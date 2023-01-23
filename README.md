@@ -14,7 +14,7 @@
 
 Enjoy a powerful tool for integrating NFT domain handling directly into your mobile app:
 
-1️⃣ Link external wallets to manage your #Web3 domains.
+1️⃣ Import & link external wallets to manage your #Web3 domains.
 
 2️⃣ Manage profiles & crypto addresses for ALL your domains.
 
