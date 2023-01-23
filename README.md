@@ -1,3 +1,5 @@
+---
+
 # unstoppable-ios-app
 
 ![](https://i.ibb.co/bvf6Rc5/screens-pano.png)
@@ -23,6 +25,8 @@ Enjoy a powerful tool for integrating NFT domain handling directly into your mob
 3️⃣ Connect 100s of WalletConnect-compatible apps.
 
 4️⃣ Re-use UI elements to streamline profile integration w/ your app.
+
+---
 
 ## Setup
 
