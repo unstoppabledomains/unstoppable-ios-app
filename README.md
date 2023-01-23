@@ -24,7 +24,6 @@ Enjoy a powerful tool for integrating NFT domain handling directly into your mob
 
 4️⃣ Re-use UI elements to streamline profile integration w/ your app.
 
----
 
 ## Setup
 
