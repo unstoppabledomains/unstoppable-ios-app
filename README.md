@@ -1,10 +1,8 @@
-# unstoppable-ios-app
+# Unstoppable Domains iOS App
 
 ![](https://i.ibb.co/F6gXBsz/screens.png)
 
-### Unstoppable Domains iOS App
-
-> Your identity and login for Web3!
+> Your identity, crypto address, and login for Web3
 
 📲️ [Available on the iOS App Store.]( https://apps.apple.com/app/unstoppable-domains-app/id1544748602 )
 
