@@ -2,7 +2,7 @@
 
 ![](https://i.ibb.co/bvf6Rc5/screens-pano.png)
 
-> Your identity and login for Web3!
+> Your identity, crypto address, and login for Web3
 
 📲️ [Available on the iOS App Store.]( https://apps.apple.com/app/unstoppable-domains-app/id1544748602 )
 
