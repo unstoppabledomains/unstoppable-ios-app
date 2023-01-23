@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MintDomainsConfigurationViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="collectionView" destination="MQc-1f-QIS" id="LOQ-Re-7HA"/>
+                <outlet property="gradientView" destination="9aC-YH-62s" id="dl5-Tv-iPU"/>
+                <outlet property="mintDomainsButton" destination="QyS-Qy-spP" id="ZK7-Rf-z5p"/>
+                <outlet property="mintDomainsToLabel" destination="C8a-hp-kmZ" id="IoI-xp-6xs"/>
+                <outlet property="mintDomainsWarningIndicator" destination="CIA-oV-4RV" id="KVA-lj-Tiw"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="walletIndicatorView" destination="YrJ-9G-3yr" id="ha9-Qv-cQj"/>
+                <outlet property="walletSelectorButton" destination="bJf-Ai-Uof" id="UBw-Sf-Z19"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="MQc-1f-QIS">
+                    <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Phk-gk-SsH">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9aC-YH-62s" customClass="UDGradientCoverView" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="729" width="414" height="16"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="16" id="hVr-Su-Y2a"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jC7-EF-V7L">
+                    <rect key="frame" x="0.0" y="745" width="414" height="151"/>
+                    <color key="backgroundColor" name="backgroundDefault"/>
+                </view>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="cFH-QH-ERt">
+                    <rect key="frame" x="16" y="745" width="382" height="103"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="35" translatesAutoresizingMaskIntoConstraints="NO" id="ieZ-oa-zhs">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="31"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="yf8-bZ-Jkd">
+                                    <rect key="frame" x="0.0" y="3.5" width="252" height="24"/>
+                                    <subviews>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="warningIcon" translatesAutoresizingMaskIntoConstraints="NO" id="CIA-oV-4RV">
+                                            <rect key="frame" x="0.0" y="2" width="20" height="20"/>
+                                            <color key="tintColor" name="foregroundWarning"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="20" id="HIg-yt-6Do"/>
+                                                <constraint firstAttribute="width" secondItem="CIA-oV-4RV" secondAttribute="height" id="VkL-DT-hz8"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C8a-hp-kmZ">
+                                            <rect key="frame" x="28" y="0.0" width="224" height="24"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="24" id="rkn-Jd-iCr"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="GgN-QL-GoQ">
+                                    <rect key="frame" x="287" y="0.0" width="95" height="31"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="20" placeholderIntrinsicHeight="20" translatesAutoresizingMaskIntoConstraints="NO" id="YrJ-9G-3yr" customClass="ResizableRoundedWalletImageView" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="5.5" width="20" height="20"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="20" placeholder="YES" id="Eq6-yh-FnA"/>
+                                            </constraints>
+                                        </view>
+                                        <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bJf-Ai-Uof" customClass="SelectorButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="28" y="0.0" width="67" height="31"/>
+                                            <state key="normal" title="Button"/>
+                                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                            <connections>
+                                                <action selector="walletSelectorButtonPressed:" destination="-1" eventType="touchUpInside" id="jEA-Jo-Yv9"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                        </stackView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QyS-Qy-spP" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="55" width="382" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="ZSg-Cb-nW2"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <connections>
+                                <action selector="mintDomainsButtonPressed:" destination="-1" eventType="touchUpInside" id="Jqv-fM-0Eh"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="jC7-EF-V7L" firstAttribute="top" secondItem="cFH-QH-ERt" secondAttribute="top" id="3tI-LJ-lIC"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="jC7-EF-V7L" secondAttribute="trailing" id="4AM-yz-hjv"/>
+                <constraint firstItem="jC7-EF-V7L" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="51u-wn-xid"/>
+                <constraint firstItem="MQc-1f-QIS" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="936-Pm-udx"/>
+                <constraint firstItem="cFH-QH-ERt" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="9Ed-HZ-aWc"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="cFH-QH-ERt" secondAttribute="bottom" constant="14" id="LrT-LC-Yai"/>
+                <constraint firstItem="cFH-QH-ERt" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="QuS-G5-9Qy"/>
+                <constraint firstItem="jC7-EF-V7L" firstAttribute="top" secondItem="9aC-YH-62s" secondAttribute="bottom" id="RmH-ii-cUM"/>
+                <constraint firstItem="9aC-YH-62s" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="TEK-sT-aDh"/>
+                <constraint firstItem="MQc-1f-QIS" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="aCt-Mv-Df5"/>
+                <constraint firstAttribute="bottom" secondItem="MQc-1f-QIS" secondAttribute="bottom" id="f0v-hr-Mxd"/>
+                <constraint firstAttribute="bottom" secondItem="jC7-EF-V7L" secondAttribute="bottom" id="gPW-rJ-enN"/>
+                <constraint firstItem="9aC-YH-62s" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="hqH-dI-rsK"/>
+                <constraint firstItem="MQc-1f-QIS" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="sSg-IL-5Zb"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <point key="canvasLocation" x="137.68115942028987" y="152.67857142857142"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="warningIcon" width="20" height="20"/>
+        <namedColor name="backgroundDefault">
+            <color red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="foregroundWarning">
+            <color red="0.81960784313725488" green="0.51764705882352946" blue="0.066666666666666666" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

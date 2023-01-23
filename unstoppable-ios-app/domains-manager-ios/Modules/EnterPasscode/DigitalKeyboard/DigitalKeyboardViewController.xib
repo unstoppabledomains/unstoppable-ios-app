@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DigitalKeyboardViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="passcodeInputView" destination="d6X-xc-1J7" id="Yms-9v-mww"/>
+                <outlet property="view" destination="44r-05-pvH" id="rIa-cP-gIc"/>
+                <outletCollection property="keyboardButtons" destination="4EF-Wd-4Tt" collectionClass="NSMutableArray" id="Yei-Fp-YrV"/>
+                <outletCollection property="keyboardButtons" destination="5Nw-HN-AFY" collectionClass="NSMutableArray" id="9JL-m8-pvo"/>
+                <outletCollection property="keyboardButtons" destination="naC-Xi-4H6" collectionClass="NSMutableArray" id="UhS-HQ-Bmz"/>
+                <outletCollection property="keyboardButtons" destination="PJJ-WN-Diu" collectionClass="NSMutableArray" id="CpN-4N-g2g"/>
+                <outletCollection property="keyboardButtons" destination="3po-jh-Bip" collectionClass="NSMutableArray" id="QnJ-Ia-nh0"/>
+                <outletCollection property="keyboardButtons" destination="IIo-8x-Ph5" collectionClass="NSMutableArray" id="Ee9-q2-4O6"/>
+                <outletCollection property="keyboardButtons" destination="gn4-JY-tT8" collectionClass="NSMutableArray" id="b3L-Lu-dFC"/>
+                <outletCollection property="keyboardButtons" destination="dnZ-YZ-Qaz" collectionClass="NSMutableArray" id="DnT-R7-eX8"/>
+                <outletCollection property="keyboardButtons" destination="gUW-e3-KcN" collectionClass="NSMutableArray" id="DEd-YF-3sa"/>
+                <outletCollection property="keyboardButtons" destination="Rwq-1y-4gl" collectionClass="NSMutableArray" id="DLU-J4-XLI"/>
+                <outletCollection property="keyboardButtons" destination="sO0-gI-r8n" collectionClass="NSMutableArray" id="yse-el-JQR"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="44r-05-pvH">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="lk7-Bb-tfu">
+                    <rect key="frame" x="63" y="193" width="288" height="304"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="48" translatesAutoresizingMaskIntoConstraints="NO" id="MTl-u9-hGW">
+                            <rect key="frame" x="0.0" y="0.0" width="288" height="64"/>
+                            <subviews>
+                                <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4EF-Wd-4Tt" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" secondItem="4EF-Wd-4Tt" secondAttribute="height" id="EIk-SA-iJ5"/>
+                                        <constraint firstAttribute="width" constant="64" id="u84-EO-vha"/>
+                                    </constraints>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="1">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="1F2-is-BLC"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Nw-HN-AFY" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="112" y="0.0" width="64" height="64"/>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="2">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="CoQ-PP-JuC"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="naC-Xi-4H6" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="224" y="0.0" width="64" height="64"/>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="3">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="iRT-iV-yT0"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="48" translatesAutoresizingMaskIntoConstraints="NO" id="neH-6K-IMt">
+                            <rect key="frame" x="0.0" y="80" width="288" height="64"/>
+                            <subviews>
+                                <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PJJ-WN-Diu" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" secondItem="PJJ-WN-Diu" secondAttribute="height" id="C8p-da-bcQ"/>
+                                        <constraint firstAttribute="width" constant="64" id="qLw-hr-Yi7"/>
+                                    </constraints>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="4">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="wCs-ZF-081"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3po-jh-Bip" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="112" y="0.0" width="64" height="64"/>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="5">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="qWg-0k-i5M"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IIo-8x-Ph5" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="224" y="0.0" width="64" height="64"/>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="6">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="Sn9-RB-cHz"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="48" translatesAutoresizingMaskIntoConstraints="NO" id="Xdq-r9-uZi">
+                            <rect key="frame" x="0.0" y="160" width="288" height="64"/>
+                            <subviews>
+                                <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gn4-JY-tT8" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="64" id="FNq-6D-rc0"/>
+                                        <constraint firstAttribute="width" secondItem="gn4-JY-tT8" secondAttribute="height" id="eUv-Hn-s7s"/>
+                                    </constraints>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="7">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="dEH-bL-74u"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dnZ-YZ-Qaz" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="112" y="0.0" width="64" height="64"/>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="8">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="UHk-RP-PVd"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" tag="9" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gUW-e3-KcN" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="224" y="0.0" width="64" height="64"/>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="9">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="elx-MB-qz3"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="48" translatesAutoresizingMaskIntoConstraints="NO" id="sx2-Kp-ovP">
+                            <rect key="frame" x="0.0" y="240" width="288" height="64"/>
+                            <subviews>
+                                <button opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2k1-6S-Whq" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="64" height="64"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="64" id="Lqv-OX-sk6"/>
+                                        <constraint firstAttribute="width" secondItem="2k1-6S-Whq" secondAttribute="height" id="bMn-UI-Cb4"/>
+                                    </constraints>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rwq-1y-4gl" customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="112" y="0.0" width="64" height="64"/>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="0">
+                                        <fontDescription key="titleFontDescription" type="system" pointSize="28"/>
+                                    </buttonConfiguration>
+                                    <connections>
+                                        <action selector="didTapDigitalButton:" destination="-1" eventType="touchUpInside" id="BWU-St-wlg"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" tag="33" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sO0-gI-r8n" userLabel=" " customClass="PasscodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="224" y="0.0" width="64" height="64"/>
+                                    <color key="tintColor" systemColor="labelColor"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" image="deleteKeyboardButton"/>
+                                    <connections>
+                                        <action selector="didTapErase:" destination="-1" eventType="touchUpInside" id="61y-dk-OtT"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d6X-xc-1J7" customClass="PasscodeInputView" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="91" y="44" width="232" height="12"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="12" id="9bU-Tr-Ujw"/>
+                        <constraint firstAttribute="width" constant="232" id="eR4-Dl-fMG"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="GEF-jp-6mJ"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="lk7-Bb-tfu" firstAttribute="centerX" secondItem="44r-05-pvH" secondAttribute="centerX" id="BOG-9B-9vz"/>
+                <constraint firstItem="d6X-xc-1J7" firstAttribute="centerX" secondItem="44r-05-pvH" secondAttribute="centerX" id="Bgn-Nr-pOr"/>
+                <constraint firstItem="lk7-Bb-tfu" firstAttribute="top" secondItem="d6X-xc-1J7" secondAttribute="bottom" constant="137" id="Mkr-VX-wew" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhoneSE2G">
+                            <real key="value" value="90"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone8">
+                            <real key="value" value="90"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                            <real key="value" value="60"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </constraint>
+                <constraint firstItem="GEF-jp-6mJ" firstAttribute="bottom" secondItem="lk7-Bb-tfu" secondAttribute="bottom" constant="10" id="cD0-u9-ihy"/>
+                <constraint firstItem="d6X-xc-1J7" firstAttribute="top" secondItem="GEF-jp-6mJ" secondAttribute="top" id="s3i-sv-DS2"/>
+            </constraints>
+            <point key="canvasLocation" x="858" y="135"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="deleteKeyboardButton" width="24" height="24"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

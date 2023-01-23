@@ -1,0 +1,13 @@
+/* 
+  InfoPlist.strings
+  domains-manager-ios
+
+  Created by Oleg Kuplin on 06.06.2022.
+  
+*/
+
+NSCameraUsageDescription = "Interact with apps and scan QR codes";
+NSPhotoLibraryUsageDescription = "Save your NFT ID to your photos.";
+NSPhotoLibraryAddUsageDescription = "Save your NFT ID to your photos.";
+NSFaceIDUsageDescription = "Protect your data and authenticate with Face ID";
+

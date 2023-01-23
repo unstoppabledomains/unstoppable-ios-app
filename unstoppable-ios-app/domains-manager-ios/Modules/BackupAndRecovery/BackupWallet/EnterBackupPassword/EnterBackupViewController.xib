@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EnterBackupViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="continueButton" destination="Jgp-Ss-ktA" id="Ev9-Ht-yuV"/>
+                <outlet property="continueButtonBottomConstraint" destination="i9q-HB-G8F" id="949-ic-ea3"/>
+                <outlet property="hintLabel" destination="mpX-Wq-Zlf" id="4nE-LD-tCJ"/>
+                <outlet property="subtitleLabel" destination="hGM-gX-u6X" id="esI-Yh-bwd"/>
+                <outlet property="titleLabel" destination="v7g-tx-yyB" id="PAJ-nd-lwn"/>
+                <outlet property="udTextField" destination="fIO-bt-Ho3" id="oOq-Gg-0l0"/>
+                <outlet property="view" destination="NV9-vX-57j" id="XqK-8p-Eez"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="NV9-vX-57j">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="kUR-yT-Z3F">
+                    <rect key="frame" x="16" y="151" width="343" height="70"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter backup password" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v7g-tx-yyB" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="343" height="33.666666666666664"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hGM-gX-u6X" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="49.666666666666657" width="343" height="20.333333333333329"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
+                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="128" translatesAutoresizingMaskIntoConstraints="NO" id="fIO-bt-Ho3" customClass="UDTextField" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="253" width="343" height="128"/>
+                    <color key="backgroundColor" systemColor="systemGray6Color"/>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mpX-Wq-Zlf">
+                    <rect key="frame" x="32" y="389" width="311" height="40.666666666666686"/>
+                    <attributedString key="attributedText">
+                        <fragment content="Unstoppable Domains cannot recover your password for you. Learn more">
+                            <attributes>
+                                <font key="NSFont" metaFont="system" size="17"/>
+                            </attributes>
+                        </fragment>
+                    </attributedString>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jgp-Ss-ktA" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="748" width="343" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="Q8v-eL-H4n"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Continue"/>
+                    <connections>
+                        <action selector="didTapContinueButton:" destination="-1" eventType="touchUpInside" id="CgY-W7-Oae"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="zqA-gy-gF3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="mpX-Wq-Zlf" firstAttribute="leading" secondItem="zqA-gy-gF3" secondAttribute="leading" constant="32" id="632-oJ-cB1"/>
+                <constraint firstItem="zqA-gy-gF3" firstAttribute="trailing" secondItem="fIO-bt-Ho3" secondAttribute="trailing" constant="16" id="69g-oa-OBl"/>
+                <constraint firstItem="kUR-yT-Z3F" firstAttribute="centerX" secondItem="NV9-vX-57j" secondAttribute="centerX" id="OPu-l0-PnF"/>
+                <constraint firstItem="zqA-gy-gF3" firstAttribute="trailing" secondItem="Jgp-Ss-ktA" secondAttribute="trailing" constant="16" id="QWj-85-IzS"/>
+                <constraint firstItem="fIO-bt-Ho3" firstAttribute="leading" secondItem="zqA-gy-gF3" secondAttribute="leading" constant="16" id="Szs-Tl-xky"/>
+                <constraint firstItem="fIO-bt-Ho3" firstAttribute="top" secondItem="kUR-yT-Z3F" secondAttribute="bottom" constant="32" id="ToA-iY-eQT" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                            <real key="value" value="14"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </constraint>
+                <constraint firstItem="kUR-yT-Z3F" firstAttribute="top" secondItem="zqA-gy-gF3" secondAttribute="top" constant="60" id="dcB-G0-SBv"/>
+                <constraint firstItem="mpX-Wq-Zlf" firstAttribute="top" secondItem="fIO-bt-Ho3" secondAttribute="bottom" constant="8" id="fBd-c1-Ba0"/>
+                <constraint firstAttribute="bottom" secondItem="Jgp-Ss-ktA" secondAttribute="bottom" constant="16" id="i9q-HB-G8F"/>
+                <constraint firstItem="Jgp-Ss-ktA" firstAttribute="leading" secondItem="zqA-gy-gF3" secondAttribute="leading" constant="16" id="rd3-tV-HdQ"/>
+                <constraint firstItem="kUR-yT-Z3F" firstAttribute="leading" secondItem="zqA-gy-gF3" secondAttribute="leading" constant="16" id="rwi-kk-CDT"/>
+                <constraint firstItem="mpX-Wq-Zlf" firstAttribute="centerX" secondItem="NV9-vX-57j" secondAttribute="centerX" id="sUg-mg-arZ"/>
+            </constraints>
+            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+            <point key="canvasLocation" x="-297" y="140"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray6Color">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

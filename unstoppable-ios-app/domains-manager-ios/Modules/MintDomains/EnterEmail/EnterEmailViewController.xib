@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EnterEmailViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="continueButton" destination="Myh-cp-Ifz" id="Kdc-ew-LLT"/>
+                <outlet property="continueButtonBottomConstraint" destination="JJp-Jo-sCD" id="ulf-Wf-tiM"/>
+                <outlet property="emailTF" destination="ktd-WP-lhF" id="NNo-9h-Ywf"/>
+                <outlet property="subtitleLabel" destination="TSq-ry-grk" id="dPe-X1-bpy"/>
+                <outlet property="titleLabel" destination="GUr-MX-EjV" id="DHc-Kt-bWQ"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="fUb-5p-nVz">
+                    <rect key="frame" x="16" y="52.999999999999986" width="382" height="216.66666666666663"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="zl0-pQ-xqK">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="56.666666666666664"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GUr-MX-EjV" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="382" height="20.333333333333332"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TSq-ry-grk" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="36.333333333333329" width="382" height="20.333333333333329"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="128" translatesAutoresizingMaskIntoConstraints="NO" id="ktd-WP-lhF" customClass="UDTextField" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="88.666666666666657" width="382" height="128"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </view>
+                    </subviews>
+                </stackView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Myh-cp-Ifz" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="838" width="382" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="GPG-0q-H5y"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                    <connections>
+                        <action selector="continueButtonPressed" destination="-1" eventType="touchUpInside" id="0EZ-j1-qNe"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="Myh-cp-Ifz" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="42H-cj-VyL"/>
+                <constraint firstAttribute="bottom" secondItem="Myh-cp-Ifz" secondAttribute="bottom" constant="10" id="JJp-Jo-sCD"/>
+                <constraint firstItem="Myh-cp-Ifz" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="16" id="QeB-vp-yCM"/>
+                <constraint firstItem="fUb-5p-nVz" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="Xtb-Jc-K1U"/>
+                <constraint firstItem="fUb-5p-nVz" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="esX-l3-A9a"/>
+                <constraint firstItem="fUb-5p-nVz" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="53" id="iKQ-aA-ydG"/>
+            </constraints>
+            <point key="canvasLocation" x="139" y="135"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

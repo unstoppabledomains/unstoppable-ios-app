@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SaveDomainImageTypePullUpView" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="containerView" destination="iN0-l3-epB" id="sdM-fc-1sj"/>
+                <outlet property="contentStack" destination="j3p-k6-7cP" id="cNt-bz-Io6"/>
+                <outlet property="socialsPreview" destination="CNJ-0h-M5J" id="G6z-tD-3Yg"/>
+                <outlet property="titleLabel" destination="zRK-AA-gb3" id="oJW-b8-2l7"/>
+                <outlet property="wallpaperPreview" destination="ZUp-E6-Jfz" id="MEB-qM-kVe"/>
+                <outlet property="watchfacePreview" destination="5KY-ik-jbw" id="XRK-4f-KXr"/>
+                <outletCollection property="previewTitleButtons" destination="fDt-Bn-gfO" collectionClass="NSMutableArray" id="PX6-At-3ha"/>
+                <outletCollection property="previewTitleButtons" destination="XHI-J3-gPC" collectionClass="NSMutableArray" id="CSE-Xd-64k"/>
+                <outletCollection property="previewTitleButtons" destination="1km-GH-BEc" collectionClass="NSMutableArray" id="5uC-q2-WrU"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="501"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="qYg-1q-GuL">
+                    <rect key="frame" x="16" y="0.0" width="382" height="225.33333333333334"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zRK-AA-gb3">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="20.333333333333332"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="j3p-k6-7cP">
+                            <rect key="frame" x="0.0" y="44.333333333333343" width="382" height="181"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Bsi-TR-mMb">
+                                    <rect key="frame" x="0.0" y="0.0" width="127.33333333333333" height="181"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZUp-E6-Jfz" customClass="WallpaperDomainImagePreviewView" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="27.333333333333336" y="0.0" width="73" height="125"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="125" id="VMG-Be-54v"/>
+                                                <constraint firstAttribute="width" constant="73" id="Y1P-Zq-zR5"/>
+                                            </constraints>
+                                        </view>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fDt-Bn-gfO" customClass="TertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="26.333333333333336" y="141" width="75" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="P2q-K2-doZ"/>
+                                            </constraints>
+                                            <state key="normal" title="Button"/>
+                                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                    <real key="value" value="20"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </button>
+                                    </subviews>
+                                </stackView>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="lMO-5R-7t7">
+                                    <rect key="frame" x="127.33333333333334" y="0.0" width="127.33333333333334" height="181"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CNJ-0h-M5J" customClass="SocialsDomainImagePreviewView" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="27.333333333333314" y="0.0" width="73" height="125"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="73" id="ORD-rv-Rqb"/>
+                                                <constraint firstAttribute="height" constant="125" id="PIb-af-XIM"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                    <real key="value" value="12"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XHI-J3-gPC" customClass="TertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="26.333333333333314" y="141" width="75" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="piH-tP-Ge9"/>
+                                            </constraints>
+                                            <state key="normal" title="Button"/>
+                                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                    <real key="value" value="20"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </button>
+                                    </subviews>
+                                </stackView>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="kio-4N-xOh">
+                                    <rect key="frame" x="254.66666666666671" y="0.0" width="127.33333333333334" height="181"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5KY-ik-jbw" customClass="WatchFaceDomainImagePreviewView" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="27.333333333333314" y="0.0" width="73" height="125"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="73" id="cWV-v8-dff"/>
+                                                <constraint firstAttribute="height" constant="125" id="cal-KE-bo3"/>
+                                            </constraints>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                    <real key="value" value="12"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </view>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1km-GH-BEc" customClass="TertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="1.3333333333333144" y="141" width="125" height="40"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="40" id="awz-20-3vv"/>
+                                            </constraints>
+                                            <state key="normal" title="Button"/>
+                                            <buttonConfiguration key="configuration" style="plain" title="Longlinglinga"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                    <real key="value" value="20"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </button>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="qYg-1q-GuL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="RYe-zk-zqK"/>
+                <constraint firstItem="qYg-1q-GuL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="TK0-r9-KZ2" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                            <real key="value" value="8"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </constraint>
+                <constraint firstItem="qYg-1q-GuL" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="p7h-uQ-rPd"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="137.68115942028987" y="284.93303571428572"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

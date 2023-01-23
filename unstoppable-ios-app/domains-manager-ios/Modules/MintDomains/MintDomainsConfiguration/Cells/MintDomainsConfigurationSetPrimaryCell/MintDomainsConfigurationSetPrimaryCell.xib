@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="MintDomainsConfigurationSetPrimaryCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="259" height="72"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="259" height="72"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5c5-TY-1gY">
+                        <rect key="frame" x="0.0" y="0.0" width="259" height="72"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="bNT-b2-J6Y">
+                                <rect key="frame" x="16" y="12" width="227" height="48"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="LkK-Tq-lbX">
+                                        <rect key="frame" x="0.0" y="0.0" width="227" height="48"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wY2-nc-H9i" customClass="TextBlackButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="142.5" height="48"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Busdkdsfs kjf dkjf sdkjf h"/>
+                                                <connections>
+                                                    <action selector="infoButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="zqv-OK-gpG"/>
+                                                </connections>
+                                            </button>
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DBi-4u-47k">
+                                                <rect key="frame" x="178" y="8.5" width="51" height="31"/>
+                                                <color key="onTintColor" name="backgroundAccentEmphasis"/>
+                                                <connections>
+                                                    <action selector="switcherValueChanged:" destination="gTV-IL-0wX" eventType="valueChanged" id="mKh-b8-JMe"/>
+                                                </connections>
+                                            </switch>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" name="backgroundOverlay"/>
+                        <constraints>
+                            <constraint firstItem="bNT-b2-J6Y" firstAttribute="centerY" secondItem="5c5-TY-1gY" secondAttribute="centerY" id="Bef-Jt-sAx"/>
+                            <constraint firstAttribute="height" constant="72" id="XEa-0j-wTP"/>
+                            <constraint firstAttribute="trailing" secondItem="bNT-b2-J6Y" secondAttribute="trailing" constant="16" id="giK-2D-xla"/>
+                            <constraint firstItem="bNT-b2-J6Y" firstAttribute="leading" secondItem="5c5-TY-1gY" secondAttribute="leading" constant="16" id="n4N-Xj-sR9"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="5c5-TY-1gY" secondAttribute="bottom" id="IJ6-Un-baN"/>
+                <constraint firstAttribute="trailing" secondItem="5c5-TY-1gY" secondAttribute="trailing" id="S8U-Jh-8uK"/>
+                <constraint firstItem="5c5-TY-1gY" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="WMh-1C-8bT"/>
+                <constraint firstItem="5c5-TY-1gY" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="XY7-sN-NZn"/>
+            </constraints>
+            <size key="customSize" width="259" height="57"/>
+            <connections>
+                <outlet property="containerView" destination="5c5-TY-1gY" id="HGO-9T-oMs"/>
+                <outlet property="infoButton" destination="wY2-nc-H9i" id="vbP-N8-xrX"/>
+                <outlet property="switcher" destination="DBi-4u-47k" id="9Tv-Ek-qaM"/>
+            </connections>
+            <point key="canvasLocation" x="289" y="126"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="backgroundAccentEmphasis">
+            <color red="0.050999999046325684" green="0.40400001406669617" blue="0.99599999189376831" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="backgroundOverlay">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

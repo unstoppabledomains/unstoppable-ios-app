@@ -1,0 +1,8 @@
+/* 
+  Localizable.strings
+  domains-manager-ios
+
+  Created by Oleg Kuplin on 22.07.2022.
+  
+*/
+"NOTIFICATION_RECORDS_UPDATED" = "Records has been updated successfully";

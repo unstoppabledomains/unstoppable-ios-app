@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="BaseSignTransactionView" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="appHostButton" destination="HRg-JN-D9E" id="uaN-O4-0ub"/>
+                <outlet property="appImageBackgroundView" destination="egX-gG-Ebc" id="1ag-pm-RhZ"/>
+                <outlet property="appImageView" destination="2Wx-NK-5ne" id="Skn-kK-Cy4"/>
+                <outlet property="cancelButton" destination="Can-gI-u2C" id="P5L-Ko-Qkt"/>
+                <outlet property="confirmButton" destination="Imi-yz-M2b" id="6Ca-IG-oBr"/>
+                <outlet property="containerView" destination="iN0-l3-epB" id="yvq-ZF-R3g"/>
+                <outlet property="contentStackView" destination="QZm-vc-uf2" id="yj1-qA-XC3"/>
+                <outlet property="titleLabel" destination="gmb-nC-mah" id="a5w-me-2OJ"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="559"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Abp-qf-YUE">
+                    <rect key="frame" x="16" y="8" width="382" height="551"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="VmR-lH-9FQ">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="551"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="QZm-vc-uf2">
+                                    <rect key="frame" x="0.0" y="0.0" width="382" height="250"/>
+                                    <subviews>
+                                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="5DC-dl-CDw">
+                                            <rect key="frame" x="0.0" y="0.0" width="382" height="153"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LnY-1n-oG5">
+                                                    <rect key="frame" x="163" y="0.0" width="56" height="56"/>
+                                                    <subviews>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="egX-gG-Ebc">
+                                                            <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                                            <color key="backgroundColor" name="brandWhite"/>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                                    <real key="value" value="1"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                                    <real key="value" value="12"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                                    <color key="value" name="borderSubtle"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                            </userDefinedRuntimeAttributes>
+                                                        </view>
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="2Wx-NK-5ne">
+                                                            <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" secondItem="2Wx-NK-5ne" secondAttribute="height" id="OpV-8z-pek"/>
+                                                                <constraint firstAttribute="width" constant="56" id="VOe-zj-h40"/>
+                                                            </constraints>
+                                                            <userDefinedRuntimeAttributes>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                                    <real key="value" value="12"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                                                    <real key="value" value="1"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                                <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                                                    <color key="value" name="borderSubtle"/>
+                                                                </userDefinedRuntimeAttribute>
+                                                            </userDefinedRuntimeAttributes>
+                                                        </imageView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstItem="2Wx-NK-5ne" firstAttribute="leading" secondItem="LnY-1n-oG5" secondAttribute="leading" id="5EE-3K-QaM"/>
+                                                        <constraint firstItem="egX-gG-Ebc" firstAttribute="leading" secondItem="2Wx-NK-5ne" secondAttribute="leading" id="Pti-6m-NRf"/>
+                                                        <constraint firstItem="egX-gG-Ebc" firstAttribute="trailing" secondItem="2Wx-NK-5ne" secondAttribute="trailing" id="UE3-c5-94c"/>
+                                                        <constraint firstItem="2Wx-NK-5ne" firstAttribute="top" secondItem="LnY-1n-oG5" secondAttribute="top" id="WsM-aM-un1"/>
+                                                        <constraint firstItem="egX-gG-Ebc" firstAttribute="top" secondItem="2Wx-NK-5ne" secondAttribute="top" id="a51-B5-qgA"/>
+                                                        <constraint firstAttribute="bottom" secondItem="2Wx-NK-5ne" secondAttribute="bottom" id="dJl-BN-Eg3"/>
+                                                        <constraint firstAttribute="trailing" secondItem="2Wx-NK-5ne" secondAttribute="trailing" id="kp1-6c-loX"/>
+                                                        <constraint firstItem="egX-gG-Ebc" firstAttribute="bottom" secondItem="2Wx-NK-5ne" secondAttribute="bottom" id="u88-fm-gfx"/>
+                                                    </constraints>
+                                                </view>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Labels kjdfhskd fjhsd kfj sdkfj sdk fskdj fsdk fsdk sdhskdfj s" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gmb-nC-mah">
+                                                    <rect key="frame" x="3.5" y="72" width="375" height="41"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JuC-eC-fVv">
+                                                    <rect key="frame" x="76.5" y="129" width="229" height="24"/>
+                                                    <subviews>
+                                                        <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="tLQ-hQ-a0L">
+                                                            <rect key="frame" x="0.0" y="-3.5" width="229" height="31"/>
+                                                            <subviews>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HRg-JN-D9E" customClass="TextButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                                    <rect key="frame" x="0.0" y="0.0" width="229" height="31"/>
+                                                                    <state key="normal" title="Button"/>
+                                                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                                    <connections>
+                                                                        <action selector="appNameButtonPressed:" destination="-1" eventType="touchUpInside" id="NpW-IO-aU0"/>
+                                                                    </connections>
+                                                                </button>
+                                                            </subviews>
+                                                        </stackView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="24" id="6VU-eG-AvM"/>
+                                                        <constraint firstItem="tLQ-hQ-a0L" firstAttribute="centerX" secondItem="JuC-eC-fVv" secondAttribute="centerX" id="7Fy-ld-JHb"/>
+                                                        <constraint firstItem="tLQ-hQ-a0L" firstAttribute="centerY" secondItem="JuC-eC-fVv" secondAttribute="centerY" id="fVl-2P-4xt"/>
+                                                        <constraint firstItem="tLQ-hQ-a0L" firstAttribute="leading" secondItem="JuC-eC-fVv" secondAttribute="leading" id="q3U-58-9xn"/>
+                                                    </constraints>
+                                                </view>
+                                            </subviews>
+                                        </stackView>
+                                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="VhI-Ac-xVF">
+                                            <rect key="frame" x="0.0" y="177" width="382" height="48"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Can-gI-u2C" customClass="TertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                    <rect key="frame" x="0.0" y="0.0" width="183" height="48"/>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                    <connections>
+                                                        <action selector="cancelButtonPressed:" destination="-1" eventType="touchUpInside" id="eop-qm-aZP"/>
+                                                    </connections>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Imi-yz-M2b" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                    <rect key="frame" x="199" y="0.0" width="183" height="48"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="48" id="lAD-C5-ApS"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                    <connections>
+                                                        <action selector="confirmButtonPressed:" destination="-1" eventType="touchUpInside" id="gAE-4c-DXl"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                        </stackView>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Id-zz-j3g">
+                                            <rect key="frame" x="0.0" y="249" width="382" height="1"/>
+                                            <color key="backgroundColor" name="borderSubtle"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="1" id="fWW-Fb-UHJ"/>
+                                            </constraints>
+                                        </view>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="Abp-qf-YUE" secondAttribute="bottom" id="AAL-sP-7QS"/>
+                <constraint firstItem="Abp-qf-YUE" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="FIr-jy-8zp"/>
+                <constraint firstItem="Abp-qf-YUE" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="klP-P0-JEU"/>
+                <constraint firstItem="Abp-qf-YUE" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="zvV-2F-HvR"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="137.68115942028987" y="265.51339285714283"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="borderSubtle">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.019999999552965164" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="brandWhite">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

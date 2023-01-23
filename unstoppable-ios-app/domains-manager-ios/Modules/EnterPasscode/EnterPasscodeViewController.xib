@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EnterPasscodeViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="keyboardContainerView" destination="egu-Ks-F6t" id="bKX-bj-qup"/>
+                <outlet property="titleLabel" destination="2ad-lF-d1R" id="4Yj-dL-EgF"/>
+                <outlet property="view" destination="5EO-nu-q9m" id="CGL-XF-hww"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="5EO-nu-q9m">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create passcode" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ad-lF-d1R" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="97" width="382" height="20.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="egu-Ks-F6t">
+                    <rect key="frame" x="25" y="254.5" width="364" height="300"/>
+                    <color key="backgroundColor" systemColor="systemGray5Color"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="300" placeholder="YES" id="r5t-yn-KmY"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="XJq-MB-XPg"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="egu-Ks-F6t" firstAttribute="leading" secondItem="XJq-MB-XPg" secondAttribute="leading" constant="25" id="4zY-la-a5Z" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                            <real key="value" value="0.0"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </constraint>
+                <constraint firstItem="2ad-lF-d1R" firstAttribute="leading" secondItem="XJq-MB-XPg" secondAttribute="leading" constant="16" id="7Oy-Bf-q4U"/>
+                <constraint firstItem="egu-Ks-F6t" firstAttribute="centerX" secondItem="5EO-nu-q9m" secondAttribute="centerX" id="Af8-S5-tOf"/>
+                <constraint firstItem="egu-Ks-F6t" firstAttribute="top" secondItem="2ad-lF-d1R" secondAttribute="bottom" constant="137" id="Fge-nc-uac" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhoneSE2G">
+                            <real key="value" value="90"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone8">
+                            <real key="value" value="90"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                            <real key="value" value="60"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </constraint>
+                <constraint firstItem="2ad-lF-d1R" firstAttribute="centerX" secondItem="5EO-nu-q9m" secondAttribute="centerX" id="RtF-Ss-OTg"/>
+                <constraint firstItem="2ad-lF-d1R" firstAttribute="top" secondItem="XJq-MB-XPg" secondAttribute="top" constant="53" id="VVx-GC-OlA"/>
+            </constraints>
+            <point key="canvasLocation" x="-406" y="781"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

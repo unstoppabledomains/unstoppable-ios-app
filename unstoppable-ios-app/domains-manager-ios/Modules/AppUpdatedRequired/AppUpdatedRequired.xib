@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AppUpdatedRequired" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="subtitleLabel" destination="d2a-3h-fpI" id="7wD-lO-UXQ"/>
+                <outlet property="titleLabel" destination="fvV-oY-iN9" id="ufE-7j-M5n"/>
+                <outlet property="updateButton" destination="moZ-Lk-ATz" id="MJ6-9f-BbR"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="faI-7J-5jN">
+                    <rect key="frame" x="0.0" y="44" width="390" height="680"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="hYK-kM-LTd">
+                            <rect key="frame" x="16" y="267.66666666666669" width="358" height="144.66666666666669"/>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="udLogo" translatesAutoresizingMaskIntoConstraints="NO" id="eNR-2X-xGL">
+                                    <rect key="frame" x="147" y="0.0" width="64" height="64"/>
+                                </imageView>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="hQ8-PW-ThR">
+                                    <rect key="frame" x="158.33333333333334" y="88" width="41.333333333333343" height="56.666666666666657"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fvV-oY-iN9" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="41.333333333333336" height="20.333333333333332"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d2a-3h-fpI" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="36.333333333333314" width="41.333333333333336" height="20.333333333333329"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="hYK-kM-LTd" firstAttribute="centerY" secondItem="faI-7J-5jN" secondAttribute="centerY" id="7RL-Ct-QHw"/>
+                        <constraint firstItem="hYK-kM-LTd" firstAttribute="leading" secondItem="faI-7J-5jN" secondAttribute="leading" constant="16" id="rLN-s6-vjR"/>
+                        <constraint firstItem="hYK-kM-LTd" firstAttribute="centerX" secondItem="faI-7J-5jN" secondAttribute="centerX" id="yeP-Mq-PXN"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="moZ-Lk-ATz" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="748" width="358" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="fzt-pd-gxW"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                    <connections>
+                        <action selector="updateButtonPressed:" destination="-1" eventType="touchUpInside" id="Abq-gM-59I"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="moZ-Lk-ATz" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="9QK-CR-MHR"/>
+                <constraint firstItem="faI-7J-5jN" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="RYc-TG-idg"/>
+                <constraint firstItem="faI-7J-5jN" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="X4A-VY-hPf"/>
+                <constraint firstItem="moZ-Lk-ATz" firstAttribute="top" secondItem="faI-7J-5jN" secondAttribute="bottom" constant="24" id="cXz-Hg-D2T"/>
+                <constraint firstItem="moZ-Lk-ATz" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="kQo-sA-wTX"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="moZ-Lk-ATz" secondAttribute="bottom" constant="14" id="wWp-VN-3sQ"/>
+                <constraint firstAttribute="trailing" secondItem="faI-7J-5jN" secondAttribute="trailing" id="xE0-QD-hFu"/>
+            </constraints>
+            <point key="canvasLocation" x="139" y="153"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="udLogo" width="64" height="64"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="ReverseResolutionTransactionInProgressCardCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="340" height="358"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="340" height="358"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dje-35-7PY" customClass="UDDomainCardView" customModule="domains_manager_ios" customModuleProvider="target">
+                        <rect key="frame" x="40" y="16" width="260" height="260"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="260" id="ETw-Gb-QYr"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FDJ-GN-IXz" customClass="WalletInfoBadgeView" customModule="domains_manager_ios" customModuleProvider="target">
+                        <rect key="frame" x="79" y="292" width="182" height="66"/>
+                        <color key="backgroundColor" name="backgroundSubtle"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="182" placeholder="YES" id="CtE-US-jBw"/>
+                            <constraint firstAttribute="height" priority="999" constant="32" id="O1y-vg-vYJ"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="Dje-35-7PY" firstAttribute="width" secondItem="Dje-35-7PY" secondAttribute="height" id="32v-Rn-oNs"/>
+                <constraint firstItem="FDJ-GN-IXz" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="8vg-Wv-ApM"/>
+                <constraint firstItem="Dje-35-7PY" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="J6X-F3-3LU"/>
+                <constraint firstItem="FDJ-GN-IXz" firstAttribute="top" secondItem="Dje-35-7PY" secondAttribute="bottom" constant="16" id="K4o-vN-GL1"/>
+                <constraint firstAttribute="bottom" secondItem="FDJ-GN-IXz" secondAttribute="bottom" id="XzT-3H-3eK"/>
+                <constraint firstItem="Dje-35-7PY" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="16" id="cDY-w8-jUb"/>
+            </constraints>
+            <size key="customSize" width="340" height="358"/>
+            <connections>
+                <outlet property="domainCardView" destination="Dje-35-7PY" id="nYV-KH-nJH"/>
+                <outlet property="walletInfoBadgeView" destination="FDJ-GN-IXz" id="Seo-Jn-0eP"/>
+            </connections>
+            <point key="canvasLocation" x="347.82608695652175" y="70.3125"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="backgroundSubtle">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.039999999105930328" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

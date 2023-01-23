@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Happy End View Controller-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="HappyEndViewController" id="Y6W-OH-hqX" customClass="HappyEndViewController" customModule="domains_manager_ios" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="G4f-ZS-o71" customClass="ConfettiImageView" customModule="domains_manager_ios" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="390" height="390"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="G4f-ZS-o71" secondAttribute="height" id="BLv-98-IgM"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Nx-Hs-8Tp" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                <rect key="frame" x="16" y="748" width="358" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="5hI-BB-7aK"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Get started"/>
+                                <connections>
+                                    <action selector="didTapGetStartedButton:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="reC-3L-J61"/>
+                                </connections>
+                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Cqb-Qe-4Vj">
+                                <rect key="frame" x="16" y="672" width="358" height="60"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Av5-8E-VN5">
+                                        <rect key="frame" x="0.0" y="0.0" width="277" height="60"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" horizontalHuggingPriority="251" placeholderIntrinsicWidth="20" placeholderIntrinsicHeight="20" translatesAutoresizingMaskIntoConstraints="NO" id="0Ed-WU-IVh" customClass="UDCheckBox" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="10" y="10" width="257" height="40"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <connections>
+                                                    <action selector="didTapSwitch:" destination="Y6W-OH-hqX" eventType="valueChanged" id="Ea2-AS-DVv"/>
+                                                </connections>
+                                            </view>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="0Ed-WU-IVh" secondAttribute="trailing" constant="10" id="GYO-0e-Jfg"/>
+                                            <constraint firstItem="0Ed-WU-IVh" firstAttribute="top" secondItem="Av5-8E-VN5" secondAttribute="top" constant="10" id="WQS-8F-oZ8"/>
+                                            <constraint firstAttribute="bottom" secondItem="0Ed-WU-IVh" secondAttribute="bottom" constant="10" id="kbl-ax-c9i"/>
+                                            <constraint firstItem="0Ed-WU-IVh" firstAttribute="leading" secondItem="Av5-8E-VN5" secondAttribute="leading" constant="10" id="ue2-AU-C2r"/>
+                                        </constraints>
+                                    </view>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="Agreement" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kO4-gW-kLR">
+                                        <rect key="frame" x="277" y="13.666666666666629" width="81" height="33"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="textColor" systemColor="labelColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                </subviews>
+                            </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="e5l-zi-B00">
+                                <rect key="frame" x="16" y="290" width="358" height="158"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="udLogo" translatesAutoresizingMaskIntoConstraints="NO" id="ajW-TO-oG5">
+                                        <rect key="frame" x="147" y="0.0" width="64" height="64"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="64" id="Fad-XJ-UT7"/>
+                                            <constraint firstAttribute="width" secondItem="ajW-TO-oG5" secondAttribute="height" id="bra-xB-8pc"/>
+                                        </constraints>
+                                    </imageView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="XKE-0p-hrE">
+                                        <rect key="frame" x="83.666666666666671" y="88" width="190.66666666666663" height="70"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You're all done" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sd4-8T-4fy" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="190.66666666666666" height="33.666666666666664"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hVr-d4-qGj" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="74.666666666666671" y="49.666666666666686" width="41.333333333333329" height="20.333333333333329"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="4Nx-Hs-8Tp" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="Cxf-LT-Mal"/>
+                            <constraint firstItem="e5l-zi-B00" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="FUY-ZS-h06"/>
+                            <constraint firstItem="e5l-zi-B00" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="16" id="NcG-mv-Twa"/>
+                            <constraint firstItem="Cqb-Qe-4Vj" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="QWJ-Wi-lBV"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="4Nx-Hs-8Tp" secondAttribute="bottom" constant="14" id="Ryk-bX-bUN"/>
+                            <constraint firstItem="4Nx-Hs-8Tp" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="16" id="UAx-iF-4S1"/>
+                            <constraint firstItem="Cqb-Qe-4Vj" firstAttribute="leading" secondItem="4Nx-Hs-8Tp" secondAttribute="leading" id="Usq-jm-vph"/>
+                            <constraint firstItem="4Nx-Hs-8Tp" firstAttribute="top" secondItem="Cqb-Qe-4Vj" secondAttribute="bottom" constant="16" id="VuB-1Z-Fgg"/>
+                            <constraint firstItem="e5l-zi-B00" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="XAH-Ds-Ifd"/>
+                            <constraint firstItem="G4f-ZS-o71" firstAttribute="top" secondItem="5EZ-qb-Rvc" secondAttribute="top" id="gdp-kc-vbv"/>
+                            <constraint firstItem="G4f-ZS-o71" firstAttribute="trailing" secondItem="vDu-zF-Fre" secondAttribute="trailing" id="mjr-71-0NN"/>
+                            <constraint firstItem="G4f-ZS-o71" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="w0Y-Bf-d6P"/>
+                            <constraint firstItem="e5l-zi-B00" firstAttribute="top" secondItem="G4f-ZS-o71" secondAttribute="bottom" constant="-100" id="ziH-Hm-UXB" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone8">
+                                        <real key="value" value="-150"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                                        <real key="value" value="-150"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </constraint>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="M3a-nA-GiD"/>
+                    <connections>
+                        <outlet property="agreementTextView" destination="kO4-gW-kLR" id="Df5-o0-9Pv"/>
+                        <outlet property="checkbox" destination="0Ed-WU-IVh" id="JkQ-D2-m2H"/>
+                        <outlet property="checkboxContainer" destination="Av5-8E-VN5" id="6Im-dX-fuH"/>
+                        <outlet property="confettiImageView" destination="G4f-ZS-o71" id="NfR-0q-rzZ"/>
+                        <outlet property="getStartedButton" destination="4Nx-Hs-8Tp" id="THg-SA-8Ws"/>
+                        <outlet property="subtitleLabel" destination="hVr-d4-qGj" id="5oa-xm-2SU"/>
+                        <outlet property="titleLabel" destination="sd4-8T-4fy" id="bHZ-3p-pdT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="105.79710144927537" y="91.741071428571431"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="udLogo" width="64" height="64"/>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

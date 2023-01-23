@@ -1,0 +1,26 @@
+{
+    "applinks": {
+        "details": [
+            {
+                ],
+                "components": [
+                    {
+                        "/": "/claim-domains-ios/*",
+                        "?": {
+                            "email": "*"
+                        },
+                        "comment": "Matches any URL whose path starts with /claim-domains-ios/ and which has a query item with name 'email' and a value of any number of characters"
+                    },
+                    {
+                        "/": "/mobile/*",
+                        "?": {
+                            "operation": "*",
+                            "email": "*"
+                        },
+                        "comment": "Matches any URL whose path starts with /mobile/ and which has query items 'operation' and 'email' and a value of any number of characters"
+                    }
+                ]
+            }
+        ]
+    }
+}

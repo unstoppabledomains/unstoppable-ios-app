@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SocialsDomainImagePreviewView" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="backgroundImageView" destination="3xH-5t-itt" id="hr8-dx-WR7"/>
+                <outlet property="containerView" destination="iN0-l3-epB" id="K0e-Nt-6qS"/>
+                <outlet property="domainSharingCardView" destination="FCd-5L-ld6" id="GDI-zN-KKK"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="73" height="125"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7wx-EF-8kG">
+                    <rect key="frame" x="0.0" y="0.0" width="73" height="125"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" name="borderMuted"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="1"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                            <real key="value" value="12"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xoz-XK-wnw">
+                    <rect key="frame" x="1" y="1" width="71" height="123"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="3XK-kk-awf">
+                            <rect key="frame" x="4" y="18" width="63" height="87"/>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="saveImageSocialTopIllustrationsaveImageSocialTopIllustration" translatesAutoresizingMaskIntoConstraints="NO" id="dU6-iw-fGk">
+                                    <rect key="frame" x="0.0" y="0.0" width="63" height="8"/>
+                                    <color key="tintColor" name="foregroundMuted"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="8" id="63m-zo-CDN"/>
+                                    </constraints>
+                                </imageView>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OlD-oH-u6t">
+                                    <rect key="frame" x="0.0" y="12" width="63" height="63"/>
+                                    <subviews>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3xH-5t-itt">
+                                            <rect key="frame" x="0.0" y="0.0" width="63" height="63"/>
+                                        </imageView>
+                                        <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Io-n5-gfW">
+                                            <rect key="frame" x="0.0" y="0.0" width="63" height="63"/>
+                                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="pPw-Wg-wA8">
+                                                <rect key="frame" x="0.0" y="0.0" width="63" height="63"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            </view>
+                                            <blurEffect style="systemThickMaterial"/>
+                                        </visualEffectView>
+                                        <view hidden="YES" alpha="0.88" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pZj-Go-R2l">
+                                            <rect key="frame" x="0.0" y="0.0" width="63" height="63"/>
+                                            <color key="backgroundColor" name="backgroundOverlayOpacity"/>
+                                        </view>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FCd-5L-ld6" customClass="UDDomainSharingCardView" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="11.5" y="6" width="40" height="51"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="FCd-5L-ld6" secondAttribute="height" multiplier="200/256" id="cIK-GN-M6S"/>
+                                            </constraints>
+                                        </view>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="3xH-5t-itt" secondAttribute="trailing" id="2UT-mq-0M9"/>
+                                        <constraint firstAttribute="width" secondItem="OlD-oH-u6t" secondAttribute="height" id="2fT-on-7Ux"/>
+                                        <constraint firstAttribute="bottom" secondItem="6Io-n5-gfW" secondAttribute="bottom" id="3cf-i7-pjl"/>
+                                        <constraint firstItem="pZj-Go-R2l" firstAttribute="bottom" secondItem="6Io-n5-gfW" secondAttribute="bottom" id="3o2-yD-frP"/>
+                                        <constraint firstItem="pZj-Go-R2l" firstAttribute="leading" secondItem="6Io-n5-gfW" secondAttribute="leading" id="EyT-7M-7m2"/>
+                                        <constraint firstItem="6Io-n5-gfW" firstAttribute="leading" secondItem="OlD-oH-u6t" secondAttribute="leading" id="IoD-H3-Nf1"/>
+                                        <constraint firstItem="FCd-5L-ld6" firstAttribute="top" secondItem="OlD-oH-u6t" secondAttribute="top" constant="6" id="UQn-qg-MAM"/>
+                                        <constraint firstItem="3xH-5t-itt" firstAttribute="top" secondItem="OlD-oH-u6t" secondAttribute="top" id="Vw0-NU-qCJ"/>
+                                        <constraint firstAttribute="bottom" secondItem="3xH-5t-itt" secondAttribute="bottom" id="Yx3-g1-0Ed"/>
+                                        <constraint firstItem="6Io-n5-gfW" firstAttribute="top" secondItem="OlD-oH-u6t" secondAttribute="top" id="cNk-al-I9o"/>
+                                        <constraint firstItem="FCd-5L-ld6" firstAttribute="centerX" secondItem="OlD-oH-u6t" secondAttribute="centerX" id="cR2-GL-GM1"/>
+                                        <constraint firstItem="FCd-5L-ld6" firstAttribute="centerY" secondItem="OlD-oH-u6t" secondAttribute="centerY" id="eF8-Bj-FMO"/>
+                                        <constraint firstItem="3xH-5t-itt" firstAttribute="leading" secondItem="OlD-oH-u6t" secondAttribute="leading" id="krj-9v-A3q"/>
+                                        <constraint firstAttribute="trailing" secondItem="6Io-n5-gfW" secondAttribute="trailing" id="mcb-IX-PCq"/>
+                                        <constraint firstItem="pZj-Go-R2l" firstAttribute="top" secondItem="6Io-n5-gfW" secondAttribute="top" id="qnJ-S3-zbx"/>
+                                        <constraint firstItem="pZj-Go-R2l" firstAttribute="trailing" secondItem="6Io-n5-gfW" secondAttribute="trailing" id="rrh-JI-X2a"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                            <real key="value" value="4"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </view>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="saveImageSocialBottomIllustration" translatesAutoresizingMaskIntoConstraints="NO" id="LIs-Q9-Q5v">
+                                    <rect key="frame" x="0.0" y="79" width="63" height="8"/>
+                                    <color key="tintColor" name="foregroundMuted"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="8" id="fos-ai-OyL"/>
+                                    </constraints>
+                                </imageView>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" name="backgroundOverlay"/>
+                    <constraints>
+                        <constraint firstItem="3XK-kk-awf" firstAttribute="centerY" secondItem="Xoz-XK-wnw" secondAttribute="centerY" id="7kt-i5-zjV"/>
+                        <constraint firstItem="3XK-kk-awf" firstAttribute="leading" secondItem="Xoz-XK-wnw" secondAttribute="leading" constant="4" id="FdN-KM-wBO"/>
+                        <constraint firstItem="3XK-kk-awf" firstAttribute="centerX" secondItem="Xoz-XK-wnw" secondAttribute="centerX" id="FsO-Wd-UNa"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                            <real key="value" value="12"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="0.0"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="7wx-EF-8kG" secondAttribute="bottom" id="1Rw-wX-XYO"/>
+                <constraint firstItem="7wx-EF-8kG" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="OXz-la-p0K"/>
+                <constraint firstItem="7wx-EF-8kG" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Tg9-kb-Obo"/>
+                <constraint firstAttribute="trailing" secondItem="7wx-EF-8kG" secondAttribute="trailing" id="UVq-ox-fj4"/>
+                <constraint firstAttribute="trailing" secondItem="Xoz-XK-wnw" secondAttribute="trailing" constant="1" id="bdh-1q-HNh"/>
+                <constraint firstItem="Xoz-XK-wnw" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="1" id="lvh-pd-o9L"/>
+                <constraint firstItem="Xoz-XK-wnw" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="1" id="n4S-kT-1ND"/>
+                <constraint firstAttribute="bottom" secondItem="Xoz-XK-wnw" secondAttribute="bottom" constant="1" id="qIW-LE-bJE"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-63.768115942028992" y="374.33035714285711"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="saveImageSocialBottomIllustration" width="64" height="8"/>
+        <image name="saveImageSocialTopIllustrationsaveImageSocialTopIllustration" width="64" height="8"/>
+        <namedColor name="backgroundOverlay">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="backgroundOverlayOpacity">
+            <color red="1" green="1" blue="1" alpha="0.87999999523162842" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="borderMuted">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.059999998658895493" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="foregroundMuted">
+            <color red="0.68599998950958252" green="0.68599998950958252" blue="0.71399998664855957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

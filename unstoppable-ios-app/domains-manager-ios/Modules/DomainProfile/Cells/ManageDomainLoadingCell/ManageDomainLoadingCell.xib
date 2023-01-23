@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="ManageDomainLoadingCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="348" height="54"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="348" height="54"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tLx-c3-SSN">
+                        <rect key="frame" x="0.0" y="0.0" width="348" height="54"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="k9l-ea-2Gd">
+                                <rect key="frame" x="16" y="15" width="316" height="24"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ml1-iF-a7t" customClass="LoadingIndicatorView" customModule="domains_manager_ios" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
+                                        <color key="backgroundColor" name="backgroundSubtle"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="24" id="K9l-CB-90C"/>
+                                            <constraint firstAttribute="width" secondItem="ml1-iF-a7t" secondAttribute="height" id="XGW-mu-VRP"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="12"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                <real key="value" value="12"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="khE-O1-JWX">
+                                        <rect key="frame" x="40" y="4" width="276" height="16"/>
+                                        <subviews>
+                                            <stackView hidden="YES" opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="ibK-2J-ekL">
+                                                <rect key="frame" x="0.0" y="0.0" width="124" height="16"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SYc-jJ-7m0" customClass="LoadingIndicatorView" customModule="domains_manager_ios" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="124" height="16"/>
+                                                        <color key="backgroundColor" name="backgroundSubtle"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="16" id="Jo1-Ot-ZQJ"/>
+                                                            <constraint firstAttribute="width" priority="750" constant="124" id="y51-AD-vWn"/>
+                                                        </constraints>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                                <real key="value" value="8"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                                <real key="value" value="8"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
+                                                    </view>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="myU-bt-s24">
+                                                <rect key="frame" x="0.0" y="0.0" width="256" height="16"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Jw-15-aCA" customClass="LoadingIndicatorView" customModule="domains_manager_ios" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="72" height="16"/>
+                                                        <color key="backgroundColor" name="backgroundSubtle"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="16" id="H47-7h-U1f"/>
+                                                            <constraint firstAttribute="width" priority="750" constant="72" id="qn9-7c-9Ja"/>
+                                                        </constraints>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                                <real key="value" value="8"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                                <real key="value" value="8"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cxk-cF-CcV" customClass="LoadingIndicatorView" customModule="domains_manager_ios" customModuleProvider="target">
+                                                        <rect key="frame" x="88" y="0.0" width="168" height="16"/>
+                                                        <color key="backgroundColor" name="backgroundSubtle"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" priority="750" constant="168" id="ItM-bB-SZV"/>
+                                                            <constraint firstAttribute="width" relation="lessThanOrEqual" constant="168" id="PVF-B2-vng"/>
+                                                        </constraints>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                                <real key="value" value="8"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                                <real key="value" value="8"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
+                                                    </view>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="cxk-cF-CcV" firstAttribute="height" secondItem="4Jw-15-aCA" secondAttribute="height" id="GnW-uj-fbF"/>
+                                                </constraints>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" name="backgroundOverlay"/>
+                        <constraints>
+                            <constraint firstItem="k9l-ea-2Gd" firstAttribute="leading" secondItem="tLx-c3-SSN" secondAttribute="leading" constant="16" id="4uv-ta-Fy5"/>
+                            <constraint firstAttribute="trailing" secondItem="k9l-ea-2Gd" secondAttribute="trailing" constant="16" id="9K5-Sf-0yG"/>
+                            <constraint firstAttribute="height" priority="750" constant="54" id="agb-mZ-j7r"/>
+                            <constraint firstItem="k9l-ea-2Gd" firstAttribute="centerY" secondItem="tLx-c3-SSN" secondAttribute="centerY" id="oUF-le-UZT"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="tLx-c3-SSN" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="CD6-Hu-kNG"/>
+                <constraint firstAttribute="bottom" secondItem="tLx-c3-SSN" secondAttribute="bottom" id="HQh-sX-Efq"/>
+                <constraint firstAttribute="trailing" secondItem="tLx-c3-SSN" secondAttribute="trailing" id="bgk-Pi-MqA"/>
+                <constraint firstItem="tLx-c3-SSN" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="wiY-3X-Wu9"/>
+            </constraints>
+            <size key="customSize" width="348" height="52"/>
+            <connections>
+                <outlet property="containerView" destination="tLx-c3-SSN" id="iXH-mv-0ly"/>
+                <outlet property="defaultContentStackView" destination="myU-bt-s24" id="mSs-v3-2YP"/>
+                <outlet property="hideShowContentStackView" destination="ibK-2J-ekL" id="IJv-4b-Z0S"/>
+                <outletCollection property="loadingIndicatorViews" destination="ml1-iF-a7t" collectionClass="NSMutableArray" id="RnJ-2m-PC7"/>
+                <outletCollection property="loadingIndicatorViews" destination="SYc-jJ-7m0" collectionClass="NSMutableArray" id="cg4-1d-gxm"/>
+                <outletCollection property="loadingIndicatorViews" destination="4Jw-15-aCA" collectionClass="NSMutableArray" id="AVF-UU-4b6"/>
+                <outletCollection property="loadingIndicatorViews" destination="cxk-cF-CcV" collectionClass="NSMutableArray" id="UaT-Zk-UDg"/>
+            </connections>
+            <point key="canvasLocation" x="353.62318840579712" y="133.92857142857142"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="backgroundOverlay">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="backgroundSubtle">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.039999999105930328" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

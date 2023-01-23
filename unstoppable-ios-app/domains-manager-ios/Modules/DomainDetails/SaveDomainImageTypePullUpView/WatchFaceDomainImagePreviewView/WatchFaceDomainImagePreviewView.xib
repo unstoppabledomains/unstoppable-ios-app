@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="WatchFaceDomainImagePreviewView" customModule="domains_manager_ios">
+            <connections>
+                <outlet property="bottomGradientView" destination="o79-Es-LDP" id="be7-Q1-Gj6"/>
+                <outlet property="containerView" destination="iN0-l3-epB" id="JRe-oz-fN0"/>
+                <outlet property="domainSharingCardView" destination="bY3-yG-bih" id="a5Y-sl-tw5"/>
+                <outlet property="timeLabel" destination="vRO-dy-cGg" id="aZz-qK-d0B"/>
+                <outlet property="topGradientView" destination="J8Z-81-T3V" id="8n4-eE-SBa"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="72" height="124"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="watchfacePreviewBand" translatesAutoresizingMaskIntoConstraints="NO" id="GFv-oW-Ys2">
+                    <rect key="frame" x="22" y="0.0" width="28" height="124"/>
+                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bFb-Sb-vKx">
+                    <rect key="frame" x="22" y="0.0" width="28" height="124"/>
+                    <color key="backgroundColor" name="backgroundMuted2"/>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J8Z-81-T3V" customClass="GradientView" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="72" height="24"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="24" id="q8f-62-hmG"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bY3-yG-bih" customClass="UDDomainSharingWatchCardView" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="38" width="40" height="48"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="xuU-14-p05"/>
+                        <constraint firstAttribute="height" constant="48" id="y1y-bN-stI"/>
+                    </constraints>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vRO-dy-cGg">
+                    <rect key="frame" x="12" y="42" width="42" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o79-Es-LDP" customClass="GradientView" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="100" width="72" height="24"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="24" id="v8V-AK-6nH"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="vRO-dy-cGg" firstAttribute="trailing" secondItem="bY3-yG-bih" secondAttribute="trailing" constant="-2" id="55I-1N-tk5"/>
+                <constraint firstItem="J8Z-81-T3V" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="CPu-bI-kZ4"/>
+                <constraint firstItem="vRO-dy-cGg" firstAttribute="top" secondItem="bY3-yG-bih" secondAttribute="top" constant="4" id="GEx-Pr-fR8"/>
+                <constraint firstItem="bY3-yG-bih" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="LtZ-Cy-AGe"/>
+                <constraint firstAttribute="trailing" secondItem="o79-Es-LDP" secondAttribute="trailing" id="VHq-Wb-fEP"/>
+                <constraint firstItem="bY3-yG-bih" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="XNu-pa-rRW"/>
+                <constraint firstAttribute="bottom" secondItem="o79-Es-LDP" secondAttribute="bottom" id="bRf-v8-y0f"/>
+                <constraint firstItem="bFb-Sb-vKx" firstAttribute="top" secondItem="GFv-oW-Ys2" secondAttribute="top" id="boG-EI-DiF"/>
+                <constraint firstItem="GFv-oW-Ys2" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="cYs-00-YtZ"/>
+                <constraint firstItem="GFv-oW-Ys2" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.388889" id="cug-el-qqL"/>
+                <constraint firstItem="bFb-Sb-vKx" firstAttribute="leading" secondItem="GFv-oW-Ys2" secondAttribute="leading" id="eLY-IP-Wwy"/>
+                <constraint firstItem="o79-Es-LDP" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="eUl-vv-Ymj"/>
+                <constraint firstItem="J8Z-81-T3V" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="jBa-Gw-t3w"/>
+                <constraint firstAttribute="trailing" secondItem="J8Z-81-T3V" secondAttribute="trailing" id="jSa-z5-JHH"/>
+                <constraint firstItem="GFv-oW-Ys2" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="oTx-yM-giN"/>
+                <constraint firstItem="GFv-oW-Ys2" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="rqo-as-35x"/>
+                <constraint firstItem="bFb-Sb-vKx" firstAttribute="bottom" secondItem="GFv-oW-Ys2" secondAttribute="bottom" id="ti7-WF-Pdi"/>
+                <constraint firstItem="bFb-Sb-vKx" firstAttribute="trailing" secondItem="GFv-oW-Ys2" secondAttribute="trailing" id="yDF-yR-EYB"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="-62" y="398"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="watchfacePreviewBand" width="28" height="124"/>
+        <namedColor name="backgroundMuted2">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.079999998211860657" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

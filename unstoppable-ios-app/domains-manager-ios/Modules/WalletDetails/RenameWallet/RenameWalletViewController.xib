@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="RenameWalletViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="doneButton" destination="LcR-v3-ql5" id="RC5-Ga-Yji"/>
+                <outlet property="doneButtonBottomConstraint" destination="BUX-Cq-5Q6" id="4ST-il-vRz"/>
+                <outlet property="errorLabel" destination="j5V-UN-tOT" id="Wto-Cw-VWM"/>
+                <outlet property="errorView" destination="4pj-PD-ytH" id="hTX-kp-PfY"/>
+                <outlet property="textField" destination="t0d-i4-xN9" id="1dK-bS-8ta"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="walletAddressLabel" destination="KRv-qe-mYF" id="0OE-dU-JHs"/>
+                <outlet property="walletImageView" destination="a34-xJ-aJw" id="ceO-If-J7Y"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="TtX-9m-IUG">
+                    <rect key="frame" x="16" y="108" width="382" height="200.5"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="JEx-LH-UZM">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="128"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="3RC-oh-0vB">
+                                    <rect key="frame" x="0.0" y="0.0" width="382" height="64"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="64" placeholderIntrinsicHeight="64" translatesAutoresizingMaskIntoConstraints="NO" id="a34-xJ-aJw" customClass="ResizableRoundedWalletImageView" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <rect key="frame" x="159" y="0.0" width="64" height="64"/>
+                                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        </view>
+                                    </subviews>
+                                </stackView>
+                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="t0d-i4-xN9">
+                                    <rect key="frame" x="0.0" y="88" width="382" height="40"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="40" id="xXc-jx-e14"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits" autocorrectionType="no"/>
+                                </textField>
+                            </subviews>
+                        </stackView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KRv-qe-mYF">
+                            <rect key="frame" x="0.0" y="144" width="382" height="20.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="4pj-PD-ytH">
+                            <rect key="frame" x="0.0" y="180.5" width="382" height="20"/>
+                            <subviews>
+                                <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Atx-BA-dVx">
+                                    <rect key="frame" x="156.5" y="0.0" width="69.5" height="20"/>
+                                    <subviews>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="alertCircle" translatesAutoresizingMaskIntoConstraints="NO" id="Mdq-uV-PPd">
+                                            <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="20" id="P2r-qS-Huk"/>
+                                                <constraint firstAttribute="height" constant="20" id="z4l-fl-2kA"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j5V-UN-tOT">
+                                            <rect key="frame" x="28" y="0.0" width="41.5" height="20"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LcR-v3-ql5" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="828" width="382" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="0uY-xL-la9"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Continue"/>
+                    <connections>
+                        <action selector="doneButtonPressed:" destination="-1" eventType="touchUpInside" id="PEg-pg-9xl"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="TtX-9m-IUG" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="2OV-8I-s1a"/>
+                <constraint firstItem="TtX-9m-IUG" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="45b-t2-0uj"/>
+                <constraint firstAttribute="bottom" secondItem="LcR-v3-ql5" secondAttribute="bottom" constant="20" id="BUX-Cq-5Q6"/>
+                <constraint firstItem="TtX-9m-IUG" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="60" id="Jc2-QR-Ct1" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                            <real key="value" value="20"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </constraint>
+                <constraint firstItem="LcR-v3-ql5" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="faZ-4B-RVz"/>
+                <constraint firstItem="LcR-v3-ql5" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="sQ8-9K-Ysn"/>
+            </constraints>
+            <point key="canvasLocation" x="139" y="135"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="alertCircle" width="16" height="16"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

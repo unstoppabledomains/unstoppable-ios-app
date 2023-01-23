@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="ManageMultiChainDomainAddressCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="347" height="54"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="347" height="54"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JMI-aI-jnZ">
+                        <rect key="frame" x="0.0" y="0.0" width="347" height="54"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="cIB-ni-9tE">
+                                <rect key="frame" x="16" y="7" width="315" height="40"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Labelsdf sdfsdf" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8QM-rw-0hM">
+                                        <rect key="frame" x="0.0" y="10" width="56" height="20.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="56" id="N5J-AZ-q1c"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="nbL-KJ-bvv">
+                                        <rect key="frame" x="72" y="0.0" width="243" height="40"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="752" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="mbo-eV-GgQ">
+                                                <rect key="frame" x="0.0" y="0.0" width="148.5" height="40"/>
+                                                <subviews>
+                                                    <textField opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="752" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="sodfsdkfjhsldkjfsldf" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Whc-Ci-IhE">
+                                                        <rect key="frame" x="0.0" y="0.0" width="148.5" height="24"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="24" id="hnT-yf-Z0q"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                                                        <connections>
+                                                            <action selector="doneButtonPressed" destination="gTV-IL-0wX" eventType="editingDidEndOnExit" id="Llb-cg-34l"/>
+                                                        </connections>
+                                                    </textField>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="752" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4SL-sZ-aVy">
+                                                        <rect key="frame" x="0.0" y="24" width="148.5" height="16"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="16" id="3PP-bd-O7e"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" horizontalCompressionResistancePriority="752" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f1P-5G-Ra0">
+                                                <rect key="frame" x="156.5" y="3" width="20" height="34"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="xDW-cx-Jlv"/>
+                                                </constraints>
+                                                <color key="tintColor" name="foregroundMuted"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" image="cancelCircleIcon"/>
+                                                <connections>
+                                                    <action selector="clearButtonPressed" destination="gTV-IL-0wX" eventType="touchUpInside" id="5LQ-YS-P6B"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" horizontalCompressionResistancePriority="752" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="juR-UG-fgO" customClass="ManageWalletDoneButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="184.5" y="4.5" width="58.5" height="31"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Done"/>
+                                                <connections>
+                                                    <action selector="doneButtonPressed" destination="gTV-IL-0wX" eventType="touchUpInside" id="b3h-jI-Om1"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" name="backgroundOverlay"/>
+                        <constraints>
+                            <constraint firstItem="cIB-ni-9tE" firstAttribute="centerY" secondItem="JMI-aI-jnZ" secondAttribute="centerY" id="Tf8-pG-faQ"/>
+                            <constraint firstItem="cIB-ni-9tE" firstAttribute="leading" secondItem="JMI-aI-jnZ" secondAttribute="leading" constant="16" id="pgn-Sf-pzo"/>
+                            <constraint firstAttribute="trailing" secondItem="cIB-ni-9tE" secondAttribute="trailing" constant="16" id="xih-Kk-sOI"/>
+                            <constraint firstAttribute="height" constant="54" id="yXR-c7-gU6"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="JMI-aI-jnZ" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="2d1-vm-dXO"/>
+                <constraint firstItem="JMI-aI-jnZ" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="7H6-mz-bDh"/>
+                <constraint firstAttribute="trailing" secondItem="JMI-aI-jnZ" secondAttribute="trailing" id="HUJ-rC-xIy"/>
+                <constraint firstAttribute="bottom" secondItem="JMI-aI-jnZ" secondAttribute="bottom" id="YMn-7f-dkE"/>
+            </constraints>
+            <size key="customSize" width="347" height="65"/>
+            <connections>
+                <outlet property="clearButton" destination="f1P-5G-Ra0" id="yEF-Sq-TDL"/>
+                <outlet property="coinVersionLabel" destination="8QM-rw-0hM" id="zpH-Qi-hcD"/>
+                <outlet property="containerView" destination="JMI-aI-jnZ" id="xSb-HL-xvq"/>
+                <outlet property="doneButton" destination="juR-UG-fgO" id="FPZ-Nv-atw"/>
+                <outlet property="errorLabel" destination="4SL-sZ-aVy" id="Frv-LY-ol3"/>
+                <outlet property="walletAddressTF" destination="Whc-Ci-IhE" id="VcR-3D-kPG"/>
+            </connections>
+            <point key="canvasLocation" x="352.89855072463769" y="129.57589285714286"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="cancelCircleIcon" width="20" height="20"/>
+        <namedColor name="backgroundOverlay">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="foregroundMuted">
+            <color red="0.68599998950958252" green="0.68599998950958252" blue="0.71399998664855957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

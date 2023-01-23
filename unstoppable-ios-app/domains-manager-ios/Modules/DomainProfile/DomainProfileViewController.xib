@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina5_5" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DomainProfileViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="backgroundImageBlurView" destination="y5u-T5-FyZ" id="M04-8V-rre"/>
+                <outlet property="backgroundImageView" destination="Nek-R5-bwt" id="LjI-GQ-T5P"/>
+                <outlet property="collectionView" destination="Hjl-bm-SXL" id="anq-Hv-TeL"/>
+                <outlet property="confirmButtonGradientView" destination="CKh-vB-K4d" id="OtT-Hp-Rjg"/>
+                <outlet property="confirmUpdateButton" destination="aYl-6Z-efQ" id="fge-Ee-JJu"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Nek-R5-bwt">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                </imageView>
+                <visualEffectView hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y5u-T5-FyZ">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="IGp-BA-DUL">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    </view>
+                    <blurEffect style="regular"/>
+                </visualEffectView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ltf-oF-plW">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.56000000000000005" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="Hjl-bm-SXL">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="274-fg-lyV">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CKh-vB-K4d" customClass="GradientView" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="665.66666666666663" width="414" height="70.333333333333371"/>
+                    <color key="backgroundColor" systemColor="tertiarySystemFillColor"/>
+                </view>
+                <view contentMode="scaleToFill" placeholderIntrinsicWidth="147.5" placeholderIntrinsicHeight="44.5" translatesAutoresizingMaskIntoConstraints="NO" id="aYl-6Z-efQ" customClass="FABCounterButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="133.33333333333331" y="665.66666666666663" width="147.33333333333331" height="44.333333333333371"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                            <real key="value" value="24"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="confirmChangesButtonPressed" destination="-1" eventType="touchUpInside" id="iOQ-Mv-Kyc"/>
+                    </connections>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" name="brandUnstoppableBlue"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="Hjl-bm-SXL" secondAttribute="bottom" id="10O-uw-fc1"/>
+                <constraint firstItem="aYl-6Z-efQ" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="54R-qv-kLD"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="aYl-6Z-efQ" secondAttribute="bottom" constant="26" id="5a9-cu-cRb"/>
+                <constraint firstItem="Nek-R5-bwt" firstAttribute="leading" secondItem="ltf-oF-plW" secondAttribute="leading" id="7O4-sh-wmv"/>
+                <constraint firstItem="Hjl-bm-SXL" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="7RR-Qy-cih"/>
+                <constraint firstItem="ltf-oF-plW" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="9QL-nf-a5G"/>
+                <constraint firstItem="y5u-T5-FyZ" firstAttribute="leading" secondItem="Nek-R5-bwt" secondAttribute="leading" id="EuQ-qX-bTq"/>
+                <constraint firstItem="Hjl-bm-SXL" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="FUB-5R-gsJ"/>
+                <constraint firstAttribute="trailing" secondItem="Hjl-bm-SXL" secondAttribute="trailing" id="FXf-SL-Z4C"/>
+                <constraint firstItem="Nek-R5-bwt" firstAttribute="bottom" secondItem="ltf-oF-plW" secondAttribute="bottom" id="G47-Ss-BKN"/>
+                <constraint firstItem="CKh-vB-K4d" firstAttribute="top" secondItem="aYl-6Z-efQ" secondAttribute="top" id="K46-tT-iNa"/>
+                <constraint firstItem="CKh-vB-K4d" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="RdW-wv-EtU"/>
+                <constraint firstItem="y5u-T5-FyZ" firstAttribute="top" secondItem="Nek-R5-bwt" secondAttribute="top" id="UKn-d0-gRi"/>
+                <constraint firstAttribute="trailing" secondItem="CKh-vB-K4d" secondAttribute="trailing" id="VrS-sE-fxt"/>
+                <constraint firstItem="ltf-oF-plW" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Wuh-mX-jaG"/>
+                <constraint firstAttribute="bottom" secondItem="CKh-vB-K4d" secondAttribute="bottom" id="Yib-fB-Uie"/>
+                <constraint firstItem="y5u-T5-FyZ" firstAttribute="trailing" secondItem="Nek-R5-bwt" secondAttribute="trailing" id="aRO-eU-XfQ"/>
+                <constraint firstItem="Nek-R5-bwt" firstAttribute="top" secondItem="ltf-oF-plW" secondAttribute="top" id="dt3-Xb-Q2c"/>
+                <constraint firstItem="Nek-R5-bwt" firstAttribute="trailing" secondItem="ltf-oF-plW" secondAttribute="trailing" id="gPu-Xa-nHw"/>
+                <constraint firstAttribute="bottom" secondItem="ltf-oF-plW" secondAttribute="bottom" id="k8t-ah-dUZ"/>
+                <constraint firstItem="ltf-oF-plW" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="sHG-r0-SnK"/>
+                <constraint firstItem="y5u-T5-FyZ" firstAttribute="bottom" secondItem="Nek-R5-bwt" secondAttribute="bottom" id="y9F-NM-ugC"/>
+            </constraints>
+            <point key="canvasLocation" x="39.130434782608695" y="39.945652173913047"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="brandUnstoppableBlue">
+            <color red="0.050980392156862744" green="0.40392156862745099" blue="0.99215686274509807" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="tertiarySystemFillColor">
+            <color red="0.46274509803921571" green="0.46274509803921571" blue="0.50196078431372548" alpha="0.12" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

@@ -1,0 +1,705 @@
+//
+//  DomainProfileViewController.swift
+//  domains-manager-ios
+//
+//  Created by Oleg Kuplin on 07.10.2022.
+//
+
+import UIKit
+import SwiftUI
+
+@MainActor
+protocol DomainProfileViewProtocol: BaseCollectionViewControllerProtocol & DomainProfileSectionViewProtocol {
+    func applySnapshot(_ snapshot: DomainProfileSnapshot, animated: Bool)
+    func setConfirmButtonHidden(_ isHidden: Bool, counter: Int)
+    func set(title: String?)
+    func setAvailableActionsGroups(_ actionGroups: [DomainProfileActionsGroup])
+    func setBackgroundImage(_ image: UIImage?)
+}
+
+@MainActor
+protocol DomainProfileSectionViewProtocol: BaseViewController & WalletConnectController {
+    func scroll(to item: DomainProfileViewController.Item)
+    func hideKeyboard()
+}
+
+typealias DomainProfileDataSource = UICollectionViewDiffableDataSource<DomainProfileViewController.Section, DomainProfileViewController.Item>
+typealias DomainProfileSnapshot = NSDiffableDataSourceSnapshot<DomainProfileViewController.Section, DomainProfileViewController.Item>
+typealias DomainProfileActionsGroup = [DomainProfileViewController.Action]
+
+@MainActor
+final class DomainProfileViewController: BaseViewController, TitleVisibilityAfterLimitNavBarScrollingBehaviour, BlurVisibilityAfterLimitNavBarScrollingBehaviour, PassthroughAfterLimitNavBarScrollingBehaviour {
+    
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet private weak var backgroundImageView: UIImageView!
+    @IBOutlet private weak var backgroundImageBlurView: UIVisualEffectView!
+    @IBOutlet private weak var confirmUpdateButton: FABCounterButton!
+    @IBOutlet private weak var confirmButtonGradientView: GradientView!
+    
+    var cellIdentifiers: [UICollectionViewCell.Type] { [DomainProfileTopInfoCell.self,
+                                                        DomainProfileGeneralInfoCell.self,
+                                                        ManageDomainLoadingCell.self,
+                                                        ManageDomainRecordCell.self,
+                                                        CollectionViewShowHideCell.self,
+                                                        DomainProfileSocialCell.self,
+                                                        DomainProfileBadgeCell.self,
+                                                        DomainProfileMetadataCell.self,
+                                                        DomainProfileNoSocialsCell.self,
+                                                        DomainProfileWeb3WebsiteCell.self,
+                                                        DomainProfileWeb3WebsiteLoadingCell.self,
+                                                        DomainProfileUpdatingRecordsCell.self] }
+    var presenter: DomainProfileViewPresenterProtocol!
+    
+    override var isObservingKeyboard: Bool { true }
+    override var scrollableContentYOffset: CGFloat? { 8 }
+    override var analyticsName: Analytics.ViewName { presenter.analyticsName }
+    override var additionalAppearAnalyticParameters: Analytics.EventParameters { [.domainName: presenter.domainName] }
+    override var navBackStyle: BaseViewController.NavBackIconStyle { presenter.navBackStyle }
+    override var navBackButtonConfiguration: CNavigationBarContentView.BackButtonConfiguration {
+        .init(backArrowIcon: navBackStyle.icon,
+              tintColor: .foregroundOnEmphasis,
+              backTitleVisible: false,
+              isEnabled: presenter.isNavEnabled())
+    }
+    override var navBarTitleAttributes: [NSAttributedString.Key : Any]? { [.foregroundColor : UIColor.foregroundOnEmphasis,
+                                                                  .font: UIFont.currentFont(withSize: 16, weight: .semibold)] }
+    private var dataSource: DomainProfileDataSource!
+    private var defaultBottomOffset: CGFloat { Constants.scrollableContentBottomOffset }
+    private var availableActionGroups = [DomainProfileActionsGroup]()
+    private let minScrollYOffset: CGFloat = -40
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        configureCollectionView()
+        setup()
+        presenter.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        presenter.viewWillAppear()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        cNavigationController?.navigationBar.navBarContentView.setTitle(hidden: true, animated: false)
+        presenter.viewDidAppear()
+    }
+    
+    override func shouldPopOnBackButton() -> Bool {
+        presenter.shouldPopOnBackButton()
+    }
+    
+    override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
+        collectionView.contentInset.bottom = keyboardHeight + defaultBottomOffset
+    }
+    
+    override func keyboardWillHideAction(duration: Double, curve: Int) {
+        setBottomContentInset()
+    }
+    
+    override func customScrollingBehaviour(yOffset: CGFloat, in navBar: CNavigationBar) -> (()->())? {
+        { [weak self, weak navBar] in
+            guard let navBar = navBar else { return }
+            
+            self?.updateBlurVisibility(for: yOffset, in: navBar)
+            self?.updateTitleVisibility(for: yOffset, in: navBar, limit: 134)
+            self?.updatePassthroughState(for: yOffset, in: navBar, limit: 30)
+        }
+    }
+}
+
+// MARK: - DomainProfileViewProtocol
+extension DomainProfileViewController: DomainProfileViewProtocol, DomainProfileSectionViewProtocol {
+    func applySnapshot(_ snapshot: DomainProfileSnapshot, animated: Bool) {
+        dataSource.apply(snapshot, animatingDifferences: animated)
+    }
+    
+    func setConfirmButtonHidden(_ isHidden: Bool, counter: Int) {
+        confirmUpdateButton.isHidden = isHidden
+        confirmButtonGradientView.isHidden = isHidden
+        confirmUpdateButton.setCounter(counter)
+        setBottomContentInset()
+    }
+    
+    func set(title: String?) {
+        navigationItem.title = title
+        cNavigationController?.navigationBar.set(title: title)
+    }
+    
+    func scroll(to item: DomainProfileViewController.Item) { }
+    
+    func setAvailableActionsGroups(_ actionGroups: [DomainProfileActionsGroup]) {
+        self.availableActionGroups = actionGroups
+        setupNavigation()
+        cNavigationController?.updateNavigationBar()
+    }
+    
+    func setBackgroundImage(_ image: UIImage?) {
+        backgroundImageView.image = image
+        backgroundImageBlurView.isHidden = image == nil
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension DomainProfileViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        
+        presenter.didSelectItem(item)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < minScrollYOffset {
+            scrollView.contentOffset.y = minScrollYOffset
+        }
+        
+        cNavigationController?.underlyingScrollViewDidScroll(scrollView)
+        for cell in collectionView.visibleCells {
+            if let scrollListener = cell as? ScrollViewOffsetListener {
+                scrollListener.didScrollTo(offset: scrollView.contentOffset)
+            }
+        }
+    }
+}
+
+// MARK: - Actions
+private extension DomainProfileViewController {
+    @IBAction func confirmChangesButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .confirm)
+        presenter.confirmChangesButtonPressed()
+    }
+    
+    @objc func shareButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+        logButtonPressedAnalyticEvents(button: .share)
+        presenter.shareButtonPressed()
+    }
+    
+    @objc func moreButtonPressed() {
+        guard let navView = navigationItem.rightBarButtonItem?.customView else { return }
+        
+        logButtonPressedAnalyticEvents(button: .dots)
+        UDVibration.buttonTap.vibrate()
+        let availableActions = self.availableActionGroups.reduce([], { $0 + $1 })
+        var actions: [UIActionBridgeItem] = []
+        
+        for action in availableActions {
+            switch action {
+            case .copyDomain:
+                let copyDomainMenuElement = UIActionBridgeItem(title: String.Constants.copyDomain.localized(),
+                                                                      image: .systemDocOnDoc,
+                                                                      handler: { [weak self] in  self?.didTapCopyDomainButton() })
+                actions.append(copyDomainMenuElement)
+            case .viewWallet:
+                let showWalletDetailsMenuElement = UIActionBridgeItem(title: String.Constants.viewWallet.localized(presenter.walletName.lowercased()),
+                                                                      image: .arrowUpRight,
+                                                                      handler: { [weak self] in  self?.didTapShowWalletDetailsButton() })
+                actions.append(showWalletDetailsMenuElement)
+            case .setPrimaryDomain:
+                let setPrimaryDomainMenuElement = UIActionBridgeItem(title: String.Constants.setAsPrimaryDomain.localized(),
+                                                                     image: .personCropCircle,
+                                                                     handler: { [weak self] in  self?.didTapSetPrimaryButton() })
+                actions.append(setPrimaryDomainMenuElement)
+            case .setReverseResolution(let isEnabled):
+                let setReverseResolutionMenuElement = UIActionBridgeItem(title: String.Constants.setReverseResolution.localized(),
+                                                                         image: .arrowRightArrowLeft,
+                                                                         attributes: isEnabled ? [] : [.disabled],
+                                                                         handler: { [weak self] in  self?.didTapSetReverseResolutionButton() })
+                actions.append(setReverseResolutionMenuElement)
+            case .aboutProfiles:
+                let aboutProfilesMenuElement = UIActionBridgeItem(title: String.Constants.learnMore.localized(),
+                                                               image: .systemQuestionmarkCircle,
+                                                               handler: { [weak self] in  self?.didTapAboutProfilesButton() })
+                actions.append(aboutProfilesMenuElement)
+            case .mintedOn(let chain):
+                let mintedOnChainMenuElement = UIActionBridgeItem(title: chain.fullName,
+                                                               image: .getNetworkSmallIcon(by: chain),
+                                                               handler: { [weak self] in  self?.didTapMintedOnChainButton() })
+                actions.append(mintedOnChainMenuElement)
+            }
+        }
+        
+        let popoverViewController = UIMenuBridgeView.instance(with: "",
+                                                              actions: actions)
+        popoverViewController.show(in: self.view, sourceView: navView)
+    }
+    
+    @objc func didTapSetPrimaryButton() {
+        logButtonPressedAnalyticEvents(button: .setPrimaryDomain)
+        UDVibration.buttonTap.vibrate()
+        presenter.didTapSetPrimaryButton()
+    }
+    
+    @objc func didTapShowWalletDetailsButton() {
+        logButtonPressedAnalyticEvents(button: .showWalletDetails)
+        UDVibration.buttonTap.vibrate()
+        presenter.didTapShowWalletDetailsButton()
+    }
+    
+    @objc func didTapSetReverseResolutionButton() {
+        logButtonPressedAnalyticEvents(button: .setReverseResolution)
+        UDVibration.buttonTap.vibrate()
+        presenter.didTapSetReverseResolutionButton()
+    }
+    
+    @objc func didTapCopyDomainButton() {
+        logButtonPressedAnalyticEvents(button: .copyDomain)
+        UDVibration.buttonTap.vibrate()
+        presenter.didTapCopyDomainButton()
+    }
+    
+    @objc func didTapAboutProfilesButton() {
+        logButtonPressedAnalyticEvents(button: .aboutProfile)
+        UDVibration.buttonTap.vibrate()
+        presenter.didTapAboutProfilesButton()
+    }
+    
+    @objc func didTapMintedOnChainButton() {
+        logButtonPressedAnalyticEvents(button: .mintedOnChain)
+        UDVibration.buttonTap.vibrate()
+        presenter.didTapMintedOnChainButton()
+    }
+}
+
+// MARK: - Private functions
+private extension DomainProfileViewController {
+    func setBottomContentInset() {
+        if confirmUpdateButton.isHidden {
+            collectionView.contentInset.bottom = defaultBottomOffset
+        } else {
+            collectionView.contentInset.bottom = (view.frame.height - confirmUpdateButton.frame.minY) + defaultBottomOffset
+        }
+    }
+}
+
+// MARK: - Setup functions
+private extension DomainProfileViewController {
+    func setup() {
+        view.backgroundColor = .brandUnstoppableBlue
+        setupNavigation()
+        setupCollectionView()
+        setupConfirmButton()
+        setupGradientView()
+        addHideKeyboardTapGesture(cancelsTouchesInView: false, toView: nil)
+    }
+    
+    func setupNavigation() {
+        let shareButton = UIButton()
+        shareButton.tintColor = .foregroundOnEmphasis
+        shareButton.setImage(.shareIcon, for: .normal)
+        shareButton.addTarget(self, action: #selector(shareButtonPressed), for: .touchUpInside)
+        
+        let moreButton = UIButton()
+        moreButton.tintColor = .foregroundOnEmphasis
+        moreButton.setImage(.dotsCircleIcon, for: .normal)
+        
+        
+        if #available(iOS 14.0, *) {
+            var children: [UIMenuElement] = []
+            
+            for group in availableActionGroups {
+                let groupChildren = group.map({ self.uiAction(for: $0) })
+                let menu = UIMenu(title: "", options: .displayInline, children: groupChildren)
+                children.append(menu)
+            }
+            
+            let menu = UIMenu(title: "", children: children)
+            moreButton.showsMenuAsPrimaryAction = true
+            moreButton.menu = menu
+            moreButton.addAction(UIAction(handler: { [weak self] _ in
+                self?.logButtonPressedAnalyticEvents(button: .dots)
+                UDVibration.buttonTap.vibrate()
+            }), for: .menuActionTriggered)
+        } else {
+            moreButton.addTarget(self, action: #selector(moreButtonPressed), for: .touchUpInside)
+        }
+        
+
+        let shareBarButtonItem = UIBarButtonItem(customView: shareButton)
+        let moreBarButtonItem = UIBarButtonItem(customView: moreButton)
+
+        navigationItem.rightBarButtonItems = [shareBarButtonItem, moreBarButtonItem]
+    }
+    
+    func uiAction(for action: Action) -> UIAction {
+        switch action {
+        case .copyDomain:
+            return UIAction(title: String.Constants.copyDomain.localized(),
+                            image: .systemDocOnDoc,
+                            identifier: .init(UUID().uuidString),
+                            handler: { [weak self] _ in  self?.didTapCopyDomainButton() })
+        case .viewWallet(let subtitle):
+            if #available(iOS 15.0, *) {
+                return UIAction(title: String.Constants.viewWallet.localized(presenter.walletName.lowercased()),
+                                subtitle: subtitle,
+                                image: .arrowUpRight,
+                                identifier: .init(UUID().uuidString),
+                                handler: { [weak self] _ in  self?.didTapShowWalletDetailsButton() })
+                
+            } else {
+                return UIAction(title: String.Constants.viewWallet.localized(presenter.walletName.lowercased()),
+                                image: .arrowUpRight,
+                                identifier: .init(UUID().uuidString),
+                                handler: { [weak self] _ in  self?.didTapShowWalletDetailsButton() })
+            }
+        case .setPrimaryDomain:
+            return UIAction(title: String.Constants.setAsPrimaryDomain.localized(),
+                            image: .personCropCircle,
+                            identifier: .init(UUID().uuidString),
+                            handler: { [weak self] _ in  self?.didTapSetPrimaryButton() })
+            
+        case .setReverseResolution(let isEnabled):
+            if #available(iOS 15.0, *) {
+                return UIAction(title: String.Constants.setReverseResolution.localized(),
+                                subtitle: isEnabled ? nil : String.Constants.reverseResolutionUnavailableWhileRecordsUpdating.localized(),
+                                image: .arrowRightArrowLeft,
+                                identifier: .init(UUID().uuidString),
+                                attributes: isEnabled ? [] : [.disabled],
+                                handler: { [weak self] _ in  self?.didTapSetReverseResolutionButton() })
+            } else {
+                return UIAction(title: String.Constants.setReverseResolution.localized(),
+                                image: .arrowRightArrowLeft,
+                                identifier: .init(UUID().uuidString),
+                                attributes: isEnabled ? [] : [.disabled],
+                                handler: { [weak self] _ in  self?.didTapSetReverseResolutionButton() })
+            }
+            
+        case .aboutProfiles:
+            return UIAction(title: String.Constants.learnMore.localized(),
+                            image: .systemQuestionmarkCircle,
+                            identifier: .init(UUID().uuidString),
+                            handler: { [weak self] _ in  self?.didTapAboutProfilesButton() })
+            
+        case .mintedOn(let chain):
+            return UIAction(title: chain.fullName,
+                            image: .getNetworkSmallIcon(by: chain),
+                            identifier: .init(UUID().uuidString),
+                            handler: { [weak self] _ in  self?.didTapMintedOnChainButton() })
+        }
+    }
+    
+    func setupConfirmButton() {
+        confirmUpdateButton.setTitle(String.Constants.confirmUpdates.localized())
+        confirmUpdateButton.counterLimit = 9
+    }
+    
+    func setupGradientView() {
+        let gradientColor = #colorLiteral(red: 0.07843137255, green: 0.07843137255, blue: 0.08235294118, alpha: 1)
+        confirmButtonGradientView.gradientColors = [gradientColor.withAlphaComponent(0.01), gradientColor]
+    }
+    
+    func setupCollectionView() {
+        collectionView.delegate = self
+        collectionView.collectionViewLayout = buildLayout()
+        collectionView.register(DomainProfileSectionHeader.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: DomainProfileSectionHeader.reuseIdentifier)
+        collectionView.register(CollectionDashesHeaderReusableView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: CollectionDashesHeaderReusableView.reuseIdentifier)
+        collectionView.register(CollectionTextFooterReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CollectionTextFooterReusableView.reuseIdentifier)
+
+        configureDataSource()
+    }
+    
+    func configureDataSource() {
+        dataSource = DomainProfileDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
+            switch item {
+            case .topInfo(let data):
+                let cell = collectionView.dequeueCellOfType(DomainProfileTopInfoCell.self, forIndexPath: indexPath)
+                cell.set(with: data)
+                
+                return cell
+            case .updatingRecords(let displayInfo):
+                let cell = collectionView.dequeueCellOfType(DomainProfileUpdatingRecordsCell.self, forIndexPath: indexPath)
+                cell.setWith(displayInfo: displayInfo)
+                
+                return cell
+            case .generalInfo(let displayInfo):
+                let cell = collectionView.dequeueCellOfType(DomainProfileGeneralInfoCell.self, forIndexPath: indexPath)
+                cell.setWith(displayInfo: displayInfo)
+                
+                return cell
+            case .loading(_, let style, let uiConfiguration):
+                let cell = collectionView.dequeueCellOfType(ManageDomainLoadingCell.self, forIndexPath: indexPath)
+                
+                cell.set(style: style)
+                cell.set(uiConfiguration: uiConfiguration)
+                cell.setBlinkingColor(.white.withAlphaComponent(0.08))
+                
+                return cell
+            case .record(let displayInfo):
+                let cell = collectionView.dequeueCellOfType(ManageDomainRecordCell.self, forIndexPath: indexPath)
+                cell.setWith(displayInfo: displayInfo)
+                
+                return cell
+            case .social(let displayInfo):
+                let cell = collectionView.dequeueCellOfType(DomainProfileSocialCell.self, forIndexPath: indexPath)
+                cell.setWith(displayInfo: displayInfo)
+                
+                return cell
+            case .noSocials:
+                let cell = collectionView.dequeueCellOfType(DomainProfileNoSocialsCell.self, forIndexPath: indexPath)
+                
+                return cell
+            case .badge(let displayInfo):
+                let cell = collectionView.dequeueCellOfType(DomainProfileBadgeCell.self, forIndexPath: indexPath)
+                cell.setWith(displayInfo: displayInfo)
+                
+                return cell
+            case .web3Website(let displayInfo):
+                let cell = collectionView.dequeueCellOfType(DomainProfileWeb3WebsiteCell.self, forIndexPath: indexPath)
+                cell.setWith(displayInfo: displayInfo)
+                
+                return cell
+            case .web3WebsiteLoading:
+                let cell = collectionView.dequeueCellOfType(DomainProfileWeb3WebsiteLoadingCell.self, forIndexPath: indexPath)
+                
+                return cell
+            case .metadata(let displayInfo):
+                let cell = collectionView.dequeueCellOfType(DomainProfileMetadataCell.self, forIndexPath: indexPath)
+                cell.setWith(displayInfo: displayInfo)
+                
+                return cell
+            case .showAll:
+                let cell = collectionView.dequeueCellOfType(CollectionViewShowHideCell.self, forIndexPath: indexPath)
+                
+                cell.setWith(text: String.Constants.showAll.localized(),
+                             direction: .down,
+                             style: .clear,
+                             height: 56)
+                
+                return cell
+            case .hide:
+                let cell = collectionView.dequeueCellOfType(CollectionViewShowHideCell.self, forIndexPath: indexPath)
+                
+                cell.setWith(text: String.Constants.hide.localized(),
+                             direction: .up,
+                             style: .clear,
+                             height: 56)
+                
+                return cell
+            }
+        })
+        
+        
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
+            let section = self?.section(at: indexPath)
+            
+            if elementKind == UICollectionView.elementKindSectionHeader {
+                switch section {
+                case .topInfo, .updatingRecords, .none, .showHideItem, .footer:
+                    return nil
+                case .records(let description), .socials(let description), .noSocials(let description), .badges(let description), .profileMetadata(let description), .web3Website(let description):
+                    let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                               withReuseIdentifier: DomainProfileSectionHeader.reuseIdentifier,
+                                                                               for: indexPath) as! DomainProfileSectionHeader
+                    view.setWith(description: description)
+                    return view
+                case .generalInfo, .dashesSeparator:
+                    let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                               withReuseIdentifier: CollectionDashesHeaderReusableView.reuseIdentifier,
+                                                                               for: indexPath) as! CollectionDashesHeaderReusableView
+                    if case .generalInfo = section {
+                        view.setAlignmentPosition(.top)
+                    } else {
+                        view.setAlignmentPosition(.bottom)
+                    }
+                    
+                    return view
+                }
+            } else {
+                switch section {
+                case .footer(let footer):
+                    let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                               withReuseIdentifier: CollectionTextFooterReusableView.reuseIdentifier,
+                                                                               for: indexPath) as! CollectionTextFooterReusableView
+                    view.setFooter(footer, textColor: .white.withAlphaComponent(0.56))
+                    return view
+                default:
+                    return nil
+                }
+            }
+        }
+    }
+    
+    func buildLayout() -> UICollectionViewLayout {
+        let spacing: CGFloat = UICollectionView.SideOffset
+        
+        let config = UICollectionViewCompositionalLayoutConfiguration()
+        config.interSectionSpacing = 8
+        
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self]
+            (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+            
+            let section = self?.section(at: IndexPath(item: 0, section: sectionIndex))
+            var layoutSection: NSCollectionLayoutSection = .flexibleListItemSection()
+
+            func addBackgroundWithTopInset(_ topInset: CGFloat, bottomInset: CGFloat? = nil) {
+                let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackgroundWhiteWithAlpha.reuseIdentifier)
+                background.contentInsets.top = topInset
+                if let bottomInset {
+                    background.contentInsets.bottom = bottomInset
+                }
+                layoutSection.decorationItems = [background]
+            }
+            
+            func addHeader() {
+                let headerHeight = section?.headerHeight ?? 0
+                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .absolute(headerHeight))
+                let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: size,
+                                                                         elementKind: UICollectionView.elementKindSectionHeader,
+                                                                         alignment: .top)
+                layoutSection.boundarySupplementaryItems.append(header)
+            }
+            
+            func setSectionContentInset() {
+                layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
+                                                                      leading: spacing + 1,
+                                                                      bottom: 1,
+                                                                      trailing: spacing + 1)
+            }
+            
+            func addFooter(_ footer: String) {
+                let footerHeight: CGFloat = footer.height(withConstrainedWidth: UIScreen.main.bounds.width - (spacing * 2),
+                                                          font: CollectionTextFooterReusableView.font,
+                                                          lineHeight: 20)
+                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .absolute(footerHeight + 12))
+                let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: size,
+                                                                         elementKind: UICollectionView.elementKindSectionFooter,
+                                                                         alignment: .bottom)
+                layoutSection.boundarySupplementaryItems.append(footer)
+            }
+            
+            switch section {
+            case .topInfo:
+                Void()
+            case .dashesSeparator:
+                setSectionContentInset()
+                addHeader()
+            case .updatingRecords:
+                setSectionContentInset()
+                addBackgroundWithTopInset(0, bottomInset: 16)
+            case .showHideItem:
+                setSectionContentInset()
+                addBackgroundWithTopInset(0)
+            case .records, .socials, .generalInfo, .profileMetadata, .web3Website:
+                setSectionContentInset()
+                
+                let headerHeight = section?.headerHeight ?? 0
+                if headerHeight > 0 {
+                    addHeader()
+                }
+                
+                addBackgroundWithTopInset(headerHeight)
+            case .noSocials:
+                setSectionContentInset()
+                addHeader()
+            case .badges:
+                layoutSection = .multipleListItemSection(height: 56, numberOfItems: 2)
+                setSectionContentInset()
+                addHeader()
+            case .footer(let footer):
+                setSectionContentInset()
+                addFooter(footer)
+            case .none:
+                Void()
+            }
+            
+            return layoutSection
+            
+        }, configuration: config)
+        layout.register(CollectionReusableRoundedBackgroundWhiteWithAlpha.self, forDecorationViewOfKind: CollectionReusableRoundedBackgroundWhiteWithAlpha.reuseIdentifier)
+        
+        return layout
+    }
+    
+    func section(at indexPath: IndexPath) -> Section? {
+        self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
+    }
+}
+
+// MARK: - Collection elements
+extension DomainProfileViewController {
+    enum Section: Hashable {
+        case topInfo
+        case generalInfo
+        case updatingRecords
+        case socials(headerDescription: DomainProfileSectionHeader.HeaderDescription), noSocials(headerDescription: DomainProfileSectionHeader.HeaderDescription)
+        case records(headerDescription: DomainProfileSectionHeader.HeaderDescription)
+        case badges(headerDescription: DomainProfileSectionHeader.HeaderDescription)
+        case profileMetadata(headerDescription: DomainProfileSectionHeader.HeaderDescription)
+        case web3Website(headerDescription: DomainProfileSectionHeader.HeaderDescription)
+        case showHideItem(id: UUID = .init())
+        case dashesSeparator(id: UUID = .init())
+        case footer(_ footer: String)
+        
+        var headerHeight: CGFloat {
+            switch self {
+            case .topInfo, .showHideItem, .updatingRecords, .footer: return 0
+            case .generalInfo: return CollectionDashesHeaderReusableView.Height
+            case .dashesSeparator: return 19
+            case .records, .socials, .noSocials, .badges, .profileMetadata, .web3Website: return DomainProfileSectionHeader.Height
+            }
+        }
+    }
+    
+    enum Item: Hashable {
+        case topInfo(data: ItemTopInfoData)
+        case updatingRecords(displayInfo: DomainProfileUpdatingRecordsDisplayInfo)
+        case generalInfo(displayInfo: DomainProfileGeneralDisplayInfo)
+        case loading(id: UUID = .init(),
+                     style: ManageDomainLoadingCell.Style = .default,
+                     uiConfiguration: ManageDomainLoadingCell.UIConfiguration = .default)
+        case social(displayInfo: DomainProfileSocialsDisplayInfo)
+        case noSocials
+        case record(displayInfo: ManageDomainRecordDisplayInfo)
+        case badge(displayInfo: DomainProfileBadgeDisplayInfo)
+        case web3Website(displayInfo: DomainProfileWeb3WebsiteDisplayInfo), web3WebsiteLoading(id: UUID = .init())
+        case metadata(displayInfo: DomainProfileMetadataDisplayInfo)
+        case showAll(section: Section), hide(section: Section)
+    }
+    
+    enum State: Hashable {
+        case loading, `default`, updatingRecords, loadingError, updatingProfile(dataType: UpdateProfileDataType)
+        
+        enum UpdateProfileDataType: Hashable {
+            case onChain, offChain, mixed
+        }
+    }
+}
+
+extension DomainProfileViewController {
+    enum Action: Hashable {
+        case copyDomain, viewWallet(subtitle: String), setPrimaryDomain, setReverseResolution(isEnabled: Bool)
+        case aboutProfiles, mintedOn(chain: BlockchainType)
+    }
+}
+
+struct DomainProfileViewController_Previews: PreviewProvider {
+    static var previews: some View {
+        UIViewControllerPreview {
+            let domain = DomainItem(name: "olegkuplin.x")
+            let wallet = UDWallet.createUnverified(address: "0x1944dF1425C2237Ec501206ba416B82f47f9901d")!
+            let walletInfo = WalletDisplayInfo(name: "Wallet",
+                                               address: "0x1944dF1425C2237Ec501206ba416B82f47f9901d",
+                                               domainsCount: 1,
+                                               source: .locallyGenerated,
+                                               isBackedUp: false,
+                                               isWithPrivateKey: true,
+                                               reverseResolutionDomain: nil)
+            let vc = UDRouter().buildDomainProfileModule(domain: domain,
+                                                         wallet: wallet,
+                                                         walletInfo: walletInfo,
+                                                         sourceScreen: .domainsCollection)
+            return vc
+        }
+    }
+}
+

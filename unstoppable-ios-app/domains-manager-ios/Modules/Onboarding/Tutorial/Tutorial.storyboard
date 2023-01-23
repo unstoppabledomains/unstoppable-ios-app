@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Onboarding Navigation Controller-->
+        <scene sceneID="4N6-Ia-emX">
+            <objects>
+                <navigationController storyboardIdentifier="OnboardingNavigationController" id="yUr-tv-i5E" customClass="OnboardingNavigationController" customModule="domains_manager_ios" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="fim-L4-guO">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UhL-jY-WGC" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1755" y="98"/>
+        </scene>
+        <!--Tutorial View Controller-->
+        <scene sceneID="kTk-b1-g8n">
+            <objects>
+                <pageViewController storyboardIdentifier="TutorialViewController" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="NvM-yC-JJf" customClass="TutorialViewController" customModule="domains_manager_ios" customModuleProvider="target" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="SuR-hG-Ebu"/>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="A2f-32-B3U" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-949" y="98"/>
+        </scene>
+        <!--Tutorial Step View Controller-->
+        <scene sceneID="vcX-5m-hkk">
+            <objects>
+                <viewController storyboardIdentifier="TutorialScreen" id="JG4-4n-V80" customClass="TutorialStepViewController" customModule="domains_manager_ios" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Lrq-3y-ORo">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tutorialIllustration1" translatesAutoresizingMaskIntoConstraints="NO" id="0Ni-3s-4Fc">
+                                <rect key="frame" x="0.0" y="74" width="414" height="378"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="0Ni-3s-4Fc" secondAttribute="height" multiplier="390/356" id="aIP-En-No2"/>
+                                </constraints>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="lPn-DT-faQ">
+                                <rect key="frame" x="16" y="452" width="382" height="103.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Claim and manage your domains" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YZ0-cj-2qd" customClass="UDTitleLabel">
+                                        <rect key="frame" x="67.5" y="0.0" width="247.5" height="67"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JU8-Tf-FIo" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                        <rect key="frame" x="170.5" y="83" width="41.5" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="3oa-H3-sGl"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="lPn-DT-faQ" firstAttribute="centerX" secondItem="Lrq-3y-ORo" secondAttribute="centerX" id="55s-bC-4BK"/>
+                            <constraint firstItem="lPn-DT-faQ" firstAttribute="leading" secondItem="Lrq-3y-ORo" secondAttribute="leading" constant="16" id="6Hi-6M-Qpy"/>
+                            <constraint firstItem="0Ni-3s-4Fc" firstAttribute="top" secondItem="3oa-H3-sGl" secondAttribute="top" constant="30" id="Srw-Rh-Jpk" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone8">
+                                        <real key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone8Plus">
+                                        <real key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                                        <real key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </constraint>
+                            <constraint firstItem="0Ni-3s-4Fc" firstAttribute="trailing" secondItem="3oa-H3-sGl" secondAttribute="trailing" id="TUH-qA-ivC"/>
+                            <constraint firstItem="0Ni-3s-4Fc" firstAttribute="leading" secondItem="3oa-H3-sGl" secondAttribute="leading" id="krh-a6-j2w"/>
+                            <constraint firstItem="lPn-DT-faQ" firstAttribute="top" secondItem="0Ni-3s-4Fc" secondAttribute="bottom" id="pqc-6f-LFM" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone8">
+                                        <real key="value" value="-27"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                                        <real key="value" value="-33"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone8Plus">
+                                        <real key="value" value="-27"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="iPhone11Pro">
+                                        <real key="value" value="-5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </constraint>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="labelsStackView" destination="lPn-DT-faQ" id="tjq-92-TIt"/>
+                        <outlet property="stepDescriptionLabel" destination="JU8-Tf-FIo" id="Qy1-y1-ZmB"/>
+                        <outlet property="stepImageView" destination="0Ni-3s-4Fc" id="miG-ts-qxv"/>
+                        <outlet property="stepNameLabel" destination="YZ0-cj-2qd" id="Vag-Yh-3FJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UrC-6R-JRm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-201" y="98"/>
+        </scene>
+        <!--Existing Users Tutorial View Controller-->
+        <scene sceneID="YTg-Bd-MFL">
+            <objects>
+                <viewController storyboardIdentifier="ExistingUsersTutorialViewController" id="iX2-L0-PvU" customClass="ExistingUsersTutorialViewController" customModule="domains_manager_ios" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="oNP-Zw-Tuc">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="0Qd-TS-lcj">
+                                <rect key="frame" x="16" y="375.5" width="382" height="145"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="udLogo" translatesAutoresizingMaskIntoConstraints="NO" id="tA6-QD-Yov">
+                                        <rect key="frame" x="159" y="0.0" width="64" height="64"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="64" id="Ttu-pm-8k7"/>
+                                            <constraint firstAttribute="width" secondItem="tA6-QD-Yov" secondAttribute="height" multiplier="1:1" id="y6w-aJ-GLZ"/>
+                                        </constraints>
+                                    </imageView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="DGq-Wz-qqn">
+                                        <rect key="frame" x="120" y="88" width="142.5" height="57"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Protect your wallet" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YYc-bD-N7X" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="142.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y5H-0m-5yG" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="36.5" width="142.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vUb-VG-uTO" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                <rect key="frame" x="16" y="800" width="382" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="BPF-6Z-UsH"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                <connections>
+                                    <action selector="continueButtonPressed:" destination="iX2-L0-PvU" eventType="touchUpInside" id="Cdz-xF-kwQ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Gz8-aR-5NL"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="0Qd-TS-lcj" firstAttribute="centerY" secondItem="oNP-Zw-Tuc" secondAttribute="centerY" id="D6Y-S0-RTp"/>
+                            <constraint firstItem="0Qd-TS-lcj" firstAttribute="centerX" secondItem="oNP-Zw-Tuc" secondAttribute="centerX" id="Ixs-dp-8Ep"/>
+                            <constraint firstItem="vUb-VG-uTO" firstAttribute="leading" secondItem="Gz8-aR-5NL" secondAttribute="leading" constant="16" id="dX3-JW-lpt"/>
+                            <constraint firstItem="Gz8-aR-5NL" firstAttribute="bottom" secondItem="vUb-VG-uTO" secondAttribute="bottom" constant="14" id="e0T-y4-cXL"/>
+                            <constraint firstItem="0Qd-TS-lcj" firstAttribute="leading" secondItem="Gz8-aR-5NL" secondAttribute="leading" constant="16" id="iag-GY-e9m"/>
+                            <constraint firstItem="vUb-VG-uTO" firstAttribute="centerX" secondItem="oNP-Zw-Tuc" secondAttribute="centerX" id="o9G-fb-evv"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="continueButton" destination="vUb-VG-uTO" id="xYE-Je-w7E"/>
+                        <outlet property="subtitleLabel" destination="Y5H-0m-5yG" id="Fsm-pv-UzF"/>
+                        <outlet property="titleLabel" destination="YYc-bD-N7X" id="Cv1-IA-TzN"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lIk-6G-bkE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="801" y="98"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="tutorialIllustration1" width="390" height="356"/>
+        <image name="udLogo" width="64" height="64"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

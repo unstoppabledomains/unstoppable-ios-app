@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="DomainProfileTopInfoCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="378" height="400"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="378" height="400"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8v8-I7-B0o">
+                        <rect key="frame" x="0.0" y="0.0" width="378" height="98"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.32000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </imageView>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="8gd-8M-DIy">
+                        <rect key="frame" x="16" y="24" width="346" height="368"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l9h-aR-zxu">
+                                <rect key="frame" x="115.66666666666666" y="0.0" width="115" height="24"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="115" id="1NW-ii-haK"/>
+                                    <constraint firstAttribute="height" priority="999" constant="24" id="scT-aK-clv"/>
+                                </constraints>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="bSB-9Q-2th">
+                                <rect key="frame" x="0.0" y="46" width="346" height="322"/>
+                                <subviews>
+                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8KU-Uo-7G0">
+                                        <rect key="frame" x="133" y="0.0" width="80" height="80"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="D8f-DF-qvd">
+                                                <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="D8f-DF-qvd" secondAttribute="height" id="bJn-4A-c1y"/>
+                                                    <constraint firstAttribute="width" priority="999" constant="80" id="tk4-re-rAc"/>
+                                                </constraints>
+                                            </imageView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xsz-SU-6Ar" customClass="GhostTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                <connections>
+                                                    <action selector="avatarButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="K5T-cQ-TuL"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" name="brandUnstoppableBlue"/>
+                                        <constraints>
+                                            <constraint firstItem="D8f-DF-qvd" firstAttribute="top" secondItem="8KU-Uo-7G0" secondAttribute="top" id="3yc-Ea-n1I"/>
+                                            <constraint firstAttribute="trailing" secondItem="D8f-DF-qvd" secondAttribute="trailing" id="6EI-3A-WLB"/>
+                                            <constraint firstAttribute="bottom" secondItem="Xsz-SU-6Ar" secondAttribute="bottom" id="Dqf-w1-6El"/>
+                                            <constraint firstItem="D8f-DF-qvd" firstAttribute="leading" secondItem="8KU-Uo-7G0" secondAttribute="leading" id="FhB-Jk-A6M"/>
+                                            <constraint firstItem="Xsz-SU-6Ar" firstAttribute="top" secondItem="8KU-Uo-7G0" secondAttribute="top" id="MQh-aE-L0N"/>
+                                            <constraint firstAttribute="trailing" secondItem="Xsz-SU-6Ar" secondAttribute="trailing" id="SUW-aD-S4w"/>
+                                            <constraint firstItem="Xsz-SU-6Ar" firstAttribute="leading" secondItem="8KU-Uo-7G0" secondAttribute="leading" id="T0G-03-4ZL"/>
+                                            <constraint firstAttribute="bottom" secondItem="D8f-DF-qvd" secondAttribute="bottom" id="zqi-sB-vA5"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                <real key="value" value="40"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="8Ee-Fh-fmj">
+                                        <rect key="frame" x="0.0" y="96" width="346" height="186"/>
+                                        <subviews>
+                                            <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label kh ksjhdfkasdjhflksjdhaf slkjdhflaskjhdflkasjhf lksjahdfkljsahdflksjhdflksjhdfsakjlfh" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LrO-nW-5kD">
+                                                <rect key="frame" x="0.0" y="79" width="318" height="28"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="28" id="pzK-OF-xKl"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Qv5-2k-g1k">
+                                                <rect key="frame" x="326" y="83" width="20" height="20"/>
+                                                <color key="tintColor" name="foregroundOnEmphasis"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="20" id="Ool-7I-K4t"/>
+                                                    <constraint firstAttribute="width" secondItem="Qv5-2k-g1k" secondAttribute="height" id="m8M-yG-cfb"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="q9W-Tp-GK2">
+                                        <rect key="frame" x="102" y="298" width="142" height="24"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" spacing="-8" translatesAutoresizingMaskIntoConstraints="NO" id="5I4-jb-pu4">
+                                                <rect key="frame" x="0.0" y="0.0" width="142" height="24"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" horizontalCompressionResistancePriority="753" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GJQ-Ck-XLe" customClass="GhostTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="75" height="24"/>
+                                                        <state key="normal" title="Button"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                        <connections>
+                                                            <action selector="qrCodeButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="81h-4H-NyY"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="254" horizontalCompressionResistancePriority="754" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rHb-ab-50F" customClass="GhostTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                        <rect key="frame" x="67" y="0.0" width="75" height="24"/>
+                                                        <state key="normal" title="Button"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                        <connections>
+                                                            <action selector="publicProfileButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="alj-bG-SqH"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" priority="999" constant="24" id="3iT-0Y-Egx"/>
+                                                </constraints>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                    </stackView>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Ts-Qa-VHS" customClass="GhostTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="6" width="378" height="60"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="60" id="5rE-gJ-SFL"/>
+                        </constraints>
+                        <state key="normal" title="Button"/>
+                        <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                        <connections>
+                            <action selector="bannerButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="xhC-vY-Klg"/>
+                        </connections>
+                    </button>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="8gd-8M-DIy" secondAttribute="bottom" priority="999" constant="8" id="1ys-Jy-jah"/>
+                <constraint firstAttribute="trailing" secondItem="8v8-I7-B0o" secondAttribute="trailing" id="7UY-6s-90V"/>
+                <constraint firstItem="8gd-8M-DIy" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" priority="999" constant="24" id="9XU-H7-Z3s"/>
+                <constraint firstItem="8Ts-Qa-VHS" firstAttribute="leading" secondItem="ZTg-uK-7eu" secondAttribute="leading" id="NbQ-MF-bNO"/>
+                <constraint firstItem="8Ts-Qa-VHS" firstAttribute="centerY" secondItem="l9h-aR-zxu" secondAttribute="centerY" id="QJy-c8-f0B"/>
+                <constraint firstItem="8gd-8M-DIy" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="biA-2X-JTq"/>
+                <constraint firstItem="8gd-8M-DIy" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="e2V-RD-mua"/>
+                <constraint firstItem="8v8-I7-B0o" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="erW-PE-KlK"/>
+                <constraint firstItem="8v8-I7-B0o" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="prw-Il-KJB"/>
+                <constraint firstItem="8v8-I7-B0o" firstAttribute="bottom" secondItem="8KU-Uo-7G0" secondAttribute="top" constant="28" id="puC-AO-0Kb"/>
+                <constraint firstItem="8Ts-Qa-VHS" firstAttribute="centerX" secondItem="l9h-aR-zxu" secondAttribute="centerX" id="ucf-YH-GSY"/>
+            </constraints>
+            <size key="customSize" width="378" height="376"/>
+            <connections>
+                <outlet property="avatarButton" destination="Xsz-SU-6Ar" id="McM-vH-eVZ"/>
+                <outlet property="avatarContainerView" destination="8KU-Uo-7G0" id="PE5-Ap-4uP"/>
+                <outlet property="bannerButton" destination="8Ts-Qa-VHS" id="ztC-st-Neq"/>
+                <outlet property="bannerTopConstraint" destination="erW-PE-KlK" id="lZ6-Qt-ubx"/>
+                <outlet property="domainAvatarImageView" destination="D8f-DF-qvd" id="mn3-DY-3XU"/>
+                <outlet property="domainBannerImageView" destination="8v8-I7-B0o" id="bl1-Nd-WGr"/>
+                <outlet property="domainNameIndicatorImageView" destination="Qv5-2k-g1k" id="NV0-9w-Qvo"/>
+                <outlet property="domainNameLabel" destination="LrO-nW-5kD" id="D9s-nG-i8V"/>
+                <outlet property="publicProfileButton" destination="rHb-ab-50F" id="WLu-1c-e8x"/>
+                <outlet property="qrCodeButton" destination="GJQ-Ck-XLe" id="aLD-IN-eN1"/>
+            </connections>
+            <point key="canvasLocation" x="272.30769230769232" y="38.388625592417057"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="brandUnstoppableBlue">
+            <color red="0.050980392156862744" green="0.40392156862745099" blue="0.99215686274509807" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="foregroundOnEmphasis">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

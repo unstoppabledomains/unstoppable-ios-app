@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="rvW-za-lCa">
+            <objects>
+                <navigationController storyboardIdentifier="ProtectWalletNavigationController" id="fub-wN-qA5" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Dm3-7u-I7R">
+                        <rect key="frame" x="0.0" y="44" width="390" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Y6W-OH-hqX" kind="relationship" relationship="rootViewController" id="gVQ-Cp-ht0"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="O0m-tS-MH0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-938" y="96"/>
+        </scene>
+        <!--Protect Wallet View Controller-->
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="ProtectWalletViewController" id="Y6W-OH-hqX" customClass="ProtectWalletViewController" customModule="domains_manager_ios" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="eRW-vR-URp">
+                                <rect key="frame" x="16" y="148" width="358" height="128.66666666666663"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="protectLock" translatesAutoresizingMaskIntoConstraints="NO" id="ATd-uI-FpN">
+                                        <rect key="frame" x="155" y="0.0" width="48" height="48"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="48" id="ri3-SV-LDf"/>
+                                            <constraint firstAttribute="width" constant="48" id="vl8-YM-c92"/>
+                                        </constraints>
+                                    </imageView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="kIl-ap-8by">
+                                        <rect key="frame" x="108.00000000000001" y="72" width="142.33333333333337" height="56.666666666666657"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Protect your wallet" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QsV-fF-joe" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="142.33333333333334" height="20.333333333333332"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zL3-Ix-71W" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="36.333333333333314" width="142.33333333333334" height="20.333333333333329"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="96o-du-3Qa" customClass="BorderedTableView" customModule="domains_manager_ios" customModuleProvider="target">
+                                <rect key="frame" x="16" y="308.66666666666669" width="358" height="220.00000000000006"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="220" id="AnU-I6-qbY"/>
+                                </constraints>
+                                <sections/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="96o-du-3Qa" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="16" id="9iX-bL-NF3"/>
+                            <constraint firstItem="eRW-vR-URp" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="60" id="9kI-dg-MNs"/>
+                            <constraint firstItem="96o-du-3Qa" firstAttribute="top" secondItem="eRW-vR-URp" secondAttribute="bottom" constant="32" id="Vsa-Xp-Jeg"/>
+                            <constraint firstItem="eRW-vR-URp" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="dmm-SG-fes"/>
+                            <constraint firstItem="eRW-vR-URp" firstAttribute="leading" secondItem="96o-du-3Qa" secondAttribute="leading" id="phm-vY-kuR"/>
+                            <constraint firstItem="96o-du-3Qa" firstAttribute="centerX" secondItem="5EZ-qb-Rvc" secondAttribute="centerX" id="pst-xP-EFJ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="7BL-2R-C3I"/>
+                    <connections>
+                        <outlet property="selectionTableView" destination="96o-du-3Qa" id="oz1-yL-jLy"/>
+                        <outlet property="selectionTableViewHeightConstraint" destination="AnU-I6-qbY" id="UpT-05-iiX"/>
+                        <outlet property="subtitleLabel" destination="zL3-Ix-71W" id="06n-by-qfA"/>
+                        <outlet property="titleLabel" destination="QsV-fF-joe" id="oSn-gQ-uXF"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-78.260869565217391" y="95.758928571428569"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="protectLock" width="48" height="48"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

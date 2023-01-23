@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="AppearanceSettingsCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="263" height="70"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="263" height="70"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wbs-bM-yM6">
+                        <rect key="frame" x="0.0" y="0.0" width="263" height="70"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="WGL-f3-8pY">
+                                <rect key="frame" x="16" y="23" width="231" height="24"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" placeholderIntrinsicWidth="24" placeholderIntrinsicHeight="24" translatesAutoresizingMaskIntoConstraints="NO" id="Jyy-Hs-VbD" customClass="ResizableRoundedImageView" customModule="domains_manager_ios" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="92" height="24"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="zUS-E9-w3M">
+                                        <rect key="frame" x="108" y="0.0" width="123" height="24"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Tg4-al-1tE">
+                                                <rect key="frame" x="0.0" y="0.0" width="91" height="24"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hio-X1-N9E">
+                                                        <rect key="frame" x="0.0" y="0.0" width="41.5" height="24"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="254" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="Label" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JwL-uR-0aD">
+                                                        <rect key="frame" x="49.5" y="0.0" width="41.5" height="24"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevronRight" translatesAutoresizingMaskIntoConstraints="NO" id="F0B-gD-ShS">
+                                                <rect key="frame" x="99" y="0.0" width="24" height="24"/>
+                                                <color key="tintColor" name="foregroundMuted"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="F0B-gD-ShS" secondAttribute="height" id="CSZ-bb-jve"/>
+                                                    <constraint firstAttribute="width" constant="24" id="uyT-ZB-TDH"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" name="backgroundOverlay"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="WGL-f3-8pY" secondAttribute="trailing" constant="16" id="D1S-a5-ZGR"/>
+                            <constraint firstItem="WGL-f3-8pY" firstAttribute="leading" secondItem="Wbs-bM-yM6" secondAttribute="leading" constant="16" id="EMj-z0-0r5"/>
+                            <constraint firstItem="WGL-f3-8pY" firstAttribute="centerY" secondItem="Wbs-bM-yM6" secondAttribute="centerY" id="HED-ax-Jqn"/>
+                            <constraint firstAttribute="height" constant="70" id="V9h-NQ-UQT"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="Wbs-bM-yM6" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Fd6-i5-lmO"/>
+                <constraint firstAttribute="bottom" secondItem="Wbs-bM-yM6" secondAttribute="bottom" id="I1U-xD-Qs4"/>
+                <constraint firstItem="Wbs-bM-yM6" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="cZK-jJ-BUM"/>
+                <constraint firstAttribute="trailing" secondItem="Wbs-bM-yM6" secondAttribute="trailing" id="sqz-JO-HHt"/>
+            </constraints>
+            <size key="customSize" width="263" height="50"/>
+            <connections>
+                <outlet property="containerView" destination="Wbs-bM-yM6" id="ZEt-QA-zMw"/>
+                <outlet property="imageContainerView" destination="Jyy-Hs-VbD" id="I8G-ml-Opt"/>
+                <outlet property="nameLabel" destination="Hio-X1-N9E" id="VbN-NT-ld0"/>
+                <outlet property="valueLabel" destination="JwL-uR-0aD" id="zxH-G3-qlm"/>
+            </connections>
+            <point key="canvasLocation" x="292.02898550724638" y="134.59821428571428"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="chevronRight" width="24" height="24"/>
+        <namedColor name="backgroundOverlay">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="foregroundMuted">
+            <color red="0.68599998950958252" green="0.68599998950958252" blue="0.71399998664855957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

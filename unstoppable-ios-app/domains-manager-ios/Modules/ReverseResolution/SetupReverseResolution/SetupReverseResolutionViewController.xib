@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SetupReverseResolutionViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="confirmButton" destination="Tez-2r-Gkl" id="X20-Ut-Mlb"/>
+                <outlet property="rrIllustrationView" destination="9py-J4-CNg" id="Dkn-Lz-J2M"/>
+                <outlet property="skipButton" destination="Foy-H4-Qgy" id="RCh-Gr-Bph"/>
+                <outlet property="subtitleLabel" destination="s09-r5-MyJ" id="Z0L-hf-JSa"/>
+                <outlet property="titleLabel" destination="CmI-0W-0cw" id="WNI-8h-rld"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="0lC-6i-Kl1">
+                    <rect key="frame" x="16" y="268.5" width="382" height="245"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9py-J4-CNg" customClass="ReverseResolutionIllustrationView" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="164"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="164" id="SOo-Sd-Hwh" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                                            <real key="value" value="136"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </constraint>
+                            </constraints>
+                        </view>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Van-pe-eKx">
+                            <rect key="frame" x="0.0" y="188" width="382" height="57"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CmI-0W-0cw" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="382" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s09-r5-MyJ">
+                                    <rect key="frame" x="0.0" y="36.5" width="382" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="XbA-SW-eN2">
+                    <rect key="frame" x="16" y="736" width="382" height="112"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tez-2r-Gkl" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="f88-Uz-YkB"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <connections>
+                                <action selector="confirmButtonPressed:" destination="-1" eventType="touchUpInside" id="Yjm-BW-9XR"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Foy-H4-Qgy" customClass="SecondaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="64" width="382" height="48"/>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <connections>
+                                <action selector="skipButtonPressed:" destination="-1" eventType="touchUpInside" id="nr3-kk-kj0"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="XbA-SW-eN2" secondAttribute="bottom" constant="14" id="2wl-IG-aqG"/>
+                <constraint firstItem="0lC-6i-Kl1" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="F3P-Uu-29h"/>
+                <constraint firstItem="0lC-6i-Kl1" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="JOY-QD-C5r"/>
+                <constraint firstItem="XbA-SW-eN2" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="SdL-Nh-gPb"/>
+                <constraint firstItem="XbA-SW-eN2" firstAttribute="leading" secondItem="0lC-6i-Kl1" secondAttribute="leading" id="b9w-Bq-Or7"/>
+                <constraint firstItem="0lC-6i-Kl1" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" constant="-57" id="zoG-3b-LBw" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                            <real key="value" value="-40"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone8Plus">
+                            <real key="value" value="-37"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone8">
+                            <real key="value" value="-42"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </constraint>
+            </constraints>
+            <point key="canvasLocation" x="139" y="147"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="MintingDomainListCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="295" height="70"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="295" height="70"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AA7-9r-pms">
+                        <rect key="frame" x="0.0" y="0.0" width="295" height="70"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="ylf-hq-LuL">
+                                <rect key="frame" x="16" y="15" width="263" height="40"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="mip-dr-3k7">
+                                        <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="5hd-hd-ElY"/>
+                                            <constraint firstAttribute="width" secondItem="mip-dr-3k7" secondAttribute="height" multiplier="1:1" id="5r5-vf-SwV"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                <real key="value" value="20"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </imageView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="mpD-va-5Vr">
+                                        <rect key="frame" x="56" y="8" width="207" height="24"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="hwt-9d-9jZ">
+                                                <rect key="frame" x="0.0" y="2" width="175" height="20.5"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i85-gh-eSq">
+                                                        <rect key="frame" x="0.0" y="0.0" width="175" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="domainsProfileIcon" translatesAutoresizingMaskIntoConstraints="NO" id="A8i-g9-o6d">
+                                                <rect key="frame" x="183" y="0.0" width="24" height="24"/>
+                                                <color key="tintColor" name="foregroundMuted"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="A8i-g9-o6d" secondAttribute="height" id="h05-Yn-MQi"/>
+                                                    <constraint firstAttribute="width" constant="24" id="lra-sF-GUw"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" name="backgroundOverlay"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="ylf-hq-LuL" secondAttribute="trailing" constant="16" id="B8K-Gr-RKm"/>
+                            <constraint firstItem="ylf-hq-LuL" firstAttribute="leading" secondItem="AA7-9r-pms" secondAttribute="leading" constant="16" id="ZbW-dy-i8q"/>
+                            <constraint firstAttribute="height" constant="70" id="i8Y-Pd-hqU"/>
+                            <constraint firstItem="ylf-hq-LuL" firstAttribute="centerY" secondItem="AA7-9r-pms" secondAttribute="centerY" id="ugS-a6-gtB"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="AA7-9r-pms" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="JBp-HT-ZyL"/>
+                <constraint firstAttribute="bottom" secondItem="AA7-9r-pms" secondAttribute="bottom" id="dH6-Na-gMb"/>
+                <constraint firstItem="AA7-9r-pms" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="eGP-IS-cpn"/>
+                <constraint firstAttribute="trailing" secondItem="AA7-9r-pms" secondAttribute="trailing" id="izC-Nj-XGF"/>
+            </constraints>
+            <size key="customSize" width="295" height="61"/>
+            <connections>
+                <outlet property="containerView" destination="AA7-9r-pms" id="Gdk-uH-ihc"/>
+                <outlet property="domainNameImageView" destination="mip-dr-3k7" id="b7a-3j-tCg"/>
+                <outlet property="domainNameLabel" destination="i85-gh-eSq" id="wcZ-iT-RCs"/>
+                <outlet property="primaryImageView" destination="A8i-g9-o6d" id="fNe-oX-0F5"/>
+            </connections>
+            <point key="canvasLocation" x="315.21739130434787" y="148.99553571428569"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="domainsProfileIcon" width="20" height="20"/>
+        <namedColor name="backgroundOverlay">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="foregroundMuted">
+            <color red="0.68599998950958252" green="0.68599998950958252" blue="0.71399998664855957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

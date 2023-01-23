@@ -1,0 +1,710 @@
+/* 
+  Localizable.strings
+  domains-manager-ios
+
+  Created by Roman Medvid on 11.11.2020.
+  ENGLISH
+*/
+
+"MOBILE_APP_NAME" = "Unstoppable Domains";
+"MOBILE_APP_DESCRIPTION" = "Your identity and login for Web3";
+
+"UD_COMPANY_NAME" = "Unstoppable Domains";
+"DEFAULT_WALLET_NAME" = "Unstoppable App";
+
+/* HOME SCREEN */
+
+"MINT_PURCHASED_DOMAINS" = "Mint Domains";
+"MY_DOMAIN_TITLE" = "My Domains";
+"YOU_HAVE" = "You have";
+"DOMAIN" = "Domain";
+"DOMAINS" = "domains";
+
+/* MINT DOMAINS */
+"MINT_DOMAINS_TITLE" = "Mint Domains";
+
+"YOU_CAN_MINT_THESE_DOMAINS" = "You can mint these domains";
+"MINT_SELECTED_DOMAINS" = "Mint selected domains";
+"MINT_DOMAINS_TO_CUSTOM_WALLET" = "Mint domains to custom wallet";
+"MINT_DOMAINS_AMOUNT_LIMIT_MESSAGE" = "Mint up to %i domains";
+"TRY_AGAIN_LATER" = "Try again later";
+"FAILED_TO_PROCEED" = "Failed to proceed";
+"MINTING_FAILED_DUE_TO_ERROR" = "Minting failed due to some error";
+
+"HELP_VERIFY_EMAIL" = "Unstoppable Domains are blockchain-based assets. Each user stores their domains personally with a private key, just like cryptocurrencies.
+​
+Minting a domain is the process of creating your domain and sending it to your wallet. This process can take anywhere from a few minutes during periods of low network traffic up to a few days. Once complete, you have full ownership of your domain.
+​
+To start this process, verify your email address to load the set of domains you have purchased.";
+
+"WE_SENT_CODE" = "Verification code sent to";
+
+"NO_DOMAINS_TO_MINT" = "No domains to mint";
+
+/* MENU */
+"MY_DOMAINS_ITEM" = "My Domains";
+"WALLETS_ITEM" = "Wallets";
+"SETTINGS_ITEM" = "Settings";
+"BACKUP_ITEM" = "Back Up Domains";
+
+/* DOMAIN DETAILS */
+"DOMAIN_TITLE" = "Domain";
+"EDIT_BUTTON_TITLE" = "Edit";
+"DONE_BUTTON_TITLE" = "Done";
+"OWNERSHIP_TRANSFERRED_TITLE" = "Ownership Transferred";
+"OWNERSHIP_TRANSFERRED_DESCRIPTION" = "The domain has been transferred to another wallet";
+
+/* WALLETS LIST */
+
+"NO_WALLETS_TO_IMPORT" = "No wallets to import";
+
+/* WALLET DETAILS */
+"READ-ONLY_WALLET_STATE" = "Read-only";
+"EXTERNAL-LINKED_WALLET_STATE" = "External";
+
+/* TRANSFER DOMAIN */
+"TRANSFER_TITLE" = "Transfer";
+
+/* WALLET ACTIONS MENU */
+"ACTIONS_BUTTON_TITLE" = "Actions";
+"SHOW_MINTED_DOMAINS_ITEM" = "Show Minted Domains";
+"RENAME_ITEM" = "Rename Wallet";
+"DISCONNECT_ITEM" = "Disconnect Wallet";
+
+"WALLET_ALREADY_CONNECTED_ERROR" = "This wallet is already connected";
+"CHECK_AND_RE-ENTER_ERROR" = "Please check and enter correctly";
+
+/* PAYMENTS */
+"TRANSACTION_FEE_TITLE" = "Update Domain";
+"TRANSACTION_FEE_SUBTITLLE" = "Pay Blockchain Fees";
+"TRANSACTION_FEE_DESCRIPTION" = "Complete this payment to send your domain updates to the Ethereum blockchain. Unstoppable Domains makes no money from this transaction.";
+"WHAT_ARE_GAS_FEES_BUTTON_TITLE" = "What are gas fees?";
+"CTA_BUTTON_TITLE" = "Continue to Apple Pay";
+"CANCEL_BUTTON_TITLE" = "Cancel update";
+"UD_FEE_LABEL" = "Unstoppable Domains Fee";
+"ETH_GAS_FEE_LABEL" = "Ethereum Gas Fee";
+
+/* ERRORS */
+
+"badResponseOrStatusCode" = "Bad Response Or Status Code";
+"parsingTxsError" = "Failed to parse transactions data in a response from the server";
+"responseFailedToParse" = "Response to /getMessagesToSign failed to parse";
+
+"paymentNotConfirmed" = "Payment to cover the transaction fee was not confirmed.";
+"applePayFailed"  = "Apple Pay failed to handle the payment.";
+"applePayNotSupported" = "Apple Pay is not supported. Try to enable Apple Pay on this phone and then try again.";
+"failedToFetchClientSecret" = "The app could not communicate with Unstoppable Domains servers. Please try again later.";
+"fetchingTxCostFailedInternet" = "Failure to fetch the price for the transaction due to bad connection. Try again later.";
+"fetchingTxCostFailedParsing" = "Failure to fetch the price for the transaction due to wrong data. Try again later.";
+
+"CREATION_FAILED" = "Creation failed";
+"CONNECTION_FAILED" = "Connection failed";
+"FAILED_TO_CREATE_NEW_WALLET" = "Failed to create a new vault, error: %@";
+"AUTHENTICATION_FAILED" = "Authentication failed";
+"BIOMETRICS_NOT_AVAILABLE" = "Biometrics is not available";
+"SAVE_TO_ICLOUD_FAILED_TITLE" = "iCloud failed";
+"SAVE_TO_ICLOUD_FAILED_MESSAGE" = "At least some of the vaults failed to back up in iCloud.";
+"BACKUP_TO_ICLOUD_FAILED_MESSAGE" = "The vaults failed to back up in iCloud. Please try again";
+"NO_WALLETS_FOUND_IN_ICLOUD_TITLE" = "No wallets found";
+"NO_WALLETS_FOUND_IN_ICLOUD_MESSAGE" = "No wallets found in iCloud to import";
+"RESTORE_FROM_ICLOUD_FAILED_TITLE" = "Restoration failed";
+"RESTORE_FROM_ICLOUD_FAILED_MESSAGE" = "Failed to to restore a %@ from iCloud";
+"WALLET_NOT_FOUND" = "Wallet not found";
+"FAILED_TO_FIND_WALLET_FOR_DOMAIN" = "Failed to find a wallet for the domain %@";
+"FAILED_TO_CREATE_WATCH_WALLET" = "Failed to create an watch wallet";
+"FAILED_TO_CONNECT_EXTERNAL_WALLET" = "An external wallet failed to connect to the app. Please try again";
+"PLEASE_TRY_AGAIN" = "Please try again";
+"SOMETHING_WENT_WRONG" = "Something went wrong";
+"TRANSACTION_FAILED" = "Transaction Failed";
+"CONNECTION_LOST" = "Connection lost";
+"PLEASE_CHECK_INTERNET_CONNECTION" = "Please check your connection and try again.";
+"FAILED_TO_PICK_IMAGE_FROM_PHOTO_LIBRARY_ERROR_MESSAGE" = "Unexpected error occurred when tried to use selected image";
+
+// NetworkLayerError
+"invalidTxCostError" = "Failed to fetch the cost of transaction from the server. Please try again later.";
+
+/* BACKUP WALLET */
+"SHOW_PRIVATE_KEY" = "Show Private Key";
+"SHOW_MNEMONIC_PHRASE" = "Show Seed Phrase";
+
+/* Common */
+"CONTINUE" = "Continue";
+"SKIP" = "Skip";
+"HELP" = "Help";
+"SEARCH" = "Search";
+"ERROR" = "Error";
+"OK" = "Ok";
+"COPY" = "Copy";
+"CANCEL" = "Cancel";
+"IMPORT" = "Import";
+"GOT_IT" = "Got it";
+"SHARE" = "Share";
+"COMING_SOON" = "Coming soon";
+"POPULAR" = "Popular";
+"ALL" = "All";
+"NO_RESULTS" = "No results";
+"CONFIRM" = "Confirm";
+"ADDED" = "Added";
+"REMOVED" = "Removed";
+"UPDATED" = "Updated";
+"DISCARD" = "Discard";
+"SAVED" = "Saved";
+"WALLET" = "Wallet";
+"VAULT" = "Vault";
+"CURRENT" = "Current";
+"LATER" = "Later";
+"PENDING" = "Pending";
+"HIDE" = "Hide";
+"INSTALLED" = "Installed";
+"NOT_INSTALLED" = "Not installed";
+"MINTING" = "Minting";
+"SCANNING" = "Scanning";
+"ADD" = "Add";
+"SHOW_ALL" = "Show all";
+"DEPRECATED" = "Deprecated";
+"VERIFY" = "Verify";
+"REFRESH" = "Refresh";
+"REFRESHING" = "Refreshing";
+"FAILED_TO_FETCH_DATA" = "Failed to fetch data";
+"FAILED" = "Failed";
+"REFRESH_FAILED" = "Refresh failed";
+"UPDATE" = "Update";
+"NEXT" = "Next";
+"N_SAVED" = "%@ saved";
+"N_COPIED" = "%@ copied";
+"COPY_N" = "Copy %@";
+"USERNAME" = "Username";
+
+/* ONBOARDING */
+// Tutorial screens
+"ALREADY_MINTED_DOMAIN" = "Import minted domains";
+"CREATE_DOMAIN_VAULT" = "Create domain vault";
+"MINT_YOUR_DOMAIN" = "Mint your domains";
+"BUY_DOMAIN" = "Buy domain";
+
+"TUTORIAL_SCREEN_1_NAME" = "Your identity and\nlogin for Web3";
+"TUTORIAL_SCREEN_2_NAME" = "A name to pay\nand get paid";
+"TUTORIAL_SCREEN_3_NAME" = "Manage any way\nyou want";
+
+"TUTORIAL_SCREEN_1_DESCRIPTION" = "Securely managed\nat your fingertips.";
+"TUTORIAL_SCREEN_2_DESCRIPTION" = "Route up to 275+ crypto addresses with your domain name.";
+"TUTORIAL_SCREEN_3_DESCRIPTION" = "Connect your favorite wallet to seamlessly manage your Web3 identity.";
+
+// Creating wallet
+"CREATING_WALLET" = "Creating vault...";
+
+// Protect screen
+"USE_FACE_ID" = "Use Face ID";
+"USE_TOUCH_ID" = "Use Touch ID";
+"IDENTIFY_YOURSELF" = "Protect your data and authenticate with %@";
+"SETUP_PASSCODE" = "Set up passcode";
+"RECOMMENDED" = "Recommended";
+"PROTECT_YOUR_WALLET_TITLE" = "Protect your %@";
+"PROTECT_YOUR_WALLET_DESCRIPTION" = "Add an extra layer of security to keep your Web3 domains safe.";
+
+// Passcode screen
+"CREATE_PASSCODE" = "Create passcode";
+"CONFIRM_PASSCODE" = "Confirm passcode";
+"PASSCODE_DONT_MATCH" = "Passcode don’t match";
+"TRY_AGAIN" = "Try again";
+"INCORRECT_PASSCODE" = "Incorrect passcode";
+"UNLOCK_WITH_PASSCODE" = "Unlock with your passcode";
+"CONFIRM_YOUR_PASSCODE" = "Confirm your passcode";
+"ENTER_OLD_PASSCODE" = "Enter your old passcode";
+"CREATE_NEW_PASSCODE" = "Create your new passcode";
+"CONFIRM_NEW_PASSCODE" = "Confirm your new passcode";
+
+// Backup screen
+"BACK_UP_YOUR_WALLET" = "Back up your %@";
+"BACK_UP_YOUR_WALLET_DESCRIPTION" = "You will be shown a 12 word recovery phrase. Keep your recovery phrase safe as it is required to access your vault and manage your Web3 domains if your phone is lost, stolen, or inaccessible.";
+"BACK_UP_YOUR_EXISTING_WALLET_DESCRIPTION" = "Save an encrypted copy of your recovery phrase on iCloud.";
+"BACK_UP_TO_ICLOUD" = "Back up to iCloud";
+"BACK_UP_MANUALLY" = "Back up manually";
+
+// Create password screen
+"CREATE_PASSWORD" = "Create a password";
+"CREATE_PASSWORD_DESCRIPTION" = "This password protects your iCloud backups. Store this password somewhere safe.  Unstoppable Domains cannot recover your password for you. Learn more";
+"CREATE_PASSWORD_DESCRIPTION_HIGHLIGHTED" = "Store this password somewhere safe.";
+"LEARN_MORE" = "Learn more";
+"BACKUP_PASSWORD" = "Backup password";
+"CONFIRM_PASSWORD" = "Confirm password";
+"PASSWORD_RULE_AT_LEAST" = "At least 8 characters, with at least 1 number";
+"PASSWORD_RULE_CHARACTERS" = "Password must contain 8 characters";
+"PASSWORD_RULE_NUMBER" = "Password must contain number";
+"PASSWORD_RULE_LETTER" = "Password must contain a non-number";
+"PASSWORD_RULE_RANGE" = "Password must contain between 8-30 characters";
+"CREATE_PASSWORD_HELP_TITLE" = "Why do I need a backup password?";
+"CREATE_PASSWORD_HELP_TEXT" = "When backing up your vault or wallet to iCloud, you’ll be asked to set a password that will be used to to encrypt your vault or wallet backup. This password will also be required to manage your existing and new iCloud backups. Similar to a recovery phrase, you’ll want to keep this backup password safe as it is necessary to recover your vault or wallet using the iCloud backup option.\n\nAlthough backing up your vault or wallet to iCloud is a convenient way to protect your domains, you should still write down and secure your vault or wallet recovery phrase. In the event that you lose or forget your iCloud backup password, your recovery phrase will allow you to restore your vault or wallets and access your domains.\n\nNote: Unstoppable Domains cannot recover your backup password for you.";
+"CREATE_PASSWORD_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your backup password for you.";
+
+// Recovery phrase screen
+"RECOVERY_PHRASE" = "Recovery phrase";
+"RECOVERY_PRIVATE_KEY" = "Private key";
+"RECOVERY_PHRASE_DESCRIPTION" = "For your eyes only! Anyone who knows your 12 word recovery phrase can access your domains. Store your recovery phrase somewhere safe. Learn more";
+"RECOVERY_PRIVATE_KEY_DESCRIPTION" = "For your eyes only! Anyone who knows your private key can access your domains. Store your private key somewhere safe.";
+"RECOVERY_PHRASE_DESCRIPTION_HIGHLIGHTED" = "For your eyes only!";
+"COPY_TO_CLIPBOARD" = "Copy to clipboard";
+"COPIED" = "Copied";
+"I_VE_SAVED_THIS_WORDS" = "I’ve saved these words";
+"BACKED_UP_TO_ICLOUD" = "Backed up to iCloud";
+"RECOVERY_PHRASE_HELP_TITLE" = "What is a recovery phrase?";
+"RECOVERY_PHRASE_HELP_TEXT" = "A recovery phrase is the human-readable form of your vault or wallet private key — the unique, secret passcode used to authenticate and encrypt your vault or wallet access. This phrase allows you to sign transactions, claim ownership of your Web3 domains, and recover them in the event that your mobile device is lost, stolen, or becomes inaccessible.\n\nHowever you choose to store your recovery phrase, you should consider two things:\n\n•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.\n\nNote: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
+"RECOVERY_PHRASE_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your 12 word recovery phrase for you.";
+"RECOVERY_PHRASE_HELP_TEXT_BULLETS" = "•  Your 12 word recovery phrase should be safe from other people.\n•  Your 12 word recovery phrase should be in a reliable location that you’ll always have access to.";
+
+// Confirm words screen
+"CONFIRM_YOUR_WORDS" = "Confirm your words";
+"I_FORGOT_MY_WORDS" = "I forgot my words";
+"WHICH_WORD_BELOW" = "Which word below was your %@ word?";
+"WHICH_WORD_BELOW_HIGHLIGHTED" = "%@ word?";
+
+// All done screen
+"YOU_ARE_ALL_DONE_TITLE" = "You're all done!";
+"YOU_ARE_ALL_DONE_SUBTITLE" = "Manage your Web3 domains on the go";
+"GET_STARTED" = "Get started";
+"AGREE_TO_TU_AND_PP" = "I agree to the Terms of use and Privacy policy";
+"TERMS_OF_USE" = "Terms of use";
+"PRIVACY_POLICY" = "Privacy policy";
+
+// Connect wallet
+"CONNECT_WALLET_TITLE" = "Connect";
+"CONNECT_WALLET_SUBTITLE" = "Choose an option to manage your domains.";
+"CONNECT_WALLET_ICLOUD" = "iCloud";
+"CONNECT_WALLET_ICLOUD_HINT" = "You have %@ backed up";
+"CONNECT_WALLET_RECOVERY" = "Recovery phrase or private key";
+"CONNECT_WALLET_RECOVERY_HINT" = "Ethereum & Zilliqa";
+"CONNECT_WALLET_WATCH" = "Watch wallet ";
+"CONNECT_WALLET_WATCH_HINT" = "Unstoppable Domain, Ethereum address";
+"CONNECT_WALLET_EXTERNAL" = "External wallet";
+"CONNECT_WALLET_EXTERNAL_HINT" = "MetaMask, Rainbow, etc.";
+
+// Add wallet
+"ADD_WALLET_TITLE" = "Add wallet";
+"ADD_WALLET_MANAGE_HINT" = "12 word recovery phrase, private key";
+"ADD_WALLET_WATCH_HINT" = "Unstoppable domain, Ethereum address, recovery phrase, private key";
+"PASTE" = "Paste";
+
+// Add Backed up wallet
+"ADD_BACKUP_WALLET_TITLE" = "Enter backup password";
+"ADD_BACKUP_WALLET_SUBTITLE" = "To restore your iCloud backup, enter the backup password you created.";
+"ADD_BACKUP_WALLET_HINT" = "Unstoppable Domains cannot recover your password for you. Learn more";
+"INCORRECT_PASSWORD" = "Incorrect password";
+
+// Choose external wallet
+"CHOOSE_EXTERNAL_WALLET_TITLE" = "Choose your wallet";
+"CHOOSE_EXTERNAL_WALLET_SUBTITLE" = "Manage your domains using a third party wallet.";
+
+// External wallet connected
+"WALLET_CONNECTED" = "wallet connected";
+"EXTERNAL_WALLET_CONNECTED_SUBTITLE" = "You can now manage your domains on the Unstoppable App.";
+
+// Existing users tutorial
+"EXISTING_USERS_TUTORIAL_TITLE" = "Complete a few steps to better protect your domain vault";
+"EXISTING_USERS_TUTORIAL_SUBTITLE" = "It only takes a minute.";
+
+// iCloud not enabled
+"ICLOUD_NOT_ENABLED_ALERT_TITLE" = "iCloud Not Enabled";
+"ICLOUD_NOT_ENABLED_ALERT_MESSAGE" = "Looks like iCloud drive is not enabled on your device.\n\nDo you want to see how to enable it?";
+"ICLOUD_NOT_ENABLED_ALERT_CONFIRM_BUTTON" = "Yes, Show me";
+"ICLOUD_NOT_ENABLED_ALERT_DECLINE_BUTTON" = "No thanks";
+
+// Domains Collection
+"ALREADY_OWN_A_DOMAIN" = "Already own a domain?";
+"WANT_TO_BUY_A_DOMAIN" = "Want to buy a domain?";
+"MINT_DOMAIN" = "Mint domains";
+"MINT_DOMAIN_PULLUP_DESCRIPTION" = "Import your wallets or mint your domains to manage your profile and login to apps.";
+"SEARCH_DOMAINS_TITLE" = "Search your domains";
+"SEARCH_DOMAINS_HINT" = "Example: \"matt.crypto\"";
+"TAP_DOMAIN_CARD_HINT" = "Tap to manage profile";
+"DOMAINS_COLLECTION_EMPTY_STATE_MINT_TITLE" = "Mint domains";
+"DOMAINS_COLLECTION_EMPTY_STATE_MINT_SUBTITLE" = "Store in your domain vault";
+"DOMAINS_COLLECTION_EMPTY_STATE_BUY_TITLE" = "Buy domains";
+"DOMAINS_COLLECTION_EMPTY_STATE_BUY_SUBTITLE" = "Search for your NFT name";
+"DOMAINS_COLLECTION_EMPTY_STATE_MANAGE_TITLE" = "Manage domains";
+"DOMAINS_COLLECTION_EMPTY_STATE_MANAGE_SUBTITLE" = "Import your wallets";
+"DOMAINS_COLLECTION_EMPTY_STATE_TITLE" = "Mint domains";
+"DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE" = "Mint domains or import your wallets to manage your profile and login to apps.";
+
+// Statuses
+"UPDATING_RECORDS" = "Updating records";
+
+// Settings
+"SETTINGS_WALLETS" = "Domain vault";
+"SETTINGS_SECURITY" = "Security";
+"SETTINGS_APPEARANCE" = "Appearance";
+"SETTINGS_HOME_SCREEN" = "Home screen";
+
+"SETTINGS_LEARN" = "Learn";
+"SETTINGS_FOLLOW_TWITTER" = "Follow us on Twitter";
+"SETTINGS_SUPPORT_N_FEEDBACK" = "Support & feedback";
+"SETTINGS_LEGAL" = "Legal";
+
+"SETTINGS_SECURITY_PASSCODE" = "Passcode";
+"SETTINGS_SECURITY_CHANGE_PASSCODE" = "Change passcode";
+"SETTINGS_SECURITY_REQUIRE_WHEN_OPENING_HEADER" = "Require security check when...";
+"SETTINGS_SECURITY_OPENING_THE_APP" = "Opening the app";
+
+"SETTINGS_APPEARANCE_THEME" = "Theme";
+"SETTINGS_APPEARANCE_THEME_SYSTEM" = "System";
+"SETTINGS_APPEARANCE_THEME_LIGHT" = "Light";
+"SETTINGS_APPEARANCE_THEME_DARK" = "Dark";
+"SETTINGS_APPEARANCE_CHOOSE_THEME" = "Choose theme";
+
+// Wallets list
+"MANAGE_ICLOUD_BACKUPS" = "Manage iCloud backups";
+"RESTORE_FROM_ICLOUD_BACKUP" = "Restore from iCloud backup";
+"DELETE_ICLOUD_BACKUPS" = "Delete all iCloud backups";
+"CONNECTED" = "Connected";
+"MANAGED" = "Managed";
+"DELETE_ICLOUD_BACKUPS_CONFIRMATION_MESSAGE" = "Are you sure you want to delete all iCloud backups?";
+"RESTORE_FROM_ICLOUD_BACKUP_DESCRIPTION" = "Make sure you save and have access to your recovery phrases and private keys before restoring from another iCloud backup.\nLearn more";
+"RESTORE_FROM_ICLOUD_HELP_TITLE" = "Restore from iCloud backup";
+"RESTORE_FROM_ICLOUD_HELP_TEXT" = "When restoring from an iCloud backup, you’ll be asked to enter the password used to create the iCloud backup. Before performing this action, make sure you save and have access to your vault or wallet recovery phrases and/or private keys. If you lose or forget your iCloud backup password, your recovery phrases and private keys will enable you to restore your vault or wallet that hold your Web3 domains.\n\nWhen creating a brand new iCloud backup, using the same recovery password as an older iCloud backup will result in the two backups being grouped as your most recent backup. Entering your recovery password in this situation will result in all of your vaults or wallets across both backups being restored with a single iCloud backup password.\n\nNote: Unstoppable Domains cannot recover your backup password, recovery phrases or private keys for you.";
+"RESTORE_FROM_ICLOUD_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your backup password, recovery phrases or private keys for you.";
+"ADD_TO_BACKUP_NEW_WALLET_SUBTITLE" = "Save an encrypted copy of your recovery phrase on iCloud.";
+"ADD_TO_CURRENT_BACKUP_NEW_WALLET_TITLE" = "Enter current backup password";
+"CREATE_VAULT" = "Create vault";
+
+// Wallet details
+"VIEW_RECOVERY_PHRASE" = "View recovery phrase";
+"VIEW_PRIVATE_KEY" = "View private key";
+"RENAME" = "Rename";
+"SEE_DOMAINS_STORED_IN_WALLET" = "See %@ stored in %@";
+"REMOVE_WALLET" = "Remove %@";
+"DISCONNECT_WALLET" = "Disconnect wallet";
+"NOT_BACKED_UP" = "Not backed up";
+"IMPORTED_WALLET_BACKUP_HINT" = "Save an encrypted copy of your recovery phrase on iCloud.";
+"REMOVE_WALLET_ALERT_TITLE" = "Are you sure you want to remove this %@: %@?";
+"DISCONNECT_WALLET_ALERT_TITLE" = "Are you sure you want to disconnect this wallet: %@?";
+"REMOVE_WALLET_ALERT_SUBTITLE_RECOVERY_PHRASE" = "This action is irreversible. Make sure you have saved your recovery phrase to restore access to this wallet.";
+"REMOVE_WALLET_ALERT_SUBTITLE_PRIVATE_KEY" = "This action is irreversible. Make sure you have saved your private key to restore access to this wallet.";
+"COPY_ADDRESS" = "Copy address";
+"ETH_ADDRESS" = "ETH address";
+"ZIL_ADDRESS" = "ZIL address";
+"IMPORT_CONNECTED_WALLET_DESCRIPTION" = "Manage your Web3 domains using an external wallet without importing a recovery phrase or private key. Your linked wallet will be used for message & transaction signing.";
+"WALLET_WAS_DISCONNECTED_MESSAGE" = "Your wallet: %@ was disconnected from %@";
+
+// Toast messages
+"TOAST_WALLET_ADDRESS_COPIED" = "%@ address copied";
+"TOAST_WALLET_ADDED" = "%@ added";
+"TOAST_ICLOUD_BACKUP_RESTORED" = "iCloud backup restored";
+"TOAST_WALLET_REMOVED" = "%@ removed";
+"TOAST_WALLET_DISCONNECTED" = "Wallet disconnected";
+"TOAST_NO_INTERNET_CONNECTION" = "Offline";
+"TOAST_MINTING_UNAVAILABLE" = "Minting unavailable";
+
+// Transactions
+"ETHEREUM_TRANSACTIONS" = "Ethereum transactions";
+"POLYGON_TRANSACTIONS" = "Polygon transactions";
+
+// Rename wallet
+"WALLET_NAME_PLACEHOLDER" = "Name your %@";
+"WALLET_NAME_TOO_LONG_ERROR" = "Too long name";
+"WALLET_NAME_NOT_UNIQUE_ERROR" = "%@ name should be unique";
+
+// Domain Details
+"DOMAIN_DETAILS_EDIT_PROFILE" = "Edit profile";
+"DOMAIN_DETAILS_MANAGE_DOMAIN" = "Manage domain";
+"DOMAIN_DETAILS_SHARE_MESSAGE" = "This is my #NFTDomain profile made with the @UnstoppableWeb mobile app! Check it out and join the community that's building the future of #Web3\n\n";
+"DOMAIN_DETAILS_ADD_CURRENCY" = "Add currency";
+
+// Manage domain
+"MANAGE_DOMAIN_SECTION_HEADER" = "Route crypto using your Web3 domain";
+"MANAGE_DOMAIN_ROUTE_CRYPTO_HEADER" = "Route cryptocurrency";
+"MANAGE_DOMAIN_ROUTE_CRYPTO_DESCRIPTION" = "Route up to 275+ crypto addresses with your domain name.";
+"VIEW_WALLET" = "View %@";
+"MANAGE_DOMAIN_INVALID_ADDRESS_ERROR" = "Enter a valid address";
+"EDIT_ADDRESS" = "Edit address";
+"REMOVE_ADDRESS" = "Remove address";
+"CONFIRM_UPDATES" = "Confirm updates";
+"N_ADDRESS" = "%@ address";
+"UPDATE_ADDRESS" = "Update address";
+"N_UPDATES" = "%@ updates";
+"DISCARD_CHANGES" = "Discard changes";
+"DISCARD_CHANGES_CONFIRMATION_MESSAGE" = "Are you sure you want do discard changes?";
+"CHANGES_CONFIRMED" = "Changes confirmed";
+"PLEASE_ADD_N_ADDRESS" = "Please add %@ address";
+"THIS_TOKEN_WAS_DEPRECATED" = "Legacy token";
+"GASE_FEE_PULLUP_TITLE" = "Complete transaction";
+"GASE_FEE_PULLUP_SUBTITLE" = "Complete this payment to process your domain updates. Unstoppable Domains makes no money from this transaction. What are gas fees?";
+"GASE_FEE_PULLUP_SUBTITLE_HIGHLIGHTED" = "What are gas fees?";
+"GASE_FEE" = "Gas fee";
+"PAY" = "Pay";
+
+// Edit profile
+"EDIT_PROFILE_TITLE" = "Edit profile";
+"EDIT_PROFILE_SUBTITLE" = "Coming to the mobile app soon.\nIn the meantime, edit your profile on the Unstoppable Domains website.";
+"EDIT_PROFILE_SUBTITLE_HIGHLIGHTED" = "Coming to the mobile app soon.";
+"EDIT_PROFILE_STEP_1" = "Login to unstoppabledomains.com";
+"EDIT_PROFILE_STEP_2" = "Click on “My Domains”";
+"EDIT_PROFILE_STEP_3" = "Select the domain you want to manage";
+"GO_TO_WEBSITE" = "Go to website";
+
+// What is minting
+"WHAT_IS_MINTING_TITLE" = "What is minting?";
+"WHAT_IS_MINTING_SUBTITLE" = "Minting is the process of registering a domain onto the blockchain. Once minted, neither Unstoppable Domains nor any other entity is able to make changes to your domain or take it back from you.";
+"DONT_SHOW_IT_AGAIN" = "Don’t show it again";
+
+// Enter email
+"ENTER_EMAIL_TITLE" = "Enter your email";
+"ENTER_EMAIL_SUBTITLE" = "Enter your email to obtain all of your purchased & unminted domains.";
+"EMAIL" = "Email";
+"ADD_YOUR_EMAIL_ADDRESS" = "Add your email address";
+"ENTER_VALID_EMAIL_ADDRESS" = "Enter a valid email address";
+
+// Enter verification code
+"ENTER_VERIFICATION_CODE_TITLE" = "Enter code";
+"ENTER_VERIFICATION_CODE_SUBTITLE" = "Please enter the 6-digit verificiation code sent to your email: %@";
+"RESEND_CODE" = "Resend code";
+"RESEND_CODE_IN" = "Resend code in %@";
+"OPEN_EMAIL_APP" = "Open email app";
+
+// No Domains to mint
+"NO_DOMAINS_TO_MINT_MESSAGE" = "Sorry, you don’t have any domains to mint";
+"IMPORT_WALLET" = "Import wallet";
+
+// Mint domains
+"SELECT_ALL" = "Select all";
+"DESELECT_ALL" = "Deselect all";
+"MINT_DOMAINS_TO" = "Mint domains to";
+"SET_AS_MY_PRIMARY_DOMAIN" = "Display on the home screen";
+"WHAT_PRIMARY_DOMAIN_INFO_TITLE" = "Home screen domain";
+"WHAT_PRIMARY_DOMAIN_INFO_SUBTITLE" = "The domain that you can manage from the Unstoppable app home screen.";
+"MINT_NTF_DOMAIN_HELP_TITLE" = "Minting your Web3 Domain";
+"MINT_NTF_DOMAIN_HELP_TEXT" = "Minting is the process of registering a domain onto the blockchain via your domain vault or cryptocurrency wallet to gain full custody of the domain. Once minted, neither Unstoppable Domains nor any other entity is able to make changes to the domain or take it back from you.";
+
+// Choose primary domain
+"CHOOSE_PRIMARY_DOMAIN_TITLE" = "Personalize your\nhome screen";
+"CHOOSE_PRIMARY_DOMAIN_SUBTITLE" = "Choose a domain to manage from the Unstoppable app home screen.";
+"CHANGE_PRIMARY_DOMAIN_TITLE" = "Personalize your\nhome screen";
+
+// Minting in progress
+"MINTING_IN_PROGRESS_TITLE" = "Minting in progress";
+"MINTING_IN_PROGRESS_SUBTITLE" = "Please wait while your domain registers on the blockchain.";
+"VIEW_TRANSACTION" = "View transaction";
+"MINTING_SUCCESSFUL" = "Minting successful";
+"NOTIFY_ME_WHEN_FINISHED" = "Notify me when finished";
+"WE_WILL_NOTIFY_YOU_WHEN_FINISHED" = "We'll notify you when finished";
+
+// Change primary domain
+"SET_AS_PRIMARY_DOMAIN" = "Set on home screen";
+"CHANGE_PRIMARY_DOMAIN_PULLUP_TITLE" = "Manage %@ from the home screen ";
+"CHANGE_PRIMARY_DOMAIN_PULLUP_SUBTITLE" = " You can change this anytime in settings.";
+
+// Permissions
+"WARNING" = "Warning";
+"SETTINGS" = "Settings";
+"ERR_CAMERA_PERMISSIONS" = "You have no permissions to access camera. Please, enable access to the camera in the settings.";
+"ERR_PHOTO_LIBRARY_PERMISSIONS" = "You have no permissions to access photo library. Please, enable access to the photo library in the settings.";
+"ERR_NOTIFICATIONS_PERMISSIONS" = "You have no permissions to receive push notifications. Please, enable push notifications in the settings.";
+
+// Scan QR Code
+"SCAN_QR_CODE_TITLE" = "Scan QR code";
+"WALLET_CONNECT_COMPATIBLE" = "Connect via WalletConnect";
+"SCAN_TO_PAY_OR_CONNECT" = "Connect to apps, metaverses, and games";
+"CAMERA_ACCESS_NEEDED_TO_SCAN" = "Camera access needed to scan.";
+"ENABLE_CAMERA_ACCESS" = "Enable camera access";
+"CAMERA_NOT_AVAILABLE" = "Camera unavailable.";
+"SHOW_WALLET_BALANCE_IN" = "Show balance in";
+"SHOW_OHTER_N" = "Show other %@";
+
+// Select Web3 Domain
+"SELECT_NFT_DOMAIN_TITLE" = "Select Web3 domain";
+
+// Connected apps list
+"CONNECTED_APPS_TITLE" = "Connected apps";
+"DISCONNECT" = "Disconnect";
+"SUPPORTED_NETWORKS" = "Supported networks";
+"CONNECTED_APP_DOMAIN_INFO_TITLE" = "%@ connected to %@";
+"CONNECTED_APP_DOMAIN_INFO_SUBTITLE" = "On %@";
+"CONNECTED_APP_NETWORKS_INFO_TITLE" = "Unstoppable app supports Ethereum and Polygon networks";
+
+// Sign transactions
+"MESSAGE_SIGN_REQUEST_TITLE" = "Message signing request";
+"PAYMENT_SIGN_REQUEST_TITLE" = "Transaction request";
+"CONNECT_WALLET_SIGN_REQUEST_TITLE" = "Connect to %@";
+"BALANCE" = "Balance";
+"ESTIMATED_FEE" = "Estimated fee";
+"INSUFFICIENT_BALANCE" = "Insufficient balance";
+"NETWORK" = "Network";
+
+"WALLET_VERIFIED_INFO_TITLE" = "Verified";
+"WALLET_VERIFIED_INFO_DESCRIPTION" = "This application has integrated with Unstoppable Domains.";
+
+"NETWORK_NOT_SUPPORTED_INFO_TITLE" = "Network not supported";
+"NETWORK_NOT_SUPPORTED_INFO_DESCRIPTION" = "Change your network to Ethereum or Polygon to sign messages and transactions.";
+
+"WC_REQUEST_NOT_SUPPORTED_INFO_TITLE" = "Request not supported";
+"WC_REQUEST_NOT_SUPPORTED_INFO_DESCRIPTION" = "Sorry, this request type is not supported.";
+
+"NETWORK_GAS_FEE_INFO_TITLE" = "%@ gas fee";
+"NETWORK_GAS_FEE_INFO_DESCRIPTION" = "A gas fee is required to conduct a transaction on the %@ network.";
+
+"SIGN_TRANSACTION_FAILED_ALERT_TITLE" = "Connection failed";
+"SIGN_TRANSACTION_FAILED_ALERT_DESCRIPTION" = "Something went wrong! Please try again later.";
+
+"WALLET_CONNECT_INVALID_QR_CODE_ALERT_TITLE" = "Unrecognized QR Code";
+"WALLET_CONNECT_INVALID_QR_CODE_ALERT_DESCRIPTION" = "Sorry, this QR code could not be recognized.";
+
+"WALLET_CONNECT_LOW_BALANCE_ALERT_DESCRIPTION" = "Please add funds and try again";
+
+// Offline
+"YOU_ARE_OFFLINE_PULLUP_TITLE" = "You are offline";
+"YOU_ARE_OFFLINE_PULLUP_MESSAGE" = "%@ is unavailable when you are offline. Please check your connection and try again.";
+"UNAVAILABLE_WHEN_OFFLINE" = "Unavailable when offline";
+
+// Update required
+"APP_UPDATE_REQUIRED_TITLE" = "Update required";
+"APP_UPDATE_REQUIRED_SUBTITLE" = "This version of the app is no longer supported. Install the latest version.";
+
+// Bridge zil to polygon
+"BRIDGE_DOMAIN_TO_POLYGON" = "Bridge domain to Polygon";
+"DOMAINS_ON_ZIL_NOT_SUPPORTED_INFO_TITLE" = "Domains minted on Zilliqa no longer supported";
+"DOMAINS_ON_ZIL_NOT_SUPPORTED_INFO_MESSAGE" = "Upgrade your domain to Polygon to update domain records for free.";
+"FREE_UPGRADE_TO_POLYGON" = "Free upgrade to Polygon";
+"FREE_UPGRADE_TO_POLYGON_SUBTITLE" = "Once upgraded, you'll be able to update domain records on Polygon for free.";
+"UPGRADE_ZIL_TO_POLYGON_STEP_1" = "Login to unstoppabledomains.com";
+"UPGRADE_ZIL_TO_POLYGON_STEP_2" = "Click on “My Domains”";
+"UPGRADE_ZIL_TO_POLYGON_STEP_3" = "Select the domain you want to manage";
+"UPGRADE_ZIL_TO_POLYGON_STEP_4" = "Click the “Upgrade to Polygon” button to get started";
+
+// Minting not available
+"MINTING_NOT_AVAILABLE_PULL_UP_TITLE" = "We’ll be back soon";
+"MINTING_NOT_AVAILABLE_PULL_UP_MESSAGE" = "Minting is temporarily unavailable for scheduled maintenance. Please try again later.";
+
+// Share domain image
+"SHARE_LINK" = "Share link";
+"SAVE_AS_IMAGE" = "Save as image";
+"SAVE_AS_IMAGE_SUBHEAD" = "Wallpaper, Card, Watchface";
+"WALLPAPER" = "Wallpaper";
+"NFT_ID" = "NFT ID";
+"CARD" = "Card";
+"WATCHFACE" = "Watchface";
+"YOU_MUST_ADD_A_PROFILE_PICTURE" = "Add profile picture via the website";
+
+// WC Friendly reminder
+"WC_FRIENDLY_REMINDER_TITLE" = "Friendly reminder";
+"WC_FRIENDLY_REMINDER_MESSAGE" = "Make sure you're connecting to the right app by double checking the website URL.";
+
+// External wallet disconnected
+"WC_EXTERNAL_WALLET_DISCONNECTED_MESSAGE" = "Your wallet: %@ was disconnected from %@";
+
+// Switch to external wallet
+"WC_SWITCH_TO_EXTERNAL_WALLET_TITLE" = "Switch to %@";
+"WC_SWITCH_TO_EXTERNAL_WALLET_MESSAGE" = "Confirm updates with your external wallet and return to the Unstoppable app.";
+"WC_SWITCH_TO_EXTERNAL_WALLET_OPEN" = "Open %@";
+
+// Security wall
+"SECURITY_WALL_MESSAGE" = "Please enable %@ in settings";
+"GO_TO_SETTINGS" = "Go to settings";
+
+// Reverse resolution
+"SETUP_REVERSE_RESOLUTION" = "Set up reverse resolution";
+"SETUP_REVERSE_RESOLUTION_DESCRIPTION" = "Display %@ instead of your wallet address %@ when connecting to Web3 applications.";
+"DOMAINS_WITH_REVERSE_RESOLUTION_HEADER" = "Domains with reverse resolution";
+"ALL_DOMAINS" = "All domains";
+"REVERSE_RESOLUTION_INFO_TITLE" = "Reverse resolution";
+"REVERSE_RESOLUTION_INFO_SUBTITLE" = "Display your domain name instead of your wallet address when connecting to Web3 applications.";
+"REVERSE_RESOLUTION" = "Reverse resolution";
+"CURRENTLY_SET" = "Currently set";
+"SELECT_DOMAIN_FOR_REVERSE_RESOLUTION" = "Set up reverse resolution";
+"SELECT_DOMAIN_FOR_REVERSE_RESOLUTION_DESCRIPTION" = "Display your domain name instead of your wallet address when connecting to Web3  applications.";
+"CHANGE_DOMAIN_FOR_REVERSE_RESOLUTION" = "Manage reverse resolution";
+"REVERSE_RESOLUTION_SETUP_IN_PROGRESS_TITLE" = "Reverse resolution setup in progress";
+"REVERSE_RESOLUTION_SETUP_IN_PROGRESS_SUBTITLE" = "Please wait while your domain is set up with reverse resolution.";
+"WHAT_DOES_RESOLUTION_MEAN_WHAT" = "What does";
+"WHAT_DOES_RESOLUTION_MEAN_MEAN" = "mean?";
+"SET_REVERSE_RESOLUTION" = "Set reverse resolution";
+"SHOW_N_MORE" = "Show %i more";
+"REVERSE_RESOLUTION_UNAVAILABLE_WHILE_RECORDS_UPDATING" = "Unavailable while records are updating";
+
+// Deprecated TLD
+"TLD_HAS_BEEN_DEPRECATED" = ".%@ has been deprecated";
+"TLD_DEPRECATED_REFUND_DESCRIPTION" = "We’ve deprecated .%@, so we’re giving you a 3x refund.";
+
+// Domain profile
+"ADD_COVER" = "Add cover";
+"QR_CODE" = "QR code";
+"PUBLIC_PROFILE" = "Public profile";
+"UPLOAD_PHOTO" = "Upload photo";
+"CHANGE_PHOTO" = "Change photo";
+"REMOVE_PHOTO" = "Remove photo";
+"REPLACE_WITH_PHOTO" = "Replace with photo";
+"DOMAIN_PROFILE_SECTION_SOCIALS_NAME" = "Socials";
+"DOMAIN_PROFILE_SECTION_RECORDS_NAME" = "Crypto";
+"DOMAIN_PROFILE_SECTION_BADGES_NAME" = "Badges";
+"DOMAIN_PROFILE_SECTION_WEB3_WEBSITE_NAME" = "Web3 Website";
+"DOMAIN_PROFILE_SECTION_METADATA_NAME" = "Profile metadata";
+"COPY_DOMAIN" = "Copy domain";
+"ABOUT_PROFILES" = "About profiles";
+"MINTED_ON_CHAIN" = "Minted on %@";
+"MINTED_ON_POLYGON_DESCRIPTION" = "Your domain is managed on Polygon. Enjoy unlimited profile updates with no gas fees.";
+"MINTED_ON_ETHEREUM_DESCRIPTION" = "Your domain is managed on Ethereum. Bridge to Polygon to enjoy unlimited profile updates with no gas fees. ";
+"DOMAIN_PROFILE_INFO_TITLE" = "Web3 Profile";
+"DOMAIN_PROFILE_CREATE_INFO_TITLE" = "Create your Web3 profile";
+"DOMAIN_PROFILE_INFO_DESCRIPTION" = "Your domain is your self-sovereign identity. You control what information you share across apps, metaverse, and games.";
+"PROFILE_INFO_CAROUSEL_ITEM_PORTABLE_IDENTITY" = "Portable identity";
+"PROFILE_INFO_CAROUSEL_ITEM_BADGES" = "Badges";
+"PROFILE_INFO_CAROUSEL_ITEM_REWARDS" = "Rewards";
+"PROFILE_INFO_CAROUSEL_ITEM_AVATARS" = "Avatars";
+"PROFILE_INFO_CAROUSEL_ITEM_VERIFY_SOCIALS" = "Verify socials";
+"PROFILE_INFO_CAROUSEL_ITEM_PUBLIC_PROFILE" = "Public profile";
+"PROFILE_INFO_CAROUSEL_ITEM_DATA_SHARING" = "Data sharing";
+"PROFILE_INFO_CAROUSEL_ITEM_ROUTE_PAYMENTS" = "Route payments";
+"PROFILE_INFO_CAROUSEL_ITEM_REPUTATION" = "Reputation";
+"PROFILE_INFO_CAROUSEL_ITEM_PERMISSIONING" = "Permissioning";
+"PROFILE_PICTURE" = "Profile Picture";
+"COVER_PHOTO" = "Cover Photo";
+"PROFILE_NAME" = "Name";
+"PROFILE_BIO" = "Bio";
+"PROFILE_LOCATION" = "Location";
+"PROFILE_WEBSITE" = "Website";
+"PROFILE_EDIT_ITEM" = "Edit %@";
+"PROFILE_CLEAR_ITEM" = "Remove %@";
+"PROFILE_OPEN_ITEM" = "Open %@";
+"PROFILE_ADD_N" = "Add %@";
+"DOMAIN_PROFILE_INVALID_WEBSITE_ERROR" = "Enter a valid URL";
+"PROFILE_SOCIALS_EDIT" = "Edit account";
+"PROFILE_SOCIALS_OPEN" = "Open link";
+"PROFILE_SOCIALS_REMOVE" = "Remove account";
+"PROFILE_SOCIALS_FORMAT_ERROR_MESSAGE" = "Invalid format";
+"SOCIALS_VERIFY_ACCOUNT_TITLE" = "Verify account:";
+"SOCIALS_VERIFY_ACCOUNT_DESCRIPTION" = "Sign into your %@ account to verify ownership and link to your profile.";
+"PROFILE_BADGES_FOOTER" = "Synced from domain owner wallet: %@";
+"PROFILE_BADGE_EXPLORE_WEB3_TITLE_SHORT" = "Explore Web3";
+"PROFILE_BADGE_EXPLORE_WEB3_DESCRIPTION_SHORT" = "& collect badges";
+"PROFILE_BADGE_EXPLORE_WEB3_TITLE_FULL" = "Explore Web3 & collect badges";
+"PROFILE_BADGE_EXPLORE_WEB3_DESCRIPTION_FULL" = "Showcase your Web3 achievements including NFT ownership, domain names, and more by exploring and interacting with web3 dapps.";
+"PROFILE_BADGES_COMING_SOON_DESCRIPTION" = "In the meantime, refresh your badges on the Unstoppable Domains website.";
+"HUMANITY_CHECK_VERIFIED" = "Humanity Check verified";
+"PROFILE_METADATA_FOOTER" = "This information is only shared with apps, metaverses, and games when you choose to do so.";
+"PROFILE_OPEN_WEBSITE" = "Open website";
+"PROFILE_IMAGE_TOO_LARGE_TO_UPLOAD_TITLE" = "Image too large to upload";
+"PROFILE_IMAGE_TOO_LARGE_TO_UPLOAD_DESCRIPTION" = "Please select another photo under 5MB.";
+"PROFILE_IMAGE_BAD_DESCRIPTION" = "Please select another photo.";
+"PROFILE_UPDATING_RECORDS_NOTIFY_WHEN_FINISHED_DESCRIPTION" = "Get notified when your on-chain record updates register on the blockchain.";
+"PROFILE_UPDATING_RECORDS_WILL_NOTIFY_WHEN_FINISHED_DESCRIPTION" = "Please wait while your on-chain record updates register on the blockchain.";
+"PROFILE_LOADING_FAILED_TITLE" = "Failed to fetch profile data";
+"PROFILE_LOADING_FAILED_DESCRIPTION" = "Please refresh to continue editing your profile.";
+"PROFILE_VIEW_OFFLINE_PROFILE" = "View offline profile";
+"PROFILE_UPDATE_FAILED" = "Update failed";
+"PROFILE_SOME_UPDATES_FAILED" = "Some updates failed";
+"PROFILE_UPDATING_PROFILE" = "Updating profile";
+"PROFILE_UPDATING_NFT_PFP_NOT_SUPPORTED" = "Updating NFT profile pictures is currently not supported on mobile.";
+"PROFILE_TRY_UPDATE_PROFILE_LATER" = "Update failed. Please try again later.";
+"PROFILE_SIGN_EXTERNAL_WALLET_REQUEST_TITLE" = "Access your profile";
+"PROFILE_SIGN_EXTERNAL_WALLET_REQUEST_DESCRIPTION" = "For the best profile management experience, we recommend importing your wallet.";
+"PROFILE_SIGN_MESSAGE_ON_EXTERNAL_WALLET" = "Sign message on %@";
+"PROFILE_VIEW_NFT" = "View NFT";
+"PROFILE_VIEW_PHOTO" = "View photo";
+"PROFILE_CHANGE_NFT" = "Change NFT";
+"PROFILE_VIEW_ON_OPEN_SEA" = "View on OpenSea";
+"PROFILE_MAKE_PRIVATE" = "Make private";
+"PROFILE_MAKE_PUBLIC" = "Make public";
+"PROFILE_SET_ACCESS_ACTION_DESCRIPTION" = "Control the access people have in viewing your data.";
+"SHARE_PROFILE" = "Share profile";
+"PROFILE_SHOWCASE_PROFILE_TITLE" = "Showcase your profile\n%@";
+"PROFILE_SHOWCASE_PROFILE_DESCRIPTION" = "Share with your friends and followers.";
+"DOMAIN_PROFILE_ACCESS_INFO_TITLE" = "Who can view your data?";
+"DOMAIN_PROFILE_ACCESS_INFO_DESCRIPTION" = "Control the data displayed on your public profile and what is only visible to you and allowed apps.";
+"PROFILE_SOCIALS_EMPTY_MESSAGE" = "Manage your social links on the Unstoppable Domains website.";

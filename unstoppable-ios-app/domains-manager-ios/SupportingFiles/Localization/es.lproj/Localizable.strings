@@ -1,0 +1,116 @@
+/* 
+  Localizable.strings
+  domains-manager-ios
+
+  Created by Roman Medvid on 11.11.2020.
+  SPANISH
+*/
+
+"MOBILE_APP_NAME" = "Unstoppable: NFT ID";
+"MOBILE_APP_DESCRIPTION" = "Your identity and login for Web3";
+
+"UD_COMPANY_NAME" = "Unstoppable Domains";
+"DEFAULT_WALLET_NAME" = "Unstoppable App";
+
+/* HOME SCREEN */
+
+"MINT_PURCHASED_DOMAINS" = "(TO TRANSLATE)Mint Domains";
+"MY_DOMAIN_TITLE" = "Dominios Mios";
+"YOU_HAVE" = "Tu tienes";
+"DOMAIN" = "domino";
+"DOMAINS" = "dominios";
+
+/* MINT DOMAINS  -- TO TRANSLATE */
+"MINT_DOMAINS_TITLE" = "(TO TRANSLATE)Mint Domains";
+
+"YOU_CAN_MINT_THESE_DOMAINS" = "(TO TRANSLATE)You can mint these domains";
+"MINT_SELECTED_DOMAINS" = "(TO TRANSLATE)Mint Selected Domains";
+"MINT_DOMAINS_TO_CUSTOM_WALLET" = "(TO TRANSLATE)Mint domains to custom wallet";
+"TRY_AGAIN_LATER" = "(TO TRANSLATE)";
+"FAILED_TO_PROCEED" = "(TO TRANSLATE)";
+"MINTING_FAILED_DUE_TO_ERROR" = "(TO TRANSLATE)Minting failed due to some error";
+
+"HELP_VERIFY_EMAIL" = "(TO TRANSLATE)";
+
+"WE_SENT_CODE" = "(TO TRANSLATE)Verification code sent to";
+
+"NO_DOMAINS_TO_MINT" = "(TO TRANSLATE)No domains to mint";
+
+/* MENU -- TO TRANSLATE */
+"MY_DOMAINS_ITEM" = "My Domains";
+"WALLETS_ITEM" = "Wallets";
+"SETTINGS_ITEM" = "Settings";
+"BACKUP_ITEM" = "Backup App";
+
+/* DOMAIN DETAILS */
+"DOMAIN_TITLE" = "Dominio !!";
+"EDIT_BUTTON_TITLE" = "-";
+"DONE_BUTTON_TITLE" = "-";
+"OWNERSHIP_TRANSFERRED_TITLE" = "-";
+"OWNERSHIP_TRANSFERRED_DESCRIPTION" = "-";
+
+/* WALLETS LIST */
+"NO_WALLETS_TO_IMPORT" = "(To Transale)No wallets to import";
+
+/* WALLET DETAILS */
+"READ-ONLY_WALLET_STATE" = "(TO TRANSLATE)Read-only";
+"EXTERNAL-LINKED_WALLET_STATE" = "(TO TRANSLATE)External";
+
+/* TRANSFER DOMAIN */
+"TRANSFER_TITLE" = "Transferio";
+
+/* WALLET ACTIONS MENU  -- TO TRANSLATE */
+"ACTIONS_BUTTON_TITLE" = "Acciones";
+"SHOW_MINTED_DOMAINS_ITEM" = "(TRANSLATE)Show Minted Domains";
+"RENAME_ITEM" = "Rename Wallet";
+"DISCONNECT_ITEM" = "Disconnect Wallet";
+
+"WALLET_ALREADY_CONNECTED_ERROR" = "This wallet is already connected";
+"CHECK_AND_RE-ENTER_ERROR" = "Please check and enter correctly";
+
+
+/* PAYMENTS */
+"TRANSACTION_FEE_TITLE" = "TITULO !!!";
+"TRANSACTION_FEE_SUBTITLLE" = "SUBTITULO !";
+"TRANSACTION_FEE_DESCRIPTION" = "EXPLICATIVO !!!";
+"WHAT_ARE_GAS_FEES_BUTTON_TITLE" = "¿Qué son las tarifas de gas?";
+"CTA_BUTTON_TITLE" = "(TO TRANSLATE) Agree and Proceed";
+"CANCEL_BUTTON_TITLE" = "(TO TRANSLATE)Cancel update";
+"UD_FEE_LABEL" = "(TO TRANSLATE)Unstoppable Domains Fee";
+"ETH_GAS_FEE_LABEL" = "(TO TRANSLATE)Ethereum Gas Fee";
+
+/* ERRORS */
+
+"badResponseOrStatusCode" = "(TO TRANSLATE)Bad Response Or Status Code";
+"parsingTxsError" = "(TO TRANSLATE)Failed to parse transactions data in a response from the server";
+"requestFailedToBeProcessed" = "(TO TRANSLATE)Response to /getMessagesToSign failed to parse";
+
+"paymentNotConfirmed" = "Payment to cover the transaction fee was not confirmed !!!!";
+"applePayFailed"  = "(TO TRANSLATE)Apple Pay failed to handle the payment";
+"applePayNotSupported" = "(TO TRANSLATE)Apple Pay is not supported. Try to enable Apple Pay on this phone and then try again";
+"failedToFetchClientSecret" = "(TO TRANSLATE)The app could not communicate with Unstoppable Domains servers. Please try again later";
+"fetchingTxCostFailedInternet" = "(TO TRANSLATE)Failure to fetch the price for the transaction due to bad connection. Try again later";
+"fetchingTxCostFailedParsing" = "(TO TRANSLATE)Failure to fetch the price for the transaction due to wrong data. Try again later";
+
+// NetworkLayerError
+"invalidTxCostError" = "(SPANISH) Invalido.";
+
+/* BACKUP WALLET */
+"SHOW_PRIVATE_KEY" = "(TO TRANSLATE)Show Private Key";
+"SHOW_MNEMONIC_PHRASE" = "(TO TRANSLATE)Show Seed Phrase";
+
+/* ONBOARDING */
+// Tutorial screens
+"I_ALREADY_HAVE_A_WALLET" = "(TO TRANSLATE)I already have a wallet";
+"CREATE_A_NEW_WALLET" = "(TO TRANSLATE)Create a new wallet";
+"BUY_DOMAIN" = "(TO TRANSLATE)Buy domain";
+
+"TUTORIAL_SCREEN_1_NAME" = "(TO TRANSLATE)Your identity and login for Web3";
+"TUTORIAL_SCREEN_2_NAME" = "(TO TRANSLATE)A name to pay and get paid";
+"TUTORIAL_SCREEN_3_NAME" = "(TO TRANSLATE)Manage anyway you want";
+
+"TUTORIAL_SCREEN_1_DESCRIPTION" = "(TO TRANSLATE) Seamlessly and securely managed at your fingertips.";
+"TUTORIAL_SCREEN_2_DESCRIPTION" = "(TO TRANSLATE) Combine 275 crypto wallet addresses into a single, easy-to-read name";
+"TUTORIAL_SCREEN_3_DESCRIPTION" = "(TO TRANSLATE) Connect your favorite wallet to seamlessly manage your Web3 identity.";
+
+"CREATING_WALLET" = "Creating Wallet...";

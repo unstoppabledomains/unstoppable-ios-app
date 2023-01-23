@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="TransactionInProgressViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="collectionView" destination="4JX-N9-gEk" id="9wt-Wv-tQO"/>
+                <outlet property="gradientView" destination="a5Y-Ii-wsR" id="dkT-KL-fDM"/>
+                <outlet property="skipButtonContainerView" destination="Zrb-c5-WTe" id="x2o-Yb-iMb"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+                <outlet property="viewTransactionButton" destination="9Ac-7M-MVR" id="14Y-fn-9da"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="4JX-N9-gEk">
+                    <rect key="frame" x="0.0" y="103" width="414" height="729"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Moi-3m-Wz0">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zrb-c5-WTe">
+                    <rect key="frame" x="0.0" y="784" width="414" height="112"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a5Y-Ii-wsR" customClass="UDGradientCoverView" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="16"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="qRZ-cq-jeW"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OB4-6r-TUA">
+                            <rect key="frame" x="0.0" y="16" width="414" height="96"/>
+                            <color key="backgroundColor" name="backgroundDefault"/>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Ac-7M-MVR" customClass="RaisedTertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="16" y="16" width="382" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="xem-Aq-gvl"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <connections>
+                                <action selector="viewTransactionButtonPressed:" destination="-1" eventType="touchUpInside" id="WR9-EM-x5o"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="a5Y-Ii-wsR" secondAttribute="trailing" id="Elo-Ci-WaX"/>
+                        <constraint firstItem="9Ac-7M-MVR" firstAttribute="top" secondItem="a5Y-Ii-wsR" secondAttribute="bottom" id="Mp1-10-eEr"/>
+                        <constraint firstItem="a5Y-Ii-wsR" firstAttribute="top" secondItem="Zrb-c5-WTe" secondAttribute="top" id="SUc-V8-utJ"/>
+                        <constraint firstItem="a5Y-Ii-wsR" firstAttribute="leading" secondItem="Zrb-c5-WTe" secondAttribute="leading" id="Sel-hp-WT6"/>
+                        <constraint firstItem="OB4-6r-TUA" firstAttribute="leading" secondItem="Zrb-c5-WTe" secondAttribute="leading" id="Sqh-fZ-cI5"/>
+                        <constraint firstItem="9Ac-7M-MVR" firstAttribute="centerX" secondItem="Zrb-c5-WTe" secondAttribute="centerX" id="WnT-ep-pcB"/>
+                        <constraint firstAttribute="bottom" secondItem="OB4-6r-TUA" secondAttribute="bottom" id="e2Q-g9-H1e"/>
+                        <constraint firstItem="OB4-6r-TUA" firstAttribute="top" secondItem="9Ac-7M-MVR" secondAttribute="top" id="eYS-3B-N54"/>
+                        <constraint firstAttribute="trailing" secondItem="OB4-6r-TUA" secondAttribute="trailing" id="lD9-cw-30g"/>
+                        <constraint firstItem="9Ac-7M-MVR" firstAttribute="leading" secondItem="Zrb-c5-WTe" secondAttribute="leading" constant="16" id="tzf-9Z-719"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="4JX-N9-gEk" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="AUK-OJ-Cdr"/>
+                <constraint firstItem="Zrb-c5-WTe" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="Ac5-yN-u0l"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="9Ac-7M-MVR" secondAttribute="bottom" constant="14" id="CD8-ee-Nik"/>
+                <constraint firstItem="Zrb-c5-WTe" firstAttribute="top" secondItem="4JX-N9-gEk" secondAttribute="bottom" constant="-48" id="Sb1-oj-Z2U"/>
+                <constraint firstAttribute="bottom" secondItem="Zrb-c5-WTe" secondAttribute="bottom" id="mQv-lQ-IEE"/>
+                <constraint firstItem="Zrb-c5-WTe" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="raO-qQ-3j7"/>
+                <constraint firstItem="4JX-N9-gEk" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="sF2-65-SMY"/>
+                <constraint firstItem="4JX-N9-gEk" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="55" id="t8N-pa-jN0"/>
+            </constraints>
+            <point key="canvasLocation" x="137.68115942028987" y="152.67857142857142"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="backgroundDefault">
+            <color red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="CarouselCollectionViewCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="261" height="50"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="261" height="50"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WdA-Wq-gn3">
+                        <rect key="frame" x="0.0" y="0.0" width="261" height="50"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="5v5-Dd-sEb">
+                                <rect key="frame" x="12" y="14.999999999999998" width="237" height="20.333333333333329"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wik-r2-RPB">
+                                        <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                        <color key="tintColor" name="foregroundSecondary"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="wik-r2-RPB" secondAttribute="height" id="RHe-ld-eAI"/>
+                                            <constraint firstAttribute="width" constant="20" id="pYU-No-mA4"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c0N-vm-Wd0">
+                                        <rect key="frame" x="28" y="0.0" width="209" height="20.333333333333332"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" name="backgroundSubtle"/>
+                        <constraints>
+                            <constraint firstItem="5v5-Dd-sEb" firstAttribute="centerX" secondItem="WdA-Wq-gn3" secondAttribute="centerX" id="NbY-Kh-yxZ"/>
+                            <constraint firstItem="5v5-Dd-sEb" firstAttribute="centerY" secondItem="WdA-Wq-gn3" secondAttribute="centerY" id="s3g-jU-15z"/>
+                            <constraint firstItem="5v5-Dd-sEb" firstAttribute="leading" secondItem="WdA-Wq-gn3" secondAttribute="leading" constant="12" id="zHo-XE-xX9"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                <real key="value" value="16"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="WdA-Wq-gn3" secondAttribute="trailing" id="Cul-5q-FBt"/>
+                <constraint firstItem="WdA-Wq-gn3" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Yb5-kj-Mws"/>
+                <constraint firstAttribute="bottom" secondItem="WdA-Wq-gn3" secondAttribute="bottom" id="fu2-MD-2sJ"/>
+                <constraint firstItem="WdA-Wq-gn3" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="k7K-n0-yhE"/>
+            </constraints>
+            <size key="customSize" width="261" height="50"/>
+            <connections>
+                <outlet property="iconImageView" destination="wik-r2-RPB" id="Xq1-ua-Zvi"/>
+                <outlet property="textLabel" destination="c0N-vm-Wd0" id="sEB-3F-vU3"/>
+            </connections>
+            <point key="canvasLocation" x="19.23076923076923" y="40.521327014218009"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="backgroundSubtle">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.039999999105930328" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="foregroundSecondary">
+            <color red="0.47843137254901963" green="0.47843137254901963" blue="0.52156862745098043" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

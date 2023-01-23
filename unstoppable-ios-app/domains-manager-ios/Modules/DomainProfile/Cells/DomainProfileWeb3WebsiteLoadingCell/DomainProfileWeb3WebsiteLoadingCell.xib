@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="DomainProfileWeb3WebsiteLoadingCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="326" height="107"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="326" height="107"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BiH-xr-Bdi">
+                        <rect key="frame" x="0.0" y="0.0" width="326" height="107"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="DBp-Gg-0tE">
+                                <rect key="frame" x="16" y="16" width="294" height="75"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VQF-Dd-cgP" customClass="LoadingIndicatorView" customModule="domains_manager_ios" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="5.6666666666666714" width="120" height="64"/>
+                                        <color key="backgroundColor" name="backgroundSubtle"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="VQF-Dd-cgP" secondAttribute="height" multiplier="120/64" id="oPg-3g-F9u"/>
+                                            <constraint firstAttribute="height" priority="999" constant="64" id="r9T-1H-uQH"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <real key="value" value="12"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                <real key="value" value="12"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="n1l-P7-dJq">
+                                        <rect key="frame" x="136" y="17.666666666666664" width="158" height="40"/>
+                                        <subviews>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6t5-e8-vzo" customClass="LoadingIndicatorView" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="0.0" width="126" height="16"/>
+                                                <color key="backgroundColor" name="backgroundSubtle"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" priority="750" constant="16" id="XyJ-Vu-oUu"/>
+                                                    <constraint firstAttribute="width" priority="750" constant="126" id="ibW-9T-KCp"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                        <real key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                        <real key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RFZ-yn-Od8" customClass="LoadingIndicatorView" customModule="domains_manager_ios" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="24" width="158" height="16"/>
+                                                <color key="backgroundColor" name="backgroundSubtle"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="168" id="2Ns-NO-br3"/>
+                                                    <constraint firstAttribute="height" priority="750" constant="16" id="5iG-87-wb2"/>
+                                                    <constraint firstAttribute="width" priority="750" constant="160" id="Xwa-vn-6ee"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                        <real key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                        <real key="value" value="8"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" name="backgroundOverlay"/>
+                        <constraints>
+                            <constraint firstItem="DBp-Gg-0tE" firstAttribute="leading" secondItem="BiH-xr-Bdi" secondAttribute="leading" constant="16" id="2yQ-Oi-OEC"/>
+                            <constraint firstItem="DBp-Gg-0tE" firstAttribute="centerY" secondItem="BiH-xr-Bdi" secondAttribute="centerY" id="54S-dR-17a"/>
+                            <constraint firstAttribute="bottom" secondItem="DBp-Gg-0tE" secondAttribute="bottom" constant="16" id="KRU-DT-e0s"/>
+                            <constraint firstAttribute="trailing" secondItem="DBp-Gg-0tE" secondAttribute="trailing" constant="16" id="Khi-Pe-Be8"/>
+                            <constraint firstItem="DBp-Gg-0tE" firstAttribute="top" secondItem="BiH-xr-Bdi" secondAttribute="top" constant="16" id="TsA-9J-UxT"/>
+                            <constraint firstAttribute="height" priority="750" constant="54" id="Y96-3y-GVA"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="BiH-xr-Bdi" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="A6f-Pf-sMh"/>
+                <constraint firstAttribute="trailing" secondItem="BiH-xr-Bdi" secondAttribute="trailing" id="irm-xn-isZ"/>
+                <constraint firstAttribute="bottom" secondItem="BiH-xr-Bdi" secondAttribute="bottom" id="nLO-ag-jE2"/>
+                <constraint firstItem="BiH-xr-Bdi" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="qcC-NW-gNc"/>
+            </constraints>
+            <size key="customSize" width="326" height="107"/>
+            <connections>
+                <outlet property="containerView" destination="BiH-xr-Bdi" id="Get-Up-ZgX"/>
+                <outlet property="imageLoadingView" destination="VQF-Dd-cgP" id="63j-9P-owI"/>
+                <outletCollection property="loadingIndicatorViews" destination="RFZ-yn-Od8" collectionClass="NSMutableArray" id="X9m-b2-UUE"/>
+                <outletCollection property="loadingIndicatorViews" destination="6t5-e8-vzo" collectionClass="NSMutableArray" id="0LK-PK-smH"/>
+                <outletCollection property="loadingIndicatorViews" destination="VQF-Dd-cgP" collectionClass="NSMutableArray" id="g13-TT-2BW"/>
+            </connections>
+            <point key="canvasLocation" x="349.61832061068702" y="21.47887323943662"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="backgroundOverlay">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="backgroundSubtle">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.039999999105930328" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

@@ -1,0 +1,27 @@
+/* 
+  Localizable.strings
+  domains-manager-ios
+
+  Created by Oleg Kuplin on 22.07.2022.
+  
+*/
+"NOTIFICATION_MINTING_FINISHED" = "✨ %@ minted successfully";
+"NOTIFICATION_MINTING_N_FINISHED" = "✨ %i domains minted successfully";
+
+"NOTIFICATION_DOMAIN_TRANSFERRED_TITLE" = "Domain received";
+"NOTIFICATION_DOMAIN_TRANSFERRED" = "📲 %@ has been transferred to your domain vault";
+
+"NOTIFICATION_REVERSE_RESOLUTION_SET" = "👤 Your %@ address is set to resolve to %@";
+"NOTIFICATION_REVERSE_RESOLUTION_REMOVED" = "👤 Your %@ address no longer resolves to %@";
+
+"NOTIFICATION_RECORDS_UPDATED" = "🔄 Your records have been updated successfully";
+"NOTIFICATION_RECORDS_UPDATED_SINGLE_ADDED" = "✅ Your %@ address has been added";
+"NOTIFICATION_RECORDS_UPDATED_SINGLE_REMOVED" = "❎ Your %@ address has been removed";
+"NOTIFICATION_RECORDS_UPDATED_SINGLE_UPDATED" = "🔄 Your %@ address has been updated";
+"NOTIFICATION_RECORDS_UPDATED_MULTIPLE_ADDED" = "✅ Your %i crypto addresses have been added";
+"NOTIFICATION_RECORDS_UPDATED_MULTIPLE_REMOVED" = "❎ Your %i crypto addresses have been removed";
+"NOTIFICATION_RECORDS_UPDATED_MULTIPLE_UPDATED" = "🔄 Your %i crypto addresses have been updated";
+
+"NOTIFICATION_WALLET_CONNECT_REQUEST" = "✍️ New request from %@";
+
+"NOTIFICATION_DOMAIN_PROFILE_UPDATED" = "📝 Your profile has been updated";

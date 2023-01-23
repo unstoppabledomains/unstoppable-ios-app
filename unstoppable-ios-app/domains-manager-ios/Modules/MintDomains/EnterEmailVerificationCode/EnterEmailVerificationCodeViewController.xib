@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EnterEmailVerificationCodeViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="codeVerificationView" destination="yf7-Cf-WIm" id="Ro4-lG-oiL"/>
+                <outlet property="openEmailAppButton" destination="KBE-xX-PJm" id="BOc-JY-w5g"/>
+                <outlet property="openEmailButtonBottomConstraint" destination="X0U-jf-yIw" id="lj7-bI-AnT"/>
+                <outlet property="resendCodeButton" destination="6EG-kq-JnB" id="YuD-WI-SX7"/>
+                <outlet property="subtitleLabel" destination="vXj-Jd-eKY" id="iE8-5h-vR6"/>
+                <outlet property="titleLabel" destination="Wop-FR-6vl" id="RWL-PN-vxg"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="Nqt-2T-o8H">
+                    <rect key="frame" x="16" y="97" width="382" height="177"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="xB0-ms-lNs">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="57"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wop-FR-6vl" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="382" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vXj-Jd-eKY" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="36.5" width="382" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="NL7-HH-DyQ">
+                            <rect key="frame" x="0.0" y="89" width="382" height="88"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yf7-Cf-WIm" customClass="CodeVerificationView" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="382" height="56"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="56" id="0Gn-N0-9OM" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                                                    <real key="value" value="48"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </constraint>
+                                    </constraints>
+                                </view>
+                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6EG-kq-JnB" customClass="ResendCodeButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="72" width="382" height="16"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="16" id="UOs-AB-7cC"/>
+                                    </constraints>
+                                    <inset key="titleEdgeInsets" minX="-20" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                    <connections>
+                                        <action selector="resendCodeButtonPressed:" destination="-1" eventType="touchUpInside" id="b6a-aA-8ya"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KBE-xX-PJm" customClass="SecondaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="838" width="382" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="89W-ww-Bn0"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                    <connections>
+                        <action selector="openEmailButtonPressed:" destination="-1" eventType="touchUpInside" id="EsH-Bm-buo"/>
+                    </connections>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="Nqt-2T-o8H" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="1eQ-wF-LZv"/>
+                <constraint firstItem="KBE-xX-PJm" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="AJT-uW-A4l"/>
+                <constraint firstItem="Nqt-2T-o8H" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="Nur-hx-AzN"/>
+                <constraint firstItem="Nqt-2T-o8H" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="53" id="UkP-7A-GV3"/>
+                <constraint firstAttribute="bottom" secondItem="KBE-xX-PJm" secondAttribute="bottom" constant="10" id="X0U-jf-yIw"/>
+                <constraint firstItem="KBE-xX-PJm" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="j7j-zh-vO9"/>
+            </constraints>
+            <point key="canvasLocation" x="139" y="135"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

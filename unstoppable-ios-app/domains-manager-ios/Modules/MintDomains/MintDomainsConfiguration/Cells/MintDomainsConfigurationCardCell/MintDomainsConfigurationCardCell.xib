@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="MintDomainsConfigurationCardCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="346" height="382"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="346" height="382"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lDH-PO-ZaF">
+                        <rect key="frame" x="0.0" y="0.0" width="346" height="382"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SM3-V6-7mn" customClass="UDDomainCardView" customModule="domains_manager_ios" customModuleProvider="target">
+                                <rect key="frame" x="43" y="90" width="260" height="260"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="SM3-V6-7mn" secondAttribute="height" id="6Bm-B1-x4A"/>
+                                    <constraint firstAttribute="width" constant="260" id="zUb-5i-z7f"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="SM3-V6-7mn" secondAttribute="bottom" constant="32" id="HVA-Uc-bbg"/>
+                            <constraint firstAttribute="height" constant="382" id="TuJ-6h-hGw"/>
+                            <constraint firstItem="SM3-V6-7mn" firstAttribute="centerX" secondItem="lDH-PO-ZaF" secondAttribute="centerX" id="sSV-Rp-ATd"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="lDH-PO-ZaF" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="4pm-EL-ENR"/>
+                <constraint firstItem="lDH-PO-ZaF" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="KOL-jE-Rgv"/>
+                <constraint firstAttribute="bottom" secondItem="lDH-PO-ZaF" secondAttribute="bottom" id="Z37-XF-a8o"/>
+                <constraint firstAttribute="trailing" secondItem="lDH-PO-ZaF" secondAttribute="trailing" id="a2G-Dm-7Ek"/>
+            </constraints>
+            <size key="customSize" width="346" height="348"/>
+            <connections>
+                <outlet property="cardViewWidthConstraint" destination="zUb-5i-z7f" id="d0f-8c-wJL"/>
+                <outlet property="domainCardView" destination="SM3-V6-7mn" id="yz6-Cq-ZDQ"/>
+                <outlet property="heightConstraint" destination="TuJ-6h-hGw" id="QDW-L5-K0X"/>
+            </connections>
+            <point key="canvasLocation" x="352.17391304347831" y="52.901785714285715"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

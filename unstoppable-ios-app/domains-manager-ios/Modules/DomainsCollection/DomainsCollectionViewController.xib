@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DomainsCollectionViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="backgroundImageContainer" destination="w3z-5t-Iva" id="iId-E4-DIG"/>
+                <outlet property="backgroundImageView" destination="xXu-En-gVW" id="o8i-95-8xb"/>
+                <outlet property="collectionView" destination="szF-yh-pPX" id="vhf-c4-HZR"/>
+                <outlet property="confettiContainerView" destination="II4-Xi-ATf" id="8di-r9-EBU"/>
+                <outlet property="confettiGradientView" destination="z1a-2L-Jrf" id="4VD-7f-8Zm"/>
+                <outlet property="confettiImageView" destination="c4h-pM-LUr" id="7ZJ-Pa-4Ea"/>
+                <outlet property="emptyStateGradient" destination="Z6r-GB-iMM" id="PwN-zj-IhU"/>
+                <outlet property="emptyStateView" destination="yGa-3F-V0E" id="kgo-eA-dpU"/>
+                <outlet property="goToSettingsContainerView" destination="04H-L9-sRu" id="FUK-yE-a5d"/>
+                <outlet property="scanButton" destination="LZk-Ht-9jZ" id="Rik-Em-sNt"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3z-5t-Iva">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mockNFTIcon1" translatesAutoresizingMaskIntoConstraints="NO" id="xXu-En-gVW">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        </imageView>
+                        <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CBY-uJ-AEs">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="zOV-xc-ujV">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </view>
+                            <blurEffect style="systemThickMaterial"/>
+                        </visualEffectView>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstItem="CBY-uJ-AEs" firstAttribute="leading" secondItem="w3z-5t-Iva" secondAttribute="leading" id="56J-p9-sWJ"/>
+                        <constraint firstItem="xXu-En-gVW" firstAttribute="leading" secondItem="w3z-5t-Iva" secondAttribute="leading" id="8tF-cu-KTU"/>
+                        <constraint firstItem="xXu-En-gVW" firstAttribute="top" secondItem="w3z-5t-Iva" secondAttribute="top" id="Her-JU-jY9"/>
+                        <constraint firstItem="CBY-uJ-AEs" firstAttribute="top" secondItem="w3z-5t-Iva" secondAttribute="top" id="Lwn-7W-Y6F"/>
+                        <constraint firstAttribute="trailing" secondItem="CBY-uJ-AEs" secondAttribute="trailing" id="UIY-cS-R7h"/>
+                        <constraint firstAttribute="bottom" secondItem="CBY-uJ-AEs" secondAttribute="bottom" id="iNP-7U-dwG"/>
+                        <constraint firstAttribute="trailing" secondItem="xXu-En-gVW" secondAttribute="trailing" id="nHI-ah-ylR"/>
+                        <constraint firstAttribute="bottom" secondItem="xXu-En-gVW" secondAttribute="bottom" id="wPs-aB-BuU"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="II4-Xi-ATf">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="c4h-pM-LUr" customClass="ConfettiImageView" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="414"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="c4h-pM-LUr" secondAttribute="height" id="424-3q-dEz"/>
+                            </constraints>
+                        </imageView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z1a-2L-Jrf" customClass="GradientView" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="c4h-pM-LUr" secondAttribute="trailing" id="G6m-jZ-hk1"/>
+                        <constraint firstAttribute="bottom" secondItem="z1a-2L-Jrf" secondAttribute="bottom" id="HrN-gS-xqd"/>
+                        <constraint firstItem="c4h-pM-LUr" firstAttribute="leading" secondItem="II4-Xi-ATf" secondAttribute="leading" id="J5Q-ze-7Z6"/>
+                        <constraint firstItem="z1a-2L-Jrf" firstAttribute="leading" secondItem="II4-Xi-ATf" secondAttribute="leading" id="P6A-lM-lIR"/>
+                        <constraint firstItem="z1a-2L-Jrf" firstAttribute="top" secondItem="II4-Xi-ATf" secondAttribute="top" id="hTT-3C-3px"/>
+                        <constraint firstAttribute="trailing" secondItem="z1a-2L-Jrf" secondAttribute="trailing" id="lvW-YU-qe2"/>
+                        <constraint firstItem="c4h-pM-LUr" firstAttribute="top" secondItem="II4-Xi-ATf" secondAttribute="top" id="og1-M3-Qn9"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yGa-3F-V0E">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="domainsCollectionEmptyFooter" translatesAutoresizingMaskIntoConstraints="NO" id="YxU-kh-QJP">
+                            <rect key="frame" x="0.0" y="521.5" width="414" height="374.5"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="YxU-kh-QJP" secondAttribute="height" multiplier="358:324" id="Gp0-Ov-fhP"/>
+                            </constraints>
+                        </imageView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Z6r-GB-iMM" customClass="GradientView" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="521.5" width="414" height="374.5"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="bottom" secondItem="YxU-kh-QJP" secondAttribute="bottom" id="Krz-na-YV1"/>
+                        <constraint firstItem="YxU-kh-QJP" firstAttribute="leading" secondItem="yGa-3F-V0E" secondAttribute="leading" id="Y6p-wX-xg8"/>
+                        <constraint firstItem="Z6r-GB-iMM" firstAttribute="trailing" secondItem="YxU-kh-QJP" secondAttribute="trailing" id="ckN-Xn-aMj"/>
+                        <constraint firstItem="Z6r-GB-iMM" firstAttribute="leading" secondItem="YxU-kh-QJP" secondAttribute="leading" id="gmc-Y5-cnj"/>
+                        <constraint firstItem="Z6r-GB-iMM" firstAttribute="bottom" secondItem="YxU-kh-QJP" secondAttribute="bottom" id="nwO-S6-yDn"/>
+                        <constraint firstItem="Z6r-GB-iMM" firstAttribute="top" secondItem="YxU-kh-QJP" secondAttribute="top" id="oAd-r0-EWg"/>
+                        <constraint firstAttribute="trailing" secondItem="YxU-kh-QJP" secondAttribute="trailing" id="vLR-ST-27i"/>
+                    </constraints>
+                </view>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="szF-yh-pPX">
+                    <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Tmi-Kn-5ry">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LZk-Ht-9jZ" customClass="FABButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="346" y="792" width="56" height="56"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="56" id="hhn-LD-gLA"/>
+                        <constraint firstAttribute="width" secondItem="LZk-Ht-9jZ" secondAttribute="height" id="xWY-mB-OJk"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="scanQRIcon"/>
+                    <connections>
+                        <action selector="didPressScanButton:" destination="-1" eventType="touchUpInside" id="IF1-a1-dOb"/>
+                    </connections>
+                </button>
+                <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="04H-L9-sRu">
+                    <rect key="frame" x="18" y="44" width="271" height="36"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="domainsCollectionGoToSettingsArrow" translatesAutoresizingMaskIntoConstraints="NO" id="j2q-Pr-8UB">
+                            <rect key="frame" x="0.0" y="0.0" width="24" height="26"/>
+                            <color key="tintColor" name="foregroundMuted"/>
+                        </imageView>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="domainsCollectionGoToSettingsText" translatesAutoresizingMaskIntoConstraints="NO" id="YPN-rt-YEy">
+                            <rect key="frame" x="32" y="0.0" width="239" height="36"/>
+                            <color key="tintColor" name="foregroundMuted"/>
+                        </imageView>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="yGa-3F-V0E" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="00w-Cy-lmS"/>
+                <constraint firstItem="szF-yh-pPX" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="1A9-aw-svE"/>
+                <constraint firstItem="II4-Xi-ATf" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="1Yw-cK-EMt"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="yGa-3F-V0E" secondAttribute="trailing" id="47F-mr-uqT"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="II4-Xi-ATf" secondAttribute="trailing" id="9Fm-Lx-P5k"/>
+                <constraint firstItem="w3z-5t-Iva" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="FD1-MR-eTh"/>
+                <constraint firstItem="w3z-5t-Iva" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="GTX-yf-e35"/>
+                <constraint firstItem="04H-L9-sRu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="18" id="PVE-wX-aMd"/>
+                <constraint firstItem="szF-yh-pPX" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="Tjw-is-4mo"/>
+                <constraint firstItem="yGa-3F-V0E" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="U8G-lS-ta4"/>
+                <constraint firstItem="szF-yh-pPX" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="XVG-0m-bm3"/>
+                <constraint firstAttribute="bottom" secondItem="II4-Xi-ATf" secondAttribute="bottom" id="Z87-Jy-Pdw"/>
+                <constraint firstAttribute="bottom" secondItem="yGa-3F-V0E" secondAttribute="bottom" id="bIP-3z-Vz1"/>
+                <constraint firstItem="II4-Xi-ATf" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="ctc-ZR-vSp"/>
+                <constraint firstAttribute="bottom" secondItem="szF-yh-pPX" secondAttribute="bottom" id="eb0-W1-ory"/>
+                <constraint firstAttribute="trailing" secondItem="LZk-Ht-9jZ" secondAttribute="trailing" constant="12" id="hTi-cn-rBc"/>
+                <constraint firstItem="w3z-5t-Iva" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="jVl-dP-09s"/>
+                <constraint firstItem="04H-L9-sRu" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="l0h-zz-faT"/>
+                <constraint firstAttribute="bottom" secondItem="w3z-5t-Iva" secondAttribute="bottom" id="mHS-zY-ggw"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="LZk-Ht-9jZ" secondAttribute="bottom" constant="14" id="rvq-SG-Oyc"/>
+            </constraints>
+            <point key="canvasLocation" x="137.68115942028987" y="70.982142857142847"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="domainsCollectionEmptyFooter" width="390" height="324"/>
+        <image name="domainsCollectionGoToSettingsArrow" width="24" height="26"/>
+        <image name="domainsCollectionGoToSettingsText" width="239" height="36"/>
+        <image name="mockNFTIcon1" width="2000" height="2000"/>
+        <image name="scanQRIcon" width="24" height="24"/>
+        <namedColor name="foregroundMuted">
+            <color red="0.68599998950958252" green="0.68599998950958252" blue="0.71399998664855957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
