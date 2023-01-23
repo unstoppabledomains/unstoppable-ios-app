@@ -13,3 +13,14 @@
 🐦️ [Follow us on Twitter](https://twitter.com/unstoppableweb)
 
 ## Setup
+
+1. Install the [latest version of XCode](https://developer.apple.com/xcode/).
+    Download this repository.
+
+2. Find the file `Env-Demo.swift` in the repository.
+
+3. Duplicate it and name it `Env.swift`. Make sure it is included in the project.
+
+4. Enter all the real IDs.
+
+5. Build and Run the project.
