@@ -1,8 +1,6 @@
-# Unstoppable App
+# Unstoppable Domains iOS App
 
 ![](https://i.ibb.co/bvf6Rc5/screens-pano.png)
-
-### Unstoppable Domains iOS App
 
 > Your identity and login for Web3!
 
