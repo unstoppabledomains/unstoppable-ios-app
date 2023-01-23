@@ -24,3 +24,11 @@
 4. Enter all the real IDs.
 
 5. Build and Run the project.
+
+---
+
+Enjoy a powerful tool for integrating NFT domain handling directly into your mobile app:
+1️⃣ Link external wallets to manage your #Web3 domains
+2️⃣ Manage profiles & crypto addresses for ALL your domains
+3️⃣ Connect 100s of WalletConnect-compatible apps
+4️⃣ Re-use UI elements to streamline profile integration w/ your app
