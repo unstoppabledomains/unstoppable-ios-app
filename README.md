@@ -1,6 +1,6 @@
 # unstoppable-ios-app
 
-![](https://pbs.twimg.com/profile_banners/1103191459409420288/1573207178/1500x500)
+![](https://i.ibb.co/82tKB3W/Screenshot-2023-01-23-at-12-23-19.png)
 
 ### Unstoppable Domains iOS App
 
