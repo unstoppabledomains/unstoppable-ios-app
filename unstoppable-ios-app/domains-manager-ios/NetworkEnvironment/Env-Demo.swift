@@ -21,12 +21,11 @@ extension NetworkService {
     static let testnetMetadataAPIKey = "<testnet-api-key>"
     
     // Analytics API, you may keep these empty
-    static let heapProdAppId = "prod-heap-key"
-    static let heapDevAppId = "dev-heap-key"
-    
-    // Needed for push notifications in WalletConnect2
-    static let wc2EchoServerProdHost = "https://..."
-    static let wc2EchoServerDevHost = "https://..."
+#if DEBUG
+    static let heapAppId = "dev-heap-key"
+#else
+    static let heapAppId = "prod-heap-key"
+#endif
 }
 
 struct AppIdentificators {
