@@ -14,13 +14,7 @@ private protocol HeapRequest: Codable {
 final class HeapAnalyticService {
     
     private let heapApiURL = URL(string: "https://heapanalytics.com/api")!
-    private let appId: String = {
-        #if DEBUG
-        NetworkService.heapDevAppId
-        #else
-        NetworkService.heapProdAppId
-        #endif
-    }()
+    private let appId: String = NetworkService.heapAppId
     private let storage = HeapAnalyticRequestsStorage()
     private var timer: Timer?
     private let userID: String
