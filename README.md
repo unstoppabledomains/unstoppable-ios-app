@@ -1,16 +1,27 @@
-# unstoppable-ios-app
+# Unstoppable Domains iOS App
 
-![](https://i.ibb.co/bvf6Rc5/screens-pano.png)
+![](https://i.ibb.co/V3vXrv4/screens-2.png)
 
-### Unstoppable Domains iOS App
-
-> Your identity and login for Web3!
+> Your identity, crypto address, and login for Web3
 
 📲️ [Available on the iOS App Store.]( https://apps.apple.com/app/unstoppable-domains-app/id1544748602 )
 
 🤖 [Android Beta available on Google Play Store](https://play.google.com/store/apps/details?id=com.unstoppabledomains.manager)
 
 🐦️ [Follow us on Twitter](https://twitter.com/unstoppableweb)
+
+---
+
+Enjoy a powerful tool for integrating NFT domain handling directly into your mobile app:
+
+1️⃣ Import & link external wallets to manage your #Web3 domains.
+
+2️⃣ Manage profiles & crypto addresses for ALL your domains.
+
+3️⃣ Connect 100s of WalletConnect-compatible apps.
+
+4️⃣ Re-use UI elements to streamline profile integration w/ your app.
+
 
 ## Setup
 
@@ -23,4 +34,6 @@
 
 4. Enter all the real IDs.
 
-5. Build and Run the project.
+5. Use scheme `TESTFLIGH DEV` to run the app in debug mode.
+
+6. Build and Run the project.
