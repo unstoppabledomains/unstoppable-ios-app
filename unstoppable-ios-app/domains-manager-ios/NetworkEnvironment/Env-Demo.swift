@@ -22,9 +22,9 @@ extension NetworkService {
     
     // Analytics API, you may keep these empty
 #if DEBUG
-    static let heapAppId = "heap-key"
+    static let heapAppId = "dev-heap-key"
 #else
-    static let heapAppId = "heap-key"
+    static let heapAppId = "prod-heap-key"
 #endif
 }
 
