@@ -36,10 +36,10 @@ extension AppGroupsBridgeFromDataAggregatorService: DataAggregatorServiceListene
 
 // MARK: - Private methods
 private extension AppGroupsBridgeFromDataAggregatorService {
-    func updateDomainsPFPInBridge(_ domains: [DomainItem]) {
+    func updateDomainsPFPInBridge(_ domains: [DomainDisplayInfo]) {
         @Sendable
-        func pfpPath(for domain: DomainItem) -> String? {
-            switch domain.pfpInfo {
+        func pfpPath(for domain: DomainDisplayInfo) -> String? {
+            switch domain.pfpSource {
             case .nft(let imagePath), .nonNFT(let imagePath):
                 return imagePath
             case .none:

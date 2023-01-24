@@ -24,7 +24,7 @@ class WalletsListViewPresenter {
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
     private var walletsWithInfo = [WalletWithInfo]()
-    private var shouldShowImportWalletPullUp = false
+    private var initialAction: InitialAction = .none
     var shouldShowManageBackup: Bool { true }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     var title: String { String.Constants.settingsWallets.localized() }
@@ -33,12 +33,12 @@ class WalletsListViewPresenter {
 
     init(view: WalletsListViewProtocol,
          dataAggregatorService: DataAggregatorServiceProtocol,
-         shouldShowImportWalletPullUp: Bool,
+         initialAction: InitialAction,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
         self.dataAggregatorService = dataAggregatorService
-        self.shouldShowImportWalletPullUp = shouldShowImportWalletPullUp
+        self.initialAction = initialAction
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
         networkReachabilityService?.addListener(self)
@@ -61,12 +61,22 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
     }
     
     func viewWillAppear() {
-        if shouldShowImportWalletPullUp {
-            showAddWalletPullUp(isImportOnly: true)
-            shouldShowImportWalletPullUp = false
+        Task {
+            try? await Task.sleep(seconds: 0.3)
+            switch initialAction {
+            case .none:
+                return
+            case .showImportWalletOptionsPullUp:
+                showAddWalletPullUp(isImportOnly: true)
+            case .importWallet:
+                await importNewWallet()
+            case .connectWallet:
+                await connectNewWallet()
+            }
+            initialAction = .none
         }
     }
-
+    
     func didPressAddButton() {
         showAddWalletPullUp(isImportOnly: false)
     }
@@ -345,5 +355,12 @@ private extension WalletsListViewPresenter {
             }
         }
         self.walletsWithInfo = walletsWithInfo
+    }
+}
+
+// MARK: - WalletsListViewPresenter
+extension WalletsListViewPresenter {
+    enum InitialAction {
+        case none, showImportWalletOptionsPullUp, importWallet, connectWallet
     }
 }

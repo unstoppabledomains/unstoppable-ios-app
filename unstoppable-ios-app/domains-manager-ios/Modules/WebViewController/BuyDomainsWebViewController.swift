@@ -106,7 +106,6 @@ private extension BuyDomainsWebViewController {
 }
 
 
-@available(iOS 14.0, *)
 extension WKContentWorld {
     func describe() -> String {
         let name = self.name ?? "N/A"
@@ -133,9 +132,7 @@ extension WKScriptMessage {
             body = "NULL/Unknown"
         }
         var world: String = ""
-        if #available(iOS 14.0, *) {
-            world = self.world.describe()
-        }
+        world = self.world.describe()
         
         return "WKScriptMessage: Name - \(name). Body - \(body). World - \(world)"
     }

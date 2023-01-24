@@ -131,11 +131,14 @@ extension BaseSignTransactionView {
         self.domain = domain
         if let domainImageView {
             Task {
-                domainImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domain, size: .full),
-                                                                                       downsampleDescription: nil)
-                let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .full),
-                                                                           downsampleDescription: nil)
-                domainImageView.image = image
+                let domainsDisplayInfo = await appContext.dataAggregatorService.getDomains()
+                if let domainDisplayInfo = domainsDisplayInfo.first(where: { $0.name == domain.name }) {
+                    domainImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domainDisplayInfo, size: .full),
+                                                                                           downsampleDescription: nil)
+                    let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainDisplayInfo, size: .full),
+                                                                               downsampleDescription: nil)
+                    domainImageView.image = image
+                }
             }
         }
         domainNameButton?.setTitle(domain.name, image: isSelectable ? .chevronDown : nil)

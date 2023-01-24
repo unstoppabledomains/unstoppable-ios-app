@@ -10,6 +10,7 @@ import UIKit
 
 protocol TransactionInProgressViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var isNavBarHidden: Bool { get }
+    var navBackStyle: BaseViewController.NavBackIconStyle { get }
     
     func didSelectItem(_ item: TransactionInProgressViewController.Item)
     func viewTransactionButtonPressed()
@@ -22,10 +23,11 @@ class BaseTransactionInProgressViewPresenter {
     private let notificationsService: NotificationsServiceProtocol
     let transactionsService: DomainTransactionsServiceProtocol
     private var refreshTimer: Timer?
-    private var isNotificationPermissionsGranted = false
-    var isNavBarHidden: Bool { true }
+    private(set) var isNotificationPermissionsGranted = false
+    var isNavBarHidden: Bool { false }
     var analyticsName: Analytics.ViewName { .unspecified }
     var content: TransactionInProgressViewController.HeaderDescription.Content { .minting }
+    var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
 
     init(view: TransactionInProgressViewProtocol,
          transactionsService: DomainTransactionsServiceProtocol,
@@ -37,6 +39,10 @@ class BaseTransactionInProgressViewPresenter {
     
     func fillUpMintingDomains(in snapshot: inout TransactionInProgressSnapshot) { }
     func viewTransactionButtonPressed() { }
+    func didSelectItem(_ item: TransactionInProgressViewController.Item) { }
+    @MainActor func setActionButtonStyle() {
+        view?.setActionButtonStyle(.viewTransaction)
+    }
 }
 
 // MARK: - MintingInProgressViewPresenterProtocol
@@ -45,15 +51,14 @@ extension BaseTransactionInProgressViewPresenter: TransactionInProgressViewPrese
         Task {
             await checkNotificationPermissions()
             await MainActor.run {
-                view?.setViewTransactionButtonHidden(true)
+                setActionButtonStyle()
+                view?.setActionButtonHidden(true)
                 showData()
                 startRefreshTransactionsTimer()
             }
             refreshMintingTransactions()
         }
     }
-    
-    func didSelectItem(_ item: TransactionInProgressViewController.Item) { }
 }
 
 // MARK: - Open methods

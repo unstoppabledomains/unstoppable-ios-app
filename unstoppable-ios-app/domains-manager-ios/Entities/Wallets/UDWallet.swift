@@ -559,7 +559,7 @@ extension Array where Element == UDWallet {
 }
 
 extension UDWallet {
-    func owns(domain: DomainItem) -> Bool {
+    func owns(domain: any DomainEntity) -> Bool {
         guard let domainWalletAddress = domain.ownerWallet?.normalized else { return false }
         return self.extractEthWallet()?.address.normalized == domainWalletAddress || self.extractZilWallet()?.address.normalized == domainWalletAddress
     }

@@ -20,25 +20,20 @@ final class DomainProfileTopInfoCell: UICollectionViewCell {
     @IBOutlet private weak var domainAvatarImageView: UIImageView!
     @IBOutlet private weak var avatarButton: GhostTertiaryWhiteButton!
     @IBOutlet private weak var domainNameLabel: UILabel!
-    @IBOutlet private weak var domainNameIndicatorImageView: UIImageView!
     @IBOutlet private weak var qrCodeButton: GhostTertiaryWhiteButton!
     @IBOutlet private weak var publicProfileButton: GhostTertiaryWhiteButton!
     @IBOutlet private weak var bannerTopConstraint: NSLayoutConstraint!
     
     private var avatarStyle: DomainAvatarImageView.AvatarStyle = .circle
     private var buttonPressedCallback: DomainProfileTopInfoButtonCallback?
-    private var bannerImageActions: [DomainProfileTopInfoSection.ProfileImageAction] = []
-    private var avatarImageActions: [DomainProfileTopInfoSection.ProfileImageAction] = []
 
     override func awakeFromNib() {
         super.awakeFromNib()
         
         avatarButton.setTitle(nil, image: .avatarsIcon32)
-        domainNameIndicatorImageView.image = .polygonIcon
         bannerButton.setTitle(String.Constants.addCover.localized(), image: .framesIcon20)
         qrCodeButton.setTitle(String.Constants.qrCode.localized(), image: .scanQRIcon20)
         publicProfileButton.setTitle(String.Constants.publicProfile.localized(), image: .arrowTopRight)
-        domainNameIndicatorImageView.isHidden = true
         domainNameLabel.numberOfLines = 2
         domainNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapDomainNameLabel)))
     }
@@ -63,14 +58,6 @@ extension DomainProfileTopInfoCell {
                                               font: .currentFont(withSize: 22, weight: .bold),
                                               textColor: .white,
                                               lineBreakMode: .byTruncatingTail)
-        switch domain.blockchain {
-        case .Matic:
-            domainNameIndicatorImageView.image = .polygonIcon
-        case .Ethereum:
-            domainNameIndicatorImageView.image = .ethereumIcon
-        case .Zilliqa, .none:
-            Debugger.printFailure("Unsupported blockhain", critical: true)
-        }
         
         switch data.avatarImageState {
         case .untouched(let source):
@@ -101,28 +88,23 @@ extension DomainProfileTopInfoCell {
         bannerButton.isUserInteractionEnabled = data.isEnabled
         avatarButton.isUserInteractionEnabled = data.isEnabled
         
-        if #available(iOS 14.0, *) {
-            let bannerMenuElements = data.bannerImageActions.compactMap({ menuElement(for: $0) })
-            let bannerMenu = UIMenu(title: "", children: bannerMenuElements)
-            bannerButton.menu = bannerMenu
-            bannerButton.showsMenuAsPrimaryAction = true
-            bannerButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.buttonPressedCallback?(.banner)
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-            
-            let avatarMenuElements = data.avatarImageActions.compactMap({ menuElement(for: $0) })
-            let avatarMenu = UIMenu(title: avatarsActionMenuTitle, children: avatarMenuElements)
-            avatarButton.menu = avatarMenu
-            avatarButton.showsMenuAsPrimaryAction = true
-            avatarButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.buttonPressedCallback?(.avatar)
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-        } else {
-            self.bannerImageActions = data.bannerImageActions
-            self.avatarImageActions = data.avatarImageActions
-        }
+        let bannerMenuElements = data.bannerImageActions.compactMap({ menuElement(for: $0) })
+        let bannerMenu = UIMenu(title: "", children: bannerMenuElements)
+        bannerButton.menu = bannerMenu
+        bannerButton.showsMenuAsPrimaryAction = true
+        bannerButton.addAction(UIAction(handler: { [weak self] _ in
+            self?.buttonPressedCallback?(.banner)
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
+        
+        let avatarMenuElements = data.avatarImageActions.compactMap({ menuElement(for: $0) })
+        let avatarMenu = UIMenu(title: avatarsActionMenuTitle, children: avatarMenuElements)
+        avatarButton.menu = avatarMenu
+        avatarButton.showsMenuAsPrimaryAction = true
+        avatarButton.addAction(UIAction(handler: { [weak self] _ in
+            self?.buttonPressedCallback?(.avatar)
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
     }
     
     func setImageFor(state: DomainProfileTopInfoData.ImageState,
@@ -169,16 +151,6 @@ extension DomainProfileTopInfoCell: ScrollViewOffsetListener {
 
 // MARK: - Actions
 private extension DomainProfileTopInfoCell {
-    @IBAction func bannerButtonPressed(_ sender: Any) {
-        buttonPressedCallback?(.banner)
-        showMenuBridgeView(in: bannerButton, withActions: bannerImageActions, title: "")
-    }
-    
-    @IBAction func avatarButtonPressed(_ sender: Any) {
-        buttonPressedCallback?(.avatar)
-        showMenuBridgeView(in: avatarButton, withActions: avatarImageActions, title: avatarsActionMenuTitle)
-    }
-    
     @IBAction func qrCodeButtonPressed(_ sender: Any) {
         buttonPressedCallback?(.qrCode)
     }
@@ -199,16 +171,6 @@ private extension DomainProfileTopInfoCell {
         ""
     }
     
-    func showMenuBridgeView(in button: UIButton, withActions imageActions: [DomainProfileTopInfoSection.ProfileImageAction], title: String) {
-        guard let view = self.findViewController()?.view else { return }
-        
-        let actions: [UIActionBridgeItem] = imageActions.map({ action in uiActionBridgeItem(for: action) }).reduce(into: [UIActionBridgeItem]()) { partialResult, result in
-            partialResult += result
-        }
-        let popoverViewController = UIMenuBridgeView.instance(with: title, actions: actions)
-        popoverViewController.show(in: view, sourceView: button)
-    }
-    
     func menuElement(for imageAction: DomainProfileTopInfoSection.ProfileImageAction) -> UIMenuElement {
         var attributes: UIMenuElement.Attributes = imageAction.isEnabled ? [] : [.disabled]
         switch imageAction {
@@ -222,17 +184,6 @@ private extension DomainProfileTopInfoCell {
             attributes.insert(.destructive)
             let remove = UIAction(title: imageAction.title, image: imageAction.icon, identifier: .init(UUID().uuidString), attributes: attributes, handler: { _ in callback() })
             return UIMenu(title: "", options: .displayInline, children: [remove])
-        }
-    }
-    
-    func uiActionBridgeItem(for imageAction: DomainProfileTopInfoSection.ProfileImageAction) -> [UIActionBridgeItem] {
-        var attributes: [UIActionBridgeItem.Attributes] = imageAction.isEnabled ? [] : [.disabled]
-        switch imageAction {
-        case .upload(let callback), .change(_, _, let callback), .view(_, let callback), .setAccess(_, let callback), .changeNFT(let callback):
-            return [UIActionBridgeItem(title: imageAction.title, image: imageAction.icon, attributes: attributes, handler: {  callback() })]
-        case .remove(_, _, let callback):
-            attributes.append(.destructive)
-            return [UIActionBridgeItem(title: imageAction.title, image: imageAction.icon, attributes: attributes, handler: { callback() })]
         }
     }
 }
@@ -301,22 +252,22 @@ private extension DomainProfileTopInfoCell {
     }
 }
 
-struct DomainProfileTopInfoCell_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        UICollectionViewCellPreview(cellType: DomainProfileTopInfoCell.self, height: 234) { cell in
-            var domainItem = DomainItem(name: "olegkuhkjdfsjhfdkhflakjhdfi748723642in.coin", blockchain: .Ethereum)
-            cell.set(with: .init(id: UUID(),
-                                 domain: domainItem,
-                                 isEnabled: true,
-                                 avatarImageState: .untouched(source: .imageURL(URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/user/146/387d4afa-2cc5-483f-ba22-003334161d17.jpeg")!, imageType: .offChain)),
-                                 bannerImageState: .untouched(source: nil),
-                                 buttonPressedCallback: { _ in },
-                                 bannerImageActions: [.change(isReplacingNFT: false, isUpdatingRecords: false, callback: { }), .remove(isRemovingNFT: false, isUpdatingRecords: false, callback: { })],
-                                 avatarImageActions: [.upload(callback: { })]))
-            cell.backgroundColor = .blue
-        }
-        .frame(width: 390, height: 300)
-    }
-    
-}
+//struct DomainProfileTopInfoCell_Previews: PreviewProvider {
+//    
+//    static var previews: some View {
+//        UICollectionViewCellPreview(cellType: DomainProfileTopInfoCell.self, height: 234) { cell in
+//            var domainItem = DomainDisplayInfo(name: "olegkuhkjdfsjhfdkhflakjhdfi748723642in.coin", blockchain: .Ethereum)
+//            cell.set(with: .init(id: UUID(),
+//                                 domain: domainItem,
+//                                 isEnabled: true,
+//                                 avatarImageState: .untouched(source: .imageURL(URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/user/146/387d4afa-2cc5-483f-ba22-003334161d17.jpeg")!, imageType: .offChain)),
+//                                 bannerImageState: .untouched(source: nil),
+//                                 buttonPressedCallback: { _ in },
+//                                 bannerImageActions: [.change(isReplacingNFT: false, isUpdatingRecords: false, callback: { }), .remove(isRemovingNFT: false, isUpdatingRecords: false, callback: { })],
+//                                 avatarImageActions: [.upload(callback: { })]))
+//            cell.backgroundColor = .blue
+//        }
+//        .frame(width: 390, height: 300)
+//    }
+//    
+//}

@@ -23,11 +23,11 @@ extension DomainsCollectionEmptyRepresentation: DomainsCollectionRepresentation 
 
     func layout() -> UICollectionViewLayout { .fullSizeLayout() }
     
-    func snapshot() -> DomainsCollectionSnapshot {
-        var snapshot = DomainsCollectionSnapshot()
+    func snapshot() -> DomainsListSnapshot {
+        var snapshot = DomainsListSnapshot()
         snapshot.appendSections([.other])
-        snapshot.appendItems([.empty(mintPressed: mintPressedCallback,
-                                     buyPressed: buyPressedCallback)])
+//        snapshot.appendItems([.empty(mintPressed: mintPressedCallback,
+//                                     buyPressed: buyPressedCallback)])
         
         return snapshot
     }

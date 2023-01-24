@@ -39,7 +39,7 @@ final class UDDomainSharingWatchCardView: UIView, SelfNameable, NibInstantiateab
         super.init(coder: coder)
     }
     
-    func setWith(domain: DomainItem, qrImage: UIImage) {
+    func setWith(domain: DomainDisplayInfo, qrImage: UIImage) {
         Task {
             let avatarImage = await appContext.imageLoadingService.loadImage(from: .domain(domain), downsampleDescription: nil)
             await MainActor.run {
@@ -50,7 +50,7 @@ final class UDDomainSharingWatchCardView: UIView, SelfNameable, NibInstantiateab
         qrContainerView.layer.cornerRadius = 2
     }
     
-    func setWith(domain: DomainItem, avatarImage: UIImage, qrImage: UIImage) {
+    func setWith(domain: DomainDisplayInfo, avatarImage: UIImage, qrImage: UIImage) {
         setWith(avatarImage: avatarImage)
         setWith(qrImage: qrImage)
         qrContainerView.layer.cornerRadius = 2

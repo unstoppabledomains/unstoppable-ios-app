@@ -23,7 +23,6 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
     
     struct ConnectedApp: Codable, Equatable, Hashable, CustomStringConvertible {
         
-        
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.session.url.key == rhs.session.url.key
         }
@@ -43,6 +42,10 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
         var appUrl: URL { self.session.dAppInfo.peerMeta.url }
         var appHost: String { self.session.dAppInfo.getDappHostName() }
         var displayName: String { self.session.dAppInfo.getDisplayName() }
+        var blockchainType: BlockchainType {
+            let chainId = session.walletInfo?.chainId ?? 1
+            return (try? UnsConfigManager.getBlockchainType(from: chainId)) ?? .Ethereum
+        }
         var description: String {
             "ConnectedApp: \(appName), wallet: \(walletAddress), to domain: \(domain.name)"
         }
@@ -96,8 +99,8 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
         return byAccounts?.filter({$0.session.url.topic.lowercased() == topic.lowercased()})
     }
         
-    func find(by domain: DomainItem) -> [ConnectedApp]? {
-        return retrieveApps().filter({ $0.domain.name == domain.name } )
+    func findBy(domainName: DomainName) -> [ConnectedApp]? {
+        return retrieveApps().filter({ $0.domain.name == domainName } )
     }
     
     func findDuplicate(to newApp: ConnectedApp) -> [ConnectedApp] {

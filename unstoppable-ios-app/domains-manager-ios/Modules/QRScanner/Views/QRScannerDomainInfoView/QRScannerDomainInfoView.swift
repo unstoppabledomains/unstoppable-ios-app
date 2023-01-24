@@ -53,7 +53,7 @@ final class QRScannerDomainInfoView: UIControl, SelfNameable, NibInstantiateable
 
 // MARK: - Open methods
 extension QRScannerDomainInfoView {
-    func setWith(domain: DomainItem, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool) {
+    func setWith(domain: DomainDisplayInfo, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool) {
         Task {
             iconImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domain, size: .default),
                                                                                  downsampleDescription: nil)

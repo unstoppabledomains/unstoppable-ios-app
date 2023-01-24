@@ -129,14 +129,6 @@ extension NetworkService {
         let txCosts: [TxCost]?
     }
     
-    struct DomainsNFTImagesInfoArray: Codable {
-        let data: [DomainNFTImageInfo]
-    }
-   
-    struct DomainsNonNFTImagesInfoArray: Codable {
-        let domainProfiles: [DomainNonNFTImageInfo]
-    }
-    
     // Response
     struct DomainResponseArray: Decodable {
         let domains: [DomainResponse]
@@ -324,15 +316,7 @@ extension NetworkService {
 
 extension NetworkService {
     static let postRequestLimit = 500
-    
-    func fetchDomainsNonNFTImageInfo(for domains: [DomainItem]) async throws -> [DomainNonNFTImageInfo] {
-        try await fetchAllPagesWithLimit(for: domains, limit: 30)
-    }
-
-    func fetchDomainsNFTImageInfo(for domains: [DomainItem]) async throws -> [DomainNFTImageInfo] {
-        try await fetchAllPagesWithLimit(for: domains, limit: 30)
-    }
-
+ 
     public func fetchUnsDomains(for wallets: [UDWallet]) -> Promise<[DomainItem]> {
         let ownerUnsAddresses = wallets.compactMap({ $0.extractEthWallet()?.address.normalized})
         guard !ownerUnsAddresses.isEmpty else { return Promise { $0.fulfill([]) } }
@@ -561,77 +545,6 @@ enum FetchRequestBuilderError: String, LocalizedError {
     
     public var errorDescription: String? {
         return rawValue
-    }
-}
-
-
-extension DomainNonNFTImageInfo: PaginatedFetchable {
-    init(jsonResponse: DomainNonNFTImageInfo) {
-        self.domainName = jsonResponse.domainName
-        self.imagePath = jsonResponse.imagePath
-    }
-    
-    typealias O = DomainItem
-    typealias J = NetworkService.DomainsNonNFTImagesInfoArray
-    typealias D = DomainNonNFTImageInfo
-    
-    static func convert(_ json: Self.J) -> [Self] {
-        json.domainProfiles
-    }
-    
-    static func createRequestForPaginated(for originItems: [DomainItem],
-                                          page: Int,
-                                          perPage: Int) throws -> APIRequest {
-        let endpoint = Endpoint.domainsNonNFTImages(for: originItems)
-        return APIRequest(url: endpoint.url!, body: endpoint.body, method: .get)
-    }
-    
-    static func fetchPaginatedData_Blocking(for addresses: [DomainItem],
-                                            page: Int,
-                                            perPage: Int) -> Result<[Self]> {
-        return NetworkService.gen_paginatedBlockingFetchDataGen(for: addresses, page: page, perPage: perPage)
-    }
-    
-    static func fetchPaginatedData_Blocking(for originItems: [O],
-                                            page: Int,
-                                            perPage: Int) async throws -> [Self] {
-        try await NetworkService.gen_paginatedBlockingFetchDataGen(for: originItems, page: page, perPage: perPage)
-    }
-}
-
-extension DomainNFTImageInfo: PaginatedFetchable {
-    init(jsonResponse: DomainNFTImageInfo) {
-        self.domain = jsonResponse.domain
-        self.records = jsonResponse.records
-    }
-    
-    typealias O = DomainItem
-    typealias J = NetworkService.DomainsNFTImagesInfoArray
-    typealias D = DomainNFTImageInfo
-    
-    static func convert(_ json: Self.J) -> [Self] {
-        json.data
-    }
-    
-    static func createRequestForPaginated(for originItems: [DomainItem],
-                                          page: Int,
-                                          perPage: Int) throws -> APIRequest {
-        guard let endpoint = MetadataEndpoint.domainsImageInfo(for: originItems) else {
-            throw FetchRequestBuilderError.domains
-        }
-        return APIRequest(url: endpoint.url!, headers: MetadataNetworkConfig.authHeader, body: endpoint.body, method: .get)
-    }
-    
-    static func fetchPaginatedData_Blocking(for addresses: [DomainItem],
-                                            page: Int,
-                                            perPage: Int) -> Result<[Self]> {
-        return NetworkService.gen_paginatedBlockingFetchDataGen(for: addresses, page: page, perPage: perPage)
-    }
-    
-    static func fetchPaginatedData_Blocking(for originItems: [O],
-                                            page: Int,
-                                            perPage: Int) async throws -> [Self] {
-        try await NetworkService.gen_paginatedBlockingFetchDataGen(for: originItems, page: page, perPage: perPage)
     }
 }
 

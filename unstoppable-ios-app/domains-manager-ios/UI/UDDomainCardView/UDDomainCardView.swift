@@ -40,8 +40,8 @@ final class UDDomainCardView: UIView, SelfNameable, NibInstantiateable {
 
 // MARK: - Open methods
 extension UDDomainCardView {
-    func setWith(domainItem: DomainItem) {
-        if domainItem.pfpInfo != .none,
+    func setWith(domainItem: DomainDisplayInfo) {
+        if domainItem.pfpSource != .none,
            let image = appContext.imageLoadingService.getStoredImage(for: .domain(domainItem)) {
             setWith(domainName: domainItem.name, avatarImage: image)
         } else {
@@ -66,13 +66,13 @@ extension UDDomainCardView {
                                         lineHeight: 44,
                                         lineBreakMode: .byTruncatingTail)
         tldLabel.setAttributedTextWith(text: String.dotSeparator + domain.uppercased(),
-                                          font: .helveticaNeueCustom(size: 36),
-                                          letterSpacing: 0,
-                                          textColor: .clear,
-                                          lineHeight: 36,
-                                          lineBreakMode: .byTruncatingTail,
-                                          strokeColor: .foregroundOnEmphasis,
-                                          strokeWidth: 3)
+                                       font: .helveticaNeueCustom(size: 36),
+                                       letterSpacing: 0,
+                                       textColor: .clear,
+                                       lineHeight: 36,
+                                       lineBreakMode: .byTruncatingTail,
+                                       strokeColor: .foregroundOnEmphasis,
+                                       strokeWidth: 3)
         
         coverView.isHidden = avatarImage == nil
         avatarImageView.image = avatarImage ?? .domainSharePlaceholder

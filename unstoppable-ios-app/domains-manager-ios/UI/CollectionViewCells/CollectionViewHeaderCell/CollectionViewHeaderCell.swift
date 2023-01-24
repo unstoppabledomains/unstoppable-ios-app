@@ -23,10 +23,15 @@ final class CollectionViewHeaderCell: UICollectionViewCell {
         if let subtitle = subtitleDescription {
             subtitleLabel.setSubtitle(subtitle.subtitle)
             subtitleDescription?.attributes.forEach({ attribute in
+                var font: UIFont?
+                if let fontWeight = attribute.fontWeight {
+                    font = .currentFont(withSize: subtitleLabel.font.pointSize,
+                                        weight: fontWeight)
+                }
                 subtitleLabel.updateAttributesOf(text: attribute.text,
-                                                 withFont: .currentFont(withSize: subtitleLabel.font.pointSize,
-                                                                        weight: attribute.fontWeight),
-                                                 textColor: attribute.textColor)
+                                                 withFont: font,
+                                                 textColor: attribute.textColor,
+                                                 alignment: attribute.alignment)
             })
         }
         iconView.image = icon
@@ -101,8 +106,9 @@ extension CollectionViewHeaderCell {
         
         struct Attributes: Hashable {
             let text: String
-            let fontWeight: UIFont.Weight
-            let textColor: UIColor?
+            var fontWeight: UIFont.Weight? = nil
+            var textColor: UIColor? = nil
+            var alignment: NSTextAlignment = .left
         }
     }
 }

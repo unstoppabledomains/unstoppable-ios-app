@@ -24,6 +24,7 @@ public struct Debugger {
         case Security = "SCRTY"
         case WallectConnect = "WC"
         case WallectConnectV2 = "WC_V2"
+        case UI = "=UI="
         case None = ""
     }
     

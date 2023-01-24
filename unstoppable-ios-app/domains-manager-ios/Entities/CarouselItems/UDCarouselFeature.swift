@@ -10,7 +10,9 @@ import UIKit
 struct UDCarouselFeature: CarouselViewItem {
     let icon: UIImage
     let text: String
-    
+    var tintColor: UIColor { .foregroundSecondary }
+    var backgroundColor: UIColor { .backgroundSubtle }
+
     static let ProfileInfoFeatures: [UDCarouselFeature] = [.init(icon: .rocketIcon20,
                                                                  text: String.Constants.profileInfoCarouselItemPortableIdentity.localized()),
                                                            .init(icon: .badgeIcon20,

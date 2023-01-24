@@ -40,7 +40,7 @@ final class ShareDomainImagePullUpView: UIView, SelfNameable, NibInstantiateable
 
 // MARK: - Open methods
 extension ShareDomainImagePullUpView {
-    func setWithDomain(_ domainItem: DomainItem, qrImage: UIImage) {
+    func setWithDomain(_ domainItem: DomainDisplayInfo, qrImage: UIImage) {
         domainSharingView.setWith(domain: domainItem, qrImage: qrImage)
     }
 }

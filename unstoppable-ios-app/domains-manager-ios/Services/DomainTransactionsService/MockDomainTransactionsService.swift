@@ -26,7 +26,7 @@ extension MockDomainTransactionsService: DomainTransactionsServiceProtocol {
         domains.map({
             TransactionItem(transactionHash: UUID().uuidString,
                             domainName: $0,
-                            isPending: false,
+                            isPending: true,
                             operation: .mintDomain)
         })
     }

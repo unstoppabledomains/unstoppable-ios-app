@@ -20,17 +20,19 @@ extension CNavItemsTransitioning {
     mutating func setupWith(navBarContentView: CNavigationBarContentView, oldNavComponents: CNavComponents, newNavComponents: CNavComponents) {
         if let newTitleView = newNavComponents.titleView {
             let alpha = newTitleView.alpha
-            newTitleView.alpha = 1
-            let image = CNavigationHelper.viewToImage(newTitleView)
-            newTitleView.alpha = alpha
-            
-            let imageView = UIImageView(image: image)
-            imageView.frame = newTitleView.bounds
-            
-            navBarContentView.addSubview(imageView)
-            imageView.center = navBarContentView.titleLabel.center
-            imageView.alpha = 0
-            newBarItems = [imageView]
+            if alpha > 0 {
+                newTitleView.alpha = 1
+                let image = CNavigationHelper.viewToImage(newTitleView)
+                newTitleView.alpha = alpha
+                
+                let imageView = UIImageView(image: image)
+                imageView.frame = newTitleView.bounds
+                
+                navBarContentView.addSubview(imageView)
+                imageView.center = navBarContentView.titleLabel.center
+                imageView.alpha = 0
+                newBarItems = [imageView]
+            }
         }
         
         if let navBarCopy = try? CNavigationHelper.makeCopy(of: navBarContentView) {

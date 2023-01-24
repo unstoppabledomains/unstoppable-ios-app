@@ -20,11 +20,11 @@ class DomainProfileActionCoverViewPresenter {
     var analyticsName: Analytics.ViewName { .unspecified }
 
     private(set) weak var view: DomainProfileActionCoverViewProtocol?
-    let domain: DomainItem
+    let domain: DomainDisplayInfo
     let imagesInfo: DomainImagesInfo
     
     init(view: DomainProfileActionCoverViewProtocol,
-         domain: DomainItem,
+         domain: DomainDisplayInfo,
          imagesInfo: DomainImagesInfo) {
         self.view = view
         self.domain = domain

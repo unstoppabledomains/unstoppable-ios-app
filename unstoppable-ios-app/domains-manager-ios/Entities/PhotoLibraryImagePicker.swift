@@ -32,46 +32,14 @@ final class PhotoLibraryImagePicker: NSObject {
             }
             
             self.imagePickerCallback = imagePickerCallback
-            var pickerVC: UIViewController
-            if #available(iOS 14.0, *) {
-                var config = PHPickerConfiguration(photoLibrary: .shared())
-                config.filter = .images
-                config.selectionLimit = 1
-                let imagePicker = PHPickerViewController(configuration: config)
-                imagePicker.delegate = self
-                pickerVC = imagePicker
-            } else {
-                let imagePicker = UIImagePickerController()
-                imagePicker.delegate = self
-                imagePicker.mediaTypes = ["public.image"]
-                pickerVC = imagePicker
-            }
             
-            pickerVC.modalPresentationStyle = .fullScreen
-            viewController.present(pickerVC, animated: true)
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.mediaTypes = ["public.image"]
+            
+            imagePicker.modalPresentationStyle = .fullScreen
+            viewController.present(imagePicker, animated: true)
         }
-    }
-}
-
-// MARK: - PHPickerViewControllerDelegate
-extension PhotoLibraryImagePicker: PHPickerViewControllerDelegate {
-    @available(iOS 14.0, *)
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        guard let result = results.first else {
-            picker.dismiss(animated: true) // User cancelled selection
-            return
-        }
-        
-        result.itemProvider.loadObject(ofClass: UIImage.self, completionHandler: { [weak self] (object, error) in
-            DispatchQueue.main.async {
-                if let image = object as? UIImage {
-                    self?.didPick(image: image, from: picker)
-                } else {
-                    Debugger.printFailure("Failed to get image from PHImagePicker with error \(error)", critical: false)
-                    self?.didFailToPickImage(from: picker)
-                }
-            }
-        })
     }
 }
 

@@ -168,7 +168,7 @@ extension ChooseReverseResolutionDomainViewController {
     }
     
     struct DomainDetails: Hashable {
-        let domain: DomainItem
+        let domain: DomainDisplayInfo
         let isSelected: Bool
         var isCurrent: Bool = false
     }

@@ -169,38 +169,25 @@ extension ConnectedAppsListViewController {
     }
     
     struct AppItemDisplayInfo: Hashable {
-        
-        private let appHolder: AppHolder
-        let domain: DomainItem
+        private let appHolder: UnifiedConnectedAppInfoHolder
+        let domain: DomainDisplayInfo
         let blockchainTypes: NonEmptyArray<BlockchainType>
         let actions: [ItemAction]
         var app: any UnifiedConnectAppInfoProtocol { appHolder.app }
         
         init(app: any UnifiedConnectAppInfoProtocol,
-                      domain: DomainItem,
-                      blockchainTypes: NonEmptyArray<BlockchainType>,
-                      actions: [ConnectedAppsListViewController.ItemAction]) {
+             domain: DomainDisplayInfo,
+             blockchainTypes: NonEmptyArray<BlockchainType>,
+             actions: [ConnectedAppsListViewController.ItemAction]) {
             self.appHolder = .init(app: app)
             self.domain = domain
             self.blockchainTypes = blockchainTypes
             self.actions = actions
         }
-        
-        struct AppHolder: Hashable {
-            let app: any UnifiedConnectAppInfoProtocol
-
-            static func == (lhs: Self, rhs: Self) -> Bool {
-                lhs.app.isEqual(rhs.app)
-            }
-            
-            func hash(into hasher: inout Hasher) {
-                hasher.combine(app)
-            }
-        }
     }
     
     enum ItemAction: Hashable {
-        case domainInfo(domain: DomainItem)
+        case domainInfo(domain: DomainDisplayInfo)
         case networksInfo(networks: [String])
         case disconnect
         

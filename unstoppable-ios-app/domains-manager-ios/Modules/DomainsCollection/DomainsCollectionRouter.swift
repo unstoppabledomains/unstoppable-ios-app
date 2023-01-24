@@ -10,17 +10,19 @@ import UIKit
 @MainActor
 protocol DomainsCollectionRouterProtocol {
     func showSettings()
-    func showQRScanner()
-    func showDomainProfile(_ domain: DomainItem,
+    func showQRScanner(selectedDomain: DomainDisplayInfo)
+    func showDomainProfile(_ domain: DomainDisplayInfo,
                            wallet: UDWallet,
                            walletInfo: WalletDisplayInfo,
                            dismissCallback: EmptyCallback?) async
     func isMintingAvailable(in viewController: UIViewController) async -> Bool
     func runMintDomainsFlow(with mode: MintDomainsNavigationController.Mode)
-    func showImportWalletsOptions()
+    func showImportWalletsWith(initialAction: WalletsListViewPresenter.InitialAction)
     func showBuyDomainsWebView()
     func isTopPresented() -> Bool
     func showAppUpdateRequired()
+    func showDomainsSearch(_ domains: [DomainDisplayInfo],
+                           searchCallback: @escaping DomainsListSearchCallback)
 }
 
 @MainActor
@@ -54,11 +56,11 @@ final class DomainsCollectionRouter: UDRouter {
 
 // MARK: - DomainsCollectionRouterProtocol
 extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
-    func showImportWalletsOptions() {
+    func showImportWalletsWith(initialAction: WalletsListViewPresenter.InitialAction) {
         guard let navigationController = self.navigationController,
             let viewController = self.viewController else { return }
 
-        let walletsListVC = buildWalletsListModule(shouldShowImportWalletPullUp: true)
+        let walletsListVC = buildWalletsListModule(initialAction: initialAction)
         let viewControllers = [viewController, walletsListVC]
         navigationController.setViewControllers(viewControllers, animated: true)
     }
@@ -69,13 +71,15 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
         showSettings(in: navigationController)
     }
     
-    func showQRScanner() {
+    func showQRScanner(selectedDomain: DomainDisplayInfo) {
         guard let navigationController = self.navigationController else { return }
         
-        showQRScanner(in: navigationController, qrRecognizedCallback: { Task { await self.presenter?.didRecognizeQRCode() } })
+        showQRScanner(in: navigationController,
+                      selectedDomain: selectedDomain,
+                      qrRecognizedCallback: { Task { await self.presenter?.didRecognizeQRCode() } })
     }
     
-    func showDomainProfile(_ domain: DomainItem,
+    func showDomainProfile(_ domain: DomainDisplayInfo,
                            wallet: UDWallet,
                            walletInfo: WalletDisplayInfo,
                            dismissCallback: EmptyCallback?) async {
@@ -142,6 +146,13 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     func showAppUpdateRequired() {
         appContext.coreAppCoordinator.showAppUpdateRequired()
     }
+    
+    func showDomainsSearch(_ domains: [DomainDisplayInfo],
+                           searchCallback: @escaping DomainsListSearchCallback) {
+        guard let viewController = self.viewController else { return }
+
+        self.showDomainsSearch(domains, searchCallback: searchCallback, in: viewController)
+    }
 }
 
 // MARK: - Open methods
@@ -154,12 +165,10 @@ extension DomainsCollectionRouter {
     func showHomeScreenList() async {
         viewController?.loadViewIfNeeded()
         await resetNavigationToRoot()
-        viewController?.setVisualisationControlSelectedSegmentIndex(1)
-        presenter?.didChangeDomainsVisualisation(.list)
     }
     
     @MainActor
-    func primaryDomainMinted(_ domain: DomainItem) async {
+    func primaryDomainMinted(_ domain: DomainDisplayInfo) async {
         if let mintingNav = navigationController?.topViewController?.presentedViewController as? MintDomainsNavigationController {
             mintingNav.refreshMintingProgress()
             Debugger.printWarning("Primary domain minted: Already on minting screen")
@@ -180,7 +189,7 @@ private extension DomainsCollectionRouter {
     }
     
     @discardableResult
-    func showDomainProfileFromDomainsCollection(_ domain: DomainItem,
+    func showDomainProfileFromDomainsCollection(_ domain: DomainDisplayInfo,
                                                 wallet: UDWallet,
                                                 walletInfo: WalletDisplayInfo,
                                                 dismissCallback: EmptyCallback?) async -> CNavigationController? {

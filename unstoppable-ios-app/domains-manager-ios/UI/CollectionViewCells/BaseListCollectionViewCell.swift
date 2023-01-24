@@ -31,13 +31,20 @@ class BaseListCollectionViewCell: UICollectionViewCell {
         didSet {
             guard isSelectable else { return }
             
-            backgroundContainerView.backgroundColor = isHighlighted ? .backgroundSubtle : backgroundContainerColor
+            setBackgroundFor(highlighted: isHighlighted)
         }
     }
     
     func updateAppearance() {
         containerView.backgroundColor = containerColor
         backgroundContainerView.backgroundColor = backgroundContainerColor
+    }
+    
+    func blink(for seconds: TimeInterval) {
+        setBackgroundFor(highlighted: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            self.setBackgroundFor(highlighted: false)
+        }
     }
 }
 
@@ -49,5 +56,9 @@ private extension BaseListCollectionViewCell {
         backgroundContainerView.embedInSuperView(self, constraints: UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4))
         backgroundContainerView.layer.cornerRadius = 8
         containerView.insertSubview(backgroundContainerView, at: 0)
+    }
+    
+    func setBackgroundFor(highlighted: Bool) {
+        backgroundContainerView.backgroundColor = highlighted ? .backgroundSubtle : backgroundContainerColor
     }
 }

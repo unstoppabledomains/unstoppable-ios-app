@@ -49,8 +49,8 @@ protocol ExternalEventsUIHandler {
 }
 
 enum ExternalEventUIFlow {
-    case showDomainProfile(domain: DomainItem, walletWithInfo: WalletWithInfo)
-    case primaryDomainMinted(domain: DomainItem)
+    case showDomainProfile(domain: DomainDisplayInfo, walletWithInfo: WalletWithInfo)
+    case primaryDomainMinted(domain: DomainDisplayInfo)
     case showHomeScreenList
     case showPullUpLoading
 }
@@ -195,15 +195,20 @@ private extension ExternalEventsService {
                 return .showHomeScreenList
             }
         case .wcDeepLink(let wcDeepLink):
-                    
-            let request = try WCRequest.connectWallet(resolveRequest(from: wcDeepLink))
+            guard let wcURL = WalletConnectService.wcURL(from: wcDeepLink) else {
+                Debugger.printWarning("Invalid WC url: \(wcDeepLink)")
+                throw EventsHandlingError.invalidWCURL
+            }
+            // TODO: Connect to Version2?
+            let request = WCRequest.connectWallet(WalletConnectService.ConnectWalletRequest.version1(wcURL))
             let domains = await dataAggregatorService.getDomains()
-            guard let domainToUse = domains.first(where: { $0.isPrimary }) ?? domains.first else {
+            guard let domainDisplayInfoToUse = domains.first(where: { $0.isPrimary }) ?? domains.first else {
                 Debugger.printWarning("Failed to find any domain to handle WC url")
                 throw EventsHandlingError.cantFindDomain
             }
             
-            let walletWithInfo = try await findWalletWithInfo(for: domainToUse)
+            let domainToUse = try await dataAggregatorService.getDomainWith(name: domainDisplayInfoToUse.name)
+            let walletWithInfo = try await findWalletWithInfo(for: domainDisplayInfoToUse)
             let wallet = walletWithInfo.wallet
             let target = (wallet, domainToUse)
             try await WalletConnectService.handleWCRequest(request, target: target)
@@ -220,24 +225,9 @@ private extension ExternalEventsService {
         }
     }
     
-    private func resolveRequest(from url: URL) throws -> WalletConnectService.ConnectWalletRequest {
-        let wcRequest: WalletConnectService.ConnectWalletRequest
-        do {
-            let uriV2 = try appContext.walletConnectServiceV2.getWCV2Request(for: url.absoluteString)
-            wcRequest = WalletConnectService.ConnectWalletRequest.version2(uriV2)
-        } catch {
-            guard let wcURL = WalletConnectService.wcURL(from: url) else {
-                Debugger.printWarning("Invalid WC url: \(url)")
-                throw EventsHandlingError.invalidWCURL
-            }
-            wcRequest = WalletConnectService.ConnectWalletRequest.version1(wcURL)
-        }
-        return wcRequest
-    }
-    
-    func findDomainsWith(domainNames: [String]) async throws -> [DomainItem] {
+    func findDomainsWith(domainNames: [String]) async throws -> [DomainDisplayInfo] {
         let domains = await dataAggregatorService.getDomains()
-        var searchedDomains = [DomainItem]()
+        var searchedDomains = [DomainDisplayInfo]()
         for domainName in domainNames {
             if let domain = domains.first(where: { $0.name == domainName }) {
                 searchedDomains.append(domain)
@@ -248,7 +238,7 @@ private extension ExternalEventsService {
         return searchedDomains
     }
     
-    func findWalletWithInfo(for domain: DomainItem) async throws -> WalletWithInfo {
+    func findWalletWithInfo(for domain: DomainDisplayInfo) async throws -> WalletWithInfo {
         let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
 
         guard let walletWithInfo = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) }) else {

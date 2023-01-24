@@ -208,7 +208,9 @@ extension CNavigationController {
 extension CNavigationController {
     func underlyingScrollViewDidScroll(_ scrollView: UIScrollView) {
         guard !isTransitioning,
-              CNavigationHelper.findViewController(of: scrollView) == topViewController else { return }
+              let topViewController,
+              let scrollingViewController = CNavigationHelper.findViewController(of: scrollView) else { return }
+        guard topViewController == scrollingViewController || topViewController.allChilds().contains(scrollingViewController) else { return }
         
         updateNavBarScrollingState(in: scrollView)
     }
@@ -226,7 +228,7 @@ extension CNavigationController {
         
         UIView.performWithoutAnimation {
             navigationBar.setupWith(child: navChild, navigationItem: topViewController.navigationItem)
-            if let scrollView = CNavigationHelper.firstSubviewOfType(UIScrollView.self, in: topViewController.view) {
+            if let scrollView = CNavigationHelper.topScrollableView(in: topViewController.view) {
                 updateNavBarScrollingState(in: scrollView)
             }
             navigationBar.isHidden = navChild?.isNavBarHidden ?? false || topViewController is CNavigationController
@@ -283,6 +285,7 @@ private extension CNavigationController {
         
         let containerView = self.viewControllersContainerView!
         viewController.willMove(toParent: self)
+        addChild(viewController)
         viewController.view.translatesAutoresizingMaskIntoConstraints = true
         viewController.view.frame = containerView.bounds
         topViewController?.viewWillDisappear(animated)
@@ -291,7 +294,6 @@ private extension CNavigationController {
         
         func finishPush() {
             viewController.didMove(toParent: self)
-            addChild(viewController)
             completion?()
             updateNavigationBarAfterNavigation()
             setTransitioning(false)
@@ -473,6 +475,7 @@ private extension CNavigationController {
 
 extension UIViewController {
     var cNavigationController: CNavigationController? { parent as? CNavigationController }
+    var cNavigationBar: CNavigationBar? { cNavigationController?.navigationBar }
 }
 
 extension CNavigationController {

@@ -23,8 +23,8 @@ class ChooseReverseResolutionDomainViewPresenter {
     private let dataAggregatorService: DataAggregatorServiceProtocol
     var title: String { "" }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
-    private(set) var walletDomains = [DomainItem]()
-    var selectedDomain: DomainItem?
+    private(set) var walletDomains = [DomainDisplayInfo]()
+    var selectedDomain: DomainDisplayInfo?
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: ChooseReverseResolutionDomainViewProtocol,

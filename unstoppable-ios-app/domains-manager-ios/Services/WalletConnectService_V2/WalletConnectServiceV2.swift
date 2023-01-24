@@ -125,7 +125,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let clientId  = try? Networking.interactor.getClientId()
         if let sanitizedClientId = clientId?.replacingOccurrences(of: "did:key:", with: "") {
             self.sanitizedClientId = sanitizedClientId
-            Echo.configure(clientId: sanitizedClientId)
+            Echo.configure(projectId: AppIdentificators.wc2ProjectId, clientId: sanitizedClientId)
         }
     }
     
@@ -144,8 +144,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     private func pickDomain() async -> DomainItem? {
-        if let primary = appContext.udDomainsService.getAllDomains().first(where: {$0.isPrimary}) {
-            return primary
+        if let primaryDomainDisplayInfo = await appContext.dataAggregatorService.getDomains().first,
+           let primaryDomain = try? await appContext.dataAggregatorService.getDomainWith(name: primaryDomainDisplayInfo.name) {
+            return primaryDomain
         }
         return appContext.udDomainsService.getAllDomains().first
     }

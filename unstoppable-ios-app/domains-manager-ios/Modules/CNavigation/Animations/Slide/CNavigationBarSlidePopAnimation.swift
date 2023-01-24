@@ -49,6 +49,7 @@ final class CNavigationBarSlidePopAnimation: NSObject, UIViewControllerAnimatedT
         
         toNavBarCopy.setBackButton(title: newBackButtonTitle ?? "")
         toNavBarCopy.setBackButton(hidden: isLastViewController)
+        toNavBarCopy.navBarContentView.setTitleView(hidden: navBar.navBarContentView.isTitleViewHidden, animated: false)
         let toYOffset = CNavigationHelper.contentYOffset(in: toViewController.view)
         toNavBarCopy.setYOffset(toYOffset)
         toNavBarCopy.frame.origin.x = -containerView.bounds.width

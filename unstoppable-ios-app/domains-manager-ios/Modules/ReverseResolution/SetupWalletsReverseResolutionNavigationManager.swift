@@ -64,15 +64,16 @@ extension SetupWalletsReverseResolutionNavigationManager: SetupWalletsReverseRes
         switch action {
         case .continueReverseResolutionSetup:
             moveToStep(.chooseDomainForReverseResolution(mode: .chooseFirst))
-        case .didSelectDomainForReverseResolution(let domain):
+        case .didSelectDomainForReverseResolution(let domainDisplayInfo):
             guard let topViewController = self.topViewController as? PaymentConfirmationDelegate else {
                 dismiss(result: .cancelled)
                 Debugger.printFailure("Failed to get payment confirmation delegate to set RR", critical: true)
                 return
             }
+            let domain = try await dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
             try await udWalletsService.setReverseResolution(to: domain,
                                                             paymentConfirmationDelegate: topViewController)
-            dismiss(result: .set(domain: domain))
+            dismiss(result: .set(domain: domainDisplayInfo))
         }
     }
 }
@@ -188,7 +189,7 @@ private extension SetupWalletsReverseResolutionNavigationManager {
 extension SetupWalletsReverseResolutionNavigationManager {
     enum Mode {
         case chooseFirstDomain
-        case changeDomain(currentDomain: DomainItem)
+        case changeDomain(currentDomain: DomainDisplayInfo)
     }
     
     enum Step {
@@ -198,15 +199,15 @@ extension SetupWalletsReverseResolutionNavigationManager {
     
     enum Action {
         case continueReverseResolutionSetup
-        case didSelectDomainForReverseResolution(_ domain: DomainItem)
+        case didSelectDomainForReverseResolution(_ domain: DomainDisplayInfo)
     }
     
     enum Result {
         case cancelled
-        case set(domain: DomainItem)
+        case set(domain: DomainDisplayInfo)
     }
     
     enum ChooseDomainForReverseResolutionMode {
-        case chooseFirst, changeExisting(currentDomain: DomainItem)
+        case chooseFirst, changeExisting(currentDomain: DomainDisplayInfo)
     }
 }

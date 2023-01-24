@@ -15,16 +15,16 @@ protocol SignTransactionDomainSelectionViewPresenterProtocol: BasePresenterProto
     func subheadButtonPressed()
 }
 
-typealias DomainWithBalanceSelectionCallback = (DomainItem, WalletBalance?)->()
+typealias DomainWithBalanceSelectionCallback = (DomainDisplayInfo, WalletBalance?)->()
 
 final class SignTransactionDomainSelectionViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: SignTransactionDomainSelectionViewProtocol?
     private let dataAggregatorService: DataAggregatorServiceProtocol
-    private var selectedDomain: DomainItem
-    private var domains: [DomainItem] = []
-    private var filteredDomains: [DomainItem] = []
-    private var domainsWithReverseResolution: [DomainItem] = []
+    private var selectedDomain: DomainDisplayInfo
+    private var domains: [DomainDisplayInfo] = []
+    private var filteredDomains: [DomainDisplayInfo] = []
+    private var domainsWithReverseResolution: [DomainDisplayInfo] = []
     private var walletsWithInfo: [WalletWithInfoAndOptionalBalance] = []
     private var isSearchActive = false
     private var searchKey = ""
@@ -33,7 +33,7 @@ final class SignTransactionDomainSelectionViewPresenter: ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
 
     init(view: SignTransactionDomainSelectionViewProtocol,
-         selectedDomain: DomainItem,
+         selectedDomain: DomainDisplayInfo,
          domainSelectedCallback: DomainWithBalanceSelectionCallback?,
          dataAggregatorService: DataAggregatorServiceProtocol) {
         self.view = view
@@ -176,7 +176,7 @@ private extension SignTransactionDomainSelectionViewPresenter {
            searchKey.isEmpty {
             setEmptyState()
         } else {
-            var walletsToDomains: [LocalWalletInfo : [DomainItem]] = [:]
+            var walletsToDomains: [LocalWalletInfo : [DomainDisplayInfo]] = [:]
             
             for walletWithInfo in walletsWithInfo {
                 let domains = filteredDomains.filter({ walletWithInfo.wallet.owns(domain: $0) })
@@ -212,8 +212,8 @@ private extension SignTransactionDomainSelectionViewPresenter {
                     let sortedDomains = domains.sorted(by: {
                         if $0 == info.reverseResolutionDomain || $1 == info.reverseResolutionDomain {
                             return $0 == info.reverseResolutionDomain
-                        } else if $0 == selectedDomain || $1 == selectedDomain {
-                            return $0 == selectedDomain
+                        } else if $0.isSameEntity(selectedDomain) || $1.isSameEntity(selectedDomain) {
+                            return $0.isSameEntity(selectedDomain)
                         }
                         
                         return $0.name < $1.name
@@ -239,7 +239,7 @@ private extension SignTransactionDomainSelectionViewPresenter {
                             if domains.count == 1 {
                                 snapshot.appendItems([viewItem(for: reverseResolutionDomain)])
                             } else if let selectedDomain = info.selectedDomain {
-                                if selectedDomain != reverseResolutionDomain {
+                                if !selectedDomain.isSameEntity(reverseResolutionDomain) {
                                     /// Corner case if there's two domains in a wallet, one with RR and another is selected
                                     if domains.count == 2 {
                                         snapshot.appendItems(sortedDomains.map({ viewItem(for: $0) }))
@@ -263,9 +263,9 @@ private extension SignTransactionDomainSelectionViewPresenter {
         await view?.applySnapshot(snapshot, animated: animated)
     }
     
-    func viewItem(for domain: DomainItem) -> SignTransactionDomainSelectionViewController.Item {
+    func viewItem(for domain: DomainDisplayInfo) -> SignTransactionDomainSelectionViewController.Item {
         SignTransactionDomainSelectionViewController.Item.domain(domain,
-                                                                 isSelected: domain == selectedDomain,
+                                                                 isSelected: domain.isSameEntity(selectedDomain),
                                                                  isReverseResolutionSet: domainsWithReverseResolution.contains(domain))
     }
     
@@ -273,8 +273,8 @@ private extension SignTransactionDomainSelectionViewPresenter {
         let name: String
         let address: String
         let balance: WalletBalance?
-        let selectedDomain: DomainItem?
-        let reverseResolutionDomain: DomainItem?
+        let selectedDomain: DomainDisplayInfo?
+        let reverseResolutionDomain: DomainDisplayInfo?
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(address)

@@ -87,37 +87,12 @@ extension String {
         static let mobileAppName = "MOBILE_APP_NAME"
         static let mobileAppDescription = "MOBILE_APP_DESCRIPTION"
         static let udCompanyName = "UD_COMPANY_NAME"
-        static let defaultWalletName = "DEFAULT_WALLET_NAME"
-        // Menu
-        static let myDomainsMenuTitle = "MY_DOMAINS_ITEM"
-        static let walletsMenuTitle = "WALLETS_ITEM"
-        static let settingsMenuTitle = "SETTINGS_ITEM"
-        static let backupMenuTitle = "BACKUP_ITEM"
-        static let disconnectMenuTitle = "DISCONNECT_ITEM"
-        
-        // Home
-        static let mintPurchasedDomains = "MINT_PURCHASED_DOMAINS"
-        static let myDomains = "MY_DOMAIN_TITLE"
-        static let youHave = "YOU_HAVE"
-        static let domain = "DOMAIN"
-        static let domains = "DOMAINS"
-        
+
         // Mint Domains
-        static let mintDomains = "MINT_DOMAINS_TITLE"
-        
-        static let youMintTheseDomains = "YOU_CAN_MINT_THESE_DOMAINS"
-        static let mintSelectedDomains = "MINT_SELECTED_DOMAINS"
-        static let mintDomainsToCustomWallet = "MINT_DOMAINS_TO_CUSTOM_WALLET"
-        static let mintDomainsAmountLimitMessage = "MINT_DOMAINS_AMOUNT_LIMIT_MESSAGE"
-        
+        static let moveDomains = "MOVE_DOMAINS"
+        static let moveSelectedDomains = "MOVE_SELECTED_DOMAINS"
+        static let moveDomainsAmountLimitMessage = "MOVE_DOMAINS_AMOUNT_LIMIT_MESSAGE"
         static let tryAgainLater = "TRY_AGAIN_LATER"
-        static let failedToPreceed = "FAILED_TO_PROCEED"
-        static let mintingFailed = "MINTING_FAILED_DUE_TO_ERROR"
-        
-        static let helpTitle = "HELP_TITLE"
-        static let helpVerifyEmail = "HELP_VERIFY_EMAIL"
-        
-        static let weSentCode = "WE_SENT_CODE"
         
         //Authentication
         static let identifyYourself = "IDENTIFY_YOURSELF"
@@ -129,33 +104,13 @@ extension String {
         static let ownershipTransferredTitle = "OWNERSHIP_TRANSFERRED_TITLE"
         static let ownershipTransferredDescription = "OWNERSHIP_TRANSFERRED_DESCRIPTION"
         
-        //Transfer Domain
-        static let transferTitle = "TRANSFER_TITLE"
-        
-        // Wallets
-        static let readOnlyWalletState = "READ-ONLY_WALLET_STATE"
-        static let externalLinkedWalletState = "EXTERNAL-LINKED_WALLET_STATE"
-        static let reEnterError = "CHECK_AND_RE-ENTER_ERROR"
-        static let actionsButtonTitle = "ACTIONS_BUTTON_TITLE"
-        
         //Payments
-        static let transactionFeeTitle = "TRANSACTION_FEE_TITLE"
-        static let transactionFeeSubtitle = "TRANSACTION_FEE_SUBTITLLE"
-        static let transactionFeeDescription = "TRANSACTION_FEE_DESCRIPTION"
-        static let whatGasFeesButtonTitle = "WHAT_ARE_GAS_FEES_BUTTON_TITLE"
-        static let ctaButtonTitle = "CTA_BUTTON_TITLE"
-        static let cancelButtonTitle = "CANCEL_BUTTON_TITLE"
         static let udFeeLabel = "UD_FEE_LABEL"
         static let ethGasFeeLabel = "ETH_GAS_FEE_LABEL"
-        
-        //Backup Wallet
-        static let showPrivateKey = "SHOW_PRIVATE_KEY"
-        static let showMnemonicPhrase = "SHOW_MNEMONIC_PHRASE"
-        
-        //Importing Wallets
-        static let youCanImportTheseWallets = "YOU_CAN_IMPORT_THESE_WALLETS"
-        
+       
         // Common
+        static let domain = "DOMAIN"
+        static let domains = "DOMAINS"
         static let `continue` = "CONTINUE"
         static let skip = "SKIP"
         static let help = "HELP"
@@ -186,6 +141,7 @@ extension String {
         static let installed = "INSTALLED"
         static let notInstalled = "NOT_INSTALLED"
         static let minting = "MINTING"
+        static let moving = "MOVING"
         static let scanning = "SCANNING"
         static let add = "ADD"
         static let showAll = "SHOW_ALL"
@@ -202,7 +158,10 @@ extension String {
         static let nCopied = "N_COPIED"
         static let copyN = "COPY_N"
         static let username = "USERNAME"
-        
+        static let showMore = "SHOW_MORE"
+        static let rearrange = "REARRANGE"
+        static let login = "LOGIN"
+
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
@@ -327,7 +286,9 @@ extension String {
         static let pluralNVaults = "SDICT:N_VAULTS"
         static let pluralNDomains = "SDICT:N_DOMAINS"
         static let pluralMintDomains = "SDICT:MINT_DOMAINS"
+        static let pluralMoveDomains = "SDICT:MOVE_DOMAINS"
         static let pluralMintDomainsTo = "SDICT:MINT_DOMAINS_TO"
+        static let pluralMoveDomainsTo = "SDICT:MOVE_DOMAINS_TO"
         static let pluralNAppsConnected = "SDICT:N_APPS_CONNECTED"
         
         // Errors
@@ -363,26 +324,20 @@ extension String {
         static let iCloudNotEnabledAlertDeclineButton = "ICLOUD_NOT_ENABLED_ALERT_DECLINE_BUTTON"
         
         // Domains Collection
-        static let alreadyOwnADomain = "ALREADY_OWN_A_DOMAIN"
-        static let wantToBuyADomain = "WANT_TO_BUY_A_DOMAIN"
-        static let mintDomain = "MINT_DOMAIN"
-        static let mintDomainPullupDescription = "MINT_DOMAIN_PULLUP_DESCRIPTION"
         static let searchDomainsTitle = "SEARCH_DOMAINS_TITLE"
         static let searchDomainsHint = "SEARCH_DOMAINS_HINT"
-        static let tapDomainCardHint = "TAP_DOMAIN_CARD_HINT"
-        static let domainsCollectionEmptyStateMintTitle = "DOMAINS_COLLECTION_EMPTY_STATE_MINT_TITLE"
-        static let domainsCollectionEmptyStateMintSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_MINT_SUBTITLE"
-        static let domainsCollectionEmptyStateBuyTitle = "DOMAINS_COLLECTION_EMPTY_STATE_BUY_TITLE"
-        static let domainsCollectionEmptyStateBuySubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_BUY_SUBTITLE"
-        static let domainsCollectionEmptyStateManageTitle = "DOMAINS_COLLECTION_EMPTY_STATE_MANAGE_TITLE"
-        static let domainsCollectionEmptyStateManageSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_MANAGE_SUBTITLE"
         static let domainsCollectionEmptyStateTitle = "DOMAINS_COLLECTION_EMPTY_STATE_TITLE"
         static let domainsCollectionEmptyStateSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE"
+        static let domainsCollectionEmptyStateImportTitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE"
+        static let domainsCollectionEmptyStateExternalTitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE"
+        static let domainsCollectionEmptyStateExternalSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE"
+        static let importYourDomains = "IMPORT_YOUR_DOMAINS"
         
         // Statuses
         static let updatingRecords = "UPDATING_RECORDS"
         
         // Settings
+        static let settingsScreenTitle = "SETTINGS_ITEM"
         static let settingsWallets = "SETTINGS_WALLETS"
         static let settingsSecurity = "SETTINGS_SECURITY"
         static let settingsAppearance = "SETTINGS_APPEARANCE"
@@ -495,18 +450,13 @@ extension String {
         static let editProfileStep3 = "EDIT_PROFILE_STEP_3";
         static let goToWebsite = "GO_TO_WEBSITE";
         
-        // What is minting
-        static let whatIsMintingTitle = "WHAT_IS_MINTING_TITLE";
-        static let whatIsMintingSubtitle = "WHAT_IS_MINTING_SUBTITLE";
-        static let dontShowItAgain = "DONT_SHOW_IT_AGAIN";
-
         // Enter email
         static let enterEmailTitle = "ENTER_EMAIL_TITLE"
         static let enterEmailSubtitle = "ENTER_EMAIL_SUBTITLE"
         static let email = "EMAIL"
         static let addYourEmailAddress = "ADD_YOUR_EMAIL_ADDRESS"
         static let enterValidEmailAddress = "ENTER_VALID_EMAIL_ADDRESS"
-
+        
         // Enter verification code
         static let enterVerificationCodeTitle = "ENTER_VERIFICATION_CODE_TITLE"
         static let enterVerificationCodeSubtitle = "ENTER_VERIFICATION_CODE_SUBTITLE"
@@ -521,31 +471,22 @@ extension String {
         // Mint domains
         static let selectAll = "SELECT_ALL"
         static let deselectAll = "DESELECT_ALL"
-        static let mintDomainsTo = "MINT_DOMAINS_TO"
-        static let setAsMyPrimaryDomain = "SET_AS_MY_PRIMARY_DOMAIN"
-        static let whatPrimaryDomainInfoTitle = "WHAT_PRIMARY_DOMAIN_INFO_TITLE"
-        static let whatPrimaryDomainInfoSubtitle = "WHAT_PRIMARY_DOMAIN_INFO_SUBTITLE"
-        static let mintNFTDomainHelpTitle = "MINT_NTF_DOMAIN_HELP_TITLE"
-        static let mintNFTDomainHelpText = "MINT_NTF_DOMAIN_HELP_TEXT"
+        static let moveDomainsTo = "MOVE_DOMAINS_TO"
         
-        // Choose primary domain
-        static let choosePrimaryDomainTitle = "CHOOSE_PRIMARY_DOMAIN_TITLE"
-        static let choosePrimaryDomainSubtitle = "CHOOSE_PRIMARY_DOMAIN_SUBTITLE"
-        static let changePrimaryDomainTitle = "CHANGE_PRIMARY_DOMAIN_TITLE"
+        // Rearrange domains
+        static let rearrangeDomainsTitle = "REARRANGE_DOMAINS_TITLE"
+        static let rearrangeDomainsSubtitle = "REARRANGE_DOMAINS_SUBTITLE"
+        static let moveToTop = "MOVE_TO_TOP"
         
         // Minting in progress
         static let mintingInProgressTitle = "MINTING_IN_PROGRESS_TITLE"
         static let mintingInProgressSubtitle = "MINTING_IN_PROGRESS_SUBTITLE"
-        static let viewTransaction = "VIEW_TRANSACTION"
+        static let goToHomeScreen = "GO_TO_HOME_SCREEN"
         static let mintingSuccessful = "MINTING_SUCCESSFUL"
         static let notifyMeWhenFinished = "NOTIFY_ME_WHEN_FINISHED"
         static let weWillNotifyYouWhenFinished = "WE_WILL_NOTIFY_YOU_WHEN_FINISHED"
-        
-        // Change primary domain
-        static let setAsPrimaryDomain = "SET_AS_PRIMARY_DOMAIN"
-        static let changePrimaryDomainPullUpTitle = "CHANGE_PRIMARY_DOMAIN_PULLUP_TITLE"
-        static let changePrimaryDomainPullUpSubtitle = "CHANGE_PRIMARY_DOMAIN_PULLUP_SUBTITLE"
-        
+        static let viewTransaction = "VIEW_TRANSACTION"
+
         // Permissions
         static let warning = "WARNING"
         static let settings = "SETTINGS"
@@ -758,6 +699,22 @@ extension String {
         static let domainProfileAccessInfoTitle = "DOMAIN_PROFILE_ACCESS_INFO_TITLE"
         static let domainProfileAccessInfoDescription = "DOMAIN_PROFILE_ACCESS_INFO_DESCRIPTION"
         static let profileSocialsEmptyMessage = "PROFILE_SOCIALS_EMPTY_MESSAGE"
+        
+        // Recent activities
+        static let noRecentActivity = "NO_RECENT_ACTIVITY"
+        static let recentActivityInfoTitle = "RECENT_ACTIVITY_INFO_TITLE"
+        static let recentActivityInfoSubtitle = "RECENT_ACTIVITY_INFO_SUBTITLE"
+        static let scanToConnect = "SCAN_TO_CONNECT"
+        
+        // Domain card
+        static let domainCardSwipeToDetails = "DOMAIN_CARD_SWIPE_TO_DETAILS"
+        static let domainCardSwipeToCard = "DOMAIN_CARD_SWIPE_TO_CARD"
+    
+        
+        // Minting-Claiming
+        static let importFromTheWebsite = "IMPORT_FROM_THE_WEBSITE"
+        static let storeInYourDomainVault = "STORE_IN_YOUR_DOMAIN_VAULT"
+
     }
     
     struct Segues {

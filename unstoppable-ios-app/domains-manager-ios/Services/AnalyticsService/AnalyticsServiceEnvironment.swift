@@ -26,7 +26,7 @@ extension Analytics {
         case didConnectToExternalWallet, failedToConnectExternalWallet
         case biometricAuthFailed, biometricAuthSuccess
         case didEnterPasscode, didConfirmPasscode
-        case domainPressed
+        case domainPressed, domainMoved
         case didStartSearching, didStopSearching, didSearch
         case didSelectExportDomainPFPStyle
         case didChangeTheme
@@ -38,7 +38,7 @@ extension Analytics {
         case didSelectPhoto
         
         // Domains Collection
-        case mintingDomainsPressed, swipeToScanning, swipeToHome
+        case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
         
         // Domain Profile
         case didStartEditingCoinAddress, didStopEditingCoinAddress
@@ -130,7 +130,8 @@ extension Analytics {
         case enterEmail, enterEmailVerificationCode
         case noDomainsToMint
         case mintDomainsConfiguration
-        case chooseFirstPrimaryDomain, choosePrimaryDomainDuringMinting, changePrimaryDomainFromSettings
+        case chooseFirstPrimaryDomain, choosePrimaryDomainDuringMinting, changePrimaryDomainFromSettings // Deprecated
+        case sortDomainsForTheFirstTime, sortDomainsDuringMinting, sortDomainsFromSettings, sortDomainsFromHome, sortDomainsFromHomeSearch
         case primaryDomainMintingInProgress
         case domainDetails
         case settings, securitySettings
@@ -144,7 +145,6 @@ extension Analytics {
         case verifySocialTwitter, verifySocialDiscord, verifySocialTelegram, verifySocialReddit, verifySocialYouTube
         case addEmail
         case failedToFetchDomainProfile, signMessageInExternalWalletToLoadDomainProfile
-        case whatIsMinting
         case domainProfileImageDetails
     }
 }
@@ -152,7 +152,7 @@ extension Analytics {
 // MARK: - Button
 extension Analytics {
     enum Button: String, Codable {
-        case buyDomains, mintDomains, manageDomains
+        case buyDomains, mintDomains, manageDomains, importFromTheWebsite
         case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock
         case copyToClipboard, pasteFromClipboard
         case agreeCheckbox
@@ -239,8 +239,12 @@ extension Analytics {
         case viewOfflineProfile
         case setPublic, setPrivate
         
-        // What is minting
-        case dontShowWhatIsMintingCheckbox
+        case scanToConnect
+        case domainCardDot
+        case recentActivityLearnMore
+        case showMoreMintingDomains
+        case rearrangeDomains, searchDomains
+        case moveToTop
     }
 }
 
@@ -278,6 +282,7 @@ extension Analytics {
         case failedToFetchProfileData, updateDomainProfileFailed, tryUpdateProfileLater, updateDomainProfileSomeChangesFailed
         case refreshBadgesComingSoon
         case showcaseYourProfile
+        case recentActivityInfo
         case connectedAppNetworksInfo, connectedAppDomainInfo
         
         // Disabled

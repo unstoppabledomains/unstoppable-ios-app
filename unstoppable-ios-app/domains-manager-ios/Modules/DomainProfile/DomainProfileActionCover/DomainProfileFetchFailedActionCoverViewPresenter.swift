@@ -16,7 +16,7 @@ final class DomainProfileFetchFailedActionCoverViewPresenter: DomainProfileActio
     private var refreshActionCallback: DomainProfileFetchFailedActionCallback
     
     init(view: DomainProfileActionCoverViewProtocol,
-         domain: DomainItem,
+         domain: DomainDisplayInfo,
          imagesInfo: DomainImagesInfo,
          refreshActionCallback: @escaping DomainProfileFetchFailedActionCallback) {
         self.refreshActionCallback = refreshActionCallback

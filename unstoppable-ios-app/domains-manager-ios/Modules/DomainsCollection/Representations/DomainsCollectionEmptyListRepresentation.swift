@@ -44,15 +44,15 @@ extension DomainsCollectionEmptyListRepresentation: DomainsCollectionRepresentat
         return layout
     }
     
-    func snapshot() -> DomainsCollectionSnapshot {
-        var snapshot = DomainsCollectionSnapshot()
+    func snapshot() -> DomainsListSnapshot {
+        var snapshot = DomainsListSnapshot()
         
-        snapshot.appendSections([.emptyTopInfo])
-        snapshot.appendItems([.emptyTopInfo])
-        snapshot.appendSections([.emptyList(item: .mintDomains)])
-        snapshot.appendItems([.emptyList(item: .mintDomains)])
-        snapshot.appendSections([.emptyList(item: .manageDomains)])
-        snapshot.appendItems([.emptyList(item: .manageDomains)])
+//        snapshot.appendSections([.emptyTopInfo])
+//        snapshot.appendItems([.emptyTopInfo])
+//        snapshot.appendSections([.emptyList(item: .mintDomains)])
+//        snapshot.appendItems([.emptyList(item: .mintDomains)])
+//        snapshot.appendSections([.emptyList(item: .manageDomains)])
+//        snapshot.appendItems([.emptyList(item: .manageDomains)])
         
         return snapshot
     }

@@ -12,7 +12,8 @@ final class MockDataAggregatorService {
     private let walletsService: UDWalletsServiceProtocol
     private let transactionsService: DomainTransactionsServiceProtocol
     private var listeners: [DataAggregatorListenerHolder] = []
-    
+    var domainsWithDisplayInfo: [DomainWithDisplayInfo] = []
+
     init(domainsService: UDDomainsServiceProtocol,
          walletsService: UDWalletsServiceProtocol,
          transactionsService: DomainTransactionsServiceProtocol) {
@@ -25,6 +26,41 @@ final class MockDataAggregatorService {
 
 // MARK: - DataAggregatorServiceProtocol
 extension MockDataAggregatorService: DataAggregatorServiceProtocol {
+    func getDomains() async -> [DomainDisplayInfo] {
+        if domainsWithDisplayInfo.isEmpty {
+            let domains = await getCachedDomainsFor(wallets: walletsService.getUserWallets())
+            for (i, domain) in domains.enumerated() {
+                let displayInfo = DomainDisplayInfo(domainItem: domain,
+                                                    pfpInfo: nil,
+                                                    state: (i % 2 == 0) ? .minting : .default,
+                                                    order: i,
+                                                    isSetForRR: false)
+                domainsWithDisplayInfo.append(.init(domain: domain,
+                                                    displayInfo: displayInfo))
+            }
+            
+            let mintingInProgressDomains = domainsWithDisplayInfo.filter({ $0.displayInfo.isMinting })
+            if mintingInProgressDomains.isEmpty {
+                MintingDomainsStorage.clearMintingDomains()
+            } else {
+                let mintingDomains = mintingInProgressDomains.map({ MintingDomain(name: $0.name,
+                                                                                  walletAddress: $0.displayInfo.ownerWallet ?? "",
+                                                                                  isPrimary: false,
+                                                                                  transactionId: 0)})
+                try? MintingDomainsStorage.save(mintingDomains: mintingDomains)
+            }
+        }
+        
+        return domainsWithDisplayInfo.map { $0.displayInfo }
+    }
+    
+    func getCachedDomainsFor(wallets: [UDWallet]) async -> [DomainItem] {
+        let domains = try! await domainsService.updateDomainsList(for: wallets)
+        return domains
+    }
+    
+    func getDomainWith(name: String) async throws -> DomainItem { throw NSError() }
+    func getDomainsWith(names: Set<String>) async -> [DomainItem] { [] }
     func getReverseResolutionDomain(for walletAddress: HexAddress) async -> String?
     { nil }
     
@@ -70,22 +106,18 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
         
     }
     
-    func getDomains() async -> [DomainItem] {
-        await getCachedDomainsFor(wallets: walletsService.getUserWallets())
-    }
-    func getCachedDomainsFor(wallets: [UDWallet]) async -> [DomainItem] {
-        var domains = try! await domainsService.updateDomainsList(for: wallets)
-        let primaryDomainName = UserDefaults.primaryDomainName
-        for i in 0..<domains.count {
-            domains[i].isPrimary = domains[i].name == primaryDomainName
-            domains[i].isUpdatingRecords = i == 4
+//    func getDomains() async -> [DomainItem] {
+//
+//    }
+    
+   
+    func setDomainsOrder(using domains: [DomainDisplayInfo]) async {
+        for domain in domains {
+            if let i = domainsWithDisplayInfo.firstIndex(where: { $0.displayInfo.isSameEntity(domain) }) {
+                domainsWithDisplayInfo[i].displayInfo.setOrder(domain.order)
+            }
         }
-        return domains
-    }
-     
-    func setPrimaryDomainWith(name: String) async {
-        UserDefaults.primaryDomainName = name
-        let domains = await getDomains()
+        self.domainsWithDisplayInfo = domainsWithDisplayInfo.sorted()
         notifyListenersWith(result: .success(.domainsUpdated(domains)))
     }
     
@@ -93,14 +125,14 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
         
     }
     
-    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainItem? { domainsService.getCachedDomainsFor(wallets: [wallet]).first }
+    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo? { await getDomains().first }
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool { true }
-    func isReverseResolutionChangeAllowed(for domain: DomainItem) async -> Bool { true }
+    func isReverseResolutionChangeAllowed(for domain: DomainDisplayInfo) async -> Bool { true }
     func isReverseResolutionSetupInProgress(for domainName: DomainName) async -> Bool { false }
     func isReverseResolutionSet(for domainName: DomainName) async -> Bool { false }
     func mintDomains(_ domains: [String],
                      paidDomains: [String],
-                     newPrimaryDomain: String?,
+                     domainsOrderInfoMap: SortDomainsOrderInfoMap,
                      to wallet: UDWallet,
                      userEmail: String,
                      securityCode: String) async throws -> [MintingDomain] {
@@ -109,7 +141,7 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
         let transactions: [TransactionItem] = []
         let mintingDomains = domains.map({ domain in MintingDomain(name: domain,
                                                                    walletAddress: wallet.address,
-                                                                   isPrimary: domain == newPrimaryDomain,
+                                                                   isPrimary: false,
                                                                    transactionId: 0,
                                                                    transactionHash: transactions.first(where: { $0.domainName == domain })?.transactionHash) })
         return mintingDomains

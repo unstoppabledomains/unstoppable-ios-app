@@ -11,6 +11,7 @@ final class MintingInProgressViewPresenter: BaseMintingTransactionInProgressView
     
     private weak var mintDomainsFlowManager: MintDomainsFlowManager?
     override var analyticsName: Analytics.ViewName { .primaryDomainMintingInProgress }
+    override var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
 
     init(view: TransactionInProgressViewProtocol,
          mintingDomains: [MintingDomain],
@@ -24,6 +25,12 @@ final class MintingInProgressViewPresenter: BaseMintingTransactionInProgressView
         self.mintDomainsFlowManager = mintDomainsFlowManager
     }
     
+    override func viewTransactionButtonPressed() {
+        Task {
+            try? await mintDomainsFlowManager?.handle(action: .skipMinting)
+        }
+    }
+    
     override func fillUpMintingDomains(in snapshot: inout TransactionInProgressSnapshot) {
         if pendingDomains.count == 1 {
             snapshot.appendSections([.card])
@@ -31,7 +38,8 @@ final class MintingInProgressViewPresenter: BaseMintingTransactionInProgressView
         } else {
             snapshot.appendSections([.list])
             snapshot.appendItems(pendingDomains.map({
-                TransactionInProgressViewController.Item.list(domain: $0.name, isPrimary: $0.name == primaryDomain?.name)
+                TransactionInProgressViewController.Item.firstMintingList(domain: $0.name,
+                                                              isSelectable: false)
             }))
         }
     }
@@ -40,7 +48,7 @@ final class MintingInProgressViewPresenter: BaseMintingTransactionInProgressView
         if pendingDomains.isEmpty {
             stopTimer()
             Task {
-                try? await mintDomainsFlowManager?.handle(action: .mintingCompleted(isPrimary: primaryDomain != nil))
+                try? await mintDomainsFlowManager?.handle(action: .mintingCompleted)
             }
         }
     }

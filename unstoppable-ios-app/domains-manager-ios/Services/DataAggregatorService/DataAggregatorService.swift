@@ -29,13 +29,16 @@ final class DataAggregatorService {
         self.walletsService = walletsService
         self.transactionsService = transactionsService
         self.walletConnectServiceV2 = walletConnectServiceV2
-        dataHolder = DataHolder(wallets: walletsService.getUserWallets(), domains: [])
+        dataHolder = DataHolder(wallets: walletsService.getUserWallets())
         walletsService.addListener(self)
         Task {
             await startRefreshTimer()
         }
     }
     
+    func domainItems(from displayInfo: [DomainWithDisplayInfo]) -> [DomainDisplayInfo] {
+        displayInfo.map({ $0.displayInfo })
+    }
 }
 
 // MARK: - DataAggregatorServiceProtocol
@@ -86,45 +89,38 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
                                  reverseResolutionDomain: reverseResolutionDomain)
     }
      
-    func getDomains() async -> [DomainItem] {
-        let currentDomains = await dataHolder.domains
-         guard currentDomains.isEmpty else {
-            return currentDomains
+    func getDomains() async -> [DomainDisplayInfo] {
+        return await getDomainsWithDisplayInfo().map { $0.displayInfo }
+    }
+
+    func getDomainWith(name: String) async throws -> DomainItem {
+        guard let domain = await getDomainsWith(names: [name]).first else { throw DataAggregationError.failedToFindDomain }
+        
+        return domain
+    }
+    
+    func getDomainsWith(names: Set<String>) async -> [DomainItem] {
+        let domainsWithInfo = await getDomainsWithDisplayInfo()
+        let domains = Array(domainsWithInfo.lazy.filter({ names.contains($0.name) }).map({ $0.domain }))
+        if domains.count != names.count {
+            Debugger.printFailure("Not all domain items were found", critical: true)
         }
-        await fillDomainsDataFromCache()
-        return await dataHolder.domains
+        
+        return domains
     }
     
-    private func fillDomainsDataFromCache() async {
-        let wallets = await getWallets()
-        let cachedDomains = domainsService.getCachedDomainsFor(wallets: wallets)
-        let domainNames = cachedDomains.map({ $0.name }) + (MintingDomainsStorage.retrieveMintingDomains().map({ $0.name }))
-        let transactions = transactionsService.getCachedTransactionsFor(domainNames: domainNames)
-        let cachedReverseResolutionMap = ReverseResolutionInfoMapStorage.retrieveReverseResolutionMap()
-        await updateDataWith(domains: cachedDomains,
-                             withTransactions: transactions,
-                             reverseResolutionMap: cachedReverseResolutionMap)
-        await prepareDomains()
+    func setDomainsOrder(using domains: [DomainDisplayInfo]) async {
+        SortDomainsManager.shared.saveDomainsOrder(domains: domains)
+        await dataHolder.setOrder(using: domains)
+        let domains = await dataHolder.domainsWithDisplayInfo
+        notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: domains))))
     }
-    
+
     func getReverseResolutionDomain(for walletAddress: HexAddress) async -> String? {
-        return await dataHolder.reverseResolutionDomainName(for: walletAddress)
+        await dataHolder.reverseResolutionDomainName(for: walletAddress)
     }
     
-    func setPrimaryDomainWith(name: String) async {
-        UserDefaults.primaryDomainName = name
-        await prepareDomains()
-        let domains = await dataHolder.domains
-        notifyListenersWith(result: .success(.domainsUpdated(domains)))
-        notifyListenersWith(result: .success(.primaryDomainChanged(name)))
-    }
-    
-    private func findFirstPendingRRTransaction(from txs: [TransactionItem]) -> TransactionItem? {
-        txs.filterPending(extraCondition: {$0.operation == .setReverseResolution})
-            .first
-    }
-    
-    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainItem? {
+    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo? {
         let domains = await getDomains()
         let walletDomains = domains.filter({ wallet.owns(domain: $0) })
         let transactions = transactionsService.getCachedTransactionsFor(domainNames: walletDomains.map({ $0.name }))
@@ -150,6 +146,11 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         return findFirstPendingRRTransaction(from: transactions) != nil
     }
     
+    private func findFirstPendingRRTransaction(from txs: [TransactionItem]) -> TransactionItem? {
+        txs.filterPending(extraCondition: {$0.operation == .setReverseResolution})
+            .first
+    }
+    
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool {
         let domains = await getDomains()
         let domainNames = domains.map({ $0.name })
@@ -165,7 +166,7 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         return !domainsAllowedToSetRR.isEmpty
     }
     
-    func isReverseResolutionChangeAllowed(for domain: DomainItem) async -> Bool {
+    func isReverseResolutionChangeAllowed(for domain: DomainDisplayInfo) async -> Bool {
         if !domain.isReverseResolutionChangeAllowed() {
             return false
         }
@@ -191,7 +192,7 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     
     func mintDomains(_ domains: [String],
                      paidDomains: [String],
-                     newPrimaryDomain: String?,
+                     domainsOrderInfoMap: SortDomainsOrderInfoMap,
                      to wallet: UDWallet,
                      userEmail: String,
                      securityCode: String) async throws -> [MintingDomain] {
@@ -203,23 +204,23 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
                                                                     userEmail: userEmail,
                                                                     securityCode: securityCode)
             transactionsService.cacheTransactions(transactions)
+            
             let mintingDomains = domains.compactMap({ (domainName: String) -> MintingDomain?  in
                 guard let foundTx = transactions.first(where: { $0.domainName == domainName }),
                       let txId = foundTx.id else { return nil }
                 return MintingDomain(name: domainName,
                                      walletAddress: wallet.address,
-                                     isPrimary: domainName == newPrimaryDomain,
+                                     isPrimary: false,
                                      transactionId: txId,
                                      transactionHash: nil) })
             
             var currentMintingDomains = MintingDomainsStorage.retrieveMintingDomains()
             currentMintingDomains.append(contentsOf: mintingDomains)
             try MintingDomainsStorage.save(mintingDomains: currentMintingDomains)
+            SortDomainsManager.shared.saveDomainsOrderMap(domainsOrderInfoMap)
             await reloadAndAggregateData(shouldRefreshPFP: false)
             await startRefreshTimer()
-            if let primaryDomain = newPrimaryDomain {
-                await setPrimaryDomainWith(name: primaryDomain)
-            }
+            
             return mintingDomains
         } catch {
             await startRefreshTimer()
@@ -276,6 +277,29 @@ extension DataAggregatorService: UDWalletsServiceListener {
 
 // MARK: - Private methods
 private extension DataAggregatorService {
+    func getDomainsWithDisplayInfo() async -> [DomainWithDisplayInfo] {
+        let currentDomains = await dataHolder.domainsWithDisplayInfo
+        guard currentDomains.isEmpty else {
+            return currentDomains
+        }
+        await fillDomainsDataFromCache()
+        let domains = await dataHolder.domainsWithDisplayInfo
+        return domains
+    }
+    
+    func fillDomainsDataFromCache() async {
+        let wallets = await getWallets()
+        let cachedDomains = domainsService.getCachedDomainsFor(wallets: wallets)
+        let domainNames = cachedDomains.map({ $0.name }) + (MintingDomainsStorage.retrieveMintingDomains().map({ $0.name }))
+        let cachedTransactions = transactionsService.getCachedTransactionsFor(domainNames: domainNames)
+        let cachedReverseResolutionMap = ReverseResolutionInfoMapStorage.retrieveReverseResolutionMap()
+        let cachedPFPInfo = domainsService.getCachedDomainsPFPInfo()
+        await buildDomainsDisplayInfoDataWith(domains: cachedDomains,
+                                              pfpInfo: cachedPFPInfo,
+                                              withTransactions: cachedTransactions,
+                                              reverseResolutionMap: cachedReverseResolutionMap)
+    }
+    
     @objc func refreshData() {
         Task {
             await reloadAndAggregateData()
@@ -294,7 +318,7 @@ private extension DataAggregatorService {
             let (domains, reverseResolutionMap) = try await (domainsTask, reverseResolutionTask)
 
             guard !domains.isEmpty else {
-                await dataHolder.setDataWith(domains: [],
+                await dataHolder.setDataWith(domainsWithDisplayInfo: [],
                                              reverseResolutionMap: reverseResolutionMap)
                 notifyListenersWith(result: .success(.domainsUpdated([])))
                 let wallets = await getWalletsWithInfo()
@@ -311,25 +335,25 @@ private extension DataAggregatorService {
                 Debugger.printFailure("Failed to load transactions for \(domains.count) domains with error: \(error.localizedDescription)", critical: false)
             }
             
-            let domainsWithPFP = try await loadDomainsPFPIfNotTooLarge(domains)
-            await updateDataWith(domains: domainsWithPFP,
-                                 withTransactions: transactions,
-                                 reverseResolutionMap: reverseResolutionMap)
-            await prepareDomains()
+            let domainsPFPInfo = try await loadDomainsPFPIfNotTooLarge(domains)
+            await buildDomainsDisplayInfoDataWith(domains: domains,
+                                                  pfpInfo: domainsPFPInfo,
+                                                  withTransactions: transactions,
+                                                  reverseResolutionMap: reverseResolutionMap)
             
-            let finalDomains = await dataHolder.domains
-            notifyListenersWith(result: .success(.domainsUpdated(finalDomains)))
+            let finalDomains = await dataHolder.domainsWithDisplayInfo
+            notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: finalDomains))))
             
             let wallets = await getWalletsWithInfo()
             notifyListenersWith(result: .success(.walletsListUpdated(wallets)))
-            
-            walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains)
+            walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
             Debugger.printWarning("Did aggregate data for \(finalDomains.count) domains for \(Date().timeIntervalSince(startTime))")
             if shouldRefreshPFP {
                 await loadDomainsPFPIfTooLarge()
                 Debugger.printWarning("Did aggregate data with PFP for \(finalDomains.count) domains for \(Date().timeIntervalSince(startTime))")
             }
         } catch NetworkLayerError.connectionLost {
+            await reloadAndAggregateData(shouldRefreshPFP: shouldRefreshPFP)
             return // May occur when user navigate between apps and underlaying requests were cancelled
         } catch {
             let error = error
@@ -339,23 +363,23 @@ private extension DataAggregatorService {
         await startRefreshTimer()
     }
         
-    func loadDomainsPFPIfNotTooLarge(_ domains: [DomainItem]) async throws -> [DomainItem] {
+    func loadDomainsPFPIfNotTooLarge(_ domains: [DomainItem]) async throws -> [DomainPFPInfo] {
         if domains.count <= numberOfDomainsToLoadPerTime {
-            return try await domainsService.updatePFP(for: domains)
+            return await domainsService.updateDomainsPFPInfo(for: domains)
         }
-        return domains
+        return domainsService.getCachedDomainsPFPInfo()
     }
     
     func loadDomainsPFPIfTooLarge() async {
-        let domains = await dataHolder.domains
-        if domains.count > numberOfDomainsToLoadPerTime {
+        let domainsWithInfo = await dataHolder.domainsWithDisplayInfo
+        if domainsWithInfo.count > numberOfDomainsToLoadPerTime {
             let walletsWithInfo = await getWalletsWithInfo()
             let reverseResolutionDomainNames = Set(walletsWithInfo.compactMap({ $0.displayInfo?.reverseResolutionDomain?.name }))
             let loadDomainsPFPTask = Task {
-                var domains = domains.sorted { lhs, rhs in
-                    if lhs.isPrimary {
+                var domains = Array(domainsWithInfo.lazy.sorted { lhs, rhs in
+                    if lhs.displayInfo.isPrimary {
                         return true
-                    } else if rhs.isPrimary {
+                    } else if rhs.displayInfo.isPrimary {
                         return false
                     } else if reverseResolutionDomainNames.contains(lhs.name) {
                         return true
@@ -363,17 +387,18 @@ private extension DataAggregatorService {
                         return false
                     }
                     return false
-                }
+                }.map({ $0.domain }))
                 
                 while !domains.isEmpty {
                     let batch = Array(domains.prefix(numberOfDomainsToLoadPerTime))
-                    if let domainsWithPFP = try? await domainsService.updatePFP(for: batch) {
-                        if batch.sortedByName() != domainsWithPFP.sortedByName() {
-                            await dataHolder.replaceDomains(domainsWithPFP)
-                            let updatedDomains = await dataHolder.domains
-                            notifyListenersWith(result: .success(.domainsPFPUpdated(updatedDomains)))
-                        }
+                    let pfpInfo = await domainsService.updateDomainsPFPInfo(for: batch)
+                    let isPFPInfoChanged = await dataHolder.updateDisplayDomainsPFPInfoIfChanged(pfpInfo)
+                    
+                    if isPFPInfoChanged {
+                        let updatedDomains = await dataHolder.domainsWithDisplayInfo
+                        notifyListenersWith(result: .success(.domainsPFPUpdated(domainItems(from: updatedDomains))))
                     }
+                    
                     if Task.isCancelled {
                         break
                     }
@@ -425,60 +450,83 @@ private extension DataAggregatorService {
         return reverseResolutionMap
     }
     
-    func prepareDomains() async {
-        await dataHolder.prepareDomains(primaryDomainName: UserDefaults.primaryDomainName)
-    }
-    
-    func updateDataWith(domains: [DomainItem],
-                        withTransactions transactions: [TransactionItem],
-                        reverseResolutionMap: ReverseResolutionInfoMap) async {
+    func buildDomainsDisplayInfoDataWith(domains: [DomainItem],
+                                         pfpInfo: [DomainPFPInfo],
+                                         withTransactions transactions: [TransactionItem],
+                                         reverseResolutionMap: ReverseResolutionInfoMap) async {
         
+        let rrDomainsList = Set(reverseResolutionMap.compactMap( { $0.value } ))
+        
+        // Aggregate domain display info
+        var domainsWithDisplayInfo = [DomainWithDisplayInfo]()
+        for domain in domains {
+            let domainState: DomainDisplayInfo.State = transactions.containPending(domain) ? .updatingRecords : .default
+            let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domain.name })
+            let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
+            let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
+                                                      pfpInfo: domainPFPInfo,
+                                                      state: domainState,
+                                                      order: order,
+                                                      isSetForRR: rrDomainsList.contains(domain.name))
+            
+            domainsWithDisplayInfo.append(.init(domain: domain,
+                                                displayInfo: domainDisplayInfo))
+        }
+        
+        // Set minting domains
+        let mintingTransactions = transactions.filterPending(extraCondition: { $0.isMintingTransaction() })
+        let mintingDomainsNames = mintingTransactions.compactMap({ $0.domainName })
+        var mintingDomainsWithDisplayInfoItems = [DomainWithDisplayInfo]()
+
         func detectMintingDomains(in wallets: [UDWallet]) -> [MintingDomain] {
             let walletsAddresses = Set(wallets.map({ $0.address }))
-
+            
             let mintingDomains: [MintingDomain] = mintingDomainsNames.compactMap({ (_ domainName: String) -> MintingDomain? in
                 guard let mintingDomain = MintingDomainsStorage.retrieveMintingDomains()
                     .first(where: { $0.name == domainName }) else { return nil }
                 guard walletsAddresses.contains(mintingDomain.walletAddress) else { return nil }
-
+                
                 return MintingDomain(name: domainName,
                                      walletAddress: mintingDomain.walletAddress,
-                                     isPrimary: domainName == UserDefaults.primaryDomainName,
+                                     isPrimary: false,  
                                      transactionId: mintingDomain.transactionId,
                                      transactionHash: mintingDomain.transactionHash)
             })
             return mintingDomains
         }
         
-        // Set isUpdatingRecord status
-        var domains = domains
-        for i in 0..<domains.count {
-            domains[i].isUpdatingRecords = transactions.containPending(domains[i])
-        }
-        
-        // Set minting domains
-        let mintingTransactions = transactions.filterPending(extraCondition: { $0.isMintingTransaction() })
-        let mintingDomainsNames = mintingTransactions.compactMap({ $0.domainName })
-        var mintingDomainItems = [DomainItem]()
-        
         if !mintingDomainsNames.isEmpty {
             let wallets = await dataHolder.wallets
             let mintingDomains = detectMintingDomains(in: wallets)
-            mintingDomainItems = mintingDomains.map({ DomainItem(name: $0.name,
-                                                                 ownerWallet: $0.walletAddress,
-                                                                 transactionHashes: [$0.transactionHash ?? ""],
-                                                                 isPrimary: $0.isPrimary,
-                                                                 isMinting: true) })
-            domains.remove(domains: mintingDomainItems)
+            mintingDomainsWithDisplayInfoItems = mintingDomains.map({
+                let domainName = $0.name
+                let domain = DomainItem(name: domainName,
+                                        ownerWallet: $0.walletAddress,
+                                        transactionHashes: [$0.transactionHash ?? ""])
+                let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domainName })
+                let order = SortDomainsManager.shared.orderFor(domainName: domainName)
+
+                let displayInfo = DomainDisplayInfo(name: domainName,
+                                                    ownerWallet: $0.walletAddress,
+                                                    pfpInfo: domainPFPInfo,
+                                                    state: .minting,
+                                                    order: order,
+                                                    isSetForRR: rrDomainsList.contains(domainName))
+                
+                return DomainWithDisplayInfo(domain: domain, displayInfo: displayInfo)
+            })
+            
+            domainsWithDisplayInfo.remove(domains: mintingDomainsWithDisplayInfoItems)
             try? MintingDomainsStorage.save(mintingDomains: mintingDomains)
         } else {
             MintingDomainsStorage.clearMintingDomains()
         }
         
-        let finalDomains = domains + mintingDomainItems
+        let finalDomainsWithDisplayInfo = domainsWithDisplayInfo + mintingDomainsWithDisplayInfoItems
         
-        await dataHolder.setDataWith(domains: finalDomains,
+        await dataHolder.setDataWith(domainsWithDisplayInfo: finalDomainsWithDisplayInfo,
                                      reverseResolutionMap: reverseResolutionMap)
+        await dataHolder.sortDomainsToDisplay()
     }
     
     func getWallets() async -> [UDWallet] {
@@ -522,52 +570,67 @@ private extension DataAggregatorService {
 // MARK: - Private methods
 private extension DataAggregatorService {
     actor DataHolder {
-        var domains: [DomainItem]
+        var domainsWithDisplayInfo: [DomainWithDisplayInfo] = []
         var wallets: [UDWallet]
         var reverseResolutionMap: ReverseResolutionInfoMap = [:]
 
-        init(wallets: [UDWallet], domains: [DomainItem]) {
+        init(wallets: [UDWallet]) {
             self.wallets = wallets
-            self.domains = domains
         }
         
         func setWallets(_ wallets: [UDWallet]) {
             self.wallets = wallets
         }
         
-        func setDataWith(domains: [DomainItem],
+        func setDataWith(domainsWithDisplayInfo: [DomainWithDisplayInfo],
                          reverseResolutionMap: ReverseResolutionInfoMap) {
-            self.domains = domains
+            self.domainsWithDisplayInfo = domainsWithDisplayInfo
             self.reverseResolutionMap = reverseResolutionMap
         }
         
         func setReverseResolutionInProgress(for domainName: String) {
-            if let i = domains.firstIndex(where: { $0.name == domainName }) {
-                domains[i].isUpdatingRecords = true
+            if let i = domainsWithDisplayInfo.firstIndex(where: { $0.name == domainName }) {
+                domainsWithDisplayInfo[i].displayInfo.setState(.updatingRecords)
             }
-        }
-        
-        func appendDomains(_ domains: [DomainItem]) {
-            self.domains.append(contentsOf: domains)
         }
         
         func reverseResolutionDomainName(for walletAddress: HexAddress) -> DomainName? {
             reverseResolutionMap[walletAddress] ?? nil
         }
         
-        func prepareDomains(primaryDomainName: String?) {
-            self.domains = domains.sorted(by: { $0.name < $1.name })
-            for i in 0..<domains.count {
-                domains[i].isPrimary = domains[i].name == primaryDomainName
-            }
+        func sortDomainsToDisplay() {
+            self.domainsWithDisplayInfo = domainsWithDisplayInfo.sorted()
         }
         
-        func replaceDomains(_ domainsToReplace: [DomainItem]) {
-            for domainToReplace in domainsToReplace {
-                if let i = domains.firstIndex(where: { $0.name == domainToReplace.name }) {
-                    domains[i] = domainToReplace
+        func setOrder(using domains: [DomainDisplayInfo]) {
+            for domain in domains {
+                if let i = domainsWithDisplayInfo.firstIndex(where: { $0.displayInfo.isSameEntity(domain) }) {
+                    domainsWithDisplayInfo[i].displayInfo.setOrder(domain.order)
                 }
             }
+            sortDomainsToDisplay()
         }
+        
+        @discardableResult
+        /// Return true if pfp info was changed
+        func updateDisplayDomainsPFPInfoIfChanged(_ pfpInfoArray: [DomainPFPInfo]) -> Bool {
+            var isPFPInfoChanged = false
+            
+            for pfpInfo in pfpInfoArray {
+                if let i = domainsWithDisplayInfo.firstIndex(where: { $0.name == pfpInfo.domainName }),
+                   domainsWithDisplayInfo[i].displayInfo.domainPFPInfo != pfpInfo {
+                    isPFPInfoChanged = true
+                    domainsWithDisplayInfo[i].displayInfo.setPFPInfo(pfpInfo)
+                }
+            }
+            
+            return isPFPInfoChanged
+        }
+    }
+}
+
+extension DataAggregatorService {
+    enum DataAggregationError: Error {
+        case failedToFindDomain
     }
 }

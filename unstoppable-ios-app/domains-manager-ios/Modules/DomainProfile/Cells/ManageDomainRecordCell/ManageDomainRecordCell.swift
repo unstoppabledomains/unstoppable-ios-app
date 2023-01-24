@@ -34,7 +34,6 @@ final class ManageDomainRecordCell: WalletAddressFieldCollectionCell {
     private var mode: DomainProfileViewController.RecordEditingMode = .viewOnly
     private var didRequestToStartEditing = false
     private var coin: CoinRecord?
-    private var actions: [DomainProfileViewController.RecordAction] = []
     private var currencyImageLoader: CurrencyImageLoader!
 
     override func awakeFromNib() {
@@ -117,20 +116,16 @@ extension ManageDomainRecordCell {
             walletAddressTF.resignFirstResponder()
         }
         
-        if #available(iOS 14.0, *) {
-            let menuTitle = actionsMenuTitle
-            let menuElements = displayInfo.availableActions.compactMap({ menuElement(for: $0) })
-            let menu = UIMenu(title: menuTitle, children: menuElements)
-            actionButton.menu = menu
-            actionButton.showsMenuAsPrimaryAction = true
-            actionButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.dotsActionCallback?()
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-        } else {
-            self.actions = displayInfo.availableActions
-            actionButton.addTarget(self, action: #selector(actionsButtonPressed), for: .touchUpInside)
-        }
+        // Actions
+        let menuTitle = actionsMenuTitle
+        let menuElements = displayInfo.availableActions.compactMap({ menuElement(for: $0) })
+        let menu = UIMenu(title: menuTitle, children: menuElements)
+        actionButton.menu = menu
+        actionButton.showsMenuAsPrimaryAction = true
+        actionButton.addAction(UIAction(handler: { [weak self] _ in
+            self?.dotsActionCallback?()
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
     }
 }
 
@@ -180,20 +175,7 @@ private extension ManageDomainRecordCell {
 
         return "\(coin.ticker) • \(coin.ticker)"
     }
-    
-    @objc func actionsButtonPressed() {
-        guard let view = self.findViewController()?.view else { return }
-        
-        dotsActionCallback?()
-        UDVibration.buttonTap.vibrate()
-        let actions: [UIActionBridgeItem] = actions.map({ action in uiActionBridgeItem(for: action) }).reduce(into: [UIActionBridgeItem]()) { partialResult, result in
-            partialResult += result
-        }
-        let popoverViewController = UIMenuBridgeView.instance(with: actionsMenuTitle,
-                                                              actions: actions)
-        popoverViewController.show(in: view, sourceView: actionButton)
-    }
-    
+
     func endEditing() {
         walletAddressTF.resignFirstResponder()
     }
@@ -230,21 +212,6 @@ private extension ManageDomainRecordCell {
         case .remove(let callback):
             let remove = UIAction(title: action.title, image: action.icon, identifier: .init(UUID().uuidString), attributes: .destructive, handler: { _ in callback() })
             return UIMenu(title: "", options: .displayInline, children: [remove])
-        }
-    }
-    
-    func uiActionBridgeItem(for action: DomainProfileViewController.RecordAction, titlePrefix: String = "") -> [UIActionBridgeItem] {
-        switch action {
-        case .copy(_, let callback):
-            return [UIActionBridgeItem(title: titlePrefix + action.title, image: action.icon, handler: {  callback() })]
-        case .copyMultiple(let addresses):
-            return addresses.flatMap({ uiActionBridgeItem(for: $0, titlePrefix: String.Constants.copy.localized() + " ") })
-        case .edit(let callback):
-            return [UIActionBridgeItem(title: action.title, image: action.icon, handler: { callback() })]
-        case .editForAllChains(_, let callback):
-            return [UIActionBridgeItem(title: action.title, image: action.icon, handler: { callback() })]
-        case .remove(let callback):
-            return [UIActionBridgeItem(title: action.title, image: action.icon, attributes: [.destructive], handler: { callback() })]
         }
     }
     

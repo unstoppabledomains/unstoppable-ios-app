@@ -28,7 +28,6 @@ final class DomainProfileGeneralInfoCell: BaseListCollectionViewCell {
     private var actionButtonPressedCallback: EmptyCallback?
     private var lockButtonPressedCallback: EmptyCallback?
     private var mode: DomainProfileViewController.TextEditingMode = .viewOnly
-    private var actions: [DomainProfileGeneralInfoSection.InfoAction] = []
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -90,19 +89,15 @@ extension DomainProfileGeneralInfoCell {
         }
         lockButton.isHidden = lockIconView.isHidden
         
-        if #available(iOS 14.0, *) {
-            let bannerMenuElements = displayInfo.availableActions.compactMap({ menuElement(for: $0) })
-            let bannerMenu = UIMenu(title: "", children: bannerMenuElements)
-            actionButton.menu = bannerMenu
-            actionButton.showsMenuAsPrimaryAction = true
-            actionButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.actionButtonPressedCallback?()
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-        } else {
-            self.actions = displayInfo.availableActions
-            actionButton.addTarget(self, action: #selector(actionsButtonPressed), for: .touchUpInside)
-        }
+        // Actions
+        let bannerMenuElements = displayInfo.availableActions.compactMap({ menuElement(for: $0) })
+        let bannerMenu = UIMenu(title: "", children: bannerMenuElements)
+        actionButton.menu = bannerMenu
+        actionButton.showsMenuAsPrimaryAction = true
+        actionButton.addAction(UIAction(handler: { [weak self] _ in
+            self?.actionButtonPressedCallback?()
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
         
         updatePlaceholder()
     }
@@ -146,19 +141,6 @@ extension DomainProfileGeneralInfoCell: UITextViewDelegate {
 
 // MARK: - Private methods
 private extension DomainProfileGeneralInfoCell {
-    @objc func actionsButtonPressed() {
-        guard let view = self.findViewController()?.view else { return }
-        
-        actionButtonPressedCallback?()
-        UDVibration.buttonTap.vibrate()
-        let actions: [UIActionBridgeItem] = actions.map({ action in uiActionBridgeItem(for: action) }).reduce(into: [UIActionBridgeItem]()) { partialResult, result in
-            partialResult += result
-        }
-        let popoverViewController = UIMenuBridgeView.instance(with: "",
-                                                              actions: actions)
-        popoverViewController.show(in: view, sourceView: actionButton)
-    }
-    
     @IBAction func doneButtonPressed() {
         endEditing()
     }
@@ -231,15 +213,6 @@ private extension DomainProfileGeneralInfoCell {
                 callback()
             })
             return UIMenu(title: "", options: .displayInline, children: [remove])
-        }
-    }
-    
-    func uiActionBridgeItem(for action: DomainProfileGeneralInfoSection.InfoAction) -> [UIActionBridgeItem] {
-        switch action {
-        case .edit(_, let callback), .open(_, let callback), .setAccess(_, let callback), .copy(_, let callback):
-            return [UIActionBridgeItem(title: action.title, image: action.icon, handler: { UDVibration.buttonTap.vibrate(); callback() })]
-        case .clear(_, let callback):
-            return [UIActionBridgeItem(title: action.title, image: action.icon, attributes: [.destructive], handler: { UDVibration.buttonTap.vibrate(); callback() })]
         }
     }
     

@@ -13,7 +13,7 @@ protocol QRScannerViewProtocol: BaseViewControllerProtocol {
     func startCaptureSession()
     func stopCaptureSession()
     func setState(_ state: QRScannerViewController.State)
-    func setWith(selectedDomain: DomainItem, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool)
+    func setWith(selectedDomain: DomainDisplayInfo, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool)
     func setWith(appsConnected: Int)
     func setBlockchainTypeSelectionWith(availableTypes: [BlockchainType], selectedType: BlockchainType)
     func removeBlockchainTypeSelection()
@@ -110,7 +110,7 @@ extension QRScannerViewController: QRScannerViewProtocol {
         }
     }
     
-    func setWith(selectedDomain: DomainItem, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool) {
+    func setWith(selectedDomain: DomainDisplayInfo, wallet: WalletDisplayInfo, balance: WalletBalance?, isSelectable: Bool) {
         selectedDomainItemView.setWith(domain: selectedDomain, wallet: wallet, balance: balance, isSelectable: isSelectable)
     }
     
@@ -127,36 +127,35 @@ extension QRScannerViewController: QRScannerViewProtocol {
         button.tintColor = .foregroundOnEmphasis
         button.setImage(.dotsCircleIcon, for: .normal)
         
-        if #available(iOS 14.0, *) {
-            let actions: [UIAction] = availableBlockchainTypes.map({ type in
-                let action = UIAction(title: type.rawValue,
-                                      image: type.icon,
-                                      identifier: .init(UUID().uuidString),
-                                      handler: { [weak self] _ in
-                    self?.didSelectBlockchainType(type)
-                })
-                if type == selectedType {
-                    action.state = .on
-                }
-                return action
+        // Actions
+        let actions: [UIAction] = availableBlockchainTypes.map({ type in
+            let action = UIAction(title: type.rawValue,
+                                  image: type.icon,
+                                  identifier: .init(UUID().uuidString),
+                                  handler: { [weak self] _ in
+                self?.didSelectBlockchainType(type)
             })
-            
-            let menu = UIMenu(title: String.Constants.showWalletBalanceIn.localized(), children: actions)
-            button.showsMenuAsPrimaryAction = true
-            button.menu = menu
-            button.addAction(UIAction(handler: { [weak self] _ in
-                self?.logButtonPressedAnalyticEvents(button: .scanningSelectNetwork)
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-            
-        } else {
-            button.addTarget(self, action: #selector(didTapRightNavButton), for: .touchUpInside)
-        }
+            if type == selectedType {
+                action.state = .on
+            }
+            return action
+        })
+        
+        let menu = UIMenu(title: String.Constants.showWalletBalanceIn.localized(), children: actions)
+        button.showsMenuAsPrimaryAction = true
+        button.menu = menu
+        button.addAction(UIAction(handler: { [weak self] _ in
+            self?.logButtonPressedAnalyticEvents(button: .scanningSelectNetwork)
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
+        
         let rightItem: UIBarButtonItem = UIBarButtonItem(customView: button)
         rightItem.tintColor = .foregroundOnEmphasis
         
         navigationItem.rightBarButtonItem = rightItem
-        cNavigationController?.updateNavigationBar()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.cNavigationController?.updateNavigationBar()
+        }
     }
     
     func removeBlockchainTypeSelection() {
@@ -208,28 +207,6 @@ private extension QRScannerViewController {
             await self.cameraSessionService.setRectOfInterest(rect)
         }
     }
-    
-    @objc func didTapRightNavButton() {
-        guard let navView = navigationItem.rightBarButtonItem?.customView else { return }
-
-        logButtonPressedAnalyticEvents(button: .scanningSelectNetwork)
-        UDVibration.buttonTap.vibrate()
-        
-        let actions: [UIActionBridgeItem] = availableBlockchainTypes.map({ type in
-            var action = UIActionBridgeItem(title: type.fullName,
-                                            image: type.icon,
-                                            handler: { [weak self] in
-                self?.didSelectBlockchainType(type)
-            })
-            action.isSelected = type == self.selectedBlockchainType
-            return action
-        })
-        
-        let popoverViewController = UIMenuBridgeView.instance(with: String.Constants.network.localized(),
-                                                              actions: actions)
-        popoverViewController.show(in: view, sourceView: navView)
-    }
-    
     
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {
         logAnalytic(event: .didSelectChainNetwork,

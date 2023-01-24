@@ -9,14 +9,14 @@ import Foundation
 
 final class DomainImageDetailsViewPresenter: ViewAnalyticsLogger {
     
-    private var domain: DomainItem
+    private var domain: DomainDisplayInfo
     private var imageState: DomainProfileTopInfoData.ImageState
     private weak var view: DomainDetailsViewProtocol?
     private var openSeaLink: String.Links?
     var analyticsName: Analytics.ViewName { .domainProfileImageDetails }
     
     init(view: DomainDetailsViewProtocol,
-         domain: DomainItem,
+         domain: DomainDisplayInfo,
          imageState: DomainProfileTopInfoData.ImageState) {
         self.view = view
         self.domain = domain
@@ -60,7 +60,7 @@ private extension DomainImageDetailsViewPresenter {
     
     @MainActor
     func setActionButton() {
-        switch (domain.pfpInfo, imageState) {
+        switch (domain.pfpSource, imageState) {
         case (.nft(let imageValue), .untouched):
             findAndStoreOpenSeaLink(from: imageValue)
             if openSeaLink != nil {

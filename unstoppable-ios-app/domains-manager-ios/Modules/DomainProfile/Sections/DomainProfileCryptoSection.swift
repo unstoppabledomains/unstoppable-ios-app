@@ -223,7 +223,7 @@ private extension DomainProfileCryptoSection {
         }
     }
     
-    func prepareData(domain: DomainItem) {
+    func prepareData(domain: DomainDisplayInfo) {
         removePendingRecords(domain: domain)
         groupRecordsData()
         sortAndFillRecordsData()
@@ -491,7 +491,7 @@ private extension DomainProfileCryptoSection {
     }
     
     @discardableResult
-    func removePendingRecords(domain: DomainItem) -> Bool {
+    func removePendingRecords(domain: DomainDisplayInfo) -> Bool {
         if let changes = AppGroupsBridgeService.shared.getDomainChanges().first(where: { $0.domainName == domain.name })?.changes {
             var isRemoved = false
             for change in changes {

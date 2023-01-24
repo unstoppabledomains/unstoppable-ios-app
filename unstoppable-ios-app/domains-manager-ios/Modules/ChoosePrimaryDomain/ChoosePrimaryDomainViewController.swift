@@ -13,10 +13,14 @@ protocol ChoosePrimaryDomainViewProtocol: BaseCollectionViewControllerProtocol &
     func setConfirmButtonEnabled(_ isEnabled: Bool)
     func setConfirmButtonTitle(_ title: String)
     func setLoadingIndicator(active: Bool)
+    func setTitleHidden(_ hidden: Bool)
+    func stopSearching()
+    func scrollTo(item: ChoosePrimaryDomainViewController.Item)
 }
 
 typealias ChoosePrimaryDomainDataSource = UICollectionViewDiffableDataSource<ChoosePrimaryDomainViewController.Section, ChoosePrimaryDomainViewController.Item>
 typealias ChoosePrimaryDomainSnapshot = NSDiffableDataSourceSnapshot<ChoosePrimaryDomainViewController.Section, ChoosePrimaryDomainViewController.Item>
+typealias ChoosePrimaryDomainMoveTransaction = NSDiffableDataSourceTransaction<ChoosePrimaryDomainViewController.Section, ChoosePrimaryDomainViewController.Item>
 
 @MainActor
 final class ChoosePrimaryDomainViewController: BaseViewController {
@@ -24,19 +28,38 @@ final class ChoosePrimaryDomainViewController: BaseViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet private weak var gradientView: UDGradientCoverView!
     @IBOutlet private weak var confirmButton: MainButton!
+    @IBOutlet private weak var moveToTopButton: FABButton!
     @IBOutlet private weak var contentTopConstraint: NSLayoutConstraint!
     
-    var cellIdentifiers: [UICollectionViewCell.Type] { [DomainSelectionCell.self, CollectionViewHeaderCell.self] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [RearrangeDomainCell.self,
+                                                        CollectionViewHeaderCell.self,
+                                                        DomainsCollectionSearchEmptyCell.self] }
     var presenter: ChoosePrimaryDomainViewPresenterProtocol!
     private var dataSource: ChoosePrimaryDomainDataSource!
-    override var navBackStyle: BaseViewController.NavBackIconStyle { (self.cNavigationController is EmptyRootCNavigationController) ? .cancel : .arrow }
-    override var prefersLargeTitles: Bool { true }
+    private var isTitleHidden: Bool = false
+    override var isObservingKeyboard: Bool { true }
+    override var navBackStyle: BaseViewController.NavBackIconStyle {
+        if (self.cNavigationController is EmptyRootCNavigationController),
+           cNavigationController?.viewControllers.first == self {
+            return .cancel
+        }
+        return .arrow
+    }
+    override var prefersLargeTitles: Bool { !isTitleHidden }
     override var largeTitleAlignment: NSTextAlignment { .center }
-    override var largeTitleIcon: UIImage? { .homeDomainInfoVisualisation }
+    override var largeTitleIcon: UIImage? { isTitleHidden ? nil : .homeDomainInfoVisualisation }
     override var largeTitleIconSize: CGSize? { CGSize(width: 72, height: 124) }
-    override var scrollableContentYOffset: CGFloat? { 180 }
+    override var scrollableContentYOffset: CGFloat? { 10 }
     override var adjustLargeTitleFontSizeForSmallerDevice: Bool { true }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
+    override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { presenter.isSearchable ? cSearchBarConfiguration : nil }
+    private var isDraggingItem: Bool = false
+    private var searchBar: UDSearchBar = UDSearchBar()
+    private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
+        .init { [weak self] in
+            self?.searchBar ?? UIView()
+        }
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +68,7 @@ final class ChoosePrimaryDomainViewController: BaseViewController {
         setup()
         presenter.viewDidLoad()
     }
-    
+ 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -53,6 +76,13 @@ final class ChoosePrimaryDomainViewController: BaseViewController {
         presenter.viewWillAppear()
     }
     
+    override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
+        collectionView.contentInset.bottom = keyboardHeight + Constants.scrollableContentBottomOffset
+    }
+    
+    override func keyboardWillHideAction(duration: Double, curve: Int) {
+        collectionView.contentInset.bottom = Constants.scrollableContentBottomOffset
+    }
 }
 
 // MARK: - ChoosePrimaryDomainViewProtocol
@@ -84,6 +114,30 @@ extension ChoosePrimaryDomainViewController: ChoosePrimaryDomainViewProtocol {
             confirmButton.hideLoadingIndicator()
         }
     }
+    
+    func setTitleHidden(_ hidden: Bool) {
+        isTitleHidden = hidden
+        collectionView.contentInset.top = hidden ? 50 : 286
+        cNavigationController?.updateNavigationBar()
+    }
+    
+    func stopSearching() {
+        setSearchBarActive(false)
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+    }
+    
+    func scrollTo(item: Item) {
+        if let indexPath = dataSource.indexPath(for: item) {
+            scrollToItemAt(indexPath: indexPath, atPosition: .centeredVertically, animated: true)
+            Task {
+                try? await Task.sleep(seconds: 0.3)
+                if let cell = collectionView.cellForItem(at: indexPath) as? RearrangeDomainCell {
+                    cell.blink(for: 2)
+                }
+            }
+        }
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -95,24 +149,121 @@ extension ChoosePrimaryDomainViewController: UICollectionViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        setMoveToTopButton(hidden: scrollView.contentOffset.y < 100, animated: false)
+        if isDraggingItem,
+           let cell = collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) {
+            var contentOffset = scrollView.contentOffset
+            if contentOffset.y < cell.frame.minY {
+                contentOffset.y = cell.frame.minY
+                scrollView.setContentOffset(contentOffset, animated: false)
+            }
+        }
+        
         cNavigationController?.underlyingScrollViewDidScroll(scrollView)
     }
-    
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            cNavigationController?.underlyingScrollViewDidFinishScroll(scrollView)
+
+    func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveOfItemFromOriginalIndexPath originalIndexPath: IndexPath, atCurrentIndexPath currentIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        guard let item = dataSource.itemIdentifier(for: proposedIndexPath),
+              item.isDraggable else { return currentIndexPath }
+        
+        return proposedIndexPath
+    }
+}
+
+// MARK: - UICollectionViewDragDelegate
+extension ChoosePrimaryDomainViewController: UICollectionViewDragDelegate {
+    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        if let item = dataSource.itemIdentifier(for: indexPath),
+           let dragItem = presenter.dragItem(item, at: indexPath) {
+            return [dragItem]
         }
+        return []
     }
     
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        cNavigationController?.underlyingScrollViewDidFinishScroll(scrollView)
+    func collectionView(_ collectionView: UICollectionView, itemsForAddingTo session: UIDragSession, at indexPath: IndexPath, point: CGPoint) -> [UIDragItem] { [] }
+    
+    func collectionView(_ collectionView: UICollectionView, dragSessionIsRestrictedToDraggingApplication session: UIDragSession) -> Bool { true }
+    
+    func collectionView(_ collectionView: UICollectionView, dragPreviewParametersForItemAt indexPath: IndexPath) -> UIDragPreviewParameters? {
+        let cell = collectionView.cellForItem(at: indexPath)
+        let previewParameters = UIDragPreviewParameters()
+        let path = UIBezierPath(roundedRect: cell?.bounds ?? .zero, cornerRadius: 8.0)
+        previewParameters.visiblePath = path
+        previewParameters.backgroundColor = .clear
+        return previewParameters
+    }
+}
+
+// MARK: - UICollectionViewDropDelegate
+extension ChoosePrimaryDomainViewController: UICollectionViewDropDelegate {
+    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+        return /// Handled via dataSource.reorderingHandlers.didReorder
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        return presenter.proposalForItemsWithDropSession(session, destinationIndexPath: destinationIndexPath)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, dropSessionDidEnter session: UIDropSession) {
+        isDraggingItem = true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, dropSessionDidEnd session: UIDropSession) {
+        isDraggingItem = false
+    }
+}
+
+// MARK: - UISearchBarDelegate
+extension ChoosePrimaryDomainViewController: UDSearchBarDelegate {
+    func udSearchBarTextDidBeginEditing(_ udSearchBar: UDSearchBar) {
+        logAnalytic(event: .didStartSearching)
+        presenter.didStartSearch()
+    }
+    
+    func udSearchBar(_ udSearchBar: UDSearchBar, textDidChange searchText: String) {
+        logAnalytic(event: .didSearch, parameters: [.domainName : searchText])
+        presenter.didSearchWith(key: searchText)
+    }
+    
+    func udSearchBarSearchButtonClicked(_ udSearchBar: UDSearchBar) {
+        cNavigationBar?.setSearchActive(false, animated: true)
+    }
+    
+    func udSearchBarCancelButtonClicked(_ udSearchBar: UDSearchBar) {
+        logAnalytic(event: .didStopSearching)
+        UDVibration.buttonTap.vibrate()
+        presenter.didStopSearch()
+        setSearchBarActive(false)
+    }
+    
+    func udSearchBarTextDidEndEditing(_ udSearchBar: UDSearchBar) {
+        logAnalytic(event: .didStopSearching)
+        setSearchBarActive(false)
+        presenter.didStopSearch()
     }
 }
 
 // MARK: - Private functions
 private extension ChoosePrimaryDomainViewController {
     @IBAction func confirmButtonPressed(_ sender: Any) {
+        logButtonPressedAnalyticEvents(button: .confirm)
         presenter.confirmButtonPressed()
+    }
+    
+    @IBAction func moveToTopButtonPressed(_ sender: Any) {
+        logButtonPressedAnalyticEvents(button: .moveToTop)
+        let ip = IndexPath(row: 0, section: 0)
+        collectionView.scrollToItem(at: ip, at: .top, animated: true)
+    }
+    
+    func setSearchBarActive(_ isActive: Bool) {
+        cNavigationBar?.setSearchActive(isActive, animated: true)
+    }
+    
+    func setMoveToTopButton(hidden: Bool, animated: Bool) {
+        UIView.animate(withDuration: animated ? 0.25 : 0.0) {
+            self.moveToTopButton.alpha = hidden ? 0 : 1
+        }
     }
 }
 
@@ -120,69 +271,66 @@ private extension ChoosePrimaryDomainViewController {
 private extension ChoosePrimaryDomainViewController {
     func setup() {
         addProgressDashesView()
+        if presenter.progress == nil {
+            setDashesProgress(nil)
+        }
+        searchBar.delegate = self
         setupCollectionView()
         self.title = presenter.title
+        setupMoveToTopButton()
     }
  
     func setupCollectionView() {
         collectionView.delegate = self
+        collectionView.dragDelegate = self
+        collectionView.dropDelegate = self
         collectionView.collectionViewLayout = buildLayout()
-        collectionView.contentInset.top = 325
-        collectionView.register(ChoosePrimaryDomainReverseResolutionHeader.self,
-                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: ChoosePrimaryDomainReverseResolutionHeader.reuseIdentifier)
-        collectionView.register(ChoosePrimaryDomainAllDomainsHeader.self,
-                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
-                                withReuseIdentifier: ChoosePrimaryDomainAllDomainsHeader.reuseIdentifier)
-        
+        collectionView.contentInset.top = 286
         configureDataSource()
+    }
+    
+    func setupMoveToTopButton() {
+        moveToTopButton.customImageEdgePadding = 12
+        moveToTopButton.customTitleEdgePadding = 12
+        moveToTopButton.customFont = .medium
+        moveToTopButton.setTitle(String.Constants.moveToTop.localized(), image: nil)
+        setMoveToTopButton(hidden: true, animated: false)
     }
     
     func configureDataSource() {
         dataSource = ChoosePrimaryDomainDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
             
             switch item {
-            case .domainName(let domainName, let isSelected):
-                let cell = collectionView.dequeueCellOfType(DomainSelectionCell.self, forIndexPath: indexPath)
-                cell.setWith(domainName: domainName, isSelected: isSelected)
+            case .domainName(let domainName):
+                let cell = collectionView.dequeueCellOfType(RearrangeDomainCell.self, forIndexPath: indexPath)
+                cell.setWith(domainName: domainName)
                 return cell
-            case .domain(let domain, let isSelected):
-                let cell = collectionView.dequeueCellOfType(DomainSelectionCell.self, forIndexPath: indexPath)
-                cell.setWith(domain: domain, isSelected: isSelected)
-                return cell
-            case .reverseResolutionDomain(let domain, let isSelected, let walletInfo):
-                let cell = collectionView.dequeueCellOfType(DomainSelectionCell.self, forIndexPath: indexPath)
-                cell.setWith(domain: domain, isSelected: isSelected, walletInfo: walletInfo, indicator: .reverseResolution)
+            case .domain(let domain, let reverseResolutionWalletInfo, let isSearching):
+                let cell = collectionView.dequeueCellOfType(RearrangeDomainCell.self, forIndexPath: indexPath)
+                cell.setWith(domain: domain,
+                             reverseResolutionWalletInfo: reverseResolutionWalletInfo,
+                             isSearching: isSearching)
                 return cell
             case .header:
                 let cell = collectionView.dequeueCellOfType(CollectionViewHeaderCell.self, forIndexPath: indexPath)
+                let subtitle = String.Constants.rearrangeDomainsSubtitle.localized()
                 cell.setTitle(nil,
-                              subtitleDescription: .init(subtitle: String.Constants.choosePrimaryDomainSubtitle.localized()),
+                              subtitleDescription: .init(subtitle: subtitle,
+                                                         attributes: [.init(text: subtitle,
+                                                                            alignment: .center)]),
                               icon: nil)
+                return cell
+            case .searchEmptyState(let mode):
+                let cell = collectionView.dequeueCellOfType(DomainsCollectionSearchEmptyCell.self, forIndexPath: indexPath)
+                cell.setMode(mode)
+                
                 return cell
             }
         })
         
-        dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
-            guard let section = self?.section(at: indexPath) else { return nil }
-
-            switch section {
-            case .reverseResolutionDomains:
-                let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind, withReuseIdentifier: ChoosePrimaryDomainReverseResolutionHeader.reuseIdentifier, for: indexPath) as! ChoosePrimaryDomainReverseResolutionHeader
-                
-                view.setHeader()
-                view.headerButtonPressedCallback = {
-                    self?.presenter.reverseResolutionInfoHeaderPressed()
-                }
-                return view
-            case .allDomains:
-                let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind, withReuseIdentifier: ChoosePrimaryDomainAllDomainsHeader.reuseIdentifier, for: indexPath) as! ChoosePrimaryDomainAllDomainsHeader
-                view.setHeader()
-                
-                return view
-            default:
-                return nil
-            }
+        dataSource.reorderingHandlers.canReorderItem = { item in return item.isDraggable }
+        dataSource.reorderingHandlers.didReorder = { [weak self] transaction in
+            self?.presenter.didMoveItemsWith(transaction: transaction)
         }
     }
     
@@ -216,19 +364,12 @@ private extension ChoosePrimaryDomainViewController {
             }
             
             switch section {
-            case .main:
+            case .primaryDomain, .mintingDomains:
                 setBackground()
-            case .reverseResolutionDomains, .allDomains:
-                let headerHeight = section?.headerHeight ?? 0
-                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                  heightDimension: .absolute(headerHeight))
-                let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: size,
-                                                                         elementKind: UICollectionView.elementKindSectionHeader,
-                                                                         alignment: .top)
-                layoutSection.boundarySupplementaryItems = [header]
-                
+            case .allDomains:
+                layoutSection.contentInsets.top = 16
                 setBackground()
-            case .header, .none:
+            case .header, .none, .searchEmptyState:
                 Void()
             }
             
@@ -243,19 +384,18 @@ private extension ChoosePrimaryDomainViewController {
 
 // MARK: - Collection elements
 extension ChoosePrimaryDomainViewController {
-    enum Section: Hashable {
+    enum Section: Int, Hashable {
         case header
-        case main(_ val: Int)
-        case reverseResolutionDomains, allDomains
+        case primaryDomain, mintingDomains
+        case allDomains
+        case searchEmptyState
         
         var headerHeight: CGFloat {
             switch self {
-            case .header:
+            case .header, .searchEmptyState:
                 return 0
-            case .main:
+            case .primaryDomain, .mintingDomains:
                 return 16
-            case .reverseResolutionDomains:
-                return ChoosePrimaryDomainReverseResolutionHeader.Height
             case .allDomains:
                 return CollectionTextHeaderReusableView.Height
             }
@@ -263,10 +403,20 @@ extension ChoosePrimaryDomainViewController {
     }
     
     enum Item: Hashable {
-        case domainName(_ domainName: String, isSelected: Bool)
-        case domain(_ domain: DomainItem, isSelected: Bool)
-        case reverseResolutionDomain(_ domain: DomainItem, isSelected: Bool, walletInfo: WalletDisplayInfo)
+        case domainName(_ domainName: String)
+        case domain(_ domain: DomainDisplayInfo, reverseResolutionWalletInfo: WalletDisplayInfo?, isSearching: Bool)
         case header
+        case searchEmptyState(mode: DomainsCollectionSearchEmptyCell.Mode)
+        
+        var isDraggable: Bool {
+            switch self {
+            case .searchEmptyState, .header:
+                return false
+            case .domainName:
+                return true
+            case .domain(_, _, let isSearching):
+                return !isSearching
+            }
+        }
     }
-    
 }

@@ -8,19 +8,19 @@
 import UIKit
 
 protocol DomainProfileSignatureValidator {
-    func isAbleToLoadProfile(of domain: DomainItem, walletInfo: WalletDisplayInfo) -> Bool
-    func askToSignExternalWalletProfileSignature(for domain: DomainItem, walletInfo: WalletDisplayInfo, in view: UIViewController) async -> AsyncStream<DomainProfileSignExternalWalletViewPresenter.ResultAction>
+    func isAbleToLoadProfile(of domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo) -> Bool
+    func askToSignExternalWalletProfileSignature(for domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo, in view: UIViewController) async -> AsyncStream<DomainProfileSignExternalWalletViewPresenter.ResultAction>
     @MainActor
-    func isProfileSignatureAvailable(for domain: DomainItem, walletInfo: WalletDisplayInfo, in view: UIViewController) async -> Bool
+    func isProfileSignatureAvailable(for domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo, in view: UIViewController) async -> Bool
 }
 
 extension DomainProfileSignatureValidator {
     
-    func isAbleToLoadProfile(of domain: DomainItem, walletInfo: WalletDisplayInfo) -> Bool {
+    func isAbleToLoadProfile(of domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo) -> Bool {
         switch walletInfo.source {
         case .external:
             guard !appContext.persistedProfileSignaturesStorage
-                .hasValidSignature(for: domain) else {
+                .hasValidSignature(for: domain.name) else {
                 return true
             }
             
@@ -30,10 +30,10 @@ extension DomainProfileSignatureValidator {
         }
     }
     
-    func askToSignExternalWalletProfileSignature(for domain: DomainItem, walletInfo: WalletDisplayInfo, in view: UIViewController) async -> AsyncStream<DomainProfileSignExternalWalletViewPresenter.ResultAction> {
+    func askToSignExternalWalletProfileSignature(for domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo, in view: UIViewController) async -> AsyncStream<DomainProfileSignExternalWalletViewPresenter.ResultAction> {
         let isOnChainAvatar: Bool
         
-        switch domain.pfpInfo {
+        switch domain.pfpSource {
         case .nft:
             isOnChainAvatar = true
         case .nonNFT, .none:
@@ -60,7 +60,7 @@ extension DomainProfileSignatureValidator {
     }
     
     @MainActor
-    func isProfileSignatureAvailable(for domain: DomainItem, walletInfo: WalletDisplayInfo, in view: UIViewController) async -> Bool {
+    func isProfileSignatureAvailable(for domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo, in view: UIViewController) async -> Bool {
         guard !isAbleToLoadProfile(of: domain, walletInfo: walletInfo) else { return true }
      
         return await withSafeCheckedMainActorContinuation({ completion in
@@ -72,6 +72,7 @@ extension DomainProfileSignatureValidator {
                     case .signMessage:
                         Task.detached {
                             do {
+                                let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
                                 try await NetworkService().createAndStorePersistedProfileSignature(for: domain)
                                 await view.dismiss(animated: true, completion: nil)
                                 completion(true)

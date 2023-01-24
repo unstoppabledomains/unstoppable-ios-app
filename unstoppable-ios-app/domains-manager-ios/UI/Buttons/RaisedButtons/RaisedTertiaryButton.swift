@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class RaisedTertiaryButton: BaseButton {
+class RaisedTertiaryButton: BaseButton {
     
     override var backgroundIdleColor: UIColor { .backgroundMuted2 }
     override var backgroundHighlightedColor: UIColor { .backgroundMuted }
@@ -19,5 +19,6 @@ final class RaisedTertiaryButton: BaseButton {
     override var fontWeight: UIFont.Weight { .medium }
         
 }
+
 
 

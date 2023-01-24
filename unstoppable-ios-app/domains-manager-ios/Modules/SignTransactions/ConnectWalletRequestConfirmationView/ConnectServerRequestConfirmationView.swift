@@ -110,30 +110,27 @@ private extension ConnectServerRequestConfirmationView {
         guard let networkSelectorButton = self.networkSelectorButton else { return }
 
         self.network = selectedChain
-        if #available(iOS 14.0, *) {
-            let actions: [UIAction] = supportedChains.map({ type in
-                let action = UIAction(title: type.fullName,
-                                      image: type.icon,
-                                      identifier: .init(UUID().uuidString),
-                                      handler: { [weak self] _ in
-                    self?.didSelectBlockchainType(type)
-                })
-                if type == selectedChain {
-                    action.state = .on
-                }
-                return action
+        let actions: [UIAction] = supportedChains.map({ type in
+            let action = UIAction(title: type.fullName,
+                                  image: type.icon,
+                                  identifier: .init(UUID().uuidString),
+                                  handler: { [weak self] _ in
+                self?.didSelectBlockchainType(type)
             })
-
-            let menu = UIMenu(title: String.Constants.network.localized(), children: actions)
-            networkSelectorButton.showsMenuAsPrimaryAction = true
-            networkSelectorButton.menu = menu
-            networkSelectorButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.logButtonPressed(.wcSelectNetwork)
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-        } else {
-            networkSelectorButton.addTarget(self, action: #selector(networkSelectorButtonPressed), for: .touchUpInside)
-        }
+            if type == selectedChain {
+                action.state = .on
+            }
+            return action
+        })
+        
+        // Actions
+        let menu = UIMenu(title: String.Constants.network.localized(), children: actions)
+        networkSelectorButton.showsMenuAsPrimaryAction = true
+        networkSelectorButton.menu = menu
+        networkSelectorButton.addAction(UIAction(handler: { [weak self] _ in
+            self?.logButtonPressed(.wcSelectNetwork)
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
         
         networkSelectorButton.setTitle(selectedChain.fullName, image: .chevronDown)
 
@@ -148,27 +145,6 @@ private extension ConnectServerRequestConfirmationView {
         indicator.widthAnchor.constraint(equalTo: indicator.heightAnchor, multiplier: 1).isActive = true
         
         return indicator
-    }
-    
-    @objc func networkSelectorButtonPressed() {
-        logButtonPressed(.wcSelectNetwork)
-        UDVibration.buttonTap.vibrate()
-        
-        let actions: [UIActionBridgeItem] = supportedChains.map({ type in
-            var action = UIActionBridgeItem(title: type.fullName,
-                                            image: type.icon,
-                                            handler: { [weak self] in
-                self?.didSelectBlockchainType(type)
-            })
-            
-            action.isSelected = type == network
-            
-            return action
-        })
-        
-        let popoverViewController = UIMenuBridgeView.instance(with: String.Constants.network.localized(),
-                                                                        actions: actions)
-        popoverViewController.show(in: self, sourceView: networkSelectorButton!)
     }
     
     func didSelectBlockchainType(_ blockchainType: BlockchainType) {

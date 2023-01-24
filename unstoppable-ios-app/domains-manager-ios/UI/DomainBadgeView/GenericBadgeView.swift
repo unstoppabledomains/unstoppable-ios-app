@@ -36,7 +36,7 @@ final class GenericBadgeView: UIControl, SelfNameable, NibInstantiateable {
 
 // MARK: - Open methods
 extension GenericBadgeView {
-    func setWith(domain: DomainItem,
+    func setWith(domain: DomainDisplayInfo,
                  isUpdating: Bool) {
         badgeImageView.layer.removeAllAnimations()
         setTextLabel(with: domain.name)

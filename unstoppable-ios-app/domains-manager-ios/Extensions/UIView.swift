@@ -232,3 +232,22 @@ extension UIView {
         }
     }
 }
+
+extension UIView {
+    var localCenter: CGPoint {
+        .init(x: bounds.width / 2,
+              y: bounds.height / 2)
+    }
+    
+    func forceLayout(animated: Bool = false) {
+        if animated {
+            UIView.animate(withDuration: 0.25) {
+                self.setNeedsLayout()
+                self.layoutIfNeeded()
+            }
+        } else {
+            setNeedsLayout()
+            layoutIfNeeded()
+        }
+    }
+}

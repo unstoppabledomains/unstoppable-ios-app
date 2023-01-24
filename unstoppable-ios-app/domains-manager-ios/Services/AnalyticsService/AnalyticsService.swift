@@ -17,7 +17,6 @@ final class AnalyticsService {
     
     init(dataAggregatorService: DataAggregatorServiceProtocol) {
         dataAggregatorService.addListener(self)
-        checkInitialValuesSet()
     }
     
 }
@@ -78,12 +77,6 @@ private extension AnalyticsService {
     
     var carrierName: String {
         CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.values.compactMap({ $0.carrierName }).joined(separator: ", ") ?? ""
-    }
-    
-    func checkInitialValuesSet() {
-        if let primaryDomainName = UserDefaults.primaryDomainName {
-            set(userProperties: [.primaryDomain: primaryDomainName])
-        }
     }
     
     func publicIP() -> String? {

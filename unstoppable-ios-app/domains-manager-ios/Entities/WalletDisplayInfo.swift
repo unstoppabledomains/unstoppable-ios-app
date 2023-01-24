@@ -14,7 +14,7 @@ struct WalletDisplayInfo: Hashable {
     let source: Source
     let isBackedUp: Bool
     var isWithPrivateKey: Bool = false
-    var reverseResolutionDomain: DomainItem? = nil 
+    var reverseResolutionDomain: DomainDisplayInfo? = nil
     
     var backupState: BackupState {
         if isBackedUp {
@@ -63,7 +63,7 @@ struct WalletDisplayInfo: Hashable {
 }
 
 extension WalletDisplayInfo {
-    init?(wallet: UDWallet, domainsCount: Int, reverseResolutionDomain: DomainItem? = nil) {
+    init?(wallet: UDWallet, domainsCount: Int, reverseResolutionDomain: DomainDisplayInfo? = nil) {
         if wallet.walletState == .externalLinked {
             guard let externalWallet = wallet.getExternalWallet(),
                   let walletMake = externalWallet.make else { return nil }

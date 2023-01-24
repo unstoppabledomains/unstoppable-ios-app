@@ -57,7 +57,7 @@ final class ReverseResolutionIllustrationView: UIView {
 
 // MARK: - Open methods
 extension ReverseResolutionIllustrationView {
-    func setWith(walletInfo: WalletDisplayInfo, domain: DomainItem?) {
+    func setWith(walletInfo: WalletDisplayInfo, domain: DomainDisplayInfo?) {
         let walletAddress = walletInfo.address.walletAddressTruncated
         let domainName = domain?.name ?? domainPlaceholderName
         set(walletAddress: walletAddress,

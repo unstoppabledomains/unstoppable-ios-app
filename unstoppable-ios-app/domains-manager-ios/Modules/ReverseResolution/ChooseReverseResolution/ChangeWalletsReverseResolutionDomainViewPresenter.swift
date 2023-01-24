@@ -13,12 +13,12 @@ final class ChangeWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
     override var title: String { String.Constants.changeDomainForReverseResolution.localized() }
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
     override var analyticsName: Analytics.ViewName { .changeDomainForReverseResolution }
-    private let currentDomain: DomainItem
+    private let currentDomain: DomainDisplayInfo
     
     init(view: ChooseReverseResolutionDomainViewProtocol,
          wallet: UDWallet,
          walletInfo: WalletDisplayInfo,
-         currentDomain: DomainItem,
+         currentDomain: DomainDisplayInfo,
          setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager,
          dataAggregatorService: DataAggregatorServiceProtocol) {
         self.currentDomain = currentDomain
