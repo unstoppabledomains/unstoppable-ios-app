@@ -29,7 +29,7 @@ extension GIFAnimationsService {
         }
         
         let task: Task<UIImage, Never> = Task.detached(priority: .high) {
-            guard let animation = await self.gifImageWithName(gif.name, maskingType: gif.maskingType) else {
+            guard let animation = await self.createGIFImageWithName(gif.name, maskingType: gif.maskingType) else {
                 Debugger.printFailure("Failed to create GIF animation \(gif.name)", critical: true)
                 return .init()
             }
@@ -44,7 +44,7 @@ extension GIFAnimationsService {
         return image
     }
     
-    func getGIF(_ gif: GIF) async -> UIImage {
+    func createImageForGIF(_ gif: GIF) async -> UIImage {
         if let image = await stateHolder.cachedGifs[gif] {
             return image
         } else if let imageTask = await stateHolder.currentAsyncProcess[gif] {
@@ -60,8 +60,8 @@ extension GIFAnimationsService {
         }
     }
     
-    func gifImageWithData(_ data: Data,
-                          maskingType: GIFMaskingType? = nil) async -> UIImage? {
+    func createGIFImageWithData(_ data: Data,
+                                maskingType: GIFMaskingType? = nil) async -> UIImage? {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
             Debugger.printInfo("image doesn't exist")
             return nil
@@ -97,8 +97,8 @@ extension GIFAnimationsService {
 
 // MARK: - GIF animations. Use GIFAnimationsService to work with GIF animations
 private extension GIFAnimationsService {
-    func gifImageWithURL(_ gifUrl: String,
-                         maskingType: GIFMaskingType?) async -> UIImage? {
+    func createGIFImageWithURL(_ gifUrl: String,
+                               maskingType: GIFMaskingType?) async -> UIImage? {
         guard let bundleURL = URL(string: gifUrl) else {
             Debugger.printInfo("image named \"\(gifUrl)\" doesn't exist")
             return nil
@@ -108,11 +108,11 @@ private extension GIFAnimationsService {
             return nil
         }
         
-        return await gifImageWithData(imageData, maskingType: maskingType)
+        return await createGIFImageWithData(imageData, maskingType: maskingType)
     }
     
-    func gifImageWithName(_ name: String,
-                          maskingType: GIFMaskingType?) async -> UIImage? {
+    func createGIFImageWithName(_ name: String,
+                                maskingType: GIFMaskingType?) async -> UIImage? {
         guard let bundleURL = Bundle.main
             .url(forResource: name, withExtension: "gif") else {
             Debugger.printInfo("This image named \"\(name)\" does not exist")
@@ -123,7 +123,7 @@ private extension GIFAnimationsService {
             return nil
         }
         
-        return await gifImageWithData(imageData, maskingType: maskingType)
+        return await createGIFImageWithData(imageData, maskingType: maskingType)
     }
     
     func animatedImageWithSource(_ source: CGImageSource,
@@ -193,7 +193,7 @@ private extension GIFAnimationsService {
             for i in 0..<count {
                 group.addTask {
                     guard let image = CGImageSourceCreateImageAtIndex(source, i, downsampleOptions),
-                          let maskedImage = self.maskingImage(image, withMaskingType: maskingType),
+                          let maskedImage = self.createCGImage(image, withMaskingType: maskingType),
                           let resizedImage = self.resizedImage(maskedImage,
                                                                scale: self.scaleForImage(image),
                                                                aspectRatio: 1,
@@ -223,7 +223,7 @@ private extension GIFAnimationsService {
         return (images, delays)
     }
     
-    func maskingImage(_ image: CGImage, withMaskingType maskingType: GIFMaskingType?) -> CGImage? {
+    func createCGImage(_ image: CGImage, withMaskingType maskingType: GIFMaskingType?) -> CGImage? {
         guard let maskingType else { return image }
         
         return image.copy(maskingColorComponents: maskingType.maskingColorComponents)

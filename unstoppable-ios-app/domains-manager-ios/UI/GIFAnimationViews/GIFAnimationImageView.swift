@@ -31,7 +31,7 @@ extension GIFAnimationImageView {
 private extension GIFAnimationImageView {
     func setAnimationAsync() {
         Task {
-            let image = await GIFAnimationsService.shared.getGIF(gifAnimation)
+            let image = await GIFAnimationsService.shared.createImageForGIF(gifAnimation)
             self.image = image
         }
     }

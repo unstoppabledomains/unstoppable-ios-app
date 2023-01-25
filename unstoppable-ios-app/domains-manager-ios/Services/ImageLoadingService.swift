@@ -96,7 +96,7 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
                 return storedImage
             }
             
-            if let image = await self.imageFor(source: source, downsampleDescription: downsampleDescription) {
+            if let image = await self.fetchImageFor(source: source, downsampleDescription: downsampleDescription) {
                 return image
             } else {
                 return nil
@@ -143,13 +143,13 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
 
 // MARK: - Private methods
 fileprivate extension ImageLoadingService {
-    func imageFor(source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
+    func fetchImageFor(source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
         switch source {
         case .url(let url, let maxImageSize):
             do {
                 let imageData = try await loadImage(from: url)
                 
-                if let gif = await GIFAnimationsService.shared.gifImageWithData(imageData) {
+                if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData) {
                     storeAndCache(imageData: imageData, image: gif, forKey: source.key)
                     
                     return gif
@@ -193,7 +193,7 @@ fileprivate extension ImageLoadingService {
                 let start = Date()
                 
                 
-                if let image = await imageFor(source: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: downsampleDescription) {
+                if let image = await fetchImageFor(source: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: downsampleDescription) {
                     Debugger.printWarning("\(String.itTook(from: start)) to load domain pfp")
                     return image
                 }
@@ -202,34 +202,34 @@ fileprivate extension ImageLoadingService {
                 return nil
             }
         case .domainInitials(let domainItem, let size):
-            return await imageFor(source: .initials(domainItem.name, size: size, style: .accent), downsampleDescription: downsampleDescription)
+            return await fetchImageFor(source: .initials(domainItem.name, size: size, style: .accent), downsampleDescription: downsampleDescription)
         case .domainItemOrInitials(let domainItem, let size):
             if domainItem.pfpInfo != .none,
-               let image = await imageFor(source: .domain(domainItem), downsampleDescription: downsampleDescription) {
+               let image = await fetchImageFor(source: .domain(domainItem), downsampleDescription: downsampleDescription) {
                 return image
             }
-            return await imageFor(source: .domainInitials(domainItem, size: size), downsampleDescription: downsampleDescription)
+            return await fetchImageFor(source: .domainInitials(domainItem, size: size), downsampleDescription: downsampleDescription)
         case .currency(let currency, let size, let style):
             if let url = URL(string: NetworkConfig.currencyIconUrl(for: currency)),
-               let image = await imageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
+               let image = await fetchImageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
                 return image
             }
-            return await imageFor(source: .initials(currency.ticker, size: size, style: style), downsampleDescription: downsampleDescription)
+            return await fetchImageFor(source: .initials(currency.ticker, size: size, style: style), downsampleDescription: downsampleDescription)
         case .wcApp(let appInfo, let size):
             if let url = appInfo.getIconURL(),
-               let image = await imageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
+               let image = await fetchImageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
                 return image
             }
-            return await imageFor(source: .initials(appInfo.getDisplayName(), size: size, style: .gray), downsampleDescription: downsampleDescription)
+            return await fetchImageFor(source: .initials(appInfo.getDisplayName(), size: size, style: .gray), downsampleDescription: downsampleDescription)
         case .connectedApp(let appInfo, let size):
             let urlString = appInfo.appIconUrls
                 .first(where: { URL(string: $0).pathExtensionPng }) ?? appInfo.appIconUrls.first
             if let urlString = urlString,
                let url = URL(string: urlString),
-               let image = await imageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
+               let image = await fetchImageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
                 return image
             }
-            return await imageFor(source: .initials(appInfo.displayName, size: size, style: .gray), downsampleDescription: downsampleDescription)
+            return await fetchImageFor(source: .initials(appInfo.displayName, size: size, style: .gray), downsampleDescription: downsampleDescription)
         case .qrCode(let url, let options):
             if let image = try? await qrCodeService.generateUDQRCode(for: url,
                                                                      with: options),
@@ -287,7 +287,7 @@ fileprivate extension ImageLoadingService {
         guard let imageData = storage.getStoredImage(for: key) else { return nil }
         
         var image: UIImage?
-        if let gif = await GIFAnimationsService.shared.gifImageWithData(imageData) {
+        if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData) {
             image = gif
         } else if let justImage = UIImage(data: imageData) {
             image = justImage
