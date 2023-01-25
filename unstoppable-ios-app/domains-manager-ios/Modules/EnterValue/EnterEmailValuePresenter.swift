@@ -26,7 +26,7 @@ final class EnterEmailValuePresenter: EnterValueViewPresenter, UserDataValidator
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view?.set(title: String.Constants.profileAddN.localized(String.Constants.email.localized().lowercased()),
+        view?.set(title: String.Constants.addN.localized(String.Constants.email.localized().lowercased()),
                   icon: .mailIcon24,
                   tintColor: .foregroundSecondary)
         view?.setPlaceholder(String.Constants.addYourEmailAddress.localized())

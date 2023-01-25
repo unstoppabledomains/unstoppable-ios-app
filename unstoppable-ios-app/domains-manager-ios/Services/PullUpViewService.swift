@@ -92,6 +92,8 @@ protocol PullUpViewServiceProtocol {
     func showConnectedAppDomainInfoPullUp(for domain: DomainItem,
                                            connectedApp: any UnifiedConnectAppInfoProtocol,
                                            in viewController: UIViewController) async
+    func showChooseCoinVersionPullUp(for coin: CoinRecord,
+                                     in viewController: UIViewController) async throws -> Bool
 }
 
 @MainActor
@@ -1318,6 +1320,42 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
         presentPullUpView(in: viewController, pullUp: .connectedAppNetworksInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
+    
+    /// Return true if latest is selected and false if Legacy
+    func showChooseCoinVersionPullUp(for coin: CoinRecord,
+                                     in viewController: UIViewController) async throws -> Bool {
+        let selectionViewHeight: CGFloat = 404
+        let ticker = coin.ticker
+        let coinIcon = await appContext.imageLoadingService.loadImage(from: .currency(coin,
+                                                                                      size: .default,
+                                                                                      style: .gray),
+                                                                      downsampleDescription: nil)
+        let segmentedControl = UDSegmentedControl(frame: .zero)
+        segmentedControl.heightAnchor.constraint(equalToConstant: 36).isActive = true
+        segmentedControl.insertSegment(withTitle: String.Constants.multiChain.localized(), at: 0, animated: false)
+        segmentedControl.insertSegment(withTitle: String.Constants.legacy.localized(), at: 1, animated: false)
+        segmentedControl.selectedSegmentIndex = 0
+        
+        return try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(coin.fullName ?? ticker),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: coinIcon ?? .warningIcon,
+                                                                                     size: .large,
+                                                                                     corners: .circle),
+                                                                         subtitle: .label(.text(String.Constants.chooseCoinVersionPullUpDescription.localized())),
+                                                                         extraViews: [segmentedControl],
+                                                                         actionButton: .main(content: .init(title: String.Constants.addN.localized(ticker),
+                                                                                                            icon: nil,
+                                                                                                            analyticsName: .addCurrency,
+                                                                                                            action: { [weak segmentedControl] in
+                let isNotLegacySelected = segmentedControl?.selectedSegmentIndex == 0
+                completion(.success(isNotLegacySelected))
+            }))),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            presentPullUpView(in: viewController, pullUp: .chooseCoinVersion, contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
+        }
     }
 }
 

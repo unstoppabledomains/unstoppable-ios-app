@@ -12,6 +12,9 @@ final class AddCurrencyCell: BaseListCollectionViewCell {
     @IBOutlet private weak var currencyImageView: UIImageView!
     @IBOutlet private weak var currencyNameLabel: UILabel!
     @IBOutlet private weak var currencyTickerLabel: UILabel!
+    @IBOutlet private weak var legacyLabel: UILabel!
+    @IBOutlet private weak var horizontalContentStackView: UIStackView!
+    
     private var currencyImageLoader: CurrencyImageLoader!
     
     override func awakeFromNib() {
@@ -19,6 +22,9 @@ final class AddCurrencyCell: BaseListCollectionViewCell {
         
         currencyImageLoader = CurrencyImageLoader(currencyImageView: currencyImageView,
                                                   initialsSize: .default)
+        legacyLabel.setAttributedTextWith(text: String.Constants.legacy.localized(),
+                                          font: .currentFont(withSize: 16, weight: .regular),
+                                          textColor: .foregroundSecondary)
     }
     
 }
@@ -34,6 +40,8 @@ extension AddCurrencyCell {
         currencyTickerLabel.setAttributedTextWith(text: currency.ticker,
                                                   font: .currentFont(withSize: 14, weight: .regular),
                                                   textColor: .foregroundSecondary)
+        legacyLabel.isHidden = !currency.isDeprecated
+        horizontalContentStackView.spacing = currency.isDeprecated ? 8 : 0
     }
 }
 

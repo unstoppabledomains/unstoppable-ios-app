@@ -174,6 +174,7 @@ To start this process, verify your email address to load the set of domains you 
 "N_COPIED" = "%@ copied";
 "COPY_N" = "Copy %@";
 "USERNAME" = "Username";
+"ADD_N" = "Add %@";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -662,7 +663,6 @@ To start this process, verify your email address to load the set of domains you 
 "PROFILE_EDIT_ITEM" = "Edit %@";
 "PROFILE_CLEAR_ITEM" = "Remove %@";
 "PROFILE_OPEN_ITEM" = "Open %@";
-"PROFILE_ADD_N" = "Add %@";
 "DOMAIN_PROFILE_INVALID_WEBSITE_ERROR" = "Enter a valid URL";
 "PROFILE_SOCIALS_EDIT" = "Edit account";
 "PROFILE_SOCIALS_OPEN" = "Open link";
@@ -708,3 +708,8 @@ To start this process, verify your email address to load the set of domains you 
 "DOMAIN_PROFILE_ACCESS_INFO_TITLE" = "Who can view your data?";
 "DOMAIN_PROFILE_ACCESS_INFO_DESCRIPTION" = "Control the data displayed on your public profile and what is only visible to you and allowed apps.";
 "PROFILE_SOCIALS_EMPTY_MESSAGE" = "Manage your social links on the Unstoppable Domains website.";
+
+// Legacy tokens
+"LEGACY" = "Legacy";
+"MULTI_CHAIN" = "Multi-chain";
+"CHOOSE_COIN_VERSION_PULL_UP_DESCRIPTION" = "For backward compatibility with some dApps, we recommend setting up both Legacy (Ethereum) and Multi-chain.";
