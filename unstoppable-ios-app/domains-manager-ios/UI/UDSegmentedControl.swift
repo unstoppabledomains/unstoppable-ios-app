@@ -21,18 +21,11 @@ final class UDSegmentedControl: UISegmentedControl {
         setup()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        layer.cornerRadius = bounds.height / 2
-    }
-    
 }
 
 // MARK: - Setup methods
 private extension UDSegmentedControl {
     func setup() {
-        let states: UIControl.State = [.normal, .highlighted, .disabled, .selected, .focused]
-        setTitleTextAttributes([.font: UIFont.currentFont(withSize: 16, weight: .semibold)], for: states)
+        setTitleTextAttributes([.font: UIFont.currentFont(withSize: 16, weight: .semibold)], for: .normal)
     }
 }

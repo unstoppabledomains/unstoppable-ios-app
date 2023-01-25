@@ -48,13 +48,17 @@ extension AddCurrencyViewPresenter: AddCurrencyViewPresenterProtocol {
         }
     }
     
+    @MainActor
     func didSelectItem(_ item: AddCurrencyViewController.Item) {
         switch item {
         case .currency(let currency):
             UDVibration.buttonTap.vibrate()
-            view?.dismiss(animated: true, completion: { [weak self] in
-                self?.addCurrencyCallback(currency)
-            })
+            if let deprecatedRecord = deprecatedRecordsMap[currency.coin.ticker] {
+                showChooseCoinPullUp(for: currency, deprecatedRecord: deprecatedRecord)
+            } else {
+                finishWith(coinRecord: currency)
+            }
+            
         case .emptyState:
             return
         }
@@ -79,7 +83,7 @@ private extension AddCurrencyViewPresenter {
     func showCurrencies() {
         Task {
             var snapshot = AddCurrencySnapshot()
-           
+            
             let currencies = self.filteredGroupedRecords
             
             if currencies.isEmpty {
@@ -136,7 +140,27 @@ private extension AddCurrencyViewPresenter {
                 }
             }
         }
-
+        
         self.filteredGroupedRecords = self.groupedRecord
+    }
+    
+    func showChooseCoinPullUp(for coinRecord: GroupedCoinRecord, deprecatedRecord: GroupedCoinRecord) {
+        Task {
+            guard let view else { return }
+            
+            do {
+                let isNotLegacySelected = try await appContext.pullUpViewService.showChooseCoinVersionPullUp(for: coinRecord.coin, in: view)
+                
+                let selectedRecord = isNotLegacySelected ? coinRecord : deprecatedRecord
+                await finishWith(coinRecord: selectedRecord)
+            }
+        }
+    }
+    
+    @MainActor
+    func finishWith(coinRecord: GroupedCoinRecord) {
+        view?.presentingViewController?.dismiss(animated: true, completion: { [weak self] in
+            self?.addCurrencyCallback(coinRecord)
+        })
     }
 }

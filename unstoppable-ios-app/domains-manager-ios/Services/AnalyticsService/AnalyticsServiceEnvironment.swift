@@ -279,6 +279,7 @@ extension Analytics {
         case refreshBadgesComingSoon
         case showcaseYourProfile
         case connectedAppNetworksInfo, connectedAppDomainInfo
+        case chooseCoinVersion
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
