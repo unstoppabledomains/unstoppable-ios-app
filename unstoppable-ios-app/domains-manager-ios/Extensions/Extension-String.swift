@@ -202,7 +202,8 @@ extension String {
         static let nCopied = "N_COPIED"
         static let copyN = "COPY_N"
         static let username = "USERNAME"
-        
+        static let addN = "ADD_N"
+
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
@@ -712,7 +713,6 @@ extension String {
         static let profileEditItem = "PROFILE_EDIT_ITEM"
         static let profileClearItem = "PROFILE_CLEAR_ITEM"
         static let profileOpenItem = "PROFILE_OPEN_ITEM"
-        static let profileAddN = "PROFILE_ADD_N"
         static let domainProfileInvalidWebsiteError = "DOMAIN_PROFILE_INVALID_WEBSITE_ERROR"
         static let profileSocialsEdit = "PROFILE_SOCIALS_EDIT"
         static let profileSocialsOpen = "PROFILE_SOCIALS_OPEN"
@@ -758,6 +758,12 @@ extension String {
         static let domainProfileAccessInfoTitle = "DOMAIN_PROFILE_ACCESS_INFO_TITLE"
         static let domainProfileAccessInfoDescription = "DOMAIN_PROFILE_ACCESS_INFO_DESCRIPTION"
         static let profileSocialsEmptyMessage = "PROFILE_SOCIALS_EMPTY_MESSAGE"
+        
+        // Legacy tokens
+        static let legacy = "LEGACY"
+        static let multiChain = "MULTI_CHAIN"
+        static let chooseCoinVersionPullUpTitle = "CHOOSE_COIN_VERSION_PULL_UP_TITLE"
+        static let chooseCoinVersionPullUpDescription = "CHOOSE_COIN_VERSION_PULL_UP_DESCRIPTION"
     }
     
     struct Segues {

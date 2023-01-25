@@ -63,7 +63,7 @@ extension DomainProfileGeneralInfoCell {
                                             font: .currentFont(withSize: 16, weight: .medium),
                                             textColor: .white)
         textView.text = type.displayValue
-        placeholderLabel.setAttributedTextWith(text: String.Constants.profileAddN.localized(type.title.lowercased()),
+        placeholderLabel.setAttributedTextWith(text: String.Constants.addN.localized(type.title.lowercased()),
                                                font: .currentFont(withSize: 16, weight: .regular),
                                                textColor: .white.withAlphaComponent(0.56))
         setupControlsForCurrentMode(error: displayInfo.error, isEnabled: displayInfo.isEnabled)

@@ -48,7 +48,7 @@ extension DomainProfileMetadataCell {
             actionButton.isHidden = actions.isEmpty
             
             if value.isEmpty {
-                let placeholder = String.Constants.profileAddN.localized(type.title.lowercased())
+                let placeholder = String.Constants.addN.localized(type.title.lowercased())
                 metadataValueLabel.setAttributedTextWith(text: placeholder,
                                                          font: .currentFont(withSize: 16, weight: .regular),
                                                          textColor: .white.withAlphaComponent(0.56),

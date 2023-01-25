@@ -13,6 +13,7 @@ final class ManageMultiChainDomainAddressCell: WalletAddressFieldCollectionCell 
 
     @IBOutlet private weak var coinVersionLabel: UILabel!
     @IBOutlet private weak var errorLabel: UILabel!
+    @IBOutlet private weak var legacyLabel: UILabel!
     @IBOutlet private weak var doneButton: ManageWalletDoneButton!
     @IBOutlet private weak var clearButton: UIButton!
 
@@ -29,6 +30,10 @@ final class ManageMultiChainDomainAddressCell: WalletAddressFieldCollectionCell 
         doneButton.setTitle(String.Constants.doneButtonTitle.localized(), image: nil)
         clearButton.setTitle("", for: .normal)
         doneButton.isEnabled = false
+        legacyLabel.setAttributedTextWith(text: String.Constants.legacy.localized(),
+                                          font: .currentFont(withSize: 12, weight: .medium),
+                                          textColor: .foregroundSecondary)
+        legacyLabel.adjustsFontSizeToFitWidth = true
     }
 
     override var canCheckPasteboard: Bool { true }
@@ -57,10 +62,8 @@ extension ManageMultiChainDomainAddressCell {
                                                                   weight: .medium),
                                                textColor: .foregroundDefault,
                                                lineBreakMode: .byTruncatingTail)
-        errorLabel.setAttributedTextWith(text: error?.title ?? "",
-                                         font: .currentFont(withSize: 12,
-                                                            weight: .medium),
-                                         textColor: .foregroundDanger)
+        setError(text: error?.title)
+        legacyLabel.isHidden = !coin.isDeprecated
         walletAddressTF.placeholder = String.Constants.nAddress.localized(coin.name)
         setupControlsForCurrentMode()
     }
@@ -123,8 +126,6 @@ private extension ManageMultiChainDomainAddressCell {
         } else {
             if let error {
                 setError(text: error.title)
-            } else if coin?.isDeprecated == true {
-                setError(text: String.Constants.thisTokenWasDeprecated.localized(), style: .warning)
             } else {
                 setError(text: nil)
             }
