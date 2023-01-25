@@ -712,5 +712,4 @@ To start this process, verify your email address to load the set of domains you 
 // Legacy tokens
 "LEGACY" = "Legacy";
 "MULTI_CHAIN" = "Multi-chain";
-"CHOOSE_COIN_VERSION_PULL_UP_TITLE" = "Choose a version of %@";
 "CHOOSE_COIN_VERSION_PULL_UP_DESCRIPTION" = "For backward compatibility with some dApps, we recommend setting up both Legacy (Ethereum) and Multi-chain.";

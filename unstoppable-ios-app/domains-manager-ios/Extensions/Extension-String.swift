@@ -762,7 +762,6 @@ extension String {
         // Legacy tokens
         static let legacy = "LEGACY"
         static let multiChain = "MULTI_CHAIN"
-        static let chooseCoinVersionPullUpTitle = "CHOOSE_COIN_VERSION_PULL_UP_TITLE"
         static let chooseCoinVersionPullUpDescription = "CHOOSE_COIN_VERSION_PULL_UP_DESCRIPTION"
     }
     
