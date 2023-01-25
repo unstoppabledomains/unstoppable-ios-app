@@ -135,7 +135,8 @@ extension DomainProfileTopInfoCell {
                 case .image(let image, _):
                     imageView.image = image
                 case .imageURL(let url, _):
-                    let image = await appContext.imageLoadingService.loadImage(from: .url(url),
+                    let image = await appContext.imageLoadingService.loadImage(from: .url(url,
+                                                                                          maxSize: Constants.downloadedImageMaxSize),
                                                                                downsampleDescription: nil)
                     imageView.image = image 
                 case .none:

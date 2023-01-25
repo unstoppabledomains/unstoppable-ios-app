@@ -29,7 +29,7 @@ extension GIFAnimationsService {
         }
         
         let task: Task<UIImage, Never> = Task.detached(priority: .high) {
-            guard let animation = await self.gifImageWithName(gif.name) else {
+            guard let animation = await self.createGIFImageWithName(gif.name, maskingType: gif.maskingType) else {
                 Debugger.printFailure("Failed to create GIF animation \(gif.name)", critical: true)
                 return .init()
             }
@@ -44,7 +44,7 @@ extension GIFAnimationsService {
         return image
     }
     
-    func getGIF(_ gif: GIF) async -> UIImage {
+    func createImageForGIF(_ gif: GIF) async -> UIImage {
         if let image = await stateHolder.cachedGifs[gif] {
             return image
         } else if let imageTask = await stateHolder.currentAsyncProcess[gif] {
@@ -59,6 +59,22 @@ extension GIFAnimationsService {
             await stateHolder.removeGIF(gif)
         }
     }
+    
+    func createGIFImageWithData(_ data: Data,
+                                maskingType: GIFMaskingType? = nil) async -> UIImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
+            Debugger.printInfo("image doesn't exist")
+            return nil
+        }
+        
+        do {
+            let image = try await animatedImageWithSource(source, maskingType: maskingType)
+            return image
+        } catch {
+            Debugger.printFailure("Failed to create GIF image: \(error.localizedDescription)", critical: false)
+            return nil
+        }
+    }
 }
 
 extension GIFAnimationsService {
@@ -70,12 +86,19 @@ extension GIFAnimationsService {
             case .happyEnd: return "allDoneConfettiAnimation"
             }
         }
+        
+        fileprivate var maskingType: GIFMaskingType? {
+            switch self {
+            case .happyEnd: return .maskWhite
+            }
+        }
     }
 }
 
 // MARK: - GIF animations. Use GIFAnimationsService to work with GIF animations
 private extension GIFAnimationsService {
-    func gifImageWithURL(_ gifUrl:String) async -> UIImage? {
+    func createGIFImageWithURL(_ gifUrl: String,
+                               maskingType: GIFMaskingType?) async -> UIImage? {
         guard let bundleURL = URL(string: gifUrl) else {
             Debugger.printInfo("image named \"\(gifUrl)\" doesn't exist")
             return nil
@@ -85,10 +108,11 @@ private extension GIFAnimationsService {
             return nil
         }
         
-        return await gifImageWithData(imageData)
+        return await createGIFImageWithData(imageData, maskingType: maskingType)
     }
     
-    func gifImageWithName(_ name: String) async -> UIImage? {
+    func createGIFImageWithName(_ name: String,
+                                maskingType: GIFMaskingType?) async -> UIImage? {
         guard let bundleURL = Bundle.main
             .url(forResource: name, withExtension: "gif") else {
             Debugger.printInfo("This image named \"\(name)\" does not exist")
@@ -99,28 +123,14 @@ private extension GIFAnimationsService {
             return nil
         }
         
-        return await gifImageWithData(imageData)
+        return await createGIFImageWithData(imageData, maskingType: maskingType)
     }
     
-    func gifImageWithData(_ data: Data) async -> UIImage? {
-        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
-            Debugger.printInfo("image doesn't exist")
-            return nil
-        }
-        
-        do {
-            let image = try await animatedImageWithSource(source)
-            return image
-        } catch {
-            Debugger.printFailure("Failed to create GIF image: \(error.localizedDescription)", critical: true)
-            return nil
-        }
-    }
-    
-    func animatedImageWithSource(_ source: CGImageSource) async throws -> UIImage {
+    func animatedImageWithSource(_ source: CGImageSource,
+                                 maskingType: GIFMaskingType?) async throws -> UIImage {
         let start = Date()
         let count = CGImageSourceGetCount(source)
-        let (images, delays) = try await extractImagesWithDelays(from: source)
+        let (images, delays) = try await extractImagesWithDelays(from: source, maskingType: maskingType)
         Debugger.printWarning("\(String.itTook(from: start)) to prepare animation")
         
         let duration: Int = {
@@ -155,11 +165,15 @@ private extension GIFAnimationsService {
         return animation
     }
     
-    func extractImagesWithDelays(from source: CGImageSource) async throws -> ImagesWithDelays {
+    func extractImagesWithDelays(from source: CGImageSource,
+                                 maskingType: GIFMaskingType?) async throws -> ImagesWithDelays {
         guard let cgContext = CGContext(data: nil, width: 10, height: 10, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceGray(), bitmapInfo: 0) else {
             throw GIFPreparationError.failedToCreateCGContext
         }
         let count = CGImageSourceGetCount(source)
+        if count <= 1 {
+            throw GIFPreparationError.oneOrLessFrames
+        }
         guard let cgImage = cgContext.makeImage() else {
             throw GIFPreparationError.failedToMakeCGImage
         }
@@ -179,8 +193,11 @@ private extension GIFAnimationsService {
             for i in 0..<count {
                 group.addTask {
                     guard let image = CGImageSourceCreateImageAtIndex(source, i, downsampleOptions),
-                          let correctedImage = image.copy(maskingColorComponents: [222, 255, 222, 255, 222, 255]),
-                          let resizedImage = self.resizedImage(correctedImage, scale: 1, aspectRatio: 1, in: sharedContext) else {
+                          let maskedImage = self.createCGImage(image, withMaskingType: maskingType),
+                          let resizedImage = self.resizedImage(maskedImage,
+                                                               scale: self.scaleForImage(image),
+                                                               aspectRatio: 1,
+                                                               in: sharedContext) else {
                         throw GIFPreparationError.failedToGetImageFromSource
                     }
                     
@@ -206,6 +223,18 @@ private extension GIFAnimationsService {
         return (images, delays)
     }
     
+    func createCGImage(_ image: CGImage, withMaskingType maskingType: GIFMaskingType?) -> CGImage? {
+        guard let maskingType else { return image }
+        
+        return image.copy(maskingColorComponents: maskingType.maskingColorComponents)
+    }
+    
+    func scaleForImage(_ image: CGImage) -> CGFloat {
+        let maxSize = max(image.height, image.width)
+        let scale = min(1, Constants.downloadedImageMaxSize / CGFloat(maxSize))
+        return scale
+    }
+    
     func resizedImage(_ cgImage: CGImage, scale: CGFloat, aspectRatio: CGFloat, in sharedContext: CIContext) -> CGImage? {
         autoreleasepool {
             let image = CIImage(cgImage: cgImage)
@@ -227,15 +256,24 @@ private extension GIFAnimationsService {
     
     func delayForImageAtIndex(_ index: Int, source: CGImageSource) throws -> Double {
         let cfProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil)
-        let gifProperties: CFDictionary = unsafeBitCast(
-            CFDictionaryGetValue(cfProperties,
-                                 Unmanaged.passUnretained(kCGImagePropertyGIFDictionary).toOpaque()),
-            to: CFDictionary.self)
         
-        var delayObject: AnyObject = unsafeBitCast(
-            CFDictionaryGetValue(gifProperties,
-                                 Unmanaged.passUnretained(kCGImagePropertyGIFUnclampedDelayTime).toOpaque()),
-            to: AnyObject.self)
+        var value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyGIFDictionary, to: UnsafeRawPointer.self))
+        if value == nil {
+            if #available(iOS 14.0, *) {
+                value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyWebPDictionary, to: UnsafeRawPointer.self))
+            }
+        }
+        
+        guard let value else { throw GIFPreparationError.failedToCastDelay }
+        
+        let gifProperties: CFDictionary = unsafeBitCast(value,
+                                                        to: CFDictionary.self)
+        
+        
+        var delayObject: AnyObject = unsafeBitCast(CFDictionaryGetValue(gifProperties,
+                                                                        Unmanaged.passUnretained(kCGImagePropertyGIFUnclampedDelayTime).toOpaque()),
+                                                   to: AnyObject.self)
+        
         if delayObject.doubleValue == 0 {
             delayObject = unsafeBitCast(CFDictionaryGetValue(gifProperties,
                                                              Unmanaged.passUnretained(kCGImagePropertyGIFDelayTime).toOpaque()), to: AnyObject.self)
@@ -295,7 +333,8 @@ private extension GIFAnimationsService {
         case failedToMakeCGImage
         case failedToGetImageFromSource
         case failedToCastDelay
-        
+        case oneOrLessFrames
+
         public var errorDescription: String? {
             return rawValue
         }
@@ -335,6 +374,19 @@ private extension GIFAnimationsService {
             cachedGifs[gif] = nil
             currentAsyncProcess[gif]?.cancel()
             currentAsyncProcess[gif] = nil
+        }
+    }
+}
+
+extension GIFAnimationsService {
+    enum GIFMaskingType {
+        case maskWhite
+        
+        var maskingColorComponents: [CGFloat] {
+            switch self {
+            case .maskWhite:
+                return [222, 255, 222, 255, 222, 255]
+            }
         }
     }
 }
