@@ -1034,7 +1034,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         Task {
             var badgeIcon = badgeDisplayInfo.defaultIcon
             if let url = URL(string: badgeDisplayInfo.badge.logo),
-               let image = await appContext.imageLoadingService.loadImage(from: .url(url),
+               let image = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedIconMaxSize),
                                                                           downsampleDescription: nil) {
                 badgeIcon = image
             }

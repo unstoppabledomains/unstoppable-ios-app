@@ -273,7 +273,7 @@ extension DomainProfileViewController {
                 // Hard code specifically for UD logo in mobile app. Request from designer. 
                 return .udBadgeLogo
             } else if let url = URL(string: badge.logo) {
-                return await appContext.imageLoadingService.loadImage(from: .url(url),
+                return await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedIconMaxSize),
                                                                       downsampleDescription: nil)
             }
             return nil

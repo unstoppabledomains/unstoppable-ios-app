@@ -23,7 +23,7 @@ struct DownsampleDescription {
 }
 
 enum ImageSource {
-    case url(_ url: URL)
+    case url(_ url: URL, maxSize: CGFloat? = nil)
     case initials(_ name: String, size: InitialsView.InitialsSize, style: InitialsView.Style)
     case domain(_ domainItem: DomainItem)
     case domainInitials(_ domainItem: DomainItem, size: InitialsView.InitialsSize)
@@ -35,7 +35,7 @@ enum ImageSource {
 
     var key: String {
         switch self {
-        case .url(let url):
+        case .url(let url, _):
             return url.absoluteString
         case .initials(let name, let initialsSize, let style):
             let initials = String(name.first ?? .init("")).uppercased()
@@ -146,18 +146,29 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
 fileprivate extension ImageLoadingService {
     func imageFor(source: ImageSource, shouldCache: Bool = true, downsampleDescription: DownsampleDescription?) async -> UIImage? {
         switch source {
-        case .url(let url):
+        case .url(let url, let maxImageSize):
             do {
+                
                 let imageData = try await loadImage(from: url)
+                
+                if let gif = await GIFAnimationsService.shared.gifImageWithData(imageData) {
+                    if shouldCache {
+                        storeAndCache(image: gif, forKey: source.key)
+                    }
+                    return gif
+                }
                 
                 return autoreleasepool {
                     var finalImage: UIImage?
                   
-                    let maxImageSize: CGFloat = Constants.ImagesMaxSize
                     if let image = UIImage(data: imageData) {
-                        finalImage = scaleIfNeeded(image, maxImageSize: maxImageSize)
+                        finalImage = image
                     } else {
-                        finalImage = scaleIfNeeded(UIImage.from(svgData: imageData), maxImageSize: maxImageSize)
+                        finalImage = UIImage.from(svgData: imageData)
+                    }
+                    
+                    if let maxImageSize {
+                        finalImage = scaleIfNeeded(finalImage, maxImageSize: maxImageSize)
                     }
                     
                     guard let image = finalImage else { return nil }
@@ -186,7 +197,7 @@ fileprivate extension ImageLoadingService {
                 guard let url = URL(string: imagePath) else { return nil }
                 let start = Date()
                 
-                if let image = await imageFor(source: .url(url), downsampleDescription: downsampleDescription) {
+                if let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.downloadedImageMaxSize) {
                     Debugger.printWarning("\(String.itTook(from: start)) to load domain pfp")
                     return image
                 }
@@ -204,13 +215,13 @@ fileprivate extension ImageLoadingService {
             return await imageFor(source: .domainInitials(domainItem, size: size), downsampleDescription: downsampleDescription)
         case .currency(let currency, let size, let style):
             if let url = URL(string: NetworkConfig.currencyIconUrl(for: currency)),
-               let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.IconsMaxSize) {
+               let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.downloadedIconMaxSize) {
                 return image
             }
             return await imageFor(source: .initials(currency.ticker, size: size, style: style), downsampleDescription: downsampleDescription)
         case .wcApp(let appInfo, let size):
             if let url = appInfo.getIconURL(),
-               let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.IconsMaxSize) {
+               let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.downloadedIconMaxSize) {
                 return image
             }
             return await imageFor(source: .initials(appInfo.getDisplayName(), size: size, style: .gray), downsampleDescription: downsampleDescription)
@@ -219,14 +230,14 @@ fileprivate extension ImageLoadingService {
                 .first(where: { URL(string: $0).pathExtensionPng }) ?? appInfo.appIconUrls.first
             if let urlString = urlString,
                let url = URL(string: urlString),
-               let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.IconsMaxSize) {
+               let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.downloadedIconMaxSize) {
                 return image
             }
             return await imageFor(source: .initials(appInfo.displayName, size: size, style: .gray), downsampleDescription: downsampleDescription)
         case .qrCode(let url, let options):
             if let image = try? await qrCodeService.generateUDQRCode(for: url,
                                                                      with: options),
-               let scaledImage = scaleIfNeeded(image, maxImageSize: Constants.ImagesMaxSize) {
+               let scaledImage = scaleIfNeeded(image, maxImageSize: Constants.downloadedImageMaxSize) {
                 storeAndCache(image: scaledImage, forKey: source.key)
                 return scaledImage
             }
