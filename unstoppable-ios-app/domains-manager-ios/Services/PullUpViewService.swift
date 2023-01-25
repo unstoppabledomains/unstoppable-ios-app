@@ -1338,11 +1338,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         segmentedControl.selectedSegmentIndex = 0
         
         return try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
-            let selectionView = PullUpSelectionView(configuration: .init(title: .highlightedText(.init(text: String.Constants.chooseCoinVersionPullUpTitle.localized(ticker),
-                                                                                                       highlightedText: [.init(highlightedText: ticker,
-                                                                                                                               highlightedColor: .foregroundSecondary)],
-                                                                                                       analyticsActionName: nil,
-                                                                                                       action: nil)),
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(coin.fullName ?? ticker),
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: coinIcon ?? .warningIcon,
                                                                                      size: .large,
