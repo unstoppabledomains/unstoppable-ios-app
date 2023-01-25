@@ -194,7 +194,10 @@ private extension GIFAnimationsService {
                 group.addTask {
                     guard let image = CGImageSourceCreateImageAtIndex(source, i, downsampleOptions),
                           let maskedImage = self.maskingImage(image, withMaskingType: maskingType),
-                          let resizedImage = self.resizedImage(maskedImage, scale: 1, aspectRatio: 1, in: sharedContext) else {
+                          let resizedImage = self.resizedImage(maskedImage,
+                                                               scale: self.scaleForImage(image),
+                                                               aspectRatio: 1,
+                                                               in: sharedContext) else {
                         throw GIFPreparationError.failedToGetImageFromSource
                     }
                     
@@ -224,6 +227,12 @@ private extension GIFAnimationsService {
         guard let maskingType else { return image }
         
         return image.copy(maskingColorComponents: maskingType.maskingColorComponents)
+    }
+    
+    func scaleForImage(_ image: CGImage) -> CGFloat {
+        let maxSize = max(image.height, image.width)
+        let scale = min(1, Constants.downloadedImageMaxSize / CGFloat(maxSize))
+        return scale
     }
     
     func resizedImage(_ cgImage: CGImage, scale: CGFloat, aspectRatio: CGFloat, in sharedContext: CIContext) -> CGImage? {
