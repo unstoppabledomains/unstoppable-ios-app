@@ -112,7 +112,7 @@ private extension GIFAnimationsService {
             let image = try await animatedImageWithSource(source)
             return image
         } catch {
-            Debugger.printFailure("Failed to create GIF image: \(error.localizedDescription)", critical: true)
+            Debugger.printFailure("Failed to create GIF image: \(error.localizedDescription)", critical: false)
             return nil
         }
     }
@@ -160,6 +160,9 @@ private extension GIFAnimationsService {
             throw GIFPreparationError.failedToCreateCGContext
         }
         let count = CGImageSourceGetCount(source)
+        if count <= 1 {
+            throw GIFPreparationError.oneOrLessFrames
+        }
         guard let cgImage = cgContext.makeImage() else {
             throw GIFPreparationError.failedToMakeCGImage
         }
@@ -227,15 +230,24 @@ private extension GIFAnimationsService {
     
     func delayForImageAtIndex(_ index: Int, source: CGImageSource) throws -> Double {
         let cfProperties = CGImageSourceCopyPropertiesAtIndex(source, index, nil)
-        let gifProperties: CFDictionary = unsafeBitCast(
-            CFDictionaryGetValue(cfProperties,
-                                 Unmanaged.passUnretained(kCGImagePropertyGIFDictionary).toOpaque()),
-            to: CFDictionary.self)
         
-        var delayObject: AnyObject = unsafeBitCast(
-            CFDictionaryGetValue(gifProperties,
-                                 Unmanaged.passUnretained(kCGImagePropertyGIFUnclampedDelayTime).toOpaque()),
-            to: AnyObject.self)
+        var value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyGIFDictionary, to: UnsafeRawPointer.self))
+        if value == nil {
+            if #available(iOS 14.0, *) {
+                value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyWebPDictionary, to: UnsafeRawPointer.self))
+            }
+        }
+        
+        guard let value else { throw GIFPreparationError.failedToCastDelay }
+        
+        var gifProperties: CFDictionary = unsafeBitCast(value,
+                                                        to: CFDictionary.self)
+        
+        
+        var delayObject: AnyObject = unsafeBitCast(CFDictionaryGetValue(gifProperties,
+                                                                        Unmanaged.passUnretained(kCGImagePropertyGIFUnclampedDelayTime).toOpaque()),
+                                                   to: AnyObject.self)
+        
         if delayObject.doubleValue == 0 {
             delayObject = unsafeBitCast(CFDictionaryGetValue(gifProperties,
                                                              Unmanaged.passUnretained(kCGImagePropertyGIFDelayTime).toOpaque()), to: AnyObject.self)
@@ -295,7 +307,8 @@ private extension GIFAnimationsService {
         case failedToMakeCGImage
         case failedToGetImageFromSource
         case failedToCastDelay
-        
+        case oneOrLessFrames
+
         public var errorDescription: String? {
             return rawValue
         }
