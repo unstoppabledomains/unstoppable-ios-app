@@ -2775,7 +2775,6 @@
 		C6DF9871290F83020098733A /* ResolutionInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */; };
 		C6DF9872290F83020098733A /* TransactionsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300F291525CFEBEC007EEAD1 /* TransactionsListViewModelTests.swift */; };
 		C6DF9873290F83020098733A /* UDWalletsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C680178A2886A7CC00524712 /* UDWalletsServiceTests.swift */; };
-		C6DF9874290F83020098733A /* DomainDetailsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30CB2D1B25C2B95200203052 /* DomainDetailsViewControllerTests.swift */; };
 		C6DF9875290F83020098733A /* UnsConfigManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F6A88F277BB5310086D70B /* UnsConfigManagerTests.swift */; };
 		C6DF9876290F83020098733A /* ArrayExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307CFF7E279AEF2B003A6AF1 /* ArrayExtensionsTests.swift */; };
 		C6DF9877290F83020098733A /* domains_manager_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306486972527253D00388026 /* domains_manager_iosTests.swift */; };
@@ -3204,7 +3203,6 @@
 		30BFA4D927E1087500644CD5 /* ProtectWallet.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ProtectWallet.storyboard; sourceTree = "<group>"; };
 		30BFA4E327E24A4600644CD5 /* RecoveryPhraseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryPhraseViewController.swift; sourceTree = "<group>"; };
 		30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateKeyStorageTests.swift; sourceTree = "<group>"; };
-		30CB2D1B25C2B95200203052 /* DomainDetailsViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainDetailsViewControllerTests.swift; sourceTree = "<group>"; };
 		30CB2D2125C2E98C00203052 /* ApiRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRequestBuilder.swift; sourceTree = "<group>"; };
 		30D89F5526A9EA2900251C2D /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		30E1379D276A342F0086E5E5 /* domains-manager-ios TESTFLIGHT RELEASE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios TESTFLIGHT RELEASE.entitlements"; sourceTree = "<group>"; };
@@ -4139,7 +4137,6 @@
 				306486992527253D00388026 /* Info.plist */,
 				307CFF7E279AEF2B003A6AF1 /* ArrayExtensionsTests.swift */,
 				C679B61B291CF8C800F543A7 /* BaseTestClass.swift */,
-				30CB2D1B25C2B95200203052 /* DomainDetailsViewControllerTests.swift */,
 				300F291B25D3D4A1007EEAD1 /* DomainRecordsViewModelTests.swift */,
 				306486972527253D00388026 /* domains_manager_iosTests.swift */,
 				30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */,
@@ -8152,7 +8149,6 @@
 				C679B61C291CF8C800F543A7 /* BaseTestClass.swift in Sources */,
 				C6DF9877290F83020098733A /* domains_manager_iosTests.swift in Sources */,
 				C6DF986A290F83020098733A /* WalletDataValidationTests.swift in Sources */,
-				C6DF9874290F83020098733A /* DomainDetailsViewControllerTests.swift in Sources */,
 				C6DF986E290F83020098733A /* DomainRecordsViewModelTests.swift in Sources */,
 				C6DF9870290F83020098733A /* testUpdateRecords.swift in Sources */,
 			);

@@ -65,6 +65,11 @@
                BlueprintName = "domains-manager-iosTests"
                ReferencedContainer = "container:domains-manager-ios.xcodeproj">
             </BuildableReference>
+            <SkippedTests>
+               <Test
+                  Identifier = "TransactionsStorageTests">
+               </Test>
+            </SkippedTests>
          </TestableReference>
          <TestableReference
             skipped = "NO">

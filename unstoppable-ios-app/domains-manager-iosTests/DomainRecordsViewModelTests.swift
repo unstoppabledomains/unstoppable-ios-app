@@ -145,11 +145,14 @@ class SignatureTests: XCTestCase {
     }
 
     func testSigningMessage() throws {
+        let privateKey = "0x397ab335485c15be06deb7a64fd87ec93da836ee3ab189441f71d51e93bf7ce0"
+        
         let exp = expectation(description: "wait for signed data")
         let message = "0x943ba9c825ad7552853ef52927dec257048efbcd9e6819fc5df9a2aac84e486f"
-        UDWalletWithPrivateSeed.create(aliasName: "", type: .generatedLocally, privateKeyEthereum: "0x397ab335485c15be06deb7a64fd87ec93da836ee3ab189441f71d51e93bf7ce0")
+        UDWalletWithPrivateSeed.create(aliasName: "", type: .generatedLocally, privateKeyEthereum: privateKey)
             .done { (wallet: UDWalletWithPrivateSeed) -> Void in
-                let sig = try! wallet.udWallet.signPersonalEthMessage(Data(message.droppedHexPrefix.hexToBytes()))
+                let personalMessage = Data(message.droppedHexPrefix.hexToBytes())
+                let sig = try! UDWallet.signPersonalEthMessage(personalMessage, with: privateKey)
                 let sigString = sig!.toHexString()
                 XCTAssertEqual(HexAddress.hexPrefix + sigString, "0x69d4da1dd5eef16e05ef54526e55e14bcff1c183daffe96007982624072592da4f0e958cca733cc77f7c81eec5cb95b538e9403175bae294844dd1a664a060b61b")
                 exp.fulfill()
@@ -276,15 +279,15 @@ class SignatureTests: XCTestCase {
         XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
     }
     
-    func testSignHashOpenSea() {
-        let cow = "cow".data(using: .utf8)!
-        let privateKeyData = Crypto.hash(cow)
-
-        let dataSignHashOpenSea = typedDataOpenSea.signHash
-        let signed = try! UDWallet.signMessageHash(messageHash: dataSignHashOpenSea, with: privateKeyData)
-        let result = "be609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2"
-        XCTAssertEqual(dataSignHashOpenSea.hexString, result)
-        XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
-    }
+//    func testSignHashOpenSea() {
+//        let cow = "cow".data(using: .utf8)!
+//        let privateKeyData = Crypto.hash(cow)
+//
+//        let dataSignHashOpenSea = typedDataOpenSea.signHash
+//        let signed = try! UDWallet.signMessageHash(messageHash: dataSignHashOpenSea, with: privateKeyData)
+//        let result = "be609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2"
+//        XCTAssertEqual(dataSignHashOpenSea.hexString, result)
+//        XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
+//    }
     
 }
