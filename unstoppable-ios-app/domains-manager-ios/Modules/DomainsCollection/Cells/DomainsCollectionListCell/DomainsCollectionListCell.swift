@@ -34,7 +34,7 @@ extension DomainsCollectionListCell {
         chevronImageView.isHidden = !isSelectable
         
         if domainItem.pfpInfo != .none,
-           let image = appContext.imageLoadingService.getStoredImage(for: .domain(domainItem)) {
+           let image = appContext.imageLoadingService.cachedImage(for: .domain(domainItem)) {
             iconImageView.image = image
         } else {
             Task {

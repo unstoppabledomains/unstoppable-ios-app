@@ -12,7 +12,7 @@ protocol ImageLoadingServiceProtocol {
     func cachedImage(for source: ImageSource) -> UIImage?
     func downsample(image: UIImage, downsampleDescription: DownsampleDescription) -> UIImage?
     func storeImage(_ image: UIImage, for source: ImageSource) async
-    func getStoredImage(for source: ImageSource) -> UIImage?
+    func getStoredImage(for source: ImageSource) async -> UIImage?
     func clearCache() async
     func clearStoredImages() async
 }
@@ -83,7 +83,7 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
     // Currently downsample description is ignored. We set maximum size of upcoming image to 512px.
     func loadImage(from source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
         let key = source.key
-        if let cachedImage = self.imageCache.object(forKey: key as NSString) {
+        if let cachedImage = cachedImage(for: key) {
             return cachedImage
         }
         
@@ -92,7 +92,7 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
         }
         
         let task: Task<UIImage?, Never> = Task.detached(priority: .medium) {
-            if let storedImage = self.getStoredImage(for: key) {
+            if let storedImage = await self.getStoredImage(for: key) {
                 return storedImage
             }
             
@@ -128,9 +128,8 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
         cachedImage(for: source.key)
     }
    
-    nonisolated
-    func getStoredImage(for source: ImageSource) -> UIImage? {
-        getStoredImage(for: source.key)
+    func getStoredImage(for source: ImageSource) async -> UIImage? {
+        await getStoredImage(for: source.key)
     }
   
     func clearCache() async {
@@ -144,17 +143,15 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
 
 // MARK: - Private methods
 fileprivate extension ImageLoadingService {
-    func imageFor(source: ImageSource, shouldCache: Bool = true, downsampleDescription: DownsampleDescription?) async -> UIImage? {
+    func imageFor(source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
         switch source {
         case .url(let url, let maxImageSize):
             do {
-                
                 let imageData = try await loadImage(from: url)
                 
                 if let gif = await GIFAnimationsService.shared.gifImageWithData(imageData) {
-                    if shouldCache {
-                        storeAndCache(image: gif, forKey: source.key)
-                    }
+                    storeAndCache(imageData: imageData, image: gif, forKey: source.key)
+                    
                     return gif
                 }
                 
@@ -173,9 +170,7 @@ fileprivate extension ImageLoadingService {
                     
                     guard let image = finalImage else { return nil }
                     
-                    if shouldCache {
-                        storeAndCache(image: image, forKey: source.key)
-                    }
+                    storeAndCache(image: image, forKey: source.key)
                     
                     return image
                 }
@@ -197,7 +192,8 @@ fileprivate extension ImageLoadingService {
                 guard let url = URL(string: imagePath) else { return nil }
                 let start = Date()
                 
-                if let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.downloadedImageMaxSize) {
+                
+                if let image = await imageFor(source: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: downsampleDescription) {
                     Debugger.printWarning("\(String.itTook(from: start)) to load domain pfp")
                     return image
                 }
@@ -215,13 +211,13 @@ fileprivate extension ImageLoadingService {
             return await imageFor(source: .domainInitials(domainItem, size: size), downsampleDescription: downsampleDescription)
         case .currency(let currency, let size, let style):
             if let url = URL(string: NetworkConfig.currencyIconUrl(for: currency)),
-               let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.downloadedIconMaxSize) {
+               let image = await imageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
                 return image
             }
             return await imageFor(source: .initials(currency.ticker, size: size, style: style), downsampleDescription: downsampleDescription)
         case .wcApp(let appInfo, let size):
             if let url = appInfo.getIconURL(),
-               let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.downloadedIconMaxSize) {
+               let image = await imageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
                 return image
             }
             return await imageFor(source: .initials(appInfo.getDisplayName(), size: size, style: .gray), downsampleDescription: downsampleDescription)
@@ -230,7 +226,7 @@ fileprivate extension ImageLoadingService {
                 .first(where: { URL(string: $0).pathExtensionPng }) ?? appInfo.appIconUrls.first
             if let urlString = urlString,
                let url = URL(string: urlString),
-               let image = await loadAndCacheImage(from: url, forKey: source.key, withMaxImageSize: Constants.downloadedIconMaxSize) {
+               let image = await imageFor(source: .url(url, maxSize: Constants.downloadedIconMaxSize), downsampleDescription: downsampleDescription) {
                 return image
             }
             return await imageFor(source: .initials(appInfo.displayName, size: size, style: .gray), downsampleDescription: downsampleDescription)
@@ -243,15 +239,6 @@ fileprivate extension ImageLoadingService {
             }
             return nil
         }
-    }
-    
-    func loadAndCacheImage(from url: URL, forKey key: String, withMaxImageSize maxImageSize: CGFloat) async -> UIImage? {
-        if let image = await imageFor(source: .url(url), shouldCache: false, downsampleDescription: nil),
-           let scaledImage = scaleIfNeeded(image, maxImageSize: maxImageSize) {
-            storeAndCache(image: scaledImage, forKey: key)
-            return scaledImage
-        }
-        return nil
     }
     
     func scaleIfNeeded(_ image: UIImage?, maxImageSize: CGFloat) -> UIImage? {
@@ -293,26 +280,35 @@ fileprivate extension ImageLoadingService {
         self.imageCache.object(forKey: key as NSString)
     }
     
-    nonisolated
-    func getStoredImage(for key: String) -> UIImage? {
+    func getStoredImage(for key: String) async -> UIImage? {
         if let cachedImage = cachedImage(for: key) {
             return cachedImage
         }
         guard let imageData = storage.getStoredImage(for: key) else { return nil }
         
-        if let image = UIImage(data: imageData) {
-            Task { await cache(image: image, forKey: key) }
-            return image
+        var image: UIImage?
+        if let gif = await GIFAnimationsService.shared.gifImageWithData(imageData) {
+            image = gif
+        } else if let justImage = UIImage(data: imageData) {
+            image = justImage
         }
-        return nil
+            
+        guard let image else { return nil }
+      
+        cache(image: image, forKey: key)
+        return image
     }
     
     func storeAndCache(image: UIImage, forKey key: String) {
         if let imageData = image.pngData() {
-            storage.storeImageData(imageData, for: key)
+            storeAndCache(imageData: imageData, image: image, forKey: key)
         } else if let imageData = image.jpegData(compressionQuality: 1) {
-            storage.storeImageData(imageData, for: key)
+            storeAndCache(imageData: imageData, image: image, forKey: key)
         }
+    }
+    
+    func storeAndCache(imageData: Data, image: UIImage, forKey key: String) {
+        storage.storeImageData(imageData, for: key)
         cache(image: image, forKey: key)
     }
     
