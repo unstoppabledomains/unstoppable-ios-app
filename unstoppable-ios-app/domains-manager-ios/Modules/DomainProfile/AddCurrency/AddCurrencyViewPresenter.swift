@@ -16,10 +16,13 @@ typealias AddCurrencyCallback = (GroupedCoinRecord)->()
 
 final class AddCurrencyViewPresenter {
     
-    private let currencies: [GroupedCoinRecord]
+    private let currencies: [CoinRecord]
+    private let excludedCurrencies: [CoinRecord]
+    private var groupedRecord: [GroupedCoinRecord] = []
+    private var filteredGroupedRecords: [GroupedCoinRecord] = []
     private let coinRecordsService: CoinRecordsServiceProtocol
-    private var filteredCurrencies: [GroupedCoinRecord]
     private var addCurrencyCallback: AddCurrencyCallback
+    private var deprecatedCoinsMap: [String : GroupedCoinRecord] = [:]
     private var searchKey: String = ""
     private weak var view: AddCurrencyViewProtocol?
     
@@ -29,15 +32,8 @@ final class AddCurrencyViewPresenter {
          coinRecordsService: CoinRecordsServiceProtocol,
          addCurrencyCallback: @escaping AddCurrencyCallback) {
         self.view = view
-        let excludedCurrenciesSet = Set(excludedCurrencies.map({ CryptoEditingGroupedRecord.getGroupIdentifierFor(coin: $0) }))
-        
-        self.currencies = CryptoEditingGroupedRecord.groupCoins(currencies)
-            .lazy
-            .compactMap({ GroupedCoinRecord(coins: $0.value) })
-            .filter({ !excludedCurrenciesSet.contains(CryptoEditingGroupedRecord.getGroupIdentifierFor(coin: $0.coin)) })
-            .sorted(by: { $0.coin.ticker < $1.coin.ticker })
-        
-        self.filteredCurrencies = self.currencies
+        self.currencies = currencies
+        self.excludedCurrencies = excludedCurrencies
         self.addCurrencyCallback = addCurrencyCallback
         self.coinRecordsService = coinRecordsService
     }
@@ -46,7 +42,10 @@ final class AddCurrencyViewPresenter {
 // MARK: - AddCurrencyViewPresenterProtocol
 extension AddCurrencyViewPresenter: AddCurrencyViewPresenterProtocol {
     func viewDidLoad() {
-        showCurrencies()
+        Task {
+            await prepareCurrencies()
+            showCurrencies()
+        }
     }
     
     func didSelectItem(_ item: AddCurrencyViewController.Item) {
@@ -63,10 +62,10 @@ extension AddCurrencyViewPresenter: AddCurrencyViewPresenterProtocol {
     
     func didSearchWith(key: String) {
         if key.isEmpty {
-            filteredCurrencies = currencies
+            filteredGroupedRecords = groupedRecord
         } else {
             let lowercasedKey = key.lowercased()
-            filteredCurrencies = currencies.filter({ currency in
+            filteredGroupedRecords = groupedRecord.filter({ currency in
                 return currency.coin.ticker.lowercased().contains(lowercasedKey) || currency.coin.name.lowercased().contains(lowercasedKey) || (currency.coin.fullName?.lowercased().contains(lowercasedKey) == true)
             })            
         }
@@ -81,7 +80,7 @@ private extension AddCurrencyViewPresenter {
         Task {
             var snapshot = AddCurrencySnapshot()
            
-            let currencies = self.filteredCurrencies
+            let currencies = self.filteredGroupedRecords
             
             if currencies.isEmpty {
                 snapshot.appendSections([.empty])
@@ -115,5 +114,17 @@ private extension AddCurrencyViewPresenter {
             
             await view?.applySnapshot(snapshot, animated: true)
         }
+    }
+    
+    func prepareCurrencies() async {
+        let excludedCurrenciesSet = Set(excludedCurrencies.map({ CryptoEditingGroupedRecord.getGroupIdentifierFor(coin: $0) }))
+        
+        self.groupedRecord = CryptoEditingGroupedRecord.groupCoins(currencies)
+            .lazy
+            .compactMap({ GroupedCoinRecord(coins: $0.value) })
+            .filter({ !excludedCurrenciesSet.contains(CryptoEditingGroupedRecord.getGroupIdentifierFor(coin: $0.coin)) })
+            .sorted(by: { $0.coin.ticker < $1.coin.ticker })
+        
+        self.filteredGroupedRecords = self.groupedRecord
     }
 }
