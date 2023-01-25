@@ -22,7 +22,7 @@ final class AddCurrencyViewPresenter {
     private var filteredGroupedRecords: [GroupedCoinRecord] = []
     private let coinRecordsService: CoinRecordsServiceProtocol
     private var addCurrencyCallback: AddCurrencyCallback
-    private var deprecatedCoinsMap: [String : GroupedCoinRecord] = [:]
+    private var deprecatedRecordsMap: [String : GroupedCoinRecord] = [:]
     private var searchKey: String = ""
     private weak var view: AddCurrencyViewProtocol?
     
@@ -125,6 +125,18 @@ private extension AddCurrencyViewPresenter {
             .filter({ !excludedCurrenciesSet.contains(CryptoEditingGroupedRecord.getGroupIdentifierFor(coin: $0.coin)) })
             .sorted(by: { $0.coin.ticker < $1.coin.ticker })
         
+        /// If both (legacy and new) coin versions is in the list, we show only non-legacy.
+        /// User can select which one to add when select.
+        let coinTickersToRecordsMap = [String : [GroupedCoinRecord]].init(grouping: groupedRecord, by: { $0.coin.ticker })
+        for (ticker, records) in coinTickersToRecordsMap where records.count > 1 {
+            if let deprecatedRecord = records.first(where: { $0.isDeprecated }) {
+                deprecatedRecordsMap[ticker] = deprecatedRecord
+                if let i = groupedRecord.firstIndex(of: deprecatedRecord) {
+                    groupedRecord.remove(at: i)
+                }
+            }
+        }
+
         self.filteredGroupedRecords = self.groupedRecord
     }
 }
