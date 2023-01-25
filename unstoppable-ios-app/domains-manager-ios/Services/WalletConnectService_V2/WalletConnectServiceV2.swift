@@ -92,10 +92,18 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws {
-        guard let toDisconnect = appsStorage.find(by: app as! UnifiedConnectAppInfo) else {
+        let unifiedApp = app as! UnifiedConnectAppInfo // always safe
+        guard unifiedApp.isV2dApp else {
+            let peerId = unifiedApp.appInfo.getPeerId()! // always safe with V1
+            appContext.walletConnectService.disconnect(peerId: peerId)
+            return
+        }
+
+        guard let toDisconnect = appsStorage.find(by: unifiedApp) else {
             Debugger.printFailure("Failed to find app to disconnect", critical: false)
             return
         }
+        
         await self.appsStorage.remove(byTopic: toDisconnect.sessionProxy.topic)
         try await self.disconnect(topic: toDisconnect.sessionProxy.topic)
         self.listeners.forEach { holder in
@@ -108,7 +116,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     private func disconnect(topic: String) async throws {
-        try await Sign.instance.disconnect(topic: topic)
+        do {
+            try await Sign.instance.disconnect(topic: topic)
+        } catch {
+            Debugger.printFailure("[WC2] Failed to disconnect topic \(topic), error: \(error)")
+            throw error
+        }
     }
     
     private func configure() {
@@ -816,6 +829,13 @@ extension WalletConnectService {
             switch dAppInfoInternal {
             case .version1(let info): return info.dAppInfo.getDappHostDisplayName()
             case .version2(let info): return info.appMetaData.name
+            }
+        }
+        
+        func getPeerId() -> String? {
+            switch dAppInfoInternal {
+            case .version1(let info): return info.dAppInfo.peerId
+            case .version2(let info): return nil
             }
         }
         

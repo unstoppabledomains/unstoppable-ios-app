@@ -84,12 +84,13 @@ private extension ConnectedAppsListViewPresenter {
                 let apps = apps.sorted(by: { $0.appName < $1.appName })
                 guard let displayInfo = walletsDisplayInfo.first(where: { $0.address == apps[0].walletAddress }) else { continue }
                 
-                let items: [ConnectedAppsListViewController.Item] = apps.compactMap({ app in
-                    guard let domain = domains.first(where: { $0.name == app.domain.name }) else {
-                        Task {
-                            try await walletConnectServiceV2.disconnect(app: app)
-                        }
-                        return nil
+                let items: [ConnectedAppsListViewController.Item] = apps.map({ app in
+                    let domain: DomainItem
+                    if let _domain = domains.first(where: { $0.name == app.domain.name }) {
+                        domain = _domain
+                    } else {
+                        Debugger.printFailure("Forced to display a domain that has been disconnected, \(app.domain.name)", critical: true)
+                        domain = DomainItem(name: "Disconnected: \(app.domain.name)")
                     }
                     
                     var blockchainTypesArray: [BlockchainType] = app.chainIds.compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
@@ -97,7 +98,7 @@ private extension ConnectedAppsListViewPresenter {
                         blockchainTypesArray.append(.Ethereum) /// Fallback to V1 when chainId could be nil and we set ETH as default
                     }
                     
-                    guard let blockchainTypes = NonEmptyArray(items: blockchainTypesArray) else { return nil }
+                    let blockchainTypes = NonEmptyArray(items: blockchainTypesArray)! // safe after the previous lines
                     
                     let supportedNetworks = BlockchainType.supportedCases.map({ $0.fullName })
                     let displayInfo = ConnectedAppsListViewController.AppItemDisplayInfo(app: app,
