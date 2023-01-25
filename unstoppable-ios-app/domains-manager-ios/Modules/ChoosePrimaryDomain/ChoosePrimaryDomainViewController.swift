@@ -185,9 +185,10 @@ extension ChoosePrimaryDomainViewController: UICollectionViewDragDelegate {
     func collectionView(_ collectionView: UICollectionView, dragSessionIsRestrictedToDraggingApplication session: UIDragSession) -> Bool { true }
     
     func collectionView(_ collectionView: UICollectionView, dragPreviewParametersForItemAt indexPath: IndexPath) -> UIDragPreviewParameters? {
-        let cell = collectionView.cellForItem(at: indexPath)
+        guard let cell = collectionView.cellForItem(at: indexPath) else { return nil }
+        
         let previewParameters = UIDragPreviewParameters()
-        let path = UIBezierPath(roundedRect: cell?.bounds ?? .zero, cornerRadius: 8.0)
+        let path = UIBezierPath(roundedRect: cell.bounds, cornerRadius: 8.0)
         previewParameters.visiblePath = path
         previewParameters.backgroundColor = .clear
         return previewParameters
@@ -368,6 +369,7 @@ private extension ChoosePrimaryDomainViewController {
                 setBackground()
             case .allDomains:
                 layoutSection.contentInsets.top = 16
+                layoutSection.interGroupSpacing = 4
                 setBackground()
             case .header, .none, .searchEmptyState:
                 Void()
