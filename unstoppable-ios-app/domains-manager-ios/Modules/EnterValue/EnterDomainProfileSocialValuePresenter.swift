@@ -25,7 +25,7 @@ final class EnterDomainProfileSocialValuePresenter: EnterValueViewPresenter, Web
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view?.set(title: String.Constants.profileAddN.localized(socialType.title),
+        view?.set(title: String.Constants.addN.localized(socialType.title),
                   icon: socialType.icon,
                   tintColor: socialType.styleColor)
         view?.setPlaceholder(socialType.placeholder)

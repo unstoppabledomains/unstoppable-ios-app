@@ -284,6 +284,7 @@ extension Analytics {
         case showcaseYourProfile
         case recentActivityInfo
         case connectedAppNetworksInfo, connectedAppDomainInfo
+        case chooseCoinVersion
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

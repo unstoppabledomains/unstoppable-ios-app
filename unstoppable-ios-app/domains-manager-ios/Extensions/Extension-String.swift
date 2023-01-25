@@ -161,6 +161,7 @@ extension String {
         static let showMore = "SHOW_MORE"
         static let rearrange = "REARRANGE"
         static let login = "LOGIN"
+        static let addN = "ADD_N"
 
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -653,7 +654,6 @@ extension String {
         static let profileEditItem = "PROFILE_EDIT_ITEM"
         static let profileClearItem = "PROFILE_CLEAR_ITEM"
         static let profileOpenItem = "PROFILE_OPEN_ITEM"
-        static let profileAddN = "PROFILE_ADD_N"
         static let domainProfileInvalidWebsiteError = "DOMAIN_PROFILE_INVALID_WEBSITE_ERROR"
         static let profileSocialsEdit = "PROFILE_SOCIALS_EDIT"
         static let profileSocialsOpen = "PROFILE_SOCIALS_OPEN"
@@ -715,6 +715,10 @@ extension String {
         static let importFromTheWebsite = "IMPORT_FROM_THE_WEBSITE"
         static let storeInYourDomainVault = "STORE_IN_YOUR_DOMAIN_VAULT"
 
+        // Legacy tokens
+        static let legacy = "LEGACY"
+        static let multiChain = "MULTI_CHAIN"
+        static let chooseCoinVersionPullUpDescription = "CHOOSE_COIN_VERSION_PULL_UP_DESCRIPTION"
     }
     
     struct Segues {

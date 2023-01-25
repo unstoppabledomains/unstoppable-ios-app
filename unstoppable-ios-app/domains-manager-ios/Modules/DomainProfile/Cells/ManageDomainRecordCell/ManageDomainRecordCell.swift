@@ -63,26 +63,32 @@ final class ManageDomainRecordCell: WalletAddressFieldCollectionCell {
 // MARK: - Open methods
 extension ManageDomainRecordCell {
     func setWith(displayInfo: DomainProfileViewController.ManageDomainRecordDisplayInfo) {
-        self.coin = displayInfo.coin
+        let coin = displayInfo.coin
+        self.coin = coin
         self.textEditingActionCallback = displayInfo.editingActionCallback
         self.dotsActionCallback = displayInfo.dotsActionCallback
         self.removeAction = displayInfo.removeCoinCallback
         self.mode = displayInfo.mode
         self.isUserInteractionEnabled = displayInfo.isEnabled
-        currencyImageLoader.loadImage(for: displayInfo.coin)
+        currencyImageLoader.loadImage(for: coin)
 
         let disabledTextColor: UIColor = .brandWhite.withAlphaComponent(0.24)
         let foregroundColor: UIColor = displayInfo.isEnabled ? .brandWhite : disabledTextColor
         walletAddressTF.textColor = foregroundColor
         walletAddressTF.text = displayInfo.address
-        coinNameLabel.setAttributedTextWith(text: displayInfo.coin.name,
+        coinNameLabel.setAttributedTextWith(text: coin.name,
                                             font: .currentFont(withSize: 16,
                                                                weight: .medium),
                                             textColor: .brandWhite)
         
-        if let multiChainAddressesCount = displayInfo.multiChainAddressesCount,
+        if coin.isDeprecated {
+            coinVersionLabel.isHidden = false
+            coinVersionLabel.setAttributedTextWith(text: String.Constants.legacy.localized(),
+                                              font: .currentFont(withSize: 12, weight: .medium),
+                                              textColor: .brandWhite.withAlphaComponent(0.56))
+        } else if let multiChainAddressesCount = displayInfo.multiChainAddressesCount,
            displayInfo.error == nil,
-           var version = displayInfo.coin.version {
+           var version = coin.version {
             coinVersionLabel.isHidden = false
             if multiChainAddressesCount > 1 {
                 version += " +\(multiChainAddressesCount - 1)"
@@ -94,7 +100,7 @@ extension ManageDomainRecordCell {
             coinVersionLabel.isHidden = true
         }
         
-        let placeholder = String.Constants.nAddress.localized(displayInfo.coin.displayName)
+        let placeholder = String.Constants.nAddress.localized(coin.displayName)
         walletAddressTF.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                    attributes: [.font : UIFont.currentFont(withSize: 16, weight: .regular),
                                                                                 .foregroundColor: UIColor.white.withAlphaComponent(0.56)])
@@ -221,12 +227,6 @@ private extension ManageDomainRecordCell {
         switch mode {
         case .viewOnly, .deprecated:
             setError(text: error?.title)
-            
-            if case .deprecated = mode,
-               error == nil {
-                setError(text: String.Constants.thisTokenWasDeprecated.localized(), style: .warning)
-            }
-            
             deleteButton.isHidden = error == nil
             if isEnabled {
                 actionButton.isHidden = !isWithActions

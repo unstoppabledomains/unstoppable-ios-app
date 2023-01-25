@@ -125,6 +125,7 @@
 "SHOW_MORE" = "Show more";
 "REARRANGE" = "Rearrange";
 "LOGIN" = "Login";
+"ADD_N" = "Add %@";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -593,7 +594,6 @@
 "PROFILE_EDIT_ITEM" = "Edit %@";
 "PROFILE_CLEAR_ITEM" = "Remove %@";
 "PROFILE_OPEN_ITEM" = "Open %@";
-"PROFILE_ADD_N" = "Add %@";
 "DOMAIN_PROFILE_INVALID_WEBSITE_ERROR" = "Enter a valid URL";
 "PROFILE_SOCIALS_EDIT" = "Edit account";
 "PROFILE_SOCIALS_OPEN" = "Open link";
@@ -653,3 +653,8 @@
 // Minting-Claiming
 "IMPORT_FROM_THE_WEBSITE" = "Import from the website";
 "STORE_IN_YOUR_DOMAIN_VAULT" = "Store in your domain vault";
+
+// Legacy tokens
+"LEGACY" = "Legacy";
+"MULTI_CHAIN" = "Multi-chain";
+"CHOOSE_COIN_VERSION_PULL_UP_DESCRIPTION" = "For backward compatibility with some dApps, we recommend setting up both Legacy (Ethereum) and Multi-chain.";
