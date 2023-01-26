@@ -31,17 +31,18 @@ final class AddCurrencyCell: BaseListCollectionViewCell {
 
 // MARK: - Open methods
 extension AddCurrencyCell {
-    func setWithCurrency(_ currency: CoinRecord) {
-        currencyImageLoader.loadImage(for: currency)
+    func setWithGroupedRecord(_ record: GroupedCoinRecord) {
+        let coin = record.coin
+        currencyImageLoader.loadImage(for: coin)
         
-        currencyNameLabel.setAttributedTextWith(text: nameFor(currency: currency),
+        currencyNameLabel.setAttributedTextWith(text: nameFor(currency: coin),
                                                 font: .currentFont(withSize: 16, weight: .medium),
                                                 textColor: .foregroundDefault)
-        currencyTickerLabel.setAttributedTextWith(text: currency.ticker,
+        currencyTickerLabel.setAttributedTextWith(text: coin.ticker,
                                                   font: .currentFont(withSize: 14, weight: .regular),
                                                   textColor: .foregroundSecondary)
-        legacyLabel.isHidden = !currency.isDeprecated
-        horizontalContentStackView.spacing = currency.isDeprecated ? 8 : 0
+        legacyLabel.isHidden = !record.isDeprecated
+        horizontalContentStackView.spacing = coin.isDeprecated ? 8 : 0
     }
 }
 
