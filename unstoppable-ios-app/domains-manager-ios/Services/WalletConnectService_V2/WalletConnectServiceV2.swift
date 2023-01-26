@@ -31,7 +31,7 @@ protocol WalletConnectServiceV2Protocol {
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
     func pairClient(uri: WalletConnectURI)
     func setUIHandler(_ uiHandler: WalletConnectUIHandler)
-    func getConnectedApps() -> [UnifiedConnectAppInfo]
+    func getConnectedApps() async -> [UnifiedConnectAppInfo]
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
     func addListener(_ listener: WalletConnectServiceListener)
     func disconnectAppsForAbsentDomains(from: [DomainItem])
@@ -62,6 +62,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         #if DEBUG
         Debugger.printInfo(topic: .WallectConnectV2, "Settled pairings: \(pairings)")
         #endif
+        
+        // listen to the updates to domains, disconnect those dApps connected to gone domains
+        appContext.dataAggregatorService.addListener(self)
     }
     
     func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
@@ -75,27 +78,40 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     // returns both V1 and V2 apps
-    func getConnectedApps() -> [UnifiedConnectAppInfo] {
-        appsStorage.retrieveApps().map{ UnifiedConnectAppInfo(from: $0)}
-            + appContext.walletConnectService.getConnectedAppsV1().map{ UnifiedConnectAppInfo(from: $0)}
+    func getConnectedApps() async -> [UnifiedConnectAppInfo] {
+        let unifiedApps = getAllUnifiedAppsFromCache()
+        
+        // trim the list of connected dApps
+        let validDomains = await appContext.dataAggregatorService.getDomains()
+        let validConnectedApps = unifiedApps.trimmed(to: validDomains)
+        
+        // disconnect those connected to gone domains
+        disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
+        return validConnectedApps
     }
-    
-    func disconnectAppsForAbsentDomains(from domains: [DomainItem]) {
+        
+    func disconnectAppsForAbsentDomains(from validDomains: [DomainItem]) {
         Task {
-            let connectedApps = getConnectedApps()
-            for app in connectedApps {
-                if domains.first(where: { $0.name == app.domain.name }) == nil {
-                    try? await disconnect(app: app)
-                }
-            }
+            let unifiedApps = getAllUnifiedAppsFromCache()
+            let validConnectedApps = unifiedApps.trimmed(to: validDomains)
+            
+            disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
         }
     }
     
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws {
-        guard let toDisconnect = appsStorage.find(by: app as! UnifiedConnectAppInfo) else {
+        let unifiedApp = app as! UnifiedConnectAppInfo // always safe
+        guard unifiedApp.isV2dApp else {
+            let peerId = unifiedApp.appInfo.getPeerId()! // always safe with V1
+            appContext.walletConnectService.disconnect(peerId: peerId)
+            return
+        }
+
+        guard let toDisconnect = appsStorage.find(by: unifiedApp) else {
             Debugger.printFailure("Failed to find app to disconnect", critical: false)
             return
         }
+        
         await self.appsStorage.remove(byTopic: toDisconnect.sessionProxy.topic)
         try await self.disconnect(topic: toDisconnect.sessionProxy.topic)
         self.listeners.forEach { holder in
@@ -108,7 +124,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     private func disconnect(topic: String) async throws {
-        try await Sign.instance.disconnect(topic: topic)
+        do {
+            try await Sign.instance.disconnect(topic: topic)
+        } catch {
+            Debugger.printFailure("[WC2] Failed to disconnect topic \(topic), error: \(error)")
+            throw error
+        }
     }
     
     private func configure() {
@@ -381,7 +402,29 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
 }
 
+extension WalletConnectServiceV2: DataAggregatorServiceListener {
+    func dataAggregatedWith(result: DataAggregationResult) {
+        if case .success(let serviceResult) = result,
+           case .domainsUpdated(let validDomains) = serviceResult {
+            disconnectAppsForAbsentDomains(from: validDomains)
+        }
+    }
+}
+
 extension WalletConnectServiceV2 {
+    private func getAllUnifiedAppsFromCache() -> [UnifiedConnectAppInfo] {
+        appsStorage.retrieveApps().map{ UnifiedConnectAppInfo(from: $0)}
+        + appContext.walletConnectService.getConnectedAppsV1().map{ UnifiedConnectAppInfo(from: $0)}
+    }
+    
+    private func disconnectApps(from unifiedApps: [UnifiedConnectAppInfo],
+                                notIncluding validConnectedApps: [UnifiedConnectAppInfo]) {
+        Set(unifiedApps).subtracting(Set(validConnectedApps)).forEach { lostApp in
+            Debugger.printWarning("Disconnecting \(lostApp.appName) because its domain \(lostApp.domain.name) is gone")
+            Task { try? await disconnect(app: lostApp) }
+        }
+    }
+    
     private func detectApp(by address: HexAddress, topic: String) throws -> WCConnectedAppsStorageV2.ConnectedApp {
         guard let connectedApp = self.appsStorage.find(by: address, topic: topic)?.first else {
             Debugger.printFailure("No connected app can sign for the wallet address \(address)", critical: true)
@@ -819,6 +862,13 @@ extension WalletConnectService {
             }
         }
         
+        func getPeerId() -> String? {
+            switch dAppInfoInternal {
+            case .version1(let info): return info.dAppInfo.peerId
+            case .version2(let info): return nil
+            }
+        }
+        
         func getDisplayName() -> String {
             let name = getDappName()
             if name.isEmpty {
@@ -864,7 +914,6 @@ extension WalletConnectServiceV2 {
 }
 
 
-
 final class MockWalletConnectServiceV2 { }
 
 // MARK: - WalletConnectServiceProtocol
@@ -898,5 +947,15 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     func pairClient(uri: WalletConnectUtils.WalletConnectURI) {
         
+    }
+}
+
+protocol DomainHolder {
+    var domain: DomainItem { get }
+}
+
+extension Array where Element: DomainHolder {
+    func trimmed(to domains: [DomainItem]) -> [Element] {
+        self.filter({domains.contains(domain: $0.domain)})
     }
 }
