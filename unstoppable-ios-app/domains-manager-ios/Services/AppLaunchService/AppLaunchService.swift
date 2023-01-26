@@ -38,6 +38,7 @@ extension AppLaunchService: AppLaunchServiceProtocol {
         self.sceneDelegate = sceneDelegate
         self.completion = completion
         checkFirstLaunchAfterProfilesReleased()
+        checkFirstLaunchAfterGIFSupportReleased()
         resolveInitialViewController()
         wakeUpServices(walletConnectService: walletConnectService,
                        walletConnectServiceV2: walletConnectServiceV2,
@@ -237,6 +238,18 @@ private extension AppLaunchService {
         
         walletConnectClientService.setUIHandler(coreAppCoordinator) // wake up
         _ = AppGroupsBridgeFromDataAggregatorService.shared // wake up
+    }
+    
+    func checkFirstLaunchAfterGIFSupportReleased() {
+        /// When GIF support released, we need to clear images cache to avoid issue when GIF image was saved as regular image.
+        /// Release: End of Jan, 2023
+        if UserDefaults.isFirstLaunchAfterGIFSupportReleased {
+            Task {
+                await appContext.imageLoadingService.clearStoredImages()
+                await appContext.imageLoadingService.clearCache()
+                UserDefaults.isFirstLaunchAfterGIFSupportReleased = false
+            }
+        }
     }
 }
 
