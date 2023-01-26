@@ -157,14 +157,14 @@ private extension UDButton {
         imageView.frame.size = CGSize(width: iconSize, height: iconSize)
 
         if imageView.image == nil,
-           titleLabel.text != nil {
+           !title.isEmpty {
             // Title only
             bounds.size = CGSize(width: titleWidth + contentInset.left + contentInset.right,
                                  height: titleHeight + contentInset.top + contentInset.bottom)
             
             titleLabel.frame.origin = CGPoint(x: contentInset.left,
                                               y: contentInset.top)
-        } else if titleLabel.text == nil,
+        } else if title.isEmpty,
                   imageView.image != nil {
             // Image only
             bounds.size = CGSize(width: iconSize + contentInset.left + contentInset.right,
