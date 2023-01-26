@@ -170,7 +170,7 @@ private extension DomainsCollectionCarouselCardCell {
 private extension DomainsCollectionCarouselCardCell {
     func setAvatarWith(domainItem: DomainDisplayInfo) {
         if domainItem.pfpSource != .none,
-           let image = appContext.imageLoadingService.getStoredImage(for: .domain(domainItem)) {
+           let image = appContext.imageLoadingService.cachedImage(for: .domain(domainItem)) {
             set(avatarImage: image)
         } else {
             set(avatarImage: nil)

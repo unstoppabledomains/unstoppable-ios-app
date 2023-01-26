@@ -35,8 +35,8 @@ struct Constants {
     static var deprecatedTLDs: Set<String> = []
     static let imageProfileMaxSize: Int = 4_000_000 // 4 MB
     static let standardWebHosts = ["https://", "http://"]
-    static let ImagesMaxSize: CGFloat = 512
-    static let IconsMaxSize: CGFloat = 128
+    static let downloadedImageMaxSize: CGFloat = 512
+    static let downloadedIconMaxSize: CGFloat = 128
     static let defaultUNSReleaseVersion = "v0.6.19"
     static let defaultInitials: String = "N/A"
     

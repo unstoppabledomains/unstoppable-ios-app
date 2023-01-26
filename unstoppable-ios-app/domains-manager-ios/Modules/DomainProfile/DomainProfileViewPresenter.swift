@@ -1023,7 +1023,7 @@ private extension DomainProfileViewPresenter {
         if let path = dataHolder.profile.profile.coverPath,
            let url = URL(string: path) {
             Task {
-                let image = await appContext.imageLoadingService.loadImage(from: .url(url), downsampleDescription: nil)
+                let image = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: nil)
                 view?.setBackgroundImage(image)
             }
         }
