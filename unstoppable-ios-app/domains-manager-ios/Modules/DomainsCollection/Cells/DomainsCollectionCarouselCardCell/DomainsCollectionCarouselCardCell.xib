@@ -92,12 +92,22 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="han-EA-TUE">
-                                <rect key="frame" x="268" y="304" width="48" height="38"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wGZ-Db-mKw">
+                                <rect key="frame" x="282" y="308" width="24" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" name="foregroundOnEmphasis"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="dotsCircleIcon"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="han-EA-TUE">
+                                <rect key="frame" x="292" y="318" width="24" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="han-EA-TUE" secondAttribute="height" id="YNf-Ij-o73"/>
+                                    <constraint firstAttribute="width" constant="24" id="kNn-zY-THq"/>
+                                </constraints>
+                                <color key="tintColor" name="foregroundOnEmphasis"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain"/>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBlueColor"/>
@@ -105,9 +115,16 @@
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="han-EA-TUE" firstAttribute="leading" secondItem="ZTg-uK-7eu" secondAttribute="leading" priority="250" constant="292" id="PWM-W5-FDC"/>
+                <constraint firstItem="han-EA-TUE" firstAttribute="top" secondItem="ZTg-uK-7eu" secondAttribute="top" priority="250" constant="257" id="tfu-V4-1u6"/>
+            </constraints>
             <size key="customSize" width="344" height="387"/>
             <connections>
                 <outlet property="actionButton" destination="han-EA-TUE" id="vWe-T6-fhz"/>
+                <outlet property="actionButtonLeadingConstraint" destination="PWM-W5-FDC" id="1Ce-Pd-2gv"/>
+                <outlet property="actionButtonTopConstraint" destination="tfu-V4-1u6" id="jE2-qi-9vw"/>
+                <outlet property="actionButtonUIView" destination="wGZ-Db-mKw" id="rFF-04-K46"/>
                 <outlet property="carouselView" destination="P6O-DL-fw5" id="v6w-Rp-auX"/>
                 <outlet property="containerView" destination="Tef-pV-sMA" id="K1T-Hu-wh1"/>
                 <outlet property="domainAvatarBackgroundBlurView" destination="53r-Dh-ge3" id="zkc-X9-fp3"/>

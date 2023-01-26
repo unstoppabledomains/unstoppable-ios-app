@@ -23,8 +23,15 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
     @IBOutlet private weak var domainTLDLabel: UILabel!
     @IBOutlet private weak var domainTLDCollapsedLabel: UILabel!
     @IBOutlet private weak var actionButton: UIButton!
+    @IBOutlet private weak var actionButtonUIView: UIButton!
     @IBOutlet private weak var carouselView: CarouselView!
     @IBOutlet private weak var statusMessage: StatusMessage!
+    
+    /// On the iPhone 14 Pro Max UIMenu doesn't get opened when action button's frame origin is set manually.
+    /// It works fine with auto-layout. The workaround is to have two buttons, one is visible on the UI and animated manually.
+    /// Second is not visible and use auto-layout. Second button is on the top in views hierarchy and will handle menu action correctly
+    @IBOutlet private weak var actionButtonLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var actionButtonTopConstraint: NSLayoutConstraint!
     
     static let sideOffset: CGFloat = 6
     static let minHeight: CGFloat = 80
@@ -39,6 +46,7 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
         
         let imageViewCornerRadius: CGFloat = 8
         actionButton.setTitle("", for: .normal)
+        actionButtonUIView.setTitle("", for: .normal)
         containerView.layer.cornerRadius = 12
         domainAvatarBackgroundImageView.layer.cornerRadius = 12
         domainAvatarBackgroundBlurView.layer.cornerRadius = 12
@@ -408,14 +416,17 @@ private extension DomainsCollectionCarouselCardCell {
                           height: actionButtonSize)
         switch state {
         case .expanded:
-            actionButton.frame = CGRect(origin: CGPoint(x: domainAvatarImageView.frame.maxX - actionButtonSize,
+            actionButtonUIView.frame = CGRect(origin: CGPoint(x: domainAvatarImageView.frame.maxX - actionButtonSize,
                                                         y: domainAvatarImageView.frame.maxY + 33),
                                         size: size)
         case .collapsed:
-            actionButton.frame = CGRect(origin: CGPoint(x: containerView.bounds.width - actionButtonSize - 16,
+            actionButtonUIView.frame = CGRect(origin: CGPoint(x: containerView.bounds.width - actionButtonSize - 16,
                                                         y: (containerView.bounds.height / 2) - (actionButtonSize / 2)),
                                         size: size)
         }
+        let actionButtonRequiredFrame = actionButtonUIView.convert(actionButtonUIView.bounds, to: self)
+        actionButtonLeadingConstraint.constant = actionButtonRequiredFrame.minX
+        actionButtonTopConstraint.constant = actionButtonRequiredFrame.minY
     }
     
     func setDomainNameLabelFrame(for state: CardState) {
@@ -428,7 +439,7 @@ private extension DomainsCollectionCarouselCardCell {
                 label?.frame.size.height = 36
             }
             
-            let maxDomainNameLabelWidth = (domainAvatarImageView.bounds.width / abs(visibilityLevel.value)) - actionButton.bounds.width - 16
+            let maxDomainNameLabelWidth = (domainAvatarImageView.bounds.width / abs(visibilityLevel.value)) - actionButtonUIView.bounds.width - 16
             domainNameLabel.frame.size.width = maxDomainNameLabelWidth
             domainNameLabel.alpha = 1
             domainNameCollapsedLabel.alpha = 0
@@ -440,7 +451,7 @@ private extension DomainsCollectionCarouselCardCell {
                                               y: 14)
             }
             
-            let domainNameMaxWidth = containerView.bounds.width - domainNameLabel.frame.minX - (containerView.bounds.width - actionButton.frame.minX)
+            let domainNameMaxWidth = containerView.bounds.width - domainNameLabel.frame.minX - (containerView.bounds.width - actionButtonUIView.frame.minX)
             domainNameCollapsedLabel.frame.size.width = domainNameMaxWidth
             domainNameLabel.alpha = 0
             domainNameCollapsedLabel.alpha = 1
