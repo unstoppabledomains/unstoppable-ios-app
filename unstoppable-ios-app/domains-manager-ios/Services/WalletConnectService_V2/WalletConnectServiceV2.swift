@@ -64,7 +64,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         #endif
         
         // listen to the updates to domains, disconnect those dApps connected to gone domains
-        appContext.dataAggregatorService.addListener(self)
+        Task { await MainActor.run {
+            appContext.dataAggregatorService.addListener(self) }
+        }
     }
     
     func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
