@@ -62,6 +62,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         #if DEBUG
         Debugger.printInfo(topic: .WallectConnectV2, "Settled pairings: \(pairings)")
         #endif
+        
+        // listen to the updates to domains, disconnect those dApps connected to gone domains
+        appContext.dataAggregatorService.addListener(self)
     }
     
     func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
@@ -76,18 +79,14 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     // returns both V1 and V2 apps
     func getConnectedApps() async -> [UnifiedConnectAppInfo] {
-        let unifiedApps = appsStorage.retrieveApps().map{ UnifiedConnectAppInfo(from: $0)}
-        + appContext.walletConnectService.getConnectedAppsV1().map{ UnifiedConnectAppInfo(from: $0)}
+        let unifiedApps = getAllUnifiedAppsFromCache()
         
         // trim the list of connected dApps
         let validDomains = await appContext.dataAggregatorService.getDomains()
         let validConnectedApps = unifiedApps.trimmed(to: validDomains)
         
         // disconnect those connected to gone domains
-        Set(unifiedApps).subtracting(Set(validConnectedApps)).forEach { lostApp in
-            Debugger.printWarning("Disconnecting \(lostApp.appName) because its domain \(lostApp.domain.name) is gone")
-            Task { try? await disconnect(app: lostApp) }
-        }
+        disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
         return validConnectedApps
     }
         
@@ -405,7 +404,33 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
 }
 
+extension WalletConnectServiceV2: DataAggregatorServiceListener {
+    func dataAggregatedWith(result: DataAggregationResult) {
+        if case .success(let serviceResult) = result,
+           case .domainsUpdated(let validDomains) = serviceResult {
+            
+            let unifiedApps = getAllUnifiedAppsFromCache()
+            let validConnectedApps = unifiedApps.trimmed(to: validDomains)
+            
+            disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
+        }
+    }
+}
+
 extension WalletConnectServiceV2 {
+    private func getAllUnifiedAppsFromCache() -> [UnifiedConnectAppInfo] {
+        appsStorage.retrieveApps().map{ UnifiedConnectAppInfo(from: $0)}
+        + appContext.walletConnectService.getConnectedAppsV1().map{ UnifiedConnectAppInfo(from: $0)}
+    }
+    
+    private func disconnectApps(from unifiedApps: [UnifiedConnectAppInfo],
+                                notIncluding validConnectedApps: [UnifiedConnectAppInfo]) {
+        Set(unifiedApps).subtracting(Set(validConnectedApps)).forEach { lostApp in
+            Debugger.printWarning("Disconnecting \(lostApp.appName) because its domain \(lostApp.domain.name) is gone")
+            Task { try? await disconnect(app: lostApp) }
+        }
+    }
+    
     private func detectApp(by address: HexAddress, topic: String) throws -> WCConnectedAppsStorageV2.ConnectedApp {
         guard let connectedApp = self.appsStorage.find(by: address, topic: topic)?.first else {
             Debugger.printFailure("No connected app can sign for the wallet address \(address)", critical: true)
@@ -893,7 +918,6 @@ extension WalletConnectServiceV2 {
                                                      isTrusted: appMetaData.isTrusted)
     }
 }
-
 
 
 final class MockWalletConnectServiceV2 { }
