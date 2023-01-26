@@ -258,7 +258,7 @@ private extension QRScannerViewPresenter {
     }
 
     func showNumberOfAppsConnected() async {
-        let appsConnected = walletConnectServiceV2.getConnectedApps()
+        let appsConnected = await walletConnectServiceV2.getConnectedApps()
         await view?.setWith(appsConnected: appsConnected.count)
     }
     

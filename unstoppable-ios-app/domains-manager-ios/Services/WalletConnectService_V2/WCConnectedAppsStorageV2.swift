@@ -169,7 +169,7 @@ extension UnifiedConnectAppInfoProtocol {
     }
 }
 
-struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol {
+struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
     static func == (lhs: UnifiedConnectAppInfo, rhs: UnifiedConnectAppInfo) -> Bool {
         return lhs.walletAddress.normalized == rhs.walletAddress.normalized
         && lhs.domain.name == rhs.domain.name

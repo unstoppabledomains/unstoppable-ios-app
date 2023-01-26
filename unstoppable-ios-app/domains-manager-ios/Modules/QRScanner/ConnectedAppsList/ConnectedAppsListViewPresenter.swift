@@ -63,7 +63,7 @@ extension ConnectedAppsListViewPresenter: WalletConnectServiceListener {
 // MARK: - Private functions
 private extension ConnectedAppsListViewPresenter {
     func showConnectedAppsList() async {
-        let connectedAppsUnified: [any UnifiedConnectAppInfoProtocol] = walletConnectServiceV2.getConnectedApps()
+        let connectedAppsUnified: [any UnifiedConnectAppInfoProtocol] = await walletConnectServiceV2.getConnectedApps()
         
         guard !connectedAppsUnified.isEmpty else {
             await view?.navigationController?.popViewController(animated: true)

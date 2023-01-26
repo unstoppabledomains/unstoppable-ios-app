@@ -31,7 +31,7 @@ protocol WalletConnectServiceV2Protocol {
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
     func pairClient(uri: WalletConnectURI)
     func setUIHandler(_ uiHandler: WalletConnectUIHandler)
-    func getConnectedApps() -> [UnifiedConnectAppInfo]
+    func getConnectedApps() async -> [UnifiedConnectAppInfo]
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
     func addListener(_ listener: WalletConnectServiceListener)
     func disconnectAppsForAbsentDomains(from: [DomainItem])
@@ -75,14 +75,25 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     // returns both V1 and V2 apps
-    func getConnectedApps() -> [UnifiedConnectAppInfo] {
-        appsStorage.retrieveApps().map{ UnifiedConnectAppInfo(from: $0)}
-            + appContext.walletConnectService.getConnectedAppsV1().map{ UnifiedConnectAppInfo(from: $0)}
+    func getConnectedApps() async -> [UnifiedConnectAppInfo] {
+        let unifiedApps = appsStorage.retrieveApps().map{ UnifiedConnectAppInfo(from: $0)}
+        + appContext.walletConnectService.getConnectedAppsV1().map{ UnifiedConnectAppInfo(from: $0)}
+        
+        // trim the list of connected dApps
+        let validDomains = await appContext.dataAggregatorService.getDomains()
+        let validConnectedApps = unifiedApps.trimmed(to: validDomains)
+        
+        // disconnect those connected to gone domains
+        Set(unifiedApps).subtracting(Set(validConnectedApps)).forEach { lostApp in
+            Debugger.printWarning("Disconnecting \(lostApp.appName) because its domain \(lostApp.domain.name) is gone")
+            Task { try? await disconnect(app: lostApp) }
+        }
+        return validConnectedApps
     }
-    
+        
     func disconnectAppsForAbsentDomains(from domains: [DomainItem]) {
         Task {
-            let connectedApps = getConnectedApps()
+            let connectedApps = await getConnectedApps()
             for app in connectedApps {
                 if domains.first(where: { $0.name == app.domain.name }) == nil {
                     try? await disconnect(app: app)
@@ -918,5 +929,15 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     func pairClient(uri: WalletConnectUtils.WalletConnectURI) {
         
+    }
+}
+
+protocol DomainHolder {
+    var domain: DomainItem { get }
+}
+
+extension Array where Element: DomainHolder {
+    func trimmed(to domains: [DomainItem]) -> [Element] {
+        self.filter({domains.contains(domain: $0.domain)})
     }
 }

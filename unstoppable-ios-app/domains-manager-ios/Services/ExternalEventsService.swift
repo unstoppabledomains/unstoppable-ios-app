@@ -210,7 +210,7 @@ private extension ExternalEventsService {
             
             return .showPullUpLoading
         case .walletConnectRequest(let dAppName, _):
-            let apps = walletConnectServiceV2.getConnectedApps()
+            let apps = await walletConnectServiceV2.getConnectedApps()
             guard let connectedApp = apps.first(where: { $0.appName == dAppName }) else {
                 throw EventsHandlingError.cantFindConnectedApp
             }
