@@ -90,14 +90,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         return validConnectedApps
     }
         
-    func disconnectAppsForAbsentDomains(from domains: [DomainItem]) {
+    func disconnectAppsForAbsentDomains(from validDomains: [DomainItem]) {
         Task {
-            let connectedApps = await getConnectedApps()
-            for app in connectedApps {
-                if domains.first(where: { $0.name == app.domain.name }) == nil {
-                    try? await disconnect(app: app)
-                }
-            }
+            let unifiedApps = getAllUnifiedAppsFromCache()
+            let validConnectedApps = unifiedApps.trimmed(to: validDomains)
+            
+            disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
         }
     }
     
@@ -408,11 +406,7 @@ extension WalletConnectServiceV2: DataAggregatorServiceListener {
     func dataAggregatedWith(result: DataAggregationResult) {
         if case .success(let serviceResult) = result,
            case .domainsUpdated(let validDomains) = serviceResult {
-            
-            let unifiedApps = getAllUnifiedAppsFromCache()
-            let validConnectedApps = unifiedApps.trimmed(to: validDomains)
-            
-            disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
+            disconnectAppsForAbsentDomains(from: validDomains)
         }
     }
 }
