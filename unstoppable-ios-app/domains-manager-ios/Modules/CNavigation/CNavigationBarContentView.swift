@@ -281,6 +281,10 @@ extension CNavigationBarContentView {
         setNeedsLayout()
         layoutIfNeeded()
     }
+    
+    func setSearchBarButtonEnabled(_ isEnabled: Bool) {
+        searchBarButton?.isEnabled = isEnabled
+    }
 }
 
 // MARK: - Actions

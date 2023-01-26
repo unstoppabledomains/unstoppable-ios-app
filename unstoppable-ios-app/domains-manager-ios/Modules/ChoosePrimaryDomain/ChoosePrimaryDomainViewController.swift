@@ -53,7 +53,6 @@ final class ChoosePrimaryDomainViewController: BaseViewController {
     override var adjustLargeTitleFontSizeForSmallerDevice: Bool { true }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { presenter.isSearchable ? cSearchBarConfiguration : nil }
-    private var isDraggingItem: Bool = false
     private var searchBar: UDSearchBar = UDSearchBar()
     private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
         .init { [weak self] in
@@ -150,7 +149,7 @@ extension ChoosePrimaryDomainViewController: UICollectionViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         setMoveToTopButton(hidden: scrollView.contentOffset.y < 100, animated: false)
-        if isDraggingItem,
+        if collectionView.hasActiveDrag,
            let cell = collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) {
             var contentOffset = scrollView.contentOffset
             if contentOffset.y < cell.frame.minY {
@@ -193,6 +192,14 @@ extension ChoosePrimaryDomainViewController: UICollectionViewDragDelegate {
         previewParameters.backgroundColor = .clear
         return previewParameters
     }
+    
+    func collectionView(_ collectionView: UICollectionView, dragSessionWillBegin session: UIDragSession) {
+        cNavigationBar?.navBarContentView.setSearchBarButtonEnabled(false)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, dragSessionDidEnd session: UIDragSession) {
+        cNavigationBar?.navBarContentView.setSearchBarButtonEnabled(true)
+    }
 }
 
 // MARK: - UICollectionViewDropDelegate
@@ -203,14 +210,6 @@ extension ChoosePrimaryDomainViewController: UICollectionViewDropDelegate {
     
     func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
         return presenter.proposalForItemsWithDropSession(session, destinationIndexPath: destinationIndexPath)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, dropSessionDidEnter session: UIDropSession) {
-        isDraggingItem = true
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, dropSessionDidEnd session: UIDropSession) {
-        isDraggingItem = false
     }
 }
 
