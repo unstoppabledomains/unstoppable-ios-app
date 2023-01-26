@@ -924,7 +924,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                          cancelButton: .secondary(content: .init(title: String.Constants.later.localized(),
                                                                                                                  icon: nil,
                                                                                                                  analyticsName: .later,
-                                                                                                                 action: nil))),
+                                                                                                                 action: { completion(.failure(PullUpError.dismissed)) }))),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
             showOrUpdate(in: viewController, pullUp: .setupReverseResolutionPrompt, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
