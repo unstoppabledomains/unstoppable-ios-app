@@ -26,6 +26,7 @@ public enum UserDefaultsKey: String {
     case didEverUpdateDomainProfile
     case didAskToShowcaseProfileAfterFirstUpdate
     case didShowDomainProfileInfoTutorial
+    case isFirstLaunchAfterGIFSupportReleased
 }
 
 extension UserDefaults {
@@ -47,6 +48,7 @@ extension UserDefaults {
     @UserDefaultsValue(key: .didEverUpdateDomainProfile, defaultValue: false) static var didEverUpdateDomainProfile: Bool
     @UserDefaultsValue(key: .didAskToShowcaseProfileAfterFirstUpdate, defaultValue: false) static var didAskToShowcaseProfileAfterFirstUpdate: Bool
     @UserDefaultsValue(key: .didShowDomainProfileInfoTutorial, defaultValue: false) static var didShowDomainProfileInfoTutorial: Bool
+    @UserDefaultsValue(key: .isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
 }
 
 // MARK: - Property Wrappers
