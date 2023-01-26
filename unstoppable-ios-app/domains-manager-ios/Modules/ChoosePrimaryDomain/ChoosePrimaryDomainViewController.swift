@@ -350,7 +350,12 @@ private extension ChoosePrimaryDomainViewController {
             let section = self?.section(at: IndexPath(item: 0, section: sectionIndex))
             let layoutSection: NSCollectionLayoutSection
             
-            layoutSection = .flexibleListItemSection()
+            if let rowHeight = section?.rowHeight {
+                layoutSection = .listItemSection(height: rowHeight)
+            } else {
+                layoutSection = .flexibleListItemSection()
+            }
+            
             layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
                                                                   leading: spacing + 1,
                                                                   bottom: 1,
@@ -364,8 +369,6 @@ private extension ChoosePrimaryDomainViewController {
             }
             
             switch section {
-            case .primaryDomain, .mintingDomains:
-                setBackground()
             case .allDomains:
                 layoutSection.contentInsets.top = 16
                 layoutSection.interGroupSpacing = 4
@@ -387,7 +390,6 @@ private extension ChoosePrimaryDomainViewController {
 extension ChoosePrimaryDomainViewController {
     enum Section: Int, Hashable {
         case header
-        case primaryDomain, mintingDomains
         case allDomains
         case searchEmptyState
         
@@ -395,10 +397,19 @@ extension ChoosePrimaryDomainViewController {
             switch self {
             case .header, .searchEmptyState:
                 return 0
-            case .primaryDomain, .mintingDomains:
-                return 16
             case .allDomains:
                 return CollectionTextHeaderReusableView.Height
+            }
+        }
+        
+        var rowHeight: CGFloat? {
+            switch self {
+            case .header:
+                return 32
+            case .searchEmptyState:
+                return 340
+            case .allDomains:
+                return 64
             }
         }
     }
