@@ -125,7 +125,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let clientId  = try? Networking.interactor.getClientId()
         if let sanitizedClientId = clientId?.replacingOccurrences(of: "did:key:", with: "") {
             self.sanitizedClientId = sanitizedClientId
-            Echo.configure(projectId: AppIdentificators.wc2ProjectId, clientId: sanitizedClientId)
+            Echo.configure(clientId: sanitizedClientId)
         }
     }
     
