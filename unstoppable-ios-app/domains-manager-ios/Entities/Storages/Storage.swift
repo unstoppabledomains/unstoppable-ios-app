@@ -152,24 +152,46 @@ protocol TxsStorage {
     func getCachedTransactionsListSync(by domains: [DomainItem]) -> [TransactionItem]
     func injectTxsUpdate(_ newTxs: [TransactionItem]) -> Promise<Void>
 }
-    
+
 extension TxsStorage {
     static func inject(newTxs: [TransactionItem], into transactionArray: [TransactionItem]) -> [TransactionItem] {
-        let newTxsDict = Dictionary(newTxs.map({ ($0.id, $0) }), uniquingKeysWith: { f, s in f })
-        let intoTxsDict = Dictionary(transactionArray.map({ ($0.id, $0) }), uniquingKeysWith: { f, s in f })
-     
-        var updatedTxs = [TransactionItem]()
-        updatedTxs.reserveCapacity(newTxs.count)
-        for (newTransactionId, newTransaction) in newTxsDict {
-            if let existingTransaction = intoTxsDict[newTransactionId] {
-                let updatedTxn = existingTransaction.merge(withNew: newTransaction)
-                updatedTxs.append(updatedTxn)
+        var transactionCache = transactionArray
+        
+        var unknownTransactions: [TransactionItem] = []
+        newTxs.forEach { newTx in
+            var txToUpdate: TransactionItem
+            var txToUpdateIndex: Int
+            if let existingToUpdate = transactionCache.enumerated().first(where: {$0.element == newTx}) {
+                txToUpdate = existingToUpdate.element.merge(withNew: newTx)
+                txToUpdateIndex = existingToUpdate.offset
+                transactionCache[txToUpdateIndex] = txToUpdate
             } else {
-                updatedTxs.append(newTransaction)
+                unknownTransactions.append(newTx)
+                return
             }
         }
-        
-        return updatedTxs
+        transactionCache.append(contentsOf: unknownTransactions)
+        return removeDuplicates(for: newTxs, transactionCache: transactionCache)
+    }
+    
+    static func removeDuplicates(for newTxs: [TransactionItem],
+                                 transactionCache: [TransactionItem]) -> [TransactionItem]{
+        var txs = transactionCache
+        var indecesToRemove: [Int] = []
+        newTxs.forEach { newTx in
+            let enumeratedDuplicates = transactionCache.enumerated().filter({$0.element == newTx})
+            guard enumeratedDuplicates.count > 1 else { return }
+            
+            let accumulatedTx = enumeratedDuplicates.map({$0.element}).mergeToFirst()
+            txs[enumeratedDuplicates[0].offset] = accumulatedTx
+            
+            let indecesOfObsoleteElements = enumeratedDuplicates.dropFirst().map({$0.offset})
+            indecesToRemove.append(contentsOf: indecesOfObsoleteElements)
+        }
+        if indecesToRemove.count > 0 {
+            txs.remove(at: indecesToRemove)
+        }
+        return txs
     }
 }
 
@@ -218,5 +240,19 @@ extension Storage: TxsStorage {
             injectTxsUpdate_Blocking(newTxs)
             seal.fulfill(())
         }
+    }
+}
+
+extension Array where Element == TransactionItem {
+  func mergeToFirst() -> TransactionItem {
+    return Array(self.dropFirst()).merge(to: self[0])
+  }
+    
+    func merge(to accumulator: TransactionItem) -> TransactionItem {
+        var accum = accumulator
+        self.forEach {
+            accum = accum.merge(withNew: $0)
+        }
+        return accum
     }
 }

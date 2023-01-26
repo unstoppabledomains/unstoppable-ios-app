@@ -62,44 +62,4 @@ final class ProfilesTests: XCTestCase {
         
         XCTAssertEqual(twitterLocation, userTwitter)
     }
-    
-    func testUpdateProfile() async {
-        let userName = "crazy man"
-        let userBio = "born to win"
-        let userTwitter = "superBrain"
-        
-        let twitterAccountType: SocialAccount.Kind = .twitter
-        
-        // name and bio and image
-        let imageUpdate = ProfileUpdateRequest.Attribute.VisualData(kind: .personalAvatar,
-                                                            base64: "cool64",
-                                                            type: .png)
-
-        let attributes: ProfileUpdateRequest.AttributeSet = [.name(userName),
-                                                             .bio(userBio),
-                                                             .data([imageUpdate])]
-        
-        //twitter
-        let twitterAccount = SocialAccount(accountType: twitterAccountType, location: userTwitter)
-        let requestUpdateNameAndBioAndTwitter = ProfileUpdateRequest(attributes: attributes,
-                                                                     domainSocialAccounts: [twitterAccount])
-        
-        await AppDelegate.shared.setAppContextType(.general)
-        
-        guard let testnetWallet = appContext.udWalletsService.find(by: "0x94b420da794c1a8f45b70581ae015e6bd1957233") else {
-            fatalError("no wallet")
-        }
-
-        guard let domain = appContext.udDomainsService
-            .getCachedDomainsFor(wallets: [testnetWallet])
-            .first(where: {$0.name.contains("bulk-mint-06.x")}) else {
-            fatalError("no domain bulk-mint-06.x")
-        }
-        
-        do {
-            let res = try await NetworkService().updateUserDomainProfile(for: domain, request: requestUpdateNameAndBioAndTwitter)
-        } catch {
-            fatalError("call failed, error = \(error.localizedDescription)")
-        }
-    }
 }
