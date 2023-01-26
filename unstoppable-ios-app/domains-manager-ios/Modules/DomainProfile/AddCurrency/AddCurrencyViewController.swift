@@ -152,10 +152,10 @@ private extension AddCurrencyViewController {
     func configureDataSource() {
         dataSource = AddCurrencyDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
             switch item {
-            case .currency(let currency):
+            case .currency(let record):
                 let cell = collectionView.dequeueCellOfType(AddCurrencyCell.self, forIndexPath: indexPath)
                 
-                cell.setWithCurrency(currency.coin)
+                cell.setWithGroupedRecord(record)
                 
                 return cell
             case .emptyState:
