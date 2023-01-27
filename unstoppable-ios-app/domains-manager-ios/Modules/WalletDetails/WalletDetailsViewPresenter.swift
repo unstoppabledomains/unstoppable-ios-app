@@ -228,8 +228,12 @@ private extension WalletDetailsViewPresenter {
         Task {
             do {
                 try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                UDRouter().showRecoveryPhrase(of: wallet, recoveryType: recoveryType, in: view)
-                AppReviewService.shared.appReviewEventDidOccurs(event: .didRevealPK)
+                UDRouter().showRecoveryPhrase(of: wallet,
+                                              recoveryType: recoveryType,
+                                              in: view,
+                                              dismissCallback: {
+                    AppReviewService.shared.appReviewEventDidOccurs(event: .didRevealPK)
+                })
             }
         }
     }
