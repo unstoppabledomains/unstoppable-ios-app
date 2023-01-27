@@ -23,9 +23,14 @@ final class AppReviewService {
     @UserDefaultsValue(key: AppReviewStorageKey.numberOfTimesReviewWasRequestedKey, defaultValue: 0) var numberOfTimesReviewWasRequested: Int
     /// - Key: number of times review are requested
     /// - Value: number of events required
+    #if DEBUG
     private let numberOfEventsToRequestReviewMap: [Int : Int] = [0 : 20]
     private let defaultNumberOfEventsToRequestReview = 50
-
+    #else
+    private let numberOfEventsToRequestReviewMap: [Int : Int] = [0 : 20]
+    private let defaultNumberOfEventsToRequestReview = 50
+    #endif
+    
     private init() { }
     
 }
@@ -66,6 +71,10 @@ private extension AppReviewService {
     }
     
     func isValidAppVersionToRequestReview() -> Bool {
+        #if DEBUG
+//        return true
+        #endif
+        
         if lastVersionPromptedForReview.isEmpty { /// Never requested
             return true
         }
