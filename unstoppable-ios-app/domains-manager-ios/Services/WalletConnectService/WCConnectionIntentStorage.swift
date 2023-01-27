@@ -17,7 +17,7 @@ class WCConnectionIntentStorage: DefaultsStorage<WCConnectionIntentStorage.Inten
     }
     
     func retrieveIntents() -> [Intent] {
-        super.getAll()
+        super.retrieveAll()
     }
     
     func save(newIntent: Intent) {

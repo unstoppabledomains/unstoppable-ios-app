@@ -89,7 +89,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
     typealias ConnectedAppsArray = [ConnectedApp]
     
     func retrieveApps() -> ConnectedAppsArray {
-        super.getAll()
+        super.retrieveAll()
     }
     
     func save(newApp: ConnectedApp) throws {

@@ -94,7 +94,7 @@ final class WalletConnectClientService {
     }
 
     private func reconnectExistingSessions() throws {
-        let oldConnections = clientConnections.getAll()
+        let oldConnections = clientConnections.retrieveAll()
         try oldConnections.forEach {
             try getClient().reconnect(to: $0.session)
         }
@@ -124,7 +124,7 @@ extension WalletConnectClientService: WalletConnectClientServiceProtocol {
     }
     
     public func findSessions(by walletAddress: HexAddress) -> [Session] {
-        clientConnections.getAll()
+        clientConnections.retrieveAll()
             .filter({ $0.session.walletInfo?.accounts.map({$0.normalized}).contains(walletAddress.normalized) ?? false })
         .map({$0.session})
     }
@@ -148,7 +148,7 @@ extension WalletConnectClientService: WalletConnectSwift.ClientDelegate {
             return
         }
 
-        if clientConnections.getAll().filter({$0.session == session}).first == nil {
+        if clientConnections.retrieveAll().filter({$0.session == session}).first == nil {
             clientConnections.save(newConnection: ConnectionData(session: session))
         } else {
             Debugger.printWarning("Existing session got reconnected")
@@ -159,7 +159,7 @@ extension WalletConnectClientService: WalletConnectSwift.ClientDelegate {
     
     func client(_ client: Client, didDisconnect session: Session) {
         Task  {
-            guard let connectionToRemove = self.clientConnections.getAll()
+            guard let connectionToRemove = self.clientConnections.retrieveAll()
                                                 .first(where: {$0.session == session}) else {
                 Debugger.printFailure("Session disconnected that was not in cache", critical: true)
                 return

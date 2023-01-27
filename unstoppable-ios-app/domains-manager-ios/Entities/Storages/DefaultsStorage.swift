@@ -16,20 +16,22 @@ class DefaultsStorage<T: Equatable> where T: Codable {
         
     func save(newElement: T) {
         q.async {
-            var elements = self.retrieveAll()
+            var elements = self.getAllFromDefaults()
             elements.update(with: newElement)
             try? self.store(elements: elements)
         }
     }
     
-    func getAll() -> [T] {
+    func retrieveAll() -> [T] {
         var result: [T] = []
         if Thread.isMainThread {
-            q.sync {
-                result = retrieveAll()
+            DispatchQueue.global().sync {
+                q.sync {
+                    result = getAllFromDefaults()
+                }
             }
         } else {
-            result = retrieveAll()
+            result = getAllFromDefaults()
             return result
         }
         return result
@@ -38,7 +40,7 @@ class DefaultsStorage<T: Equatable> where T: Codable {
     final public func remove(when condition: @escaping (T) -> Bool) async -> T? {
         await withSafeCheckedContinuation { completion in
             q.async {
-                var all = self.retrieveAll()
+                var all = self.getAllFromDefaults()
                 guard let index = all.firstIndex(where: {condition($0)}) else {
                     completion(nil)
                     return
@@ -60,7 +62,7 @@ class DefaultsStorage<T: Equatable> where T: Codable {
                               when condition: @escaping (T) -> Bool) async -> T? {
         await withSafeCheckedContinuation { completion in
             q.async {
-                var all = self.retrieveAll()
+                var all = self.getAllFromDefaults()
                 guard let index = all.firstIndex(where: {condition($0)}) else {
                     completion(nil)
                     return
@@ -79,7 +81,7 @@ class DefaultsStorage<T: Equatable> where T: Codable {
         UserDefaults.standard.set(appsData, forKey: storageKey)
     }
     
-    private func retrieveAll() -> [T] {
+    private func getAllFromDefaults() -> [T] {
         guard let arrayObject = UserDefaults.standard
             .object(forKey: storageKey) as? Data else { return [] }
         guard let array = try? JSONDecoder().decode([T].self, from: arrayObject) else {
