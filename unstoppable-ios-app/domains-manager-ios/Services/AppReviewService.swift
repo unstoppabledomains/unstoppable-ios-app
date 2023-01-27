@@ -9,7 +9,10 @@ import Foundation
 import UIKit
 import StoreKit
 
-protocol AppReviewServiceProtocol { }
+protocol AppReviewServiceProtocol {
+    func appReviewEventDidOccurs(event: AppReviewActionEvent)
+    func requestToWriteReviewInAppStore()
+}
 
 final class AppReviewService {
     
