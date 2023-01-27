@@ -36,6 +36,7 @@ extension String {
         case domainProfilePage(domainName: String)
         case openSeaETHAsset(value: String)
         case openSeaPolygonAsset(value: String)
+        case writeAppStoreReview(appId: String)
 
         var urlString: String {
             switch self {
@@ -75,6 +76,8 @@ extension String {
                 return "https://opensea.io/assets/ethereum/\(value)"
             case .openSeaPolygonAsset(let value):
                 return "https://opensea.io/assets/matic/\(value)"
+            case .writeAppStoreReview(let appId):
+                return "https://apps.apple.com/app/id\(appId)?action=write-review"
             }
         }
         
