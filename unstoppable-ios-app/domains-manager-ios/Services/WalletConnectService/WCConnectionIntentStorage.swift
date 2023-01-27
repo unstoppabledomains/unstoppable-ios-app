@@ -17,17 +17,13 @@ class WCConnectionIntentStorage: DefaultsStorage<WCConnectionIntentStorage.Inten
     }
     
     func retrieveIntents() -> [Intent] {
-        super.retrieveAll()
+        super.getAll()
     }
     
     func save(newIntent: Intent) {
         super.save(newElement: newIntent)
     }
 
-    private func store(intents: [Intent]) throws {
-        try super.store(elements: intents)
-    }
-    
     func getIntent(by accounts: [HexAddress]) -> Intent? {
         let normalizedAccounts = accounts.map({$0.normalized})
         return retrieveIntents().first(where: { normalizedAccounts

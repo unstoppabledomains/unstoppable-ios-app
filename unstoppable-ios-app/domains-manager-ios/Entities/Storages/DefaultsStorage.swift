@@ -13,29 +13,27 @@ class DefaultsStorage<T: Equatable> where T: Codable {
     }
     var storageKey: String = ""
     var q = DispatchQueue(label: "work-queue")
-
-    func retrieveAll() -> [T] {
-        guard let arrayObject = UserDefaults.standard
-            .object(forKey: storageKey) as? Data else { return [] }
-        guard let array = try? JSONDecoder().decode([T].self, from: arrayObject) else {
-            Debugger.printFailure("Failed to decode connection intents from data: \(String(data: arrayObject, encoding: .utf8) ?? "n/a")", critical: false)
-            return []
-        }
-        return array
-    }
         
-    func store(elements: [T]) throws {
-        let appsData = try JSONEncoder().encode(elements)
-        UserDefaults.standard.set(appsData, forKey: storageKey)
-    }
-    
     func save(newElement: T) {
         q.async {
             var elements = self.retrieveAll()
             elements.update(with: newElement)
             try? self.store(elements: elements)
         }
-    }    
+    }
+    
+    func getAll() -> [T] {
+        var result: [T] = []
+        if Thread.isMainThread {
+            q.sync {
+                result = retrieveAll()
+            }
+        } else {
+            result = retrieveAll()
+            return result
+        }
+        return result
+    }
     
     final public func remove(when condition: @escaping (T) -> Bool) async -> T? {
         await withSafeCheckedContinuation { completion in
@@ -73,6 +71,22 @@ class DefaultsStorage<T: Equatable> where T: Codable {
                 completion(replaced)
             }
         }
+    }
+    
+    // private methods
+    private func store(elements: [T]) throws {
+        let appsData = try JSONEncoder().encode(elements)
+        UserDefaults.standard.set(appsData, forKey: storageKey)
+    }
+    
+    private func retrieveAll() -> [T] {
+        guard let arrayObject = UserDefaults.standard
+            .object(forKey: storageKey) as? Data else { return [] }
+        guard let array = try? JSONDecoder().decode([T].self, from: arrayObject) else {
+            Debugger.printFailure("Failed to decode connection intents from data: \(String(data: arrayObject, encoding: .utf8) ?? "n/a")", critical: false)
+            return []
+        }
+        return array
     }
 }
 

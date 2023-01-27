@@ -52,17 +52,13 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
     typealias ConnectedAppsArray = [ConnectedApp]
     
     func retrieveApps() -> ConnectedAppsArray {
-        super.retrieveAll()
+        super.getAll()
     }
     
     func save(newApp: ConnectedApp) throws {
         super.save(newElement: newApp)
     }
 
-    private func store(apps: ConnectedAppsArray) throws {
-        try super.store(elements: apps)
-    }
-    
     func save(session: Session, for domain: DomainItem, walletAddress: HexAddress) throws {
         let newApp = ConnectedApp(walletAddress: walletAddress,
                                   domain: domain,
