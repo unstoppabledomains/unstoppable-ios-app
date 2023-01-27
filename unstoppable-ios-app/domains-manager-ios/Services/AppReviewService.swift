@@ -85,6 +85,7 @@ private extension AppReviewService {
                 return
             }
             
+            appContext.analyticsService.log(event: .showRateAppRequest, withParameters: nil)
             try? await Task.sleep(seconds: 1) // Apple recommend to wait for second before showing review request
             updateLastVersionPromptedForReviewToCurrent()
             numberOfTimesReviewWasRequested += 1

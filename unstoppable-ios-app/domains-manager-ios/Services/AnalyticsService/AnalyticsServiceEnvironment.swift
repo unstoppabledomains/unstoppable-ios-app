@@ -36,6 +36,7 @@ extension Analytics {
         case didOpenDeepLink
         case didSwipeNavigationBack
         case didSelectPhoto
+        case showRateAppRequest
         
         // Domains Collection
         case mintingDomainsPressed, swipeToScanning, swipeToHome
