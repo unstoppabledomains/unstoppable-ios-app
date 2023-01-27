@@ -57,7 +57,7 @@ struct AppVersionAPIResponse: Decodable {
 
 struct AppVersionInfo: Codable {
     var minSupportedVersion: Version = Version(major: 0, minor: 3, revision: 1)
-    var supportedStoreLink: String = "https://apps.apple.com/us/app/unstoppable-domains-app/id1544748602"
+    var supportedStoreLink: String = "https://apps.apple.com/us/app/unstoppable-domains-app/id\(Constants.appStoreAppId)"
     var mintingIsEnabled: Bool = true
     var polygonMintingReleased: Bool = true
     var mintingZilTldOnPolygonReleased: Bool = false
