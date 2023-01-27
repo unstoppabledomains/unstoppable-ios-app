@@ -145,13 +145,13 @@ private extension AppLaunchService {
 
         Task {
             await dataAggregatorService.aggregateData()
-            let domains = await dataAggregatorService.getDomains()
+            let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
             await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: mintingState)))
         }
         
         Task {
-            let domains = await dataAggregatorService.getDomains()
+            let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let timePassed = Date().timeIntervalSince(startTime)
             let timeLeft: TimeInterval = max(0, maximumWaitingTime - timePassed)
             try await Task.sleep(seconds: timeLeft)

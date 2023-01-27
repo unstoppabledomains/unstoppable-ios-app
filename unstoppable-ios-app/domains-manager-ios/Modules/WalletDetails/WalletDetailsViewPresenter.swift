@@ -309,7 +309,7 @@ private extension WalletDetailsViewPresenter {
     func showWalletDomains() async {
         guard let view = self.view else { return }
         
-        let domains = await dataAggregatorService.getDomains().filter({ $0.isOwned(by: wallet) })
+        let domains = await dataAggregatorService.getDomainsDisplayInfo().filter({ $0.isOwned(by: wallet) })
         await UDRouter().showWalletDomains(domains,
                                            walletWithInfo: WalletWithInfo(wallet: wallet, displayInfo: walletInfo),
                                            in: view)

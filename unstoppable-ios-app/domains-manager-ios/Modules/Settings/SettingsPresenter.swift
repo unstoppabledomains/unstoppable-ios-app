@@ -95,7 +95,7 @@ private extension SettingsPresenter {
             snapshot.appendSections([.main(0)]) // empty header
             
             snapshot.appendSections([.main(1)])
-            let interactableDomains = await dataAggregatorService.getDomains().interactableItems()
+            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
             if let primaryDomain = interactableDomains.first {
                 snapshot.appendItems([.homeScreen(primaryDomain.name)])
             }
@@ -181,7 +181,7 @@ private extension SettingsPresenter {
         guard let view = self.view else { return }
 
         Task {
-            let interactableDomains = await dataAggregatorService.getDomains().interactableItems()
+            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
             let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: interactableDomains,
                                                                               isFirstPrimaryDomain: false,
                                                                               configuration: .init(canReverseResolutionETHDomain: false,

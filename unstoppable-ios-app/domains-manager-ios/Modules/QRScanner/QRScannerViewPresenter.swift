@@ -229,7 +229,7 @@ private extension QRScannerViewPresenter {
     func showInfoFor(domain: DomainDisplayInfo, balance: WalletBalance?) async {
         guard let walletWithInfo = await dataAggregatorService.getWalletsWithInfo().first(where: { $0.wallet.owns(domain: domain) }),
               let displayInfo = walletWithInfo.displayInfo else { return }
-        let domains = await dataAggregatorService.getDomains()
+        let domains = await dataAggregatorService.getDomainsDisplayInfo()
         self.selectedDomain = domain
         
         await view?.setWith(selectedDomain: domain,
@@ -251,7 +251,7 @@ private extension QRScannerViewPresenter {
     }
     
     func setPrimaryDomainInfo() async {
-        let domains = await dataAggregatorService.getDomains()
+        let domains = await dataAggregatorService.getDomainsDisplayInfo()
         if let primaryDomain = domains.first(where: { $0.isPrimary })  {
             await showInfoFor(domain: primaryDomain, balance: nil)
         }

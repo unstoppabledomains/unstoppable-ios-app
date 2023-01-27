@@ -107,7 +107,7 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     
     func runMintDomainsFlow(with mode: MintDomainsNavigationController.Mode) {
         Task {
-            let domains = await dataAggregatorService.getDomains()
+            let domains = await dataAggregatorService.getDomainsDisplayInfo()
             
             let topPresentedViewController = navigationController?.topViewController
             if let mintingNav = topPresentedViewController as? MintDomainsNavigationController {

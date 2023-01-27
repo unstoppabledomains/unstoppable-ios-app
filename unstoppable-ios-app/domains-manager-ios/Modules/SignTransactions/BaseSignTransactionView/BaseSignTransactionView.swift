@@ -131,7 +131,7 @@ extension BaseSignTransactionView {
         self.domain = domain
         if let domainImageView {
             Task {
-                let domainsDisplayInfo = await appContext.dataAggregatorService.getDomains()
+                let domainsDisplayInfo = await appContext.dataAggregatorService.getDomainsDisplayInfo()
                 if let domainDisplayInfo = domainsDisplayInfo.first(where: { $0.name == domain.name }) {
                     domainImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domainDisplayInfo, size: .full),
                                                                                            downsampleDescription: nil)

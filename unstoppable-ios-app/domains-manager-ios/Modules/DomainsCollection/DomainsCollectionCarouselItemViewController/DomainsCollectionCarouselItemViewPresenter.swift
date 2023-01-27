@@ -148,6 +148,8 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceListen
 private extension DomainsCollectionCarouselItemViewPresenter {
     func showDomainDataWithActions(animated: Bool) async {
         let actions = await actionsForDomain()
+        let connectedApps = await appContext.walletConnectServiceV2.getConnectedApps().filter({ $0.domain.isSameEntity(domain) })
+        self.connectedApps = connectedApps
         await showDomainData(animated: animated, actions: actions)
     }
     
@@ -164,8 +166,6 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             self?.logButtonPressedAnalyticEvents(button: .domainCardDot,
                                                  parameters: [.domainName : domain.name])
         }))])
-        
-        connectedApps = appContext.walletConnectServiceV2.getConnectedApps().filter({ $0.domain.isSameEntity(domain) })
          
         if connectedApps.isEmpty {
             snapshot.appendSections([.noRecentActivities])

@@ -73,7 +73,7 @@ extension ChooseReverseResolutionDomainViewPresenter: ChooseReverseResolutionDom
 // MARK: - Private functions
 private extension ChooseReverseResolutionDomainViewPresenter {
     func loadDomains() async {
-        let domains = await dataAggregatorService.getDomains().interactableItems()
+        let domains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
         walletDomains = domains.filter({ $0.isOwned(by: wallet ) })
     }
 }

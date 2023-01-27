@@ -233,7 +233,7 @@ private extension DomainsCollectionPresenter {
     func loadInitialData() async {
         let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
         await stateController.set(walletsWithInfo: walletsWithInfo)
-        let domains = await dataAggregatorService.getDomains()
+        let domains = await dataAggregatorService.getDomainsDisplayInfo()
         await setDomains(domains, shouldCheckPresentedDomains: true)
         
         if let _ = domains.first(where: { $0.isPrimary }) {

@@ -26,7 +26,7 @@ final class MockDataAggregatorService {
 
 // MARK: - DataAggregatorServiceProtocol
 extension MockDataAggregatorService: DataAggregatorServiceProtocol {
-    func getDomains() async -> [DomainDisplayInfo] {
+    func getDomainsDisplayInfo() async -> [DomainDisplayInfo] {
         if domainsWithDisplayInfo.isEmpty {
             let domains = await getCachedDomainsFor(wallets: walletsService.getUserWallets())
             for (i, domain) in domains.enumerated() {
@@ -98,7 +98,7 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
     
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo? {
         let rrDomain = await reverseResolutionDomain(for: wallet)
-        let domains = await getDomains()
+        let domains = await getDomainsDisplayInfo()
         let domainsCount = domains.filter({ $0.isOwned(by: [wallet] )}).count
         return WalletDisplayInfo(wallet: wallet,
                                  domainsCount: domainsCount,
@@ -110,7 +110,11 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
 //
 //    }
     
-   
+    
+    func getDomainItems() async -> [DomainItem] {
+        []
+    }
+    
     func setDomainsOrder(using domains: [DomainDisplayInfo]) async {
         for domain in domains {
             if let i = domainsWithDisplayInfo.firstIndex(where: { $0.displayInfo.isSameEntity(domain) }) {
@@ -125,7 +129,7 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
         
     }
     
-    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo? { await getDomains().first }
+    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo? { await getDomainsDisplayInfo().first }
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool { true }
     func isReverseResolutionChangeAllowed(for domain: DomainDisplayInfo) async -> Bool { true }
     func isReverseResolutionSetupInProgress(for domainName: DomainName) async -> Bool { false }
@@ -169,7 +173,7 @@ extension MockDataAggregatorService: UDWalletsServiceListener {
                 let walletsInfo = await getWalletsWithInfo()
                 notifyListenersWith(result: .success(.walletsListUpdated(walletsInfo)))
                 
-                let domains = await getDomains()
+                let domains = await getDomainsDisplayInfo()
                 notifyListenersWith(result: .success(.domainsUpdated(domains)))
             }
         }

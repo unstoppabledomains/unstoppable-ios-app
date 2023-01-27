@@ -71,7 +71,7 @@ private extension ConnectedAppsListViewPresenter {
         }
         
         let walletsDisplayInfo = await dataAggregatorService.getWalletsWithInfo().compactMap({ $0.displayInfo })
-        let domains = await dataAggregatorService.getDomains()
+        let domains = await dataAggregatorService.getDomainsDisplayInfo()
         
         var snapshot = ConnectedAppsListSnapshot()
         
@@ -85,12 +85,15 @@ private extension ConnectedAppsListViewPresenter {
                 guard let displayInfo = walletsDisplayInfo.first(where: { $0.address == apps[0].walletAddress }) else { continue }
                 
                 let items: [ConnectedAppsListViewController.Item] = apps.map({ app in
-                    let domain: DomainItem
-                    if let _domain = domains.first(where: { $0.name == app.domain.name }) {
-                        domain = _domain
+                    let domainItem = app.domain
+                    let domainDisplayInfo: DomainDisplayInfo
+                    if let _domain = domains.first(where: { $0.isSameEntity(domainItem) }) {
+                        domainDisplayInfo = _domain
                     } else {
                         Debugger.printFailure("Forced to display a domain that has been disconnected, \(app.domain.name)", critical: true)
-                        domain = DomainItem(name: "Disconnected: \(app.domain.name)")
+                        domainDisplayInfo = DomainDisplayInfo(domainItem: domainItem,
+                                                   pfpInfo: nil,
+                                                   isSetForRR: false)
                     }
                     
                     var blockchainTypesArray: [BlockchainType] = app.chainIds.compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
@@ -102,9 +105,9 @@ private extension ConnectedAppsListViewPresenter {
                     
                     let supportedNetworks = BlockchainType.supportedCases.map({ $0.fullName })
                     let displayInfo = ConnectedAppsListViewController.AppItemDisplayInfo(app: app,
-                                                                                         domain: domain,
+                                                                                         domain: domainDisplayInfo,
                                                                                          blockchainTypes: blockchainTypes,
-                                                                                         actions: [.domainInfo(domain: domain),
+                                                                                         actions: [.domainInfo(domain: domainDisplayInfo),
                                                                                                    .networksInfo(networks: supportedNetworks),
                                                                                                    .disconnect])
                     return ConnectedAppsListViewController.Item.app(displayInfo, actionCallback: { [weak self] action in

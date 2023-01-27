@@ -80,17 +80,21 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         
         return walletsWithInfoAndBalance
     }
-    
+  
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo? {
-        let domains = await getDomains()
+        let domains = await getDomainsDisplayInfo()
         let reverseResolutionDomain = await reverseResolutionDomain(for: wallet)
         return WalletDisplayInfo(wallet: wallet,
                                  domainsCount: domains.filter( { wallet.owns(domain: $0) } ).count,
                                  reverseResolutionDomain: reverseResolutionDomain)
     }
-     
-    func getDomains() async -> [DomainDisplayInfo] {
-        return await getDomainsWithDisplayInfo().map { $0.displayInfo }
+    
+    func getDomainItems() async -> [DomainItem] {
+        await getDomainsWithDisplayInfo().map { $0.domain }
+    }
+    
+    func getDomainsDisplayInfo() async -> [DomainDisplayInfo] {
+        await getDomainsWithDisplayInfo().map { $0.displayInfo }
     }
 
     func getDomainWith(name: String) async throws -> DomainItem {
@@ -121,7 +125,7 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo? {
-        let domains = await getDomains()
+        let domains = await getDomainsDisplayInfo()
         let walletDomains = domains.filter({ wallet.owns(domain: $0) })
         let transactions = transactionsService.getCachedTransactionsFor(domainNames: walletDomains.map({ $0.name }))
         
@@ -152,7 +156,7 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool {
-        let domains = await getDomains()
+        let domains = await getDomainsDisplayInfo()
         let domainNames = domains.map({ $0.name })
         let transactions = transactionsService.getCachedTransactionsFor(domainNames: domainNames)
         
@@ -268,7 +272,7 @@ extension DataAggregatorService: UDWalletsServiceListener {
                 notifyListenersWith(result: .success(.walletsListUpdated(walletsInfo)))
                 
                 await dataHolder.setReverseResolutionInProgress(for: domainName)
-                let domains = await getDomains()
+                let domains = await getDomainsDisplayInfo()
                 notifyListenersWith(result: .success(.domainsUpdated(domains)))
             }
         }

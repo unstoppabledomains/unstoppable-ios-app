@@ -143,7 +143,7 @@ extension SignTransactionDomainSelectionViewPresenter: DataAggregatorServiceList
 // MARK: - Private functions
 private extension SignTransactionDomainSelectionViewPresenter {
     func prepareData() async {
-        domains = await dataAggregatorService.getDomains().interactableItems()
+        domains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
         filteredDomains = domains
         let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
         self.walletsWithInfo = walletsWithInfo.map({ WalletWithInfoAndOptionalBalance(wallet: $0.wallet,

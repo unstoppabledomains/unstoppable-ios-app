@@ -12,7 +12,8 @@ protocol DataAggregatorServiceProtocol {
     func getWalletsWithInfo() async -> [WalletWithInfo]
     func getWalletsWithInfoAndBalance(for blockchainType: BlockchainType) async throws -> [WalletWithInfoAndBalance]
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo?
-    func getDomains() async -> [DomainDisplayInfo]
+    func getDomainItems() async -> [DomainItem]
+    func getDomainsDisplayInfo() async -> [DomainDisplayInfo]
     func getDomainWith(name: String) async throws -> DomainItem
     func getDomainsWith(names: Set<String>) async -> [DomainItem]
     func setDomainsOrder(using domains: [DomainDisplayInfo]) async

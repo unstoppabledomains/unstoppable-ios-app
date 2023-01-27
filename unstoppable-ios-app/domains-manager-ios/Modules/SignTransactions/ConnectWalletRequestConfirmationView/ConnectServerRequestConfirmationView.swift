@@ -33,7 +33,7 @@ extension ConnectServerRequestConfirmationView {
         setWith(appInfo: connectionConfig.appInfo)
         setDomainInfo(connectionConfig.domain, isSelectable: false)
         Task {
-            let domains = await appContext.dataAggregatorService.getDomains()
+            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
             await MainActor.run {
                 setDomainInfo(connectionConfig.domain, isSelectable: domains.count > 1)
             }
