@@ -20,9 +20,7 @@ final class AppReviewService {
     @UserDefaultsValue(key: AppReviewStorageKey.numberOfTimesReviewWasRequestedKey, defaultValue: 0) var numberOfTimesReviewWasRequested: Int
     /// - Key: number of times review are requested
     /// - Value: number of events required
-    private let numberOfEventsToRequestReviewMap: [Int : Int] = [0 : 10,
-                                                                 1 : 20,
-                                                                 2 : 50]
+    private let numberOfEventsToRequestReviewMap: [Int : Int] = [0 : 20]
     private let defaultNumberOfEventsToRequestReview = 50
 
     private init() { }
@@ -59,8 +57,8 @@ private extension AppReviewService {
         let requiredNumberOfEvents = numberOfEventsToRequestReviewMap[numberOfTimesReviewWasRequested] ?? defaultNumberOfEventsToRequestReview
         
         if appReviewEventsCount >= requiredNumberOfEvents && isValidAppVersionToRequestReview() {
-            requestAppReview()
             appReviewEventsCount = 0
+            requestAppReview()
         }
     }
     
