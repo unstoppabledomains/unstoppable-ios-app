@@ -110,7 +110,7 @@ class APIRequestBuilder {
         }
     }
         
-    private var actionId: UInt?
+    private var actionId: UInt64?
     
     private var secureHeader: [String: String] = [:]
     private var email: String?
@@ -335,7 +335,7 @@ class APIRequestBuilder {
 
 extension APIRequestBuilder {
     struct MetaAction: Encodable {
-        let id: UInt
+        let id: UInt64
         let type: String
         let signature: String
     }
@@ -349,7 +349,7 @@ extension APIRequestBuilder {
         }
     }
     
-    func actionSign(for id: UInt,
+    func actionSign(for id: UInt64,
                      response: NetworkService.ActionsResponse,
                      signatures: [String]) throws -> APIRequestBuilder {
         self.type = .actionsSign

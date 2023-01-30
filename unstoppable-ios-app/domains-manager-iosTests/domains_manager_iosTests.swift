@@ -84,7 +84,7 @@ class APIRequestTests: XCTestCase {
      
     
     func test_actionSign () {
-        let actionId: UInt = 30303030, txId1: UInt = 5551, txId2: UInt = 8886
+        let actionId: UInt64 = 30303030, txId1: UInt64 = 5551, txId2: UInt64 = 8886
         let txType = "Meta"
         
         let actionDomInfo = NetworkService.ActionsDomainInfo(id: 7333, name: "domain.crypto", ownerAddress: "0x666333888222111000", blockchain: "ETH")

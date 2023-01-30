@@ -26,7 +26,7 @@ struct DomainItem: Codable {
     var imageType: DomainProfileImageType?
     
     var transactionHashes: [HexAddress] = []
-    var claimingTxId: Int?
+    var claimingTxId: UInt64?
     var status: Status = .confirmed
     
     // TODO: - Temporary properties. Might be changed depending on implementation
