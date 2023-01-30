@@ -13,6 +13,7 @@ struct OnboardingData: Codable {
     var wallets: [UDWallet] = []
     var passcode: String?
     var backupPassword: String?
+    var didRestoreWalletsFromBackUp: Bool?
     
     func persist() {
         UserDefaults.onboardingData = self

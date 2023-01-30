@@ -36,6 +36,7 @@ extension Analytics {
         case didOpenDeepLink
         case didSwipeNavigationBack
         case didSelectPhoto
+        case showRateAppRequest
         
         // Domains Collection
         case mintingDomainsPressed, swipeToScanning, swipeToHome
@@ -206,7 +207,7 @@ extension Analytics {
         case editProfile, manageDomain, shareLink, saveAsImage
         
         // Settings
-        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen
+        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs
         
         // Security settings
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
