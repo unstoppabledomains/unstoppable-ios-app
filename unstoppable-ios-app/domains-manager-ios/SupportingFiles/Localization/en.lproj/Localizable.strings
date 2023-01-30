@@ -237,6 +237,7 @@ To start this process, verify your email address to load the set of domains you 
 "PASSWORD_RULE_NUMBER" = "Password must contain number";
 "PASSWORD_RULE_LETTER" = "Password must contain a non-number";
 "PASSWORD_RULE_RANGE" = "Password must contain between 8-30 characters";
+"PASSWORD_RULE_MATCH" = "Passwords do not match";
 "CREATE_PASSWORD_HELP_TITLE" = "Why do I need a backup password?";
 "CREATE_PASSWORD_HELP_TEXT" = "When backing up your vault or wallet to iCloud, you’ll be asked to set a password that will be used to to encrypt your vault or wallet backup. This password will also be required to manage your existing and new iCloud backups. Similar to a recovery phrase, you’ll want to keep this backup password safe as it is necessary to recover your vault or wallet using the iCloud backup option.\n\nAlthough backing up your vault or wallet to iCloud is a convenient way to protect your domains, you should still write down and secure your vault or wallet recovery phrase. In the event that you lose or forget your iCloud backup password, your recovery phrase will allow you to restore your vault or wallets and access your domains.\n\nNote: Unstoppable Domains cannot recover your backup password for you.";
 "CREATE_PASSWORD_HELP_TEXT_HIGHLIGHTED" = "Note: Unstoppable Domains cannot recover your backup password for you.";

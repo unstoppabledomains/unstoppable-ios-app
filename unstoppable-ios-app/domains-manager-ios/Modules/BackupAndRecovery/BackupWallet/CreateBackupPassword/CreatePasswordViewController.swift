@@ -105,6 +105,13 @@ extension CreatePasswordViewController: UDTextFieldV2Delegate {
                                            style: error == .empty ? .grey : .red))
                 setConfirmPasswordTextfieldHidden(true)
             }
+        } else {
+            if !confirmedPassword.isEmpty && confirmedPassword != backupPassword {
+                udTextField.setState(.info(text: String.Constants.passwordRuleMatch.localized(),
+                                           style: .red))
+            } else {
+                udTextField.setState(.default)
+            }
         }
     }
     
