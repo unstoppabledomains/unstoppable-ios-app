@@ -186,7 +186,7 @@ extension SettingsViewController {
     
     enum SettingsMenuItem: Hashable {
         static var supplementaryItems: [SettingsMenuItem] {
-            var items: [SettingsMenuItem] = [.learn, .twitter]
+            var items: [SettingsMenuItem] = [.rateUs, .learn, .twitter]
             
             if MFMailComposeViewController.canSendMail() {
                 items.append(.support)
@@ -197,7 +197,7 @@ extension SettingsViewController {
         }
 
         case homeScreen(_ value: String), wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
-        case learn, twitter, support, legal
+        case rateUs, learn, twitter, support, legal
         case testnet(isOn: Bool)
         
         var title: String {
@@ -208,6 +208,8 @@ extension SettingsViewController {
                 return String.Constants.settingsSecurity.localized()
             case .appearance:
                 return String.Constants.settingsAppearanceTheme.localized()
+            case .rateUs:
+                return String.Constants.rateUs.localized()
             case .learn:
                 return String.Constants.settingsLearn.localized()
             case .twitter:
@@ -231,6 +233,8 @@ extension SettingsViewController {
                 return UIImage(named: "settingsIconLock")!
             case .appearance:
                 return .settingsIconAppearance
+            case .rateUs:
+                return .iconStar24
             case .learn:
                 return UIImage(named: "settingsIconLearn")!
             case .twitter:
@@ -260,7 +264,7 @@ extension SettingsViewController {
                 return .brandUnstoppablePink
             case .testnet:
                 return .brandSkyBlue
-            case .learn, .twitter, .support, .legal:
+            case .rateUs, .learn, .twitter, .support, .legal:
                 return .backgroundMuted2
             case .homeScreen:
                 return .brandDeepPurple
@@ -273,7 +277,7 @@ extension SettingsViewController {
                 return .chevron(value: value)
             case .appearance(let appearanceStyle):
                 return .chevron(value: appearanceStyle.visibleName)
-            case .learn, .twitter, .support, .legal:
+            case .rateUs, .learn, .twitter, .support, .legal:
                 return .empty
             case .testnet(let isOn):
                 return .switcher(isOn: isOn)
@@ -303,6 +307,8 @@ extension SettingsViewController {
                 return .settingsSecurity
             case .appearance:
                 return .settingsTheme
+            case .rateUs:
+                return .settingsRateUs
             case .learn:
                 return .settingsLearn
             case .twitter:
