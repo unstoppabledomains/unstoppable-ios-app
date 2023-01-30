@@ -18,6 +18,7 @@ final class DomainProfileBadgesSection {
     private var isSectionExpanded = false
     private let sectionAnalyticName: String = "badges"
     private var isRefreshingBadges = false
+    private var isBadgesUpToDate = false
     private var refreshBadgesTimer: Timer?
 
     init(sectionData: SectionData,
@@ -26,6 +27,7 @@ final class DomainProfileBadgesSection {
         self.badgesData = sectionData
         self.controller = controller
         self.state = state
+        setBadgesUpToDateFor(nextRefreshDate: badgesData.refresh.next)
     }
 }
 
@@ -60,7 +62,6 @@ extension DomainProfileBadgesSection: DomainProfileSection {
         case .default, .updatingRecords, .loadingError, .updatingProfile:
             let isRefreshBadgesButtonEnabled = state == .default || state == .updatingRecords
             let sectionHeaderDescription = sectionHeader(isLoading: false,
-                                                         isButtonVisible: true,
                                                          isButtonEnabled: isRefreshBadgesButtonEnabled)
             let section: DomainProfileViewController.Section = .badges(headerDescription: sectionHeaderDescription)
             snapshot.appendSections([section])
@@ -89,7 +90,6 @@ extension DomainProfileBadgesSection: DomainProfileSection {
             snapshot.appendSections([.footer(sectionFooter())])
         case .loading:
             snapshot.appendSections([.badges(headerDescription: sectionHeader(isLoading: true,
-                                                                              isButtonVisible: true,
                                                                               isButtonEnabled: false))])
             for _ in 0..<maxItems {
                 snapshot.appendItems([.loading(style: .hideShow, uiConfiguration: .profileBadges)])
@@ -119,10 +119,11 @@ extension DomainProfileBadgesSection: DomainProfileSection {
 // MARK: - Private methods
 private extension DomainProfileBadgesSection {
     func sectionHeader(isLoading: Bool,
-                       isButtonVisible: Bool,
                        isButtonEnabled: Bool) -> DomainProfileSectionHeader.HeaderDescription {
         var headerButton: DomainProfileSectionHeader.HeaderButton? = nil
-        if isButtonVisible {
+        
+        if !isBadgesUpToDate {
+            /// Refresh action is available
             let isEnabled = isRefreshingBadges ? false : isButtonEnabled
             headerButton = .refresh(isEnabled: isEnabled,
                                     isSpinning: isRefreshingBadges,
@@ -132,7 +133,14 @@ private extension DomainProfileBadgesSection {
                                                                   parameters: [:])
                 self?.refreshDomainBadges()
             })
+        } else {
+            /// Refresh action is not available
+            headerButton = .init(title: String.Constants.profileBadgesUpToDate.localized(),
+                                 icon: .checkmark,
+                                 isEnabled: false,
+                                 action: { })
         }
+        
         
         let numberOfBadges = badgesData.badges.count
         let secondaryTitle = numberOfBadges == 0 ? "" : String(numberOfBadges)
@@ -178,6 +186,7 @@ private extension DomainProfileBadgesSection {
             updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: true)
             do {
                 let refreshInfo = try await NetworkService().refreshDomainBadges(for: domain)
+                setBadgesUpToDateFor(nextRefreshDate: refreshInfo.next)
                 updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: refreshInfo.refresh)
                 if refreshInfo.refresh {
                     await startRefreshBadgesTimer()
@@ -210,6 +219,10 @@ private extension DomainProfileBadgesSection {
     func stopRefreshBadgesTimer() {
         refreshBadgesTimer?.invalidate()
         refreshBadgesTimer = nil
+    }
+    
+    func setBadgesUpToDateFor(nextRefreshDate: Date) {
+        isBadgesUpToDate = nextRefreshDate > Date()
     }
 }
 
