@@ -172,6 +172,8 @@ extension Analytics {
         case navigationBack
         case setReverseResolution
         case hide, showAll
+        case dontAlreadyHaveDomain
+        case createVault
         
         // Backup type
         case iCloud, manually

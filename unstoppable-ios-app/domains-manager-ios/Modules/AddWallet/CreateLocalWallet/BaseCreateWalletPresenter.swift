@@ -9,15 +9,20 @@ import UIKit
 
 protocol CreateWalletPresenterProtocol: BasePresenterProtocol {
     var analyticsName: Analytics.ViewName { get }
+    var canMoveBack: Bool { get }
+    
+    func createVaultButtonPressed()
 }
 
 class BaseCreateWalletPresenter {
     
     private let udWalletsService: UDWalletsServiceProtocol
+    private var isCreatingWallet: Bool = false
     var wallet: UDWallet?
     weak var view: CreateWalletViewControllerProtocol?
     var analyticsName: Analytics.ViewName { .unspecified }
-    
+    var canMoveBack: Bool { !isCreatingWallet }
+
     init(view: CreateWalletViewControllerProtocol,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
@@ -25,38 +30,43 @@ class BaseCreateWalletPresenter {
     }
     
     func walletCreated(_ wallet: UDWallet) {  }
+    @MainActor func viewDidLoad() { }
+    @MainActor func viewDidAppear() { }
 }
 
 // MARK: - CreateWalletPresenterProtocol
 extension BaseCreateWalletPresenter: CreateWalletPresenterProtocol {
-    func viewDidLoad() {
+    @MainActor
+    func createVaultButtonPressed() {
         view?.setActivityIndicator(active: true)
-    }
-    
-    func viewDidAppear() {
-        if wallet == nil {
-            createUDWallet()
-        }
+        createUDWallet()
     }
 }
 
-// MARK: - Private methods
-private extension BaseCreateWalletPresenter {
+// MARK: - Common methods
+extension BaseCreateWalletPresenter {
     func createUDWallet() {
+        guard !isCreatingWallet else { return }
+        
         Task {
+            await view?.setNavigationGestureEnabled(false)
+            isCreatingWallet = true
             do {
                 let wallet = try await udWalletsService.createNewUDWallet()
                 await MainActor.run {
+                    view?.setNavigationGestureEnabled(true)
                     Vibration.success.vibrate()
                     walletCreated(wallet)
                 }
             } catch {
                 await MainActor.run {
                     Debugger.printFailure("Failed to create UD wallet: \(error)", critical: true)
+                    view?.setNavigationGestureEnabled(true)
                     view?.showSimpleAlert(title: String.Constants.creationFailed.localized(),
-                                               body: String.Constants.failedToCreateNewWallet.localized(error.localizedDescription))
+                                          body: String.Constants.failedToCreateNewWallet.localized(error.localizedDescription))
                 }
             }
+            isCreatingWallet = false
         }
     }
 }

@@ -223,6 +223,8 @@ extension String {
         static let tutorialScreen3Description = "TUTORIAL_SCREEN_3_DESCRIPTION"
         
         static let creatingWallet = "CREATING_WALLET"
+        static let createNewVaultTitle = "CREATE_NEW_VAULT_TITLE"
+        static let createNewVaultSubtitle = "CREATE_NEW_VAULT_SUBTITLE"
         
         static let useFaceID = "USE_FACE_ID"
         static let useTouchID = "USE_TOUCH_ID"
@@ -300,7 +302,8 @@ extension String {
         static let connectWalletWatchHint = "CONNECT_WALLET_WATCH_HINT"
         static let connectWalletExternal = "CONNECT_WALLET_EXTERNAL"
         static let connectWalletExternalHint = "CONNECT_WALLET_EXTERNAL_HINT"
-        
+        static let connectWalletDontAlreadyHaveDomain = "CONNECT_WALLET_DONT_ALREADY_HAVE_DOMAIN"
+
         // Add wallet
         static let addWalletTitle = "ADD_WALLET_TITLE"
         static let addWalletManageHint = "ADD_WALLET_MANAGE_HINT"

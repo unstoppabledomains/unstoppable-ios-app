@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TutorialViewControllerProtocol: UIViewController, CNavigationControllerChild {
-    func setIHaveWalletsButton(title: String)
+    
 }
 
 final class TutorialViewController: UIPageViewController {
@@ -23,9 +23,6 @@ final class TutorialViewController: UIPageViewController {
     
     private var pageControl = UIPageControl()
     private var createNewWalletButton = MainButton()
-    private var iHaveWalletButton = SecondaryButton()
-    private var mintDomainLabel = UILabel()
-    private var createVaultHintLabel = UILabel()
     var presenter: TutorialViewPresenterProtocol!
     
     var navBackButtonConfiguration: CNavigationBarContentView.BackButtonConfiguration {
@@ -60,17 +57,17 @@ final class TutorialViewController: UIPageViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        self.createVaultHintLabel.frame.origin.y = self.createNewWalletButton.frame.minY + 28
-        self.mintDomainLabel.frame.origin.y = self.createNewWalletButton.frame.minY + 4
+        let buttonSideOffset: CGFloat = 16
+        let bottomOffset: CGFloat = 14 + view.safeAreaInsets.bottom
+        createNewWalletButton.frame = CGRect(x: buttonSideOffset,
+                                             y: view.bounds.height - MainButton.height - bottomOffset,
+                                             width: view.bounds.width - (buttonSideOffset * 2),
+                                             height: MainButton.height)
     }
 }
 
 // MARK: - TutorialViewControllerProtocol
-extension TutorialViewController: TutorialViewControllerProtocol {
-    func setIHaveWalletsButton(title: String) {
-        iHaveWalletButton.setTitle(title, image: nil)
-    }
-}
+extension TutorialViewController: TutorialViewControllerProtocol { }
 
 // MARK: - UIPageViewControllerDelegate
 extension TutorialViewController: UIPageViewControllerDelegate {
@@ -149,17 +146,12 @@ private extension TutorialViewController {
     }
     
     @objc func didPressCreateNewWalletButton(_ sender: UITapGestureRecognizer) {
-        logButtonPressedAnalyticEvents(button: "createNewVault")
+        logButtonPressedAnalyticEvents(button: .getStarted)
         presenter?.didPressCreateNewWalletButton()
     }
     
-    @objc func didPressIHaveWalletButton(_ sender: UITapGestureRecognizer) {
-        logButtonPressedAnalyticEvents(button: "alreadyHaveWallet")
-        presenter?.didPressIHaveWalletButton()
-    }
-    
     @objc func didPressBuyDomain(_ sender: Any) {
-        logButtonPressedAnalyticEvents(button: "buyDomains")
+        logButtonPressedAnalyticEvents(button: .buyDomains)
         presenter?.didPressBuyDomain()
     }
 }
@@ -169,7 +161,6 @@ private extension TutorialViewController {
     func setup() {
         setupView()
         setupDelegates()
-        setupIHaveWalletButton()
         setupCreateNewWalletButton()
         configurePageControl()
         setupNavigationBar()
@@ -184,43 +175,11 @@ private extension TutorialViewController {
         self.delegate = self
     }
     
-    func setupIHaveWalletButton() {
-        view.addSubview(iHaveWalletButton)
-        iHaveWalletButton.accessibilityIdentifier = "Tutorial I Have Button"
-        iHaveWalletButton.translatesAutoresizingMaskIntoConstraints = false
-        iHaveWalletButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: iHaveWalletButton.bottomAnchor, constant: 14).isActive = true
-        iHaveWalletButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        iHaveWalletButton.heightAnchor.constraint(equalToConstant: SecondaryButton.ButtonHeight).isActive = true
-        
-        iHaveWalletButton.addTarget(self, action: #selector(didPressIHaveWalletButton(_:)), for: .touchUpInside)
-    }
-    
     func setupCreateNewWalletButton() {
         view.addSubview(createNewWalletButton)
         createNewWalletButton.accessibilityIdentifier = "Tutorial Create New Button"
-        createNewWalletButton.translatesAutoresizingMaskIntoConstraints = false
-        createNewWalletButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16).isActive = true
-        iHaveWalletButton.topAnchor.constraint(equalTo: createNewWalletButton.bottomAnchor, constant: 16).isActive = true
-        createNewWalletButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        createNewWalletButton.heightAnchor.constraint(equalToConstant: MainButton.height).isActive = true
-        
-        createNewWalletButton.setTitle(nil, image: nil)
+        createNewWalletButton.setTitle(String.Constants.getStarted.localized(), image: nil)
         createNewWalletButton.addTarget(self, action: #selector(didPressCreateNewWalletButton(_:)), for: .touchUpInside)
-    
-        view.addSubview(mintDomainLabel)
-        mintDomainLabel.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 24)
-        mintDomainLabel.setAttributedTextWith(text: String.Constants.mintYourDomain.localized(),
-                                                   font: .currentFont(withSize: 16, weight: .semibold),
-                                                   textColor: .foregroundOnEmphasis,
-                                                   alignment: .center)
-        
-        view.addSubview(createVaultHintLabel)
-        createVaultHintLabel.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 16)
-        createVaultHintLabel.setAttributedTextWith(text: String.Constants.createDomainVault.localized(),
-                                                   font: .currentFont(withSize: 11, weight: .semibold),
-                                                   textColor: .foregroundOnEmphasisOpacity,
-                                                   alignment: .center)
     }
     
     func configurePageControl() {
@@ -281,8 +240,8 @@ private extension TutorialViewController {
         customiseNavigationBackButton()
     }
     
-    func logButtonPressedAnalyticEvents(button: String) {
-        appContext.analyticsService.log(event: .buttonPressed, withParameters: [.button : button,
+    func logButtonPressedAnalyticEvents(button: Analytics.Button) {
+        appContext.analyticsService.log(event: .buttonPressed, withParameters: [.button : button.rawValue,
                                                                             .viewName: Analytics.ViewName.onboardingTutorial.rawValue])
     }
     
