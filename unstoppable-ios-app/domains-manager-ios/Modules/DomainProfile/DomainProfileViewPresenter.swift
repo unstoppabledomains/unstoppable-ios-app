@@ -1114,7 +1114,8 @@ private extension DomainProfileViewPresenter {
         var transactions: [TransactionItem] = []
         var recordsData: DomainRecordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
         var currencies: [CoinRecord] = []
-        var badgesInfo: BadgesInfo = .init(badges: [])
+        var badgesInfo: BadgesInfo = .init(badges: [],
+                                           refresh: .init(last: Date(), next: Date()))
         var profile: SerializedUserDomainProfile = .init(profile: .init(),
                                                          messaging: .init(),
                                                          socialAccounts: .init(),
@@ -1167,7 +1168,7 @@ private extension DomainProfileViewPresenter {
         func reset() {
             transactions = []
             recordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
-            badgesInfo = .init(badges: [])
+            badgesInfo = .init(badges: [], refresh: .init(last: Date(), next: Date()))
             profile = .init(profile: .init(),
                                                              messaging: .init(),
                                                              socialAccounts: .init(),

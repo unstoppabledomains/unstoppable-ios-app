@@ -284,13 +284,26 @@ struct SerializedDomainMessageRule: Codable {
 }
 
 struct BadgesInfo: Codable, Hashable {
+    let badges: [BadgeInfo]
+    let refresh: BadgesRefreshInfo
+    
     struct BadgeInfo: Codable, Hashable {
         let code: String
         let name: String
         let logo:  String
         let description: String
     }
-    let badges: [BadgeInfo]
+        
+    struct BadgesRefreshInfo: Codable, Hashable {
+        let last: Date
+        let next: Date
+    }
+}
+
+struct RefreshBadgesResponse: Codable {
+    let ok: Bool
+    let refresh: Bool
+    let next: Date
 }
 
 struct GeneratedMessage: Decodable {
@@ -339,10 +352,23 @@ extension NetworkService {
             throw NetworkLayerError.creatingURLFailed
         }
         let data = try await fetchData(for: url, method: .get)
-        guard let info = BadgesInfo.objectFromData(data) else {
+        guard let info = BadgesInfo.objectFromData(data,
+                                                   dateDecodingStrategy: .badgesDateDecodingStrategy()) else {
             throw NetworkLayerError.failedParseProfileData
         }
         return info
+    }
+    
+    public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {
+        guard let url = Endpoint.refreshDomainBadges(for: domain).url else {
+            throw NetworkLayerError.creatingURLFailed
+        }
+        let data = try await fetchData(for: url, method: .get)
+        guard let response = RefreshBadgesResponse.objectFromData(data,
+                                                                  dateDecodingStrategy: .badgesDateDecodingStrategy()) else {
+            throw NetworkLayerError.failedParseProfileData
+        }
+        return response
     }
     
     public func fetchUserDomainProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedUserDomainProfile {
