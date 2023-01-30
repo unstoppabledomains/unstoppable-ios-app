@@ -54,6 +54,9 @@ private extension HappyEndViewController {
     }
     
     @IBAction func didTapGetStartedButton(_ sender: MainButton) {
+        if UserDefaults.onboardingData?.didRestoreWalletsFromBackUp == true {
+            AppReviewService.shared.appReviewEventDidOccurs(event: .didRestoreWalletsFromBackUp)
+        }
         UserDefaults.onboardingNavigationInfo = nil
         UserDefaults.onboardingData = nil
         

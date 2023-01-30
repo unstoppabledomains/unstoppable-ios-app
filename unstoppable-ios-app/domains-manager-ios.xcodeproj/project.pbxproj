@@ -1449,6 +1449,10 @@
 		C650AC3E298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C650AC3F298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C650AC40298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
+		C650AC422983B20D00A398AB /* AppReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC412983B20D00A398AB /* AppReviewService.swift */; };
+		C650AC432983B20D00A398AB /* AppReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC412983B20D00A398AB /* AppReviewService.swift */; };
+		C650AC442983B20D00A398AB /* AppReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC412983B20D00A398AB /* AppReviewService.swift */; };
+		C650AC452983B20D00A398AB /* AppReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC412983B20D00A398AB /* AppReviewService.swift */; };
 		C650BC0328F3C97900AD6733 /* DomainProfileGeneralData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */; };
 		C650BC0428F3C97900AD6733 /* DomainProfileGeneralData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */; };
 		C650BC0528F3C97900AD6733 /* DomainProfileGeneralData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */; };
@@ -3495,6 +3499,7 @@
 		C64836BC282BCAFB007BD3F1 /* PrimaryDangerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryDangerButton.swift; sourceTree = "<group>"; };
 		C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCopyAddressAction.swift; sourceTree = "<group>"; };
 		C650AC3C298105C900A398AB /* UDSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDSegmentedControl.swift; sourceTree = "<group>"; };
+		C650AC412983B20D00A398AB /* AppReviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewService.swift; sourceTree = "<group>"; };
 		C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileGeneralData.swift; sourceTree = "<group>"; };
 		C651DC50286C115400808D4C /* WatchFaceDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFaceDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WatchFaceDomainImagePreviewView.xib; sourceTree = "<group>"; };
@@ -5686,12 +5691,14 @@
 		C681091F2804131D002D780E /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				C650AC412983B20D00A398AB /* AppReviewService.swift */,
 				C6EECE9C2833A42600978ED5 /* CoinRecordsService.swift */,
+				C6B6B047297039E500D4E30F /* DateFormattingService.swift */,
 				C6E69FF5288AE47D000A8346 /* ExternalEventsService.swift */,
 				C681092028041325002D780E /* GIFAnimationsService.swift */,
 				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
+				C664B678291551E600A76154 /* LinkPresentationService.swift */,
 				C692C312282E303B00C31393 /* NetworkReachabilityService.swift */,
-				C6B6B047297039E500D4E30F /* DateFormattingService.swift */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
 				C6E69FF0288AD9DB000A8346 /* NotificationsService.swift */,
@@ -5699,9 +5706,8 @@
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
-				C664B678291551E600A76154 /* LinkPresentationService.swift */,
-				C61236EE292CADE1002BA97B /* AppGroupsBridge */,
 				C63F1D0328AF31D5000A5C12 /* AnalyticsService */,
+				C61236EE292CADE1002BA97B /* AppGroupsBridge */,
 				C6109E2728E5AB310027D5D8 /* AppLaunchService */,
 				C6109E2328E5AB310027D5D8 /* AuthentificationService */,
 				C6FE49DF285CBAB60058F9D1 /* CoreAppCoordinator */,
@@ -7830,6 +7836,7 @@
 				C642A6A92841157E00299C6E /* TransactionInProgressViewController.swift in Sources */,
 				C63A352628F017220057D34B /* DomainProfileSectionsFactory.swift in Sources */,
 				C66FCCFE2844871A009B9525 /* UserDataServiceProtocol.swift in Sources */,
+				C650AC422983B20D00A398AB /* AppReviewService.swift in Sources */,
 				C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */,
 				C628E36D27FDE0D50044E408 /* UDTitleLabel.swift in Sources */,
 				3018AEC227EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,
@@ -8679,6 +8686,7 @@
 				C624D772281B884600F55530 /* ImageLoadingService.swift in Sources */,
 				C692C306282E012900C31393 /* WalletDataValidator.swift in Sources */,
 				C6A2D595284FA0AE00327C47 /* WalletConnectService.swift in Sources */,
+				C650AC442983B20D00A398AB /* AppReviewService.swift in Sources */,
 				C603A53828522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift in Sources */,
 				C628E37F27FEE2D40044E408 /* NSLayoutHelper.swift in Sources */,
 				C691CFAA28C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
@@ -9266,6 +9274,7 @@
 				C624D773281B884600F55530 /* ImageLoadingService.swift in Sources */,
 				C692C307282E012900C31393 /* WalletDataValidator.swift in Sources */,
 				C6A2D596284FA0AE00327C47 /* WalletConnectService.swift in Sources */,
+				C650AC452983B20D00A398AB /* AppReviewService.swift in Sources */,
 				C603A53928522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift in Sources */,
 				C628E38027FEE2D40044E408 /* NSLayoutHelper.swift in Sources */,
 				C691CFAB28C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
@@ -9647,6 +9656,7 @@
 				C642A6AA2841157E00299C6E /* TransactionInProgressViewController.swift in Sources */,
 				C63A352728F017220057D34B /* DomainProfileSectionsFactory.swift in Sources */,
 				C66FCCFF2844871A009B9525 /* UserDataServiceProtocol.swift in Sources */,
+				C650AC432983B20D00A398AB /* AppReviewService.swift in Sources */,
 				C6F6AF6428A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */,
 				C628E36E27FDE0D50044E408 /* UDTitleLabel.swift in Sources */,
 				3018AEC327EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,

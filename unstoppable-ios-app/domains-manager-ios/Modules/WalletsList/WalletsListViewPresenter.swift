@@ -184,6 +184,7 @@ private extension WalletsListViewPresenter {
                                                       walletsRestoredCallback: { [weak self] in
             self?.showICloudBackupRestoredToast()
             self?.refreshWallets()
+            AppReviewService.shared.appReviewEventDidOccurs(event: .didRestoreWalletsFromBackUp)
         }, in: view)
     }
     
@@ -259,6 +260,7 @@ private extension WalletsListViewPresenter {
                        let walletInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0) {
                         showDetailsOf(wallet: wallet, walletInfo: walletInfo)
                     }
+                    AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
                 }
             }
         }
