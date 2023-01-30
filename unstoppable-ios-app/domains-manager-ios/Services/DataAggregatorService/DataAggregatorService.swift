@@ -274,6 +274,7 @@ extension DataAggregatorService: UDWalletsServiceListener {
                 await dataHolder.setReverseResolutionInProgress(for: domainName)
                 let domains = await getDomainsDisplayInfo()
                 notifyListenersWith(result: .success(.domainsUpdated(domains)))
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
             }
         }
     }

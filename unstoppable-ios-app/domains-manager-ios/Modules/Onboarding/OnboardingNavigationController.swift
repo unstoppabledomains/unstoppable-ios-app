@@ -39,14 +39,8 @@ final class OnboardingNavigationController: CNavigationController {
     override func popViewController(animated: Bool, completion: (()->())? = nil) -> UIViewController? {
         if topViewController is ProtectWalletViewController {
             // We don't need to handle additionally back navigation from ProtectVC for existing user flow
-            if case .newUser(let onboardingSubFlow) = flow,
-               let onboardingSubFlow = onboardingSubFlow {
-                switch onboardingSubFlow {
-                case .create:
-                    return popTo(TutorialViewController.self)
-                case .restore:
-                    return popTo(RestoreWalletViewController.self)
-                }
+            if case .newUser = flow {
+                return popTo(RestoreWalletViewController.self)
             }
         } else if topViewController is BackupWalletViewController {
             switch flow {
@@ -154,9 +148,7 @@ private extension OnboardingNavigationController {
     func checkSwipeGestureEnabled() {
         guard let topViewController = viewControllers.last else { return }
         
-        if topViewController is CreateWalletViewController {
-            transitionHandler?.isInteractionEnabled = false
-        } else if topViewController is HappyEndViewController || topViewController is WalletConnectedViewController {
+        if topViewController is HappyEndViewController || topViewController is WalletConnectedViewController {
             transitionHandler?.isInteractionEnabled = false
         } else if topViewController is RecoveryPhraseViewController,
                   UserDefaults.onboardingNavigationInfo?.steps.contains(.recoveryPhraseConfirmed) == true {

@@ -113,9 +113,11 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
                     .showServerConnectConfirmationPullUp(for: config,
                                                          in: hostView)
                 await hostView.dismissPullUpMenu()
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 return domainToProcessRequest
             } catch {
                 try? await awaitPullUpDisappear()
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didHandleWCRequest)
                 throw WalletConnectUIError.cancelled
             }
         default: throw WalletConnectUIError.cancelled

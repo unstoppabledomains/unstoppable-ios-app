@@ -39,6 +39,7 @@ struct Constants {
     static let downloadedIconMaxSize: CGFloat = 128
     static let defaultUNSReleaseVersion = "v0.6.19"
     static let defaultInitials: String = "N/A"
+    static let appStoreAppId = "1544748602"
     
     #if DEBUG
     static let isTestingMinting: Bool = false
@@ -47,6 +48,7 @@ struct Constants {
     static let isTestingMinting: TimeInterval = false
     static let testMintingDomainsCount = 0
     #endif
+
 }
 
 let currencyNumberFormatter: NumberFormatter = {

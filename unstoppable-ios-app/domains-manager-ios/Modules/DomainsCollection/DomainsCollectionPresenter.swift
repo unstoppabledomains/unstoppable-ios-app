@@ -171,6 +171,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
                 view?.runConfettiAnimation()
                 appContext.toastMessageService.showToast(.mintingSuccessful, isSticky: false)
             }
+            AppReviewService.shared.appReviewEventDidOccurs(event: .didMintDomains)
         case .domainsPurchased(let details):
             Task {
                 try? await Task.sleep(seconds: 0.2)
@@ -402,6 +403,7 @@ private extension DomainsCollectionPresenter {
         do {
             try await udWalletsService.setReverseResolution(to: domain,
                                                             paymentConfirmationDelegate: view)
+            AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
         } catch {
             await MainActor.run {
                 view.showAlertWith(error: error)

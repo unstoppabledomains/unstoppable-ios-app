@@ -36,6 +36,7 @@ extension String {
         case domainProfilePage(domainName: String)
         case openSeaETHAsset(value: String)
         case openSeaPolygonAsset(value: String)
+        case writeAppStoreReview(appId: String)
 
         var urlString: String {
             switch self {
@@ -75,6 +76,8 @@ extension String {
                 return "https://opensea.io/assets/ethereum/\(value)"
             case .openSeaPolygonAsset(let value):
                 return "https://opensea.io/assets/matic/\(value)"
+            case .writeAppStoreReview(let appId):
+                return "https://apps.apple.com/app/id\(appId)?action=write-review"
             }
         }
         
@@ -162,6 +165,7 @@ extension String {
         static let rearrange = "REARRANGE"
         static let login = "LOGIN"
         static let addN = "ADD_N"
+        static let rateUs = "RATE_US"
 
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -178,6 +182,8 @@ extension String {
         static let tutorialScreen3Description = "TUTORIAL_SCREEN_3_DESCRIPTION"
         
         static let creatingWallet = "CREATING_WALLET"
+        static let createNewVaultTitle = "CREATE_NEW_VAULT_TITLE"
+        static let createNewVaultSubtitle = "CREATE_NEW_VAULT_SUBTITLE"
         
         static let useFaceID = "USE_FACE_ID"
         static let useTouchID = "USE_TOUCH_ID"
@@ -255,7 +261,8 @@ extension String {
         static let connectWalletWatchHint = "CONNECT_WALLET_WATCH_HINT"
         static let connectWalletExternal = "CONNECT_WALLET_EXTERNAL"
         static let connectWalletExternalHint = "CONNECT_WALLET_EXTERNAL_HINT"
-        
+        static let connectWalletDontAlreadyHaveDomain = "CONNECT_WALLET_DONT_ALREADY_HAVE_DOMAIN"
+
         // Add wallet
         static let addWalletTitle = "ADD_WALLET_TITLE"
         static let addWalletManageHint = "ADD_WALLET_MANAGE_HINT"

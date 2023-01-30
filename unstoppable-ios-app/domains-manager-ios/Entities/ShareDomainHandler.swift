@@ -116,8 +116,13 @@ private extension ShareDomainHandler {
         if let image = image {
             activityItems.append(image)
         }
-        let vc = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        view.present(vc, animated: true)
+        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        activityViewController.completionWithItemsHandler = { _, completed, _, _ in
+            if completed {
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didShareProfile)
+            }
+        }
+        view.present(activityViewController, animated: true)
     }
     
     func saveImage(_ image: UIImage) {
@@ -134,6 +139,7 @@ private extension ShareDomainHandler {
                 if let selectedStyleName {
                     appContext.toastMessageService.showToast(.itemSaved(name: selectedStyleName), isSticky: false)
                 }
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didSaveProfileImage)
             }
         }
     }

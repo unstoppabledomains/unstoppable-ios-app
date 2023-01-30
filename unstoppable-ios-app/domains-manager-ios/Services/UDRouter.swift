@@ -93,9 +93,10 @@ class UDRouter: DomainProfileSignatureValidator {
     
     func showRecoveryPhrase(of wallet: UDWallet,
                             recoveryType: UDWallet.RecoveryType,
-                            in viewController: UIViewController) {
+                            in viewController: UIViewController,
+                            dismissCallback: EmptyCallback?) {
         let revealVC = buildRevealRecoveryPhraseModule(for: wallet, recoveryType: recoveryType)
-        presentInEmptyCRootNavigation(revealVC, in: viewController)
+        presentInEmptyCRootNavigation(revealVC, in: viewController, dismissCallback: dismissCallback)
     }
     
     func showRenameWalletScreen(of wallet: UDWallet,

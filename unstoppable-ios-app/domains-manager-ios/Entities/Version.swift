@@ -12,7 +12,7 @@ struct Version: Comparable, Codable {
     let minor: Int
     let revision: Int
     
-    static func parse(version: String) -> Version? {
+    private static func parse(version: String) -> Version? {
         let components = version.split(separator: Character.dotSeparator)
         guard components.count == 3 else { return nil }
         guard let major = Int(components[0]) else { return nil }
@@ -21,14 +21,48 @@ struct Version: Comparable, Codable {
         return Version(major: major, minor: minor, revision: revision)
     }
     
+    static func parse(versionString: String) throws -> Version {
+        guard let version = parse(version: versionString) else {
+            Debugger.printFailure("Failed to parse app version", critical: true)
+            throw Self.Error.failedToParseFromString
+        }
+
+        return version
+    }
+    
     static func < (lhs: Version, rhs: Version) -> Bool {
         guard lhs.major == rhs.major else { return lhs.major < rhs.major }
         guard lhs.minor == rhs.minor else { return lhs.minor < rhs.minor }
         return lhs.revision < rhs.revision
     }
     
-    static func getAppVersion() -> String? {
+    static func getCurrentAppVersionString() -> String? {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    }
+    
+    static func getCurrentAppVersionStringThrowing() throws -> String {
+        guard let appVersionString = getCurrentAppVersionString() else {
+            Debugger.printFailure("Failed to get app version from bundle", critical: true)
+            throw Self.Error.failedToGetVersionFromBundle
+        }
+        
+        return appVersionString
+    }
+    
+    static func getCurrent() throws -> Version {
+        let currentVersionString = try getCurrentAppVersionStringThrowing()
+        let currentVersion = try parse(versionString: currentVersionString)
+        
+        return currentVersion
+    }
+    
+    enum Error: String, LocalizedError {
+        case failedToGetVersionFromBundle
+        case failedToParseFromString
+        
+        public var errorDescription: String? {
+            return rawValue
+        }
     }
 }
 
@@ -57,7 +91,7 @@ struct AppVersionAPIResponse: Decodable {
 
 struct AppVersionInfo: Codable {
     var minSupportedVersion: Version = Version(major: 0, minor: 3, revision: 1)
-    var supportedStoreLink: String = "https://apps.apple.com/us/app/unstoppable-domains-app/id1544748602"
+    var supportedStoreLink: String = "https://apps.apple.com/us/app/unstoppable-domains-app/id\(Constants.appStoreAppId)"
     var mintingIsEnabled: Bool = true
     var polygonMintingReleased: Bool = true
     var mintingZilTldOnPolygonReleased: Bool = false
@@ -83,7 +117,7 @@ struct DefaultAppVersionFetcher: AppVersionApi {
                                                         extraHeaders: NetworkConfig.stagingAccessKeyIfNecessary)
         
         if let response = AppVersionAPIResponse.objectFromData(data),
-           let minSupportedVersion = Version.parse(version: response.ios.minSupportedVersion) {
+           let minSupportedVersion = try? Version.parse(versionString: response.ios.minSupportedVersion) {
             let appVersion = AppVersionInfo(minSupportedVersion: minSupportedVersion,
                                             supportedStoreLink: response.ios.supportedStoreLink,
                                             mintingIsEnabled: response.claimingIsEnabled,

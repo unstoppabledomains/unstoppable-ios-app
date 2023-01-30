@@ -1469,6 +1469,10 @@
 		C650AC3E298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C650AC3F298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C650AC40298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
+		C650AC422983B20D00A398AB /* AppReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC412983B20D00A398AB /* AppReviewService.swift */; };
+		C650AC432983B20D00A398AB /* AppReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC412983B20D00A398AB /* AppReviewService.swift */; };
+		C650AC442983B20D00A398AB /* AppReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC412983B20D00A398AB /* AppReviewService.swift */; };
+		C650AC452983B20D00A398AB /* AppReviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC412983B20D00A398AB /* AppReviewService.swift */; };
 		C650BC0328F3C97900AD6733 /* DomainProfileGeneralData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */; };
 		C650BC0428F3C97900AD6733 /* DomainProfileGeneralData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */; };
 		C650BC0528F3C97900AD6733 /* DomainProfileGeneralData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */; };
@@ -2847,10 +2851,6 @@
 		C6E041BA29548ADC0080F8E3 /* SmallRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041B829548ADC0080F8E3 /* SmallRaisedTertiaryButton.swift */; };
 		C6E041BB29548ADC0080F8E3 /* SmallRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041B829548ADC0080F8E3 /* SmallRaisedTertiaryButton.swift */; };
 		C6E041BC29548ADC0080F8E3 /* SmallRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041B829548ADC0080F8E3 /* SmallRaisedTertiaryButton.swift */; };
-		C6E041BE2954926E0080F8E3 /* DateFormattingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041BD2954926E0080F8E3 /* DateFormattingService.swift */; };
-		C6E041BF2954926E0080F8E3 /* DateFormattingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041BD2954926E0080F8E3 /* DateFormattingService.swift */; };
-		C6E041C02954926E0080F8E3 /* DateFormattingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041BD2954926E0080F8E3 /* DateFormattingService.swift */; };
-		C6E041C12954926E0080F8E3 /* DateFormattingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041BD2954926E0080F8E3 /* DateFormattingService.swift */; };
 		C6E041C4295499100080F8E3 /* DomainsCollectionTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041C3295499100080F8E3 /* DomainsCollectionTitleView.swift */; };
 		C6E041C5295499100080F8E3 /* DomainsCollectionTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041C3295499100080F8E3 /* DomainsCollectionTitleView.swift */; };
 		C6E041C6295499100080F8E3 /* DomainsCollectionTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6E041C3295499100080F8E3 /* DomainsCollectionTitleView.swift */; };
@@ -3600,6 +3600,7 @@
 		C64836BC282BCAFB007BD3F1 /* PrimaryDangerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryDangerButton.swift; sourceTree = "<group>"; };
 		C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCopyAddressAction.swift; sourceTree = "<group>"; };
 		C650AC3C298105C900A398AB /* UDSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDSegmentedControl.swift; sourceTree = "<group>"; };
+		C650AC412983B20D00A398AB /* AppReviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewService.swift; sourceTree = "<group>"; };
 		C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileGeneralData.swift; sourceTree = "<group>"; };
 		C651DC50286C115400808D4C /* WatchFaceDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFaceDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WatchFaceDomainImagePreviewView.xib; sourceTree = "<group>"; };
@@ -3944,7 +3945,6 @@
 		C6E041AD2954689E0080F8E3 /* DomainsCollectionCarouselItemViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionCarouselItemViewPresenter.swift; sourceTree = "<group>"; };
 		C6E041B329546AB60080F8E3 /* DomainsCollectionCarouselViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionCarouselViewController.swift; sourceTree = "<group>"; };
 		C6E041B829548ADC0080F8E3 /* SmallRaisedTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmallRaisedTertiaryButton.swift; sourceTree = "<group>"; };
-		C6E041BD2954926E0080F8E3 /* DateFormattingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormattingService.swift; sourceTree = "<group>"; };
 		C6E041C3295499100080F8E3 /* DomainsCollectionTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionTitleView.swift; sourceTree = "<group>"; };
 		C6E041C8295545CE0080F8E3 /* DomainCollectionUnderCardControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainCollectionUnderCardControl.swift; sourceTree = "<group>"; };
 		C6E041CD29554C370080F8E3 /* GhostTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTertiaryButton.swift; sourceTree = "<group>"; };
@@ -5807,13 +5807,14 @@
 		C681091F2804131D002D780E /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				C650AC412983B20D00A398AB /* AppReviewService.swift */,
 				C6EECE9C2833A42600978ED5 /* CoinRecordsService.swift */,
-				C6E041BD2954926E0080F8E3 /* DateFormattingService.swift */,
+				C6B6B047297039E500D4E30F /* DateFormattingService.swift */,
 				C6E69FF5288AE47D000A8346 /* ExternalEventsService.swift */,
 				C681092028041325002D780E /* GIFAnimationsService.swift */,
 				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
+				C664B678291551E600A76154 /* LinkPresentationService.swift */,
 				C692C312282E303B00C31393 /* NetworkReachabilityService.swift */,
-				C6B6B047297039E500D4E30F /* DateFormattingService.swift */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
 				C6E69FF0288AD9DB000A8346 /* NotificationsService.swift */,
@@ -5821,9 +5822,8 @@
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
-				C664B678291551E600A76154 /* LinkPresentationService.swift */,
-				C61236EE292CADE1002BA97B /* AppGroupsBridge */,
 				C63F1D0328AF31D5000A5C12 /* AnalyticsService */,
+				C61236EE292CADE1002BA97B /* AppGroupsBridge */,
 				C6109E2728E5AB310027D5D8 /* AppLaunchService */,
 				C6109E2328E5AB310027D5D8 /* AuthentificationService */,
 				C6FE49DF285CBAB60058F9D1 /* CoreAppCoordinator */,
@@ -7986,7 +7986,6 @@
 				C61B3E72283E43D000500B6D /* EnterEmailViewPresenter.swift in Sources */,
 				C6ED320D295E8EDE00BC6919 /* NonEmptyArray.swift in Sources */,
 				C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */,
-				C6E041BE2954926E0080F8E3 /* DateFormattingService.swift in Sources */,
 				C63F1CFF28AD099C000A5C12 /* EmptyRootCNavigationController.swift in Sources */,
 				C635195628D048D700FC6AF8 /* SetupWalletsReverseResolutionNavigationManager.swift in Sources */,
 				309BD85F265679EA00CB0C49 /* PaymentConfiguration.swift in Sources */,
@@ -8049,6 +8048,7 @@
 				C63A352628F017220057D34B /* DomainProfileSectionsFactory.swift in Sources */,
 				C6E041AE2954689E0080F8E3 /* DomainsCollectionCarouselItemViewPresenter.swift in Sources */,
 				C66FCCFE2844871A009B9525 /* UserDataServiceProtocol.swift in Sources */,
+				C650AC422983B20D00A398AB /* AppReviewService.swift in Sources */,
 				C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */,
 				C628E36D27FDE0D50044E408 /* UDTitleLabel.swift in Sources */,
 				3018AEC227EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,
@@ -8530,7 +8530,6 @@
 				307F83D6267A339F0070A9A6 /* ApiRequestBuilder.swift in Sources */,
 				C61236E9292C88D2002BA97B /* ImagesStorage.swift in Sources */,
 				C6D6E55F28193A41008C66BB /* DomainsCollectionPresenter.swift in Sources */,
-				C6E041C02954926E0080F8E3 /* DateFormattingService.swift in Sources */,
 				C64513092808089400413C51 /* UserDefaults.swift in Sources */,
 				C6C9959C289D313D00367362 /* CNavigationControllerChild.swift in Sources */,
 				C6DF987D290FBA4C0098733A /* DomainProfileGenericChangeDescription.swift in Sources */,
@@ -8929,6 +8928,7 @@
 				C624D772281B884600F55530 /* ImageLoadingService.swift in Sources */,
 				C692C306282E012900C31393 /* WalletDataValidator.swift in Sources */,
 				C6A2D595284FA0AE00327C47 /* WalletConnectService.swift in Sources */,
+				C650AC442983B20D00A398AB /* AppReviewService.swift in Sources */,
 				C603A53828522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift in Sources */,
 				C628E37F27FEE2D40044E408 /* NSLayoutHelper.swift in Sources */,
 				C691CFAA28C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
@@ -9143,7 +9143,6 @@
 				307F858F267B60300070A9A6 /* ApiRequestBuilder.swift in Sources */,
 				C61236EA292C88D2002BA97B /* ImagesStorage.swift in Sources */,
 				C6D6E56028193A41008C66BB /* DomainsCollectionPresenter.swift in Sources */,
-				C6E041C12954926E0080F8E3 /* DateFormattingService.swift in Sources */,
 				C645130A2808089400413C51 /* UserDefaults.swift in Sources */,
 				C6C9959D289D313D00367362 /* CNavigationControllerChild.swift in Sources */,
 				C6DF987E290FBA4C0098733A /* DomainProfileGenericChangeDescription.swift in Sources */,
@@ -9542,6 +9541,7 @@
 				C624D773281B884600F55530 /* ImageLoadingService.swift in Sources */,
 				C692C307282E012900C31393 /* WalletDataValidator.swift in Sources */,
 				C6A2D596284FA0AE00327C47 /* WalletConnectService.swift in Sources */,
+				C650AC452983B20D00A398AB /* AppReviewService.swift in Sources */,
 				C603A53928522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift in Sources */,
 				C628E38027FEE2D40044E408 /* NSLayoutHelper.swift in Sources */,
 				C691CFAB28C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
@@ -9881,7 +9881,6 @@
 				C61B3E73283E43D000500B6D /* EnterEmailViewPresenter.swift in Sources */,
 				C6ED320E295E8EDE00BC6919 /* NonEmptyArray.swift in Sources */,
 				C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */,
-				C6E041BF2954926E0080F8E3 /* DateFormattingService.swift in Sources */,
 				C63F1D0028AD099C000A5C12 /* EmptyRootCNavigationController.swift in Sources */,
 				C635195728D048D700FC6AF8 /* SetupWalletsReverseResolutionNavigationManager.swift in Sources */,
 				C6456F0C27FF299800A517D5 /* UIView.swift in Sources */,
@@ -9944,6 +9943,7 @@
 				C63A352728F017220057D34B /* DomainProfileSectionsFactory.swift in Sources */,
 				C6E041AF2954689E0080F8E3 /* DomainsCollectionCarouselItemViewPresenter.swift in Sources */,
 				C66FCCFF2844871A009B9525 /* UserDataServiceProtocol.swift in Sources */,
+				C650AC432983B20D00A398AB /* AppReviewService.swift in Sources */,
 				C6F6AF6428A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */,
 				C628E36E27FDE0D50044E408 /* UDTitleLabel.swift in Sources */,
 				3018AEC327EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,

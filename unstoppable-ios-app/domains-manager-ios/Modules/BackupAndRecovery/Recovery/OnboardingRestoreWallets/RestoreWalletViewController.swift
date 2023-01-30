@@ -13,6 +13,7 @@ final class RestoreWalletViewController: BaseViewController, ViewWithDashesProgr
     @IBOutlet private weak var subtitleLabel: UDSubtitleLabel!
     @IBOutlet private weak var selectionTableView: BorderedTableView!
     @IBOutlet private weak var selectionTableViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var alreadyHaveDomainsButton: SecondaryButton!
     
     private var restoreOptions = [RestoreType]()
     var onboardingFlowManager: OnboardingFlowManager!
@@ -99,6 +100,14 @@ extension RestoreWalletViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - Actions
+private extension RestoreWalletViewController {
+    @IBAction func dontHaveDomainButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .dontAlreadyHaveDomain)
+        onboardingFlowManager?.moveToStep(.createWallet)
+    }
+}
+
 // MARK: - Setup methods
 private extension RestoreWalletViewController {
     func setup() {
@@ -137,6 +146,7 @@ private extension RestoreWalletViewController {
         selectionTableViewHeightConstraint.constant = TableViewSelectionCell.Height * CGFloat(restoreOptions.count)
         titleLabel.setTitle(String.Constants.connectWalletTitle.localized())
         subtitleLabel.setSubtitle(String.Constants.connectWalletSubtitle.localized())
+        alreadyHaveDomainsButton.setTitle(String.Constants.connectWalletDontAlreadyHaveDomain.localized(), image: nil)
     }
     
     func setupDashesProgressView() {

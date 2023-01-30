@@ -30,26 +30,26 @@ extension UserDefaults {
     @UserDefaultsCodableValue(key: .onboardingData) static var onboardingData: OnboardingData?
     @UserDefaultsCodableValue(key: .onboardingNavigationInfo) static var onboardingNavigationInfo: OnboardingNavigationController.OnboardingNavigationInfo?
     @UserDefaultsCodableValue(key: .onboardingDomainsPurchasedDetails) static var onboardingDomainsPurchasedDetails: DomainsPurchasedDetails?
-    @UserDefaultsValue(key: .homeScreenSettingsButtonPressed, defaultValue: false) static var homeScreenSettingsButtonPressed: Bool
-    @UserDefaultsValue(key: .buildVersion, defaultValue: "") static var buildVersion: String
+    @UserDefaultsValue(key: UserDefaultsKey.homeScreenSettingsButtonPressed, defaultValue: false) static var homeScreenSettingsButtonPressed: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.buildVersion, defaultValue: "") static var buildVersion: String
     @UserDefaultsRawRepresentableValue(key: .appearanceStyle, defaultValue: .unspecified) static var appearanceStyle: UIUserInterfaceStyle
     @UserDefaultsRawRepresentableValue(key: .selectedBlockchainType, defaultValue: .Ethereum) static var selectedBlockchainType: BlockchainType
-    @UserDefaultsValue(key: .wcFriendlyReminderShown, defaultValue: false) static var wcFriendlyReminderShown: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.wcFriendlyReminderShown, defaultValue: false) static var wcFriendlyReminderShown: Bool
     @UserDefaultsOptionalValue(key: .apnsToken) static var apnsToken: String?
-    @UserDefaultsValue(key: .setupRRPromptCounter, defaultValue: 0) static var setupRRPromptCounter: Int
+    @UserDefaultsValue(key: UserDefaultsKey.setupRRPromptCounter, defaultValue: 0) static var setupRRPromptCounter: Int
     @UserDefaultsOptionalValue(key: .preferableDomainNameForRR) static var preferableDomainNameForRR: String?
-    @UserDefaultsValue(key: .didEverUpdateDomainProfile, defaultValue: false) static var didEverUpdateDomainProfile: Bool
-    @UserDefaultsValue(key: .didAskToShowcaseProfileAfterFirstUpdate, defaultValue: false) static var didAskToShowcaseProfileAfterFirstUpdate: Bool
-    @UserDefaultsValue(key: .didShowDomainProfileInfoTutorial, defaultValue: false) static var didShowDomainProfileInfoTutorial: Bool
-    @UserDefaultsValue(key: .didShowSwipeDomainCardTutorial, defaultValue: false) static var didShowSwipeDomainCardTutorial: Bool
-    @UserDefaultsValue(key: .isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didEverUpdateDomainProfile, defaultValue: false) static var didEverUpdateDomainProfile: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didAskToShowcaseProfileAfterFirstUpdate, defaultValue: false) static var didAskToShowcaseProfileAfterFirstUpdate: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didShowDomainProfileInfoTutorial, defaultValue: false) static var didShowDomainProfileInfoTutorial: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didShowSwipeDomainCardTutorial, defaultValue: false) static var didShowSwipeDomainCardTutorial: Bool
 }
 
 // MARK: - Property Wrappers
 @propertyWrapper
-struct UserDefaultsValue<Value> {
+struct UserDefaultsValue<Key: RawRepresentable, Value> where Key.RawValue == String {
     
-    let key: UserDefaultsKey
+    let key: Key
     let defaultValue: Value
     
     var wrappedValue: Value {

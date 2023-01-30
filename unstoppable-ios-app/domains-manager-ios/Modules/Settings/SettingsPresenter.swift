@@ -50,6 +50,8 @@ extension SettingsPresenter: SettingsPresenterProtocol {
                     showSelectAppearanceStyle(selectedStyle: selectedAppearance)
                 case .testnet(let isOn):
                     setTestnet(on: isOn)
+                case .rateUs:
+                    AppReviewService.shared.requestToWriteReviewInAppStore()
                 case .learn:
                     view?.openLink(.learn)
                 case .twitter:

@@ -36,6 +36,7 @@ extension Analytics {
         case didOpenDeepLink
         case didSwipeNavigationBack
         case didSelectPhoto
+        case showRateAppRequest
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
@@ -171,6 +172,8 @@ extension Analytics {
         case navigationBack
         case setReverseResolution
         case hide, showAll
+        case dontAlreadyHaveDomain
+        case createVault
         
         // Backup type
         case iCloud, manually
@@ -206,7 +209,7 @@ extension Analytics {
         case editProfile, manageDomain, shareLink, saveAsImage
         
         // Settings
-        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen
+        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs
         
         // Security settings
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen

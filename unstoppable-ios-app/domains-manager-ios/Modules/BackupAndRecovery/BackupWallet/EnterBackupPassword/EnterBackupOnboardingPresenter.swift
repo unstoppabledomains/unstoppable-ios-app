@@ -82,7 +82,10 @@ extension EnterBackupOnboardingPresenter: OnboardingDataHandling {
 private extension EnterBackupOnboardingPresenter {
     func didRestoreWallets(_ wallets: [UDWallet]) {
         Vibration.success.vibrate()
-        onboardingFlowManager?.modifyOnboardingData() { $0.wallets = wallets }
+        onboardingFlowManager?.modifyOnboardingData() {
+            $0.wallets = wallets
+            $0.didRestoreWalletsFromBackUp = true
+        }
         if case .sameUserWithoutWallets = onboardingFlowManager?.onboardingFlow {
             self.onboardingFlowManager?.didFinishOnboarding()
         } else {
