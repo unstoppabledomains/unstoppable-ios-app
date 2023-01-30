@@ -9,6 +9,7 @@ import UIKit
 
 protocol CreateWalletPresenterProtocol: BasePresenterProtocol {
     var analyticsName: Analytics.ViewName { get }
+    var canMoveBack: Bool { get }
     
     func createVaultButtonPressed()
 }
@@ -16,10 +17,12 @@ protocol CreateWalletPresenterProtocol: BasePresenterProtocol {
 class BaseCreateWalletPresenter {
     
     private let udWalletsService: UDWalletsServiceProtocol
+    private var isCreatingWallet: Bool = false
     var wallet: UDWallet?
     weak var view: CreateWalletViewControllerProtocol?
     var analyticsName: Analytics.ViewName { .unspecified }
-    
+    var canMoveBack: Bool { !isCreatingWallet }
+
     init(view: CreateWalletViewControllerProtocol,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
@@ -43,8 +46,11 @@ extension BaseCreateWalletPresenter: CreateWalletPresenterProtocol {
 // MARK: - Common methods
 extension BaseCreateWalletPresenter {
     func createUDWallet() {
+        guard !isCreatingWallet else { return }
+        
         Task {
             await view?.setNavigationGestureEnabled(false)
+            isCreatingWallet = true
             do {
                 let wallet = try await udWalletsService.createNewUDWallet()
                 await MainActor.run {
@@ -60,6 +66,7 @@ extension BaseCreateWalletPresenter {
                                           body: String.Constants.failedToCreateNewWallet.localized(error.localizedDescription))
                 }
             }
+            isCreatingWallet = false
         }
     }
 }

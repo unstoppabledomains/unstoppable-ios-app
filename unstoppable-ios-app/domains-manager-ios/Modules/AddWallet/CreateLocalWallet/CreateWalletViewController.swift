@@ -52,6 +52,10 @@ final class CreateWalletViewController: BaseViewController {
             didAppear = true
         }
     }
+    
+    override func shouldPopOnBackButton() -> Bool {
+        presenter.canMoveBack
+    }
 }
 
 // MARK: - CreateWalletViewControllerProtocol
