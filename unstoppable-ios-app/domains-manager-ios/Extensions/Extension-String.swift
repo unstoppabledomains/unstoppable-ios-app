@@ -758,7 +758,8 @@ extension String {
         static let domainProfileAccessInfoTitle = "DOMAIN_PROFILE_ACCESS_INFO_TITLE"
         static let domainProfileAccessInfoDescription = "DOMAIN_PROFILE_ACCESS_INFO_DESCRIPTION"
         static let profileSocialsEmptyMessage = "PROFILE_SOCIALS_EMPTY_MESSAGE"
-        
+        static let profileRefreshingBadgesTitle = "PROFILE_REFRESHING_BADGES_TITLE"
+
         // Legacy tokens
         static let legacy = "LEGACY"
         static let multiChain = "MULTI_CHAIN"

@@ -18,6 +18,7 @@ final class DomainProfileBadgesSection {
     private var isSectionExpanded = false
     private let sectionAnalyticName: String = "badges"
     private var isRefreshingBadges = false
+    private var refreshBadgesTimer: Timer?
 
     init(sectionData: SectionData,
          state: DomainProfileViewController.State,
@@ -122,12 +123,14 @@ private extension DomainProfileBadgesSection {
                        isButtonEnabled: Bool) -> DomainProfileSectionHeader.HeaderDescription {
         var headerButton: DomainProfileSectionHeader.HeaderButton? = nil
         if isButtonVisible {
-            headerButton = .refresh(isEnabled: isButtonEnabled,
+            let isEnabled = isRefreshingBadges ? false : isButtonEnabled
+            headerButton = .refresh(isEnabled: isEnabled,
                                     isSpinning: isRefreshingBadges,
+                                    refreshingTitle: String.Constants.profileRefreshingBadgesTitle.localized(),
                                     callback: { [weak self] in
                 self?.logProfileSectionButtonPressedAnalyticEvent(button: .refresh,
                                                                   parameters: [:])
-                self?.refreshBadgesButtonPressed()
+                self?.refreshDomainBadges()
             })
         }
         
@@ -166,26 +169,47 @@ private extension DomainProfileBadgesSection {
         }
     }
     
-    func refreshBadgesButtonPressed() {
+    func refreshDomainBadges() {
         Task {
+            await stopRefreshBadgesTimer()
             guard let controller else { return }
             let domain = await controller.generalData.domain
             
-            self.isRefreshingBadges = true
-            refreshSectionHeader()
+            updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: true)
             do {
                 let refreshInfo = try await NetworkService().refreshDomainBadges(for: domain)
-                self.isRefreshingBadges = refreshInfo.refresh
-                refreshSectionHeader()
+                updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: refreshInfo.refresh)
+                if refreshInfo.refresh {
+                    await startRefreshBadgesTimer()
+                }
             } catch {
                 await appContext.toastMessageService.showToast(.failedToRefreshBadges, isSticky: false)
+                updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: false)
             }
         }
     }
     
-    func refreshSectionHeader() {
-        sectionId = .init()
-        controller?.sectionDidUpdate(animated: false)
+    func updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: Bool) {
+        if self.isRefreshingBadges != isRefreshingBadges {
+            self.isRefreshingBadges = isRefreshingBadges
+            sectionId = .init()
+            controller?.sectionDidUpdate(animated: false)
+        }
+    }
+    
+    @MainActor
+    func startRefreshBadgesTimer() {
+        refreshBadgesTimer = Timer.scheduledTimer(withTimeInterval: Constants.refreshDomainBadgesInterval,
+                                                  repeats: true,
+                                                  block: { [weak self] _ in
+            self?.refreshDomainBadges()
+        })
+    }
+    
+    @MainActor
+    func stopRefreshBadgesTimer() {
+        refreshBadgesTimer?.invalidate()
+        refreshBadgesTimer = nil
     }
 }
 

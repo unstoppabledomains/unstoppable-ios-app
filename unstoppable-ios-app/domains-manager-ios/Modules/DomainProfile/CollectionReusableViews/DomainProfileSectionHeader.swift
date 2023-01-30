@@ -129,8 +129,15 @@ extension DomainProfileSectionHeader {
             HeaderButton(title: String.Constants.add.localized(), icon: .plusIconSmall, isEnabled: isEnabled, action: callback)
         }
         
-        static func refresh(isEnabled: Bool, isSpinning: Bool, callback: @escaping EmptyCallback) -> HeaderButton {
-            HeaderButton(title: String.Constants.refresh.localized(), icon: .refreshArrow20, isEnabled: isEnabled, action: callback) { imageView in
+        static func refresh(isEnabled: Bool,
+                            isSpinning: Bool,
+                            refreshingTitle: String,
+                            callback: @escaping EmptyCallback) -> HeaderButton {
+            let title = isSpinning ? refreshingTitle : String.Constants.refresh.localized()
+            return HeaderButton(title: title,
+                                icon: .refreshArrow20,
+                                isEnabled: isEnabled,
+                                action: callback) { imageView in
                 if isSpinning {
                     imageView.runUpdatingRecordsAnimation(clockwise: true)
                 }
