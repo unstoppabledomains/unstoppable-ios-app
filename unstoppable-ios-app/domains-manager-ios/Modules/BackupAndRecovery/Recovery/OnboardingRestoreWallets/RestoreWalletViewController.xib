@@ -70,6 +70,9 @@
                     </constraints>
                     <state key="normal" title="Button"/>
                     <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                    <connections>
+                        <action selector="dontHaveDomainButtonPressed" destination="-1" eventType="touchUpInside" id="emh-PZ-6FL"/>
+                    </connections>
                 </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="VRv-qj-zYi"/>

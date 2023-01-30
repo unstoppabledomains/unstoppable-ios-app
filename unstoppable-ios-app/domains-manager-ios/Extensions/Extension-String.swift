@@ -219,6 +219,8 @@ extension String {
         static let tutorialScreen3Description = "TUTORIAL_SCREEN_3_DESCRIPTION"
         
         static let creatingWallet = "CREATING_WALLET"
+        static let createNewVaultTitle = "CREATE_NEW_VAULT_TITLE"
+        static let createNewVaultSubtitle = "CREATE_NEW_VAULT_SUBTITLE"
         
         static let useFaceID = "USE_FACE_ID"
         static let useTouchID = "USE_TOUCH_ID"

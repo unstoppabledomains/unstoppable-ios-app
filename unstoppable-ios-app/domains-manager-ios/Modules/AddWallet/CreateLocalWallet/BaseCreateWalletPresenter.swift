@@ -9,6 +9,8 @@ import UIKit
 
 protocol CreateWalletPresenterProtocol: BasePresenterProtocol {
     var analyticsName: Analytics.ViewName { get }
+    
+    func createVaultButtonPressed()
 }
 
 class BaseCreateWalletPresenter {
@@ -25,36 +27,37 @@ class BaseCreateWalletPresenter {
     }
     
     func walletCreated(_ wallet: UDWallet) {  }
+    @MainActor func viewDidLoad() { }
+    @MainActor func viewDidAppear() { }
 }
 
 // MARK: - CreateWalletPresenterProtocol
 extension BaseCreateWalletPresenter: CreateWalletPresenterProtocol {
-    func viewDidLoad() {
+    @MainActor
+    func createVaultButtonPressed() {
         view?.setActivityIndicator(active: true)
-    }
-    
-    func viewDidAppear() {
-        if wallet == nil {
-            createUDWallet()
-        }
+        createUDWallet()
     }
 }
 
-// MARK: - Private methods
-private extension BaseCreateWalletPresenter {
+// MARK: - Common methods
+extension BaseCreateWalletPresenter {
     func createUDWallet() {
         Task {
+            await view?.setNavigationGestureEnabled(false)
             do {
                 let wallet = try await udWalletsService.createNewUDWallet()
                 await MainActor.run {
+                    view?.setNavigationGestureEnabled(true)
                     Vibration.success.vibrate()
                     walletCreated(wallet)
                 }
             } catch {
                 await MainActor.run {
                     Debugger.printFailure("Failed to create UD wallet: \(error)", critical: true)
+                    view?.setNavigationGestureEnabled(true)
                     view?.showSimpleAlert(title: String.Constants.creationFailed.localized(),
-                                               body: String.Constants.failedToCreateNewWallet.localized(error.localizedDescription))
+                                          body: String.Constants.failedToCreateNewWallet.localized(error.localizedDescription))
                 }
             }
         }

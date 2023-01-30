@@ -32,9 +32,6 @@ extension TutorialViewPresenter: TutorialViewPresenterProtocol {
     func didPressCreateNewWalletButton() {
         onboardingFlowManager?.setNewUserOnboardingSubFlow(.restore)
         onboardingFlowManager?.moveToStep(.restoreWallet)
-        
-//        onboardingFlowManager?.setNewUserOnboardingSubFlow(.create)
-//        onboardingFlowManager?.moveToStep(.createWallet)
     }
     
     func didPressIHaveWalletButton() {

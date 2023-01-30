@@ -193,6 +193,8 @@ To start this process, verify your email address to load the set of domains you 
 
 // Creating wallet
 "CREATING_WALLET" = "Creating vault...";
+"CREATE_NEW_VAULT_TITLE" = "Create new vault";
+"CREATE_NEW_VAULT_SUBTITLE" = "A domain vault is a cryptocurrency address used to store your Web3 domains. Once setup, you’ll need to import your domains to manage them on the Unstoppable app.";
 
 // Protect screen
 "USE_FACE_ID" = "Use Face ID";
