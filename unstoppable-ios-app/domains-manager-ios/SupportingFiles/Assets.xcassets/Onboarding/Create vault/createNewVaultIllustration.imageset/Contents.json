@@ -3,6 +3,16 @@
     {
       "filename" : "createNewVaultIllustration.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "createNewVaultIllustrationDark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {
