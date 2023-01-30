@@ -207,6 +207,7 @@ extension String {
         static let username = "USERNAME"
         static let addN = "ADD_N"
         static let rateUs = "RATE_US"
+        static let both = "BOTH"
 
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

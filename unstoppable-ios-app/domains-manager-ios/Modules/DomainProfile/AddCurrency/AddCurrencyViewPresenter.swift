@@ -12,7 +12,7 @@ protocol AddCurrencyViewPresenterProtocol: BasePresenterProtocol {
     func didSearchWith(key: String)
 }
 
-typealias AddCurrencyCallback = (GroupedCoinRecord)->()
+typealias AddCurrencyCallback = ([GroupedCoinRecord])->()
 
 final class AddCurrencyViewPresenter {
     
@@ -56,7 +56,7 @@ extension AddCurrencyViewPresenter: AddCurrencyViewPresenterProtocol {
             if let deprecatedRecord = deprecatedRecordsMap[currency.coin.ticker] {
                 showChooseCoinPullUp(for: currency, deprecatedRecord: deprecatedRecord)
             } else {
-                finishWith(coinRecord: currency)
+                finishWith(coinRecords: [currency])
             }
             
         case .emptyState:
@@ -149,18 +149,44 @@ private extension AddCurrencyViewPresenter {
             guard let view else { return }
             
             do {
-                let isNotLegacySelected = try await appContext.pullUpViewService.showChooseCoinVersionPullUp(for: coinRecord.coin, in: view)
+                let selectionResult = try await appContext.pullUpViewService.showChooseCoinVersionPullUp(for: coinRecord.coin, in: view)
                 
-                let selectedRecord = isNotLegacySelected ? coinRecord : deprecatedRecord
-                await finishWith(coinRecord: selectedRecord)
+                switch selectionResult {
+                case .both:
+                    await finishWith(coinRecords: [coinRecord, deprecatedRecord])
+                case .multichain:
+                    await finishWith(coinRecords: [coinRecord])
+                case .legacy:
+                    await finishWith(coinRecords: [deprecatedRecord])
+                }
             }
         }
     }
     
     @MainActor
-    func finishWith(coinRecord: GroupedCoinRecord) {
+    func finishWith(coinRecords: [GroupedCoinRecord]) {
         view?.presentingViewController?.dismiss(animated: true, completion: { [weak self] in
-            self?.addCurrencyCallback(coinRecord)
+            self?.addCurrencyCallback(coinRecords)
         })
+    }
+}
+
+enum CoinVersionSelectionResult: Int, CaseIterable {
+    
+    static let preselected: CoinVersionSelectionResult = .both
+    
+    case multichain
+    case legacy
+    case both
+    
+    var title: String {
+        switch self {
+        case .both:
+            return String.Constants.both.localized()
+        case .multichain:
+            return String.Constants.multiChain.localized()
+        case .legacy:
+            return String.Constants.legacy.localized()
+        }
     }
 }

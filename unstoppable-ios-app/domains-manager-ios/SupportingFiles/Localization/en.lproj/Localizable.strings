@@ -176,6 +176,7 @@ To start this process, verify your email address to load the set of domains you 
 "USERNAME" = "Username";
 "ADD_N" = "Add %@";
 "RATE_US" = "Rate us";
+"BOTH" = "Both";
 
 /* ONBOARDING */
 // Tutorial screens
