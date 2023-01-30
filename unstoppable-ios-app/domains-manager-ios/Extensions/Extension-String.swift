@@ -262,6 +262,7 @@ extension String {
         static let passwordRuleNumber = "PASSWORD_RULE_NUMBER"
         static let passwordRuleLetter = "PASSWORD_RULE_LETTER"
         static let passwordRuleRange = "PASSWORD_RULE_RANGE"
+        static let passwordRuleMatch = "PASSWORD_RULE_MATCH"
         static let createPasswordHelpTitle = "CREATE_PASSWORD_HELP_TITLE"
         static let createPasswordHelpText = "CREATE_PASSWORD_HELP_TEXT"
         static let createPasswordHelpTextHighlighted = "CREATE_PASSWORD_HELP_TEXT_HIGHLIGHTED"
