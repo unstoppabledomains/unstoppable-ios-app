@@ -9,7 +9,6 @@ import Foundation
 
 protocol TutorialViewPresenterProtocol: BasePresenterProtocol {
     func didPressCreateNewWalletButton()
-    func didPressIHaveWalletButton()
     func didPressBuyDomain()
 }
 
@@ -27,12 +26,15 @@ final class TutorialViewPresenter {
 // MARK: - TutorialViewPresenterProtocol
 extension TutorialViewPresenter: TutorialViewPresenterProtocol {
     func viewDidLoad() {
-        view?.setIHaveWalletsButton(title: String.Constants.alreadyMintedDomain.localized())
+        
     }
     
     func didPressCreateNewWalletButton() {
-        onboardingFlowManager?.setNewUserOnboardingSubFlow(.create)
-        onboardingFlowManager?.moveToStep(.createWallet)
+        onboardingFlowManager?.setNewUserOnboardingSubFlow(.restore)
+        onboardingFlowManager?.moveToStep(.restoreWallet)
+        
+//        onboardingFlowManager?.setNewUserOnboardingSubFlow(.create)
+//        onboardingFlowManager?.moveToStep(.createWallet)
     }
     
     func didPressIHaveWalletButton() {
