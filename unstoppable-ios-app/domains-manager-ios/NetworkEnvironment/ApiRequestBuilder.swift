@@ -581,6 +581,15 @@ extension Endpoint {
         )
     }
     
+    static func refreshDomainBadges(for domain: DomainItem) -> Endpoint {
+        return Endpoint(
+            host: NetworkConfig.migratedEndpoint,
+            path: "/api/domains/\(domain.name)/sync_badges",
+            queryItems: [],
+            body: ""
+        )
+    }
+    
     static let yearInSecs: TimeInterval = 60 * 60 * 24 * 356
     static func getGeneratedMessageToRetrieve(for domain: DomainItem) -> Endpoint {
         // https://profile.ud-staging.com/api/user/aaron.x/signature?expiry=1765522015090

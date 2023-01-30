@@ -293,6 +293,12 @@ struct BadgesInfo: Codable, Hashable {
     let badges: [BadgeInfo]
 }
 
+struct RefreshBadgesResponse: Codable {
+    let ok: Bool
+    let refresh: Bool
+    let next: Date
+}
+
 struct GeneratedMessage: Decodable {
     let message: String
     let headers: SignatureComponentHeaders
@@ -343,6 +349,18 @@ extension NetworkService {
             throw NetworkLayerError.failedParseProfileData
         }
         return info
+    }
+    
+    public func refreshDomainBadges(for domain: DomainItem) async throws -> RefreshBadgesResponse {
+        guard let url = Endpoint.refreshDomainBadges(for: domain).url else {
+            throw NetworkLayerError.creatingURLFailed
+        }
+        let data = try await fetchData(for: url, method: .get)
+        guard let response = RefreshBadgesResponse.objectFromData(data,
+                                                                  dateDecodingStrategy: .iso8601WithOptions([.withFractionalSeconds])) else {
+            throw NetworkLayerError.failedParseProfileData
+        }
+        return response
     }
     
     public func fetchUserDomainProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedUserDomainProfile {
