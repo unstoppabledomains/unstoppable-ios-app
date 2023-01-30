@@ -21,6 +21,20 @@ final class CreateLocalWalletPresenter: BaseCreateWalletPresenter {
                    udWalletsService: udWalletsService)
     }
     
+    @MainActor
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view?.setActivityIndicator(active: true)
+        view?.setStyle(.progressIndicator)
+    }
+    
+    override func viewDidAppear() {
+        if wallet == nil {
+            createUDWallet()
+        }
+    }
+    
     override func walletCreated(_ wallet: UDWallet) {
         addWalletFlowManager?.wallet = wallet
         self.addWalletFlowManager?.moveToStep(.backupWallet)

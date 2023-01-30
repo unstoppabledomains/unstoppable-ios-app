@@ -175,6 +175,7 @@ To start this process, verify your email address to load the set of domains you 
 "COPY_N" = "Copy %@";
 "USERNAME" = "Username";
 "ADD_N" = "Add %@";
+"RATE_US" = "Rate us";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -193,6 +194,8 @@ To start this process, verify your email address to load the set of domains you 
 
 // Creating wallet
 "CREATING_WALLET" = "Creating vault...";
+"CREATE_NEW_VAULT_TITLE" = "Create new vault";
+"CREATE_NEW_VAULT_SUBTITLE" = "A domain vault is a cryptocurrency address used to store your Web3 domains. Once setup, you’ll need to import your domains to manage them on the Unstoppable app.";
 
 // Protect screen
 "USE_FACE_ID" = "Use Face ID";
@@ -268,8 +271,8 @@ To start this process, verify your email address to load the set of domains you 
 "PRIVACY_POLICY" = "Privacy policy";
 
 // Connect wallet
-"CONNECT_WALLET_TITLE" = "Connect";
-"CONNECT_WALLET_SUBTITLE" = "Choose an option to manage your domains.";
+"CONNECT_WALLET_TITLE" = "Import your domains";
+"CONNECT_WALLET_SUBTITLE" = "Choose a way to import your domains.";
 "CONNECT_WALLET_ICLOUD" = "iCloud";
 "CONNECT_WALLET_ICLOUD_HINT" = "You have %@ backed up";
 "CONNECT_WALLET_RECOVERY" = "Recovery phrase or private key";
@@ -278,6 +281,7 @@ To start this process, verify your email address to load the set of domains you 
 "CONNECT_WALLET_WATCH_HINT" = "Unstoppable Domain, Ethereum address";
 "CONNECT_WALLET_EXTERNAL" = "External wallet";
 "CONNECT_WALLET_EXTERNAL_HINT" = "MetaMask, Rainbow, etc.";
+"CONNECT_WALLET_DONT_ALREADY_HAVE_DOMAIN" = "Don’t already have a domain?";
 
 // Add wallet
 "ADD_WALLET_TITLE" = "Add wallet";

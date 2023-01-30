@@ -348,6 +348,7 @@ extension DomainProfileViewPresenter: DomainProfileSectionsController {
             do {
                 try await saveProfile(.init(attributes: [attribute],
                                             domainSocialAccounts: []))
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
                 resultCallback(.success(Void()))
             } catch {
                 await MainActor.run {
@@ -495,7 +496,8 @@ private extension DomainProfileViewPresenter {
                 Task.detached { [weak self] in
                     await self?.dataAggregatorService.aggregateData()
                 }
-                UserDefaults.didEverUpdateDomainProfile = true 
+                UserDefaults.didEverUpdateDomainProfile = true
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
             } else if updateErrors.count == requestsWithChanges.count {
                 // All requests are failed
                 await dataHolder.didFailToUpdateProfile()
