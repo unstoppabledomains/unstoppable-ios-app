@@ -276,7 +276,6 @@ extension Analytics {
         case selectedImageBad, selectedImageTooLarge
         case askToNotifyWhenRecordsUpdated, willNotifyWhenRecordsUpdated
         case failedToFetchProfileData, updateDomainProfileFailed, tryUpdateProfileLater, updateDomainProfileSomeChangesFailed
-        case refreshBadgesComingSoon
         case showcaseYourProfile
         case connectedAppNetworksInfo, connectedAppDomainInfo
         case chooseCoinVersion

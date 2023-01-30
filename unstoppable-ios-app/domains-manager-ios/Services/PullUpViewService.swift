@@ -84,7 +84,6 @@ protocol PullUpViewServiceProtocol {
     func showTryUpdateDomainProfileLaterPullUp(in viewController: UIViewController) async throws
     func showUpdateDomainProfileSomeChangesFailedPullUp(in viewController: UIViewController,
                                                         changes: [DomainProfileSectionUIChangeFailedItem]) async throws
-    func showRefreshBadgesComingSoonPullUp(in viewController: UIViewController)
     func showShowcaseYourProfilePullUp(for domain: DomainItem,
                                        in viewController: UIViewController) async throws
     func showDomainProfileAccessInfoPullUp(in viewController: UIViewController)
@@ -1205,19 +1204,6 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             
             showOrUpdate(in: viewController, pullUp: .updateDomainProfileSomeChangesFailed, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
-    }
-    
-    func showRefreshBadgesComingSoonPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 304
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.comingSoon.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .refreshArrow24,
-                                                                                 size: .small),
-                                                                     subtitle: .label(.text(String.Constants.profileBadgesComingSoonDescription.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        presentPullUpView(in: viewController, pullUp: .refreshBadgesComingSoon, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
     
     func showShowcaseYourProfilePullUp(for domain: DomainItem,

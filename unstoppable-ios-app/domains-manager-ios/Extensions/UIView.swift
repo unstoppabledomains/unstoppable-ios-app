@@ -214,9 +214,9 @@ extension UIView {
 
 // MARK: - Animations
 extension UIView {
-    func runUpdatingRecordsAnimation() {
+    func runUpdatingRecordsAnimation(clockwise: Bool = false) {
         layer.removeAllAnimations()
-        let rotationAnimation = CABasicAnimation.infiniteRotateAnimation(duration: 5)
+        let rotationAnimation = CABasicAnimation.infiniteRotateAnimation(duration: 5, clockwise: clockwise)
         layer.add(rotationAnimation, forKey: "updatingRecordsAnimation")
     }
 }

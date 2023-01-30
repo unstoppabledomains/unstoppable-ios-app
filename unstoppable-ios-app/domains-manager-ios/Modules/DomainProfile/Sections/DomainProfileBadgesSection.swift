@@ -14,8 +14,10 @@ final class DomainProfileBadgesSection {
     private var badgesData: SectionData
     var state: DomainProfileViewController.State
     private let id = UUID()
+    private var sectionId = UUID()
     private var isSectionExpanded = false
     private let sectionAnalyticName: String = "badges"
+    private var isRefreshingBadges = false
 
     init(sectionData: SectionData,
          state: DomainProfileViewController.State,
@@ -121,6 +123,7 @@ private extension DomainProfileBadgesSection {
         var headerButton: DomainProfileSectionHeader.HeaderButton? = nil
         if isButtonVisible {
             headerButton = .refresh(isEnabled: isButtonEnabled,
+                                    isSpinning: isRefreshingBadges,
                                     callback: { [weak self] in
                 self?.logProfileSectionButtonPressedAnalyticEvent(button: .refresh,
                                                                   parameters: [:])
@@ -135,7 +138,7 @@ private extension DomainProfileBadgesSection {
                      secondaryTitle: secondaryTitle,
                      button: headerButton,
                      isLoading: isLoading,
-                     id: id)
+                     id: sectionId)
     }
     
     @MainActor
@@ -164,11 +167,25 @@ private extension DomainProfileBadgesSection {
     }
     
     func refreshBadgesButtonPressed() {
-        Task { @MainActor in
-            guard let view = controller?.viewController else { return }
+        Task {
+            guard let controller else { return }
+            let domain = await controller.generalData.domain
             
-            appContext.pullUpViewService.showRefreshBadgesComingSoonPullUp(in: view)
+            self.isRefreshingBadges = true
+            refreshSectionHeader()
+            do {
+                let refreshInfo = try await NetworkService().refreshDomainBadges(for: domain)
+                self.isRefreshingBadges = refreshInfo.refresh
+                refreshSectionHeader()
+            } catch {
+                await appContext.toastMessageService.showToast(.failedToRefreshBadges, isSticky: false)
+            }
         }
+    }
+    
+    func refreshSectionHeader() {
+        sectionId = .init()
+        controller?.sectionDidUpdate(animated: false)
     }
 }
 
@@ -180,7 +197,8 @@ extension BadgesInfo {
                        .init(code: "4", name: "NFT Domain", logo: "", description: "Holder"),
                        .init(code: "5", name: "NFT Domain", logo: "", description: "Holder"),
                        .init(code: "6", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "7", name: "NFT Domain", logo: "", description: "Holder")])
+                       .init(code: "7", name: "NFT Domain", logo: "", description: "Holder")],
+              refresh: .init(last: Date(), next: Date()))
     }
 }
 

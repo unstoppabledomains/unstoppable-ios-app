@@ -87,6 +87,10 @@ extension Encodable {
 }
 
 extension JSONDecoder.DateDecodingStrategy {
+    static func badgesDateDecodingStrategy() -> JSONDecoder.DateDecodingStrategy {
+        .iso8601WithOptions([.withFractionalSeconds])
+    }
+    
     static func iso8601WithOptions(_ options: ISO8601DateFormatter.Options) -> JSONDecoder.DateDecodingStrategy {
         .custom { decoder in
             let formatter = ISO8601DateFormatter()
