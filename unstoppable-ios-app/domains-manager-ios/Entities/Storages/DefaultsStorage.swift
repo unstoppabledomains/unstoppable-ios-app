@@ -24,15 +24,8 @@ class DefaultsStorage<T: Equatable> where T: Codable {
     
     func retrieveAll() -> [T] {
         var result: [T] = []
-        if Thread.isMainThread {
-            DispatchQueue.global().sync {
-                q.sync {
-                    result = getAllFromDefaults()
-                }
-            }
-        } else {
+        q.sync {
             result = getAllFromDefaults()
-            return result
         }
         return result
     }
