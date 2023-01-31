@@ -215,7 +215,7 @@ private extension ExternalEventsService {
                 throw EventsHandlingError.cantFindConnectedApp
             }
             
-//            walletConnectService.expectConnection(from: connectedApp)
+            walletConnectServiceV2.expectConnection(from: connectedApp)
             return .showPullUpLoading
         }
     }
