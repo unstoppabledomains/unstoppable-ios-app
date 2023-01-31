@@ -126,9 +126,6 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceListen
         guard app?.domainName == self.domain.name else { return }
         
         Task {
-            // TODO: - Fix race condition
-            /// Issue: didConnect called before app is in the storage.
-            try? await Task.sleep(seconds: 0.1)
             await showDomainDataWithActions(animated: true)
         }
     }
