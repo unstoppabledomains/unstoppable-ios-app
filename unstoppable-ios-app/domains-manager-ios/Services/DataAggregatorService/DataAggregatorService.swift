@@ -254,13 +254,14 @@ extension DataAggregatorService: UDWalletsServiceListener {
                 if wallets.count != walletsCount {
                     await reloadAndAggregateData()
                 }
-            case .reverseResolutionDomainChanged(let domainName):
+            case .reverseResolutionDomainChanged(let domainName, let txIds):
                 var transactions = transactionsService.getCachedTransactionsFor(domainNames: [domainName])
-                let newTransaction = TransactionItem(transactionHash: UUID().uuidString,
-                                                     domainName: domainName,
-                                                     isPending: true,
-                                                     operation: .setReverseResolution)
-                transactions.append(newTransaction)
+                let newTransactions = txIds.map({TransactionItem(id: $0,
+                                                                 transactionHash: nil,
+                                                                 domainName: domainName,
+                                                                 isPending: true,
+                                                                 operation: .setReverseResolution)})
+                transactions.append(contentsOf: newTransactions)
                 transactionsService.cacheTransactions(transactions)
                 
                 let walletsInfo = await getWalletsWithInfo()
@@ -269,6 +270,7 @@ extension DataAggregatorService: UDWalletsServiceListener {
                 await dataHolder.setReverseResolutionInProgress(for: domainName)
                 let domains = await getDomains()
                 notifyListenersWith(result: .success(.domainsUpdated(domains)))
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
             }
         }
     }

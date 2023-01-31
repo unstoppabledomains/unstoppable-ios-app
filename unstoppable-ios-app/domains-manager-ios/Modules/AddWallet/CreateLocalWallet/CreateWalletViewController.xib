@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -13,7 +13,12 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CreateWalletViewController" customModule="domains_manager_ios" customModuleProvider="target">
             <connections>
                 <outlet property="activityIndicator" destination="gPR-Nr-FI2" id="vPk-8d-WB0"/>
+                <outlet property="createVaultButton" destination="uXI-sU-KPx" id="aY8-w1-yWF"/>
                 <outlet property="creatingWalletLabel" destination="7nR-1p-JDC" id="RWo-YA-TGi"/>
+                <outlet property="fullUIStateStackView" destination="9zE-Se-jTR" id="8Wq-qb-4Ud"/>
+                <outlet property="loadingStateStackView" destination="il7-UJ-0Lp" id="h89-d6-TaU"/>
+                <outlet property="subtitleLabel" destination="sJp-LS-Mk9" id="OTY-fN-XYE"/>
+                <outlet property="titleLabel" destination="h4E-En-4bJ" id="q8q-s2-7Ft"/>
                 <outlet property="view" destination="BRB-Af-XMu" id="2hu-R5-Eg2"/>
             </connections>
         </placeholder>
@@ -36,17 +41,63 @@
                         </label>
                     </subviews>
                 </stackView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uXI-sU-KPx" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="800" width="382" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="vch-Ap-0Gg"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                    <connections>
+                        <action selector="createVaultButtonPressed:" destination="-1" eventType="touchUpInside" id="hoa-L6-v1y"/>
+                    </connections>
+                </button>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="9zE-Se-jTR">
+                    <rect key="frame" x="16" y="313.5" width="382" height="269"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="createNewVaultIllustration" translatesAutoresizingMaskIntoConstraints="NO" id="xMo-iT-ioq">
+                            <rect key="frame" x="12" y="0.0" width="358" height="188"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="xMo-iT-ioq" secondAttribute="height" multiplier="358/188" id="r7u-yP-ZLs"/>
+                            </constraints>
+                        </imageView>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="JM5-sO-TuT">
+                            <rect key="frame" x="170.5" y="212" width="41.5" height="57"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h4E-En-4bJ" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sJp-LS-Mk9" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="36.5" width="41.5" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="QrX-Eq-zhs"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="9zE-Se-jTR" firstAttribute="centerX" secondItem="BRB-Af-XMu" secondAttribute="centerX" id="EW1-4i-Bc8"/>
+                <constraint firstItem="uXI-sU-KPx" firstAttribute="centerX" secondItem="BRB-Af-XMu" secondAttribute="centerX" id="F74-lX-CN3"/>
                 <constraint firstItem="il7-UJ-0Lp" firstAttribute="centerY" secondItem="BRB-Af-XMu" secondAttribute="centerY" id="Gga-LM-o8h"/>
+                <constraint firstItem="QrX-Eq-zhs" firstAttribute="bottom" secondItem="uXI-sU-KPx" secondAttribute="bottom" constant="14" id="K3b-C7-yy4"/>
+                <constraint firstItem="9zE-Se-jTR" firstAttribute="leading" secondItem="QrX-Eq-zhs" secondAttribute="leading" constant="16" id="YMg-K6-bDn"/>
+                <constraint firstItem="9zE-Se-jTR" firstAttribute="centerY" secondItem="BRB-Af-XMu" secondAttribute="centerY" id="cWC-co-gps"/>
+                <constraint firstItem="uXI-sU-KPx" firstAttribute="leading" secondItem="QrX-Eq-zhs" secondAttribute="leading" constant="16" id="eHY-Hu-p5B"/>
                 <constraint firstItem="il7-UJ-0Lp" firstAttribute="centerX" secondItem="BRB-Af-XMu" secondAttribute="centerX" id="oTq-Ic-Dvd"/>
             </constraints>
             <point key="canvasLocation" x="-1252" y="169"/>
         </view>
     </objects>
     <resources>
+        <image name="createNewVaultIllustration" width="358" height="188"/>
         <namedColor name="foregroundDefault">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

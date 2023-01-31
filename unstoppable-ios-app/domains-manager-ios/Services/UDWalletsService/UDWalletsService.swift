@@ -314,7 +314,9 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         try await NetworkService().postMetaActions(requestSign)
         
         Debugger.printInfo("Successful setReverseResolution for domain: \(domain.name)")
-        self.notifyListeners(.reverseResolutionDomainChanged(domainName: domain.name))
+        let txIds = response.txs.map({$0.id})
+        self.notifyListeners(.reverseResolutionDomainChanged(domainName: domain.name,
+                                                             txIds: txIds))
     }
         
     private func getRequestForActionReverseResolution(_ domain: DomainItem, remove: Bool) throws -> APIRequest {

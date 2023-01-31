@@ -348,6 +348,7 @@ extension DomainProfileViewPresenter: DomainProfileSectionsController {
             do {
                 try await saveProfile(.init(attributes: [attribute],
                                             domainSocialAccounts: []))
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
                 resultCallback(.success(Void()))
             } catch {
                 await MainActor.run {
@@ -495,7 +496,8 @@ private extension DomainProfileViewPresenter {
                 Task.detached { [weak self] in
                     await self?.dataAggregatorService.aggregateData()
                 }
-                UserDefaults.didEverUpdateDomainProfile = true 
+                UserDefaults.didEverUpdateDomainProfile = true
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
             } else if updateErrors.count == requestsWithChanges.count {
                 // All requests are failed
                 await dataHolder.didFailToUpdateProfile()
@@ -1112,7 +1114,8 @@ private extension DomainProfileViewPresenter {
         var transactions: [TransactionItem] = []
         var recordsData: DomainRecordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
         var currencies: [CoinRecord] = []
-        var badgesInfo: BadgesInfo = .init(badges: [])
+        var badgesInfo: BadgesInfo = .init(badges: [],
+                                           refresh: .init(last: Date(), next: Date()))
         var profile: SerializedUserDomainProfile = .init(profile: .init(),
                                                          messaging: .init(),
                                                          socialAccounts: .init(),
@@ -1165,7 +1168,7 @@ private extension DomainProfileViewPresenter {
         func reset() {
             transactions = []
             recordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
-            badgesInfo = .init(badges: [])
+            badgesInfo = .init(badges: [], refresh: .init(last: Date(), next: Date()))
             profile = .init(profile: .init(),
                                                              messaging: .init(),
                                                              socialAccounts: .init(),

@@ -84,6 +84,6 @@ struct MintingDomain: Codable {
     let walletAddress: String
     let isPrimary: Bool
     var isMinting: Bool = true
-    let transactionId: Int
+    let transactionId: UInt64
     var transactionHash: String?
 }

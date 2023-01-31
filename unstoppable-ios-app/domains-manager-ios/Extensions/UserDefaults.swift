@@ -33,29 +33,29 @@ extension UserDefaults {
     @UserDefaultsCodableValue(key: .onboardingData) static var onboardingData: OnboardingData?
     @UserDefaultsCodableValue(key: .onboardingNavigationInfo) static var onboardingNavigationInfo: OnboardingNavigationController.OnboardingNavigationInfo?
     @UserDefaultsCodableValue(key: .onboardingDomainsPurchasedDetails) static var onboardingDomainsPurchasedDetails: DomainsPurchasedDetails?
-    @UserDefaultsValue(key: .homeScreenSettingsButtonPressed, defaultValue: false) static var homeScreenSettingsButtonPressed: Bool
-    @UserDefaultsValue(key: .buildVersion, defaultValue: "") static var buildVersion: String
+    @UserDefaultsValue(key: UserDefaultsKey.homeScreenSettingsButtonPressed, defaultValue: false) static var homeScreenSettingsButtonPressed: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.buildVersion, defaultValue: "") static var buildVersion: String
     @UserDefaultsRawRepresentableValue(key: .appearanceStyle, defaultValue: .unspecified) static var appearanceStyle: UIUserInterfaceStyle
     @UserDefaultsOptionalValue(key: .primaryDomainName) static var primaryDomainName: String?
     @UserDefaultsRawRepresentableValue(key: .selectedBlockchainType, defaultValue: .Ethereum) static var selectedBlockchainType: BlockchainType
-    @UserDefaultsValue(key: .wcFriendlyReminderShown, defaultValue: false) static var wcFriendlyReminderShown: Bool
-    @UserDefaultsValue(key: .didTapPrimaryDomain, defaultValue: false) static var didTapPrimaryDomain: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.wcFriendlyReminderShown, defaultValue: false) static var wcFriendlyReminderShown: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didTapPrimaryDomain, defaultValue: false) static var didTapPrimaryDomain: Bool
     @UserDefaultsOptionalValue(key: .apnsToken) static var apnsToken: String?
-    @UserDefaultsValue(key: .setupRRPromptCounter, defaultValue: 0) static var setupRRPromptCounter: Int
+    @UserDefaultsValue(key: UserDefaultsKey.setupRRPromptCounter, defaultValue: 0) static var setupRRPromptCounter: Int
     @UserDefaultsOptionalValue(key: .preferableDomainNameForRR) static var preferableDomainNameForRR: String?
-    @UserDefaultsValue(key: .shouldShowMintingTutorial, defaultValue: true) static var shouldShowMintingTutorial: Bool
-    @UserDefaultsValue(key: .isFirstLaunchAfterProfileFeatureReleased, defaultValue: true) static var isFirstLaunchAfterProfileFeatureReleased: Bool
-    @UserDefaultsValue(key: .didEverUpdateDomainProfile, defaultValue: false) static var didEverUpdateDomainProfile: Bool
-    @UserDefaultsValue(key: .didAskToShowcaseProfileAfterFirstUpdate, defaultValue: false) static var didAskToShowcaseProfileAfterFirstUpdate: Bool
-    @UserDefaultsValue(key: .didShowDomainProfileInfoTutorial, defaultValue: false) static var didShowDomainProfileInfoTutorial: Bool
-    @UserDefaultsValue(key: .isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.shouldShowMintingTutorial, defaultValue: true) static var shouldShowMintingTutorial: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.isFirstLaunchAfterProfileFeatureReleased, defaultValue: true) static var isFirstLaunchAfterProfileFeatureReleased: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didEverUpdateDomainProfile, defaultValue: false) static var didEverUpdateDomainProfile: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didAskToShowcaseProfileAfterFirstUpdate, defaultValue: false) static var didAskToShowcaseProfileAfterFirstUpdate: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didShowDomainProfileInfoTutorial, defaultValue: false) static var didShowDomainProfileInfoTutorial: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
 }
 
 // MARK: - Property Wrappers
 @propertyWrapper
-struct UserDefaultsValue<Value> {
+struct UserDefaultsValue<Key: RawRepresentable, Value> where Key.RawValue == String {
     
-    let key: UserDefaultsKey
+    let key: Key
     let defaultValue: Value
     
     var wrappedValue: Value {

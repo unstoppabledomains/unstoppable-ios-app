@@ -51,6 +51,10 @@ final class DomainProfileSectionHeader: UICollectionReusableView {
             actionButton.setTitle(button.title, image: button.icon)
             actionButton.isEnabled = button.isEnabled
             self.actionButtonCallback = button.action
+            if let imageView = actionButton.firstSubviewOfType(UIImageView.self) {
+                imageView.layer.removeAllAnimations()
+                description.button?.iconBehaviour?(imageView)
+            }
         } else {
             actionButton.isHidden = true
         }
@@ -119,13 +123,25 @@ extension DomainProfileSectionHeader {
         let icon: UIImage
         let isEnabled: Bool
         let action: EmptyCallback
+        var iconBehaviour: ((UIImageView)->())? = nil
         
         static func add(isEnabled: Bool, callback: @escaping EmptyCallback) -> HeaderButton {
             HeaderButton(title: String.Constants.add.localized(), icon: .plusIconSmall, isEnabled: isEnabled, action: callback)
         }
         
-        static func refresh(isEnabled: Bool, callback: @escaping EmptyCallback) -> HeaderButton {
-            HeaderButton(title: String.Constants.refresh.localized(), icon: .refreshArrow20, isEnabled: isEnabled, action: callback)
+        static func refresh(isEnabled: Bool,
+                            isSpinning: Bool,
+                            refreshingTitle: String,
+                            callback: @escaping EmptyCallback) -> HeaderButton {
+            let title = isSpinning ? refreshingTitle : String.Constants.refresh.localized()
+            return HeaderButton(title: title,
+                                icon: .refreshArrow20,
+                                isEnabled: isEnabled,
+                                action: callback) { imageView in
+                if isSpinning {
+                    imageView.runUpdatingRecordsAnimation(clockwise: true)
+                }
+            }
         }
         
         static func == (lhs: Self, rhs: Self) -> Bool {

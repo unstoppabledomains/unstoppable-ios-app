@@ -35,6 +35,7 @@ protocol WalletConnectServiceV2Protocol {
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
     func addListener(_ listener: WalletConnectServiceListener)
     func disconnectAppsForAbsentDomains(from: [DomainItem])
+    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
 }
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
@@ -119,6 +120,15 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         self.listeners.forEach { holder in
             holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: toDisconnect))
         }
+    }
+    
+    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
+        guard connectedApp.isV2dApp else {
+            appContext.walletConnectService.expectConnection(from: connectedApp)
+            return
+        }
+        
+        // TODO: - Figure out timeout system for WC2
     }
     
     private func _disconnect(session: WalletConnectSign.Session) async throws {
@@ -948,6 +958,9 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     func pairClient(uri: WalletConnectUtils.WalletConnectURI) {
+        
+    }
+    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
         
     }
 }

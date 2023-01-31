@@ -36,6 +36,7 @@ extension String {
         case domainProfilePage(domainName: String)
         case openSeaETHAsset(value: String)
         case openSeaPolygonAsset(value: String)
+        case writeAppStoreReview(appId: String)
 
         var urlString: String {
             switch self {
@@ -75,6 +76,8 @@ extension String {
                 return "https://opensea.io/assets/ethereum/\(value)"
             case .openSeaPolygonAsset(let value):
                 return "https://opensea.io/assets/matic/\(value)"
+            case .writeAppStoreReview(let appId):
+                return "https://apps.apple.com/app/id\(appId)?action=write-review"
             }
         }
         
@@ -203,6 +206,8 @@ extension String {
         static let copyN = "COPY_N"
         static let username = "USERNAME"
         static let addN = "ADD_N"
+        static let rateUs = "RATE_US"
+        static let both = "BOTH"
 
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -219,6 +224,8 @@ extension String {
         static let tutorialScreen3Description = "TUTORIAL_SCREEN_3_DESCRIPTION"
         
         static let creatingWallet = "CREATING_WALLET"
+        static let createNewVaultTitle = "CREATE_NEW_VAULT_TITLE"
+        static let createNewVaultSubtitle = "CREATE_NEW_VAULT_SUBTITLE"
         
         static let useFaceID = "USE_FACE_ID"
         static let useTouchID = "USE_TOUCH_ID"
@@ -255,6 +262,7 @@ extension String {
         static let passwordRuleNumber = "PASSWORD_RULE_NUMBER"
         static let passwordRuleLetter = "PASSWORD_RULE_LETTER"
         static let passwordRuleRange = "PASSWORD_RULE_RANGE"
+        static let passwordRuleMatch = "PASSWORD_RULE_MATCH"
         static let createPasswordHelpTitle = "CREATE_PASSWORD_HELP_TITLE"
         static let createPasswordHelpText = "CREATE_PASSWORD_HELP_TEXT"
         static let createPasswordHelpTextHighlighted = "CREATE_PASSWORD_HELP_TEXT_HIGHLIGHTED"
@@ -296,7 +304,8 @@ extension String {
         static let connectWalletWatchHint = "CONNECT_WALLET_WATCH_HINT"
         static let connectWalletExternal = "CONNECT_WALLET_EXTERNAL"
         static let connectWalletExternalHint = "CONNECT_WALLET_EXTERNAL_HINT"
-        
+        static let connectWalletDontAlreadyHaveDomain = "CONNECT_WALLET_DONT_ALREADY_HAVE_DOMAIN"
+
         // Add wallet
         static let addWalletTitle = "ADD_WALLET_TITLE"
         static let addWalletManageHint = "ADD_WALLET_MANAGE_HINT"
@@ -758,7 +767,9 @@ extension String {
         static let domainProfileAccessInfoTitle = "DOMAIN_PROFILE_ACCESS_INFO_TITLE"
         static let domainProfileAccessInfoDescription = "DOMAIN_PROFILE_ACCESS_INFO_DESCRIPTION"
         static let profileSocialsEmptyMessage = "PROFILE_SOCIALS_EMPTY_MESSAGE"
-        
+        static let profileRefreshingBadgesTitle = "PROFILE_REFRESHING_BADGES_TITLE"
+        static let profileBadgesUpToDate = "PROFILE_BADGES_UP_TO_DATE"
+
         // Legacy tokens
         static let legacy = "LEGACY"
         static let multiChain = "MULTI_CHAIN"

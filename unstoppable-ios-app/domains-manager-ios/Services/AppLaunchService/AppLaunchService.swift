@@ -197,9 +197,8 @@ private extension AppLaunchService {
     }
     
     func isAppVersionSupported(info: AppVersionInfo) -> Bool {
-        guard let currentVersionString = Version.getAppVersion(),
-              let currentVersion = Version.parse(version: currentVersionString) else {
-            Debugger.printFailure("Failed to parse app version", critical: true)
+        guard let currentVersion = try? Version.getCurrent() else {
+            Debugger.printFailure("Failed to get app version", critical: true)
             return true
         }
         return currentVersion >= info.minSupportedVersion

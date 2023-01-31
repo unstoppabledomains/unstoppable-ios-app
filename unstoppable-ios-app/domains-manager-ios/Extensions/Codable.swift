@@ -85,3 +85,24 @@ extension Encodable {
         return nil
     }
 }
+
+extension JSONDecoder.DateDecodingStrategy {
+    static func badgesDateDecodingStrategy() -> JSONDecoder.DateDecodingStrategy {
+        .iso8601WithOptions([.withFractionalSeconds])
+    }
+    
+    static func iso8601WithOptions(_ options: ISO8601DateFormatter.Options) -> JSONDecoder.DateDecodingStrategy {
+        .custom { decoder in
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions.insert(options)
+            
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+            if let date = formatter.date(from: dateString) {
+                return date
+            }
+            
+            throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+        }
+    }
+}

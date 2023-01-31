@@ -169,7 +169,7 @@ struct NetworkService {
         Self.headers.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
         extraHeaders.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
         
-        urlRequest.addValue(Version.getAppVersion() ?? "version n/a", forHTTPHeaderField: Self.appVersionHeaderKey)
+        urlRequest.addValue(Version.getCurrentAppVersionString() ?? "version n/a", forHTTPHeaderField: Self.appVersionHeaderKey)
         
         Debugger.printInfo(topic: .Network, "--- REQUEST TO ENDPOINT")
         Debugger.printInfo(topic: .Network, "METHOD: \(method) | URL: \(url.absoluteString)")
@@ -391,7 +391,7 @@ extension NetworkService {
         coins.first(where: {$0.expandedTicker == expandedTicker})?.regexPattern
     }
     
-    static func getRequestForActionSign(id: UInt,
+    static func getRequestForActionSign(id: UInt64,
                                          response: NetworkService.ActionsResponse,
                                          signatures: [String]) throws -> APIRequest {
         let request = try APIRequestBuilder()

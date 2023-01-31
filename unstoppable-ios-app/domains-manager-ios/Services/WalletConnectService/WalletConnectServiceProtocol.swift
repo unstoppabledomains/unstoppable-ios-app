@@ -18,7 +18,7 @@ protocol WalletConnectServiceProtocol {
     func disconnect(app: WCConnectedAppsStorage.ConnectedApp) async
     func disconnect(peerId: String)
     func getConnectedAppsV1() -> [WCConnectedAppsStorage.ConnectedApp]
-    func expectConnection(from connectedApp: WCConnectedAppsStorage.ConnectedApp)
+    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
     
     func didRemove(wallet: UDWallet)
     func didLostOwnership(to domain: DomainItem)

@@ -74,7 +74,7 @@ enum TxStatusGroup: String, Codable {
 
 struct TransactionItem: TransactionProtocol, Codable {
     static let cnsConfirmationBlocksBLOCKS: UInt64 = 12
-    var id: Int?
+    var id: UInt64?
     var transactionHash: HexAddress?
     var domainName: String?
     
@@ -92,7 +92,7 @@ struct TransactionItem: TransactionProtocol, Codable {
     
     var logs: [ResponseLog]?
     
-    init(id: Int? = nil, transactionHash: HexAddress? = nil, domainName: String?,
+    init(id: UInt64? = nil, transactionHash: HexAddress? = nil, domainName: String?,
          isPending: Bool, type: TxType? = nil, operation: TxOperation? = nil,
          gasPrice: Gwei? = nil, nonce: Int? = nil,
          domainId: HexAddress? = nil) {

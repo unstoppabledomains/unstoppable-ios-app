@@ -20,8 +20,19 @@ final class OnboardingCreateWalletPresenter: BaseCreateWalletPresenter {
         self.wallet = onboardingFlowManager.onboardingData.wallets.first
     }
     
+    @MainActor
+    override func viewDidLoad() {
+        view?.setStyle(.fullUI)
+        Task {
+            await MainActor.run {
+                view?.setDashesProgress(0.25)
+            }
+        }
+    }
+    
     override func walletCreated(_ wallet: UDWallet) {
         onboardingFlowManager?.modifyOnboardingData() { $0.wallets = [wallet] }
+        onboardingFlowManager?.setNewUserOnboardingSubFlow(.create)
         if case .sameUserWithoutWallets = onboardingFlowManager?.onboardingFlow {
             self.onboardingFlowManager?.moveToStep(.backupWallet)
         } else {
@@ -38,5 +49,7 @@ extension OnboardingCreateWalletPresenter: OnboardingNavigationHandler {
 
 // MARK: - OnboardingDataHandling
 extension OnboardingCreateWalletPresenter: OnboardingDataHandling {
-    func willNavigateBack() { }
+    func willNavigateBack() {
+        onboardingFlowManager?.setNewUserOnboardingSubFlow(.restore)
+    }
 }

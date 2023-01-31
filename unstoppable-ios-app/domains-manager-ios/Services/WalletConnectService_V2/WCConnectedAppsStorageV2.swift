@@ -96,18 +96,6 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         super.save(newElement: newApp)
     }
 
-    private func store(apps: ConnectedAppsArray) throws {
-        try super.store(elements: apps)
-    }
-    
-    /*
-    func save(session: Session, for domain: DomainItem, walletAddress: HexAddress) throws {
-        let newApp = ConnectedApp(walletAddress: walletAddress,
-                                  domain: domain,
-                                  session: session)
-        try save(newApp: newApp)
-    }
-    */
     @discardableResult
     func remove(byTopic topic: String) async -> ConnectedApp? {
         await remove(when: {$0.sessionProxy.topic == topic})
@@ -128,24 +116,6 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         let normalizedAccount = account.normalized
         return retrieveApps().filter({ $0.walletAddress.normalized == normalizedAccount } )
     }
-
-
-    /*
-    
-    func find(by accounts: [HexAddress], url: URL) -> [ConnectedApp]? {
-        let byAccounts = find(by: accounts)
-        return byAccounts?.filter({$0.appUrl.host == url.host})
-    }
-    
-        
-    func find(by domain: DomainItem) -> [ConnectedApp]? {
-        return retrieveApps().filter({ $0.domain.name == domain.name } )
-    }
-    
-    func findDuplicate(to newApp: ConnectedApp) -> [ConnectedApp] {
-        return retrieveApps().filter({ $0.appUrl.host == newApp.appUrl.host } )
-    }
-     */
 }
 
 protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
@@ -166,6 +136,13 @@ protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
 extension UnifiedConnectAppInfoProtocol {
     var chainIds: [Int] {
         return appInfo.getChainIds()
+    }
+    
+    var isV2dApp: Bool {
+        switch appInfo.dAppInfoInternal {
+        case .version1: return false
+        case .version2: return true
+        }
     }
 }
 
@@ -213,13 +190,6 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
         self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version1(appV1.session),
                                                              isTrusted: WalletConnectService.isTrusted(dAppInfo: appV1.session.dAppInfo))
         self.connectionStartDate = appV1.connectionStartDate
-    }
-    
-    var isV2dApp: Bool {
-        switch appInfo.dAppInfoInternal {
-        case .version1: return false
-        case .version2: return true
-        }
     }
 }
 
