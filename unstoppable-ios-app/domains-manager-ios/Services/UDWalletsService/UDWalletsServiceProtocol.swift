@@ -55,7 +55,7 @@ protocol UDWalletsServiceListener: AnyObject {
 
 enum UDWalletsServiceNotification {
     case walletsUpdated(_ wallets: [UDWallet])
-    case reverseResolutionDomainChanged(domainName: String)
+    case reverseResolutionDomainChanged(domainName: String, txIds: [UInt64])
 }
 
 final class UDWalletsListenerHolder: Equatable {

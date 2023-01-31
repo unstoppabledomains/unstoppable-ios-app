@@ -391,7 +391,7 @@ extension NetworkService {
         coins.first(where: {$0.expandedTicker == expandedTicker})?.regexPattern
     }
     
-    static func getRequestForActionSign(id: UInt,
+    static func getRequestForActionSign(id: UInt64,
                                          response: NetworkService.ActionsResponse,
                                          signatures: [String]) throws -> APIRequest {
         let request = try APIRequestBuilder()
