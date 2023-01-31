@@ -13,6 +13,7 @@ final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionView
     private let domains: [DomainDisplayInfo]
     private let reverseResolutionDomain: DomainDisplayInfo
     override var analyticsName: Analytics.ViewName { .setupReverseResolution }
+    override var domainName: String? { reverseResolutionDomain.name }
     
     init(view: SetupReverseResolutionViewProtocol,
          wallet: UDWallet,

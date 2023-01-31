@@ -321,6 +321,9 @@ extension DomainsCollectionViewController: DomainsCollectionPageViewControllerDe
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7,
                                       execute: setSearchUnderCardControlStateWorkingItem)
         self.setSearchUnderCardControlStateWorkingItem = setSearchUnderCardControlStateWorkingItem
+        if let domain = presenter.domain(at: pageViewController.currentIndex) {
+            logAnalytic(event: .didSwipeToDomain, parameters: [.domainName: domain.name])
+        }
     }
     
     func pageViewControllerWillScroll(_ scrollView: UIScrollView) {
@@ -580,7 +583,6 @@ private extension DomainsCollectionViewController {
 // MARK: - Actions
 private extension DomainsCollectionViewController {
     @IBAction func didPressScanButton(_ sender: Any) {
-        logButtonPressedAnalyticEvents(button: .scan)
         presenter.didPressScanButton()
     }
     

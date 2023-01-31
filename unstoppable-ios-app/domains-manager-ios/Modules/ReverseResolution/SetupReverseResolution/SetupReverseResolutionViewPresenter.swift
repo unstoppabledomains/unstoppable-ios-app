@@ -9,6 +9,7 @@ import Foundation
 
 protocol SetupReverseResolutionViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
+    var domainName: String? { get }
 
     func confirmButtonPressed()
     func skipButtonPressed()
@@ -20,6 +21,7 @@ class SetupReverseResolutionViewPresenter {
     let wallet: UDWallet
     let walletInfo: WalletDisplayInfo
     let domain: DomainDisplayInfo?
+    var domainName: String? { domain?.name }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     var analyticsName: Analytics.ViewName { .unspecified }
 
@@ -41,10 +43,10 @@ class SetupReverseResolutionViewPresenter {
         }
     }
     func confirmButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .confirm)
+        logButtonPressedAnalyticEvents(button: .confirm, parameters: [.domainName: domainName ?? "N/A"])
     }
     func skipButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .skip)
+        logButtonPressedAnalyticEvents(button: .skip, parameters: [.domainName: domainName ?? "N/A"])
     }
     func setupReverseResolutionFor(domain: DomainDisplayInfo) async throws {
         guard let view = self.view else { return }

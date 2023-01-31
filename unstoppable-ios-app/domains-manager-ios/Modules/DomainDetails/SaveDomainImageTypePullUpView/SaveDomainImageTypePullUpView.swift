@@ -76,7 +76,8 @@ private extension SaveDomainImageTypePullUpView {
         let provider = previewProviders[tag]
         let style = ExportStyle(rawValue: tag) ?? .card
         appContext.analyticsService.log(event: .didSelectExportDomainPFPStyle,
-                                        withParameters: [.exportDomainImageStyle : style.analyticsName])
+                                        withParameters: [.exportDomainImageStyle : style.analyticsName,
+                                                         .domainName: saveDomainImageDescription?.domain.name ?? "N/A"])
         
         guard let image = provider.finalImage() else {
             Debugger.printFailure("Failed to generate image for sharing", critical: true)

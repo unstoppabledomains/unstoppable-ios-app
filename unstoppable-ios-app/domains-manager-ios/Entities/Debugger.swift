@@ -26,6 +26,7 @@ public struct Debugger {
         case WallectConnectV2 = "WC_V2"
         case UI = "=UI="
         case None = ""
+        case Analytics = "Analtyics"
     }
     
     static let allowedTopics = DebugTopic.allCases.filter({ $0.rawValue.first != "/"})

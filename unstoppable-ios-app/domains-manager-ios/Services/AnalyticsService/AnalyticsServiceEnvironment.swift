@@ -40,6 +40,7 @@ extension Analytics {
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
+        case didSwipeToDomain
         
         // Domain Profile
         case didStartEditingCoinAddress, didStopEditingCoinAddress

@@ -63,6 +63,7 @@ private extension DomainImageDetailsViewPresenter {
         switch (domain.pfpSource, imageState) {
         case (.nft(let imageValue), .untouched):
             findAndStoreOpenSeaLink(from: imageValue)
+            logButtonPressedAnalyticEvents(button: .viewPhoto, parameters: [.domainName: domainName])
             if openSeaLink != nil {
                 view?.setActionButtonWith(title: String.Constants.profileViewOnOpenSea.localized(), icon: .arrowTopRight)
             }

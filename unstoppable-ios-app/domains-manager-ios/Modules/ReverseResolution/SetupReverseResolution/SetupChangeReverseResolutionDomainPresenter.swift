@@ -13,6 +13,7 @@ final class SetupChangeReverseResolutionDomainPresenter: SetupReverseResolutionV
     private let selectedDomain: DomainDisplayInfo
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
     override var analyticsName: Analytics.ViewName { .setupChangeReverseResolution }
+    override var domainName: String? { selectedDomain.name }
     
     init(view: SetupReverseResolutionViewProtocol,
          wallet: UDWallet,

@@ -197,7 +197,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                                                                            availableActions: actions,
                                                                            actionButtonPressedCallback: { [weak self] in
                     self?.logButtonPressedAnalyticEvents(button: .connectedAppDot,
-                                                         parameters: [.wcAppName : app.displayName])
+                                                         parameters: [.wcAppName : app.displayName,
+                                                                      .domainName: domain.name])
                 }))])
             }
         }
@@ -218,13 +219,13 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }
         
         var actions: [CardAction] = [.copyDomain(callback: { [weak self] in
-            self?.logButtonPressedAnalyticEvents(button: .copyDomain)
+            self?.logButtonPressedAnalyticEvents(button: .copyDomain, parameters: [.domainName: domain.name])
             self?.copyDomainName(domain.name)
         }),
                                      .viewVault(vaultName: vaultName ?? "",
                                                 vaultAddress: domain.ownerWallet ?? "",
                                                 callback: { [weak self] in
-            self?.logButtonPressedAnalyticEvents(button: .showWalletDetails)
+            self?.logButtonPressedAnalyticEvents(button: .showWalletDetails, parameters: [.domainName: domain.name])
             self?.didTapShowWalletDetailsButton()
         })]
         
@@ -235,7 +236,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             
             actions.append(.setUpRR(isEnabled: isEnabled,
                                     callback: { [weak self] in
-                self?.logButtonPressedAnalyticEvents(button: .setReverseResolution)
+                self?.logButtonPressedAnalyticEvents(button: .setReverseResolution, parameters: [.domainName: domain.name])
                 self?.showSetupReverseResolutionModule()
             }))
         }
@@ -248,7 +249,9 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func handleDisconnectAppAction(_ app: any UnifiedConnectAppInfoProtocol) {
-        logButtonPressedAnalyticEvents(button: .disconnectApp, parameters: [.wcAppName: app.appName])
+        logButtonPressedAnalyticEvents(button: .disconnectApp,
+                                       parameters: [.wcAppName: app.appName,
+                                                    .domainName: domain.name])
         Task {
             switch app.appInfo.dAppInfoInternal {
             case .version1(let session): appContext.walletConnectService.disconnect(peerId: session.dAppInfo.peerId)
