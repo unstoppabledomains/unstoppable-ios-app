@@ -49,7 +49,7 @@ extension MockWalletConnectService: WalletConnectServiceProtocol {
         
     }
     
-    func expectConnection(from connectedApp: WCConnectedAppsStorage.ConnectedApp) {
+    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
         
     }
     
