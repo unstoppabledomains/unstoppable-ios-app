@@ -25,6 +25,9 @@ final class AnalyticsService {
 extension AnalyticsService: AnalyticsServiceProtocol {
     func log(event: Analytics.Event, withParameters eventParameters: Analytics.EventParameters?) {
         Task  {
+            let parametersDebugString = (eventParameters ?? [:]).map({ "\($0.key.rawValue) : \($0.value)" })
+            Debugger.printInfo(topic: .Analytics, "Will log event: \(event.rawValue) with parameters: \(parametersDebugString)")
+            
             let defaultProperties = self.defaultProperties
             await services.forEach { (service) in
                 service.log(event: event, withParameters: (eventParameters ?? [:]).adding(defaultProperties))

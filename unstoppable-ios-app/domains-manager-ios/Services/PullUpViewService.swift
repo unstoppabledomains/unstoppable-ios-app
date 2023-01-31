@@ -35,7 +35,7 @@ protocol PullUpViewServiceProtocol {
     func showManageDomainRouteCryptoPullUp(in viewController: UIViewController,
                                            numberOfCrypto: Int)
     func showDomainProfileChangesConfirmationPullUp(in viewController: UIViewController,
-                                             changes: [DomainProfileSectionUIChangeType]) async throws
+                                                    changes: [DomainProfileSectionUIChangeType]) async throws
     func showDiscardRecordChangesConfirmationPullUp(in viewController: UIViewController) async throws
     func showPayGasFeeConfirmationPullUp(gasFeeInCents: Int,
                                          in viewController: UIViewController) async throws
@@ -179,7 +179,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let title = String.Constants.restoreFromICloudBackup.localized()
         let subtitle = String.Constants.restoreFromICloudBackupDescription.localized()
         let highlightedSubtitle = String.Constants.learnMore.localized()
-
+        
         return try await withSafeCheckedThrowingMainActorContinuation(critical: false) { continuation in
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
                                                                          contentAlignment: .left,
@@ -326,7 +326,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         
         showOrUpdate(in: viewController, pullUp: .connectedExternalWalletInfo, contentView: selectionView, height: selectionViewHeight)
     }
-
+    
     func showAppearanceStyleSelectionPullUp(in viewController: UIViewController,
                                             selectedStyle: UIUserInterfaceStyle,
                                             styleChangedCallback: @escaping AppearanceStyleChangedCallback) {
@@ -360,9 +360,9 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     }
     
     func showDomainProfileChangesConfirmationPullUp(in viewController: UIViewController,
-                                             changes: [DomainProfileSectionUIChangeType]) async throws {
+                                                    changes: [DomainProfileSectionUIChangeType]) async throws {
         let selectionViewHeight: CGFloat = 268 + (CGFloat(changes.count) * PullUpCollectionViewCell.Height)
-
+        
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             var didFireContinuation = false
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.confirmUpdates.localized()),
@@ -380,7 +380,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             showOrUpdate(in: viewController, pullUp: .domainRecordsChangesConfirmation, contentView: selectionView, height: selectionViewHeight, closedCallback: { if !didFireContinuation { completion(.failure(PullUpError.dismissed)) } })
         }
     }
-
+    
     func showDiscardRecordChangesConfirmationPullUp(in viewController: UIViewController) async throws {
         let selectionViewHeight: CGFloat = 276
         
@@ -410,8 +410,8 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         gasFeeValueLabel.translatesAutoresizingMaskIntoConstraints = false
         let gasFeeString = String(format: "$%.02f", PaymentConfiguration.centsIntoDollars(cents: gasFeeInCents))
         gasFeeValueLabel.setAttributedTextWith(text: gasFeeString,
-                                          font: .currentFont(withSize: 16, weight: .medium),
-                                          textColor: .foregroundDefault)
+                                               font: .currentFont(withSize: 16, weight: .medium),
+                                               textColor: .foregroundDefault)
         gasFeeValueLabel.setContentHuggingPriority(.init(rawValue: 1000), for: .horizontal)
         
         let stack = UIStackView(arrangedSubviews: [gasFeeLabel, gasFeeValueLabel])
@@ -465,7 +465,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             showOrUpdate(in: viewController, pullUp: .mintDomainsSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
-
+    
     func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration,
                                              in viewController: UIViewController) async throws -> WalletConnectService.ConnectionUISettings {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
@@ -509,7 +509,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             let analyticParameters: Analytics.EventParameters = [.wcAppName: connectionConfiguration.appInfo.getDappName(),
                                                                  .hostURL: connectionConfiguration.appInfo.getDappHostName(),
                                                                  .chainId: chainIds]
-
+            
             let pullUpView = showOrUpdate(in: viewController,
                                           pullUp: pullUp,
                                           additionalAnalyticParameters: analyticParameters,
@@ -571,7 +571,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         
         showOrUpdate(in: viewController, pullUp: .wcAppVerifiedInfo, contentView: selectionView, height: selectionViewHeight)
     }
-
+    
     func showGasFeeInfoPullUp(in viewController: UIViewController, for network: BlockchainType) {
         let selectionViewHeight: CGFloat = 304
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.networkGasFeeInfoTitle.localized(network.fullName)),
@@ -583,7 +583,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
         presentPullUpView(in: viewController, pullUp: .wcETHGasFeeInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
-
+        
     }
     
     func showNetworkNotSupportedPullUp(in viewController: UIViewController) {
@@ -695,7 +695,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                 completion(result)
             }
             
-            showOrUpdate(in: viewController, pullUp: .shareDomainSelection, contentView: shareDomainPullUpView, height: selectionViewHeight, closedCallback: {
+            showOrUpdate(in: viewController, pullUp: .shareDomainSelection, additionalAnalyticParameters: [.domainName: domain.name], contentView: shareDomainPullUpView, height: selectionViewHeight, closedCallback: {
                 completion(.cancel)
             })
         }
@@ -926,7 +926,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                                                                  action: { completion(.failure(PullUpError.dismissed)) }))),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
-            showOrUpdate(in: viewController, pullUp: .setupReverseResolutionPrompt, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
+            showOrUpdate(in: viewController, pullUp: .setupReverseResolutionPrompt, additionalAnalyticParameters: [.domainName: domain.name], contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
     
@@ -955,13 +955,13 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                      cancelButton: .gotItButton()),
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
-        showOrUpdate(in: viewController, pullUp: .domainMintedOnChainDescription, contentView: selectionView, height: selectionViewHeight)
+        showOrUpdate(in: viewController, pullUp: .domainMintedOnChainDescription, additionalAnalyticParameters: [.chainNetwork: chain.rawValue], contentView: selectionView, height: selectionViewHeight)
     }
     
     func showDomainProfileInfoPullUp(in viewController: UIViewController) {
         showDomainProfileInfoPullUp(in: viewController, page: 1)
     }
-
+    
     private func showDomainProfileInfoPullUp(in viewController: UIViewController,
                                              page: Int) {
         showDomainProfileTutorialPullUp(in: viewController,
@@ -974,8 +974,8 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let description = badge.description
         let labelWidth = UIScreen.main.bounds.width - 32 // 16 * 2 side offsets
         let descriptionHeight = description.height(withConstrainedWidth: labelWidth,
-                                                         font: .currentFont(withSize: 16,
-                                                                            weight: .regular))
+                                                   font: .currentFont(withSize: 16,
+                                                                      weight: .regular))
         selectionViewHeight += descriptionHeight
         Task {
             var badgeIcon = badgeDisplayInfo.defaultIcon
@@ -1038,8 +1038,8 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                          subtitle: .label(.text(String.Constants.profileUpdatingRecordsNotifyWhenFinishedDescription.localized())),
                                                                          actionButton: .main(content: .init(title: String.Constants.notifyMeWhenFinished.localized(),
                                                                                                             icon: .bellIcon,
-                                                                                                                 analyticsName: .notifyWhenFinished,
-                                                                                                                 action: { completion(.success(Void())) })),
+                                                                                                            analyticsName: .notifyWhenFinished,
+                                                                                                            action: { completion(.success(Void())) })),
                                                                          cancelButton: .gotItButton()),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
@@ -1055,9 +1055,9 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                                  size: .small),
                                                                      subtitle: .label(.text(String.Constants.profileUpdatingRecordsWillNotifyWhenFinishedDescription.localized())),
                                                                      actionButton: .main(content: .init(title: String.Constants.weWillNotifyYouWhenFinished.localized(),
-                                                                                                             icon: nil,
-                                                                                                             analyticsName: .notifyWhenFinished,
-                                                                                                             isSuccessState: true,
+                                                                                                        icon: nil,
+                                                                                                        analyticsName: .notifyWhenFinished,
+                                                                                                        isSuccessState: true,
                                                                                                         action: { [weak viewController] in viewController?.dismissPullUpMenu()})),
                                                                      cancelButton: .gotItButton()),
                                                 items: PullUpSelectionViewEmptyItem.allCases)
@@ -1150,7 +1150,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             showOrUpdate(in: viewController, pullUp: .updateDomainProfileSomeChangesFailed, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
-
+    
     func showShowcaseYourProfilePullUp(for domain: DomainDisplayInfo,
                                        in viewController: UIViewController) async throws {
         let selectionViewHeight: CGFloat = 388
@@ -1171,7 +1171,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                          cancelButton: .cancelButton),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
-            presentPullUpView(in: viewController, pullUp: .showcaseYourProfile, contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
+            presentPullUpView(in: viewController, pullUp: .showcaseYourProfile, additionalAnalyticParameters: [.domainName: domain.name], contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
     
@@ -1270,7 +1270,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                      cancelButton: .gotItButton()),
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
-        presentPullUpView(in: viewController, pullUp: .connectedAppDomainInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+        presentPullUpView(in: viewController, pullUp: .connectedAppDomainInfo, additionalAnalyticParameters: [.domainName: domain.name, .wcAppName: connectedApp.appName], contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
     
     /// Return true if latest is selected and false if Legacy
@@ -1308,7 +1308,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             }))),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
-            presentPullUpView(in: viewController, pullUp: .chooseCoinVersion, contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
+            presentPullUpView(in: viewController, pullUp: .chooseCoinVersion, additionalAnalyticParameters: [.coin: ticker], contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
 }

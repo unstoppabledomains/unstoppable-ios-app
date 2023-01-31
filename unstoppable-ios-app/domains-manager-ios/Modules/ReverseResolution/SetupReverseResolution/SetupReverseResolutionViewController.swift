@@ -26,6 +26,12 @@ final class SetupReverseResolutionViewController: BaseViewController {
     var presenter: SetupReverseResolutionViewPresenterProtocol!
     override var navBackStyle: BaseViewController.NavBackIconStyle { presenter.navBackStyle }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
+    override var additionalAppearAnalyticParameters: Analytics.EventParameters {
+        if let domainName = presenter.domainName {
+            return [.domainName: domainName]
+        }
+        return [:]
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

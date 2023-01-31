@@ -115,7 +115,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
                 connectWalletPressed()
             }
         case .recentActivityLearnMore:
-            logButtonPressedAnalyticEvents(button: .recentActivityLearnMore)
+            logButtonPressedAnalyticEvents(button: .recentActivityLearnMore, parameters: [.domainName: getCurrentDomainName()])
             showRecentActivitiesLearMorePullUp()
         case .domainSelected(let domain):
             logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
@@ -148,6 +148,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     }
      
     func didPressScanButton() {
+        logButtonPressedAnalyticEvents(button: .scan, parameters: [.domainName: getCurrentDomainName()])
         showQRScanner()
     }
    
@@ -720,7 +721,6 @@ private extension DomainsCollectionPresenter {
             do {
                 guard let view = self.view else { return }
                 
-                logButtonPressedAnalyticEvents(button: .learnMore)
                 try await appContext.pullUpViewService.showRecentActivitiesInfoPullUp(in: view)
                 await view.dismissPullUpMenu()
                 showQRScanner()
@@ -736,6 +736,18 @@ private extension DomainsCollectionPresenter {
         let selectedDomain = domains[currentIndex]
         router.showQRScanner(selectedDomain: selectedDomain)
     }
+    
+    @MainActor
+    func getCurrentDomain() -> DomainDisplayInfo? {
+        guard isIndexSupported(currentIndex) else { return nil }
+        return stateController.domains[currentIndex]
+    }
+    
+    @MainActor
+    func getCurrentDomainName() -> String {
+        getCurrentDomain()?.name ?? "N/A"
+    }
+    
 }
 
 // MARK: - State
