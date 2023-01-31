@@ -13,7 +13,7 @@ import PromiseKit
 class TransactionsStorageTests: XCTestCase {
     static let domainName1 = "01.crypto"
 
-    static let id_1 = 1
+    static let id_1: UInt64 = 1
     static let hash_1 = "0x111111"
     
     static let timeout = 0.1

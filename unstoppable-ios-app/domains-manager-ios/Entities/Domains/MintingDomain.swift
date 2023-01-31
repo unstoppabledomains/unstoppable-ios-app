@@ -12,6 +12,6 @@ struct MintingDomain: Codable {
     let walletAddress: String
     let isPrimary: Bool /// Deprecated property. Sorting is used now and taking directly from SortDomainsManager
     var isMinting: Bool = true
-    let transactionId: Int
+    let transactionId: UInt64
     var transactionHash: String?
 }

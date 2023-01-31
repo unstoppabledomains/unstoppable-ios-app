@@ -25,7 +25,7 @@ struct DomainItem: DomainEntity, Codable {
     var pfpURL: String?
     var imageType: DomainProfileImageType?
     var transactionHashes: [HexAddress] = []
-    var claimingTxId: Int?
+    var claimingTxId: UInt64?
     var status: Status = .confirmed
     
     func inject(owner: HexAddress) -> DomainItem {

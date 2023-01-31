@@ -84,7 +84,7 @@ extension NetworkService {
     }
     
     struct TxResponse: Codable {
-        let id: Int
+        let id: UInt64
         let type: TxType
         let operation: TxOperation
         let statusGroup: String
@@ -687,7 +687,7 @@ extension NetworkService {
         }
         
         struct ActionsTxInfo: Decodable {
-            let id: UInt
+            let id: UInt64
             let type: String
             let blockchain: String
             let messageToSign: String?
@@ -700,7 +700,7 @@ extension NetworkService {
         }
         
         struct ActionsResponse: Decodable {
-            let id: UInt
+            let id: UInt64
             let domain: ActionsDomainInfo
             let txs: [ActionsTxInfo]
             let paymentInfo: ActionsPaymentInfo?

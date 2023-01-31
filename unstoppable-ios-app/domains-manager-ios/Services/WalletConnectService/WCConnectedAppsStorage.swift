@@ -62,10 +62,6 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
         super.save(newElement: newApp)
     }
 
-    private func store(apps: ConnectedAppsArray) throws {
-        try super.store(elements: apps)
-    }
-    
     func save(session: Session, for domain: DomainItem, walletAddress: HexAddress) throws {
         let newApp = ConnectedApp(walletAddress: walletAddress,
                                   domain: domain,

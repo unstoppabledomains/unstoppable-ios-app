@@ -124,7 +124,8 @@ extension WalletConnectClientService: WalletConnectClientServiceProtocol {
     }
     
     public func findSessions(by walletAddress: HexAddress) -> [Session] {
-        clientConnections.retrieveAll().filter({ $0.session.walletInfo?.accounts.map({$0.normalized}).contains(walletAddress.normalized) ?? false })
+        clientConnections.retrieveAll()
+            .filter({ $0.session.walletInfo?.accounts.map({$0.normalized}).contains(walletAddress.normalized) ?? false })
         .map({$0.session})
     }
 }
