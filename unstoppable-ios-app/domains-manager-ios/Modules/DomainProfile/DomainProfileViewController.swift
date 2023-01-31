@@ -167,42 +167,42 @@ extension DomainProfileViewController: UICollectionViewDelegate {
 // MARK: - Actions
 private extension DomainProfileViewController {
     @IBAction func confirmChangesButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .confirm)
+        logProfileButtonPressedAnalyticEvents(button: .confirm)
         presenter.confirmChangesButtonPressed()
     }
     
     @objc func shareButtonPressed() {
         UDVibration.buttonTap.vibrate()
-        logButtonPressedAnalyticEvents(button: .share)
+        logProfileButtonPressedAnalyticEvents(button: .share)
         presenter.shareButtonPressed()
     }
   
     @objc func didTapShowWalletDetailsButton() {
-        logButtonPressedAnalyticEvents(button: .showWalletDetails)
+        logProfileButtonPressedAnalyticEvents(button: .showWalletDetails)
         UDVibration.buttonTap.vibrate()
         presenter.didTapShowWalletDetailsButton()
     }
     
     @objc func didTapSetReverseResolutionButton() {
-        logButtonPressedAnalyticEvents(button: .setReverseResolution)
+        logProfileButtonPressedAnalyticEvents(button: .setReverseResolution)
         UDVibration.buttonTap.vibrate()
         presenter.didTapSetReverseResolutionButton()
     }
     
     @objc func didTapCopyDomainButton() {
-        logButtonPressedAnalyticEvents(button: .copyDomain)
+        logProfileButtonPressedAnalyticEvents(button: .copyDomain)
         UDVibration.buttonTap.vibrate()
         presenter.didTapCopyDomainButton()
     }
     
     @objc func didTapAboutProfilesButton() {
-        logButtonPressedAnalyticEvents(button: .aboutProfile)
+        logProfileButtonPressedAnalyticEvents(button: .aboutProfile)
         UDVibration.buttonTap.vibrate()
         presenter.didTapAboutProfilesButton()
     }
     
     @objc func didTapMintedOnChainButton() {
-        logButtonPressedAnalyticEvents(button: .mintedOnChain)
+        logProfileButtonPressedAnalyticEvents(button: .mintedOnChain)
         UDVibration.buttonTap.vibrate()
         presenter.didTapMintedOnChainButton()
     }
@@ -216,6 +216,10 @@ private extension DomainProfileViewController {
         } else {
             collectionView.contentInset.bottom = (view.frame.height - confirmUpdateButton.frame.minY) + defaultBottomOffset
         }
+    }
+    
+    func logProfileButtonPressedAnalyticEvents(button: Analytics.Button) {
+        logButtonPressedAnalyticEvents(button: button, parameters: [.domainName: presenter.domainName])
     }
 }
 

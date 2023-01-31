@@ -105,7 +105,7 @@ extension DomainDetailsViewController: DomainDetailsViewProtocol {
 // MARK: - Actions
 private extension DomainDetailsViewController {
     @IBAction func shareButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .share)
+        logButtonPressedAnalyticEvents(button: .share, parameters: [.domainName: presenter.domainName])
         presenter.shareButtonPressed()
     }
     
