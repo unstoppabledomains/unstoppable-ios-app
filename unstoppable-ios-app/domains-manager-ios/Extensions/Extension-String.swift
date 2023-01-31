@@ -166,6 +166,7 @@ extension String {
         static let login = "LOGIN"
         static let addN = "ADD_N"
         static let rateUs = "RATE_US"
+        static let both = "BOTH"
 
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -220,6 +221,7 @@ extension String {
         static let passwordRuleNumber = "PASSWORD_RULE_NUMBER"
         static let passwordRuleLetter = "PASSWORD_RULE_LETTER"
         static let passwordRuleRange = "PASSWORD_RULE_RANGE"
+        static let passwordRuleMatch = "PASSWORD_RULE_MATCH"
         static let createPasswordHelpTitle = "CREATE_PASSWORD_HELP_TITLE"
         static let createPasswordHelpText = "CREATE_PASSWORD_HELP_TEXT"
         static let createPasswordHelpTextHighlighted = "CREATE_PASSWORD_HELP_TEXT_HIGHLIGHTED"
@@ -706,6 +708,8 @@ extension String {
         static let domainProfileAccessInfoTitle = "DOMAIN_PROFILE_ACCESS_INFO_TITLE"
         static let domainProfileAccessInfoDescription = "DOMAIN_PROFILE_ACCESS_INFO_DESCRIPTION"
         static let profileSocialsEmptyMessage = "PROFILE_SOCIALS_EMPTY_MESSAGE"
+        static let profileRefreshingBadgesTitle = "PROFILE_REFRESHING_BADGES_TITLE"
+        static let profileBadgesUpToDate = "PROFILE_BADGES_UP_TO_DATE"
         
         // Recent activities
         static let noRecentActivity = "NO_RECENT_ACTIVITY"

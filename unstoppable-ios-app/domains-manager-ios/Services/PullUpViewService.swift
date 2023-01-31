@@ -81,7 +81,6 @@ protocol PullUpViewServiceProtocol {
     func showTryUpdateDomainProfileLaterPullUp(in viewController: UIViewController) async throws
     func showUpdateDomainProfileSomeChangesFailedPullUp(in viewController: UIViewController,
                                                         changes: [DomainProfileSectionUIChangeFailedItem]) async throws
-    func showRefreshBadgesComingSoonPullUp(in viewController: UIViewController)
     func showShowcaseYourProfilePullUp(for domain: DomainDisplayInfo,
                                        in viewController: UIViewController) async throws
     func showDomainProfileAccessInfoPullUp(in viewController: UIViewController)
@@ -91,7 +90,7 @@ protocol PullUpViewServiceProtocol {
                                           connectedApp: any UnifiedConnectAppInfoProtocol,
                                           in viewController: UIViewController) async
     func showChooseCoinVersionPullUp(for coin: CoinRecord,
-                                     in viewController: UIViewController) async throws -> Bool
+                                     in viewController: UIViewController) async throws -> CoinVersionSelectionResult
 }
 
 @MainActor
@@ -1151,20 +1150,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             showOrUpdate(in: viewController, pullUp: .updateDomainProfileSomeChangesFailed, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
-    
-    func showRefreshBadgesComingSoonPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 304
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.comingSoon.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .refreshArrow24,
-                                                                                 size: .small),
-                                                                     subtitle: .label(.text(String.Constants.profileBadgesComingSoonDescription.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        presentPullUpView(in: viewController, pullUp: .refreshBadgesComingSoon, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
-    }
-    
+
     func showShowcaseYourProfilePullUp(for domain: DomainDisplayInfo,
                                        in viewController: UIViewController) async throws {
         let selectionViewHeight: CGFloat = 388
@@ -1289,7 +1275,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     
     /// Return true if latest is selected and false if Legacy
     func showChooseCoinVersionPullUp(for coin: CoinRecord,
-                                     in viewController: UIViewController) async throws -> Bool {
+                                     in viewController: UIViewController) async throws -> CoinVersionSelectionResult {
         let selectionViewHeight: CGFloat = 404
         let ticker = coin.ticker
         let coinIcon = await appContext.imageLoadingService.loadImage(from: .currency(coin,
@@ -1298,9 +1284,10 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                       downsampleDescription: nil)
         let segmentedControl = UDSegmentedControl(frame: .zero)
         segmentedControl.heightAnchor.constraint(equalToConstant: 36).isActive = true
-        segmentedControl.insertSegment(withTitle: String.Constants.multiChain.localized(), at: 0, animated: false)
-        segmentedControl.insertSegment(withTitle: String.Constants.legacy.localized(), at: 1, animated: false)
-        segmentedControl.selectedSegmentIndex = 0
+        for (i, result) in CoinVersionSelectionResult.allCases.enumerated() {
+            segmentedControl.insertSegment(withTitle: result.title, at: i, animated: false)
+        }
+        segmentedControl.selectedSegmentIndex = CoinVersionSelectionResult.preselected.rawValue
         
         return try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(coin.fullName ?? ticker),
@@ -1314,8 +1301,10 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                                                             icon: nil,
                                                                                                             analyticsName: .addCurrency,
                                                                                                             action: { [weak segmentedControl] in
-                let isNotLegacySelected = segmentedControl?.selectedSegmentIndex == 0
-                completion(.success(isNotLegacySelected))
+                
+                let selectedIndex = segmentedControl?.selectedSegmentIndex ?? 0
+                let result = CoinVersionSelectionResult(rawValue: selectedIndex) ?? .both
+                completion(.success(result))
             }))),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             

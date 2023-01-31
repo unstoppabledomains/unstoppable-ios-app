@@ -14,8 +14,12 @@ final class DomainProfileBadgesSection {
     private var badgesData: SectionData
     var state: DomainProfileViewController.State
     private let id = UUID()
+    private var sectionId = UUID()
     private var isSectionExpanded = false
     private let sectionAnalyticName: String = "badges"
+    private var isRefreshingBadges = false
+    private var isBadgesUpToDate = false
+    private var refreshBadgesTimer: Timer?
 
     init(sectionData: SectionData,
          state: DomainProfileViewController.State,
@@ -23,6 +27,7 @@ final class DomainProfileBadgesSection {
         self.badgesData = sectionData
         self.controller = controller
         self.state = state
+        setBadgesUpToDateFor(nextRefreshDate: badgesData.refresh.next)
     }
 }
 
@@ -57,7 +62,6 @@ extension DomainProfileBadgesSection: DomainProfileSection {
         case .default, .updatingRecords, .loadingError, .updatingProfile:
             let isRefreshBadgesButtonEnabled = state == .default || state == .updatingRecords
             let sectionHeaderDescription = sectionHeader(isLoading: false,
-                                                         isButtonVisible: true,
                                                          isButtonEnabled: isRefreshBadgesButtonEnabled)
             let section: DomainProfileViewController.Section = .badges(headerDescription: sectionHeaderDescription)
             snapshot.appendSections([section])
@@ -86,7 +90,6 @@ extension DomainProfileBadgesSection: DomainProfileSection {
             snapshot.appendSections([.footer(sectionFooter())])
         case .loading:
             snapshot.appendSections([.badges(headerDescription: sectionHeader(isLoading: true,
-                                                                              isButtonVisible: true,
                                                                               isButtonEnabled: false))])
             for _ in 0..<maxItems {
                 snapshot.appendItems([.loading(style: .hideShow, uiConfiguration: .profileBadges)])
@@ -116,17 +119,28 @@ extension DomainProfileBadgesSection: DomainProfileSection {
 // MARK: - Private methods
 private extension DomainProfileBadgesSection {
     func sectionHeader(isLoading: Bool,
-                       isButtonVisible: Bool,
                        isButtonEnabled: Bool) -> DomainProfileSectionHeader.HeaderDescription {
         var headerButton: DomainProfileSectionHeader.HeaderButton? = nil
-        if isButtonVisible {
-            headerButton = .refresh(isEnabled: isButtonEnabled,
+        
+        if !isBadgesUpToDate {
+            /// Refresh action is available
+            let isEnabled = isRefreshingBadges ? false : isButtonEnabled
+            headerButton = .refresh(isEnabled: isEnabled,
+                                    isSpinning: isRefreshingBadges,
+                                    refreshingTitle: String.Constants.profileRefreshingBadgesTitle.localized(),
                                     callback: { [weak self] in
                 self?.logProfileSectionButtonPressedAnalyticEvent(button: .refresh,
                                                                   parameters: [:])
-                self?.refreshBadgesButtonPressed()
+                self?.refreshDomainBadges()
             })
+        } else {
+            /// Refresh action is not available
+            headerButton = .init(title: String.Constants.profileBadgesUpToDate.localized(),
+                                 icon: .checkmark,
+                                 isEnabled: false,
+                                 action: { })
         }
+        
         
         let numberOfBadges = badgesData.badges.count
         let secondaryTitle = numberOfBadges == 0 ? "" : String(numberOfBadges)
@@ -135,7 +149,7 @@ private extension DomainProfileBadgesSection {
                      secondaryTitle: secondaryTitle,
                      button: headerButton,
                      isLoading: isLoading,
-                     id: id)
+                     id: sectionId)
     }
     
     @MainActor
@@ -163,12 +177,52 @@ private extension DomainProfileBadgesSection {
         }
     }
     
-    func refreshBadgesButtonPressed() {
-        Task { @MainActor in
-            guard let view = controller?.viewController else { return }
+    func refreshDomainBadges() {
+        Task {
+            await stopRefreshBadgesTimer()
+            guard let controller,
+                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: (await controller.generalData.domain).name) else { return }
             
-            appContext.pullUpViewService.showRefreshBadgesComingSoonPullUp(in: view)
+            updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: true)
+            do {
+                let refreshInfo = try await NetworkService().refreshDomainBadges(for: domain)
+                setBadgesUpToDateFor(nextRefreshDate: refreshInfo.next)
+                updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: refreshInfo.refresh)
+                if refreshInfo.refresh {
+                    await startRefreshBadgesTimer()
+                }
+            } catch {
+                await appContext.toastMessageService.showToast(.failedToRefreshBadges, isSticky: false)
+                updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: false)
+            }
         }
+    }
+    
+    func updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: Bool) {
+        if self.isRefreshingBadges != isRefreshingBadges {
+            self.isRefreshingBadges = isRefreshingBadges
+            sectionId = .init()
+            controller?.sectionDidUpdate(animated: false)
+        }
+    }
+    
+    @MainActor
+    func startRefreshBadgesTimer() {
+        refreshBadgesTimer = Timer.scheduledTimer(withTimeInterval: Constants.refreshDomainBadgesInterval,
+                                                  repeats: true,
+                                                  block: { [weak self] _ in
+            self?.refreshDomainBadges()
+        })
+    }
+    
+    @MainActor
+    func stopRefreshBadgesTimer() {
+        refreshBadgesTimer?.invalidate()
+        refreshBadgesTimer = nil
+    }
+    
+    func setBadgesUpToDateFor(nextRefreshDate: Date) {
+        isBadgesUpToDate = nextRefreshDate > Date()
     }
 }
 
@@ -180,7 +234,8 @@ extension BadgesInfo {
                        .init(code: "4", name: "NFT Domain", logo: "", description: "Holder"),
                        .init(code: "5", name: "NFT Domain", logo: "", description: "Holder"),
                        .init(code: "6", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "7", name: "NFT Domain", logo: "", description: "Holder")])
+                       .init(code: "7", name: "NFT Domain", logo: "", description: "Holder")],
+              refresh: .init(last: Date(), next: Date()))
     }
 }
 

@@ -8,10 +8,14 @@
 import UIKit
 
 extension CABasicAnimation {
-    static func infiniteRotateAnimation(duration: TimeInterval) -> CABasicAnimation {
+    static func infiniteRotateAnimation(duration: TimeInterval, clockwise: Bool) -> CABasicAnimation {
         let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation")
         rotationAnimation.fromValue = 0.0
-        rotationAnimation.toValue = -Double.pi * 2
+        var toValue: Double = .pi * 2
+        if !clockwise {
+            toValue *= -1
+        }
+        rotationAnimation.toValue = toValue
         rotationAnimation.duration = duration
         rotationAnimation.repeatCount = .infinity
         

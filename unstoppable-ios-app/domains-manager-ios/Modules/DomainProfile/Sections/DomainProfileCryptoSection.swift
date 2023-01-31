@@ -383,19 +383,22 @@ private extension DomainProfileCryptoSection {
             
             UDRouter().showAddCurrency(from: currencies,
                                        excludedCurrencies: excludedCurrencies,
-                                       addCurrencyCallback: addRecordFor(currency:),
+                                       addCurrencyCallback: addRecordFor(currencies:),
                                        in: view)
         }
     }
     
-    func addRecordFor(currency: GroupedCoinRecord) {
+    func addRecordFor(currencies: [GroupedCoinRecord]) {
         Task {
             await MainActor.run {
                 self.isSectionExpanded = true
-                let newRecord = CryptoEditingGroupedRecord(records: currency.coins.map({ CryptoRecord.init(coin: $0) }))
-                
-                editingGroupedRecords.append(newRecord)
-                setEditingRecord(newRecord)
+                for (i, currency) in currencies.enumerated() {
+                    let newRecord = CryptoEditingGroupedRecord(records: currency.coins.map({ CryptoRecord.init(coin: $0) }))
+                    editingGroupedRecords.append(newRecord)
+                    if i == 0 {
+                        setEditingRecord(newRecord)
+                    }
+                }
                 controller?.sectionDidUpdate(animated: true)
             }
         }
