@@ -49,6 +49,7 @@ private extension SignMessageRequestConfirmationView {
         textView.layer.borderWidth = 1
         textView.layer.borderColor = UIColor.borderDefault.cgColor
         textView.textContainerInset = textContainerInset
+        textView.isEditable = false
         
         let maxTextViewHeight: CGFloat = 176
         let font: UIFont = .currentFont(withSize: 16, weight: .regular)
