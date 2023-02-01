@@ -36,7 +36,7 @@ struct NetworkConfig {
     
     static var baseResolveUrl: String {
         if User.instance.getSettings().isTestnetUsed {
-            return "https://resolve.staging.unstoppabledomains.com"
+            return "https://resolve.ud-staging.com"
         } else {
             return "https://resolve.unstoppabledomains.com"
         }
