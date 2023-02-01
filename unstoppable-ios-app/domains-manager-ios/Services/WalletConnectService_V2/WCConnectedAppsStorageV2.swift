@@ -149,6 +149,13 @@ extension UnifiedConnectAppInfoProtocol {
     var chainIds: [Int] {
         return appInfo.getChainIds()
     }
+    
+    var isV2dApp: Bool {
+        switch appInfo.dAppInfoInternal {
+        case .version1: return false
+        case .version2: return true
+        }
+    }
 }
 
 struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
@@ -195,13 +202,6 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
         self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version1(appV1.session),
                                                              isTrusted: WalletConnectService.isTrusted(dAppInfo: appV1.session.dAppInfo))
         self.connectionStartDate = appV1.connectionStartDate
-    }
-    
-    var isV2dApp: Bool {
-        switch appInfo.dAppInfoInternal {
-        case .version1: return false
-        case .version2: return true
-        }
     }
 }
 

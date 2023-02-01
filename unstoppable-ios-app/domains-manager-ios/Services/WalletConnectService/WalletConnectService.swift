@@ -286,13 +286,18 @@ extension WalletConnectService: WalletConnectServiceProtocol {
         try? self.server.disconnect(from: toDisconnect.session)
     }
     
-    func expectConnection(from connectedApp: WCConnectedAppsStorage.ConnectedApp) {
+    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
         Task {
-            let requestURL = connectedApp.session.url
-            if !(await requestsManager.contains(requestURL: requestURL)) {
-                /// This request is not yet received
-                await expectedRequestsManager.add(requestURL: requestURL)
-                startConnectionTimeout(for: requestURL)
+            switch connectedApp.appInfo.dAppInfoInternal {
+            case .version1(let session):
+                let requestURL = session.url
+                if !(await requestsManager.contains(requestURL: requestURL)) {
+                    /// This request is not yet received
+                    await expectedRequestsManager.add(requestURL: requestURL)
+                    startConnectionTimeout(for: requestURL)
+                }
+            case .version2:
+                return
             }
         }
     }

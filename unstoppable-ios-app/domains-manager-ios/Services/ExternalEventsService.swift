@@ -215,8 +215,8 @@ private extension ExternalEventsService {
             guard let connectedApp = apps.first(where: { $0.appName == dAppName }) else {
                 throw EventsHandlingError.cantFindConnectedApp
             }
-            
-            //            walletConnectService.expectConnection(from: connectedApp)
+
+            walletConnectServiceV2.expectConnection(from: connectedApp)
             return .showPullUpLoading
         }
     }
