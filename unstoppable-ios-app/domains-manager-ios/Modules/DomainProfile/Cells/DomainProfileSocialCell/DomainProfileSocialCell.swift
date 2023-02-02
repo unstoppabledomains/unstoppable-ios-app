@@ -88,7 +88,7 @@ private extension DomainProfileSocialCell {
             return "@"
         case .reddit:
             return "u/"
-        case .youTube:
+        case .youTube, .linkedIn, .gitHub:
             return "/"
         case .discord:
             return ""
@@ -105,7 +105,7 @@ private extension DomainProfileSocialCell {
                 return url.lastPathComponent
             }
             return value.replacingOccurrences(of: "u/", with: "")
-        case .youTube:
+        case .youTube, .linkedIn, .gitHub:
             if isWebsiteValid(value),
                let url = URL(string: value) {
                 return url.pathComponents.suffix(2).joined(separator: "/")

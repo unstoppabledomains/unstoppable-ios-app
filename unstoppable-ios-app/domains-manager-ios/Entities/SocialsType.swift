@@ -14,6 +14,8 @@ enum SocialsType: Hashable {
     case telegram
     case reddit
     case youTube
+    case linkedIn
+    case gitHub
     
     var title: String {
         switch self {
@@ -27,6 +29,10 @@ enum SocialsType: Hashable {
             return "Reddit"
         case .youTube:
             return "YouTube"
+        case .linkedIn:
+            return "LinkedIn"
+        case .gitHub:
+            return "GitHub"
         }
     }
     
@@ -42,6 +48,10 @@ enum SocialsType: Hashable {
             return .redditIcon24
         case .youTube:
             return .youTubeIcon24
+        case .linkedIn:
+            return .linkedInIcon24
+        case .gitHub:
+            return .gitHubIcon24
         }
     }
     
@@ -57,6 +67,10 @@ enum SocialsType: Hashable {
             return "u/username"
         case .youTube:
             return "/channel URL"
+        case .linkedIn:
+            return ""
+        case .gitHub:
+            return ""
         }
     }
     
@@ -71,6 +85,10 @@ enum SocialsType: Hashable {
         case .reddit:
             return #colorLiteral(red: 0.3495665193, green: 0.6941498518, blue: 0.9350705147, alpha: 1)
         case .youTube:
+            return #colorLiteral(red: 0.3495665193, green: 0.6941498518, blue: 0.9350705147, alpha: 1)
+        case .linkedIn:
+            return #colorLiteral(red: 0.3495665193, green: 0.6941498518, blue: 0.9350705147, alpha: 1)
+        case .gitHub:
             return #colorLiteral(red: 0.3495665193, green: 0.6941498518, blue: 0.9350705147, alpha: 1)
         }
     }

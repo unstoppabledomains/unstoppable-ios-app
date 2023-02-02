@@ -226,22 +226,15 @@ private extension DomainProfileSocialsSection {
             editingSocialsData.reddit?.location = value
         case .youTube:
             editingSocialsData.youtube?.location = value
+        case .linkedIn:
+            editingSocialsData.linkedin?.location = value
+        case .gitHub:
+            editingSocialsData.github?.location = value
         }
     }
     
     func value(of description: SocialDescription, in sectionData: SectionData) -> String {
-        switch description.type {
-        case .twitter:
-            return sectionData.twitter?.location ?? ""
-        case .discord:
-            return sectionData.discord?.location ?? ""
-        case .telegram:
-            return sectionData.telegram?.location ?? ""
-        case .reddit:
-            return sectionData.reddit?.location ?? ""
-        case .youTube:
-            return sectionData.youtube?.location ?? ""
-        }
+        account(of: description.type, in: sectionData)?.location ?? ""
     }
     
     func account(of type: SocialsType, in sectionData: SectionData) -> SerializedDomainSocialAccount? {
@@ -256,6 +249,10 @@ private extension DomainProfileSocialsSection {
             return sectionData.reddit
         case .youTube:
             return sectionData.youtube
+        case .linkedIn:
+            return sectionData.linkedin
+        case .gitHub:
+            return sectionData.github
         }
     }
 }
@@ -278,6 +275,10 @@ extension DomainProfileSocialsSection {
                 return "reddit"
             case .youTube:
                 return "youTube"
+            case .linkedIn:
+                return "linkedIn"
+            case .gitHub:
+                return "gitHub"
             }
         }
         
@@ -292,6 +293,10 @@ extension DomainProfileSocialsSection {
             case .reddit:
                 return webURL
             case .youTube:
+                return webURL
+            case .linkedIn:
+                return webURL
+            case .gitHub:
                 return webURL
             }
         }
@@ -310,6 +315,10 @@ extension DomainProfileSocialsSection {
                 }
                 return URL(string: "https://www.reddit.com/user/\(value.replacingOccurrences(of: "u/", with: ""))")
             case .youTube:
+                return URL(string: value)
+            case .linkedIn:
+                return URL(string: value)
+            case .gitHub:
                 return URL(string: value)
             }
         }
