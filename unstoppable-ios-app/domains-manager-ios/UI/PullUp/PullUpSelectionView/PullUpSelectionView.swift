@@ -376,6 +376,7 @@ private extension PullUpSelectionView {
             buttonContent = content
         }
         
+        button.bounds.size.height = buttonType.height
         button.isUserInteractionEnabled = buttonContent.isUserInteractionEnabled
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: buttonType.height).isActive = true
