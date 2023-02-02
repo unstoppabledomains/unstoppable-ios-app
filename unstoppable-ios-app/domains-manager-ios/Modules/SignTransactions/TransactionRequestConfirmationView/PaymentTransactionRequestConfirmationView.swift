@@ -140,9 +140,9 @@ private extension PaymentTransactionRequestConfirmationView {
         }
         let costView: PaymentTransactionDisplayCostView
         if configuration.isGasFeeOnlyTransaction {
-            costView = PaymentTransactionGasOnlyCostView()
+            costView = PaymentTransactionGasOnlyCostView(frame: bounds)
         } else {
-            costView = PaymentTransactionCostView()
+            costView = PaymentTransactionCostView(frame: bounds)
         }
         
         costView.embedInSuperView(costContainerView)

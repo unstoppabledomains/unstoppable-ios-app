@@ -473,24 +473,25 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             let selectionViewHeight: CGFloat
             let pullUp: Analytics.PullUp
             let connectionConfiguration: WalletConnectService.ConnectionConfig
+            let viewFrame: CGRect = UIScreen.main.bounds
             
             switch connectionConfig {
             case .signMessage(let configuration):
-                let signMessageConfirmationView = SignMessageRequestConfirmationView()
+                let signMessageConfirmationView = SignMessageRequestConfirmationView(frame: viewFrame)
                 signMessageConfirmationView.configureWith(configuration)
                 selectionViewHeight = signMessageConfirmationView.requiredHeight()
                 signTransactionView = signMessageConfirmationView
                 pullUp = .wcRequestSignMessageConfirmation
                 connectionConfiguration = configuration.connectionConfig
             case .payment(let configuration):
-                let signPaymentConfirmationView = PaymentTransactionRequestConfirmationView()
+                let signPaymentConfirmationView = PaymentTransactionRequestConfirmationView(frame: viewFrame)
                 signPaymentConfirmationView.configureWith(configuration)
                 selectionViewHeight = configuration.isGasFeeOnlyTransaction ? 512 : 564
                 signTransactionView = signPaymentConfirmationView
                 pullUp = .wcRequestTransactionConfirmation
                 connectionConfiguration = configuration.connectionConfig
             case .connectWallet(let connectionConfig):
-                let connectServerConfirmationView = ConnectServerRequestConfirmationView()
+                let connectServerConfirmationView = ConnectServerRequestConfirmationView(frame: viewFrame)
                 connectServerConfirmationView.setWith(connectionConfig: connectionConfig)
                 if case .version2 = connectionConfig.appInfo.dAppInfoInternal {
                     selectionViewHeight = 376
