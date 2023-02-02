@@ -259,9 +259,7 @@ private extension GIFAnimationsService {
         
         var value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyGIFDictionary, to: UnsafeRawPointer.self))
         if value == nil {
-            if #available(iOS 14.0, *) {
-                value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyWebPDictionary, to: UnsafeRawPointer.self))
-            }
+            value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyWebPDictionary, to: UnsafeRawPointer.self))
         }
         
         guard let value else { throw GIFPreparationError.failedToCastDelay }
