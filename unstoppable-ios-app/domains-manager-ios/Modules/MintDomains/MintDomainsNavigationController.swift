@@ -200,6 +200,9 @@ private extension MintDomainsNavigationController {
            domains.contains(primaryDomainName),
            await dataAggregatorService.reverseResolutionDomain(for: wallet) == nil {
             UserDefaults.preferableDomainNameForRR = primaryDomainName
+        } else if mintedDomains.filter({ wallet.owns(domain: $0) }).isEmpty {
+            /// Transferring first domain to the wallet. Before RR was set automatically, with new system it is not.
+            UserDefaults.preferableDomainNameForRR = domains.first
         }
    
         await MainActor.run {
