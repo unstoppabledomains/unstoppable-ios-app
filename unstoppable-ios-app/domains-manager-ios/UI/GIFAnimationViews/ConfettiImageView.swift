@@ -25,6 +25,11 @@ final class ConfettiImageView: GIFAnimationImageView {
     }
    
     static func prepareAnimationsAsync() {
+        #if DEBUG
+        if TestsEnvironment.isTestModeOn {
+            return
+        }
+        #endif
         Task {
             await GIFAnimationsService.shared.prepareGIF(.happyEnd)
         }

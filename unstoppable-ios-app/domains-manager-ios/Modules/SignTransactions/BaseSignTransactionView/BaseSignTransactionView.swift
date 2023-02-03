@@ -110,8 +110,6 @@ extension BaseSignTransactionView {
                 appImageBackgroundView.backgroundColor = (color ?? .brandWhite)
             }
         }
-        
-        self.network = getChainFromAppInfo(appInfo)
          
         appImageView.layer.borderColor = UIColor.borderSubtle.cgColor
         appImageView.layer.borderWidth = 1
@@ -119,12 +117,21 @@ extension BaseSignTransactionView {
                                image: appInfo.isTrusted ? .checkBadge : nil)
     }
     
-    func getChainFromAppInfo(_ appInfo: WalletConnectService.WCServiceAppInfo) -> BlockchainType {
-        if let chainId = appInfo.getChainIds().first,
-           let blockchainType = (try? UnsConfigManager.getBlockchainType(from: chainId)) {
-            return blockchainType
+    func setNetworkFrom(appInfo: WalletConnectService.WCServiceAppInfo, domain: DomainItem) {
+        self.network = getChainFromAppInfo(appInfo, domain: domain)
+    }
+    
+    func getChainFromAppInfo(_ appInfo: WalletConnectService.WCServiceAppInfo, domain: DomainItem) -> BlockchainType {
+        switch appInfo.dAppInfoInternal {
+        case .version1:
+            return domain.getBlockchainType()
+        case .version2:
+            let appBlockchainTypes = appInfo.getChainIds().compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
+            if let domainBlockchainType = appBlockchainTypes.first(where: { $0 == domain.getBlockchainType() }) {
+                return domainBlockchainType
+            }
+            return appBlockchainTypes.first ?? .Ethereum
         }
-        return .Ethereum
     }
     
     func setDomainInfo(_ domain: DomainItem, isSelectable: Bool) {

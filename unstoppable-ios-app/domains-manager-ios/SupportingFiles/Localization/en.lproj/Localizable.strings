@@ -558,7 +558,7 @@
 
 // Deprecated TLD
 "TLD_HAS_BEEN_DEPRECATED" = ".%@ has been deprecated";
-"TLD_DEPRECATED_REFUND_DESCRIPTION" = "We’ve deprecated .%@, so we’re giving you a 3x refund.";
+"TLD_DEPRECATED_REFUND_DESCRIPTION" = "We've deprecated .%@. Learn more on our website";
 
 // Domain profile
 "ADD_COVER" = "Add cover";

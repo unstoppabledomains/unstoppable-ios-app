@@ -60,7 +60,6 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
                     }
                 }
             }
-
             return domains
         }
     }
@@ -122,7 +121,6 @@ private extension MockUDDomainsService {
             let tld = isZil ? "zil" : "x"
             var newDomain = DomainItem(name: "coolguy_\(self.domains.count)_\(suffix).\(tld)")
             newDomain.blockchain = blockchain
-
             if let wallet {
                 newDomain.ownerWallet = wallet
             }

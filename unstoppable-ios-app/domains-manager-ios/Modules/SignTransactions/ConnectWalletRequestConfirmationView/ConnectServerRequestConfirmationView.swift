@@ -30,6 +30,7 @@ extension ConnectServerRequestConfirmationView {
         titleLabel.updateAttributesOf(text: connectionConfig.appInfo.getDisplayName(),
                                       withFont: .currentFont(withSize: 22, weight: .bold),
                                       textColor: .foregroundDefault)
+        setNetworkFrom(appInfo: connectionConfig.appInfo, domain: connectionConfig.domain)
         setWith(appInfo: connectionConfig.appInfo)
         setDomainInfo(connectionConfig.domain, isSelectable: false)
         Task {
@@ -48,7 +49,7 @@ extension ConnectServerRequestConfirmationView {
             domainInfoStackView?.axis = .horizontal
         }
         
-        let blockchainType = getChainFromAppInfo(connectionConfig.appInfo)
+        let blockchainType = getChainFromAppInfo(connectionConfig.appInfo, domain: connectionConfig.domain)
         set(selectedChain: blockchainType)
     }
 }
