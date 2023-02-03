@@ -149,7 +149,10 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
                     case .connectionTimeout:
                         showErrorAlert(in: hostView)
                     case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance:
-                        guard !(hostView is PullUpViewController) else { return }
+                        if let pullUpView = hostView as? PullUpViewController,
+                           pullUpView.pullUp != .wcLoading {
+                            return
+                        }
                         
                         showErrorAlert(in: hostView)
                     }
