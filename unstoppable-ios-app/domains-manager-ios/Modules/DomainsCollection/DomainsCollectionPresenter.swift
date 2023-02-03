@@ -499,10 +499,15 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
 private extension DomainsCollectionPresenter {
     @MainActor
     func checkPresentedDomainsIndexChangedAndUpdateUI(domains: [DomainDisplayInfo]) {
+        func updateSelectedDomain(_ domain: DomainDisplayInfo, at index: Int, newCurrentIndex: Int) {
+            self.currentIndex = newCurrentIndex
+            stateController.set(domains: domains)
+            view?.setSelectedDomain(domain, at: index, animated: true)
+        }
+        
         guard isIndexSupported(currentIndex) else {
             if !domains.isEmpty {
-                self.currentIndex = 0
-                view?.setSelectedDomain(domains[0], at: 0, animated: true)
+                updateSelectedDomain(domains[0], at: 0, newCurrentIndex: 0)
             }
             return
         }
@@ -514,15 +519,13 @@ private extension DomainsCollectionPresenter {
         if let newIndex = domains.firstIndex(where: { $0.isSameEntity(currentlySelectedDomain )}) {
             /// Currently selected domain's order changed
             if newIndex != currentIndex {
-                self.currentIndex = newIndex
-                view?.setSelectedDomain(currentlySelectedDomain, at: newIndex, animated: true)
+                updateSelectedDomain(currentlySelectedDomain, at: newIndex, newCurrentIndex: newIndex)
                 didUpdateSelectedDomainIndex = true
             }
         } else {
             /// Currently selected domain removed. Set first as current
             if !domains.isEmpty {
-                self.currentIndex = 0
-                view?.setSelectedDomain(domains[0], at: 0, animated: true)
+                updateSelectedDomain(domains[0], at: 0, newCurrentIndex: 0)
                 didUpdateSelectedDomainIndex = true
             }
         }
@@ -540,7 +543,7 @@ private extension DomainsCollectionPresenter {
         /// If selected domain wasn't updated, need to check if previous and next domain's order changed 
         if !didUpdateSelectedDomainIndex,
            isDomainIndexChanged(at: currentIndex - 1) || isDomainIndexChanged(at: currentIndex + 1) {
-            view?.setSelectedDomain(currentlySelectedDomain, at: currentIndex, animated: true)
+            updateSelectedDomain(currentlySelectedDomain, at: currentIndex, newCurrentIndex: currentIndex)
         }
     }
     
