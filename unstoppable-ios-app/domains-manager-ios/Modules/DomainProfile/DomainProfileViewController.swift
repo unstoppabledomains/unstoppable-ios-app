@@ -66,6 +66,7 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     private var dataSource: DomainProfileDataSource!
     private var defaultBottomOffset: CGFloat { Constants.scrollableContentBottomOffset }
     private let minScrollYOffset: CGFloat = -40
+    private var viewDidAppear = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,6 +86,10 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
         super.viewDidAppear(animated)
         
         cNavigationController?.navigationBar.navBarContentView.setTitle(hidden: true, animated: false)
+        if !viewDidAppear {
+            viewDidAppear = true
+            return
+        }
         presenter.viewDidAppear()
     }
     

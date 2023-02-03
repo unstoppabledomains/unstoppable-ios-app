@@ -94,6 +94,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
 
     @MainActor
     func viewDidAppear() {
+        setAvailableActions()
         view?.set(title: dataHolder.domain.name)
     }
     
@@ -771,7 +772,6 @@ private extension DomainProfileViewPresenter {
 private extension DomainProfileViewPresenter {
     @MainActor
     func start() {
-        setAvailableActions()
         updateSectionsData()
         refreshDomainProfileDetails(animated: true)
         asyncCheckForExternalWalletAndFetchProfile()
