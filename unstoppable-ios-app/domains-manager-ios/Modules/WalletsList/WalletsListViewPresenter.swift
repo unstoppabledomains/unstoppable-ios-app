@@ -255,23 +255,22 @@ private extension WalletsListViewPresenter {
     
     func handleWalletAddedResult(_ result: AddWalletNavigationController.Result) {
         Task {
-            await MainActor.run {
-                switch result {
-                case .cancelled:
-                    return
-                case .created(let wallet), .createdAndBackedUp(let wallet):
-                    var walletName = String.Constants.vault.localized()
-                    if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0) {
-                        walletName = displayInfo.walletSourceName
-                    }
-                    appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
-                    refreshWallets()
-                    if case .createdAndBackedUp(let wallet) = result,
-                       let walletInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0) {
-                        showDetailsOf(wallet: wallet, walletInfo: walletInfo)
-                    }
-                    AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
+            switch result {
+            case .cancelled:
+                return
+            case .created(let wallet), .createdAndBackedUp(let wallet):
+                var walletName = String.Constants.vault.localized()
+                if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0) {
+                    walletName = displayInfo.walletSourceName
                 }
+                await appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
+                await fetchWallets()
+                await showWallets()
+                if case .createdAndBackedUp(let wallet) = result,
+                   let walletInfo = walletsWithInfo.first(where: { $0.wallet.address == wallet.address })?.displayInfo {
+                    await showDetailsOf(wallet: wallet, walletInfo: walletInfo)
+                }
+                AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
             }
         }
     }
