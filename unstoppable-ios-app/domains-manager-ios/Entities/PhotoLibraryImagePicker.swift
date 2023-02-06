@@ -62,13 +62,20 @@ extension PhotoLibraryImagePicker: PHPickerViewControllerDelegate {
             return
         }
         
-        result.itemProvider.loadObject(ofClass: UIImage.self, completionHandler: { [weak self] (object, error) in
-            DispatchQueue.main.async {
-                if let image = object as? UIImage {
-                    self?.didPick(image: image, from: picker)
+        result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image", completionHandler: { [weak self] (url, error) in
+            Task {
+                if let url = url,
+                   let data = try? Data(contentsOf: url),
+                   let image = await UIImage.createWith(anyData: data) {
+                    
+                    DispatchQueue.main.async {
+                        self?.didPick(image: image, from: picker)
+                    }
                 } else {
-                    Debugger.printFailure("Failed to get image from PHImagePicker with error \(error)", critical: false)
-                    self?.didFailToPickImage(from: picker)
+                    DispatchQueue.main.async {
+                        Debugger.printFailure("Failed to get image from PHImagePicker with error ", critical: false)
+                        self?.didFailToPickImage(from: picker)
+                    }
                 }
             }
         })
@@ -94,10 +101,12 @@ private extension PhotoLibraryImagePicker {
     func didPick(image: UIImage, from picker: UIViewController) {
         picker.presentingViewController?.dismiss(animated: true) { [weak self] in
             self?.imagePickerCallback?(image)
+            self?.imagePickerCallback = nil
         }
     }
     
     func didFailToPickImage(from picker: UIViewController) {
+        self.imagePickerCallback = nil
         guard let presentingVC = picker.presentingViewController else {
             picker.dismiss(animated: true)
             Debugger.printFailure("Failed to get presenting view controller from image picker", critical: true)
