@@ -61,7 +61,7 @@ class CNavigationController: UIViewController {
         topViewController?.loadViewIfNeeded()
         topViewController?.viewWillAppear(animated)
         if self.rootViewController == nil {
-            if let rootViewController = self.viewControllers.last {
+            if let rootViewController = self.viewControllers.first {
                 self.rootViewController = rootViewController
                 viewControllers.forEach { vc in
                     vc.loadViewIfNeeded()
