@@ -377,19 +377,21 @@ private extension DomainsCollectionPresenter {
     
     func askToSetRRIfCurrentRRDomainIsNotPreferable(among domains: [DomainDisplayInfo]) async {
         let walletsWithInfo = await stateController.walletsWithInfo
-        if let preferableDomainNameForRR = UserDefaults.preferableDomainNameForRR,
-           let primaryDomain = domains.first(where: { $0.isPrimary }),
-           preferableDomainNameForRR == primaryDomain.name,
-           let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: primaryDomain)}),
-           let walletInfo = walletWithInfo.displayInfo {
-            guard let rrDomain = walletInfo.reverseResolutionDomain else { return }
-            
-            if rrDomain.name != preferableDomainNameForRR {
-                try? await askToSetReverseResolutionFor(domain: primaryDomain, in: walletInfo)
-            }
-            
+        guard let preferableDomainNameForRR = UserDefaults.preferableDomainNameForRR,
+              await router.isTopPresented(),
+              let (index, preferableDomainForRR) = domains.enumerated().first(where: { $0.element.name == preferableDomainNameForRR }),
+              !preferableDomainForRR.isMinting,
+              let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: preferableDomainForRR)}),
+              let walletInfo = walletWithInfo.displayInfo else { return }
+        
+        guard walletInfo.reverseResolutionDomain?.name != preferableDomainNameForRR else {
             UserDefaults.preferableDomainNameForRR = nil
+            return
         }
+        
+        await view?.setSelectedDomain(preferableDomainForRR, at: index, animated: true)
+        try? await askToSetReverseResolutionFor(domain: preferableDomainForRR, in: walletInfo)
+        UserDefaults.preferableDomainNameForRR = nil
     }
     
     func askToSetReverseResolutionFor(domain: DomainDisplayInfo, in walletInfo: WalletDisplayInfo) async throws {
@@ -470,11 +472,9 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
                 case .domainsUpdated(let domains):
                     setDomains(domains, shouldCheckPresentedDomains: true)
                     updateUI()
-                    if !isResolvingPrimaryDomain,
-                       !isPrimaryDomainResolved(domains: domains) {
-                        Task {
-                            await resolvePrimaryDomain(domains: domains)
-                        }
+                    Task {
+                        await resolvePrimaryDomain(domains: domains)
+                        await askToSetRRIfCurrentRRDomainIsNotPreferable(among: domains)
                     }
                 case .domainsPFPUpdated(let domains):
                     let isDomainsChanged = stateController.domains != domains
