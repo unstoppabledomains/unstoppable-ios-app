@@ -30,6 +30,7 @@ final class ChoosePrimaryDomainViewController: BaseViewController {
     @IBOutlet private weak var confirmButton: MainButton!
     @IBOutlet private weak var moveToTopButton: FABButton!
     @IBOutlet private weak var contentTopConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var buttonBackgroundView: UIView!
     
     var cellIdentifiers: [UICollectionViewCell.Type] { [RearrangeDomainCell.self,
                                                         CollectionViewHeaderCell.self,
@@ -76,7 +77,7 @@ final class ChoosePrimaryDomainViewController: BaseViewController {
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
-        collectionView.contentInset.bottom = keyboardHeight + Constants.scrollableContentBottomOffset
+        collectionView.contentInset.bottom = keyboardHeight + Constants.scrollableContentBottomOffset - buttonBackgroundView.bounds.height
     }
     
     override func keyboardWillHideAction(duration: Double, curve: Int) {
@@ -92,8 +93,8 @@ extension ChoosePrimaryDomainViewController: ChoosePrimaryDomainViewProtocol {
         dataSource.apply(snapshot, animatingDifferences: animated)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             guard let self = self else { return }
-            
-            self.collectionView.isScrollEnabled = (self.collectionView.contentSize.height + self.collectionView.contentInset.top) > self.collectionView.bounds.height
+
+            self.collectionView.isScrollEnabled = (self.collectionView.contentSize.height + self.collectionView.contentInset.top + self.collectionView.contentInset.bottom) > self.collectionView.bounds.height
         }
     }
     
@@ -227,6 +228,7 @@ extension ChoosePrimaryDomainViewController: UDSearchBarDelegate {
     
     func udSearchBarSearchButtonClicked(_ udSearchBar: UDSearchBar) {
         cNavigationBar?.setSearchActive(false, animated: true)
+        searchBar.text = ""
     }
     
     func udSearchBarCancelButtonClicked(_ udSearchBar: UDSearchBar) {

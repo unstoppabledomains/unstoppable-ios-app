@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ChoosePrimaryDomainViewController" customModule="domains_manager_ios" customModuleProvider="target">
             <connections>
+                <outlet property="buttonBackgroundView" destination="nS4-Le-GgK" id="D4z-JQ-Doa"/>
                 <outlet property="collectionView" destination="YwI-Qa-fP2" id="sl2-uH-T1c"/>
                 <outlet property="confirmButton" destination="U6L-oQ-9hZ" id="Opw-bM-BMy"/>
                 <outlet property="contentTopConstraint" destination="tRH-MZ-6Ux" id="LQM-Lg-o0w"/>
