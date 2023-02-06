@@ -51,12 +51,7 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
         switch item {
         case .domain(let domain, let rrInfo, _):
             logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
-            view?.stopSearching()
-            didStopSearch()
-            Task {
-                try? await Task.sleep(seconds: 0.3)
-                view?.scrollTo(item: .domain(domain, reverseResolutionWalletInfo: rrInfo, isSearching: false))
-            }
+            stopSearchAndScroll(to: domain, rrInfo: rrInfo)
         case .domainName, .header, .searchEmptyState:
             return
         }
@@ -140,6 +135,18 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
 
 // MARK: - Private functions
 private extension ChooseNewPrimaryDomainPresenter {
+    @MainActor
+    func stopSearchAndScroll(to domain: DomainDisplayInfo, rrInfo: WalletDisplayInfo?) {
+        view?.stopSearching()
+        super.didStopSearch()
+        view?.setTitleHidden(false)
+        Task {
+            await showData()
+            try? await Task.sleep(seconds: 0.3)
+            view?.scrollTo(item: .domain(domain, reverseResolutionWalletInfo: rrInfo, isSearching: false))
+        }
+    }
+    
     func showDataAsync() {
         Task { await showData() }
     }
