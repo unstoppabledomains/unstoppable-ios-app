@@ -40,6 +40,7 @@ struct Constants {
     static let defaultUNSReleaseVersion = "v0.6.19"
     static let appStoreAppId = "1544748602"
     static let refreshDomainBadgesInterval: TimeInterval = 60 * 3 // 3 min
+    static let defaultInitials: String = "N/A"
 }
 
 let currencyNumberFormatter: NumberFormatter = {
