@@ -47,6 +47,26 @@ extension UIImage {
     }
     
     func gifImageCropped(to cropRect: CGRect) -> UIImage? {
+        transformGifImages { image in
+            if let cgimage = image.cgImage?.cropping(to: cropRect) {
+                return UIImage(cgImage: cgimage)
+            }
+            return nil
+        }
+    }
+    
+    func gifImageDownsampled(to size: CGSize, scale: CGFloat) -> UIImage? {
+        transformGifImages { image in
+            appContext.imageLoadingService.downsample(image: image,
+                                                      downsampleDescription: .init(size: size,
+                                                                                   scale: scale))
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension UIImage {
+    func transformGifImages(_ transformBlock: (UIImage) ->(UIImage?)) -> UIImage? {
         let images = self.images ?? [self]
         let frameCount = images.count
         let frameDuration: TimeInterval = duration / Double(frameCount)
@@ -58,13 +78,10 @@ extension UIImage {
         
         var uiImages = [UIImage]()
         for image in images {
-            if let cgimage = image.cgImage?.cropping(to: cropRect) {
-                let uiImage = UIImage(cgImage: cgimage)
-                uiImages.append(uiImage)
+            if let transformedImage = transformBlock(image) {
+                uiImages.append(transformedImage)
             }
         }
-        
-        
         
         return UIImage.animatedImage(with: uiImages,
                                      duration: Double(duration))

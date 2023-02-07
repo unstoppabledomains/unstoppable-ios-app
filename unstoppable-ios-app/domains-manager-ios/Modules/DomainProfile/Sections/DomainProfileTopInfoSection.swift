@@ -239,9 +239,8 @@ private extension DomainProfileTopInfoSection {
         let newHeight = size.height * scale
         let newSize = CGSize(width: newWidth, height: newHeight)
         
-        let image = appContext.imageLoadingService.downsample(image: image,
-                                                              downsampleDescription: .init(size: newSize,
-                                                                                           scale: 1))
+        let image = image.gifImageDownsampled(to: newSize,
+                                              scale: 1)
         
         return image
     }
