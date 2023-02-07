@@ -62,23 +62,28 @@ extension PhotoLibraryImagePicker: PHPickerViewControllerDelegate {
             return
         }
         
-        result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.image", completionHandler: { [weak self] (url, error) in
-            Task {
-                if let url = url,
-                   let data = try? Data(contentsOf: url),
-                   let image = await UIImage.createWith(anyData: data) {
-                    
-                    DispatchQueue.main.async {
-                        self?.didPick(image: image, from: picker)
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        Debugger.printFailure("Failed to get image from PHImagePicker with error ", critical: false)
-                        self?.didFailToPickImage(from: picker)
-                    }
-                }
-            }
+        result.itemProvider.loadDataRepresentation(forTypeIdentifier: "public.image", completionHandler: { [weak self] data, error in
+            self?.didLoadImageData(data, error: error, from: picker)
         })
+    }
+    
+    private func didLoadImageData(_ data: Data?, error: Error?, from picker: UIViewController) {
+        Task {
+            if let data {
+                guard let image = await UIImage.createWith(anyData: data) else {
+                    Debugger.printFailure("Failed to create image from any data", critical: false)
+                    await didFailToPickImage(from: picker)
+                    return
+                }
+                await didPick(image: image, from: picker)
+            } else if let error {
+                Debugger.printFailure("Failed to get image from PHImagePicker with error \(error.localizedDescription)", critical: false)
+                await didFailToPickImage(from: picker)
+            } else {
+                Debugger.printFailure("Failed to get image from PHImagePicker without error and data 🤷‍♂️", critical: false)
+                await didFailToPickImage(from: picker)
+            }
+        }
     }
 }
 
@@ -98,6 +103,7 @@ extension PhotoLibraryImagePicker: UIImagePickerControllerDelegate & UINavigatio
 
 // MARK: - Private methods
 private extension PhotoLibraryImagePicker {
+    @MainActor
     func didPick(image: UIImage, from picker: UIViewController) {
         picker.presentingViewController?.dismiss(animated: true) { [weak self] in
             self?.imagePickerCallback?(image)
@@ -105,6 +111,7 @@ private extension PhotoLibraryImagePicker {
         }
     }
     
+    @MainActor
     func didFailToPickImage(from picker: UIViewController) {
         self.imagePickerCallback = nil
         guard let presentingVC = picker.presentingViewController else {
@@ -115,7 +122,7 @@ private extension PhotoLibraryImagePicker {
         
         Task {
             await presentingVC.dismiss(animated: true)
-            await appContext.pullUpViewService.showSelectedImageBadPullUp(in: presentingVC)
+            appContext.pullUpViewService.showSelectedImageBadPullUp(in: presentingVC)
         }
     }
 }
