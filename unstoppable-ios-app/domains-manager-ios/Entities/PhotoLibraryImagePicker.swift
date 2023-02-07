@@ -33,9 +33,11 @@ final class PhotoLibraryImagePicker: NSObject {
             
             self.imagePickerCallback = imagePickerCallback
             
-            let imagePicker = UIImagePickerController()
+            var config = PHPickerConfiguration(photoLibrary: .shared())
+            config.filter = .images
+            config.selectionLimit = 1
+            let imagePicker = PHPickerViewController(configuration: config)
             imagePicker.delegate = self
-            imagePicker.mediaTypes = ["public.image"]
             
             imagePicker.modalPresentationStyle = .fullScreen
             viewController.present(imagePicker, animated: true)
@@ -43,29 +45,52 @@ final class PhotoLibraryImagePicker: NSObject {
     }
 }
 
-// MARK: - UIImagePickerControllerDelegate & UINavigationControllerDelegate
-extension PhotoLibraryImagePicker: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[.editedImage] as? UIImage {
-            didPick(image: image, from: picker)
-        } else if let image = info[.originalImage] as? UIImage {
-            didPick(image: image, from: picker)
-        } else {
-            Debugger.printFailure("Failed to get image from UIImagePicker", critical: true)
-            didFailToPickImage(from: picker)
+// MARK: - PHPickerViewControllerDelegate
+extension PhotoLibraryImagePicker: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        guard let result = results.first else {
+            picker.dismiss(animated: true) // User cancelled selection
+            return
         }
+        
+        result.itemProvider.loadDataRepresentation(forTypeIdentifier: "public.image", completionHandler: { [weak self] data, error in
+            self?.didLoadImageData(data, error: error, from: picker)
+        })
     }
 }
 
 // MARK: - Private methods
 private extension PhotoLibraryImagePicker {
-    func didPick(image: UIImage, from picker: UIViewController) {
-        picker.presentingViewController?.dismiss(animated: true) { [weak self] in
-            self?.imagePickerCallback?(image)
+    func didLoadImageData(_ data: Data?, error: Error?, from picker: UIViewController) {
+        Task {
+            if let data {
+                guard let image = await UIImage.createWith(anyData: data) else {
+                    Debugger.printFailure("Failed to create image from any data", critical: false)
+                    await didFailToPickImage(from: picker)
+                    return
+                }
+                await didPick(image: image, from: picker)
+            } else if let error {
+                Debugger.printFailure("Failed to get image from PHImagePicker with error \(error.localizedDescription)", critical: false)
+                await didFailToPickImage(from: picker)
+            } else {
+                Debugger.printFailure("Failed to get image from PHImagePicker without error and data 🤷‍♂️", critical: false)
+                await didFailToPickImage(from: picker)
+            }
         }
     }
     
+    @MainActor
+    func didPick(image: UIImage, from picker: UIViewController) {
+        picker.presentingViewController?.dismiss(animated: true) { [weak self] in
+            self?.imagePickerCallback?(image)
+            self?.imagePickerCallback = nil
+        }
+    }
+    
+    @MainActor
     func didFailToPickImage(from picker: UIViewController) {
+        self.imagePickerCallback = nil
         guard let presentingVC = picker.presentingViewController else {
             picker.dismiss(animated: true)
             Debugger.printFailure("Failed to get presenting view controller from image picker", critical: true)
@@ -74,7 +99,7 @@ private extension PhotoLibraryImagePicker {
         
         Task {
             await presentingVC.dismiss(animated: true)
-            await appContext.pullUpViewService.showSelectedImageBadPullUp(in: presentingVC)
+            appContext.pullUpViewService.showSelectedImageBadPullUp(in: presentingVC)
         }
     }
 }

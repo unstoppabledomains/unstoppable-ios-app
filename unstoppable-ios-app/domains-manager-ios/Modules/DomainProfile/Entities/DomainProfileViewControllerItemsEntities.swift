@@ -20,6 +20,8 @@ extension DomainProfileViewController {
     }
 }
 
+typealias ImageDropCallback = (UIImage) -> ()
+
 // MARK: - Top Info data
 extension DomainProfileViewController {
     struct ItemTopInfoData: Hashable {
@@ -32,7 +34,9 @@ extension DomainProfileViewController {
         let buttonPressedCallback: DomainProfileTopInfoButtonCallback
         let bannerImageActions: [DomainProfileTopInfoSection.ProfileImageAction]
         let avatarImageActions: [DomainProfileTopInfoSection.ProfileImageAction]
-        
+        let avatarDropCallback: ImageDropCallback
+        let bannerDropCallback: ImageDropCallback
+
         enum Button {
             case banner, avatar, qrCode, publicProfile, domainName
             

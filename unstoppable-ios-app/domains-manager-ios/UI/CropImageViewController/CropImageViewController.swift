@@ -223,9 +223,7 @@ fileprivate extension CropImageViewController {
         var originalCropRect = CGRect.init(x: originalX, y: originalY, width: originalCropSize.width, height: originalCropSize.height)
         originalCropRect = originalCropRect.integral
         
-        guard let imageRef = fixedImage.cgImage?.cropping(to: originalCropRect) else { return nil }
-        
-        let croppedImage = UIImage(cgImage: imageRef, scale: 1, orientation: fixedImage.imageOrientation)
+        guard let croppedImage = fixedImage.gifImageCropped(to: originalCropRect) else { return nil }
         
         return croppedImage
     }
