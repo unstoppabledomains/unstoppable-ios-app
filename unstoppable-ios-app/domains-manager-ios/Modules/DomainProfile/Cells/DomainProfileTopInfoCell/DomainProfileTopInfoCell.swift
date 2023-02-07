@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import MobileCoreServices
 
 typealias DomainProfileTopInfoButton = DomainProfileViewController.ItemTopInfoData.Button
 typealias DomainProfileTopInfoButtonCallback = (DomainProfileTopInfoButton)->()
@@ -29,6 +30,9 @@ final class DomainProfileTopInfoCell: UICollectionViewCell {
     private var buttonPressedCallback: DomainProfileTopInfoButtonCallback?
     private var bannerImageActions: [DomainProfileTopInfoSection.ProfileImageAction] = []
     private var avatarImageActions: [DomainProfileTopInfoSection.ProfileImageAction] = []
+    private var avatarDropCallback: ImageDropCallback?
+    private var bannerDropCallback: ImageDropCallback?
+    private let dropItemIdentifier = kUTTypeImage as String
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -41,6 +45,12 @@ final class DomainProfileTopInfoCell: UICollectionViewCell {
         domainNameIndicatorImageView.isHidden = true
         domainNameLabel.numberOfLines = 2
         domainNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapDomainNameLabel)))
+        
+        
+        let avatarDropInteraction = UIDropInteraction(delegate: self)
+        avatarButton.addInteraction(avatarDropInteraction)
+        let bannerDropInteraction = UIDropInteraction(delegate: self)
+        bannerButton.addInteraction(bannerDropInteraction)
     }
     
     override func layoutSubviews() {
@@ -54,10 +64,54 @@ final class DomainProfileTopInfoCell: UICollectionViewCell {
 
 }
 
+// MARK: - UIDropInteractionDelegate
+extension DomainProfileTopInfoCell: UIDropInteractionDelegate {
+    func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
+        session.hasItemsConforming(toTypeIdentifiers: [dropItemIdentifier]) && session.items.count == 1
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+        UIDropProposal(operation: .copy)
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        guard let item = session.items.first else { return }
+        
+        let isAvatar = interaction.view == avatarButton
+        
+        item.itemProvider.loadInPlaceFileRepresentation(forTypeIdentifier: dropItemIdentifier,
+                                                        completionHandler: { [weak self] (url, isInplaceOrCopy, error) in
+            Task {
+                if let url = url,
+                   let data = try? Data(contentsOf: url),
+                   let image = (await UIImage.createWith(anyData: data)) {
+                    self?.didDropImage(image, isAvatar: isAvatar)
+                } else {
+                    session.loadObjects(ofClass: UIImage.self) { [weak self] imageItems in
+                        guard let images = imageItems as? [UIImage],
+                              let image = images.first else { return }
+                        self?.didDropImage(image, isAvatar: isAvatar)
+                    }
+                }
+            }
+        })
+    }
+    
+    private func didDropImage(_ image: UIImage, isAvatar: Bool) {
+        if isAvatar {
+            avatarDropCallback?(image)
+        } else {
+            bannerDropCallback?(image)
+        }
+    }
+}
+
 // MARK: - Open methods
 extension DomainProfileTopInfoCell {
     func set(with data: DomainProfileViewController.ItemTopInfoData) {
         self.buttonPressedCallback = data.buttonPressedCallback
+        self.avatarDropCallback = data.avatarDropCallback
+        self.bannerDropCallback = data.bannerDropCallback
         let domain = data.domain
         domainNameLabel.setAttributedTextWith(text: domain.name,
                                               font: .currentFont(withSize: 22, weight: .bold),
@@ -314,7 +368,9 @@ struct DomainProfileTopInfoCell_Previews: PreviewProvider {
                                  bannerImageState: .untouched(source: nil),
                                  buttonPressedCallback: { _ in },
                                  bannerImageActions: [.change(isReplacingNFT: false, isUpdatingRecords: false, callback: { }), .remove(isRemovingNFT: false, isUpdatingRecords: false, callback: { })],
-                                 avatarImageActions: [.upload(callback: { })]))
+                                 avatarImageActions: [.upload(callback: { })],
+                                 avatarDropCallback: { _ in },
+                                 bannerDropCallback: { _ in }))
             cell.backgroundColor = .blue
         }
         .frame(width: 390, height: 300)

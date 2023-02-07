@@ -254,7 +254,19 @@ extension UIImage {
 }
 
 extension UIImage {
-    var dataToUpload: Data? { self.jpegData(compressionQuality: 1) }
+    var dataToUpload: Data? { try? self.gifDataRepresentation() }
     var base64String: String? { dataToUpload?.base64EncodedString() }
 }
 
+extension UIImage {
+    static func createWith(anyData data: Data) async -> UIImage? {
+        if let gif = await GIFAnimationsService.shared.createGIFImageWithData(data) {
+            return gif
+        } else if let image = UIImage(data: data) {
+            return image
+        } else if let svg = UIImage.from(svgData: data) {
+            return svg
+        }
+        return nil
+    }
+}

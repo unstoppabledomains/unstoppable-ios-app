@@ -46,7 +46,12 @@ extension DomainProfileTopInfoSection: DomainProfileSection {
                                                    bannerImageActions: imageActionsIf(imageState: editingTopInfoData.bannerImageState,
                                                                                       of: .banner),
                                                    avatarImageActions: imageActionsIf(imageState: editingTopInfoData.avatarImageState,
-                                                                                      of: .avatar)))])
+                                                                                      of: .avatar),
+                                                   avatarDropCallback: { [weak self] image in
+            self?.didPickImage(image, ofType: .avatar)
+        }, bannerDropCallback: { [weak self] image in
+            self?.didPickImage(image, ofType: .banner)
+        }))])
     }
  
     func areAllFieldsValid() -> Bool {
@@ -222,10 +227,14 @@ private extension DomainProfileTopInfoSection {
         
         PhotoLibraryImagePicker.shared.pickImage(in: viewController, imagePickerCallback: { [weak self] image in
             DispatchQueue.main.async {
-                let resizedImage = self?.resize(image: image, to: 1000) ?? image
-                self?.crop(image: resizedImage, ofType: type)
+                self?.didPickImage(image, ofType: type)
             }
         })
+    }
+    
+    func didPickImage(_ image: UIImage, ofType type: DomainImageType) {
+        let resizedImage = resize(image: image, to: 1000) ?? image
+        crop(image: resizedImage, ofType: type)
     }
 
     func resize(image: UIImage, to maxResolution: CGFloat) -> UIImage? {
@@ -239,9 +248,8 @@ private extension DomainProfileTopInfoSection {
         let newHeight = size.height * scale
         let newSize = CGSize(width: newWidth, height: newHeight)
         
-        let image = appContext.imageLoadingService.downsample(image: image,
-                                                              downsampleDescription: .init(size: newSize,
-                                                                                           scale: 1))
+        let image = image.gifImageDownsampled(to: newSize,
+                                              scale: 1)
         
         return image
     }
