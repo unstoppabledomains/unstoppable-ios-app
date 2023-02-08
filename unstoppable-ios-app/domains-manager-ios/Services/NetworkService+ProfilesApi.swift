@@ -285,7 +285,7 @@ struct SerializedDomainMessageRule: Codable {
 
 struct BadgesInfo: Codable, Hashable {
     let badges: [BadgeInfo]
-    let refresh: BadgesRefreshInfo
+    let refresh: BadgesRefreshInfo?
     
     struct BadgeInfo: Codable, Hashable {
         let code: String

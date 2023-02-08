@@ -27,7 +27,7 @@ final class DomainProfileBadgesSection {
         self.badgesData = sectionData
         self.controller = controller
         self.state = state
-        setBadgesUpToDateFor(nextRefreshDate: badgesData.refresh.next)
+        setBadgesUpToDateFor(nextRefreshDate: badgesData.refresh?.next)
     }
 }
 
@@ -221,7 +221,11 @@ private extension DomainProfileBadgesSection {
         refreshBadgesTimer = nil
     }
     
-    func setBadgesUpToDateFor(nextRefreshDate: Date) {
+    func setBadgesUpToDateFor(nextRefreshDate: Date?) {
+        guard let nextRefreshDate else {
+            self.isBadgesUpToDate = false
+            return
+        }
         isBadgesUpToDate = nextRefreshDate > Date()
     }
 }
