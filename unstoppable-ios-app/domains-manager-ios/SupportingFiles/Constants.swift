@@ -46,7 +46,7 @@ struct Constants {
     static let isTestingMinting: Bool = false
     static let testMintingDomainsCount = 10
     #else
-    static let isTestingMinting: TimeInterval = false
+    static let isTestingMinting: Bool = false
     static let testMintingDomainsCount = 0
     #endif
 
