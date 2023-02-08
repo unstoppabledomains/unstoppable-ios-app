@@ -43,6 +43,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     @MainActor
     func viewDidLoad() {
         appContext.walletConnectService.addListener(self)
+        appContext.walletConnectServiceV2.addListener(self)
         appContext.dataAggregatorService.addListener(self)
         appContext.appLaunchService.addListener(self)
         appContext.externalEventsService.addListener(self)
