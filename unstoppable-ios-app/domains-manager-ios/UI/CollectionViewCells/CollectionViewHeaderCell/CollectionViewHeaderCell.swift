@@ -70,13 +70,14 @@ private extension CollectionViewHeaderCell {
     }
     
     func actionButtonForType(_ type: ActionButtonType) -> BaseButton {
+        let frame = CGRect(origin: .zero, size: CGSize(width: 100, height: 24))
         switch type {
         case .text(let isSuccess):
-            let button = TextButton()
+            let button = TextButton(frame: frame)
             button.isSuccess = isSuccess
             return button
         case .warning:
-            let button = TextWarningButton()
+            let button = TextWarningButton(frame: frame)
             return button
         }
     }
