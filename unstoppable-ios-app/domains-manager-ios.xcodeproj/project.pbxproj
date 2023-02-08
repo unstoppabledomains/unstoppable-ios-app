@@ -202,8 +202,6 @@
 		306DB27326936C57009D95DE /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306DB27126936C57009D95DE /* Endpoint.swift */; };
 		306DB27426936C58009D95DE /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306DB27126936C57009D95DE /* Endpoint.swift */; };
 		306DB27526936C58009D95DE /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306DB27126936C57009D95DE /* Endpoint.swift */; };
-		3070B1CC25AF80B700DEC81C /* Valet in Frameworks */ = {isa = PBXBuildFile; productRef = 3070B1CB25AF80B700DEC81C /* Valet */; };
-		3070B1D225AF812C00DEC81C /* Valet in Frameworks */ = {isa = PBXBuildFile; productRef = 3070B1D125AF812C00DEC81C /* Valet */; };
 		3070B1D825AF8AF300DEC81C /* KeychainLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3070B1D725AF8AF300DEC81C /* KeychainLayer.swift */; };
 		3070B1D925AF8AF300DEC81C /* KeychainLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3070B1D725AF8AF300DEC81C /* KeychainLayer.swift */; };
 		30784C8927F455100034FA4A /* UDTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30784C8827F455100034FA4A /* UDTextView.swift */; };
@@ -1252,6 +1250,7 @@
 		C638121D29914EDF002590E7 /* UIImage+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = C638121B29914EDF002590E7 /* UIImage+GIF.swift */; };
 		C638121E29914EDF002590E7 /* UIImage+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = C638121B29914EDF002590E7 /* UIImage+GIF.swift */; };
 		C638121F29914EDF002590E7 /* UIImage+GIF.swift in Sources */ = {isa = PBXBuildFile; fileRef = C638121B29914EDF002590E7 /* UIImage+GIF.swift */; };
+		C63812242993E009002590E7 /* Valet in Frameworks */ = {isa = PBXBuildFile; productRef = C63812232993E009002590E7 /* Valet */; };
 		C638680B2858DA0F000F98C4 /* KeepingAnimationImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C638680A2858DA0F000F98C4 /* KeepingAnimationImageView.swift */; };
 		C638680C2858DA0F000F98C4 /* KeepingAnimationImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C638680A2858DA0F000F98C4 /* KeepingAnimationImageView.swift */; };
 		C638680D2858DA0F000F98C4 /* KeepingAnimationImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C638680A2858DA0F000F98C4 /* KeepingAnimationImageView.swift */; };
@@ -3908,7 +3907,6 @@
 				290A60502950AA1600882109 /* WalletConnectPush in Frameworks */,
 				290A604E2950AA1600882109 /* WalletConnectPairing in Frameworks */,
 				30CE604C26A9DED000E0D29B /* web3swift in Frameworks */,
-				3070B1CC25AF80B700DEC81C /* Valet in Frameworks */,
 				C63402882886547C00AB5D38 /* SVGKit in Frameworks */,
 				30AD0D7C2704642900F42ACC /* WalletConnectSwift in Frameworks */,
 				306B3D79253EE8EC00102A76 /* Web3 in Frameworks */,
@@ -3917,6 +3915,7 @@
 				290A60522950AA1600882109 /* WalletConnectRouter in Frameworks */,
 				30B6583926A9E75E004F707F /* Stripe in Frameworks */,
 				290A60542950AA1600882109 /* WalletConnectVerify in Frameworks */,
+				C63812242993E009002590E7 /* Valet in Frameworks */,
 				290A604A2950AA1600882109 /* WalletConnectAuth in Frameworks */,
 				306B3D75253EE8EC00102A76 /* Web3PromiseKit in Frameworks */,
 			);
@@ -3991,7 +3990,6 @@
 				30AE84F3257836E2003A0142 /* Web3ContractABI in Frameworks */,
 				30AD0D82270478BF00F42ACC /* WalletConnectSwift in Frameworks */,
 				307BEF0926AEF04B009EC445 /* web3swift in Frameworks */,
-				3070B1D225AF812C00DEC81C /* Valet in Frameworks */,
 				C634028A2886548D00AB5D38 /* SVGKit in Frameworks */,
 				30AE84F4257836E2003A0142 /* Web3 in Frameworks */,
 				307BEF0326AEF022009EC445 /* BigInt in Frameworks */,
@@ -6706,7 +6704,6 @@
 				306B3D74253EE8EC00102A76 /* Web3PromiseKit */,
 				306B3D76253EE8EC00102A76 /* Web3ContractABI */,
 				306B3D78253EE8EC00102A76 /* Web3 */,
-				3070B1CB25AF80B700DEC81C /* Valet */,
 				307B1D592603C8E0007B14C3 /* BigInt */,
 				30CE604B26A9DED000E0D29B /* web3swift */,
 				30B6583826A9E75E004F707F /* Stripe */,
@@ -6721,6 +6718,7 @@
 				290A604F2950AA1600882109 /* WalletConnectPush */,
 				290A60512950AA1600882109 /* WalletConnectRouter */,
 				290A60532950AA1600882109 /* WalletConnectVerify */,
+				C63812232993E009002590E7 /* Valet */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -6855,7 +6853,6 @@
 				30AE84C7257836E2003A0142 /* Web3PromiseKit */,
 				30AE84C9257836E2003A0142 /* Web3ContractABI */,
 				30AE84CA257836E2003A0142 /* Web3 */,
-				3070B1D125AF812C00DEC81C /* Valet */,
 				307BEF0226AEF022009EC445 /* BigInt */,
 				307BEF0426AEF02A009EC445 /* Stripe */,
 				307BEF0626AEF02F009EC445 /* Bugsnag */,
@@ -6925,7 +6922,6 @@
 			mainGroup = 306486742527253700388026;
 			packageReferences = (
 				306B3D73253EE8EC00102A76 /* XCRemoteSwiftPackageReference "Web3.swift" */,
-				3070B1CA25AF80B700DEC81C /* XCRemoteSwiftPackageReference "Valet" */,
 				307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */,
 				30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */,
 				30B6583726A9E75E004F707F /* XCRemoteSwiftPackageReference "stripe-ios" */,
@@ -6934,6 +6930,7 @@
 				30AD0D7A2704642900F42ACC /* XCRemoteSwiftPackageReference "WalletConnectSwift" */,
 				C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */,
 				290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */,
+				C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -10609,14 +10606,6 @@
 				minimumVersion = 0.5.0;
 			};
 		};
-		3070B1CA25AF80B700DEC81C /* XCRemoteSwiftPackageReference "Valet" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Square/Valet";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.1.1;
-			};
-		};
 		307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/attaswift/BigInt";
@@ -10737,6 +10726,14 @@
 				kind = branch;
 			};
 		};
+		C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/unstoppabledomains/Valet-ios.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -10844,16 +10841,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 306B3D73253EE8EC00102A76 /* XCRemoteSwiftPackageReference "Web3.swift" */;
 			productName = Web3;
-		};
-		3070B1CB25AF80B700DEC81C /* Valet */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3070B1CA25AF80B700DEC81C /* XCRemoteSwiftPackageReference "Valet" */;
-			productName = Valet;
-		};
-		3070B1D125AF812C00DEC81C /* Valet */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3070B1CA25AF80B700DEC81C /* XCRemoteSwiftPackageReference "Valet" */;
-			productName = Valet;
 		};
 		307B1D592603C8E0007B14C3 /* BigInt */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -11044,6 +11031,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */;
 			productName = SVGKit;
+		};
+		C63812232993E009002590E7 /* Valet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */;
+			productName = Valet;
 		};
 		C6E69F98288AB6DC000A8346 /* Bugsnag */ = {
 			isa = XCSwiftPackageProductDependency;
