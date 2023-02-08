@@ -56,6 +56,8 @@ class TransactionsStorageTests: XCTestCase {
         txsStorage = nil
     }
     
+    
+    
     func testInjectArrayOfTxs() {
         let ex = expectation(description: "InjectArrayOfTxs")
         
@@ -123,7 +125,13 @@ class TransactionsStorageTests: XCTestCase {
             }.cauterize()
         
         waitForExpectations(timeout: Self.timeout)
-
+        
+    }
+    
+    func testRemoveDuplicates() {
+        let cache = [tx1_with_id, tx_Reconciling_1_and_2, tx3, tx3_Equal]
+        let trimmed = MockupTxsStorage.removeDuplicates(for: [tx_Reconciling_1_and_2, tx3_Equal], _transactionCache: cache)
+        XCTAssertTrue(trimmed.count == 2)
     }
 }
     

@@ -127,12 +127,12 @@
       }
     },
     {
-      "identity" : "valet",
+      "identity" : "valet-ios",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Square/Valet",
+      "location" : "https://github.com/unstoppabledomains/Valet-ios.git",
       "state" : {
-        "revision" : "26689601804b0cc86ed212a6b137232c22210d28",
-        "version" : "4.1.3"
+        "branch" : "master",
+        "revision" : "d680470731ada7ae48d9ca29756c9df792530e7f"
       }
     },
     {
