@@ -263,7 +263,7 @@ extension String {
         static let connectWalletWatchHint = "CONNECT_WALLET_WATCH_HINT"
         static let connectWalletExternal = "CONNECT_WALLET_EXTERNAL"
         static let connectWalletExternalHint = "CONNECT_WALLET_EXTERNAL_HINT"
-        static let connectWalletDontAlreadyHaveDomain = "CONNECT_WALLET_DONT_ALREADY_HAVE_DOMAIN"
+        static let connectWalletCreateNew = "CONNECT_WALLET_CREATE_NEW"
 
         // Add wallet
         static let addWalletTitle = "ADD_WALLET_TITLE"

@@ -155,7 +155,7 @@ private extension RestoreWalletViewController {
         selectionTableViewHeightConstraint.constant = TableViewSelectionCell.Height * CGFloat(restoreOptions.count)
         titleLabel.setTitle(String.Constants.connectWalletTitle.localized())
         subtitleLabel.setSubtitle(String.Constants.connectWalletSubtitle.localized())
-        alreadyHaveDomainsButton.setTitle(String.Constants.connectWalletDontAlreadyHaveDomain.localized(), image: nil)
+        alreadyHaveDomainsButton.setTitle(String.Constants.connectWalletCreateNew.localized(), image: nil)
     }
     
     func setupDashesProgressView() {

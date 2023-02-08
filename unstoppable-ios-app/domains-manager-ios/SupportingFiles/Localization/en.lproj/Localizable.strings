@@ -145,7 +145,7 @@
 "TUTORIAL_SCREEN_3_DESCRIPTION" = "Connect your favorite wallet to seamlessly manage your Web3 identity.";
 
 // Creating wallet
-"CREATING_WALLET" = "Creating vault...";
+"CREATING_WALLET" = "Creating vault";
 "CREATE_NEW_VAULT_TITLE" = "Create new vault";
 "CREATE_NEW_VAULT_SUBTITLE" = "A domain vault is a cryptocurrency address used to store your Web3 domains. Once setup, you’ll need to import your domains to manage them on the Unstoppable app.";
 
@@ -234,7 +234,7 @@
 "CONNECT_WALLET_WATCH_HINT" = "Unstoppable Domain, Ethereum address";
 "CONNECT_WALLET_EXTERNAL" = "External wallet";
 "CONNECT_WALLET_EXTERNAL_HINT" = "MetaMask, Rainbow, etc.";
-"CONNECT_WALLET_DONT_ALREADY_HAVE_DOMAIN" = "Don’t already have a domain?";
+"CONNECT_WALLET_CREATE_NEW" = "Create a new domain vault";
 
 // Add wallet
 "ADD_WALLET_TITLE" = "Add wallet";
