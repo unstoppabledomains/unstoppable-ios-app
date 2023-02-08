@@ -322,8 +322,9 @@ private extension DataAggregatorService {
             async let reverseResolutionTask = fetchIntoCacheReverseResolutionInfo()
             
             let (domains, reverseResolutionMap) = try await (domainsTask, reverseResolutionTask)
+            let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomains().map({ $0.name })
 
-            guard !domains.isEmpty else {
+            guard !domains.isEmpty || !mintingDomainsNames.isEmpty else {
                 await dataHolder.setDataWith(domainsWithDisplayInfo: [],
                                              reverseResolutionMap: reverseResolutionMap)
                 notifyListenersWith(result: .success(.domainsUpdated([])))
@@ -332,7 +333,6 @@ private extension DataAggregatorService {
                 return
             }
             
-            let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomains().map({ $0.name })
             var transactions: [TransactionItem] = []
             do {
                 let newTransactions = try await transactionsService.updateTransactionsListFor(domains: domains.map({ $0.name }) + mintingDomainsNames)
