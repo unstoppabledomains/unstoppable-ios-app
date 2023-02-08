@@ -77,9 +77,11 @@ extension CreateWalletViewController: CreateWalletViewControllerProtocol {
     
     func setActivityIndicator(active: Bool) {
         if active {
+            createVaultButton.setTitle(String.Constants.creatingWallet.localized(), image: nil)
             createVaultButton.showLoadingIndicator()
             activityIndicator.startAnimating()
         } else {
+            createVaultButton.setTitle(String.Constants.createVault.localized(), image: nil)
             createVaultButton.hideLoadingIndicator()
             activityIndicator.stopAnimating()
         }
