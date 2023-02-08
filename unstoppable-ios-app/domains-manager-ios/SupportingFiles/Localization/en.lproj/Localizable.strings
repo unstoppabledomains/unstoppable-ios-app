@@ -283,7 +283,7 @@ To start this process, verify your email address to load the set of domains you 
 "CONNECT_WALLET_WATCH_HINT" = "Unstoppable Domain, Ethereum address";
 "CONNECT_WALLET_EXTERNAL" = "External wallet";
 "CONNECT_WALLET_EXTERNAL_HINT" = "MetaMask, Rainbow, etc.";
-"CONNECT_WALLET_DONT_ALREADY_HAVE_DOMAIN" = "Don’t already have a domain?";
+"CONNECT_WALLET_CREATE_NEW" = "Create a new domain vault";
 
 // Add wallet
 "ADD_WALLET_TITLE" = "Add wallet";
