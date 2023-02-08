@@ -87,7 +87,12 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
         await showDomainProfileFromDomainsCollection(domain,
                                                      wallet: wallet,
                                                      walletInfo: walletInfo,
-                                                     dismissCallback: dismissCallback)
+                                                     dismissCallback: { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self?.presenter?.viewDidAppear()
+            }
+            dismissCallback?()
+        })
     }
     
     func isMintingAvailable(in viewController: UIViewController) async -> Bool {

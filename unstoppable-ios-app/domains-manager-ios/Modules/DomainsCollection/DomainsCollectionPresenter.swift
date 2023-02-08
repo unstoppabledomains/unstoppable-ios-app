@@ -67,6 +67,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         dataAggregatorService.addListener(self)
         view?.setSettingsButtonHidden(false)
         updateGoToSettingsTutorialVisibility()
+        updateUIControlsVisibility()
         Task {
             await loadInitialData()
             let domains = stateController.domains
