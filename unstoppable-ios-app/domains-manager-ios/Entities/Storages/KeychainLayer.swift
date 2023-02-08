@@ -51,7 +51,8 @@ extension PrivateKeyStorage {
             try valet.setString(value, forKey: key)
             Debugger.printInfo("Stored value to iCloud keychain: \(key)")
         } catch {
-            Debugger.printFailure("Failed to store value to iCloud keychain: \(key) with error \(error.localizedDescription)", critical: true)
+            let errorDescription = error is KeychainError ? (error as! KeychainError).description : error.localizedDescription
+            Debugger.printFailure("Failed to store value to iCloud keychain: \(key) with error \(errorDescription)", critical: true)
         }
     }
     
