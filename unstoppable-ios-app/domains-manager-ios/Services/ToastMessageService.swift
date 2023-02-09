@@ -13,6 +13,7 @@ protocol ToastMessageServiceProtocol {
     func removeStickyToast(_ toast: Toast)
     func showToast(_ toast: Toast,
                    in view: UIView,
+                   at position: Toast.Position?,
                    isSticky: Bool,
                    dismissDelay: TimeInterval?,
                    action: EmptyCallback?)
@@ -59,11 +60,12 @@ extension ToastMessageService: ToastMessageServiceProtocol {
         let toastView = buildToastViewWith(message: toast.message,
                                            image: toast.image,
                                            secondaryMessage: toast.secondaryMessage,
-                                           style: toast.style)
+                                           style: toast.style,
+                                           in: nil)
         toastView.toast = toast
         toastView.isSticky = isSticky
         visibleToast = toastView
-        showToastView(toastView, in: nil, at: toast.position, dismissDelay: dismissDelay)
+        showToastView(toastView, in: nil, at: .bottom, dismissDelay: dismissDelay)
     }
     
     func removeStickyToast(_ toast: Toast) {
@@ -77,6 +79,7 @@ extension ToastMessageService: ToastMessageServiceProtocol {
     
     func showToast(_ toast: Toast,
                    in view: UIView,
+                   at position: Toast.Position?,
                    isSticky: Bool,
                    dismissDelay: TimeInterval?,
                    action: EmptyCallback?) {
@@ -86,16 +89,20 @@ extension ToastMessageService: ToastMessageServiceProtocol {
             }
             toastView.removeFromSuperview()
         }
-        
+        dismissToastWorkingItem?.perform()
         let toastView = buildToastViewWith(message: toast.message,
                                            image: toast.image,
                                            secondaryMessage: toast.secondaryMessage,
-                                           style: toast.style)
+                                           style: toast.style,
+                                           in: view.bounds)
         toastView.toast = toast
         toastView.isSticky = isSticky
         add(action: action, for: toast, to: toastView)
         visibleToast = toastView
-        showToastView(toastView, in: view, at: toast.position, dismissDelay: dismissDelay ?? self.dismissDelay)
+        showToastView(toastView,
+                      in: view,
+                      at: position ?? .bottom,
+                      dismissDelay: dismissDelay ?? self.dismissDelay)
     }
     
     func removeToast(from view: UIView) {
@@ -113,8 +120,9 @@ private extension ToastMessageService {
     func buildToastViewWith(message: String,
                             image: UIImage,
                             secondaryMessage: String?,
-                            style: Toast.Style) -> ToastView {
-        let windowFrame = window?.frame ?? .zero
+                            style: Toast.Style,
+                            in frame: CGRect?) -> ToastView {
+        let windowFrame = frame ?? window?.frame ?? .zero
         let sideOffset: CGFloat = 12
         let view = ToastView(frame: CGRect(x: 0, y: 0, width: windowFrame.width, height: 36))
         view.backgroundColor = style.color
@@ -168,6 +176,8 @@ private extension ToastMessageService {
         switch position {
         case .bottom:
             initialY = container.bounds.height
+        case .center:
+            initialY = container.bounds.height / 2 - toastView.bounds.height / 2
         }
         toastView.initialY = initialY
         
@@ -178,6 +188,8 @@ private extension ToastMessageService {
         switch position {
         case .bottom:
             targetY = container.bounds.height - toastView.bounds.height - 48
+        case .center:
+            targetY = initialY
         }
         
         UIView.animate(withDuration: animationDuration) {
@@ -215,7 +227,7 @@ private extension ToastMessageService {
         let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swipeDismissView))
         
         switch position {
-        case .bottom:
+        case .bottom, .center:
             swipeGesture.direction = .down
         }
         

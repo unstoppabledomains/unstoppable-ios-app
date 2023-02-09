@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -37,27 +37,19 @@
                                         </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="mpD-va-5Vr">
-                                        <rect key="frame" x="56" y="8" width="207" height="24"/>
+                                        <rect key="frame" x="56" y="10" width="207" height="20.5"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="hwt-9d-9jZ">
-                                                <rect key="frame" x="0.0" y="2" width="175" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="207" height="20.5"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i85-gh-eSq">
-                                                        <rect key="frame" x="0.0" y="0.0" width="175" height="20.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="207" height="20.5"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                 </subviews>
                                             </stackView>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="domainsProfileIcon" translatesAutoresizingMaskIntoConstraints="NO" id="A8i-g9-o6d">
-                                                <rect key="frame" x="183" y="0.0" width="24" height="24"/>
-                                                <color key="tintColor" name="foregroundMuted"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="A8i-g9-o6d" secondAttribute="height" id="h05-Yn-MQi"/>
-                                                    <constraint firstAttribute="width" constant="24" id="lra-sF-GUw"/>
-                                                </constraints>
-                                            </imageView>
                                         </subviews>
                                     </stackView>
                                 </subviews>
@@ -85,18 +77,13 @@
                 <outlet property="containerView" destination="AA7-9r-pms" id="Gdk-uH-ihc"/>
                 <outlet property="domainNameImageView" destination="mip-dr-3k7" id="b7a-3j-tCg"/>
                 <outlet property="domainNameLabel" destination="i85-gh-eSq" id="wcZ-iT-RCs"/>
-                <outlet property="primaryImageView" destination="A8i-g9-o6d" id="fNe-oX-0F5"/>
             </connections>
             <point key="canvasLocation" x="315.21739130434787" y="148.99553571428569"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="domainsProfileIcon" width="20" height="20"/>
         <namedColor name="backgroundOverlay">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="foregroundMuted">
-            <color red="0.68599998950958252" green="0.68599998950958252" blue="0.71399998664855957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

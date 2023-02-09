@@ -64,7 +64,8 @@ extension UIColor {
     static let brandWhite = UIColor(named: "brandWhite") ?? .black
     static let brandUnstoppablePink = UIColor(named: "brandUnstoppablePink") ?? .black
     static let brandDeepPurple = UIColor(named: "brandDeepPurple") ?? .black
-    
+    static let brandElectricGreen = UIColor(named: "brandElectricGreen") ?? .black
+    static let brandElectricYellow = UIColor(named: "brandElectricYellow") ?? .black
 }
 
 extension UIColor {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -19,10 +19,10 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="Adc-Zz-6qC">
-                        <rect key="frame" x="-2" y="8" width="371" height="139"/>
+                        <rect key="frame" x="16" y="8" width="335" height="139"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="domainsProfileIcon" translatesAutoresizingMaskIntoConstraints="NO" id="stW-qd-F8U" customClass="KeepingAnimationImageView" customModule="domains_manager_ios" customModuleProvider="target">
-                                <rect key="frame" x="161.5" y="0.0" width="48" height="48"/>
+                                <rect key="frame" x="143.5" y="0.0" width="48" height="48"/>
                                 <color key="tintColor" name="foregroundMuted"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="stW-qd-F8U" secondAttribute="height" id="cb2-0Q-lJv"/>
@@ -30,7 +30,7 @@
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="vya-MX-6AH">
-                                <rect key="frame" x="165" y="72" width="41.5" height="67"/>
+                                <rect key="frame" x="147" y="72" width="41.5" height="67"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eq7-Ml-FeJ" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
@@ -54,8 +54,8 @@
             <constraints>
                 <constraint firstItem="Adc-Zz-6qC" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="8" id="4sa-T4-q6f"/>
                 <constraint firstItem="Adc-Zz-6qC" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="Xo4-EZ-XWT"/>
-                <constraint firstItem="Adc-Zz-6qC" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="-2" id="uhG-D1-hWV"/>
-                <constraint firstAttribute="bottom" secondItem="Adc-Zz-6qC" secondAttribute="bottom" id="wzJ-TK-tyL"/>
+                <constraint firstItem="Adc-Zz-6qC" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="uhG-D1-hWV"/>
+                <constraint firstAttribute="bottom" secondItem="Adc-Zz-6qC" secondAttribute="bottom" priority="999" id="wzJ-TK-tyL"/>
             </constraints>
             <size key="customSize" width="367" height="147"/>
             <connections>
@@ -70,7 +70,7 @@
     <resources>
         <image name="domainsProfileIcon" width="48" height="48"/>
         <namedColor name="foregroundMuted">
-            <color red="0.68599998950958252" green="0.68599998950958252" blue="0.71399998664855957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.71372549019607845" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

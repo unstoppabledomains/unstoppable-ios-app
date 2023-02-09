@@ -11,6 +11,7 @@ import PromiseKit
 final class UDDomainsService {
         
     private let storage: Storage = Storage.instance
+    private let domainsPFPStorage = DomainsPFPInfoStorage.instance
     
 }
 
@@ -49,10 +50,14 @@ extension UDDomainsService: UDDomainsServiceProtocol {
         return domains
     }
     
-    func updatePFP(for domains: [DomainItem]) async throws -> [DomainItem] {
-        let domainsWithPFPs = await loadPFPs(for: domains)
-        try await storage.updateDomainsPFPToCache_Blocking(domainsWithPFPs)
-        return domainsWithPFPs
+    func getCachedDomainsPFPInfo() -> [DomainPFPInfo] {
+        domainsPFPStorage.getCachedPFPs()
+    }
+    
+    func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo] {
+        let domainsPFPInfo = await loadPFPs(for: domains)
+        domainsPFPStorage.saveCachedPFPInfo(domainsPFPInfo)
+        return domainsPFPInfo
     }
     
     func getAllUnMintedDomains(for email: String, securityCode: String) async throws -> [String] {
@@ -183,48 +188,38 @@ private extension UDDomainsService {
 
 // MARK: - Private methods
 private extension UDDomainsService {
-    actor DomainsHolder {
-        var domains: [DomainItem]
-        init(domains: [DomainItem]) {
-            self.domains = domains
-        }
-        
-        func addDomain(_ domain: DomainItem) {
-            domains.append(domain)
-        }
-    }
-    
-    func loadPFPs(for domains: [DomainItem]) async -> [DomainItem] {
-        guard !domains.isEmpty else { return  domains }
+    func loadPFPs(for domains: [DomainItem]) async -> [DomainPFPInfo] {
+        guard !domains.isEmpty else { return  [] }
         
         let start = Date()
         let networkService = NetworkService()
-        let holder = DomainsHolder(domains: [])
-        await withTaskGroup(of: Void.self) { group in
-            for (i, domain) in domains.enumerated() {
-                
-                if i >= 5 {
-                    await group.next()
-                }
-                
+        var domainsPFPInfo = [DomainPFPInfo]()
+        
+        await withTaskGroup(of: DomainPFPInfo?.self, body: { group in
+            for domain in domains {
                 group.addTask {
-                    if let profile = (try? await networkService.fetchPublicProfile(for: domain, fields: [.profile, .records])) {
-                        var domain = domain
-                        domain.pfpURL = profile.profile.imagePath
-                        domain.imageType = profile.profile.imageType
-                        await holder.addDomain(domain)
+                    if let profile = (try? await networkService.fetchPublicProfile(for: domain,
+                                                                                   fields: [.profile, .records])) {
+                        return DomainPFPInfo(domainName: domain.name,
+                                             pfpURL: profile.profile.imagePath,
+                                             imageType: profile.profile.imageType)
                     } else {
                         Debugger.printFailure("Failed to load domains PFP info for domain \(domain.name)", critical: false)
-                        await holder.addDomain(domain)
+                        return nil
                     }
                 }
             }
             
-            await group.waitForAll()
-        }
+            for await pfpInfo in group {
+                if let pfpInfo {
+                    domainsPFPInfo.append(pfpInfo)
+                }
+            }
+        })
+        
         Debugger.printWarning("\(String.itTook(from: start)) to load \(domains.count) domains pfps")
         
-        return await holder.domains
+        return domainsPFPInfo
     }
 }
 
@@ -240,43 +235,6 @@ enum UDDomainsError: Error {
             return "Failed to load ZIL domains: \(error.localizedDescription)"
         }
     }
-}
-
-struct DomainNFTImageInfo: Codable {
-    
-    let domain: String
-    let records: Records?
-    
-    var imageValue: String? {
-        if let imageValue = records?.imageValue,
-           !imageValue.isEmpty {
-            return imageValue
-        }
-        return nil
-    }
-    
-    struct Records: Codable {
-        let imageValue: String?
-        
-        enum CodingKeys: String, CodingKey {
-            case imageValue = "social.picture.value"
-        }
-    }
-}
-
-struct DomainNonNFTImageInfo: Codable {
-  
-    let domainName: String
-    let imagePath: String?
-    
-    var imagePathValue: String? {
-        if let imagePath = imagePath,
-           !imagePath.isEmpty {
-            return imagePath
-        }
-        return nil
-    }
-    
 }
 
 enum MintingError: String, RawValueLocalizable, Error {

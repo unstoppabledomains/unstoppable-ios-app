@@ -32,30 +32,21 @@ final class PhotoLibraryImagePicker: NSObject {
             }
             
             self.imagePickerCallback = imagePickerCallback
-            var pickerVC: UIViewController
-            if #available(iOS 14.0, *) {
-                var config = PHPickerConfiguration(photoLibrary: .shared())
-                config.filter = .images
-                config.selectionLimit = 1
-                let imagePicker = PHPickerViewController(configuration: config)
-                imagePicker.delegate = self
-                pickerVC = imagePicker
-            } else {
-                let imagePicker = UIImagePickerController()
-                imagePicker.delegate = self
-                imagePicker.mediaTypes = ["public.image"]
-                pickerVC = imagePicker
-            }
             
-            pickerVC.modalPresentationStyle = .fullScreen
-            viewController.present(pickerVC, animated: true)
+            var config = PHPickerConfiguration(photoLibrary: .shared())
+            config.filter = .images
+            config.selectionLimit = 1
+            let imagePicker = PHPickerViewController(configuration: config)
+            imagePicker.delegate = self
+            
+            imagePicker.modalPresentationStyle = .fullScreen
+            viewController.present(imagePicker, animated: true)
         }
     }
 }
 
 // MARK: - PHPickerViewControllerDelegate
 extension PhotoLibraryImagePicker: PHPickerViewControllerDelegate {
-    @available(iOS 14.0, *)
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         guard let result = results.first else {
             picker.dismiss(animated: true) // User cancelled selection
@@ -66,8 +57,11 @@ extension PhotoLibraryImagePicker: PHPickerViewControllerDelegate {
             self?.didLoadImageData(data, error: error, from: picker)
         })
     }
-    
-    private func didLoadImageData(_ data: Data?, error: Error?, from picker: UIViewController) {
+}
+
+// MARK: - Private methods
+private extension PhotoLibraryImagePicker {
+    func didLoadImageData(_ data: Data?, error: Error?, from picker: UIViewController) {
         Task {
             if let data {
                 guard let image = await UIImage.createWith(anyData: data) else {
@@ -85,24 +79,7 @@ extension PhotoLibraryImagePicker: PHPickerViewControllerDelegate {
             }
         }
     }
-}
-
-// MARK: - UIImagePickerControllerDelegate & UINavigationControllerDelegate
-extension PhotoLibraryImagePicker: UIImagePickerControllerDelegate & UINavigationControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[.editedImage] as? UIImage {
-            didPick(image: image, from: picker)
-        } else if let image = info[.originalImage] as? UIImage {
-            didPick(image: image, from: picker)
-        } else {
-            Debugger.printFailure("Failed to get image from UIImagePicker", critical: true)
-            didFailToPickImage(from: picker)
-        }
-    }
-}
-
-// MARK: - Private methods
-private extension PhotoLibraryImagePicker {
+    
     @MainActor
     func didPick(image: UIImage, from picker: UIViewController) {
         picker.presentingViewController?.dismiss(animated: true) { [weak self] in

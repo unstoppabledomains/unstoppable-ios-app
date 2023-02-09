@@ -10,6 +10,7 @@ import UIKit
 final class DashesView: UIView {
     
     private var dashesLayer = CAShapeLayer()
+    private var configuration: Configuration = .domainProfile
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -35,6 +36,20 @@ final class DashesView: UIView {
         dashesLayer.path = path.cgPath
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        setConfiguration(configuration)
+    }
+}
+
+// MARK: - Open methods
+extension DashesView {
+    func setConfiguration(_ configuration: Configuration) {
+        self.configuration = configuration
+        dashesLayer.strokeColor = configuration.color.cgColor
+        dashesLayer.opacity = configuration.opacity
+    }
 }
 
 // MARK: - Setup methods
@@ -42,14 +57,39 @@ private extension DashesView {
     func setup() {
         layer.addSublayer(dashesLayer)
      
-        dashesLayer.strokeColor = UIColor.white.cgColor
         dashesLayer.lineDashPattern = [2, 2]
         dashesLayer.lineWidth = 1
         dashesLayer.fillColor = nil
         dashesLayer.lineJoin = .round
-        dashesLayer.opacity = 0.08
+        setConfiguration(configuration)
         
         setNeedsLayout()
         layoutIfNeeded()
+    }
+}
+
+// MARK: - Configuration
+extension DashesView {
+    enum Configuration {
+        case domainProfile
+        case domainsCollection
+        
+        var color: UIColor {
+            switch self {
+            case .domainProfile:
+                return .white
+            case .domainsCollection:
+                return .borderMuted
+            }
+        }
+        
+        var opacity: Float {
+            switch self {
+            case .domainProfile:
+                return 0.08
+            case .domainsCollection:
+                return 1
+            }
+        }
     }
 }

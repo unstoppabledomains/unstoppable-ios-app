@@ -98,13 +98,6 @@ enum Toast: Hashable {
         }
     }
     
-    var position: Position {
-        switch self {
-        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .noInternetConnection, .updatingRecords, .changesConfirmed, .mintingSuccessful, .mintingUnavailable, .domainCopied, .failedToFetchDomainProfileData, .failedToRefreshBadges, .failedToUpdateProfile, .itemSaved, .itemCopied:
-            return .bottom
-        }
-    }
-    
     static func == (lhs: Toast, rhs: Toast) -> Bool {
         switch (lhs, rhs) {
         case (.walletAddressCopied(let lhsAddresses), .walletAddressCopied(let rhsAddresses)):
@@ -164,6 +157,7 @@ enum Toast: Hashable {
     
     enum Position {
         case bottom
+        case center
     }
     
 }

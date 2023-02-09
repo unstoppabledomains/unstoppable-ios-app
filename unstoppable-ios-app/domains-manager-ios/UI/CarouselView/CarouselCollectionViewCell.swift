@@ -11,18 +11,23 @@ final class CarouselCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet private weak var iconImageView: UIImageView!
     @IBOutlet private weak var textLabel: UILabel!
-    
+    @IBOutlet private weak var containerView: UIView!
+    @IBOutlet private weak var imageSizeConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var contentLeftOffsetConstraint: NSLayoutConstraint!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
     
-    static func widthFor(carouselItem: CarouselViewItem) -> CGFloat {
-        let sideOffset: CGFloat = 12
+    static func widthFor(carouselItem: CarouselViewItem,
+                         sideOffset: CGFloat,
+                         style: CarouselCollectionViewCell.Style) -> CGFloat {
+        let sideOffset: CGFloat = sideOffset
         let uiElementsSpacing: CGFloat = 8
-        let iconWidth: CGFloat = 20
+        let iconWidth: CGFloat = style.imageSize
         let textSize: CGFloat = carouselItem.text.width(withConstrainedHeight: 32,
-                                                        font: .currentFont(withSize: 16, weight: .medium))
+                                                        font: .currentFont(withSize: style.fontSize, weight: .medium))
         
         return iconWidth + textSize + uiElementsSpacing + (sideOffset * 2)
     }
@@ -32,12 +37,49 @@ final class CarouselCollectionViewCell: UICollectionViewCell {
 // MARK: - Open methods
 extension CarouselCollectionViewCell {
     
-    func set(carouselItem: CarouselViewItem) {
+    func set(carouselItem: CarouselViewItem,
+             sideOffset: CGFloat,
+             style: Style) {
+        contentLeftOffsetConstraint.constant = sideOffset
         iconImageView.image = carouselItem.icon
         textLabel.text = carouselItem.text
         textLabel.setAttributedTextWith(text: carouselItem.text,
-                                        font: .currentFont(withSize: 16, weight: .medium),
-                                        textColor: .foregroundSecondary)
+                                        font: .currentFont(withSize: style.fontSize, weight: .medium),
+                                        textColor: carouselItem.tintColor)
+        iconImageView.tintColor = carouselItem.tintColor
+        containerView.backgroundColor = carouselItem.backgroundColor
+        setStyle(style)
     }
     
+}
+
+// MARK: - Private methods
+private extension CarouselCollectionViewCell {
+    func setStyle(_ style: Style) {
+        imageSizeConstraint.constant = style.imageSize
+    }
+}
+
+extension CarouselCollectionViewCell {
+    enum Style {
+        case `default`, small
+        
+        var imageSize: CGFloat {
+            switch self {
+            case .default:
+                return 20
+            case .small:
+                return 12
+            }
+        }
+        
+        var fontSize: CGFloat {
+            switch self {
+            case .default:
+                return 16
+            case .small:
+                return 12
+            }
+        }
+    }
 }

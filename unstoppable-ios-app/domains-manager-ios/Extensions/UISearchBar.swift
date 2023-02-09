@@ -9,14 +9,12 @@ import UIKit
 
 extension UISearchBar {
     func applyUDStyle() {
-        if #available(iOS 14.0, *) {
-            let clearIcon = UIImage.searchClearIcon.withTintColor(.foregroundMuted)
-            UISearchBar.appearance().setImage(clearIcon, for: .clear, state: .normal)
-            UISearchBar.appearance().setImage(clearIcon, for: .clear, state: .highlighted)
-            
-            if let clearButton = searchTextField.value(forKey: "_clearButton") as? UIButton {
-                clearButton.tintColor = .foregroundMuted
-            }
+        let clearIcon = UIImage.searchClearIcon.withTintColor(.foregroundMuted)
+        UISearchBar.appearance().setImage(clearIcon, for: .clear, state: .normal)
+        UISearchBar.appearance().setImage(clearIcon, for: .clear, state: .highlighted)
+        
+        if let clearButton = searchTextField.value(forKey: "_clearButton") as? UIButton {
+            clearButton.tintColor = .foregroundMuted
         }
         
         backgroundColor = .clear
@@ -43,6 +41,9 @@ extension UISearchBar {
         searchIconImageView.tintColor = .foregroundSecondary
         let searchContainer = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: 20))
         searchContainer.addSubview(searchIconImageView)
+        
+        searchTextField.textContentType = .oneTimeCode
+        searchTextField.spellCheckingType = .no
         
         searchTextField.leftView = searchContainer
         searchTextField.leftViewMode = .always

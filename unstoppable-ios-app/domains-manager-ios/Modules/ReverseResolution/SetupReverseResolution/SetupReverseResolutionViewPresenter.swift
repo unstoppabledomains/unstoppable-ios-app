@@ -9,6 +9,7 @@ import Foundation
 
 protocol SetupReverseResolutionViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
+    var domainName: String? { get }
 
     func confirmButtonPressed()
     func skipButtonPressed()
@@ -19,14 +20,15 @@ class SetupReverseResolutionViewPresenter {
     private let udWalletsService: UDWalletsServiceProtocol
     let wallet: UDWallet
     let walletInfo: WalletDisplayInfo
-    let domain: DomainItem?
+    let domain: DomainDisplayInfo?
+    var domainName: String? { domain?.name }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: SetupReverseResolutionViewProtocol,
          wallet: UDWallet,
          walletInfo: WalletDisplayInfo,
-         domain: DomainItem?,
+         domain: DomainDisplayInfo?,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
         self.wallet = wallet
@@ -41,14 +43,15 @@ class SetupReverseResolutionViewPresenter {
         }
     }
     func confirmButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .confirm)
+        logButtonPressedAnalyticEvents(button: .confirm, parameters: [.domainName: domainName ?? "N/A"])
     }
     func skipButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .skip)
+        logButtonPressedAnalyticEvents(button: .skip, parameters: [.domainName: domainName ?? "N/A"])
     }
-    func setupReverseResolutionFor(domain: DomainItem) async throws {
+    func setupReverseResolutionFor(domain: DomainDisplayInfo) async throws {
         guard let view = self.view else { return }
         
+        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
         try await udWalletsService.setReverseResolution(to: domain,
                                                         paymentConfirmationDelegate: view)
     }

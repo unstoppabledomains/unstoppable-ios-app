@@ -19,7 +19,6 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
     func confirmChangesButtonPressed()
     func shouldPopOnBackButton() -> Bool
     func shareButtonPressed()
-    func didTapSetPrimaryButton()
     func didTapShowWalletDetailsButton()
     func didTapSetReverseResolutionButton()
     func didTapCopyDomainButton()
@@ -50,7 +49,7 @@ final class DomainProfileViewPresenter: ViewAnalyticsLogger, WebsiteURLValidator
     }
 
     init(view: DomainProfileViewProtocol,
-         domain: DomainItem,
+         domain: DomainDisplayInfo,
          wallet: UDWallet,
          walletInfo: WalletDisplayInfo,
          sourceScreen: SourceScreen,
@@ -95,6 +94,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
 
     @MainActor
     func viewDidAppear() {
+        setAvailableActions()
         view?.set(title: dataHolder.domain.name)
     }
     
@@ -139,25 +139,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
                                            analyticsLogger: self)
         self.shareDomainHandler = shareDomainHandler
     }
-    
-    func didTapSetPrimaryButton() {
-        Task {
-            guard let view = self.view else { return }
-            
-            let domain = dataHolder.domain
-            do {
-                try await appContext.pullUpViewService.showChangePrimaryDomainConfirmationPullUp(newPrimaryDomain: domain.name, in: view)
-                await dataAggregatorService.setPrimaryDomainWith(name: domain.name)
-                await MainActor.run {
-                    view.dismissPullUpMenu()
-                    dataHolder.domain.isPrimary = true
-                    setAvailableActions()
-                    view.cNavigationController?.updateNavigationBar()
-                }
-            }
-        }
-    }
-    
+  
     func didTapShowWalletDetailsButton() {
         Task {
             switch sourceScreen {
@@ -221,7 +203,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
 // MARK: - Open methods
 extension DomainProfileViewPresenter {
     @MainActor
-    func replace(domain: DomainItem,
+    func replace(domain: DomainDisplayInfo,
                  wallet: UDWallet,
                  walletInfo: WalletDisplayInfo) {
         guard domain.name != dataHolder.domain.name || walletInfo != dataHolder.walletInfo else {
@@ -358,6 +340,7 @@ extension DomainProfileViewPresenter: DomainProfileSectionsController {
                     Vibration.error.vibrate()
                     appContext.toastMessageService.showToast(.failedToUpdateProfile,
                                                              in: view.view,
+                                                             at: nil,
                                                              isSticky: false,
                                                              dismissDelay: 15,
                                                              action: { [weak self] in
@@ -584,7 +567,7 @@ private extension DomainProfileViewPresenter {
         }
     }
      
-    func saveChangesToAppGroup(_ changes: [DomainProfileSectionChangeDescription], domain: DomainItem) {
+    func saveChangesToAppGroup(_ changes: [DomainProfileSectionChangeDescription], domain: DomainDisplayInfo) {
         guard !changes.isEmpty else { return }
         
         let bridgeChanges = changes.compactMap { change -> DomainRecordChanges.ChangeType? in
@@ -736,14 +719,21 @@ private extension DomainProfileViewPresenter {
     func saveRecords(_ records: [RecordToUpdate]) async throws {
         guard let view = self.view else { return }
         
+        let domain = try await getCurrentDomain()
         try await appContext.domainRecordsService.saveRecords(records: records,
-                                                              in: generalData.domain,
+                                                              in: domain,
                                                               paymentConfirmationDelegate: view)
     }
     
     func saveProfile(_ request: ProfileUpdateRequest) async throws {
-        try await NetworkService().updateUserDomainProfile(for: generalData.domain,
+        let domain = try await getCurrentDomain()
+        try await NetworkService().updateUserDomainProfile(for: domain,
                                                            request: request)
+    }
+    
+    func getCurrentDomain() async throws -> DomainItem {
+        let domainName = await generalData.domain.name
+        return try await dataAggregatorService.getDomainWith(name: domainName)
     }
 }
 
@@ -761,7 +751,7 @@ private extension DomainProfileViewPresenter {
         Task {
             do {
                 try await loadDataOf(types: [.transactions])
-                await checkTransactions()
+                try await checkTransactions()
                 await MainActor.run {
                     updateSectionsState()
                     refreshDomainProfileDetails(animated: true)
@@ -782,7 +772,6 @@ private extension DomainProfileViewPresenter {
 private extension DomainProfileViewPresenter {
     @MainActor
     func start() {
-        setAvailableActions()
         updateSectionsData()
         refreshDomainProfileDetails(animated: true)
         asyncCheckForExternalWalletAndFetchProfile()
@@ -846,7 +835,7 @@ private extension DomainProfileViewPresenter {
     func fetchProfileData(of types: [ProfileGetDataType] = ProfileGetDataType.allCases) async {
         do {
             try await loadDataOf(types: types)
-            await checkTransactions()
+            try await checkTransactions()
             await MainActor.run {
                 stateController.set(isFailedToDownloadProfile: false)
                 stateController.set(isInitialRecordsLoaded: true)
@@ -906,6 +895,7 @@ private extension DomainProfileViewPresenter {
         } catch {
             await appContext.toastMessageService.showToast(.failedToFetchDomainProfileData,
                                                            in: view.view,
+                                                           at: nil,
                                                            isSticky: true,
                                                            dismissDelay: nil,
                                                            action: { [weak self] in
@@ -933,8 +923,8 @@ private extension DomainProfileViewPresenter {
     }
     
     @MainActor
-    func checkTransactions() async {
-        let domain = dataHolder.domain
+    func checkTransactions() async throws {
+        let domain = try await getCurrentDomain()
         let transactions = dataHolder.transactions
 
         if transactions.containPending(domain) {
@@ -1024,10 +1014,6 @@ private extension DomainProfileViewPresenter {
                 }
             }
             
-            if isSetPrimaryActionAvailable {
-                topActionsGroup.append(.setPrimaryDomain)
-            }
-            
             let bottomActionsGroup: DomainProfileActionsGroup = [.aboutProfiles, .mintedOn(chain: dataHolder.domain.getBlockchainType())]
             
             view?.setAvailableActionsGroups([topActionsGroup, bottomActionsGroup])
@@ -1108,7 +1094,7 @@ private extension DomainProfileViewPresenter {
     @MainActor
     final class DataHolder: DomainProfileGeneralData {
       
-        var domain: DomainItem
+        var domain: DomainDisplayInfo
         var wallet: UDWallet
         var walletInfo: WalletDisplayInfo
         var transactions: [TransactionItem] = []
@@ -1124,7 +1110,7 @@ private extension DomainProfileViewPresenter {
         var domainImagesInfo: DomainImagesInfo = .init()
         var numberOfFailedToUpdateProfileAttempts = 0
         
-        nonisolated init(domain: DomainItem, wallet: UDWallet, walletInfo: WalletDisplayInfo) {
+        nonisolated init(domain: DomainDisplayInfo, wallet: UDWallet, walletInfo: WalletDisplayInfo) {
             self.domain = domain
             self.wallet = wallet
             self.walletInfo = walletInfo
@@ -1148,7 +1134,10 @@ private extension DomainProfileViewPresenter {
         
         func set(profile: SerializedUserDomainProfile) {
             self.profile = profile
-            self.domain.pfpURL = profile.profile.imagePath
+            let pfpInfo = DomainPFPInfo(domainName: domain.name,
+                                        pfpURL: profile.profile.imagePath,
+                                        imageType: profile.profile.imageType)
+            self.domain.setPFPInfo(pfpInfo)
         }
         
         func mergeWith(cachedProfile: CachedDomainProfileInfo) {
@@ -1170,10 +1159,10 @@ private extension DomainProfileViewPresenter {
             recordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
             badgesInfo = .init(badges: [], refresh: .init(last: Date(), next: Date()))
             profile = .init(profile: .init(),
-                                                             messaging: .init(),
-                                                             socialAccounts: .init(),
-                                                             humanityCheck: .init(),
-                                                             records: [:])
+                            messaging: .init(),
+                            socialAccounts: .init(),
+                            humanityCheck: .init(),
+                            records: [:])
             domainImagesInfo = .init()
             numberOfFailedToUpdateProfileAttempts = 0
         }
@@ -1198,7 +1187,7 @@ extension DomainProfileViewPresenter {
     }
     
     func loadDataOf(type: ProfileGetDataType) async throws {
-        let domain = await dataHolder.domain
+        let domain = try await getCurrentDomain()
 
         switch type {
         case .badges:

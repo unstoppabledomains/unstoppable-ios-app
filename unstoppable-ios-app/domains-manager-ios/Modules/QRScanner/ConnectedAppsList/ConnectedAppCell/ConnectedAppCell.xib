@@ -24,53 +24,12 @@
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="E05-d0-GlW">
                                 <rect key="frame" x="16" y="13" width="290" height="44"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Aj-bU-H4D">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Aj-bU-H4D" customClass="ConnectedAppImageView" customModule="domains_manager_ios" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="2" width="40" height="40"/>
-                                        <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LlO-Ql-ByN">
-                                                <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
-                                                <color key="backgroundColor" name="brandWhite"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                        <real key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
-                                                        <real key="value" value="12"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                                        <color key="value" name="borderSubtle"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                            </view>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QJM-Qs-QDo">
-                                                <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="QJM-Qs-QDo" secondAttribute="height" multiplier="1:1" id="SBV-nO-BEx"/>
-                                                    <constraint firstAttribute="width" constant="40" id="frO-mk-CRK"/>
-                                                </constraints>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
-                                                        <real key="value" value="12"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                                        <real key="value" value="1"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                    <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                                        <color key="value" name="borderSubtle"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                            </imageView>
-                                        </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="LlO-Ql-ByN" firstAttribute="top" secondItem="QJM-Qs-QDo" secondAttribute="top" id="4Qk-mb-29n"/>
-                                            <constraint firstAttribute="bottom" secondItem="QJM-Qs-QDo" secondAttribute="bottom" id="4rx-r0-LuB"/>
-                                            <constraint firstItem="LlO-Ql-ByN" firstAttribute="trailing" secondItem="QJM-Qs-QDo" secondAttribute="trailing" id="DQn-vf-bJM"/>
-                                            <constraint firstItem="QJM-Qs-QDo" firstAttribute="top" secondItem="2Aj-bU-H4D" secondAttribute="top" id="Msa-h3-W54"/>
-                                            <constraint firstItem="LlO-Ql-ByN" firstAttribute="leading" secondItem="QJM-Qs-QDo" secondAttribute="leading" id="QSN-Z6-1q6"/>
-                                            <constraint firstItem="LlO-Ql-ByN" firstAttribute="bottom" secondItem="QJM-Qs-QDo" secondAttribute="bottom" id="SrT-0Z-lm0"/>
-                                            <constraint firstItem="QJM-Qs-QDo" firstAttribute="leading" secondItem="2Aj-bU-H4D" secondAttribute="leading" id="rV7-pA-RId"/>
-                                            <constraint firstAttribute="trailing" secondItem="QJM-Qs-QDo" secondAttribute="trailing" id="wHX-84-0ZH"/>
+                                            <constraint firstAttribute="width" secondItem="2Aj-bU-H4D" secondAttribute="height" multiplier="1:1" id="YgX-cn-QOI"/>
+                                            <constraint firstAttribute="width" constant="40" id="cXN-17-0vJ"/>
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="SbZ-SS-dtO">
@@ -149,8 +108,7 @@
             <size key="customSize" width="322" height="53"/>
             <connections>
                 <outlet property="actionButton" destination="QeN-fO-7kb" id="JCX-XH-Aaj"/>
-                <outlet property="appImageBackgroundView" destination="LlO-Ql-ByN" id="kAI-Nc-a2f"/>
-                <outlet property="appImageView" destination="QJM-Qs-QDo" id="gUv-lK-EYW"/>
+                <outlet property="appImageView" destination="2Aj-bU-H4D" id="lLQ-tQ-Jha"/>
                 <outlet property="appNameLabel" destination="SXj-0w-Irk" id="Oj8-MC-fNj"/>
                 <outlet property="containerView" destination="Kai-eQ-Vk0" id="vKf-FO-lUN"/>
                 <outlet property="subtitleLabel" destination="QNQ-VM-xQb" id="66l-w8-aic"/>
@@ -161,12 +119,6 @@
     <resources>
         <image name="dotsCircleIcon" width="24" height="24"/>
         <namedColor name="backgroundOverlay">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="borderSubtle">
-            <color red="0.0" green="0.0" blue="0.0" alpha="0.019999999552965164" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="brandWhite">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="foregroundMuted">

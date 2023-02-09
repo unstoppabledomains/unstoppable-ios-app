@@ -10,7 +10,6 @@ import UIKit
 @MainActor
 protocol SignTransactionDomainSelectionViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: SignTransactionDomainSelectionSnapshot, animated: Bool)
-    func setSubhead(hidden: Bool)
 }
 
 typealias SignTransactionDomainSelectionDataSource = UICollectionViewDiffableDataSource<SignTransactionDomainSelectionViewController.Section, SignTransactionDomainSelectionViewController.Item>
@@ -20,18 +19,6 @@ typealias SignTransactionDomainSelectionSnapshot = NSDiffableDataSourceSnapshot<
 final class SignTransactionDomainSelectionViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    
-    @IBOutlet private weak var titleContainerView: UIStackView!
-    @IBOutlet private var titleView: UIStackView!
-    @IBOutlet private weak var titleLabel: UILabel!
-    @IBOutlet private weak var dismissButton: UIButton!
-    @IBOutlet private weak var searchButton: UIButton!
-    @IBOutlet private var searchContainer: UIView!
-    @IBOutlet private weak var searchBar: UISearchBar!
-    @IBOutlet private weak var subheadStackView: UIStackView!
-    @IBOutlet private weak var subheadWhatIsButton: SubheadTertiaryButton!
-    @IBOutlet private weak var subheadMeanButton: SubheadTertiaryButton!
-    
     
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainSelectionCell.self,
                                                         DomainsCollectionSearchEmptyCell.self,
@@ -43,6 +30,16 @@ final class SignTransactionDomainSelectionViewController: BaseViewController {
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
     override var isObservingKeyboard: Bool { true }
     override var analyticsName: Analytics.ViewName { .signWCTransactionDomainSelection }
+    override var scrollableContentYOffset: CGFloat? { 32 }
+    override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { cSearchBarConfiguration }
+    private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
+        .init { [weak self] in 
+            let searchBar = UDSearchBar()
+            searchBar.delegate = self
+            
+            return searchBar
+        }
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,10 +63,6 @@ extension SignTransactionDomainSelectionViewController: SignTransactionDomainSel
     func applySnapshot(_ snapshot: SignTransactionDomainSelectionSnapshot, animated: Bool) {
         dataSource.apply(snapshot, animatingDifferences: animated)
     }
-    
-    func setSubhead(hidden: Bool) {
-        subheadStackView.isHidden = hidden
-    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -79,33 +72,36 @@ extension SignTransactionDomainSelectionViewController: UICollectionViewDelegate
         
         presenter.didSelectItem(item)
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        cNavigationController?.underlyingScrollViewDidScroll(scrollView)
+    }
 }
 
 // MARK: - UISearchBarDelegate
-extension SignTransactionDomainSelectionViewController: UISearchBarDelegate {
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+extension SignTransactionDomainSelectionViewController: UDSearchBarDelegate {
+    func udSearchBarTextDidBeginEditing(_ udSearchBar: UDSearchBar) {
         logAnalytic(event: .didStartSearching)
+        presenter.didStartSearch()
     }
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+    func udSearchBar(_ udSearchBar: UDSearchBar, textDidChange searchText: String) {
         logAnalytic(event: .didSearch, parameters: [.domainName : searchText])
         presenter.didSearchWith(key: searchText)
     }
     
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
+    func udSearchBarSearchButtonClicked(_ udSearchBar: UDSearchBar) {
+        cNavigationBar?.setSearchActive(false, animated: true)
     }
     
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+    func udSearchBarCancelButtonClicked(_ udSearchBar: UDSearchBar) {
         logAnalytic(event: .didStopSearching)
         UDVibration.buttonTap.vibrate()
-        searchBar.text = ""
-        presenter.didSearchWith(key: "")
         setSearchBarActive(false)
         presenter.didStopSearch()
     }
     
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+    func udSearchBarTextDidEndEditing(_ udSearchBar: UDSearchBar) {
         logAnalytic(event: .didStopSearching)
         setSearchBarActive(false)
         presenter.didStopSearch()
@@ -115,39 +111,11 @@ extension SignTransactionDomainSelectionViewController: UISearchBarDelegate {
 // MARK: - Private functions
 private extension SignTransactionDomainSelectionViewController {
     func setSearchBarActive(_ isActive: Bool) {
-        if isActive {
-            searchContainer.removeFromSuperview()
-            titleContainerView.addArrangedSubview(searchContainer)
-        }
-        UIView.animate(withDuration: 0.0) { [weak self] in
-            self?.titleView.arrangedSubviews.forEach({ view in
-                view.isHidden = isActive
-            })
-                        self?.titleView.isHidden = isActive
-            self?.searchBar.superview?.isHidden = !isActive
-        }
-        if isActive {
-            searchBar.becomeFirstResponder()
-        } else {
-            searchBar.resignFirstResponder()
-        }
+        cNavigationBar?.setSearchActive(isActive, animated: true)
     }
     
-    @IBAction func searchButtonPressed() {
-        UDVibration.buttonTap.vibrate()
-        setSearchBarActive(true)
-        presenter.didStartSearch()
-    }
-    
-    @IBAction func dismissButtonPressed(_ sender: Any) {
-        logButtonPressedAnalyticEvents(button: .close)
-        UDVibration.buttonTap.vibrate()
-        dismiss(animated: true)
-    }
-    
-    @IBAction func subheadButtonPressed(_ sender: Any) {
+    func subheadButtonPressed() {
         logButtonPressedAnalyticEvents(button: .whatDoesReverseResolutionMean)
-        UDVibration.buttonTap.vibrate()
         presenter.subheadButtonPressed()
     }
 }
@@ -156,36 +124,22 @@ private extension SignTransactionDomainSelectionViewController {
 private extension SignTransactionDomainSelectionViewController {
     func setup() {
         setupCollectionView()
-        navigationController?.navigationBar.isHidden = true
-        localizeContent()
-        setupSearchBar()
+        setupHeaderView()
     }
-    
-    func localizeContent() {
-        titleLabel.setAttributedTextWith(text: String.Constants.selectNFTDomainTitle.localized(),
-                                         font: .currentFont(withSize: 16, weight: .semibold),
-                                         textColor: .foregroundDefault)
-        dismissButton.setTitle("", for: .normal)
-        searchButton.setTitle("", for: .normal)
-        subheadWhatIsButton.setTitle(String.Constants.whatDoesResolutionMeanWhat.localized(), image: nil)
-        subheadMeanButton.setTitle(String.Constants.whatDoesResolutionMeanMean.localized(), image: .reverseResolutionArrows12)
-    }
-    
-    func setupSearchBar() {
-        searchBar.applyUDStyle()
-        searchBar.delegate = self
-        searchBar.setShowsCancelButton(true, animated: false)
-        searchBar.setNeedsLayout()
-        searchBar.layoutIfNeeded()
-        searchBar.searchTextField.textContentType = .oneTimeCode
-        searchBar.searchTextField.spellCheckingType = .no
-        setSearchBarActive(false)
+  
+    func setupHeaderView() {
+        let headerView = SignTransactionDomainSelectionHeaderView()
+        headerView.subheadPressedCallback = { [weak self] in
+            self?.subheadButtonPressed()
+        }
+        
+        navigationItem.titleView = headerView
     }
     
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
-        collectionView.contentInset.top = 32
+        collectionView.contentInset.top = 64
         collectionView.register(SignTransactionDomainSelectionSectionHeaderView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: SignTransactionDomainSelectionSectionHeaderView.reuseIdentifier)
@@ -322,7 +276,7 @@ extension SignTransactionDomainSelectionViewController {
     }
     
     enum Item: Hashable {
-        case domain(_ domain: DomainItem, isSelected: Bool, isReverseResolutionSet: Bool)
+        case domain(_ domain: DomainDisplayInfo, isSelected: Bool, isReverseResolutionSet: Bool)
         case emptyState
         case showOthers(domainsCount: Int, walletAddress: HexAddress)
         case hide(walletAddress: HexAddress)

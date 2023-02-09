@@ -29,7 +29,7 @@ final class ChooseReverseResolutionCollectionCell: BaseListCollectionViewCell {
 
 // MARK: - Open methods
 extension ChooseReverseResolutionCollectionCell {
-    func setWith(domain: DomainItem, isSelected: Bool, isCurrent: Bool) {
+    func setWith(domain: DomainDisplayInfo, isSelected: Bool, isCurrent: Bool) {
         checkmark.isHidden = !isSelected
         reverseResolutionIndicatorImageView.isHidden = checkmark.isHidden
         titleLabel.setAttributedTextWith(text: domain.name,

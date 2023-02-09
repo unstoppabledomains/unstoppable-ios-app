@@ -100,7 +100,7 @@ private extension SettingsViewController {
     }
     
     func setupNavBar() {
-        self.title = String.Constants.settingsMenuTitle.localized()
+        self.title = String.Constants.settingsScreenTitle.localized()
     }
   
     func setupCollectionView() {

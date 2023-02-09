@@ -285,7 +285,7 @@ struct SerializedDomainMessageRule: Codable {
 
 struct BadgesInfo: Codable, Hashable {
     let badges: [BadgeInfo]
-    let refresh: BadgesRefreshInfo
+    let refresh: BadgesRefreshInfo?
     
     struct BadgeInfo: Codable, Hashable {
         let code: String
@@ -375,7 +375,7 @@ extension NetworkService {
         let signature: String
         let expires: UInt64
         if let storedSignature = try? appContext.persistedProfileSignaturesStorage
-            .getUserDomainProfileSignature(for: domain) {
+            .getUserDomainProfileSignature(for: domain.name) {
             signature = storedSignature.sign
             expires = storedSignature.expires
         } else {

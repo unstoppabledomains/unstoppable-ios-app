@@ -28,6 +28,7 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
     var adjustLargeTitleFontSizeForSmallerDevice: Bool { false }
     var analyticsName: Analytics.ViewName { .unspecified }
     var additionalAppearAnalyticParameters: Analytics.EventParameters { [:] }
+    var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { nil }
 
     // MARK: - PaymentConfirmationDelegate properties
     var stripePaymentHelper: StripePaymentHelper?

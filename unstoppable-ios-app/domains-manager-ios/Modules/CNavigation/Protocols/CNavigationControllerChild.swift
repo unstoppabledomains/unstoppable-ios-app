@@ -18,6 +18,7 @@ protocol CNavigationControllerChild: AnyObject {
     var navBackButtonConfiguration: CNavigationBarContentView.BackButtonConfiguration { get }
     var navBarDividerColor: UIColor { get }
     var scrollableContentYOffset: CGFloat? { get }
+    var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { get }
     func shouldPopOnBackButton() -> Bool
     func customScrollingBehaviour(yOffset: CGFloat, in navBar: CNavigationBar) -> (()->())?
 }
@@ -32,6 +33,7 @@ extension CNavigationControllerChild {
     var navBackButtonConfiguration: CNavigationBarContentView.BackButtonConfiguration { .default }
     var navBarDividerColor: UIColor { .systemGray6 }
     var scrollableContentYOffset: CGFloat? { nil }
+    var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { nil }
     func shouldPopOnBackButton() -> Bool { true }
     func customScrollingBehaviour(yOffset: CGFloat, in navBar: CNavigationBar) -> (()->())? { nil }
 }

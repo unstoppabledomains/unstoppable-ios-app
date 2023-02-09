@@ -17,7 +17,7 @@ final class DomainProfileSignExternalWalletViewPresenter: DomainProfileActionCov
     private let externalWallet: WalletDisplayInfo
     
     init(view: DomainProfileActionCoverViewProtocol,
-         domain: DomainItem,
+         domain: DomainDisplayInfo,
          imagesInfo: DomainImagesInfo,
          externalWallet: WalletDisplayInfo,
          refreshActionCallback: @escaping DomainProfileSignExternalWalletActionCallback) {

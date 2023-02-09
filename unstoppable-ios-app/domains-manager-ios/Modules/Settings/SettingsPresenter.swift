@@ -97,9 +97,9 @@ private extension SettingsPresenter {
             snapshot.appendSections([.main(0)]) // empty header
             
             snapshot.appendSections([.main(1)])
-            let interactableDomains = await dataAggregatorService.getDomains().interactableItems()
-            if interactableDomains.count > 1 {
-                snapshot.appendItems([.homeScreen(UserDefaults.primaryDomainName ?? "")])
+            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
+            if let primaryDomain = interactableDomains.first {
+                snapshot.appendItems([.homeScreen(primaryDomain.name)])
             }
             let securityName = User.instance.getSettings().touchIdActivated ? (appContext.authentificationService.biometricsName ?? "") : String.Constants.settingsSecurityPasscode.localized()
             snapshot.appendItems([.wallets("\(wallets.count)"),
@@ -123,7 +123,7 @@ private extension SettingsPresenter {
     func showWalletsList() {
         guard let nav = view?.cNavigationController else { return }
         
-        UDRouter().showWalletsList(in: nav, shouldShowImportWalletPullUp: false)
+        UDRouter().showWalletsList(in: nav, initialAction: .none)
     }
     
     @MainActor
@@ -183,18 +183,17 @@ private extension SettingsPresenter {
         guard let view = self.view else { return }
 
         Task {
-            let interactableDomains = await dataAggregatorService.getDomains().interactableItems()
+            let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
             let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: interactableDomains,
                                                                               isFirstPrimaryDomain: false,
-                                                                              configuration: .init(selectedDomain: interactableDomains.first(where: { $0.isPrimary }),
-                                                                                                   canReverseResolutionETHDomain: false,
-                                                                                                   analyticsView: .changePrimaryDomainFromSettings),
+                                                                              configuration: .init(canReverseResolutionETHDomain: false,
+                                                                                                   analyticsView: .sortDomainsFromSettings),
                                                                               in: view)
             switch result {
             case .cancelled:
                 return
-            case .homeDomainSet(let newPrimaryDomain), .homeAndReverseResolutionSet(let newPrimaryDomain):
-                await dataAggregatorService.setPrimaryDomainWith(name: newPrimaryDomain.name)
+            case .domainsOrderSet(let domains), .domainsOrderAndReverseResolutionSet(let domains, _):
+                await dataAggregatorService.setDomainsOrder(using: domains)
                 await view.cNavigationController?.popToRootViewController(animated: true)
             }
         }

@@ -17,7 +17,6 @@ final class AnalyticsService {
     
     init(dataAggregatorService: DataAggregatorServiceProtocol) {
         dataAggregatorService.addListener(self)
-        checkInitialValuesSet()
     }
     
 }
@@ -26,6 +25,9 @@ final class AnalyticsService {
 extension AnalyticsService: AnalyticsServiceProtocol {
     func log(event: Analytics.Event, withParameters eventParameters: Analytics.EventParameters?) {
         Task  {
+            let parametersDebugString = (eventParameters ?? [:]).map({ "\($0.key.rawValue) : \($0.value)" })
+            Debugger.printInfo(topic: .Analytics, "Will log event: \(event.rawValue) with parameters: \(parametersDebugString)")
+            
             let defaultProperties = self.defaultProperties
             await services.forEach { (service) in
                 service.log(event: event, withParameters: (eventParameters ?? [:]).adding(defaultProperties))
@@ -78,12 +80,6 @@ private extension AnalyticsService {
     
     var carrierName: String {
         CTTelephonyNetworkInfo().serviceSubscriberCellularProviders?.values.compactMap({ $0.carrierName }).joined(separator: ", ") ?? ""
-    }
-    
-    func checkInitialValuesSet() {
-        if let primaryDomainName = UserDefaults.primaryDomainName {
-            set(userProperties: [.primaryDomain: primaryDomainName])
-        }
     }
     
     func publicIP() -> String? {

@@ -11,29 +11,32 @@ class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProg
     
     override var analyticsName: Analytics.ViewName { .primaryDomainMintingInProgress }
     private let domain: DomainItem
+    private let domainDisplayInfo: DomainDisplayInfo
     private let walletInfo: WalletDisplayInfo
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private var domainTransaction: TransactionItem?
-    override var isNavBarHidden: Bool { false }
     override var content: TransactionInProgressViewController.HeaderDescription.Content { .reverseResolution }
     
     init(view: TransactionInProgressViewProtocol,
          domain: DomainItem,
+         domainDisplayInfo: DomainDisplayInfo,
          walletInfo: WalletDisplayInfo,
          transactionsService: DomainTransactionsServiceProtocol,
          notificationsService: NotificationsServiceProtocol,
          dataAggregatorService: DataAggregatorServiceProtocol) {
         self.domain = domain
+        self.domainDisplayInfo = domainDisplayInfo
         self.walletInfo = walletInfo
         self.dataAggregatorService = dataAggregatorService
         super.init(view: view,
                    transactionsService: transactionsService,
                    notificationsService: notificationsService)
+        appContext.externalEventsService.addListener(self)
     }
     
     override func fillUpMintingDomains(in snapshot: inout TransactionInProgressSnapshot) {
         snapshot.appendSections([.card])
-        snapshot.appendItems([.reverseResolutionCard(domain: domain, walletInfo: walletInfo)])
+        snapshot.appendItems([.reverseResolutionCard(domain: domainDisplayInfo, walletInfo: walletInfo)])
     }
         
     override func viewTransactionButtonPressed() {
@@ -56,12 +59,28 @@ class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProg
                 domainTransaction = nil
             }
 
-            await view?.setViewTransactionButtonHidden(domainTransaction?.transactionHash == nil)
+            await view?.setActionButtonHidden(domainTransaction?.transactionHash == nil)
             if domainTransaction == nil {
-                await dataAggregatorService.aggregateData()
                 await dismiss()
+                if !isNotificationPermissionsGranted {
+                    await dataAggregatorService.aggregateData()
+                }
             } else {
                 await showData()
+            }
+        }
+    }
+}
+
+// MARK: - ExternalEventsServiceListener
+extension ReverseResolutionTransactionInProgressViewPresenter: ExternalEventsServiceListener {
+    func didReceive(event: ExternalEvent) {
+        Task {
+            switch event {
+            case .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved:
+                refreshMintingTransactions()
+            case .wcDeepLink, .walletConnectRequest, .domainTransferred, .mintingFinished, .domainProfileUpdated:
+                return
             }
         }
     }

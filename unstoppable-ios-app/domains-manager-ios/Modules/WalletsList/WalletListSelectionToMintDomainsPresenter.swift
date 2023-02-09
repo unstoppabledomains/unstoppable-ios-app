@@ -13,7 +13,7 @@ final class WalletListSelectionToMintDomainsPresenter: WalletsListViewPresenter 
     
     override var shouldShowManageBackup: Bool { false }
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
-    override var title: String { String.Constants.mintDomainsTo.localized() }
+    override var title: String { String.Constants.moveDomainsTo.localized() }
     override var canAddWallet: Bool { false }
     override var analyticsName: Analytics.ViewName { .mintingWalletsListSelection }
     
@@ -28,7 +28,7 @@ final class WalletListSelectionToMintDomainsPresenter: WalletsListViewPresenter 
          walletSelectedCallback: @escaping WalletSelectedCallback) {
         super.init(view: view,
                    dataAggregatorService: dataAggregatorService,
-                   shouldShowImportWalletPullUp: false,
+                   initialAction: .none,
                    networkReachabilityService: networkReachabilityService,
                    udWalletsService: udWalletsService)
         if let selectedWallet = selectedWallet,

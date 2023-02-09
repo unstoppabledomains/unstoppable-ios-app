@@ -97,10 +97,8 @@ extension WalletDetailsViewPresenter: WalletDetailsViewPresenterProtocol {
                                                                                     walletInfo: walletInfo,
                                                                                     mode: .changeDomain(currentDomain: domain))
                         handleSetupReverseResolution(result: result)
-                    case .settingFor(let domain):
-                        UDRouter().showReverseResolutionInProgressScreen(in: view,
-                                                                               domain: domain,
-                                                                               walletInfo: walletInfo)
+                    case .settingFor(let domainDisplayInfo):
+                        showReverseResolutionInProgress(for: domainDisplayInfo)
                     }
                 case .importWallet:
                     importExternalWallet()
@@ -317,10 +315,9 @@ private extension WalletDetailsViewPresenter {
     func showWalletDomains() async {
         guard let view = self.view else { return }
         
-        let domains = await dataAggregatorService.getDomains().filter({ $0.isOwned(by: wallet) })
+        let domains = await dataAggregatorService.getDomainsDisplayInfo().filter({ $0.isOwned(by: wallet) })
         await UDRouter().showWalletDomains(domains,
                                            walletWithInfo: WalletWithInfo(wallet: wallet, displayInfo: walletInfo),
-                                           reverseResolutionDomain: walletInfo.reverseResolutionDomain,
                                            in: view)
     }
     
@@ -354,5 +351,20 @@ private extension WalletDetailsViewPresenter {
         self.wallet = wallet
         self.walletInfo = WalletDisplayInfo(wallet: wallet, domainsCount: self.walletInfo.domainsCount) ?? self.walletInfo
         showWalletDetails()
+    }
+    
+    @MainActor
+    func showReverseResolutionInProgress(for domainDisplayInfo: DomainDisplayInfo) {
+        Task {
+            guard let view = self.view else { return }
+
+            do {
+                let domain = try await dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
+                UDRouter().showReverseResolutionInProgressScreen(in: view,
+                                                                 domain: domain,
+                                                                 domainDisplayInfo: domainDisplayInfo,
+                                                                 walletInfo: walletInfo)
+            }
+        }
     }
 }

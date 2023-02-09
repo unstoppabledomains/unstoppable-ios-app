@@ -22,8 +22,8 @@ struct PersistedTimedSignature: Codable {
 }
 
 protocol PersistedSignaturesStorageProtocol {
-    func getUserDomainProfileSignature(for domain: DomainItem) throws -> PersistedTimedSignature
-    func hasValidSignature(for domain: DomainItem) -> Bool
+    func getUserDomainProfileSignature(for domainName: String) throws -> PersistedTimedSignature
+    func hasValidSignature(for domainName: String) -> Bool
     func saveNewSignature(sign: PersistedTimedSignature) throws
     func removeExpired()
     func revokeSignatures(for: DomainItem)
@@ -54,8 +54,8 @@ extension PersistedSignaturesStorage: PersistedSignaturesStorageProtocol {
         case failedToSave = "Failed to save"
     }
     
-    func getUserDomainProfileSignature(for domain: DomainItem) throws -> PersistedTimedSignature {
-        let domainSigs = getAllSignatures().filter({$0.domainName == domain.name})
+    func getUserDomainProfileSignature(for domainName: String) throws -> PersistedTimedSignature {
+        let domainSigs = getAllSignatures().filter({$0.domainName == domainName})
         guard !domainSigs.isEmpty else { throw Error.notFound }
         
         let validSigns = domainSigs.filter({!$0.isExpired})
@@ -64,8 +64,8 @@ extension PersistedSignaturesStorage: PersistedSignaturesStorageProtocol {
         return found
     }
     
-    func hasValidSignature(for domain: DomainItem) -> Bool {
-        (try? getUserDomainProfileSignature(for: domain)) != nil
+    func hasValidSignature(for domainName: String) -> Bool {
+        (try? getUserDomainProfileSignature(for: domainName)) != nil
     }
     
     func saveNewSignature(sign: PersistedTimedSignature) throws {
@@ -74,11 +74,11 @@ extension PersistedSignaturesStorage: PersistedSignaturesStorageProtocol {
 }
 
 final class MockPersistedSignaturesStorage: PersistedSignaturesStorageProtocol {
-    func getUserDomainProfileSignature(for domain: DomainItem) throws -> PersistedTimedSignature {
+    func getUserDomainProfileSignature(for domainName: String) throws -> PersistedTimedSignature {
         throw PersistedSignaturesStorage.Error.notFound
     }
     
-    func hasValidSignature(for domain: DomainItem) -> Bool {
+    func hasValidSignature(for domainName: String) -> Bool {
         false
     }
     

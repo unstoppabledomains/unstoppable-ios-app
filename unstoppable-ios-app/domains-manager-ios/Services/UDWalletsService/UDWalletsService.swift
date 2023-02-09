@@ -290,7 +290,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     }
     
     func setReverseResolution(to domain: DomainItem,
-                                   paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws {
+                              paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws {
         let request = try getRequestForActionReverseResolution(domain, remove: false)
         let response = try await NetworkService().getActions(request: request)
         
@@ -307,10 +307,10 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         }
         
         let signatures = try await UDWallet.createSignaturesAsync(messages: payloadReturned.messages,
-                                                                domain: domain)
+                                                                  domain: domain)
         let requestSign = try NetworkService.getRequestForActionSign(id: response.id,
-                                                       response: response,
-                                                       signatures: signatures)
+                                                                     response: response,
+                                                                     signatures: signatures)
         try await NetworkService().postMetaActions(requestSign)
         
         Debugger.printInfo("Successful setReverseResolution for domain: \(domain.name)")

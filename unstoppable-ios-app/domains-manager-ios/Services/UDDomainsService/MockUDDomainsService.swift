@@ -20,17 +20,18 @@ final class MockUDDomainsService {
     private var walletToDomains: [String : [DomainItem]] = [:]
     
     init() {
-#if DEBUG
+        #if DEBUG
         for _ in 0..<TestsEnvironment.numberOfDomainsToUse {
             addDomain()
         }
-#endif
+        #endif
     }
     
 }
 
 // MARK: - UDDomainsServiceProtocol
 extension MockUDDomainsService: UDDomainsServiceProtocol {
+
     func getAllDomains() -> [DomainItem] {
         domains
     }
@@ -59,33 +60,35 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
                     }
                 }
             }
-            
             return domains
         }
     }
-    
-    func updatePFP(for domains: [DomainItem]) async throws -> [DomainItem] {
-        domains
+
+    func getCachedDomainsPFPInfo() -> [DomainPFPInfo] {
+        []
     }
     
+    func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo] {
+        []
+    }
+
     func getAllUnMintedDomains(for email: String, securityCode: String) async throws -> [String] {
         try await Task.sleep(seconds: 0.3)
         
-        //        var domains = ["coolguy.coin"]
-        //
-        //        for i in 0..<60 {
-        //            let tld = i > 5 ? "crypto" : "coin"
-        //            domains.append("domain_\(i).\(tld)")
-        //        }
-        //        return domains
+//        var domains = ["coolguy.coin"]
+//
+//        for i in 0..<60 {
+//            let tld = i > 5 ? "crypto" : "coin"
+//            domains.append("domain_\(i).\(tld)")
+//        }
+//        return domains
         
-        //        return []
-        //        return ["coolguy.coin"]
+//        return []
+//        return ["coolguy.coin"]
         return ["coolguy.crypto"]
-        //        return ["coolguy.crypto",  "coolguy.coin"]
-        //        return ["coolguy.crypto", "evencoolerguy.x", "abc.x", "daniil.nft", "jongordon.x", "one.x", "two.x", "three.crypto", "four.x", "five.x", "six.x", "seven.x", "eight.x"]
+//        return ["coolguy.crypto",  "coolguy.coin"]
+//        return ["coolguy.crypto", "evencoolerguy.x", "abc.x", "daniil.nft", "jongordon.x", "one.x", "two.x", "three.crypto", "four.x", "five.x", "six.x", "seven.x", "eight.x"]
     }
-    
     
     func mintDomains(_ domains: [String],
                      paidDomains: [String],
@@ -115,16 +118,15 @@ private extension MockUDDomainsService {
                    wallet: String? = nil) -> DomainItem? {
         if self.domains.count < self.DomainsLimit {
             let isZil = blockchain == .Zilliqa
-            let tld = isZil ? "zil" : "coin"
+            let tld = isZil ? "zil" : "x"
             var newDomain = DomainItem(name: "coolguy_\(self.domains.count)_\(suffix).\(tld)")
             newDomain.blockchain = blockchain
-            
             if let wallet {
                 newDomain.ownerWallet = wallet
             }
             
             Debugger.printInfo("Will add domain \(newDomain.name)")
-            
+
             self.domains.append(newDomain)
             return newDomain
         }

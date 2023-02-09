@@ -25,7 +25,9 @@ final class WalletDetailsViewController: BaseViewController, TitleVisibilityAfte
     var presenter: WalletDetailsViewPresenterProtocol!
     override var scrollableContentYOffset: CGFloat? { 8 }
     override var analyticsName: Analytics.ViewName { .walletDetails }
-    override var additionalAppearAnalyticParameters: Analytics.EventParameters { [.wallet: presenter.walletAddress]}
+    override var additionalAppearAnalyticParameters: Analytics.EventParameters { [.wallet: presenter.walletAddress] }
+    override var navBackStyle: BaseViewController.NavBackIconStyle { currentNavBackStyle }
+    var currentNavBackStyle: BaseViewController.NavBackIconStyle = .arrow
 
     private var dataSource: WalletDetailsDataSource!
 
@@ -162,7 +164,7 @@ extension WalletDetailsViewController {
     
     struct WalletDetailsTopInfo: Hashable {
         let walletInfo: WalletDisplayInfo
-        let domain: DomainItem?
+        let domain: DomainDisplayInfo?
         let isUpdating: Bool
         let copyButtonPressed: EmptyCallback
         let externalBadgePressed: EmptyCallback
@@ -265,8 +267,8 @@ extension WalletDetailsViewController {
         
         enum ReverseResolutionState: Hashable {
             case notSet(isEnabled: Bool)
-            case settingFor(domain: DomainItem)
-            case setFor(domain: DomainItem, isEnabled: Bool, isUpdatingRecords: Bool)
+            case settingFor(domain: DomainDisplayInfo)
+            case setFor(domain: DomainDisplayInfo, isEnabled: Bool, isUpdatingRecords: Bool)
         }
         
         var analyticsName: Analytics.Button {

@@ -14,18 +14,15 @@ public enum UserDefaultsKey: String {
     case homeScreenSettingsButtonPressed
     case buildVersion
     case appearanceStyle
-    case primaryDomainName
     case selectedBlockchainType
     case wcFriendlyReminderShown
-    case didTapPrimaryDomain
     case apnsToken
     case setupRRPromptCounter
     case preferableDomainNameForRR
-    case shouldShowMintingTutorial
-    case isFirstLaunchAfterProfileFeatureReleased
     case didEverUpdateDomainProfile
     case didAskToShowcaseProfileAfterFirstUpdate
     case didShowDomainProfileInfoTutorial
+    case didShowSwipeDomainCardTutorial
     case isFirstLaunchAfterGIFSupportReleased
 }
 
@@ -36,19 +33,16 @@ extension UserDefaults {
     @UserDefaultsValue(key: UserDefaultsKey.homeScreenSettingsButtonPressed, defaultValue: false) static var homeScreenSettingsButtonPressed: Bool
     @UserDefaultsValue(key: UserDefaultsKey.buildVersion, defaultValue: "") static var buildVersion: String
     @UserDefaultsRawRepresentableValue(key: .appearanceStyle, defaultValue: .unspecified) static var appearanceStyle: UIUserInterfaceStyle
-    @UserDefaultsOptionalValue(key: .primaryDomainName) static var primaryDomainName: String?
     @UserDefaultsRawRepresentableValue(key: .selectedBlockchainType, defaultValue: .Ethereum) static var selectedBlockchainType: BlockchainType
     @UserDefaultsValue(key: UserDefaultsKey.wcFriendlyReminderShown, defaultValue: false) static var wcFriendlyReminderShown: Bool
-    @UserDefaultsValue(key: UserDefaultsKey.didTapPrimaryDomain, defaultValue: false) static var didTapPrimaryDomain: Bool
     @UserDefaultsOptionalValue(key: .apnsToken) static var apnsToken: String?
     @UserDefaultsValue(key: UserDefaultsKey.setupRRPromptCounter, defaultValue: 0) static var setupRRPromptCounter: Int
     @UserDefaultsOptionalValue(key: .preferableDomainNameForRR) static var preferableDomainNameForRR: String?
-    @UserDefaultsValue(key: UserDefaultsKey.shouldShowMintingTutorial, defaultValue: true) static var shouldShowMintingTutorial: Bool
-    @UserDefaultsValue(key: UserDefaultsKey.isFirstLaunchAfterProfileFeatureReleased, defaultValue: true) static var isFirstLaunchAfterProfileFeatureReleased: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didEverUpdateDomainProfile, defaultValue: false) static var didEverUpdateDomainProfile: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didAskToShowcaseProfileAfterFirstUpdate, defaultValue: false) static var didAskToShowcaseProfileAfterFirstUpdate: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didShowDomainProfileInfoTutorial, defaultValue: false) static var didShowDomainProfileInfoTutorial: Bool
     @UserDefaultsValue(key: UserDefaultsKey.isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
+    @UserDefaultsValue(key: UserDefaultsKey.didShowSwipeDomainCardTutorial, defaultValue: false) static var didShowSwipeDomainCardTutorial: Bool
 }
 
 // MARK: - Property Wrappers
