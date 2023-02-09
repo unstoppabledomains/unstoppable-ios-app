@@ -504,6 +504,17 @@ extension WalletConnectServiceV2 {
         try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .error(.internalError))
     }
     
+    private func parseAddress(from addressIdentificator: String) throws -> HexAddress {
+        let parts = addressIdentificator.split(separator: ":")
+        guard parts.count > 1 else {
+            return addressIdentificator
+        }
+        guard parts.count == 3 else {
+            throw WalletConnectService.Error.invalidWCRequest
+        }
+        return String(parts[2])
+    }
+    
     func handlePersonalSign(request: WalletConnectSign.Request) {
         Task {
             do {
@@ -516,7 +527,7 @@ extension WalletConnectServiceV2 {
                     return
                 }
                 let messageString = paramsAny[0]
-                let address = paramsAny[1]
+                let address = try parseAddress(from: paramsAny[1])
                 
                 let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
                                                                                  request: request,
