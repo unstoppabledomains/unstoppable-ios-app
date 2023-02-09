@@ -18,7 +18,6 @@ final class DomainProfileSocialCell: BaseListCollectionViewCell, WebsiteURLValid
 
     private var socialDescription: DomainProfileSocialsSection.SocialDescription?
     private var actionButtonPressedCallback: EmptyCallback?
-    private var actions: [DomainProfileSocialsSection.SocialsAction] = []
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -59,20 +58,16 @@ extension DomainProfileSocialCell {
         }
          
         setupControlsForCurrentMode(isEnabled: displayInfo.isEnabled)
-     
-        if #available(iOS 14.0, *) {
-            let bannerMenuElements = displayInfo.availableActions.compactMap({ menuElement(for: $0) })
-            let bannerMenu = UIMenu(title: actionMenuTitle, children: bannerMenuElements)
-            actionButton.menu = bannerMenu
-            actionButton.showsMenuAsPrimaryAction = true
-            actionButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.actionButtonPressedCallback?()
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-        } else {
-            self.actions = displayInfo.availableActions
-            actionButton.addTarget(self, action: #selector(actionsButtonPressed), for: .touchUpInside)
-        }
+        
+        // Actions
+        let bannerMenuElements = displayInfo.availableActions.compactMap({ menuElement(for: $0) })
+        let bannerMenu = UIMenu(title: actionMenuTitle, children: bannerMenuElements)
+        actionButton.menu = bannerMenu
+        actionButton.showsMenuAsPrimaryAction = true
+        actionButton.addAction(UIAction(handler: { [weak self] _ in
+            self?.actionButtonPressedCallback?()
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
     }
 }
 
@@ -113,19 +108,6 @@ private extension DomainProfileSocialCell {
             return value
         }
     }
-    
-    @objc func actionsButtonPressed() {
-        guard let view = self.findViewController()?.view else { return }
-        
-        actionButtonPressedCallback?()
-        UDVibration.buttonTap.vibrate()
-        let actions: [UIActionBridgeItem] = actions.map({ action in uiActionBridgeItem(for: action) }).reduce(into: [UIActionBridgeItem]()) { partialResult, result in
-            partialResult += result
-        }
-        let popoverViewController = UIMenuBridgeView.instance(with: actionMenuTitle,
-                                                              actions: actions)
-        popoverViewController.show(in: view, sourceView: actionButton)
-    }
 
     func menuElement(for action: DomainProfileSocialsSection.SocialsAction) -> UIMenuElement {
         switch action {
@@ -134,15 +116,6 @@ private extension DomainProfileSocialCell {
         case .remove(_, let callback):
             let remove = UIAction(title: action.title, image: action.icon, identifier: .init(UUID().uuidString), attributes: .destructive, handler: { _ in callback() })
             return UIMenu(title: "", options: .displayInline, children: [remove])
-        }
-    }
-    
-    func uiActionBridgeItem(for action: DomainProfileSocialsSection.SocialsAction) -> [UIActionBridgeItem] {
-        switch action {
-        case .edit(_, let callback), .open(_, let callback), .copy(_, let callback):
-            return [UIActionBridgeItem(title: action.title, image: action.icon, handler: {  callback() })]
-        case .remove(_, let callback):
-            return [UIActionBridgeItem(title: action.title, image: action.icon, attributes: [.destructive], handler: { callback() })]
         }
     }
     

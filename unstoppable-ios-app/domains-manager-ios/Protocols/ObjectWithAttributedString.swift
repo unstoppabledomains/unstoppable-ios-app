@@ -39,6 +39,7 @@ protocol ObjectWithAttributedString: AnyObject {
                             strikethroughStyle: NSUnderlineStyle?,
                             strikethroughColor: UIColor?,
                             textColor: UIColor?,
+                            alignment: NSTextAlignment?,
                             baselineOffset: CGFloat?,
                             headIndent: CGFloat?,
                             firstLineHeadIndent: CGFloat?,
@@ -103,6 +104,7 @@ extension ObjectWithAttributedString {
                             strikethroughStyle: NSUnderlineStyle? = nil,
                             strikethroughColor: UIColor? = nil,
                             textColor: UIColor? = nil,
+                            alignment: NSTextAlignment? = nil,
                             baselineOffset: CGFloat? = nil,
                             headIndent: CGFloat? = nil,
                             firstLineHeadIndent: CGFloat? = nil,
@@ -141,7 +143,7 @@ extension ObjectWithAttributedString {
                 let newAttributedText = NSMutableAttributedString(attributedString: currentAttributedText)
                 let paragraphStyle: NSParagraphStyle? = currentAttributedText.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSParagraphStyle
                 let lineSpacing = lineHeight ?? paragraphStyle?.minimumLineHeight ?? 20.0
-                let alignment = paragraphStyle?.alignment ?? textAlignment
+                let alignment = alignment ?? paragraphStyle?.alignment ?? textAlignment
                 let lineBreakMode = paragraphStyle?.lineBreakMode ?? .byWordWrapping
                 let newTextAttributes = attributesFor(text: currentAttributedText.string,
                                                       font: font,

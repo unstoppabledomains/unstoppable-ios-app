@@ -55,11 +55,30 @@ extension CNavigationHelper {
         return nil
     }
     
+    static func lastSubviewOfType<T: UIView>(_ type: T.Type, in view: UIView) -> T? {
+        for subview in view.subviews.reversed() {
+            if let view = subview as? T {
+                return view
+            } else if let view = firstSubviewOfType(type, in: subview) {
+                return view
+            }
+        }
+        
+        return nil
+    }
+    
+    static func topScrollableView(in view: UIView) -> UIScrollView? {
+        if let collectionView = lastSubviewOfType(UICollectionView.self, in: view) {
+            return collectionView
+        } else if let tableView = lastSubviewOfType(UITableView.self, in: view) {
+            return tableView
+        }
+        return lastSubviewOfType(UIScrollView.self, in: view)
+    }
+    
     static func contentYOffset(in view: UIView) -> CGFloat {
-        if let table = firstSubviewOfType(UITableView.self, in: view) {
-            return contentYOffset(of: table)
-        } else if let collection = firstSubviewOfType(UICollectionView.self, in: view) {
-            return contentYOffset(of: collection)
+        if let scrollableView = topScrollableView(in: view) {
+            return contentYOffset(of: scrollableView)
         }
         return 0
     }
@@ -67,6 +86,22 @@ extension CNavigationHelper {
     static func contentYOffset(of scrollView: UIScrollView) -> CGFloat {
         scrollView.contentOffset.y + scrollView.contentInset.top
     }
+    
+    static func setMask(with hole: CGRect, in view: UIView){
+        // Create a mutable path and add a rectangle that will be h
+        let mutablePath = CGMutablePath()
+        mutablePath.addRect(view.bounds)
+        mutablePath.addRect(hole)
+        
+        // Create a shape layer and cut out the intersection
+        let mask = CAShapeLayer()
+        mask.path = mutablePath
+        mask.fillRule = .evenOdd
+        
+        // Add the mask to the view
+        view.layer.mask = mask
+    }
+    
 }
 
 // MARK: - Calculate size

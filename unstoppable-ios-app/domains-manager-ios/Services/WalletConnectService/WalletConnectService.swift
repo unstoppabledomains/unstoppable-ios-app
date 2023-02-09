@@ -309,7 +309,7 @@ extension WalletConnectService: WalletConnectServiceProtocol {
     }
     
     func didLostOwnership(to domain: DomainItem) {
-        if let appsToDisconnect = appsStorage.find(by: domain) {
+        if let appsToDisconnect = appsStorage.findBy(domainName: domain.name) {
             appsToDisconnect.forEach { try? server.disconnect(from: $0.session) }
         }
     }

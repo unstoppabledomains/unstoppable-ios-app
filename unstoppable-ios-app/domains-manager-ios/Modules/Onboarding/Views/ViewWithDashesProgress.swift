@@ -22,10 +22,9 @@ extension ViewWithDashesProgress {
     func setDashesProgress(_ progress: Double?) {
         if let progress = progress {
             dashesProgressView.setProgress(progress)
-            dashesProgressView.isHidden = false
-        } else {
-            dashesProgressView.isHidden = true
         }
+        dashesProgressView.alpha = progress == nil ? 0 : 1
+        cNavigationBar?.navBarContentView.setTitleView(hidden: progress == nil, animated: false)
     }
 
     func addProgressDashesView() {

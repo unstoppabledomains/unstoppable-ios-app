@@ -11,10 +11,10 @@ final class ShareDomainHandler: NSObject {
     
     private weak var view: BaseViewControllerProtocol?
     private var imageSavedCallback: EmptyCallback?
-    let domain: DomainItem
+    let domain: DomainDisplayInfo
     private var selectedStyleName: String?
     
-    init(domain: DomainItem) {
+    init(domain: DomainDisplayInfo) {
         self.domain = domain
         super.init()
         loadQRCode()

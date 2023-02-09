@@ -70,10 +70,6 @@
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CNJ-0h-M5J" customClass="SocialsDomainImagePreviewView" customModule="domains_manager_ios" customModuleProvider="target">
                                             <rect key="frame" x="27.333333333333314" y="0.0" width="73" height="125"/>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="73" id="ORD-rv-Rqb"/>
-                                                <constraint firstAttribute="height" constant="125" id="PIb-af-XIM"/>
-                                            </constraints>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
                                                     <real key="value" value="12"/>
@@ -82,9 +78,6 @@
                                         </view>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XHI-J3-gPC" customClass="TertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
                                             <rect key="frame" x="26.333333333333314" y="141" width="75" height="40"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="piH-tP-Ge9"/>
-                                            </constraints>
                                             <state key="normal" title="Button"/>
                                             <buttonConfiguration key="configuration" style="plain" title="Button"/>
                                             <userDefinedRuntimeAttributes>
@@ -101,10 +94,6 @@
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5KY-ik-jbw" customClass="WatchFaceDomainImagePreviewView" customModule="domains_manager_ios" customModuleProvider="target">
                                             <rect key="frame" x="27.333333333333314" y="0.0" width="73" height="125"/>
                                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="73" id="cWV-v8-dff"/>
-                                                <constraint firstAttribute="height" constant="125" id="cal-KE-bo3"/>
-                                            </constraints>
                                             <userDefinedRuntimeAttributes>
                                                 <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
                                                     <real key="value" value="12"/>
@@ -113,9 +102,6 @@
                                         </view>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1km-GH-BEc" customClass="TertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
                                             <rect key="frame" x="1.3333333333333144" y="141" width="125" height="40"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="40" id="awz-20-3vv"/>
-                                            </constraints>
                                             <state key="normal" title="Button"/>
                                             <buttonConfiguration key="configuration" style="plain" title="Longlinglinga"/>
                                             <userDefinedRuntimeAttributes>
@@ -127,6 +113,14 @@
                                     </subviews>
                                 </stackView>
                             </subviews>
+                            <constraints>
+                                <constraint firstItem="CNJ-0h-M5J" firstAttribute="width" secondItem="ZUp-E6-Jfz" secondAttribute="width" id="0cu-mK-GTu"/>
+                                <constraint firstItem="5KY-ik-jbw" firstAttribute="height" secondItem="ZUp-E6-Jfz" secondAttribute="height" id="31O-dk-Vxs"/>
+                                <constraint firstItem="5KY-ik-jbw" firstAttribute="width" secondItem="ZUp-E6-Jfz" secondAttribute="width" id="5Fq-pV-6hO"/>
+                                <constraint firstItem="XHI-J3-gPC" firstAttribute="height" secondItem="fDt-Bn-gfO" secondAttribute="height" id="Zdi-vZ-sNt"/>
+                                <constraint firstItem="CNJ-0h-M5J" firstAttribute="height" secondItem="ZUp-E6-Jfz" secondAttribute="height" id="iiL-Zw-HPS"/>
+                                <constraint firstItem="1km-GH-BEc" firstAttribute="height" secondItem="fDt-Bn-gfO" secondAttribute="height" id="pm9-bh-LLp"/>
+                            </constraints>
                         </stackView>
                     </subviews>
                 </stackView>
@@ -134,7 +128,7 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="qYg-1q-GuL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="RYe-zk-zqK"/>
-                <constraint firstItem="qYg-1q-GuL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="16" id="TK0-r9-KZ2" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                <constraint firstItem="qYg-1q-GuL" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" priority="999" constant="16" id="TK0-r9-KZ2" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
                             <real key="value" value="8"/>

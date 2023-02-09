@@ -103,24 +103,8 @@ class Storage {
         }
     }
     
-    func updateDomainsPFPToCache_Blocking(_ array: [DomainItem]) async throws {
-        try domainWorkerQueue.sync {
-            var domainsCache: [DomainItem] = self.getStoredDomains()
-            array.forEach { newDomain in
-                if let existing = domainsCache.enumerated()
-                    .first(where: {$0.element.name == newDomain.name }) {
-                    domainsCache[existing.offset] = domainsCache[existing.offset].mergePFPInfo(with: newDomain)
-                } else {
-                    domainsCache.append(newDomain)
-                }
-            }
-            try storeDomains(domainsCache)
-        }
-    }
-    
     private func storeDomains(_ domains: [DomainItem]) throws {
-        let cacheAbleDomains = domains.filter({ $0.isCacheAble })
-        if !self.domainsStorage.store(cacheAbleDomains) {
+        if !self.domainsStorage.store(domains) {
             throw StorageError.WritingError
         }
     }

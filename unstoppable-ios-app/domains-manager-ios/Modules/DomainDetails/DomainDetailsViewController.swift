@@ -9,7 +9,7 @@ import UIKit
 
 @MainActor
 protocol DomainDetailsViewProtocol: BaseViewControllerProtocol {
-    func setWithDomain(_ domain: DomainItem)
+    func setWithDomain(_ domain: DomainDisplayInfo)
     func setDomain(avatarImage: UIImage?)
     func setQRImage(_ qrImage: UIImage?)
     func showQRSaved()
@@ -63,7 +63,7 @@ final class DomainDetailsViewController: BaseViewController {
 
 // MARK: - DomainDetailsViewProtocol
 extension DomainDetailsViewController: DomainDetailsViewProtocol {
-    func setWithDomain(_ domain: DomainItem) {
+    func setWithDomain(_ domain: DomainDisplayInfo) {
         domainNameLabel.setAttributedTextWith(text: domain.name,
                                               font: .currentFont(withSize: 22, weight: .bold),
                                               textColor: .foregroundOnEmphasis,
@@ -105,7 +105,7 @@ extension DomainDetailsViewController: DomainDetailsViewProtocol {
 // MARK: - Actions
 private extension DomainDetailsViewController {
     @IBAction func shareButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .share)
+        logButtonPressedAnalyticEvents(button: .share, parameters: [.domainName: presenter.domainName])
         presenter.shareButtonPressed()
     }
     

@@ -85,12 +85,16 @@ private extension StatusMessage {
 extension StatusMessage {
     enum Style {
         case gray, success, warning
+        case electricYellow, electricGreen, orange
         
         var color: UIColor {
             switch self {
             case .gray: return .foregroundSecondary
             case .success: return .foregroundSuccess
             case .warning: return .foregroundWarning
+            case .electricYellow: return .brandElectricYellow
+            case .electricGreen: return .brandElectricGreen
+            case .orange: return .brandOrange
             }
         }
     }
@@ -98,49 +102,53 @@ extension StatusMessage {
     enum Component {
         case updatingRecords
         case bridgeDomainToPolygon
-        case tapOnCardToSeeDetails
         case deprecated(tld: String)
+        case electricMinting, electricUpdatingRecords, orangeDeprecated(tld: String)
         
         var icon: UIImage {
             switch self {
-            case .updatingRecords:
+            case .updatingRecords, .electricUpdatingRecords, .electricMinting:
                 return .refreshIcon
             case .bridgeDomainToPolygon:
                 return .warningIconLarge
-            case .tapOnCardToSeeDetails:
-                return .tapIcon
-            case .deprecated:
+            case .deprecated, .orangeDeprecated:
                 return .warningIconLarge
             }
         }
         
         var message: String {
             switch self {
-            case .updatingRecords:
+            case .updatingRecords, .electricUpdatingRecords:
                 return String.Constants.updatingRecords.localized()
             case .bridgeDomainToPolygon:
                 return String.Constants.bridgeDomainToPolygon.localized()
-            case .tapOnCardToSeeDetails:
-                return String.Constants.tapDomainCardHint.localized()
-            case .deprecated(let tld):
+            case .deprecated(let tld), .orangeDeprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
+            case .electricMinting:
+                return String.Constants.mintingInProgressTitle.localized()
             }
         }
         
         var style: Style {
             switch self {
-            case .updatingRecords, .tapOnCardToSeeDetails:
+            case .updatingRecords:
                 return .gray
             case .bridgeDomainToPolygon, .deprecated:
                 return .warning
+            case .electricUpdatingRecords:
+                return .electricYellow
+            case .electricMinting:
+                return .electricGreen
+            case .orangeDeprecated:
+                return .orange
             }
         }
         
         func applyAdditionalBehaviour(on imageView: UIImageView) {
             switch self {
-            case .updatingRecords:
+            case .updatingRecords, .electricUpdatingRecords, .electricMinting:
                 imageView.runUpdatingRecordsAnimation()
-            case .bridgeDomainToPolygon, .tapOnCardToSeeDetails, .deprecated:
+            case .bridgeDomainToPolygon, .deprecated, .orangeDeprecated:
                 return
             }
         }

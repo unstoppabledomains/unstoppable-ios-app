@@ -85,7 +85,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let unifiedApps = getAllUnifiedAppsFromCache()
         
         // trim the list of connected dApps
-        let validDomains = await appContext.dataAggregatorService.getDomains()
+        let validDomains = await appContext.dataAggregatorService.getDomainItems()
         let validConnectedApps = unifiedApps.trimmed(to: validDomains)
         
         // disconnect those connected to gone domains
@@ -177,8 +177,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     private func pickDomain() async -> DomainItem? {
-        if let primary = appContext.udDomainsService.getAllDomains().first(where: {$0.isPrimary}) {
-            return primary
+        if let primaryDomainDisplayInfo = await appContext.dataAggregatorService.getDomainsDisplayInfo().first,
+           let primaryDomain = try? await appContext.dataAggregatorService.getDomainWith(name: primaryDomainDisplayInfo.name) {
+            return primaryDomain
         }
         return appContext.udDomainsService.getAllDomains().first
     }
@@ -417,8 +418,11 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 extension WalletConnectServiceV2: DataAggregatorServiceListener {
     func dataAggregatedWith(result: DataAggregationResult) {
         if case .success(let serviceResult) = result,
-           case .domainsUpdated(let validDomains) = serviceResult {
-            disconnectAppsForAbsentDomains(from: validDomains)
+           case .domainsUpdated = serviceResult {
+            Task {
+                let validDomains = await appContext.dataAggregatorService.getDomainItems()
+                disconnectAppsForAbsentDomains(from: validDomains)
+            }
         }
     }
 }

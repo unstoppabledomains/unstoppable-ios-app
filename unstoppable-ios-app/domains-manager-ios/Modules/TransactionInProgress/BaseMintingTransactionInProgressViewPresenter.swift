@@ -20,33 +20,15 @@ class BaseMintingTransactionInProgressViewPresenter: BaseTransactionInProgressVi
         super.init(view: view,
                    transactionsService: transactionsService,
                    notificationsService: notificationsService)
+        appContext.externalEventsService.addListener(self)
     }
-    
-    override func fillUpMintingDomains(in snapshot: inout TransactionInProgressSnapshot) {
-        if pendingDomains.count == 1 {
-            snapshot.appendSections([.card])
-            snapshot.appendItems([.card(domain: pendingDomains[0].name)])
-        } else {
-            snapshot.appendSections([.list])
-            snapshot.appendItems(pendingDomains.map({
-                TransactionInProgressViewController.Item.list(domain: $0.name, isPrimary: $0.name == primaryDomain?.name)
-            }))
-        }
-    }
-    
+
     func didRefreshPendingDomains() { }
     
     override func viewTransactionButtonPressed() {
-        Task {
-            let transactions = pendingDomains.compactMap({ $0.transactionHash })
-            if transactions.count > 1 {
-                await view?.openLink(.polygonScanAddress(pendingDomains[0].walletAddress))
-            } else if transactions.count == 1 {
-                await view?.openLink(.polygonScanTransaction(transactions[0]))
-            }
-        }
+        view?.cNavigationController?.popViewController(animated: true)
     }
-    
+     
     override func refreshMintingTransactions() {
         Task {
             let transactions = try await transactionsService.updateTransactionsListFor(domains: mintingDomains.map({ $0.name }))
@@ -61,29 +43,36 @@ class BaseMintingTransactionInProgressViewPresenter: BaseTransactionInProgressVi
             }
             
             let pendingDomains = self.pendingDomains
-            try MintingDomainsStorage.save(mintingDomains: pendingDomains)
             
             await MainActor.run {
-                let hasTransactionHash = pendingDomains.first(where: { $0.transactionHash != nil }) != nil
-                view?.setViewTransactionButtonHidden(!hasTransactionHash)
+                view?.setActionButtonHidden(pendingDomains.count != 1)
                 showData()
             }
             didRefreshPendingDomains()
+        }
+    }
+    
+    override func setActionButtonStyle() {
+        view?.setActionButtonStyle(.goHome)
+    }
+}
+
+// MARK: - ExternalEventsServiceListener
+extension BaseMintingTransactionInProgressViewPresenter: ExternalEventsServiceListener {
+    func didReceive(event: ExternalEvent) {
+        Task {
+            switch event {
+            case .mintingFinished, .domainTransferred:
+                refreshMintingTransactions()
+            case .wcDeepLink, .walletConnectRequest, .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainProfileUpdated:
+                return
+            }
         }
     }
 }
 
 // MARK: - Open methods
 extension BaseMintingTransactionInProgressViewPresenter {
-    var primaryDomain: MintingDomain? { mintingDomains.first(where: { $0.isPrimary })}
     var pendingDomains: [MintingDomain] { mintingDomains.filter({ $0.isMinting })}
 }
 
-struct MintingDomain: Codable {
-    let name: String
-    let walletAddress: String
-    let isPrimary: Bool
-    var isMinting: Bool = true
-    let transactionId: UInt64
-    var transactionHash: String?
-}

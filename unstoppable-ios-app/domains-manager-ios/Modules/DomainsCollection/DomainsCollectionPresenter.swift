@@ -11,19 +11,19 @@ import UIKit
 @MainActor
 protocol DomainsCollectionPresenterProtocol: BasePresenterProtocol {
     var analyticsName: Analytics.ViewName { get }
-    var scrollableContentYOffset: CGFloat { get }
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
+    var currentIndex: Int { get }
     
-    func didSelectItem(_ item: DomainsCollectionViewController.Item)
-    func didChangeDomainsVisualisation(_ domainsVisualisation: DomainsCollectionViewController.DomainsVisualisation)
+    func canMove(to index: Int) -> Bool
+    func domain(at index: Int) -> DomainDisplayInfo?
+    func didMove(to index: Int)
+    func didOccureUIAction(_ action: DomainsCollectionViewController.Action)
     func didTapSettingsButton()
-    func didTapAddButton()
+    func importDomainsFromWebPressed()
     func didPressScanButton()
-    func didSearchDomainsWith(key: String)
     func didMintDomains(result: MintDomainsNavigationController.MintDomainsResult)
-    func didStartSearch()
-    func didStopSearch()
     func didRecognizeQRCode()
+    func didTapAddButton()
 }
 
 final class DomainsCollectionPresenter: ViewAnalyticsLogger {
@@ -34,14 +34,11 @@ final class DomainsCollectionPresenter: ViewAnalyticsLogger {
     private let notificationsService: NotificationsServiceProtocol
     private let udWalletsService: UDWalletsServiceProtocol
     private var stateController: StateController = StateController()
-    private var transactions = [TransactionItem]()
-    private var updateTimer: Timer?
-    private var searchKey = ""
-    private var isSearchActive = false
     private(set) var isResolvingPrimaryDomain = false
     private var initialMintingState: DomainsCollectionMintingState
     private var shareDomainHandler: ShareDomainHandler?
-    var scrollableContentYOffset: CGFloat { 16 }
+    private(set) var currentIndex = 0
+
     var analyticsName: Analytics.ViewName { .home }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     
@@ -70,10 +67,14 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         dataAggregatorService.addListener(self)
         view?.setSettingsButtonHidden(false)
         updateGoToSettingsTutorialVisibility()
+        updateUIControlsVisibility()
         Task {
             await loadInitialData()
             let domains = stateController.domains
-            resolveCurrentState(animated: false, domains: domains)
+            if let domain = domains.first {
+                view?.setSelectedDomain(domain, at: 0, animated: false)
+            }
+            updateUI()
             await resolvePrimaryDomain(domains: domains)
             launchMintFlowAfterOnboardingIfNeeded()
             await showReverseResolutionPromptIfNeeded()
@@ -88,111 +89,89 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         }
     }
     
-    func didSelectItem(_ item: DomainsCollectionViewController.Item) {
-        switch item {
-        case .empty, .searchEmptyState, .emptyTopInfo:
-            return
-        case .emptyList(let itemType):
+    func canMove(to index: Int) -> Bool {
+        isIndexSupported(index)
+    }
+    
+    func domain(at index: Int) -> DomainDisplayInfo? {
+        guard isIndexSupported(index) else { return nil }
+        
+        return stateController.domains[index]
+    }
+   
+    func didMove(to index: Int) {
+        currentIndex = index
+        updateUI()
+    }
+    
+    func didOccureUIAction(_ action: DomainsCollectionViewController.Action) {
+        switch action {
+        case .emptyListItemType(let itemType):
             UDVibration.buttonTap.vibrate()
             logButtonPressedAnalyticEvents(button: itemType.analyticsName)
             switch itemType {
-            case .mintDomains:
-                mintDomainPressed()
-            case .buyDomains:
-                buyDomainPressed()
-            case .manageDomains:
-                manageDomainsPressed()
+            case .importWallet:
+                importWalletPressed()
+            case .external:
+                connectWalletPressed()
             }
-        case .domainCardItem(let displayInfo):
-            let domainItem = displayInfo.domainItem
-            logAnalytic(event: .domainPressed, parameters: [.domainName : domainItem.name,
-                                                            .topControlType : DomainsCollectionViewController.DomainsVisualisation.card.analyticsName])
+        case .recentActivityLearnMore:
+            logButtonPressedAnalyticEvents(button: .recentActivityLearnMore, parameters: [.domainName: getCurrentDomainName()])
+            showRecentActivitiesLearMorePullUp()
+        case .domainSelected(let domain):
+            logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
             UDVibration.buttonTap.vibrate()
-            if !UserDefaults.didTapPrimaryDomain {
-                UserDefaults.didTapPrimaryDomain = true
-                let domains = stateController.domains
-                let state = stateController.state
-                setState(state, domains: domains, animated: false)
-            }
-            showDomainProfile(domainItem)
-        case .domainListItem(let domainItem, _, _, _):
-            logAnalytic(event: .domainPressed, parameters: [.domainName : domainItem.name,
-                                                            .topControlType : DomainsCollectionViewController.DomainsVisualisation.list.analyticsName])
-            UDVibration.buttonTap.vibrate()
-            showDomainProfile(domainItem)
-        case .domainsMintingInProgress:
-            logAnalytic(event: .mintingDomainsPressed)
-            UDVibration.buttonTap.vibrate()
-            let domains = stateController.domains
-            showMintingInProgressList(domains.filter({ $0.isMinting }))
+            showDomainProfile(domain)
+        case .mintingDomainSelected(let mintingDomain):
+            logAnalytic(event: .mintingDomainPressed, parameters: [.domainName : mintingDomain.name])
+            didSelectMintingDomain(mintingDomain)
+        case .mintingDomainsShowMoreMintedDomainsPressed:
+            logButtonPressedAnalyticEvents(button: .showMoreMintingDomains)
+            showAllMintingInProgressList()
+        case .rearrangeDomains:
+            logButtonPressedAnalyticEvents(button: .rearrangeDomains)
+            rearrangeDomains()
+        case .searchPressed:
+            logButtonPressedAnalyticEvents(button: .searchDomains)
+            showDomainsSearch()
         }
     }
-    
-    func didChangeDomainsVisualisation(_ domainsVisualisation: DomainsCollectionViewController.DomainsVisualisation) {
-        let domains = stateController.domains
-        switch domainsVisualisation {
-        case .card:
-            setState(cardState(domains: domains), domains: domains, animated: true)
-        case .list:
-            setState(listState(domains: domains), domains: domains, animated: true)
-        }
-    }
-    
+
     func didTapSettingsButton() {
         UserDefaults.homeScreenSettingsButtonPressed = true
         updateGoToSettingsTutorialVisibility()
         router.showSettings()
     }
-    
-    func didTapAddButton() {
-        Task {
-            guard let view = self.view,
-                await router.isMintingAvailable(in: view) else { return }
-            
-            do {
-                let action = try await appContext.pullUpViewService.showMintDomainConfirmationPullUp(in: view)
-                switch action {
-                case .mint:
-                    mintDomainPressed()
-                case .importWallet:
-                    await view.dismissPullUpMenu()
-                    router.showImportWalletsOptions()
-                }
-            }
-        }
+
+    @MainActor
+    func importDomainsFromWebPressed() {
+        runMintingFlow(mode: .default)
     }
-    
+     
     func didPressScanButton() {
-        router.showQRScanner()
+        logButtonPressedAnalyticEvents(button: .scan, parameters: [.domainName: getCurrentDomainName()])
+        showQRScanner()
     }
-    
-    func didSearchDomainsWith(key: String) {
-        logAnalytic(event: .didSearch, parameters: [.domainName: key])
-        let representation = stateController.representation
-        self.searchKey = key
-        guard let representation = representation as? DomainsCollectionListRepresentation else { return }
-        
-        let domains = stateController.domains
-        representation.domains = self.domainsForCurrentState(domains: domains)
-        view?.applySnapshot(representation.snapshot(), animated: true)
-    }
-    
+   
     func didMintDomains(result: MintDomainsNavigationController.MintDomainsResult) {
         switch result {
         case .noDomainsToMint:
-            didTapAddButton()
+            handleNoDomainsToMint()
         case .importWallet:
-            router.showImportWalletsOptions()
+            router.showImportWalletsWith(initialAction: .showImportWalletOptionsPullUp)
         case .cancel:
             return
-        case .minted(let isPrimary):
+        case .minted, .skipped:
             let domains = stateController.domains
-            if isPrimary {
-                setState(cardState(domains: domains), domains: domains, animated: true)
+            guard let mintingDomainIndex = domains.firstIndex(where: { $0.isMinting }) else { return }
+            
+            setNewIndex(mintingDomainIndex, animated: true)
+            updateUI()
+
+            if case .minted = result,
+               domains[mintingDomainIndex].isPrimary {
                 view?.runConfettiAnimation()
                 appContext.toastMessageService.showToast(.mintingSuccessful, isSticky: false)
-            } else {
-                setState(listState(domains: domains), domains: domains, animated: true)
             }
             AppReviewService.shared.appReviewEventDidOccurs(event: .didMintDomains)
         case .domainsPurchased(let details):
@@ -202,29 +181,6 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             }
         }
     }
-        
-    func didStartSearch() {
-        logAnalytic(event: .didStartSearching)
-        let representation = stateController.representation
-        self.isSearchActive = true
-        guard let representation = representation as? DomainsCollectionListRepresentation else { return }
-        
-        representation.isSearchActive = true
-        representation.domains = []
-        view?.applySnapshot(representation.snapshot(), animated: false)
-    }
-    
-    func didStopSearch() {
-        logAnalytic(event: .didStopSearching)
-        let representation = stateController.representation
-        let domains = stateController.domains
-        self.isSearchActive = false
-        guard let representation = representation as? DomainsCollectionListRepresentation else { return }
-        
-        representation.isSearchActive = false
-        representation.domains = domains
-        view?.applySnapshot(representation.snapshot(), animated: false)
-    }
     
     func didRecognizeQRCode() {
         guard let view = self.view else { return }
@@ -233,15 +189,34 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             appContext.pullUpViewService.showLoadingIndicator(in: view)
         }
     }
-}
+    
+    func didTapAddButton() {
+        Task {
+            guard let view = self.view,
+                  await router.isMintingAvailable(in: view) else { return }
+            
+            do {
+                let action = try await appContext.pullUpViewService.showMintDomainConfirmationPullUp(in: view)
+                await view.dismissPullUpMenu()
 
+                switch action {
+                case .importFromWebsite:
+                    importDomainsFromWebPressed()
+                case .importWallet:
+                    importWalletPressed()
+                case .connectWallet:
+                    connectWalletPressed()
+                }
+            }
+        }
+    }
+}
 
 // MARK: - AppLaunchServiceListener
 extension DomainsCollectionPresenter: AppLaunchServiceListener {
     func appLaunchServiceDidUpdateAppVersion() {
-        Task { @MainActor in
-            let domains = stateController.domains
-            resolveCurrentState(animated: true, domains: domains)
+        Task {
+            let domains = await stateController.domains
             await resolvePrimaryDomain(domains: domains)
         }
     }
@@ -249,23 +224,26 @@ extension DomainsCollectionPresenter: AppLaunchServiceListener {
 
 // MARK: - Private methods
 private extension DomainsCollectionPresenter {
-    func isPrimaryDomainSet(domains: [DomainItem]) -> Bool {
+    func isPrimaryDomainSet(domains: [DomainDisplayInfo]) -> Bool {
         !(!domains.isEmpty && domains.first(where: { $0.isPrimary }) == nil)
+    }
+    
+    @MainActor
+    func isIndexSupported(_ index: Int) -> Bool {
+        index >= 0 && index < stateController.domains.count
     }
     
     func loadInitialData() async {
         let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
         await stateController.set(walletsWithInfo: walletsWithInfo)
-        let domains = await dataAggregatorService.getDomains()
-        await stateController.set(domains: domains)
-       
+        let domains = await dataAggregatorService.getDomainsDisplayInfo()
+        await setDomains(domains, shouldCheckPresentedDomains: true)
+        
         if let _ = domains.first(where: { $0.isPrimary }) {
             switch initialMintingState {
-            case .mintingPrimary:
-                await runMintingFlow(mode: .mintingInProgress(domains: MintingDomainsStorage.retrieveMintingDomains()))
             case .primaryDomainMinted:
                 await view?.runConfettiAnimation()
-            case .default:
+            case .default, .mintingPrimary:
                 return
             }
         } else {
@@ -273,7 +251,7 @@ private extension DomainsCollectionPresenter {
         }
     }
     
-    func isPrimaryDomainResolved(domains: [DomainItem]) -> Bool {
+    func isPrimaryDomainResolved(domains: [DomainDisplayInfo]) -> Bool {
         let interactableDomains = domains.interactableItems()
         if !interactableDomains.isEmpty,
            interactableDomains.first(where: { $0.isPrimary }) == nil {
@@ -284,11 +262,8 @@ private extension DomainsCollectionPresenter {
     }
     
     @MainActor
-    func resolvePrimaryDomain(domains: [DomainItem]) async {
-        func updatePrimaryDomain(with newPrimaryDomain: DomainItem) async {
-            await dataAggregatorService.setPrimaryDomainWith(name: newPrimaryDomain.name)
-            stateController.updatePrimaryDomain(newPrimaryDomain)
-        }
+    func resolvePrimaryDomain(domains: [DomainDisplayInfo]) async {
+     
         
         if !isPrimaryDomainResolved(domains: domains),
            !isResolvingPrimaryDomain,
@@ -300,30 +275,78 @@ private extension DomainsCollectionPresenter {
             
             ConfettiImageView.prepareAnimationsAsync()
             if domains.count == 1 {
-                await dataAggregatorService.setPrimaryDomainWith(name: domains[0].name)
+                await updateDomainsListOrder(with: domains, newIndex: 0)
             } else {
-                setState(listState(domains: domains), domains: domains, animated: true)
+                updateUI()
                 let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: domains,
                                                                                   isFirstPrimaryDomain: true,
                                                                                   configuration: .init(canReverseResolutionETHDomain: false,
-                                                                                                       analyticsView: .chooseFirstPrimaryDomain),
+                                                                                                       analyticsView: .sortDomainsForTheFirstTime),
                                                                                   in: view)
                 switch result {
                 case .cancelled:
                     Debugger.printFailure("Should not be able to dismiss initial home domain selection screen", critical: true)
-                case .homeDomainSet(let newPrimaryDomain):
-                    await updatePrimaryDomain(with: newPrimaryDomain)
-                case .homeAndReverseResolutionSet(let newPrimaryDomain):
-                    await updatePrimaryDomain(with: newPrimaryDomain)
-                    stateController.setReverseResolutionInProgressForDomain(newPrimaryDomain)
+                case .domainsOrderSet(let domains):
+                    await updateDomainsListOrder(with: domains, newIndex: 0)
+                case .domainsOrderAndReverseResolutionSet(let domains, let reverseResolutionDomain):
+                    await updateDomainsListOrder(with: domains, newIndex: 0)
+                    stateController.setReverseResolutionInProgressForDomain(reverseResolutionDomain)
                 }
                 domains = stateController.domains
                 UserDefaults.setupRRPromptCounter = 1
             }
-            setState(cardState(domains: domains), domains: domains, animated: true)
+            updateUI()
             self.isResolvingPrimaryDomain = false
             view.runConfettiAnimation()
             notificationsService.checkNotificationsPermissions()
+        }
+    }
+    
+    @MainActor
+    func updateDomainsListOrder(with domains: [DomainDisplayInfo], newIndex: Int?) async {
+        stateController.set(domains: domains)
+        if let newIndex {
+            setNewIndex(newIndex)
+        }
+        await dataAggregatorService.setDomainsOrder(using: domains)
+    }
+    
+    @MainActor
+    func setNewIndex(_ newIndex: Int, animated: Bool = false) {
+        guard isIndexSupported(newIndex) else {
+            Debugger.printFailure("Attempt to set not supported index")
+            return }
+        let domains = stateController.domains
+        currentIndex = newIndex
+        view?.setSelectedDomain(domains[newIndex], at: newIndex, animated: animated)
+    }
+    
+    @MainActor
+    func rearrangeDomains() {
+        Task {
+            guard let view else { return }
+            
+            let domains = stateController.domains
+            func updateDomains(_ updatedDomains: [DomainDisplayInfo]) async {
+                let currentDomain = domains[self.currentIndex]
+                let newIndex = updatedDomains.firstIndex(where: { $0.isSameEntity(currentDomain) })
+                await updateDomainsListOrder(with: updatedDomains, newIndex: newIndex)
+            }
+            
+            let result = await UDRouter().showNewPrimaryDomainSelectionScreen(domains: domains,
+                                                                              isFirstPrimaryDomain: false,
+                                                                              configuration: .init(canReverseResolutionETHDomain: false,
+                                                                                                   analyticsView: .sortDomainsFromHome),
+                                                                              in: view)
+            switch result {
+            case .cancelled:
+                return
+            case .domainsOrderSet(let domains):
+                await updateDomains(domains)
+            case .domainsOrderAndReverseResolutionSet(let domains, let reverseResolutionDomain):
+                stateController.setReverseResolutionInProgressForDomain(reverseResolutionDomain)
+                await updateDomains(domains)
+            }
         }
     }
     
@@ -353,24 +376,26 @@ private extension DomainsCollectionPresenter {
         }
     }
     
-    func askToSetRRIfCurrentRRDomainIsNotPreferable(among domains: [DomainItem]) async {
+    func askToSetRRIfCurrentRRDomainIsNotPreferable(among domains: [DomainDisplayInfo]) async {
         let walletsWithInfo = await stateController.walletsWithInfo
-        if let preferableDomainNameForRR = UserDefaults.preferableDomainNameForRR,
-           let primaryDomain = domains.first(where: { $0.isPrimary }),
-           preferableDomainNameForRR == primaryDomain.name,
-           let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: primaryDomain)}),
-           let walletInfo = walletWithInfo.displayInfo {
-            guard let rrDomain = walletInfo.reverseResolutionDomain else { return }
-            
-            if rrDomain.name != preferableDomainNameForRR {
-                try? await askToSetReverseResolutionFor(domain: primaryDomain, in: walletInfo)
-            }
-            
+        guard let preferableDomainNameForRR = UserDefaults.preferableDomainNameForRR,
+              await router.isTopPresented(),
+              let (index, preferableDomainForRR) = domains.enumerated().first(where: { $0.element.name == preferableDomainNameForRR }),
+              !preferableDomainForRR.isMinting,
+              let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: preferableDomainForRR)}),
+              let walletInfo = walletWithInfo.displayInfo else { return }
+        
+        guard walletInfo.reverseResolutionDomain?.name != preferableDomainNameForRR else {
             UserDefaults.preferableDomainNameForRR = nil
+            return
         }
+        
+        await view?.setSelectedDomain(preferableDomainForRR, at: index, animated: true)
+        try? await askToSetReverseResolutionFor(domain: preferableDomainForRR, in: walletInfo)
+        UserDefaults.preferableDomainNameForRR = nil
     }
     
-    func askToSetReverseResolutionFor(domain: DomainItem, in walletInfo: WalletDisplayInfo) async throws {
+    func askToSetReverseResolutionFor(domain: DomainDisplayInfo, in walletInfo: WalletDisplayInfo) async throws {
         guard let view = self.view else { return }
         
         try await appContext.pullUpViewService.showSetupReverseResolutionPromptPullUp(walletInfo: walletInfo,
@@ -378,6 +403,7 @@ private extension DomainsCollectionPresenter {
                                                                                   in: view)
         await view.dismissPullUpMenu()
         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+        let domain = try await dataAggregatorService.getDomainWith(name: domain.name)
         do {
             try await udWalletsService.setReverseResolution(to: domain,
                                                             paymentConfirmationDelegate: view)
@@ -389,40 +415,7 @@ private extension DomainsCollectionPresenter {
             throw error 
         }
     }
-    
-    @MainActor
-    func resolveCurrentState(animated: Bool, domains: [DomainItem]) {
-        let state = stateController.state
-        if domains.isEmpty {
-            setState(.empty, domains: [], animated: animated)
-        } else {
-            if case .list = state,
-               domains.count > 1 {
-                setState(listState(domains: domains), domains: domains, animated: animated)
-            } else {
-                setState(cardState(domains: domains), domains: domains, animated: animated)
-            }
-        }
-    }
-    
-    func cardState(domains: [DomainItem]) -> State {
-        guard !domains.isEmpty else { return .empty }
-        
-        let cardDomain = domains.first(where: { $0.isPrimary == true }) ?? domains.first!
-        return .card(domain: cardDomain)
-    }
-    
-    func listState(domains: [DomainItem]) -> State {
-        guard !domains.isEmpty else { return .empty }
-        
-        return .list(domains: domainsForCurrentState(domains: domains))
-    }
-    
-    @MainActor
-    func mintDomainPressed() {
-        runMintingFlow(mode: .default)
-    }
-    
+
     @MainActor
     func buyDomainPressed() {
         router.showBuyDomainsWebView()
@@ -437,50 +430,67 @@ private extension DomainsCollectionPresenter {
     }
     
     @MainActor
-    func manageDomainsPressed() {
-        router.showImportWalletsOptions()
+    func importWalletPressed() {
+        router.showImportWalletsWith(initialAction: .importWallet)
+    }
+    
+    @MainActor
+    func connectWalletPressed() {
+        router.showImportWalletsWith(initialAction: .connectWallet)
+    }
+    
+    @MainActor
+    func showDomainsSearch() {
+        let domains = stateController.domains
+        router.showDomainsSearch(domains) { [weak self] selectedDomain in
+            self?.showDomain(selectedDomain, animated: false)
+        }
+    }
+    
+    func showDomain(_ domain: DomainDisplayInfo, animated: Bool = false) {
+        Task { @MainActor in
+            let domains = stateController.domains
+            
+            if let index = domains.firstIndex(where: { $0.isSameEntity(domain) }) {
+                self.setNewIndex(index, animated: animated)
+            }
+        }
+    }
+    
+    @MainActor
+    func handleNoDomainsToMint() {
+        didTapAddButton()
     }
 }
-
+ 
 // MARK: - DataAggregatorServiceListener
 extension DomainsCollectionPresenter: DataAggregatorServiceListener {
     func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
-            await MainActor.run {
-                switch result {
-                case .success(let resultType):
-                    switch resultType {
-                    case .domainsUpdated(let domains):
-                        let isDomainsChanged = stateController.domains != domains
-                                                
-                        self.stateController.set(domains: domains)
-                        if !isResolvingPrimaryDomain {
-                            if isPrimaryDomainResolved(domains: domains) {
-                                if isDomainsChanged {
-                                    resolveCurrentState(animated: true, domains: domains)
-                                }
-                            } else {
-                                Task {
-                                    await resolvePrimaryDomain(domains: domains)
-                                }
-                            }
-                        }
-                    case .domainsPFPUpdated(let domains):
-                        let isDomainsChanged = stateController.domains != domains
-                        if isDomainsChanged {
-                            self.stateController.set(domains: domains)
-                            resolveCurrentState(animated: false, domains: domains)
-                        }
-                    case .walletsListUpdated(let wallets):
-                        stateController.set(walletsWithInfo: wallets)
-                        if wallets.isEmpty {
-                            SceneDelegate.shared?.restartOnboarding()
-                        }
-                    case .primaryDomainChanged: return
+        Task { @MainActor in
+            switch result {
+            case .success(let resultType):
+                switch resultType {
+                case .domainsUpdated(let domains):
+                    setDomains(domains, shouldCheckPresentedDomains: true)
+                    updateUI()
+                    Task {
+                        await resolvePrimaryDomain(domains: domains)
+                        await askToSetRRIfCurrentRRDomainIsNotPreferable(among: domains)
                     }
-                case .failure:
-                    return
+                case .domainsPFPUpdated(let domains):
+                    let isDomainsChanged = stateController.domains != domains
+                    if isDomainsChanged {
+                        setDomains(domains, shouldCheckPresentedDomains: false)
+                    }
+                case .walletsListUpdated(let wallets):
+                    stateController.set(walletsWithInfo: wallets)
+                    if wallets.isEmpty {
+                        SceneDelegate.shared?.restartOnboarding()
+                    }
+                case .primaryDomainChanged: return
                 }
+            case .failure:
+                return
             }
         }
     }
@@ -489,41 +499,70 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
 // MARK: - State & Representation methods
 private extension DomainsCollectionPresenter {
     @MainActor
-    func setState(_ state: State, domains: [DomainItem], animated: Bool) {
-        stateController.set(state: state)
-        let newRepresentation = stateController.representation(for: state, isSearchActive: isSearchActive)
-        let currentRepresentation = stateController.representation
-        setRepresentation(newRepresentation, currentRepresentation: currentRepresentation, animated: animated)
-        updateBackgroundImage(domains: domains, state: state)
-        updateGoToSettingsTutorialVisibility()
-        updateUIControlsVisibility(domains: domains, state: state)
-        stateController.set(representation: newRepresentation)
-    }
-    
-    func domainsForCurrentState(domains: [DomainItem]) -> [DomainItem] {
-        if isSearchActive {
-            if searchKey.isEmpty {
-                return []
-            } else {
-                return domains.filter({ $0.name.lowercased().contains(searchKey.lowercased()) })
+    func checkPresentedDomainsIndexChangedAndUpdateUI(domains: [DomainDisplayInfo]) {
+        func updateSelectedDomain(_ domain: DomainDisplayInfo, at index: Int, newCurrentIndex: Int) {
+            self.currentIndex = newCurrentIndex
+            stateController.set(domains: domains)
+            view?.setSelectedDomain(domain, at: index, animated: true)
+        }
+        
+        guard isIndexSupported(currentIndex) else {
+            if !domains.isEmpty {
+                updateSelectedDomain(domains[0], at: 0, newCurrentIndex: 0)
+            }
+            return
+        }
+        
+        let currentDomains = stateController.domains
+        let currentlySelectedDomain = currentDomains[self.currentIndex]
+        
+        var didUpdateSelectedDomainIndex = false
+        if let newIndex = domains.firstIndex(where: { $0.isSameEntity(currentlySelectedDomain )}) {
+            /// Currently selected domain's order changed
+            if newIndex != currentIndex {
+                updateSelectedDomain(currentlySelectedDomain, at: newIndex, newCurrentIndex: newIndex)
+                didUpdateSelectedDomainIndex = true
             }
         } else {
-            return domains
+            /// Currently selected domain removed. Set first as current
+            if !domains.isEmpty {
+                updateSelectedDomain(domains[0], at: 0, newCurrentIndex: 0)
+                didUpdateSelectedDomainIndex = true
+            }
+        }
+        
+        /// Check next and previous domain changed
+        func isDomainIndexChanged(at index: Int) -> Bool {
+            guard isIndexSupported(index) else { return false }
+            
+            let currentDomains = currentDomains[index]
+            let newIndex = domains.firstIndex(where: { $0.isSameEntity(currentDomains) })
+            return newIndex != index
+        }
+        
+        /// If selected domain was updated before, it will automatically request new next and previous domain, no need extra steps.
+        /// If selected domain wasn't updated, need to check if previous and next domain's order changed 
+        if !didUpdateSelectedDomainIndex,
+           isDomainIndexChanged(at: currentIndex - 1) || isDomainIndexChanged(at: currentIndex + 1) {
+            updateSelectedDomain(currentlySelectedDomain, at: currentIndex, newCurrentIndex: currentIndex)
         }
     }
     
     @MainActor
-    func setRepresentation(_ newRepresentation: DomainsCollectionRepresentation, currentRepresentation: DomainsCollectionRepresentation?, animated: Bool) {
-        view?.setScrollEnabled(newRepresentation.isScrollEnabled)
-        if type(of: currentRepresentation) != type(of: newRepresentation) {
-            let layout = newRepresentation.layout()
-            view?.setLayout(layout)
+    func setDomains(_ domains: [DomainDisplayInfo], shouldCheckPresentedDomains: Bool) {
+        if shouldCheckPresentedDomains {
+            checkPresentedDomainsIndexChangedAndUpdateUI(domains: domains)
         }
-        if animated { // Avoid auto-transition which looks ugly.
-            view?.applySnapshot(.init(), animated: false)
-        }
-        let snapshot = newRepresentation.snapshot()
-        view?.applySnapshot(snapshot, animated: animated)
+        stateController.set(domains: domains)
+        view?.setNumberOfSteps(domains.count)
+        updateMintingDomainsUI()
+    }
+    
+    @MainActor
+    func updateUI() {
+        updateBackgroundImage()
+        updateGoToSettingsTutorialVisibility()
+        updateUIControlsVisibility()
     }
     
     @MainActor
@@ -532,44 +571,44 @@ private extension DomainsCollectionPresenter {
     }
     
     @MainActor
-    func updateUIControlsVisibility(domains: [DomainItem], state: State) {
-        view?.setVisualisationControlHidden(domains.count <= 1)
-        if case .list = state {
-            view?.setVisualisationControlSelectedSegmentIndex(1)
-        } else {
-            view?.setVisualisationControlSelectedSegmentIndex(0)
-        }
-        view?.setScanButtonHidden(domains.isEmpty)
-        
-        switch state {
-        case .empty:
-            view?.setAddButtonHidden(true)
-            view?.setEmptyState(hidden: false)
-        case .list, .card:
-            view?.setAddButtonHidden(false)
-            view?.setEmptyState(hidden: true)
+    func updateUIControlsVisibility() {
+        let isEmpty = stateController.domains.isEmpty
+        view?.setScanButtonHidden(isEmpty)
+        view?.setAddButtonHidden(isEmpty)
+        view?.setEmptyState(hidden: !isEmpty)
+    }
+    
+    @MainActor
+    func updateBackgroundImage() {
+        Task {
+            let domains = stateController.domains
+            if !domains.isEmpty {
+                let domain = domains[currentIndex]
+                let avatar = await appContext.imageLoadingService.loadImage(from: .domain(domain),
+                                                                            downsampleDescription: nil)
+                view?.setBackgroundImage(avatar)
+            } else {
+                view?.setBackgroundImage(nil)
+            }
         }
     }
     
     @MainActor
-    func updateBackgroundImage(domains: [DomainItem], state: State) {
-        if case .card = state,
-           let domain = domains.first(where: { $0.isPrimary == true }) ?? domains.first {
-            Task {
-                let avatar = await appContext.imageLoadingService.loadImage(from: .domain(domain),
-                                                                            downsampleDescription: nil)
-                view?.setBackgroundImage(avatar)
-            }
+    func updateMintingDomainsUI() {
+        let mintingDomains: [DomainDisplayInfo]
+        if Constants.isTestingMinting {
+            mintingDomains = Array(stateController.domains.prefix(Constants.testMintingDomainsCount))
         } else {
-            view?.setBackgroundImage(nil)
+            mintingDomains = stateController.domains.filter({ $0.isMinting })
         }
+        view?.showMintingDomains(mintingDomains)
     }
     
-    func showDomainProfile(_ domainItem: DomainItem) {
+    func showDomainProfile(_ domain: DomainDisplayInfo) {
         guard let view = self.view else { return }
         let topView = view.presentedViewController ?? view
         Task {
-            switch domainItem.usageType {
+            switch domain.usageType {
             case .zil:
                 do {
                     try await appContext.pullUpViewService.showZilDomainsNotSupportedPullUp(in: topView)
@@ -583,16 +622,20 @@ private extension DomainsCollectionPresenter {
                     await topView.openLink(.deprecatedCoinTLDPage)
                 }
             case .normal:
+                guard !domain.isMinting else {
+                    await showDomainMintingInProgress(domain)
+                    return }
+                
                 let walletsWithInfo = await stateController.walletsWithInfo
-                guard let domainWallet = walletsWithInfo.first(where: { domainItem.isOwned(by: $0.wallet) })?.wallet,
+                guard let domainWallet = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) })?.wallet,
                       let walletInfo = await dataAggregatorService.getWalletDisplayInfo(for: domainWallet) else { return }
                 
-                await router.showDomainProfile(domainItem, wallet: domainWallet, walletInfo: walletInfo, dismissCallback: { [weak self] in self?.didCloseDomainProfile(domainItem) })
+                await router.showDomainProfile(domain, wallet: domainWallet, walletInfo: walletInfo, dismissCallback: { [weak self] in self?.didCloseDomainProfile(domain) })
             }
         }
     }
     
-    func didCloseDomainProfile(_ domain: DomainItem) {
+    func didCloseDomainProfile(_ domain: DomainDisplayInfo) {
         if !UserDefaults.didAskToShowcaseProfileAfterFirstUpdate,
            UserDefaults.didEverUpdateDomainProfile {
             guard let view = self.view else { return }
@@ -613,48 +656,115 @@ private extension DomainsCollectionPresenter {
     }
     
     @MainActor
-    func showMintingInProgressList(_ domainItems: [DomainItem]) {
-        guard let view = self.view else { return }
+    func showDomainMintingInProgress(_ domain: DomainDisplayInfo) {
+        guard domain.isMinting else { return }
+        
+        let mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
+        
+        guard let mintingDomain = mintingDomains.first(where: { $0.name == domain.name }) else { return }
+        
+        let mintingDomainWithDisplayInfo = MintingDomainWithDisplayInfo(mintingDomain: mintingDomain,
+                                                                        displayInfo: domain)
+        showMintingInProgress(mintingDomainsWithDisplayInfo: [mintingDomainWithDisplayInfo])
+    }
+    
+    @MainActor
+    func showAllMintingInProgressList() {
+        let domains = stateController.domains
+        let mintingDomains: [MintingDomain]
+        if Constants.isTestingMinting {
+            let domainsToTransform = Array(stateController.domains.prefix(Constants.testMintingDomainsCount))
+            mintingDomains = domainsToTransform.map({ MintingDomain(name: $0.name,
+                                                                    walletAddress: $0.ownerWallet ?? "",
+                                                                    isPrimary: false,
+                                                                    transactionId: 0)})
+        } else {
+            mintingDomains = MintingDomainsStorage.retrieveMintingDomains()
+        }
+        
+        let mintingDomainsWithDisplayInfo = mintingDomains.compactMap({ mintingDomain -> MintingDomainWithDisplayInfo? in
+            guard let domain = domains.first(where: { $0.name == mintingDomain.name }) else { return nil }
+            
+            return MintingDomainWithDisplayInfo(mintingDomain: mintingDomain, displayInfo: domain)
+        })
+        
+        showMintingInProgress(mintingDomainsWithDisplayInfo: mintingDomainsWithDisplayInfo)
+    }
+    
+    @MainActor
+    func showMintingInProgress(mintingDomainsWithDisplayInfo: [MintingDomainWithDisplayInfo]) {
+        guard let view else { return }
         
         let vcToUse = view.presentedViewController ?? view
-        UDRouter().showMintingDomainsInProgressScreen(domains: domainItems, in: vcToUse)
+        UDRouter().showMintingDomainsInProgressScreen(mintingDomainsWithDisplayInfo: mintingDomainsWithDisplayInfo,
+                                                      mintingDomainSelectedCallback: { [weak self] mintingDomain in
+            self?.didSelectMintingDomain(mintingDomain)
+        },
+                                                      in: vcToUse)
+    }
+    
+    func didSelectMintingDomain(_ mintingDomain: DomainDisplayInfo) {
+        Task { @MainActor in
+            let domains = stateController.domains
+            guard let index = domains.firstIndex(where: { $0.isSameEntity(mintingDomain) }),
+                  index != currentIndex else { return }
+            
+            view?.setSelectedDomain(mintingDomain, at: index, animated: true)
+            currentIndex = index
+        }
     }
     
     @MainActor
     func runMintingFlow(mode: MintDomainsNavigationController.Mode) {
         router.runMintDomainsFlow(with: mode)
     }
+    
+    @MainActor
+    func showRecentActivitiesLearMorePullUp() {
+        Task {
+            do {
+                guard let view = self.view else { return }
+                
+                try await appContext.pullUpViewService.showRecentActivitiesInfoPullUp(in: view)
+                await view.dismissPullUpMenu()
+                showQRScanner()
+            }
+        }
+    }
+    
+    @MainActor
+    func showQRScanner() {
+        guard isIndexSupported(currentIndex) else { return }
+        
+        let domains = stateController.domains
+        let selectedDomain = domains[currentIndex]
+        router.showQRScanner(selectedDomain: selectedDomain)
+    }
+    
+    @MainActor
+    func getCurrentDomain() -> DomainDisplayInfo? {
+        guard isIndexSupported(currentIndex) else { return nil }
+        return stateController.domains[currentIndex]
+    }
+    
+    @MainActor
+    func getCurrentDomainName() -> String {
+        getCurrentDomain()?.name ?? "N/A"
+    }
+    
 }
 
 // MARK: - State
 extension DomainsCollectionPresenter {
-    enum State {
-        case empty, card(domain: DomainItem), list(domains: [DomainItem])
-    }
-    
     @MainActor
     final class StateController {
-        var state: State = .empty
-        var representation: DomainsCollectionRepresentation? = nil
-        var domains = [DomainItem]()
+        var domains = [DomainDisplayInfo]()
         var walletsWithInfo = [WalletWithInfo]()
 
-        private var emptyRepresentation: DomainsCollectionEmptyListRepresentation?
-        private var cardRepresentation: DomainsCollectionCardRepresentation?
-        private var listRepresentation: DomainsCollectionListRepresentation?
-        
         nonisolated
         init() { }
         
-        func set(state: State) {
-            self.state = state
-        }
-        
-        func set(representation: DomainsCollectionRepresentation) {
-            self.representation = representation
-        }
-        
-        func set(domains: [DomainItem]) {
+        func set(domains: [DomainDisplayInfo]) {
             self.domains = domains
         }
         
@@ -662,54 +772,52 @@ extension DomainsCollectionPresenter {
             self.walletsWithInfo = walletsWithInfo
         }
         
-        func updatePrimaryDomain(_ newPrimaryDomain: DomainItem) {
-            if let i = domains.firstIndex(where: { $0.name == newPrimaryDomain.name }) {
-                domains[i].isPrimary = true
-            }
-        }
-        
-        func setReverseResolutionInProgressForDomain(_ newRRDomain: DomainItem) {
+        func setReverseResolutionInProgressForDomain(_ newRRDomain: DomainDisplayInfo) {
             if let i = domains.firstIndex(where: { $0.name == newRRDomain.name }) {
-                domains[i].isUpdatingRecords = true
-            }
-        }
-        
-        func representation(for state: State, isSearchActive: Bool) -> DomainsCollectionRepresentation {
-            switch state {
-            case .empty:
-                if let emptyRepresentation = self.emptyRepresentation {
-                    return emptyRepresentation
-                }
-                let emptyRepresentation = DomainsCollectionEmptyListRepresentation()
-                self.emptyRepresentation = emptyRepresentation
-                return emptyRepresentation
-            case .card(let domain):
-                if let cardRepresentation = self.cardRepresentation {
-                    cardRepresentation.domain = domain
-                    return cardRepresentation
-                }
-                let cardRepresentation = DomainsCollectionCardRepresentation(domain: domain)
-                self.cardRepresentation = cardRepresentation
-                return cardRepresentation
-            case .list(let domains):
-                if let listRepresentation = self.listRepresentation {
-                    listRepresentation.domains = domains
-                    listRepresentation.isSearchActive = isSearchActive
-                    return listRepresentation
-                }
-                let reverseResolutionDomains = walletsWithInfo.compactMap({ $0.displayInfo?.reverseResolutionDomain })
-                let listRepresentation = DomainsCollectionListRepresentation(domains: domains,
-                                                                             reverseResolutionDomains: reverseResolutionDomains,
-                                                                             isSearchActive: isSearchActive)
-                self.listRepresentation = listRepresentation
-                return listRepresentation
+                domains[i].setState(.updatingRecords)
             }
         }
     }
 }
 
-enum MintDomainPullUpAction {
-    case mint, importWallet
+enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem {
+    case importWallet, connectWallet, importFromWebsite
+    
+    var title: String {
+        switch self {
+        case .importFromWebsite:
+            return String.Constants.importFromTheWebsite.localized()
+        case .importWallet:
+            return String.Constants.connectWalletRecovery.localized()
+        case .connectWallet:
+            return String.Constants.connectWalletExternal.localized()
+        }
+    }
+    
+    var subtitle: String? {
+        switch self {
+        case .importFromWebsite:
+            return String.Constants.storeInYourDomainVault.localized()
+        case .importWallet:
+            return nil
+        case .connectWallet:
+            return String.Constants.domainsCollectionEmptyStateExternalSubtitle.localized()
+        }
+    }
+    
+    var icon: UIImage {
+        switch self {
+        case .importFromWebsite:
+            return .sparklesIcon
+        case .importWallet:
+            return .recoveryPhraseIcon
+        case .connectWallet:
+            return .externalWalletIndicator
+        }
+    }
+    
+    var analyticsName: String { rawValue }
+    
 }
 
 enum DomainsCollectionMintingState {

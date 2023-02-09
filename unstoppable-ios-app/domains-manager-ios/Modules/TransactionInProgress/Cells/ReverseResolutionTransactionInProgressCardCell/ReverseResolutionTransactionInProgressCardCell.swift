@@ -16,7 +16,7 @@ final class ReverseResolutionTransactionInProgressCardCell: UICollectionViewCell
 
 // MARK: - Open methods
 extension ReverseResolutionTransactionInProgressCardCell {
-    func setWith(domain: DomainItem, walletInfo: WalletDisplayInfo) {
+    func setWith(domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo) {
         domainCardView.setWith(domainItem: domain)
         walletInfoBadgeView.setWith(walletInfo: walletInfo)
     }

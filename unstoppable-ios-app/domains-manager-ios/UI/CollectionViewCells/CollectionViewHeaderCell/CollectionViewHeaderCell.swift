@@ -23,10 +23,15 @@ final class CollectionViewHeaderCell: UICollectionViewCell {
         if let subtitle = subtitleDescription {
             subtitleLabel.setSubtitle(subtitle.subtitle)
             subtitleDescription?.attributes.forEach({ attribute in
+                var font: UIFont?
+                if let fontWeight = attribute.fontWeight {
+                    font = .currentFont(withSize: subtitleLabel.font.pointSize,
+                                        weight: fontWeight)
+                }
                 subtitleLabel.updateAttributesOf(text: attribute.text,
-                                                 withFont: .currentFont(withSize: subtitleLabel.font.pointSize,
-                                                                        weight: attribute.fontWeight),
-                                                 textColor: attribute.textColor)
+                                                 withFont: font,
+                                                 textColor: attribute.textColor,
+                                                 alignment: attribute.alignment)
             })
         }
         iconView.image = icon
@@ -65,13 +70,14 @@ private extension CollectionViewHeaderCell {
     }
     
     func actionButtonForType(_ type: ActionButtonType) -> BaseButton {
+        let frame = CGRect(origin: .zero, size: CGSize(width: 100, height: 24))
         switch type {
         case .text(let isSuccess):
-            let button = TextButton()
+            let button = TextButton(frame: frame)
             button.isSuccess = isSuccess
             return button
         case .warning:
-            let button = TextWarningButton()
+            let button = TextWarningButton(frame: frame)
             return button
         }
     }
@@ -101,8 +107,9 @@ extension CollectionViewHeaderCell {
         
         struct Attributes: Hashable {
             let text: String
-            let fontWeight: UIFont.Weight
-            let textColor: UIColor?
+            var fontWeight: UIFont.Weight? = nil
+            var textColor: UIColor? = nil
+            var alignment: NSTextAlignment = .left
         }
     }
 }

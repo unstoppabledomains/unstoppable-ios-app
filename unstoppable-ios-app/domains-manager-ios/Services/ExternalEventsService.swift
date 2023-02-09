@@ -49,8 +49,8 @@ protocol ExternalEventsUIHandler {
 }
 
 enum ExternalEventUIFlow {
-    case showDomainProfile(domain: DomainItem, walletWithInfo: WalletWithInfo)
-    case primaryDomainMinted(domain: DomainItem)
+    case showDomainProfile(domain: DomainDisplayInfo, walletWithInfo: WalletWithInfo)
+    case primaryDomainMinted(domain: DomainDisplayInfo)
     case showHomeScreenList
     case showPullUpLoading
 }
@@ -195,15 +195,16 @@ private extension ExternalEventsService {
                 return .showHomeScreenList
             }
         case .wcDeepLink(let wcDeepLink):
-                    
             let request = try WCRequest.connectWallet(resolveRequest(from: wcDeepLink))
-            let domains = await dataAggregatorService.getDomains()
-            guard let domainToUse = domains.first(where: { $0.isPrimary }) ?? domains.first else {
+            let domains = await dataAggregatorService.getDomainsDisplayInfo()
+            
+            guard let domainDisplayInfoToUse = domains.first(where: { $0.isPrimary }) ?? domains.first else {
                 Debugger.printWarning("Failed to find any domain to handle WC url")
                 throw EventsHandlingError.cantFindDomain
             }
             
-            let walletWithInfo = try await findWalletWithInfo(for: domainToUse)
+            let domainToUse = try await dataAggregatorService.getDomainWith(name: domainDisplayInfoToUse.name)
+            let walletWithInfo = try await findWalletWithInfo(for: domainDisplayInfoToUse)
             let wallet = walletWithInfo.wallet
             let target = (wallet, domainToUse)
             try await WalletConnectService.handleWCRequest(request, target: target)
@@ -214,7 +215,7 @@ private extension ExternalEventsService {
             guard let connectedApp = apps.first(where: { $0.appName == dAppName }) else {
                 throw EventsHandlingError.cantFindConnectedApp
             }
-            
+
             walletConnectServiceV2.expectConnection(from: connectedApp)
             return .showPullUpLoading
         }
@@ -235,9 +236,9 @@ private extension ExternalEventsService {
         return wcRequest
     }
     
-    func findDomainsWith(domainNames: [String]) async throws -> [DomainItem] {
-        let domains = await dataAggregatorService.getDomains()
-        var searchedDomains = [DomainItem]()
+    func findDomainsWith(domainNames: [String]) async throws -> [DomainDisplayInfo] {
+        let domains = await dataAggregatorService.getDomainsDisplayInfo()
+        var searchedDomains = [DomainDisplayInfo]()
         for domainName in domainNames {
             if let domain = domains.first(where: { $0.name == domainName }) {
                 searchedDomains.append(domain)
@@ -248,7 +249,7 @@ private extension ExternalEventsService {
         return searchedDomains
     }
     
-    func findWalletWithInfo(for domain: DomainItem) async throws -> WalletWithInfo {
+    func findWalletWithInfo(for domain: DomainDisplayInfo) async throws -> WalletWithInfo {
         let walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
 
         guard let walletWithInfo = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) }) else {

@@ -26,17 +26,19 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
-    private var selectedDomain: DomainItem?
+    private var selectedDomain: DomainDisplayInfo
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     var qrRecognizedCallback: EmptyAsyncCallback?
     
     init(view: QRScannerViewProtocol,
+         selectedDomain: DomainDisplayInfo,
          dataAggregatorService: DataAggregatorServiceProtocol,
          walletConnectService: WalletConnectServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
+        self.selectedDomain = selectedDomain
         self.dataAggregatorService = dataAggregatorService
         self.walletConnectService = walletConnectService
         self.walletConnectServiceV2 = walletConnectServiceV2
@@ -54,6 +56,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
         walletConnectService.addListener(self)
         walletConnectServiceV2.addListener(self)
         view.setState(.askingForPermissions)
+        let selectedDomain = self.selectedDomain
         Task.detached(priority: .low) { [weak self] in
             let isGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .camera)
             
@@ -65,7 +68,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
             }
             
             await self?.showNumberOfAppsConnected()
-            await self?.setPrimaryDomainInfo()
+            await self?.showInfoFor(domain: selectedDomain, balance: nil)
         }
     }
     @MainActor
@@ -80,7 +83,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
 
         isAcceptingQRCodes = false
         UDVibration.buttonTap.vibrate()
-        logAnalytic(event: .didRecognizeQRCode, parameters: [.domainName: selectedDomain?.name ?? "n/a"])
+        logAnalytic(event: .didRecognizeQRCode, parameters: [.domainName: selectedDomain.name])
         Task {
             guard let view = self.view else { return }
             
@@ -94,6 +97,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
             do {
                 let wcRequest = try await getWCConnectionRequest(for: qrCode)
                 try await handleWCRequest(wcRequest)
+                await view.dismiss(animated: false)
                 view.cNavigationController?.popViewController(animated: true)
                 qrRecognizedCallback?()
             } catch {
@@ -137,8 +141,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     func didTapDomainInfoView() {
         UDVibration.buttonTap.vibrate()
         Task {
-            guard let selectedDomain = self.selectedDomain,
-                  let view = self.view else { return }
+            guard let view = self.view else { return }
             do {
                 let result = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: selectedDomain,
                                                                                            swipeToDismissEnabled: true,
@@ -154,9 +157,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
         UserDefaults.selectedBlockchainType = blockchainType
         setBlockchainTypePicker()
         Task {
-            if let selectedDomain = self.selectedDomain {
-                await showInfoFor(domain: selectedDomain, balance: nil)
-            }
+            await showInfoFor(domain: selectedDomain, balance: nil)
         }
     }
 }
@@ -183,7 +184,7 @@ extension QRScannerViewPresenter: WalletConnectServiceListener {
     internal func getCurrentConnectionTarget() async -> (UDWallet, DomainItem)? {
         let wallets = await dataAggregatorService.getWalletsWithInfo().map({ $0.wallet })
         
-        guard let domain = selectedDomain,
+        guard let domain = try? await dataAggregatorService.getDomainWith(name: selectedDomain.name),
               let wallet = wallets.first(where: { $0.owns(domain: domain) }) else { return nil }
         return (wallet, domain)
     }
@@ -201,7 +202,7 @@ extension QRScannerViewPresenter: DataAggregatorServiceListener {
             case .success(let result):
                 switch result {
                 case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
-                    if let domain = domains.first(where: { $0.name == self.selectedDomain?.name }) {
+                    if let domain = domains.first(where: { $0.name == self.selectedDomain.name }) {
                         self.selectedDomain = domain
                         await showInfoFor(domain: domain, balance: nil)
                     } else if domains.isEmpty {
@@ -226,10 +227,10 @@ private extension QRScannerViewPresenter {
         view?.setBlockchainTypeSelectionWith(availableTypes: BlockchainType.supportedCases, selectedType: UserDefaults.selectedBlockchainType)
     }
     
-    func showInfoFor(domain: DomainItem, balance: WalletBalance?) async {
+    func showInfoFor(domain: DomainDisplayInfo, balance: WalletBalance?) async {
         guard let walletWithInfo = await dataAggregatorService.getWalletsWithInfo().first(where: { $0.wallet.owns(domain: domain) }),
               let displayInfo = walletWithInfo.displayInfo else { return }
-        let domains = await dataAggregatorService.getDomains()
+        let domains = await dataAggregatorService.getDomainsDisplayInfo()
         self.selectedDomain = domain
         
         await view?.setWith(selectedDomain: domain,
@@ -251,7 +252,7 @@ private extension QRScannerViewPresenter {
     }
     
     func setPrimaryDomainInfo() async {
-        let domains = await dataAggregatorService.getDomains()
+        let domains = await dataAggregatorService.getDomainsDisplayInfo()
         if let primaryDomain = domains.first(where: { $0.isPrimary })  {
             await showInfoFor(domain: primaryDomain, balance: nil)
         }

@@ -31,7 +31,7 @@ final class MintDomainsConfigurationViewController: BaseViewController {
     @IBOutlet private weak var mintDomainsButton: MainButton!
     @IBOutlet private weak var mintDomainsWarningIndicator: UIImageView!
 
-    var cellIdentifiers: [UICollectionViewCell.Type] { [MintDomainsConfigurationSelectionCell.self, MintDomainsConfigurationCardCell.self, MintDomainsConfigurationSetPrimaryCell.self, CollectionViewHeaderCell.self] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [MintDomainsConfigurationSelectionCell.self, MintDomainsConfigurationCardCell.self, CollectionViewHeaderCell.self] }
     var presenter: MintDomainsConfigurationViewPresenterProtocol!
     private var dataSource: MintDomainsConfigurationDataSource!
     override var prefersLargeTitles: Bool { true }
@@ -91,12 +91,12 @@ extension MintDomainsConfigurationViewController: MintDomainsConfigurationViewPr
     func setMintingLimitReached(visible: Bool, limit: Int) {
         mintDomainsWarningIndicator.isHidden = !visible
         if visible {
-            mintDomainsToLabel.setAttributedTextWith(text: String.Constants.mintDomainsAmountLimitMessage.localized(limit) + ":",
+            mintDomainsToLabel.setAttributedTextWith(text: String.Constants.moveDomainsAmountLimitMessage.localized(limit) + ":",
                                                      font: .currentFont(withSize: 16, weight: .medium),
                                                      textColor: .foregroundWarning,
                                                      lineBreakMode: .byTruncatingTail)
         } else {
-            mintDomainsToLabel.setAttributedTextWith(text: String.Constants.pluralMintDomainsTo.localized(presenter.domainsCount) + ":",
+            mintDomainsToLabel.setAttributedTextWith(text: String.Constants.pluralMoveDomainsTo.localized(presenter.domainsCount) + ":",
                                                      font: .currentFont(withSize: 16, weight: .medium),
                                                      textColor: .foregroundSecondary,
                                                      lineBreakMode: .byTruncatingTail)
@@ -145,15 +145,16 @@ private extension MintDomainsConfigurationViewController {
         addProgressDashesView()
         setupCollectionView()
         localizeContent()
+        walletSelectorButton.customTitleEdgePadding = 0
     }
     
     func localizeContent() {
         let domainsCount = presenter.domainsCount
         
         if domainsCount > 1 {
-            mintDomainsButton.setTitle(String.Constants.mintSelectedDomains.localized(), image: nil)
+            mintDomainsButton.setTitle(String.Constants.moveSelectedDomains.localized(), image: nil)
         } else {
-            mintDomainsButton.setTitle(String.Constants.mintDomain.localized(), image: nil)
+            mintDomainsButton.setTitle(String.Constants.moveDomains.localized(), image: nil)
         }
         title = presenter.title
     }
@@ -177,26 +178,13 @@ private extension MintDomainsConfigurationViewController {
                 
                 cell.setWith(configuration: configuration)
                 return cell
-            case .domainCard(let domain):
+            case .domainCard(let domainName):
                 let cell = collectionView.dequeueCellOfType(MintDomainsConfigurationCardCell.self, forIndexPath: indexPath)
-                let height: CGFloat
-                switch deviceSize {
-                case .i4Inch, .i4_7Inch:
-                    height = 308
-                default:
-                    height = 382
-                }
-                cell.setWith(domain: domain, height: height)
-                return cell
-            case .setPrimary(let isSelected, let isEnabled, let infoPressedCallback, let valueChangedCallback):
-                let cell = collectionView.dequeueCellOfType(MintDomainsConfigurationSetPrimaryCell.self, forIndexPath: indexPath)
-                
-                cell.set(isOn: isSelected, isEnabled: isEnabled, infoPressedCallback: infoPressedCallback, valueChangedCallback: valueChangedCallback)
-                
+                cell.setWith(domainName: domainName)
                 return cell
             case .header(let domainsCount):
                 let cell = collectionView.dequeueCellOfType(CollectionViewHeaderCell.self, forIndexPath: indexPath)
-                cell.setTitle(String.Constants.pluralMintDomains.localized(domainsCount),
+                cell.setTitle(String.Constants.pluralMoveDomains.localized(domainsCount),
                               subtitleDescription: nil,
                               icon: nil)
                 
@@ -259,7 +247,19 @@ private extension MintDomainsConfigurationViewController {
                 layoutSection.boundarySupplementaryItems = [header]
             case .setPrimary:
                 addBackground()
-            case .domainCard, .none, .header:
+            case .domainCard:
+                let topOffset: CGFloat
+                switch deviceSize {
+                case .i4Inch, .i4_7Inch:
+                    topOffset = 20
+                default:
+                    topOffset = 100
+                }
+                layoutSection.contentInsets = NSDirectionalEdgeInsets(top: topOffset,
+                                                                      leading: 1,
+                                                                      bottom: 1,
+                                                                      trailing: 1)
+            case .none, .header:
                 Void()
             }
             
@@ -324,7 +324,6 @@ extension MintDomainsConfigurationViewController {
 
         case domainListItem(configuration: ListItemConfiguration)
         case domainCard(_ domain: String)
-        case setPrimary(isSelected: Bool, isEnabled: Bool, infoPressedCallback: EmptyCallback, valueChangedCallback: SetIsPrimaryDomainCallback)
         case header(domainsCount: Int)
         
         static func == (lhs: MintDomainsConfigurationViewController.Item, rhs: MintDomainsConfigurationViewController.Item) -> Bool {
@@ -333,8 +332,6 @@ extension MintDomainsConfigurationViewController {
                 return lhsItem == rhsItem
             case (.domainCard(let lhsDomain), .domainCard(let rhsDomain)):
                 return lhsDomain == rhsDomain
-            case (.setPrimary(let lhsSelected, let lhsEnabled, _, _), .setPrimary(let rhsSelected, let rhsEnabled, _, _)):
-                return lhsSelected == rhsSelected && lhsEnabled == rhsEnabled
             case (.header(let lhsDomainsCount), .header(let rhsDomainsCount)):
                 return lhsDomainsCount == rhsDomainsCount
             default:
@@ -347,9 +344,6 @@ extension MintDomainsConfigurationViewController {
                 hasher.combine(item)
             case .domainCard(let domain):
                 hasher.combine(domain)
-            case .setPrimary(let isSelected, let isEnabled, _, _):
-                hasher.combine(isSelected)
-                hasher.combine(isEnabled)
             case .header(let domainsCount):
                 hasher.combine(domainsCount)
             }

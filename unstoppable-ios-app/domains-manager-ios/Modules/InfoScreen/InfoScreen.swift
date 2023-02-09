@@ -134,14 +134,12 @@ extension InfoScreen {
         case createBackupPassword
         case whatIsRecoveryPhrase
         case restoreFromICloudBackup
-        case mintingNFTDomain
         
         var title: String {
             switch self {
             case .createBackupPassword: return String.Constants.createPasswordHelpTitle.localized()
             case .whatIsRecoveryPhrase: return String.Constants.recoveryPhraseHelpTitle.localized()
             case .restoreFromICloudBackup: return String.Constants.restoreFromICloudHelpTitle.localized()
-            case .mintingNFTDomain: return String.Constants.mintNFTDomainHelpTitle.localized()
             }
         }
         
@@ -150,7 +148,6 @@ extension InfoScreen {
             case .createBackupPassword: return String.Constants.createPasswordHelpText.localized()
             case .whatIsRecoveryPhrase: return String.Constants.recoveryPhraseHelpText.localized()
             case .restoreFromICloudBackup: return String.Constants.restoreFromICloudHelpText.localized()
-            case .mintingNFTDomain: return String.Constants.mintNFTDomainHelpText.localized()
             }
         }
         
@@ -159,7 +156,6 @@ extension InfoScreen {
             case .createBackupPassword: return String.Constants.createPasswordHelpTextHighlighted.localized()
             case .whatIsRecoveryPhrase: return String.Constants.recoveryPhraseHelpTextHighlighted.localized()
             case .restoreFromICloudBackup: return String.Constants.restoreFromICloudHelpTextHighlighted.localized()
-            case .mintingNFTDomain: return nil
             }
         }
         
@@ -167,15 +163,13 @@ extension InfoScreen {
             switch self {
             case .createBackupPassword: return nil
             case .whatIsRecoveryPhrase: return String.Constants.recoveryPhraseHelpTextBullets.localized()
-            case .restoreFromICloudBackup, .mintingNFTDomain:
+            case .restoreFromICloudBackup:
                 return nil
             }
         }
         
         var infoURL: URL? {
             switch self {
-            case .mintingNFTDomain:
-                return String.Links.mintDomainGuide.url
             case .createBackupPassword, .whatIsRecoveryPhrase, .restoreFromICloudBackup:
                 return nil
             }

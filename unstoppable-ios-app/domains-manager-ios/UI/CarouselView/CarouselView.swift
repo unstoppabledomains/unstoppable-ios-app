@@ -11,13 +11,20 @@ import SwiftUI
 protocol CarouselViewItem {
     var icon: UIImage  { get }
     var text: String  { get }
+    var tintColor: UIColor { get }
+    var backgroundColor: UIColor { get }
 }
 
 final class CarouselView: UIView {
     
     private var collectionView: UICollectionView!
     
-    private let dataMultiplier = 1000
+    private let dataMultiplier = 100
+    private let gradientViewWidth: CGFloat = 48
+    private var sideGradientViews: [GradientView] = []
+
+    var elementSideOffset: CGFloat = 12
+    var style: CarouselCollectionViewCell.Style = .default
     var data: [CarouselViewItem] = []
     
     override init(frame: CGRect) {
@@ -32,6 +39,21 @@ final class CarouselView: UIView {
         setup()
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        guard !sideGradientViews.isEmpty else { return }
+        
+        let height = bounds.height
+        sideGradientViews[0].frame = CGRect(x: 0, // Left side
+                                            y: 0,
+                                            width: gradientViewWidth,
+                                            height: height)
+        sideGradientViews[1].frame = CGRect(x: bounds.width - gradientViewWidth, // Right side
+                                            y: 0,
+                                            width: gradientViewWidth,
+                                            height: height)
+    }
 }
 
 // MARK: - Open methods
@@ -40,6 +62,12 @@ extension CarouselView {
         self.data = data
         collectionView.reloadData()
         startAutoScroll()
+    }
+    
+    func setSideGradient(hidden: Bool) {
+        sideGradientViews.forEach { view in
+            view.isHidden = hidden
+        }
     }
 }
 
@@ -54,7 +82,7 @@ extension CarouselView: UICollectionViewDataSource {
         
         let itemNum = indexPath.item % data.count
         let carouselItem = data[itemNum]
-        cell.set(carouselItem: carouselItem)
+        cell.set(carouselItem: carouselItem, sideOffset: elementSideOffset, style: style)
         
         return cell
     }
@@ -65,7 +93,7 @@ extension CarouselView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemNum = indexPath.item % data.count
         let carouselItem = data[itemNum]
-        let width = CarouselCollectionViewCell.widthFor(carouselItem: carouselItem)
+        let width = CarouselCollectionViewCell.widthFor(carouselItem: carouselItem, sideOffset: elementSideOffset, style: style)
         return CGSize(width: width, height: 32)
     }
     
@@ -85,19 +113,14 @@ private extension CarouselView {
     
     func setupCollectionView() {
         collectionView = UICollectionView(frame: bounds, collectionViewLayout: buildLayout())
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        addSubview(collectionView)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.registerCellNibOfType(CarouselCollectionViewCell.self)
         collectionView.isUserInteractionEnabled = false
         collectionView.contentInset.left = 16
         collectionView.backgroundColor = .clear
-        
-        addSubview(collectionView)
-        collectionView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        collectionView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        collectionView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        collectionView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
     
     func buildLayout() -> UICollectionViewFlowLayout {
@@ -109,34 +132,28 @@ private extension CarouselView {
     }
     
     func addGradientViews() {
-        let gradientViewWidth: CGFloat = 48
-        
         let leftGradientView = GradientView(frame: .zero)
-        leftGradientView.translatesAutoresizingMaskIntoConstraints = false
         leftGradientView.gradientDirection = .leftToRight
         leftGradientView.gradientColors = [.backgroundDefault, .backgroundDefault.withAlphaComponent(0.01)]
-        
         addSubview(leftGradientView)
-        leftGradientView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        leftGradientView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        leftGradientView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        leftGradientView.widthAnchor.constraint(equalToConstant: gradientViewWidth).isActive = true
 
         let rightGradientView = GradientView(frame: .zero)
-        rightGradientView.translatesAutoresizingMaskIntoConstraints = false
         rightGradientView.gradientDirection = .leftToRight
         rightGradientView.gradientColors = [.backgroundDefault.withAlphaComponent(0.01), .backgroundDefault]
-        
         addSubview(rightGradientView)
-        rightGradientView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        rightGradientView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        rightGradientView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        rightGradientView.widthAnchor.constraint(equalToConstant: gradientViewWidth).isActive = true
+        
+        sideGradientViews = [leftGradientView, rightGradientView]
     }
     
     func startAutoScroll() {
+        guard !data.isEmpty else { return }
+        
         let dur: Double = 0.1
         let ptsPerSecond: Double = 15 // Adjust this value to control speed
+        
+        if collectionView.contentOffset.x + collectionView.bounds.width > collectionView.contentSize.width {
+            collectionView.setContentOffset(.zero, animated: false)
+        }
         
         UIView.animate(withDuration: dur, delay: 0, options: [.curveLinear]) { [weak self] in
             self?.collectionView.contentOffset.x += ptsPerSecond * dur

@@ -250,9 +250,12 @@ private struct TitleTransitioningLargeToSmall: CNavBarTitleTransitioning {
     private let backButtonLabel: UILabel
     private let titleLabel: UILabel
     private let largeTitleLabel: UILabel
+    private let largeTitleImageView: UIImageView
 
     private let originalX: CGFloat
+    private let originalImageX: CGFloat
     private let targetX: CGFloat
+    private let imageTargetX: CGFloat
     private let titleCenter: CGPoint
     private let hasTitleView: Bool
      
@@ -268,17 +271,21 @@ private struct TitleTransitioningLargeToSmall: CNavBarTitleTransitioning {
         navBarContent.set(title: newTitle)
         titleLabel = navBarContent.titleLabel!
         largeTitleLabel = navBar.largeTitleLabel
+        largeTitleImageView = navBar.largeTitleImageView
         originalX = largeTitleLabel.frame.origin.x
+        originalImageX = largeTitleImageView.frame.origin.x
         
         titleLabel.alpha = 0
         titleLabel.frame.origin.x = navBarContent.backButton.label.frame.minX
-        targetX = navBarContent.frame.width
+        targetX = originalX + navBarContent.frame.width
+        imageTargetX = originalImageX + navBarContent.frame.width
     }
     
     func addAnimations() {
         backButtonLabel.alpha = 0
         backButtonLabel.center = titleCenter
         largeTitleLabel.frame.origin.x = targetX
+        largeTitleImageView.frame.origin.x = imageTargetX
         titleLabel.center = titleCenter
     }
     
@@ -306,6 +313,7 @@ private struct TitleTransitioningLargeToSmall: CNavBarTitleTransitioning {
         }
         
         largeTitleLabel.frame.origin.x = originalX
+        largeTitleImageView.frame.origin.x = originalImageX
         backButtonLabel.alpha = 1
         backButtonLabel.mask =  nil
     }

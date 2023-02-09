@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -14,14 +14,17 @@
             <connections>
                 <outlet property="backgroundImageContainer" destination="w3z-5t-Iva" id="iId-E4-DIG"/>
                 <outlet property="backgroundImageView" destination="xXu-En-gVW" id="o8i-95-8xb"/>
-                <outlet property="collectionView" destination="szF-yh-pPX" id="vhf-c4-HZR"/>
                 <outlet property="confettiContainerView" destination="II4-Xi-ATf" id="8di-r9-EBU"/>
                 <outlet property="confettiGradientView" destination="z1a-2L-Jrf" id="4VD-7f-8Zm"/>
                 <outlet property="confettiImageView" destination="c4h-pM-LUr" id="7ZJ-Pa-4Ea"/>
-                <outlet property="emptyStateGradient" destination="Z6r-GB-iMM" id="PwN-zj-IhU"/>
-                <outlet property="emptyStateView" destination="yGa-3F-V0E" id="kgo-eA-dpU"/>
+                <outlet property="emptyStateContainerView" destination="yGa-3F-V0E" id="kgo-eA-dpU"/>
+                <outlet property="emptyStateView" destination="toV-pA-zM2" id="ocJ-EF-mhO"/>
                 <outlet property="goToSettingsContainerView" destination="04H-L9-sRu" id="FUK-yE-a5d"/>
+                <outlet property="importFromSiteButton" destination="gsF-t2-Cms" id="aEh-6n-m96"/>
+                <outlet property="pageViewControllerContainer" destination="h8J-lL-Rza" id="cCf-K2-ira"/>
+                <outlet property="pageViewControllerGradientView" destination="r5S-XQ-l2K" id="yYC-6c-kX2"/>
                 <outlet property="scanButton" destination="LZk-Ht-9jZ" id="Rik-Em-sNt"/>
+                <outlet property="underCardControl" destination="HKs-Yu-jhR" id="9w1-Ml-V8l"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -33,7 +36,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w3z-5t-Iva">
                     <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                     <subviews>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mockNFTIcon1" translatesAutoresizingMaskIntoConstraints="NO" id="xXu-En-gVW">
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xXu-En-gVW">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         </imageView>
                         <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CBY-uJ-AEs">
@@ -82,55 +85,74 @@
                         <constraint firstItem="c4h-pM-LUr" firstAttribute="top" secondItem="II4-Xi-ATf" secondAttribute="top" id="og1-M3-Qn9"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yGa-3F-V0E">
-                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sdy-SI-Lnl">
+                    <rect key="frame" x="0.0" y="84" width="414" height="812"/>
                     <subviews>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="domainsCollectionEmptyFooter" translatesAutoresizingMaskIntoConstraints="NO" id="YxU-kh-QJP">
-                            <rect key="frame" x="0.0" y="521.5" width="414" height="374.5"/>
-                            <constraints>
-                                <constraint firstAttribute="width" secondItem="YxU-kh-QJP" secondAttribute="height" multiplier="358:324" id="Gp0-Ov-fhP"/>
-                            </constraints>
-                        </imageView>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Z6r-GB-iMM" customClass="GradientView" customModule="domains_manager_ios" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="521.5" width="414" height="374.5"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h8J-lL-Rza">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="812"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
+                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r5S-XQ-l2K" customClass="UDGradientCoverView" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="716" width="414" height="96"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="96" id="H9k-Al-mBr"/>
+                            </constraints>
                         </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="bottom" secondItem="YxU-kh-QJP" secondAttribute="bottom" id="Krz-na-YV1"/>
-                        <constraint firstItem="YxU-kh-QJP" firstAttribute="leading" secondItem="yGa-3F-V0E" secondAttribute="leading" id="Y6p-wX-xg8"/>
-                        <constraint firstItem="Z6r-GB-iMM" firstAttribute="trailing" secondItem="YxU-kh-QJP" secondAttribute="trailing" id="ckN-Xn-aMj"/>
-                        <constraint firstItem="Z6r-GB-iMM" firstAttribute="leading" secondItem="YxU-kh-QJP" secondAttribute="leading" id="gmc-Y5-cnj"/>
-                        <constraint firstItem="Z6r-GB-iMM" firstAttribute="bottom" secondItem="YxU-kh-QJP" secondAttribute="bottom" id="nwO-S6-yDn"/>
-                        <constraint firstItem="Z6r-GB-iMM" firstAttribute="top" secondItem="YxU-kh-QJP" secondAttribute="top" id="oAd-r0-EWg"/>
-                        <constraint firstAttribute="trailing" secondItem="YxU-kh-QJP" secondAttribute="trailing" id="vLR-ST-27i"/>
+                        <constraint firstItem="h8J-lL-Rza" firstAttribute="leading" secondItem="sdy-SI-Lnl" secondAttribute="leading" id="6Bp-36-FdI"/>
+                        <constraint firstAttribute="trailing" secondItem="h8J-lL-Rza" secondAttribute="trailing" id="9m1-W9-2a3"/>
+                        <constraint firstAttribute="trailing" secondItem="r5S-XQ-l2K" secondAttribute="trailing" id="9y5-8G-Rcg"/>
+                        <constraint firstAttribute="bottom" secondItem="r5S-XQ-l2K" secondAttribute="bottom" id="GaT-FM-0NW"/>
+                        <constraint firstItem="r5S-XQ-l2K" firstAttribute="leading" secondItem="sdy-SI-Lnl" secondAttribute="leading" id="Kkl-Fg-jcy"/>
+                        <constraint firstAttribute="bottom" secondItem="h8J-lL-Rza" secondAttribute="bottom" id="Twd-Gz-qHv"/>
+                        <constraint firstItem="h8J-lL-Rza" firstAttribute="top" secondItem="sdy-SI-Lnl" secondAttribute="top" id="Y44-KI-ujP"/>
                     </constraints>
                 </view>
-                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" keyboardDismissMode="interactive" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="szF-yh-pPX">
-                    <rect key="frame" x="0.0" y="44" width="414" height="852"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Tmi-Kn-5ry">
-                        <size key="itemSize" width="128" height="128"/>
-                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                    </collectionViewFlowLayout>
-                </collectionView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LZk-Ht-9jZ" customClass="FABButton" customModule="domains_manager_ios" customModuleProvider="target">
-                    <rect key="frame" x="346" y="792" width="56" height="56"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yGa-3F-V0E">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="toV-pA-zM2" customClass="DomainsCollectionEmptyStateView" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gsF-t2-Cms" customClass="UDConfigurableButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="16" y="788" width="382" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="re3-cR-Nz0"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <connections>
+                                <action selector="importDomainsFromWebPressed" destination="-1" eventType="touchUpInside" id="9vF-MR-4EY"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="56" id="hhn-LD-gLA"/>
-                        <constraint firstAttribute="width" secondItem="LZk-Ht-9jZ" secondAttribute="height" id="xWY-mB-OJk"/>
+                        <constraint firstAttribute="bottom" secondItem="toV-pA-zM2" secondAttribute="bottom" id="6tU-dK-Iev"/>
+                        <constraint firstItem="toV-pA-zM2" firstAttribute="leading" secondItem="yGa-3F-V0E" secondAttribute="leading" id="NMi-vY-d9x"/>
+                        <constraint firstItem="toV-pA-zM2" firstAttribute="top" secondItem="yGa-3F-V0E" secondAttribute="top" id="YHQ-IQ-JBL"/>
+                        <constraint firstItem="gsF-t2-Cms" firstAttribute="centerX" secondItem="yGa-3F-V0E" secondAttribute="centerX" id="j6c-5h-MBg"/>
+                        <constraint firstAttribute="trailing" secondItem="toV-pA-zM2" secondAttribute="trailing" id="lAw-SQ-rpo"/>
+                        <constraint firstItem="gsF-t2-Cms" firstAttribute="leading" secondItem="yGa-3F-V0E" secondAttribute="leading" constant="16" id="qNZ-lt-AtY"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LZk-Ht-9jZ" customClass="FABButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="162" y="800" width="90" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="xE6-o8-k4P"/>
                     </constraints>
                     <state key="normal" title="Button"/>
-                    <buttonConfiguration key="configuration" style="plain" image="scanQRIcon"/>
+                    <buttonConfiguration key="configuration" style="plain" image="scanQRIcon" title="Login"/>
                     <connections>
                         <action selector="didPressScanButton:" destination="-1" eventType="touchUpInside" id="IF1-a1-dOb"/>
                     </connections>
                 </button>
                 <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="04H-L9-sRu">
-                    <rect key="frame" x="18" y="44" width="271" height="36"/>
+                    <rect key="frame" x="18" y="48" width="271" height="36"/>
                     <subviews>
                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="domainsCollectionGoToSettingsArrow" translatesAutoresizingMaskIntoConstraints="NO" id="j2q-Pr-8UB">
                             <rect key="frame" x="0.0" y="0.0" width="24" height="26"/>
@@ -142,42 +164,52 @@
                         </imageView>
                     </subviews>
                 </stackView>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HKs-Yu-jhR" customClass="DomainCollectionUnderCardControl" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="87" y="384" width="240" height="128"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="yGa-3F-V0E" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="00w-Cy-lmS"/>
-                <constraint firstItem="szF-yh-pPX" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="1A9-aw-svE"/>
                 <constraint firstItem="II4-Xi-ATf" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="1Yw-cK-EMt"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="yGa-3F-V0E" secondAttribute="trailing" id="47F-mr-uqT"/>
+                <constraint firstItem="sdy-SI-Lnl" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="6Lt-Li-XdH"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="II4-Xi-ATf" secondAttribute="trailing" id="9Fm-Lx-P5k"/>
                 <constraint firstItem="w3z-5t-Iva" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="FD1-MR-eTh"/>
                 <constraint firstItem="w3z-5t-Iva" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="GTX-yf-e35"/>
+                <constraint firstItem="LZk-Ht-9jZ" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="OcM-Fg-i45"/>
                 <constraint firstItem="04H-L9-sRu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="18" id="PVE-wX-aMd"/>
-                <constraint firstItem="szF-yh-pPX" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="Tjw-is-4mo"/>
                 <constraint firstItem="yGa-3F-V0E" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="U8G-lS-ta4"/>
-                <constraint firstItem="szF-yh-pPX" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="XVG-0m-bm3"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="gsF-t2-Cms" secondAttribute="bottom" constant="26" id="VV6-Ik-UQa" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone5">
+                            <real key="value" value="10"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </constraint>
                 <constraint firstAttribute="bottom" secondItem="II4-Xi-ATf" secondAttribute="bottom" id="Z87-Jy-Pdw"/>
                 <constraint firstAttribute="bottom" secondItem="yGa-3F-V0E" secondAttribute="bottom" id="bIP-3z-Vz1"/>
                 <constraint firstItem="II4-Xi-ATf" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="ctc-ZR-vSp"/>
-                <constraint firstAttribute="bottom" secondItem="szF-yh-pPX" secondAttribute="bottom" id="eb0-W1-ory"/>
-                <constraint firstAttribute="trailing" secondItem="LZk-Ht-9jZ" secondAttribute="trailing" constant="12" id="hTi-cn-rBc"/>
                 <constraint firstItem="w3z-5t-Iva" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="jVl-dP-09s"/>
                 <constraint firstItem="04H-L9-sRu" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="l0h-zz-faT"/>
                 <constraint firstAttribute="bottom" secondItem="w3z-5t-Iva" secondAttribute="bottom" id="mHS-zY-ggw"/>
+                <constraint firstItem="sdy-SI-Lnl" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="muE-OZ-fJZ"/>
+                <constraint firstItem="sdy-SI-Lnl" firstAttribute="top" secondItem="04H-L9-sRu" secondAttribute="bottom" id="oX3-lK-Hmc"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="LZk-Ht-9jZ" secondAttribute="bottom" constant="14" id="rvq-SG-Oyc"/>
+                <constraint firstAttribute="bottom" secondItem="sdy-SI-Lnl" secondAttribute="bottom" id="u2n-zB-wMw"/>
             </constraints>
             <point key="canvasLocation" x="137.68115942028987" y="70.982142857142847"/>
         </view>
     </objects>
     <resources>
-        <image name="domainsCollectionEmptyFooter" width="390" height="324"/>
         <image name="domainsCollectionGoToSettingsArrow" width="24" height="26"/>
         <image name="domainsCollectionGoToSettingsText" width="239" height="36"/>
-        <image name="mockNFTIcon1" width="2000" height="2000"/>
         <image name="scanQRIcon" width="24" height="24"/>
         <namedColor name="foregroundMuted">
-            <color red="0.68599998950958252" green="0.68599998950958252" blue="0.71399998664855957" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.71372549019607845" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
