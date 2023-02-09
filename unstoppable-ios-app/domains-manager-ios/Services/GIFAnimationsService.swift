@@ -196,7 +196,6 @@ private extension GIFAnimationsService {
                           let maskedImage = self.createCGImage(image, withMaskingType: maskingType),
                           let resizedImage = self.resizedImage(maskedImage,
                                                                scale: self.scaleForImage(image),
-                                                               aspectRatio: 1,
                                                                in: sharedContext) else {
                         throw GIFPreparationError.failedToGetImageFromSource
                     }
@@ -235,13 +234,15 @@ private extension GIFAnimationsService {
         return scale
     }
     
-    func resizedImage(_ cgImage: CGImage, scale: CGFloat, aspectRatio: CGFloat, in sharedContext: CIContext) -> CGImage? {
-        autoreleasepool {
+    func resizedImage(_ cgImage: CGImage, scale: CGFloat, in sharedContext: CIContext) -> CGImage? {
+        guard scale != 1 else { return cgImage }
+        
+        return autoreleasepool {
             let image = CIImage(cgImage: cgImage)
             let filter = CIFilter(name: "CILanczosScaleTransform")
             filter?.setValue(image, forKey: kCIInputImageKey)
             filter?.setValue(scale, forKey: kCIInputScaleKey)
-            filter?.setValue(aspectRatio, forKey: kCIInputAspectRatioKey)
+            filter?.setValue(1, forKey: kCIInputAspectRatioKey)
             
             guard let outputCIImage = filter?.outputImage,
                   let outputCGImage = sharedContext.createCGImage(outputCIImage,
