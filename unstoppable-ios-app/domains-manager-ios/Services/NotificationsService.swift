@@ -7,6 +7,7 @@
 
 import UIKit
 import UserNotifications
+import WalletConnectPush
 
 // MARK: - NotificationsServiceProtocol
 protocol NotificationsServiceProtocol {
@@ -76,6 +77,10 @@ extension NotificationsService: NotificationsServiceProtocol {
         Debugger.printInfo(topic: .PNs, "Device Token: \(token)")
         UserDefaults.apnsToken = token
         updatePushNotificationsInfo(info)
+        
+        Task {
+            try await Push.wallet.register(deviceToken: deviceToken)
+        }
     }
     
     func updateTokenSubscriptions() {

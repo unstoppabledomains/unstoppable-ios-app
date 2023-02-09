@@ -16,6 +16,7 @@ import WalletConnectSwift
 import WalletConnectUtils
 import WalletConnectSign
 import WalletConnectEcho
+import WalletConnectPush
 
 import Starscream
 
@@ -154,12 +155,11 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                                    icons: [String.Links.udLogoPng.urlString])
         
         Pair.configure(metadata: metadata)
-        
-        let clientId  = try? Networking.interactor.getClientId()
-        if let sanitizedClientId = clientId?.replacingOccurrences(of: "did:key:", with: "") {
-            self.sanitizedClientId = sanitizedClientId
-            Echo.configure(clientId: sanitizedClientId)
-        }
+        #if DEBUG
+        Push.configure(environment: .sandbox)
+        #else
+        Push.configure(environment: .production)
+        #endif
     }
     
     private func canSupport( _ proposal: WalletConnectSign.Session.Proposal) -> Bool {
@@ -392,14 +392,10 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             let proposalNamespace = $0.value
             let accounts = Set(proposalNamespace.chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
 
-            let extensions: [SessionNamespace.Extension]? = proposalNamespace.extensions?.map { element in
-                let accounts = Set(element.chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
-                return SessionNamespace.Extension(accounts: accounts, methods: element.methods, events: element.events)
-            }
+        
             let sessionNamespace = SessionNamespace(accounts: accounts,
                                                     methods: proposalNamespace.methods,
-                                                    events: proposalNamespace.events,
-                                                    extensions: extensions)
+                                                    events: proposalNamespace.events)
             sessionNamespaces[caip2Namespace] = sessionNamespace
         }
         DispatchQueue.main.async {
