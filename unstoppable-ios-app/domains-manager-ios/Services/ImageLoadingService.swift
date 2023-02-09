@@ -38,7 +38,10 @@ enum ImageSource {
         case .url(let url, _):
             return url.absoluteString
         case .initials(let name, let initialsSize, let style):
-            let initials = String(name.first ?? .init("")).uppercased()
+            var initials = Constants.defaultInitials
+            if let firstChar = name.first {
+                initials = firstChar.uppercased()
+            }
             return initials + "_\(initialsSize.rawValue)_\(style.rawValue)"
         case .domain(let domainItem):
             return domainItem.pfpInfo.value

@@ -151,6 +151,7 @@ protocol TxsStorage {
     func getCachedTransactionsList(by domains: [DomainItem]) -> Promise<[TransactionItem]>
     func getCachedTransactionsListSync(by domains: [DomainItem]) -> [TransactionItem]
     func injectTxsUpdate(_ newTxs: [TransactionItem]) -> Promise<Void>
+    static func removeDuplicates(for newTxs: [TransactionItem], _transactionCache: [TransactionItem]) -> [TransactionItem]
 }
 
 extension TxsStorage {
@@ -171,15 +172,15 @@ extension TxsStorage {
             }
         }
         transactionCache.append(contentsOf: unknownTransactions)
-        return removeDuplicates(for: newTxs, transactionCache: transactionCache)
+        return removeDuplicates(for: newTxs, _transactionCache: transactionCache)
     }
     
     static func removeDuplicates(for newTxs: [TransactionItem],
-                                 transactionCache: [TransactionItem]) -> [TransactionItem]{
-        var txs = transactionCache
+                                 _transactionCache: [TransactionItem]) -> [TransactionItem]{
+        var txs = _transactionCache
         var indecesToRemove: [Int] = []
         newTxs.forEach { newTx in
-            let enumeratedDuplicates = transactionCache.enumerated().filter({$0.element == newTx})
+            let enumeratedDuplicates = txs.enumerated().filter({$0.element == newTx})
             guard enumeratedDuplicates.count > 1 else { return }
             
             let accumulatedTx = enumeratedDuplicates.map({$0.element}).mergeToFirst()
@@ -189,6 +190,10 @@ extension TxsStorage {
             indecesToRemove.append(contentsOf: indecesOfObsoleteElements)
         }
         if indecesToRemove.count > 0 {
+            guard indecesToRemove.allSatisfy({$0 < txs.count}) else {
+                Debugger.printFailure("Indeces found: \(indecesToRemove) is out of range: \(txs.count)")
+                return txs
+            }
             txs.remove(at: indecesToRemove)
         }
         return txs
