@@ -32,12 +32,14 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     var presenter: DomainsCollectionCarouselItemViewPresenterProtocol!
     
     static func instantiate(domain: DomainDisplayInfo,
+                            cardState: CarouselCardState,
                             containerViewController: BaseViewController,
                             actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate) -> DomainsCollectionCarouselItemViewController {
         let vc = DomainsCollectionCarouselItemViewController()
         vc.containerViewController = containerViewController
         let presenter = DomainsCollectionCarouselItemViewPresenter(view: vc,
                                                                    domain: domain,
+                                                                   cardState: cardState,
                                                                    actionsDelegate: actionsDelegate)
         vc.presenter = presenter
         return vc

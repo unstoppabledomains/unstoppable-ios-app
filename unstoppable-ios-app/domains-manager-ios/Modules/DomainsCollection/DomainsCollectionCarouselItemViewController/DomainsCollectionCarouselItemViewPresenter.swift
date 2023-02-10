@@ -30,9 +30,11 @@ final class DomainsCollectionCarouselItemViewPresenter {
 
     init(view: DomainsCollectionCarouselItemViewProtocol,
          domain: DomainDisplayInfo,
+         cardState: CarouselCardState,
          actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate) {
         self.view = view
         self.domain = domain
+        self.cardState = cardState
         self.actionsDelegate = actionsDelegate
     }
     
