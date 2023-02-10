@@ -7,11 +7,20 @@
 
 import Foundation
 // V2
-import WalletConnectUtils
+//import WalletConnectUtils
 import WalletConnectSign
-import WalletConnectEcho
+//import WalletConnectEcho
 
-final class WalletConnectClientServiceV2 {
+protocol WalletConnectClientServiceV2Protocol: AnyObject {
+//    func setUIHandler(_ uiHandler: WalletConnectClientUIHandler)
+//    func getClient() -> Client
+//    func findSessions(by walletAddress: HexAddress) -> [Session]
+    func connect() async throws -> WalletConnectURI
+//    func disconnect(walletAddress: HexAddress) throws
+//    var delegate: WalletConnectDelegate? { get set }
+}
+
+final class WalletConnectClientServiceV2: WalletConnectClientServiceV2Protocol {
     
     let namespaces: [String: ProposalNamespace] = [
         "eip155": ProposalNamespace(
@@ -31,5 +40,11 @@ final class WalletConnectClientServiceV2 {
         try await Sign.instance.connect(requiredNamespaces: namespaces, topic: uri.topic)
         
         return uri
+    }
+}
+
+final class MockWalletConnectV2ClientManager: WalletConnectClientServiceV2Protocol {
+    func connect() async throws -> WalletConnectUtils.WalletConnectURI {
+        throw WalletConnectError.walletConnectNil
     }
 }

@@ -32,6 +32,7 @@ protocol AppContextProtocol {
     var qrCodeService: QRCodeServiceProtocol { get }
     var userDataService: UserDataServiceProtocol { get }
     var walletConnectClientService: WalletConnectClientServiceProtocol { get }
+    var walletConnectClientServiceV2: WalletConnectClientServiceV2Protocol { get }
     var linkPresentationService: LinkPresentationServiceProtocol { get }
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }

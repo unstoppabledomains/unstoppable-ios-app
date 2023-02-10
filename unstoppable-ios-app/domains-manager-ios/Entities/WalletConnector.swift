@@ -13,12 +13,15 @@ protocol WalletConnector {
     func updateUI()
 }
 extension WalletConnector {
-    func evokeConnectExternalWallet(wcWallet: WCWalletsProvider.WalletRecord) {
+    func evokeConnectExternalWallet(wcWallet: WCWalletsProvider.WalletRecord) async {
         
         let connectionUrlString: String
         if ReleaseConfig.shouldUseWCCLient_V2 {
-            //TODO:
-            connectionUrlString = "" // uri.absoluteString
+            guard let uri = try? await appContext.walletConnectClientServiceV2.connect() else {
+                Debugger.printFailure("Failed to connect via URI", critical: true)
+                return
+            }
+            connectionUrlString = uri.absoluteString
             
         } else {
             guard let connectionUrl = try? appContext.walletConnectClientService.connect() else {
