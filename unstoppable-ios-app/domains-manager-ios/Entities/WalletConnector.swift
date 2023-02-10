@@ -19,11 +19,11 @@ extension WalletConnector {
             return
         }
         
-        startExternalWallet(wcWallet: wcWallet, connectionUrl: connectionUrl)
+        startExternalWallet(wcWallet: wcWallet, connectionUrlString: connectionUrl.absoluteStringCorrect)
         self.updateUI()
     }
     
-    private func startExternalWallet(wcWallet: WCWalletsProvider.WalletRecord, connectionUrl: WCURL) {
+    private func startExternalWallet(wcWallet: WCWalletsProvider.WalletRecord, connectionUrlString: String) {
         let appPrefix: String
         if let universalPrefix = wcWallet.getUniversalAppLink(),
            !universalPrefix.isEmpty {
@@ -43,7 +43,7 @@ extension WalletConnector {
               }
         var components = comps
         components.path = "/wc"
-        let universalDeepLinkUrl = components.url!.absoluteString + "?uri=\(connectionUrl.absoluteStringCorrect)"
+        let universalDeepLinkUrl = components.url!.absoluteString + "?uri=\(connectionUrlString)"
         
         if let universalUrl = URL(string: universalDeepLinkUrl),
            UIApplication.shared.canOpenURL(universalUrl) {
