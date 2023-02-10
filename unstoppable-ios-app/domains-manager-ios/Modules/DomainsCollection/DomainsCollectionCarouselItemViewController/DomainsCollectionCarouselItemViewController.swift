@@ -19,7 +19,7 @@ typealias DomainsCollectionCarouselItemSnapshot = NSDiffableDataSourceSnapshot<D
 final class DomainsCollectionCarouselItemViewController: BaseViewController {
     
     static let cardFractionalWidth: CGFloat = 0.877
-    static let scrollViewTopInset: CGFloat = 41
+    static let scrollViewTopInset: CGFloat = 30
     
     private(set) var collectionView: UICollectionView!
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainsCollectionCarouselCardCell.self,
