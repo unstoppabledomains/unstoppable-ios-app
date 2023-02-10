@@ -13,7 +13,8 @@ final class DomainsCollectionUICache {
     static let shared = DomainsCollectionUICache()
 
     // Constants
-    private let nominalCardAspectRatio: CGFloat = 416 / 342
+    static let nominalCardWidth: CGFloat = 342
+    private let nominalCardAspectRatio: CGFloat = 416 / DomainsCollectionUICache.nominalCardWidth
     
     // Properties
     private var collectionViewHeight: CGFloat = 0

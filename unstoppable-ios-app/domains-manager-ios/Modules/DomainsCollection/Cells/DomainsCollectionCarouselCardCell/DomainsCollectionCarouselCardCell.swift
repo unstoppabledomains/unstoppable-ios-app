@@ -33,7 +33,6 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
     @IBOutlet private weak var actionButtonLeadingConstraint: NSLayoutConstraint!
     @IBOutlet private weak var actionButtonTopConstraint: NSLayoutConstraint!
     
-    static let sideOffset: CGFloat = 6
     static let minHeight: CGFloat = 80
     
     private var yOffset: CGFloat = 0
@@ -320,23 +319,21 @@ private extension DomainsCollectionCarouselCardCell {
 private extension DomainsCollectionCarouselCardCell {
     func setContainerViewFrame(for state: CardState) {
         containerView.bounds.origin = .zero
+        let visibilityLevelValue = abs(visibilityLevel.value)
         switch state {
         case .expanded:
-            let visibilityLevelValue = abs(visibilityLevel.value)
             let size = bounds.size
-            containerView.frame.size = CGSize(width: size.width * visibilityLevelValue,
-                                              height: size.height * visibilityLevelValue)
-            
-            let containerSize = containerView.frame.size
+            let containerSize = CGSize(width: size.width * visibilityLevelValue,
+                                       height: size.height * visibilityLevelValue)
+            containerView.frame.size = containerSize
             containerView.frame.origin = CGPoint(x: (size.width - containerSize.width) / 2,
                                                  y: (size.height - containerSize.height) / 2)
         case .collapsed:
             let containerHeight = Self.minHeight
-            let sideOffset = Self.sideOffset
             
-            containerView.frame.size = CGSize(width: bounds.width - (sideOffset * 2),
+            containerView.frame.size = CGSize(width: bounds.width,
                                               height: containerHeight)
-            containerView.frame.origin = CGPoint(x: sideOffset,
+            containerView.frame.origin = CGPoint(x: 0,
                                                  y: bounds.height - containerHeight)
         }
     }
@@ -506,20 +503,16 @@ private extension DomainsCollectionCarouselCardCell {
     
     func setSideVisibilityFrame(for state: CardState) {
         let visibilityLevelValue = abs(visibilityLevel.value)
-        switch state {
-        case .expanded:
-            var visibilitySideOffset = (1 - visibilityLevelValue) * 350
-            if visibilityLevel.isBehind {
+        var visibilitySideOffset = (1 - visibilityLevelValue) * DomainsCollectionUICache.nominalCardWidth
+        if visibilityLevel.isBehind {
+            switch state {
+            case .expanded:
                 visibilitySideOffset *= -2
-            }
-            containerView.frame.origin.x = -visibilitySideOffset
-        case .collapsed:
-            var visibilitySideOffset = (1 - visibilityLevelValue) * 450
-            if visibilityLevel.isBehind {
+            case .collapsed:
                 visibilitySideOffset *= -1
             }
-            containerView.frame.origin.x += -visibilitySideOffset
         }
+        containerView.frame.origin.x = -visibilitySideOffset
     }
 }
 

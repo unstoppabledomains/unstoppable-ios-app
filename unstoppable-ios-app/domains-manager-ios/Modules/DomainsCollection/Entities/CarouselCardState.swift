@@ -7,6 +7,6 @@
 
 import Foundation
 
-enum CarouselCardState {
+enum CarouselCardState: Hashable {
     case expanded, collapsed, notVisible
 }
