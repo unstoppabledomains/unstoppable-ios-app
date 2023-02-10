@@ -441,7 +441,7 @@ private struct BackButtonTransitioningLargeToLarge: CNavBarTitleTransitioning, C
         targetX = navBar.largeTitleLabel.frame.minX
         navBar.set(title: newTitle)
         
-        setupWith(navBarContentView: navBar.navBarContentView, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)
+        setupWith(navBarContentView: navBar.navBarContentView, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents, isLastViewController: false)
     }
     
     func addAnimations() {
@@ -498,7 +498,7 @@ private struct BackButtonTransitioningSmallToSmall: CNavBarTitleTransitioning, C
         
         targetX = navBarContent.backButton.label.frame.minX
         
-        setupWith(navBarContentView: navBarContent, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)
+        setupWith(navBarContentView: navBarContent, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents, isLastViewController: false)
     }
     
     func addAnimations() {

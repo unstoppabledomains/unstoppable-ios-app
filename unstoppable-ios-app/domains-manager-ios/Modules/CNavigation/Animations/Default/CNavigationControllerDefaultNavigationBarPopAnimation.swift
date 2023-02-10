@@ -376,7 +376,7 @@ private struct BackButtonTransitioningSmallToSmall: CNavBarTitleTransitioning, C
         self.isLastViewController = isLastViewController
         targetX = navBarContent.backButton.label.frame.minX
         
-        setupWith(navBarContentView: navBarContent, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)
+        setupWith(navBarContentView: navBarContent, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents, isLastViewController: isLastViewController)
     }
     
     func addAnimations() {
