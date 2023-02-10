@@ -1243,7 +1243,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         if connectedApp.appIconUrls.isEmpty {
             connectedAppImageBackgroundView.backgroundColor = .clear
         } else {
-            let color = await icon?.getColors()?.background
+            let color = await ConnectedAppsImageCache.shared.colorForApp(connectedApp)
             connectedAppImageBackgroundView.backgroundColor = (color ?? .brandWhite)
         }
         connectedAppImageView.image = icon
