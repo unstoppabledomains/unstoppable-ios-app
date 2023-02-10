@@ -30,6 +30,10 @@
 		295506F12954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
 		295506F22954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
 		295506F32954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
+		297C04F629967F8900E91F64 /* WalletConnectClientService_V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297C04F529967F8900E91F64 /* WalletConnectClientService_V2.swift */; };
+		297C04F729967F8900E91F64 /* WalletConnectClientService_V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297C04F529967F8900E91F64 /* WalletConnectClientService_V2.swift */; };
+		297C04F829967F8900E91F64 /* WalletConnectClientService_V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297C04F529967F8900E91F64 /* WalletConnectClientService_V2.swift */; };
+		297C04F929967F8900E91F64 /* WalletConnectClientService_V2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297C04F529967F8900E91F64 /* WalletConnectClientService_V2.swift */; };
 		299713BE28F6927500743003 /* ABIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713BD28F6927500743003 /* ABIType.swift */; };
 		299713BF28F6927500743003 /* ABIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713BD28F6927500743003 /* ABIType.swift */; };
 		299713C028F6927500743003 /* ABIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713BD28F6927500743003 /* ABIType.swift */; };
@@ -3198,6 +3202,7 @@
 		290A60412950A89900882109 /* WalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushSubscriberInfo.swift; sourceTree = "<group>"; };
 		295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCConnectedAppsStorageV2.swift; sourceTree = "<group>"; };
+		297C04F529967F8900E91F64 /* WalletConnectClientService_V2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectClientService_V2.swift; sourceTree = "<group>"; };
 		299713BD28F6927500743003 /* ABIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIType.swift; sourceTree = "<group>"; };
 		299713C228F692AB00743003 /* ABIValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIValue.swift; sourceTree = "<group>"; };
 		299713C728F692D700743003 /* ABIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIError.swift; sourceTree = "<group>"; };
@@ -4851,6 +4856,7 @@
 			children = (
 				C6109E4A28E5AC310027D5D8 /* MockWalletConnectClientManager.swift */,
 				C6109E4B28E5AC310027D5D8 /* WalletConnectClientService.swift */,
+				297C04F529967F8900E91F64 /* WalletConnectClientService_V2.swift */,
 			);
 			path = Client;
 			sourceTree = "<group>";
@@ -8135,6 +8141,7 @@
 				C6D6E52C28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
 				C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */,
+				297C04F629967F8900E91F64 /* WalletConnectClientService_V2.swift in Sources */,
 				C624D77A281BAB5000F55530 /* UDDomainsService.swift in Sources */,
 				C6C75C692848E82000DD8E3F /* Sequence.swift in Sources */,
 				C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */,
@@ -8455,6 +8462,7 @@
 				C6C995AC289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
 				C6637A7328100D3A0000AE56 /* LaunchViewController.swift in Sources */,
 				C66804D7280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
+				297C04F829967F8900E91F64 /* WalletConnectClientService_V2.swift in Sources */,
 				C609823C2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
 				306DB27426936C58009D95DE /* Endpoint.swift in Sources */,
 				C628E30B27FD7DFF0044E408 /* TutorialStepViewController.swift in Sources */,
@@ -9069,6 +9077,7 @@
 				C6C995AD289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
 				C6637A7428100D3A0000AE56 /* LaunchViewController.swift in Sources */,
 				C66804D8280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
+				297C04F929967F8900E91F64 /* WalletConnectClientService_V2.swift in Sources */,
 				C609823D2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
 				306DB27526936C58009D95DE /* Endpoint.swift in Sources */,
 				C628E30C27FD7DFF0044E408 /* TutorialStepViewController.swift in Sources */,
@@ -10033,6 +10042,7 @@
 				C609824C2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C6D6E52D28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C61236E8292C88D1002BA97B /* ImagesStorage.swift in Sources */,
+				297C04F729967F8900E91F64 /* WalletConnectClientService_V2.swift in Sources */,
 				C6D6E4D52817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
 				C624D77B281BAB5000F55530 /* UDDomainsService.swift in Sources */,
 				C6C75C6A2848E82000DD8E3F /* Sequence.swift in Sources */,
