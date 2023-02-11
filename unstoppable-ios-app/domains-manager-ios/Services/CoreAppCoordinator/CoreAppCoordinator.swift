@@ -181,31 +181,34 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
 // MARK: - WalletConnectClientUIHandler
 extension CoreAppCoordinator: WalletConnectClientUIHandler {
     func didDisconnect(walletDisplayInfo: WalletDisplayInfo) {
-        switch currentRoot {
-        case .domainsCollection, .onboarding:
-            guard let windowScene = window?.windowScene else { return }
-            
-            Task {
-                let vc = UIViewController()
-                await MainActor.run {
-                    let topInfoWindow = UIWindow(windowScene: windowScene)
-                    topInfoWindow.overrideUserInterfaceStyle = UserDefaults.appearanceStyle
-                    self.topInfoWindow = topInfoWindow
-                    topInfoWindow.backgroundColor = .clear
-                    vc.view.backgroundColor = .clear
-                    vc.modalPresentationStyle = .overFullScreen
-                    topInfoWindow.rootViewController = vc
-                    topInfoWindow.makeKeyAndVisible()
-                }
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            switch self.currentRoot {
+            case .domainsCollection, .onboarding:
+                guard let windowScene = self.window?.windowScene else { return }
                 
-                await pullUpViewService.showExternalWalletDisconnected(from: walletDisplayInfo, in: vc)
-                
-                await MainActor.run {
-                    window?.makeKeyAndVisible()
-                    topInfoWindow = nil
+                Task {
+                    let vc = UIViewController()
+                    await MainActor.run {
+                        let topInfoWindow = UIWindow(windowScene: windowScene)
+                        topInfoWindow.overrideUserInterfaceStyle = UserDefaults.appearanceStyle
+                        self.topInfoWindow = topInfoWindow
+                        topInfoWindow.backgroundColor = .clear
+                        vc.view.backgroundColor = .clear
+                        vc.modalPresentationStyle = .overFullScreen
+                        topInfoWindow.rootViewController = vc
+                        topInfoWindow.makeKeyAndVisible()
+                    }
+                    
+                    await self.pullUpViewService.showExternalWalletDisconnected(from: walletDisplayInfo, in: vc)
+                    
+                    await MainActor.run {
+                        self.window?.makeKeyAndVisible()
+                        self.topInfoWindow = nil
+                    }
                 }
+            default: return
             }
-        default: return
         }
     }
 }
