@@ -57,11 +57,13 @@ extension WalletConnector {
         components.path = "/wc"
         let universalDeepLinkUrl = components.url!.absoluteString + "?uri=\(connectionUrlString)"
         
-        if let universalUrl = URL(string: universalDeepLinkUrl),
-           UIApplication.shared.canOpenURL(universalUrl) {
-            UIApplication.shared.open(universalUrl, options: [:], completionHandler: nil)
-        } else {
-            Debugger.printFailure("Cannot open a wallet \(wcWallet.name)", critical: true)
+        DispatchQueue.main.async {
+            if let universalUrl = URL(string: universalDeepLinkUrl),
+               UIApplication.shared.canOpenURL(universalUrl) {
+                UIApplication.shared.open(universalUrl, options: [:], completionHandler: nil)
+            } else {
+                Debugger.printFailure("Cannot open a wallet \(wcWallet.name)", critical: true)
+            }
         }
     }
 
