@@ -25,10 +25,12 @@ class ConnectExternalWalletViewPresenter: WalletConnector {
 
     init(view: ConnectExternalWalletViewProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectClientService: WalletConnectClientServiceProtocol) {
+         walletConnectClientService: WalletConnectClientServiceProtocol,
+         walletConnectClientServiceV2: WalletConnectClientServiceV2Protocol) {
         self.view = view
         self.udWalletsService = udWalletsService
-        walletConnectClientService.delegate = self
+        walletConnectClientService._delegate = self
+        walletConnectClientServiceV2.delegate = self
       
     }
     func updateUI() {}
