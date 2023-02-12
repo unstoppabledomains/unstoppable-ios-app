@@ -8,5 +8,5 @@
 import Foundation
 
 struct ReleaseConfig {
-    static let shouldUseWCCLient_V2 = false
+    static let shouldUseWCCLient_V2 = true
 }
