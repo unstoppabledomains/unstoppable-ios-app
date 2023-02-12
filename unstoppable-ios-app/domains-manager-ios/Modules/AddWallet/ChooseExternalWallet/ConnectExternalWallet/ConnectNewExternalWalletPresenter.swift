@@ -18,12 +18,14 @@ final class ConnectNewExternalWalletPresenter: ConnectExternalWalletViewPresente
          addWalletFlowManager: AddWalletFlowManager,
          udWalletsService: UDWalletsServiceProtocol,
          walletConnectClientService: WalletConnectClientServiceProtocol,
-         walletConnectClientServiceV2: WalletConnectClientServiceV2Protocol) {
+         walletConnectClientServiceV2: WalletConnectClientServiceV2Protocol,
+         walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.addWalletFlowManager = addWalletFlowManager
         super.init(view: view,
                    udWalletsService: udWalletsService,
                    walletConnectClientService: walletConnectClientService,
-                   walletConnectClientServiceV2: walletConnectClientServiceV2)
+                   walletConnectClientServiceV2: walletConnectClientServiceV2,
+                   walletConnectServiceV2: walletConnectServiceV2)
     }
     
     override func viewDidLoad() {

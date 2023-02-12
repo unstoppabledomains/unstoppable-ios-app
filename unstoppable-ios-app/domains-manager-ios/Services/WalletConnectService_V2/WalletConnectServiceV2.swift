@@ -27,8 +27,8 @@ struct SocketFactory: WebSocketFactory {
     }
 }
 
-protocol WalletConnectServiceV2Protocol {
-    var delegate: WalletConnectDelegate? { get }
+protocol WalletConnectServiceV2Protocol: AnyObject {
+    var delegate: WalletConnectDelegate? { get set }
     
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
     func pairClient(uri: WalletConnectURI)
