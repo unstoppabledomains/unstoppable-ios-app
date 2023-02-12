@@ -28,6 +28,8 @@ struct SocketFactory: WebSocketFactory {
 }
 
 protocol WalletConnectServiceV2Protocol {
+    var delegate: WalletConnectDelegate? { get }
+    
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
     func pairClient(uri: WalletConnectURI)
     func setUIHandler(_ uiHandler: WalletConnectUIHandler)
@@ -39,6 +41,8 @@ protocol WalletConnectServiceV2Protocol {
 }
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    var delegate: WalletConnectDelegate?
+    
     private var publishers = [AnyCancellable]()
     weak var uiHandler: WalletConnectUIHandler?
     var intentsStorage: WCConnectionIntentStorage { WCConnectionIntentStorage.shared }
@@ -230,6 +234,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         }
     }
     
+    var pendingProposal: WalletConnectSign.Session.Proposal?
     private func setUpAuthSubscribing() {
         // callback after pair()
         Sign.instance.sessionProposalPublisher
@@ -249,6 +254,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                         self?.didRejectSession(sessionProposal)
                         return
                     }
+                    self?.pendingProposal = sessionProposal
                     self?.didApproveSession(sessionProposal, accountAddress: accountAddress)
                 }
             }.store(in: &publishers)
@@ -258,16 +264,21 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] session in
                 
-//                self?.reloadActiveSessions()
-                
-                if let pendingIntent = self?.intentsStorage.retrieveIntents().first {
-                    // connection initiated by UI
-                    self?.handleConnection(session: session,
-                                     with: pendingIntent)
+                if let proposal = self?.pendingProposal, session.peer == proposal.proposer {
+                    if let pendingIntent = self?.intentsStorage.retrieveIntents().first {
+                        // connection initiated by UI
+                        self?.handleConnection(session: session,
+                                         with: pendingIntent)
+                    } else {
+                        Debugger.printInfo(topic: .WallectConnectV2, "App connected with no intent \(session.peer.name)")
+                    }
                 } else {
-                    Debugger.printInfo(topic: .WallectConnectV2, "App connected with no intent \(session.peer.name)")
+                    // connection without a proposal, it is a wallet
+                    self?.handleWalletConnection(session: session)
                 }
+
                 self?.intentsStorage.removeAll()
+                self?.pendingProposal = nil
             }.store(in: &publishers)
 
         // request to sign a TX or message
@@ -308,6 +319,27 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     }
                 }
             }.store(in: &publishers)
+    }
+    
+    private func handleWalletConnection(session: WalletConnectSign.Session) {
+        Debugger.printInfo("WC2: CLIENT DID CONNECT - SESSION: \(session)")
+        
+        // TODO:
+        
+//        guard let walletAddress = session.walletInfo?.accounts.first else {
+//            Debugger.printFailure("Wallet has insufficient info: \(String(describing: session.walletInfo))", critical: true)
+//            _delegate?.didConnect(to: nil, with: nil)
+//            return
+//        }
+//
+//        if clientConnections.retrieveAll().filter({$0.session == session}).first == nil {
+//            clientConnections.save(newConnection: ConnectionData(session: session))
+//        } else {
+//            Debugger.printWarning("WC2: Existing session got reconnected")
+//        }
+//
+//        _delegate?.didConnect(to: walletAddress, with: WCRegistryWalletProxy(session.walletInfo))
+
     }
     
     private func handleConnection(session: WalletConnectSign.Session,
@@ -941,7 +973,9 @@ extension WalletConnectServiceV2 {
 }
 
 
-final class MockWalletConnectServiceV2 { }
+final class MockWalletConnectServiceV2 {
+    var delegate: WalletConnectDelegate?
+}
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
