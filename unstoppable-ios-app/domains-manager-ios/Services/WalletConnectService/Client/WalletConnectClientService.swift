@@ -29,17 +29,6 @@ protocol WalletConnectClientUIHandler: AnyObject {
     func didDisconnect(walletDisplayInfo: WalletDisplayInfo)
 }
 
-
-struct WCRegistryWalletProxy {
-    let host: String
-    
-    init?(_ walletInfo: Session.WalletInfo?) {
-        guard let info = walletInfo else { return nil }
-        guard let host = info.peerMeta.url.host else { return nil }
-        self.host = host
-    }
-}
-
 class WCClientConnections: DefaultsStorage<WalletConnectClientService.ConnectionData> {
     override init() {
         super.init()

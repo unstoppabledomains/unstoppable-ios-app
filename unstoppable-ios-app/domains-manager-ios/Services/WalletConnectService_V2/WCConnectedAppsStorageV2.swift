@@ -30,7 +30,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         case failedToFindWallet
     }
     
-    struct SessionProxy: Codable {
+    struct SessionProxy: Codable, Equatable {
         public let topic: String
         public let peer: AppMetadata
         public let namespaces: [String: SessionNamespace]

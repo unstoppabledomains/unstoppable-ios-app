@@ -27,6 +27,18 @@ struct SocketFactory: WebSocketFactory {
     }
 }
 
+class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ConnectionDataV2> {
+    override init() {
+        super.init()
+        storageKey = "CLIENT_CONNECTIONS_STORAGE"
+        q = DispatchQueue(label: "work-queue-client-connections")
+    }
+    
+    func save(newConnection: WalletConnectServiceV2.ConnectionDataV2) {
+        super.save(newElement: newConnection)
+    }
+}
+
 protocol WalletConnectServiceV2Protocol: AnyObject {
     var delegate: WalletConnectDelegate? { get set }
     
@@ -41,7 +53,12 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
 }
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    struct ConnectionDataV2: Codable, Equatable {
+        let session: WCConnectedAppsStorageV2.SessionProxy
+    }
+    
     var delegate: WalletConnectDelegate?
+    let clientConnectionsV2 = WCClientConnectionsV2()
     
     private var publishers = [AnyCancellable]()
     weak var uiHandler: WalletConnectUIHandler?
@@ -324,21 +341,20 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     private func handleWalletConnection(session: WalletConnectSign.Session) {
         Debugger.printInfo("WC2: CLIENT DID CONNECT - SESSION: \(session)")
         
-        // TODO:
-        
-//        guard let walletAddress = session.walletInfo?.accounts.first else {
-//            Debugger.printFailure("Wallet has insufficient info: \(String(describing: session.walletInfo))", critical: true)
-//            _delegate?.didConnect(to: nil, with: nil)
-//            return
-//        }
-//
-//        if clientConnections.retrieveAll().filter({$0.session == session}).first == nil {
-//            clientConnections.save(newConnection: ConnectionData(session: session))
-//        } else {
-//            Debugger.printWarning("WC2: Existing session got reconnected")
-//        }
-//
-//        _delegate?.didConnect(to: walletAddress, with: WCRegistryWalletProxy(session.walletInfo))
+        let walletAddresses = Array(session.namespaces.values)
+        guard walletAddresses.count > 0 else {
+            Debugger.printFailure("Wallet has insufficient info: \(String(describing: session.namespaces))", critical: true)
+            delegate?.didConnect(to: nil, with: nil)
+            return
+        }
+
+        if clientConnectionsV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
+            clientConnectionsV2.save(newConnection: ConnectionDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
+        } else {
+            Debugger.printWarning("WC2: Existing session got reconnected")
+        }
+
+        self.delegate?.didConnect(to: walletAddresses.first?.accounts.first?.address, with: WCRegistryWalletProxy(session)) // TODO:
 
     }
     
@@ -1021,5 +1037,19 @@ protocol DomainHolder {
 extension Array where Element: DomainHolder {
     func trimmed(to domains: [DomainItem]) -> [Element] {
         self.filter({domains.contains(domain: $0.domain)})
+    }
+}
+
+struct WCRegistryWalletProxy {
+    let host: String
+    
+    init?(_ walletInfo: WalletConnectSwift.Session.WalletInfo?) {
+        guard let info = walletInfo else { return nil }
+        guard let host = info.peerMeta.url.host else { return nil }
+        self.host = host
+    }
+    
+    init?(_ walletInfo: WalletConnectSign.Session) {
+        self.host = walletInfo.peer.url
     }
 }
