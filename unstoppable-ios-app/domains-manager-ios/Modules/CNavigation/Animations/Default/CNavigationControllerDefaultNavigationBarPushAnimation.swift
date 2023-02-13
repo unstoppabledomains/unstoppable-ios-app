@@ -141,7 +141,7 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
     init?(navBar: CNavigationBarContentView,
           newTitle: String?,
           newNavComponents: CNavComponents) {
-        guard let transitionFromTitle = try? CNavigationHelper.makeCopy(of: navBar.titleLabel) else { return nil }
+        let transitionFromTitle = CNavigationHelper.makeEfficientCopy(of: navBar.titleLabel)
         
         self.hasTitleView = newNavComponents.titleView != nil
         self.transitionFromTitle = transitionFromTitle
@@ -212,8 +212,8 @@ private struct TitleTransitioningSmallToLarge: CNavBarTitleTransitioning {
           newTitle: String?,
           largeTitleConfiguration: CNavigationBar.LargeTitleConfiguration?,
           attributes: [NSAttributedString.Key : Any]) {
-        guard let transitionNewLargeTitle = try? CNavigationHelper.makeCopy(of: navBar.largeTitleLabel),
-              let transitionFromTitle = try? CNavigationHelper.makeCopy(of: navBar.titleLabel) else { return nil }
+        let transitionNewLargeTitle = CNavigationHelper.makeEfficientCopy(of: navBar.largeTitleLabel)
+        let transitionFromTitle = CNavigationHelper.makeEfficientCopy(of: navBar.titleLabel)
         
         navBar.addSubview(transitionNewLargeTitle)
         if let newTitle = newTitle {
@@ -316,7 +316,7 @@ private struct TitleTransitioningLargeToSmall: CNavBarTitleTransitioning {
     init?(navBar: CNavigationBar,
           newTitle: String?,
           newNavComponents: CNavComponents) {
-        guard let transitionLargeTitle = try? CNavigationHelper.makeCopy(of: navBar.largeTitleLabel) else { return nil }
+        let transitionLargeTitle = CNavigationHelper.makeEfficientCopy(of: navBar.largeTitleLabel)
         
         self.hasTitleView = newNavComponents.titleView != nil
         navBar.addSubview(transitionLargeTitle)
@@ -367,7 +367,7 @@ private struct TitleTransitioningLargeToLarge: CNavBarTitleTransitioning {
     private let targetX: CGFloat
 
     init?(navBar: CNavigationBar, newTitle: String?) {
-        guard let transitionNewLargeTitle = try? CNavigationHelper.makeCopy(of: navBar.largeTitleLabel) else { return nil }
+        let transitionNewLargeTitle = CNavigationHelper.makeEfficientCopy(of: navBar.largeTitleLabel)
         
         navBar.addSubview(transitionNewLargeTitle)
         transitionNewLargeTitle.text = newTitle
@@ -413,8 +413,8 @@ private struct BackButtonTransitioningLargeToLarge: CNavBarTitleTransitioning, C
           oldNavComponents: CNavComponents,
           newNavComponents: CNavComponents,
           backTitleVisible: Bool) {
-        guard let transitionLargeTitle = try? CNavigationHelper.makeCopy(of: navBar.largeTitleLabel),
-              let transitionLargeBlueTitle = try? CNavigationHelper.makeCopy(of: transitionLargeTitle) else { return nil }
+        let transitionLargeTitle = CNavigationHelper.makeEfficientCopy(of: navBar.largeTitleLabel)
+        let transitionLargeBlueTitle = CNavigationHelper.makeEfficientCopy(of: transitionLargeTitle)
         
         navBar.addSubview(transitionLargeTitle)
         navBar.bringSubviewToFront(navBar.navBarBlur)
@@ -487,7 +487,7 @@ private struct BackButtonTransitioningSmallToSmall: CNavBarTitleTransitioning, C
           backButtonTitle: String?,
           oldNavComponents: CNavComponents,
           newNavComponents: CNavComponents) {
-        guard let transitionBackButtonLabel = try? CNavigationHelper.makeCopy(of: navBarContent.backButton.label) else { return nil }
+        let transitionBackButtonLabel = CNavigationHelper.makeEfficientCopy(of: navBarContent.backButton.label)
         
         transitionBackButtonLabel.text = backButtonTitle
         navBarContent.addSubview(transitionBackButtonLabel)

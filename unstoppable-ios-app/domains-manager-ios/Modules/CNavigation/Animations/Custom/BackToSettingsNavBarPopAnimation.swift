@@ -18,7 +18,7 @@ final class BackToSettingsNavBarPopAnimation: CBaseTransitioningAnimation {
         
         let largeTitle = navBar.largeTitleLabel!
         let largeTitleOrigin = CNavigationBar.Constants.largeTitleOrigin
-        guard let largeTitleCopy = try? CNavigationHelper.makeCopy(of: largeTitle) else { return nil }
+        let largeTitleCopy = CNavigationHelper.makeEfficientCopy(of: largeTitle)
         
         navBar.addSubview(largeTitleCopy)
         navBar.bringSubviewToFront(navBar.navBarBlur)
@@ -38,8 +38,8 @@ final class BackToSettingsNavBarPopAnimation: CBaseTransitioningAnimation {
         let isBlurActive = yOffset >= contentOffset
 
         var titleCopy: UILabel?
-        if isLargeTitleHidden,
-           let titleLabelCopy = try? CNavigationHelper.makeCopy(of: navBar.titleLabel) as? UILabel {
+        if isLargeTitleHidden {
+            let titleLabelCopy = CNavigationHelper.makeEfficientCopy(of: navBar.titleLabel)
             navBar.addSubview(titleLabelCopy)
             titleLabelCopy.text = toViewController.title
             titleLabelCopy.alpha = 0
