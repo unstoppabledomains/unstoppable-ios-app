@@ -36,10 +36,11 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
         self.resultCallback = resultCallback
     }
     
+    @MainActor
     override func viewDidLoad() {
         Task {
-            await setupView()
-            await setConfirmButton()
+            setConfirmButton()
+            setupView()
             await showData()
         }
     }
