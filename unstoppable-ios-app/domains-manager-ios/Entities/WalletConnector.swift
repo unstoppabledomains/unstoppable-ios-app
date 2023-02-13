@@ -16,7 +16,7 @@ extension WalletConnector {
     func evokeConnectExternalWallet(wcWallet: WCWalletsProvider.WalletRecord) async {
         
         let connectionUrlString: String
-        if ReleaseConfig.shouldUseWCCLient_V2 {
+        if wcWallet.isV2Compatible {
             guard let uri = try? await appContext.walletConnectClientServiceV2.connect() else {
                 Debugger.printFailure("Failed to connect via URI", critical: true)
                 return
