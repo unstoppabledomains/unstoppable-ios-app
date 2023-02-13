@@ -70,6 +70,8 @@ extension GIFAnimationsService {
         do {
             let image = try await animatedImageWithSource(source, maskingType: maskingType)
             return image
+        } catch GIFPreparationError.oneOrLessFrames {
+            return nil /// Don't log this error
         } catch {
             Debugger.printFailure("Failed to create GIF image: \(error.localizedDescription)", critical: false)
             return nil
