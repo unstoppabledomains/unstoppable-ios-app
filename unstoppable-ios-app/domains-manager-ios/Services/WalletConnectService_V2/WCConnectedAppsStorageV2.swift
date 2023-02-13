@@ -42,6 +42,10 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
             self.namespaces = session.namespaces
             self.expiryDate = session.expiryDate
         }
+        
+        func getWalletAddresses() -> [HexAddress] {
+            Array(namespaces.values).map({ Array($0.accounts).map({$0.address}) }).flatMap({ $0 })
+        }
     }
     
     static let trustedAppsHosts = ["unstoppabledomains.com",

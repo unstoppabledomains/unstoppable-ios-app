@@ -50,6 +50,8 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func addListener(_ listener: WalletConnectServiceListener)
     func disconnectAppsForAbsentDomains(from: [DomainItem])
     func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
+    
+    func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy]
 }
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
@@ -112,6 +114,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         // disconnect those connected to gone domains
         disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
         return validConnectedApps
+    }
+    
+    public func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
+        clientConnectionsV2.retrieveAll()
+            .filter({ ($0.session.getWalletAddresses().map({$0.normalized})).contains(walletAddress.normalized) })
+            .map({$0.session})
     }
         
     func disconnectAppsForAbsentDomains(from validDomains: [DomainItem]) {
@@ -341,7 +349,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     private func handleWalletConnection(session: WalletConnectSign.Session) {
         Debugger.printInfo("WC2: CLIENT DID CONNECT - SESSION: \(session)")
         
-        let walletAddresses = Array(session.namespaces.values)
+        let walletAddresses = WCConnectedAppsStorageV2.SessionProxy(session).getWalletAddresses()
         guard walletAddresses.count > 0 else {
             Debugger.printFailure("Wallet has insufficient info: \(String(describing: session.namespaces))", critical: true)
             delegate?.didConnect(to: nil, with: nil)
@@ -354,7 +362,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             Debugger.printWarning("WC2: Existing session got reconnected")
         }
 
-        self.delegate?.didConnect(to: walletAddresses.first?.accounts.first?.address, with: WCRegistryWalletProxy(session)) // TODO:
+        self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session)) // TODO:
 
     }
     
@@ -995,6 +1003,10 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
+        []
+    }
+    
     func disconnectAppsForAbsentDomains(from: [DomainItem]) {
     }
     
