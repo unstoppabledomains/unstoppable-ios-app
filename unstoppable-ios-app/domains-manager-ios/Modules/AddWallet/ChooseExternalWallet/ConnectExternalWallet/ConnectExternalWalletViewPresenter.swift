@@ -25,10 +25,12 @@ class ConnectExternalWalletViewPresenter: WalletConnector {
 
     init(view: ConnectExternalWalletViewProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectClientService: WalletConnectClientServiceProtocol) {
+         walletConnectClientService: WalletConnectClientServiceProtocol,
+         walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
         self.udWalletsService = udWalletsService
         walletConnectClientService.delegate = self
+        walletConnectServiceV2.delegate = self
       
     }
     func updateUI() {}
@@ -53,7 +55,9 @@ extension ConnectExternalWalletViewPresenter: ConnectExternalWalletViewPresenter
 
             if description.isInstalled {
                 connectingWalletName = wcWalletSelected.name
-                self.evokeConnectExternalWallet(wcWallet: wcWalletSelected)
+                Task {
+                    await self.evokeConnectExternalWallet(wcWallet: wcWalletSelected)
+                }
             } else if let appStoreId = wcWalletSelected.make?.appStoreId {
                 view?.openAppStore(for: appStoreId)
             } else {
