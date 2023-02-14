@@ -54,7 +54,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy]
     
     // Client V2 part
-    func connect() async throws -> WalletConnectURI
+    func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType
 }
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
@@ -1047,8 +1047,8 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
     }
     
-    func connect() async throws -> WalletConnectURI {
-        throw WalletConnectError.walletConnectNil
+    func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType {
+        return .oldPairing
     }
 }
 
@@ -1078,6 +1078,10 @@ struct WCRegistryWalletProxy {
 
 // Client V2 part
 extension WalletConnectServiceV2 {
+    enum Wc2ConnectionType {
+        case oldPairing
+        case newPairing (WalletConnectURI)
+    }
     var namespaces: [String: ProposalNamespace]  { [
         "eip155": ProposalNamespace(
             chains: [
@@ -1091,9 +1095,20 @@ extension WalletConnectServiceV2 {
             ], events: [], extensions: nil
         )] }
     
-    func connect() async throws -> WalletConnectURI {
+    func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
+        let activePairings = Pair.instance.getPairings().filter({$0.isAlive(for: wcWallet)})
+        if let pairing = activePairings.first {
+            try await Sign.instance.connect(requiredNamespaces: namespaces, topic: pairing.topic)
+            return .oldPairing
+        }
         let uri = try await Pair.instance.create()
         try await Sign.instance.connect(requiredNamespaces: namespaces, topic: uri.topic)
-        return uri
+        return .newPairing(uri)
+    }
+}
+
+extension Pairing {
+    func isAlive(for wcWallet: WCWalletsProvider.WalletRecord) -> Bool {
+        return self.peer?.name == wcWallet.name && self.peer?.url == wcWallet.homepage && expiryDate > Date().addingTimeInterval(60 * 20)
     }
 }
