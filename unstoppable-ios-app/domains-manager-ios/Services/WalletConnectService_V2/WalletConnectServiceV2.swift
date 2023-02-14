@@ -292,7 +292,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] session in
                 
-                if let proposal = self?.pendingProposal, session.peer == proposal.proposer {
+                if let proposal = self?.pendingProposal {
+                    guard session.peer == proposal.proposer else {
+                        Debugger.printFailure("Connected session \(session.peer) is not equivalent to proposer: \(proposal.proposer)")
+                        self?.pendingProposal = nil
+                        return
+                    }
                     if let pendingIntent = self?.intentsStorage.retrieveIntents().first {
                         // connection initiated by UI
                         self?.handleConnection(session: session,
@@ -300,13 +305,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     } else {
                         Debugger.printInfo(topic: .WallectConnectV2, "App connected with no intent \(session.peer.name)")
                     }
+                    self?.pendingProposal = nil
                 } else {
                     // connection without a proposal, it is a wallet
                     self?.handleWalletConnection(session: session)
                 }
-
                 self?.intentsStorage.removeAll()
-                self?.pendingProposal = nil
             }.store(in: &publishers)
 
         // request to sign a TX or message
