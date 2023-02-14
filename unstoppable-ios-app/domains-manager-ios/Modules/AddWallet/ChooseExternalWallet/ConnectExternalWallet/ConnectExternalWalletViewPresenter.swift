@@ -29,7 +29,7 @@ class ConnectExternalWalletViewPresenter: WalletConnector {
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
         self.udWalletsService = udWalletsService
-        walletConnectClientService._delegate = self
+        walletConnectClientService.delegate = self
         walletConnectServiceV2.delegate = self
       
     }

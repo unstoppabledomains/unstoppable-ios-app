@@ -78,6 +78,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     init() {
         configure()
         
+//        try? Sign.instance.cleanup()
+//        try? Pair.instance.cleanup()
+        
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
         Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions: \(settledSessions)")

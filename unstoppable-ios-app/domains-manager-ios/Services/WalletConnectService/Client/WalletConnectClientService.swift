@@ -15,7 +15,7 @@ protocol WalletConnectClientServiceProtocol: AnyObject {
     func findSessions(by walletAddress: HexAddress) -> [Session]
     func connect() throws -> WCURL
     func disconnect(walletAddress: HexAddress) throws
-    var _delegate: WalletConnectDelegate? { get set }
+    var delegate: WalletConnectDelegate? { get set }
 }
 
 protocol WalletConnectDelegate: AnyObject {
@@ -43,7 +43,6 @@ class WCClientConnections: DefaultsStorage<WalletConnectClientService.Connection
 
 final class WalletConnectClientService {
     struct ConnectionData: Codable, Equatable {
-//        let targetWalletAddress: HexAddress?
         let session: Session
     }
 
@@ -53,7 +52,7 @@ final class WalletConnectClientService {
         case failedGenerateUrl
     }
         
-    weak var _delegate: WalletConnectDelegate?
+    weak var delegate: WalletConnectDelegate?
     private weak var uiHandler: WalletConnectClientUIHandler?
     let clientConnections = WCClientConnections()
     private let udWalletsService: UDWalletsServiceProtocol
@@ -121,7 +120,7 @@ extension WalletConnectClientService: WalletConnectClientServiceProtocol {
 
 extension WalletConnectClientService: WalletConnectSwift.ClientDelegate {
     func client(_ client: Client, didFailToConnect url: WCURL) {
-        _delegate?.failedToConnect()
+        delegate?.failedToConnect()
     }
     
     func client(_ client: Client, didConnect url: WCURL) {
@@ -133,7 +132,7 @@ extension WalletConnectClientService: WalletConnectSwift.ClientDelegate {
         Debugger.printInfo("WC: CLIENT DID CONNECT - SESSION: \(session)")
         guard let walletAddress = session.walletInfo?.accounts.first else {
             Debugger.printFailure("Wallet has insufficient info: \(String(describing: session.walletInfo))", critical: true)
-            _delegate?.didConnect(to: nil, with: nil)
+            delegate?.didConnect(to: nil, with: nil)
             return
         }
 
@@ -143,7 +142,7 @@ extension WalletConnectClientService: WalletConnectSwift.ClientDelegate {
             Debugger.printWarning("Existing session got reconnected")
         }
         
-        _delegate?.didConnect(to: walletAddress, with: WCRegistryWalletProxy(session.walletInfo))
+        delegate?.didConnect(to: walletAddress, with: WCRegistryWalletProxy(session.walletInfo))
     }
     
     func client(_ client: Client, didDisconnect session: Session) {
@@ -171,7 +170,7 @@ extension WalletConnectClientService: WalletConnectSwift.ClientDelegate {
                 return
             }
             
-            self._delegate?.didDisconnect(from: accounts, with: WCRegistryWalletProxy(session.walletInfo))
+            self.delegate?.didDisconnect(from: accounts, with: WCRegistryWalletProxy(session.walletInfo))
         }
     }
     

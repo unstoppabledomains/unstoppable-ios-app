@@ -10,7 +10,7 @@ import WalletConnectSwift
 
 final class MockWalletConnectClientManager {
     var sessions: [Session] = []
-    var _delegate: WalletConnectDelegate?
+    var delegate: WalletConnectDelegate?
     private lazy var client: Client = {
         let clientMeta = Session.ClientMeta(name: String.Constants.mobileAppName.localized(),
                                             description: String.Constants.mobileAppDescription.localized(),
