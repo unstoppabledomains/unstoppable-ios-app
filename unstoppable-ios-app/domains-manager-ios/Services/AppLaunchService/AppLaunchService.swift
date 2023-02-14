@@ -42,6 +42,7 @@ extension AppLaunchService: AppLaunchServiceProtocol {
         wakeUpServices(walletConnectService: walletConnectService,
                        walletConnectServiceV2: walletConnectServiceV2,
                        walletConnectClientService: walletConnectClientService)
+        preparePopularPlaceholders()
     }
     
     func addListener(_ listener: AppLaunchServiceListener) {
@@ -233,6 +234,21 @@ private extension AppLaunchService {
                 await appContext.imageLoadingService.clearStoredImages()
                 await appContext.imageLoadingService.clearCache()
                 UserDefaults.isFirstLaunchAfterGIFSupportReleased = false
+            }
+        }
+    }
+    
+    /// Placeholders aren't stored on the disk, they're generated after each launch and cached in memory when needed.
+    /// Downside: When add coins screen get opened, it require multiple placeholders to be prepared at a time, which cause UI hang.
+    /// Solution: Prepare popular placeholders in advance while we show 1 sec of launch screen
+    func preparePopularPlaceholders() {
+        Task.detached(priority: .background) {
+            let toPrepare = appContext.coinRecordsService.popularCoinsTickers.map({ String($0.first ?? "a") }).joined() + "0ab"
+            for char in toPrepare {
+                _ = await appContext.imageLoadingService.loadImage(from: .initials(String(char),
+                                                                                   size: .default,
+                                                                                   style: .gray),
+                                                                   downsampleDescription: nil)
             }
         }
     }

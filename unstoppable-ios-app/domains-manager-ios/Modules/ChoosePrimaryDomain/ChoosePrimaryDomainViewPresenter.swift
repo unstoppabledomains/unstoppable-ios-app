@@ -42,7 +42,7 @@ class ChoosePrimaryDomainViewPresenter {
     func didMoveItem(from fromIndex: Int, to toIndex: Int) { }
     
     // MARK: - ChoosePrimaryDomainViewPresenterProtocol
-    func viewDidLoad() { }
+    @MainActor func viewDidLoad() { }
     @MainActor func didSelectItem(_ item: ChoosePrimaryDomainViewController.Item) { }
     func confirmButtonPressed() { }
     func reverseResolutionInfoHeaderPressed() {

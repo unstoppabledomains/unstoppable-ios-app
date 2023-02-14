@@ -71,7 +71,14 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
 // MARK: - ScrollViewOffsetListener
 extension DomainsCollectionCarouselCardCell: ScrollViewOffsetListener {
     func didScrollTo(offset: CGPoint) {
-        self.yOffset = offset.y
+        if offset.y < 1 {
+            /// Due to ScrollView nature, it is sometimes 'stuck' with offset in range 0...0.9 (usually 0.33 or 0.66)
+            /// This leads to incorrect animation progress calculation and ugly UI bug.
+            /// Solution: round offset to 0 if it is < 1
+            self.yOffset = 0
+        } else {
+            self.yOffset = round(offset.y)
+        }
         setFrame()
     }
 }

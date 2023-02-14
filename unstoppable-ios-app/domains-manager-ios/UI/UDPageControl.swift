@@ -61,7 +61,7 @@ private extension UDPageControl {
         let dots = getAllDots()
         if animated {
             guard dots.count == maximumDotsCount else {
-                Debugger.printFailure("Animation can be make only if dots amount >= maximum", critical: true)
+                Debugger.printFailure("Animation can be make only if dots amount >= maximum", critical: false)
                 return
             }
             

@@ -11,9 +11,11 @@ actor ConnectedAppsImageCache {
     
     static let shared = ConnectedAppsImageCache()
     
-    private var connectedAppToColorCache: [Int : UIColor?] = [:]
+    private var connectedAppToColorCache: [String : UIColor] = [:]
     
-    private init() { }
+    private init() {
+        loadFromCache()
+    }
     
 }
 
@@ -23,15 +25,77 @@ extension ConnectedAppsImageCache {
         if app.appIconUrls.isEmpty {
             return nil
         } else {
-            if let cachedValue = connectedAppToColorCache[app.hashValue] {
+            let imageSource: ImageSource = .connectedApp(app, size: .default)
+            if let cachedValue = connectedAppToColorCache[imageSource.key] {
                 return cachedValue
             }
             
-            let icon = await appContext.imageLoadingService.loadImage(from: .connectedApp(app, size: .default), downsampleDescription: nil)
+            let icon = await appContext.imageLoadingService.loadImage(from: imageSource, downsampleDescription: nil)
             let color = await icon?.getColors()?.background ?? .brandWhite
-            connectedAppToColorCache[app.hashValue] = color
+            connectedAppToColorCache[imageSource.key] = color
+            
+            saveCache()
             
             return color
         }
+    }
+}
+
+// MARK: - Private methods
+private extension ConnectedAppsImageCache {
+    func loadFromCache() {
+        let cachedMap = ConnectedAppsColorsStorage.instance.getConnectedAppToColorMap()
+        
+        for (key, data) in cachedMap {
+            if let color = UIColor.color(data: data) {
+                connectedAppToColorCache[key] = color
+            } else {
+                Debugger.printFailure("Failed to unarchive uicolor from data for key \(key)", critical: true)
+            }
+        }
+    }
+    
+    func saveCache() {
+        var cachedMap = ConnectedAppToColorMap()
+        
+        for (key, color) in connectedAppToColorCache {
+            if let data = color.encode() {
+                cachedMap[key] = data
+            } else {
+                Debugger.printFailure("Failed to encode uicolor to data for key \(key)", critical: true)
+            }
+        }
+        
+        ConnectedAppsColorsStorage.instance.set(newConnectedAppToColorMap: cachedMap)
+    }
+}
+
+private extension UIColor {
+    static func color(data: Data) -> UIColor? {
+        return try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as? UIColor
+    }
+    
+    func encode() -> Data? {
+        return try? NSKeyedArchiver.archivedData(withRootObject: self, requiringSecureCoding: false)
+    }
+}
+
+typealias ConnectedAppToColorMap = [String : Data]
+
+private final class ConnectedAppsColorsStorage {
+    
+    static let connectedAppsToColorFileName = "connected-apps-colors.data"
+    
+    private init() {}
+    static var instance = ConnectedAppsColorsStorage()
+    
+    private var storage = SpecificStorage<ConnectedAppToColorMap>(fileName: ConnectedAppsColorsStorage.connectedAppsToColorFileName)
+    
+    func getConnectedAppToColorMap() -> ConnectedAppToColorMap {
+        storage.retrieve() ?? [:]
+    }
+    
+    func set(newConnectedAppToColorMap: ConnectedAppToColorMap) {
+        storage.store(newConnectedAppToColorMap)
     }
 }

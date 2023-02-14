@@ -70,6 +70,8 @@ extension GIFAnimationsService {
         do {
             let image = try await animatedImageWithSource(source, maskingType: maskingType)
             return image
+        } catch GIFPreparationError.oneOrLessFrames {
+            return nil /// Don't log this error
         } catch {
             Debugger.printFailure("Failed to create GIF image: \(error.localizedDescription)", critical: false)
             return nil
@@ -174,6 +176,7 @@ private extension GIFAnimationsService {
         if count <= 1 {
             throw GIFPreparationError.oneOrLessFrames
         }
+        Debugger.printInfo(topic: .UI, "Extracting \(count) images for gif")
         guard let cgImage = cgContext.makeImage() else {
             throw GIFPreparationError.failedToMakeCGImage
         }
