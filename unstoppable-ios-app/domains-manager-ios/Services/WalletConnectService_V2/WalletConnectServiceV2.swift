@@ -52,6 +52,9 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
     
     func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy]
+    
+    // Client V2 part
+    func connect() async throws -> WalletConnectURI
 }
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
@@ -892,7 +895,6 @@ extension WCRequestUIConfiguration {
 }
 
 extension WalletConnectService {
-        
     struct ClientDataV2 {
         let appMetaData: WalletConnectSign.AppMetadata
         let proposalNamespace: [String: ProposalNamespace] 
@@ -1040,6 +1042,10 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
         
     }
+    
+    func connect() async throws -> WalletConnectURI {
+        throw WalletConnectError.walletConnectNil
+    }
 }
 
 protocol DomainHolder {
@@ -1063,5 +1069,27 @@ struct WCRegistryWalletProxy {
     
     init?(_ walletInfo: WalletConnectSign.Session) {
         self.host = walletInfo.peer.url
+    }
+}
+
+// Client V2 part
+extension WalletConnectServiceV2 {
+    var namespaces: [String: ProposalNamespace]  { [
+        "eip155": ProposalNamespace(
+            chains: [
+                Blockchain("eip155:1")!,
+                Blockchain("eip155:137")!
+            ],
+            methods: [
+                "eth_sendTransaction",
+                "personal_sign",
+                "eth_signTypedData"
+            ], events: [], extensions: nil
+        )] }
+    
+    func connect() async throws -> WalletConnectURI {
+        let uri = try await Pair.instance.create()
+        try await Sign.instance.connect(requiredNamespaces: namespaces, topic: uri.topic)
+        return uri
     }
 }

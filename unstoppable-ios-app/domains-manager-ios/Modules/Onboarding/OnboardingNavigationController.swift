@@ -20,7 +20,6 @@ final class OnboardingNavigationController: CNavigationController {
     
     private let udWalletsService: UDWalletsServiceProtocol = appContext.udWalletsService
     private let walletConnectClientService: WalletConnectClientServiceProtocol = appContext.walletConnectClientService
-    private let walletConnectClientServiceV2: WalletConnectClientServiceV2Protocol = appContext.walletConnectClientServiceV2
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol = appContext.walletConnectServiceV2
     private var stepHandlers: [WeakOnboardingStepHandler] = []
     private var flow: OnboardingFlow = .newUser(subFlow: nil)
@@ -342,7 +341,6 @@ private extension OnboardingNavigationController {
                                                                      onboardingFlowManager: self,
                                                                      udWalletsService: udWalletsService,
                                                                      walletConnectClientService: walletConnectClientService,
-                                                                     walletConnectClientServiceV2: walletConnectClientServiceV2,
                                                                      walletConnectServiceV2: walletConnectServiceV2)
             addStepHandler(presenter)
             vc.presenter = presenter

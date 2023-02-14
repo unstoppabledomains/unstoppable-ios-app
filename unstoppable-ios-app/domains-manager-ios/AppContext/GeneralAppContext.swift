@@ -41,7 +41,6 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()
     private(set) lazy var userDataService: UserDataServiceProtocol = UserDataService()
     private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = WalletConnectClientService(udWalletsService: udWalletsService)
-    private(set) lazy var walletConnectClientServiceV2: WalletConnectClientServiceV2Protocol = WalletConnectClientServiceV2()
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
 
     init() {

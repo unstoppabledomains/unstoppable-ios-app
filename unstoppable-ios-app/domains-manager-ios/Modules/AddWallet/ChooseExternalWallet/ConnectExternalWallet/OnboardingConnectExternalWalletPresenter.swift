@@ -16,13 +16,11 @@ final class OnboardingConnectExternalWalletPresenter: ConnectExternalWalletViewP
          onboardingFlowManager: OnboardingFlowManager,
          udWalletsService: UDWalletsServiceProtocol,
          walletConnectClientService: WalletConnectClientServiceProtocol,
-         walletConnectClientServiceV2: WalletConnectClientServiceV2Protocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.onboardingFlowManager = onboardingFlowManager
         super.init(view: view,
                    udWalletsService: udWalletsService,
                    walletConnectClientService: walletConnectClientService,
-                   walletConnectClientServiceV2: walletConnectClientServiceV2,
                    walletConnectServiceV2: walletConnectServiceV2)
     }
     

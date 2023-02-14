@@ -50,7 +50,6 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var walletConnectService: WalletConnectServiceProtocol = MockWalletConnectService()
     private(set) lazy var walletConnectServiceV2: WalletConnectServiceV2Protocol = MockWalletConnectServiceV2()
     private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = MockWalletConnectClientManager()
-    private(set) lazy var walletConnectClientServiceV2: WalletConnectClientServiceV2Protocol = MockWalletConnectV2ClientManager()
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
 
     
