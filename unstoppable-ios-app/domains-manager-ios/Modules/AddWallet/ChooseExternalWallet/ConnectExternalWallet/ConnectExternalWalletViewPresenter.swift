@@ -31,7 +31,6 @@ class ConnectExternalWalletViewPresenter: WalletConnector {
         self.view = view
         self.udWalletsService = udWalletsService
         walletConnectClientService._delegate = self
-        walletConnectClientServiceV2.delegate = self // TODO: remove
         walletConnectServiceV2.delegate = self
       
     }

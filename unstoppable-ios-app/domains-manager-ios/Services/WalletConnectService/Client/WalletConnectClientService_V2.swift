@@ -17,11 +17,9 @@ protocol WalletConnectClientServiceV2Protocol: AnyObject {
 //    func findSessions(by walletAddress: HexAddress) -> [Session]
     func connect() async throws -> WalletConnectURI
 //    func disconnect(walletAddress: HexAddress) throws
-    var delegate: WalletConnectDelegate? { get set }
 }
 
 final class WalletConnectClientServiceV2: WalletConnectClientServiceV2Protocol {
-    var delegate: WalletConnectDelegate?
     
     
     let namespaces: [String: ProposalNamespace] = [
@@ -46,7 +44,6 @@ final class WalletConnectClientServiceV2: WalletConnectClientServiceV2Protocol {
 }
 
 final class MockWalletConnectV2ClientManager: WalletConnectClientServiceV2Protocol {
-    var delegate: WalletConnectDelegate?
     
     func connect() async throws -> WalletConnectUtils.WalletConnectURI {
         throw WalletConnectError.walletConnectNil
