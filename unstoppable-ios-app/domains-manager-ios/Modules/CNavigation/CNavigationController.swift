@@ -59,7 +59,6 @@ class CNavigationController: UIViewController {
         super.viewWillAppear(animated)
         
         topViewController?.loadViewIfNeeded()
-        topViewController?.viewWillAppear(animated)
         if self.rootViewController == nil {
             if let rootViewController = self.viewControllers.first {
                 self.rootViewController = rootViewController
@@ -77,25 +76,7 @@ class CNavigationController: UIViewController {
             }
         }
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        topViewController?.viewDidAppear(animated)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        topViewController?.viewWillDisappear(animated)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        topViewController?.viewDidDisappear(animated)
-    }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
