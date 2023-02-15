@@ -67,6 +67,8 @@ enum ExternalWalletMake: String, Codable, Hashable {
     case Atomic = "185850e869e40f4e6c59b5b3f60b7e63a72e88b09e2a43a40b1fd0f237e49e9a"
     case Argent = "cf21952a9bc8108bf13b12c92443751e2cc388d27008be4201b92bbc6d83dd46"
     case Blockchain = "9806e241053d8c99b0ce9f62606f97d405de5c3c0b2593921f5aac99ecbaea58"
+    case Spot = "74f8092562bd79675e276d8b2062a83601a4106d30202f2d509195e30e19673d"
+    case imToken = "9d373b43ad4d2cf190fb1a774ec964a1addf406d6fd24af94ab7596e58c291b2"
 }
 
 extension ExternalWalletMake {        
@@ -86,6 +88,8 @@ extension ExternalWalletMake {
         case .Coin98: return .cancelCircleIcon
         case .Argent: return .cancelCircleIcon
         case .Blockchain: return .cancelCircleIcon
+        case .Spot: return .cancelCircleIcon
+        case .imToken: return .cancelCircleIcon
         default: return .init()
         }
     }
