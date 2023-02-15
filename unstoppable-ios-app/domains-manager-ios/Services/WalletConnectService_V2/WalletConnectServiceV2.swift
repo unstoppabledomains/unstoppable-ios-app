@@ -56,6 +56,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     // Client V2 part
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType
     func sendPersonalSign(session: WCConnectedAppsStorageV2.SessionProxy, message: String, address: HexAddress) async throws -> WalletConnectSign.Response
+    func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress) async throws -> WalletConnectSign.Response
     func handle(response: WalletConnectSign.Response) throws -> String
 }
 
@@ -65,6 +66,7 @@ typealias ResponseV2 = WalletConnectSign.Response
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     enum RPCMethod: String {
         case personalSign = "personal_sign"
+        case ethSign = "eth_sign"
         case sendTransaction = "eth_sendTransaction"
         case signTransaction = "eth_signTransaction"
         
@@ -73,6 +75,10 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     static func getParamsPersonalSign(message: String, address: HexAddress) -> AnyCodable {
         AnyCodable([message, address])
+    }
+    
+    static func getParamsEthSign(message: String, address: HexAddress) -> AnyCodable {
+        AnyCodable([address, message])
     }
     
     struct ConnectionDataV2: Codable, Equatable {
@@ -97,7 +103,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
     init() {
         configure()
-        
+//
 //        try? Sign.instance.cleanup()
 //        try? Pair.instance.cleanup()
         
@@ -365,6 +371,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             .sink { (topic, _) in
                 Task { [weak self]  in
                     guard let removed = await self?.appsStorage.remove(byTopic: topic) else {
+                        Debugger.printFailure("Failed to remove connection with topic :\(topic)", critical: true)
                         return
                     }
                     Debugger.printWarning("Disconnected from topic: \(topic)")
@@ -1040,6 +1047,10 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress) async throws -> WalletConnectSign.Response {
+        throw WalletConnectError.failedEthSignMessage
+    }
+    
     func sendPersonalSign(session: WCConnectedAppsStorageV2.SessionProxy, message: String, address: HexAddress) async throws -> WalletConnectSign.Response {
         throw WalletConnectError.failedSignPersonalMessage
     }
@@ -1130,6 +1141,7 @@ extension WalletConnectServiceV2 {
             methods: [
                 "eth_sendTransaction",
                 "personal_sign",
+                "eth_sign",
                 "eth_signTypedData"
             ], events: [], extensions: nil
         )] }
@@ -1146,7 +1158,11 @@ extension WalletConnectServiceV2 {
     }
     
     private func sendRequest(method: RPCMethod, session: SessionV2, requestParams: AnyCodable) async throws -> WalletConnectSign.Response {
-        let request = Request(topic: session.topic, method: method.string, params: requestParams, chainId: Blockchain("1")!)
+        guard let chainIdString = Array(session.namespaces.values).map({Array($0.accounts)}).flatMap({$0}).map({$0.blockchainIdentifier}).first,
+        let chainId = Blockchain(chainIdString) else {
+            throw WalletConnectError.invalidChainIdentifier
+        }
+        let request = Request(topic: session.topic, method: method.string, params: requestParams, chainId: chainId)
         pendingRequest = request
         try await Sign.instance.request(params: request)
         return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<WalletConnectSign.Response, Swift.Error>) in
@@ -1166,6 +1182,22 @@ extension WalletConnectServiceV2 {
         
         let params = WalletConnectServiceV2.getParamsPersonalSign(message: message, address: address)
         return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.personalSign,
+                              session: sessionSettled,
+                              requestParams: params)
+    }
+    
+    func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy],
+                          message: String,
+                          address: HexAddress) async throws -> WalletConnectSign.Response {
+        let settledSessions = Sign.instance.getSessions()
+        let settledSessionsTopics = settledSessions.map { $0.topic }
+        
+        guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
+            throw WalletConnectError.noWCSessionFound
+        }
+        
+        let params = WalletConnectServiceV2.getParamsEthSign(message: message, address: address)
+        return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.ethSign,
                               session: sessionSettled,
                               requestParams: params)
     }
