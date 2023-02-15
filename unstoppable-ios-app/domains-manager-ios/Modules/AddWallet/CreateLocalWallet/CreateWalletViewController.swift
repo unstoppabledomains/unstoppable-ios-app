@@ -25,7 +25,6 @@ final class CreateWalletViewController: BaseViewController {
     @IBOutlet private weak var titleLabel: UDTitleLabel!
     @IBOutlet private weak var subtitleLabel: UDSubtitleLabel!
     
-    private var didAppear = false
     private var style: Style = .fullUI
     var presenter: CreateWalletPresenterProtocol!
     var onboardingStep: OnboardingNavigationController.OnboardingStep { .createWallet }
@@ -47,10 +46,7 @@ final class CreateWalletViewController: BaseViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     
-        if !didAppear {
-            presenter.viewDidAppear()
-            didAppear = true
-        }
+        presenter.viewDidAppear()
     }
     
     override func shouldPopOnBackButton() -> Bool {
