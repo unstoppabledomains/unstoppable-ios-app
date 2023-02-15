@@ -1108,6 +1108,24 @@ extension WalletConnectServiceV2 {
         try await Sign.instance.connect(requiredNamespaces: namespaces, topic: uri.topic)
         return .newPairing(uri)
     }
+    
+    func sendRequest(method: String, session: WalletConnectSign.Session, requestParams: AnyCodable) async throws {
+        let request = Request(topic: session.topic, method: method, params: requestParams, chainId: Blockchain("1")!)
+            try await Sign.instance.request(params: request)
+    }
+    
+//    private func getRequestParams(for method: String) -> AnyCodable {
+//        let account = session.namespaces.first!.value.accounts.first!.absoluteString
+//        if method == "eth_sendTransaction" {
+//            let tx = Stub.tx
+//            return AnyCodable(tx)
+//        } else if method == "personal_sign" {
+//            return AnyCodable(["0x4d7920656d61696c206973206a6f686e40646f652e636f6d202d2031363533333933373535313531", account])
+//        } else if method == "eth_signTypedData" {
+//            return AnyCodable([account, Stub.eth_signTypedData])
+//        }
+//        fatalError("not implemented")
+//    }
 }
 
 extension Pairing {
