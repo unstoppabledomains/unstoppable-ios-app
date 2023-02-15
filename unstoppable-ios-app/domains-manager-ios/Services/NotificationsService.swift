@@ -79,7 +79,12 @@ extension NotificationsService: NotificationsServiceProtocol {
         updatePushNotificationsInfo(info)
         
         Task {
-            try await Push.wallet.register(deviceToken: deviceToken)
+            do {
+                try await Push.wallet.register(deviceToken: deviceToken)
+                Debugger.printInfo(topic: .PNs, "DId register token")
+            } catch {
+                Debugger.printInfo(topic: .PNs, "Failed to register device token wit error: \(error)")
+            }
         }
     }
     
