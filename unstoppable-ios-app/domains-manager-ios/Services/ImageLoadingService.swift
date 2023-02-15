@@ -153,7 +153,7 @@ fileprivate extension ImageLoadingService {
                 let imageData = try await loadImage(from: url)
                 
                 if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData) {
-                    storeAndCache(imageData: imageData, image: gif, forKey: source.key)
+                    scaleIfNeededAndSaveGif(gif, data: imageData, forKey: source.key)
                     
                     return gif
                 }
@@ -256,6 +256,14 @@ fileprivate extension ImageLoadingService {
                                                            scale: 1))
         } else {
             return image
+        }
+    }
+    
+    func scaleIfNeededAndSaveGif(_ image: UIImage, data: Data, forKey key: String) {
+        if let adjustedData = try? image.gifDataRepresentation() {
+            storeAndCache(imageData: adjustedData, image: image, forKey: key)
+        } else {
+            storeAndCache(imageData: data, image: image, forKey: key)
         }
     }
     

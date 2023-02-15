@@ -358,7 +358,6 @@ extension DomainsCollectionViewController: DomainsCollectionPageViewControllerDe
             if let self,
                let carouselItem = viewController as? DomainsCollectionCarouselItemViewController {
                 carouselItem.updateScrollOffset(self.currentOffset)
-                carouselItem.setCarouselCardState(self.cardState)
             }
         }
     }
@@ -610,14 +609,12 @@ private extension DomainsCollectionViewController {
 
     func getContainerItemForDomain(_ domain: DomainDisplayInfo, at index: Int) -> DomainsCollectionCarouselViewController? {
         let itemVC = DomainsCollectionCarouselItemViewController.instantiate(domain: domain,
+                                                                             cardState: cardState,
                                                                              containerViewController: self,
                                                                              actionsDelegate: self)
         itemVC.page = index
         itemVC.delegate = self
-        let contentOffset = self.currentOffset
-        DispatchQueue.main.async {
-            itemVC.updateScrollOffset(contentOffset)
-        }
+        
         return itemVC
     }
     

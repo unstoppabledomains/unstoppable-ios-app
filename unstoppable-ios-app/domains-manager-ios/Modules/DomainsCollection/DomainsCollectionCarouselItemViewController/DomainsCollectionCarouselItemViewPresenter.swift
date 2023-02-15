@@ -30,9 +30,11 @@ final class DomainsCollectionCarouselItemViewPresenter {
 
     init(view: DomainsCollectionCarouselItemViewProtocol,
          domain: DomainDisplayInfo,
+         cardState: CarouselCardState,
          actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate) {
         self.view = view
         self.domain = domain
+        self.cardState = cardState
         self.actionsDelegate = actionsDelegate
     }
     
@@ -173,8 +175,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         } else {
             // Spacer
             if cardState == .expanded {
-                let space = DomainsCollectionUICache.shared.spaceToRecentActivitiesSection()
-                snapshot.appendSections([.emptySeparator(height: space)])
+                snapshot.appendSections([.emptySeparator(height: 40)])
             }
             
             // Separator

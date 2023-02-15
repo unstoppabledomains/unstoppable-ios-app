@@ -19,7 +19,7 @@ typealias DomainsCollectionCarouselItemSnapshot = NSDiffableDataSourceSnapshot<D
 final class DomainsCollectionCarouselItemViewController: BaseViewController {
     
     static let cardFractionalWidth: CGFloat = 0.877
-    static let scrollViewTopInset: CGFloat = 41
+    static let scrollViewTopInset: CGFloat = 30
     
     private(set) var collectionView: UICollectionView!
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainsCollectionCarouselCardCell.self,
@@ -30,14 +30,17 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     private(set) weak var containerViewController: BaseViewController?
     weak var delegate: DomainsCollectionCarouselViewControllerDelegate?
     var presenter: DomainsCollectionCarouselItemViewPresenterProtocol!
+    private var cardState: CarouselCardState = .expanded
     
     static func instantiate(domain: DomainDisplayInfo,
+                            cardState: CarouselCardState,
                             containerViewController: BaseViewController,
                             actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate) -> DomainsCollectionCarouselItemViewController {
         let vc = DomainsCollectionCarouselItemViewController()
         vc.containerViewController = containerViewController
         let presenter = DomainsCollectionCarouselItemViewPresenter(view: vc,
                                                                    domain: domain,
+                                                                   cardState: cardState,
                                                                    actionsDelegate: actionsDelegate)
         vc.presenter = presenter
         return vc
@@ -89,6 +92,7 @@ extension DomainsCollectionCarouselItemViewController: DomainsCollectionCarousel
     }
     
     func setCarouselCardState(_ state: CarouselCardState) {
+        self.cardState = state
         presenter.setCarouselCardState(state)
     }
 }
@@ -306,8 +310,9 @@ private extension DomainsCollectionCarouselItemViewController {
                                                                                                            heightDimension: .fractionalHeight(DomainsCollectionUICache.shared.cardFractionalHeight())),
                                                                         subitems: [leadingItem])
                 section = NSCollectionLayoutSection(group: containerGroup)
+                let bottomInset: CGFloat = self.cardState == .expanded ? 8 : 0
                 section.contentInsets = .init(top: 0, leading: 24,
-                                              bottom: 8, trailing: 24)
+                                              bottom: bottomInset, trailing: 24)
             case .recentActivity(let numberOfActivities):
                 let rowHeight: CGFloat = DomainsCollectionRecentActivityCell.height
                 setSectionContentInset()

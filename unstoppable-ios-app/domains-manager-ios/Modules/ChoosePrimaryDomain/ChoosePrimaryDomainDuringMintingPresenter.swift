@@ -30,10 +30,11 @@ final class ChoosePrimaryDomainDuringMintingPresenter: ChoosePrimaryDomainViewPr
         super.init(view: view)
     }
     
+    @MainActor
     override func viewDidLoad() {
         Task {
-            await setupView()
-            await setConfirmButton()
+            setupView()
+            setConfirmButton()
             await showData()
         }
     }

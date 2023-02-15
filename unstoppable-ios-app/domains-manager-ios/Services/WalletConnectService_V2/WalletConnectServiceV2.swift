@@ -28,7 +28,21 @@ struct SocketFactory: WebSocketFactory {
     }
 }
 
-protocol WalletConnectServiceV2Protocol {
+class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ConnectionDataV2> {
+    override init() {
+        super.init()
+        storageKey = "CLIENT_CONNECTIONS_STORAGE"
+        q = DispatchQueue(label: "work-queue-client-connections")
+    }
+    
+    func save(newConnection: WalletConnectServiceV2.ConnectionDataV2) {
+        super.save(newElement: newConnection)
+    }
+}
+
+protocol WalletConnectServiceV2Protocol: AnyObject {
+    var delegate: WalletConnectDelegate? { get set }
+    
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
     func pairClient(uri: WalletConnectURI)
     func setUIHandler(_ uiHandler: WalletConnectUIHandler)
@@ -37,9 +51,21 @@ protocol WalletConnectServiceV2Protocol {
     func addListener(_ listener: WalletConnectServiceListener)
     func disconnectAppsForAbsentDomains(from: [DomainItem])
     func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
+    
+    func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy]
+    
+    // Client V2 part
+    func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType
 }
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    struct ConnectionDataV2: Codable, Equatable {
+        let session: WCConnectedAppsStorageV2.SessionProxy
+    }
+    
+    var delegate: WalletConnectDelegate?
+    let clientConnectionsV2 = WCClientConnectionsV2()
+    
     private var publishers = [AnyCancellable]()
     weak var uiHandler: WalletConnectUIHandler?
     var intentsStorage: WCConnectionIntentStorage { WCConnectionIntentStorage.shared }
@@ -52,6 +78,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
     init() {
         configure()
+        
+//        try? Sign.instance.cleanup()
+//        try? Pair.instance.cleanup()
         
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
@@ -92,6 +121,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         // disconnect those connected to gone domains
         disconnectApps(from: unifiedApps, notIncluding: validConnectedApps)
         return validConnectedApps
+    }
+    
+    public func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
+        clientConnectionsV2.retrieveAll()
+            .filter({ ($0.session.getWalletAddresses().map({$0.normalized})).contains(walletAddress.normalized) })
+            .map({$0.session})
     }
         
     func disconnectAppsForAbsentDomains(from validDomains: [DomainItem]) {
@@ -230,6 +265,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         }
     }
     
+    var pendingProposal: WalletConnectSign.Session.Proposal?
     private func setUpAuthSubscribing() {
         // callback after pair()
         Sign.instance.sessionProposalPublisher
@@ -249,6 +285,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                         self?.didRejectSession(sessionProposal)
                         return
                     }
+                    self?.pendingProposal = sessionProposal
                     self?.didApproveSession(sessionProposal, accountAddress: accountAddress)
                 }
             }.store(in: &publishers)
@@ -258,14 +295,23 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] session in
                 
-//                self?.reloadActiveSessions()
-                
-                if let pendingIntent = self?.intentsStorage.retrieveIntents().first {
-                    // connection initiated by UI
-                    self?.handleConnection(session: session,
-                                     with: pendingIntent)
+                if let proposal = self?.pendingProposal {
+                    guard session.peer == proposal.proposer else {
+                        Debugger.printFailure("Connected session \(session.peer) is not equivalent to proposer: \(proposal.proposer)")
+                        self?.pendingProposal = nil
+                        return
+                    }
+                    if let pendingIntent = self?.intentsStorage.retrieveIntents().first {
+                        // connection initiated by UI
+                        self?.handleConnection(session: session,
+                                         with: pendingIntent)
+                    } else {
+                        Debugger.printInfo(topic: .WallectConnectV2, "App connected with no intent \(session.peer.name)")
+                    }
+                    self?.pendingProposal = nil
                 } else {
-                    Debugger.printInfo(topic: .WallectConnectV2, "App connected with no intent \(session.peer.name)")
+                    // connection without a proposal, it is a wallet
+                    self?.handleWalletConnection(session: session)
                 }
                 self?.intentsStorage.removeAll()
             }.store(in: &publishers)
@@ -308,6 +354,26 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     }
                 }
             }.store(in: &publishers)
+    }
+    
+    private func handleWalletConnection(session: WalletConnectSign.Session) {
+        Debugger.printInfo("WC2: CLIENT DID CONNECT - SESSION: \(session)")
+        
+        let walletAddresses = WCConnectedAppsStorageV2.SessionProxy(session).getWalletAddresses()
+        guard walletAddresses.count > 0 else {
+            Debugger.printFailure("Wallet has insufficient info: \(String(describing: session.namespaces))", critical: true)
+            delegate?.didConnect(to: nil, with: nil)
+            return
+        }
+
+        if clientConnectionsV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
+            clientConnectionsV2.save(newConnection: ConnectionDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
+        } else {
+            Debugger.printWarning("WC2: Existing session got reconnected")
+        }
+
+        self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session)) // TODO:
+
     }
     
     private func handleConnection(session: WalletConnectSign.Session,
@@ -832,7 +898,6 @@ extension WCRequestUIConfiguration {
 }
 
 extension WalletConnectService {
-        
     struct ClientDataV2 {
         let appMetaData: WalletConnectSign.AppMetadata
         let proposalNamespace: [String: ProposalNamespace] 
@@ -937,10 +1002,16 @@ extension WalletConnectServiceV2 {
 }
 
 
-final class MockWalletConnectServiceV2 { }
+final class MockWalletConnectServiceV2 {
+    var delegate: WalletConnectDelegate?
+}
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
+        []
+    }
+    
     func disconnectAppsForAbsentDomains(from: [DomainItem]) {
     }
     
@@ -974,6 +1045,10 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
         
     }
+    
+    func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType {
+        return .oldPairing
+    }
 }
 
 protocol DomainHolder {
@@ -983,5 +1058,56 @@ protocol DomainHolder {
 extension Array where Element: DomainHolder {
     func trimmed(to domains: [DomainItem]) -> [Element] {
         self.filter({domains.contains(domain: $0.domain)})
+    }
+}
+
+struct WCRegistryWalletProxy {
+    let host: String
+    
+    init?(_ walletInfo: WalletConnectSwift.Session.WalletInfo?) {
+        guard let info = walletInfo else { return nil }
+        guard let host = info.peerMeta.url.host else { return nil }
+        self.host = host
+    }
+    
+    init?(_ walletInfo: WalletConnectSign.Session) {
+        self.host = walletInfo.peer.url
+    }
+}
+
+// Client V2 part
+extension WalletConnectServiceV2 {
+    enum Wc2ConnectionType {
+        case oldPairing
+        case newPairing (WalletConnectURI)
+    }
+    var namespaces: [String: ProposalNamespace]  { [
+        "eip155": ProposalNamespace(
+            chains: [
+                Blockchain("eip155:1")!,
+                Blockchain("eip155:137")!
+            ],
+            methods: [
+                "eth_sendTransaction",
+                "personal_sign",
+                "eth_signTypedData"
+            ], events: [], extensions: nil
+        )] }
+    
+    func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
+        let activePairings = Pair.instance.getPairings().filter({$0.isAlive(for: wcWallet)})
+        if let pairing = activePairings.first {
+            try await Sign.instance.connect(requiredNamespaces: namespaces, topic: pairing.topic)
+            return .oldPairing
+        }
+        let uri = try await Pair.instance.create()
+        try await Sign.instance.connect(requiredNamespaces: namespaces, topic: uri.topic)
+        return .newPairing(uri)
+    }
+}
+
+extension Pairing {
+    func isAlive(for wcWallet: WCWalletsProvider.WalletRecord) -> Bool {
+        return self.peer?.name == wcWallet.name && self.peer?.url == wcWallet.homepage && expiryDate > Date().addingTimeInterval(60 * 20)
     }
 }

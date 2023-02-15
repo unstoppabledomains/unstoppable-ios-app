@@ -15,11 +15,13 @@ final class OnboardingConnectExternalWalletPresenter: ConnectExternalWalletViewP
     init(view: ConnectExternalWalletViewProtocol,
          onboardingFlowManager: OnboardingFlowManager,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectClientService: WalletConnectClientServiceProtocol) {
+         walletConnectClientService: WalletConnectClientServiceProtocol,
+         walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.onboardingFlowManager = onboardingFlowManager
         super.init(view: view,
                    udWalletsService: udWalletsService,
-                   walletConnectClientService: walletConnectClientService)
+                   walletConnectClientService: walletConnectClientService,
+                   walletConnectServiceV2: walletConnectServiceV2)
     }
     
     override func viewDidLoad() {

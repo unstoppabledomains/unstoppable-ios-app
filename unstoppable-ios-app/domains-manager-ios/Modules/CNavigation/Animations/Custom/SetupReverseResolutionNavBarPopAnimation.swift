@@ -45,7 +45,7 @@ final class SetupReverseResolutionNavBarPopAnimation: CBaseTransitioningAnimatio
         let currentBackButtonImage: UIImage? = navBarContent.backButton.icon.image
         let isBackButtonHidden = !(toViewController.cNavigationController is EmptyRootCNavigationController)
         if !isBackButtonHidden {
-            backButtonTransitionImage = try? CNavigationHelper.makeCopy(of: navBarContent.backButton.icon)
+            backButtonTransitionImage = CNavigationHelper.makeEfficientCopy(of: navBarContent.backButton.icon)
             backButtonTransitionImage?.image = navBarContent.backButton.icon.image
             if let backButtonTransitionImage = backButtonTransitionImage {
                 navBarContent.backButton.icon.alpha = 0
