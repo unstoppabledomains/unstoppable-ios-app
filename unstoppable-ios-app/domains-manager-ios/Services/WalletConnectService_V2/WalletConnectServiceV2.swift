@@ -1091,7 +1091,7 @@ extension WalletConnectServiceV2 {
                 "eth_sendTransaction",
                 "personal_sign",
                 "eth_signTypedData"
-            ], events: [], extensions: nil
+            ], events: []
         )] }
     
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
