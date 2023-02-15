@@ -113,6 +113,12 @@ extension UDWallet {
     }
     
     func signViaWalletConnectPersonalSign(message: String) async throws -> String {
+        if let session = appContext.walletConnectServiceV2.findSessions(by: self.address).first  {
+            let response = try await appContext.walletConnectServiceV2.sendPersonalSign(session: session,
+                                                                                        message: message,
+                                                                                        address: address)
+            return try appContext.walletConnectServiceV2.handle(response: response)
+        }
         guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
             Debugger.printFailure("Failed to find session for WC", critical: false)
             throw WalletConnectError.noWCSessionFound
