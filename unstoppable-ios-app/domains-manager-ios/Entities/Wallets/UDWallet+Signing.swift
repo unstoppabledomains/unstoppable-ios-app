@@ -113,8 +113,9 @@ extension UDWallet {
     }
     
     func signViaWalletConnectPersonalSign(message: String) async throws -> String {
-        if let session = appContext.walletConnectServiceV2.findSessions(by: self.address).first  {
-            let response = try await appContext.walletConnectServiceV2.sendPersonalSign(session: session,
+        let sessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
+        if  sessions.count > 0 {
+            let response = try await appContext.walletConnectServiceV2.sendPersonalSign(sessions: sessions,
                                                                                         message: message,
                                                                                         address: address) {
                 try await launchExternalWallet()

@@ -55,7 +55,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     
     // Client V2 part
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType
-    func sendPersonalSign(session: WCConnectedAppsStorageV2.SessionProxy, message: String, address: HexAddress,
+    func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress,
                           onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response
     func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress,
                      onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response
@@ -1049,7 +1049,7 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
-    func sendPersonalSign(session: WCConnectedAppsStorageV2.SessionProxy, message: String, address: HexAddress, onWcRequestSentCallback: () async throws -> Void) async throws -> WalletConnectSign.Response {
+    func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress, onWcRequestSentCallback: @escaping () async throws -> Void) async throws -> WalletConnectSign.Response {
         throw WalletConnectError.failedEthSignMessage
     }
     
@@ -1178,12 +1178,14 @@ extension WalletConnectServiceV2 {
         })
     }
     
-    func sendPersonalSign(session: WCConnectedAppsStorageV2.SessionProxy,
+    func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy],
                           message: String,
                           address: HexAddress,
                           onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
         let settledSessions = Sign.instance.getSessions()
-        guard let sessionSettled = settledSessions.filter({$0.topic == session.topic}).first else {
+        let settledSessionsTopics = settledSessions.map { $0.topic }
+        
+        guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
             throw WalletConnectError.noWCSessionFound
         }
         
