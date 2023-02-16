@@ -37,6 +37,11 @@ class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ConnectionDa
     func save(newConnection: WalletConnectServiceV2.ConnectionDataV2) {
         super.save(newElement: newConnection)
     }
+    
+    @discardableResult
+    func remove(byTopic topic: String) async -> WalletConnectServiceV2.ConnectionDataV2? {
+        await remove(when: {$0.session.topic == topic})
+    }
 }
 
 protocol WalletConnectServiceV2Protocol: AnyObject {
@@ -45,6 +50,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
     func pairClient(uri: WalletConnectURI)
     func setUIHandler(_ uiHandler: WalletConnectUIHandler)
+    func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler)
     func getConnectedApps() async -> [UnifiedConnectAppInfo]
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
     func addListener(_ listener: WalletConnectServiceListener)
@@ -74,24 +80,20 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
         var string: String { self.rawValue }
     }
-    
-    static func getParamsPersonalSign(message: String, address: HexAddress) -> AnyCodable {
-        AnyCodable([message, address])
-    }
-    
-    static func getParamsEthSign(message: String, address: HexAddress) -> AnyCodable {
-        AnyCodable([address, message])
-    }
-    
+        
     struct ConnectionDataV2: Codable, Equatable {
         let session: WCConnectedAppsStorageV2.SessionProxy
     }
     
+    private let udWalletsService: UDWalletsServiceProtocol
     var delegate: WalletConnectDelegate?
     let clientConnectionsV2 = WCClientConnectionsV2()
     
     private var publishers = [AnyCancellable]()
+    
     weak var uiHandler: WalletConnectUIHandler?
+    private weak var walletsUiHandler: WalletConnectClientUIHandler?
+    
     var intentsStorage: WCConnectionIntentStorage { WCConnectionIntentStorage.shared }
     var appsStorage: WCConnectedAppsStorageV2 { WCConnectedAppsStorageV2.shared }
     private var listeners: [WalletConnectServiceListenerHolder] = []
@@ -103,7 +105,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     var pendingRequest: WalletConnectSign.Request?
     var callback: ((ResponseV2)->Void)?
         
-    init() {
+    init(udWalletsService: UDWalletsServiceProtocol) {
+        self.udWalletsService = udWalletsService
+        
         configure()
 //
 //        try? Sign.instance.cleanup()
@@ -129,6 +133,10 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
         self.uiHandler = uiHandler
+    }
+    
+    func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler) {
+        self.walletsUiHandler = walletUiHandler
     }
     
     func addListener(_ listener: WalletConnectServiceListener) {
@@ -372,14 +380,21 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             .receive(on: DispatchQueue.main)
             .sink { (topic, _) in
                 Task { [weak self]  in
-                    guard let removed = await self?.appsStorage.remove(byTopic: topic) else {
-                        Debugger.printFailure("Failed to remove connection with topic :\(topic)", critical: true)
+                    if let removedApp = await self?.appsStorage.remove(byTopic: topic) {
+                        Debugger.printWarning("Disconnected from dApp topic: \(topic)")
+                        
+                        self?.listeners.forEach { holder in
+                            holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: removedApp))
+                        }
+                    } else if let removedWallet = await self?.clientConnectionsV2.remove(byTopic: topic){
+                        // Client part
+                        Debugger.printWarning("Disconnected from Wallet topic: \(topic)")
+                        removedWallet.session.getWalletAddresses().forEach({ walletAddress in
+                            self?.handleWalletDisconnection(walletAddress: walletAddress)
+                        })
+                    } else {
+                        Debugger.printFailure("Topic disconnected that was not in cache :\(topic)", critical: true)
                         return
-                    }
-                    Debugger.printWarning("Disconnected from topic: \(topic)")
-                    
-                    self?.listeners.forEach { holder in
-                        holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: removed))
                     }
                 }
             }.store(in: &publishers)
@@ -391,6 +406,16 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                 callback?(response)
                 callback = nil
             }.store(in: &publishers)
+    }
+    
+    private func handleWalletDisconnection(walletAddress: HexAddress) {
+        if let toRemove = self.udWalletsService.find(by: walletAddress) {
+            if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0) {
+                self.walletsUiHandler?.didDisconnect(walletDisplayInfo: walletDisplayInfo)
+            }
+            self.udWalletsService.remove(wallet: toRemove)
+            Debugger.printWarning("Disconnected external wallet: \(toRemove.aliasName)")
+        }
     }
     
     private func handleWalletConnection(session: SessionV2) {
@@ -1049,6 +1074,10 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler) {
+        
+    }
+    
     func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress, onWcRequestSentCallback: @escaping () async throws -> Void) async throws -> WalletConnectSign.Response {
         throw WalletConnectError.failedEthSignMessage
     }
@@ -1227,6 +1256,13 @@ extension WalletConnectServiceV2 {
         }
     }
     
+    static func getParamsPersonalSign(message: String, address: HexAddress) -> AnyCodable {
+        AnyCodable([message, address])
+    }
+    
+    static func getParamsEthSign(message: String, address: HexAddress) -> AnyCodable {
+        AnyCodable([address, message])
+    }
 }
 
 extension Pairing {

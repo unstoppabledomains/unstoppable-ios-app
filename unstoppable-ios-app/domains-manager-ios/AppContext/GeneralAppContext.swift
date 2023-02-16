@@ -49,7 +49,7 @@ final class GeneralAppContext: AppContextProtocol {
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
         walletConnectService = WalletConnectService()
-        walletConnectServiceV2 = WalletConnectServiceV2()
+        walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         permissionsService = PermissionsService()
         pullUpViewService = PullUpViewService(authentificationService: authentificationService)
         
