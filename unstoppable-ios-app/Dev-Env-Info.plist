@@ -104,11 +104,19 @@
 		<string>celo</string>
 		<string>zel</string>
 		<string>fuse.cash</string>
+		<string>spot</string>
+		<string>zeluswallet</string>
+		<string>omni</string>
+		<string>zerion</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Use Face ID to secure critical steps</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>INSendMessageIntent</string>
+	</array>
 	<key>UIAppFonts</key>
 	<array>
 		<string>HelveticaNeue-Custom.ttf</string>
@@ -168,9 +176,5 @@
 		<key>apiKey</key>
 		<string>bc471d79e666ce83787724f3b14c8562</string>
 	</dict>
-    <key>NSUserActivityTypes</key>
-    <array>
-        <string>INSendMessageIntent</string>
-    </array>
 </dict>
 </plist>

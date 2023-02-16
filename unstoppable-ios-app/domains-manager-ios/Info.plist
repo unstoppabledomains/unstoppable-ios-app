@@ -104,8 +104,12 @@
 		<string>tongue</string>
 		<string>moneyunstoppable</string>
 		<string>celo</string>
-		<string>zel</string>
-		<string>fuse.cash</string>
+        <string>zel</string>
+        <string>fuse.cash</string>
+        <string>spot</string>
+        <string>zeluswallet</string>
+        <string>omni</string>
+        <string>zerion</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
