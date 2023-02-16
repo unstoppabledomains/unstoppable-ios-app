@@ -709,8 +709,7 @@ private extension DomainsCollectionPresenter {
             guard let index = domains.firstIndex(where: { $0.isSameEntity(mintingDomain) }),
                   index != currentIndex else { return }
             
-            view?.setSelectedDomain(mintingDomain, at: index, animated: true)
-            currentIndex = index
+            setNewIndex(index, animated: true)
         }
     }
     
