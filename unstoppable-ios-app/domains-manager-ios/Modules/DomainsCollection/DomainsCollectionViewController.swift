@@ -247,7 +247,7 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
                                                                    in: viewController.collectionView) {
             for vc in getCurrentCarouselViewControllers() {
                 vc.collectionView.setContentOffset(targetPoint,
-                                                   animated: true)
+                                                   animated: false)
             }
         }
         applyCurrentCardState()
