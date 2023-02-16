@@ -105,9 +105,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    func sceneWillResignActive(_ scene: UIScene) {
-        blurIfNeeded()
-    }
+    func sceneWillResignActive(_ scene: UIScene) { }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
         Task.detached { [unowned self] in

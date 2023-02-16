@@ -23,9 +23,9 @@ final class DashesProgressNavBarPushAnimation: CBaseTransitioningAnimation {
               let toViewController = transitionContext.viewController(forKey: .to),
               let navBar = fromViewController.cNavigationController?.navigationBar,
               let dashesView = navBar.navBarContentView.titleView as? DashesProgressView,
-              let toNavBarCopy = try? CNavigationHelper.makeCopy(of: navBar),
-              let fromLargeTitleCopy = try? CNavigationHelper.makeCopy(of: navBar.largeTitleLabel) else { return nil }
+              let toNavBarCopy = try? CNavigationHelper.makeCopy(of: navBar) else { return nil }
         
+        let fromLargeTitleCopy = CNavigationHelper.makeEfficientCopy(of: navBar.largeTitleLabel)
         let toNavChild = toViewController as? CNavigationControllerChild
         let yOffset = CNavigationHelper.contentYOffset(in: toViewController.view)
         

@@ -27,6 +27,10 @@ struct CNavigationHelper {
 
 // MARK: - Copy
 extension CNavigationHelper {
+    static func makeEfficientCopy<T: CNavigationCopiableView>(of object: T) -> T {
+        object.makeCopy()
+    }
+    
     static func makeCopy<T>(of object: T) throws -> T {
         let data = try NSKeyedArchiver.archivedData(withRootObject: object, requiringSecureCoding:false)
         let copy = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(data) as! T
@@ -143,5 +147,30 @@ extension CNavigationHelper {
     static func sizeOf(label: UILabel, withConstrainedSize size: CGSize, lineHeight: CGFloat? = nil) -> CGSize {
         let string = label.text ?? ""
         return sizeOf(string: string, withConstrainedSize: size, font: label.font, lineHeight: lineHeight)
+    }
+}
+
+protocol CNavigationCopiableView {
+    func makeCopy() -> Self
+}
+
+extension UILabel: CNavigationCopiableView {
+    func makeCopy() -> Self {
+        let copy = UILabel(frame: frame)
+        copy.attributedText = attributedText
+        copy.isHidden = isHidden
+        copy.alpha = alpha
+        return copy as! Self
+    }
+}
+
+extension UIImageView: CNavigationCopiableView {
+    func makeCopy() -> Self {
+        let copy = UIImageView(frame: frame)
+        copy.image = image
+        copy.isHidden = isHidden
+        copy.alpha = alpha
+        copy.tintColor = tintColor
+        return copy as! Self
     }
 }

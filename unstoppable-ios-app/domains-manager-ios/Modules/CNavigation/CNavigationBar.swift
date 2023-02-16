@@ -24,7 +24,7 @@ final class CNavigationBar: UIView {
     private var yOffset: CGFloat = 0
     var isModalInPageSheet = false
     var scrollableContentYOffset: CGFloat?
-    var titleLabel: UIView { navBarContentView.titleLabel }
+    var titleLabel: UILabel { navBarContentView.titleLabel }
     var backButton: CNavigationBarBackButton { navBarContentView.backButton }
     var backButtonPressedCallback: (()->())?
     var alwaysShowBackButton = false
