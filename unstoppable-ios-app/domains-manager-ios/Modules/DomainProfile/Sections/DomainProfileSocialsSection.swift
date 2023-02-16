@@ -107,7 +107,7 @@ extension DomainProfileSocialsSection: DomainProfileSection {
 // MARK: - Private methods
 private extension DomainProfileSocialsSection {
     var currentSocialDescriptions: [SocialDescription] {
-        let types: [SocialsType] = [.twitter, .discord, .telegram, .reddit, .youTube]
+        let types: [SocialsType] = [.twitter, .discord, .telegram, .reddit, .youTube, .gitHub, .linkedIn]
         return types.compactMap({
             if let account = account(of: $0, in: editingSocialsData) {
                 return SocialDescription(type: $0, account: account)
@@ -319,7 +319,7 @@ extension DomainProfileSocialsSection {
             case .linkedIn:
                 return URL(string: value)
             case .gitHub:
-                return URL(string: value)
+                return URL(string: "https://github.com/\(value)")
             }
         }
     }

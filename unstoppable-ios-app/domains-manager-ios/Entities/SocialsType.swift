@@ -70,7 +70,7 @@ enum SocialsType: Hashable {
         case .linkedIn:
             return ""
         case .gitHub:
-            return ""
+            return "username"
         }
     }
     
