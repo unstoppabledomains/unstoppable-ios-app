@@ -751,7 +751,7 @@ extension WalletConnectServiceV2 {
                 do {
                     try await handleSingleSendTx(tx: tx)
                 } catch {
-                    Debugger.printFailure("Failed to send tx: \(tx)", critical: true)
+                    Debugger.printFailure("Failed to send tx: \(tx), error: \(error)", critical: false)
                     try await respondWithError(request: request)
                 }
             }
