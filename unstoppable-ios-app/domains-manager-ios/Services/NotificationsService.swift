@@ -41,6 +41,7 @@ final class NotificationsService: NSObject {
         walletConnectService.addListener(self)
         walletConnectServiceV2.addListener(self)
         udWalletsService.addListener(self)
+        configure()
     }
     
 }
@@ -81,9 +82,9 @@ extension NotificationsService: NotificationsServiceProtocol {
         Task {
             do {
                 try await Push.wallet.register(deviceToken: deviceToken)
-                Debugger.printInfo(topic: .PNs, "DId register token")
+                Debugger.printInfo(topic: .PNs, "Did register device token with WC2")
             } catch {
-                Debugger.printInfo(topic: .PNs, "Failed to register device token wit error: \(error)")
+                Debugger.printInfo(topic: .PNs, "Failed to register device token with WC2 with error: \(error)")
             }
         }
     }
@@ -176,6 +177,18 @@ extension NotificationsService: WalletConnectServiceListener {
 
 // MARK: - Private methods
 fileprivate extension NotificationsService {
+    func configure() {
+        configureWC2PN()
+    }
+    
+    func configureWC2PN() {
+        #if DEBUG
+        Push.configure(environment: .sandbox)
+        #else
+        Push.configure(environment: .production)
+        #endif
+    }
+    
     @discardableResult
     func checkNotificationPayload(_ userInfo: [AnyHashable : Any], receiveState: ExternalEventReceivedState) -> UNNotificationPresentationOptions {
         if let json = userInfo as? [String : Any],

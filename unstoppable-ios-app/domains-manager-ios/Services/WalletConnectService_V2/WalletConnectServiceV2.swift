@@ -16,7 +16,6 @@ import WalletConnectSwift
 import WalletConnectUtils
 import WalletConnectSign
 import WalletConnectEcho
-import WalletConnectPush
 
 import Starscream
 
@@ -190,11 +189,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                                    icons: [String.Links.udLogoPng.urlString])
         
         Pair.configure(metadata: metadata)
-        #if DEBUG
-        Push.configure(environment: .sandbox)
-        #else
-        Push.configure(environment: .production)
-        #endif
     }
     
     private func canSupport( _ proposal: WalletConnectSign.Session.Proposal) -> Bool {
