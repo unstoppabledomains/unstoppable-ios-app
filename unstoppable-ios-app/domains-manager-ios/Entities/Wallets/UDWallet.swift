@@ -630,10 +630,12 @@ enum WalletConnectError: String, LocalizedError, RawValueLocalizable {
     case walletConnectNil = "WalletConnect object is nil"
     case failedHashPersonalMessage = "Failed to hash a message for signing"
     case failedSignPersonalMessage = "WalletConnect failed to sign a message in an external wallet app"
+    case failedEthSignMessage = "WalletConnect failed to eth_sign a message in an external wallet app"
     case failedToFindExternalAppLink
     case failedToFindDomainToConnect
     case failedOpenExternalApp = "Failed to open external wallet app with a deep link"
     case failedToRelayTxToExternalWallet
+    case invalidChainIdentifier
     
     public var errorDescription: String? {
         return rawValue

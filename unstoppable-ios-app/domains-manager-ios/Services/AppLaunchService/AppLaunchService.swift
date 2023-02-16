@@ -223,6 +223,7 @@ private extension AppLaunchService {
         walletConnectServiceV2.setUIHandler(coreAppCoordinator) // wake up
         
         walletConnectClientService.setUIHandler(coreAppCoordinator) // wake up
+        walletConnectServiceV2.setWalletUIHandler(coreAppCoordinator) // wake up
         _ = AppGroupsBridgeFromDataAggregatorService.shared // wake up
     }
     

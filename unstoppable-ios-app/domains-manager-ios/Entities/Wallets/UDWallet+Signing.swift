@@ -113,6 +113,15 @@ extension UDWallet {
     }
     
     func signViaWalletConnectPersonalSign(message: String) async throws -> String {
+        let sessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
+        if  sessions.count > 0 {
+            let response = try await appContext.walletConnectServiceV2.sendPersonalSign(sessions: sessions,
+                                                                                        message: message,
+                                                                                        address: address) {
+                try await launchExternalWallet()
+            }
+            return try appContext.walletConnectServiceV2.handle(response: response)
+        }
         guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
             Debugger.printFailure("Failed to find session for WC", critical: false)
             throw WalletConnectError.noWCSessionFound
@@ -134,26 +143,36 @@ extension UDWallet {
     }
     
     func signViaWalletConnectEthSign(message: String) async throws -> String {
-            guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
-                Debugger.printFailure("Failed to find session for WC", critical: false)
-                throw WalletConnectError.noWCSessionFound
+        let sessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
+        if  sessions.count > 0 {
+            let response = try await appContext.walletConnectServiceV2.sendEthSign(sessions: sessions,
+                                                                                        message: message,
+                                                                                        address: address) {
+                try await launchExternalWallet()
             }
-            
-            return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<String, Swift.Error>) in
-                do {
-                    try appContext.walletConnectClientService.getClient()
-                        .eth_sign(url: session.url, account: self.address, message: message) {
-                            response in
-                            handleResponse(response: response,
-                                           continuation: continuation)
-                        }
-                    Task {
-                        try await launchExternalWallet()
-                    }
-                } catch { continuation.resume(throwing: error) }
-            })
+            return try appContext.walletConnectServiceV2.handle(response: response)
         }
-
+        
+        guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
+            Debugger.printFailure("Failed to find session for WC", critical: false)
+            throw WalletConnectError.noWCSessionFound
+        }
+        
+        return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<String, Swift.Error>) in
+            do {
+                try appContext.walletConnectClientService.getClient()
+                    .eth_sign(url: session.url, account: self.address, message: message) {
+                        response in
+                        handleResponse(response: response,
+                                       continuation: continuation)
+                    }
+                Task {
+                    try await launchExternalWallet()
+                }
+            } catch { continuation.resume(throwing: error) }
+        })
+    }
+    
     private func handleResponse(response: Response,
                                 continuation: CheckedContinuation<String, Swift.Error>) {
         if let error = response.error {
