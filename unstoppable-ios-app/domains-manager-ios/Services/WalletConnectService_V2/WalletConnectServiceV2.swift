@@ -229,7 +229,11 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let clientId  = try? Networking.interactor.getClientId()
         if let sanitizedClientId = clientId?.replacingOccurrences(of: "did:key:", with: "") {
             self.sanitizedClientId = sanitizedClientId
-            Echo.configure(clientId: sanitizedClientId)
+            #if DEBUG
+            Echo.configure(clientId: sanitizedClientId, environment: .sandbox)
+            #else
+            Echo.configure(clientId: sanitizedClientId, environment: .production)
+            #endif
         }
     }
     
@@ -520,14 +524,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             let proposalNamespace = $0.value
             let accounts = Set(proposalNamespace.chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
 
-            let extensions: [SessionNamespace.Extension]? = proposalNamespace.extensions?.map { element in
-                let accounts = Set(element.chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
-                return SessionNamespace.Extension(accounts: accounts, methods: element.methods, events: element.events)
-            }
             let sessionNamespace = SessionNamespace(accounts: accounts,
                                                     methods: proposalNamespace.methods,
-                                                    events: proposalNamespace.events,
-                                                    extensions: extensions)
+                                                    events: proposalNamespace.events)
             sessionNamespaces[caip2Namespace] = sessionNamespace
         }
         DispatchQueue.main.async {
@@ -1174,7 +1173,7 @@ extension WalletConnectServiceV2 {
                 "personal_sign",
                 "eth_sign",
                 "eth_signTypedData"
-            ], events: [], extensions: nil
+            ], events: []
         )] }
     
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
