@@ -72,13 +72,20 @@ typealias SessionV2 = WalletConnectSign.Session
 typealias ResponseV2 = WalletConnectSign.Response
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
-    enum RPCMethod: String {
+    enum RPCMethod: String, CaseIterable {
         case personalSign = "personal_sign"
         case ethSign = "eth_sign"
         case sendTransaction = "eth_sendTransaction"
         case signTransaction = "eth_signTransaction"
         
         var string: String { self.rawValue }
+        
+        init?(rawValue: String) {
+            guard let caseFromString = Self.allCases.filter({$0.rawValue == rawValue}).first else {
+                return nil
+            }
+            self = caseFromString
+        }
     }
         
     struct ConnectionDataV2: Codable, Equatable {
@@ -360,23 +367,23 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         Sign.instance.sessionRequestPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] sessionRequest in
-                Debugger.printInfo(topic: .WallectConnectV2, "Did receive session request, method: \(sessionRequest.method)")
-                if sessionRequest.method == RPCMethod.personalSign.string {
-                    self?.handlePersonalSign(request: sessionRequest)
-                } else
-                if sessionRequest.method == RPCMethod.sendTransaction.string {
-                    self?.handleSendTx(request: sessionRequest)
-                } else
-                if sessionRequest.method == RPCMethod.signTransaction.string {
-                    self?.handleSignTx(request: sessionRequest)
-                } else
-                {self?.uiHandler?.didReceiveUnsupported(sessionRequest.method)
-                    Debugger.printFailure("Unsupported WC_2 method: \(sessionRequest.method)")
-                    Task {
-                        try await Sign.instance.respond(topic: sessionRequest.topic,
-                                                        requestId: sessionRequest.id,
-                                                        response: .error(.internalError))
-                    }
+                let methodString = sessionRequest.method
+                Debugger.printInfo(topic: .WallectConnectV2, "Did receive session request, method: \(methodString)")
+                guard let method = RPCMethod(rawValue: methodString) else {
+                    self?.uiHandler?.didReceiveUnsupported(methodString)
+                        Debugger.printFailure("Unsupported WC_2 method: \(methodString)")
+                        Task {
+                            try await Sign.instance.respond(topic: sessionRequest.topic,
+                                                            requestId: sessionRequest.id,
+                                                            response: .error(.internalError))
+                        }
+                    return
+                }
+                switch method {
+                case .personalSign: self?.handlePersonalSign(request: sessionRequest)
+                case .ethSign: self?.handleEthSign(request: sessionRequest)
+                case .signTransaction: self?.handleSignTx(request: sessionRequest)
+                case .sendTransaction: self?.handleSendTx(request: sessionRequest)
                 }
             }.store(in: &publishers)
         
@@ -640,6 +647,19 @@ extension WalletConnectServiceV2 {
             throw WalletConnectService.Error.invalidWCRequest
         }
         return String(parts[2])
+    }
+    
+    func handleEthSign(request: WalletConnectSign.Request) {
+        Task {
+            do {
+               // TODO: 
+                
+            } catch {
+                Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
+                try await respondWithError(request: request)
+                return
+            }
+        }
     }
     
     func handlePersonalSign(request: WalletConnectSign.Request) {
