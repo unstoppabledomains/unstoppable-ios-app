@@ -652,7 +652,32 @@ extension WalletConnectServiceV2 {
     func handleEthSign(request: WalletConnectSign.Request) {
         Task {
             do {
-               // TODO: 
+                Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(String(describing: request.jsonString))")
+
+                guard let paramsAny = request.params.value as? [String],
+                      paramsAny.count >= 2 else {
+                    try await respondWithError(request: request)
+                    Debugger.printFailure("Invalid parameters", critical: true)
+                    return
+                }
+                let messageString = paramsAny[1]
+                let address =  try parseAddress(from: paramsAny[0])
+                
+                let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
+                                                                                 request: request,
+                                                                                 messageString: messageString)
+                
+                let sig: AnyCodable
+                do {
+                    let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
+                    sig = AnyCodable(sigTyped)
+                } catch {
+                    
+                    Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: true)
+                    try await respondWithError(request: request)
+                    return
+                }
+                try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .response(sig))
                 
             } catch {
                 Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
@@ -685,8 +710,6 @@ extension WalletConnectServiceV2 {
                     let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
                     sig = AnyCodable(sigTyped)
                 } catch {
-                    //TODO: If the error == WalletConnectError.failedOpenExternalApp
-                    // the mobile wallet app may have been deleted
                     
                     Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: true)
                     try await respondWithError(request: request)
