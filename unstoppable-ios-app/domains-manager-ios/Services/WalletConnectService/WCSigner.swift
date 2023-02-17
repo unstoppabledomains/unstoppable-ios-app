@@ -653,7 +653,7 @@ extension UDWallet {
         }
     }
     
-    func signTxViaWalletConnectAsync(session: Session,
+    func signTxViaWalletConnectV1Async(session: Session,
                                      tx: EthereumTransaction,
                                      requestSentCallback: ()->Void) async throws -> Response {
         return try await withCheckedThrowingContinuation { continuation in

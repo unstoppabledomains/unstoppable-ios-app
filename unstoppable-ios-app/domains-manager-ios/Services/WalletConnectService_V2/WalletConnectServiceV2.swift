@@ -733,7 +733,7 @@ extension WalletConnectServiceV2 {
             let udWallet = try detectWallet(by: walletAddress)
             
             guard udWallet.walletState != .externalLinked else {
-                guard let sessionWithExtWallet = appContext.walletConnectClientService.findSessions(by: walletAddress).first else {
+                guard let sessionWithExtWallet = findSessions(by: walletAddress).first else {
                     Debugger.printFailure("Failed to find session for WC", critical: false)
                     uiHandler?.didFailToConnect(with: .noWCSessionFound)
                     try? await respondWithError(request: request)
@@ -741,7 +741,7 @@ extension WalletConnectServiceV2 {
                 }
                 
                 do {
-                    let response = try await udWallet.signTxViaWalletConnectAsync(session: sessionWithExtWallet, tx: transaction)  {
+                    let response = try await signTxViaWalletConnectV2Async(session: sessionWithExtWallet, tx: transaction)  {
                         Task { try? await udWallet.launchExternalWallet() }
                     }
                     if let error = response.error {
@@ -1249,6 +1249,53 @@ extension WalletConnectServiceV2 {
         })
     }
     
+    struct TransactionV2: Codable {
+        let from, to, data, gas: String
+        let gasPrice, value, nonce: String
+        
+        init? (ethTx: EthereumTransaction) {
+            
+            guard let from = ethTx.from?.hex(),
+                  let to = ethTx.to?.hex(),
+                  let gas = ethTx.gas?.hex(),
+                  let gasPrice = ethTx.gasPrice?.hex(),
+                  let value = ethTx.value,
+                  let nonce = ethTx.nonce?.hex() else {
+                return nil
+            }
+            self.from = from
+            self.to = to
+            self.gas = gas
+            self.gasPrice = gasPrice
+            self.value = value.hex()
+            self.nonce = nonce
+
+            self.data = ethTx.data.hex()
+
+        }
+    }
+    
+    func signTxViaWalletConnectV2Async(session: WCConnectedAppsStorageV2.SessionProxy,
+                                       tx: EthereumTransaction,
+                                       onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
+        let settledSessions = Sign.instance.getSessions()
+        let settledSessionsTopics = settledSessions.map { $0.topic }
+        
+        guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
+            throw WalletConnectError.noWCSessionFound
+        }
+        
+        guard let txV2 = TransactionV2(ethTx: tx) else {
+            throw WalletConnectError.failedBuildParams
+        }
+        let params = WalletConnectServiceV2.getParamsSignTx(tx: txV2)
+        return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.signTransaction,
+                              session: sessionSettled,
+                                     requestParams: params,
+                                     onWcRequestSentCallback: onWcRequestSentCallback)
+    }
+
+    
     func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy],
                           message: String,
                           address: HexAddress,
@@ -1296,6 +1343,10 @@ extension WalletConnectServiceV2 {
             Debugger.printFailure("Failed to sign personal message, error: \(error)", critical: false)
             throw error
         }
+    }
+    
+    static func getParamsSignTx(tx: TransactionV2) -> AnyCodable {
+        AnyCodable(tx)
     }
     
     static func getParamsPersonalSign(message: String, address: HexAddress) -> AnyCodable {
