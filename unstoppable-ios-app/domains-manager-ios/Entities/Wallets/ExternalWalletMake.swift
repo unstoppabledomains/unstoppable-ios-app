@@ -92,7 +92,7 @@ extension ExternalWalletMake {
         case .Blockchain: return .cancelCircleIcon
         case .Spot: return .cancelCircleIcon
         case .imToken: return .cancelCircleIcon
-        case .Zelus: return .cancelCircleIcon
+        case .Zelus: return UIImage(named: "walletZelus")!
         case .Omni: return .cancelCircleIcon
         case .Exodus: return .cancelCircleIcon
         case .Zerion: return .cancelCircleIcon
