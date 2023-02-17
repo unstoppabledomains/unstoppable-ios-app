@@ -57,6 +57,11 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         window?.makeKeyAndVisible()
         topInfoWindow?.makeKeyAndVisible()
     }
+    
+    @discardableResult
+    func goBackToPreviousApp() -> Bool {
+        goBackToPreviousAppIfCan()
+    }
 }
 
 // MARK: - DeepLinkServiceListener
@@ -258,6 +263,22 @@ private extension CoreAppCoordinator {
                           duration: 0.3,
                           options: options,
                           animations: { })
+    }
+    
+    func goBackToPreviousAppIfCan() -> Bool {
+        let app = UIApplication.shared
+        let selector = Selector(("sendResponseForDestination:"))
+        if let sysNavIvar = class_getInstanceVariable(UIApplication.self, "_systemNavigationAction"),
+           let actionObject = object_getIvar(app, sysNavIvar) as? NSObject,
+           actionObject.responds(to: selector),
+           let destinations = actionObject.value(forKey: "destinations") as? [Int],
+           destinations.count > 1 {
+            let destination = destinations[destinations.count - 2] // Get previous screen
+            actionObject.perform(selector, with: destination)
+            return true
+        } else {
+            return false
+        }
     }
 }
 

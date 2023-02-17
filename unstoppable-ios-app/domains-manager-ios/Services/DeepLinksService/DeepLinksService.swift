@@ -13,6 +13,7 @@ final class DeepLinksService {
     private var listeners: [DeepLinkListenerHolder] = []
     private let deepLinkPath = "/mobile"
     private let wcScheme = "wc"
+    private var expectingWCURL: URL?
     
     init(externalEventsService: ExternalEventsServiceProtocol) {
         self.externalEventsService = externalEventsService
@@ -47,6 +48,26 @@ extension DeepLinksService: DeepLinksServiceProtocol {
     }
 }
 
+// MARK: - WalletConnectServiceListener
+extension DeepLinksService: WalletConnectServiceListener {
+    func didConnect(to app: PushSubscriberInfo?) {
+        checkExpectingWCURLAndGoBackIfNeeded()
+    }
+    func didDisconnect(from app: PushSubscriberInfo?) { }
+    func didCompleteConnectionAttempt() {
+        checkExpectingWCURLAndGoBackIfNeeded()
+    }
+    
+    private func checkExpectingWCURLAndGoBackIfNeeded() {
+        Task {
+            if expectingWCURL != nil {
+                expectingWCURL = nil
+                await appContext.coreAppCoordinator.goBackToPreviousApp()
+            }
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension DeepLinksService {
     func tryHandleUDDeepLink(_ incomingURL: URL, params: [URLQueryItem], receivedState: ExternalEventReceivedState) -> Bool {
@@ -72,6 +93,7 @@ private extension DeepLinksService {
     func tryHandleWCDeepLink(from components: NSURLComponents, incomingURL: URL, receivedState: ExternalEventReceivedState) -> Bool {
         guard let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) else { return false }
         
+        self.expectingWCURL = walletConnectURL
         appContext.analyticsService.log(event: .didOpenDeepLink,
                                         withParameters: [.deepLink : "walletConnect"])
         handleWCDeepLink(walletConnectURL, receivedState: receivedState)
