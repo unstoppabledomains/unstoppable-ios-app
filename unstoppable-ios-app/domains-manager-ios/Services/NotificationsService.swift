@@ -78,15 +78,7 @@ extension NotificationsService: NotificationsServiceProtocol {
         Debugger.printInfo(topic: .PNs, "Device Token: \(token)")
         UserDefaults.apnsToken = token
         updatePushNotificationsInfo(info)
-        
-        Task {
-            do {
-                try await Push.wallet.register(deviceToken: deviceToken)
-                Debugger.printInfo(topic: .PNs, "Did register device token with WC2")
-            } catch {
-                Debugger.printInfo(topic: .PNs, "Failed to register device token with WC2 with error: \(error)")
-            }
-        }
+        registerForWC2PN(deviceToken: deviceToken)
     }
     
     func updateTokenSubscriptions() {
@@ -187,6 +179,17 @@ fileprivate extension NotificationsService {
         #else
         Push.configure(environment: .production)
         #endif
+    }
+    
+    func registerForWC2PN(deviceToken: Data) {
+        Task {
+            do {
+                try await Push.wallet.register(deviceToken: deviceToken)
+                Debugger.printInfo(topic: .PNs, "Did register device token with WC2")
+            } catch {
+                Debugger.printInfo(topic: .PNs, "Failed to register device token with WC2 with error: \(error)")
+            }
+        }
     }
     
     @discardableResult
