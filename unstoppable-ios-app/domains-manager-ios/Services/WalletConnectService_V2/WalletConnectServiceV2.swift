@@ -514,10 +514,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             let proposalNamespace = $0.value
             let accounts = Set(proposalNamespace.chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
 
-<<<<<<< HEAD
-        
-=======
->>>>>>> development
             let sessionNamespace = SessionNamespace(accounts: accounts,
                                                     methods: proposalNamespace.methods,
                                                     events: proposalNamespace.events)
