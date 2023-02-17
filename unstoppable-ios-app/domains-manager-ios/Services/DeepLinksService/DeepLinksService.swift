@@ -11,6 +11,8 @@ final class DeepLinksService {
         
     private let externalEventsService: ExternalEventsServiceProtocol
     private var listeners: [DeepLinkListenerHolder] = []
+    private let deepLinkPath = "/mobile"
+    private let wcScheme = "wc"
     
     init(externalEventsService: ExternalEventsServiceProtocol) {
         self.externalEventsService = externalEventsService
@@ -24,13 +26,13 @@ extension DeepLinksService: DeepLinksServiceProtocol {
         guard let components = NSURLComponents(url: incomingURL, resolvingAgainstBaseURL: true) else { return }
         
         if let path = components.path,
-           path == "/mobile",
+           path == deepLinkPath,
            let params = components.queryItems {
-            handleUDDeepLink(incomingURL, params: params, receivedState: receivedState)
-        } else if let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) {
-            appContext.analyticsService.log(event: .didOpenDeepLink,
-                                        withParameters: [.deepLink : "walletConnect"])
-            handleWCDeepLink(walletConnectURL, receivedState: receivedState)
+            if !tryHandleUDDeepLink(incomingURL, params: params, receivedState: receivedState) {
+                tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
+            }
+        } else  {
+            tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
         }
     }
     
@@ -47,11 +49,11 @@ extension DeepLinksService: DeepLinksServiceProtocol {
 
 // MARK: - Private methods
 private extension DeepLinksService {
-    func handleUDDeepLink(_ incomingURL: URL, params: [URLQueryItem], receivedState: ExternalEventReceivedState) {
+    func tryHandleUDDeepLink(_ incomingURL: URL, params: [URLQueryItem], receivedState: ExternalEventReceivedState) -> Bool {
         Debugger.printInfo(topic: .UniversalLink, "Handling Universal Link \(incomingURL.absoluteURL)")
         
         guard let operationString = findValue(in: params, forKey: .operation),
-              let operation = DeepLinkOperation (operationString) else { return }
+              let operation = DeepLinkOperation (operationString) else { return false }
         
         appContext.analyticsService.log(event: .didOpenDeepLink,
                                     withParameters: [.deepLink : operationString])
@@ -60,14 +62,26 @@ private extension DeepLinksService {
         case .mintDomains:
             handleMintDomainsLink(with: params, receivedState: receivedState)
         case .importWallets:
-            return
+            Void()
         }
+        
+        return true
+    }
+    
+    @discardableResult
+    func tryHandleWCDeepLink(from components: NSURLComponents, incomingURL: URL, receivedState: ExternalEventReceivedState) -> Bool {
+        guard let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) else { return false }
+        
+        appContext.analyticsService.log(event: .didOpenDeepLink,
+                                        withParameters: [.deepLink : "walletConnect"])
+        handleWCDeepLink(walletConnectURL, receivedState: receivedState)
+        return true
     }
     
     func parseWalletConnectURL(from components: NSURLComponents, in url: URL) -> URL? {
-        if components.scheme == "wc" {
+        if components.scheme == wcScheme {
             return url
-        } else if components.path == "/mobile/wc",
+        } else if (components.path == deepLinkPath) || (components.path == (deepLinkPath + "/" + wcScheme)),
                   let params = components.queryItems,
                   let uri = findValue(in: params, forKey: .uri),
                   let wcURL = URL(string: uri) {
