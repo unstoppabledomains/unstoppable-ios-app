@@ -78,6 +78,9 @@ final class GeneralAppContext: AppContextProtocol {
         
         deepLinksService.addListener(coreAppCoordinator)
         
+        walletConnectService.addListener(deepLinksService)
+        walletConnectServiceV2.addListener(deepLinksService)
+        
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")
         Task {

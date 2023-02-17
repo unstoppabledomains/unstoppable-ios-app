@@ -13,5 +13,7 @@ protocol CoreAppCoordinatorProtocol: WalletConnectUIHandler, WalletConnectClient
     func showOnboarding(_ flow: OnboardingNavigationController.OnboardingFlow)
     func showHome(mintingState: DomainsCollectionMintingState)
     func showAppUpdateRequired()
-    func setKeyWindow() 
+    func setKeyWindow()
+    @discardableResult
+    func goBackToPreviousApp() -> Bool
 }
