@@ -10,7 +10,8 @@ import UIKit
 @MainActor
 protocol TransactionInProgressViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: TransactionInProgressSnapshot, animated: Bool)
-    func setViewTransactionButtonHidden(_ isHidden: Bool)
+    func setActionButtonStyle(_ style: TransactionInProgressViewController.ActionButtonStyle)
+    func setActionButtonHidden(_ isHidden: Bool)
 }
 
 typealias TransactionInProgressDataSource = UICollectionViewDiffableDataSource<TransactionInProgressViewController.Section, TransactionInProgressViewController.Item>
@@ -30,8 +31,9 @@ final class TransactionInProgressViewController: BaseViewController {
                                                         ReverseResolutionTransactionInProgressCardCell.self] }
     var presenter: TransactionInProgressViewPresenterProtocol!
     override var isNavBarHidden: Bool { presenter.isNavBarHidden }
-    override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
+    override var navBackStyle: BaseViewController.NavBackIconStyle { presenter.navBackStyle }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
+    override var scrollableContentYOffset: CGFloat? { 14 }
     private var dataSource: TransactionInProgressDataSource!
     
     override func viewDidLoad() {
@@ -47,11 +49,15 @@ final class TransactionInProgressViewController: BaseViewController {
 extension TransactionInProgressViewController: TransactionInProgressViewProtocol {
     func applySnapshot(_ snapshot: TransactionInProgressSnapshot, animated: Bool) {
         dataSource.apply(snapshot, animatingDifferences: animated)
-        collectionView.isScrollEnabled = collectionView.contentSize.height > collectionView.bounds.height
+        collectionView.isScrollEnabled = collectionView.contentSize.height > (collectionView.bounds.height - skipButtonContainerView.bounds.height - collectionView.contentInset.top)
     }
 
-    func setViewTransactionButtonHidden(_ isHidden: Bool) {
-        viewTransactionButton.isHidden = isHidden
+    func setActionButtonStyle(_ style: ActionButtonStyle) {
+        viewTransactionButton.setTitle(style.title, image: style.icon)
+    }
+    
+    func setActionButtonHidden(_ isHidden: Bool) {
+        skipButtonContainerView.isHidden = isHidden
     }
 }
 
@@ -61,6 +67,10 @@ extension TransactionInProgressViewController: UICollectionViewDelegate {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
         
         presenter.didSelectItem(item)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        cNavigationController?.underlyingScrollViewDidScroll(scrollView)
     }
 }
 
@@ -81,13 +91,13 @@ private extension TransactionInProgressViewController {
     
     func localizeContent() {
         viewTransactionButton.imageLayout = .trailing
-        viewTransactionButton.setTitle(String.Constants.viewTransaction.localized(), image: .arrowTopRight)
     }
     
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
         collectionView.contentInset.bottom = Constants.scrollableContentBottomOffset + viewTransactionButton.bounds.height
+        collectionView.contentInset.top = 54
         configureDataSource()
     }
     
@@ -98,10 +108,10 @@ private extension TransactionInProgressViewController {
     func configureDataSource() {
         dataSource = TransactionInProgressDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
             switch item {
-            case .card(let domain):
+            case .card(let domainName):
                 let cell = collectionView.dequeueCellOfType(MintDomainsConfigurationCardCell.self, forIndexPath: indexPath)
                 
-                cell.setWith(domain: domain, height: deviceSize == .i4Inch ? 248 : 292, shouldAdjustCardWidth: true)
+                cell.setWith(domainName: domainName)
                 collectionView.isScrollEnabled = false
                 return cell
             case .reverseResolutionCard(let domain, let walletInfo):
@@ -110,10 +120,16 @@ private extension TransactionInProgressViewController {
                 cell.setWith(domain: domain, walletInfo: walletInfo)
                 collectionView.isScrollEnabled = false
                 return cell
-            case .list(let domain, let isPrimary):
+            case .firstMintingList(let domain, let isSelectable):
                 let cell = collectionView.dequeueCellOfType(MintingDomainListCell.self, forIndexPath: indexPath)
                 
-                cell.setWith(domain: domain, isPrimary: isPrimary)
+                cell.setWith(domain: domain, isSelectable: isSelectable)
+                collectionView.isScrollEnabled = true
+                return cell
+            case .mintingList(let domain, let isSelectable):
+                let cell = collectionView.dequeueCellOfType(MintingDomainListCell.self, forIndexPath: indexPath)
+                
+                cell.setWith(domain: domain, isSelectable: isSelectable)
                 collectionView.isScrollEnabled = true
                 return cell
             case .header(let header):
@@ -142,7 +158,7 @@ private extension TransactionInProgressViewController {
         let spacing: CGFloat = UICollectionView.SideOffset
         
         let config = UICollectionViewCompositionalLayoutConfiguration()
-        config.interSectionSpacing = spacing
+        config.interSectionSpacing = spacing * 2
         
         let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self]
             (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
@@ -183,8 +199,9 @@ extension TransactionInProgressViewController {
     enum Item: Hashable {
         case header(_ headerDescription: HeaderDescription)
         case card(domain: String)
-        case reverseResolutionCard(domain: DomainItem, walletInfo: WalletDisplayInfo)
-        case list(domain: String, isPrimary: Bool)
+        case reverseResolutionCard(domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo)
+        case firstMintingList(domain: String, isSelectable: Bool)
+        case mintingList(domain: DomainDisplayInfo, isSelectable: Bool)
     }
     
     struct HeaderDescription: Hashable {
@@ -226,6 +243,30 @@ extension TransactionInProgressViewController {
                 }
             }
             
+        }
+    }
+}
+
+extension TransactionInProgressViewController {
+    enum ActionButtonStyle {
+        case viewTransaction, goHome
+        
+        var title: String {
+            switch self {
+            case .viewTransaction:
+                return String.Constants.viewTransaction.localized()
+            case .goHome:
+                return String.Constants.goToHomeScreen.localized()
+            }
+        }
+        
+        var icon: UIImage? {
+            switch self {
+            case .viewTransaction:
+                return .arrowTopRight
+            case .goHome:
+                return nil
+            }
         }
     }
 }

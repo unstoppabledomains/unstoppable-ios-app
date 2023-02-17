@@ -70,6 +70,8 @@ extension GIFAnimationsService {
         do {
             let image = try await animatedImageWithSource(source, maskingType: maskingType)
             return image
+        } catch GIFPreparationError.oneOrLessFrames {
+            return nil /// Don't log this error
         } catch {
             Debugger.printFailure("Failed to create GIF image: \(error.localizedDescription)", critical: false)
             return nil
@@ -174,6 +176,7 @@ private extension GIFAnimationsService {
         if count <= 1 {
             throw GIFPreparationError.oneOrLessFrames
         }
+        Debugger.printInfo(topic: .UI, "Extracting \(count) images for gif")
         guard let cgImage = cgContext.makeImage() else {
             throw GIFPreparationError.failedToMakeCGImage
         }
@@ -196,7 +199,6 @@ private extension GIFAnimationsService {
                           let maskedImage = self.createCGImage(image, withMaskingType: maskingType),
                           let resizedImage = self.resizedImage(maskedImage,
                                                                scale: self.scaleForImage(image),
-                                                               aspectRatio: 1,
                                                                in: sharedContext) else {
                         throw GIFPreparationError.failedToGetImageFromSource
                     }
@@ -235,13 +237,15 @@ private extension GIFAnimationsService {
         return scale
     }
     
-    func resizedImage(_ cgImage: CGImage, scale: CGFloat, aspectRatio: CGFloat, in sharedContext: CIContext) -> CGImage? {
-        autoreleasepool {
+    func resizedImage(_ cgImage: CGImage, scale: CGFloat, in sharedContext: CIContext) -> CGImage? {
+        guard scale != 1 else { return cgImage }
+        
+        return autoreleasepool {
             let image = CIImage(cgImage: cgImage)
             let filter = CIFilter(name: "CILanczosScaleTransform")
             filter?.setValue(image, forKey: kCIInputImageKey)
             filter?.setValue(scale, forKey: kCIInputScaleKey)
-            filter?.setValue(aspectRatio, forKey: kCIInputAspectRatioKey)
+            filter?.setValue(1, forKey: kCIInputAspectRatioKey)
             
             guard let outputCIImage = filter?.outputImage,
                   let outputCGImage = sharedContext.createCGImage(outputCIImage,
@@ -259,9 +263,7 @@ private extension GIFAnimationsService {
         
         var value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyGIFDictionary, to: UnsafeRawPointer.self))
         if value == nil {
-            if #available(iOS 14.0, *) {
-                value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyWebPDictionary, to: UnsafeRawPointer.self))
-            }
+            value = CFDictionaryGetValue(cfProperties, unsafeBitCast(kCGImagePropertyWebPDictionary, to: UnsafeRawPointer.self))
         }
         
         guard let value else { throw GIFPreparationError.failedToCastDelay }

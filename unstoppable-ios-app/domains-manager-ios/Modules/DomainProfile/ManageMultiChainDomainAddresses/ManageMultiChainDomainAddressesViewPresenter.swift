@@ -35,7 +35,7 @@ final class ManageMultiChainDomainAddressesViewPresenter: ViewAnalyticsLogger {
         self.callback = callback
     }
 }
-
+ 
 // MARK: - ManageMultiChainDomainAddressesViewPresenterProtocol
 extension ManageMultiChainDomainAddressesViewPresenter: ManageMultiChainDomainAddressesViewPresenterProtocol {
     var record: String { originalRecordModel.primaryRecord?.coin.ticker ?? "Unknown" }

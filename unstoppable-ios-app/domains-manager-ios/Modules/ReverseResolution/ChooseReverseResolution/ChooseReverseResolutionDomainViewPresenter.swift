@@ -23,8 +23,8 @@ class ChooseReverseResolutionDomainViewPresenter {
     private let dataAggregatorService: DataAggregatorServiceProtocol
     var title: String { "" }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
-    private(set) var walletDomains = [DomainItem]()
-    var selectedDomain: DomainItem?
+    private(set) var walletDomains = [DomainDisplayInfo]()
+    var selectedDomain: DomainDisplayInfo?
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: ChooseReverseResolutionDomainViewProtocol,
@@ -73,7 +73,7 @@ extension ChooseReverseResolutionDomainViewPresenter: ChooseReverseResolutionDom
 // MARK: - Private functions
 private extension ChooseReverseResolutionDomainViewPresenter {
     func loadDomains() async {
-        let domains = await dataAggregatorService.getDomains().interactableItems()
+        let domains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
         walletDomains = domains.filter({ $0.isOwned(by: wallet ) })
     }
 }

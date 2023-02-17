@@ -38,11 +38,14 @@ class EnterEmailVerificationCodeViewPresenter {
         Task {
             await MainActor.run {
                 view?.setWith(email: email)
-                secondsLeftToResend = Int(resendInterval)
-                startResendTimer()
-            }
-            if let preFilledCode = self.preFilledCode {
-                await view?.setCode(preFilledCode)
+                
+                if let preFilledCode = self.preFilledCode {
+                    view?.setCode(preFilledCode)
+                    secondsLeftToResend = -1
+                    checkResendStatus()
+                } else {
+                    startResendTimer()
+                }
             }
         }
     }
@@ -95,7 +98,6 @@ private extension EnterEmailVerificationCodeViewPresenter {
         })
     }
     
-    @MainActor
     func checkResendStatus() {
         Task {
             await MainActor.run {

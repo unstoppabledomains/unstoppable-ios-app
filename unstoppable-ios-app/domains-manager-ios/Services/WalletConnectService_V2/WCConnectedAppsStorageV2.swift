@@ -30,7 +30,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         case failedToFindWallet
     }
     
-    struct SessionProxy: Codable {
+    struct SessionProxy: Codable, Equatable {
         public let topic: String
         public let peer: AppMetadata
         public let namespaces: [String: SessionNamespace]
@@ -41,6 +41,10 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
             self.peer = session.peer
             self.namespaces = session.namespaces
             self.expiryDate = session.expiryDate
+        }
+        
+        func getWalletAddresses() -> [HexAddress] {
+            Array(namespaces.values).map({ Array($0.accounts).map({$0.address}) }).flatMap({ $0 })
         }
     }
     
@@ -131,6 +135,18 @@ protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
     var connectionStartDate: Date? { get }
         
     init(from appV2: WCConnectedAppsStorageV2.ConnectedApp)
+}
+
+struct UnifiedConnectedAppInfoHolder: Hashable {
+    let app: any UnifiedConnectAppInfoProtocol
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.app.isEqual(rhs.app)
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(app)
+    }
 }
 
 extension UnifiedConnectAppInfoProtocol {

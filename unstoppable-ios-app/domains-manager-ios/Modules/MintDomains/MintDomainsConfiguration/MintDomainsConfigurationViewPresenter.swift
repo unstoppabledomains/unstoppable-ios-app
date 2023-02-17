@@ -22,7 +22,7 @@ final class MintDomainsConfigurationViewPresenter: ViewAnalyticsLogger {
     private weak var mintDomainsFlowManager: MintDomainsFlowManager?
     private let unMintedDomains: [String]
     private var unMintedAvailableDomains: [String] = []
-    private let mintedDomains: [DomainItem]
+    private let mintedDomains: [DomainDisplayInfo]
     private let walletsService: UDWalletsServiceProtocol
     private var wallets = [UDWallet]()
     private var selectedWallet: UDWallet?
@@ -30,12 +30,12 @@ final class MintDomainsConfigurationViewPresenter: ViewAnalyticsLogger {
     private var shouldUseAsPrimary = false
     private let mintDomainsAmountLimit = 50
     var progress: Double? { 0.75 }
-    var title: String { String.Constants.pluralMintDomains.localized(unMintedDomains.count) }
+    var title: String { String.Constants.pluralMoveDomains.localized(unMintedDomains.count) }
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
 
     init(view: MintDomainsConfigurationViewProtocol,
          unMintedDomains: [String],
-         mintedDomains: [DomainItem],
+         mintedDomains: [DomainDisplayInfo],
          mintDomainsFlowManager: MintDomainsFlowManager,
          walletsService: UDWalletsServiceProtocol) {
         self.view = view
@@ -83,7 +83,7 @@ extension MintDomainsConfigurationViewPresenter: MintDomainsConfigurationViewPre
                 await showDomainsToSelect()
                 await updateMintButton()
                 await checkLimitReached()
-            case .domainCard, .setPrimary, .header:
+            case .domainCard, .header:
                 return
             }
         }
@@ -113,7 +113,7 @@ extension MintDomainsConfigurationViewPresenter: MintDomainsConfigurationViewPre
                 if unMintedDomains.count > 1 {
                     try await mintDomainsFlowManager?.handle(action: .didSelectDomainsToMint(Array(selectedDomains), wallet: wallet))
                 } else if let domain = unMintedAvailableDomains.first {
-                    try await mintDomainsFlowManager?.handle(action: .didSelectDomainToMint(domain, wallet: wallet, isPrimary: shouldUseAsPrimary))
+                    try await mintDomainsFlowManager?.handle(action: .didSelectDomainsToMint([domain], wallet: wallet))
                 }
                 await view?.setLoadingIndicator(active: false)
             } catch {
@@ -160,17 +160,6 @@ private extension MintDomainsConfigurationViewPresenter {
         } else {
             snapshot.appendSections([.domainCard])
             snapshot.appendItems([.domainCard(unMintedDomains[0])])
-            snapshot.appendItems([.setPrimary(isSelected: shouldUseAsPrimary,
-                                              isEnabled: alreadyHasDomains,
-                                              infoPressedCallback: { [weak self] in
-                self?.logButtonPressedAnalyticEvents(button: .primaryDomainInfo)
-                self?.showPrimaryDomainInfo()
-            },
-                                              valueChangedCallback: { [weak self] isOn in
-                self?.logButtonPressedAnalyticEvents(button: .setAsPrimary,
-                                                     parameters: [.isOn : String(isOn)])
-                self?.setShouldUseAsPrimary(isOn)
-            })])
         }
         
         await view?.applySnapshot(snapshot, animated: animated)
@@ -227,14 +216,6 @@ private extension MintDomainsConfigurationViewPresenter {
             await showDomainsToSelect()
             await updateMintButton()
             await checkLimitReached()
-        }
-    }
-    
-    func showPrimaryDomainInfo() {
-        Task {
-            guard let view = self.view else { return }
-            
-            await appContext.pullUpViewService.showWhatIsPrimaryDomainInfoPullUp(in: view)
         }
     }
     

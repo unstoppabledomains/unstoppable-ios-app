@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftUI
+import MobileCoreServices
 
 typealias DomainProfileTopInfoButton = DomainProfileViewController.ItemTopInfoData.Button
 typealias DomainProfileTopInfoButtonCallback = (DomainProfileTopInfoButton)->()
@@ -20,27 +21,31 @@ final class DomainProfileTopInfoCell: UICollectionViewCell {
     @IBOutlet private weak var domainAvatarImageView: UIImageView!
     @IBOutlet private weak var avatarButton: GhostTertiaryWhiteButton!
     @IBOutlet private weak var domainNameLabel: UILabel!
-    @IBOutlet private weak var domainNameIndicatorImageView: UIImageView!
     @IBOutlet private weak var qrCodeButton: GhostTertiaryWhiteButton!
     @IBOutlet private weak var publicProfileButton: GhostTertiaryWhiteButton!
     @IBOutlet private weak var bannerTopConstraint: NSLayoutConstraint!
     
     private var avatarStyle: DomainAvatarImageView.AvatarStyle = .circle
     private var buttonPressedCallback: DomainProfileTopInfoButtonCallback?
-    private var bannerImageActions: [DomainProfileTopInfoSection.ProfileImageAction] = []
-    private var avatarImageActions: [DomainProfileTopInfoSection.ProfileImageAction] = []
+    private var avatarDropCallback: ImageDropCallback?
+    private var bannerDropCallback: ImageDropCallback?
+    private let dropItemIdentifier = kUTTypeImage as String
 
     override func awakeFromNib() {
         super.awakeFromNib()
         
         avatarButton.setTitle(nil, image: .avatarsIcon32)
-        domainNameIndicatorImageView.image = .polygonIcon
         bannerButton.setTitle(String.Constants.addCover.localized(), image: .framesIcon20)
         qrCodeButton.setTitle(String.Constants.qrCode.localized(), image: .scanQRIcon20)
         publicProfileButton.setTitle(String.Constants.publicProfile.localized(), image: .arrowTopRight)
-        domainNameIndicatorImageView.isHidden = true
         domainNameLabel.numberOfLines = 2
         domainNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapDomainNameLabel)))
+        
+        
+        let avatarDropInteraction = UIDropInteraction(delegate: self)
+        avatarButton.addInteraction(avatarDropInteraction)
+        let bannerDropInteraction = UIDropInteraction(delegate: self)
+        bannerButton.addInteraction(bannerDropInteraction)
     }
     
     override func layoutSubviews() {
@@ -54,23 +59,59 @@ final class DomainProfileTopInfoCell: UICollectionViewCell {
 
 }
 
+// MARK: - UIDropInteractionDelegate
+extension DomainProfileTopInfoCell: UIDropInteractionDelegate {
+    func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
+        session.hasItemsConforming(toTypeIdentifiers: [dropItemIdentifier]) && session.items.count == 1
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+        UIDropProposal(operation: .copy)
+    }
+    
+    func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        guard let item = session.items.first else { return }
+        
+        let isAvatar = interaction.view == avatarButton
+        
+        item.itemProvider.loadInPlaceFileRepresentation(forTypeIdentifier: dropItemIdentifier,
+                                                        completionHandler: { [weak self] (url, isInplaceOrCopy, error) in
+            Task {
+                if let url = url,
+                   let data = try? Data(contentsOf: url),
+                   let image = (await UIImage.createWith(anyData: data)) {
+                    self?.didDropImage(image, isAvatar: isAvatar)
+                } else {
+                    session.loadObjects(ofClass: UIImage.self) { [weak self] imageItems in
+                        guard let images = imageItems as? [UIImage],
+                              let image = images.first else { return }
+                        self?.didDropImage(image, isAvatar: isAvatar)
+                    }
+                }
+            }
+        })
+    }
+    
+    private func didDropImage(_ image: UIImage, isAvatar: Bool) {
+        if isAvatar {
+            avatarDropCallback?(image)
+        } else {
+            bannerDropCallback?(image)
+        }
+    }
+}
+
 // MARK: - Open methods
 extension DomainProfileTopInfoCell {
     func set(with data: DomainProfileViewController.ItemTopInfoData) {
         self.buttonPressedCallback = data.buttonPressedCallback
+        self.avatarDropCallback = data.avatarDropCallback
+        self.bannerDropCallback = data.bannerDropCallback
         let domain = data.domain
         domainNameLabel.setAttributedTextWith(text: domain.name,
                                               font: .currentFont(withSize: 22, weight: .bold),
                                               textColor: .white,
                                               lineBreakMode: .byTruncatingTail)
-        switch domain.blockchain {
-        case .Matic:
-            domainNameIndicatorImageView.image = .polygonIcon
-        case .Ethereum:
-            domainNameIndicatorImageView.image = .ethereumIcon
-        case .Zilliqa, .none:
-            Debugger.printFailure("Unsupported blockhain", critical: true)
-        }
         
         switch data.avatarImageState {
         case .untouched(let source):
@@ -101,28 +142,23 @@ extension DomainProfileTopInfoCell {
         bannerButton.isUserInteractionEnabled = data.isEnabled
         avatarButton.isUserInteractionEnabled = data.isEnabled
         
-        if #available(iOS 14.0, *) {
-            let bannerMenuElements = data.bannerImageActions.compactMap({ menuElement(for: $0) })
-            let bannerMenu = UIMenu(title: "", children: bannerMenuElements)
-            bannerButton.menu = bannerMenu
-            bannerButton.showsMenuAsPrimaryAction = true
-            bannerButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.buttonPressedCallback?(.banner)
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-            
-            let avatarMenuElements = data.avatarImageActions.compactMap({ menuElement(for: $0) })
-            let avatarMenu = UIMenu(title: avatarsActionMenuTitle, children: avatarMenuElements)
-            avatarButton.menu = avatarMenu
-            avatarButton.showsMenuAsPrimaryAction = true
-            avatarButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.buttonPressedCallback?(.avatar)
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-        } else {
-            self.bannerImageActions = data.bannerImageActions
-            self.avatarImageActions = data.avatarImageActions
-        }
+        let bannerMenuElements = data.bannerImageActions.compactMap({ menuElement(for: $0) })
+        let bannerMenu = UIMenu(title: "", children: bannerMenuElements)
+        bannerButton.menu = bannerMenu
+        bannerButton.showsMenuAsPrimaryAction = true
+        bannerButton.addAction(UIAction(handler: { [weak self] _ in
+            self?.buttonPressedCallback?(.banner)
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
+        
+        let avatarMenuElements = data.avatarImageActions.compactMap({ menuElement(for: $0) })
+        let avatarMenu = UIMenu(title: avatarsActionMenuTitle, children: avatarMenuElements)
+        avatarButton.menu = avatarMenu
+        avatarButton.showsMenuAsPrimaryAction = true
+        avatarButton.addAction(UIAction(handler: { [weak self] _ in
+            self?.buttonPressedCallback?(.avatar)
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
     }
     
     func setImageFor(state: DomainProfileTopInfoData.ImageState,
@@ -170,16 +206,6 @@ extension DomainProfileTopInfoCell: ScrollViewOffsetListener {
 
 // MARK: - Actions
 private extension DomainProfileTopInfoCell {
-    @IBAction func bannerButtonPressed(_ sender: Any) {
-        buttonPressedCallback?(.banner)
-        showMenuBridgeView(in: bannerButton, withActions: bannerImageActions, title: "")
-    }
-    
-    @IBAction func avatarButtonPressed(_ sender: Any) {
-        buttonPressedCallback?(.avatar)
-        showMenuBridgeView(in: avatarButton, withActions: avatarImageActions, title: avatarsActionMenuTitle)
-    }
-    
     @IBAction func qrCodeButtonPressed(_ sender: Any) {
         buttonPressedCallback?(.qrCode)
     }
@@ -200,16 +226,6 @@ private extension DomainProfileTopInfoCell {
         ""
     }
     
-    func showMenuBridgeView(in button: UIButton, withActions imageActions: [DomainProfileTopInfoSection.ProfileImageAction], title: String) {
-        guard let view = self.findViewController()?.view else { return }
-        
-        let actions: [UIActionBridgeItem] = imageActions.map({ action in uiActionBridgeItem(for: action) }).reduce(into: [UIActionBridgeItem]()) { partialResult, result in
-            partialResult += result
-        }
-        let popoverViewController = UIMenuBridgeView.instance(with: title, actions: actions)
-        popoverViewController.show(in: view, sourceView: button)
-    }
-    
     func menuElement(for imageAction: DomainProfileTopInfoSection.ProfileImageAction) -> UIMenuElement {
         var attributes: UIMenuElement.Attributes = imageAction.isEnabled ? [] : [.disabled]
         switch imageAction {
@@ -223,17 +239,6 @@ private extension DomainProfileTopInfoCell {
             attributes.insert(.destructive)
             let remove = UIAction(title: imageAction.title, image: imageAction.icon, identifier: .init(UUID().uuidString), attributes: attributes, handler: { _ in callback() })
             return UIMenu(title: "", options: .displayInline, children: [remove])
-        }
-    }
-    
-    func uiActionBridgeItem(for imageAction: DomainProfileTopInfoSection.ProfileImageAction) -> [UIActionBridgeItem] {
-        var attributes: [UIActionBridgeItem.Attributes] = imageAction.isEnabled ? [] : [.disabled]
-        switch imageAction {
-        case .upload(let callback), .change(_, _, let callback), .view(_, let callback), .setAccess(_, let callback), .changeNFT(let callback):
-            return [UIActionBridgeItem(title: imageAction.title, image: imageAction.icon, attributes: attributes, handler: {  callback() })]
-        case .remove(_, _, let callback):
-            attributes.append(.destructive)
-            return [UIActionBridgeItem(title: imageAction.title, image: imageAction.icon, attributes: attributes, handler: { callback() })]
         }
     }
 }
@@ -302,22 +307,25 @@ private extension DomainProfileTopInfoCell {
     }
 }
 
-struct DomainProfileTopInfoCell_Previews: PreviewProvider {
-    
-    static var previews: some View {
-        UICollectionViewCellPreview(cellType: DomainProfileTopInfoCell.self, height: 234) { cell in
-            var domainItem = DomainItem(name: "olegkuhkjdfsjhfdkhflakjhdfi748723642in.coin", blockchain: .Ethereum)
-            cell.set(with: .init(id: UUID(),
-                                 domain: domainItem,
-                                 isEnabled: true,
-                                 avatarImageState: .untouched(source: .imageURL(URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/user/146/387d4afa-2cc5-483f-ba22-003334161d17.jpeg")!, imageType: .offChain)),
-                                 bannerImageState: .untouched(source: nil),
-                                 buttonPressedCallback: { _ in },
-                                 bannerImageActions: [.change(isReplacingNFT: false, isUpdatingRecords: false, callback: { }), .remove(isRemovingNFT: false, isUpdatingRecords: false, callback: { })],
-                                 avatarImageActions: [.upload(callback: { })]))
-            cell.backgroundColor = .blue
-        }
-        .frame(width: 390, height: 300)
-    }
-    
-}
+
+//struct DomainProfileTopInfoCell_Previews: PreviewProvider {
+//
+//    static var previews: some View {
+//        UICollectionViewCellPreview(cellType: DomainProfileTopInfoCell.self, height: 234) { cell in
+//            var domainItem = DomainItem(name: "olegkuhkjdfsjhfdkhflakjhdfi748723642in.coin", blockchain: .Ethereum)
+//            cell.set(with: .init(id: UUID(),
+//                                 domain: domainItem,
+//                                 isEnabled: true,
+//                                 avatarImageState: .untouched(source: .imageURL(URL(string: "https://storage.googleapis.com/unstoppable-client-assets/images/user/146/387d4afa-2cc5-483f-ba22-003334161d17.jpeg")!, imageType: .offChain)),
+//                                 bannerImageState: .untouched(source: nil),
+//                                 buttonPressedCallback: { _ in },
+//                                 bannerImageActions: [.change(isReplacingNFT: false, isUpdatingRecords: false, callback: { }), .remove(isRemovingNFT: false, isUpdatingRecords: false, callback: { })],
+//                                 avatarImageActions: [.upload(callback: { })],
+//                                 avatarDropCallback: { _ in },
+//                                 bannerDropCallback: { _ in }))
+//            cell.backgroundColor = .blue
+//        }
+//        .frame(width: 390, height: 300)
+//    }
+//
+//}

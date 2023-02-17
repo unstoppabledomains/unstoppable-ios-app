@@ -9,7 +9,7 @@ import UIKit
 
 final class TertiaryButton: UDConfigurableButton {
 
-    override var udConfiguration: UDConfigurableButton.UDConfiguration { .tertiaryButtonConfiguration }
+    override var udConfiguration: UDButtonConfiguration { .mediumRaisedTertiaryButtonConfiguration }
 
 }
 

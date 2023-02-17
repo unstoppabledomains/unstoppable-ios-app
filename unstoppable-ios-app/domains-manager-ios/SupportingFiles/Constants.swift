@@ -10,7 +10,7 @@ import UIKit
 
 typealias EmptyCallback = ()->()
 typealias EmptyAsyncCallback = @Sendable ()->()
-
+ 
 struct Constants {
     
     #if DEBUG
@@ -38,8 +38,18 @@ struct Constants {
     static let downloadedImageMaxSize: CGFloat = 512
     static let downloadedIconMaxSize: CGFloat = 128
     static let defaultUNSReleaseVersion = "v0.6.19"
+    static let defaultInitials: String = "N/A"
     static let appStoreAppId = "1544748602"
     static let refreshDomainBadgesInterval: TimeInterval = 60 * 3 // 3 min
+    
+    #if DEBUG
+    static let isTestingMinting: Bool = false
+    static let testMintingDomainsCount = 10
+    #else
+    static let isTestingMinting: Bool = false
+    static let testMintingDomainsCount = 0
+    #endif
+
 }
 
 let currencyNumberFormatter: NumberFormatter = {

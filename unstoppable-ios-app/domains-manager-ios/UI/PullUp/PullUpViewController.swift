@@ -69,6 +69,12 @@ final class PullUpViewController: UIViewController {
     }
     
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        if presentedViewController != nil {
+            // When top controller willing to dismiss
+            super.dismiss(animated: flag, completion: completion)
+            return
+        }
+
         log(event: .pullUpClosed)
         if isPresentedAsPageSheet {
             dismiss(completion: completion, isCancelled: pullUpView.isClosingDown, animated: true)

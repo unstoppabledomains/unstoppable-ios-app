@@ -18,7 +18,6 @@ final class CollectionDashesHeaderReusableView: CollectionGenericContentViewReus
     
     override func additionalSetup() {
         contentView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        contentViewCenterYConstraint.isActive = false
         
         bottomConstraint = contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
         topConstraint = contentView.topAnchor.constraint(equalTo: topAnchor)
@@ -34,7 +33,13 @@ final class CollectionDashesHeaderReusableView: CollectionGenericContentViewReus
             alignTop()
         case .bottom:
             alignBottom()
+        case .center:
+            alignCenter()
         }
+    }
+    
+    func setDashesConfiguration(_ configuration: DashesView.Configuration) {
+        contentView.setConfiguration(configuration)
     }
 }
 
@@ -43,16 +48,24 @@ private extension CollectionDashesHeaderReusableView {
     func alignBottom() {
         topConstraint?.isActive = false
         bottomConstraint?.isActive = true
+        contentViewCenterYConstraint.isActive = false
     }
     
     func alignTop() {
         bottomConstraint?.isActive = false
         topConstraint?.isActive = true
+        contentViewCenterYConstraint.isActive = false
+    }
+    
+    func alignCenter() {
+        bottomConstraint?.isActive = false
+        topConstraint?.isActive = false
+        contentViewCenterYConstraint.isActive = true
     }
 }
 
 extension CollectionDashesHeaderReusableView {
     enum AlignmentPosition {
-        case top, bottom
+        case top, bottom, center
     }
 }

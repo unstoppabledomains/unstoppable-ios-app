@@ -42,6 +42,7 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
         let oldNavComponents = CNavComponents(viewController: fromViewController)
         let newNavComponents = CNavComponents(viewController: toViewController)
         let backTitleVisible = toNavChild?.navBackButtonConfiguration.backTitleVisible ?? true
+        let largeTitleConfiguration = toNavChild?.largeTitleConfiguration
 
         let titleTransitioning: CNavBarTitleTransitioning
         let backButtonTransitioning: CNavBarTitleTransitioning
@@ -51,7 +52,10 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
             titleTransitioning = TitleTransitioningSmallToSmall(navBar: navBarContent, newTitle: newTitle, newNavComponents: newNavComponents)!
         case (false, true):
             backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, backButtonTitle: backButtonTitle, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
-            titleTransitioning = TitleTransitioningSmallToLarge(navBar: navBar, newTitle: newTitle, attributes: toNavChild?.largeTitleConfiguration?.navBarLargeTitleAttributes ?? navBar.largeTitleAttributes)!
+            titleTransitioning = TitleTransitioningSmallToLarge(navBar: navBar,
+                                                                newTitle: newTitle,
+                                                                largeTitleConfiguration: largeTitleConfiguration,
+                                                                attributes: toNavChild?.largeTitleConfiguration?.navBarLargeTitleAttributes ?? navBar.largeTitleAttributes)!
         case (true, false):
             if isLargeTitleCollapsed {
                 backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, backButtonTitle: backButtonTitle, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
@@ -126,21 +130,25 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
 private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
     
     private let transitionFromTitle: UILabel
+    private let titleView: UIView?
     private let titleLabel: UILabel
     private let targetX: CGFloat
     private let targetTitleCenter: CGPoint
     private let hasTitleView: Bool
-    private let currentTitleAlpha: CGFloat
+    private let currentTitleLabelAlpha: CGFloat
+    private let currentTitleViewAlpha: CGFloat?
     
     init?(navBar: CNavigationBarContentView,
           newTitle: String?,
           newNavComponents: CNavComponents) {
-        guard let transitionFromTitle = try? CNavigationHelper.makeCopy(of: navBar.titleLabel) else { return nil }
+        let transitionFromTitle = CNavigationHelper.makeEfficientCopy(of: navBar.titleLabel)
         
         self.hasTitleView = newNavComponents.titleView != nil
         self.transitionFromTitle = transitionFromTitle
         titleLabel = navBar.titleLabel!
-        currentTitleAlpha = titleLabel.alpha
+        titleView = navBar.titleView
+        currentTitleLabelAlpha = titleLabel.alpha
+        currentTitleViewAlpha = navBar.titleView?.alpha
         targetX = navBar.backButton.label.frame.minX
         targetTitleCenter = titleLabel.center
         
@@ -170,11 +178,14 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
     
     func completionAction(position: UIViewAnimatingPosition) {
         if position == .start {
-            titleLabel.alpha = currentTitleAlpha
+            titleLabel.alpha = currentTitleLabelAlpha
         } else {
             if !hasTitleView {
                 titleLabel.alpha = 1
             }
+        }
+        if let currentTitleViewAlpha {
+            titleView?.alpha = currentTitleViewAlpha
         }
         transitionFromTitle.removeFromSuperview()
     }
@@ -184,16 +195,25 @@ private struct TitleTransitioningSmallToLarge: CNavBarTitleTransitioning {
     
     private let transitionFromTitle: UIView
     private let transitionNewLargeTitle: UILabel
+    private var transitionNewLargeImage: UIImageView?
     private let titleLabel: UIView
+    private let titleView: UIView?
     private let largeTitleLabel: UILabel
     
     private let targetTitleX: CGFloat
+    private var targetTitleImageX: CGFloat?
     private let targetX: CGFloat
     private let backButtonX: CGFloat
-    
-    init?(navBar: CNavigationBar, newTitle: String?, attributes: [NSAttributedString.Key : Any]) {
-        guard let transitionNewLargeTitle = try? CNavigationHelper.makeCopy(of: navBar.largeTitleLabel),
-              let transitionFromTitle = try? CNavigationHelper.makeCopy(of: navBar.titleLabel) else { return nil }
+    private let currentTitleViewAlpha: CGFloat?
+    private let searchBarView: UIView?
+    private let searchBarViewTargetX: CGFloat
+
+    init?(navBar: CNavigationBar,
+          newTitle: String?,
+          largeTitleConfiguration: CNavigationBar.LargeTitleConfiguration?,
+          attributes: [NSAttributedString.Key : Any]) {
+        let transitionNewLargeTitle = CNavigationHelper.makeEfficientCopy(of: navBar.largeTitleLabel)
+        let transitionFromTitle = CNavigationHelper.makeEfficientCopy(of: navBar.titleLabel)
         
         navBar.addSubview(transitionNewLargeTitle)
         if let newTitle = newTitle {
@@ -205,13 +225,17 @@ private struct TitleTransitioningSmallToLarge: CNavBarTitleTransitioning {
                                                                       withConstrainedSize: navBar.largeTitleView.bounds.size)
         transitionNewLargeTitle.frame.origin.x = navBar.bounds.width
         transitionNewLargeTitle.frame.origin.y = navBar.largeTitleView.frame.minY + CNavigationBar.Constants.largeTitleOrigin.y
+        if largeTitleConfiguration?.largeTitleIcon != nil {
+            transitionNewLargeTitle.frame.origin.y += (largeTitleConfiguration?.largeTitleIconSize?.height ?? CNavigationBar.Constants.largeTitleIconSize.height) + CNavigationBar.Constants.largeTitleIconOffset
+        }
+        
         self.transitionNewLargeTitle = transitionNewLargeTitle
         transitionNewLargeTitle.alpha = 1
         navBar.navBarContentView.addSubview(transitionFromTitle)
         self.transitionFromTitle = transitionFromTitle
-
+        
         navBar.set(title: newTitle)
-
+        
         targetTitleX = navBar.backButton.label.frame.minX
         
         if transitionNewLargeTitle.textAlignment == .center {
@@ -220,7 +244,25 @@ private struct TitleTransitioningSmallToLarge: CNavBarTitleTransitioning {
             targetX = CNavigationBar.Constants.largeTitleOrigin.x
         }
         
+        if let image = largeTitleConfiguration?.largeTitleIcon {
+            let size = largeTitleConfiguration?.largeTitleIconSize ?? CNavigationBar.Constants.largeTitleIconSize
+            let imageView = UIImageView(frame: CGRect(origin: .zero, size: size))
+            imageView.image = image
+            self.transitionNewLargeImage = imageView
+            navBar.largeTitleView.addSubview(imageView)
+            
+            
+            targetTitleImageX = navBar.navBarContentView.bounds.width / 2 - size.width / 2
+            imageView.frame.origin.x = navBar.bounds.width
+            imageView.frame.origin.y = CNavigationBar.Constants.largeTitleOrigin.y
+        }
+        
+        searchBarView = navBar.navBarContentView.searchBarConfiguration?.searchBarView
+        searchBarViewTargetX = -navBar.bounds.width
+        
         titleLabel = navBar.titleLabel
+        titleView = navBar.navBarContentView.titleView
+        currentTitleViewAlpha = navBar.navBarContentView.titleView?.alpha
         largeTitleLabel = navBar.largeTitleLabel
         backButtonX = navBar.backButton.label.frame.minX
         titleLabel.alpha = 0
@@ -231,6 +273,8 @@ private struct TitleTransitioningSmallToLarge: CNavBarTitleTransitioning {
         titleLabel.alpha = 0
         titleLabel.frame.origin.x = backButtonX
         transitionFromTitle.frame.origin.x = targetTitleX
+        transitionNewLargeImage?.frame.origin.x = targetTitleImageX ?? 0
+        searchBarView?.frame.origin.x = searchBarViewTargetX
     }
     
     func addAdditionalAnimation(in animator: UIViewPropertyAnimator, duration: TimeInterval) {
@@ -251,8 +295,12 @@ private struct TitleTransitioningSmallToLarge: CNavBarTitleTransitioning {
             largeTitleLabel.alpha = 1
             largeTitleLabel.superview?.isHidden = false
         }
+        if let currentTitleViewAlpha {
+            titleView?.alpha = currentTitleViewAlpha
+        }
         transitionNewLargeTitle.removeFromSuperview()
         transitionFromTitle.removeFromSuperview()
+        transitionNewLargeImage?.removeFromSuperview()
     }
 }
 
@@ -268,7 +316,7 @@ private struct TitleTransitioningLargeToSmall: CNavBarTitleTransitioning {
     init?(navBar: CNavigationBar,
           newTitle: String?,
           newNavComponents: CNavComponents) {
-        guard let transitionLargeTitle = try? CNavigationHelper.makeCopy(of: navBar.largeTitleLabel) else { return nil }
+        let transitionLargeTitle = CNavigationHelper.makeEfficientCopy(of: navBar.largeTitleLabel)
         
         self.hasTitleView = newNavComponents.titleView != nil
         navBar.addSubview(transitionLargeTitle)
@@ -319,7 +367,7 @@ private struct TitleTransitioningLargeToLarge: CNavBarTitleTransitioning {
     private let targetX: CGFloat
 
     init?(navBar: CNavigationBar, newTitle: String?) {
-        guard let transitionNewLargeTitle = try? CNavigationHelper.makeCopy(of: navBar.largeTitleLabel) else { return nil }
+        let transitionNewLargeTitle = CNavigationHelper.makeEfficientCopy(of: navBar.largeTitleLabel)
         
         navBar.addSubview(transitionNewLargeTitle)
         transitionNewLargeTitle.text = newTitle
@@ -365,8 +413,8 @@ private struct BackButtonTransitioningLargeToLarge: CNavBarTitleTransitioning, C
           oldNavComponents: CNavComponents,
           newNavComponents: CNavComponents,
           backTitleVisible: Bool) {
-        guard let transitionLargeTitle = try? CNavigationHelper.makeCopy(of: navBar.largeTitleLabel),
-              let transitionLargeBlueTitle = try? CNavigationHelper.makeCopy(of: transitionLargeTitle) else { return nil }
+        let transitionLargeTitle = CNavigationHelper.makeEfficientCopy(of: navBar.largeTitleLabel)
+        let transitionLargeBlueTitle = CNavigationHelper.makeEfficientCopy(of: transitionLargeTitle)
         
         navBar.addSubview(transitionLargeTitle)
         navBar.bringSubviewToFront(navBar.navBarBlur)
@@ -393,7 +441,7 @@ private struct BackButtonTransitioningLargeToLarge: CNavBarTitleTransitioning, C
         targetX = navBar.largeTitleLabel.frame.minX
         navBar.set(title: newTitle)
         
-        setupWith(navBarContentView: navBar.navBarContentView, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)
+        setupWith(navBarContentView: navBar.navBarContentView, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents, isLastViewController: false)
     }
     
     func addAnimations() {
@@ -439,7 +487,7 @@ private struct BackButtonTransitioningSmallToSmall: CNavBarTitleTransitioning, C
           backButtonTitle: String?,
           oldNavComponents: CNavComponents,
           newNavComponents: CNavComponents) {
-        guard let transitionBackButtonLabel = try? CNavigationHelper.makeCopy(of: navBarContent.backButton.label) else { return nil }
+        let transitionBackButtonLabel = CNavigationHelper.makeEfficientCopy(of: navBarContent.backButton.label)
         
         transitionBackButtonLabel.text = backButtonTitle
         navBarContent.addSubview(transitionBackButtonLabel)
@@ -450,7 +498,7 @@ private struct BackButtonTransitioningSmallToSmall: CNavBarTitleTransitioning, C
         
         targetX = navBarContent.backButton.label.frame.minX
         
-        setupWith(navBarContentView: navBarContent, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)
+        setupWith(navBarContentView: navBarContent, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents, isLastViewController: false)
     }
     
     func addAnimations() {

@@ -118,6 +118,8 @@ extension UIImage {
     static let hammerWrenchIcon24 = UIImage(named: "hammerWrenchIcon24")!
     static let showcaseDomainProfileIllustration = UIImage(named: "showcaseDomainProfileIllustration")!
     static let arrowRight = UIImage(named: "arrowRight")!
+    static let timeIcon24 = UIImage(named: "timeIcon24")!
+    static let dragIcon24 = UIImage(named: "dragIcon24")!
     static let connectedAppNetworksInfoIllustration = UIImage(named: "connectedAppNetworksInfoIllustration")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
@@ -129,7 +131,7 @@ extension UIImage {
     // System SF symbols
     static let personCropCircle = UIImage(systemName: "person.crop.circle")
     static let arrowUpRightCircle = UIImage(systemName: "arrowshape.turn.up.right.circle")
-    static let arrowUpRight = UIImage(systemName: "arrowshape.turn.up.right")
+    static let arrowUpRight = UIImage(systemName: "arrowshape.turn.up.right")!
     static let safari = UIImage(systemName: "safari")!
     static let chevronLeft = UIImage(systemName: "chevron.left")
     static let chevronRight = UIImage(systemName: "chevron.right")
@@ -145,6 +147,7 @@ extension UIImage {
     static let systemHexagonRightHalfFilled = UIImage(systemName: "hexagon.righthalf.filled")!
     static let systemLock = UIImage(systemName: "lock")!
     static let systemGlobe = UIImage(systemName: "globe")!
+    static let systemChevronUpDown = UIImage(systemName: "chevron.up.chevron.down")!
     
 }
 
@@ -254,7 +257,19 @@ extension UIImage {
 }
 
 extension UIImage {
-    var dataToUpload: Data? { self.jpegData(compressionQuality: 1) }
+    var dataToUpload: Data? { try? self.gifDataRepresentation() }
     var base64String: String? { dataToUpload?.base64EncodedString() }
 }
 
+extension UIImage {
+    static func createWith(anyData data: Data) async -> UIImage? {
+        if let gif = await GIFAnimationsService.shared.createGIFImageWithData(data) {
+            return gif
+        } else if let image = UIImage(data: data) {
+            return image
+        } else if let svg = UIImage.from(svgData: data) {
+            return svg
+        }
+        return nil
+    }
+}

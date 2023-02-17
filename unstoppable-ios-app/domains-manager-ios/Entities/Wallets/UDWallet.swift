@@ -559,7 +559,7 @@ extension Array where Element == UDWallet {
 }
 
 extension UDWallet {
-    func owns(domain: DomainItem) -> Bool {
+    func owns(domain: any DomainEntity) -> Bool {
         guard let domainWalletAddress = domain.ownerWallet?.normalized else { return false }
         return self.extractEthWallet()?.address.normalized == domainWalletAddress || self.extractZilWallet()?.address.normalized == domainWalletAddress
     }
@@ -613,7 +613,7 @@ extension UDWallet {
     }
         
     var isExternalConnectionActive: Bool {
-        !appContext.walletConnectClientService.findSessions(by: self.address).isEmpty
+        !(appContext.walletConnectClientService.findSessions(by: self.address).isEmpty && appContext.walletConnectServiceV2.findSessions(by: self.address).isEmpty)
     }
 }
 
@@ -630,10 +630,12 @@ enum WalletConnectError: String, LocalizedError, RawValueLocalizable {
     case walletConnectNil = "WalletConnect object is nil"
     case failedHashPersonalMessage = "Failed to hash a message for signing"
     case failedSignPersonalMessage = "WalletConnect failed to sign a message in an external wallet app"
+    case failedEthSignMessage = "WalletConnect failed to eth_sign a message in an external wallet app"
     case failedToFindExternalAppLink
     case failedToFindDomainToConnect
     case failedOpenExternalApp = "Failed to open external wallet app with a deep link"
     case failedToRelayTxToExternalWallet
+    case invalidChainIdentifier
     
     public var errorDescription: String? {
         return rawValue

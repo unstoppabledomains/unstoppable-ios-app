@@ -29,9 +29,18 @@ final class RestoreWalletViewController: BaseViewController, ViewWithDashesProgr
         
         setup()
         Task {
+            var prevTitleView: UIView?
+            /// Progress view will be overlapped with previous title if not hidden. Temporary solution
+            if let titleView = cNavigationBar?.navBarContentView.titleView,
+               !(titleView is DashesProgressView) {
+                prevTitleView = titleView
+            }
             await MainActor.run {
+                prevTitleView?.isHidden = true
                 setDashesProgress(0.25)
             }
+            try? await Task.sleep(seconds: 0.5)
+            prevTitleView?.isHidden = false
         }
     }
 }
@@ -146,7 +155,7 @@ private extension RestoreWalletViewController {
         selectionTableViewHeightConstraint.constant = TableViewSelectionCell.Height * CGFloat(restoreOptions.count)
         titleLabel.setTitle(String.Constants.connectWalletTitle.localized())
         subtitleLabel.setSubtitle(String.Constants.connectWalletSubtitle.localized())
-        alreadyHaveDomainsButton.setTitle(String.Constants.connectWalletDontAlreadyHaveDomain.localized(), image: nil)
+        alreadyHaveDomainsButton.setTitle(String.Constants.connectWalletCreateNew.localized(), image: nil)
     }
     
     func setupDashesProgressView() {

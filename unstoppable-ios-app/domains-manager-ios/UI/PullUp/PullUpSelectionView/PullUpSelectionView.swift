@@ -73,12 +73,6 @@ final class PullUpSelectionView<Item: PullUpCollectionViewCellItem>: UIView, UIC
         pullUpView?.cancel()
     }
     
-    @objc private func didTapButton(_ button: UIButton) {
-        let tag = button.tag
-        logButtonPressed(configuration.buttonContentInButtonWith(tag: tag)?.analyticsName.rawValue ?? "unspecified")
-        configuration.callActionInButtonWith(tag: tag)
-    }
-    
     @objc private func didTapLabel() {
         switch configuration.title {
         case .highlightedText(let textDescription):
@@ -130,8 +124,8 @@ extension PullUpSelectionView {
 private extension PullUpSelectionView {
     func setup() {
         backgroundColor = .clear
-        setupCustomHeader()
         setupIcon()
+        setupCustomHeader()
         setupTitleLabel()
         setupSubtitle()
         setupExtraViews()
@@ -146,7 +140,11 @@ private extension PullUpSelectionView {
         customHeader.translatesAutoresizingMaskIntoConstraints = false
         addSubview(customHeader)
         customHeader.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        customHeader.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
+        if let currentMinYAnchor {
+            customHeader.topAnchor.constraint(equalTo: currentMinYAnchor, constant: 24).isActive = true
+        } else {
+            customHeader.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
+        }
         currentMinYAnchor = customHeader.bottomAnchor
     }
     
@@ -378,21 +376,17 @@ private extension PullUpSelectionView {
             buttonContent = content
         }
         
+        button.bounds.size.height = buttonType.height
         button.isUserInteractionEnabled = buttonContent.isUserInteractionEnabled
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: buttonType.height).isActive = true
         button.imageLayout = buttonContent.imageLayout
         button.setTitle(buttonContent.title,
                         image: buttonContent.icon)
-        if #available(iOS 14.0, *) {
-            button.addAction(.init(handler: { [weak self] _ in
-                self?.logButtonPressed(buttonContent.analyticsName.rawValue)
-                buttonContent.action?()
-            }), for: .touchUpInside)
-        } else {
-            button.tag = configuration.tagForButtonType(buttonType)
-            button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
-        }
+        button.addAction(.init(handler: { [weak self] _ in
+            self?.logButtonPressed(buttonContent.analyticsName.rawValue)
+            buttonContent.action?()
+        }), for: .touchUpInside)
         
         if buttonContent.isLoading {
             button.showLoadingIndicator()
@@ -454,39 +448,7 @@ struct PullUpSelectionViewConfiguration {
     var extraViews: [UIView]? = nil
     var actionButton: ButtonType? = nil
     var cancelButton: ButtonType? = nil
-    
-    /// Remove tagForButtonType, and callActionInButtonWith, (callAction in ButtonType) when iOS 13 will be dropped.
-    func tagForButtonType(_ buttonType: ButtonType) -> Int {
-        if buttonType == actionButton {
-            return 0
-        } else if buttonType == cancelButton {
-            return 1
-        } else {
-            return 2
-        }
-    }
-    
-    func buttonContentInButtonWith(tag: Int) -> ButtonContent? {
-        if tag == 0 {
-            return actionButton?.content
-        } else if tag == 1 {
-            return cancelButton?.content
-        } else if case .button(let buttonType) = subtitle {
-            return buttonType.content
-        }
-        return nil
-    }
-    
-    func callActionInButtonWith(tag: Int) {
-        if tag == 0 {
-            actionButton?.callAction()
-        } else if tag == 1 {
-            cancelButton?.callAction()
-        } else if case .button(let buttonType) = subtitle {
-            buttonType.callAction()
-        }
-    }
-    
+
     // Title
     enum LabelType {
         case text(_ text: String)

@@ -106,7 +106,9 @@ private extension WalletsListViewController {
         collectionView.accessibilityIdentifier = "Wallets List Collection View"
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
-        collectionView.register(WalletsListHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: WalletsListHeaderView.reuseIdentifier)
+        collectionView.register(WalletsListHeaderView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: WalletsListHeaderView.reuseIdentifier)
         collectionView.contentInset.top = 45
         
         configureDataSource()
@@ -122,7 +124,9 @@ private extension WalletsListViewController {
         })
         
         dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
-            let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind, withReuseIdentifier: WalletsListHeaderView.reuseIdentifier, for: indexPath) as! WalletsListHeaderView
+            let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                       withReuseIdentifier: WalletsListHeaderView.reuseIdentifier,
+                                                                       for: indexPath) as! WalletsListHeaderView
             
             if let section = self?.section(at: indexPath) {
                 view.setHeader(for: section)
@@ -160,9 +164,9 @@ private extension WalletsListViewController {
             
             switch section {
             case .connected, .managed, .manageICloudExtraHeight:
-                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                  heightDimension: .absolute(sectionHeaderHeight))
-                let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: size,
+                let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                        heightDimension: .absolute(sectionHeaderHeight))
+                let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
                                                                          elementKind: UICollectionView.elementKindSectionHeader,
                                                                          alignment: .top)
                 layoutSection.boundarySupplementaryItems = [header]

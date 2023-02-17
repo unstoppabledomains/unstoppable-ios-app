@@ -102,11 +102,7 @@ private extension AppReviewService {
             updateLastVersionPromptedForReviewToCurrent()
             numberOfTimesReviewWasRequested += 1
 
-            if #available(iOS 14.0, *) {
-                SKStoreReviewController.requestReview(in: windowScene)
-            } else {
-                SKStoreReviewController.requestReview()
-            }
+            SKStoreReviewController.requestReview(in: windowScene)
         }
     }
     

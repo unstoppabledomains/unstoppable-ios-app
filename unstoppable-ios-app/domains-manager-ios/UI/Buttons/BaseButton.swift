@@ -26,7 +26,8 @@ class BaseButton: UIButton {
     var fontSize: CGFloat { 16 }
     var fontWeight: UIFont.Weight { .regular }
     
-    var cornerRadius: CGFloat { 12 }
+    var cornerRadius: CGFloat { customCornerRadius ?? 12 }
+    var customCornerRadius: CGFloat? { didSet { layer.cornerRadius = cornerRadius } }
     var imageLayout: ButtonImageLayout = .leading
     var titleImagePadding: CGFloat { 8 }
     var titleLeftPadding: CGFloat = 12

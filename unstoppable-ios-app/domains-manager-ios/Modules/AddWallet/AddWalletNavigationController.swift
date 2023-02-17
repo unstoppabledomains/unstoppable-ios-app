@@ -21,6 +21,7 @@ final class AddWalletNavigationController: CNavigationController {
     private let networkReachabilityService: NetworkReachabilityServiceProtocol? = appContext.networkReachabilityService
     private let udWalletsService: UDWalletsServiceProtocol = appContext.udWalletsService
     private let walletConnectClientService: WalletConnectClientServiceProtocol = appContext.walletConnectClientService
+    private let walletConnectServiceV2: WalletConnectServiceV2Protocol = appContext.walletConnectServiceV2
     private var mode: Mode = .createLocal
     var wallet: UDWallet?
     var walletAddedCallback: WalletAddedCallback?
@@ -241,7 +242,8 @@ private extension AddWalletNavigationController {
             let presenter = ConnectNewExternalWalletPresenter(view: vc,
                                                               addWalletFlowManager: self,
                                                               udWalletsService: udWalletsService,
-                                                              walletConnectClientService: walletConnectClientService)
+                                                              walletConnectClientService: walletConnectClientService,
+                                                              walletConnectServiceV2: walletConnectServiceV2)
             vc.presenter = presenter
             return vc
         case .externalWalletConnected:

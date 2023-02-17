@@ -12,16 +12,19 @@ protocol DataAggregatorServiceProtocol {
     func getWalletsWithInfo() async -> [WalletWithInfo]
     func getWalletsWithInfoAndBalance(for blockchainType: BlockchainType) async throws -> [WalletWithInfoAndBalance]
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo?
-    func getDomains() async -> [DomainItem]
-    func setPrimaryDomainWith(name: String) async
-    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainItem?
+    func getDomainItems() async -> [DomainItem]
+    func getDomainsDisplayInfo() async -> [DomainDisplayInfo]
+    func getDomainWith(name: String) async throws -> DomainItem
+    func getDomainsWith(names: Set<String>) async -> [DomainItem]
+    func setDomainsOrder(using domains: [DomainDisplayInfo]) async
+    func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo?
     func isReverseResolutionSetupInProgress(for domainName: DomainName) async -> Bool
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool
-    func isReverseResolutionChangeAllowed(for domain: DomainItem) async -> Bool
+    func isReverseResolutionChangeAllowed(for domain: DomainDisplayInfo) async -> Bool
     func isReverseResolutionSet(for domainName: DomainName) async -> Bool
     func mintDomains(_ domains: [String],
                      paidDomains: [String],
-                     newPrimaryDomain: String?,
+                     domainsOrderInfoMap: SortDomainsOrderInfoMap,
                      to wallet: UDWallet,
                      userEmail: String,
                      securityCode: String) async throws -> [MintingDomain]
@@ -55,8 +58,8 @@ final class DataAggregatorListenerHolder: Equatable {
 }
 
 enum DataAggregationServiceResult {
-    case domainsUpdated(_ domains: [DomainItem])
-    case domainsPFPUpdated(_ allDomains: [DomainItem])
+    case domainsUpdated(_ domains: [DomainDisplayInfo])
+    case domainsPFPUpdated(_ allDomains: [DomainDisplayInfo])
     case walletsListUpdated(_ walletsWithInfo: [WalletWithInfo])
     case primaryDomainChanged(_ name: String)
 }

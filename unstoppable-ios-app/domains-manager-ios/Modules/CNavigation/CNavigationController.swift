@@ -59,9 +59,8 @@ class CNavigationController: UIViewController {
         super.viewWillAppear(animated)
         
         topViewController?.loadViewIfNeeded()
-        topViewController?.viewWillAppear(animated)
         if self.rootViewController == nil {
-            if let rootViewController = self.viewControllers.last {
+            if let rootViewController = self.viewControllers.first {
                 self.rootViewController = rootViewController
                 viewControllers.forEach { vc in
                     vc.loadViewIfNeeded()
@@ -77,25 +76,7 @@ class CNavigationController: UIViewController {
             }
         }
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        topViewController?.viewDidAppear(animated)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        topViewController?.viewWillDisappear(animated)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        topViewController?.viewDidDisappear(animated)
-    }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -208,7 +189,9 @@ extension CNavigationController {
 extension CNavigationController {
     func underlyingScrollViewDidScroll(_ scrollView: UIScrollView) {
         guard !isTransitioning,
-              CNavigationHelper.findViewController(of: scrollView) == topViewController else { return }
+              let topViewController,
+              let scrollingViewController = CNavigationHelper.findViewController(of: scrollView) else { return }
+        guard topViewController == scrollingViewController || topViewController.allChilds().contains(scrollingViewController) else { return }
         
         updateNavBarScrollingState(in: scrollView)
     }
@@ -226,7 +209,7 @@ extension CNavigationController {
         
         UIView.performWithoutAnimation {
             navigationBar.setupWith(child: navChild, navigationItem: topViewController.navigationItem)
-            if let scrollView = CNavigationHelper.firstSubviewOfType(UIScrollView.self, in: topViewController.view) {
+            if let scrollView = CNavigationHelper.topScrollableView(in: topViewController.view) {
                 updateNavBarScrollingState(in: scrollView)
             }
             navigationBar.isHidden = navChild?.isNavBarHidden ?? false || topViewController is CNavigationController
@@ -283,15 +266,16 @@ private extension CNavigationController {
         
         let containerView = self.viewControllersContainerView!
         viewController.willMove(toParent: self)
+        addChild(viewController)
         viewController.view.translatesAutoresizingMaskIntoConstraints = true
         viewController.view.frame = containerView.bounds
-        topViewController?.viewWillDisappear(animated)
+        topViewController?.beginAppearanceTransition(false, animated: animated)
+        viewController.beginAppearanceTransition(true, animated: animated)
         containerView.addSubview(viewController.view)
         delegate?.navigationController(self, willShow: viewController, animated: animated)
         
         func finishPush() {
             viewController.didMove(toParent: self)
-            addChild(viewController)
             completion?()
             updateNavigationBarAfterNavigation()
             setTransitioning(false)
@@ -322,16 +306,22 @@ private extension CNavigationController {
             
             func finishTransition() {
                 transition.animationEnded?(true)
-                topViewController.viewDidDisappear(animated)
+                topViewController.endAppearanceTransition()
                 finishPush()
                 navigationBar.setBackButton(hidden: false)
-                viewController.viewDidAppear(animated)
+                viewController.endAppearanceTransition()
                 delegate?.navigationController(self, didShow: viewController, animated: animated)
             }
             
             func cancelTransition() {
+                viewController.beginAppearanceTransition(false, animated: animated)
                 viewController.view.removeFromSuperview()
+                viewController.endAppearanceTransition()
                 viewController.didMove(toParent: nil)
+                
+                topViewController.beginAppearanceTransition(true, animated: animated)
+                topViewController.endAppearanceTransition()
+                
                 setTransitioning(false)
             }
             
@@ -359,8 +349,8 @@ private extension CNavigationController {
         setTransitioning(true)
         let containerView = self.viewControllersContainerView!
         fromViewController.willMove(toParent: nil)
-        fromViewController.viewWillDisappear(animated)
-        toViewController.viewWillAppear(animated)
+        fromViewController.beginAppearanceTransition(false, animated: animated)
+        toViewController.beginAppearanceTransition(true, animated: animated)
         delegate?.navigationController(self, willShow: toViewController, animated: animated)
 
         let transition = transitionHandler.navigationController(self,
@@ -384,11 +374,11 @@ private extension CNavigationController {
         
         func finishTransition() {
             transition.animationEnded?(true)
-            fromViewController.viewDidDisappear(animated)
             fromViewController.view.removeFromSuperview()
+            fromViewController.endAppearanceTransition()
             fromViewController.removeFromParent()
             completion()
-            toViewController.viewDidAppear(animated)
+            toViewController.endAppearanceTransition()
             delegate?.navigationController(self, didShow: toViewController, animated: animated)
 
             if viewControllers.count == 1 {
@@ -399,8 +389,13 @@ private extension CNavigationController {
         }
         
         func cancelTransition() {
+            toViewController.beginAppearanceTransition(false, animated: animated)
+            toViewController.endAppearanceTransition()
+
+            fromViewController.beginAppearanceTransition(true, animated: animated)
+            fromViewController.endAppearanceTransition()
             fromViewController.didMove(toParent: self)
-            fromViewController.viewDidAppear(animated)
+            
             setTransitioning(false)
         }
         var isSwipe = false
@@ -473,6 +468,7 @@ private extension CNavigationController {
 
 extension UIViewController {
     var cNavigationController: CNavigationController? { parent as? CNavigationController }
+    var cNavigationBar: CNavigationBar? { cNavigationController?.navigationBar }
 }
 
 extension CNavigationController {

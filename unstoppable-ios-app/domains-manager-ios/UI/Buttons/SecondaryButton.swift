@@ -9,6 +9,6 @@ import UIKit
 
 final class SecondaryButton: UDConfigurableButton {
     
-    override var udConfiguration: UDConfiguration { .secondaryButtonConfiguration }
+    override var udConfiguration: UDButtonConfiguration { .secondaryButtonConfiguration }
     
 }

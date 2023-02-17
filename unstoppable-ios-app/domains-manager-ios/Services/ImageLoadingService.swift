@@ -25,9 +25,9 @@ struct DownsampleDescription {
 enum ImageSource {
     case url(_ url: URL, maxSize: CGFloat? = nil)
     case initials(_ name: String, size: InitialsView.InitialsSize, style: InitialsView.Style)
-    case domain(_ domainItem: DomainItem)
-    case domainInitials(_ domainItem: DomainItem, size: InitialsView.InitialsSize)
-    case domainItemOrInitials(_ domainItem: DomainItem, size: InitialsView.InitialsSize)
+    case domain(_ domainItem: DomainDisplayInfo)
+    case domainInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
+    case domainItemOrInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case currency(_ currency: CoinRecord, size: InitialsView.InitialsSize, style: InitialsView.Style)
     case wcApp(_ appInfo: WalletConnectService.WCServiceAppInfo, size: InitialsView.InitialsSize)
     case connectedApp(_ connectedApp: any UnifiedConnectAppInfoProtocol, size: InitialsView.InitialsSize)
@@ -38,14 +38,17 @@ enum ImageSource {
         case .url(let url, _):
             return url.absoluteString
         case .initials(let name, let initialsSize, let style):
-            let initials = String(name.first ?? .init("")).uppercased()
+            var initials = Constants.defaultInitials
+            if let firstChar = name.first {
+                initials = firstChar.uppercased()
+            }
             return initials + "_\(initialsSize.rawValue)_\(style.rawValue)"
         case .domain(let domainItem):
-            return domainItem.pfpInfo.value
+            return domainItem.pfpSource.value
         case .domainInitials(let domainItem, let size):
             return ImageSource.initials(domainItem.name, size: size, style: .accent).key
         case .domainItemOrInitials(let domainItem, let size):
-            if domainItem.pfpInfo != .none {
+            if domainItem.pfpSource != .none {
                 return ImageSource.domain(domainItem).key
             }
             return ImageSource.domainInitials(domainItem, size: size).key
@@ -150,7 +153,7 @@ fileprivate extension ImageLoadingService {
                 let imageData = try await loadImage(from: url)
                 
                 if let gif = await GIFAnimationsService.shared.createGIFImageWithData(imageData) {
-                    storeAndCache(imageData: imageData, image: gif, forKey: source.key)
+                    scaleIfNeededAndSaveGif(gif, data: imageData, forKey: source.key)
                     
                     return gif
                 }
@@ -187,7 +190,7 @@ fileprivate extension ImageLoadingService {
             }
             return nil
         case .domain(let domainItem):
-            switch domainItem.pfpInfo {
+            switch domainItem.pfpSource {
             case .nft(let imagePath), .nonNFT(let imagePath):
                 guard let url = URL(string: imagePath) else { return nil }
                 let start = Date()
@@ -204,7 +207,7 @@ fileprivate extension ImageLoadingService {
         case .domainInitials(let domainItem, let size):
             return await fetchImageFor(source: .initials(domainItem.name, size: size, style: .accent), downsampleDescription: downsampleDescription)
         case .domainItemOrInitials(let domainItem, let size):
-            if domainItem.pfpInfo != .none,
+            if domainItem.pfpSource != .none,
                let image = await fetchImageFor(source: .domain(domainItem), downsampleDescription: downsampleDescription) {
                 return image
             }
@@ -253,6 +256,14 @@ fileprivate extension ImageLoadingService {
                                                            scale: 1))
         } else {
             return image
+        }
+    }
+    
+    func scaleIfNeededAndSaveGif(_ image: UIImage, data: Data, forKey key: String) {
+        if let adjustedData = try? image.gifDataRepresentation() {
+            storeAndCache(imageData: adjustedData, image: image, forKey: key)
+        } else {
+            storeAndCache(imageData: data, image: image, forKey: key)
         }
     }
     

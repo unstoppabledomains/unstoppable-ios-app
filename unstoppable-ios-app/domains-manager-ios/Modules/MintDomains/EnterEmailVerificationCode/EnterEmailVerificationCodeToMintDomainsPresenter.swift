@@ -73,6 +73,10 @@ final class EnterEmailVerificationCodeToMintDomainsPresenter: EnterEmailVerifica
                                                                                          code: code))
         } catch {
             logAnalytic(event: .didEnterInvalidVerificationCode)
+            await MainActor.run {
+                view?.setLoading(false)
+                view?.setInvalidCode()
+            }
         }
     }
 }

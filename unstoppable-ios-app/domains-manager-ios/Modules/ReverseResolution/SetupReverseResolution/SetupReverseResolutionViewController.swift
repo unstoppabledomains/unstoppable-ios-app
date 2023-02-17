@@ -9,7 +9,7 @@ import UIKit
 
 @MainActor
 protocol SetupReverseResolutionViewProtocol: BaseViewControllerProtocol {
-    func setWith(walletInfo: WalletDisplayInfo, domain: DomainItem?)
+    func setWith(walletInfo: WalletDisplayInfo, domain: DomainDisplayInfo?)
     func setSkipButton(hidden: Bool)
     func setConfirmButton(title: String, icon: UIImage?)
 }
@@ -26,6 +26,12 @@ final class SetupReverseResolutionViewController: BaseViewController {
     var presenter: SetupReverseResolutionViewPresenterProtocol!
     override var navBackStyle: BaseViewController.NavBackIconStyle { presenter.navBackStyle }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
+    override var additionalAppearAnalyticParameters: Analytics.EventParameters {
+        if let domainName = presenter.domainName {
+            return [.domainName: domainName]
+        }
+        return [:]
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +44,7 @@ final class SetupReverseResolutionViewController: BaseViewController {
 
 // MARK: - SetupReverseResolutionViewProtocol
 extension SetupReverseResolutionViewController: SetupReverseResolutionViewProtocol {
-    func setWith(walletInfo: WalletDisplayInfo, domain: DomainItem?) {
+    func setWith(walletInfo: WalletDisplayInfo, domain: DomainDisplayInfo?) {
         rrIllustrationView.setWith(walletInfo: walletInfo, domain: domain)
         
         if let domain = domain {

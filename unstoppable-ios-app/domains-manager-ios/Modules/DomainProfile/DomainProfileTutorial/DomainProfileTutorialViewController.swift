@@ -171,9 +171,9 @@ private extension DomainProfileTutorialViewController {
             if case.pullUp = useCase {
                 if isLastItem {
                     title = String.Constants.gotIt.localized()
-                    actionButton.setConfiguration(.tertiaryButtonConfiguration)
+                    actionButton.setConfiguration(.largePrimaryButtonConfiguration)
                 } else {
-                    actionButton.setConfiguration(.primaryButtonConfiguration)
+                    actionButton.setConfiguration(.largeGhostPrimaryButtonConfiguration)
                     title = String.Constants.next.localized()
                 }
             } else {

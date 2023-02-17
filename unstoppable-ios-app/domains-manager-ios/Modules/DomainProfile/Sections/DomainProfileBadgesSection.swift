@@ -27,7 +27,7 @@ final class DomainProfileBadgesSection {
         self.badgesData = sectionData
         self.controller = controller
         self.state = state
-        setBadgesUpToDateFor(nextRefreshDate: badgesData.refresh.next)
+        setBadgesUpToDateFor(nextRefreshDate: badgesData.refresh?.next)
     }
 }
 
@@ -180,8 +180,8 @@ private extension DomainProfileBadgesSection {
     func refreshDomainBadges() {
         Task {
             await stopRefreshBadgesTimer()
-            guard let controller else { return }
-            let domain = await controller.generalData.domain
+            guard let controller,
+                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: (await controller.generalData.domain).name) else { return }
             
             updateRefreshingStatusAndUpdateSectionHeader(isRefreshingBadges: true)
             do {
@@ -221,7 +221,11 @@ private extension DomainProfileBadgesSection {
         refreshBadgesTimer = nil
     }
     
-    func setBadgesUpToDateFor(nextRefreshDate: Date) {
+    func setBadgesUpToDateFor(nextRefreshDate: Date?) {
+        guard let nextRefreshDate else {
+            self.isBadgesUpToDate = false
+            return
+        }
         isBadgesUpToDate = nextRefreshDate > Date()
     }
 }

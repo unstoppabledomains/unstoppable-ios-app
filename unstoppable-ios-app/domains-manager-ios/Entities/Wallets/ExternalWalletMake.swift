@@ -27,8 +27,6 @@ enum ExternalWalletMake: String, Codable, Hashable {
     case Stasis = "9d6c614d1995741d5313f1f3dbf1f66dcba694de782087d13b8721822502692f"
     case TKFinance = "e3787ea98d014ca77e2c3794db97c02ef8bcb39347705f5e79502a55434a1ecf"
     case TKFinance2 = "add8361c0692500217aea81380a8dd4b4d7ce6458292391957c874630c80b874"
-    case Steakwallet = "afbd95522f4041c71dd4f1a065f971fd32372865b416f95a0b1db759ae33f2a7"
-    case Steakwallet2 = "0c72ae93696df557d174b7a9616fb4f9128e4476cbaa7afc7788d5c7c935de40"
     case CYBAVOWallet = "a395dbfc92b5519cbd1cc6937a4e79830187daaeb2c6fcdf9b9cce4255f2dcd5"
     case JulWallet = "a6ffb821a3c32d36fc9d29e29c2ff79a0cd1db0bca453714777846ddf3fdff76"
     case Nash = "8240fb8a7b117aed27f04aa8870c714eeb910f7c1b16c9b868e793c1836335b8"
@@ -67,6 +65,12 @@ enum ExternalWalletMake: String, Codable, Hashable {
     case Atomic = "185850e869e40f4e6c59b5b3f60b7e63a72e88b09e2a43a40b1fd0f237e49e9a"
     case Argent = "cf21952a9bc8108bf13b12c92443751e2cc388d27008be4201b92bbc6d83dd46"
     case Blockchain = "9806e241053d8c99b0ce9f62606f97d405de5c3c0b2593921f5aac99ecbaea58"
+    case Spot = "74f8092562bd79675e276d8b2062a83601a4106d30202f2d509195e30e19673d"
+    case imToken = "9d373b43ad4d2cf190fb1a774ec964a1addf406d6fd24af94ab7596e58c291b2"
+    case Zelus = "00e39f835988d1bb783b2a0748e18bc6278dec03492d00b0e102a466cd8b3d77"
+    case Omni = "afbd95522f4041c71dd4f1a065f971fd32372865b416f95a0b1db759ae33f2a7"
+    case Exodus = "e9ff15be73584489ca4a66f64d32c4537711797e30b6660dbcb71ea72a42b1f4"
+    case Zerion = "ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18"
 }
 
 extension ExternalWalletMake {        
@@ -86,6 +90,12 @@ extension ExternalWalletMake {
         case .Coin98: return .cancelCircleIcon
         case .Argent: return .cancelCircleIcon
         case .Blockchain: return .cancelCircleIcon
+        case .Spot: return .cancelCircleIcon
+        case .imToken: return .cancelCircleIcon
+        case .Zelus: return UIImage(named: "walletZelus")!
+        case .Omni: return .cancelCircleIcon
+        case .Exodus: return .cancelCircleIcon
+        case .Zerion: return .cancelCircleIcon
         default: return .init()
         }
     }

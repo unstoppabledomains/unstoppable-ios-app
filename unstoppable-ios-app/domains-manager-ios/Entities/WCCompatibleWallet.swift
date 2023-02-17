@@ -32,6 +32,7 @@ struct WCWalletsProvider {
         let homepage: String?
         let appStoreLink: String?
         let mobile: MobileInfo
+        let isV2Compatible: Bool
         
         var make: ExternalWalletMake? {
             ExternalWalletMake(rawValue: id)
@@ -65,16 +66,19 @@ struct WCWalletsProvider {
                       let links = mobiles as? [String: String],
                       let native = links["native"],
                       let universal = links["universal"],
+                      let sdks = wallet["sdks"] as? [String],
                       !native.isEmpty else {
                     continue
                 }
                 let fixedName = fixMathWalletName(name)
+                let isV2compatible = sdks.contains("sign_v2")
                 walletRecords.append(WalletRecord(id: id,
                                                   name: fixedName,
                                                   homepage: homepage,
                                                   appStoreLink: appStoreLink,
                                                   mobile: MobileInfo(native: native,
-                                                                     universal: universal))
+                                                                     universal: universal),
+                                                  isV2Compatible: isV2compatible)
                 )
             }
             return walletRecords.sorted(by: <)
@@ -212,9 +216,11 @@ extension WCWalletsProvider {
             switch self {
             case .supported:
                 #if DEBUG
-                return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .AlphaWallet, .MathWallet, .ONTO, .KleverWallet, .Coinomi, .Coin98, .Argent]
+                return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .AlphaWallet, .MathWallet, .ONTO,
+                    .KleverWallet, .Coinomi, .Coin98, .Argent,
+                        .Guarda, .Blockchain, .Spot, .imToken, .Zelus, .Omni, .Exodus, .Zerion]
                 #else
-                return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .AlphaWallet, .MathWallet]
+                return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .AlphaWallet, .Zelus, .MathWallet]
                 #endif
             }
         }

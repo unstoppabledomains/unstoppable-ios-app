@@ -8,44 +8,14 @@
 
 "MOBILE_APP_NAME" = "Unstoppable Domains";
 "MOBILE_APP_DESCRIPTION" = "Your identity and login for Web3";
-
 "UD_COMPANY_NAME" = "Unstoppable Domains";
-"DEFAULT_WALLET_NAME" = "Unstoppable App";
-
-/* HOME SCREEN */
-
-"MINT_PURCHASED_DOMAINS" = "Mint Domains";
-"MY_DOMAIN_TITLE" = "My Domains";
-"YOU_HAVE" = "You have";
-"DOMAIN" = "Domain";
-"DOMAINS" = "domains";
 
 /* MINT DOMAINS */
-"MINT_DOMAINS_TITLE" = "Mint Domains";
-
-"YOU_CAN_MINT_THESE_DOMAINS" = "You can mint these domains";
-"MINT_SELECTED_DOMAINS" = "Mint selected domains";
-"MINT_DOMAINS_TO_CUSTOM_WALLET" = "Mint domains to custom wallet";
-"MINT_DOMAINS_AMOUNT_LIMIT_MESSAGE" = "Mint up to %i domains";
+"MOVE_DOMAINS" = "Move Domains";
+"MOVE_SELECTED_DOMAINS" = "Move selected domains";
+"MOVE_DOMAINS_AMOUNT_LIMIT_MESSAGE" = "Move up to %i domains";
 "TRY_AGAIN_LATER" = "Try again later";
-"FAILED_TO_PROCEED" = "Failed to proceed";
-"MINTING_FAILED_DUE_TO_ERROR" = "Minting failed due to some error";
-
-"HELP_VERIFY_EMAIL" = "Unstoppable Domains are blockchain-based assets. Each user stores their domains personally with a private key, just like cryptocurrencies.
-​
-Minting a domain is the process of creating your domain and sending it to your wallet. This process can take anywhere from a few minutes during periods of low network traffic up to a few days. Once complete, you have full ownership of your domain.
-​
-To start this process, verify your email address to load the set of domains you have purchased.";
-
-"WE_SENT_CODE" = "Verification code sent to";
-
 "NO_DOMAINS_TO_MINT" = "No domains to mint";
-
-/* MENU */
-"MY_DOMAINS_ITEM" = "My Domains";
-"WALLETS_ITEM" = "Wallets";
-"SETTINGS_ITEM" = "Settings";
-"BACKUP_ITEM" = "Back Up Domains";
 
 /* DOMAIN DETAILS */
 "DOMAIN_TITLE" = "Domain";
@@ -54,38 +24,17 @@ To start this process, verify your email address to load the set of domains you 
 "OWNERSHIP_TRANSFERRED_TITLE" = "Ownership Transferred";
 "OWNERSHIP_TRANSFERRED_DESCRIPTION" = "The domain has been transferred to another wallet";
 
-/* WALLETS LIST */
-
-"NO_WALLETS_TO_IMPORT" = "No wallets to import";
-
-/* WALLET DETAILS */
-"READ-ONLY_WALLET_STATE" = "Read-only";
-"EXTERNAL-LINKED_WALLET_STATE" = "External";
-
-/* TRANSFER DOMAIN */
-"TRANSFER_TITLE" = "Transfer";
-
 /* WALLET ACTIONS MENU */
-"ACTIONS_BUTTON_TITLE" = "Actions";
 "SHOW_MINTED_DOMAINS_ITEM" = "Show Minted Domains";
 "RENAME_ITEM" = "Rename Wallet";
-"DISCONNECT_ITEM" = "Disconnect Wallet";
 
 "WALLET_ALREADY_CONNECTED_ERROR" = "This wallet is already connected";
-"CHECK_AND_RE-ENTER_ERROR" = "Please check and enter correctly";
 
 /* PAYMENTS */
-"TRANSACTION_FEE_TITLE" = "Update Domain";
-"TRANSACTION_FEE_SUBTITLLE" = "Pay Blockchain Fees";
-"TRANSACTION_FEE_DESCRIPTION" = "Complete this payment to send your domain updates to the Ethereum blockchain. Unstoppable Domains makes no money from this transaction.";
-"WHAT_ARE_GAS_FEES_BUTTON_TITLE" = "What are gas fees?";
-"CTA_BUTTON_TITLE" = "Continue to Apple Pay";
-"CANCEL_BUTTON_TITLE" = "Cancel update";
 "UD_FEE_LABEL" = "Unstoppable Domains Fee";
 "ETH_GAS_FEE_LABEL" = "Ethereum Gas Fee";
 
 /* ERRORS */
-
 "badResponseOrStatusCode" = "Bad Response Or Status Code";
 "parsingTxsError" = "Failed to parse transactions data in a response from the server";
 "responseFailedToParse" = "Response to /getMessagesToSign failed to parse";
@@ -123,11 +72,9 @@ To start this process, verify your email address to load the set of domains you 
 // NetworkLayerError
 "invalidTxCostError" = "Failed to fetch the cost of transaction from the server. Please try again later.";
 
-/* BACKUP WALLET */
-"SHOW_PRIVATE_KEY" = "Show Private Key";
-"SHOW_MNEMONIC_PHRASE" = "Show Seed Phrase";
-
 /* Common */
+"DOMAIN" = "Domain";
+"DOMAINS" = "domains";
 "CONTINUE" = "Continue";
 "SKIP" = "Skip";
 "HELP" = "Help";
@@ -158,6 +105,7 @@ To start this process, verify your email address to load the set of domains you 
 "INSTALLED" = "Installed";
 "NOT_INSTALLED" = "Not installed";
 "MINTING" = "Minting";
+"MOVING" = "Moving";
 "SCANNING" = "Scanning";
 "ADD" = "Add";
 "SHOW_ALL" = "Show all";
@@ -174,6 +122,9 @@ To start this process, verify your email address to load the set of domains you 
 "N_COPIED" = "%@ copied";
 "COPY_N" = "Copy %@";
 "USERNAME" = "Username";
+"SHOW_MORE" = "Show more";
+"REARRANGE" = "Rearrange";
+"LOGIN" = "Login";
 "ADD_N" = "Add %@";
 "RATE_US" = "Rate us";
 "BOTH" = "Both";
@@ -194,7 +145,7 @@ To start this process, verify your email address to load the set of domains you 
 "TUTORIAL_SCREEN_3_DESCRIPTION" = "Connect your favorite wallet to seamlessly manage your Web3 identity.";
 
 // Creating wallet
-"CREATING_WALLET" = "Creating vault...";
+"CREATING_WALLET" = "Creating vault";
 "CREATE_NEW_VAULT_TITLE" = "Create new vault";
 "CREATE_NEW_VAULT_SUBTITLE" = "A domain vault is a cryptocurrency address used to store your Web3 domains. Once setup, you’ll need to import your domains to manage them on the Unstoppable app.";
 
@@ -283,7 +234,7 @@ To start this process, verify your email address to load the set of domains you 
 "CONNECT_WALLET_WATCH_HINT" = "Unstoppable Domain, Ethereum address";
 "CONNECT_WALLET_EXTERNAL" = "External wallet";
 "CONNECT_WALLET_EXTERNAL_HINT" = "MetaMask, Rainbow, etc.";
-"CONNECT_WALLET_DONT_ALREADY_HAVE_DOMAIN" = "Don’t already have a domain?";
+"CONNECT_WALLET_CREATE_NEW" = "Create a new domain vault";
 
 // Add wallet
 "ADD_WALLET_TITLE" = "Add wallet";
@@ -316,26 +267,20 @@ To start this process, verify your email address to load the set of domains you 
 "ICLOUD_NOT_ENABLED_ALERT_DECLINE_BUTTON" = "No thanks";
 
 // Domains Collection
-"ALREADY_OWN_A_DOMAIN" = "Already own a domain?";
-"WANT_TO_BUY_A_DOMAIN" = "Want to buy a domain?";
-"MINT_DOMAIN" = "Mint domains";
-"MINT_DOMAIN_PULLUP_DESCRIPTION" = "Import your wallets or mint your domains to manage your profile and login to apps.";
 "SEARCH_DOMAINS_TITLE" = "Search your domains";
 "SEARCH_DOMAINS_HINT" = "Example: \"matt.crypto\"";
-"TAP_DOMAIN_CARD_HINT" = "Tap to manage profile";
-"DOMAINS_COLLECTION_EMPTY_STATE_MINT_TITLE" = "Mint domains";
-"DOMAINS_COLLECTION_EMPTY_STATE_MINT_SUBTITLE" = "Store in your domain vault";
-"DOMAINS_COLLECTION_EMPTY_STATE_BUY_TITLE" = "Buy domains";
-"DOMAINS_COLLECTION_EMPTY_STATE_BUY_SUBTITLE" = "Search for your NFT name";
-"DOMAINS_COLLECTION_EMPTY_STATE_MANAGE_TITLE" = "Manage domains";
-"DOMAINS_COLLECTION_EMPTY_STATE_MANAGE_SUBTITLE" = "Import your wallets";
-"DOMAINS_COLLECTION_EMPTY_STATE_TITLE" = "Mint domains";
-"DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE" = "Mint domains or import your wallets to manage your profile and login to apps.";
+"DOMAINS_COLLECTION_EMPTY_STATE_TITLE" = "No domains";
+"DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE" = "Import your domains to manage your profile and login to apps.";
+"DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE" = "Recovery phrase\nor private key";
+"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE" = "External wallet";
+"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE" = "MetaMask, Rainbow, etc.";
+"IMPORT_YOUR_DOMAINS" = "Import your domains";
 
 // Statuses
 "UPDATING_RECORDS" = "Updating records";
 
 // Settings
+"SETTINGS_ITEM" = "Settings";
 "SETTINGS_WALLETS" = "Domain vault";
 "SETTINGS_SECURITY" = "Security";
 "SETTINGS_APPEARANCE" = "Appearance";
@@ -447,14 +392,9 @@ To start this process, verify your email address to load the set of domains you 
 "EDIT_PROFILE_STEP_3" = "Select the domain you want to manage";
 "GO_TO_WEBSITE" = "Go to website";
 
-// What is minting
-"WHAT_IS_MINTING_TITLE" = "What is minting?";
-"WHAT_IS_MINTING_SUBTITLE" = "Minting is the process of registering a domain onto the blockchain. Once minted, neither Unstoppable Domains nor any other entity is able to make changes to your domain or take it back from you.";
-"DONT_SHOW_IT_AGAIN" = "Don’t show it again";
-
 // Enter email
 "ENTER_EMAIL_TITLE" = "Enter your email";
-"ENTER_EMAIL_SUBTITLE" = "Enter your email to obtain all of your purchased & unminted domains.";
+"ENTER_EMAIL_SUBTITLE" = "Verify your email to move your registered domains to the Unstoppable app.";
 "EMAIL" = "Email";
 "ADD_YOUR_EMAIL_ADDRESS" = "Add your email address";
 "ENTER_VALID_EMAIL_ADDRESS" = "Enter a valid email address";
@@ -467,36 +407,27 @@ To start this process, verify your email address to load the set of domains you 
 "OPEN_EMAIL_APP" = "Open email app";
 
 // No Domains to mint
-"NO_DOMAINS_TO_MINT_MESSAGE" = "Sorry, you don’t have any domains to mint";
+"NO_DOMAINS_TO_MINT_MESSAGE" = "Sorry, you don’t have any domains to import";
 "IMPORT_WALLET" = "Import wallet";
 
 // Mint domains
 "SELECT_ALL" = "Select all";
 "DESELECT_ALL" = "Deselect all";
-"MINT_DOMAINS_TO" = "Mint domains to";
-"SET_AS_MY_PRIMARY_DOMAIN" = "Display on the home screen";
-"WHAT_PRIMARY_DOMAIN_INFO_TITLE" = "Home screen domain";
-"WHAT_PRIMARY_DOMAIN_INFO_SUBTITLE" = "The domain that you can manage from the Unstoppable app home screen.";
-"MINT_NTF_DOMAIN_HELP_TITLE" = "Minting your Web3 Domain";
-"MINT_NTF_DOMAIN_HELP_TEXT" = "Minting is the process of registering a domain onto the blockchain via your domain vault or cryptocurrency wallet to gain full custody of the domain. Once minted, neither Unstoppable Domains nor any other entity is able to make changes to the domain or take it back from you.";
+"MOVE_DOMAINS_TO" = "Move domains to";
 
-// Choose primary domain
-"CHOOSE_PRIMARY_DOMAIN_TITLE" = "Personalize your\nhome screen";
-"CHOOSE_PRIMARY_DOMAIN_SUBTITLE" = "Choose a domain to manage from the Unstoppable app home screen.";
-"CHANGE_PRIMARY_DOMAIN_TITLE" = "Personalize your\nhome screen";
+// Rearrange domains
+"REARRANGE_DOMAINS_TITLE" = "Personalize your\nhome screen";
+"REARRANGE_DOMAINS_SUBTITLE" = "Drag to change your display order.";
+"MOVE_TO_TOP" = "Move to top";
 
 // Minting in progress
-"MINTING_IN_PROGRESS_TITLE" = "Minting in progress";
-"MINTING_IN_PROGRESS_SUBTITLE" = "Please wait while your domain registers on the blockchain.";
-"VIEW_TRANSACTION" = "View transaction";
-"MINTING_SUCCESSFUL" = "Minting successful";
+"MINTING_IN_PROGRESS_TITLE" = "Transfer in progress";
+"MINTING_IN_PROGRESS_SUBTITLE" = "Once finished, you’ll be able to manage your Web3 ID and profile on the go.";
+"GO_TO_HOME_SCREEN" = "Go to home screen";
+"MINTING_SUCCESSFUL" = "Moving successful";
 "NOTIFY_ME_WHEN_FINISHED" = "Notify me when finished";
 "WE_WILL_NOTIFY_YOU_WHEN_FINISHED" = "We'll notify you when finished";
-
-// Change primary domain
-"SET_AS_PRIMARY_DOMAIN" = "Set on home screen";
-"CHANGE_PRIMARY_DOMAIN_PULLUP_TITLE" = "Manage %@ from the home screen ";
-"CHANGE_PRIMARY_DOMAIN_PULLUP_SUBTITLE" = " You can change this anytime in settings.";
+"VIEW_TRANSACTION" = "View transaction";
 
 // Permissions
 "WARNING" = "Warning";
@@ -627,7 +558,7 @@ To start this process, verify your email address to load the set of domains you 
 
 // Deprecated TLD
 "TLD_HAS_BEEN_DEPRECATED" = ".%@ has been deprecated";
-"TLD_DEPRECATED_REFUND_DESCRIPTION" = "We’ve deprecated .%@, so we’re giving you a 3x refund.";
+"TLD_DEPRECATED_REFUND_DESCRIPTION" = "We've deprecated .%@. Learn more on our website";
 
 // Domain profile
 "ADD_COVER" = "Add cover";
@@ -716,6 +647,20 @@ To start this process, verify your email address to load the set of domains you 
 "PROFILE_SOCIALS_EMPTY_MESSAGE" = "Manage your social links on the Unstoppable Domains website.";
 "PROFILE_REFRESHING_BADGES_TITLE" = "Refreshing (~15m)";
 "PROFILE_BADGES_UP_TO_DATE" = "Badges are up to date";
+
+// Recent activities
+"NO_RECENT_ACTIVITY" = "No recent activity";
+"RECENT_ACTIVITY_INFO_TITLE" = "Recent Activity";
+"RECENT_ACTIVITY_INFO_SUBTITLE" = "View and manage your connections to apps, metaverses, and games.";
+"SCAN_TO_CONNECT" = "Scan to connect";
+
+// Domain card
+"DOMAIN_CARD_SWIPE_TO_DETAILS" = "Swipe to details";
+"DOMAIN_CARD_SWIPE_TO_CARD" = "Swipe to the card";
+
+// Minting-Claiming
+"IMPORT_FROM_THE_WEBSITE" = "Import from the website";
+"STORE_IN_YOUR_DOMAIN_VAULT" = "Store in your domain vault";
 
 // Legacy tokens
 "LEGACY" = "Legacy";

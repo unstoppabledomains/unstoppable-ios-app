@@ -65,7 +65,6 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
                                                                   .font: UIFont.currentFont(withSize: 16, weight: .semibold)] }
     private var dataSource: DomainProfileDataSource!
     private var defaultBottomOffset: CGFloat { Constants.scrollableContentBottomOffset }
-    private var availableActionGroups = [DomainProfileActionsGroup]()
     private let minScrollYOffset: CGFloat = -40
 
     override func viewDidLoad() {
@@ -133,8 +132,7 @@ extension DomainProfileViewController: DomainProfileViewProtocol, DomainProfileS
     func scroll(to item: DomainProfileViewController.Item) { }
     
     func setAvailableActionsGroups(_ actionGroups: [DomainProfileActionsGroup]) {
-        self.availableActionGroups = actionGroups
-        setupNavigation()
+        setupNavigation(actionGroups: actionGroups)
         cNavigationController?.updateNavigationBar()
     }
     
@@ -169,97 +167,42 @@ extension DomainProfileViewController: UICollectionViewDelegate {
 // MARK: - Actions
 private extension DomainProfileViewController {
     @IBAction func confirmChangesButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .confirm)
+        logProfileButtonPressedAnalyticEvents(button: .confirm)
         presenter.confirmChangesButtonPressed()
     }
     
     @objc func shareButtonPressed() {
         UDVibration.buttonTap.vibrate()
-        logButtonPressedAnalyticEvents(button: .share)
+        logProfileButtonPressedAnalyticEvents(button: .share)
         presenter.shareButtonPressed()
     }
-    
-    @objc func moreButtonPressed() {
-        guard let navView = navigationItem.rightBarButtonItem?.customView else { return }
-        
-        logButtonPressedAnalyticEvents(button: .dots)
-        UDVibration.buttonTap.vibrate()
-        let availableActions = self.availableActionGroups.reduce([], { $0 + $1 })
-        var actions: [UIActionBridgeItem] = []
-        
-        for action in availableActions {
-            switch action {
-            case .copyDomain:
-                let copyDomainMenuElement = UIActionBridgeItem(title: String.Constants.copyDomain.localized(),
-                                                                      image: .systemDocOnDoc,
-                                                                      handler: { [weak self] in  self?.didTapCopyDomainButton() })
-                actions.append(copyDomainMenuElement)
-            case .viewWallet:
-                let showWalletDetailsMenuElement = UIActionBridgeItem(title: String.Constants.viewWallet.localized(presenter.walletName.lowercased()),
-                                                                      image: .arrowUpRight,
-                                                                      handler: { [weak self] in  self?.didTapShowWalletDetailsButton() })
-                actions.append(showWalletDetailsMenuElement)
-            case .setPrimaryDomain:
-                let setPrimaryDomainMenuElement = UIActionBridgeItem(title: String.Constants.setAsPrimaryDomain.localized(),
-                                                                     image: .personCropCircle,
-                                                                     handler: { [weak self] in  self?.didTapSetPrimaryButton() })
-                actions.append(setPrimaryDomainMenuElement)
-            case .setReverseResolution(let isEnabled):
-                let setReverseResolutionMenuElement = UIActionBridgeItem(title: String.Constants.setReverseResolution.localized(),
-                                                                         image: .arrowRightArrowLeft,
-                                                                         attributes: isEnabled ? [] : [.disabled],
-                                                                         handler: { [weak self] in  self?.didTapSetReverseResolutionButton() })
-                actions.append(setReverseResolutionMenuElement)
-            case .aboutProfiles:
-                let aboutProfilesMenuElement = UIActionBridgeItem(title: String.Constants.learnMore.localized(),
-                                                               image: .systemQuestionmarkCircle,
-                                                               handler: { [weak self] in  self?.didTapAboutProfilesButton() })
-                actions.append(aboutProfilesMenuElement)
-            case .mintedOn(let chain):
-                let mintedOnChainMenuElement = UIActionBridgeItem(title: chain.fullName,
-                                                               image: .getNetworkSmallIcon(by: chain),
-                                                               handler: { [weak self] in  self?.didTapMintedOnChainButton() })
-                actions.append(mintedOnChainMenuElement)
-            }
-        }
-        
-        let popoverViewController = UIMenuBridgeView.instance(with: "",
-                                                              actions: actions)
-        popoverViewController.show(in: self.view, sourceView: navView)
-    }
-    
-    @objc func didTapSetPrimaryButton() {
-        logButtonPressedAnalyticEvents(button: .setPrimaryDomain)
-        UDVibration.buttonTap.vibrate()
-        presenter.didTapSetPrimaryButton()
-    }
-    
+  
     @objc func didTapShowWalletDetailsButton() {
-        logButtonPressedAnalyticEvents(button: .showWalletDetails)
+        logProfileButtonPressedAnalyticEvents(button: .showWalletDetails)
         UDVibration.buttonTap.vibrate()
         presenter.didTapShowWalletDetailsButton()
     }
     
     @objc func didTapSetReverseResolutionButton() {
-        logButtonPressedAnalyticEvents(button: .setReverseResolution)
+        logProfileButtonPressedAnalyticEvents(button: .setReverseResolution)
         UDVibration.buttonTap.vibrate()
         presenter.didTapSetReverseResolutionButton()
     }
     
     @objc func didTapCopyDomainButton() {
-        logButtonPressedAnalyticEvents(button: .copyDomain)
+        logProfileButtonPressedAnalyticEvents(button: .copyDomain)
         UDVibration.buttonTap.vibrate()
         presenter.didTapCopyDomainButton()
     }
     
     @objc func didTapAboutProfilesButton() {
-        logButtonPressedAnalyticEvents(button: .aboutProfile)
+        logProfileButtonPressedAnalyticEvents(button: .aboutProfile)
         UDVibration.buttonTap.vibrate()
         presenter.didTapAboutProfilesButton()
     }
     
     @objc func didTapMintedOnChainButton() {
-        logButtonPressedAnalyticEvents(button: .mintedOnChain)
+        logProfileButtonPressedAnalyticEvents(button: .mintedOnChain)
         UDVibration.buttonTap.vibrate()
         presenter.didTapMintedOnChainButton()
     }
@@ -274,54 +217,53 @@ private extension DomainProfileViewController {
             collectionView.contentInset.bottom = (view.frame.height - confirmUpdateButton.frame.minY) + defaultBottomOffset
         }
     }
+    
+    func logProfileButtonPressedAnalyticEvents(button: Analytics.Button) {
+        logButtonPressedAnalyticEvents(button: button, parameters: [.domainName: presenter.domainName])
+    }
 }
 
 // MARK: - Setup functions
 private extension DomainProfileViewController {
     func setup() {
         view.backgroundColor = .brandUnstoppableBlue
-        setupNavigation()
+        setupNavigation(actionGroups: [])
         setupCollectionView()
         setupConfirmButton()
         setupGradientView()
         addHideKeyboardTapGesture(cancelsTouchesInView: false, toView: nil)
     }
     
-    func setupNavigation() {
+    func setupNavigation(actionGroups: [DomainProfileActionsGroup]) {
+        // Share button
         let shareButton = UIButton()
         shareButton.tintColor = .foregroundOnEmphasis
         shareButton.setImage(.shareIcon, for: .normal)
         shareButton.addTarget(self, action: #selector(shareButtonPressed), for: .touchUpInside)
+        let shareBarButtonItem = UIBarButtonItem(customView: shareButton)
         
+        // More button
         let moreButton = UIButton()
         moreButton.tintColor = .foregroundOnEmphasis
         moreButton.setImage(.dotsCircleIcon, for: .normal)
         
-        
-        if #available(iOS 14.0, *) {
-            var children: [UIMenuElement] = []
-            
-            for group in availableActionGroups {
-                let groupChildren = group.map({ self.uiAction(for: $0) })
-                let menu = UIMenu(title: "", options: .displayInline, children: groupChildren)
-                children.append(menu)
-            }
-            
-            let menu = UIMenu(title: "", children: children)
-            moreButton.showsMenuAsPrimaryAction = true
-            moreButton.menu = menu
-            moreButton.addAction(UIAction(handler: { [weak self] _ in
-                self?.logButtonPressedAnalyticEvents(button: .dots)
-                UDVibration.buttonTap.vibrate()
-            }), for: .menuActionTriggered)
-        } else {
-            moreButton.addTarget(self, action: #selector(moreButtonPressed), for: .touchUpInside)
+        var children: [UIMenuElement] = []
+        for group in actionGroups {
+            let groupChildren = group.map({ self.uiAction(for: $0) })
+            let menu = UIMenu(title: "", options: .displayInline, children: groupChildren)
+            children.append(menu)
         }
         
-
-        let shareBarButtonItem = UIBarButtonItem(customView: shareButton)
+        let menu = UIMenu(title: "", children: children)
+        moreButton.showsMenuAsPrimaryAction = true
+        moreButton.menu = menu
+        moreButton.addAction(UIAction(handler: { [weak self] _ in
+            self?.logButtonPressedAnalyticEvents(button: .dots)
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
         let moreBarButtonItem = UIBarButtonItem(customView: moreButton)
 
+        // Assign
         navigationItem.rightBarButtonItems = [shareBarButtonItem, moreBarButtonItem]
     }
     
@@ -346,12 +288,6 @@ private extension DomainProfileViewController {
                                 identifier: .init(UUID().uuidString),
                                 handler: { [weak self] _ in  self?.didTapShowWalletDetailsButton() })
             }
-        case .setPrimaryDomain:
-            return UIAction(title: String.Constants.setAsPrimaryDomain.localized(),
-                            image: .personCropCircle,
-                            identifier: .init(UUID().uuidString),
-                            handler: { [weak self] _ in  self?.didTapSetPrimaryButton() })
-            
         case .setReverseResolution(let isEnabled):
             if #available(iOS 15.0, *) {
                 return UIAction(title: String.Constants.setReverseResolution.localized(),
@@ -504,6 +440,7 @@ private extension DomainProfileViewController {
                     let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
                                                                                withReuseIdentifier: CollectionDashesHeaderReusableView.reuseIdentifier,
                                                                                for: indexPath) as! CollectionDashesHeaderReusableView
+                    view.setDashesConfiguration(.domainProfile)
                     if case .generalInfo = section {
                         view.setAlignmentPosition(.top)
                     } else {
@@ -677,29 +614,7 @@ extension DomainProfileViewController {
 
 extension DomainProfileViewController {
     enum Action: Hashable {
-        case copyDomain, viewWallet(subtitle: String), setPrimaryDomain, setReverseResolution(isEnabled: Bool)
+        case copyDomain, viewWallet(subtitle: String), setReverseResolution(isEnabled: Bool)
         case aboutProfiles, mintedOn(chain: BlockchainType)
     }
 }
-
-struct DomainProfileViewController_Previews: PreviewProvider {
-    static var previews: some View {
-        UIViewControllerPreview {
-            let domain = DomainItem(name: "olegkuplin.x")
-            let wallet = UDWallet.createUnverified(address: "0x1944dF1425C2237Ec501206ba416B82f47f9901d")!
-            let walletInfo = WalletDisplayInfo(name: "Wallet",
-                                               address: "0x1944dF1425C2237Ec501206ba416B82f47f9901d",
-                                               domainsCount: 1,
-                                               source: .locallyGenerated,
-                                               isBackedUp: false,
-                                               isWithPrivateKey: true,
-                                               reverseResolutionDomain: nil)
-            let vc = UDRouter().buildDomainProfileModule(domain: domain,
-                                                         wallet: wallet,
-                                                         walletInfo: walletInfo,
-                                                         sourceScreen: .domainsCollection)
-            return vc
-        }
-    }
-}
-

@@ -31,6 +31,7 @@ final class MockUDDomainsService {
 
 // MARK: - UDDomainsServiceProtocol
 extension MockUDDomainsService: UDDomainsServiceProtocol {
+
     func getAllDomains() -> [DomainItem] {
         domains
     }
@@ -40,32 +41,36 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
     }
     
     func getCachedDomainsFor(wallets: [UDWallet]) -> [DomainItem] {
-        domains.filter({ $0.isOwned(by: wallets) })
+        var domains = [DomainItem]()
+        for wallet in wallets {
+            domains += walletToDomains[wallet.address] ?? []
+        }
+        return domains
     }
     
     func updateDomainsList(for userWallets:  [UDWallet]) async throws -> [DomainItem] {
-        domains
-//        workingQueue.sync {
-//            if domains.isEmpty {
-//                for (i, wallet) in userWallets.enumerated() {
-//                    for _ in 0..<2 {
-//                        if let domain = addDomain(suffix: "_\(i)",
-//                                                  wallet: wallet.address) {
-//                            walletToDomains[wallet.address, default: []].append(domain)
-//                        }
-//                    }
-//                }
-//
-//                if shouldShakePrimaryDomain {
-//                    shakePrimaryDomain()
-//                }
-//            }
-//
-//            return domains
-//        }
+        workingQueue.sync {
+            if domains.isEmpty {
+                for (i, wallet) in userWallets.enumerated() {
+                    for _ in 0..<2 {
+                        if let domain = addDomain(suffix: "_\(i)",
+                                                  wallet: wallet.address) {
+                            walletToDomains[wallet.address, default: []].append(domain)
+                        }
+                    }
+                }
+            }
+            return domains
+        }
     }
 
-    func updatePFP(for domains: [DomainItem]) async throws -> [DomainItem] { [] }
+    func getCachedDomainsPFPInfo() -> [DomainPFPInfo] {
+        []
+    }
+    
+    func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo] {
+        []
+    }
 
     func getAllUnMintedDomains(for email: String, securityCode: String) async throws -> [String] {
         try await Task.sleep(seconds: 0.3)
@@ -77,10 +82,11 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
 //            domains.append("domain_\(i).\(tld)")
 //        }
 //        return domains
+        
 //        return []
 //        return ["coolguy.coin"]
-//        return ["coolguy.crypto"]
-        return ["coolguy.crypto",  "coolguy.coin"]
+        return ["coolguy.crypto"]
+//        return ["coolguy.crypto",  "coolguy.coin"]
 //        return ["coolguy.crypto", "evencoolerguy.x", "abc.x", "daniil.nft", "jongordon.x", "one.x", "two.x", "three.crypto", "four.x", "five.x", "six.x", "seven.x", "eight.x"]
     }
     
@@ -104,46 +110,26 @@ extension MockUDDomainsService {
 
 // MARK: - Private methods
 private extension MockUDDomainsService {
-    func addDomain(blockchain: BlockchainType = .Ethereum,
-                   isMinting: Bool = false) -> DomainItem? {
+    
+    @discardableResult
+    func addDomain(suffix: String = "",
+                   blockchain: BlockchainType = .Matic,
+                   isMinting: Bool = false,
+                   wallet: String? = nil) -> DomainItem? {
         if self.domains.count < self.DomainsLimit {
             let isZil = blockchain == .Zilliqa
             let tld = isZil ? "zil" : "x"
-            var newDomain = DomainItem(name: "joshgordon_\(self.domains.count).\(tld)",
-                                       isMinting: isMinting)
+            var newDomain = DomainItem(name: "coolguy_\(self.domains.count)_\(suffix).\(tld)")
             newDomain.blockchain = blockchain
-            
-            if shouldMockPrimaryDomain,
-               self.domains.isEmpty {
-                newDomain.isPrimary = true
+            if let wallet {
+                newDomain.ownerWallet = wallet
             }
             
             Debugger.printInfo("Will add domain \(newDomain.name)")
-            
+
             self.domains.append(newDomain)
             return newDomain
         }
         return nil
-    }
-    
-    func getMockImage() -> UIImage? {
-        let name = mockImageNames[domains.count] //.randomElement()!
-
-        return UIImage(named: name)
-    }
-    
-    func shakePrimaryDomain() {
-        if let primaryDomainName = self.primaryDomainName {
-            for i in 0..<domains.count {
-                domains[i].isPrimary = domains[i].name == primaryDomainName
-            }
-        } else {
-            if let randomDomain = domains.randomElement() {
-                Debugger.printInfo(topic: .None, "Will set primary domain \(randomDomain.name)")
-                for i in 0..<domains.count {
-                    domains[i].isPrimary = domains[i] == randomDomain
-                }
-            }
-        }
     }
 }

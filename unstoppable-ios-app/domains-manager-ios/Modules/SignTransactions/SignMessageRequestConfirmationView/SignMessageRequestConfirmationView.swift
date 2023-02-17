@@ -33,6 +33,7 @@ final class SignMessageRequestConfirmationView: BaseSignTransactionView {
 extension SignMessageRequestConfirmationView {
     func configureWith(_ configuration: SignMessageTransactionUIConfiguration) {
         addSigningMessageView(signingMessage: configuration.signingMessage)
+        setNetworkFrom(appInfo: configuration.connectionConfig.appInfo, domain: configuration.connectionConfig.domain)
         setWith(appInfo: configuration.connectionConfig.appInfo)
         setDomainInfo(configuration.connectionConfig.domain, isSelectable: false)
     }

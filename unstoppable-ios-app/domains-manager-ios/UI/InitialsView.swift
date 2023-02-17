@@ -19,7 +19,7 @@ final class InitialsView: UIView {
     init(initials: String, size: InitialsSize = .default, style: Style = .gray) {
         super.init(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
         
-        self.initials = initials
+        self.initials = initials.isEmpty ? Constants.defaultInitials : initials
         self.size = size
         self.style = style
         self.setup()

@@ -37,12 +37,12 @@ extension AppLaunchService: AppLaunchServiceProtocol {
                    completion: @escaping EmptyAsyncCallback) {
         self.sceneDelegate = sceneDelegate
         self.completion = completion
-        checkFirstLaunchAfterProfilesReleased()
         checkFirstLaunchAfterGIFSupportReleased()
         resolveInitialViewController()
         wakeUpServices(walletConnectService: walletConnectService,
                        walletConnectServiceV2: walletConnectServiceV2,
                        walletConnectClientService: walletConnectClientService)
+        preparePopularPlaceholders()
     }
     
     func addListener(_ listener: AppLaunchServiceListener) {
@@ -146,13 +146,13 @@ private extension AppLaunchService {
 
         Task {
             await dataAggregatorService.aggregateData()
-            let domains = await dataAggregatorService.getDomains()
+            let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
             await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: mintingState)))
         }
         
         Task {
-            let domains = await dataAggregatorService.getDomains()
+            let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let timePassed = Date().timeIntervalSince(startTime)
             let timeLeft: TimeInterval = max(0, maximumWaitingTime - timePassed)
             try await Task.sleep(seconds: timeLeft)
@@ -162,8 +162,8 @@ private extension AppLaunchService {
         }
     }
     
-    func mintingStateFor(domains: [DomainItem], mintingDomains: [MintingDomain]) async -> DomainsCollectionMintingState {
-        if domains.first(where: { $0.isPrimary })?.isMinting == true {
+    func mintingStateFor(domains: [DomainDisplayInfo], mintingDomains: [MintingDomain]) async -> DomainsCollectionMintingState {
+        if domains.first(where: { $0.isPrimary })?.state == .minting {
             await ConfettiImageView.prepareAnimationsAsync()
             return .mintingPrimary
         } else {
@@ -208,24 +208,11 @@ private extension AppLaunchService {
     func appVersionUpdated(_ appVersion: AppVersionInfo) {
         if appVersion.dotcoinDeprecationReleased == true {
             Constants.deprecatedTLDs = ["coin"]
-            if let primaryDomainTLD = UserDefaults.primaryDomainName?.getTldName(),
-               Constants.deprecatedTLDs.contains(primaryDomainTLD) {
-                UserDefaults.primaryDomainName = nil
-            }
         }
         if !appVersion.mintingIsEnabled {
             appContext.toastMessageService.showToast(.mintingUnavailable, isSticky: true)
         } else {
             appContext.toastMessageService.removeStickyToast(.mintingUnavailable)
-        }
-    }
-    
-    func checkFirstLaunchAfterProfilesReleased() {
-        /// When new domain profiles feature released, we encourage our users to take a look.
-        /// Release: End of November, 2022
-        if UserDefaults.isFirstLaunchAfterProfileFeatureReleased {
-            UserDefaults.isFirstLaunchAfterProfileFeatureReleased = false
-            UserDefaults.didTapPrimaryDomain = false
         }
     }
     
@@ -236,6 +223,7 @@ private extension AppLaunchService {
         walletConnectServiceV2.setUIHandler(coreAppCoordinator) // wake up
         
         walletConnectClientService.setUIHandler(coreAppCoordinator) // wake up
+        walletConnectServiceV2.setWalletUIHandler(coreAppCoordinator) // wake up
         _ = AppGroupsBridgeFromDataAggregatorService.shared // wake up
     }
     
@@ -247,6 +235,21 @@ private extension AppLaunchService {
                 await appContext.imageLoadingService.clearStoredImages()
                 await appContext.imageLoadingService.clearCache()
                 UserDefaults.isFirstLaunchAfterGIFSupportReleased = false
+            }
+        }
+    }
+    
+    /// Placeholders aren't stored on the disk, they're generated after each launch and cached in memory when needed.
+    /// Downside: When add coins screen get opened, it require multiple placeholders to be prepared at a time, which cause UI hang.
+    /// Solution: Prepare popular placeholders in advance while we show 1 sec of launch screen
+    func preparePopularPlaceholders() {
+        Task.detached(priority: .background) {
+            let toPrepare = appContext.coinRecordsService.popularCoinsTickers.map({ String($0.first ?? "a") }).joined() + "0ab"
+            for char in toPrepare {
+                _ = await appContext.imageLoadingService.loadImage(from: .initials(String(char),
+                                                                                   size: .default,
+                                                                                   style: .gray),
+                                                                   downsampleDescription: nil)
             }
         }
     }

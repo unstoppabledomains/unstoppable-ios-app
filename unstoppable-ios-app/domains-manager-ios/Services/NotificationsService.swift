@@ -176,7 +176,7 @@ fileprivate extension NotificationsService {
                                                receivedState: receiveState)
             switch event {
             case .domainProfileUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .wcDeepLink, .recordsUpdated:
-                return [.alert, .sound]
+                return [.list, .banner, .sound]
             case .walletConnectRequest:
                 return []
             }

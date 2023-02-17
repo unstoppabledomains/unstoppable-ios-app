@@ -54,6 +54,7 @@ extension PaymentTransactionRequestConfirmationView {
     func configureWith(_ configuration: SignPaymentTransactionUIConfiguration) {
         self.configuration = configuration
         addCostView(configuration: configuration)
+        setNetworkFrom(appInfo: configuration.connectionConfig.appInfo, domain: configuration.connectionConfig.domain)
         setWith(appInfo: configuration.connectionConfig.appInfo)
         setDomainInfo(configuration.connectionConfig.domain, isSelectable: false)
         balanceValueWarningIndicator?.isHidden = true
@@ -140,9 +141,9 @@ private extension PaymentTransactionRequestConfirmationView {
         }
         let costView: PaymentTransactionDisplayCostView
         if configuration.isGasFeeOnlyTransaction {
-            costView = PaymentTransactionGasOnlyCostView()
+            costView = PaymentTransactionGasOnlyCostView(frame: bounds)
         } else {
-            costView = PaymentTransactionCostView()
+            costView = PaymentTransactionCostView(frame: bounds)
         }
         
         costView.embedInSuperView(costContainerView)

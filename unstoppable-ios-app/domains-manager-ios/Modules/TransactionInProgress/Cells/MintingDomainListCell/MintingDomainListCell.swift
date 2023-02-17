@@ -11,20 +11,13 @@ final class MintingDomainListCell: BaseListCollectionViewCell {
 
     @IBOutlet private weak var domainNameImageView: UIImageView!
     @IBOutlet private weak var domainNameLabel: UILabel!
-    @IBOutlet private weak var primaryImageView: UIImageView!
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        isSelectable = false
-    }
-
+   
 }
 
 // MARK: - Open methods
 extension MintingDomainListCell {
-    func setWith(domain: String, isPrimary: Bool) {
-        primaryImageView.isHidden = !isPrimary
+    func setWith(domain: String, isSelectable: Bool) {
+        setSelectable(isSelectable)
         domainNameLabel.setAttributedTextWith(text: domain,
                                               font: .currentFont(withSize: 16, weight: .medium),
                                               textColor: .foregroundDefault)
@@ -33,5 +26,26 @@ extension MintingDomainListCell {
                                                                    downsampleDescription: nil)
             domainNameImageView.image = image
         }
+    }
+    
+    func setWith(domain: DomainDisplayInfo, isSelectable: Bool) {
+        setSelectable(isSelectable)
+        domainNameLabel.setAttributedTextWith(text: domain.name,
+                                              font: .currentFont(withSize: 16, weight: .medium),
+                                              textColor: .foregroundDefault)
+        Task {
+            let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain,
+                                                                                                   size: .default),
+                                                                       downsampleDescription: nil)
+            domainNameImageView.image = image
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension MintingDomainListCell {
+    func setSelectable(_ isSelectable: Bool) {
+        self.isSelectable = isSelectable
+        self.isUserInteractionEnabled = isSelectable
     }
 }

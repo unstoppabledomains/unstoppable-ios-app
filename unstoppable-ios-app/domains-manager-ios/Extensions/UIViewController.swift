@@ -97,6 +97,14 @@ extension UIViewController {
         
         return topController
     }
+    
+    func allChilds() -> [UIViewController] {
+        var children = self.children
+        for child in children {
+            children.append(contentsOf: child.allChilds())
+        }
+        return children
+    }
 }
 
 // MARK: - AuthenticationUIHandler

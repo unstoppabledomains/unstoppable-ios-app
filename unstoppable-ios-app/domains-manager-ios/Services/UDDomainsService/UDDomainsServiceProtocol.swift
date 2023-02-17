@@ -10,7 +10,8 @@ import Foundation
 protocol UDDomainsServiceProtocol {
     func getCachedDomainsFor(wallets: [UDWallet]) -> [DomainItem]
     func updateDomainsList(for userWallets:  [UDWallet]) async throws -> [DomainItem]
-    func updatePFP(for domains: [DomainItem]) async throws -> [DomainItem]
+    func getCachedDomainsPFPInfo() -> [DomainPFPInfo]
+    func updateDomainsPFPInfo(for domains: [DomainItem]) async -> [DomainPFPInfo] 
     func getAllUnMintedDomains(for email: String,
                                securityCode: String) async throws -> [String]
     func mintDomains(_ domains: [String],

@@ -57,6 +57,11 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         window?.makeKeyAndVisible()
         topInfoWindow?.makeKeyAndVisible()
     }
+    
+    @discardableResult
+    func goBackToPreviousApp() -> Bool {
+        goBackToPreviousAppIfCan()
+    }
 }
 
 // MARK: - DeepLinkServiceListener
@@ -149,7 +154,10 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
                     case .connectionTimeout:
                         showErrorAlert(in: hostView)
                     case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance:
-                        guard !(hostView is PullUpViewController) else { return }
+                        if let pullUpView = hostView as? PullUpViewController,
+                           pullUpView.pullUp != .wcLoading {
+                            return
+                        }
                         
                         showErrorAlert(in: hostView)
                     }
@@ -178,31 +186,34 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
 // MARK: - WalletConnectClientUIHandler
 extension CoreAppCoordinator: WalletConnectClientUIHandler {
     func didDisconnect(walletDisplayInfo: WalletDisplayInfo) {
-        switch currentRoot {
-        case .domainsCollection, .onboarding:
-            guard let windowScene = window?.windowScene else { return }
-            
-            Task {
-                let vc = UIViewController()
-                await MainActor.run {
-                    let topInfoWindow = UIWindow(windowScene: windowScene)
-                    topInfoWindow.overrideUserInterfaceStyle = UserDefaults.appearanceStyle
-                    self.topInfoWindow = topInfoWindow
-                    topInfoWindow.backgroundColor = .clear
-                    vc.view.backgroundColor = .clear
-                    vc.modalPresentationStyle = .overFullScreen
-                    topInfoWindow.rootViewController = vc
-                    topInfoWindow.makeKeyAndVisible()
-                }
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            switch self.currentRoot {
+            case .domainsCollection, .onboarding:
+                guard let windowScene = self.window?.windowScene else { return }
                 
-                await pullUpViewService.showExternalWalletDisconnected(from: walletDisplayInfo, in: vc)
-                
-                await MainActor.run {
-                    window?.makeKeyAndVisible()
-                    topInfoWindow = nil
+                Task {
+                    let vc = UIViewController()
+                    await MainActor.run {
+                        let topInfoWindow = UIWindow(windowScene: windowScene)
+                        topInfoWindow.overrideUserInterfaceStyle = UserDefaults.appearanceStyle
+                        self.topInfoWindow = topInfoWindow
+                        topInfoWindow.backgroundColor = .clear
+                        vc.view.backgroundColor = .clear
+                        vc.modalPresentationStyle = .overFullScreen
+                        topInfoWindow.rootViewController = vc
+                        topInfoWindow.makeKeyAndVisible()
+                    }
+                    
+                    await self.pullUpViewService.showExternalWalletDisconnected(from: walletDisplayInfo, in: vc)
+                    
+                    await MainActor.run {
+                        self.window?.makeKeyAndVisible()
+                        self.topInfoWindow = nil
+                    }
                 }
+            default: return
             }
-        default: return
         }
     }
 }
@@ -252,6 +263,22 @@ private extension CoreAppCoordinator {
                           duration: 0.3,
                           options: options,
                           animations: { })
+    }
+    
+    func goBackToPreviousAppIfCan() -> Bool {
+        let app = UIApplication.shared
+        let selector = Selector(("sendResponseForDestination:"))
+        if let sysNavIvar = class_getInstanceVariable(UIApplication.self, "_systemNavigationAction"),
+           let actionObject = object_getIvar(app, sysNavIvar) as? NSObject,
+           actionObject.responds(to: selector),
+           let destinations = actionObject.value(forKey: "destinations") as? [Int],
+           destinations.count > 1 {
+            let destination = destinations[destinations.count - 2] // Get previous screen
+            actionObject.perform(selector, with: destination)
+            return true
+        } else {
+            return false
+        }
     }
 }
 

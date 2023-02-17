@@ -9,7 +9,7 @@ import Foundation
 
 @MainActor
 protocol DomainProfileGeneralData {
-    var domain: DomainItem { get }
+    var domain: DomainDisplayInfo { get }
     var wallet: UDWallet { get }
     var walletInfo: WalletDisplayInfo { get }
 }

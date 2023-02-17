@@ -10,20 +10,24 @@ import Foundation
 final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionViewPresenter {
     
     var resultCallback: DomainItemSelectedCallback?
-    private let selectedDomain: DomainItem
+    private let domains: [DomainDisplayInfo]
+    private let reverseResolutionDomain: DomainDisplayInfo
     override var analyticsName: Analytics.ViewName { .setupReverseResolution }
+    override var domainName: String? { reverseResolutionDomain.name }
     
     init(view: SetupReverseResolutionViewProtocol,
          wallet: UDWallet,
          walletInfo: WalletDisplayInfo,
-         domain: DomainItem,
+         domains: [DomainDisplayInfo],
+         reverseResolutionDomain: DomainDisplayInfo,
          udWalletsService: UDWalletsServiceProtocol,
          resultCallback: @escaping DomainItemSelectedCallback) {
-        self.selectedDomain = domain
+        self.reverseResolutionDomain = reverseResolutionDomain
+        self.domains = domains
         super.init(view: view,
                    wallet: wallet,
                    walletInfo: walletInfo,
-                   domain: domain,
+                   domain: reverseResolutionDomain,
                    udWalletsService: udWalletsService)
         self.resultCallback = resultCallback
     }
@@ -36,8 +40,8 @@ final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionView
 
             do {
                 try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                try await setupReverseResolutionFor(domain: selectedDomain)
-                finish(result: .homeAndReverseResolutionSet(selectedDomain))
+                try await setupReverseResolutionFor(domain: reverseResolutionDomain)
+                finish(result: .domainsOrderAndReverseResolutionSet(domains, reverseResolutionDomain: reverseResolutionDomain))
             } catch {
                 await MainActor.run {
                     view.showAlertWith(error: error)
@@ -49,7 +53,7 @@ final class SetupNewReverseResolutionDomainPresenter: SetupReverseResolutionView
     override func skipButtonPressed() {
         super.skipButtonPressed()
         
-        finish(result: .homeDomainSet(selectedDomain))
+        finish(result: .domainsOrderSet(domains))
     }
 }
 

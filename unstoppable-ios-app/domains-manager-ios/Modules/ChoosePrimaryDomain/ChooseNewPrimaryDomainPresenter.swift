@@ -5,29 +5,27 @@
 //  Created by Oleg Kuplin on 30.05.2022.
 //
 
-import Foundation
+import UIKit
 
 typealias DomainItemSelectedCallback = (SetNewHomeDomainResult)->()
 
 enum SetNewHomeDomainResult {
     case cancelled
-    case homeDomainSet(_ domain: DomainItem)
-    case homeAndReverseResolutionSet(_ domain: DomainItem)
+    case domainsOrderSet(_ domains: [DomainDisplayInfo])
+    case domainsOrderAndReverseResolutionSet(_ domains: [DomainDisplayInfo], reverseResolutionDomain: DomainDisplayInfo)
 }
 
 final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
     
-    private var domains: [DomainItem]
+    private var domains: [DomainDisplayInfo]
     private let configuration: Configuration
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private var walletsWithInfo: [WalletWithInfo] = []
-    private var selectedDomainInfo: SelectedDomainInfo?
     var resultCallback: DomainItemSelectedCallback?
-    override var title: String { String.Constants.choosePrimaryDomainTitle.localized() }
     override var analyticsName: Analytics.ViewName { configuration.analyticsView }
     
     init(view: ChoosePrimaryDomainViewProtocol,
-         domains: [DomainItem],
+         domains: [DomainDisplayInfo],
          configuration: Configuration,
          dataAggregatorService: DataAggregatorServiceProtocol,
          resultCallback: @escaping DomainItemSelectedCallback) {
@@ -36,136 +34,160 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
         self.dataAggregatorService = dataAggregatorService
         super.init(view: view)
         self.resultCallback = resultCallback
-        dataAggregatorService.addListener(self)
     }
     
+    @MainActor
     override func viewDidLoad() {
         Task {
-            if let domain = self.configuration.selectedDomain {
-                let isReverseResolutionSet = await dataAggregatorService.isReverseResolutionSet(for: domain.name)
-                self.selectedDomainInfo = SelectedDomainInfo(domain: domain,
-                                                             isReverseResolutionSet: isReverseResolutionSet)
-            }
-            await setupView()
-            await setConfirmButton()
+            setConfirmButton()
+            setupView()
             await showData()
         }
     }
     
+    @MainActor
     override func didSelectItem(_ item: ChoosePrimaryDomainViewController.Item) {
-        Task {
-            switch item {
-            case .domain(let domain, _):
-                logAnalytic(event: .domainPressed, parameters: [.domainName: domain.name])
-                UDVibration.buttonTap.vibrate()
-                self.selectedDomainInfo = SelectedDomainInfo(domain: domain, isReverseResolutionSet: false)
-            case .reverseResolutionDomain(let domain, _ , _):
-                logAnalytic(event: .domainPressed, parameters: [.domainName: domain.name])
-                UDVibration.buttonTap.vibrate()
-                self.selectedDomainInfo = SelectedDomainInfo(domain: domain, isReverseResolutionSet: true)
-            case .domainName(_, _), .header:
-                return
-            }
-            await showData()
-            await setConfirmButton()
+        guard isSearchActive else { return }
+        
+        switch item {
+        case .domain(let domain, let rrInfo, _):
+            logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
+            stopSearchAndScroll(to: domain, rrInfo: rrInfo)
+        case .domainName, .header, .searchEmptyState:
+            return
         }
     }
     
     override func confirmButtonPressed() {
         Task {
-            guard let selectedDomainInfo = selectedDomainInfo,
+            guard let primaryDomain = domains.first,
                   let nav = await view?.cNavigationController else { return }
             
-            logButtonPressedAnalyticEvents(button: .confirm, parameters: [.domainName: selectedDomainInfo.domain.name])
-            if selectedDomainInfo.isReverseResolutionSet {
-                await finish(result: .homeDomainSet(selectedDomainInfo.domain))
-            } else {
-                let selectedDomain = selectedDomainInfo.domain
-                
+            saveDomainsOrder()
+            if primaryDomain.isSetForRR || !configuration.shouldAskToSetReverseResolutionIfNotSetYet {
+                await finish(result: .domainsOrderSet(domains))
+            } else {                
                 // Do not ask to set RR for domains on ETH
-                if selectedDomain.blockchain != .Matic,
-                   !configuration.canReverseResolutionETHDomain {
-                    await finish(result: .homeDomainSet(selectedDomain))
+                if !configuration.canReverseResolutionETHDomain,
+                   primaryDomain.blockchain != .Matic {
+                    await finish(result: .domainsOrderSet(domains))
                     return
                 }
                 
-                if !(await dataAggregatorService.isReverseResolutionChangeAllowed(for: selectedDomain)) {
-                    await finish(result: .homeDomainSet(selectedDomain))
+                if !(await dataAggregatorService.isReverseResolutionChangeAllowed(for: primaryDomain)) {
+                    await finish(result: .domainsOrderSet(domains))
                     return
                 }
                 
-                guard let walletWithInfo = walletsWithInfo.first(where: { selectedDomain.isOwned(by: $0.wallet) }),
+                guard let walletWithInfo = walletsWithInfo.first(where: { primaryDomain.isOwned(by: $0.wallet) }),
                       let displayInfo = walletWithInfo.displayInfo,
                       let resultCallback = self.resultCallback else {
                     Debugger.printFailure("Failed to find wallet for selected home screen domain")
-                    await finish(result: .homeDomainSet(selectedDomain))
+                    await finish(result: .domainsOrderSet(domains))
                     return
                 }
                 
+                saveDomainsOrder()
                 await UDRouter().showSetupNewReverseResolutionModule(in: nav,
                                                                      wallet: walletWithInfo.wallet,
                                                                      walletInfo: displayInfo,
-                                                                     domain: selectedDomain,
+                                                                     domains: self.domains,
+                                                                     reverseResolutionDomain: primaryDomain,
                                                                      resultCallback: resultCallback)
             }
         }
     }
-}
-
-// MARK: - DataAggregatorServiceListener
-extension ChooseNewPrimaryDomainPresenter: DataAggregatorServiceListener {
-    func dataAggregatedWith(result: DataAggregationResult) {
-        Task {
-            switch result {
-            case .success(let resultType):
-                switch resultType {
-                case .domainsUpdated(let domains), .domainsPFPUpdated(let domains):
-                    let isDomainsChanged = self.domains != domains
-                    if isDomainsChanged {
-                        self.domains = domains
-                        await showData()
-                    }
-                case .primaryDomainChanged, .walletsListUpdated:
-                    return
-                }
-            case .failure:
-                return
-            }
+   
+    override func didMoveItem(from fromIndex: Int, to toIndex: Int) {
+        if fromIndex < 0 || toIndex >= domains.count {
+            Debugger.printFailure("Did move domains out of range")
+            showDataAsync()
+            return
         }
+
+        let movedDomain = domains[fromIndex]
+        domains.remove(at: fromIndex)
+        domains.insert(movedDomain, at: toIndex)
+        logAnalytic(event: .domainMoved, parameters: [.domainName : movedDomain.name])
+    }
+    
+    @MainActor
+    override func didSearchWith(key: String) {
+        super.didSearchWith(key: key)
+        showDataAsync()
+    }
+    
+    @MainActor
+    override func didStartSearch() {
+        super.didStartSearch()
+        
+        view?.setTitleHidden(true)
+        showDataAsync()
+    }
+    
+    @MainActor
+    override func didStopSearch() {
+        super.didStopSearch()
+        
+        view?.setTitleHidden(false)
+        showDataAsync()
     }
 }
 
 // MARK: - Private functions
 private extension ChooseNewPrimaryDomainPresenter {
+    @MainActor
+    func stopSearchAndScroll(to domain: DomainDisplayInfo, rrInfo: WalletDisplayInfo?) {
+        view?.stopSearching()
+        super.didStopSearch()
+        view?.setTitleHidden(false)
+        Task {
+            await showData()
+            try? await Task.sleep(seconds: 0.3)
+            view?.scrollTo(item: .domain(domain, reverseResolutionWalletInfo: rrInfo, isSearching: false))
+        }
+    }
+    
+    func showDataAsync() {
+        Task { await showData() }
+    }
+    
     func showData() async {
         walletsWithInfo = await dataAggregatorService.getWalletsWithInfo()
-        var snapshot = ChoosePrimaryDomainSnapshot()
-    
         let walletsWithRR = walletsWithInfo.filter({ $0.displayInfo?.reverseResolutionDomain != nil })
-        let selectedDomain = self.selectedDomainInfo?.domain
+
+        var snapshot = ChoosePrimaryDomainSnapshot()
+        var domains = self.domains
         
-        if !walletsWithRR.isEmpty {
-            var domains = domains
-
-            snapshot.appendSections([.reverseResolutionDomains])
-            for walletWithRR in walletsWithRR {
-                guard let walletInfo = walletWithRR.displayInfo,
-                      let reverseResolutionDomain = walletInfo.reverseResolutionDomain else { continue }
-
-                if let i = domains.firstIndex(where: { $0.name == reverseResolutionDomain.name }) {
-                    domains.remove(at: i)
-                }
-
-                snapshot.appendItems([ChoosePrimaryDomainViewController.Item.reverseResolutionDomain(reverseResolutionDomain, isSelected: reverseResolutionDomain.name == selectedDomain?.name, walletInfo: walletInfo)])
-            }
-
+        func addDomainsListToSnapshot() {
             snapshot.appendSections([.allDomains])
-            snapshot.appendItems(domains.map({ ChoosePrimaryDomainViewController.Item.domain($0, isSelected: $0.name == selectedDomain?.name) }))
-        } else {
-            snapshot.appendSections([.main(0)])
-            snapshot.appendItems(domains.map({ ChoosePrimaryDomainViewController.Item.domain($0, isSelected: $0.name == selectedDomain?.name) }))
+            snapshot.appendItems(domains.map({ domain in
+                let walletWithInfo = walletsWithRR.first(where: { $0.displayInfo?.reverseResolutionDomain?.isSameEntity(domain) == true })
+                let displayInfo = walletWithInfo?.displayInfo
+                return ChoosePrimaryDomainViewController.Item.domain(domain,
+                                                                     reverseResolutionWalletInfo: displayInfo,
+                                                                     isSearching: isSearchActive)
+            }))
         }
-        
+                
+        if isSearchActive {
+            if !searchKey.isEmpty {
+                domains = domains.filter({ $0.name.lowercased().contains(searchKey.lowercased()) })
+                if domains.isEmpty {
+                    snapshot.appendSections([.searchEmptyState])
+                    snapshot.appendItems([.searchEmptyState(mode: .noResults)])
+                } else {
+                    addDomainsListToSnapshot()
+                }
+            } else {
+                snapshot.appendSections([.searchEmptyState])
+                snapshot.appendItems([.searchEmptyState(mode: .searchStarted)])
+            }
+        } else {
+            snapshot.appendSections([.header])
+            snapshot.appendItems([.header])
+            addDomainsListToSnapshot()
+        }
         
         await view?.applySnapshot(snapshot, animated: true)
     }
@@ -173,7 +195,7 @@ private extension ChooseNewPrimaryDomainPresenter {
     @MainActor
     func setConfirmButton() {
         view?.setConfirmButtonTitle(String.Constants.confirm.localized())
-        view?.setConfirmButtonEnabled(selectedDomainInfo != nil && selectedDomainInfo?.domain != configuration.selectedDomain)
+        view?.setConfirmButtonEnabled(true)
     }
     
     @MainActor
@@ -182,23 +204,27 @@ private extension ChooseNewPrimaryDomainPresenter {
     }
     
     func finish(result: SetNewHomeDomainResult) async {
-        await view?.cNavigationController?.dismiss(animated: true)
+        if configuration.shouldDismissWhenFinished {
+            await view?.cNavigationController?.dismiss(animated: true)
+        } else {
+            await view?.cNavigationController?.popViewController(animated: true)
+        }
         resultCallback?(result)
     }
-}
-
-// MARK: - Private methods
-private extension ChooseNewPrimaryDomainPresenter {
-    struct SelectedDomainInfo {
-        let domain: DomainItem
-        let isReverseResolutionSet: Bool
+    
+    func saveDomainsOrder() {
+        for i in 0..<domains.count {
+            domains[i].setOrder(i)
+        }
     }
 }
 
+// MARK: - Configuration
 extension ChooseNewPrimaryDomainPresenter {
     struct Configuration {
-        var selectedDomain: DomainItem? = nil
+        var shouldAskToSetReverseResolutionIfNotSetYet: Bool = true
         let canReverseResolutionETHDomain: Bool
         let analyticsView: Analytics.ViewName
+        var shouldDismissWhenFinished: Bool = true
     }
 }

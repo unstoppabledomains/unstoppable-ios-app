@@ -9,6 +9,7 @@ import UIKit
 
 final class CNavigationBar: UIView {
     
+    static let animationDuration: TimeInterval = 0.25
     let largeTitleAttributes: [NSAttributedString.Key : Any] = [.foregroundColor: UIColor.label,
                                                                 .font: UIFont.systemFont(ofSize: 34, weight: .bold)]
     private var customLargeTitleAttributes: [NSAttributedString.Key : Any] = [:]
@@ -23,11 +24,12 @@ final class CNavigationBar: UIView {
     private var yOffset: CGFloat = 0
     var isModalInPageSheet = false
     var scrollableContentYOffset: CGFloat?
-    var titleLabel: UIView { navBarContentView.titleLabel }
-    var backButton: CNavigationBarButton { navBarContentView.backButton }
+    var titleLabel: UILabel { navBarContentView.titleLabel }
+    var backButton: CNavigationBarBackButton { navBarContentView.backButton }
     var backButtonPressedCallback: (()->())?
     var alwaysShowBackButton = false
     var shouldPassThroughEvents = false
+    var isTitleHidden: Bool { navBarContentView.isTitleHidden }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,15 +53,14 @@ final class CNavigationBar: UIView {
         
         let modalOffset: CGFloat = isModalInPageSheet ? 10 : 0
         let safeAreaTopInset: CGFloat = superview.safeAreaLayoutGuide.layoutFrame.minY
-        let navigationBarHeight = Self.Constants.navigationBarHeight
-        navBarContentView.frame = CGRect(x: 0,
-                                         y: safeAreaTopInset + modalOffset,
-                                         width: bounds.width,
-                                         height: navigationBarHeight)
+        navBarContentView.frame.size.width = bounds.width
+        navBarContentView.frame.origin = CGPoint(x: 0,
+                                                 y: safeAreaTopInset + modalOffset)
+        let navigationBarHeight = navBarContentView.bounds.height
         navBarBlur.frame = CGRect(x: 0, y: 0, width: bounds.width, height: navBarContentView.frame.maxY)
         
         largeTitleView.frame = CGRect(x: 0,
-                                      y: navBarContentView.frame.maxY,
+                                      y: Self.Constants.navigationBarHeight + safeAreaTopInset,
                                       width: bounds.width,
                                       height: largeTitleHeight)
         
@@ -96,6 +97,7 @@ extension CNavigationBar {
         navBarContentView.setBarButtons(navigationItem.leftBarButtonItems ?? [],
                                                       rightItems: navigationItem.rightBarButtonItems ?? [])
         navBarContentView.backButtonConfiguration = child?.navBackButtonConfiguration ?? .default
+        navBarContentView.set(searchBarConfiguration: child?.searchBarConfiguration)
         divider.backgroundColor = child?.navBarDividerColor ?? .systemGray6
         largeTitleImageView.frame.size = child?.largeTitleConfiguration?.largeTitleIconSize ?? Self.Constants.largeTitleIconSize
         largeTitleImageView?.image = child?.largeTitleConfiguration?.largeTitleIcon
@@ -141,11 +143,12 @@ extension CNavigationBar {
     
     func setYOffset(_ yOffset: CGFloat) {
         self.yOffset = yOffset
+        navBarContentView.setYOffset(yOffset)
         calculateLargeTitleFrame()
     }
     
     func setLargeTitle(hidden: Bool, animated: Bool) {
-        UIView.animate(withDuration: animated ? 0.25 : 0) {
+        UIView.animate(withDuration: animated ? Self.animationDuration : 0) {
             self.largeTitleLabel.alpha = hidden ? 0 : 1
         }
     }
@@ -153,6 +156,10 @@ extension CNavigationBar {
     func setBlur(hidden: Bool, animated: Bool = true) {
         let alpha: CGFloat = hidden ? 0 : 1
         setBlur(alpha: alpha, animated: animated)
+    }
+    
+    func setSearchActive(_ isSearchActive: Bool, animated: Bool) {
+        navBarContentView.setSearchActive(isSearchActive, animated: animated)
     }
     
     var largeTitleOrigin: CGPoint {
@@ -206,8 +213,8 @@ private extension CNavigationBar {
                 largeTitleImageView.frame.origin.y = Self.Constants.largeTitleOrigin.y - yOffset
                 
                 if largeTitleImageView.frame.origin.y < 0 {
-                    let covering = abs(largeTitleImageView.frame.origin.y)
-                    setMask(with: CGRect(x: 0, y: 0, width: largeTitleImageView.bounds.width, height: covering), in: largeTitleImageView)
+                    let covering = abs(largeTitleImageView.frame.origin.y) + Self.Constants.largeTitleOrigin.y + divider.bounds.height
+                    CNavigationHelper.setMask(with: CGRect(x: 0, y: 0, width: largeTitleImageView.bounds.width, height: covering), in: largeTitleImageView)
                 } else {
                     largeTitleImageView.layer.mask = nil
                 }
@@ -215,8 +222,8 @@ private extension CNavigationBar {
             
             
             if largeTitleLabel.frame.origin.y < 0 {
-                let covering = abs(largeTitleLabel.frame.origin.y)
-                setMask(with: CGRect(x: 0, y: 0, width: largeTitleLabel.bounds.width, height: covering), in: largeTitleLabel)
+                let covering = abs(largeTitleLabel.frame.origin.y) + Self.Constants.largeTitleOrigin.y + divider.bounds.height
+                CNavigationHelper.setMask(with: CGRect(x: 0, y: 0, width: largeTitleLabel.bounds.width, height: covering), in: largeTitleLabel)
             } else {
                 largeTitleLabel.layer.mask = nil
             }
@@ -260,6 +267,7 @@ private extension CNavigationBar {
         
         largeTitleView = UIView()
         largeTitleView.backgroundColor = .clear
+        largeTitleView.isUserInteractionEnabled = false
         addSubview(largeTitleView)
         
         largeTitleLabel = UILabel()
@@ -279,23 +287,7 @@ private extension CNavigationBar {
                                                         size: Self.Constants.largeTitleIconSize))
         largeTitleView.addSubview(largeTitleImageView)
     }
-    
-    func setMask(with hole: CGRect, in view: UIView){
-        
-        // Create a mutable path and add a rectangle that will be h
-        let mutablePath = CGMutablePath()
-        mutablePath.addRect(view.bounds)
-        mutablePath.addRect(hole)
-        
-        // Create a shape layer and cut out the intersection
-        let mask = CAShapeLayer()
-        mask.path = mutablePath
-        mask.fillRule = .evenOdd
-        
-        // Add the mask to the view
-        view.layer.mask = mask
-    }
-    
+
     func setupDivider() {
         divider = UIView()
         divider.frame = CGRect(x: 0, y: navBarContentView.frame.maxY, width: bounds.width, height: 1)

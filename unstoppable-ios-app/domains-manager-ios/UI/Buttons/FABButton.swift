@@ -11,11 +11,14 @@ final class FABButton: BaseButton {
     
     override var backgroundIdleColor: UIColor { .white }
     override var backgroundHighlightedColor: UIColor { .backgroundDefault.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)) }
-    override var backgroundDisabledColor: UIColor { .clear }
+    override var backgroundDisabledColor: UIColor { backgroundHighlightedColor }
     override var textColor: UIColor { .black }
     override var textHighlightedColor: UIColor { textColor }
     override var textDisabledColor: UIColor { .foregroundMuted.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)) }
-
+    override var fontWeight: UIFont.Weight { customFont ?? .semibold }
+    
+    var customFont: UIFont.Weight?
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -53,5 +56,7 @@ private extension FABButton {
         layer.borderWidth = 1
         setTitle("", for: .normal)
         applyFigmaShadow(style: .medium)
+        customTitleEdgePadding = 24
+        customImageEdgePadding = 24
     }
 }

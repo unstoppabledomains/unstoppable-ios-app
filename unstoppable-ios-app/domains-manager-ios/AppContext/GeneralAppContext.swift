@@ -49,7 +49,7 @@ final class GeneralAppContext: AppContextProtocol {
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
         walletConnectService = WalletConnectService()
-        walletConnectServiceV2 = WalletConnectServiceV2()
+        walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         permissionsService = PermissionsService()
         pullUpViewService = PullUpViewService(authentificationService: authentificationService)
         
@@ -77,6 +77,9 @@ final class GeneralAppContext: AppContextProtocol {
         self.deepLinksService = deepLinksService
         
         deepLinksService.addListener(coreAppCoordinator)
+        
+        walletConnectService.addListener(deepLinksService)
+        walletConnectServiceV2.addListener(deepLinksService)
         
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")

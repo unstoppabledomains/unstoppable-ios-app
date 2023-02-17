@@ -22,13 +22,13 @@ extension DomainDetailsViewPresenterProtocol {
 
 final class DomainDetailsViewPresenter: NSObject, ViewAnalyticsLogger {
     
-    private var domain: DomainItem
+    private var domain: DomainDisplayInfo
     private let shareDomainHandler: ShareDomainHandler
     private weak var view: DomainDetailsViewProtocol?
     var analyticsName: Analytics.ViewName { .domainDetails }
     
     init(view: DomainDetailsViewProtocol,
-         domain: DomainItem,
+         domain: DomainDisplayInfo,
          dataAggregatorService: DataAggregatorServiceProtocol) {
         self.view = view
         self.domain = domain
@@ -107,7 +107,7 @@ private extension DomainDetailsViewPresenter {
 }
 
 struct SaveDomainImageDescription {
-    let domain: DomainItem
+    let domain: DomainDisplayInfo
     let originalDomainImage: UIImage
     let qrImage: UIImage
 }

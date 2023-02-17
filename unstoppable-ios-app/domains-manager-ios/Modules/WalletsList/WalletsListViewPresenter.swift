@@ -24,7 +24,7 @@ class WalletsListViewPresenter {
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
     private var walletsWithInfo = [WalletWithInfo]()
-    private var shouldShowImportWalletPullUp = false
+    private var initialAction: InitialAction = .none
     var shouldShowManageBackup: Bool { true }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     var title: String { String.Constants.settingsWallets.localized() }
@@ -33,12 +33,12 @@ class WalletsListViewPresenter {
 
     init(view: WalletsListViewProtocol,
          dataAggregatorService: DataAggregatorServiceProtocol,
-         shouldShowImportWalletPullUp: Bool,
+         initialAction: InitialAction,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
         self.dataAggregatorService = dataAggregatorService
-        self.shouldShowImportWalletPullUp = shouldShowImportWalletPullUp
+        self.initialAction = initialAction
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
         networkReachabilityService?.addListener(self)
@@ -61,12 +61,22 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
     }
     
     func viewWillAppear() {
-        if shouldShowImportWalletPullUp {
-            showAddWalletPullUp(isImportOnly: true)
-            shouldShowImportWalletPullUp = false
+        Task {
+            try? await Task.sleep(seconds: 0.3)
+            switch initialAction {
+            case .none:
+                return
+            case .showImportWalletOptionsPullUp:
+                showAddWalletPullUp(isImportOnly: true)
+            case .importWallet:
+                await importNewWallet()
+            case .connectWallet:
+                await connectNewWallet()
+            }
+            initialAction = .none
         }
     }
-
+    
     func didPressAddButton() {
         showAddWalletPullUp(isImportOnly: false)
     }
@@ -245,23 +255,22 @@ private extension WalletsListViewPresenter {
     
     func handleWalletAddedResult(_ result: AddWalletNavigationController.Result) {
         Task {
-            await MainActor.run {
-                switch result {
-                case .cancelled:
-                    return
-                case .created(let wallet), .createdAndBackedUp(let wallet):
-                    var walletName = String.Constants.vault.localized()
-                    if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0) {
-                        walletName = displayInfo.walletSourceName
-                    }
-                    appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
-                    refreshWallets()
-                    if case .createdAndBackedUp(let wallet) = result,
-                       let walletInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0) {
-                        showDetailsOf(wallet: wallet, walletInfo: walletInfo)
-                    }
-                    AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
+            switch result {
+            case .cancelled:
+                return
+            case .created(let wallet), .createdAndBackedUp(let wallet):
+                var walletName = String.Constants.vault.localized()
+                if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0) {
+                    walletName = displayInfo.walletSourceName
                 }
+                await appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)
+                await fetchWallets()
+                await showWallets()
+                if case .createdAndBackedUp(let wallet) = result,
+                   let walletInfo = walletsWithInfo.first(where: { $0.wallet.address == wallet.address })?.displayInfo {
+                    await showDetailsOf(wallet: wallet, walletInfo: walletInfo)
+                }
+                AppReviewService.shared.appReviewEventDidOccurs(event: .walletAdded)
             }
         }
     }
@@ -347,5 +356,12 @@ private extension WalletsListViewPresenter {
             }
         }
         self.walletsWithInfo = walletsWithInfo
+    }
+}
+
+// MARK: - WalletsListViewPresenter
+extension WalletsListViewPresenter {
+    enum InitialAction {
+        case none, showImportWalletOptionsPullUp, importWallet, connectWallet
     }
 }

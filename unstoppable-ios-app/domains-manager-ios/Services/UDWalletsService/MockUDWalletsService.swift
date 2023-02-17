@@ -218,7 +218,8 @@ private extension MockUDWalletsService {
                                                                  name: "Rainbow",
                                                                  homepage: "https://rainbow.me",
                                                                  appStoreLink: "https://apple.com",
-                                                                 mobile: .init(native: "", universal: "")))
+                                                                 mobile: .init(native: "", universal: ""),
+                                                                 isV2Compatible: true))
         wallet.aliasName = wallet.address
         
         return wallet
@@ -231,7 +232,8 @@ private extension MockUDWalletsService {
                                                                  name: "Rainbow",
                                                                  homepage: "https://rainbow.me",
                                                                  appStoreLink: "https://apple.com",
-                                                                 mobile: .init(native: "", universal: "")))
+                                                                 mobile: .init(native: "", universal: ""),
+                                                                 isV2Compatible: true))
         
         return wallet
     }

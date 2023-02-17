@@ -36,7 +36,7 @@ final class WalletDetailsTopInfoCell: UICollectionViewCell {
 
 // MARK: - Open methods
 extension WalletDetailsTopInfoCell {
-    func setWith(walletInfo: WalletDisplayInfo, domain: DomainItem?, isUpdating: Bool) {
+    func setWith(walletInfo: WalletDisplayInfo, domain: DomainDisplayInfo?, isUpdating: Bool) {
         accessibilityIdentifier = "Wallet Details Collection Cell Info \(walletInfo.displayName)"
         walletImageContainerView.setWith(walletInfo: walletInfo)
         walletNameLabel.setAttributedTextWith(text: walletInfo.displayName,
