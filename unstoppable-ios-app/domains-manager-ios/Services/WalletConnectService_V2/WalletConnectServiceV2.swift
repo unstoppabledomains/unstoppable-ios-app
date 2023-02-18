@@ -30,8 +30,8 @@ struct SocketFactory: WebSocketFactory {
 class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ConnectionDataV2> {
     override init() {
         super.init()
-        storageKey = "CLIENT_CONNECTIONS_STORAGE"
-        q = DispatchQueue(label: "work-queue-client-connections")
+        storageKey = "CLIENT_CONNECTIONS_STORAGE_v2"
+        q = DispatchQueue(label: "work-queue-client-connections_v2")
     }
     
     func save(newConnection: WalletConnectServiceV2.ConnectionDataV2) {
