@@ -711,7 +711,8 @@ extension WalletConnectServiceV2 {
                     sig = AnyCodable(sigTyped)
                 } catch {
                     
-                    Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: true)
+                    Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address), error: \(error)", critical: false)
+                    self.uiHandler?.didFailToConnect(with: WalletConnectService.Error.failedToSignMessage)
                     try await respondWithError(request: request)
                     return
                 }
