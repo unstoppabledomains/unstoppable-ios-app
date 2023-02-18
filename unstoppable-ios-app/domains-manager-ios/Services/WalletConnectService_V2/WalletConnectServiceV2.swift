@@ -742,7 +742,7 @@ extension WalletConnectServiceV2 {
                 }
                 
                 do {
-                    let response = try await signTxViaWalletConnectV2Async(session: sessionWithExtWallet, tx: transaction)  {
+                    let response = try await signTxViaWalletConnectV2Async(session: sessionWithExtWallet, txParams: request.params)  {
                         Task { try? await udWallet.launchExternalWallet() }
                     }
                     let sigString = try handle(response: response)
@@ -1271,7 +1271,7 @@ extension WalletConnectServiceV2 {
     }
     
     func signTxViaWalletConnectV2Async(session: WCConnectedAppsStorageV2.SessionProxy,
-                                       tx: EthereumTransaction,
+                                       txParams: AnyCodable,
                                        onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
         let settledSessions = Sign.instance.getSessions()
         let settledSessionsTopics = settledSessions.map { $0.topic }
@@ -1279,17 +1279,12 @@ extension WalletConnectServiceV2 {
         guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
             throw WalletConnectError.noWCSessionFound
         }
-        
-        guard let txV2 = TransactionV2(ethTx: tx) else {
-            throw WalletConnectError.failedBuildParams
-        }
-        let params = WalletConnectServiceV2.getParamsSignTx(tx: txV2)
         return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.signTransaction,
-                              session: sessionSettled,
-                                     requestParams: params,
+                                     session: sessionSettled,
+                                     requestParams: txParams,
                                      onWcRequestSentCallback: onWcRequestSentCallback)
     }
-
+    
     
     func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy],
                           message: String,
