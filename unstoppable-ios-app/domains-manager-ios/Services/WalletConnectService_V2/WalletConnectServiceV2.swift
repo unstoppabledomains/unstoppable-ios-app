@@ -744,15 +744,9 @@ extension WalletConnectServiceV2 {
                     let response = try await signTxViaWalletConnectV2Async(session: sessionWithExtWallet, tx: transaction)  {
                         Task { try? await udWallet.launchExternalWallet() }
                     }
-                    if let error = response.error {
-                        Debugger.printFailure("Error from the signing ext wallet: \(error)", critical: false)
-                        throw WalletConnectService.Error.externalWalletFailedToSign
-                    }
-                    
-                    let result = try response.result(as: String.self)
-                    
-                    let respCodable = AnyCodable(result)
-                    try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .response(respCodable))
+                    let sigString = try handle(response: response)
+                    let sig = AnyCodable(sigString)
+                    try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .response(sig))
                     Debugger.printInfo(topic: .WallectConnect, "Successfully signed TX via external wallet: \(udWallet.address)")
                 }
                 catch {
