@@ -636,6 +636,8 @@ enum WalletConnectError: String, LocalizedError, RawValueLocalizable {
     case failedOpenExternalApp = "Failed to open external wallet app with a deep link"
     case failedToRelayTxToExternalWallet
     case invalidChainIdentifier
+    case failedBuildParams
+    case failedSignTransaction = "WalletConnect failed to sign a transaction in an external wallet app"
     
     public var errorDescription: String? {
         return rawValue
