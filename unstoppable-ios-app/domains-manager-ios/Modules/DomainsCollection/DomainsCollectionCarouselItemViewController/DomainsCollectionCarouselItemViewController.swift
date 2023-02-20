@@ -500,9 +500,12 @@ extension DomainsCollectionCarouselItemViewController {
         }
         
         enum Action: Hashable {
+            case openApp(callback: EmptyCallback)
             case disconnect(callback: EmptyCallback)
             var title: String {
                 switch self {
+                case .openApp:
+                    return String.Constants.recentActivityOpenApp.localized()
                 case .disconnect:
                     return String.Constants.disconnect.localized()
                 }
@@ -510,13 +513,15 @@ extension DomainsCollectionCarouselItemViewController {
             
             var subtitle: String? {
                 switch self {
-                case .disconnect:
+                case .openApp, .disconnect:
                     return nil
                 }
             }
             
             var icon: UIImage {
                 switch self {
+                case .openApp:
+                    return .safari
                 case .disconnect:
                     return .systemMultiplyCircle
                 }
@@ -524,8 +529,12 @@ extension DomainsCollectionCarouselItemViewController {
             
             static func == (lhs: Self, rhs: Self) -> Bool {
                 switch (lhs, rhs) {
+                case (.openApp, .openApp):
+                    return true
                 case (.disconnect, .disconnect):
                     return true
+                default:
+                    return false
                 }
             }
             
@@ -533,6 +542,8 @@ extension DomainsCollectionCarouselItemViewController {
                 switch self {
                 case .disconnect:
                     hasher.combine(0)
+                case .openApp:
+                    hasher.combine(1)
                 }
             }
         }
