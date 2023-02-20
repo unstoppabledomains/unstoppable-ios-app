@@ -31,6 +31,7 @@ final class PullUpViewController: UIViewController {
                      didCloseCallback: EmptyCallback?) {
         self.init()
         
+        self.didCloseCallback = didCloseCallback
         self.pullUp = pullUp
         self.additionalAnalyticParameters = additionalAnalyticParameters
         self.modalTransitionStyle = .crossDissolve
