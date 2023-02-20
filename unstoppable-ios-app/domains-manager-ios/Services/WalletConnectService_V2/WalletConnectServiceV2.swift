@@ -61,6 +61,8 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     
     // Client V2 part
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType
+    func disconnect(from wcWallet: HexAddress)
+    
     func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress,
                           onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response
     func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress,
@@ -1166,6 +1168,9 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType {
         return .oldPairing
     }
+    
+    func disconnect(from wcWallet: HexAddress) {
+    }
 }
 
 protocol DomainHolder {
@@ -1221,6 +1226,17 @@ extension WalletConnectServiceV2 {
         let uri = try await Pair.instance.create()
         try await Sign.instance.connect(requiredNamespaces: namespaces, topic: uri.topic)
         return .newPairing(uri)
+    }
+    
+    func disconnect(from wcWallet: HexAddress) {
+        let allSessions = Sign.instance.getSessions()
+        let connectedSessions = allSessions
+            .filter({WCConnectedAppsStorageV2.SessionProxy($0).getWalletAddresses().contains(wcWallet)})
+        connectedSessions.forEach({ session in
+            Task {
+                try await Sign.instance.disconnect(topic: session.topic)
+            }
+        })
     }
     
     private func sendRequest(method: RPCMethod,
