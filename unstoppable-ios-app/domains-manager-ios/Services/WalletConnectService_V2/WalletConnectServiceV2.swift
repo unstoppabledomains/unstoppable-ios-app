@@ -1231,7 +1231,7 @@ extension WalletConnectServiceV2 {
     func disconnect(from wcWallet: HexAddress) {
         let allSessions = Sign.instance.getSessions()
         let connectedSessions = allSessions
-            .filter({WCConnectedAppsStorageV2.SessionProxy($0).getWalletAddresses().contains(wcWallet)})
+            .filter({WCConnectedAppsStorageV2.SessionProxy($0).getWalletAddresses().map{$0.normalized}.contains(wcWallet.normalized)})
         connectedSessions.forEach({ session in
             Task {
                 try await Sign.instance.disconnect(topic: session.topic)
