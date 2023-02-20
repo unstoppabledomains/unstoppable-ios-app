@@ -8,7 +8,6 @@
 import Foundation
 import Web3
 import WalletConnectSwift
-import PromiseKit
 
 protocol WalletConnectServiceProtocol {
     func setUIHandler(_ uiHandler: WalletConnectUIHandler)
@@ -30,10 +29,16 @@ protocol WalletConnectServiceProtocol {
                             chainId: Int) async throws -> EthereumTransaction
 }
 
+typealias WCExternalRequestResult = Result<Void, Error>
 protocol WalletConnectServiceListener: AnyObject {
     func didConnect(to app: PushSubscriberInfo?)
     func didDisconnect(from app: PushSubscriberInfo?)
     func didCompleteConnectionAttempt()
+    func didHandleExternalWCRequestWith(result: WCExternalRequestResult)
+}
+
+extension WalletConnectServiceListener {
+    func didHandleExternalWCRequestWith(result: WCExternalRequestResult) { }
 }
 
 final class WalletConnectServiceListenerHolder: Equatable {

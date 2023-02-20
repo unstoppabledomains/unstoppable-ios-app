@@ -58,6 +58,12 @@ final class WalletConnectService {
     weak var uiHandler: WalletConnectUIHandler?
     var connectRequestTimeStamp: Date?
     
+    func notifyDidHandleExternalWCRequestWith(result: WCExternalRequestResult) {
+        // TODO: - notify listeners when: 1. Request confirmed. 2. Request cancelled. 3. Request Time out
+        listeners.forEach { holder in
+            holder.listener?.didHandleExternalWCRequestWith(result: result)
+        }
+    }
 }
 
 // MARK: - ServerDelegate
