@@ -65,6 +65,12 @@ extension DomainsCollectionRecentActivityCell {
 private extension DomainsCollectionRecentActivityCell {
     func menuElement(for action: Action) -> UIMenuElement {
         switch action {
+        case .openApp(let callback):
+            let action = UIAction(title: action.title, image: action.icon, identifier: .init(UUID().uuidString), handler: { _ in
+                UDVibration.buttonTap.vibrate()
+                callback()
+            })
+            return action
         case .disconnect(let callback):
             let disconnect = UIAction(title: action.title, image: action.icon, identifier: .init(UUID().uuidString), attributes: .destructive, handler: { _ in
                 UDVibration.buttonTap.vibrate()
