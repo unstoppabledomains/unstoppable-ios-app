@@ -106,6 +106,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     private func disable(externalWallet: UDWallet) {
         removeWithoutNotification(wallet: externalWallet)
         try? appContext.walletConnectClientService.disconnect(walletAddress: externalWallet.address)
+        try? appContext.walletConnectServiceV2.disconnect(from: externalWallet.address)
     }
 
     func createWalletFor(mnemonics: String) async -> UDWalletWithPrivateSeed? {
