@@ -1456,6 +1456,7 @@
 		C6456F3528005D8500A517D5 /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F3328005D8500A517D5 /* UITextView.swift */; };
 		C6456F3628005D8500A517D5 /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F3328005D8500A517D5 /* UITextView.swift */; };
 		C6456F3728005D8500A517D5 /* UITextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F3328005D8500A517D5 /* UITextView.swift */; };
+		C6478B1829A36960006FADFE /* DeepLinksServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6478B1729A36960006FADFE /* DeepLinksServiceTests.swift */; };
 		C64836B8282BADB1007BD3F1 /* PullUpViewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */; };
 		C64836B9282BADB1007BD3F1 /* PullUpViewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */; };
 		C64836BA282BADB1007BD3F1 /* PullUpViewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */; };
@@ -3600,6 +3601,7 @@
 		C6456F29280030AB00A517D5 /* UICollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionView.swift; sourceTree = "<group>"; };
 		C6456F2E2800520E00A517D5 /* Vibration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Vibration.swift; sourceTree = "<group>"; };
 		C6456F3328005D8500A517D5 /* UITextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextView.swift; sourceTree = "<group>"; };
+		C6478B1729A36960006FADFE /* DeepLinksServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinksServiceTests.swift; sourceTree = "<group>"; };
 		C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpViewService.swift; sourceTree = "<group>"; };
 		C64836BC282BCAFB007BD3F1 /* PrimaryDangerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryDangerButton.swift; sourceTree = "<group>"; };
 		C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCopyAddressAction.swift; sourceTree = "<group>"; };
@@ -4262,13 +4264,13 @@
 		306486962527253D00388026 /* domains-manager-iosTests */ = {
 			isa = PBXGroup;
 			children = (
-				29EDB622290A94E700A0BD08 /* ProfilesTests.swift */,
-				306486992527253D00388026 /* Info.plist */,
 				307CFF7E279AEF2B003A6AF1 /* ArrayExtensionsTests.swift */,
 				C679B61B291CF8C800F543A7 /* BaseTestClass.swift */,
+				C6478B1729A36960006FADFE /* DeepLinksServiceTests.swift */,
 				300F291B25D3D4A1007EEAD1 /* DomainRecordsViewModelTests.swift */,
 				306486972527253D00388026 /* domains_manager_iosTests.swift */,
 				30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */,
+				29EDB622290A94E700A0BD08 /* ProfilesTests.swift */,
 				30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */,
 				308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */,
 				C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */,
@@ -4278,6 +4280,7 @@
 				3087E3A22823DE0B0023B7A7 /* WalletAutonamingTests.swift */,
 				C6C9DE9128349E2900BAC36F /* WalletDataValidationTests.swift */,
 				C6DF9878290F832A0098733A /* WebsiteURLValidatorTests.swift */,
+				306486992527253D00388026 /* Info.plist */,
 				C680178C2886E95E00524712 /* Extensions */,
 			);
 			path = "domains-manager-iosTests";
@@ -8403,6 +8406,7 @@
 				C6DF986F290F83020098733A /* TransactionsDecodingTests.swift in Sources */,
 				C679B61C291CF8C800F543A7 /* BaseTestClass.swift in Sources */,
 				C6DF9877290F83020098733A /* domains_manager_iosTests.swift in Sources */,
+				C6478B1829A36960006FADFE /* DeepLinksServiceTests.swift in Sources */,
 				C6DF986A290F83020098733A /* WalletDataValidationTests.swift in Sources */,
 				C6DF986E290F83020098733A /* DomainRecordsViewModelTests.swift in Sources */,
 				C6DF9870290F83020098733A /* testUpdateRecords.swift in Sources */,

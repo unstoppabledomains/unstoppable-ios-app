@@ -61,6 +61,7 @@ extension WalletConnectService: WCSigner {
         case invalidNamespaces
         case failedParseSendTxResponse
         case failedSendTx
+        case methodUnsupported
         
         var groupType: ErrorGroup {
             switch self {
@@ -86,7 +87,8 @@ extension WalletConnectService: WCSigner {
                     .failedToBuildCompleteTransaction,
                     .failedParseSendTxResponse,
                     .failedSendTx,
-                    .failedToSignTransaction: return .failedTx
+                    .failedToSignTransaction,
+                    .methodUnsupported: return .failedTx
             case .networkNotSupported: return .networkNotSupported
             case .lowAllowance: return .lowAllowance
             case .connectionTimeout: return .connectionTimeout
@@ -123,12 +125,15 @@ extension WalletConnectService: WCSigner {
                     
                     Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: true)
                     self.server.send(.invalid(request))
+                    notifyDidHandleExternalWCRequestWith(result: .failure(error))
                     return
                 }
                 self.server.send(Response.signature(sig, for: request))
+                notifyDidHandleExternalWCRequestWith(result: .success(()))
             } catch {
                 Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
                 server.send(.invalid(request))
+                notifyDidHandleExternalWCRequestWith(result: .failure(error))
             }
         }
     }
@@ -186,13 +191,16 @@ extension WalletConnectService: WCSigner {
                             do {
                                 let result = try response.result(as: String.self)
                                 self.server.send(Response.signature(result, for: request))
+                                self.notifyDidHandleExternalWCRequestWith(result: .success(()))
                             } catch {
                                 Debugger.printFailure("Error parsing result from the signing ext wallet: \(error)", critical: true)
                                 self.server.send(.invalid(request))
+                                self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
                             }
                         }.catch { error in
                             Debugger.printFailure("Failed to send a request to the signing ext wallet: \(error)", critical: true)
                             self.server.send(.invalid(request))
+                            self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
                         }
                     return
                 }
@@ -210,11 +218,12 @@ extension WalletConnectService: WCSigner {
                 let (r, s, v) = (signedTx.r, signedTx.s, signedTx.v)
                 let signature = r.hex() + s.hex().dropFirst(2) + String(v.quantity, radix: 16)
                 server.send(Response.signature(signature, for: request))
-                
+                notifyDidHandleExternalWCRequestWith(result: .success(()))
                  
             } catch {
                 Debugger.printFailure("Signing a TX was interrupted: \(error.localizedDescription)")
                 self.server.send(.invalid(request))
+                notifyDidHandleExternalWCRequestWith(result: .failure(error))
             }
         }
     }
@@ -223,6 +232,7 @@ extension WalletConnectService: WCSigner {
         self.uiHandler?.didReceiveUnsupported(request.method)
         Debugger.printFailure("Unsupported WC method: \(request.method)")
         self.server.send(.invalid(request))
+        notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectService.Error.methodUnsupported))
     }
         
     func handleSendTx(request: WalletConnectSwift.Request) {
@@ -251,6 +261,7 @@ extension WalletConnectService: WCSigner {
                         Debugger.printFailure("Failed to find session for WC", critical: false)
                         uiHandler?.didFailToConnect(with: .noWCSessionFound)
                         self.server.send(.invalid(request))
+                        notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectService.Error.noWCSessionFound))
                         return
                     }
                     
@@ -261,6 +272,7 @@ extension WalletConnectService: WCSigner {
                         }.catch { error in
                             Debugger.printFailure("Failed to send TX: \(error.getTypedDescription())", critical: false)
                             self.server.send(.invalid(request))
+                            self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
                         }
                     return
                 }
@@ -275,6 +287,7 @@ extension WalletConnectService: WCSigner {
                     uiHandler?.didFailToConnect(with: err)
                 }
                 self.server.send(.invalid(request))
+                self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
             }
         }
     }
@@ -329,9 +342,11 @@ extension WalletConnectService: WCSigner {
                     return
                 }
                 self.server.send(Response.transaction(result, for: request))
+                self.notifyDidHandleExternalWCRequestWith(result: .success(()))
             }.catch { error in
                 Debugger.printFailure("Sending a TX was failed: \(error.localizedDescription)")
                 self.server.send(.invalid(request))
+                self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
             }
     }
     
@@ -369,6 +384,7 @@ extension WalletConnectService: WCSigner {
                         .done { (result: Response) in
                             self.server.send(result)
                             Debugger.printInfo(topic: .WallectConnect, "Successfully sent TX via Ext Wallet")
+                            self.notifyDidHandleExternalWCRequestWith(result: .success(()))
                         }.catch { error in
                             Debugger.printFailure("Failed to send TX: \(error.getTypedDescription())", critical: true)
                             self.server.send(.invalid(request))
@@ -379,6 +395,7 @@ extension WalletConnectService: WCSigner {
                 self.uiHandler?.didReceiveUnsupported(request.method)
                 Debugger.printFailure("Unsupported method: \(request.method)")
                 self.server.send(.invalid(request))
+                self.notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectService.Error.methodUnsupported))
                 return
 
                 /*
@@ -653,7 +670,7 @@ extension UDWallet {
         }
     }
     
-    func signTxViaWalletConnectAsync(session: Session,
+    func signTxViaWalletConnectV1Async(session: Session,
                                      tx: EthereumTransaction,
                                      requestSentCallback: ()->Void) async throws -> Response {
         return try await withCheckedThrowingContinuation { continuation in

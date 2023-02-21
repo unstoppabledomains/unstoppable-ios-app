@@ -73,8 +73,12 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     }
     @MainActor
     func viewDidAppear() {
-        if view?.cNavigationController != nil {
-            view?.startCaptureSession()
+        Task {
+            let isGranted = await appContext.permissionsService.checkPermissionsFor(functionality: .camera)
+            
+            if isGranted {
+                view?.startCaptureSession()
+            }
         }
     }
    
@@ -122,6 +126,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
             if isGranted {
                 setBlockchainTypePicker()
                 view.setState(.scanning)
+                view.startCaptureSession()
             } else {
                 view.openAppSettings()
             }

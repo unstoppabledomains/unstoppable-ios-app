@@ -58,6 +58,11 @@ final class WalletConnectService {
     weak var uiHandler: WalletConnectUIHandler?
     var connectRequestTimeStamp: Date?
     
+    func notifyDidHandleExternalWCRequestWith(result: WCExternalRequestResult) {
+        listeners.forEach { holder in
+            holder.listener?.didHandleExternalWCRequestWith(result: result)
+        }
+    }
 }
 
 // MARK: - ServerDelegate

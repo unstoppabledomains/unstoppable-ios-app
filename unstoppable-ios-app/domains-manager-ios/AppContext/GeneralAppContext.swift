@@ -73,10 +73,14 @@ final class GeneralAppContext: AppContextProtocol {
                                                     walletConnectService: walletConnectService,
                                                     walletConnectServiceV2: walletConnectServiceV2)
         
-        let deepLinksService = DeepLinksService(externalEventsService: externalEventsService)
+        let deepLinksService = DeepLinksService(externalEventsService: externalEventsService,
+                                                coreAppCoordinator: coreAppCoordinator)
         self.deepLinksService = deepLinksService
         
         deepLinksService.addListener(coreAppCoordinator)
+        
+        walletConnectService.addListener(deepLinksService)
+        walletConnectServiceV2.addListener(deepLinksService)
         
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")
