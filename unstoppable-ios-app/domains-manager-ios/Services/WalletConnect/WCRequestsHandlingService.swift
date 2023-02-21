@@ -6,7 +6,15 @@
 //
 
 import Foundation
+
+// V1
 import WalletConnectSwift
+
+// V2
+import WalletConnectSign
+
+private typealias WCRPCRequestV1 = WalletConnectSwift.Request
+private typealias WCRPCRequestV2 = WalletConnectSign.Request
 
 protocol WCRequestsHandlingServiceProtocol {
     func connectAsync(to request: WalletConnectService.ConnectWalletRequest)
@@ -18,12 +26,14 @@ protocol WCRequestsHandlingServiceProtocol {
 final class WCRequestsHandlingService {
     
     private var walletConnectServiceV1: WalletConnectV1RequestHandlingServiceProtocol
-    private var walletConnectServiceV2: WalletConnectServiceV2Protocol
+    private var walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol
     private var listeners: [WalletConnectServiceListenerHolder] = []
     private weak var uiHandler: WalletConnectUIHandler?
+    private var requests: [UnifiedWCRequest] = []
+    private var isHandlingRequest = false
 
     init(walletConnectServiceV1: WalletConnectV1RequestHandlingServiceProtocol,
-         walletConnectServiceV2: WalletConnectServiceV2Protocol) {
+         walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol) {
         self.walletConnectServiceV1 = walletConnectServiceV1
         self.walletConnectServiceV2 = walletConnectServiceV2
         setup()
@@ -34,13 +44,7 @@ final class WCRequestsHandlingService {
 // MARK: - Open methods
 extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
     func connectAsync(to request: WalletConnectService.ConnectWalletRequest) {
-        if case let .version1(requestURL) = request  {
-            walletConnectServiceV1.connectAsync(to: requestURL)
-        }
-        
-        if case let .version2(uri) = request  {
-            walletConnectServiceV2.pairClientAsync(uri: uri)
-        }
+        addNewRequest(.connectionRequest(request))
     }
     
     func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
@@ -60,7 +64,54 @@ extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
 
 // MARK: - WalletConnectV1SignTransactionHandlerDelegate
 extension WCRequestsHandlingService: WalletConnectV1SignTransactionHandlerDelegate {
-    func wcV1SignHandlerWillHandleRequest(_  request: Request, ofType requestType: WalletConnectRequestType) {
+    fileprivate func wcV1SignHandlerWillHandleRequest(_  request: WCRPCRequestV1, ofType requestType: WalletConnectRequestType) {
+        addNewRequest(.rpcRequestV1(request, type: requestType))
+    }
+}
+
+// MARK: - Private methods
+private extension WCRequestsHandlingService {
+    func addNewRequest(_ request: UnifiedWCRequest) {
+        requests.append(request)
+        handleNextRequest()
+    }
+    
+    func handleNextRequest() {
+        guard !isHandlingRequest,
+        let nextRequest = requests.first else { return }
+        isHandlingRequest = true
+        
+        Task {
+            do {
+                try await handleRequest(nextRequest)
+            } catch {
+                
+            }
+        }
+    }
+    
+    func handleRequest(_ request: UnifiedWCRequest) async throws {
+        switch request {
+        case .connectionRequest(let connectionRequest):
+            try await handleConnectionRequest(connectionRequest)
+        case .rpcRequestV1(let request, let type):
+            try await handleRPCRequestV1(request, requestType: type)
+        case .rpcRequestV2(let request, let type):
+            try await handleRPCRequestV2(request, requestType: type)
+        }
+    }
+    
+    func handleConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest) async throws {
+        if case let .version1(requestURL) = request  {
+            walletConnectServiceV1.connectAsync(to: requestURL)
+        }
+        
+        if case let .version2(uri) = request  {
+            walletConnectServiceV2.pairClientAsync(uri: uri)
+        }
+    }
+    
+    func handleRPCRequestV1(_ request: WCRPCRequestV1, requestType: WalletConnectRequestType) async throws {
         let wcSigner = walletConnectServiceV1
         switch requestType {
         case .personalSign:
@@ -79,6 +130,10 @@ extension WCRequestsHandlingService: WalletConnectV1SignTransactionHandlerDelega
             wcSigner.handleSignTypedData(request: request)
         }
     }
+    
+    func handleRPCRequestV2(_ request: WCRPCRequestV1, requestType: WalletConnectRequestType) async throws {
+        // TODO: - Pass to WC2 service
+    }
 }
 
 // MARK: - Setup methods
@@ -95,8 +150,14 @@ private extension WCRequestsHandlingService {
     }
 }
 
-// MARK: - Open methods
-extension WCRequestsHandlingService {
+// MARK: - Private entities
+private extension WCRequestsHandlingService {
+    enum UnifiedWCRequest {
+        case connectionRequest(_ request: WalletConnectService.ConnectWalletRequest)
+        case rpcRequestV1(_ request: WCRPCRequestV1, type: WalletConnectRequestType)
+        case rpcRequestV2(_ request: WCRPCRequestV1, type: WalletConnectRequestType)
+    }
+    
     final class WalletConnectV1SignTransactionHandler: RequestHandler {
         
         let requestType: WalletConnectRequestType
@@ -108,19 +169,19 @@ extension WCRequestsHandlingService {
             self.delegate = delegate
         }
         
-        func canHandle(request: Request) -> Bool {
+        func canHandle(request: WCRPCRequestV1) -> Bool {
             return request.method == requestType.rawValue
         }
     
-        func handle(request: Request) {
+        func handle(request: WCRPCRequestV1) {
             delegate?.wcV1SignHandlerWillHandleRequest(request, ofType: requestType)
         }
     }
 }
 
 
-protocol WalletConnectV1SignTransactionHandlerDelegate: AnyObject {
-    func wcV1SignHandlerWillHandleRequest(_  request: Request, ofType requestType: WalletConnectRequestType)
+fileprivate protocol WalletConnectV1SignTransactionHandlerDelegate: AnyObject {
+    func wcV1SignHandlerWillHandleRequest(_  request: WCRPCRequestV1, ofType requestType: WalletConnectRequestType)
 }
 
 
@@ -132,4 +193,5 @@ enum WalletConnectRequestType: String, CaseIterable {
     case ethSendTransaction = "eth_sendTransaction"
     case ethSendRawTransaction = "eth_sendRawTransaction"
     case ethSignedTypedData = "eth_signTypedData"
-    }
+}
+

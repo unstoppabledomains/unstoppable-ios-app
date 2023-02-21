@@ -70,6 +70,10 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func handle(response: WalletConnectSign.Response) throws -> String
 }
 
+protocol WalletConnectV2RequestHandlingServiceProtocol {
+    func pairClientAsync(uri: WalletConnectURI)
+}
+
 typealias SessionV2 = WalletConnectSign.Session
 typealias ResponseV2 = WalletConnectSign.Response
 
