@@ -123,6 +123,12 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         let normalizedAccount = account.normalized
         return retrieveApps().filter({ $0.walletAddress.normalized == normalizedAccount } )
     }
+    
+    func find(byTopic topic: String) -> ConnectedApp? {
+        return retrieveApps()
+            .filter({ $0.sessionProxy.topic == topic } )
+            .first
+    }
 }
 
 protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {

@@ -247,13 +247,13 @@ private extension WalletDetailsViewPresenter {
                 try await appContext.pullUpViewService.showRemoveWalletPullUp(in: view, walletInfo: walletInfo)
                 await view.dismissPullUpMenu()
                 try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                removeWallet()
+                await removeWallet()
                 walletRemovedCallback?()
             }
         }
     }
     
-    @MainActor private func indicateRemoved() {
+    @MainActor private func indicateWalletRemoved() {
         if wallet.walletState == .externalLinked {
             appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
         } else {
@@ -261,15 +261,15 @@ private extension WalletDetailsViewPresenter {
         }
     }
     
-    private func removeWallet() {
+    private func removeWallet() async {
         udWalletsService.remove(wallet: wallet)
         // WC1 + WC2
         try? walletConnectClientService.disconnect(walletAddress: wallet.address)
-        walletConnectServiceV2.disconnect(from: wallet.address)
+        await walletConnectServiceV2.disconnect(from: wallet.address)
         let wallets = udWalletsService.getUserWallets()
         guard !wallets.isEmpty else { return }
         DispatchQueue.main.async { [weak self] in
-            self?.indicateRemoved()
+            self?.indicateWalletRemoved()
         }
     }
     

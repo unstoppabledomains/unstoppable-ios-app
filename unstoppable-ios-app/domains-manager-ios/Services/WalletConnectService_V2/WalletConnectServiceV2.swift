@@ -67,7 +67,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     
     // Client V2 part
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType
-    func disconnect(from wcWallet: HexAddress)
+    func disconnect(from wcWallet: HexAddress) async
     
     func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress,
                           onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response
@@ -212,6 +212,19 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
         await self.appsStorageV2.remove(byTopic: toDisconnect.sessionProxy.topic)
         try await self.disconnect(topic: toDisconnect.sessionProxy.topic)
+        self.listeners.forEach { holder in
+            holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: toDisconnect))
+        }
+    }
+    
+    private func disconnectApp(by topic: String) async throws {
+        guard let toDisconnect = appsStorageV2.find(byTopic: topic) else {
+            Debugger.printFailure("Failed to find app to disconnect", critical: false)
+            return
+        }
+        
+        await self.appsStorageV2.remove(byTopic: topic)
+        try await self.disconnect(topic: topic)
         self.listeners.forEach { holder in
             holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: toDisconnect))
         }
@@ -375,7 +388,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     self?.pendingProposal = nil
                 } else {
                     // connection without a proposal, it is a wallet
-                    self?.handleWalletConnection(session: session)
+                    self?.addToCacheAndNotifyUi(with: session)
                 }
                 self?.intentsStorage.removeAll()
             }.store(in: &publishers)
@@ -414,14 +427,15 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                         self?.listeners.forEach { holder in
                             holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: removedApp))
                         }
-                    } else if let removedWallet = await self?.walletStorageV2.remove(byTopic: topic){
-                        // Client part
+                    } else if let removedExtWallet = await self?.walletStorageV2.remove(byTopic: topic){
+                        // Client part, an external wallet has killed the session
                         Debugger.printWarning("Disconnected from Wallet topic: \(topic)")
-                        removedWallet.session.getWalletAddresses().forEach({ walletAddress in
-                            self?.handleWalletDisconnection(walletAddress: walletAddress)
+                        self?.disconnectAppsConnected(to: removedExtWallet.session.getWalletAddresses())
+                        removedExtWallet.session.getWalletAddresses().forEach({ walletAddress in
+                            self?.updateWalletsCacheAndUi(walletAddress: walletAddress)
                         })
                     } else {
-                        Debugger.printFailure("Topic disconnected that was not in cache :\(topic)", critical: true)
+                        Debugger.printFailure("Topic disconnected that was not in cache :\(topic)", critical: false)
                         return
                     }
                 }
@@ -436,7 +450,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             }.store(in: &publishers)
     }
     
-    private func handleWalletDisconnection(walletAddress: HexAddress) {
+    private func updateWalletsCacheAndUi(walletAddress: HexAddress) {
         if let toRemove = self.udWalletsService.find(by: walletAddress) {
             if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0) {
                 self.walletsUiHandler?.didDisconnect(walletDisplayInfo: walletDisplayInfo)
@@ -446,7 +460,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         }
     }
     
-    private func handleWalletConnection(session: SessionV2) {
+    private func addToCacheAndNotifyUi(with session: SessionV2) {
         Debugger.printInfo("WC2: CLIENT DID CONNECT - SESSION: \(session)")
         
         let walletAddresses = WCConnectedAppsStorageV2.SessionProxy(session).getWalletAddresses()
@@ -461,9 +475,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         } else {
             Debugger.printWarning("WC2: Existing session got reconnected")
         }
-
-        self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session)) // TODO:
-
+        self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session))
     }
     
     private func handleConnection(session: SessionV2,
@@ -1261,16 +1273,32 @@ extension WalletConnectServiceV2 {
         return .newPairing(uri)
     }
     
-    func disconnect(from wcWallet: HexAddress) {
-        let entr = walletStorageV2.find
+    func disconnect(from wcWallet: HexAddress) async {
+        // remove from storage
+        guard let walletToDelete = walletStorageV2.find(by: wcWallet) else {
+            Debugger.printFailure("Failed to find WC2 wallet to remove", critical: true)
+            return
+        }
+        await walletStorageV2.remove(byTopic: walletToDelete.session.topic)
+        // kill the session
         let allSessions = Sign.instance.getSessions()
-        let connectedSessions = allSessions
-            .filter({WCConnectedAppsStorageV2.SessionProxy($0).getWalletAddresses().map{$0.normalized}.contains(wcWallet.normalized)})
-        connectedSessions.forEach({ session in
-            Task {
-                try await Sign.instance.disconnect(topic: session.topic)
-            }
-        })
+        if allSessions.map({$0.topic}).contains(walletToDelete.session.topic) {
+            try? await Sign.instance.disconnect(topic: walletToDelete.session.topic)
+        }
+        // disconnect apps
+        disconnectAppsConnected(to: walletToDelete.session.getWalletAddresses())
+    }
+    
+    private func disconnectAppsConnected(to addresses: [HexAddress]) {
+        appsStorageV2
+            .retrieveApps()
+            .filter({addresses.contains($0.walletAddress.normalized)})
+            .forEach({ app in
+                Task {
+                    try? await disconnectApp(by: app.sessionProxy.topic)
+                }
+            })
+        
     }
     
     private func sendRequest(method: RPCMethod,
