@@ -44,7 +44,10 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         }
         
         func getWalletAddresses() -> [HexAddress] {
-            Array(namespaces.values).map({ Array($0.accounts).map({$0.address}) }).flatMap({ $0 })
+            Array(namespaces.values).map({ Array($0.accounts)
+                .map({$0.address}) })
+                .flatMap({ $0 })
+                .map({ $0.normalized })
         }
     }
     

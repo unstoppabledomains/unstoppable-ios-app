@@ -42,6 +42,12 @@ class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ConnectionDa
     func remove(byTopic topic: String) async -> WalletConnectServiceV2.ConnectionDataV2? {
         await remove(when: {$0.session.topic == topic})
     }
+    
+    func find(by address: HexAddress) -> WalletConnectServiceV2.ConnectionDataV2? {
+        self.retrieveAll()
+            .filter({ $0.session.getWalletAddresses().contains(address.normalized)})
+            .first
+    }
 }
 
 protocol WalletConnectServiceV2Protocol: AnyObject {
@@ -102,7 +108,10 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     private let udWalletsService: UDWalletsServiceProtocol
     var delegate: WalletConnectDelegate?
-    let clientConnectionsV2 = WCClientConnectionsV2()
+    
+    let walletStorageV2 = WCClientConnectionsV2()
+    var appsStorageV2: WCConnectedAppsStorageV2 { WCConnectedAppsStorageV2.shared }
+
     
     private var publishers = [AnyCancellable]()
     
@@ -110,7 +119,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     private weak var walletsUiHandler: WalletConnectClientUIHandler?
     
     var intentsStorage: WCConnectionIntentStorage { WCConnectionIntentStorage.shared }
-    var appsStorage: WCConnectedAppsStorageV2 { WCConnectedAppsStorageV2.shared }
     private var listeners: [WalletConnectServiceListenerHolder] = []
     var sanitizedClientId: String?
 
@@ -174,8 +182,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     public func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
-        clientConnectionsV2.retrieveAll()
-            .filter({ ($0.session.getWalletAddresses().map({$0.normalized})).contains(walletAddress.normalized) })
+        walletStorageV2.retrieveAll()
+            .filter({ ($0.session.getWalletAddresses())
+            .contains(walletAddress.normalized) })
             .map({$0.session})
     }
         
@@ -196,12 +205,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             return
         }
 
-        guard let toDisconnect = appsStorage.find(by: unifiedApp) else {
+        guard let toDisconnect = appsStorageV2.find(by: unifiedApp) else {
             Debugger.printFailure("Failed to find app to disconnect", critical: false)
             return
         }
         
-        await self.appsStorage.remove(byTopic: toDisconnect.sessionProxy.topic)
+        await self.appsStorageV2.remove(byTopic: toDisconnect.sessionProxy.topic)
         try await self.disconnect(topic: toDisconnect.sessionProxy.topic)
         self.listeners.forEach { holder in
             holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: toDisconnect))
@@ -399,13 +408,13 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             .receive(on: DispatchQueue.main)
             .sink { (topic, _) in
                 Task { [weak self]  in
-                    if let removedApp = await self?.appsStorage.remove(byTopic: topic) {
+                    if let removedApp = await self?.appsStorageV2.remove(byTopic: topic) {
                         Debugger.printWarning("Disconnected from dApp topic: \(topic)")
                         
                         self?.listeners.forEach { holder in
                             holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: removedApp))
                         }
-                    } else if let removedWallet = await self?.clientConnectionsV2.remove(byTopic: topic){
+                    } else if let removedWallet = await self?.walletStorageV2.remove(byTopic: topic){
                         // Client part
                         Debugger.printWarning("Disconnected from Wallet topic: \(topic)")
                         removedWallet.session.getWalletAddresses().forEach({ walletAddress in
@@ -447,8 +456,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             return
         }
 
-        if clientConnectionsV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
-            clientConnectionsV2.save(newConnection: ConnectionDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
+        if walletStorageV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
+            walletStorageV2.save(newConnection: ConnectionDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
         } else {
             Debugger.printWarning("WC2: Existing session got reconnected")
         }
@@ -476,7 +485,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                                                                connectionExpiryDate: session.expiryDate)
             
             do {
-                try appsStorage.save(newApp: newApp)
+                try appsStorageV2.save(newApp: newApp)
             } catch {
                 Debugger.printFailure("Failed to encode session: \(session)", critical: true)
             }
@@ -571,7 +580,7 @@ extension WalletConnectServiceV2: DataAggregatorServiceListener {
 
 extension WalletConnectServiceV2 {
     private func getAllUnifiedAppsFromCache() -> [UnifiedConnectAppInfo] {
-        appsStorage.retrieveApps().map{ UnifiedConnectAppInfo(from: $0)}
+        appsStorageV2.retrieveApps().map{ UnifiedConnectAppInfo(from: $0)}
         + appContext.walletConnectService.getConnectedAppsV1().map{ UnifiedConnectAppInfo(from: $0)}
     }
     
@@ -584,7 +593,7 @@ extension WalletConnectServiceV2 {
     }
     
     private func detectApp(by address: HexAddress, topic: String) throws -> WCConnectedAppsStorageV2.ConnectedApp {
-        guard let connectedApp = self.appsStorage.find(by: address, topic: topic)?.first else {
+        guard let connectedApp = self.appsStorageV2.find(by: address, topic: topic)?.first else {
             Debugger.printFailure("No connected app can sign for the wallet address \(address)", critical: true)
             throw WalletConnectService.Error.failedToFindWalletToSign
         }
@@ -1253,6 +1262,7 @@ extension WalletConnectServiceV2 {
     }
     
     func disconnect(from wcWallet: HexAddress) {
+        let entr = walletStorageV2.find
         let allSessions = Sign.instance.getSessions()
         let connectedSessions = allSessions
             .filter({WCConnectedAppsStorageV2.SessionProxy($0).getWalletAddresses().map{$0.normalized}.contains(wcWallet.normalized)})
