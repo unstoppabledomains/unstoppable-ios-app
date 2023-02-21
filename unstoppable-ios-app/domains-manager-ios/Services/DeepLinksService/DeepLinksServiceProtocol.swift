@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DeepLinkEvent {
+enum DeepLinkEvent: Hashable {
     case mintDomainsVerificationCode(email: String, code: String)
 }
 
