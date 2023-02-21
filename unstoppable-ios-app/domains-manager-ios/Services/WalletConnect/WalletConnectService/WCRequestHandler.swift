@@ -11,7 +11,7 @@ import Web3
 import UIKit
 
 protocol WCSignHandlerDelegate: AnyObject {
-    func wcSignHandler(_ wcSignHandler: WCSignerHolder, willHandleRequest request: Request)
+    func wcSignHandlerWillHandleRequest(_  request: Request)
 }
 
 class WCSignerHolder {
@@ -23,7 +23,7 @@ class WCSignerHolder {
     }
     
     func baseHandle(request: Request) {
-        delegate?.wcSignHandler(self, willHandleRequest: request)
+        delegate?.wcSignHandlerWillHandleRequest(request)
     }
 }
 

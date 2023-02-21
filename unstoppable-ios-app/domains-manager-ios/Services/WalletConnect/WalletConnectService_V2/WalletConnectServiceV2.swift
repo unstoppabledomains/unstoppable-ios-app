@@ -48,12 +48,12 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     var delegate: WalletConnectDelegate? { get set }
     
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
-    func pairClient(uri: WalletConnectURI)
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler)
+    func pairClientAsync(uri: WalletConnectURI)
+    func setUIHandler(_ uiHandler: WalletConnectUIHandler) // TODO: - WC Remove
     func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler)
     func getConnectedApps() async -> [UnifiedConnectAppInfo]
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
-    func addListener(_ listener: WalletConnectServiceListener)
+    func addListener(_ listener: WalletConnectServiceListener) // TODO: - WC Remove
     func disconnectAppsForAbsentDomains(from: [DomainItem])
     func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
     
@@ -495,7 +495,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     @MainActor
-    internal func pairClient(uri: WalletConnectURI) {
+    internal func pairClientAsync(uri: WalletConnectURI) {
         Debugger.printInfo(topic: .WallectConnectV2, "[WALLET] Pairing to: \(uri)")
         Task {
             do {
@@ -1182,7 +1182,7 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
         return WalletConnectUtils.WalletConnectURI(string: "fake")!
     }
     
-    func pairClient(uri: WalletConnectUtils.WalletConnectURI) {
+    func pairClientAsync(uri: WalletConnectUtils.WalletConnectURI) {
         
     }
     func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {

@@ -450,6 +450,10 @@
 		C6045B8D281C2AA900B16761 /* EmptyCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */; };
 		C6045B8E281C2AA900B16761 /* EmptyCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */; };
 		C6045B8F281C2AA900B16761 /* EmptyCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */; };
+		C60610D429A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */; };
+		C60610D529A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */; };
+		C60610D629A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */; };
+		C60610D729A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73D2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
@@ -3329,6 +3333,7 @@
 		C603E8C8285859560028C21C /* CollectionViewHeaderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewHeaderCell.xib; sourceTree = "<group>"; };
 		C6045B86281C160000B16761 /* SettingsFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFooterView.swift; sourceTree = "<group>"; };
 		C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionReusableView.swift; sourceTree = "<group>"; };
+		C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCRequestsHandlingService.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
@@ -4445,6 +4450,16 @@
 				C6045B86281C160000B16761 /* SettingsFooterView.swift */,
 			);
 			path = CollectionReusableViews;
+			sourceTree = "<group>";
+		};
+		C60610D229A4FF6C005DC0D5 /* WalletConnect */ = {
+			isa = PBXGroup;
+			children = (
+				C6A2D58C284FA09500327C47 /* WalletConnectService */,
+				295506F42954D22800EDA42D /* WalletConnectService_V2 */,
+				C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */,
+			);
+			path = WalletConnect;
 			sourceTree = "<group>";
 		};
 		C60981D22822563E00546392 /* WalletDetails */ = {
@@ -5842,8 +5857,7 @@
 				C624D783281BB67F00F55530 /* UDDomainsService */,
 				C609820E2823B69A00546392 /* UDWalletsService */,
 				C66FCCFC28448710009B9525 /* UserDataService */,
-				C6A2D58C284FA09500327C47 /* WalletConnectService */,
-				295506F42954D22800EDA42D /* WalletConnectService_V2 */,
+				C60610D229A4FF6C005DC0D5 /* WalletConnect */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -8036,6 +8050,7 @@
 				C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */,
 				C66430FD28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */,
 				C6010D15287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */,
+				C60610D429A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
 				C6C42182293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
 				C62C3F96283F40D30094FC93 /* CodeVerificationCharacterView.swift in Sources */,
 				C642A6B5284118E800299C6E /* MintingDomainListCell.swift in Sources */,
@@ -8905,6 +8920,7 @@
 				C664310E28D8BEB600A9C734 /* ConnectExternalWalletCell.swift in Sources */,
 				C692C310282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
 				C63902BF28E2FCF200E16B42 /* WalletConnector.swift in Sources */,
+				C60610D629A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
 				C6670A0B28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */,
 				30E549C52886DA27009833FB /* DefaultsStorage.swift in Sources */,
 				C6C42184293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
@@ -9519,6 +9535,7 @@
 				C664310F28D8BEB600A9C734 /* ConnectExternalWalletCell.swift in Sources */,
 				C692C311282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
 				C63902C028E2FCF200E16B42 /* WalletConnector.swift in Sources */,
+				C60610D729A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
 				C6670A0C28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */,
 				30E549C62886DA27009833FB /* DefaultsStorage.swift in Sources */,
 				C6C42185293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
@@ -9935,6 +9952,7 @@
 				C66430FE28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */,
 				C6010D16287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */,
 				C62C3F97283F40D30094FC93 /* CodeVerificationCharacterView.swift in Sources */,
+				C60610D529A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
 				C6C42183293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
 				C642A6B6284118E800299C6E /* MintingDomainListCell.swift in Sources */,
 				C685A98C2840FD4900E54044 /* ChoosePrimaryDomainViewController.swift in Sources */,

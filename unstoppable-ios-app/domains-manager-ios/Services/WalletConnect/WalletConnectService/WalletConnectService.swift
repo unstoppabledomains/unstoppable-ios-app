@@ -18,6 +18,11 @@ enum WCRequest {
          payment(_ request: SignPaymentTransactionUIConfiguration)
 }
 
+protocol WalletConnectV1RequestHandlingServiceProtocol: WCSigner {
+    func registerRequestHandler(_ requestHandler: RequestHandler)
+    func connectAsync(to requestURL: WCURL)
+}
+
 final class WalletConnectService {
     
     struct ConnectionConfig {
@@ -35,6 +40,7 @@ final class WalletConnectService {
         server = UDWalletConnectServer(delegate: self)
         server.responseDelegate = self
         
+        // TODO: - WC Remove
         let requestHandlers: [BasicRequestHandler] = [PersonalSignHandler(wcSigner: self),
                                                       SignTransactionHandler(wcSigner: self),
                                                       GetTransactionCountHandler(wcSigner: self),
@@ -247,25 +253,28 @@ extension WalletConnectService: WalletConnectServiceProtocol {
         self.uiHandler = uiHandler
     }
     
-    func connectAsync(to request: ConnectWalletRequest) {
+    func connectAsync(to requestURL: WCURL) {
         Task {
-            
-            if case let .version1(requestURL) = request  {
-                do {
-                    await expectedRequestsManager.add(requestURL: requestURL)
-                    try self.server.connect(to: requestURL)
-                    startConnectionTimeout(for: requestURL)
-                    connectRequestTimeStamp = Date()
-                } catch {
-                    Debugger.printFailure("Failed to connect to WC as a wallet, error: \(error)")
-                    await expectedRequestsManager.remove(requestURL: requestURL)
-                    reportConnectionAttempt(with: .failedConnectionRequest)
-                }
+            do {
+                await expectedRequestsManager.add(requestURL: requestURL)
+                try self.server.connect(to: requestURL)
+                startConnectionTimeout(for: requestURL)
+                connectRequestTimeStamp = Date()
+            } catch {
+                Debugger.printFailure("Failed to connect to WC as a wallet, error: \(error)")
+                await expectedRequestsManager.remove(requestURL: requestURL)
+                reportConnectionAttempt(with: .failedConnectionRequest)
             }
-            
-            if case let .version2(uri) = request  {
-                appContext.walletConnectServiceV2.pairClient(uri: uri)
-            }
+        }
+    }
+    
+    func connectAsync(to request: ConnectWalletRequest) {
+        if case let .version1(requestURL) = request  {
+            connectAsync(to: requestURL)
+        }
+        
+        if case let .version2(uri) = request  {
+            appContext.walletConnectServiceV2.pairClientAsync(uri: uri)
         }
     }
     
@@ -333,7 +342,7 @@ extension WalletConnectService: WalletConnectServiceProtocol {
 // MARK: - WCSignHandlerDelegate
 /// This function called when WC receive some request to confirm
 extension WalletConnectService: WCSignHandlerDelegate {
-    func wcSignHandler(_ wcSignHandler: WCSignerHolder, willHandleRequest request: Request) {
+    func wcSignHandlerWillHandleRequest(_ request: Request) {
         Task {
             await expectedRequestsManager.remove(requestURL: request.url)
             await requestsManager.add(requestURL: request.url)

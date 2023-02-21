@@ -7,6 +7,7 @@
 
 import Foundation
 import Web3
+import WalletConnectSwift
 
 final class MockWalletConnectService {
     
@@ -35,7 +36,7 @@ extension MockWalletConnectService: WalletConnectServiceProtocol {
     func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
         
     }
-    
+    func connectAsync(to requestURL: WCURL) { }
     func connectAsync(to request: WalletConnectService.ConnectWalletRequest) {
         
     }

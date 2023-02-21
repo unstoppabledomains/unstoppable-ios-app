@@ -10,8 +10,9 @@ import Web3
 import WalletConnectSwift
 
 protocol WalletConnectServiceProtocol {
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler)
-    func connectAsync(to request: WalletConnectService.ConnectWalletRequest)
+    func setUIHandler(_ uiHandler: WalletConnectUIHandler) // TODO: - WC Remove
+    func connectAsync(to requestURL: WCURL)
+    func connectAsync(to request: WalletConnectService.ConnectWalletRequest) // TODO: - WC Remove
     func reconnectExistingSessions()
     
     func disconnect(app: WCConnectedAppsStorage.ConnectedApp) async
@@ -22,8 +23,8 @@ protocol WalletConnectServiceProtocol {
     func didRemove(wallet: UDWallet)
     func didLostOwnership(to domain: DomainItem)
     
-    func addListener(_ listener: WalletConnectServiceListener)
-    func removeListener(_ listener: WalletConnectServiceListener)
+    func addListener(_ listener: WalletConnectServiceListener) // TODO: - WC Remove
+    func removeListener(_ listener: WalletConnectServiceListener) // TODO: - WC Remove
     
     func completeTx(transaction: EthereumTransaction,
                             chainId: Int) async throws -> EthereumTransaction
