@@ -39,7 +39,7 @@ final class MockContext: AppContextProtocol {
                                   walletsService: udWalletsService,
                                   transactionsService: domainTransactionsService)
     }()
-    private(set) lazy var deepLinksService: DeepLinksServiceProtocol = DeepLinksService(externalEventsService: externalEventsService)
+    private(set) lazy var deepLinksService: DeepLinksServiceProtocol = DeepLinksService(externalEventsService: externalEventsService, coreAppCoordinator: coreAppCoordinator)
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = MockDomainRecordsService()
     private(set) lazy var domainTransactionsService: DomainTransactionsServiceProtocol = MockDomainTransactionsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()

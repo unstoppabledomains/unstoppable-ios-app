@@ -90,6 +90,12 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         }
     }
         
+    func notifyDidHandleExternalWCRequestWith(result: WCExternalRequestResult) {
+        listeners.forEach { holder in
+            holder.listener?.didHandleExternalWCRequestWith(result: result)
+        }
+    }
+    
     struct ConnectionDataV2: Codable, Equatable {
         let session: WCConnectedAppsStorageV2.SessionProxy
     }
@@ -660,6 +666,7 @@ extension WalletConnectServiceV2 {
                       paramsAny.count >= 2 else {
                     try await respondWithError(request: request)
                     Debugger.printFailure("Invalid parameters", critical: true)
+                    notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectError.failedBuildParams))
                     return
                 }
                 let messageString = paramsAny[1]
@@ -674,16 +681,18 @@ extension WalletConnectServiceV2 {
                     let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
                     sig = AnyCodable(sigTyped)
                 } catch {
-                    
                     Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: true)
                     try await respondWithError(request: request)
+                    notifyDidHandleExternalWCRequestWith(result: .failure(error))
                     return
                 }
                 try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .response(sig))
+                self.notifyDidHandleExternalWCRequestWith(result: .success(()))
                 
             } catch {
                 Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
                 try await respondWithError(request: request)
+                notifyDidHandleExternalWCRequestWith(result: .failure(error))
                 return
             }
         }
@@ -698,6 +707,7 @@ extension WalletConnectServiceV2 {
                       paramsAny.count >= 2 else {
                     try await respondWithError(request: request)
                     Debugger.printFailure("Invalid parameters", critical: true)
+                    notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectError.failedBuildParams))
                     return
                 }
                 let messageString = paramsAny[0]
@@ -712,17 +722,19 @@ extension WalletConnectServiceV2 {
                     let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
                     sig = AnyCodable(sigTyped)
                 } catch {
-                    
                     Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address), error: \(error)", critical: false)
                     self.uiHandler?.didFailToConnect(with: WalletConnectService.Error.failedToSignMessage)
                     try await respondWithError(request: request)
+                    notifyDidHandleExternalWCRequestWith(result: .failure(error))
                     return
                 }
                 try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .response(sig))
+                notifyDidHandleExternalWCRequestWith(result: .success(()))
                 
             } catch {
                 Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
                 try await respondWithError(request: request)
+                notifyDidHandleExternalWCRequestWith(result: .failure(error))
                 return
             }
         }
@@ -738,6 +750,7 @@ extension WalletConnectServiceV2 {
             guard let chainIdInt = Int(request.chainId.reference) else {
                 Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
                 try await respondWithError(request: request)
+                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectError.invalidChainIdentifier))
                 return
             }
             
@@ -752,6 +765,7 @@ extension WalletConnectServiceV2 {
                     Debugger.printFailure("Failed to find session for WC", critical: false)
                     uiHandler?.didFailToConnect(with: .noWCSessionFound)
                     try? await respondWithError(request: request)
+                    notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectError.noWCSessionFound))
                     return
                 }
                 
@@ -763,9 +777,11 @@ extension WalletConnectServiceV2 {
                     let sig = AnyCodable(sigString)
                     try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .response(sig))
                     Debugger.printInfo(topic: .WallectConnect, "Successfully signed TX via external wallet: \(udWallet.address)")
+                    notifyDidHandleExternalWCRequestWith(result: .success(()))
                 }
                 catch {
                     Debugger.printFailure("Failed to send TX: \(error.getTypedDescription())", critical: false)
+                    notifyDidHandleExternalWCRequestWith(result: .failure(error))
                     try await respondWithError(request: request)
                 }
                 return
@@ -774,6 +790,7 @@ extension WalletConnectServiceV2 {
             guard let privKeyString = udWallet.getPrivateKey() else {
                 Debugger.printFailure("No private key in \(udWallet)", critical: true)
                 try await respondWithError(request: request)
+                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectService.Error.failedToGetPrivateKey))
                 throw WalletConnectService.Error.failedToGetPrivateKey
             }
             
@@ -785,6 +802,7 @@ extension WalletConnectServiceV2 {
             let (r, s, v) = (signedTx.r, signedTx.s, signedTx.v)
             let signature = r.hex() + s.hex().dropFirst(2) + String(v.quantity, radix: 16)
             try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .response(AnyCodable(signature)))
+            notifyDidHandleExternalWCRequestWith(result: .success(()))
         }
         
         guard let inTransactions = try? request.params.getTransactions() else {
@@ -805,6 +823,7 @@ extension WalletConnectServiceV2 {
     func handleSendTx(request: WalletConnectSign.Request) {
         @Sendable func handleSingleSendTx(tx: EthereumTransaction) async throws {
             guard let walletAddress = tx.from?.hex(eip55: true) else {
+                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectService.Error.failedToFindWalletToSign))
                 throw WalletConnectService.Error.failedToFindWalletToSign
             }
             let udWallet = try detectWallet(by: walletAddress)
@@ -812,6 +831,7 @@ extension WalletConnectServiceV2 {
             guard let chainIdInt = Int(request.chainId.reference) else {
                 Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
                 try await respondWithError(request: request)
+                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectService.Error.failedToDetermineChainId))
                 return
             }
             
@@ -835,10 +855,12 @@ extension WalletConnectServiceV2 {
                     let respCodable = AnyCodable(response)
                     try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .response(respCodable))
                     Debugger.printInfo(topic: .WallectConnect, "Successfully sent TX via external wallet: \(udWallet.address)")
+                    notifyDidHandleExternalWCRequestWith(result: .success(()))
                 }
                 catch {
                     Debugger.printFailure("Failed to send TX: \(error.getTypedDescription())", critical: false)
                     try await respondWithError(request: request)
+                    notifyDidHandleExternalWCRequestWith(result: .failure(error))
                 }
                 return
             }
@@ -849,6 +871,7 @@ extension WalletConnectServiceV2 {
             let hashCodable = AnyCodable(hash)
             try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .response(hashCodable))
             Debugger.printInfo(topic: .WallectConnect, "Successfully sent TX via internal wallet: \(udWallet.address)")
+            notifyDidHandleExternalWCRequestWith(result: .success(()))
         }
         
         guard let inTransactions = try? request.params.get([EthereumTransaction].self) else {
@@ -860,6 +883,7 @@ extension WalletConnectServiceV2 {
                     try await handleSingleSendTx(tx: tx)
                 } catch {
                     Debugger.printFailure("Failed to send tx: \(tx), error: \(error)", critical: false)
+                    notifyDidHandleExternalWCRequestWith(result: .failure(error))
                     try await respondWithError(request: request)
                 }
             }
