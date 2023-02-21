@@ -10,13 +10,16 @@ import Foundation
 final class DeepLinksService {
         
     private let externalEventsService: ExternalEventsServiceProtocol
+    private let coreAppCoordinator: CoreAppCoordinatorProtocol
     private var listeners: [DeepLinkListenerHolder] = []
     private let deepLinkPath = "/mobile"
     private let wcScheme = "wc"
     private var isExpectingWCInteraction = false
     
-    init(externalEventsService: ExternalEventsServiceProtocol) {
+    init(externalEventsService: ExternalEventsServiceProtocol,
+         coreAppCoordinator: CoreAppCoordinatorProtocol) {
         self.externalEventsService = externalEventsService
+        self.coreAppCoordinator = coreAppCoordinator
     }
 
 }
@@ -76,7 +79,7 @@ extension DeepLinksService: WalletConnectServiceListener {
         Task {
             if isExpectingWCInteraction {
                 isExpectingWCInteraction = false
-                await appContext.coreAppCoordinator.goBackToPreviousApp()
+                await coreAppCoordinator.goBackToPreviousApp()
             }
         }
     }

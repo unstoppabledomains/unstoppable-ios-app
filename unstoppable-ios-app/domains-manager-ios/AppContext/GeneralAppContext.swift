@@ -73,7 +73,8 @@ final class GeneralAppContext: AppContextProtocol {
                                                     walletConnectService: walletConnectService,
                                                     walletConnectServiceV2: walletConnectServiceV2)
         
-        let deepLinksService = DeepLinksService(externalEventsService: externalEventsService)
+        let deepLinksService = DeepLinksService(externalEventsService: externalEventsService,
+                                                coreAppCoordinator: coreAppCoordinator)
         self.deepLinksService = deepLinksService
         
         deepLinksService.addListener(coreAppCoordinator)
