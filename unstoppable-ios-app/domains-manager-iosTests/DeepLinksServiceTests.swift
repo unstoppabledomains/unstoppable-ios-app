@@ -98,8 +98,41 @@ final class DeepLinksServiceTests: BaseTestClass {
         XCTAssertEqual(nil, deepLinksServiceListener.receivedEvent)
     }
     
-    func testInvalidDeepLinkReceived() {
+    func testEmptyDeepLinkReceived() {
         let url = URL(string: deepLink)!
+        
+        deepLinksService.handleUniversalLink(url, receivedState: .foreground)
+        
+        // Test no extra events passed
+        XCTAssertEqual(nil, mockExternalEventsService.receivedEvent)
+        XCTAssertEqual(nil, deepLinksServiceListener.receivedEvent)
+    }
+    
+    func testUnknownUDDeepLinkReceived() {
+        let unknownLink = "\(deepLink)?operation=UnknownOperation"
+        let url = URL(string: unknownLink)!
+        
+        deepLinksService.handleUniversalLink(url, receivedState: .foreground)
+        
+        // Test no extra events passed
+        XCTAssertEqual(nil, mockExternalEventsService.receivedEvent)
+        XCTAssertEqual(nil, deepLinksServiceListener.receivedEvent)
+    }
+    
+    func testInvalidUDDeepLinkReceived() {
+        let invalidLink = "not_url"
+        let url = URL(string: invalidLink)!
+        
+        deepLinksService.handleUniversalLink(url, receivedState: .foreground)
+        
+        // Test no extra events passed
+        XCTAssertEqual(nil, mockExternalEventsService.receivedEvent)
+        XCTAssertEqual(nil, deepLinksServiceListener.receivedEvent)
+    }
+    
+    func testInvalidWCDeepLinkReceived() {
+        let invalidLink = wcConnectionDeepLink.replacingOccurrences(of: "uri=wc:c873dde5", with: "")
+        let url = URL(string: invalidLink)!
         
         deepLinksService.handleUniversalLink(url, receivedState: .foreground)
         
