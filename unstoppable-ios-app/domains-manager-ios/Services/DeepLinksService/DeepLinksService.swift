@@ -110,7 +110,9 @@ private extension DeepLinksService {
         guard isWCDeepLinkUrl(from: components) else { return }
         
         self.isExpectingWCInteraction = true
-        guard let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) else { return }
+        guard let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) else {
+//            externalEventsService.receiveEvent(.wcDeepLink(<#T##wcURL: URL##URL#>), receivedState: <#T##ExternalEventReceivedState#>)
+            return }
         
         appContext.analyticsService.log(event: .didOpenDeepLink,
                                         withParameters: [.deepLink : "walletConnect"])
