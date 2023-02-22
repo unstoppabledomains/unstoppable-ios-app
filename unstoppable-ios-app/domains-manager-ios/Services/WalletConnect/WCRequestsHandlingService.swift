@@ -129,19 +129,46 @@ private extension WCRequestsHandlingService {
         case .rpcRequestV2(let request, let type):
             await handleRPCRequestV2(request, requestType: type)
         }
+        didFinishRequestHandling()
     }
     
     func handleConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest) async {
         // TODO: - Make async
+        // TODO: - Connection timeout
+        //                await expectedRequestsManager.add(requestURL: requestURL)
+        
+        //                startConnectionTimeout(for: requestURL)
+        //                connectRequestTimeStamp = Date()
+        await withSafeCheckedContinuation({ completion in
+            sendConnectionRequest(request) { [weak self] result in
+                guard let self else { return }
+                
+                switch result {
+                case .success(let subInfo):
+                    self.listeners.forEach { holder in
+                        holder.listener?.didConnect(to: subInfo)
+                    }
+                case .failure(let error):
+                    Debugger.printFailure("Failed to connect to WC as a wallet, error: \(error)")
+                    // TODO: - WC await
+                    self.uiHandler?.didFailToConnect(with: .failedConnectionRequest)
+                    //            await expectedRequestsManager.remove(requestURL: requestURL)
+                    //            reportConnectionAttempt(with: .failedConnectionRequest)
+                }
+                
+                completion(Void())
+            }
+        })
+    }
+    
+    func sendConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest, completion: @escaping WCConnectionResultCompletion) {
         if case let .version1(requestURL) = request  {
-            walletConnectServiceV1.connectAsync(to: requestURL)
+            walletConnectServiceV1.connectAsync(to: requestURL, completion: completion)
         }
         
         if case let .version2(uri) = request  {
-            walletConnectServiceV2.pairClientAsync(uri: uri)
+            walletConnectServiceV2.pairClientAsync(uri: uri, completion: completion)
         }
-        
-        didFinishRequestHandling()
     }
     
     func handleRPCRequestV1(_ request: WCRPCRequestV1, requestType: WalletConnectRequestType) async {
@@ -179,8 +206,6 @@ private extension WCRequestsHandlingService {
             walletConnectServiceV1.sendResponse(.invalid(request))
             notifyDidHandleExternalWCRequestWith(result: .failure(error))
         }
-        
-        didFinishRequestHandling()
     }
     
     func handleRPCRequestV2(_ request: WCRPCRequestV2, requestType: WalletConnectRequestType?) async {
@@ -222,8 +247,6 @@ private extension WCRequestsHandlingService {
             try? await walletConnectServiceV2.sendResponse(.error(.internalError), toRequest: request)
             notifyDidHandleExternalWCRequestWith(result: .failure(error))
         }
-        
-        didFinishRequestHandling()
     }
     
     func didFinishRequestHandling() {

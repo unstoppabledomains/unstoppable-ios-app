@@ -16,7 +16,7 @@ protocol WalletConnectServiceProtocol {
     func disconnect(app: WCConnectedAppsStorage.ConnectedApp) async
     func disconnect(peerId: String)
     func getConnectedAppsV1() -> [WCConnectedAppsStorage.ConnectedApp]
-    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
+    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) // TODO: - Move to WCRequestsHandlingService
     
     func didRemove(wallet: UDWallet)
     func didLostOwnership(to domain: DomainItem)
@@ -32,8 +32,8 @@ typealias WCExternalRequestResult = Result<Void, Error>
 protocol WalletConnectServiceListener: AnyObject {
     func didConnect(to app: PushSubscriberInfo?)
     func didDisconnect(from app: PushSubscriberInfo?)
-    func didCompleteConnectionAttempt()
-    func didHandleExternalWCRequestWith(result: WCExternalRequestResult)
+    func didCompleteConnectionAttempt() // DeepLinks service, QRScanner
+    func didHandleExternalWCRequestWith(result: WCExternalRequestResult) // DeepLinks
 }
 
 extension WalletConnectServiceListener {

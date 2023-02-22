@@ -43,6 +43,7 @@ final class WalletConnectService {
     
     private(set) var server: UDWalletConnectServer!
     private var listeners: [WalletConnectServiceListenerHolder] = []
+    private var connectionCompletion: WCConnectionResultCompletion?
     weak var uiHandler: WalletConnectUIHandler?
     var connectRequestTimeStamp: Date?
     
@@ -92,7 +93,7 @@ extension WalletConnectService: ServerDelegate {
             await expectedRequestsManager.remove(requestURL: url)
             Debugger.printFailure("Failed to connect to WC as wallet with wcurl: \(url)")
             intentsStorage.removeAll()
-            reportConnectionAttempt(with: .failedConnectionRequest)
+            reportConnectionAttempt(with: Error.failedConnectionRequest)
         }
     }
     
@@ -131,7 +132,7 @@ extension WalletConnectService: ServerDelegate {
                 let connectionData = try await uiHandler.getConfirmationToConnectServer(config: uiConfig)
                 guard let walletAddressToConnect = connectionData.domain.ownerWallet else {
                     Debugger.printFailure("Domain without wallet address", critical: true)
-                    reportConnectionAttempt(with: .failedConnectionRequest)
+                    reportConnectionAttempt(with: Error.failedConnectionRequest)
                     completion(buildFailedWalletInfo())
                     return
                 }
@@ -155,7 +156,7 @@ extension WalletConnectService: ServerDelegate {
                 await requestsManager.remove(requestURL: requestURL)
                 completion(walletInfo)
             } catch {
-                reportConnectionAttempt(with: error as? WalletConnectService.Error)
+                reportConnectionAttempt(with: (error as? WalletConnectService.Error) ?? .failedConnectionRequest)
                 intentsStorage.removeAll()
                 await requestsManager.remove(requestURL: requestURL)
                 completion(buildFailedWalletInfo())
@@ -166,7 +167,7 @@ extension WalletConnectService: ServerDelegate {
     func server(_ server: Server, didConnect session: Session) {
         guard let accounts = session.walletInfo?.accounts  else {
             Debugger.printWarning("Session connected with no wallet addresses")
-            reportConnectionAttempt(with: .failedConnectionRequest)
+            reportConnectionAttempt(with: Error.failedConnectionRequest)
             return
         }
         if let pendingIntent = intentsStorage.retrieveIntents().first {
@@ -178,7 +179,7 @@ extension WalletConnectService: ServerDelegate {
             Debugger.printInfo(topic: .WallectConnect, "Reconnected apps: \(currentApps)")
         } else {
             Debugger.printFailure("Session connected with no relevant wallet", critical: true)
-            reportConnectionAttempt(with: .failedConnectionRequest)
+            reportConnectionAttempt(with: Error.failedConnectionRequest)
         }
         intentsStorage.removeAll()
     }
@@ -204,9 +205,8 @@ extension WalletConnectService: ServerDelegate {
             }
             
             Debugger.printInfo("Connected to \(session.dAppInfo.getDappName())")
-            listeners.forEach { holder in
-                holder.listener?.didConnect(to: PushSubscriberInfo(app: newApp))
-            }
+            connectionCompletion?(.success(PushSubscriberInfo(app: newApp)))
+            connectionCompletion = nil
             intentsStorage.removeAll()
         }
     }
@@ -235,18 +235,12 @@ extension WalletConnectService: WalletConnectServiceProtocol {
         self.uiHandler = uiHandler
     }
     
-    func connectAsync(to requestURL: WCURL) {
-        Task {
-            do {
-                await expectedRequestsManager.add(requestURL: requestURL)
-                try self.server.connect(to: requestURL)
-                startConnectionTimeout(for: requestURL)
-                connectRequestTimeStamp = Date()
-            } catch {
-                Debugger.printFailure("Failed to connect to WC as a wallet, error: \(error)")
-                await expectedRequestsManager.remove(requestURL: requestURL)
-                reportConnectionAttempt(with: .failedConnectionRequest)
-            }
+    func connectAsync(to requestURL: WCURL, completion: @escaping WCConnectionResultCompletion) {
+        do {
+            try self.server.connect(to: requestURL)
+            self.connectionCompletion = completion
+        } catch {
+            completion(.failure(.failedConnectionRequest))
         }
     }
     
@@ -347,24 +341,27 @@ extension WalletConnectService {
 
 // MARK: - Private methods
 private extension WalletConnectService {
-    func reportConnectionAttempt(with error: Error?) {
-        if let error = error {
-            self.uiHandler?.didFailToConnect(with: error)
-        }
-        listeners.forEach { holder in
-            holder.listener?.didCompleteConnectionAttempt()
-        }
+    func reportConnectionAttempt(with error: WalletConnectService.Error) {
+        connectionCompletion?(.failure(error))
+        connectionCompletion = nil
+//        if let error = error {
+//            self.uiHandler?.didFailToConnect(with: error)
+//        }
+//        listeners.forEach { holder in
+//            holder.listener?.didCompleteConnectionAttempt()
+//        }
     }
     
+    // TODO: - WC Move to WCRequestsHandlingService
     func startConnectionTimeout(for requestURL: WCURL) {
-        Task {
-            try? await Task.sleep(seconds: Constants.wcConnectionTimeout)
-            if await expectedRequestsManager.contains(requestURL: requestURL) {
-                Debugger.printFailure("Dropping WC connection due to timeout")
-                reportConnectionAttempt(with: WalletConnectService.Error.connectionTimeout)
-            }
-            await expectedRequestsManager.remove(requestURL: requestURL)
-        }
+//        Task {
+//            try? await Task.sleep(seconds: Constants.wcConnectionTimeout)
+//            if await expectedRequestsManager.contains(requestURL: requestURL) {
+//                Debugger.printFailure("Dropping WC connection due to timeout")
+//                reportConnectionAttempt(with: WalletConnectService.Error.connectionTimeout)
+//            }
+//            await expectedRequestsManager.remove(requestURL: requestURL)
+//        }
     }
 }
 

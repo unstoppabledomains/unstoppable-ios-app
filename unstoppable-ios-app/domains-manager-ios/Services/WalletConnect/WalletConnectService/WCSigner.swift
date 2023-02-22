@@ -10,9 +10,12 @@ import WalletConnectSwift
 import Web3
 import PromiseKit
 
+typealias WCConnectionResult = Swift.Result<PushSubscriberInfo?, WalletConnectService.Error>
+typealias WCConnectionResultCompletion = ((WCConnectionResult)->())
+
 protocol WalletConnectV1RequestHandlingServiceProtocol {
     func registerRequestHandler(_ requestHandler: RequestHandler)
-    func connectAsync(to requestURL: WCURL)
+    func connectAsync(to requestURL: WCURL, completion: @escaping WCConnectionResultCompletion)
     func sendResponse(_ response: Response)
     
     func handlePersonalSign(request: Request) async throws -> Response

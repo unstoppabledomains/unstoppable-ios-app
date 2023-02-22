@@ -70,7 +70,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
 }
 
 protocol WalletConnectV2RequestHandlingServiceProtocol {
-    func pairClientAsync(uri: WalletConnectURI)
+    func pairClientAsync(uri: WalletConnectURI, completion: @escaping WCConnectionResultCompletion)
     
     func handlePersonalSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleEthSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
@@ -117,7 +117,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     var pendingRequest: WalletConnectSign.Request?
     var callback: ((ResponseV2)->Void)?
-        
+    private var connectionCompletion: WCConnectionResultCompletion?
+
     init(udWalletsService: UDWalletsServiceProtocol) {
         self.udWalletsService = udWalletsService
         
@@ -309,13 +310,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         return walletAddressToConnect
     }
     
-    func reportConnectionAttempt(with error: WalletConnectService.Error?) {
-        if let error = error {
-            self.uiHandler?.didFailToConnect(with: error)
-        }
-        listeners.forEach { holder in
-            holder.listener?.didCompleteConnectionAttempt()
-        }
+    func reportConnectionAttempt(with error: WalletConnectService.Error) {
+        connectionCompletion?(.failure(error))
     }
     
     var pendingProposal: SessionV2.Proposal?
@@ -333,7 +329,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                         }
                         accountAddress = address
                     } catch {
-                        self?.reportConnectionAttempt(with: error as? WalletConnectService.Error)
+                        self?.reportConnectionAttempt(with: (error as? WalletConnectService.Error) ?? .failedConnectionRequest)
                         self?.intentsStorage.removeAll()
                         self?.didRejectSession(sessionProposal)
                         return
@@ -481,9 +477,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             }
             
             Debugger.printInfo("Connected to \(session.peer.name)")
-            listeners.forEach { holder in
-                holder.listener?.didConnect(to: PushSubscriberInfo(appV2: newApp))
-            }
+            connectionCompletion?(.success(PushSubscriberInfo(appV2: newApp)))
+            connectionCompletion = nil
             intentsStorage.removeAll()
         }
     }
@@ -547,13 +542,15 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 // MARK: - WalletConnectV2RequestHandlingServiceProtocol
 extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol {
     @MainActor
-    internal func pairClientAsync(uri: WalletConnectURI) {
+    internal func pairClientAsync(uri: WalletConnectURI, completion: @escaping WCConnectionResultCompletion) {
         Debugger.printInfo(topic: .WallectConnectV2, "[WALLET] Pairing to: \(uri)")
         Task {
             do {
                 try await Pair.instance.pair(uri: uri)
+                self.connectionCompletion = completion
             } catch {
                 Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: true)
+                completion(.failure(.failedConnectionRequest))
             }
         }
     }
