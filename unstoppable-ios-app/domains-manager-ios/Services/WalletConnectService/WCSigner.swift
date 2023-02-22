@@ -170,60 +170,19 @@ extension WalletConnectService: WCSigner {
                 }
                 
                 let (connectedApp, udWallet) = try await getWalletAfterConfirmationIfNeeded(address: address,
-                                                                    request: request,
-                                                                    transaction: transaction)
-               
-                guard udWallet.walletState != .externalLinked else {
-                    guard let sessionWithExtWallet = walletConnectClientService.findSessions(by: address).first else {
-                        Debugger.printFailure("Failed to find session for WC", critical: false)
-                        self.uiHandler?.didFailToConnect(with: .noWCSessionFound)
-                        self.server.send(.invalid(request))
-                        return
-                    }
-                    
-                    udWallet.signTxViaWalletConnect(session: sessionWithExtWallet, tx: transaction)
-                        .done { response in
-                            if let error = response.error {
-                                Debugger.printFailure("Error from the signing ext wallet: \(error)", critical: true)
-                                self.server.send(.invalid(request))
-                                return
-                            }
-                            do {
-                                let result = try response.result(as: String.self)
-                                self.server.send(Response.signature(result, for: request))
-                                self.notifyDidHandleExternalWCRequestWith(result: .success(()))
-                            } catch {
-                                Debugger.printFailure("Error parsing result from the signing ext wallet: \(error)", critical: true)
-                                self.server.send(.invalid(request))
-                                self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
-                            }
-                        }.catch { error in
-                            Debugger.printFailure("Failed to send a request to the signing ext wallet: \(error)", critical: true)
-                            self.server.send(.invalid(request))
-                            self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
-                        }
-                    return
-                }
-                
-                guard let privKeyString = udWallet.getPrivateKey() else {
-                    Debugger.printFailure("No private key in \(udWallet)", critical: true)
-                    self.server.send(.invalid(request))
-                    throw Error.failedToGetPrivateKey
-                }
-                
-                let privateKey = try EthereumPrivateKey(hexPrivateKey: privKeyString)
-                
-                let chainId = EthereumQuantity(quantity: BigUInt(connectedApp.session.dAppInfo.getChainId()))
-                let signedTx = try transaction.sign(with: privateKey, chainId: chainId)
-                let (r, s, v) = (signedTx.r, signedTx.s, signedTx.v)
-                let signature = r.hex() + s.hex().dropFirst(2) + String(v.quantity, radix: 16)
-                server.send(Response.signature(signature, for: request))
-                notifyDidHandleExternalWCRequestWith(result: .success(()))
-                 
+                                                                                            request: request,
+                                                                                            transaction: transaction)
+                let sig = try await udWallet.getTxSignature(ethTx: transaction,
+                                                            chainId: BigUInt(connectedApp.session.dAppInfo.getChainId()),
+                                                            request: request)
+                self.server.send(Response.signature(sig, for: request))
+                self.notifyDidHandleExternalWCRequestWith(result: .success(()))
             } catch {
-                Debugger.printFailure("Signing a TX was interrupted: \(error.localizedDescription)")
+                let wcError = (error as? WalletConnectService.Error) ?? WalletConnectService.Error.failedToSignTransaction
+                Debugger.printFailure("Failed to sign transaction, error=\(error)", critical: false)
+                self.uiHandler?.didFailToConnect(with: wcError)
                 self.server.send(.invalid(request))
-                notifyDidHandleExternalWCRequestWith(result: .failure(error))
+                self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
             }
         }
     }

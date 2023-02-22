@@ -30,6 +30,10 @@
 		295506F12954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
 		295506F22954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
 		295506F32954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
+		2959AC4729A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */; };
+		2959AC4829A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */; };
+		2959AC4929A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */; };
+		2959AC4A29A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */; };
 		299713BE28F6927500743003 /* ABIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713BD28F6927500743003 /* ABIType.swift */; };
 		299713BF28F6927500743003 /* ABIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713BD28F6927500743003 /* ABIType.swift */; };
 		299713C028F6927500743003 /* ABIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713BD28F6927500743003 /* ABIType.swift */; };
@@ -3199,6 +3203,7 @@
 		290A60412950A89900882109 /* WalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushSubscriberInfo.swift; sourceTree = "<group>"; };
 		295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCConnectedAppsStorageV2.swift; sourceTree = "<group>"; };
+		2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDWallet+SigningTransaction.swift"; sourceTree = "<group>"; };
 		299713BD28F6927500743003 /* ABIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIType.swift; sourceTree = "<group>"; };
 		299713C228F692AB00743003 /* ABIValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIValue.swift; sourceTree = "<group>"; };
 		299713C728F692D700743003 /* ABIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIError.swift; sourceTree = "<group>"; };
@@ -4965,6 +4970,7 @@
 				307B1CE92602775C007B14C3 /* UDWallet.swift */,
 				29BECD21297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift */,
 				29AEA05429367785003BB5B4 /* UDWallet+Signing.swift */,
+				2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */,
 				307B1D382603C0C4007B14C3 /* UDWalletEthereum.swift */,
 				307B1D312603C087007B14C3 /* UDWalletZil.swift */,
 				3004E32626D528D300B9CB6A /* LegacyUnitaryWallet.swift */,
@@ -8263,6 +8269,7 @@
 				C6420BF328AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */,
 				C60CA28E2832501D00AB1B36 /* QRCodeService.swift in Sources */,
 				C68953882834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */,
+				2959AC4729A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */,
 				C671E38E28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */,
 				C60982672824012200546392 /* EnterBackupCreateLocalWalletPresenter.swift in Sources */,
 				304C66CF2807F1E800E1ACFE /* OnboardingData.swift in Sources */,
@@ -8477,6 +8484,7 @@
 				C63538E82949C2C100ECABA6 /* DomainsPFPInfoStorage.swift in Sources */,
 				C6C995C8289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */,
 				307F83C6267A339F0070A9A6 /* User.swift in Sources */,
+				2959AC4929A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */,
 				C6456F0827FF291D00A517D5 /* GradientView.swift in Sources */,
 				C6D0F43A283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
 				3004E32926D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */,
@@ -9091,6 +9099,7 @@
 				C63538E92949C2C100ECABA6 /* DomainsPFPInfoStorage.swift in Sources */,
 				C6C995C9289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */,
 				307F857F267B60300070A9A6 /* User.swift in Sources */,
+				2959AC4A29A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */,
 				C6456F0927FF291D00A517D5 /* GradientView.swift in Sources */,
 				C6D0F43B283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
 				3004E32A26D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */,
@@ -10162,6 +10171,7 @@
 				C60CA28F2832501D00AB1B36 /* QRCodeService.swift in Sources */,
 				C68953892834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */,
 				C60982682824012200546392 /* EnterBackupCreateLocalWalletPresenter.swift in Sources */,
+				2959AC4829A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */,
 				C671E38F28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */,
 				304C66D02807F1E800E1ACFE /* OnboardingData.swift in Sources */,
 				C6EA6D6928B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
