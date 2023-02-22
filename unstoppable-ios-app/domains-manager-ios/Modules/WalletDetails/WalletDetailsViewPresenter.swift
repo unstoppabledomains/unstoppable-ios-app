@@ -253,7 +253,8 @@ private extension WalletDetailsViewPresenter {
         }
     }
     
-    @MainActor private func indicateWalletRemoved() {
+    @MainActor
+    func indicateWalletRemoved() {
         if wallet.walletState == .externalLinked {
             appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
         } else {
@@ -261,16 +262,14 @@ private extension WalletDetailsViewPresenter {
         }
     }
     
-    private func removeWallet() async {
+    func removeWallet() async {
         udWalletsService.remove(wallet: wallet)
         // WC1 + WC2
         try? walletConnectClientService.disconnect(walletAddress: wallet.address)
-        await walletConnectServiceV2.disconnect(from: wallet.address)
+        walletConnectServiceV2.disconnect(from: wallet.address)
         let wallets = udWalletsService.getUserWallets()
         guard !wallets.isEmpty else { return }
-        DispatchQueue.main.async { [weak self] in
-            self?.indicateWalletRemoved()
-        }
+        await indicateWalletRemoved()
     }
     
     func copyAddressButtonPressed() {
