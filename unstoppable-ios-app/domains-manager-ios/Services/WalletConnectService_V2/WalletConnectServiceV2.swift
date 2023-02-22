@@ -783,7 +783,7 @@ extension WalletConnectServiceV2 {
                     notifyDidHandleExternalWCRequestWith(result: .success(()))
                 }
                 catch {
-                    Debugger.printFailure("Failed to send TX: \(error.getTypedDescription())", critical: false)
+                    Debugger.printFailure("Failed to sign TX: \(error.getTypedDescription())", critical: false)
                     notifyDidHandleExternalWCRequestWith(result: .failure(error))
                     try await respondWithError(request: request)
                 }
@@ -1404,10 +1404,41 @@ extension WalletConnectServiceV2 {
                                    session: WCConnectedAppsStorageV2.SessionProxy,
                                    tx: EthereumTransaction) async throws -> String {
         let response = try await signTxViaWalletConnectV2(session: session,
-                                                          txParams: AnyCodable(tx))  {
+                                                          txParams: tx.convertToAnyCodable())  {
             Task { try? await udWallet.launchExternalWallet() }
         }
         let sigString = try appContext.walletConnectServiceV2.handle(response: response)
         return sigString
+    }
+}
+
+extension EthereumTransaction {
+    func convertToAnyCodable() -> AnyCodable {
+        var accum: [String: String] = [String: String]()
+        
+        if let from = self.from {
+            accum["from"] = from.hex()
+        }
+        if let to = self.to {
+            accum["to"] = to.hex()
+        }
+
+        if let nonce = self.nonce {
+            accum["nonce"] = nonce.hex()
+        }
+        if let gasLimit = self.gas {
+            accum["gasLimit"] = gasLimit.hex()
+        }
+        if let gasPrice = self.gasPrice {
+            accum["gasPrice"] = gasPrice.hex()
+        }
+        if let value = self.value {
+            accum["value"] = value.hex()
+        }
+        accum["data"] = data.hex()
+        
+        
+        
+        return AnyCodable([accum])
     }
 }

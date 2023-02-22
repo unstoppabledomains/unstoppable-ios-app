@@ -164,15 +164,25 @@ extension WalletConnectService: WCSigner {
     func handleSignTx(request: WalletConnectSwift.Request) {
         Task {
             do {
-                let transaction = try request.parameter(of: EthereumTransaction.self, at: 0)
-                guard let address = transaction.from?.hex(eip55: true).normalized else {
+                let _tx = try request.parameter(of: EthereumTransaction.self, at: 0)
+                
+                
+                guard let address = _tx.from?.hex(eip55: true).normalized else {
                     throw Error.failedToFindWalletToSign
                 }
                 
                 let (connectedApp, udWallet) = try await getWalletAfterConfirmationIfNeeded(address: address,
                                                                                             request: request,
-                                                                                            transaction: transaction)
-                let sig = try await udWallet.getTxSignature(ethTx: transaction,
+                                                                                            transaction: _tx)
+                
+                guard let chainIdInt = connectedApp.session.walletInfo?.chainId else {
+                    Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
+                    throw Error.failedToDetermineChainId
+                }
+                let completedTx = try await completeTx(transaction: _tx, chainId: chainIdInt)
+
+                
+                let sig = try await udWallet.getTxSignature(ethTx: completedTx,
                                                             chainId: BigUInt(connectedApp.session.dAppInfo.getChainId()),
                                                             request: request)
                 self.server.send(Response.signature(sig, for: request))
