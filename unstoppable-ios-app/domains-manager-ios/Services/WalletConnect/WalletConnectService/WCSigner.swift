@@ -347,7 +347,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         let dataString = try request.parameter(of: String.self, at: 1)
         
         Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(request.jsonString)")
-        
+        // TODO: - Roman. For not external wallet, it will ask confirmation and then fail.
         let (_, udWallet) = try await self.getWalletAfterConfirmationIfNeeded(address: walletAddress,
                                                                               request: request,
                                                                               messageString: dataString)

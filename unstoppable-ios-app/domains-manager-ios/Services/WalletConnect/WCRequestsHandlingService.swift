@@ -263,6 +263,7 @@ private extension WCRequestsHandlingService {
 private extension WCRequestsHandlingService {
     func setup() {
         registerV1RequestHandlers()
+        registerV2RequestHandlers()
     }
     
     func registerV1RequestHandlers() {
