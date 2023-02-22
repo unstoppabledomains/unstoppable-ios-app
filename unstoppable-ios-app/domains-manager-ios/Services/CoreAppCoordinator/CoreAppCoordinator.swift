@@ -129,43 +129,41 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
         }
     }
     
-    func didFailToConnect(with error: WalletConnectService.Error) {
-        @MainActor func showErrorAlert(in hostView: UIViewController) {
+    @MainActor
+    func didFailToConnect(with error: WalletConnectService.Error) async {
+        @MainActor
+        func showErrorAlert(in hostView: UIViewController) async {
             Vibration.error.vibrate()
             switch error.groupType {
             case .failedConnection, .connectionTimeout:
-                pullUpViewService.showWCConnectionFailedPullUp(in: hostView)
+                await pullUpViewService.showWCConnectionFailedPullUp(in: hostView)
             case .failedTx:
-                pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
+                await pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
             case .networkNotSupported:
-                pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
+                await pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
             case .lowAllowance:
-                pullUpViewService.showWCLowBalancePullUp(in: hostView)
+                await pullUpViewService.showWCLowBalancePullUp(in: hostView)
             case .methodUnsupported:
-                pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
+                await pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
             }
         }
         
-        Task {
-            await MainActor.run {
-                switch currentRoot {
-                case .domainsCollection(let router):
-                    guard let hostView = router.topViewController() else { return }
-                    
-                    switch error.groupType {
-                    case .connectionTimeout:
-                        showErrorAlert(in: hostView)
-                    case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance, .methodUnsupported:
-                        if let pullUpView = hostView as? PullUpViewController,
-                           pullUpView.pullUp != .wcLoading {
-                            return
-                        }
-                        
-                        showErrorAlert(in: hostView)
-                    }
-                default: return
+        switch currentRoot {
+        case .domainsCollection(let router):
+            guard let hostView = router.topViewController() else { return }
+            
+            switch error.groupType {
+            case .connectionTimeout:
+                await showErrorAlert(in: hostView)
+            case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance, .methodUnsupported:
+                if let pullUpView = hostView as? PullUpViewController,
+                   pullUpView.pullUp != .wcLoading {
+                    return
                 }
+                
+                await showErrorAlert(in: hostView)
             }
+        default: return
         }
     }
 }

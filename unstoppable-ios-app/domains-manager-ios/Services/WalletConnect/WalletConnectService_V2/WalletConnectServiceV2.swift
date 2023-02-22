@@ -496,7 +496,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                 try await Sign.instance.approve(proposalId: proposalId, namespaces: namespaces)
             } catch {
                 Debugger.printFailure("[WC_2] DApp Failed to Approve Session error: \(error)", critical: true)
-                self.uiHandler?.didFailToConnect(with: .failedConnectionRequest)
+                self.reportConnectionAttempt(with: WalletConnectService.Error.failedConnectionRequest)
             }
         }
     }

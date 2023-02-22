@@ -133,7 +133,6 @@ private extension WCRequestsHandlingService {
     }
     
     func handleConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest) async {
-        // TODO: - Make async
         // TODO: - Connection timeout
         //                await expectedRequestsManager.add(requestURL: requestURL)
         
@@ -143,20 +142,21 @@ private extension WCRequestsHandlingService {
             sendConnectionRequest(request) { [weak self] result in
                 guard let self else { return }
                 
-                switch result {
-                case .success(let subInfo):
-                    self.listeners.forEach { holder in
-                        holder.listener?.didConnect(to: subInfo)
+                Task {
+                    switch result {
+                    case .success(let subInfo):
+                        self.listeners.forEach { holder in
+                            holder.listener?.didConnect(to: subInfo)
+                        }
+                    case .failure(let error):
+                        Debugger.printFailure("Failed to connect to WC as a wallet, error: \(error)")
+                        await self.uiHandler?.didFailToConnect(with: .failedConnectionRequest)
+                        //            await expectedRequestsManager.remove(requestURL: requestURL)
+                        //            reportConnectionAttempt(with: .failedConnectionRequest)
                     }
-                case .failure(let error):
-                    Debugger.printFailure("Failed to connect to WC as a wallet, error: \(error)")
-                    // TODO: - WC await
-                    self.uiHandler?.didFailToConnect(with: .failedConnectionRequest)
-                    //            await expectedRequestsManager.remove(requestURL: requestURL)
-                    //            reportConnectionAttempt(with: .failedConnectionRequest)
+                    
+                    completion(Void())
                 }
-                
-                completion(Void())
             }
         })
     }
@@ -234,9 +234,7 @@ private extension WCRequestsHandlingService {
     
     func handleRPCRequestFailed(error: Error) async {
         if let error = error as? WalletConnectService.Error {
-            // TODO: - WC await
-            self.uiHandler?.didFailToConnect(with: error)
-            
+            await uiHandler?.didFailToConnect(with: error)
         } else if let _ = error as? WalletConnectUIError {
             /// Request cancelled
         } else {
@@ -246,6 +244,7 @@ private extension WCRequestsHandlingService {
     }
     
     func didFinishRequestHandling() {
+        requests.removeFirst()
         isHandlingRequest = false
         handleNextRequest()
     }
