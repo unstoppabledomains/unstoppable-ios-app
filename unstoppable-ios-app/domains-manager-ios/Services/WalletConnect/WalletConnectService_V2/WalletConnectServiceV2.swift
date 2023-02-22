@@ -310,7 +310,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         return walletAddressToConnect
     }
     
-    func reportConnectionAttempt(with error: WalletConnectService.Error) {
+    func reportConnectionAttempt(with error: Swift.Error) {
         connectionCompletion?(.failure(error))
     }
     
@@ -329,7 +329,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                         }
                         accountAddress = address
                     } catch {
-                        self?.reportConnectionAttempt(with: (error as? WalletConnectService.Error) ?? .failedConnectionRequest)
+                        self?.reportConnectionAttempt(with: error)
                         self?.intentsStorage.removeAll()
                         self?.didRejectSession(sessionProposal)
                         return
@@ -550,7 +550,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 self.connectionCompletion = completion
             } catch {
                 Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: true)
-                completion(.failure(.failedConnectionRequest))
+                completion(.failure(WalletConnectService.Error.failedConnectionRequest))
             }
         }
     }

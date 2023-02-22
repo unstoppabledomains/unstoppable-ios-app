@@ -156,7 +156,7 @@ extension WalletConnectService: ServerDelegate {
                 await requestsManager.remove(requestURL: requestURL)
                 completion(walletInfo)
             } catch {
-                reportConnectionAttempt(with: (error as? WalletConnectService.Error) ?? .failedConnectionRequest)
+                reportConnectionAttempt(with: error)
                 intentsStorage.removeAll()
                 await requestsManager.remove(requestURL: requestURL)
                 completion(buildFailedWalletInfo())
@@ -240,7 +240,7 @@ extension WalletConnectService: WalletConnectServiceProtocol {
             try self.server.connect(to: requestURL)
             self.connectionCompletion = completion
         } catch {
-            completion(.failure(.failedConnectionRequest))
+            completion(.failure(WalletConnectService.Error.failedConnectionRequest))
         }
     }
     
@@ -341,7 +341,7 @@ extension WalletConnectService {
 
 // MARK: - Private methods
 private extension WalletConnectService {
-    func reportConnectionAttempt(with error: WalletConnectService.Error) {
+    func reportConnectionAttempt(with error: Swift.Error) {
         connectionCompletion?(.failure(error))
         connectionCompletion = nil
 //        if let error = error {

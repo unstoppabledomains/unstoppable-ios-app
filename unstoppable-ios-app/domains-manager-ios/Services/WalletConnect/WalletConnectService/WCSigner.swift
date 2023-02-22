@@ -10,7 +10,7 @@ import WalletConnectSwift
 import Web3
 import PromiseKit
 
-typealias WCConnectionResult = Swift.Result<PushSubscriberInfo?, WalletConnectService.Error>
+typealias WCConnectionResult = Swift.Result<PushSubscriberInfo?, Swift.Error>
 typealias WCConnectionResultCompletion = ((WCConnectionResult)->())
 
 protocol WalletConnectV1RequestHandlingServiceProtocol {

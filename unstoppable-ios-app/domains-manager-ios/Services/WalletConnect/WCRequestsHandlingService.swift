@@ -237,6 +237,8 @@ private extension WCRequestsHandlingService {
             // TODO: - WC await
             self.uiHandler?.didFailToConnect(with: error)
             
+        } else if let _ = error as? WalletConnectUIError {
+            /// Request cancelled
         } else {
             Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
         }
