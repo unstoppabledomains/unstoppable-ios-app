@@ -193,18 +193,9 @@ private extension WCRequestsHandlingService {
             }
             walletConnectServiceV1.sendResponse(response)
             notifyDidHandleExternalWCRequestWith(result: .success(()))
-        } catch let error as WalletConnectService.Error {
-            Debugger.printFailure("Unsupported WC method: \(request.method)")
-            walletConnectServiceV1.sendResponse(.invalid(request))
-            
-            // TODO: - WC await
-            self.uiHandler?.didFailToConnect(with: error)
-            
-            notifyDidHandleExternalWCRequestWith(result: .failure(error))
         } catch {
-            Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
             walletConnectServiceV1.sendResponse(.invalid(request))
-            notifyDidHandleExternalWCRequestWith(result: .failure(error))
+            await handleRPCRequestFailed(error: error)
         }
     }
     
@@ -235,18 +226,21 @@ private extension WCRequestsHandlingService {
                 try await walletConnectServiceV2.sendResponse(response, toRequest: request)
             }
             notifyDidHandleExternalWCRequestWith(result: .success(()))
-        } catch let error as WalletConnectService.Error {
+        } catch {
             try? await walletConnectServiceV2.sendResponse(.error(.internalError), toRequest: request)
-            
+            await handleRPCRequestFailed(error: error)
+        }
+    }
+    
+    func handleRPCRequestFailed(error: Error) async {
+        if let error = error as? WalletConnectService.Error {
             // TODO: - WC await
             self.uiHandler?.didFailToConnect(with: error)
             
-            notifyDidHandleExternalWCRequestWith(result: .failure(error))
-        } catch {
+        } else {
             Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
-            try? await walletConnectServiceV2.sendResponse(.error(.internalError), toRequest: request)
-            notifyDidHandleExternalWCRequestWith(result: .failure(error))
         }
+        notifyDidHandleExternalWCRequestWith(result: .failure(error))
     }
     
     func didFinishRequestHandling() {
