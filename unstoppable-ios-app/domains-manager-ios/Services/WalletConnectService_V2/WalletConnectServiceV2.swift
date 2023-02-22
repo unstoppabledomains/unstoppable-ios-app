@@ -75,6 +75,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
 
 typealias SessionV2 = WalletConnectSign.Session
 typealias ResponseV2 = WalletConnectSign.Response
+typealias SessionV2Proxy = WCConnectedAppsStorageV2.SessionProxy
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     enum RPCMethod: String, CaseIterable {
@@ -130,6 +131,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 //
 //        try? Sign.instance.cleanup()
 //        try? Pair.instance.cleanup()
+//        clientConnectionsV2.removeAll()
         
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
@@ -944,20 +946,18 @@ extension WalletConnectServiceV2 {
         
     }
     
-    private func proceedSendTxViaWC(session: WCConnectedAppsStorageV2.SessionProxy,
+    private func proceedSendTxViaWC(session: SessionV2Proxy,
                                     txParams: AnyCodable,
                                     onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
-     let settledSessions = Sign.instance.getSessions()
-     let settledSessionsTopics = settledSessions.map { $0.topic }
-     
-     guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
-         throw WalletConnectError.noWCSessionFound
-     }
-     return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.sendTransaction,
-                                  session: sessionSettled,
-                                  requestParams: txParams,
-                                  onWcRequestSentCallback: onWcRequestSentCallback)
- }
+        
+        guard let sessionSettled = pickOnlyActiveSessions(from: [session]).first else {
+            throw WalletConnectError.noWCSessionFound
+        }
+        return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.sendTransaction,
+                                     session: sessionSettled,
+                                     requestParams: txParams,
+                                     onWcRequestSentCallback: onWcRequestSentCallback)
+    }
     
 }
 
@@ -1271,7 +1271,7 @@ extension WalletConnectServiceV2 {
     }
     
     private func sendRequest(method: RPCMethod,
-                             session: SessionV2,
+                             session: SessionV2Proxy,
                              requestParams: AnyCodable,
                             onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
         guard let chainIdString = Array(session.namespaces.values).map({Array($0.accounts)}).flatMap({$0}).map({$0.blockchainIdentifier}).first,
@@ -1315,13 +1315,10 @@ extension WalletConnectServiceV2 {
         }
     }
     
-    private func signTxViaWalletConnectV2(session: WCConnectedAppsStorageV2.SessionProxy,
+    private func signTxViaWalletConnectV2(session: SessionV2Proxy,
                                        txParams: AnyCodable,
                                        onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
-        let settledSessions = Sign.instance.getSessions()
-        let settledSessionsTopics = settledSessions.map { $0.topic }
-        
-        guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
+        guard let sessionSettled = pickOnlyActiveSessions(from: [session]).first else {
             throw WalletConnectError.noWCSessionFound
         }
         return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.signTransaction,
@@ -1335,10 +1332,7 @@ extension WalletConnectServiceV2 {
                           message: String,
                           address: HexAddress,
                           onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
-        let settledSessions = Sign.instance.getSessions()
-        let settledSessionsTopics = settledSessions.map { $0.topic }
-        
-        guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
+        guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectError.noWCSessionFound
         }
         
@@ -1349,14 +1343,12 @@ extension WalletConnectServiceV2 {
                                      onWcRequestSentCallback: onWcRequestSentCallback)
     }
     
-    func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy],
+    func sendEthSign(sessions: [SessionV2Proxy],
                           message: String,
                           address: HexAddress,
                      onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
-        let settledSessions = Sign.instance.getSessions()
-        let settledSessionsTopics = settledSessions.map { $0.topic }
-        
-        guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
+
+        guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectError.noWCSessionFound
         }
         
@@ -1365,6 +1357,12 @@ extension WalletConnectServiceV2 {
                               session: sessionSettled,
                               requestParams: params,
                               onWcRequestSentCallback: onWcRequestSentCallback)
+    }
+    
+    private func pickOnlyActiveSessions(from sessions: [SessionV2Proxy]) -> [SessionV2Proxy] {
+        let settledSessions = Sign.instance.getSessions()
+        let settledSessionsTopics = settledSessions.map { $0.topic }
+        return sessions.filter({ settledSessionsTopics.contains($0.topic)})
     }
     
     func handle(response: WalletConnectSign.Response) throws -> String {
