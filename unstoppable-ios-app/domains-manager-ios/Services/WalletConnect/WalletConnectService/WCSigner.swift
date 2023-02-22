@@ -203,6 +203,7 @@ extension WalletConnectService: WCSigner {
                             self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
                         }
                     
+                    // TODO: - WC test when fixed.
 //                    let response = try await udWallet.signTxViaWalletConnect(session: sessionWithExtWallet, tx: transaction)
 //                    if let error = response.error {
 //                        Debugger.printFailure("Error from the signing ext wallet: \(error)", critical: true)
@@ -487,51 +488,41 @@ extension WalletConnectService: WCSigner {
     }
     
     private func proceedSendTxViaWC(by udWallet: UDWallet,
-                                     during session: Session,
-                                     in request: Request,
-                                     transaction: EthereumTransaction) -> Promise<Response> {
+                                    during session: Session,
+                                    in request: Request,
+                                    transaction: EthereumTransaction) -> Promise<Response> {
         let promise = udWallet.sendTxViaWalletConnect(session: session, tx: transaction)
-            .then { (response: Response) -> Promise<Response> in
-                if let error = response.error {
-                    Debugger.printFailure("Error from the sending ext wallet: \(error)", critical: false)
-                    return Promise() { $0.reject(WalletConnectService.Error.externalWalletFailedToSend) }
-                }
-                do {
-                    let result = try response.result(as: String.self)
-                    return Promise() { $0.fulfill(Response.transaction(result, for: request)) }
-                } catch {
-                    Debugger.printFailure("Error parsing result from the sending ext wallet: \(error)", critical: true)
-                    return Promise() { $0.reject(WalletConnectService.Error.failedParseResultFromExtWallet) }
-                }
-            }
         Task { try? await udWallet.launchExternalWallet() }
-        return promise
+        return commonProceedHandleTxViaWC(requestPromise: promise, in: request)
     }
-        
+    
     private func proceedSignTypedDataViaWC(by udWallet: UDWallet,
-                                     during session: Session,
-                                     in request: Request,
-                                     dataString: String) -> Promise<Response> {
+                                           during session: Session,
+                                           in request: Request,
+                                           dataString: String) -> Promise<Response> {
         let promise = udWallet.signTypedDataViaWalletConnect(session: session,
                                                              walletAddress: udWallet.address,
                                                              message: dataString)
-            .then { (response: Response) -> Promise<Response> in
-                if let error = response.error {
-                    Debugger.printFailure("Error from the sending ext wallet: \(error)", critical: true)
-                    return Promise() { $0.reject(WalletConnectService.Error.externalWalletFailedToSend) }
-                }
-                do {
-                    let result = try response.result(as: String.self)
-                    return Promise() { $0.fulfill(Response.transaction(result, for: request)) }
-                } catch {
-                    Debugger.printFailure("Error parsing result from the sending ext wallet: \(error)", critical: true)
-                    return Promise() { $0.reject(WalletConnectService.Error.failedParseResultFromExtWallet) }
-                }
-            }
         Task { try? await udWallet.launchExternalWallet() }
-        return promise
+        return commonProceedHandleTxViaWC(requestPromise: promise, in: request)
     }
-
+    
+    private func commonProceedHandleTxViaWC(requestPromise: Promise<Response>,
+                                            in request: Request) -> Promise<Response> {
+        requestPromise.then { (response: Response) -> Promise<Response> in
+            if let error = response.error {
+                Debugger.printFailure("Error from the sending ext wallet: \(error)", critical: true)
+                return Promise() { $0.reject(WalletConnectService.Error.externalWalletFailedToSend) }
+            }
+            do {
+                let result = try response.result(as: String.self)
+                return Promise() { $0.fulfill(Response.transaction(result, for: request)) }
+            } catch {
+                Debugger.printFailure("Error parsing result from the sending ext wallet: \(error)", critical: true)
+                return Promise() { $0.reject(WalletConnectService.Error.failedParseResultFromExtWallet) }
+            }
+        }
+    }
 }
 
 extension WalletConnectService {
