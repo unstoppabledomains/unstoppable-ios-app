@@ -48,7 +48,6 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     var delegate: WalletConnectDelegate? { get set }
     
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
-    func pairClientAsync(uri: WalletConnectURI)
     func setUIHandler(_ uiHandler: WalletConnectUIHandler) // TODO: - WC Remove
     func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler)
     func getConnectedApps() async -> [UnifiedConnectAppInfo]

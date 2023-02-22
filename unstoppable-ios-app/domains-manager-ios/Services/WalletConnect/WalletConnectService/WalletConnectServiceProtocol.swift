@@ -11,8 +11,6 @@ import WalletConnectSwift
 
 protocol WalletConnectServiceProtocol {
     func setUIHandler(_ uiHandler: WalletConnectUIHandler) // TODO: - WC Remove
-    func connectAsync(to requestURL: WCURL)
-    func connectAsync(to request: WalletConnectService.ConnectWalletRequest) // TODO: - WC Remove
     func reconnectExistingSessions()
     
     func disconnect(app: WCConnectedAppsStorage.ConnectedApp) async

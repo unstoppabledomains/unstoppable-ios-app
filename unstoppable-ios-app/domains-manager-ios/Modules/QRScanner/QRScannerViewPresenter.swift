@@ -291,7 +291,7 @@ private extension QRScannerViewPresenter {
             throw WalletConnectService.Error.uiHandlerNotSet
         }
         
-        try await WalletConnectService.handleWCRequest(request, target: target)
+        try await appContext.wcRequestsHandlingService.handleWCRequest(request, target: target)
     }
     
     func waitAndResumeAcceptingQRCodes() {

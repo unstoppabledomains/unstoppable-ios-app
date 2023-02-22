@@ -20,7 +20,7 @@ private typealias WCRPCRequestV2 = WalletConnectSign.Request
 private typealias WCRPCResponseV2 = WalletConnectSign.RPCResult
 
 protocol WCRequestsHandlingServiceProtocol {
-    func connectAsync(to request: WalletConnectService.ConnectWalletRequest)
+    func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws
     func setUIHandler(_ uiHandler: WalletConnectUIHandler)
     func addListener(_ listener: WalletConnectServiceListener)
     func removeListener(_ listener: WalletConnectServiceListener)
@@ -47,10 +47,36 @@ final class WCRequestsHandlingService {
 
 // MARK: - Open methods
 extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
-    func connectAsync(to request: WalletConnectService.ConnectWalletRequest) {
-        addNewRequest(.connectionRequest(request))
+    func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws {
+        guard case let .connectWallet(req) = request else {
+            Debugger.printFailure("Request is not for connecting wallet", critical: true)
+            throw WalletConnectService.Error.invalidWCRequest
+        }
+        
+        if case let .version1(wcurl) = req {
+            let connectedAppsURLS = WCConnectedAppsStorage.shared.retrieveApps().map({ $0.session.url })
+            guard !connectedAppsURLS.contains(wcurl) else {
+                Debugger.printWarning("App already connected")
+                throw WalletConnectService.Error.appAlreadyConnected
+            }
+            
+            WCConnectionIntentStorage.shared.save(newIntent: WCConnectionIntentStorage.Intent(domain: target.1,
+                                                                                              walletAddress: target.0.address,
+                                                                                              requiredNamespaces: nil,
+                                                                                              appData: nil))
+            connectAsync(to: req)
+            return
+        }
+        
+        if case .version2(_) = req {
+            WCConnectionIntentStorage.shared.save(newIntent: WCConnectionIntentStorage.Intent(domain: target.1,
+                                                                                              walletAddress: target.0.address,
+                                                                                              requiredNamespaces: nil,
+                                                                                              appData: nil))
+            connectAsync(to: req)
+        }
     }
-    
+   
     func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
         self.uiHandler = uiHandler
     }
@@ -75,6 +101,10 @@ extension WCRequestsHandlingService: WalletConnectV1SignTransactionHandlerDelega
 
 // MARK: - Private methods
 private extension WCRequestsHandlingService {
+    func connectAsync(to request: WalletConnectService.ConnectWalletRequest) {
+        addNewRequest(.connectionRequest(request))
+    }
+    
     func addNewRequest(_ request: UnifiedWCRequest) {
         requests.append(request)
         handleNextRequest()

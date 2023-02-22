@@ -250,16 +250,6 @@ extension WalletConnectService: WalletConnectServiceProtocol {
         }
     }
     
-    func connectAsync(to request: ConnectWalletRequest) {
-        if case let .version1(requestURL) = request  {
-            connectAsync(to: requestURL)
-        }
-        
-        if case let .version2(uri) = request  {
-            appContext.walletConnectServiceV2.pairClientAsync(uri: uri)
-        }
-    }
-    
     func reconnectExistingSessions() {
         appsStorage.retrieveApps().forEach{
             try? server.reconnect(to: $0.session)
@@ -352,38 +342,6 @@ extension WalletConnectService {
     
     static func wcURL(from url: URL) -> WCURL? {
         WCURL(url.absoluteString)
-    }
-    
-    static func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws {
-        
-        guard case let .connectWallet(req) = request else {
-            Debugger.printFailure("Request is not for connecting wallet", critical: true)
-            throw Error.invalidWCRequest
-        }
-
-        if case let .version1(wcurl) = req {
-            
-            let connectedAppsURLS = WCConnectedAppsStorage.shared.retrieveApps().map({ $0.session.url })
-            guard !connectedAppsURLS.contains(wcurl) else {
-                Debugger.printWarning("App already connected")
-                throw Error.appAlreadyConnected
-            }
-            
-            WCConnectionIntentStorage.shared.save(newIntent: WCConnectionIntentStorage.Intent(domain: target.1,
-                                                                                              walletAddress: target.0.address,
-                                                                                              requiredNamespaces: nil,
-                                                                                              appData: nil))
-            appContext.walletConnectService.connectAsync(to: req)
-            return
-        }
-        
-        if case .version2(_) = req {
-            WCConnectionIntentStorage.shared.save(newIntent: WCConnectionIntentStorage.Intent(domain: target.1,
-                                                                                              walletAddress: target.0.address,
-                                                                                              requiredNamespaces: nil,
-                                                                                              appData: nil))
-            appContext.walletConnectService.connectAsync(to: req)
-        }
     }
 }
 

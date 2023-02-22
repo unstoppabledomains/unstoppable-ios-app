@@ -8,7 +8,7 @@
 import Foundation
 
 final class MockWCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
-    func connectAsync(to request: WalletConnectService.ConnectWalletRequest) {
+    func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws {
         
     }
     

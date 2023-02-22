@@ -207,7 +207,7 @@ private extension ExternalEventsService {
             let walletWithInfo = try await findWalletWithInfo(for: domainDisplayInfoToUse)
             let wallet = walletWithInfo.wallet
             let target = (wallet, domainToUse)
-            try await WalletConnectService.handleWCRequest(request, target: target)
+            try await appContext.wcRequestsHandlingService.handleWCRequest(request, target: target)
             
             return .showPullUpLoading
         case .walletConnectRequest(let dAppName, _):
