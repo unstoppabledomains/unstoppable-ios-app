@@ -70,24 +70,22 @@ final class GeneralAppContext: AppContextProtocol {
                                                       udWalletsService: udWalletsService,
                                                       walletConnectServiceV2: walletConnectServiceV2)
         
-        notificationsService = NotificationsService(externalEventsService: externalEventsService,
-                                                    permissionsService: permissionsService,
-                                                    udWalletsService: udWalletsService,
-                                                    walletConnectService: walletConnectService,
-                                                    walletConnectServiceV2: walletConnectServiceV2)
-        
         let deepLinksService = DeepLinksService(externalEventsService: externalEventsService,
                                                 coreAppCoordinator: coreAppCoordinator)
         self.deepLinksService = deepLinksService
         
         deepLinksService.addListener(coreAppCoordinator)
         
-        walletConnectService.addListener(deepLinksService)
-        walletConnectServiceV2.addListener(deepLinksService)
         
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
                                                               walletConnectServiceV2: walletConnectServiceV2)
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
+        wcRequestsHandlingService.addListener(deepLinksService)
+        
+        notificationsService = NotificationsService(externalEventsService: externalEventsService,
+                                                    permissionsService: permissionsService,
+                                                    udWalletsService: udWalletsService,
+                                                    wcRequestsHandlingService: wcRequestsHandlingService)
         
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")

@@ -52,7 +52,7 @@ extension DeepLinksService: DeepLinksServiceProtocol {
 }
 
 // MARK: - WalletConnectServiceListener
-extension DeepLinksService: WalletConnectServiceListener {
+extension DeepLinksService: WalletConnectServiceConnectionListener {
     func didConnect(to app: PushSubscriberInfo?) {
         checkExpectingWCURLAndGoBackIfNeeded()
     }

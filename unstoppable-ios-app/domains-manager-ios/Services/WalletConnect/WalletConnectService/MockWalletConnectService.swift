@@ -15,8 +15,6 @@ final class MockWalletConnectService {
 //    private var connectedApps: [ConnectedApp] = []
 //    private var didInitApps = false
     
-    private var listeners: [WalletConnectServiceListenerHolder] = []
-
 }
 
 // MARK: - WalletConnectServiceProtocol
@@ -63,16 +61,6 @@ extension MockWalletConnectService: WalletConnectServiceProtocol {
     
     func didLostOwnership(to domain: DomainItem) {
         
-    }
-    
-    func addListener(_ listener: WalletConnectServiceListener) {
-        if !listeners.contains(where: { $0.listener === listener }) {
-            listeners.append(.init(listener: listener))
-        }
-    }
-    
-    func removeListener(_ listener: WalletConnectServiceListener) {
-        listeners.removeAll(where: { $0.listener == nil || $0.listener === listener })
     }
 }
 

@@ -19,8 +19,7 @@ final class MockContext: AppContextProtocol {
         NotificationsService(externalEventsService: externalEventsService,
                              permissionsService: permissionsService,
                              udWalletsService: udWalletsService,
-                             walletConnectService: walletConnectService,
-                             walletConnectServiceV2: walletConnectServiceV2)
+                             wcRequestsHandlingService: wcRequestsHandlingService)
     }()
     private(set) lazy var permissionsService: PermissionsServiceProtocol = PermissionsService()
     private(set) lazy var pullUpViewService: PullUpViewServiceProtocol = PullUpViewService(authentificationService: authentificationService)

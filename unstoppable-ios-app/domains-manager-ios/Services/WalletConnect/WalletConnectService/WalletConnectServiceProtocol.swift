@@ -21,30 +21,27 @@ protocol WalletConnectServiceProtocol {
     func didRemove(wallet: UDWallet)
     func didLostOwnership(to domain: DomainItem)
     
-    func addListener(_ listener: WalletConnectServiceListener) // TODO: - WC Remove
-    func removeListener(_ listener: WalletConnectServiceListener) // TODO: - WC Remove
-    
     func completeTx(transaction: EthereumTransaction,
                             chainId: Int) async throws -> EthereumTransaction
 }
 
 typealias WCExternalRequestResult = Result<Void, Error>
-protocol WalletConnectServiceListener: AnyObject {
+protocol WalletConnectServiceConnectionListener: AnyObject {
     func didConnect(to app: PushSubscriberInfo?)
     func didDisconnect(from app: PushSubscriberInfo?)
     func didCompleteConnectionAttempt() // DeepLinks service, QRScanner
     func didHandleExternalWCRequestWith(result: WCExternalRequestResult) // DeepLinks
 }
 
-extension WalletConnectServiceListener {
+extension WalletConnectServiceConnectionListener {
     func didHandleExternalWCRequestWith(result: WCExternalRequestResult) { }
 }
 
 final class WalletConnectServiceListenerHolder: Equatable {
     
-    weak var listener: WalletConnectServiceListener?
+    weak var listener: WalletConnectServiceConnectionListener?
     
-    init(listener: WalletConnectServiceListener) {
+    init(listener: WalletConnectServiceConnectionListener) {
         self.listener = listener
     }
     

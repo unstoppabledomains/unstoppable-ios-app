@@ -22,8 +22,8 @@ private typealias WCRPCResponseV2 = WalletConnectSign.RPCResult
 protocol WCRequestsHandlingServiceProtocol {
     func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws
     func setUIHandler(_ uiHandler: WalletConnectUIHandler)
-    func addListener(_ listener: WalletConnectServiceListener)
-    func removeListener(_ listener: WalletConnectServiceListener)
+    func addListener(_ listener: WalletConnectServiceConnectionListener)
+    func removeListener(_ listener: WalletConnectServiceConnectionListener)
 }
 
 final class WCRequestsHandlingService {
@@ -81,13 +81,13 @@ extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
         self.uiHandler = uiHandler
     }
     
-    func addListener(_ listener: WalletConnectServiceListener) {
+    func addListener(_ listener: WalletConnectServiceConnectionListener) {
         if !listeners.contains(where: { $0.listener === listener }) {
             listeners.append(.init(listener: listener))
         }
     }
     
-    func removeListener(_ listener: WalletConnectServiceListener) {
+    func removeListener(_ listener: WalletConnectServiceConnectionListener) {
         listeners.removeAll(where: { $0.listener == nil || $0.listener === listener })
     }
 }
@@ -264,6 +264,7 @@ private extension WCRequestsHandlingService {
     func setup() {
         registerV1RequestHandlers()
         registerV2RequestHandlers()
+        registerDisconnectCallbacks()
     }
     
     func registerV1RequestHandlers() {
@@ -283,6 +284,17 @@ private extension WCRequestsHandlingService {
                 
                 self?.addNewRequest(.rpcRequestV2(sessionRequest, type: requestType))
             }.store(in: &publishers)
+    }
+    
+    func registerDisconnectCallbacks() {
+        func handleAppDisconnected(_ app: PushSubscriberInfo?) {
+            listeners.forEach { holder in
+                holder.listener?.didDisconnect(from: app)
+            }
+        }
+        
+        walletConnectServiceV1.appDisconnectedCallback = handleAppDisconnected(_:)
+        walletConnectServiceV2.appDisconnectedCallback = handleAppDisconnected(_:)
     }
 }
 

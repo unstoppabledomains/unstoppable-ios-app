@@ -52,7 +52,6 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler)
     func getConnectedApps() async -> [UnifiedConnectAppInfo]
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
-    func addListener(_ listener: WalletConnectServiceListener) // TODO: - WC Remove
     func disconnectAppsForAbsentDomains(from: [DomainItem])
     func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
     
@@ -70,6 +69,8 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
 }
 
 protocol WalletConnectV2RequestHandlingServiceProtocol {
+    var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
+
     func pairClientAsync(uri: WalletConnectURI, completion: @escaping WCConnectionResultCompletion)
     
     func handlePersonalSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
@@ -87,12 +88,6 @@ typealias SessionV2 = WalletConnectSign.Session
 typealias ResponseV2 = WalletConnectSign.Response
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
-        
-    func notifyDidHandleExternalWCRequestWith(result: WCExternalRequestResult) {
-        listeners.forEach { holder in
-            holder.listener?.didHandleExternalWCRequestWith(result: result)
-        }
-    }
     
     struct ConnectionDataV2: Codable, Equatable {
         let session: WCConnectedAppsStorageV2.SessionProxy
@@ -109,7 +104,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     var intentsStorage: WCConnectionIntentStorage { WCConnectionIntentStorage.shared }
     var appsStorage: WCConnectedAppsStorageV2 { WCConnectedAppsStorageV2.shared }
-    private var listeners: [WalletConnectServiceListenerHolder] = []
     var sanitizedClientId: String?
 
     static let supportedNamespace = "eip155"
@@ -117,6 +111,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     var pendingRequest: WalletConnectSign.Request?
     var callback: ((ResponseV2)->Void)?
+    var appDisconnectedCallback: WCAppDisconnectedCallback?
     private var connectionCompletion: WCConnectionResultCompletion?
 
     init(udWalletsService: UDWalletsServiceProtocol) {
@@ -151,12 +146,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler) {
         self.walletsUiHandler = walletUiHandler
-    }
-    
-    func addListener(_ listener: WalletConnectServiceListener) {
-        if !listeners.contains(where: { $0.listener === listener }) {
-            listeners.append(.init(listener: listener))
-        }
     }
     
     // returns both V1 and V2 apps
@@ -202,9 +191,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
         await self.appsStorage.remove(byTopic: toDisconnect.sessionProxy.topic)
         try await self.disconnect(topic: toDisconnect.sessionProxy.topic)
-        self.listeners.forEach { holder in
-            holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: toDisconnect))
-        }
+        appDisconnectedCallback?(PushSubscriberInfo(appV2: toDisconnect))
     }
     
     func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
@@ -397,9 +384,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     if let removedApp = await self?.appsStorage.remove(byTopic: topic) {
                         Debugger.printWarning("Disconnected from dApp topic: \(topic)")
                         
-                        self?.listeners.forEach { holder in
-                            holder.listener?.didDisconnect(from: PushSubscriberInfo(appV2: removedApp))
-                        }
+                        self?.appDisconnectedCallback?(PushSubscriberInfo(appV2: removedApp))
                     } else if let removedWallet = await self?.clientConnectionsV2.remove(byTopic: topic){
                         // Client part
                         Debugger.printWarning("Disconnected from Wallet topic: \(topic)")
@@ -639,8 +624,6 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             
             guard let privKeyString = udWallet.getPrivateKey() else {
                 Debugger.printFailure("No private key in \(udWallet)", critical: true)
-                try await respondWithError(request: request)
-                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectRequestError.failedToGetPrivateKey))
                 throw WalletConnectRequestError.failedToGetPrivateKey
             }
             
@@ -671,7 +654,6 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     func handleSendTx(request: WalletConnectSign.Request) async throws -> [JSONRPC.RPCResult] {
         @Sendable func handleSingleSendTx(tx: EthereumTransaction) async throws -> JSONRPC.RPCResult {
             guard let walletAddress = tx.from?.hex(eip55: true) else {
-                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectRequestError.failedToFindWalletToSign))
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
             let udWallet = try detectWallet(by: walletAddress)
@@ -828,12 +810,7 @@ extension WalletConnectServiceV2 {
         }
         return (connectedApp, udWallet)
     }
-    
-    @Sendable // TODO: - WC Check if need to remove
-    private func respondWithError(request: WalletConnectSign.Request) async throws {
-        try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .error(.internalError))
-    }
-    
+ 
     private func parseAddress(from addressIdentificator: String) throws -> HexAddress {
         let parts = addressIdentificator.split(separator: ":")
         guard parts.count > 1 else {
@@ -1112,11 +1089,7 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     func disconnectAppsForAbsentDomains(from: [DomainItem]) {
     }
-    
-    func addListener(_ listener: WalletConnectServiceListener) {
-        
-    }
-    
+
     func getConnectedApps() -> [UnifiedConnectAppInfo] {
         []
     }

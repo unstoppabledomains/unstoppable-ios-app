@@ -30,15 +30,13 @@ final class NotificationsService: NSObject {
     init(externalEventsService: ExternalEventsServiceProtocol,
          permissionsService: PermissionsServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectService: WalletConnectServiceProtocol,
-         walletConnectServiceV2: WalletConnectServiceV2Protocol) {
+         wcRequestsHandlingService: WCRequestsHandlingServiceProtocol) {
         self.externalEventsService = externalEventsService
         self.permissionsService = permissionsService
         self.udWalletsService = udWalletsService
         super.init()
         notificationCenter.delegate = self
-        walletConnectService.addListener(self)
-        walletConnectServiceV2.addListener(self)
+        wcRequestsHandlingService.addListener(self)
         udWalletsService.addListener(self)
     }
     
@@ -139,7 +137,7 @@ extension NotificationsService: UDWalletsServiceListener {
 }
 
 // MARK: - WalletConnectServiceListener
-extension NotificationsService: WalletConnectServiceListener {
+extension NotificationsService: WalletConnectServiceConnectionListener {
     func didConnect(to app: PushSubscriberInfo?) {
         checkNotificationsPermissions()
         guard let subscriberApp = app else {

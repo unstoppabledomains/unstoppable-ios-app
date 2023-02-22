@@ -16,11 +16,11 @@ final class MockWCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
         
     }
     
-    func addListener(_ listener: WalletConnectServiceListener) {
+    func addListener(_ listener: WalletConnectServiceConnectionListener) {
         
     }
     
-    func removeListener(_ listener: WalletConnectServiceListener) {
+    func removeListener(_ listener: WalletConnectServiceConnectionListener) {
         
     }
 }

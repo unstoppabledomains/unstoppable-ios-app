@@ -12,8 +12,11 @@ import PromiseKit
 
 typealias WCConnectionResult = Swift.Result<PushSubscriberInfo?, Swift.Error>
 typealias WCConnectionResultCompletion = ((WCConnectionResult)->())
+typealias WCAppDisconnectedCallback = ((PushSubscriberInfo?)->())
 
 protocol WalletConnectV1RequestHandlingServiceProtocol {
+    var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
+    
     func registerRequestHandler(_ requestHandler: RequestHandler)
     func connectAsync(to requestURL: WCURL, completion: @escaping WCConnectionResultCompletion)
     func sendResponse(_ response: Response)
@@ -69,13 +72,6 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
             throw error
         }
         return Response.signature(sig, for: request)
-//            self.server.send()
-//            notifyDidHandleExternalWCRequestWith(result: .success(()))
-//        } catch {
-//            Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
-//            server.send(.invalid(request))
-//            notifyDidHandleExternalWCRequestWith(result: .failure(error))
-//        }
     }
     
     struct TxDisplayDetails {

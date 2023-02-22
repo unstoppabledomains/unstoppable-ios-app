@@ -42,16 +42,10 @@ final class WalletConnectService {
                                    "identity.unstoppabledomains.com"]
     
     private(set) var server: UDWalletConnectServer!
-    private var listeners: [WalletConnectServiceListenerHolder] = []
     private var connectionCompletion: WCConnectionResultCompletion?
     weak var uiHandler: WalletConnectUIHandler?
     var connectRequestTimeStamp: Date?
-    
-    func notifyDidHandleExternalWCRequestWith(result: WCExternalRequestResult) {
-        listeners.forEach { holder in
-            holder.listener?.didHandleExternalWCRequestWith(result: result)
-        }
-    }
+    var appDisconnectedCallback: WCAppDisconnectedCallback?
 }
 
 // MARK: - ServerDelegate
@@ -218,9 +212,7 @@ extension WalletConnectService: ServerDelegate {
                 Debugger.printFailure("Failed to remove from ConnectedAppsStorage the app by session: \(session)")
                 return }
             Debugger.printWarning("Disconnected from \(session.dAppInfo.getDappName())")
-            listeners.forEach { holder in
-                holder.listener?.didDisconnect(from: PushSubscriberInfo(app: removedApp))
-            }
+            appDisconnectedCallback?(PushSubscriberInfo(app: removedApp))
         }
     }
     
@@ -292,16 +284,6 @@ extension WalletConnectService: WalletConnectServiceProtocol {
         if let appsToDisconnect = appsStorage.findBy(domainName: domain.name) {
             appsToDisconnect.forEach { try? server.disconnect(from: $0.session) }
         }
-    }
-    
-    func addListener(_ listener: WalletConnectServiceListener) {
-        if !listeners.contains(where: { $0.listener === listener }) {
-            listeners.append(.init(listener: listener))
-        }
-    }
-    
-    func removeListener(_ listener: WalletConnectServiceListener) {
-        listeners.removeAll(where: { $0.listener == nil || $0.listener === listener })
     }
 }
 

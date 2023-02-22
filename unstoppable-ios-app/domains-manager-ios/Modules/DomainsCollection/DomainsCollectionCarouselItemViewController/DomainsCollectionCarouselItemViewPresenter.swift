@@ -44,8 +44,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
 extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselItemViewPresenterProtocol {
     @MainActor
     func viewDidLoad() {
-        appContext.walletConnectService.addListener(self)
-        appContext.walletConnectServiceV2.addListener(self)
+        appContext.wcRequestsHandlingService.addListener(self)
         appContext.dataAggregatorService.addListener(self)
         appContext.appLaunchService.addListener(self)
         appContext.externalEventsService.addListener(self)
@@ -124,7 +123,7 @@ extension DomainsCollectionCarouselItemViewPresenter: AppLaunchServiceListener {
 }
 
 // MARK: - WalletConnectServiceListener
-extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceListener {
+extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnectionListener {
     func didConnect(to app: PushSubscriberInfo?) {
         guard app?.domainName == self.domain.name else { return }
         

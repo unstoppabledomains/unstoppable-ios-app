@@ -35,8 +35,8 @@ extension ConnectedAppsListViewPresenter: ConnectedAppsListViewPresenterProtocol
     func viewDidLoad() {
         Task {
             await showConnectedAppsList()
-            walletConnectService.addListener(self)
-            walletConnectServiceV2.addListener(self)
+            appContext.wcRequestsHandlingService.addListener(self)
+            appContext.wcRequestsHandlingService.addListener(self)
         }
     }
     
@@ -44,7 +44,7 @@ extension ConnectedAppsListViewPresenter: ConnectedAppsListViewPresenterProtocol
 }
 
 // MARK: - WalletConnectServiceListener
-extension ConnectedAppsListViewPresenter: WalletConnectServiceListener {
+extension ConnectedAppsListViewPresenter: WalletConnectServiceConnectionListener {
     func didConnect(to app: PushSubscriberInfo?) {
         Task {
             await showConnectedAppsList()

@@ -53,8 +53,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     func viewDidLoad() {
         guard let view = self.view else { return }
         dataAggregatorService.addListener(self)
-        walletConnectService.addListener(self)
-        walletConnectServiceV2.addListener(self)
+        appContext.wcRequestsHandlingService.addListener(self)
         view.setState(.askingForPermissions)
         let selectedDomain = self.selectedDomain
         Task.detached(priority: .low) { [weak self] in
@@ -168,7 +167,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
 }
 
 // MARK: - WalletConnectServiceListener
-extension QRScannerViewPresenter: WalletConnectServiceListener {
+extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
     func didConnect(to app: PushSubscriberInfo?) {
         Task {
             await showNumberOfAppsConnected()
