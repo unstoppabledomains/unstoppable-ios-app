@@ -22,7 +22,7 @@ final class MockWalletConnectService {
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectService: WalletConnectServiceProtocol {
     func completeTx(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumTransaction {
-        throw WalletConnectError.walletConnectNil
+        throw WalletConnectRequestError.noWCSessionFound
     }
     
     func disconnect(peerId: String) {

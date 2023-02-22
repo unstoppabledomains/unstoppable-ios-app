@@ -99,7 +99,7 @@ extension UDWallet {
             if willHash() {
                 messageToSend = message
             } else {
-                guard let hash = Self.hashed(messageString: message) else {  throw WalletConnectError.failedHashPersonalMessage }
+                guard let hash = Self.hashed(messageString: message) else {  throw WalletConnectRequestError.failedHashPersonalMessage }
                 messageToSend = hash
             }
             return messageToSend
@@ -124,7 +124,7 @@ extension UDWallet {
         }
         guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
             Debugger.printFailure("Failed to find session for WC", critical: false)
-            throw WalletConnectError.noWCSessionFound
+            throw WalletConnectRequestError.noWCSessionFound
         }
         
         return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<String, Swift.Error>) in
@@ -155,7 +155,7 @@ extension UDWallet {
         
         guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
             Debugger.printFailure("Failed to find session for WC", critical: false)
-            throw WalletConnectError.noWCSessionFound
+            throw WalletConnectRequestError.noWCSessionFound
         }
         
         return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<String, Swift.Error>) in
@@ -177,7 +177,7 @@ extension UDWallet {
                                 continuation: CheckedContinuation<String, Swift.Error>) {
         if let error = response.error {
             Debugger.printFailure("Failed to sign message for wallet \(self.address), error: \(error.localizedDescription)", critical: false)
-            continuation.resume(throwing: WalletConnectError.failedSignPersonalMessage)
+            continuation.resume(throwing: WalletConnectRequestError.failedToSignMessage)
             return
         }
         do {

@@ -458,6 +458,14 @@
 		C60610DA29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */; };
 		C60610DB29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */; };
 		C60610DC29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */; };
+		C60610DE29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610DD29A6571B005DC0D5 /* WalletConnectRequestType.swift */; };
+		C60610DF29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610DD29A6571B005DC0D5 /* WalletConnectRequestType.swift */; };
+		C60610E029A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610DD29A6571B005DC0D5 /* WalletConnectRequestType.swift */; };
+		C60610E129A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610DD29A6571B005DC0D5 /* WalletConnectRequestType.swift */; };
+		C60610E329A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610E229A65739005DC0D5 /* WalletConnectRequestError.swift */; };
+		C60610E429A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610E229A65739005DC0D5 /* WalletConnectRequestError.swift */; };
+		C60610E529A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610E229A65739005DC0D5 /* WalletConnectRequestError.swift */; };
+		C60610E629A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610E229A65739005DC0D5 /* WalletConnectRequestError.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73D2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
@@ -3339,6 +3347,8 @@
 		C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionReusableView.swift; sourceTree = "<group>"; };
 		C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCRequestsHandlingService.swift; sourceTree = "<group>"; };
 		C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWCRequestsHandlingService.swift; sourceTree = "<group>"; };
+		C60610DD29A6571B005DC0D5 /* WalletConnectRequestType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectRequestType.swift; sourceTree = "<group>"; };
+		C60610E229A65739005DC0D5 /* WalletConnectRequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectRequestError.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
@@ -4463,6 +4473,8 @@
 				C6A2D58C284FA09500327C47 /* WalletConnectService */,
 				295506F42954D22800EDA42D /* WalletConnectService_V2 */,
 				C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */,
+				C60610E229A65739005DC0D5 /* WalletConnectRequestError.swift */,
+				C60610DD29A6571B005DC0D5 /* WalletConnectRequestType.swift */,
 				C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */,
 			);
 			path = WalletConnect;
@@ -7970,6 +7982,7 @@
 				C6FE49D6285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */,
 				C6A2D566284F3FC600327C47 /* SignTransactionDomainSelectionSectionHeaderView.swift in Sources */,
 				C62247A5283B92C0002A0CBD /* UDNavigationController.swift in Sources */,
+				C60610E329A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */,
 				C6386871285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
 				C62C8DC928DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */,
 				C6386871285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
@@ -8029,6 +8042,7 @@
 				C6C995AE289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C6D5DAF42837866800379C38 /* SecondaryDangerButton.swift in Sources */,
 				C672FD7A2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */,
+				C60610DE29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
 				C66A9DC828BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
 				C66FCCF32844863E009B9525 /* UDGradientCoverView.swift in Sources */,
 				29BECD132979BDF800662FC1 /* BackedUpWallet.swift in Sources */,
@@ -8994,11 +9008,13 @@
 				C6D5DAF12837682300379C38 /* RecordChangeType.swift in Sources */,
 				C689537C2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */,
 				C692C338282E4C9000C31393 /* SecuritySettingsActionCell.swift in Sources */,
+				C60610E029A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
 				C61B3E78283E43D000500B6D /* EnterEmailViewController.swift in Sources */,
 				307F8408267A339F0070A9A6 /* Version.swift in Sources */,
 				C6745991280E9CA20074CBE5 /* WebViewController.swift in Sources */,
 				C6D0F444283F870F00444921 /* MintDomainsConfigurationListHeaderView.swift in Sources */,
 				C6A2D5BE2850848500327C47 /* PaymentTransactionRequestConfirmationView.swift in Sources */,
+				C60610E529A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */,
 				C66435DB288EF0520098E1B8 /* MetadataEndpoint.swift in Sources */,
 				C6FF2D9E28F0245F00148007 /* DomainProfileSectionsController.swift in Sources */,
 				3018AED427EE45B400E8C37D /* CreatePasswordViewController.swift in Sources */,
@@ -9610,11 +9626,13 @@
 				C6EECEA02833A42600978ED5 /* CoinRecordsService.swift in Sources */,
 				C6D5DAF22837682300379C38 /* RecordChangeType.swift in Sources */,
 				C689537D2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */,
+				C60610E129A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
 				C692C339282E4C9000C31393 /* SecuritySettingsActionCell.swift in Sources */,
 				C61B3E79283E43D000500B6D /* EnterEmailViewController.swift in Sources */,
 				C6745992280E9CA20074CBE5 /* WebViewController.swift in Sources */,
 				C6D0F445283F870F00444921 /* MintDomainsConfigurationListHeaderView.swift in Sources */,
 				C6A2D5BF2850848500327C47 /* PaymentTransactionRequestConfirmationView.swift in Sources */,
+				C60610E629A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */,
 				C66435DC288EF0520098E1B8 /* MetadataEndpoint.swift in Sources */,
 				C6FF2D9F28F0245F00148007 /* DomainProfileSectionsController.swift in Sources */,
 				3018AED527EE45B400E8C37D /* CreatePasswordViewController.swift in Sources */,
@@ -9875,6 +9893,7 @@
 				C6FE49D7285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */,
 				C6A2D567284F3FC700327C47 /* SignTransactionDomainSelectionSectionHeaderView.swift in Sources */,
 				C62247A6283B92C0002A0CBD /* UDNavigationController.swift in Sources */,
+				C60610E429A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */,
 				C6386872285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
 				C62C8DCA28DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */,
 				C6386872285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
@@ -9934,6 +9953,7 @@
 				C6C995AF289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C6D5DAF52837866800379C38 /* SecondaryDangerButton.swift in Sources */,
 				C672FD7B2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */,
+				C60610DF29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
 				C66A9DC928BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
 				C66FCCF42844863E009B9525 /* UDGradientCoverView.swift in Sources */,
 				29BECD142979BDF800662FC1 /* BackedUpWallet.swift in Sources */,

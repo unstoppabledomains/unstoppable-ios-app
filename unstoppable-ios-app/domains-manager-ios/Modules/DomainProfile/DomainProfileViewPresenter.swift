@@ -847,7 +847,7 @@ private extension DomainProfileViewPresenter {
                                                         badgesInfo: await dataHolder.badgesInfo,
                                                         profile: await dataHolder.profile)
             DomainProfileInfoStorage.instance.saveCachedDomainProfile(cachedProfile)
-        } catch WalletConnectError.failedSignPersonalMessage {
+        } catch WalletConnectRequestError.failedToSignMessage {
             Task.detached {
                 await self.asyncCheckForExternalWalletAndFetchProfile()
             }

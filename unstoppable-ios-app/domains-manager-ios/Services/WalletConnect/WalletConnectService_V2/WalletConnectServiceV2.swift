@@ -260,7 +260,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     func getChainIds(proposal: SessionV2.Proposal) throws -> [String] {
         guard let namespace = proposal.requiredNamespaces[Self.supportedNamespace] else {
-        throw WalletConnectService.Error.invalidNamespaces }
+        throw WalletConnectRequestError.invalidNamespaces }
         let references = namespace.chains.map {$0.reference}
         return references
     }
@@ -276,11 +276,11 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     private func handleSessionProposal( _ proposal: SessionV2.Proposal) async throws -> HexAddress {
         guard canSupport(proposal) else {
             Debugger.printInfo(topic: .WallectConnectV2, "DApp requires more networks than our app supports")
-            throw WalletConnectService.Error.networkNotSupported
+            throw WalletConnectRequestError.networkNotSupported
         }
         guard let uiHandler = self.uiHandler else {
             Debugger.printFailure("UI Handler is not set", critical: true)
-            throw WalletConnectService.Error.uiHandlerNotSet
+            throw WalletConnectRequestError.uiHandlerNotSet
         }
         
         let uiConfig: WCRequestUIConfiguration
@@ -289,7 +289,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                                                     sessionProposal: proposal)
         } else {
             guard let connectionDomain = await pickDomain() else {
-                throw WalletConnectError.failedToFindDomainToConnect
+                throw WalletConnectRequestError.failedToFindDomainToConnect
             }
             uiConfig = WCRequestUIConfiguration(connectionDomain: connectionDomain,
                                                     sessionProposal: proposal)
@@ -298,7 +298,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let connectionData = try await uiHandler.getConfirmationToConnectServer(config: uiConfig)
         guard let walletAddressToConnect = connectionData.domain.ownerWallet else {
             Debugger.printFailure("Domain without wallet address", critical: true)
-            throw WalletConnectService.Error.failedToFindWalletToSign
+            throw WalletConnectRequestError.failedToFindWalletToSign
         }
         
         intentsStorage.removeAll()
@@ -325,7 +325,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     Debugger.printInfo(topic: .WallectConnectV2, "Did receive session proposal")
                     do {
                         guard let address = try await self?.handleSessionProposal(sessionProposal) else {
-                            throw WalletConnectService.Error.failedToFindWalletToSign
+                            throw WalletConnectRequestError.failedToFindWalletToSign
                         }
                         accountAddress = address
                     } catch {
@@ -372,7 +372,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 //                let methodString = sessionRequest.method
 //                Debugger.printInfo(topic: .WallectConnectV2, "Did receive session request, method: \(methodString)")
 //                guard let method = WalletConnectRequestType(rawValue: methodString) else {
-//                    self?.uiHandler?.didFailToConnect(with: WalletConnectService.Error.methodUnsupported)
+//                    self?.uiHandler?.didFailToConnect(with: WalletConnectRequestError.methodUnsupported)
 //                        Debugger.printFailure("Unsupported WC_2 method: \(methodString)")
 //                        Task {
 //                            try await Sign.instance.respond(topic: sessionRequest.topic,
@@ -496,7 +496,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                 try await Sign.instance.approve(proposalId: proposalId, namespaces: namespaces)
             } catch {
                 Debugger.printFailure("[WC_2] DApp Failed to Approve Session error: \(error)", critical: true)
-                self.reportConnectionAttempt(with: WalletConnectService.Error.failedConnectionRequest)
+                self.reportConnectionAttempt(with: WalletConnectRequestError.failedConnectionRequest)
             }
         }
     }
@@ -550,7 +550,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 self.connectionCompletion = completion
             } catch {
                 Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: true)
-                completion(.failure(WalletConnectService.Error.failedConnectionRequest))
+                completion(.failure(WalletConnectRequestError.failedConnectionRequest))
             }
         }
     }
@@ -565,7 +565,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         guard let paramsAny = request.params.value as? [String],
               paramsAny.count >= 2 else {
             Debugger.printFailure("Invalid parameters", critical: true)
-            throw WalletConnectService.Error.failedBuildParams
+            throw WalletConnectRequestError.failedBuildParams
         }
         let messageString = paramsAny[0]
         let address = try parseAddress(from: paramsAny[1])
@@ -580,7 +580,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address), error: \(error)", critical: false)
-            throw WalletConnectService.Error.failedToSignMessage
+            throw WalletConnectRequestError.failedToSignMessage
         }
         
         return .response(sig)
@@ -592,7 +592,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         guard let paramsAny = request.params.value as? [String],
               paramsAny.count >= 2 else {
             Debugger.printFailure("Invalid parameters", critical: true)
-            throw WalletConnectService.Error.failedBuildParams
+            throw WalletConnectRequestError.failedBuildParams
         }
         let messageString = paramsAny[1]
         let address =  try parseAddress(from: paramsAny[0])
@@ -607,7 +607,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: true)
-            throw WalletConnectService.Error.failedToSignMessage
+            throw WalletConnectRequestError.failedToSignMessage
         }
         
         return .response(sig)
@@ -616,7 +616,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     func handleSignTx(request: WalletConnectSign.Request) async throws -> [JSONRPC.RPCResult] {
         @Sendable func handleSingleSignTx(tx: EthereumTransaction) async throws -> JSONRPC.RPCResult {
             guard let walletAddress = tx.from?.hex(eip55: true).normalized else {
-                throw WalletConnectService.Error.failedToFindWalletToSign
+                throw WalletConnectRequestError.failedToFindWalletToSign
             }
             let udWallet = try detectWallet(by: walletAddress)
             let chainIdInt = try getChainIdFrom(request: request)
@@ -640,8 +640,8 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             guard let privKeyString = udWallet.getPrivateKey() else {
                 Debugger.printFailure("No private key in \(udWallet)", critical: true)
                 try await respondWithError(request: request)
-                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectService.Error.failedToGetPrivateKey))
-                throw WalletConnectService.Error.failedToGetPrivateKey
+                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectRequestError.failedToGetPrivateKey))
+                throw WalletConnectRequestError.failedToGetPrivateKey
             }
             
             let privateKey = try EthereumPrivateKey(hexPrivateKey: privKeyString)
@@ -656,7 +656,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         }
         
         guard let transactionsToSign = try? request.params.getTransactions() else {
-            throw WalletConnectService.Error.failedBuildParams
+            throw WalletConnectRequestError.failedBuildParams
         }
         
         var responses = [JSONRPC.RPCResult]()
@@ -671,8 +671,8 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     func handleSendTx(request: WalletConnectSign.Request) async throws -> [JSONRPC.RPCResult] {
         @Sendable func handleSingleSendTx(tx: EthereumTransaction) async throws -> JSONRPC.RPCResult {
             guard let walletAddress = tx.from?.hex(eip55: true) else {
-                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectService.Error.failedToFindWalletToSign))
-                throw WalletConnectService.Error.failedToFindWalletToSign
+                notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectRequestError.failedToFindWalletToSign))
+                throw WalletConnectRequestError.failedToFindWalletToSign
             }
             let udWallet = try detectWallet(by: walletAddress)
             let chainIdInt = try getChainIdFrom(request: request)
@@ -701,7 +701,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         }
         
         guard let transactionsToSend = try? request.params.get([EthereumTransaction].self) else {
-            throw WalletConnectService.Error.failedBuildParams
+            throw WalletConnectRequestError.failedBuildParams
         }
        
         var responses = [JSONRPC.RPCResult]()
@@ -714,15 +714,15 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     }
     
     func handleGetTransactionCount(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
-        throw WalletConnectService.Error.methodUnsupported
+        throw WalletConnectRequestError.methodUnsupported
     }
     
     func handleSendRawTx(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
-        throw WalletConnectService.Error.methodUnsupported
+        throw WalletConnectRequestError.methodUnsupported
     }
     
     func handleSignTypedData(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
-        throw WalletConnectService.Error.methodUnsupported
+        throw WalletConnectRequestError.methodUnsupported
     }
 }
 
@@ -743,7 +743,7 @@ private extension WalletConnectServiceV2 {
     func getChainIdFrom(request: WalletConnectSign.Request) throws -> Int {
         guard let chainIdInt = Int(request.chainId.reference) else {
             Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
-            throw WalletConnectService.Error.failedToDetermineChainId
+            throw WalletConnectRequestError.failedToDetermineChainId
         }
         return chainIdInt
     }
@@ -751,7 +751,7 @@ private extension WalletConnectServiceV2 {
     func findWalletConnectSessionFor(walletAddress: HexAddress) throws -> WCConnectedAppsStorageV2.SessionProxy {
         guard let sessionWithExtWallet = findSessions(by: walletAddress).first else {
             Debugger.printFailure("Failed to find session for WC", critical: false)
-            throw WalletConnectService.Error.noWCSessionFound
+            throw WalletConnectRequestError.noWCSessionFound
         }
         return sessionWithExtWallet
     }
@@ -774,7 +774,7 @@ extension WalletConnectServiceV2 {
     private func detectApp(by address: HexAddress, topic: String) throws -> WCConnectedAppsStorageV2.ConnectedApp {
         guard let connectedApp = self.appsStorage.find(by: address, topic: topic)?.first else {
             Debugger.printFailure("No connected app can sign for the wallet address \(address)", critical: true)
-            throw WalletConnectService.Error.failedToFindWalletToSign
+            throw WalletConnectRequestError.failedToFindWalletToSign
         }
         return connectedApp
     }
@@ -782,7 +782,7 @@ extension WalletConnectServiceV2 {
     private func detectWallet(by address: HexAddress) throws -> UDWallet {
         guard let udWallet = appContext.udWalletsService.find(by: address) else {
             Debugger.printFailure("No connected wallet can sign for the wallet address \(address)", critical: true)
-            throw WalletConnectService.Error.failedToFindWalletToSign
+            throw WalletConnectRequestError.failedToFindWalletToSign
         }
         return udWallet
     }
@@ -799,7 +799,7 @@ extension WalletConnectServiceV2 {
     private func getClientAfterConfirmationIfNeeded(address: HexAddress,
                                                     request: WalletConnectSign.Request,
                                                     transaction: EthereumTransaction) async throws -> (WCConnectedAppsStorageV2.ConnectedApp, UDWallet) {
-        guard let cost = WalletConnectService.TxDisplayDetails(tx: transaction) else { throw WalletConnectService.Error.failedToBuildCompleteTransaction }
+        guard let cost = WalletConnectService.TxDisplayDetails(tx: transaction) else { throw WalletConnectRequestError.failedToBuildCompleteTransaction }
         return try await getClientAfterConfirmation_generic(address: address, request: request) {
             WCRequestUIConfiguration.payment(SignPaymentTransactionUIConfiguration(connectionConfig: $0,
                                                                                    walletAddress: address,
@@ -816,7 +816,7 @@ extension WalletConnectServiceV2 {
         if udWallet.walletState != .externalLinked {
             guard let uiHandler = self.uiHandler else {
                 Debugger.printFailure("UI Handler is not set", critical: true)
-                throw WalletConnectService.Error.uiHandlerNotSet
+                throw WalletConnectRequestError.uiHandlerNotSet
             }
 
             let appInfo = Self.appInfo(from: connectedApp.appData,
@@ -840,7 +840,7 @@ extension WalletConnectServiceV2 {
             return addressIdentificator
         }
         guard parts.count == 3 else {
-            throw WalletConnectService.Error.invalidWCRequest
+            throw WalletConnectRequestError.invalidWCRequest
         }
         return String(parts[2])
     }
@@ -852,18 +852,18 @@ extension WalletConnectServiceV2 {
         return try await withCheckedThrowingContinuation { continuation in
             guard let urlString = NetworkService().getJRPCProviderUrl(chainId: chainIdInt)?.absoluteString else {
                 Debugger.printFailure("Failed to get net name for chain Id: \(chainIdInt)", critical: true)
-                continuation.resume(with: .failure(WalletConnectService.Error.failedToDetermineChainId))
+                continuation.resume(with: .failure(WalletConnectRequestError.failedToDetermineChainId))
                 return
             }
             let web3 = Web3(rpcURL: urlString)
             guard let privKeyString = udWallet.getPrivateKey() else {
                 Debugger.printFailure("No private key in \(udWallet)", critical: true)
-                continuation.resume(with: .failure(WalletConnectService.Error.failedToGetPrivateKey))
+                continuation.resume(with: .failure(WalletConnectRequestError.failedToGetPrivateKey))
                 return
             }
             guard let privateKey = try? EthereumPrivateKey(hexPrivateKey: privKeyString) else {
                 Debugger.printFailure("No private key in \(udWallet)", critical: true)
-                continuation.resume(with: .failure(WalletConnectService.Error.failedToGetPrivateKey))
+                continuation.resume(with: .failure(WalletConnectRequestError.failedToGetPrivateKey))
                 return
             }
             let chainId = EthereumQuantity(quantity: BigUInt(chainIdInt))
@@ -878,18 +878,18 @@ extension WalletConnectServiceV2 {
                     .done { hash in
                         guard let result = hash.ethereumValue().string else {
                             Debugger.printFailure("Failed to parse response from sending: \(transaction)")
-                            continuation.resume(with: .failure(WalletConnectService.Error.failedParseSendTxResponse))
+                            continuation.resume(with: .failure(WalletConnectRequestError.failedParseSendTxResponse))
                             return
                         }
                         continuation.resume(with: .success(result))
                     }.catch { error in
                         Debugger.printFailure("Sending a TX was failed: \(error.localizedDescription)")
-                        continuation.resume(with: .failure(WalletConnectService.Error.failedSendTx))
+                        continuation.resume(with: .failure(WalletConnectRequestError.failedSendTx))
                         return
                     }
             } catch {
                 Debugger.printFailure("Signing a TX was failed: \(error.localizedDescription)")
-                continuation.resume(with: .failure(WalletConnectService.Error.failedToSignTransaction))
+                continuation.resume(with: .failure(WalletConnectRequestError.failedToSignTransaction))
                 return
             }
         }
@@ -903,7 +903,7 @@ extension WalletConnectServiceV2 {
      let settledSessionsTopics = settledSessions.map { $0.topic }
      
      guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
-         throw WalletConnectError.noWCSessionFound
+         throw WalletConnectRequestError.noWCSessionFound
      }
      return try await sendRequest(method: .ethSendTransaction,
                                   session: sessionSettled,
@@ -917,7 +917,7 @@ extension AnyCodable {
     func getTransactions() throws -> [EthereumTransaction] {
         
         guard let dictArray = self.value as? [[String: Any]] else {
-            throw WalletConnectService.Error.failedParseSendTxResponse
+            throw WalletConnectRequestError.failedParseSendTxResponse
         }
         
         return dictArray.compactMap { dict in
@@ -1061,7 +1061,7 @@ extension AppMetadata {
 extension SessionV2.Proposal {
     func getChainIds() throws -> [String] {
         guard let namespace = self.requiredNamespaces[WalletConnectServiceV2.supportedNamespace] else {
-        throw WalletConnectService.Error.invalidNamespaces }
+        throw WalletConnectRequestError.invalidNamespaces }
         let references = namespace.chains.map {$0.reference}
         return references
     }
@@ -1095,11 +1095,11 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress, onWcRequestSentCallback: @escaping () async throws -> Void) async throws -> WalletConnectSign.Response {
-        throw WalletConnectError.failedEthSignMessage
+        throw WalletConnectRequestError.failedToSignMessage
     }
     
     func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress, onWcRequestSentCallback: () async throws -> Void) async throws -> WalletConnectSign.Response {
-        throw WalletConnectError.failedEthSignMessage
+        throw WalletConnectRequestError.failedToSignMessage
     }
         
     func handle(response: WalletConnectSign.Response) throws -> String {
@@ -1224,7 +1224,7 @@ extension WalletConnectServiceV2 {
                             onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
         guard let chainIdString = Array(session.namespaces.values).map({Array($0.accounts)}).flatMap({$0}).map({$0.blockchainIdentifier}).first,
         let chainId = Blockchain(chainIdString) else {
-            throw WalletConnectError.invalidChainIdentifier
+            throw WalletConnectRequestError.failedToDetermineChainId
         }
         let request = Request(topic: session.topic, method: method.string, params: requestParams, chainId: chainId)
         pendingRequest = request
@@ -1270,7 +1270,7 @@ extension WalletConnectServiceV2 {
         let settledSessionsTopics = settledSessions.map { $0.topic }
         
         guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
-            throw WalletConnectError.noWCSessionFound
+            throw WalletConnectRequestError.noWCSessionFound
         }
         return try await sendRequest(method: .ethSignTransaction,
                                      session: sessionSettled,
@@ -1287,7 +1287,7 @@ extension WalletConnectServiceV2 {
         let settledSessionsTopics = settledSessions.map { $0.topic }
         
         guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
-            throw WalletConnectError.noWCSessionFound
+            throw WalletConnectRequestError.noWCSessionFound
         }
         
         let params = WalletConnectServiceV2.getParamsPersonalSign(message: message, address: address)
@@ -1305,7 +1305,7 @@ extension WalletConnectServiceV2 {
         let settledSessionsTopics = settledSessions.map { $0.topic }
         
         guard let sessionSettled = settledSessions.filter({ settledSessionsTopics.contains($0.topic)}).first else {
-            throw WalletConnectError.noWCSessionFound
+            throw WalletConnectRequestError.noWCSessionFound
         }
         
         let params = WalletConnectServiceV2.getParamsEthSign(message: message, address: address)

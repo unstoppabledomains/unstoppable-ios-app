@@ -130,7 +130,7 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
     }
     
     @MainActor
-    func didFailToConnect(with error: WalletConnectService.Error) async {
+    func didFailToConnect(with error: WalletConnectRequestError) async {
         @MainActor
         func showErrorAlert(in hostView: UIViewController) async {
             Vibration.error.vibrate()

@@ -50,14 +50,14 @@ extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
     func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws {
         guard case let .connectWallet(req) = request else {
             Debugger.printFailure("Request is not for connecting wallet", critical: true)
-            throw WalletConnectService.Error.invalidWCRequest
+            throw WalletConnectRequestError.invalidWCRequest
         }
         
         if case let .version1(wcurl) = req {
             let connectedAppsURLS = WCConnectedAppsStorage.shared.retrieveApps().map({ $0.session.url })
             guard !connectedAppsURLS.contains(wcurl) else {
                 Debugger.printWarning("App already connected")
-                throw WalletConnectService.Error.appAlreadyConnected
+                throw WalletConnectRequestError.appAlreadyConnected
             }
             
             WCConnectionIntentStorage.shared.save(newIntent: WCConnectionIntentStorage.Intent(domain: target.1,
@@ -220,7 +220,7 @@ private extension WCRequestsHandlingService {
                 responses = [try await wcSigner.handleSignTypedData(request: request)]
             case .none:
                 /// Unsupported method
-                throw WalletConnectService.Error.methodUnsupported
+                throw WalletConnectRequestError.methodUnsupported
             }
             for response in responses {
                 try await walletConnectServiceV2.sendResponse(response, toRequest: request)
@@ -233,7 +233,7 @@ private extension WCRequestsHandlingService {
     }
     
     func handleRPCRequestFailed(error: Error) async {
-        if let error = error as? WalletConnectService.Error {
+        if let error = error as? WalletConnectRequestError {
             await uiHandler?.didFailToConnect(with: error)
         } else if let _ = error as? WalletConnectUIError {
             /// Request cancelled
@@ -319,18 +319,3 @@ private extension WCRequestsHandlingService {
 fileprivate protocol WalletConnectV1SignTransactionHandlerDelegate: AnyObject {
     func wcV1SignHandlerWillHandleRequest(_  request: WCRPCRequestV1, ofType requestType: WalletConnectRequestType)
 }
-
-
-enum WalletConnectRequestType: String, CaseIterable {
-    case personalSign = "personal_sign"
-    case ethSign = "eth_sign"
-    case ethSignTransaction = "eth_signTransaction"
-    case ethGetTransactionCount = "eth_getTransactionCount"
-    case ethSendTransaction = "eth_sendTransaction"
-    case ethSendRawTransaction = "eth_sendRawTransaction"
-    case ethSignedTypedData = "eth_signTypedData"
-    
-    var string: String { self.rawValue }
-    
-}
-

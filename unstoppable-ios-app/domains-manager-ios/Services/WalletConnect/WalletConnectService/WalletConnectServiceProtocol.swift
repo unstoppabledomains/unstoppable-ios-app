@@ -60,5 +60,5 @@ final class WalletConnectServiceListenerHolder: Equatable {
 protocol WalletConnectUIHandler: AnyObject {
     @discardableResult
     func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectService.ConnectionUISettings
-    func didFailToConnect(with error: WalletConnectService.Error) async 
+    func didFailToConnect(with error: WalletConnectRequestError) async
 }

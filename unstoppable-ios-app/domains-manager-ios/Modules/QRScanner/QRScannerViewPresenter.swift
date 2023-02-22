@@ -288,7 +288,7 @@ private extension QRScannerViewPresenter {
     
     func handleWCRequest(_ request: WCRequest) async throws {
         guard let target = await getCurrentConnectionTarget() else {
-            throw WalletConnectService.Error.uiHandlerNotSet
+            throw WalletConnectRequestError.uiHandlerNotSet
         }
         
         try await appContext.wcRequestsHandlingService.handleWCRequest(request, target: target)

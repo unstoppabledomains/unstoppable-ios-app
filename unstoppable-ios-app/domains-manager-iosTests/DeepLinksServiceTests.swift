@@ -202,7 +202,7 @@ private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
         throw NSError(domain: "-1", code: -1)
     }
     
-    func didFailToConnect(with error: domains_manager_ios.WalletConnectService.Error) {
+    func didFailToConnect(with error: domains_manager_ios.WalletConnectRequestError) {
         
     }
     
