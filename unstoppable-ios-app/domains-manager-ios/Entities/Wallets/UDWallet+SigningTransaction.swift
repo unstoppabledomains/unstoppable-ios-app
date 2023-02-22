@@ -29,7 +29,9 @@ extension UDWallet {
                                                        tx: ethTx)
         }
         if let session_V2 = appContext.walletConnectServiceV2.findSessions(by: address).first {
-            // TODO:
+            return try await appContext.walletConnectServiceV2.signTxViaWalletConnect_V2(udWallet: self,
+                                                                                         session: session_V2,
+                                                                                         tx: ethTx)
         }
         
         throw WalletConnectService.Error.noWCSessionFound
