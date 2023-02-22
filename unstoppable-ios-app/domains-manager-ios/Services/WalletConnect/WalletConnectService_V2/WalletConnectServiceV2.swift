@@ -72,6 +72,17 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
 
 protocol WalletConnectV2RequestHandlingServiceProtocol {
     func pairClientAsync(uri: WalletConnectURI)
+    
+    func handlePersonalSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
+    func handleEthSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
+    func handleSignTx(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
+    func handleSendTx(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
+    func handleGetTransactionCount(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
+    func handleSendRawTx(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
+    func handleSignTypedData(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
+    
+    
+    func sendResponse(_ response: WalletConnectSign.RPCResult, toRequest request: WalletConnectSign.Request) async throws
 }
 
 typealias SessionV2 = WalletConnectSign.Session
@@ -391,6 +402,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                         }
                     return
                 }
+                
                 switch method {
                 case .personalSign: self?.handlePersonalSign(request: sessionRequest)
                 case .ethSign: self?.handleEthSign(request: sessionRequest)
@@ -645,7 +657,7 @@ extension WalletConnectServiceV2 {
         return (connectedApp, udWallet)
     }
     
-    @Sendable
+    @Sendable // TODO: - WC Check if need to remove
     private func respondWithError(request: WalletConnectSign.Request) async throws {
         try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: .error(.internalError))
     }
@@ -659,6 +671,10 @@ extension WalletConnectServiceV2 {
             throw WalletConnectService.Error.invalidWCRequest
         }
         return String(parts[2])
+    }
+    
+    func sendResponse(_ response: WalletConnectSign.RPCResult, toRequest request: WalletConnectSign.Request) async throws {
+        try await Sign.instance.respond(topic: request.topic, requestId: request.id, response: response)
     }
     
     func handleEthSign(request: WalletConnectSign.Request) {

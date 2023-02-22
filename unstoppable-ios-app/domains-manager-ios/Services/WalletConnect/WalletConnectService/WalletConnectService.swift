@@ -18,12 +18,6 @@ enum WCRequest {
          payment(_ request: SignPaymentTransactionUIConfiguration)
 }
 
-protocol WalletConnectV1RequestHandlingServiceProtocol: WCSigner {
-    func registerRequestHandler(_ requestHandler: RequestHandler)
-    func connectAsync(to requestURL: WCURL)
-    func sendResponse(_ response: Response)
-}
-
 final class WalletConnectService {
     
     struct ConnectionConfig {
@@ -40,19 +34,6 @@ final class WalletConnectService {
     init() {
         server = UDWalletConnectServer(delegate: self)
         server.responseDelegate = self
-        
-        // TODO: - WC Remove
-//        let requestHandlers: [BasicRequestHandler] = [PersonalSignHandler(wcSigner: self),
-//                                                      SignTransactionHandler(wcSigner: self),
-//                                                      GetTransactionCountHandler(wcSigner: self),
-//                                                      EthSignHandler(wcSigner: self),
-//                                                      SendTransactionHandler(wcSigner: self),
-//                                                      SendRawTransactionHandler(wcSigner: self),
-//                                                      SignTypedDataHandler(wcSigner: self)]
-//        requestHandlers.forEach { requestHandler in
-//            requestHandler.delegate = self
-//            server.register(handler: requestHandler)
-//        }
         
         self.reconnectExistingSessions()
     }

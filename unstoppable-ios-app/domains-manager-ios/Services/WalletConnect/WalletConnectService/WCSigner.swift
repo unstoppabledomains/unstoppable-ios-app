@@ -10,19 +10,21 @@ import WalletConnectSwift
 import Web3
 import PromiseKit
 
-protocol WCSigner: AnyObject {
+protocol WalletConnectV1RequestHandlingServiceProtocol {
+    func registerRequestHandler(_ requestHandler: RequestHandler)
+    func connectAsync(to requestURL: WCURL)
+    func sendResponse(_ response: Response)
+    
     func handlePersonalSign(request: Request) async throws -> Response
     func handleSignTx(request: Request) async throws -> Response
-    
     func handleGetTransactionCount(request: Request) async throws -> Response
-    
     func handleEthSign(request: Request) async throws -> Response
     func handleSendTx(request: Request) async throws -> Response
     func handleSendRawTx(request: Request) async throws -> Response
     func handleSignTypedData(request: Request) async throws -> Response
 }
 
-extension WCSigner {
+extension WalletConnectV1RequestHandlingServiceProtocol {
     func detectConnectedApp(by walletAddress: HexAddress, request: Request) throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet) {
         guard let connectedApp = WCConnectedAppsStorage.shared.find(by: [walletAddress], topic: request.url.topic)?.first,
               let udWallet = appContext.udWalletsService.find(by: walletAddress) else {
@@ -33,7 +35,15 @@ extension WCSigner {
     }
 }
 
-extension WalletConnectService: WCSigner {
+extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
+    func registerRequestHandler(_ requestHandler: WalletConnectSwift.RequestHandler) {
+        server.register(handler: requestHandler)
+    }
+    
+    func sendResponse(_ response: WalletConnectSwift.Response) {
+        server.send(response)
+    }
+    
     enum Error: String, Swift.Error, RawValueLocalizable {
         case failedConnectionRequest
         case failedToFindWalletToSign
