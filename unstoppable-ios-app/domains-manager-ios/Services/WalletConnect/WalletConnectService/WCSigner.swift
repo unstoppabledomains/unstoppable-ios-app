@@ -202,6 +202,15 @@ extension WalletConnectService: WCSigner {
                             self.server.send(.invalid(request))
                             self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
                         }
+                    
+//                    let response = try await udWallet.signTxViaWalletConnect(session: sessionWithExtWallet, tx: transaction)
+//                    if let error = response.error {
+//                        Debugger.printFailure("Error from the signing ext wallet: \(error)", critical: true)
+//                        throw error
+//                    }
+//                    let result = try response.result(as: String.self)
+//                    self.server.send(Response.signature(result, for: request))
+//                    self.notifyDidHandleExternalWCRequestWith(result: .success(()))
                     return
                 }
                 
@@ -633,6 +642,18 @@ extension EthereumTransaction {
 }
 
 extension UDWallet {
+    func signTxViaWalletConnect(session: Session, tx: EthereumTransaction) async throws -> Response {
+        try await withSafeCheckedThrowingContinuation { completion in
+            signTxViaWalletConnect(session: session, tx: tx)
+                .done { response in
+                    completion(.success(response))
+                }.catch { error in
+                    Debugger.printFailure("Failed to send a request to the signing ext wallet: \(error)", critical: true)
+                    completion(.failure(error))
+                }
+        }
+    }
+    
     func signTxViaWalletConnect(session: Session, tx: EthereumTransaction) -> Promise<Response> {
         return Promise { seal in
             guard let transaction = Client.Transaction(ethTx: tx) else {
