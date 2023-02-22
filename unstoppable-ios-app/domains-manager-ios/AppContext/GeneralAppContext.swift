@@ -87,6 +87,7 @@ final class GeneralAppContext: AppContextProtocol {
         
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
                                                               walletConnectServiceV2: walletConnectServiceV2)
+        wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
         
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")
