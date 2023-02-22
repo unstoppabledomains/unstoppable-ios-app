@@ -242,27 +242,34 @@ private extension WalletDetailsViewPresenter {
     @MainActor
     func askToRemoveWallet() {
         guard let view = self.view else { return }
-        
         Task {
             do {
                 try await appContext.pullUpViewService.showRemoveWalletPullUp(in: view, walletInfo: walletInfo)
                 await view.dismissPullUpMenu()
                 try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                udWalletsService.remove(wallet: wallet)
-                // WC1 + WC2
-                try? walletConnectClientService.disconnect(walletAddress: wallet.address)
-                try? walletConnectServiceV2.disconnect(from: wallet.address)
-                let wallets = udWalletsService.getUserWallets()
-                if !wallets.isEmpty {
-                    if wallet.walletState == .externalLinked {
-                        appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
-                    } else {
-                        appContext.toastMessageService.showToast(.walletRemoved(walletName: walletInfo.walletSourceName), isSticky: false)
-                    }
-                }
+                await removeWallet()
                 walletRemovedCallback?()
             }
         }
+    }
+    
+    @MainActor
+    func indicateWalletRemoved() {
+        if wallet.walletState == .externalLinked {
+            appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
+        } else {
+            appContext.toastMessageService.showToast(.walletRemoved(walletName: walletInfo.walletSourceName), isSticky: false)
+        }
+    }
+    
+    func removeWallet() async {
+        udWalletsService.remove(wallet: wallet)
+        // WC1 + WC2
+        try? walletConnectClientService.disconnect(walletAddress: wallet.address)
+        walletConnectServiceV2.disconnect(from: wallet.address)
+        let wallets = udWalletsService.getUserWallets()
+        guard !wallets.isEmpty else { return }
+        await indicateWalletRemoved()
     }
     
     func copyAddressButtonPressed() {
