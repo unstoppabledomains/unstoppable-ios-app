@@ -21,6 +21,7 @@ enum WCRequest {
 protocol WalletConnectV1RequestHandlingServiceProtocol: WCSigner {
     func registerRequestHandler(_ requestHandler: RequestHandler)
     func connectAsync(to requestURL: WCURL)
+    func sendResponse(_ response: Response)
 }
 
 final class WalletConnectService {
@@ -41,17 +42,17 @@ final class WalletConnectService {
         server.responseDelegate = self
         
         // TODO: - WC Remove
-        let requestHandlers: [BasicRequestHandler] = [PersonalSignHandler(wcSigner: self),
-                                                      SignTransactionHandler(wcSigner: self),
-                                                      GetTransactionCountHandler(wcSigner: self),
-                                                      EthSignHandler(wcSigner: self),
-                                                      SendTransactionHandler(wcSigner: self),
-                                                      SendRawTransactionHandler(wcSigner: self),
-                                                      SignTypedDataHandler(wcSigner: self)]
-        requestHandlers.forEach { requestHandler in
-            requestHandler.delegate = self
-            server.register(handler: requestHandler)
-        }
+//        let requestHandlers: [BasicRequestHandler] = [PersonalSignHandler(wcSigner: self),
+//                                                      SignTransactionHandler(wcSigner: self),
+//                                                      GetTransactionCountHandler(wcSigner: self),
+//                                                      EthSignHandler(wcSigner: self),
+//                                                      SendTransactionHandler(wcSigner: self),
+//                                                      SendRawTransactionHandler(wcSigner: self),
+//                                                      SignTypedDataHandler(wcSigner: self)]
+//        requestHandlers.forEach { requestHandler in
+//            requestHandler.delegate = self
+//            server.register(handler: requestHandler)
+//        }
         
         self.reconnectExistingSessions()
     }
@@ -339,16 +340,17 @@ extension WalletConnectService: WalletConnectServiceProtocol {
     }
 }
 
+// TODO: - WC remove
 // MARK: - WCSignHandlerDelegate
 /// This function called when WC receive some request to confirm
-extension WalletConnectService: WCSignHandlerDelegate {
-    func wcSignHandlerWillHandleRequest(_ request: Request) {
-        Task {
-            await expectedRequestsManager.remove(requestURL: request.url)
-            await requestsManager.add(requestURL: request.url)
-        }
-    }
-}
+//extension WalletConnectService: WCSignHandlerDelegate {
+//    func wcSignHandlerWillHandleRequest(_ request: Request) {
+//        Task {
+//            await expectedRequestsManager.remove(requestURL: request.url)
+//            await requestsManager.add(requestURL: request.url)
+//        }
+//    }
+//}
 
 // MARK: - UDWalletConnectServerResponseDelegate
 /// This function called when user decided whether to confirm or cancel request

@@ -14,6 +14,7 @@ import WalletConnectSwift
 import WalletConnectSign
 
 private typealias WCRPCRequestV1 = WalletConnectSwift.Request
+private typealias WCRPCResponseV1 = WalletConnectSwift.Response
 private typealias WCRPCRequestV2 = WalletConnectSign.Request
 
 protocol WCRequestsHandlingServiceProtocol {
@@ -82,26 +83,22 @@ private extension WCRequestsHandlingService {
         isHandlingRequest = true
         
         Task {
-            do {
-                try await handleRequest(nextRequest)
-            } catch {
-                
-            }
+            await handleRequest(nextRequest)
         }
     }
     
-    func handleRequest(_ request: UnifiedWCRequest) async throws {
+    func handleRequest(_ request: UnifiedWCRequest) async {
         switch request {
         case .connectionRequest(let connectionRequest):
-            try await handleConnectionRequest(connectionRequest)
+            await handleConnectionRequest(connectionRequest)
         case .rpcRequestV1(let request, let type):
-            try await handleRPCRequestV1(request, requestType: type)
+            await handleRPCRequestV1(request, requestType: type)
         case .rpcRequestV2(let request, let type):
-            try await handleRPCRequestV2(request, requestType: type)
+            await handleRPCRequestV2(request, requestType: type)
         }
     }
     
-    func handleConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest) async throws {
+    func handleConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest) async {
         if case let .version1(requestURL) = request  {
             walletConnectServiceV1.connectAsync(to: requestURL)
         }
@@ -111,28 +108,54 @@ private extension WCRequestsHandlingService {
         }
     }
     
-    func handleRPCRequestV1(_ request: WCRPCRequestV1, requestType: WalletConnectRequestType) async throws {
+    func handleRPCRequestV1(_ request: WCRPCRequestV1, requestType: WalletConnectRequestType) async {
         let wcSigner = walletConnectServiceV1
-        switch requestType {
-        case .personalSign:
-            wcSigner.handlePersonalSign(request: request)
-        case .ethSign:
-            wcSigner.handleEthSign(request: request)
-        case .ethSignTransaction:
-            wcSigner.handleSignTx(request: request)
-        case .ethGetTransactionCount:
-            wcSigner.handleGetTransactionCount(request: request)
-        case .ethSendTransaction:
-            wcSigner.handleSendTx(request: request)
-        case .ethSendRawTransaction:
-            wcSigner.handleSendRawTx(request: request)
-        case .ethSignedTypedData:
-            wcSigner.handleSignTypedData(request: request)
+        do {
+            let response: WCRPCResponseV1
+            switch requestType {
+            case .personalSign:
+                response = try await wcSigner.handlePersonalSign(request: request)
+            case .ethSign:
+                response = try await wcSigner.handleEthSign(request: request) // Unsupported
+            case .ethSignTransaction:
+                response = try await wcSigner.handleSignTx(request: request)
+            case .ethGetTransactionCount:
+                response = try await wcSigner.handleGetTransactionCount(request: request)
+            case .ethSendTransaction:
+                response = try await wcSigner.handleSendTx(request: request)
+            case .ethSendRawTransaction:
+                response = try await wcSigner.handleSendRawTx(request: request)
+            case .ethSignedTypedData:
+                response = try await wcSigner.handleSignTypedData(request: request)
+            }
+            walletConnectServiceV1.sendResponse(response)
+            notifyDidHandleExternalWCRequestWith(result: .success(()))
+        } catch let error as WalletConnectService.Error {
+            Debugger.printFailure("Unsupported WC method: \(request.method)")
+            walletConnectServiceV1.sendResponse(.invalid(request))
+            
+            // TODO: - WC await
+            self.uiHandler?.didFailToConnect(with: error)
+            
+            notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectService.Error.methodUnsupported))
+        } catch {
+            Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
+            walletConnectServiceV1.sendResponse(.invalid(request))
+            notifyDidHandleExternalWCRequestWith(result: .failure(error))
         }
     }
     
-    func handleRPCRequestV2(_ request: WCRPCRequestV1, requestType: WalletConnectRequestType) async throws {
+    func handleRPCRequestV2(_ request: WCRPCRequestV1, requestType: WalletConnectRequestType) async {
         // TODO: - Pass to WC2 service
+    }
+}
+
+// MARK: - Notifications methods
+private extension WCRequestsHandlingService {
+    func notifyDidHandleExternalWCRequestWith(result: WCExternalRequestResult) {
+        listeners.forEach { holder in
+            holder.listener?.didHandleExternalWCRequestWith(result: result)
+        }
     }
 }
 

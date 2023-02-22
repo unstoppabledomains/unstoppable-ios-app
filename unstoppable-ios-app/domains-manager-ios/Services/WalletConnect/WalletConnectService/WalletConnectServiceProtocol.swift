@@ -63,5 +63,4 @@ protocol WalletConnectUIHandler: AnyObject {
     @discardableResult
     func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectService.ConnectionUISettings
     func didFailToConnect(with error: WalletConnectService.Error)
-    func didReceiveUnsupported(_ wcRequestMethodName: String)
 }

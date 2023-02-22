@@ -382,7 +382,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                 let methodString = sessionRequest.method
                 Debugger.printInfo(topic: .WallectConnectV2, "Did receive session request, method: \(methodString)")
                 guard let method = RPCMethod(rawValue: methodString) else {
-                    self?.uiHandler?.didReceiveUnsupported(methodString)
+                    self?.uiHandler?.didFailToConnect(with: WalletConnectService.Error.methodUnsupported)
                         Debugger.printFailure("Unsupported WC_2 method: \(methodString)")
                         Task {
                             try await Sign.instance.respond(topic: sessionRequest.topic,

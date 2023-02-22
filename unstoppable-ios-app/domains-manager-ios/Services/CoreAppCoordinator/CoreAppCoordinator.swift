@@ -141,6 +141,8 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
                 pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
             case .lowAllowance:
                 pullUpViewService.showWCLowBalancePullUp(in: hostView)
+            case .methodUnsupported:
+                pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
             }
         }
         
@@ -153,7 +155,7 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
                     switch error.groupType {
                     case .connectionTimeout:
                         showErrorAlert(in: hostView)
-                    case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance:
+                    case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance, .methodUnsupported:
                         if let pullUpView = hostView as? PullUpViewController,
                            pullUpView.pullUp != .wcLoading {
                             return
@@ -161,21 +163,6 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
                         
                         showErrorAlert(in: hostView)
                     }
-                default: return
-                }
-            }
-        }
-    }
-    
-    func didReceiveUnsupported(_ wcRequestMethodName: String) {
-        Task {
-            await MainActor.run {
-                switch currentRoot {
-                case .domainsCollection(let router):
-                    guard let hostView = router.topViewController(),
-                          !(hostView is PullUpViewController) else { return }
-                    Vibration.error.vibrate()
-                    pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
                 default: return
                 }
             }

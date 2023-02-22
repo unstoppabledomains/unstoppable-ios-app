@@ -10,6 +10,8 @@ import WalletConnectSwift
 import Web3
 import UIKit
 
+// TODO: - WC Remove
+/*
 protocol WCSignHandlerDelegate: AnyObject {
     func wcSignHandlerWillHandleRequest(_  request: Request)
 }
@@ -100,3 +102,4 @@ class SignTypedDataHandler: WCSignerHolder, BasicRequestHandler {
         wcSigner.handleSignTypedData(request: request)
     }
 }
+*/
