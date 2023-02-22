@@ -72,6 +72,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         case failedParseSendTxResponse
         case failedSendTx
         case methodUnsupported
+        case failedBuildParams
         
         var groupType: ErrorGroup {
             switch self {
@@ -97,7 +98,8 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                     .failedToBuildCompleteTransaction,
                     .failedParseSendTxResponse,
                     .failedSendTx,
-                    .failedToSignTransaction: return .failedTx
+                    .failedToSignTransaction,
+                    .failedBuildParams: return .failedTx
             case .methodUnsupported: return .methodUnsupported
             case .networkNotSupported: return .networkNotSupported
             case .lowAllowance: return .lowAllowance

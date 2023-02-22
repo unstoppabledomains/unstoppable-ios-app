@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 // V1
 import WalletConnectSwift
@@ -33,6 +34,7 @@ final class WCRequestsHandlingService {
     private weak var uiHandler: WalletConnectUIHandler?
     private var requests: [UnifiedWCRequest] = []
     private var isHandlingRequest = false
+    private var publishers = [AnyCancellable]() // For WC2
 
     init(walletConnectServiceV1: WalletConnectV1RequestHandlingServiceProtocol,
          walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol) {
@@ -120,7 +122,7 @@ private extension WCRequestsHandlingService {
             case .personalSign:
                 response = try await wcSigner.handlePersonalSign(request: request)
             case .ethSign:
-                response = try await wcSigner.handleEthSign(request: request) // Unsupported
+                response = try await wcSigner.handleEthSign(request: request)
             case .ethSignTransaction:
                 response = try await wcSigner.handleSignTx(request: request)
             case .ethGetTransactionCount:
@@ -151,27 +153,32 @@ private extension WCRequestsHandlingService {
         didFinishRequestHandling()
     }
     
-    func handleRPCRequestV2(_ request: WCRPCRequestV2, requestType: WalletConnectRequestType) async {
+    func handleRPCRequestV2(_ request: WCRPCRequestV2, requestType: WalletConnectRequestType?) async {
         let wcSigner = walletConnectServiceV2
         do {
-            let response: WCRPCResponseV2
+            let responses: [WCRPCResponseV2]
             switch requestType {
             case .personalSign:
-                response = try await wcSigner.handlePersonalSign(request: request)
+                responses = [try await wcSigner.handlePersonalSign(request: request)]
             case .ethSign:
-                response = try await wcSigner.handleEthSign(request: request) // Unsupported
+                responses = [try await wcSigner.handleEthSign(request: request)]
             case .ethSignTransaction:
-                response = try await wcSigner.handleSignTx(request: request)
+                responses = try await wcSigner.handleSignTx(request: request)
             case .ethGetTransactionCount:
-                response = try await wcSigner.handleGetTransactionCount(request: request)
+                responses = [try await wcSigner.handleGetTransactionCount(request: request)]
             case .ethSendTransaction:
-                response = try await wcSigner.handleSendTx(request: request)
+                responses = try await wcSigner.handleSendTx(request: request)
             case .ethSendRawTransaction:
-                response = try await wcSigner.handleSendRawTx(request: request)
+                responses = [try await wcSigner.handleSendRawTx(request: request)]
             case .ethSignedTypedData:
-                response = try await wcSigner.handleSignTypedData(request: request)
+                responses = [try await wcSigner.handleSignTypedData(request: request)]
+            case .none:
+                /// Unsupported method
+                throw WalletConnectService.Error.methodUnsupported
             }
-            try await walletConnectServiceV2.sendResponse(response, toRequest: request)
+            for response in responses {
+                try await walletConnectServiceV2.sendResponse(response, toRequest: request)
+            }
             notifyDidHandleExternalWCRequestWith(result: .success(()))
         } catch let error as WalletConnectService.Error {
             try? await walletConnectServiceV2.sendResponse(.error(.internalError), toRequest: request)
@@ -216,6 +223,18 @@ private extension WCRequestsHandlingService {
             walletConnectServiceV1.registerRequestHandler(handler)
         }
     }
+    
+    func registerV2RequestHandlers() {
+        Sign.instance.sessionRequestPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] sessionRequest in
+                let methodString = sessionRequest.method
+                Debugger.printInfo(topic: .WallectConnectV2, "Did receive session request, method: \(methodString)")
+                let requestType = WalletConnectRequestType(rawValue: methodString)
+                
+                self?.addNewRequest(.rpcRequestV2(sessionRequest, type: requestType))
+            }.store(in: &publishers)
+    }
 }
 
 // MARK: - Private entities
@@ -223,7 +242,7 @@ private extension WCRequestsHandlingService {
     enum UnifiedWCRequest {
         case connectionRequest(_ request: WalletConnectService.ConnectWalletRequest)
         case rpcRequestV1(_ request: WCRPCRequestV1, type: WalletConnectRequestType)
-        case rpcRequestV2(_ request: WCRPCRequestV2, type: WalletConnectRequestType)
+        case rpcRequestV2(_ request: WCRPCRequestV2, type: WalletConnectRequestType?)
     }
     
     final class WalletConnectV1SignTransactionHandler: RequestHandler {
@@ -261,5 +280,8 @@ enum WalletConnectRequestType: String, CaseIterable {
     case ethSendTransaction = "eth_sendTransaction"
     case ethSendRawTransaction = "eth_sendRawTransaction"
     case ethSignedTypedData = "eth_signTypedData"
+    
+    var string: String { self.rawValue }
+    
 }
 

@@ -51,7 +51,7 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var walletConnectServiceV2: WalletConnectServiceV2Protocol = MockWalletConnectServiceV2()
     private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = MockWalletConnectClientManager()
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
-
+    private(set) lazy var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol = MockWCRequestsHandlingService()
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
 }

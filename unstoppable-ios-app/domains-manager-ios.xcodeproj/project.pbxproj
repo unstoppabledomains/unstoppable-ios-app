@@ -454,6 +454,10 @@
 		C60610D529A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */; };
 		C60610D629A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */; };
 		C60610D729A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */; };
+		C60610D929A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */; };
+		C60610DA29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */; };
+		C60610DB29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */; };
+		C60610DC29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73D2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
@@ -3334,6 +3338,7 @@
 		C6045B86281C160000B16761 /* SettingsFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFooterView.swift; sourceTree = "<group>"; };
 		C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionReusableView.swift; sourceTree = "<group>"; };
 		C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCRequestsHandlingService.swift; sourceTree = "<group>"; };
+		C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWCRequestsHandlingService.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
@@ -4458,6 +4463,7 @@
 				C6A2D58C284FA09500327C47 /* WalletConnectService */,
 				295506F42954D22800EDA42D /* WalletConnectService_V2 */,
 				C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */,
+				C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */,
 			);
 			path = WalletConnect;
 			sourceTree = "<group>";
@@ -8134,6 +8140,7 @@
 				C664310C28D8BEB600A9C734 /* ConnectExternalWalletCell.swift in Sources */,
 				C60981FA2822612F00546392 /* WalletDisplayInfo.swift in Sources */,
 				C68017862886730300524712 /* CurrencyImageLoader.swift in Sources */,
+				C60610D929A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C669C3A52912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */,
 				C66804DD280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */,
 				309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */,
@@ -9038,6 +9045,7 @@
 				C6ECBF8D28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C60982732824094100546392 /* ViewWithDashesProgress.swift in Sources */,
 				C6B6B02A296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
+				C60610DB29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C6C9958C289D313D00367362 /* CNavigationBarBackButton.swift in Sources */,
 				C691CFCA28C070450077C59F /* SetupReverseResolutionViewController.swift in Sources */,
 				299713D928F693F600743003 /* EIP712TypedData.swift in Sources */,
@@ -9653,6 +9661,7 @@
 				C6124CDF2923C7FF005E6537 /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
 				C6ECBF8E28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B6B02B296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
+				C60610DC29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C60982742824094100546392 /* ViewWithDashesProgress.swift in Sources */,
 				C691CFCB28C070450077C59F /* SetupReverseResolutionViewController.swift in Sources */,
 				299713DA28F693F600743003 /* EIP712TypedData.swift in Sources */,
@@ -10036,6 +10045,7 @@
 				C624D780281BAE2100F55530 /* UDWalletsService.swift in Sources */,
 				C60981FB2822612F00546392 /* WalletDisplayInfo.swift in Sources */,
 				C68017872886730300524712 /* CurrencyImageLoader.swift in Sources */,
+				C60610DA29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C669C3A62912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */,
 				C66804DE280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */,
 				30AE84E4257836E2003A0142 /* AppDelegate.swift in Sources */,

@@ -24,6 +24,7 @@ final class GeneralAppContext: AppContextProtocol {
     let udWalletsService: UDWalletsServiceProtocol
     let walletConnectService: WalletConnectServiceProtocol
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
+    let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol 
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
@@ -48,8 +49,10 @@ final class GeneralAppContext: AppContextProtocol {
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
-        walletConnectService = WalletConnectService()
-        walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
+        let walletConnectService = WalletConnectService()
+        self.walletConnectService = walletConnectService
+        let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
+        self.walletConnectServiceV2 = walletConnectServiceV2
         permissionsService = PermissionsService()
         pullUpViewService = PullUpViewService(authentificationService: authentificationService)
         
@@ -81,6 +84,9 @@ final class GeneralAppContext: AppContextProtocol {
         
         walletConnectService.addListener(deepLinksService)
         walletConnectServiceV2.addListener(deepLinksService)
+        
+        wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
+                                                              walletConnectServiceV2: walletConnectServiceV2)
         
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")
