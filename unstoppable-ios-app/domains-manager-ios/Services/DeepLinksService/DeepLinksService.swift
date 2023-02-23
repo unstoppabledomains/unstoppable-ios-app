@@ -110,7 +110,10 @@ private extension DeepLinksService {
         guard isWCDeepLinkUrl(from: components) else { return }
         
         self.isExpectingWCInteraction = true
-        guard let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) else { return }
+        guard let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) else {
+            // TODO: - Start WC timeout timer. Show loading indicator on the UI
+            return
+        }
         
         appContext.analyticsService.log(event: .didOpenDeepLink,
                                         withParameters: [.deepLink : "walletConnect"])
