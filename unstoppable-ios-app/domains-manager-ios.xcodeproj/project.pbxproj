@@ -1905,10 +1905,6 @@
 		C671E3AD28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */; };
 		C671E3AE28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */; };
 		C671E3AF28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */; };
-		C671E3B12901178100A2B3A0 /* UDWalletConnectServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B02901178100A2B3A0 /* UDWalletConnectServer.swift */; };
-		C671E3B22901178100A2B3A0 /* UDWalletConnectServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B02901178100A2B3A0 /* UDWalletConnectServer.swift */; };
-		C671E3B32901178100A2B3A0 /* UDWalletConnectServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B02901178100A2B3A0 /* UDWalletConnectServer.swift */; };
-		C671E3B42901178100A2B3A0 /* UDWalletConnectServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B02901178100A2B3A0 /* UDWalletConnectServer.swift */; };
 		C671E3B9290133E000A2B3A0 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B7290133E000A2B3A0 /* CropImageViewController.swift */; };
 		C671E3BA290133E000A2B3A0 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B7290133E000A2B3A0 /* CropImageViewController.swift */; };
 		C671E3BB290133E000A2B3A0 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B7290133E000A2B3A0 /* CropImageViewController.swift */; };
@@ -3733,7 +3729,6 @@
 		C671E38D28FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CarouselCollectionViewCell.xib; sourceTree = "<group>"; };
 		C671E39E28FE974900A2B3A0 /* UDCarouselFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCarouselFeature.swift; sourceTree = "<group>"; };
 		C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryImagePicker.swift; sourceTree = "<group>"; };
-		C671E3B02901178100A2B3A0 /* UDWalletConnectServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletConnectServer.swift; sourceTree = "<group>"; };
 		C671E3B7290133E000A2B3A0 /* CropImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropImageViewController.swift; sourceTree = "<group>"; };
 		C671E3B8290133E000A2B3A0 /* CropImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CropImageViewController.xib; sourceTree = "<group>"; };
 		C671E3C129014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaisedTertiaryWhiteButton.swift; sourceTree = "<group>"; };
@@ -6194,7 +6189,6 @@
 				30FFABA1286CA85600ADC2EA /* WCConnectedAppsStorage.swift */,
 				30FFABA6286CA9C800ADC2EA /* WCRequestHandler.swift */,
 				30B3DC8C2870DBEF006FAA64 /* WCSigner.swift */,
-				C671E3B02901178100A2B3A0 /* UDWalletConnectServer.swift */,
 				30B3DC9628763294006FAA64 /* WCConnectionIntentStorage.swift */,
 				C6109E4928E5AC310027D5D8 /* Client */,
 			);
@@ -7976,7 +7970,6 @@
 				30BA2B36252914100097817E /* Helpers.swift in Sources */,
 				C624D766281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */,
 				C669C355291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */,
-				C671E3B12901178100A2B3A0 /* UDWalletConnectServer.swift in Sources */,
 				C6D6E5A32819945C008C66BB /* StatusMessage.swift in Sources */,
 				C6E385FD2849D66E00C91293 /* DomainsListPresenter.swift in Sources */,
 				C6E459032925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift in Sources */,
@@ -8509,7 +8502,6 @@
 				C609823C2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
 				306DB27426936C58009D95DE /* Endpoint.swift in Sources */,
 				C628E30B27FD7DFF0044E408 /* TutorialStepViewController.swift in Sources */,
-				C671E3B32901178100A2B3A0 /* UDWalletConnectServer.swift in Sources */,
 				C624D7A1281BCB9B00F55530 /* UDRouter.swift in Sources */,
 				C6D0549027FF07390036B200 /* UDTextField.swift in Sources */,
 				C62247A2283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
@@ -9128,7 +9120,6 @@
 				C609823D2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
 				306DB27526936C58009D95DE /* Endpoint.swift in Sources */,
 				C628E30C27FD7DFF0044E408 /* TutorialStepViewController.swift in Sources */,
-				C671E3B42901178100A2B3A0 /* UDWalletConnectServer.swift in Sources */,
 				C624D7A2281BCB9B00F55530 /* UDRouter.swift in Sources */,
 				C6D0549127FF07390036B200 /* UDTextField.swift in Sources */,
 				C62247A3283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
@@ -9891,7 +9882,6 @@
 				30AE84D9257836E2003A0142 /* Helpers.swift in Sources */,
 				C624D767281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */,
 				C669C356291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */,
-				C671E3B22901178100A2B3A0 /* UDWalletConnectServer.swift in Sources */,
 				C6D6E5A42819945C008C66BB /* StatusMessage.swift in Sources */,
 				C6E385FE2849D66F00C91293 /* DomainsListPresenter.swift in Sources */,
 				C6E459042925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift in Sources */,

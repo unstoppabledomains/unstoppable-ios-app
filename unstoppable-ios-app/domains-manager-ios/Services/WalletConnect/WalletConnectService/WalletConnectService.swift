@@ -25,14 +25,11 @@ final class WalletConnectService {
         let appInfo: WCServiceAppInfo
     }
         
-//    private let requestsManager = RequestsManager()
-//    private let expectedRequestsManager = RequestsManager()
-
     var intentsStorage: WCConnectionIntentStorage { WCConnectionIntentStorage.shared }
     var appsStorage: WCConnectedAppsStorage { WCConnectedAppsStorage.shared }
 
     init() {
-        server = UDWalletConnectServer(delegate: self)
+        server = Server(delegate: self)
         
         self.reconnectExistingSessions()
     }
@@ -40,7 +37,7 @@ final class WalletConnectService {
     static let trustedAppsHosts = ["unstoppabledomains.com",
                                    "identity.unstoppabledomains.com"]
     
-    private(set) var server: UDWalletConnectServer!
+    private(set) var server: Server!
     private var connectionCompletion: WCConnectionResultCompletion?
     private var expectedConnectionURL: WCURL?
     weak var uiHandler: WalletConnectUIConfirmationHandler?
