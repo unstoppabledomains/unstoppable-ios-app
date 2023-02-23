@@ -93,13 +93,13 @@ extension WalletConnectService: ServerDelegate {
     
     func server(_ server: Server, shouldStart session: Session, completion: @escaping (Session.WalletInfo) -> Void) {
         Task {
-//            if let timeStamp = connectRequestTimeStamp {
-//                let timeAfterConnectRequest = Date().timeIntervalSince(timeStamp)
-//                if timeAfterConnectRequest > 10 {
-//                    Debugger.printFailure("It took \(timeAfterConnectRequest) sec for WC to respond to connection request ", critical: true)
-//                }
-//                connectRequestTimeStamp = nil
-//            }
+            if let timeStamp = connectRequestTimeStamp {
+                let timeAfterConnectRequest = Date().timeIntervalSince(timeStamp)
+                if timeAfterConnectRequest > 10 {
+                    Debugger.printFailure("It took \(timeAfterConnectRequest) sec for WC to respond to connection request ", critical: false)
+                }
+                connectRequestTimeStamp = nil
+            }
             
             let requestURL = session.url
             
@@ -229,6 +229,7 @@ extension WalletConnectService: WalletConnectServiceProtocol {
     
     func connectAsync(to requestURL: WCURL, completion: @escaping WCConnectionResultCompletion) {
         do {
+            connectRequestTimeStamp = Date()
             try self.server.connect(to: requestURL)
             self.connectionCompletion = completion
         } catch {

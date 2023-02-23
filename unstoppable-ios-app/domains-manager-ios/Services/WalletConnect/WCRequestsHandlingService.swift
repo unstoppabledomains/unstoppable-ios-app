@@ -138,9 +138,7 @@ private extension WCRequestsHandlingService {
     func handleConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest) async {
         // TODO: - Connection timeout
         //                await expectedRequestsManager.add(requestURL: requestURL)
-        
         //                startConnectionTimeout(for: requestURL)
-        //                connectRequestTimeStamp = Date()
         await withSafeCheckedContinuation({ [weak self] completion in
             sendConnectionRequest(request) { result in
                 guard let self else { return }
@@ -380,7 +378,6 @@ private extension WCRequestsHandlingService {
     }
 }
 
-
 fileprivate protocol WalletConnectV1SignTransactionHandlerDelegate: AnyObject {
     func wcV1SignHandlerWillHandleRequest(_  request: WCRPCRequestV1, ofType requestType: WalletConnectRequestType)
 }
@@ -401,12 +398,4 @@ extension WCRPCRequestV1: Equatable {
         }
         return false
     }
-    
-//    public static func == (lhs: WCRPCRequestV1, rhs: WCRPCRequestV1) -> Bool {
-//        if let lhsStr = lhs.id as? String,
-//           let rhsStr = rhs.id as? String {
-//            return lhsStr == rhsStr
-//        }
-//        lhs.url == rhs.url && lhs.method == rhs.method && lhs.internalID == rhs.internalID
-//    }
 }
