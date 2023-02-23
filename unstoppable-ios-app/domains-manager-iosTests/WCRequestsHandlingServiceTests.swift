@@ -395,7 +395,40 @@ extension WCRequestsHandlingServiceTests {
     }
 }
 
-
+// MARK: - Request timeout
+extension WCRequestsHandlingServiceTests {
+    func testWCV1RequestTimeout() async throws {
+        verifyInitialState()
+        
+        try await handleWCV1ConnectionRequestAndWait()
+        try await awaitForLongerThanConnectionTimeout()
+        
+        XCTAssertTrue(mockWCServiceV1.didCallConnectionTimeout)
+        XCTAssertTrue(mockWCServiceV2.didCallConnectionTimeout)
+    }
+    
+    func testWCV2RequestTimeout() async throws {
+        verifyInitialState()
+        
+        try await handleWCV2ConnectionRequestAndProposalAndWait()
+        try await awaitForLongerThanConnectionTimeout()
+        
+        XCTAssertTrue(mockWCServiceV1.didCallConnectionTimeout)
+        XCTAssertTrue(mockWCServiceV2.didCallConnectionTimeout)
+    }
+    
+    func testRequestTimeoutAfterExpecting() async throws {
+        verifyInitialState()
+        wcRequestsHandlingService.expectConnection()
+        XCTAssertFalse(mockWCServiceV1.didCallConnectionTimeout)
+        XCTAssertFalse(mockWCServiceV2.didCallConnectionTimeout)
+        
+        try await awaitForLongerThanConnectionTimeout()
+        
+        XCTAssertTrue(mockWCServiceV1.didCallConnectionTimeout)
+        XCTAssertTrue(mockWCServiceV2.didCallConnectionTimeout)
+    }
+}
 
 // MARK: - Private methods
 private extension WCRequestsHandlingServiceTests {
@@ -499,6 +532,10 @@ private extension WCRequestsHandlingServiceTests {
     
     func callWC2Handler(requestType: WalletConnectRequestType) {
         mockWCServiceV2.pSessionRequestPublisher.send(.init(topic: "topic", method: requestType.rawValue, params: AnyCodable(""), chainId: .init("eip155:1")!))
+    }
+    
+    func awaitForLongerThanConnectionTimeout() async throws {
+        try await waitFor(interval: Constants.wcConnectionTimeout * 1.2)
     }
 }
 
