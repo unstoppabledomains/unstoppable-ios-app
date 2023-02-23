@@ -266,7 +266,7 @@ private extension WalletDetailsViewPresenter {
         udWalletsService.remove(wallet: wallet)
         // WC1 + WC2
         try? walletConnectClientService.disconnect(walletAddress: wallet.address)
-        walletConnectServiceV2.disconnect(from: wallet.address)
+        await walletConnectServiceV2.disconnect(from: wallet.address)
         let wallets = udWalletsService.getUserWallets()
         guard !wallets.isEmpty else { return }
         await indicateWalletRemoved()
