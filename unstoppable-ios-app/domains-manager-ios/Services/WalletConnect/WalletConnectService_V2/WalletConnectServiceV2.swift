@@ -72,6 +72,7 @@ protocol WalletConnectV2RequestHandlingServiceProtocol {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
 
     func pairClientAsync(uri: WalletConnectURI, completion: @escaping WCConnectionResultCompletion)
+    func handleConnectionProposal( _ proposal: WC2ConnectionProposal, completion: @escaping WCConnectionResultCompletion)
     
     func handlePersonalSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleEthSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
@@ -298,34 +299,16 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     func reportConnectionAttempt(with error: Swift.Error) {
-        connectionCompletion?(.failure(error))
+        reportConnectionCompletion(result: .failure(error))
+    }
+    
+    func reportConnectionCompletion(result: WCConnectionResult) {
+        connectionCompletion?(result)
+        connectionCompletion = nil
     }
     
     var pendingProposal: SessionV2.Proposal?
     private func setUpAuthSubscribing() {
-        // callback after pair()
-        Sign.instance.sessionProposalPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] sessionProposal in
-                Task { [weak self] in
-                    let accountAddress: HexAddress
-                    Debugger.printInfo(topic: .WallectConnectV2, "Did receive session proposal")
-                    do {
-                        guard let address = try await self?.handleSessionProposal(sessionProposal) else {
-                            throw WalletConnectRequestError.failedToFindWalletToSign
-                        }
-                        accountAddress = address
-                    } catch {
-                        self?.reportConnectionAttempt(with: error)
-                        self?.intentsStorage.removeAll()
-                        self?.didRejectSession(sessionProposal)
-                        return
-                    }
-                    self?.pendingProposal = sessionProposal
-                    self?.didApproveSession(sessionProposal, accountAddress: accountAddress)
-                }
-            }.store(in: &publishers)
-        
         // session is approved by dApp
         Sign.instance.sessionSettlePublisher
             .receive(on: DispatchQueue.main)
@@ -353,30 +336,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             }.store(in: &publishers)
 
         // request to sign a TX or message
-//        Sign.instance.sessionRequestPublisher
-//            .receive(on: DispatchQueue.main)
-//            .sink { [weak self] sessionRequest in
-//                let methodString = sessionRequest.method
-//                Debugger.printInfo(topic: .WallectConnectV2, "Did receive session request, method: \(methodString)")
-//                guard let method = WalletConnectRequestType(rawValue: methodString) else {
-//                    self?.uiHandler?.didFailToConnect(with: WalletConnectRequestError.methodUnsupported)
-//                        Debugger.printFailure("Unsupported WC_2 method: \(methodString)")
-//                        Task {
-//                            try await Sign.instance.respond(topic: sessionRequest.topic,
-//                                                            requestId: sessionRequest.id,
-//                                                            response: .error(.internalError))
-//                        }
-//                    return
-//                }
-//
-//                switch method {
-//                case .personalSign: self?.handlePersonalSign(request: sessionRequest)
-//                case .ethSign: self?.handleEthSign(request: sessionRequest)
-//                case .ethSignTransaction: self?.handleSignTx(request: sessionRequest)
-//                case .ethSendTransaction: self?.handleSendTx(request: sessionRequest)
-//                }
-//            }.store(in: &publishers)
-        
         Sign.instance.sessionDeletePublisher
             .receive(on: DispatchQueue.main)
             .sink { (topic, _) in
@@ -462,8 +421,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             }
             
             Debugger.printInfo("Connected to \(session.peer.name)")
-            connectionCompletion?(.success(PushSubscriberInfo(appV2: newApp)))
-            connectionCompletion = nil
+            reportConnectionCompletion(result: .success(PushSubscriberInfo(appV2: newApp)))
             intentsStorage.removeAll()
         }
     }
@@ -473,19 +431,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         return uri
     }
   
-    @MainActor
-    private func approve(proposalId: String, namespaces: [String: SessionNamespace]) {
-        Debugger.printInfo(topic: .WallectConnectV2, "[WALLET] Approve Session: \(proposalId)")
-        Task {
-            do {
-                try await Sign.instance.approve(proposalId: proposalId, namespaces: namespaces)
-            } catch {
-                Debugger.printFailure("[WC_2] DApp Failed to Approve Session error: \(error)", critical: true)
-                self.reportConnectionAttempt(with: WalletConnectRequestError.failedConnectionRequest)
-            }
-        }
-    }
-
     @MainActor
     private func reject(proposalId: String, reason: RejectionReason) {
         Debugger.printInfo(topic: .WallectConnectV2, "[WALLET] Reject Session: \(proposalId)")
@@ -516,6 +461,20 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         }
     }
 
+    @MainActor
+    private func approve(proposalId: String, namespaces: [String: SessionNamespace]) {
+        Debugger.printInfo(topic: .WallectConnectV2, "[WALLET] Approve Session: \(proposalId)")
+        Task {
+            do {
+                try await Sign.instance.approve(proposalId: proposalId, namespaces: namespaces)
+                reportConnectionCompletion(result: .success(nil)) // TODO: WC - Check if able to get subs info
+            } catch {
+                Debugger.printFailure("[WC_2] DApp Failed to Approve Session error: \(error)", critical: true)
+                self.reportConnectionAttempt(with: WalletConnectRequestError.failedConnectionRequest)
+            }
+        }
+    }
+
     // when user rejects proposal
     func didRejectSession(_ proposal: SessionV2.Proposal) {
         DispatchQueue.main.async {
@@ -536,6 +495,21 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             } catch {
                 Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: true)
                 completion(.failure(WalletConnectRequestError.failedConnectionRequest))
+            }
+        }
+    }
+    
+    func handleConnectionProposal(_ proposal: WC2ConnectionProposal, completion: @escaping WCConnectionResultCompletion) {
+        Task {
+            do {
+                let accountAddress = try await self.handleSessionProposal(proposal)
+                self.connectionCompletion = completion
+                self.pendingProposal = proposal
+                self.didApproveSession(proposal, accountAddress: accountAddress)
+            } catch {
+                self.intentsStorage.removeAll()
+                self.didRejectSession(proposal)
+                completion(.failure(error))
             }
         }
     }

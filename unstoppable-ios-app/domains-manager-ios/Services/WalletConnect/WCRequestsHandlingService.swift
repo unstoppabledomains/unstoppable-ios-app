@@ -18,6 +18,7 @@ private typealias WCRPCRequestV1 = WalletConnectSwift.Request
 private typealias WCRPCResponseV1 = WalletConnectSwift.Response
 private typealias WCRPCRequestV2 = WalletConnectSign.Request
 private typealias WCRPCResponseV2 = WalletConnectSign.RPCResult
+typealias WC2ConnectionProposal = WalletConnectSign.Session.Proposal
 
 protocol WCRequestsHandlingServiceProtocol {
     func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws
@@ -124,6 +125,8 @@ private extension WCRequestsHandlingService {
         switch request {
         case .connectionRequest(let connectionRequest):
             await handleConnectionRequest(connectionRequest)
+        case .connectionProposal(let proposal):
+            await handleConnectionProposal(proposal)
         case .rpcRequestV1(let request, let type):
             await handleRPCRequestV1(request, requestType: type)
         case .rpcRequestV2(let request, let type):
@@ -138,21 +141,17 @@ private extension WCRequestsHandlingService {
         
         //                startConnectionTimeout(for: requestURL)
         //                connectRequestTimeStamp = Date()
-        await withSafeCheckedContinuation({ completion in
-            sendConnectionRequest(request) { [weak self] result in
+        await withSafeCheckedContinuation({ [weak self] completion in
+            sendConnectionRequest(request) { result in
                 guard let self else { return }
                 
                 Task {
                     switch result {
                     case .success(let subInfo):
-                        self.listeners.forEach { holder in
-                            holder.listener?.didConnect(to: subInfo)
-                        }
+                        self.notifyDidConnect(to: subInfo)
                     case .failure(let error):
                         Debugger.printFailure("Failed to connect to WC as a wallet, error: \(error)")
-                        await self.uiHandler?.didFailToConnect(with: .failedConnectionRequest)
-                        //            await expectedRequestsManager.remove(requestURL: requestURL)
-                        //            reportConnectionAttempt(with: .failedConnectionRequest)
+                        await self.handleConnectionFailed(error: error)
                     }
                     
                     completion(Void())
@@ -169,6 +168,31 @@ private extension WCRequestsHandlingService {
         if case let .version2(uri) = request  {
             walletConnectServiceV2.pairClientAsync(uri: uri, completion: completion)
         }
+    }
+    
+    func handleConnectionProposal(_ proposal: WC2ConnectionProposal) async {
+        await withSafeCheckedContinuation({ [weak self] completion in
+            walletConnectServiceV2.handleConnectionProposal(proposal) { result in
+                guard let self else { return }
+                
+                Task {
+                    switch result {
+                    case .success(let subInfo):
+                        self.notifyDidConnect(to: subInfo)
+                    case .failure(let error):
+                        Debugger.printFailure("Failed to handle connection proposal, error: \(error)")
+                        await self.handleConnectionFailed(error: error)
+                    }
+                    
+                    completion(Void())
+                }
+            }
+        })
+    }
+    
+    func handleConnectionFailed(error: Error) async {
+        await commonHandleError(error: error)
+        notifyCompleteConnectionAttempt()
     }
     
     func handleRPCRequestV1(_ request: WCRPCRequestV1, requestType: WalletConnectRequestType) async {
@@ -233,14 +257,18 @@ private extension WCRequestsHandlingService {
     }
     
     func handleRPCRequestFailed(error: Error) async {
+        await commonHandleError(error: error)
+        notifyDidHandleExternalWCRequestWith(result: .failure(error))
+    }
+    
+    func commonHandleError(error: Error) async {
         if let error = error as? WalletConnectRequestError {
             await uiHandler?.didFailToConnect(with: error)
         } else if let _ = error as? WalletConnectUIError {
             /// Request cancelled
         } else {
-            Debugger.printFailure("Signing a message was interrupted: \(error.localizedDescription)")
+            await uiHandler?.didFailToConnect(with: .failedConnectionRequest)
         }
-        notifyDidHandleExternalWCRequestWith(result: .failure(error))
     }
     
     func didFinishRequestHandling() {
@@ -252,6 +280,24 @@ private extension WCRequestsHandlingService {
 
 // MARK: - Notifications methods
 private extension WCRequestsHandlingService {
+    func notifyDidConnect(to app: PushSubscriberInfo?) {
+        listeners.forEach { holder in
+            holder.listener?.didConnect(to: app)
+        }
+    }
+    
+    func notifyCompleteConnectionAttempt() {
+        listeners.forEach { holder in
+            holder.listener?.didCompleteConnectionAttempt()
+        }
+    }
+    
+    func notifyDidDisconnect(from app: PushSubscriberInfo?) {
+        listeners.forEach { holder in
+            holder.listener?.didDisconnect(from: app)
+        }
+    }
+    
     func notifyDidHandleExternalWCRequestWith(result: WCExternalRequestResult) {
         listeners.forEach { holder in
             holder.listener?.didHandleExternalWCRequestWith(result: result)
@@ -263,6 +309,7 @@ private extension WCRequestsHandlingService {
 private extension WCRequestsHandlingService {
     func setup() {
         registerV1RequestHandlers()
+        registerV2ProposalHandler()
         registerV2RequestHandlers()
         registerDisconnectCallbacks()
     }
@@ -272,6 +319,17 @@ private extension WCRequestsHandlingService {
             let handler = WalletConnectV1SignTransactionHandler(requestType: requestType, delegate: self)
             walletConnectServiceV1.registerRequestHandler(handler)
         }
+    }
+    
+    func registerV2ProposalHandler() {
+        Sign.instance.sessionProposalPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] sessionProposal in
+                Task { [weak self] in
+                    Debugger.printInfo(topic: .WallectConnectV2, "Did receive session proposal")
+                    self?.addNewRequest(.connectionProposal(sessionProposal))
+                }
+            }.store(in: &publishers)
     }
     
     func registerV2RequestHandlers() {
@@ -287,14 +345,8 @@ private extension WCRequestsHandlingService {
     }
     
     func registerDisconnectCallbacks() {
-        func handleAppDisconnected(_ app: PushSubscriberInfo?) {
-            listeners.forEach { holder in
-                holder.listener?.didDisconnect(from: app)
-            }
-        }
-        
-        walletConnectServiceV1.appDisconnectedCallback = handleAppDisconnected(_:)
-        walletConnectServiceV2.appDisconnectedCallback = handleAppDisconnected(_:)
+        walletConnectServiceV1.appDisconnectedCallback = { [weak self] app in self?.notifyDidDisconnect(from: app) }
+        walletConnectServiceV2.appDisconnectedCallback = { [weak self] app in self?.notifyDidDisconnect(from: app) }
     }
 }
 
@@ -302,6 +354,7 @@ private extension WCRequestsHandlingService {
 private extension WCRequestsHandlingService {
     enum UnifiedWCRequest {
         case connectionRequest(_ request: WalletConnectService.ConnectWalletRequest)
+        case connectionProposal(_ proposal: WC2ConnectionProposal)
         case rpcRequestV1(_ request: WCRPCRequestV1, type: WalletConnectRequestType)
         case rpcRequestV2(_ request: WCRPCRequestV2, type: WalletConnectRequestType?)
     }
