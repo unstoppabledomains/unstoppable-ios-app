@@ -43,7 +43,7 @@ final class WalletConnectService {
     
     private(set) var server: UDWalletConnectServer!
     private var connectionCompletion: WCConnectionResultCompletion?
-    weak var uiHandler: WalletConnectUIHandler?
+    weak var uiHandler: WalletConnectUIConfirmationHandler?
     var connectRequestTimeStamp: Date?
     var appDisconnectedCallback: WCAppDisconnectedCallback?
 }
@@ -223,7 +223,7 @@ extension WalletConnectService: ServerDelegate {
 
 // MARK: - WalletConnectServiceProtocol
 extension WalletConnectService: WalletConnectServiceProtocol {
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
+    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) {
         self.uiHandler = uiHandler
     }
     

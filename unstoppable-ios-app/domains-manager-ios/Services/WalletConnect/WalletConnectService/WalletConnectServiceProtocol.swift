@@ -10,7 +10,7 @@ import Web3
 import WalletConnectSwift
 
 protocol WalletConnectServiceProtocol {
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler) // TODO: - WC Remove
+    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) 
     func reconnectExistingSessions()
     
     func disconnect(app: WCConnectedAppsStorage.ConnectedApp) async
@@ -54,8 +54,11 @@ final class WalletConnectServiceListenerHolder: Equatable {
     
 }
 
-protocol WalletConnectUIHandler: AnyObject {
+protocol WalletConnectUIConfirmationHandler: AnyObject {
     @discardableResult
     func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectService.ConnectionUISettings
+}
+
+protocol WalletConnectUIErrorHandler: AnyObject {
     func didFailToConnect(with error: WalletConnectRequestError) async
 }

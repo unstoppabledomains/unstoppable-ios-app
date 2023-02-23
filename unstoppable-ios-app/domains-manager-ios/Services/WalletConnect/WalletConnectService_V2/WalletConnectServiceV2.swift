@@ -48,7 +48,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     var delegate: WalletConnectDelegate? { get set }
     
     func getWCV2Request(for code: QRCode) throws -> WalletConnectURI
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler) // TODO: - WC Remove
+    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler)
     func setWalletUIHandler(_ walletUiHandler: WalletConnectClientUIHandler)
     func getConnectedApps() async -> [UnifiedConnectAppInfo]
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
@@ -100,7 +100,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     private var publishers = [AnyCancellable]()
     
-    weak var uiHandler: WalletConnectUIHandler?
+    weak var uiHandler: WalletConnectUIConfirmationHandler?
     private weak var walletsUiHandler: WalletConnectClientUIHandler?
     
     var intentsStorage: WCConnectionIntentStorage { WCConnectionIntentStorage.shared }
@@ -141,7 +141,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         }
     }
     
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
+    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) {
         self.uiHandler = uiHandler
     }
     
@@ -1076,7 +1076,7 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
         []
     }
     
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
+    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) {
         
     }
     

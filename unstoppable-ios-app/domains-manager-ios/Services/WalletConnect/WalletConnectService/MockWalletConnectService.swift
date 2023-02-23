@@ -31,7 +31,7 @@ extension MockWalletConnectService: WalletConnectServiceProtocol {
         []
     }
     
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
+    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) {
         
     }
     func connectAsync(to requestURL: WCURL) { }

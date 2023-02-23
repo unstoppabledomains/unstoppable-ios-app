@@ -22,7 +22,7 @@ typealias WC2ConnectionProposal = WalletConnectSign.Session.Proposal
 
 protocol WCRequestsHandlingServiceProtocol {
     func handleWCRequest(_ request: WCRequest, target: (UDWallet, DomainItem)) async throws
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler)
+    func setUIHandler(_ uiHandler: WalletConnectUIErrorHandler)
     func addListener(_ listener: WalletConnectServiceConnectionListener)
     func removeListener(_ listener: WalletConnectServiceConnectionListener)
 }
@@ -32,7 +32,7 @@ final class WCRequestsHandlingService {
     private var walletConnectServiceV1: WalletConnectV1RequestHandlingServiceProtocol
     private var walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol
     private var listeners: [WalletConnectServiceListenerHolder] = []
-    private weak var uiHandler: WalletConnectUIHandler?
+    private weak var uiHandler: WalletConnectUIErrorHandler?
     private var requests: [UnifiedWCRequest] = []
     private var isHandlingRequest = false
     private var publishers = [AnyCancellable]() // For WC2
@@ -78,7 +78,7 @@ extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
         }
     }
    
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
+    func setUIHandler(_ uiHandler: WalletConnectUIErrorHandler) {
         self.uiHandler = uiHandler
     }
     

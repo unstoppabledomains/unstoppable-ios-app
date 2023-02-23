@@ -12,7 +12,7 @@ final class MockWCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
         
     }
     
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
+    func setUIHandler(_ uiHandler: WalletConnectUIErrorHandler) {
         
     }
     

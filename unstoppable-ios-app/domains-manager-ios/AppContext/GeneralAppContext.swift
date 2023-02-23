@@ -58,6 +58,8 @@ final class GeneralAppContext: AppContextProtocol {
         
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
+        walletConnectService.setUIHandler(coreAppCoordinator)
+        walletConnectServiceV2.setUIHandler(coreAppCoordinator)
      
         
         dataAggregatorService = DataAggregatorService(domainsService: udDomainsService,
