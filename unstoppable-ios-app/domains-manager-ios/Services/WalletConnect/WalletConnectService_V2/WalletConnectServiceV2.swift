@@ -59,7 +59,6 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func getConnectedApps() async -> [UnifiedConnectAppInfo]
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
     func disconnectAppsForAbsentDomains(from: [DomainItem])
-    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
     
     func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy]
     
@@ -76,10 +75,12 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
 
 protocol WalletConnectV2RequestHandlingServiceProtocol {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
+    var willHandleRequestCallback: EmptyCallback? { get set }
 
     func pairClient(uri: WalletConnectURI) async throws
     func handleConnectionProposal( _ proposal: WC2ConnectionProposal, completion: @escaping WCConnectionResultCompletion)
-    
+    func connectionTimeout()
+
     func handlePersonalSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleEthSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleSignTx(request: WalletConnectSign.Request) async throws -> [WalletConnectSign.RPCResult]
@@ -121,6 +122,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     var pendingRequest: WalletConnectSign.Request?
     var callback: ((ResponseV2)->Void)?
     var appDisconnectedCallback: WCAppDisconnectedCallback?
+    var willHandleRequestCallback: EmptyCallback?
     private var connectionCompletion: WCConnectionResultCompletion?
 
     init(udWalletsService: UDWalletsServiceProtocol) {
@@ -215,15 +217,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         appDisconnectedCallback?(PushSubscriberInfo(appV2: toDisconnect))
     }
     
-    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
-        guard connectedApp.isV2dApp else {
-            appContext.walletConnectService.expectConnection(from: connectedApp)
-            return
-        }
-        
-        // TODO: - Figure out timeout system for WC2
-    }
-    
     private func _disconnect(session: SessionV2) async throws {
         try await Sign.instance.disconnect(topic: session.topic)
     }
@@ -286,10 +279,11 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             Debugger.printInfo(topic: .WallectConnectV2, "DApp requires more networks than our app supports")
             throw WalletConnectRequestError.networkNotSupported
         }
-        guard let uiHandler = self.uiHandler else {
+        guard let uiHandler = self.uiHandler else { //
             Debugger.printFailure("UI Handler is not set", critical: true)
             throw WalletConnectRequestError.uiHandlerNotSet
         }
+        willHandleRequestCallback?()
         
         let uiConfig: WCRequestUIConfiguration
         if let connectionIntent = intentsStorage.retrieveIntents().first {
@@ -323,6 +317,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     func reportConnectionCompletion(result: WCConnectionResult) {
+        pendingProposal = nil
         connectionCompletion?(result)
         connectionCompletion = nil
     }
@@ -522,6 +517,10 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 completion(.failure(error))
             }
         }
+    }
+    
+    func connectionTimeout() {
+        reportConnectionAttempt(with: WalletConnectRequestError.connectionTimeout)
     }
     
     func sendResponse(_ response: WalletConnectSign.RPCResult, toRequest request: WalletConnectSign.Request) async throws {
@@ -780,7 +779,7 @@ extension WalletConnectServiceV2 {
         let udWallet = try detectWallet(by: address)
         
         if udWallet.walletState != .externalLinked {
-            guard let uiHandler = self.uiHandler else {
+            guard let uiHandler = self.uiHandler else { //
                 Debugger.printFailure("UI Handler is not set", critical: true)
                 throw WalletConnectRequestError.uiHandlerNotSet
             }
@@ -1097,10 +1096,7 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     func pairClientAsync(uri: WalletConnectUtils.WalletConnectURI) {
         
     }
-    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
-        
-    }
-    
+   
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType {
         return .oldPairing
     }

@@ -67,21 +67,21 @@ final class GeneralAppContext: AppContextProtocol {
                                                       transactionsService: domainTransactionsService,
                                                       walletConnectServiceV2: walletConnectServiceV2)
         
-        externalEventsService = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
-                                                      dataAggregatorService: dataAggregatorService,
-                                                      udWalletsService: udWalletsService,
-                                                      walletConnectServiceV2: walletConnectServiceV2)
-        
-        let deepLinksService = DeepLinksService(externalEventsService: externalEventsService,
-                                                coreAppCoordinator: coreAppCoordinator)
-        self.deepLinksService = deepLinksService
-        
-        deepLinksService.addListener(coreAppCoordinator)
-        
         
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
                                                               walletConnectServiceV2: walletConnectServiceV2)
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
+        
+        externalEventsService = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
+                                                      dataAggregatorService: dataAggregatorService,
+                                                      udWalletsService: udWalletsService,
+                                                      walletConnectServiceV2: walletConnectServiceV2,
+                                                      walletConnectRequestsHandlingService: wcRequestsHandlingService)
+        
+        let deepLinksService = DeepLinksService(externalEventsService: externalEventsService,
+                                                coreAppCoordinator: coreAppCoordinator)
+        self.deepLinksService = deepLinksService
+        deepLinksService.addListener(coreAppCoordinator)
         wcRequestsHandlingService.addListener(deepLinksService)
         
         notificationsService = NotificationsService(externalEventsService: externalEventsService,

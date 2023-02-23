@@ -51,10 +51,6 @@ extension MockWalletConnectService: WalletConnectServiceProtocol {
         
     }
     
-    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
-        
-    }
-    
     func didRemove(wallet: UDWallet) {
         
     }

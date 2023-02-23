@@ -61,6 +61,7 @@ final class ExternalEventsService {
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let udWalletsService: UDWalletsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
+    private let walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol
     private var receiveEventCompletion: EmptyCallback?
     private var processingEvent: ExternalEvent?
     private let eventsStorage = ExternalEventsStorage.shared
@@ -69,11 +70,13 @@ final class ExternalEventsService {
     init(coreAppCoordinator: CoreAppCoordinatorProtocol,
          dataAggregatorService: DataAggregatorServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectServiceV2: WalletConnectServiceV2Protocol) {
+         walletConnectServiceV2: WalletConnectServiceV2Protocol,
+         walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol) {
         self.coreAppCoordinator = coreAppCoordinator
         self.dataAggregatorService = dataAggregatorService
         self.udWalletsService = udWalletsService
         self.walletConnectServiceV2 = walletConnectServiceV2
+        self.walletConnectRequestsHandlingService = walletConnectRequestsHandlingService
     }
 }
 
@@ -210,13 +213,8 @@ private extension ExternalEventsService {
             try await appContext.wcRequestsHandlingService.handleWCRequest(request, target: target)
             
             return .showPullUpLoading
-        case .walletConnectRequest(let dAppName, _):
-            let apps = await walletConnectServiceV2.getConnectedApps()
-            guard let connectedApp = apps.first(where: { $0.appName == dAppName }) else {
-                throw EventsHandlingError.cantFindConnectedApp
-            }
-
-            walletConnectServiceV2.expectConnection(from: connectedApp)
+        case .walletConnectRequest:
+            walletConnectRequestsHandlingService.expectConnection()
             return .showPullUpLoading
         }
     }

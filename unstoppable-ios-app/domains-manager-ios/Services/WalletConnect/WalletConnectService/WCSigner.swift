@@ -16,10 +16,12 @@ typealias WCAppDisconnectedCallback = ((PushSubscriberInfo?)->())
 
 protocol WalletConnectV1RequestHandlingServiceProtocol {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
+    var willHandleRequestCallback: EmptyCallback? { get set }
     
     func registerRequestHandler(_ requestHandler: RequestHandler)
     func connectAsync(to requestURL: WCURL, completion: @escaping WCConnectionResultCompletion)
     func sendResponse(_ response: Response)
+    func connectionTimeout()
     
     func handlePersonalSign(request: Request) async throws -> Response
     func handleSignTx(request: Request) async throws -> Response

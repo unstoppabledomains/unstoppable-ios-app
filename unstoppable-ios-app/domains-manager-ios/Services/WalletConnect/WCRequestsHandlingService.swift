@@ -25,6 +25,7 @@ protocol WCRequestsHandlingServiceProtocol {
     func setUIHandler(_ uiHandler: WalletConnectUIErrorHandler)
     func addListener(_ listener: WalletConnectServiceConnectionListener)
     func removeListener(_ listener: WalletConnectServiceConnectionListener)
+    func expectConnection()
 }
 
 final class WCRequestsHandlingService {
@@ -36,6 +37,7 @@ final class WCRequestsHandlingService {
     private var requests: [UnifiedWCRequest] = []
     private var isHandlingRequest = false
     private var publishers = [AnyCancellable]() // For WC2
+    private var timeoutWorkItem: DispatchWorkItem?
 
     init(walletConnectServiceV1: WalletConnectV1RequestHandlingServiceProtocol,
          walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol) {
@@ -91,11 +93,16 @@ extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
     func removeListener(_ listener: WalletConnectServiceConnectionListener) {
         listeners.removeAll(where: { $0.listener == nil || $0.listener === listener })
     }
+    
+    func expectConnection() {
+        startConnectionTimeout()
+    }
 }
 
 // MARK: - WalletConnectV1SignTransactionHandlerDelegate
 extension WCRequestsHandlingService: WalletConnectV1SignTransactionHandlerDelegate {
     fileprivate func wcV1SignHandlerWillHandleRequest(_  request: WCRPCRequestV1, ofType requestType: WalletConnectRequestType) {
+        stopConnectionTimeout()
         addNewRequest(.rpcRequestV1(request, type: requestType))
     }
 }
@@ -136,9 +143,7 @@ private extension WCRequestsHandlingService {
     }
     
     func handleConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest) async {
-        // TODO: - Connection timeout
-        //                await expectedRequestsManager.add(requestURL: requestURL)
-        //                startConnectionTimeout(for: requestURL)
+        startConnectionTimeout()
         if case let .version1(requestURL) = request  {
             await handleV1ConnectionRequestURL(requestURL)
         }
@@ -269,6 +274,7 @@ private extension WCRequestsHandlingService {
     }
     
     func commonHandleError(error: Error) async {
+        stopConnectionTimeout()
         if let error = error as? WalletConnectRequestError {
             await uiHandler?.didFailToConnect(with: error)
         } else if let _ = error as? WalletConnectUIError {
@@ -282,6 +288,29 @@ private extension WCRequestsHandlingService {
         requests.removeAll(where: { $0 == request })
         isHandlingRequest = false
         handleNextRequest()
+    }
+}
+
+// MARK: - Connection timeout
+private extension WCRequestsHandlingService {
+    /// Starting connection timeout automatically only for connect requests, because they're async.
+    /// Sign requests always processed immediately and don't need timeout.
+    /// In case when we sign request is expected from deep link or notification, expectConnection() should be called from corresponding service.
+    
+    func startConnectionTimeout() {
+        timeoutWorkItem?.cancel()
+        let timeoutWorkItem = DispatchWorkItem { [weak self] in
+            self?.walletConnectServiceV1.connectionTimeout()
+            self?.walletConnectServiceV2.connectionTimeout()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.wcConnectionTimeout,
+                                      execute: timeoutWorkItem)
+        self.timeoutWorkItem = timeoutWorkItem
+    }
+    
+    func stopConnectionTimeout() {
+        timeoutWorkItem?.cancel()
+        timeoutWorkItem = nil
     }
 }
 
@@ -319,6 +348,7 @@ private extension WCRequestsHandlingService {
         registerV2ProposalHandler()
         registerV2RequestHandlers()
         registerDisconnectCallbacks()
+        registerWillHandleRequestCallbacks()
     }
     
     func registerV1RequestHandlers() {
@@ -347,6 +377,7 @@ private extension WCRequestsHandlingService {
                 Debugger.printInfo(topic: .WallectConnectV2, "Did receive session request, method: \(methodString)")
                 let requestType = WalletConnectRequestType(rawValue: methodString)
                 
+                self?.stopConnectionTimeout()
                 self?.addNewRequest(.rpcRequestV2(sessionRequest, type: requestType))
             }.store(in: &publishers)
     }
@@ -354,6 +385,11 @@ private extension WCRequestsHandlingService {
     func registerDisconnectCallbacks() {
         walletConnectServiceV1.appDisconnectedCallback = { [weak self] app in self?.notifyDidDisconnect(from: app) }
         walletConnectServiceV2.appDisconnectedCallback = { [weak self] app in self?.notifyDidDisconnect(from: app) }
+    }
+    
+    func registerWillHandleRequestCallbacks() {
+        walletConnectServiceV1.willHandleRequestCallback = { [weak self] in self?.stopConnectionTimeout() }
+        walletConnectServiceV2.willHandleRequestCallback = { [weak self] in self?.stopConnectionTimeout() }
     }
 }
 
