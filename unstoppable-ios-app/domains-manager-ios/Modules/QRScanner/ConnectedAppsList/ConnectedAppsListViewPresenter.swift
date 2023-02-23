@@ -140,10 +140,7 @@ private extension ConnectedAppsListViewPresenter {
             case .networksInfo:
                 await appContext.pullUpViewService.showConnectedAppNetworksInfoPullUp(in: view)
             case .disconnect:
-                switch app.appInfo.dAppInfoInternal {
-                case .version1(let session): walletConnectService.disconnect(peerId: session.dAppInfo.peerId)
-                case .version2(_): try await walletConnectServiceV2.disconnect(app: app)
-                }
+                try await walletConnectServiceV2.disconnect(app: app)
             }
         }
     }
