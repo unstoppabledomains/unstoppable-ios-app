@@ -70,7 +70,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
             //TODO: If the error == WalletConnectError.failedOpenExternalApp
             // the mobile wallet app may have been deleted
             
-            Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: true)
+            Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)
             throw error
         }
         return Response.signature(sig, for: request)
