@@ -101,7 +101,7 @@ extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
 
 // MARK: - WalletConnectV1SignTransactionHandlerDelegate
 extension WCRequestsHandlingService: WalletConnectV1SignTransactionHandlerDelegate {
-    fileprivate func wcV1SignHandlerWillHandleRequest(_  request: WCRPCRequestV1, ofType requestType: WalletConnectRequestType) {
+    func wcV1SignHandlerWillHandleRequest(_  request: WalletConnectSwift.Request, ofType requestType: WalletConnectRequestType) {
         stopConnectionTimeout()
         addNewRequest(.rpcRequestV1(request, type: requestType))
     }
@@ -401,30 +401,6 @@ private extension WCRequestsHandlingService {
         case rpcRequestV1(_ request: WCRPCRequestV1, type: WalletConnectRequestType)
         case rpcRequestV2(_ request: WCRPCRequestV2, type: WalletConnectRequestType?)
     }
-    
-    final class WalletConnectV1SignTransactionHandler: RequestHandler {
-        
-        let requestType: WalletConnectRequestType
-        weak var delegate: WalletConnectV1SignTransactionHandlerDelegate?
-        
-        init(requestType: WalletConnectRequestType,
-             delegate: WalletConnectV1SignTransactionHandlerDelegate) {
-            self.requestType = requestType
-            self.delegate = delegate
-        }
-        
-        func canHandle(request: WCRPCRequestV1) -> Bool {
-            return request.method == requestType.rawValue
-        }
-    
-        func handle(request: WCRPCRequestV1) {
-            delegate?.wcV1SignHandlerWillHandleRequest(request, ofType: requestType)
-        }
-    }
-}
-
-fileprivate protocol WalletConnectV1SignTransactionHandlerDelegate: AnyObject {
-    func wcV1SignHandlerWillHandleRequest(_  request: WCRPCRequestV1, ofType requestType: WalletConnectRequestType)
 }
 
 extension WCRPCRequestV1: Equatable {
