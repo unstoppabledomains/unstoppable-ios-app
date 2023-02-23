@@ -71,7 +71,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
 protocol WalletConnectV2RequestHandlingServiceProtocol {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
 
-    func pairClientAsync(uri: WalletConnectURI, completion: @escaping WCConnectionResultCompletion)
+    func pairClient(uri: WalletConnectURI) async throws
     func handleConnectionProposal( _ proposal: WC2ConnectionProposal, completion: @escaping WCConnectionResultCompletion)
     
     func handlePersonalSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
@@ -351,7 +351,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                             self?.handleWalletDisconnection(walletAddress: walletAddress)
                         })
                     } else {
-                        Debugger.printFailure("Topic disconnected that was not in cache :\(topic)", critical: true)
+                        Debugger.printFailure("Topic disconnected that was not in cache :\(topic)", critical: false)
                         return
                     }
                 }
@@ -397,9 +397,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     private func handleConnection(session: SessionV2,
-                                       with connectionIntent: WCConnectionIntentStorage.Intent) {
+                                  with connectionIntent: WCConnectionIntentStorage.Intent) {
         guard let namespace = connectionIntent.requiredNamespaces,
-        let appData = connectionIntent.appData else {
+              let appData = connectionIntent.appData else {
             Debugger.printFailure("No namespace found", critical: true)
             return
         }
@@ -467,7 +467,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         Task {
             do {
                 try await Sign.instance.approve(proposalId: proposalId, namespaces: namespaces)
-                reportConnectionCompletion(result: .success(nil)) // TODO: WC - Check if able to get subs info
             } catch {
                 Debugger.printFailure("[WC_2] DApp Failed to Approve Session error: \(error)", critical: true)
                 self.reportConnectionAttempt(with: WalletConnectRequestError.failedConnectionRequest)
@@ -486,17 +485,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 // MARK: - WalletConnectV2RequestHandlingServiceProtocol
 extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol {
     @MainActor
-    internal func pairClientAsync(uri: WalletConnectURI, completion: @escaping WCConnectionResultCompletion) {
+    internal func pairClient(uri: WalletConnectURI) async throws {
         Debugger.printInfo(topic: .WallectConnectV2, "[WALLET] Pairing to: \(uri)")
-        Task {
-            do {
-                try await Pair.instance.pair(uri: uri)
-                self.connectionCompletion = completion
-            } catch {
-                Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: true)
-                completion(.failure(WalletConnectRequestError.failedConnectionRequest))
-            }
-        }
+        try await Pair.instance.pair(uri: uri)
     }
     
     func handleConnectionProposal(_ proposal: WC2ConnectionProposal, completion: @escaping WCConnectionResultCompletion) {

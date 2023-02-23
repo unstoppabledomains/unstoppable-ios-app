@@ -139,8 +139,18 @@ private extension WCRequestsHandlingService {
         // TODO: - Connection timeout
         //                await expectedRequestsManager.add(requestURL: requestURL)
         //                startConnectionTimeout(for: requestURL)
+        if case let .version1(requestURL) = request  {
+            await handleV1ConnectionRequestURL(requestURL)
+        }
+        
+        if case let .version2(uri) = request  {
+            await handleV2ConnectionRequestURI(uri)
+        }
+    }
+    
+    func handleV1ConnectionRequestURL(_ requestURL: WalletConnectSwift.WCURL) async {
         await withSafeCheckedContinuation({ [weak self] completion in
-            sendConnectionRequest(request) { result in
+            walletConnectServiceV1.connectAsync(to: requestURL) { result in
                 guard let self else { return }
                 
                 Task {
@@ -158,16 +168,15 @@ private extension WCRequestsHandlingService {
         })
     }
     
-    func sendConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest, completion: @escaping WCConnectionResultCompletion) {
-        if case let .version1(requestURL) = request  {
-            walletConnectServiceV1.connectAsync(to: requestURL, completion: completion)
-        }
-        
-        if case let .version2(uri) = request  {
-            walletConnectServiceV2.pairClientAsync(uri: uri, completion: completion)
+    func handleV2ConnectionRequestURI(_ requestURI: WalletConnectSign.WalletConnectURI) async {
+        do {
+            try await walletConnectServiceV2.pairClient(uri: requestURI) /// It will create proposal request and call `handleConnectionProposal` when ready
+        } catch {
+            Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: true)
+            await handleConnectionFailed(error: error)
         }
     }
-    
+
     func handleConnectionProposal(_ proposal: WC2ConnectionProposal) async {
         await withSafeCheckedContinuation({ [weak self] completion in
             walletConnectServiceV2.handleConnectionProposal(proposal) { result in
