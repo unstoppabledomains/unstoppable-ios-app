@@ -77,7 +77,7 @@ extension WCRequestsHandlingServiceTests {
     }
     
     func testWCV1ConnectionRequestUserCancelled() async throws {
-        try await makeWC1RequestWith(result: .failure(WalletConnectUIError.cancelled))
+        try await makeWC1RequestWith(result: .failure(uiCancelledError))
         
         // Check listeners notified correctly
         XCTAssertFalse(mockListener.didConnectCalled)
@@ -86,14 +86,41 @@ extension WCRequestsHandlingServiceTests {
         XCTAssertFalse(mockListener.didHandleExternalWCRequestWith)
         XCTAssertFalse(mockUIErrorHandler.didFailToConnect)
     }
-    
+        
     // MARK: - V1 Sign tests
-    func testWC1SignRequestHandled() async throws {
+    private func makeWC1SignRequest() async throws {
         verifyInitialState()
         
         callWC1Handler(requestType: .personalSign)
         try await waitFor(interval: 0.1)
-        
+    }
+
+    func testWC1SignRequestHandled() async throws {
+        try await makeWC1SignRequest()
+        XCTAssertEqual(1, mockWCServiceV1.responseSentCount)
+        XCTAssertEqual(0, mockWCServiceV2.responseSentCount)
+        XCTAssertTrue(mockListener.didHandleExternalWCRequestWith)
+        XCTAssertFalse(mockListener.didConnectCalled)
+        XCTAssertFalse(mockListener.didDisconnectCalled)
+        XCTAssertFalse(mockListener.didCompletionAttemptCalled)
+        XCTAssertFalse(mockUIErrorHandler.didFailToConnect)
+    }
+    
+    func testWC1SignRequestFailed() async throws {
+        mockWCServiceV1.errorToFail = WalletConnectRequestError.failedConnectionRequest
+        try await makeWC1SignRequest()
+        XCTAssertEqual(1, mockWCServiceV1.responseSentCount)
+        XCTAssertEqual(0, mockWCServiceV2.responseSentCount)
+        XCTAssertTrue(mockListener.didHandleExternalWCRequestWith)
+        XCTAssertFalse(mockListener.didConnectCalled)
+        XCTAssertFalse(mockListener.didDisconnectCalled)
+        XCTAssertFalse(mockListener.didCompletionAttemptCalled)
+        XCTAssertTrue(mockUIErrorHandler.didFailToConnect)
+    }
+    
+    func testWC1SignRequestCancelled() async throws {
+        mockWCServiceV1.errorToFail = uiCancelledError
+        try await makeWC1SignRequest()
         XCTAssertEqual(1, mockWCServiceV1.responseSentCount)
         XCTAssertEqual(0, mockWCServiceV2.responseSentCount)
         XCTAssertTrue(mockListener.didHandleExternalWCRequestWith)
@@ -148,7 +175,7 @@ extension WCRequestsHandlingServiceTests {
     }
     
     func testWCV2ConnectionRequestUserCancelled() async throws {
-        try await makeWC2RequestWith(result: .failure(WalletConnectUIError.cancelled))
+        try await makeWC2RequestWith(result: .failure(uiCancelledError))
         
         // Check listeners notified correctly
         XCTAssertFalse(mockListener.didConnectCalled)
@@ -159,12 +186,39 @@ extension WCRequestsHandlingServiceTests {
     }
     
     // MARK: - V2 Sign tests
-    func testWC2SignRequestHandled() async throws {
+    private func makeWC2SignRequest() async throws {
         verifyInitialState()
         
         callWC2Handler(requestType: .personalSign)
         try await waitFor(interval: 0.1)
-        
+    }
+    
+    func testWC2SignRequestHandled() async throws {
+        try await makeWC2SignRequest()
+        XCTAssertEqual(0, mockWCServiceV1.responseSentCount)
+        XCTAssertEqual(1, mockWCServiceV2.responseSentCount)
+        XCTAssertTrue(mockListener.didHandleExternalWCRequestWith)
+        XCTAssertFalse(mockListener.didConnectCalled)
+        XCTAssertFalse(mockListener.didDisconnectCalled)
+        XCTAssertFalse(mockListener.didCompletionAttemptCalled)
+        XCTAssertFalse(mockUIErrorHandler.didFailToConnect)
+    }
+    
+    func testWC2SignRequestFailed() async throws {
+        mockWCServiceV2.errorToFail = WalletConnectRequestError.failedConnectionRequest
+        try await makeWC2SignRequest()
+        XCTAssertEqual(0, mockWCServiceV1.responseSentCount)
+        XCTAssertEqual(1, mockWCServiceV2.responseSentCount)
+        XCTAssertTrue(mockListener.didHandleExternalWCRequestWith)
+        XCTAssertFalse(mockListener.didConnectCalled)
+        XCTAssertFalse(mockListener.didDisconnectCalled)
+        XCTAssertFalse(mockListener.didCompletionAttemptCalled)
+        XCTAssertTrue(mockUIErrorHandler.didFailToConnect)
+    }
+    
+    func testWC2SignRequestCancelled() async throws {
+        mockWCServiceV2.errorToFail = uiCancelledError
+        try await makeWC2SignRequest()
         XCTAssertEqual(0, mockWCServiceV1.responseSentCount)
         XCTAssertEqual(1, mockWCServiceV2.responseSentCount)
         XCTAssertTrue(mockListener.didHandleExternalWCRequestWith)
@@ -176,6 +230,8 @@ extension WCRequestsHandlingServiceTests {
 }
 // MARK: - Private methods
 private extension WCRequestsHandlingServiceTests {
+    var uiCancelledError: Error { WalletConnectUIError.cancelled }
+    
     func verifyInitialState() {
         XCTAssertNil(mockWCServiceV1.completion)
         XCTAssertNil(mockWCServiceV2.completion)
