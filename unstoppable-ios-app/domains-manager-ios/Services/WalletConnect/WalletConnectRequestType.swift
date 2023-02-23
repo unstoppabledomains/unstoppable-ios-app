@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum WalletConnectRequestType: String, CaseIterable {
+enum WalletConnectRequestType: String, CaseIterable, Hashable {
     case personalSign = "personal_sign"
     case ethSign = "eth_sign"
     case ethSignTransaction = "eth_signTransaction"

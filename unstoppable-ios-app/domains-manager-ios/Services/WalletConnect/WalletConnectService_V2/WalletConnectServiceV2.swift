@@ -908,7 +908,7 @@ extension AnyCodable {
 }
 
 extension WalletConnectService {
-    enum ConnectWalletRequest {
+    enum ConnectWalletRequest: Equatable {
         case version1 (WCURL)
         case version2 (WalletConnectURI)
     }

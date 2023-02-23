@@ -132,7 +132,7 @@ private extension WCRequestsHandlingService {
         case .rpcRequestV2(let request, let type):
             await handleRPCRequestV2(request, requestType: type)
         }
-        didFinishRequestHandling()
+        didFinishHandlingOf(request: request)
     }
     
     func handleConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest) async {
@@ -271,8 +271,8 @@ private extension WCRequestsHandlingService {
         }
     }
     
-    func didFinishRequestHandling() {
-        requests.removeFirst()
+    func didFinishHandlingOf(request: UnifiedWCRequest) {
+        requests.removeAll(where: { $0 == request })
         isHandlingRequest = false
         handleNextRequest()
     }
@@ -352,7 +352,7 @@ private extension WCRequestsHandlingService {
 
 // MARK: - Private entities
 private extension WCRequestsHandlingService {
-    enum UnifiedWCRequest {
+    enum UnifiedWCRequest: Equatable {
         case connectionRequest(_ request: WalletConnectService.ConnectWalletRequest)
         case connectionProposal(_ proposal: WC2ConnectionProposal)
         case rpcRequestV1(_ request: WCRPCRequestV1, type: WalletConnectRequestType)
@@ -383,4 +383,30 @@ private extension WCRequestsHandlingService {
 
 fileprivate protocol WalletConnectV1SignTransactionHandlerDelegate: AnyObject {
     func wcV1SignHandlerWillHandleRequest(_  request: WCRPCRequestV1, ofType requestType: WalletConnectRequestType)
+}
+
+extension WCRPCRequestV1: Equatable {
+    public static func == (lhs: WalletConnectSwift.Request, rhs: WalletConnectSwift.Request) -> Bool {
+        if let lhsStr = lhs.id as? Int,
+           let rhsStr = rhs.id as? Int {
+            return lhsStr == rhsStr
+        }
+        if let lhsStr = lhs.id as? Double,
+           let rhsStr = rhs.id as? Double {
+            return lhsStr == rhsStr
+        }
+        if let lhsStr = lhs.id as? String,
+           let rhsStr = rhs.id as? String {
+            return lhsStr == rhsStr
+        }
+        return false
+    }
+    
+//    public static func == (lhs: WCRPCRequestV1, rhs: WCRPCRequestV1) -> Bool {
+//        if let lhsStr = lhs.id as? String,
+//           let rhsStr = rhs.id as? String {
+//            return lhsStr == rhsStr
+//        }
+//        lhs.url == rhs.url && lhs.method == rhs.method && lhs.internalID == rhs.internalID
+//    }
 }
