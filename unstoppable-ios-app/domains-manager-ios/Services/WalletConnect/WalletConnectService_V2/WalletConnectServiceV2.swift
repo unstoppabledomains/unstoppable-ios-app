@@ -76,6 +76,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
 protocol WalletConnectV2RequestHandlingServiceProtocol {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
     var willHandleRequestCallback: EmptyCallback? { get set }
+    var publishersProvider: WalletConnectV2PublishersProvider { get }
 
     func pairClient(uri: WalletConnectURI) async throws
     func handleConnectionProposal( _ proposal: WC2ConnectionProposal, completion: @escaping WCConnectionResultCompletion)
@@ -92,6 +93,13 @@ protocol WalletConnectV2RequestHandlingServiceProtocol {
     func sendResponse(_ response: WalletConnectSign.RPCResult, toRequest request: WalletConnectSign.Request) async throws
 }
 
+protocol WalletConnectV2PublishersProvider {
+    var sessionProposalPublisher: AnyPublisher<WalletConnectSign.Session.Proposal, Never> { get }
+    var sessionRequestPublisher: AnyPublisher<WalletConnectSign.Request, Never> { get }
+}
+extension WalletConnectSign.SignClient: WalletConnectV2PublishersProvider { }
+
+
 typealias SessionV2 = WalletConnectSign.Session
 typealias ResponseV2 = WalletConnectSign.Response
 
@@ -106,7 +114,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     let walletStorageV2 = WCClientConnectionsV2()
     var appsStorageV2: WCConnectedAppsStorageV2 { WCConnectedAppsStorageV2.shared }
-
+    var publishersProvider: WalletConnectV2PublishersProvider { Sign.instance }
     
     private var publishers = [AnyCancellable]()
     

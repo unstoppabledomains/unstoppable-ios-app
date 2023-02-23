@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import Combine
 import XCTest
 @testable import domains_manager_ios
 
@@ -40,7 +40,7 @@ final class WCRequestsHandlingServiceTests: BaseTestClass {
     
     func testWCV1ConnectionRequestHandled() async throws {
         verifyInitialState()
-        try await wcRequestsHandlingService.handleWCRequest(wcV1ConnectionRequest(), target: getConnectionTarget())
+        try await wcRequestsHandlingService.handleWCRequest(getWCV1ConnectionRequest(), target: getConnectionTarget())
         try await waitFor(interval: 0.1)
         
         // Check request passed to service
@@ -50,6 +50,30 @@ final class WCRequestsHandlingServiceTests: BaseTestClass {
         mockWCServiceV1.callCompletion(result: .success(nil))
         
         // Check listeners notified correctly
+        try await waitFor(interval: 0.1)
+        XCTAssertTrue(mockListener.didConnectCalled)
+        XCTAssertFalse(mockListener.didDisconnectCalled)
+        XCTAssertFalse(mockListener.didCompletionAttemptCalled)
+    }
+    
+    func testWCV2ConnectionRequestHandled() async throws {
+        verifyInitialState()
+        try await wcRequestsHandlingService.handleWCRequest(getWCV2ConnectionRequest(), target: getConnectionTarget())
+        try await waitFor(interval: 0.1)
+        
+        // Check request is not passed to any service, waiting for WC2 publisher
+        XCTAssertNil(mockWCServiceV2.completion)
+        XCTAssertNil(mockWCServiceV1.completion)
+        
+        mockWCServiceV2.pSessionProposalPublisher.send(getWC2SessionProposal())
+        try await waitFor(interval: 0.1)
+        XCTAssertNotNil(mockWCServiceV2.completion)
+        XCTAssertNil(mockWCServiceV1.completion)
+        
+        mockWCServiceV2.callCompletion(result: .success(nil))
+        
+        // Check listeners notified correctly
+        try await waitFor(interval: 0.1)
         XCTAssertTrue(mockListener.didConnectCalled)
         XCTAssertFalse(mockListener.didDisconnectCalled)
         XCTAssertFalse(mockListener.didCompletionAttemptCalled)
@@ -71,16 +95,59 @@ final class WCRequestsHandlingServiceTests: BaseTestClass {
 
 // MARK: - Private methods
 private extension WCRequestsHandlingServiceTests {
-    func wcV1URL() -> WalletConnectSwift.WCURL {
+    func getWCV1URL() -> WalletConnectSwift.WCURL {
         .init(topic: "topic", bridgeURL: URL(string: "https://g.com")!, key: "key")
     }
     
-    func wcV1ConnectionRequest() -> WCRequest {
-        WCRequest.connectWallet(.version1(wcV1URL()))
+    func getWCV1ConnectionRequest() -> WCRequest {
+        WCRequest.connectWallet(.version1(getWCV1URL()))
     }
     
     func getConnectionTarget() -> (UDWallet, DomainItem) {
         (createLocallyGeneratedBackedUpUDWallet(), createMockDomainItem())
+    }
+    
+    func getWCV2URI() -> WalletConnectSign.WalletConnectURI {
+        .init(topic: "topic", symKey: "symKey", relay: .init(protocol: "", data: nil))
+    }
+    
+    func getWCV2ConnectionRequest() -> WCRequest {
+        WCRequest.connectWallet(.version2(getWCV2URI()))
+    }
+    
+    func getWC2SessionProposal() -> WalletConnectSign.Session.Proposal {
+        // Workaround due to no public initializer for Proposal struct in WC SDK
+        struct ProposalClone: Codable {
+            var id: String
+            let pairingTopic: String
+            let proposer: WalletConnectSign.AppMetadata
+            let requiredNamespaces: [String: WalletConnectSign.ProposalNamespace]
+            let proposal: SessionProposalClone
+        }
+        struct SessionProposalClone: Codable {
+            let relays: [RelayProtocolOptions]
+            let proposer: ParticipantClone
+            let requiredNamespaces: [String: ProposalNamespace]
+        }
+        struct ParticipantClone: Codable {
+            let publicKey: String
+            let metadata: WalletConnectSign.AppMetadata
+        }
+        
+        let appMetaData = WalletConnectSign.AppMetadata(name: "name", description: "des", url: "https://g.com", icons: [])
+        let participantClone = ParticipantClone(publicKey: "key", metadata: appMetaData)
+        let sessionProposalClone = SessionProposalClone(relays: [],
+                                                        proposer: participantClone,
+                                                        requiredNamespaces: [:])
+        let proposalClone = ProposalClone(id: "id",
+                                          pairingTopic: "topic",
+                                          proposer: appMetaData,
+                                          requiredNamespaces: [:],
+                                          proposal: sessionProposalClone)
+        let data = proposalClone.jsonData()!
+        
+        let proposal: WalletConnectSign.Session.Proposal = WalletConnectSign.Session.Proposal.genericObjectFromData(data)!
+        return proposal
     }
 }
 
@@ -152,7 +219,13 @@ private final class MockWCServiceV1: WalletConnectV1RequestHandlingServiceProtoc
     }
 }
 
-private final class MockWCServiceV2: WalletConnectV2RequestHandlingServiceProtocol {
+private final class MockWCServiceV2: WalletConnectV2RequestHandlingServiceProtocol, WalletConnectV2PublishersProvider {
+    
+    private(set) var pSessionProposalPublisher = PassthroughSubject<WalletConnectSign.Session.Proposal, Never>()
+    var sessionProposalPublisher: AnyPublisher<WalletConnectSign.Session.Proposal, Never> { pSessionProposalPublisher.eraseToAnyPublisher() }
+    
+    private(set) var pSessionRequestPublisher = PassthroughSubject<WalletConnectSign.Request, Never>()
+    var sessionRequestPublisher: AnyPublisher<WalletConnectSign.Request, Never> { pSessionRequestPublisher.eraseToAnyPublisher() }
     
     // Mock properties
     var errorToFail: Error?
@@ -167,8 +240,8 @@ private final class MockWCServiceV2: WalletConnectV2RequestHandlingServiceProtoc
     
     // WalletConnectV2RequestHandlingServiceProtocol properties
     var appDisconnectedCallback: domains_manager_ios.WCAppDisconnectedCallback?
-    
     var willHandleRequestCallback: domains_manager_ios.EmptyCallback?
+    var publishersProvider: WalletConnectV2PublishersProvider { self }
     
     func pairClient(uri: WalletConnectUtils.WalletConnectURI) async throws {
         
