@@ -111,7 +111,10 @@ private extension DeepLinksService {
         
         self.isExpectingWCInteraction = true
         guard let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) else {
-            // TODO: - Start WC timeout timer. Show loading indicator on the UI
+            Task {
+                appContext.wcRequestsHandlingService.expectConnection()
+                try? await coreAppCoordinator.handle(uiFlow: .showPullUpLoading)
+            }
             return
         }
         
