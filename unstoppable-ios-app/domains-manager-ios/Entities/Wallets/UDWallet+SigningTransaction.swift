@@ -28,9 +28,11 @@ extension UDWallet {
                                                        request: request,
                                                        tx: ethTx)
         }
-        if let session_V2 = appContext.walletConnectServiceV2.findSessions(by: address).first {
+        
+        let sessions_V2 = appContext.walletConnectServiceV2.findSessions(by: address)
+        if sessions_V2.count > 0 {
             return try await appContext.walletConnectServiceV2.signTxViaWalletConnect_V2(udWallet: self,
-                                                                                         session: session_V2,
+                                                                                         sessions: sessions_V2,
                                                                                          tx: ethTx)
         }
         

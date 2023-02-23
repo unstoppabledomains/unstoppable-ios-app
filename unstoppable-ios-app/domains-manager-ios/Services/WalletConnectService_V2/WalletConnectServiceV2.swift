@@ -69,7 +69,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
                      onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response
     func handle(response: WalletConnectSign.Response) throws -> String
     func signTxViaWalletConnect_V2(udWallet: UDWallet,
-                                   session: WCConnectedAppsStorageV2.SessionProxy,
+                                   sessions: [SessionV2Proxy],
                                    tx: EthereumTransaction) async throws -> String
 }
 
@@ -178,7 +178,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         return validConnectedApps
     }
     
-    public func findSessions(by walletAddress: HexAddress) -> [WCConnectedAppsStorageV2.SessionProxy] {
+    public func findSessions(by walletAddress: HexAddress) -> [SessionV2Proxy] {
         clientConnectionsV2.retrieveAll()
             .filter({ ($0.session.getWalletAddresses().map({$0.normalized})).contains(walletAddress.normalized) })
             .map({$0.session})
@@ -766,16 +766,10 @@ extension WalletConnectServiceV2 {
                                                                       transaction: completedTx)
 
             guard udWallet.walletState != .externalLinked else {
-                guard let sessionWithExtWallet = findSessions(by: walletAddress).first else {
-                    Debugger.printFailure("Failed to find session for WC", critical: false)
-                    uiHandler?.didFailToConnect(with: .noWCSessionFound)
-                    try? await respondWithError(request: request)
-                    notifyDidHandleExternalWCRequestWith(result: .failure(WalletConnectError.noWCSessionFound))
-                    return
-                }
+                let sessionsWithExtWallet = findSessions(by: walletAddress)
                 
                 do {
-                    let response = try await signTxViaWalletConnectV2(session: sessionWithExtWallet, txParams: request.params)  {
+                    let response = try await signTxViaWalletConnectV2(sessions: sessionsWithExtWallet, txParams: request.params)  {
                         Task { try? await udWallet.launchExternalWallet() }
                     }
                     let sigString = try handle(response: response)
@@ -847,14 +841,9 @@ extension WalletConnectServiceV2 {
                                                                       transaction: completedTx)
             
             guard udWallet.walletState != .externalLinked else {
-                guard let sessionWithExtWallet = findSessions(by: walletAddress).first else {
-                    Debugger.printFailure("Failed to find session for WC", critical: false)
-                    uiHandler?.didFailToConnect(with: .noWCSessionFound)
-                    try? await respondWithError(request: request)
-                    return
-                }
+                let sessionsWithExtWallet = findSessions(by: walletAddress)
                 do {
-                    let response = try await proceedSendTxViaWC(session: sessionWithExtWallet, txParams: request.params) {
+                    let response = try await proceedSendTxViaWC_2(sessions: sessionsWithExtWallet, txParams: request.params) {
                         Task { try? await udWallet.launchExternalWallet() }
                     }
                     let respCodable = AnyCodable(response)
@@ -946,11 +935,11 @@ extension WalletConnectServiceV2 {
         
     }
     
-    private func proceedSendTxViaWC(session: SessionV2Proxy,
+    private func proceedSendTxViaWC_2(sessions: [SessionV2Proxy],
                                     txParams: AnyCodable,
                                     onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
-        
-        guard let sessionSettled = pickOnlyActiveSessions(from: [session]).first else {
+        let onlyActive = pickOnlyActiveSessions(from: sessions)
+        guard let sessionSettled = onlyActive.first else {
             throw WalletConnectError.noWCSessionFound
         }
         return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.sendTransaction,
@@ -1138,7 +1127,7 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
-    func signTxViaWalletConnect_V2(udWallet: UDWallet, session: WCConnectedAppsStorageV2.SessionProxy, tx: EthereumTransaction) async throws -> String {
+    func signTxViaWalletConnect_V2(udWallet: UDWallet, sessions: [SessionV2Proxy], tx: EthereumTransaction) async throws -> String {
         return ""
     }
     
@@ -1315,10 +1304,10 @@ extension WalletConnectServiceV2 {
         }
     }
     
-    private func signTxViaWalletConnectV2(session: SessionV2Proxy,
+    private func signTxViaWalletConnectV2(sessions: [SessionV2Proxy],
                                        txParams: AnyCodable,
                                        onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
-        guard let sessionSettled = pickOnlyActiveSessions(from: [session]).first else {
+        guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectError.noWCSessionFound
         }
         return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.signTransaction,
@@ -1335,7 +1324,6 @@ extension WalletConnectServiceV2 {
         guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectError.noWCSessionFound
         }
-        
         let params = WalletConnectServiceV2.getParamsPersonalSign(message: message, address: address)
         return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.personalSign,
                               session: sessionSettled,
@@ -1347,11 +1335,9 @@ extension WalletConnectServiceV2 {
                           message: String,
                           address: HexAddress,
                      onWcRequestSentCallback: @escaping () async throws -> Void ) async throws -> WalletConnectSign.Response {
-
         guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectError.noWCSessionFound
         }
-        
         let params = WalletConnectServiceV2.getParamsEthSign(message: message, address: address)
         return try await sendRequest(method: WalletConnectServiceV2.RPCMethod.ethSign,
                               session: sessionSettled,
@@ -1399,9 +1385,9 @@ extension Pairing {
 
 extension WalletConnectServiceV2 {
     func signTxViaWalletConnect_V2(udWallet: UDWallet,
-                                   session: WCConnectedAppsStorageV2.SessionProxy,
+                                   sessions: [SessionV2Proxy],
                                    tx: EthereumTransaction) async throws -> String {
-        let response = try await signTxViaWalletConnectV2(session: session,
+        let response = try await signTxViaWalletConnectV2(sessions: sessions,
                                                           txParams: tx.convertToAnyCodable())  {
             Task { try? await udWallet.launchExternalWallet() }
         }

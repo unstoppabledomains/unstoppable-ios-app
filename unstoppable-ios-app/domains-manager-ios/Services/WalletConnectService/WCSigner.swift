@@ -189,7 +189,7 @@ extension WalletConnectService: WCSigner {
                 self.notifyDidHandleExternalWCRequestWith(result: .success(()))
             } catch {
                 let wcError = (error as? WalletConnectService.Error) ?? WalletConnectService.Error.failedToSignTransaction
-                Debugger.printFailure("Failed to sign transaction, error=\(error)", critical: false)
+                Debugger.printFailure("Failed to sign transaction, error: \(error)", critical: false)
                 self.uiHandler?.didFailToConnect(with: wcError)
                 self.server.send(.invalid(request))
                 self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
