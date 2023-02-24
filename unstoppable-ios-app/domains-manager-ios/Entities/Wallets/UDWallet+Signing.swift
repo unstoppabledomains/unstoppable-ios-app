@@ -127,19 +127,8 @@ extension UDWallet {
             throw WalletConnectRequestError.noWCSessionFound
         }
         
-        return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<String, Swift.Error>) in
-            do {
-                try appContext.walletConnectClientService.getClient()
-                    .personal_sign(url: session.url, message: message, account: self.address) {
-                        response in
-                        handleResponse(response: response,
-                                       continuation: continuation)
-                    }
-                Task {
-                    try await launchExternalWallet()
-                }
-            } catch { continuation.resume(throwing: error) }
-        })
+        let response = try await WalletConnectExternalWalletSigner.shared.signPersonalSignViaWalletConnect_V1(session: session, message: message, in: self)
+        return try handleResponse(response: response)
     }
     
     func signViaWalletConnectEthSign(message: String) async throws -> String {
@@ -158,37 +147,15 @@ extension UDWallet {
             throw WalletConnectRequestError.noWCSessionFound
         }
         
-        return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<String, Swift.Error>) in
-            do {
-                try appContext.walletConnectClientService.getClient()
-                    .eth_sign(url: session.url, account: self.address, message: message) {
-                        response in
-                        handleResponse(response: response,
-                                       continuation: continuation)
-                    }
-                Task {
-                    try await launchExternalWallet()
-                }
-            } catch { continuation.resume(throwing: error) }
-        })
+        let response = try await WalletConnectExternalWalletSigner.shared.signConnectEthSignViaWalletConnect_V1(session: session, message: message, in: self)
+
+        return try handleResponse(response: response)
     }
     
-    private func handleResponse(response: Response,
-                                continuation: CheckedContinuation<String, Swift.Error>) {
-        if let error = response.error {
-            Debugger.printFailure("Failed to sign message for wallet \(self.address), error: \(error.localizedDescription)", critical: false)
-            continuation.resume(throwing: WalletConnectRequestError.failedToSignMessage)
-            return
-        }
-        do {
-            let result = try response.result(as: String.self)
-            continuation.resume(returning: result)
-        } catch {
-            Debugger.printFailure("Failed to sign message for waller \(self.address), error: \(error.localizedDescription)", critical: false)
-            continuation.resume(throwing: error)
-        }
+    private func handleResponse(response: Response) throws -> String {
+        let result = try response.result(as: String.self)
+        return result
     }
-    
     
     func multipleWalletSigs(messages: [String]) async throws -> [String]{
         var sigs = [String]()

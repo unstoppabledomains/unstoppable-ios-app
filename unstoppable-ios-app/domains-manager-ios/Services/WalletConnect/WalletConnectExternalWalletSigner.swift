@@ -100,6 +100,50 @@ extension WalletConnectExternalWalletSigner {
             }
         }
     }
+    
+    func signPersonalSignViaWalletConnect_V1(session: WalletConnectSwift.Session, message: String, in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
+        try await launchExternalWallet(wallet)
+
+        return try await withSafeCheckedThrowingContinuation { completion in
+            let client = appContext.walletConnectClientService.getClient()
+            
+            do {
+                try client.personal_sign(url: session.url, message: message, account: wallet.address) { response in
+                    if let error = response.error {
+                        Debugger.printFailure("Error from the signing tx via ext wallet: \(error)", critical: false)
+                        completion(.failure(WalletConnectRequestError.externalWalletFailedToSend))
+                    } else {
+                        completion(.success(response))
+                    }
+                }
+            } catch {
+                Debugger.printFailure("Failed to send a request to the signing ext wallet: \(error)", critical: true)
+                completion(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
+            }
+        }
+    }
+    
+    func signConnectEthSignViaWalletConnect_V1(session: WalletConnectSwift.Session, message: String, in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
+        try await launchExternalWallet(wallet)
+        
+        return try await withSafeCheckedThrowingContinuation { completion in
+            let client = appContext.walletConnectClientService.getClient()
+            
+            do {
+                try client.eth_sign(url: session.url, account: wallet.address, message: message) { response in
+                    if let error = response.error {
+                        Debugger.printFailure("Error from the signing tx via ext wallet: \(error)", critical: false)
+                        completion(.failure(WalletConnectRequestError.externalWalletFailedToSend))
+                    } else {
+                        completion(.success(response))
+                    }
+                }
+            } catch {
+                Debugger.printFailure("Failed to send a request to the signing ext wallet: \(error)", critical: true)
+                completion(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
+            }
+        }
+    }
 }
 
 // MARK: - Launch external wallet
