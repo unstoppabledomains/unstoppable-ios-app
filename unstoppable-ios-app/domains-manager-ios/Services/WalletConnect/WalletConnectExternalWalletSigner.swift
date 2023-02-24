@@ -137,7 +137,12 @@ extension WalletConnectExternalWalletSigner {
                         session: SessionV2Proxy,
                         requestParams: AnyCodable,
                         in wallet: UDWallet) async throws -> WalletConnectSign.Response {
-        guard let chainIdString = Array(session.namespaces.values).map({Array($0.accounts)}).flatMap({$0}).map({$0.blockchainIdentifier}).first,
+        guard let chainIdString = Array(session.namespaces.values)
+            .lazy
+            .map({ Array($0.accounts) })
+            .flatMap({ $0 })
+            .map({ $0.blockchainIdentifier })
+            .first,
               let chainId = Blockchain(chainIdString) else {
             throw WalletConnectRequestError.failedToDetermineChainId
         }
