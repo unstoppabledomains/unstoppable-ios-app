@@ -100,65 +100,28 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
     }
     
     func handleSignTx(request: WalletConnectSwift.Request) async throws -> Response {
-        let transaction = try request.parameter(of: EthereumTransaction.self, at: 0)
-        guard let address = transaction.from?.hex(eip55: true).normalized else {
+        let _tx = try request.parameter(of: EthereumTransaction.self, at: 0)
+        
+        
+        guard let address = _tx.from?.hex(eip55: true).normalized else {
             throw WalletConnectRequestError.failedToFindWalletToSign
         }
         
         let (connectedApp, udWallet) = try await getWalletAfterConfirmationIfNeeded(address: address,
                                                                                     request: request,
-                                                                                    transaction: transaction)
+                                                                                    transaction: _tx)
         
-        guard udWallet.walletState != .externalLinked else {
-            guard let sessionWithExtWallet = walletConnectClientService.findSessions(by: address).first else {
-                Debugger.printFailure("Failed to find session for WC", critical: false)
-                throw WalletConnectRequestError.noWCSessionFound
-            }
-            
-//            udWallet.signTxViaWalletConnect(session: sessionWithExtWallet, tx: transaction)
-//                .done { response in
-//                    if let error = response.error {
-//                        Debugger.printFailure("Error from the signing ext wallet: \(error)", critical: true)
-//                        self.server.send(.invalid(request))
-//                        return
-//                    }
-//                    do {
-//                        let result = try response.result(as: String.self)
-//                        self.server.send(Response.signature(result, for: request))
-//                        self.notifyDidHandleExternalWCRequestWith(result: .success(()))
-//                    } catch {
-//                        Debugger.printFailure("Error parsing result from the signing ext wallet: \(error)", critical: true)
-//                        self.server.send(.invalid(request))
-//                        self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
-//                    }
-//                }.catch { error in
-//                    Debugger.printFailure("Failed to send a request to the signing ext wallet: \(error)", critical: true)
-//                    self.server.send(.invalid(request))
-//                    self.notifyDidHandleExternalWCRequestWith(result: .failure(error))
-//                }
-            
-            // TODO: - WC test when fixed.
-            let response = try await udWallet.signTxViaWalletConnect(session: sessionWithExtWallet, tx: transaction)
-            if let error = response.error {
-                Debugger.printFailure("Error from the signing ext wallet: \(error)", critical: true)
-                throw error
-            }
-            let result = try response.result(as: String.self)
-            return Response.signature(result, for: request)
+        guard let chainIdInt = connectedApp.session.walletInfo?.chainId else {
+            Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
+            throw WalletConnectRequestError.failedToDetermineChainId
         }
+        let completedTx = try await completeTx(transaction: _tx, chainId: chainIdInt)
         
-        guard let privKeyString = udWallet.getPrivateKey() else {
-            Debugger.printFailure("No private key in \(udWallet)", critical: true)
-            throw WalletConnectRequestError.failedToGetPrivateKey
-        }
         
-        let privateKey = try EthereumPrivateKey(hexPrivateKey: privKeyString)
-        
-        let chainId = EthereumQuantity(quantity: BigUInt(connectedApp.session.dAppInfo.getChainId()))
-        let signedTx = try transaction.sign(with: privateKey, chainId: chainId)
-        let (r, s, v) = (signedTx.r, signedTx.s, signedTx.v)
-        let signature = r.hex() + s.hex().dropFirst(2) + String(v.quantity, radix: 16)
-        return Response.signature(signature, for: request)
+        let sig = try await udWallet.getTxSignature(ethTx: completedTx,
+                                                    chainId: BigUInt(connectedApp.session.dAppInfo.getChainId()),
+                                                    request: request)
+        return Response.signature(sig, for: request)
     }
     
     func handleEthSign(request: Request) async throws -> Response {
