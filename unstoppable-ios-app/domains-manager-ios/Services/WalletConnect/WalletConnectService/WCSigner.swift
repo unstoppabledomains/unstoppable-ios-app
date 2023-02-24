@@ -334,7 +334,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                     during session: Session,
                                     in request: Request,
                                     transaction: EthereumTransaction) -> Promise<Response> {
-        let promise = udWallet.sendTxViaWalletConnect(session: session, tx: transaction)
+        let promise = WalletConnectExternalWalletSigner.shared.sendTxViaWalletConnect_V1(session: session, tx: transaction)
         Task { try? await udWallet.launchExternalWallet() }
         return commonProceedHandleTxViaWC(requestPromise: promise, in: request)
     }
@@ -357,9 +357,9 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                            during session: Session,
                                            in request: Request,
                                            dataString: String) -> Promise<Response> {
-        let promise = udWallet.signTypedDataViaWalletConnect(session: session,
-                                                             walletAddress: udWallet.address,
-                                                             message: dataString)
+        let promise = WalletConnectExternalWalletSigner.shared.signTypedDataViaWalletConnect_V1(session: session,
+                                                                                             walletAddress: udWallet.address,
+                                                                                             message: dataString)
         Task { try? await udWallet.launchExternalWallet() }
         return commonProceedHandleTxViaWC(requestPromise: promise, in: request)
     }
@@ -490,107 +490,7 @@ extension EthereumTransaction {
 }
 
 extension UDWallet {
-    func signTxViaWalletConnect(session: Session, tx: EthereumTransaction) async throws -> Response {
-        try await withSafeCheckedThrowingContinuation { completion in
-            signTxViaWalletConnect(session: session, tx: tx)
-                .done { response in
-                    completion(.success(response))
-                }.catch { error in
-                    Debugger.printFailure("Failed to send a request to the signing ext wallet: \(error)", critical: true)
-                    completion(.failure(error))
-                }
-        }
-    }
-    
-    func signTxViaWalletConnect(session: Session, tx: EthereumTransaction) -> Promise<Response> {
-        return Promise { seal in
-            guard let transaction = Client.Transaction(ethTx: tx) else {
-                seal.reject(WalletConnectRequestError.failedCreateTxForExtWallet)
-                return
-            }
-            
-            let client = appContext.walletConnectClientService.getClient()
 
-            do {
-                try client.eth_signTransaction(url: session.url, transaction: transaction) { response in
-                    seal.fulfill(response)
-                }
-            } catch {
-                seal.reject(WalletConnectRequestError.failedToRelayTxToExternalWallet)
-            }
-        }
-    }
-    
-    func sendTxViaWalletConnect(session: Session,
-                                tx: EthereumTransaction) -> Promise<Response> {
-        return Promise { seal in
-            guard let transaction = Client.Transaction(ethTx: tx) else {
-                seal.reject(WalletConnectRequestError.failedCreateTxForExtWallet)
-                return
-            }
-            let client = appContext.walletConnectClientService.getClient()
-            do {
-                try client.eth_sendTransaction(url: session.url, transaction: transaction) { response in
-                    seal.fulfill(response)
-                }
-            } catch {
-                seal.reject(WalletConnectRequestError.failedToRelayTxToExternalWallet)
-            }
-        }
-    }
-    
-    func signTxViaWalletConnectV1Async(session: Session,
-                                     tx: EthereumTransaction,
-                                     requestSentCallback: ()->Void) async throws -> Response {
-        return try await withCheckedThrowingContinuation { continuation in
-            guard let transaction = Client.Transaction(ethTx: tx) else {
-                return continuation.resume(with: .failure(WalletConnectRequestError.failedCreateTxForExtWallet))
-            }
-            
-            let client = appContext.walletConnectClientService.getClient()
-            
-            do {
-                try client.eth_signTransaction(url: session.url, transaction: transaction) { response in
-                    return continuation.resume(with: .success(response))
-                }
-                requestSentCallback()
-            } catch {
-                return continuation.resume(with: .failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
-            }
-        }
-    }
-    
-    func sendTxViaWalletConnectAsync(session: Session,
-                                     tx: EthereumTransaction,
-                                     requestSentCallback: ()->Void ) async throws -> Response {
-        return try await withCheckedThrowingContinuation { continuation in
-            guard let transaction = Client.Transaction(ethTx: tx) else {
-                return continuation.resume(with: .failure(WalletConnectRequestError.failedCreateTxForExtWallet))
-            }
-            let client = appContext.walletConnectClientService.getClient()
-            do {
-                try client.eth_sendTransaction(url: session.url, transaction: transaction) { response in
-                    return continuation.resume(with: .success(response))
-                }
-                requestSentCallback()
-            } catch {
-                return continuation.resume(with: .failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
-            }
-        }
-    }
-    
-    func signTypedDataViaWalletConnect(session: Session, walletAddress: HexAddress, message: String) -> Promise<Response> {
-        return Promise { seal in
-            let client = appContext.walletConnectClientService.getClient()
-            do {
-                try client.eth_signTypedData(url: session.url, account: walletAddress, message: message) { response in
-                    seal.fulfill(response)
-                }
-            } catch {
-                seal.reject(WalletConnectRequestError.failedToRelayTxToExternalWallet)
-            }
-        }
-    }
 }
 
 extension Client.Transaction {

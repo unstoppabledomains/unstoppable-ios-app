@@ -42,19 +42,9 @@ extension UDWallet {
     private func singTxViaWalletConnect_V1(sessionWithExtWallet: Session,
                                            request: Request,
                                            tx: EthereumTransaction) async throws -> String {
-        
-        return try await withSafeCheckedThrowingContinuation { continuation in
-            self.signTxViaWalletConnect(session: sessionWithExtWallet, tx: tx)
-                .done { response in
-                    if let error = response.error {
-                        continuation(.failure(error))
-                    }
-                    let result = try response.result(as: String.self)
-                    continuation(.success(result))
-                }.catch { error in
-                    continuation(.failure(error))
-                }
-        }
+        let response = try await WalletConnectExternalWalletSigner.shared.signTxViaWalletConnect_V1(session: sessionWithExtWallet, tx: tx)
+        let result = try response.result(as: String.self)
+        return result
     }
     
     func signTxLocally_V1(ethTx: EthereumTransaction, chainId: BigUInt) throws -> String {

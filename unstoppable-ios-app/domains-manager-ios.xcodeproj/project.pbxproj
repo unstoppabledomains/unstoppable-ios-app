@@ -475,6 +475,10 @@
 		C60610EB29A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610E929A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift */; };
 		C60610EC29A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610E929A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift */; };
 		C60610ED29A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610E929A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift */; };
+		C60610F729A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */; };
+		C60610F829A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */; };
+		C60610F929A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */; };
+		C60610FA29A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73D2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
@@ -3357,6 +3361,7 @@
 		C60610E229A65739005DC0D5 /* WalletConnectRequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectRequestError.swift; sourceTree = "<group>"; };
 		C60610E729A7469A005DC0D5 /* WCRequestsHandlingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCRequestsHandlingServiceTests.swift; sourceTree = "<group>"; };
 		C60610E929A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV1SignTransactionHandler.swift; sourceTree = "<group>"; };
+		C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectExternalWalletSigner.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
@@ -4481,6 +4486,7 @@
 				C6A2D58C284FA09500327C47 /* WalletConnectService */,
 				295506F42954D22800EDA42D /* WalletConnectService_V2 */,
 				C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */,
+				C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */,
 				C60610E929A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift */,
 				C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */,
 				C60610E229A65739005DC0D5 /* WalletConnectRequestError.swift */,
@@ -8194,6 +8200,7 @@
 				C6A2D54A284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,
 				C6A2D5CD2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift in Sources */,
 				306486812527253700388026 /* AppDelegate.swift in Sources */,
+				C60610F729A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */,
 				C65955FB287C621100319ACC /* UIImage+Colors.swift in Sources */,
 				C6D5DADF28374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
 				C66435C1288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
@@ -8963,6 +8970,7 @@
 				C689539C2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */,
 				C685A95D28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */,
 				C6456F312800520E00A517D5 /* Vibration.swift in Sources */,
+				C60610F929A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */,
 				306DB245268F4EE3009D95DE /* Extension-String.swift in Sources */,
 				C669C36E2912197C00837F21 /* EnterValueViewController.swift in Sources */,
 				C6124CE82924C2B8005E6537 /* DomainProfileInfoStorage.swift in Sources */,
@@ -9582,6 +9590,7 @@
 				C624D794281BCA1F00F55530 /* SettingsViewController.swift in Sources */,
 				C689539D2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */,
 				C685A95E28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */,
+				C60610FA29A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */,
 				C6456F322800520E00A517D5 /* Vibration.swift in Sources */,
 				C669C36F2912197C00837F21 /* EnterValueViewController.swift in Sources */,
 				C6124CE92924C2B8005E6537 /* DomainProfileInfoStorage.swift in Sources */,
@@ -10109,6 +10118,7 @@
 				C60982412823F73600546392 /* BackupCreatedLocalWalletPresenter.swift in Sources */,
 				C6A2D54B284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,
 				C6A2D5CE2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift in Sources */,
+				C60610F829A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */,
 				C65955FC287C63C600319ACC /* UIImage+Colors.swift in Sources */,
 				C6D5DAE028374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
 				C66435C2288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
