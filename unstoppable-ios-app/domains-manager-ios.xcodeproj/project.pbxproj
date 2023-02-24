@@ -4483,10 +4483,10 @@
 		C60610D229A4FF6C005DC0D5 /* WalletConnect */ = {
 			isa = PBXGroup;
 			children = (
+				C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */,
 				C6A2D58C284FA09500327C47 /* WalletConnectService */,
 				295506F42954D22800EDA42D /* WalletConnectService_V2 */,
 				C60610D329A4FF84005DC0D5 /* WCRequestsHandlingService.swift */,
-				C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */,
 				C60610E929A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift */,
 				C60610D829A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift */,
 				C60610E229A65739005DC0D5 /* WalletConnectRequestError.swift */,

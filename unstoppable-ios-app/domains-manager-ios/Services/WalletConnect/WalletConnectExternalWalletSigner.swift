@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 import PromiseKit
 import Web3
 
@@ -24,8 +25,13 @@ final class WalletConnectExternalWalletSigner {
 
 // MARK: - Open methods
 extension WalletConnectExternalWalletSigner {
-    func signTypedDataViaWalletConnect_V1(session: WalletConnectSwift.Session, walletAddress: HexAddress, message: String) async throws -> WalletConnectSwift.Response {
-        try await withSafeCheckedThrowingContinuation { completion in
+    func signTypedDataViaWalletConnect_V1(session: WalletConnectSwift.Session,
+                                          walletAddress: HexAddress,
+                                          message: String,
+                                          in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
+        try await launchExternalWallet(wallet)
+
+        return try await withSafeCheckedThrowingContinuation { completion in
             let client = appContext.walletConnectClientService.getClient()
             do {
                 try client.eth_signTypedData(url: session.url, account: walletAddress, message: message) { response in
@@ -43,8 +49,11 @@ extension WalletConnectExternalWalletSigner {
     }
     
     func sendTxViaWalletConnect_V1(session: WalletConnectSwift.Session,
-                                   tx: EthereumTransaction) async throws -> WalletConnectSwift.Response {
-        try await withSafeCheckedThrowingContinuation { completion in
+                                   tx: EthereumTransaction,
+                                   in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
+        try await launchExternalWallet(wallet)
+
+        return try await withSafeCheckedThrowingContinuation { completion in
             guard let transaction = Client.Transaction(ethTx: tx) else {
                 completion(.failure(WalletConnectRequestError.failedCreateTxForExtWallet))
                 return
@@ -65,8 +74,10 @@ extension WalletConnectExternalWalletSigner {
         }
     }
     
-    func signTxViaWalletConnect_V1(session: WalletConnectSwift.Session, tx: EthereumTransaction) async throws -> WalletConnectSwift.Response {
-        try await withSafeCheckedThrowingContinuation { completion in
+    func signTxViaWalletConnect_V1(session: WalletConnectSwift.Session, tx: EthereumTransaction, in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
+        try await launchExternalWallet(wallet)
+
+        return try await withSafeCheckedThrowingContinuation { completion in
             guard let transaction = Client.Transaction(ethTx: tx) else {
                 completion(.failure(WalletConnectRequestError.failedCreateTxForExtWallet))
                 return
@@ -89,7 +100,23 @@ extension WalletConnectExternalWalletSigner {
             }
         }
     }
-    
+}
+
+// MARK: - Launch external wallet
+private extension WalletConnectExternalWalletSigner {
+    @MainActor
+    func launchExternalWallet(_ wallet: UDWallet) throws {
+        guard let wcWallet = wallet.getExternalWallet(),
+              let  nativePrefix = wcWallet.getNativeAppLink(),
+              let url = URL(string: nativePrefix) else {
+            throw WalletConnectRequestError.failedToFindExternalAppLink
+        }
+        
+        guard UIApplication.shared.canOpenURL(url) else {
+            throw WalletConnectRequestError.failedOpenExternalApp
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
 }
 
 // MARK: - Private methods

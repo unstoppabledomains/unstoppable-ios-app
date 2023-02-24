@@ -320,8 +320,9 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                     during session: Session,
                                     in request: Request,
                                     transaction: EthereumTransaction) async throws -> Response {
-        Task { try? await udWallet.launchExternalWallet() }
-        let response = try await WalletConnectExternalWalletSigner.shared.sendTxViaWalletConnect_V1(session: session, tx: transaction)
+        let response = try await WalletConnectExternalWalletSigner.shared.sendTxViaWalletConnect_V1(session: session,
+                                                                                                    tx: transaction,
+                                                                                                    in: udWallet)
         
         let result = try response.result(as: String.self)
         return Response.transaction(result, for: request)
@@ -331,10 +332,10 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                            during session: Session,
                                            in request: Request,
                                            dataString: String) async throws -> Response {
-        Task { try? await udWallet.launchExternalWallet() }
         let response = try await WalletConnectExternalWalletSigner.shared.signTypedDataViaWalletConnect_V1(session: session,
                                                                                                            walletAddress: udWallet.address,
-                                                                                                           message: dataString)
+                                                                                                           message: dataString,
+                                                                                                           in: udWallet)
         let result = try response.result(as: String.self)
         return Response.transaction(result, for: request)
     }
