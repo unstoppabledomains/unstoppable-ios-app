@@ -320,65 +320,23 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                     during session: Session,
                                     in request: Request,
                                     transaction: EthereumTransaction) async throws -> Response {
-        try await withSafeCheckedThrowingContinuation({ completion in
-            proceedSendTxViaWC(by: udWallet, during: session, in: request, transaction: transaction)
-                .done { (result: Response) in
-                    completion(.success(result))
-                }.catch { error in
-                    completion(.failure(error))
-                }
-        })
-    }
-    
-    private func proceedSendTxViaWC(by udWallet: UDWallet,
-                                    during session: Session,
-                                    in request: Request,
-                                    transaction: EthereumTransaction) -> Promise<Response> {
-        let promise = WalletConnectExternalWalletSigner.shared.sendTxViaWalletConnect_V1(session: session, tx: transaction)
         Task { try? await udWallet.launchExternalWallet() }
-        return commonProceedHandleTxViaWC(requestPromise: promise, in: request)
+        let response = try await WalletConnectExternalWalletSigner.shared.sendTxViaWalletConnect_V1(session: session, tx: transaction)
+        
+        let result = try response.result(as: String.self)
+        return Response.transaction(result, for: request)
     }
-    
+   
     private func proceedSignTypedDataViaWC(by udWallet: UDWallet,
                                            during session: Session,
                                            in request: Request,
                                            dataString: String) async throws -> Response {
-        try await withSafeCheckedThrowingContinuation({ completion in
-            proceedSignTypedDataViaWC(by: udWallet, during: session, in: request, dataString: dataString)
-                .done { (result: Response) in
-                    completion(.success(result))
-                }.catch { error in
-                    completion(.failure(error))
-                }
-        })
-    }
-    
-    private func proceedSignTypedDataViaWC(by udWallet: UDWallet,
-                                           during session: Session,
-                                           in request: Request,
-                                           dataString: String) -> Promise<Response> {
-        let promise = WalletConnectExternalWalletSigner.shared.signTypedDataViaWalletConnect_V1(session: session,
-                                                                                             walletAddress: udWallet.address,
-                                                                                             message: dataString)
         Task { try? await udWallet.launchExternalWallet() }
-        return commonProceedHandleTxViaWC(requestPromise: promise, in: request)
-    }
-    
-    private func commonProceedHandleTxViaWC(requestPromise: Promise<Response>,
-                                            in request: Request) -> Promise<Response> {
-        requestPromise.then { (response: Response) -> Promise<Response> in
-            if let error = response.error {
-                Debugger.printFailure("Error from the sending ext wallet: \(error)", critical: false)
-                return Promise() { $0.reject(WalletConnectRequestError.externalWalletFailedToSend) }
-            }
-            do {
-                let result = try response.result(as: String.self)
-                return Promise() { $0.fulfill(Response.transaction(result, for: request)) }
-            } catch {
-                Debugger.printFailure("Error parsing result from the sending ext wallet: \(error)", critical: true)
-                return Promise() { $0.reject(WalletConnectRequestError.failedParseResultFromExtWallet) }
-            }
-        }
+        let response = try await WalletConnectExternalWalletSigner.shared.signTypedDataViaWalletConnect_V1(session: session,
+                                                                                                           walletAddress: udWallet.address,
+                                                                                                           message: dataString)
+        let result = try response.result(as: String.self)
+        return Response.transaction(result, for: request)
     }
 }
 
