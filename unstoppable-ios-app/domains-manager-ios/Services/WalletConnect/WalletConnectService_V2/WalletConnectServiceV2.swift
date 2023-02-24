@@ -1177,7 +1177,7 @@ extension WalletConnectServiceV2 {
     func disconnect(from wcWallet: HexAddress) async {
         // remove from storage
         guard let walletToDelete = walletStorageV2.find(by: wcWallet) else {
-            Debugger.printFailure("Failed to find WC2 wallet to remove", critical: true)
+            Debugger.printFailure("Failed to find WC2 wallet to remove", critical: false)
             return
         }
         await walletStorageV2.remove(byTopic: walletToDelete.session.topic)
