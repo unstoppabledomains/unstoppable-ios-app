@@ -107,6 +107,15 @@ extension WCRequestsHandlingService: WalletConnectV1SignTransactionHandlerDelega
     }
 }
 
+// MARK: - SceneActivationListener
+extension WCRequestsHandlingService: SceneActivationListener {
+    func didChangeSceneActivationState(to state: SceneActivationState) {
+        if state == .foregroundActive {
+            handleNextRequest()
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension WCRequestsHandlingService {
     func connectAsync(to request: WalletConnectService.ConnectWalletRequest) {
@@ -119,13 +128,19 @@ private extension WCRequestsHandlingService {
     }
     
     func handleNextRequest() {
-        guard !isHandlingRequest,
-              let nextRequest = requests.first else { return }
-        isHandlingRequest = true
-        
         Task {
+            guard await canHandleRequest(),
+                  let nextRequest = requests.first else { return }
+            isHandlingRequest = true
+            
             await handleRequest(nextRequest)
         }
+    }
+    
+    func canHandleRequest() async -> Bool {
+        let appState = await SceneDelegate.shared?.sceneActivationState
+        
+        return !isHandlingRequest && appState == .foregroundActive
     }
     
     func handleRequest(_ request: UnifiedWCRequest) async {
@@ -349,6 +364,7 @@ private extension WCRequestsHandlingService {
         registerV2RequestHandlers()
         registerDisconnectCallbacks()
         registerWillHandleRequestCallbacks()
+        setSceneActivationListener()
     }
     
     func registerV1RequestHandlers() {
@@ -390,6 +406,12 @@ private extension WCRequestsHandlingService {
     func registerWillHandleRequestCallbacks() {
         walletConnectServiceV1.willHandleRequestCallback = { [weak self] in self?.stopConnectionTimeout() }
         walletConnectServiceV2.willHandleRequestCallback = { [weak self] in self?.stopConnectionTimeout() }
+    }
+    
+    func setSceneActivationListener() {
+        Task { @MainActor in
+            SceneDelegate.shared?.addListener(self)
+        }
     }
 }
 
