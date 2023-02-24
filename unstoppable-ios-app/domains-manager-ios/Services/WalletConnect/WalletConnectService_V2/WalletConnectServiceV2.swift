@@ -577,7 +577,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
             sig = AnyCodable(sigTyped)
         } catch {
-            Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: true)
+            Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)
             throw WalletConnectRequestError.failedToSignMessage
         }
         
