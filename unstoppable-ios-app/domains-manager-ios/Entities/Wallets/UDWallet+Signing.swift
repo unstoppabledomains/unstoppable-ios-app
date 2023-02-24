@@ -117,9 +117,8 @@ extension UDWallet {
         if  sessions.count > 0 {
             let response = try await appContext.walletConnectServiceV2.sendPersonalSign(sessions: sessions,
                                                                                         message: message,
-                                                                                        address: address) {
-                try await launchExternalWallet()
-            }
+                                                                                        address: address,
+                                                                                        in: self)
             return try appContext.walletConnectServiceV2.handle(response: response)
         }
         guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
@@ -135,10 +134,9 @@ extension UDWallet {
         let sessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
         if  sessions.count > 0 {
             let response = try await appContext.walletConnectServiceV2.sendEthSign(sessions: sessions,
-                                                                                        message: message,
-                                                                                        address: address) {
-                try await launchExternalWallet()
-            }
+                                                                                   message: message,
+                                                                                   address: address,
+                                                                                   in: self)
             return try appContext.walletConnectServiceV2.handle(response: response)
         }
         
