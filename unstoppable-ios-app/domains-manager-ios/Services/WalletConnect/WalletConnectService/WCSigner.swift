@@ -368,7 +368,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                             in request: Request) -> Promise<Response> {
         requestPromise.then { (response: Response) -> Promise<Response> in
             if let error = response.error {
-                Debugger.printFailure("Error from the sending ext wallet: \(error)", critical: true)
+                Debugger.printFailure("Error from the sending ext wallet: \(error)", critical: false)
                 return Promise() { $0.reject(WalletConnectRequestError.externalWalletFailedToSend) }
             }
             do {
