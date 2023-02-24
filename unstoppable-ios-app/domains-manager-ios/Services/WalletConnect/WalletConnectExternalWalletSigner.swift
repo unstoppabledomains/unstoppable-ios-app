@@ -163,8 +163,8 @@ extension WalletConnectExternalWalletSigner {
             throw WalletConnectRequestError.failedToDetermineChainId
         }
         let request = Request(topic: session.topic, method: method.string, params: requestParams, chainId: chainId)
-        try await launchExternalWallet(wallet)
         try await Sign.instance.request(params: request)
+        try await launchExternalWallet(wallet)
         return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<WalletConnectSign.Response, Swift.Error>) in
             externalWalletResponseCallback = { response in
                 continuation.resume(returning: response)
