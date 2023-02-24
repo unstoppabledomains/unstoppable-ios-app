@@ -84,6 +84,8 @@ extension WalletConnectService: ServerDelegate {
     
     // WC callbacks
     func server(_ server: Server, didFailToConnect url: WCURL) {
+        guard url == expectedConnectionURL else { return }
+        
         Task {
             Debugger.printFailure("Failed to connect to WC as wallet with wcurl: \(url)")
             intentsStorage.removeAll()
