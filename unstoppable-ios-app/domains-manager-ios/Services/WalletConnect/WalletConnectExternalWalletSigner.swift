@@ -20,9 +20,11 @@ import WalletConnectSign
 final class WalletConnectExternalWalletSigner {
     
     static let shared = WalletConnectExternalWalletSigner()
+    
     private var externalWalletWC1ResponseCallback: ((Swift.Result<WC1Response, Error>)->Void)?
-    private var externalWalletWC2ResponseCallback: ((ResponseV2)->Void)?
+    private var externalWalletWC2ResponseCallback: ((Swift.Result<ResponseV2, Error>)->Void)?
     private var publishers = [AnyCancellable]()
+    private var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
 
     private init() {
         setup()
@@ -40,6 +42,7 @@ extension WalletConnectExternalWalletSigner {
     
     private func submitWC1TransactionToExternalWallet(in wallet: UDWallet,
                                                       clientCallBlock: WC1ClientCallBlock) async throws -> WalletConnectSwift.Response {
+        // TODO: - Check for there's already callback set?
         do {
             let client = appContext.walletConnectClientService.getClient()
             
@@ -137,6 +140,7 @@ extension WalletConnectExternalWalletSigner {
                         session: SessionV2Proxy,
                         requestParams: AnyCodable,
                         in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+        // TODO: - Check for there's already callback set?
         guard let chainIdString = Array(session.namespaces.values)
             .lazy
             .map({ Array($0.accounts) })
@@ -150,8 +154,13 @@ extension WalletConnectExternalWalletSigner {
         try await Sign.instance.request(params: request)
         try await launchExternalWallet(wallet)
         return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<WalletConnectSign.Response, Swift.Error>) in
-            externalWalletWC2ResponseCallback = { response in
-                continuation.resume(returning: response)
+            externalWalletWC2ResponseCallback = { result in
+                switch result {
+                case .success(let response):
+                    continuation.resume(returning: response)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
             }
         })
     }
@@ -178,14 +187,62 @@ private extension WalletConnectExternalWalletSigner {
 private extension WalletConnectExternalWalletSigner {
     func setup() {
         registerForWC2ClientSessionCallback()
+        registerForAppBecomeActiveNotification()
     }
     
     func registerForWC2ClientSessionCallback() {
         Sign.instance.sessionResponsePublisher
             .receive(on: DispatchQueue.main)
-            .sink { [unowned self] response in
-                externalWalletWC2ResponseCallback?(response)
-                externalWalletWC2ResponseCallback = nil
+            .sink { [weak self] response in
+                self?.cancelNoResponseFromExternalWalletWorkItem()
+                self?.externalWalletWC2ResponseCallback?(.success(response))
+                self?.externalWalletWC2ResponseCallback = nil
             }.store(in: &publishers)
+    }
+    
+    func registerForAppBecomeActiveNotification() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+    }
+    
+    @objc func applicationDidBecomeActive() {
+        scheduleNoResponseTimerIfWaitingForResponseFromExternalWallet()
+    }
+    
+    func isWaitingForResponseFromExternalWallet() -> Bool {
+        externalWalletWC1ResponseCallback != nil || externalWalletWC2ResponseCallback != nil
+    }
+    
+    func scheduleNoResponseTimerIfWaitingForResponseFromExternalWallet() {
+        if isWaitingForResponseFromExternalWallet() {
+            scheduleNoResponseFromExternalWalletWorkItem()
+        }
+    }
+    
+    func scheduleNoResponseFromExternalWalletWorkItem() {
+        cancelNoResponseFromExternalWalletWorkItem()
+        let noResponseFromExternalWalletWorkItem = DispatchWorkItem(block: { [weak self] in
+            self?.handleExternalWalletDidNotRespond()
+        })
+        self.noResponseFromExternalWalletWorkItem = noResponseFromExternalWalletWorkItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.wcNoResponseFromExternalWalletTimeout,
+                                      execute: noResponseFromExternalWalletWorkItem)
+    }
+    
+    func cancelNoResponseFromExternalWalletWorkItem() {
+        noResponseFromExternalWalletWorkItem?.cancel()
+        noResponseFromExternalWalletWorkItem = nil
+    }
+    
+    func handleExternalWalletDidNotRespond() {
+        // WC1
+        externalWalletWC1ResponseCallback?(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
+        externalWalletWC1ResponseCallback = nil
+        
+        // WC2
+        externalWalletWC2ResponseCallback?(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
+        externalWalletWC2ResponseCallback = nil
     }
 }
