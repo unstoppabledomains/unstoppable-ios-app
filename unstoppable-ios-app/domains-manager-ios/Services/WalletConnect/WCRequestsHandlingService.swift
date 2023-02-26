@@ -111,7 +111,16 @@ extension WCRequestsHandlingService: WalletConnectV1SignTransactionHandlerDelega
 extension WCRequestsHandlingService: SceneActivationListener {
     func didChangeSceneActivationState(to state: SceneActivationState) {
         if state == .foregroundActive {
-            handleNextRequest()
+            handleNextRequestIfCan()
+        }
+    }
+}
+
+// MARK: - WalletConnectExternalWalletSignerListener
+extension WCRequestsHandlingService: WalletConnectExternalWalletSignerListener {
+    func externalWalletSignerWillHandleRequestInExternalWallet() {
+        Task {
+            await uiHandler?.dismissLoadingPageIfPresented()
         }
     }
 }
@@ -124,10 +133,10 @@ private extension WCRequestsHandlingService {
     
     func addNewRequest(_ request: UnifiedWCRequest) {
         requests.append(request)
-        handleNextRequest()
+        handleNextRequestIfCan()
     }
     
-    func handleNextRequest() {
+    func handleNextRequestIfCan() {
         Task {
             guard await canHandleRequest(),
                   let nextRequest = requests.first else { return }
@@ -302,7 +311,7 @@ private extension WCRequestsHandlingService {
     func didFinishHandlingOf(request: UnifiedWCRequest) {
         requests.removeAll(where: { $0 == request })
         isHandlingRequest = false
-        handleNextRequest()
+        handleNextRequestIfCan()
     }
 }
 
@@ -365,6 +374,7 @@ private extension WCRequestsHandlingService {
         registerDisconnectCallbacks()
         registerWillHandleRequestCallbacks()
         setSceneActivationListener()
+        setExternalWalletSignerListener()
     }
     
     func registerV1RequestHandlers() {
@@ -412,6 +422,10 @@ private extension WCRequestsHandlingService {
         Task { @MainActor in
             SceneDelegate.shared?.addListener(self)
         }
+    }
+    
+    func setExternalWalletSignerListener() {
+        WalletConnectExternalWalletSigner.shared.addListener(self)
     }
 }
 

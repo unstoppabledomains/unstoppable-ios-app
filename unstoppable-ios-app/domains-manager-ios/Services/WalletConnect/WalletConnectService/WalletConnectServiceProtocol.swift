@@ -60,4 +60,5 @@ protocol WalletConnectUIConfirmationHandler: AnyObject {
 
 protocol WalletConnectUIErrorHandler: AnyObject {
     func didFailToConnect(with error: WalletConnectRequestError) async
+    func dismissLoadingPageIfPresented() async 
 }

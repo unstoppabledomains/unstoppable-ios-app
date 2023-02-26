@@ -21,13 +21,29 @@ final class WalletConnectExternalWalletSigner {
     
     static let shared = WalletConnectExternalWalletSigner()
     
+    private var publishers = [AnyCancellable]()
+    private var listeners: [WalletConnectExternalWalletSignerListenerHolder] = []
+    
     private var externalWalletWC1ResponseCallback: ((Swift.Result<WC1Response, Error>)->Void)?
     private var externalWalletWC2ResponseCallback: ((Swift.Result<ResponseV2, Error>)->Void)?
-    private var publishers = [AnyCancellable]()
+    
     private var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
 
     private init() {
         setup()
+    }
+}
+
+// MARK: - Listeners
+extension WalletConnectExternalWalletSigner {
+    func addListener(_ listener: WalletConnectExternalWalletSignerListener) {
+        if !listeners.contains(where: { $0.listener === listener }) {
+            listeners.append(.init(listener: listener))
+        }
+    }
+    
+    func removeListener(_ listener: WalletConnectExternalWalletSignerListener) {
+        listeners.removeAll(where: { $0.listener == nil || $0.listener === listener })
     }
 }
 
@@ -57,7 +73,7 @@ extension WalletConnectExternalWalletSigner {
             }
             
             try clientCallBlock((client, handleCompletion(response:)))
-            try await launchExternalWallet(wallet)
+            try await launchExternalWalletAndNotifyListeners(wallet)
             return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<WC1Response, Error>) in
                 externalWalletWC1ResponseCallback = { result in
                     switch result {
@@ -152,7 +168,7 @@ extension WalletConnectExternalWalletSigner {
         }
         let request = Request(topic: session.topic, method: method.string, params: requestParams, chainId: chainId)
         try await Sign.instance.request(params: request)
-        try await launchExternalWallet(wallet)
+        try await launchExternalWalletAndNotifyListeners(wallet)
         return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<WalletConnectSign.Response, Swift.Error>) in
             externalWalletWC2ResponseCallback = { result in
                 switch result {
@@ -169,7 +185,7 @@ extension WalletConnectExternalWalletSigner {
 // MARK: - Launch external wallet
 private extension WalletConnectExternalWalletSigner {
     @MainActor
-    func launchExternalWallet(_ wallet: UDWallet) throws {
+    func launchExternalWalletAndNotifyListeners(_ wallet: UDWallet) throws {
         guard let wcWallet = wallet.getExternalWallet(),
               let  nativePrefix = wcWallet.getNativeAppLink(),
               let url = URL(string: nativePrefix) else {
@@ -179,32 +195,17 @@ private extension WalletConnectExternalWalletSigner {
         guard UIApplication.shared.canOpenURL(url) else {
             throw WalletConnectRequestError.failedOpenExternalApp
         }
+        notifyListeners()
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
 
-// MARK: - Setup methods
+// MARK: - Private methods
 private extension WalletConnectExternalWalletSigner {
-    func setup() {
-        registerForWC2ClientSessionCallback()
-        registerForAppBecomeActiveNotification()
-    }
-    
-    func registerForWC2ClientSessionCallback() {
-        Sign.instance.sessionResponsePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] response in
-                self?.cancelNoResponseFromExternalWalletWorkItem()
-                self?.externalWalletWC2ResponseCallback?(.success(response))
-                self?.externalWalletWC2ResponseCallback = nil
-            }.store(in: &publishers)
-    }
-    
-    func registerForAppBecomeActiveNotification() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(applicationDidBecomeActive),
-                                               name: UIApplication.didBecomeActiveNotification,
-                                               object: nil)
+    func notifyListeners() {
+        listeners.forEach { holder in
+            holder.listener?.externalWalletSignerWillHandleRequestInExternalWallet()
+        }
     }
     
     @objc func applicationDidBecomeActive() {
@@ -245,4 +246,50 @@ private extension WalletConnectExternalWalletSigner {
         externalWalletWC2ResponseCallback?(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
         externalWalletWC2ResponseCallback = nil
     }
+}
+
+// MARK: - Setup methods
+private extension WalletConnectExternalWalletSigner {
+    func setup() {
+        registerForWC2ClientSessionCallback()
+        registerForAppBecomeActiveNotification()
+    }
+    
+    func registerForWC2ClientSessionCallback() {
+        Sign.instance.sessionResponsePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] response in
+                self?.cancelNoResponseFromExternalWalletWorkItem()
+                self?.externalWalletWC2ResponseCallback?(.success(response))
+                self?.externalWalletWC2ResponseCallback = nil
+            }.store(in: &publishers)
+    }
+    
+    func registerForAppBecomeActiveNotification() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(applicationDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+    }
+}
+
+protocol WalletConnectExternalWalletSignerListener: AnyObject {
+    func externalWalletSignerWillHandleRequestInExternalWallet()
+}
+
+final class WalletConnectExternalWalletSignerListenerHolder: Equatable {
+    
+    weak var listener: WalletConnectExternalWalletSignerListener?
+    
+    init(listener: WalletConnectExternalWalletSignerListener) {
+        self.listener = listener
+    }
+    
+    static func == (lhs: WalletConnectExternalWalletSignerListenerHolder, rhs: WalletConnectExternalWalletSignerListenerHolder) -> Bool {
+        guard let lhsListener = lhs.listener,
+              let rhsListener = rhs.listener else { return false }
+        
+        return lhsListener === rhsListener
+    }
+    
 }

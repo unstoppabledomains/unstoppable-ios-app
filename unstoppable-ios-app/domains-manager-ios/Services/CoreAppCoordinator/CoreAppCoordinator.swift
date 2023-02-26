@@ -166,6 +166,20 @@ extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectU
         default: return
         }
     }
+    
+    @MainActor
+    func dismissLoadingPageIfPresented() async {
+        switch currentRoot {
+        case .domainsCollection(let router):
+            guard let hostView = router.topViewController() else { return }
+            
+            if let pullUpView = hostView as? PullUpViewController,
+               pullUpView.pullUp == .wcLoading {
+                await hostView.dismissPullUpMenu()
+            }
+        default: return
+        }
+    }
 }
 
 // MARK: - WalletConnectClientUIHandler

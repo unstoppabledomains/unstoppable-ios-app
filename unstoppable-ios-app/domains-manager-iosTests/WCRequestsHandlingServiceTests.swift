@@ -697,6 +697,8 @@ private final class MockWalletConnectUIErrorHandler: WalletConnectUIErrorHandler
     func didFailToConnect(with error: domains_manager_ios.WalletConnectRequestError) async {
         didFailToConnect = true
     }
+    
+    func dismissLoadingPageIfPresented() async { }
 }
 
 // MARK: - WalletConnectServiceConnectionListener
