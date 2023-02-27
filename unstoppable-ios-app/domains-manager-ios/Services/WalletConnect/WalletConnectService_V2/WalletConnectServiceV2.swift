@@ -250,16 +250,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                                    icons: [String.Links.udLogoPng.urlString])
         
         Pair.configure(metadata: metadata)
-        
-        let clientId  = try? Networking.interactor.getClientId()
-        if let sanitizedClientId = clientId?.replacingOccurrences(of: "did:key:", with: "") {
-            self.sanitizedClientId = sanitizedClientId
-            #if DEBUG
-            Echo.configure(clientId: sanitizedClientId, environment: .sandbox)
-            #else
-            Echo.configure(clientId: sanitizedClientId, environment: .production)
-            #endif
-        }
     }
     
     private func canSupport( _ proposal: SessionV2.Proposal) -> Bool {

@@ -7,6 +7,7 @@
 
 import UIKit
 import UserNotifications
+import WalletConnectPush
 
 // MARK: - NotificationsServiceProtocol
 protocol NotificationsServiceProtocol {
@@ -38,6 +39,7 @@ final class NotificationsService: NSObject {
         notificationCenter.delegate = self
         wcRequestsHandlingService.addListener(self)
         udWalletsService.addListener(self)
+        configure()
     }
     
 }
@@ -74,6 +76,7 @@ extension NotificationsService: NotificationsServiceProtocol {
         Debugger.printInfo(topic: .PNs, "Device Token: \(token)")
         UserDefaults.apnsToken = token
         updatePushNotificationsInfo(info)
+        registerForWC2PN(deviceToken: deviceToken)
     }
     
     func updateTokenSubscriptions() {
@@ -164,6 +167,29 @@ extension NotificationsService: WalletConnectServiceConnectionListener {
 
 // MARK: - Private methods
 fileprivate extension NotificationsService {
+    func configure() {
+        configureWC2PN()
+    }
+    
+    func configureWC2PN() {
+        #if DEBUG
+        Push.configure(environment: .sandbox)
+        #else
+        Push.configure(environment: .production)
+        #endif
+    }
+    
+    func registerForWC2PN(deviceToken: Data) {
+        Task {
+            do {
+                try await Push.wallet.register(deviceToken: deviceToken)
+                Debugger.printInfo(topic: .PNs, "Did register device token with WC2")
+            } catch {
+                Debugger.printInfo(topic: .PNs, "Failed to register device token with WC2 with error: \(error)")
+            }
+        }
+    }
+    
     @discardableResult
     func checkNotificationPayload(_ userInfo: [AnyHashable : Any], receiveState: ExternalEventReceivedState) -> UNNotificationPresentationOptions {
         if let json = userInfo as? [String : Any],
