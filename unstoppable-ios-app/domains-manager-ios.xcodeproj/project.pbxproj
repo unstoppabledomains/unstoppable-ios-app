@@ -479,6 +479,10 @@
 		C60610F829A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */; };
 		C60610F929A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */; };
 		C60610FA29A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */; };
+		C60610FC29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
+		C60610FD29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
+		C60610FE29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
+		C60610FF29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73D2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
@@ -3362,6 +3366,7 @@
 		C60610E729A7469A005DC0D5 /* WCRequestsHandlingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCRequestsHandlingServiceTests.swift; sourceTree = "<group>"; };
 		C60610E929A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV1SignTransactionHandler.swift; sourceTree = "<group>"; };
 		C60610F629A8A407005DC0D5 /* WalletConnectExternalWalletSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectExternalWalletSigner.swift; sourceTree = "<group>"; };
+		C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonWithExtendedTappableArea.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
@@ -4206,6 +4211,7 @@
 				C60DCEE1282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift */,
 				C6D6E5B1281A215D008C66BB /* SegmentPicker.swift */,
 				C6D6E5A22819945C008C66BB /* StatusMessage.swift */,
+				C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */,
 				C650AC3C298105C900A398AB /* UDSegmentedControl.swift */,
 				C6B6858F28007C09000F9037 /* UDCheckBox.swift */,
 				C6E041D7295588C90080F8E3 /* UDPageControl.swift */,
@@ -7837,6 +7843,7 @@
 				C66804D5280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
 				C6ECBF8128D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
 				C609823A2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
+				C60610FC29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */,
 				306DB27226936C57009D95DE /* Endpoint.swift in Sources */,
 				C6E041DD2955EC5B0080F8E3 /* CarouselCardState.swift in Sources */,
 				C6124CC729222CC7005E6537 /* DashesView.swift in Sources */,
@@ -8933,6 +8940,7 @@
 				C664B6522914C0F000A76154 /* DomainProfileMetadataCell.swift in Sources */,
 				C669C3922912632100837F21 /* SocialsVerificationViewController.swift in Sources */,
 				299713C528F692AB00743003 /* ABIValue.swift in Sources */,
+				C60610FE29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */,
 				C6A2D55E284F3E3200327C47 /* SignTransactionDomainSelectionViewController.swift in Sources */,
 				C6E04180295057FE0080F8E3 /* DomainsListViewPresenter.swift in Sources */,
 				C66804AF280D93E5007E6390 /* ObjectWithAttributedString.swift in Sources */,
@@ -9553,6 +9561,7 @@
 				C664B6532914C0F000A76154 /* DomainProfileMetadataCell.swift in Sources */,
 				C669C3932912632100837F21 /* SocialsVerificationViewController.swift in Sources */,
 				299713C628F692AB00743003 /* ABIValue.swift in Sources */,
+				C60610FF29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */,
 				C6A2D55F284F3E3200327C47 /* SignTransactionDomainSelectionViewController.swift in Sources */,
 				C6E04181295057FE0080F8E3 /* DomainsListViewPresenter.swift in Sources */,
 				C66804B0280D93E5007E6390 /* ObjectWithAttributedString.swift in Sources */,
@@ -9755,6 +9764,7 @@
 				C66804D6280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
 				C6ECBF8228D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
 				C609823B2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
+				C60610FD29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */,
 				306DB27326936C57009D95DE /* Endpoint.swift in Sources */,
 				C6E041DE2955EC5B0080F8E3 /* CarouselCardState.swift in Sources */,
 				C6124CC829222CC7005E6537 /* DashesView.swift in Sources */,
@@ -10997,24 +11007,24 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WalletConnect/WalletConnectSwiftV2";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.2;
+				kind = exactVersion;
+				version = 1.3.2;
 			};
 		};
 		306B3D73253EE8EC00102A76 /* XCRemoteSwiftPackageReference "Web3.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Boilertalk/Web3.swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.0;
+				kind = exactVersion;
+				version = 0.5.3;
 			};
 		};
 		307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/attaswift/BigInt";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.2.1;
+				kind = exactVersion;
+				version = 5.3.0;
 			};
 		};
 		307F83B7267A339F0070A9A6 /* XCRemoteSwiftPackageReference "Web3.swift" */ = {
@@ -11085,8 +11095,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WalletConnect/WalletConnectSwift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.6.0;
+				kind = exactVersion;
+				version = 1.7.0;
 			};
 		};
 		30AE84C8257836E2003A0142 /* XCRemoteSwiftPackageReference "Web3.swift" */ = {
@@ -11101,8 +11111,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stripe/stripe-ios";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 22.5.0;
+				kind = exactVersion;
+				version = 22.8.4;
 			};
 		};
 		30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */ = {
@@ -11117,8 +11127,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bugsnag/bugsnag-cocoa";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.10.2;
+				kind = exactVersion;
+				version = 6.25.2;
 			};
 		};
 		C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */ = {

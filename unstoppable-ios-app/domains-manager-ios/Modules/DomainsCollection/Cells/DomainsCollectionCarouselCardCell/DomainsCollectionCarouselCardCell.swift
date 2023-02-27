@@ -22,8 +22,9 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
     @IBOutlet private weak var domainNameCollapsedLabel: UILabel!
     @IBOutlet private weak var domainTLDLabel: UILabel!
     @IBOutlet private weak var domainTLDCollapsedLabel: UILabel!
-    @IBOutlet private weak var actionButton: UIButton!
-    @IBOutlet private weak var actionButtonUIView: UIButton!
+    @IBOutlet private weak var actionButton: UIButtonWithExtendedTappableArea!
+    @IBOutlet private weak v
+    ar actionButtonUIView: UIButtonWithExtendedTappableArea!
     @IBOutlet private weak var carouselView: CarouselView!
     @IBOutlet private weak var statusMessage: StatusMessage!
     
