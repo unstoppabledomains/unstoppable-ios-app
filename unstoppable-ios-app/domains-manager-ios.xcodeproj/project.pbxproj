@@ -10935,24 +10935,24 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WalletConnect/WalletConnectSwiftV2";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.2;
+				kind = exactVersion;
+				version = 1.3.2;
 			};
 		};
 		306B3D73253EE8EC00102A76 /* XCRemoteSwiftPackageReference "Web3.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Boilertalk/Web3.swift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.0;
+				kind = exactVersion;
+				version = 0.5.3;
 			};
 		};
 		307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/attaswift/BigInt";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.2.1;
+				kind = exactVersion;
+				version = 5.3.0;
 			};
 		};
 		307F83B7267A339F0070A9A6 /* XCRemoteSwiftPackageReference "Web3.swift" */ = {
@@ -11023,8 +11023,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WalletConnect/WalletConnectSwift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.6.0;
+				kind = exactVersion;
+				version = 1.7.0;
 			};
 		};
 		30AE84C8257836E2003A0142 /* XCRemoteSwiftPackageReference "Web3.swift" */ = {
@@ -11039,8 +11039,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/stripe/stripe-ios";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 22.5.0;
+				kind = exactVersion;
+				version = 22.8.4;
 			};
 		};
 		30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */ = {
@@ -11055,8 +11055,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/bugsnag/bugsnag-cocoa";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 6.10.2;
+				kind = exactVersion;
+				version = 6.25.2;
 			};
 		};
 		C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */ = {
