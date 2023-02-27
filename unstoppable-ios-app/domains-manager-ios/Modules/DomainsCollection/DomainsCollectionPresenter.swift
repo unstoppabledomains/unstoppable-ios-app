@@ -545,6 +545,8 @@ private extension DomainsCollectionPresenter {
         if !didUpdateSelectedDomainIndex,
            isDomainIndexChanged(at: currentIndex - 1) || isDomainIndexChanged(at: currentIndex + 1) {
             updateSelectedDomain(currentlySelectedDomain, at: currentIndex, newCurrentIndex: currentIndex)
+        } else if currentDomains.count == 1 && domains.count != 1 {
+            updateSelectedDomain(currentlySelectedDomain, at: currentIndex, newCurrentIndex: currentIndex)
         }
     }
     
