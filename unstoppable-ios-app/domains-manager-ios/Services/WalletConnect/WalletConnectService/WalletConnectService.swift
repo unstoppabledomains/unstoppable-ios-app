@@ -198,7 +198,7 @@ extension WalletConnectService: ServerDelegate {
             }
             
             Debugger.printInfo("Connected to \(session.dAppInfo.getDappName())")
-            reportConnectionCompletion(result: .success(PushSubscriberInfo(app: newApp)))
+            reportConnectionCompletion(result: .success(UnifiedConnectAppInfo(from: newApp)))
             intentsStorage.removeAll()
         }
     }
@@ -210,7 +210,7 @@ extension WalletConnectService: ServerDelegate {
                 Debugger.printFailure("Failed to remove from ConnectedAppsStorage the app by session: \(session)")
                 return }
             Debugger.printWarning("Disconnected from \(session.dAppInfo.getDappName())")
-            appDisconnectedCallback?(PushSubscriberInfo(app: removedApp))
+            appDisconnectedCallback?(UnifiedConnectAppInfo(from: removedApp))
         }
     }
     

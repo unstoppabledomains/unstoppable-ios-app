@@ -168,7 +168,7 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
 
 // MARK: - WalletConnectServiceListener
 extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
-    func didConnect(to app: PushSubscriberInfo?) {
+    func didConnect(to app: UnifiedConnectAppInfo) {
         Task {
             await showNumberOfAppsConnected()
         }
@@ -179,7 +179,7 @@ extension QRScannerViewPresenter: WalletConnectServiceConnectionListener {
         waitAndResumeAcceptingQRCodes()
     }
     
-    func didDisconnect(from app: PushSubscriberInfo?) {
+    func didDisconnect(from app: UnifiedConnectAppInfo) {
         Task {
             await showNumberOfAppsConnected()
         }

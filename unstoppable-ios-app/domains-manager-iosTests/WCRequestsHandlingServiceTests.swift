@@ -55,7 +55,7 @@ extension WCRequestsHandlingServiceTests {
     
     func testWCV1ConnectionRequestHandled() async throws {
         verifyInitialState()
-        try await makeWC1RequestWith(result: .success(nil))
+        try await makeWC1RequestWith(result: .success(createV1UnifiedConnectAppInfo()))
         
         // Check listeners notified correctly
         XCTAssertNil(mockWCServiceV1.completion)
@@ -160,7 +160,7 @@ extension WCRequestsHandlingServiceTests {
     
     func testWCV2ConnectionRequestHandled() async throws {
         verifyInitialState()
-        try await makeWC2RequestWith(result: .success(nil))
+        try await makeWC2RequestWith(result: .success(createV1UnifiedConnectAppInfo()))
         
         // Check listeners notified correctly
         XCTAssertNil(mockWCServiceV1.completion)
@@ -250,7 +250,7 @@ extension WCRequestsHandlingServiceTests {
     func testWCV1Disconnected() async throws {
         verifyInitialState()
         
-        mockWCServiceV1.appDisconnectedCallback?(nil)
+        mockWCServiceV1.appDisconnectedCallback?(createV1UnifiedConnectAppInfo())
         try await waitFor(interval: 0.1)
         
         XCTAssertFalse(mockListener.didHandleExternalWCRequest)
@@ -262,7 +262,7 @@ extension WCRequestsHandlingServiceTests {
     func testWCV2Disconnected() async throws {
         verifyInitialState()
         
-        mockWCServiceV2.appDisconnectedCallback?(nil)
+        mockWCServiceV2.appDisconnectedCallback?(createV1UnifiedConnectAppInfo())
         try await waitFor(interval: 0.1)
         
         XCTAssertFalse(mockListener.didHandleExternalWCRequest)
@@ -283,7 +283,7 @@ extension WCRequestsHandlingServiceTests {
         try await handleWCV1ConnectionRequestAndWait()
       
         // Complete first request
-        mockWCServiceV1.callCompletion(result: .success(nil))
+        mockWCServiceV1.callCompletion(result: .success(createV1UnifiedConnectAppInfo()))
         try await waitFor(interval: 0.1)
         XCTAssertEqual(mockListener.didConnectCalledCount, 1)
         XCTAssertNil(mockWCServiceV1.completion)
@@ -308,14 +308,14 @@ extension WCRequestsHandlingServiceTests {
         XCTAssertFalse(mockListener.didConnectCalled)
         
         // Complete first request
-        mockWCServiceV1.callCompletion(result: .success(nil))
+        mockWCServiceV1.callCompletion(result: .success(createV1UnifiedConnectAppInfo()))
         try await waitFor(interval: 0.1)
         XCTAssertEqual(mockListener.didConnectCalledCount, 1)
         XCTAssertNotNil(mockWCServiceV1.completion)
         XCTAssertNil(mockWCServiceV2.completion)
         
         // Complete second request
-        mockWCServiceV1.callCompletion(result: .success(nil))
+        mockWCServiceV1.callCompletion(result: .success(createV1UnifiedConnectAppInfo()))
         try await waitFor(interval: 0.1)
         XCTAssertEqual(mockListener.didConnectCalledCount, 2)
         XCTAssertNil(mockWCServiceV1.completion)
@@ -376,7 +376,7 @@ extension WCRequestsHandlingServiceTests {
         XCTAssertFalse(mockListener.didConnectCalled)
         
         // Complete first WC2 request
-        mockWCServiceV2.callCompletion(result: .success(nil))
+        mockWCServiceV2.callCompletion(result: .success(createV1UnifiedConnectAppInfo()))
         try await waitFor(interval: 0.1)
         
         // Check WC2 request handled. Check WC1 turn now
@@ -385,7 +385,7 @@ extension WCRequestsHandlingServiceTests {
         XCTAssertNil(mockWCServiceV2.completion)
         
         // Complete second WC1 request
-        mockWCServiceV1.callCompletion(result: .success(nil))
+        mockWCServiceV1.callCompletion(result: .success(createV1UnifiedConnectAppInfo()))
         try await waitFor(interval: 0.1)
         
         // Check WC1 request handled
@@ -711,11 +711,11 @@ private final class MockWCServiceListener: WalletConnectServiceConnectionListene
     var didHandleExternalWCRequest: Bool { didHandleExternalWCRequestCount > 0 }
     private(set) var didHandleExternalWCRequestCount = 0
     
-    func didConnect(to app: domains_manager_ios.PushSubscriberInfo?) {
+    func didConnect(to app: domains_manager_ios.UnifiedConnectAppInfo) {
         didConnectCalledCount += 1
     }
     
-    func didDisconnect(from app: domains_manager_ios.PushSubscriberInfo?) {
+    func didDisconnect(from app: domains_manager_ios.UnifiedConnectAppInfo) {
         didDisconnectCalled = true
     }
     

@@ -53,7 +53,7 @@ final class DeepLinksServiceTests: BaseTestClass {
         
         // Test user redirected back to the source app when request confirmed
         try await XCTAssertFalseAsync(await mockCoreAppCoordinator.didGoBackToPreviousAppCalled)
-        deepLinksService.didConnect(to: nil)
+        deepLinksService.didConnect(to: createV1UnifiedConnectAppInfo())
         try await waitFor(interval: 0.1)
         try await XCTAssertTrueAsync(await mockCoreAppCoordinator.didGoBackToPreviousAppCalled)
     }

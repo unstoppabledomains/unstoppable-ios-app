@@ -10,9 +10,9 @@ import WalletConnectSwift
 import Web3
 import PromiseKit
 
-typealias WCConnectionResult = Swift.Result<PushSubscriberInfo?, Swift.Error>
+typealias WCConnectionResult = Swift.Result<UnifiedConnectAppInfo, Swift.Error>
 typealias WCConnectionResultCompletion = ((WCConnectionResult)->())
-typealias WCAppDisconnectedCallback = ((PushSubscriberInfo?)->())
+typealias WCAppDisconnectedCallback = ((UnifiedConnectAppInfo)->())
 
 protocol WalletConnectV1RequestHandlingServiceProtocol {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }

@@ -8,6 +8,9 @@
 import XCTest
 @testable import domains_manager_ios
 
+// WCV1
+import WalletConnectSwift
+
 class BaseTestClass: XCTestCase {
    
     func waitFor(interval: TimeInterval = 0.2) async throws {
@@ -52,6 +55,27 @@ class BaseTestClass: XCTestCase {
     
     func createMockDomainItem() -> DomainItem {
         DomainItem(name: "olegkuhkjdfsjhfdkhflakjhdfi748723642in.coin", blockchain: .Ethereum)
+    }
+    
+    func createWCV1Session() -> WalletConnectSwift.Session {
+        let genericURL = URL(string: "https://g.com")!
+        
+        return .init(url: .init(topic: "topic", bridgeURL: genericURL, key: "key"),
+                     dAppInfo: .init(peerId: "peerId",
+                                     peerMeta: .init(name: "Name",
+                                                     description: nil,
+                                                     icons: [],
+                                                     url: genericURL)),
+                     walletInfo: nil)
+    }
+    
+    func createV1UnifiedConnectAppInfo() -> UnifiedConnectAppInfo {
+        let newApp = WCConnectedAppsStorage.ConnectedApp(walletAddress: walletAddress,
+                                            domain: createMockDomainItem(),
+                                            session: createWCV1Session(),
+                                            appIconUrls: [],
+                                            connectionStartDate: Date())
+        return UnifiedConnectAppInfo(from: newApp)
     }
 
 }

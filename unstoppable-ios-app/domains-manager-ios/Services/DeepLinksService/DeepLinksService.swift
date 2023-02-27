@@ -53,10 +53,10 @@ extension DeepLinksService: DeepLinksServiceProtocol {
 
 // MARK: - WalletConnectServiceListener
 extension DeepLinksService: WalletConnectServiceConnectionListener {
-    func didConnect(to app: PushSubscriberInfo?) {
+    func didConnect(to app: UnifiedConnectAppInfo) {
         checkExpectingWCURLAndGoBackIfNeeded()
     }
-    func didDisconnect(from app: PushSubscriberInfo?) { }
+    func didDisconnect(from app: UnifiedConnectAppInfo) { }
     func didCompleteConnectionAttempt() {
         checkExpectingWCURLAndGoBackIfNeeded()
     }

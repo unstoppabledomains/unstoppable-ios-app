@@ -26,10 +26,10 @@ protocol WalletConnectServiceProtocol {
 
 typealias WCExternalRequestResult = Result<Void, Error>
 protocol WalletConnectServiceConnectionListener: AnyObject {
-    func didConnect(to app: PushSubscriberInfo?)
-    func didDisconnect(from app: PushSubscriberInfo?)
-    func didCompleteConnectionAttempt() // DeepLinks service, QRScanner
-    func didHandleExternalWCRequestWith(result: WCExternalRequestResult) // DeepLinks
+    func didConnect(to app: UnifiedConnectAppInfo)
+    func didDisconnect(from app: UnifiedConnectAppInfo)
+    func didCompleteConnectionAttempt()
+    func didHandleExternalWCRequestWith(result: WCExternalRequestResult)
 }
 
 extension WalletConnectServiceConnectionListener {

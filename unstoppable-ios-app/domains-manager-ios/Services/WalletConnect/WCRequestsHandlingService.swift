@@ -340,7 +340,7 @@ private extension WCRequestsHandlingService {
 
 // MARK: - Notifications methods
 private extension WCRequestsHandlingService {
-    func notifyDidConnect(to app: PushSubscriberInfo?) {
+    func notifyDidConnect(to app: UnifiedConnectAppInfo) {
         listeners.forEach { holder in
             holder.listener?.didConnect(to: app)
         }
@@ -352,7 +352,7 @@ private extension WCRequestsHandlingService {
         }
     }
     
-    func notifyDidDisconnect(from app: PushSubscriberInfo?) {
+    func notifyDidDisconnect(from app: UnifiedConnectAppInfo) {
         listeners.forEach { holder in
             holder.listener?.didDisconnect(from: app)
         }

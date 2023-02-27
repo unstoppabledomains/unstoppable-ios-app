@@ -213,7 +213,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
         await self.appsStorageV2.remove(byTopic: toDisconnect.sessionProxy.topic)
         try await self.disconnect(topic: toDisconnect.sessionProxy.topic)
-        appDisconnectedCallback?(PushSubscriberInfo(appV2: toDisconnect))
+        appDisconnectedCallback?(UnifiedConnectAppInfo(from: toDisconnect))
     }
     
     private func disconnectApp(by topic: String) async throws {
@@ -224,7 +224,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
         await self.appsStorageV2.remove(byTopic: topic)
         try await self.disconnect(topic: topic)
-        appDisconnectedCallback?(PushSubscriberInfo(appV2: toDisconnect))
+        appDisconnectedCallback?(UnifiedConnectAppInfo(from: toDisconnect))
     }
     
     private func _disconnect(session: SessionV2) async throws {
@@ -358,7 +358,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     if let removedApp = await self?.appsStorageV2.remove(byTopic: topic) {
                         Debugger.printWarning("Disconnected from dApp topic: \(topic)")
                         
-                        self?.appDisconnectedCallback?(PushSubscriberInfo(appV2: removedApp))
+                        self?.appDisconnectedCallback?(UnifiedConnectAppInfo(from: removedApp))
                     } else if let removedExtWallet = await self?.walletStorageV2.remove(byTopic: topic){
                         // Client part, an external wallet has killed the session
                         Debugger.printWarning("Disconnected from Wallet topic: \(topic)")
@@ -428,7 +428,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             }
             
             Debugger.printInfo("Connected to \(session.peer.name)")
-            reportConnectionCompletion(result: .success(PushSubscriberInfo(appV2: newApp)))
+            reportConnectionCompletion(result: .success(UnifiedConnectAppInfo(from: newApp)))
             intentsStorage.removeAll()
         }
     }

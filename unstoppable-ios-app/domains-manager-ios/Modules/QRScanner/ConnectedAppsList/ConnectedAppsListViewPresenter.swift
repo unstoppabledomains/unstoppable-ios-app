@@ -45,13 +45,13 @@ extension ConnectedAppsListViewPresenter: ConnectedAppsListViewPresenterProtocol
 
 // MARK: - WalletConnectServiceListener
 extension ConnectedAppsListViewPresenter: WalletConnectServiceConnectionListener {
-    func didConnect(to app: PushSubscriberInfo?) {
+    func didConnect(to app: UnifiedConnectAppInfo) {
         Task {
             await showConnectedAppsList()
         }
     }
     
-    func didDisconnect(from app: PushSubscriberInfo?) {
+    func didDisconnect(from app: UnifiedConnectAppInfo) {
         Task {
             await showConnectedAppsList()
         }

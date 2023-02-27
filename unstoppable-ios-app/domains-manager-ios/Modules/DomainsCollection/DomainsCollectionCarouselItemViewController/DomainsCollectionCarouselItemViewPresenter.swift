@@ -124,16 +124,16 @@ extension DomainsCollectionCarouselItemViewPresenter: AppLaunchServiceListener {
 
 // MARK: - WalletConnectServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnectionListener {
-    func didConnect(to app: PushSubscriberInfo?) {
-        guard app?.domainName == self.domain.name else { return }
+    func didConnect(to app: UnifiedConnectAppInfo) {
+        guard app.domain.isSameEntity(self.domain) else { return }
         
         Task {
             await showDomainDataWithActions(animated: true)
         }
     }
     
-    func didDisconnect(from app: PushSubscriberInfo?) {
-        guard app?.domainName == self.domain.name else { return }
+    func didDisconnect(from app: UnifiedConnectAppInfo) {
+        guard app.domain.name == self.domain.name else { return }
 
         Task {
             await showDomainDataWithActions(animated: true)
