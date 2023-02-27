@@ -454,6 +454,10 @@
 		C6045B8D281C2AA900B16761 /* EmptyCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */; };
 		C6045B8E281C2AA900B16761 /* EmptyCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */; };
 		C6045B8F281C2AA900B16761 /* EmptyCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */; };
+		C60610FC29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
+		C60610FD29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
+		C60610FE29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
+		C60610FF29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73D2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
@@ -3334,6 +3338,7 @@
 		C603E8C8285859560028C21C /* CollectionViewHeaderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewHeaderCell.xib; sourceTree = "<group>"; };
 		C6045B86281C160000B16761 /* SettingsFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFooterView.swift; sourceTree = "<group>"; };
 		C6045B8B281C2AA900B16761 /* EmptyCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCollectionReusableView.swift; sourceTree = "<group>"; };
+		C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonWithExtendedTappableArea.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
@@ -4179,6 +4184,7 @@
 				C60DCEE1282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift */,
 				C6D6E5B1281A215D008C66BB /* SegmentPicker.swift */,
 				C6D6E5A22819945C008C66BB /* StatusMessage.swift */,
+				C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */,
 				C650AC3C298105C900A398AB /* UDSegmentedControl.swift */,
 				C6B6858F28007C09000F9037 /* UDCheckBox.swift */,
 				C6E041D7295588C90080F8E3 /* UDPageControl.swift */,
@@ -7796,6 +7802,7 @@
 				C66804D5280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
 				C6ECBF8128D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
 				C609823A2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
+				C60610FC29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */,
 				306DB27226936C57009D95DE /* Endpoint.swift in Sources */,
 				C6E041DD2955EC5B0080F8E3 /* CarouselCardState.swift in Sources */,
 				C6124CC729222CC7005E6537 /* DashesView.swift in Sources */,
@@ -8887,6 +8894,7 @@
 				C664B6522914C0F000A76154 /* DomainProfileMetadataCell.swift in Sources */,
 				C669C3922912632100837F21 /* SocialsVerificationViewController.swift in Sources */,
 				299713C528F692AB00743003 /* ABIValue.swift in Sources */,
+				C60610FE29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */,
 				C6A2D55E284F3E3200327C47 /* SignTransactionDomainSelectionViewController.swift in Sources */,
 				C6E04180295057FE0080F8E3 /* DomainsListViewPresenter.swift in Sources */,
 				C66804AF280D93E5007E6390 /* ObjectWithAttributedString.swift in Sources */,
@@ -9502,6 +9510,7 @@
 				C664B6532914C0F000A76154 /* DomainProfileMetadataCell.swift in Sources */,
 				C669C3932912632100837F21 /* SocialsVerificationViewController.swift in Sources */,
 				299713C628F692AB00743003 /* ABIValue.swift in Sources */,
+				C60610FF29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */,
 				C6A2D55F284F3E3200327C47 /* SignTransactionDomainSelectionViewController.swift in Sources */,
 				C6E04181295057FE0080F8E3 /* DomainsListViewPresenter.swift in Sources */,
 				C66804B0280D93E5007E6390 /* ObjectWithAttributedString.swift in Sources */,
@@ -9698,6 +9707,7 @@
 				C66804D6280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
 				C6ECBF8228D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
 				C609823B2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
+				C60610FD29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */,
 				306DB27326936C57009D95DE /* Endpoint.swift in Sources */,
 				C6E041DE2955EC5B0080F8E3 /* CarouselCardState.swift in Sources */,
 				C6124CC829222CC7005E6537 /* DashesView.swift in Sources */,
