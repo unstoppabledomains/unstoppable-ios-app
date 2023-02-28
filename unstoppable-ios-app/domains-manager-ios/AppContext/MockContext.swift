@@ -12,15 +12,14 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var externalEventsService: ExternalEventsServiceProtocol = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
                                                                                                        dataAggregatorService: dataAggregatorService,
                                                                                                        udWalletsService: udWalletsService,
-                                                                                                       walletConnectServiceV2: walletConnectServiceV2)
+                                                                                                       walletConnectServiceV2: walletConnectServiceV2, walletConnectRequestsHandlingService: wcRequestsHandlingService)
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var notificationsService: NotificationsServiceProtocol = {
         NotificationsService(externalEventsService: externalEventsService,
                              permissionsService: permissionsService,
                              udWalletsService: udWalletsService,
-                             walletConnectService: walletConnectService,
-                             walletConnectServiceV2: walletConnectServiceV2)
+                             wcRequestsHandlingService: wcRequestsHandlingService)
     }()
     private(set) lazy var permissionsService: PermissionsServiceProtocol = PermissionsService()
     private(set) lazy var pullUpViewService: PullUpViewServiceProtocol = PullUpViewService(authentificationService: authentificationService)
@@ -51,7 +50,7 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var walletConnectServiceV2: WalletConnectServiceV2Protocol = MockWalletConnectServiceV2()
     private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = MockWalletConnectClientManager()
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
-
+    private(set) lazy var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol = MockWCRequestsHandlingService()
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
 }

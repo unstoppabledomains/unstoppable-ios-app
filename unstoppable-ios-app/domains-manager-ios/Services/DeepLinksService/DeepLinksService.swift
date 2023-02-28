@@ -52,11 +52,11 @@ extension DeepLinksService: DeepLinksServiceProtocol {
 }
 
 // MARK: - WalletConnectServiceListener
-extension DeepLinksService: WalletConnectServiceListener {
-    func didConnect(to app: PushSubscriberInfo?) {
+extension DeepLinksService: WalletConnectServiceConnectionListener {
+    func didConnect(to app: UnifiedConnectAppInfo) {
         checkExpectingWCURLAndGoBackIfNeeded()
     }
-    func didDisconnect(from app: PushSubscriberInfo?) { }
+    func didDisconnect(from app: UnifiedConnectAppInfo) { }
     func didCompleteConnectionAttempt() {
         checkExpectingWCURLAndGoBackIfNeeded()
     }
@@ -110,7 +110,13 @@ private extension DeepLinksService {
         guard isWCDeepLinkUrl(from: components) else { return }
         
         self.isExpectingWCInteraction = true
-        guard let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) else { return }
+        guard let walletConnectURL = self.parseWalletConnectURL(from: components, in: incomingURL) else {
+            Task {
+                appContext.wcRequestsHandlingService.expectConnection()
+                try? await coreAppCoordinator.handle(uiFlow: .showPullUpLoading)
+            }
+            return
+        }
         
         appContext.analyticsService.log(event: .didOpenDeepLink,
                                         withParameters: [.deepLink : "walletConnect"])

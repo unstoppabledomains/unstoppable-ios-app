@@ -275,6 +275,7 @@ private extension DomainsCollectionPresenter {
             
             ConfettiImageView.prepareAnimationsAsync()
             if domains.count == 1 {
+                domains[0].setOrder(0)
                 await updateDomainsListOrder(with: domains, newIndex: 0)
             } else {
                 updateUI()

@@ -53,7 +53,7 @@ final class DeepLinksServiceTests: BaseTestClass {
         
         // Test user redirected back to the source app when request confirmed
         try await XCTAssertFalseAsync(await mockCoreAppCoordinator.didGoBackToPreviousAppCalled)
-        deepLinksService.didConnect(to: nil)
+        deepLinksService.didConnect(to: createV1UnifiedConnectAppInfo())
         try await waitFor(interval: 0.1)
         try await XCTAssertTrueAsync(await mockCoreAppCoordinator.didGoBackToPreviousAppCalled)
     }
@@ -202,7 +202,7 @@ private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
         throw NSError(domain: "-1", code: -1)
     }
     
-    func didFailToConnect(with error: domains_manager_ios.WalletConnectService.Error) {
+    func didFailToConnect(with error: domains_manager_ios.WalletConnectRequestError) {
         
     }
     

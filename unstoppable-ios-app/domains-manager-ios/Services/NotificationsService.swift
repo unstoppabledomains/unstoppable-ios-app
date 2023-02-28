@@ -31,15 +31,13 @@ final class NotificationsService: NSObject {
     init(externalEventsService: ExternalEventsServiceProtocol,
          permissionsService: PermissionsServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectService: WalletConnectServiceProtocol,
-         walletConnectServiceV2: WalletConnectServiceV2Protocol) {
+         wcRequestsHandlingService: WCRequestsHandlingServiceProtocol) {
         self.externalEventsService = externalEventsService
         self.permissionsService = permissionsService
         self.udWalletsService = udWalletsService
         super.init()
         notificationCenter.delegate = self
-        walletConnectService.addListener(self)
-        walletConnectServiceV2.addListener(self)
+        wcRequestsHandlingService.addListener(self)
         udWalletsService.addListener(self)
         configure()
     }
@@ -142,26 +140,32 @@ extension NotificationsService: UDWalletsServiceListener {
 }
 
 // MARK: - WalletConnectServiceListener
-extension NotificationsService: WalletConnectServiceListener {
-    func didConnect(to app: PushSubscriberInfo?) {
+extension NotificationsService: WalletConnectServiceConnectionListener {
+    func didConnect(to app: UnifiedConnectAppInfo) {
         checkNotificationsPermissions()
-        guard let subscriberApp = app else {
-            Debugger.printFailure("Failed to get wallet info for dApp while subscribing to WC PN")
-            return
-        }
         
-        subscribeToWC(dAppName: subscriberApp.dAppName,
-                      wcWalletPeerId: subscriberApp.peerId,
-                      bridgeUrl: subscriberApp.bridgeUrl,
-                      domainName: subscriberApp.domainName)
+        switch app.appInfo.dAppInfoInternal {
+        case .version1(let session):
+            guard let walletInfo = session.walletInfo else { return }
+
+            subscribeToWC(dAppName: app.appName,
+                          wcWalletPeerId: walletInfo.peerId,
+                          bridgeUrl: session.url.bridgeURL,
+                          domainName: app.domain.name)
+        case .version2:
+            return // TODO: - WC2 Send PN on its own
+        }
     }
     
-    func didDisconnect(from app: PushSubscriberInfo?) {
-        guard let subscriberApp = app else {
-            Debugger.printFailure("Failed to get wallet info for dApp while Unsubscribing to WC PN")
-            return
+    func didDisconnect(from app: UnifiedConnectAppInfo) {
+        switch app.appInfo.dAppInfoInternal {
+        case .version1(let session):
+            guard let walletInfo = session.walletInfo else { return }
+            
+            unsubscribeToWC(wcWalletPeerId: walletInfo.peerId)
+        case .version2:
+            return // TODO: - Handled by WC2
         }
-        unsubscribeToWC(wcWalletPeerId: subscriberApp.peerId)
     }
     
     func didCompleteConnectionAttempt() { }

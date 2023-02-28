@@ -10,42 +10,37 @@ import Web3
 import WalletConnectSwift
 
 protocol WalletConnectServiceProtocol {
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler)
-    func connectAsync(to request: WalletConnectService.ConnectWalletRequest)
+    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) 
     func reconnectExistingSessions()
     
     func disconnect(app: WCConnectedAppsStorage.ConnectedApp) async
     func disconnect(peerId: String)
     func getConnectedAppsV1() -> [WCConnectedAppsStorage.ConnectedApp]
-    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol)
     
     func didRemove(wallet: UDWallet)
     func didLostOwnership(to domain: DomainItem)
-    
-    func addListener(_ listener: WalletConnectServiceListener)
-    func removeListener(_ listener: WalletConnectServiceListener)
     
     func completeTx(transaction: EthereumTransaction,
                             chainId: Int) async throws -> EthereumTransaction
 }
 
 typealias WCExternalRequestResult = Result<Void, Error>
-protocol WalletConnectServiceListener: AnyObject {
-    func didConnect(to app: PushSubscriberInfo?)
-    func didDisconnect(from app: PushSubscriberInfo?)
+protocol WalletConnectServiceConnectionListener: AnyObject {
+    func didConnect(to app: UnifiedConnectAppInfo)
+    func didDisconnect(from app: UnifiedConnectAppInfo)
     func didCompleteConnectionAttempt()
     func didHandleExternalWCRequestWith(result: WCExternalRequestResult)
 }
 
-extension WalletConnectServiceListener {
+extension WalletConnectServiceConnectionListener {
     func didHandleExternalWCRequestWith(result: WCExternalRequestResult) { }
 }
 
 final class WalletConnectServiceListenerHolder: Equatable {
     
-    weak var listener: WalletConnectServiceListener?
+    weak var listener: WalletConnectServiceConnectionListener?
     
-    init(listener: WalletConnectServiceListener) {
+    init(listener: WalletConnectServiceConnectionListener) {
         self.listener = listener
     }
     
@@ -58,9 +53,12 @@ final class WalletConnectServiceListenerHolder: Equatable {
     
 }
 
-protocol WalletConnectUIHandler: AnyObject {
+protocol WalletConnectUIConfirmationHandler: AnyObject {
     @discardableResult
     func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectService.ConnectionUISettings
-    func didFailToConnect(with error: WalletConnectService.Error)
-    func didReceiveUnsupported(_ wcRequestMethodName: String)
+}
+
+protocol WalletConnectUIErrorHandler: AnyObject {
+    func didFailToConnect(with error: WalletConnectRequestError) async
+    func dismissLoadingPageIfPresented() async 
 }

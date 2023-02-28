@@ -36,31 +36,21 @@ extension UDWallet {
                                                                                          tx: ethTx)
         }
         
-        throw WalletConnectService.Error.noWCSessionFound
+        throw WalletConnectRequestError.noWCSessionFound
     }
     
     private func singTxViaWalletConnect_V1(sessionWithExtWallet: Session,
                                            request: Request,
                                            tx: EthereumTransaction) async throws -> String {
-        
-        return try await withSafeCheckedThrowingContinuation { continuation in
-            self.signTxViaWalletConnect(session: sessionWithExtWallet, tx: tx)
-                .done { response in
-                    if let error = response.error {
-                        continuation(.failure(error))
-                    }
-                    let result = try response.result(as: String.self)
-                    continuation(.success(result))
-                }.catch { error in
-                    continuation(.failure(error))
-                }
-        }
+        let response = try await WalletConnectExternalWalletHandler.shared.signTxViaWalletConnect_V1(session: sessionWithExtWallet, tx: tx, in: self)
+        let result = try response.result(as: String.self)
+        return result
     }
     
     func signTxLocally_V1(ethTx: EthereumTransaction, chainId: BigUInt) throws -> String {
         guard let privKeyString = self.getPrivateKey() else {
             Debugger.printFailure("No private key in \(self)", critical: true)
-            throw WalletConnectService.Error.failedToGetPrivateKey
+            throw WalletConnectRequestError.failedToGetPrivateKey
         }
         
         let privateKey = try EthereumPrivateKey(hexPrivateKey: privKeyString)

@@ -33,6 +33,7 @@ protocol AppContextProtocol {
     var userDataService: UserDataServiceProtocol { get }
     var walletConnectClientService: WalletConnectClientServiceProtocol { get }
     var linkPresentationService: LinkPresentationServiceProtocol { get }
+    var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol { get }
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
 }

@@ -588,13 +588,13 @@ extension UDWallet {
         guard let wcWallet = self.walletConnectionInfo?.externalWallet,
               let  nativePrefix = wcWallet.getNativeAppLink(),
               let url = URL(string: nativePrefix) else {
-            throw WalletConnectError.failedToFindExternalAppLink
+            throw WalletConnectRequestError.failedToFindExternalAppLink
         }
         
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Swift.Error>) in
             DispatchQueue.main.async {
                 guard UIApplication.shared.canOpenURL(url) else {
-                    continuation.resume(throwing: WalletConnectError.failedOpenExternalApp)
+                    continuation.resume(throwing: WalletConnectRequestError.failedOpenExternalApp)
                     return
                 }
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -622,25 +622,6 @@ extension UDWallet: Equatable {
         let resultEth = (lhs.extractEthWallet()?.address == rhs.extractEthWallet()?.address) && lhs.extractEthWallet()?.address != nil
         let resultZil = (lhs.extractZilWallet()?.address == rhs.extractZilWallet()?.address) && lhs.extractZilWallet()?.address != nil
         return resultEth || resultZil
-    }
-}
-
-enum WalletConnectError: String, LocalizedError, RawValueLocalizable {
-    case noWCSessionFound = "Failed to detect active session"
-    case walletConnectNil = "WalletConnect object is nil"
-    case failedHashPersonalMessage = "Failed to hash a message for signing"
-    case failedSignPersonalMessage = "WalletConnect failed to sign a message in an external wallet app"
-    case failedEthSignMessage = "WalletConnect failed to eth_sign a message in an external wallet app"
-    case failedToFindExternalAppLink
-    case failedToFindDomainToConnect
-    case failedOpenExternalApp = "Failed to open external wallet app with a deep link"
-    case failedToRelayTxToExternalWallet
-    case invalidChainIdentifier
-    case failedBuildParams
-    case failedSignTransaction = "WalletConnect failed to sign a transaction in an external wallet app"
-    
-    public var errorDescription: String? {
-        return rawValue
     }
 }
 
