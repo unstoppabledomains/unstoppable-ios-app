@@ -126,7 +126,7 @@ extension UDWallet {
             throw WalletConnectRequestError.noWCSessionFound
         }
         
-        let response = try await WalletConnectExternalWalletSigner.shared.signPersonalSignViaWalletConnect_V1(session: session, message: message, in: self)
+        let response = try await WalletConnectExternalWalletHandler.shared.signPersonalSignViaWalletConnect_V1(session: session, message: message, in: self)
         return try handleResponse(response: response)
     }
     
@@ -145,7 +145,7 @@ extension UDWallet {
             throw WalletConnectRequestError.noWCSessionFound
         }
         
-        let response = try await WalletConnectExternalWalletSigner.shared.signConnectEthSignViaWalletConnect_V1(session: session, message: message, in: self)
+        let response = try await WalletConnectExternalWalletHandler.shared.signConnectEthSignViaWalletConnect_V1(session: session, message: message, in: self)
 
         return try handleResponse(response: response)
     }

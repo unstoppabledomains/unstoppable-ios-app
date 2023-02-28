@@ -320,7 +320,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                     during session: Session,
                                     in request: Request,
                                     transaction: EthereumTransaction) async throws -> Response {
-        let response = try await WalletConnectExternalWalletSigner.shared.sendTxViaWalletConnect_V1(session: session,
+        let response = try await WalletConnectExternalWalletHandler.shared.sendTxViaWalletConnect_V1(session: session,
                                                                                                     tx: transaction,
                                                                                                     in: udWallet)
         
@@ -332,7 +332,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                            during session: Session,
                                            in request: Request,
                                            dataString: String) async throws -> Response {
-        let response = try await WalletConnectExternalWalletSigner.shared.signTypedDataViaWalletConnect_V1(session: session,
+        let response = try await WalletConnectExternalWalletHandler.shared.signTypedDataViaWalletConnect_V1(session: session,
                                                                                                            walletAddress: udWallet.address,
                                                                                                            message: dataString,
                                                                                                            in: udWallet)

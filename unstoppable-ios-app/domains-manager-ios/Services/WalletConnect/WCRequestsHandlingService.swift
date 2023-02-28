@@ -425,7 +425,7 @@ private extension WCRequestsHandlingService {
     }
     
     func setExternalWalletSignerListener() {
-        WalletConnectExternalWalletSigner.shared.addListener(self)
+        WalletConnectExternalWalletHandler.shared.addListener(self)
     }
 }
 

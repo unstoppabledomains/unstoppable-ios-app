@@ -1,5 +1,5 @@
 //
-//  WalletConnectExternalWalletSigner.swift
+//  WalletConnectExternalWalletHandler.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 24.02.2023.
@@ -17,9 +17,9 @@ import WalletConnectSwift
 // V2
 import WalletConnectSign
 
-final class WalletConnectExternalWalletSigner {
+final class WalletConnectExternalWalletHandler {
     
-    static let shared = WalletConnectExternalWalletSigner()
+    static let shared = WalletConnectExternalWalletHandler()
     
     private var publishers = [AnyCancellable]()
     private var listeners: [WalletConnectExternalWalletSignerListenerHolder] = []
@@ -35,7 +35,7 @@ final class WalletConnectExternalWalletSigner {
 }
 
 // MARK: - Listeners
-extension WalletConnectExternalWalletSigner {
+extension WalletConnectExternalWalletHandler {
     func addListener(_ listener: WalletConnectExternalWalletSignerListener) {
         if !listeners.contains(where: { $0.listener === listener }) {
             listeners.append(.init(listener: listener))
@@ -48,7 +48,7 @@ extension WalletConnectExternalWalletSigner {
 }
 
 // MARK: - WC1 methods
-extension WalletConnectExternalWalletSigner {
+extension WalletConnectExternalWalletHandler {
 
     typealias WC1Client = WalletConnectSwift.Client
     typealias WC1Response = WalletConnectSwift.Response
@@ -151,7 +151,7 @@ extension WalletConnectExternalWalletSigner {
 }
 
 // MARK: - WC2 methods
-extension WalletConnectExternalWalletSigner {
+extension WalletConnectExternalWalletHandler {
     func sendWC2Request(method: WalletConnectRequestType,
                         session: SessionV2Proxy,
                         requestParams: AnyCodable,
@@ -183,11 +183,11 @@ extension WalletConnectExternalWalletSigner {
 }
 
 // MARK: - Launch external wallet
-private extension WalletConnectExternalWalletSigner {
+private extension WalletConnectExternalWalletHandler {
     @MainActor
     func launchExternalWalletAndNotifyListeners(_ wallet: UDWallet) throws {
         guard let wcWallet = wallet.getExternalWallet(),
-              let  nativePrefix = wcWallet.getNativeAppLink(),
+              let nativePrefix = wcWallet.getNativeAppLink(),
               let url = URL(string: nativePrefix) else {
             throw WalletConnectRequestError.failedToFindExternalAppLink
         }
@@ -201,7 +201,7 @@ private extension WalletConnectExternalWalletSigner {
 }
 
 // MARK: - Private methods
-private extension WalletConnectExternalWalletSigner {
+private extension WalletConnectExternalWalletHandler {
     func notifyListeners() {
         listeners.forEach { holder in
             holder.listener?.externalWalletSignerWillHandleRequestInExternalWallet()
@@ -249,7 +249,7 @@ private extension WalletConnectExternalWalletSigner {
 }
 
 // MARK: - Setup methods
-private extension WalletConnectExternalWalletSigner {
+private extension WalletConnectExternalWalletHandler {
     func setup() {
         registerForWC2ClientSessionCallback()
         registerForAppBecomeActiveNotification()

@@ -1186,7 +1186,7 @@ extension WalletConnectServiceV2 {
                              session: SessionV2Proxy,
                              requestParams: AnyCodable,
                              in wallet: UDWallet) async throws -> WalletConnectSign.Response {
-        try await WalletConnectExternalWalletSigner.shared.sendWC2Request(method: method,
+        try await WalletConnectExternalWalletHandler.shared.sendWC2Request(method: method,
                                                                           session: session,
                                                                           requestParams: requestParams,
                                                                           in: wallet)

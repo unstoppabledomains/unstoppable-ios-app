@@ -133,7 +133,7 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnec
     }
     
     func didDisconnect(from app: UnifiedConnectAppInfo) {
-        guard app.domain.name == self.domain.name else { return }
+        guard app.domain.isSameEntity(self.domain) else { return }
 
         Task {
             await showDomainDataWithActions(animated: true)
