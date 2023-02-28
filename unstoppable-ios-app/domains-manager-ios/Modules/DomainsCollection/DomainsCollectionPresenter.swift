@@ -230,7 +230,11 @@ private extension DomainsCollectionPresenter {
     
     @MainActor
     func isIndexSupported(_ index: Int) -> Bool {
-        index >= 0 && index < stateController.domains.count
+        isIndexSupported(index, in: stateController.domains)
+    }
+    
+    func isIndexSupported(_ index: Int, in domains: [DomainDisplayInfo]) -> Bool {
+        index >= 0 && index < domains.count
     }
     
     func loadInitialData() async {
@@ -499,16 +503,16 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
 // MARK: - State & Representation methods
 private extension DomainsCollectionPresenter {
     @MainActor
-    func checkPresentedDomainsIndexChangedAndUpdateUI(domains: [DomainDisplayInfo]) {
+    func checkPresentedDomainsIndexChangedAndUpdateUI(newDomains: [DomainDisplayInfo]) {
         func updateSelectedDomain(_ domain: DomainDisplayInfo, at index: Int, newCurrentIndex: Int) {
             self.currentIndex = newCurrentIndex
-            stateController.set(domains: domains)
+            stateController.set(domains: newDomains)
             view?.setSelectedDomain(domain, at: index, animated: true)
         }
         
         guard isIndexSupported(currentIndex) else {
-            if !domains.isEmpty {
-                updateSelectedDomain(domains[0], at: 0, newCurrentIndex: 0)
+            if !newDomains.isEmpty {
+                updateSelectedDomain(newDomains[0], at: 0, newCurrentIndex: 0)
             }
             return
         }
@@ -517,7 +521,7 @@ private extension DomainsCollectionPresenter {
         let currentlySelectedDomain = currentDomains[self.currentIndex]
         
         var didUpdateSelectedDomainIndex = false
-        if let newIndex = domains.firstIndex(where: { $0.isSameEntity(currentlySelectedDomain )}) {
+        if let newIndex = newDomains.firstIndex(where: { $0.isSameEntity(currentlySelectedDomain )}) {
             /// Currently selected domain's order changed
             if newIndex != currentIndex {
                 updateSelectedDomain(currentlySelectedDomain, at: newIndex, newCurrentIndex: newIndex)
@@ -525,27 +529,31 @@ private extension DomainsCollectionPresenter {
             }
         } else {
             /// Currently selected domain removed. Set first as current
-            if !domains.isEmpty {
-                updateSelectedDomain(domains[0], at: 0, newCurrentIndex: 0)
+            if !newDomains.isEmpty {
+                updateSelectedDomain(newDomains[0], at: 0, newCurrentIndex: 0)
                 didUpdateSelectedDomainIndex = true
             }
         }
         
         /// Check next and previous domain changed
         func isDomainIndexChanged(at index: Int) -> Bool {
-            guard isIndexSupported(index) else { return false }
+            guard isIndexSupported(index, in: currentDomains) else {
+                return isIndexSupported(index, in: newDomains) // If there's new index in new domains (usually when domains count goes from 1 to 2)
+            }
             
             let currentDomains = currentDomains[index]
-            let newIndex = domains.firstIndex(where: { $0.isSameEntity(currentDomains) })
+            let newIndex = newDomains.firstIndex(where: { $0.isSameEntity(currentDomains) })
             return newIndex != index
+        }
+        
+        func isDomainsNextToCurrentChanged() -> Bool {
+            isDomainIndexChanged(at: currentIndex - 1) || isDomainIndexChanged(at: currentIndex + 1)
         }
         
         /// If selected domain was updated before, it will automatically request new next and previous domain, no need extra steps.
         /// If selected domain wasn't updated, need to check if previous and next domain's order changed 
         if !didUpdateSelectedDomainIndex,
-           isDomainIndexChanged(at: currentIndex - 1) || isDomainIndexChanged(at: currentIndex + 1) {
-            updateSelectedDomain(currentlySelectedDomain, at: currentIndex, newCurrentIndex: currentIndex)
-        } else if currentDomains.count == 1 && domains.count != 1 {
+           isDomainsNextToCurrentChanged() {
             updateSelectedDomain(currentlySelectedDomain, at: currentIndex, newCurrentIndex: currentIndex)
         }
     }
@@ -553,7 +561,7 @@ private extension DomainsCollectionPresenter {
     @MainActor
     func setDomains(_ domains: [DomainDisplayInfo], shouldCheckPresentedDomains: Bool) {
         if shouldCheckPresentedDomains {
-            checkPresentedDomainsIndexChangedAndUpdateUI(domains: domains)
+            checkPresentedDomainsIndexChangedAndUpdateUI(newDomains: domains)
         }
         stateController.set(domains: domains)
         view?.setNumberOfSteps(domains.count)
