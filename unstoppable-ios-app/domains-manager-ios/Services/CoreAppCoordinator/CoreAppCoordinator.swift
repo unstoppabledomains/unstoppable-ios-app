@@ -57,6 +57,11 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         window?.makeKeyAndVisible()
         topInfoWindow?.makeKeyAndVisible()
     }
+    
+    @discardableResult
+    func goBackToPreviousApp() -> Bool {
+        goBackToPreviousAppIfCan()
+    }
 }
 
 // MARK: - DeepLinkServiceListener
@@ -97,7 +102,7 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
 }
 
 // MARK: - WalletConnectUIHandler
-extension CoreAppCoordinator: WalletConnectUIHandler {
+extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectUIErrorHandler {
     @discardableResult
     func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectService.ConnectionUISettings {
         func awaitPullUpDisappear() async throws {
@@ -124,56 +129,55 @@ extension CoreAppCoordinator: WalletConnectUIHandler {
         }
     }
     
-    func didFailToConnect(with error: WalletConnectService.Error) {
-        @MainActor func showErrorAlert(in hostView: UIViewController) {
+    @MainActor
+    func didFailToConnect(with error: WalletConnectRequestError) async {
+        @MainActor
+        func showErrorAlert(in hostView: UIViewController) async {
             Vibration.error.vibrate()
             switch error.groupType {
             case .failedConnection, .connectionTimeout:
-                pullUpViewService.showWCConnectionFailedPullUp(in: hostView)
+                await pullUpViewService.showWCConnectionFailedPullUp(in: hostView)
             case .failedTx:
-                pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
+                await pullUpViewService.showWCTransactionFailedPullUp(in: hostView)
             case .networkNotSupported:
-                pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
+                await pullUpViewService.showNetworkNotSupportedPullUp(in: hostView)
             case .lowAllowance:
-                pullUpViewService.showWCLowBalancePullUp(in: hostView)
+                await pullUpViewService.showWCLowBalancePullUp(in: hostView)
+            case .methodUnsupported:
+                await pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
             }
         }
         
-        Task {
-            await MainActor.run {
-                switch currentRoot {
-                case .domainsCollection(let router):
-                    guard let hostView = router.topViewController() else { return }
-                    
-                    switch error.groupType {
-                    case .connectionTimeout:
-                        showErrorAlert(in: hostView)
-                    case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance:
-                        if let pullUpView = hostView as? PullUpViewController,
-                           pullUpView.pullUp != .wcLoading {
-                            return
-                        }
-                        
-                        showErrorAlert(in: hostView)
-                    }
-                default: return
+        switch currentRoot {
+        case .domainsCollection(let router):
+            guard let hostView = router.topViewController() else { return }
+            
+            switch error.groupType {
+            case .connectionTimeout:
+                await showErrorAlert(in: hostView)
+            case .failedConnection, .failedTx, .networkNotSupported, .lowAllowance, .methodUnsupported:
+                if let pullUpView = hostView as? PullUpViewController,
+                   pullUpView.pullUp != .wcLoading {
+                    return
                 }
+                
+                await showErrorAlert(in: hostView)
             }
+        default: return
         }
     }
     
-    func didReceiveUnsupported(_ wcRequestMethodName: String) {
-        Task {
-            await MainActor.run {
-                switch currentRoot {
-                case .domainsCollection(let router):
-                    guard let hostView = router.topViewController(),
-                          !(hostView is PullUpViewController) else { return }
-                    Vibration.error.vibrate()
-                    pullUpViewService.showWCRequestNotSupportedPullUp(in: hostView)
-                default: return
-                }
+    @MainActor
+    func dismissLoadingPageIfPresented() async {
+        switch currentRoot {
+        case .domainsCollection(let router):
+            guard let hostView = router.topViewController() else { return }
+            
+            if let pullUpView = hostView as? PullUpViewController,
+               pullUpView.pullUp == .wcLoading {
+                await hostView.dismissPullUpMenu()
             }
+        default: return
         }
     }
 }
@@ -258,6 +262,22 @@ private extension CoreAppCoordinator {
                           duration: 0.3,
                           options: options,
                           animations: { })
+    }
+    
+    func goBackToPreviousAppIfCan() -> Bool {
+        let app = UIApplication.shared
+        let selector = Selector(("sendResponseForDestination:"))
+        if let sysNavIvar = class_getInstanceVariable(UIApplication.self, "_systemNavigationAction"),
+           let actionObject = object_getIvar(app, sysNavIvar) as? NSObject,
+           actionObject.responds(to: selector),
+           let destinations = actionObject.value(forKey: "destinations") as? [Int],
+           destinations.count > 1 {
+            let destination = destinations[destinations.count - 2] // Get previous screen
+            actionObject.perform(selector, with: destination)
+            return true
+        } else {
+            return false
+        }
     }
 }
 

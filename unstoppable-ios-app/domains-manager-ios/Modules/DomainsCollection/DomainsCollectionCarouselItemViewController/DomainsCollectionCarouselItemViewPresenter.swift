@@ -44,8 +44,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
 extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselItemViewPresenterProtocol {
     @MainActor
     func viewDidLoad() {
-        appContext.walletConnectService.addListener(self)
-        appContext.walletConnectServiceV2.addListener(self)
+        appContext.wcRequestsHandlingService.addListener(self)
         appContext.dataAggregatorService.addListener(self)
         appContext.appLaunchService.addListener(self)
         appContext.externalEventsService.addListener(self)
@@ -124,17 +123,17 @@ extension DomainsCollectionCarouselItemViewPresenter: AppLaunchServiceListener {
 }
 
 // MARK: - WalletConnectServiceListener
-extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceListener {
-    func didConnect(to app: PushSubscriberInfo?) {
-        guard app?.domainName == self.domain.name else { return }
+extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnectionListener {
+    func didConnect(to app: UnifiedConnectAppInfo) {
+        guard app.domain.isSameEntity(self.domain) else { return }
         
         Task {
             await showDomainDataWithActions(animated: true)
         }
     }
     
-    func didDisconnect(from app: PushSubscriberInfo?) {
-        guard app?.domainName == self.domain.name else { return }
+    func didDisconnect(from app: UnifiedConnectAppInfo) {
+        guard app.domain.isSameEntity(self.domain) else { return }
 
         Task {
             await showDomainDataWithActions(animated: true)
@@ -189,7 +188,10 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             // Recent activities
             snapshot.appendSections([.recentActivity(numberOfActivities: connectedApps.count)])
             for app in connectedApps {
-                let actions: [DomainsCollectionCarouselItemViewController.RecentActivitiesConfiguration.Action] = [.disconnect(callback: { [weak self] in
+                let actions: [DomainsCollectionCarouselItemViewController.RecentActivitiesConfiguration.Action] = [.openApp(callback: { [weak self] in
+                    self?.handleOpenAppAction(app)
+                }),
+                                                                                                                   .disconnect(callback: { [weak self] in
                     self?.handleDisconnectAppAction(app)
                 })]
                 snapshot.appendItems([.recentActivity(configuration: .init(connectedApp: app,
@@ -245,6 +247,15 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }))
         
         return actions
+    }
+    
+    func handleOpenAppAction(_ app: any UnifiedConnectAppInfoProtocol) {
+        logButtonPressedAnalyticEvents(button: .open,
+                                       parameters: [.wcAppName: app.appName,
+                                                    .domainName: domain.name])
+        guard let appUrl = URL(string: app.appUrlString) else { return }
+        
+        UIApplication.shared.open(appUrl)
     }
     
     func handleDisconnectAppAction(_ app: any UnifiedConnectAppInfoProtocol) {

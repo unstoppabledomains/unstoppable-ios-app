@@ -218,11 +218,9 @@ private extension AppLaunchService {
     
     func wakeUpServices(walletConnectService: WalletConnectServiceProtocol,
                         walletConnectServiceV2: WalletConnectServiceV2Protocol,
-                        walletConnectClientService: WalletConnectClientServiceProtocol) {
-        walletConnectService.setUIHandler(coreAppCoordinator) // wake up
-        walletConnectServiceV2.setUIHandler(coreAppCoordinator) // wake up
-        
+                        walletConnectClientService: WalletConnectClientServiceProtocol) {        
         walletConnectClientService.setUIHandler(coreAppCoordinator) // wake up
+        walletConnectServiceV2.setWalletUIHandler(coreAppCoordinator) // wake up
         _ = AppGroupsBridgeFromDataAggregatorService.shared // wake up
     }
     

@@ -31,7 +31,8 @@ struct Constants {
     static let maximumConcurrentNetworkRequestsLimit = 3
     static let backEndThrottleErrorCode = 429
     static let setupRRPromptRepeatInterval = 7
-    static let wcConnectionTimeout: TimeInterval = 5
+    static var wcConnectionTimeout: TimeInterval = 5
+    static let wcNoResponseFromExternalWalletTimeout: TimeInterval = 3
     static var deprecatedTLDs: Set<String> = []
     static let imageProfileMaxSize: Int = 4_000_000 // 4 MB
     static let standardWebHosts = ["https://", "http://"]

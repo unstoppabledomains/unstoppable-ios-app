@@ -11,9 +11,13 @@ import UIKit
 protocol SceneDelegateProtocol {
     var interfaceOrientation: UIInterfaceOrientation { get }
     var window: MainWindow? { get }
+    var sceneActivationState: UIScene.ActivationState { get }
     func setAppearanceStyle(_ appearanceStyle: UIUserInterfaceStyle)
     func authorizeUserOnAppOpening() async
     func restartOnboarding()
+    
+    func addListener(_ listener: SceneActivationListener)
+    func removeListener(_ listener: SceneActivationListener)
 }
 
 @MainActor
@@ -25,6 +29,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var didResolveInitialViewController = false
     private var authHandler = AuthorizationHandler()
     var window: MainWindow?
+    var sceneActivationState: UIScene.ActivationState { window?.windowScene?.activationState ?? .unattached }
+    private var listeners: [SceneActivationListenerHolder] = []
 
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
@@ -91,11 +97,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
+        notifyListenersActivationStateChanged(scene.activationState)
         appContext.analyticsService.log(event: .appGoesToBackground, withParameters: nil)
         blurIfNeeded()
     }
     
     func sceneWillEnterForeground(_ scene: UIScene) {
+        notifyListenersActivationStateChanged(scene.activationState)
+
         appContext.analyticsService.log(event: .appGoesToForeground, withParameters: nil)
         guard didResolveInitialViewController else { return }
         
@@ -105,14 +114,23 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-    func sceneWillResignActive(_ scene: UIScene) { }
+    func sceneWillResignActive(_ scene: UIScene) {
+        notifyListenersActivationStateChanged(scene.activationState)
+    }
     
     func sceneDidBecomeActive(_ scene: UIScene) {
+        notifyListenersActivationStateChanged(scene.activationState)
         Task.detached { [unowned self] in
             let isAuthorizingUser = await self.authHandler.isAuthorizing
             if !isAuthorizingUser {
                 await self.unBlur(animated: false)
             }
+        }
+    }
+    
+    private func notifyListenersActivationStateChanged(_ newState: SceneActivationState) {
+        listeners.forEach { holder in
+            holder.listener?.didChangeSceneActivationState(to: newState)
         }
     }
 }
@@ -154,6 +172,16 @@ extension SceneDelegate: SceneDelegateProtocol {
         User.instance.update(settings: settings)
         SecureHashStorage.clearPassword()
         appContext.coreAppCoordinator.showOnboarding(.sameUserWithoutWallets(subFlow: nil))
+    }
+    
+    func addListener(_ listener: SceneActivationListener) {
+        if !listeners.contains(where: { $0.listener === listener }) {
+            listeners.append(.init(listener: listener))
+        }
+    }
+    
+    func removeListener(_ listener: SceneActivationListener) {
+        listeners.removeAll(where: { $0.listener == nil || $0.listener === listener })
     }
 }
 
@@ -319,4 +347,27 @@ extension SceneDelegate {
             }
         }
     }
+}
+
+typealias SceneActivationState = UIScene.ActivationState
+
+protocol SceneActivationListener: AnyObject {
+    func didChangeSceneActivationState(to state: SceneActivationState)
+}
+
+final class SceneActivationListenerHolder: Equatable {
+    
+    weak var listener: SceneActivationListener?
+    
+    init(listener: SceneActivationListener) {
+        self.listener = listener
+    }
+    
+    static func == (lhs: SceneActivationListenerHolder, rhs: SceneActivationListenerHolder) -> Bool {
+        guard let lhsListener = lhs.listener,
+              let rhsListener = rhs.listener else { return false }
+        
+        return lhsListener === rhsListener
+    }
+    
 }

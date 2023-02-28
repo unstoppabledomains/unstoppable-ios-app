@@ -44,7 +44,10 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         }
         
         func getWalletAddresses() -> [HexAddress] {
-            Array(namespaces.values).map({ Array($0.accounts).map({$0.address}) }).flatMap({ $0 })
+            Array(namespaces.values).map({ Array($0.accounts)
+                .map({$0.address}) })
+                .flatMap({ $0 })
+                .map({ $0.normalized })
         }
     }
     
@@ -119,6 +122,12 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
     func find(by account: HexAddress) -> [ConnectedApp]? {
         let normalizedAccount = account.normalized
         return retrieveApps().filter({ $0.walletAddress.normalized == normalizedAccount } )
+    }
+    
+    func find(byTopic topic: String) -> ConnectedApp? {
+        return retrieveApps()
+            .filter({ $0.sessionProxy.topic == topic } )
+            .first
     }
 }
 

@@ -24,6 +24,7 @@ final class GeneralAppContext: AppContextProtocol {
     let udWalletsService: UDWalletsServiceProtocol
     let walletConnectService: WalletConnectServiceProtocol
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
+    let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol 
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
@@ -48,13 +49,17 @@ final class GeneralAppContext: AppContextProtocol {
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
-        walletConnectService = WalletConnectService()
-        walletConnectServiceV2 = WalletConnectServiceV2()
+        let walletConnectService = WalletConnectService()
+        self.walletConnectService = walletConnectService
+        let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
+        self.walletConnectServiceV2 = walletConnectServiceV2
         permissionsService = PermissionsService()
         pullUpViewService = PullUpViewService(authentificationService: authentificationService)
         
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
+        walletConnectService.setUIHandler(coreAppCoordinator)
+        walletConnectServiceV2.setUIHandler(coreAppCoordinator)
      
         
         dataAggregatorService = DataAggregatorService(domainsService: udDomainsService,
@@ -62,21 +67,27 @@ final class GeneralAppContext: AppContextProtocol {
                                                       transactionsService: domainTransactionsService,
                                                       walletConnectServiceV2: walletConnectServiceV2)
         
+        
+        wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
+                                                              walletConnectServiceV2: walletConnectServiceV2)
+        wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
+        
         externalEventsService = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
                                                       dataAggregatorService: dataAggregatorService,
                                                       udWalletsService: udWalletsService,
-                                                      walletConnectServiceV2: walletConnectServiceV2)
+                                                      walletConnectServiceV2: walletConnectServiceV2,
+                                                      walletConnectRequestsHandlingService: wcRequestsHandlingService)
+        
+        let deepLinksService = DeepLinksService(externalEventsService: externalEventsService,
+                                                coreAppCoordinator: coreAppCoordinator)
+        self.deepLinksService = deepLinksService
+        deepLinksService.addListener(coreAppCoordinator)
+        wcRequestsHandlingService.addListener(deepLinksService)
         
         notificationsService = NotificationsService(externalEventsService: externalEventsService,
                                                     permissionsService: permissionsService,
                                                     udWalletsService: udWalletsService,
-                                                    walletConnectService: walletConnectService,
-                                                    walletConnectServiceV2: walletConnectServiceV2)
-        
-        let deepLinksService = DeepLinksService(externalEventsService: externalEventsService)
-        self.deepLinksService = deepLinksService
-        
-        deepLinksService.addListener(coreAppCoordinator)
+                                                    wcRequestsHandlingService: wcRequestsHandlingService)
         
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")

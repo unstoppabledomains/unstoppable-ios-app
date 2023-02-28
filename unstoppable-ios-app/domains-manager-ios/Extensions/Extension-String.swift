@@ -716,6 +716,7 @@ extension String {
         static let recentActivityInfoTitle = "RECENT_ACTIVITY_INFO_TITLE"
         static let recentActivityInfoSubtitle = "RECENT_ACTIVITY_INFO_SUBTITLE"
         static let scanToConnect = "SCAN_TO_CONNECT"
+        static let recentActivityOpenApp = "RECENT_ACTIVITY_OPEN_APP"
         
         // Domain card
         static let domainCardSwipeToDetails = "DOMAIN_CARD_SWIPE_TO_DETAILS"

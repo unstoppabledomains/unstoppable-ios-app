@@ -38,6 +38,7 @@ final class ChoosePrimaryDomainViewController: BaseViewController {
     var presenter: ChoosePrimaryDomainViewPresenterProtocol!
     private var dataSource: ChoosePrimaryDomainDataSource!
     private var isTitleHidden: Bool = false
+    private var lastContentOffset: CGPoint = .zero
     override var isObservingKeyboard: Bool { true }
     override var navBackStyle: BaseViewController.NavBackIconStyle {
         if (self.cNavigationController is EmptyRootCNavigationController),
@@ -150,15 +151,16 @@ extension ChoosePrimaryDomainViewController: UICollectionViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         setMoveToTopButton(hidden: scrollView.contentOffset.y < 100, animated: false)
+        var contentOffset = scrollView.contentOffset
         if collectionView.hasActiveDrag,
-           let cell = collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) {
-            var contentOffset = scrollView.contentOffset
-            if contentOffset.y < cell.frame.minY {
-                contentOffset.y = cell.frame.minY
-                scrollView.setContentOffset(contentOffset, animated: false)
-            }
+           let cell = collectionView.cellForItem(at: IndexPath(row: 0, section: 0)),
+           contentOffset.y < cell.frame.minY,
+           contentOffset.y < lastContentOffset.y {
+            contentOffset = lastContentOffset
+            scrollView.setContentOffset(contentOffset, animated: false)
         }
         
+        lastContentOffset = contentOffset
         cNavigationController?.underlyingScrollViewDidScroll(scrollView)
     }
 

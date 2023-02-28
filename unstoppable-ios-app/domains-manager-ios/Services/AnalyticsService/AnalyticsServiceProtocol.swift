@@ -11,3 +11,8 @@ protocol AnalyticsServiceProtocol {
     func log(event: Analytics.Event, withParameters eventParameters: Analytics.EventParameters?)
     func set(userProperties: Analytics.UserProperties)
 }
+
+protocol AnalyticsServiceChildProtocol {
+    func log(event: Analytics.Event, timestamp: Date, withParameters eventParameters: Analytics.EventParameters?)
+    func set(userProperties: Analytics.UserProperties)
+}
