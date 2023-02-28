@@ -138,8 +138,10 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
         
         UDVibration.buttonTap.vibrate()
         Task {
+            view.stopCaptureSession()
             await UDRouter().showConnectedAppsListScreen(in: view)
             await showNumberOfAppsConnected()
+            view.startCaptureSession()
         }
     }
     
@@ -147,12 +149,14 @@ extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
         UDVibration.buttonTap.vibrate()
         Task {
             guard let view = self.view else { return }
+            view.stopCaptureSession()
             do {
                 let result = try await UDRouter().showSignTransactionDomainSelectionScreen(selectedDomain: selectedDomain,
                                                                                            swipeToDismissEnabled: true,
                                                                                            in: view)
                 await showInfoFor(domain: result.0, balance: result.1)
-            }
+            } catch { }
+            view.startCaptureSession()
         }
     }
     
