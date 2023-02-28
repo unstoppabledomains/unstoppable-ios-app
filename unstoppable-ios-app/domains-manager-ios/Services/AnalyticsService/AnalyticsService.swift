@@ -10,10 +10,14 @@ import CoreTelephony
 
 final class AnalyticsService {
        
-    private let servicesHolder = ServicesHolder()
-    private var services: [AnalyticsServiceProtocol] {
-        get async { await servicesHolder.services }
+    private var servicesHolder: ServicesHolder!
+    private var services: [AnalyticsServiceChildProtocol] {
+        get async {
+            let holder = await getServicesHolder()
+            return await holder.services
+        }
     }
+    private var createServiceHolderTask: Task<ServicesHolder, Never>?
     
     init(dataAggregatorService: DataAggregatorServiceProtocol) {
         dataAggregatorService.addListener(self)
@@ -24,13 +28,14 @@ final class AnalyticsService {
 // MARK: - AnalyticsServiceProtocol
 extension AnalyticsService: AnalyticsServiceProtocol {
     func log(event: Analytics.Event, withParameters eventParameters: Analytics.EventParameters?) {
+        let timestamp = Date()
         Task  {
             let parametersDebugString = (eventParameters ?? [:]).map({ "\($0.key.rawValue) : \($0.value)" })
             Debugger.printInfo(topic: .Analytics, "Will log event: \(event.rawValue) with parameters: \(parametersDebugString)")
             
             let defaultProperties = self.defaultProperties
             await services.forEach { (service) in
-                service.log(event: event, withParameters: (eventParameters ?? [:]).adding(defaultProperties))
+                service.log(event: event, timestamp: timestamp, withParameters: (eventParameters ?? [:]).adding(defaultProperties))
             }
         }
     }
@@ -68,6 +73,23 @@ extension AnalyticsService: DataAggregatorServiceListener {
 
 // MARK: - Private methods
 private extension AnalyticsService {
+    func getServicesHolder() async -> ServicesHolder {
+        if let servicesHolder {
+            return servicesHolder
+        } else if let task = createServiceHolderTask {
+            return await task.value
+        }
+        
+        let createServiceHolderTask: Task<ServicesHolder, Never> = Task {
+            await ServicesHolder()
+        }
+        self.createServiceHolderTask = createServiceHolderTask
+        let servicesHolder = await createServiceHolderTask.value
+        self.servicesHolder = servicesHolder
+        self.createServiceHolderTask = nil
+        return servicesHolder
+    }
+    
     var defaultProperties: Analytics.EventParameters {
         [.carrier : carrierName,
          .platform: "iOS " + UIDevice.current.systemVersion,
@@ -100,11 +122,16 @@ private extension AnalyticsService {
 // MARK: - Private methods
 private extension AnalyticsService {
     actor ServicesHolder {
-        lazy var services: [AnalyticsServiceProtocol] = {
-            [HeapAnalyticService(userID: resolveUserID())]
-        }()
+        private(set) var services: [AnalyticsServiceChildProtocol] = []
         
-        func resolveUserID() -> String {
+        init() async {
+            let userID = await resolveUserID()
+            services = [HeapAnalyticService(userID: userID)]
+        }
+        
+        private func resolveUserID() async -> String {
+            try? await Task.sleep(seconds: 0.5) // Wait for 0.5 sec before accessing keychain to avoid error -25308. MOB-1078.
+            
             let key = KeychainKey.analyticsId
             let storage = iCloudPrivateKeyStorage()
             
