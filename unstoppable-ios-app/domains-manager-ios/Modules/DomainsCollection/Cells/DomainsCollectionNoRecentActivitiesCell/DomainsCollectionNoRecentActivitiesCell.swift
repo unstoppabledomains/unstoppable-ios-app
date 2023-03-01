@@ -17,12 +17,13 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
 
     var learnMoreButtonPressedCallback: EmptyCallback?
     private let contentTopCollapsedValue: CGFloat = 64
-    private var contentTopExpandedValue: CGFloat = 132
+    private var isTutorialOn: Bool = false
+
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        contentTopConstraint.constant = contentTopExpandedValue
+        contentTopConstraint.constant = contentTopExpandedValue()
         learnMoreButton.customCornerRadius = 16
         titleLabel.setAttributedTextWith(text: String.Constants.noConnectedApps.localized(),
                                          font: .currentFont(withSize: 20, weight: .bold),
@@ -34,13 +35,9 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
 
 // MARK: - ScrollViewOffsetListener
 extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
-    func setCellHeight(_ cellHeight: CGFloat, collectionHeight: CGFloat, cellMinY: CGFloat) {
+    func setCellHeight(_ cellHeight: CGFloat, isTutorialOn: Bool) {
         contentHeightConstraint.constant = cellHeight
-        
-        let spaceFromCardToBottom = collectionHeight - cellHeight - DomainsCollectionCarouselItemViewController.scrollViewTopInset
-        let spaceFromCardToThisCell = frame.minY - cellHeight
-        let requiredMinY = (spaceFromCardToBottom / 2) - 60
-        contentTopExpandedValue = requiredMinY - spaceFromCardToThisCell
+        self.isTutorialOn = isTutorialOn
     }
     
     func didScrollTo(offset: CGPoint) {
@@ -48,10 +45,19 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         let expandProgress = min(1, max(0, offset.y / height))
         
         let baseHeight = contentTopCollapsedValue
-        let dif = contentTopExpandedValue - contentTopCollapsedValue
+        let dif = contentTopExpandedValue() - contentTopCollapsedValue
         let progressHeight = dif * (1 - expandProgress)
         contentTopConstraint.constant = baseHeight + progressHeight
         
+
+        switch deviceSize {
+        case .i4_7Inch, .i4Inch:
+            iconImageView.alpha = expandProgress
+        case .i5_5Inch:
+            iconImageView.alpha = isTutorialOn ? expandProgress : 1
+        default:
+            iconImageView.alpha = 1
+        }
         learnMoreButton.alpha = expandProgress
     }
 }
@@ -60,5 +66,26 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
 private extension DomainsCollectionNoRecentActivitiesCell {
     @IBAction func learnMoreButtonPressed(_ sender: Any) {
         learnMoreButtonPressedCallback?()
+    }
+    
+    func contentTopExpandedValue() -> CGFloat {
+        switch deviceSize {
+        case .i4Inch:
+            return isTutorialOn ? 0 : -24
+        case .i4_7Inch:
+            return isTutorialOn ? 0 : -4
+        case .i5_4Inch:
+            return isTutorialOn ? 20 : 66
+        case .i5_5Inch:
+            return isTutorialOn ? 10 : 40
+        case .i5_8Inch:
+            return isTutorialOn ? 24 : 68
+        case .i6_1Inch:
+            return isTutorialOn ? 34 : 90
+        case .i6_5Inch, .i6_7Inch:
+            return isTutorialOn ? 38 : 90
+        default:
+            return 0
+        }
     }
 }

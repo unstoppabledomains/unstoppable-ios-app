@@ -26,6 +26,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
     private var connectedApps = [any UnifiedConnectAppInfoProtocol]()
     private var cardId = UUID()
     private weak var actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate?
+    private var didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: DomainsCollectionCarouselItemViewProtocol,
@@ -66,8 +67,13 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     func setCarouselCardState(_ state: CarouselCardState) {
         guard self.cardState != state else { return }
         
+        func isSwipeTutorialValueChanged() -> Bool {
+            UserDefaults.didShowSwipeDomainCardTutorial != didShowSwipeDomainCardTutorial
+        }
+        
         self.cardState = state
-        if !connectedApps.isEmpty {
+        if !connectedApps.isEmpty || isSwipeTutorialValueChanged() {
+            self.didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.07) {
                 Task {
                     await self.showDomainDataWithActions(animated: true)
@@ -167,25 +173,27 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }))])
          
         if connectedApps.isEmpty {
+            var isTutorialOn = false
             // Separator
-            if !UserDefaults.didShowSwipeDomainCardTutorial,
+            if !didShowSwipeDomainCardTutorial,
                cardState == .expanded {
-                snapshot.appendSections([.emptySeparator(height: 40)])
+                isTutorialOn = true
+                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
                 snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
             }
             
             snapshot.appendSections([.noRecentActivities])
             snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
                 self?.recentActivitiesLearnMoreButtonPressed()
-            }))])
+            }, isTutorialOn: isTutorialOn))])
         } else {
             // Spacer
             if cardState == .expanded {
-                snapshot.appendSections([.emptySeparator(height: 40)])
+                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
             }
             
             // Separator
-            if !UserDefaults.didShowSwipeDomainCardTutorial,
+            if !didShowSwipeDomainCardTutorial,
                cardState == .expanded {
                 snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
             } else {
@@ -212,6 +220,21 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }
         
         view?.applySnapshot(snapshot, animated: animated)
+    }
+    
+    func emptySeparatorHeightForExpandedState() -> CGFloat {
+        switch deviceSize {
+        case .i4Inch:
+            return 14
+        case .i5_4Inch:
+            return 26
+        case .i5_5Inch:
+            return 50
+        case .i5_8Inch:
+            return 30
+        default:
+            return 40
+        }
     }
     
     func actionsForDomain() async -> [CardAction] {

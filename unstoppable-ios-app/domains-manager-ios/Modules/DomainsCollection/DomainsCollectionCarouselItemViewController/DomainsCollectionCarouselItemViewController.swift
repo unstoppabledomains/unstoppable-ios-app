@@ -203,12 +203,9 @@ private extension DomainsCollectionCarouselItemViewController {
             case .noRecentActivities(let configuration):
                 let cell = collectionView.dequeueCellOfType(DomainsCollectionNoRecentActivitiesCell.self, forIndexPath: indexPath)
                 
-                let collectionViewHeight = collectionView.bounds.height
                 let cellHeight = DomainsCollectionUICache.shared.cardHeightWithTopInset()
-                let cellMinY = cellHeight + UICollectionView.SideOffset
                 cell.setCellHeight(cellHeight,
-                                   collectionHeight: collectionViewHeight,
-                                   cellMinY: cellMinY)
+                                   isTutorialOn: configuration.isTutorialOn)
                 cell.didScrollTo(offset: collectionView.offsetRelativeToInset)
                 cell.learnMoreButtonPressedCallback = configuration.learnMoreButtonPressedCallback
              
@@ -552,13 +549,15 @@ extension DomainsCollectionCarouselItemViewController {
     struct NoRecentActivitiesConfiguration: Hashable {
         let id = UUID()
         var learnMoreButtonPressedCallback: EmptyCallback
+        var isTutorialOn: Bool
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.id == rhs.id
+            lhs.id == rhs.id && lhs.isTutorialOn == rhs.isTutorialOn
         }
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(id)
+            hasher.combine(isTutorialOn)
         }
     }
     
