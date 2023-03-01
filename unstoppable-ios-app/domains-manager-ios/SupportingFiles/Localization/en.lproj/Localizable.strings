@@ -650,6 +650,7 @@
 
 // Recent activities
 "NO_RECENT_ACTIVITY" = "No recent activity";
+"NO_CONNECTED_APPS" = "No connected apps";
 "RECENT_ACTIVITY_INFO_TITLE" = "Recent Activity";
 "RECENT_ACTIVITY_INFO_SUBTITLE" = "View and manage your connections to apps, metaverses, and games.";
 "SCAN_TO_CONNECT" = "Scan to connect";
