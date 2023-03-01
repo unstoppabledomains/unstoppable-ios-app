@@ -58,10 +58,12 @@ extension WalletConnector {
                   return
               }
         let universalUrl: URL
-        if let uriString = connectionUrlString {
+        if let uriString = connectionUrlString,
+           let escapedString = uriString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) {
             var components = comps
             components.path = "/wc"
-            let universalDeepLinkUrl = components.url!.absoluteString + "?uri=\(uriString)"
+            
+            let universalDeepLinkUrl = components.url!.absoluteString + "?uri=\(escapedString)"
             universalUrl = URL(string: universalDeepLinkUrl)!
         } else {
             universalUrl = coreUrl
