@@ -24,7 +24,7 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
         
         contentTopConstraint.constant = contentTopExpandedValue
         learnMoreButton.customCornerRadius = 16
-        titleLabel.setAttributedTextWith(text: String.Constants.noRecentActivity.localized(),
+        titleLabel.setAttributedTextWith(text: String.Constants.noConnectedApps.localized(),
                                          font: .currentFont(withSize: 20, weight: .bold),
                                          textColor: .foregroundSecondary)
         learnMoreButton.setTitle(String.Constants.learnMore.localized(), image: nil)

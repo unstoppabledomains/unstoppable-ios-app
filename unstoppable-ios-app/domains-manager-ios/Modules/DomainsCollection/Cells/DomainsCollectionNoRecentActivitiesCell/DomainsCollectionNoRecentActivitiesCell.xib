@@ -31,7 +31,7 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Hx7-Ua-Uo9">
                                 <rect key="frame" x="0.0" y="0.0" width="322" height="120"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="timeIcon24" translatesAutoresizingMaskIntoConstraints="NO" id="6vZ-0N-Zu7">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="widgetIcon" translatesAutoresizingMaskIntoConstraints="NO" id="6vZ-0N-Zu7">
                                         <rect key="frame" x="145" y="0.0" width="32" height="32"/>
                                         <color key="tintColor" name="foregroundSecondary"/>
                                         <constraints>
@@ -87,7 +87,7 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="timeIcon24" width="24" height="24"/>
+        <image name="widgetIcon" width="24" height="24"/>
         <namedColor name="foregroundSecondary">
             <color red="0.47843137254901963" green="0.47843137254901963" blue="0.52156862745098043" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
