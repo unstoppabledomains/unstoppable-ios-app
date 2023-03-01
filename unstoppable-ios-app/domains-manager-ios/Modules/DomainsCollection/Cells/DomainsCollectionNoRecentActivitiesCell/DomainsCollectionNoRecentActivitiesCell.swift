@@ -81,6 +81,11 @@ private extension DomainsCollectionNoRecentActivitiesCell {
         case .i5_8Inch:
             return isTutorialOn ? 24 : 68
         case .i6_1Inch:
+            // IP 13Pro
+            if UIScreen.main.bounds.width == 390 {
+                return isTutorialOn ? 10 : 74
+            }
+            // IP 11
             return isTutorialOn ? 34 : 90
         case .i6_5Inch, .i6_7Inch:
             return isTutorialOn ? 38 : 90
