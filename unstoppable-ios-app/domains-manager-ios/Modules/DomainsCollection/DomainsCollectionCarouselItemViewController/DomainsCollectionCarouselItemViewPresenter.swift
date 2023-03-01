@@ -167,6 +167,13 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }))])
          
         if connectedApps.isEmpty {
+            // Separator
+            if !UserDefaults.didShowSwipeDomainCardTutorial,
+               cardState == .expanded {
+                snapshot.appendSections([.emptySeparator(height: 40)])
+                snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
+            }
+            
             snapshot.appendSections([.noRecentActivities])
             snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
                 self?.recentActivitiesLearnMoreButtonPressed()

@@ -17,7 +17,7 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
 
     var learnMoreButtonPressedCallback: EmptyCallback?
     private let contentTopCollapsedValue: CGFloat = 64
-    private var contentTopExpandedValue: CGFloat = 180
+    private var contentTopExpandedValue: CGFloat = 132
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -37,9 +37,10 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
     func setCellHeight(_ cellHeight: CGFloat, collectionHeight: CGFloat, cellMinY: CGFloat) {
         contentHeightConstraint.constant = cellHeight
         
-        let spaceToEdge = (collectionHeight - cellMinY)
-        let spaceToBottom: CGFloat = 24
-        contentTopExpandedValue = spaceToEdge - titleLabel.frame.maxY - spaceToBottom
+        let spaceFromCardToBottom = collectionHeight - cellHeight - DomainsCollectionCarouselItemViewController.scrollViewTopInset
+        let spaceFromCardToThisCell = frame.minY - cellHeight
+        let requiredMinY = (spaceFromCardToBottom / 2) - 60
+        contentTopExpandedValue = requiredMinY - spaceFromCardToThisCell
     }
     
     func didScrollTo(offset: CGPoint) {
@@ -51,7 +52,6 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         let progressHeight = dif * (1 - expandProgress)
         contentTopConstraint.constant = baseHeight + progressHeight
         
-        iconImageView.alpha = expandProgress
         learnMoreButton.alpha = expandProgress
     }
 }
