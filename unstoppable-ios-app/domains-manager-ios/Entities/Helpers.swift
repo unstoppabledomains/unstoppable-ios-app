@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import PromiseKit
 
 
 protocol SelfNameable { }
@@ -65,19 +64,5 @@ protocol RawValueLocalizable {
 extension RawValueLocalizable {
     var rawValueLocalized: String {
         return self.rawValue.localized()
-    }
-}
-
-class Utilities {
-    static func unfoldArray<T> (_ array: [Result<T>]) -> [T]{
-        let result: [T] = array.reduce([], { res, el in
-            if case let .fulfilled(subarray) = el {
-                var resMutable = res
-                resMutable.append(subarray)
-                return resMutable
-            }
-            return res
-        })
-        return result
     }
 }

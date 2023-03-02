@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import PromiseKit
 
 final class UDWalletsStorage {
     static let udWalletsStorageFileName = "ud-wallets.data"
@@ -171,7 +170,7 @@ extension UDWalletsStorage {
     func initialWalletsCheck() async throws {
         if let legacyWallets = LegacyWalletStorage.instance.getWalletsList(ownedBy: User.defaultId) {
             try await appContext.udWalletsService.migrateToUdWallets(from: legacyWallets)
-        } 
+        }
         removeReadOnlyUnverifiedWallets()
     }
 

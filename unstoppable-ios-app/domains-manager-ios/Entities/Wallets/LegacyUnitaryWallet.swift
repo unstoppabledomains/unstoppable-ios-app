@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import PromiseKit
 import web3swift
 
 // Legacy
