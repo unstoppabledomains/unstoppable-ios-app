@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import PromiseKit
 
 final class UDDomainsService {
         
@@ -61,16 +60,12 @@ extension UDDomainsService: UDDomainsServiceProtocol {
     }
     
     func getAllUnMintedDomains(for email: String, securityCode: String) async throws -> [String] {
-        try await withSafeCheckedThrowingContinuation({ completion in
-            getAllUnMintedDomains(for: email, securityCode: securityCode) { result in
-                switch result {
-                case .fulfilled(let domainNames):
-                    completion(.success(domainNames))
-                case .rejected(let error):
-                    completion(.failure(error))
-                }
-            }
-        })
+        let domainsInfo = try await NetworkService().getAllUnMintedDomains(for: email, withAccessCode: securityCode)
+        let domainNames = domainsInfo.domainNames
+        guard !domainNames.isEmpty else {
+            throw MintingError.noDomainsToMint
+        }
+        return domainNames
     }
     
     func mintDomains(_ domains: [String],
@@ -88,24 +83,7 @@ extension UDDomainsService: UDDomainsServiceProtocol {
 
 // MARK: - Private methods
 private extension UDDomainsService {
-    func getAllUnMintedDomains(for email: String, securityCode: String, completion: @escaping ((Result<[String]>)->())) {
-        NetworkService().getAllUnmintedDomains(for: email, withAccessCode: securityCode)
-            .then { (result: NetworkService.DomainsInfo) -> Promise<NetworkService.DomainsInfo> in
-                Promise {
-                    guard result.domainNames.count > 0 else {
-                        $0.reject(MintingError.noDomainsToMint)
-                        return
-                    }
-                    $0.fulfill(result)
-                }
-            }
-            .done { result in
-                completion(.fulfilled(result.domainNames))
-            }
-            .catch({ error in
-                completion(.rejected(error))
-            })
-    }
+   
 }
 
 // MARK: - Minting
@@ -118,22 +96,20 @@ private extension UDDomainsService {
                                securityCode: String) async throws -> [TransactionItem] {
         
         let domainItems = createDomainItems(from: domains, for: wallet)
-        let paidDomainItems = createDomainItems(from: paidDomains, for: wallet)
+        let paidDomainItems = createDomainItems(from: paidDomains, for: wallet) // Legacy. Currently all domains can be minted to Polygon only and it's free.
         
-        return try await withSafeCheckedThrowingContinuation({ completion in
-            doMintConcurrent(domainsMinting: domainItems,
-                             paidDomains: paidDomainItems,
-                             userEmail: userEmail,
-                             securityCode: securityCode,
-                             didStartMintingCallback: { }) { result in
-                switch result {
-                case .fulfilled(let txs):
-                    completion(.success(txs))
-                case .rejected(let error):
-                    completion(.failure(error))
-                }
-            }
-        })
+        do {
+            let txs = try await NetworkService().mint(domains: domainItems,
+                                                      with: userEmail,
+                                                      code: securityCode,
+                                                      stripeIntent: nil)
+            try? await Task.sleep(seconds: 0.1)
+            return txs
+        } catch {
+            let description = error.getTypedDescription()
+            Debugger.printFailure(description)
+            throw error
+        }
     }
     
     func createDomainItems(from domainNames: [String], for wallet: UDWallet) -> [DomainItem] {
@@ -150,39 +126,6 @@ private extension UDDomainsService {
                                status: .claiming)
         })
         return domains
-    }
-    
-    func doMintConcurrent(domainsMinting: [DomainItem],
-                          paidDomains: [DomainItem],
-                          userEmail: String,
-                          securityCode: String,
-                          didStartMintingCallback: @escaping ()->Void,
-                          completionBlock: @escaping ((Result<[TransactionItem]>) -> Void)) {
-        
-        let waitAtLeast = after(seconds: 0.1)
-        NetworkService().mint(domains: domainsMinting,
-                              with: userEmail,
-                              code: securityCode,
-                              stripeIntent: nil)
-        .done { txs in
-            let newMintingDomains: [DomainItem] = domainsMinting.map {
-                let domainName = $0.name
-                guard let mintingTx = txs.first(where: {tx in domainName == tx.domainName} ) else { return $0 }
-                var domain = $0
-                domain.claimingTxId = mintingTx.id
-                return domain
-            }
-            
-            // needed for backend simulation
-            completionBlock(.fulfilled(txs))
-        }
-        .then { waitAtLeast }
-        .catch { err in
-            
-            let description = err.getTypedDescription()
-            Debugger.printFailure(description)
-            completionBlock(.rejected(err))
-        }
     }
 }
 

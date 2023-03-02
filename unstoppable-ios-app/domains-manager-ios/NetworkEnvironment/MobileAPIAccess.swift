@@ -242,75 +242,49 @@ extension NetworkService {
         }
     }
     
-    public func getAllUnmintedDomains(for email: String, withAccessCode code: String) -> Promise<DomainsInfo> {
+    public func getAllUnMintedDomains(for email: String, withAccessCode code: String) async throws -> DomainsInfo {
         guard let request = try? APIRequestBuilder()
                                     .users(email: email)
                                     .secure(code: code)
                                     .fetchAllUnMintedDomains()
                                     .build() else {
             Debugger.printFailure("Couldn't build the url", critical: true)
-            return Promise() { seal in seal.reject(NetworkLayerError.creatingURLFailed)}
+            throw NetworkLayerError.creatingURLFailed
         }
-        return getUnmintedDomainsListPromise(for: email,
-                                                     withAccessCode: code,
-                                                     request: request)
-    }
-
-    public func getUnmintedDomainsListPromise(for email: String,
-                                                      withAccessCode code: String,
-                                                      request: APIRequest) -> Promise<DomainsInfo> {
-        return Promise { seal in
-            fetchData(for: request.url,
-                         method: .get,
-                      extraHeaders: request.headers) { result in
-                switch result {
-                case .fulfilled(let data):
-                    if let response = try? JSONDecoder().decode(DomainResponseArray.self, from: data) {
-                        let info = DomainsInfo(domainNames: response.domains.map({$0.name}),
-                                            txCosts: response.txCosts)
-                        seal.fulfill(info)
-                        return
-                    }
-                    if let _ = try? JSONDecoder().decode(MobileAPiErrorResponse.self, from: data) {
-                        seal.reject(NetworkLayerError.authorizationError)
-                        return
-                    } else {
-                        seal.reject(NetworkLayerError.parsingDomainsError)
-                    }
-                case .rejected(let error): seal.reject(error)
-                }
-            }
+        let data = try await fetchData(for: request.url,
+                                       method: .get,
+                                       extraHeaders: request.headers)
+        if let response = try? JSONDecoder().decode(DomainResponseArray.self, from: data) {
+            let info = DomainsInfo(domainNames: response.domains.map({$0.name}),
+                                   txCosts: response.txCosts)
+            return info
         }
+        if let _ = try? JSONDecoder().decode(MobileAPiErrorResponse.self, from: data) {
+            throw NetworkLayerError.authorizationError
+        }
+        throw NetworkLayerError.parsingDomainsError
     }
 
     public func mint(domains: [DomainItem],
                       with email: String,
                       code: String,
-                      stripeIntent: String?) -> Promise<[TransactionItem]> {
-        return Promise { seal in
-            guard let request = try? APIRequestBuilder().users(email: email)
-                                                        .secure(code: code)
-                                                        .mint(domains, stripeIntent: stripeIntent)
-                                                        .build() else {
-                Debugger.printFailure("Couldn't build the mint request", critical: true)
-                seal.reject(NetworkLayerError.creatingURLFailed)
-                return
-            }
-            fetchData(for: request.url,
-                      body: request.body,
-                      extraHeaders: request.headers) { result in
-                switch result {
-                case .fulfilled(let data):
-                    if let array = try? JSONDecoder().decode(TxResponseArray.self, from: data) {
-                        let txArray: [TransactionItem] = array.txs.compactMap({ TransactionItem(jsonResponse: $0) })
-                        seal.fulfill(txArray)
-                    } else {
-                        seal.reject(NetworkLayerError.parsingTxsError)
-                    }
-                case .rejected(let error): seal.reject(error)
-                }
-            }
+                      stripeIntent: String?) async throws -> [TransactionItem] {
+        guard let request = try? APIRequestBuilder().users(email: email)
+            .secure(code: code)
+            .mint(domains, stripeIntent: stripeIntent)
+            .build() else {
+            Debugger.printFailure("Couldn't build the mint request", critical: true)
+            throw NetworkLayerError.creatingURLFailed
         }
+        
+        let data = try await fetchData(for: request.url,
+                                       body: request.body,
+                                       extraHeaders: request.headers)
+        if let array = try? JSONDecoder().decode(TxResponseArray.self, from: data) {
+            let txArray: [TransactionItem] = array.txs.compactMap({ TransactionItem(jsonResponse: $0) })
+            return txArray
+        }
+        throw NetworkLayerError.parsingTxsError
     }
 }
 

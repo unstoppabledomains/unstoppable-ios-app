@@ -6,7 +6,6 @@
 //
 
 import XCTest
-import PromiseKit
 @testable import domains_manager_ios
 
 
