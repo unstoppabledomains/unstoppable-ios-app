@@ -2798,7 +2798,7 @@
 		C6DF986F290F83020098733A /* TransactionsDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */; };
 		C6DF9870290F83020098733A /* testUpdateRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */; };
 		C6DF9871290F83020098733A /* ResolutionInitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */; };
-		C6DF9872290F83020098733A /* TransactionsListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300F291525CFEBEC007EEAD1 /* TransactionsListViewModelTests.swift */; };
+		C6DF9872290F83020098733A /* TransactionsStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300F291525CFEBEC007EEAD1 /* TransactionsStorageTests.swift */; };
 		C6DF9873290F83020098733A /* UDWalletsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C680178A2886A7CC00524712 /* UDWalletsServiceTests.swift */; };
 		C6DF9875290F83020098733A /* UnsConfigManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30F6A88F277BB5310086D70B /* UnsConfigManagerTests.swift */; };
 		C6DF9876290F83020098733A /* ArrayExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 307CFF7E279AEF2B003A6AF1 /* ArrayExtensionsTests.swift */; };
@@ -3253,7 +3253,7 @@
 		29EDB62429128D4E00A0BD08 /* domains-manager-ios Dev Env.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios Dev Env.entitlements"; sourceTree = "<group>"; };
 		3004E32626D528D300B9CB6A /* LegacyUnitaryWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyUnitaryWallet.swift; sourceTree = "<group>"; };
 		3004E32B26D53F1D00B9CB6A /* UDWalletStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletStorage.swift; sourceTree = "<group>"; };
-		300F291525CFEBEC007EEAD1 /* TransactionsListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsListViewModelTests.swift; sourceTree = "<group>"; };
+		300F291525CFEBEC007EEAD1 /* TransactionsStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsStorageTests.swift; sourceTree = "<group>"; };
 		300F291B25D3D4A1007EEAD1 /* DomainRecordsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRecordsViewModelTests.swift; sourceTree = "<group>"; };
 		3018AEAD27E9D50A00E8C37D /* RestoreWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletViewController.swift; sourceTree = "<group>"; };
 		3018AEB227EA091000E8C37D /* EnterBackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterBackupViewController.swift; sourceTree = "<group>"; };
@@ -4317,7 +4317,7 @@
 				30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */,
 				308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */,
 				C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */,
-				300F291525CFEBEC007EEAD1 /* TransactionsListViewModelTests.swift */,
+				300F291525CFEBEC007EEAD1 /* TransactionsStorageTests.swift */,
 				C680178A2886A7CC00524712 /* UDWalletsServiceTests.swift */,
 				30F6A88F277BB5310086D70B /* UnsConfigManagerTests.swift */,
 				3087E3A22823DE0B0023B7A7 /* WalletAutonamingTests.swift */,
@@ -8471,7 +8471,7 @@
 				C6DF986D290F83020098733A /* PrivateKeyStorageTests.swift in Sources */,
 				C6DF9876290F83020098733A /* ArrayExtensionsTests.swift in Sources */,
 				C6DF9873290F83020098733A /* UDWalletsServiceTests.swift in Sources */,
-				C6DF9872290F83020098733A /* TransactionsListViewModelTests.swift in Sources */,
+				C6DF9872290F83020098733A /* TransactionsStorageTests.swift in Sources */,
 				C60610E829A7469A005DC0D5 /* WCRequestsHandlingServiceTests.swift in Sources */,
 				C6DF9875290F83020098733A /* UnsConfigManagerTests.swift in Sources */,
 				C6DF986B290F83020098733A /* WalletAutonamingTests.swift in Sources */,
