@@ -24,7 +24,8 @@ final class GeneralAppContext: AppContextProtocol {
     let udWalletsService: UDWalletsServiceProtocol
     let walletConnectService: WalletConnectServiceProtocol
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
-    let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol 
+    let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol
+    let walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
@@ -49,6 +50,7 @@ final class GeneralAppContext: AppContextProtocol {
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
+        walletConnectExternalWalletHandler = WalletConnectExternalWalletHandler()
         let walletConnectService = WalletConnectService()
         self.walletConnectService = walletConnectService
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
@@ -69,7 +71,8 @@ final class GeneralAppContext: AppContextProtocol {
         
         
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
-                                                              walletConnectServiceV2: walletConnectServiceV2)
+                                                              walletConnectServiceV2: walletConnectServiceV2,
+                                                              walletConnectExternalWalletHandler: walletConnectExternalWalletHandler)
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
         
         externalEventsService = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,

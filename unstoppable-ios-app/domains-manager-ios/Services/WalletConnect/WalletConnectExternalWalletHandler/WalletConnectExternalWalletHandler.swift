@@ -8,7 +8,6 @@
 import Foundation
 import Combine
 import UIKit
-import PromiseKit
 import Web3
 
 // V1
@@ -17,10 +16,8 @@ import WalletConnectSwift
 // V2
 import WalletConnectSign
 
-final class WalletConnectExternalWalletHandler {
-    
-    static let shared = WalletConnectExternalWalletHandler()
-    
+final class WalletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol {
+        
     private var publishers = [AnyCancellable]()
     private var listeners: [WalletConnectExternalWalletSignerListenerHolder] = []
     
@@ -29,7 +26,7 @@ final class WalletConnectExternalWalletHandler {
     
     private var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
 
-    private init() {
+    init() {
         setup()
     }
 }

@@ -1193,10 +1193,10 @@ extension WalletConnectServiceV2 {
                              session: SessionV2Proxy,
                              requestParams: AnyCodable,
                              in wallet: UDWallet) async throws -> WalletConnectSign.Response {
-        try await WalletConnectExternalWalletHandler.shared.sendWC2Request(method: method,
-                                                                          session: session,
-                                                                          requestParams: requestParams,
-                                                                          in: wallet)
+        try await appContext.walletConnectExternalWalletHandler.sendWC2Request(method: method,
+                                                                               session: session,
+                                                                               requestParams: requestParams,
+                                                                               in: wallet)
     }
     
     struct TransactionV2: Codable {

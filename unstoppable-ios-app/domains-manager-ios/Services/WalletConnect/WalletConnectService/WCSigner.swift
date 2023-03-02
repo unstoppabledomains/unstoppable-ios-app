@@ -320,22 +320,22 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                     during session: Session,
                                     in request: Request,
                                     transaction: EthereumTransaction) async throws -> Response {
-        let response = try await WalletConnectExternalWalletHandler.shared.sendTxViaWalletConnect_V1(session: session,
-                                                                                                    tx: transaction,
-                                                                                                    in: udWallet)
+        let response = try await appContext.walletConnectExternalWalletHandler.sendTxViaWalletConnect_V1(session: session,
+                                                                                                         tx: transaction,
+                                                                                                         in: udWallet)
         
         let result = try response.result(as: String.self)
         return Response.transaction(result, for: request)
     }
-   
+    
     private func proceedSignTypedDataViaWC(by udWallet: UDWallet,
                                            during session: Session,
                                            in request: Request,
                                            dataString: String) async throws -> Response {
-        let response = try await WalletConnectExternalWalletHandler.shared.signTypedDataViaWalletConnect_V1(session: session,
-                                                                                                           walletAddress: udWallet.address,
-                                                                                                           message: dataString,
-                                                                                                           in: udWallet)
+        let response = try await appContext.walletConnectExternalWalletHandler.signTypedDataViaWalletConnect_V1(session: session,
+                                                                                                                walletAddress: udWallet.address,
+                                                                                                                message: dataString,
+                                                                                                                in: udWallet)
         let result = try response.result(as: String.self)
         return Response.transaction(result, for: request)
     }
