@@ -101,14 +101,7 @@ private extension AppLaunchService {
     }
     
     func initialWalletsCheck() async throws {
-        try await withSafeCheckedThrowingContinuation({ completion in
-            UDWalletsStorage.instance.initialWalletsCheck()
-                .done {
-                    completion(.success(Void()))
-                }.catch { error in
-                    completion(.failure(error))
-                }
-        })
+        try await UDWalletsStorage.instance.initialWalletsCheck()
     }
      
     func resolveInitialMintingState(startTime: Date) {

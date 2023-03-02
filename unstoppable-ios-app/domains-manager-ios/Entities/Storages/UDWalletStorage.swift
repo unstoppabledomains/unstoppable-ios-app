@@ -168,37 +168,13 @@ final class UDWalletsStorage {
 }
 
 extension UDWalletsStorage {
-    func initialWalletsCheck() -> Promise<Void> {
+    func initialWalletsCheck() async throws {
         if let legacyWallets = LegacyWalletStorage.instance.getWalletsList(ownedBy: User.defaultId) {
-            return migrateToUdWallets(from: legacyWallets)
-        }
+            try await appContext.udWalletsService.migrateToUdWallets(from: legacyWallets)
+        } 
         removeReadOnlyUnverifiedWallets()
-        return Promise()
     }
-        
-    private func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) -> Promise<Void> {
-        return Promise { seal in
-            Debugger.printInfo(topic: .Wallet, "Migration from Legacy Wallets Storage started")
-            when(resolved: legacyWallets.map({$0.convert()}))
-            .done { res in
-                let udWallets = Utilities.unfoldArray(res).compactMap{$0}
-                self.add(newWallets: udWallets)
 
-                guard legacyWallets.count == udWallets.count else {
-                    Debugger.printFailure("Not all Wallets are migrated to UDWallets", critical: true)
-                    seal.reject(WalletError.migrationError)
-                    return
-                }
-                seal.fulfill(())
-            }.catch { error in
-                seal.reject(WalletError.migrationError)
-            }.finally {
-                // delete the old file
-                LegacyWalletStorage.instance.remove()
-            }
-        }
-    }
-    
     private func removeReadOnlyUnverifiedWallets() {
         let wallets = appContext.udWalletsService.getUserWallets()
         let readOnlyWallets = wallets.filter({ $0.type == .importedUnverified && !$0.isExternalConnectionActive })
