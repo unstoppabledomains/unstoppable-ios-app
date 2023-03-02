@@ -11181,7 +11181,7 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/unstoppabledomains/SVGKit-Light";
 			requirement = {
-				branch = v3/fixed;
+				branch = v3/removed_lumberjack;
 				kind = branch;
 			};
 		};
