@@ -8,7 +8,6 @@
 import Foundation
 import Web3
 import WalletConnectSwift
-import PromiseKit
 
 extension UDWallet {
     func getTxSignature(ethTx: EthereumTransaction, chainId: BigUInt, request: Request) async throws -> String {

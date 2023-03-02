@@ -8,7 +8,6 @@
 import Foundation
 import WalletConnectSwift
 import Web3
-import PromiseKit
 
 typealias WCConnectionResult = Swift.Result<UnifiedConnectAppInfo, Swift.Error>
 typealias WCConnectionResultCompletion = ((WCConnectionResult)->())
