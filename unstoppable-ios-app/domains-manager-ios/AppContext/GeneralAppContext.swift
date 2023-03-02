@@ -50,13 +50,13 @@ final class GeneralAppContext: AppContextProtocol {
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
-        walletConnectExternalWalletHandler = WalletConnectExternalWalletHandler()
         let walletConnectService = WalletConnectService()
         self.walletConnectService = walletConnectService
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         self.walletConnectServiceV2 = walletConnectServiceV2
         permissionsService = PermissionsService()
         pullUpViewService = PullUpViewService(authentificationService: authentificationService)
+        walletConnectExternalWalletHandler = WalletConnectExternalWalletHandler()
         
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
