@@ -1337,8 +1337,10 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                                                              highlightedText: [.init(highlightedText: String.Constants.learnMore.localized(),
                                                                                                                                      highlightedColor: .foregroundAccent)],
                                                                                                              analyticsActionName: .learnMore,
-                                                                                                             action: {
-            /// Learn more pressed
+                                                                                                             action: { [weak viewController] in
+            guard let viewController else { return }
+            UDVibration.buttonTap.vibrate()
+            viewController.topVisibleViewController().openLink(.udExternalWalletTutorial)
         }))),
                                                                      cancelButton: .gotItButton()),
                                                 items: PullUpSelectionViewEmptyItem.allCases)
