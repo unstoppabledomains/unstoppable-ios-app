@@ -32,7 +32,8 @@ final class WCRequestsHandlingServiceTests: BaseTestClass {
         mockWCServiceV2 = MockWCServiceV2()
         mockUIErrorHandler = MockWalletConnectUIErrorHandler()
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: mockWCServiceV1,
-                                                              walletConnectServiceV2: mockWCServiceV2)
+                                                              walletConnectServiceV2: mockWCServiceV2,
+                                                              walletConnectExternalWalletHandler: MockWalletConnectExternalWalletHandler())
         wcRequestsHandlingService.setUIHandler(mockUIErrorHandler)
         mockListener = MockWCServiceListener()
         wcRequestsHandlingService.addListener(mockListener)

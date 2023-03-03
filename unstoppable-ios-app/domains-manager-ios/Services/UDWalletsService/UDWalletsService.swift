@@ -327,7 +327,39 @@ extension UDWalletsService: UDWalletsServiceProtocol {
             .build()
         return request
     }
-        
+    
+    // Migrate
+    func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) async throws {
+        Debugger.printInfo(topic: .Wallet, "Migration from Legacy Wallets Storage started")
+        do {
+            var udWallets = [UDWallet]()
+            
+            try await withThrowingTaskGroup(of: UDWallet.self, body: { group in
+                for legacyWallet in legacyWallets {
+                    group.addTask {
+                        return try await legacyWallet.convertToUDWallet()
+                    }
+                }
+                
+                do {
+                    for try await udWallet in group {
+                        udWallets.append(udWallet)
+                    }
+                } catch WalletError.ethWalletAlreadyExists {
+                    Void() /// Ignore this error.
+                } catch {
+                    throw error
+                }
+                
+            })
+            store(wallets: udWallets, shouldNotify: true)
+            LegacyWalletStorage.instance.remove()
+        } catch {
+            Debugger.printFailure("Not all Wallets are migrated to UDWallets", critical: true)
+            throw WalletError.migrationError
+        }
+    }
+    
     // Listeners
     func addListener(_ listener: UDWalletsServiceListener) {
         if !listenerHolders.contains(where: { $0.listener === listener }) {

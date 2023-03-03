@@ -32,6 +32,7 @@ final class WCRequestsHandlingService {
     
     private var walletConnectServiceV1: WalletConnectV1RequestHandlingServiceProtocol
     private var walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol
+    private var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
     private var listeners: [WalletConnectServiceListenerHolder] = []
     private weak var uiHandler: WalletConnectUIErrorHandler?
     private var requests: [UnifiedWCRequest] = []
@@ -40,9 +41,11 @@ final class WCRequestsHandlingService {
     private var timeoutWorkItem: DispatchWorkItem?
 
     init(walletConnectServiceV1: WalletConnectV1RequestHandlingServiceProtocol,
-         walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol) {
+         walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol,
+         walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol) {
         self.walletConnectServiceV1 = walletConnectServiceV1
         self.walletConnectServiceV2 = walletConnectServiceV2
+        self.walletConnectExternalWalletHandler = walletConnectExternalWalletHandler
         setup()
     }
     
@@ -425,7 +428,7 @@ private extension WCRequestsHandlingService {
     }
     
     func setExternalWalletSignerListener() {
-        WalletConnectExternalWalletHandler.shared.addListener(self)
+        walletConnectExternalWalletHandler.addListener(self)
     }
 }
 

@@ -15,12 +15,7 @@ final class MockContext: AppContextProtocol {
                                                                                                        walletConnectServiceV2: walletConnectServiceV2, walletConnectRequestsHandlingService: wcRequestsHandlingService)
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
-    private(set) lazy var notificationsService: NotificationsServiceProtocol = {
-        NotificationsService(externalEventsService: externalEventsService,
-                             permissionsService: permissionsService,
-                             udWalletsService: udWalletsService,
-                             wcRequestsHandlingService: wcRequestsHandlingService)
-    }()
+    private(set) lazy var notificationsService: NotificationsServiceProtocol = { MockNotificationsService() }()
     private(set) lazy var permissionsService: PermissionsServiceProtocol = PermissionsService()
     private(set) lazy var pullUpViewService: PullUpViewServiceProtocol = PullUpViewService(authentificationService: authentificationService)
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
@@ -51,7 +46,8 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = MockWalletConnectClientManager()
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol = MockWCRequestsHandlingService()
-    
+    private(set) lazy var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol = MockWalletConnectExternalWalletHandler()
+
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
 }
 

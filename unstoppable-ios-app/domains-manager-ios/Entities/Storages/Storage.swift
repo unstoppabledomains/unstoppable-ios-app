@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import PromiseKit
 import BigInt
 
 enum StorageError: String, LocalizedError {
@@ -132,9 +131,8 @@ class Storage {
 }
 
 protocol TxsStorage {
-    func getCachedTransactionsList(by domains: [DomainItem]) -> Promise<[TransactionItem]>
     func getCachedTransactionsListSync(by domains: [DomainItem]) -> [TransactionItem]
-    func injectTxsUpdate(_ newTxs: [TransactionItem]) -> Promise<Void>
+    func injectTxsUpdate_Blocking(_ newTxs: [TransactionItem])
     static func removeDuplicates(for newTxs: [TransactionItem], _transactionCache: [TransactionItem]) -> [TransactionItem]
 }
 
@@ -189,11 +187,6 @@ extension Storage: TxsStorage {
         transactionStorage.retrieve() ?? []
     }
     
-    func getCachedTransactionsList(by domains: [DomainItem]) -> Promise<[TransactionItem]> {
-        return Promise { seal in
-            seal.fulfill(getCachedTransactionsListSync(by: domains))
-        }
-    }
     
     func getCachedTransactionsListSync(by domains: [DomainItem]) -> [TransactionItem] {
         guard domains.count > 0 else {
@@ -220,14 +213,6 @@ extension Storage: TxsStorage {
             let transactionCache = getTxList()
             let updatedTxsCache = Self.inject(newTxs: newTxs, into: transactionCache)
             transactionStorage.store(updatedTxsCache)
-        }
-    }
-    
-    func injectTxsUpdate(_ newTxs: [TransactionItem]) -> Promise<Void> {
-        guard newTxs.count > 0 else { return Promise { seal in seal.fulfill(())} }
-        return Promise { seal in
-            injectTxsUpdate_Blocking(newTxs)
-            seal.fulfill(())
         }
     }
 }

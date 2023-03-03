@@ -6,18 +6,12 @@
 //
 
 import Foundation
-import PromiseKit
 
 protocol TxsFetcher {
-    func fetchAllTxs(for domains: [String]) -> Promise<[TransactionItem]>
     func fetchAllTxs(for domains: [String]) async throws -> [TransactionItem]
 }
 
 extension NetworkService: TxsFetcher {
-    public func fetchAllTxs(for domains: [String]) -> Promise<[TransactionItem]> {
-        fetchAllPagesWithLimit(for: domains, limit: Self.postRequestLimit)
-    }
-    
     public func fetchAllTxs(for domains: [String]) async throws -> [TransactionItem] {
         try await fetchAllPagesWithLimit(for: domains, limit: Self.postRequestLimit)
     }
@@ -26,22 +20,15 @@ extension NetworkService: TxsFetcher {
 extension NetworkService {
     static var isBackendSimulated: Bool { false }
     
-    public func requestSecurityCode (for email: String, operation: DeepLinkOperation) -> Promise<Void> {
-        return Promise { seal in
-            guard let request = try? APIRequestBuilder().users(email: email)
-                    .operation(operation)
-                    .authenticate()
-                    .build() else {
-                Debugger.printFailure("Couldnt build url", critical: true)
-                return
-            }
-            fetchData(for: request.url, body: request.body, extraHeaders: request.headers) { result in
-                switch result {
-                case .fulfilled( _): seal.fulfill(())
-                case .rejected(let error): seal.reject(error)
-                }
-            }
+    public func requestSecurityCode (for email: String, operation: DeepLinkOperation) async throws {
+        guard let request = try? APIRequestBuilder().users(email: email)
+            .operation(operation)
+            .authenticate()
+            .build() else {
+            Debugger.printFailure("Couldnt build url", critical: true)
+            throw NetworkLayerError.creatingURLFailed
         }
+        _ = try await fetchData(for: request.url, body: request.body, extraHeaders: request.headers)
     }
     
     func updatePushNotificationsInfo(info: PushNotificationsInfo) async throws {
@@ -49,7 +36,7 @@ extension NetworkService {
             .apnsTokens(info: info)
             .build() else {
             Debugger.printFailure("Couldnt build url", critical: true)
-            return
+            throw NetworkLayerError.creatingURLFailed
         }
          
         _ = try await fetchData(for: request.url, body: request.body, extraHeaders: request.headers)
@@ -60,7 +47,7 @@ extension NetworkService {
             .wcPushNotificationsSubscribe(info: info)
             .build() else {
             Debugger.printFailure("Couldnt build url", critical: true)
-            return
+            throw NetworkLayerError.creatingURLFailed
         }
         
         _ = try await fetchData(for: request.url, body: request.body, extraHeaders: request.headers)
@@ -71,7 +58,7 @@ extension NetworkService {
             .wcPushNotificationsUnsubscribe(info: info)
             .build() else {
             Debugger.printFailure("Couldnt build url", critical: true)
-            return
+            throw NetworkLayerError.creatingURLFailed
         }
         
         _ = try await fetchData(for: request.url, body: request.body, extraHeaders: request.headers)
@@ -227,112 +214,59 @@ extension NetworkService {
         }
     }
     
-    private func unfoldArray<T> (_ array: [Result<T>]) -> Promise<[T]>{
-        return Promise { seal in
-            let result: [T] = array.reduce([], { res, el in
-                var arrCopy = res
-                
-                switch el {
-                case .fulfilled(let element): arrCopy.append(element)
-                case .rejected(let error): seal.reject(error)
-                }
-                return arrCopy
-            })
-            seal.fulfill(result)
-        }
-    }
-    
-    public func getAllUnmintedDomains(for email: String, withAccessCode code: String) -> Promise<DomainsInfo> {
+    public func getAllUnMintedDomains(for email: String, withAccessCode code: String) async throws -> DomainsInfo {
         guard let request = try? APIRequestBuilder()
                                     .users(email: email)
                                     .secure(code: code)
                                     .fetchAllUnMintedDomains()
                                     .build() else {
             Debugger.printFailure("Couldn't build the url", critical: true)
-            return Promise() { seal in seal.reject(NetworkLayerError.creatingURLFailed)}
+            throw NetworkLayerError.creatingURLFailed
         }
-        return getUnmintedDomainsListPromise(for: email,
-                                                     withAccessCode: code,
-                                                     request: request)
-    }
-
-    public func getUnmintedDomainsListPromise(for email: String,
-                                                      withAccessCode code: String,
-                                                      request: APIRequest) -> Promise<DomainsInfo> {
-        return Promise { seal in
-            fetchData(for: request.url,
-                         method: .get,
-                      extraHeaders: request.headers) { result in
-                switch result {
-                case .fulfilled(let data):
-                    if let response = try? JSONDecoder().decode(DomainResponseArray.self, from: data) {
-                        let info = DomainsInfo(domainNames: response.domains.map({$0.name}),
-                                            txCosts: response.txCosts)
-                        seal.fulfill(info)
-                        return
-                    }
-                    if let _ = try? JSONDecoder().decode(MobileAPiErrorResponse.self, from: data) {
-                        seal.reject(NetworkLayerError.authorizationError)
-                        return
-                    } else {
-                        seal.reject(NetworkLayerError.parsingDomainsError)
-                    }
-                case .rejected(let error): seal.reject(error)
-                }
-            }
+        let data = try await fetchData(for: request.url,
+                                       method: .get,
+                                       extraHeaders: request.headers)
+        if let response = try? JSONDecoder().decode(DomainResponseArray.self, from: data) {
+            let info = DomainsInfo(domainNames: response.domains.map({$0.name}),
+                                   txCosts: response.txCosts)
+            return info
         }
+        if let _ = try? JSONDecoder().decode(MobileAPiErrorResponse.self, from: data) {
+            throw NetworkLayerError.authorizationError
+        }
+        throw NetworkLayerError.parsingDomainsError
     }
 
     public func mint(domains: [DomainItem],
                       with email: String,
                       code: String,
-                      stripeIntent: String?) -> Promise<[TransactionItem]> {
-        return Promise { seal in
-            guard let request = try? APIRequestBuilder().users(email: email)
-                                                        .secure(code: code)
-                                                        .mint(domains, stripeIntent: stripeIntent)
-                                                        .build() else {
-                Debugger.printFailure("Couldn't build the mint request", critical: true)
-                seal.reject(NetworkLayerError.creatingURLFailed)
-                return
-            }
-            fetchData(for: request.url,
-                      body: request.body,
-                      extraHeaders: request.headers) { result in
-                switch result {
-                case .fulfilled(let data):
-                    if let array = try? JSONDecoder().decode(TxResponseArray.self, from: data) {
-                        let txArray: [TransactionItem] = array.txs.compactMap({ TransactionItem(jsonResponse: $0) })
-                        seal.fulfill(txArray)
-                    } else {
-                        seal.reject(NetworkLayerError.parsingTxsError)
-                    }
-                case .rejected(let error): seal.reject(error)
-                }
-            }
+                      stripeIntent: String?) async throws -> [TransactionItem] {
+        guard let request = try? APIRequestBuilder().users(email: email)
+            .secure(code: code)
+            .mint(domains, stripeIntent: stripeIntent)
+            .build() else {
+            Debugger.printFailure("Couldn't build the mint request", critical: true)
+            throw NetworkLayerError.creatingURLFailed
         }
+        
+        let data = try await fetchData(for: request.url,
+                                       body: request.body,
+                                       extraHeaders: request.headers)
+        if let array = try? JSONDecoder().decode(TxResponseArray.self, from: data) {
+            let txArray: [TransactionItem] = array.txs.compactMap({ TransactionItem(jsonResponse: $0) })
+            return txArray
+        }
+        throw NetworkLayerError.parsingTxsError
     }
 }
 
 extension NetworkService {
     static let postRequestLimit = 500
- 
-    public func fetchUnsDomains(for wallets: [UDWallet]) -> Promise<[DomainItem]> {
-        let ownerUnsAddresses = wallets.compactMap({ $0.extractEthWallet()?.address.normalized})
-        guard !ownerUnsAddresses.isEmpty else { return Promise { $0.fulfill([]) } }
-        return fetchDomains(for: ownerUnsAddresses)
-    }
     
     public func fetchUnsDomains(for wallets: [UDWallet]) async throws -> [DomainItem] {
         let ownerUnsAddresses = wallets.compactMap({ $0.extractEthWallet()?.address.normalized})
         guard !ownerUnsAddresses.isEmpty else { return [] }
         return try await fetchDomains(for: ownerUnsAddresses)
-    }
-    
-    public func fetchZilDomains(for wallets: [UDWallet]) -> Promise<[DomainItem]> {
-        let ownerZilAddresses = wallets.compactMap({ $0.extractZilWallet()?.address.normalized})
-        guard !ownerZilAddresses.isEmpty else { return Promise { $0.fulfill([]) } }
-        return fetchDomains(for: ownerZilAddresses)
     }
     
     public func fetchZilDomains(for wallets: [UDWallet]) async throws -> [DomainItem] {
@@ -341,31 +275,8 @@ extension NetworkService {
         return try await fetchDomains(for: ownerZilAddresses)
     }
     
-    private func fetchDomains(for ownerAddresses: [HexAddress]) -> Promise<[DomainItem]> {
-        fetchAllPagesWithLimit(for: ownerAddresses, limit: Self.postRequestLimit)
-    }
-    
     private func fetchDomains(for ownerAddresses: [HexAddress]) async throws -> [DomainItem] {
         try await fetchAllPagesWithLimit(for: ownerAddresses, limit: Self.postRequestLimit)
-    }
-
-    func fetchAllPagesWithLimit<T: PaginatedFetchable>(for originItems: [T.O], limit: Int) -> Promise<[T]> {
-        var items = originItems
-        var promiseArray: [Promise<[T]>] = []
-        while items.count > 0 {
-            let batch = items.prefix(limit)
-            items = Array(items.dropFirst(batch.count))
-            promiseArray.append(fetchAllPages(for: Array(batch)))
-        }
-        return Promise { seal in
-            when(fulfilled: promiseArray)
-                .done { t in
-                    seal.fulfill(t.flatMap({ $0 }))
-                }
-                .catch { error in
-                    seal.reject(error)
-                }
-        }
     }
     
     func fetchAllPagesWithLimit<T: PaginatedFetchable>(for originItems: [T.O], limit: Int) async throws -> [T] {
@@ -384,52 +295,6 @@ extension NetworkService {
         })
         
         return response
-    }
-    
-    func fetchAllPages<T: PaginatedFetchable>(for originItems: [T.O]) -> Promise<[T]> {
-        typealias GenericState = (page: Int, items: [T], lastBatchPicked: Bool)
-        
-        return Promise { seal in
-            let perPage = 1000
-            let state: GenericState = (page: 1, items: [], lastBatchPicked: false)
-            var error: Error?
-            
-            var s = sequence(state: state, next: { ( state: inout GenericState) -> [T]? in
-                if state.lastBatchPicked { return nil }
-                let nextFetch = T.fetchPaginatedData_Blocking(for: originItems,
-                                                                    page: state.page,
-                                                                    perPage: perPage)
-                switch  nextFetch {
-                case .fulfilled(let itemsBatch):
-                    if itemsBatch.count == 0 { return nil }
-                    if itemsBatch.count < perPage { state.lastBatchPicked = true }
-                    state.items.append(contentsOf: itemsBatch)
-                    state.page = state.page + 1
-                    return state.items
-                    
-                case .rejected(let loadingError):
-                    error = loadingError
-                    return nil
-                }
-            })
-          
-            
-            var result: [T] = []
-            var reading = true
-            repeat {
-                guard let next = s.next() else {
-                    reading = false
-                    continue
-                }
-                result += next
-            } while (reading)
-            
-            if let error = error {
-                seal.reject(error)
-            } else {
-                seal.fulfill(result)
-            }
-        }
     }
     
     func fetchAllPages<T: PaginatedFetchable>(for originItems: [T.O]) async throws -> [T] {
@@ -461,39 +326,6 @@ extension NetworkService {
     }
         
     static func gen_paginatedBlockingFetchDataGen<T: PaginatedFetchable>(for originItems: [T.O],
-                                                  page: Int,
-                                                  perPage: Int) -> Result<[T]> {
-        guard originItems.count > 0 else { return Result.fulfilled([]) }
-        
-        let semaphor = DispatchSemaphore(value: 0)
-        var outcome: Result<[T]>!
-        
-        let request: APIRequest
-        do {
-            request = try T.createRequestForPaginated(for: originItems, page: page, perPage: perPage)
-        } catch {
-            return Result.rejected(error)
-        }
-        NetworkService().fetchData(for: request.url,
-                                   body: request.body,
-                                   method: request.method,
-                                   extraHeaders: request.headers) { result in
-            switch result {
-            case .fulfilled(let data):
-                if let json = try? JSONDecoder().decode(T.J.self, from: data) {
-                    outcome = Result.fulfilled(T.convert(json))
-                } else {
-                    outcome = Result.rejected(NetworkLayerError.parsingDomainsError)
-                }
-            case .rejected(let error):  outcome = Result.rejected(error)
-            }
-            semaphor.signal()
-        }
-        semaphor.wait()
-        return outcome
-    }
-    
-    static func gen_paginatedBlockingFetchDataGen<T: PaginatedFetchable>(for originItems: [T.O],
                                                                          page: Int,
                                                                          perPage: Int) async throws -> [T] {
         guard originItems.count > 0 else { return [] }
@@ -523,10 +355,6 @@ protocol PaginatedFetchable {
     static func createRequestForPaginated(for originItems: [O],
                                page: Int,
                                perPage: Int) throws -> APIRequest
-    
-    static func fetchPaginatedData_Blocking(for originItems: [O],
-                                               page: Int,
-                                               perPage: Int) -> Result<[Self]>
     static func fetchPaginatedData_Blocking(for originItems: [O],
                                             page: Int,
                                             perPage: Int) async throws -> [Self] 
@@ -567,13 +395,7 @@ extension DomainItem: PaginatedFetchable {
         }
         return APIRequest(url: endpoint.url!, body: endpoint.body, method: .post)
     }
-    
-    static func fetchPaginatedData_Blocking(for addresses: [HexAddress],
-                                            page: Int,
-                                            perPage: Int) -> Result<[DomainItem]> {
-        return NetworkService.gen_paginatedBlockingFetchDataGen(for: addresses, page: page, perPage: perPage)
-    }
-    
+ 
     static func fetchPaginatedData_Blocking(for originItems: [O],
                                             page: Int,
                                             perPage: Int) async throws -> [Self] {
@@ -601,12 +423,6 @@ extension TransactionItem: PaginatedFetchable {
         return APIRequest(url: endpoint.url!, body: endpoint.body, method: .post)
     }
     
-    static func fetchPaginatedData_Blocking(for domains: [O],
-                                               page: Int,
-                                               perPage: Int) -> Result<[TransactionItem]> {
-        return NetworkService.gen_paginatedBlockingFetchDataGen(for: domains, page: page, perPage: perPage)
-    }
-    
     static func fetchPaginatedData_Blocking(for originItems: [O],
                                             page: Int,
                                             perPage: Int) async throws -> [Self] {
@@ -616,7 +432,7 @@ extension TransactionItem: PaginatedFetchable {
 
 private final class PaginatedFetchableBatchLoader<T: PaginatedFetchable> {
     typealias ResultBlock = (Swift.Result<[T], Error>)->()
-
+    
     private let operationQueue = OperationQueue()
     private let serialQueue = DispatchQueue(label: "batch.loader.serial.queue")
     private var resultItems: [T] = []
@@ -680,50 +496,31 @@ private final class PaginatedFetchableBatchLoader<T: PaginatedFetchable> {
 
 extension NetworkService {
     struct ActionsDomainInfo: Decodable {
-            let id: UInt
-            let name: String
-            let ownerAddress: HexAddress
-            let blockchain: String
-        }
-        
-        struct ActionsTxInfo: Decodable {
-            let id: UInt64
-            let type: String
-            let blockchain: String
-            let messageToSign: String?
-        }
-        
-        struct ActionsPaymentInfo: Decodable {
-            let id: String
-            let clientSecret: String
-            let totalAmount: UInt
-        }
-        
-        struct ActionsResponse: Decodable {
-            let id: UInt64
-            let domain: ActionsDomainInfo
-            let txs: [ActionsTxInfo]
-            let paymentInfo: ActionsPaymentInfo?
-        }
-        
-        public func getActions(request: APIRequest) -> Promise<NetworkService.ActionsResponse> {
-            return Promise { seal in
-                fetchData(for: request.url,
-                          body: request.body,
-                          method: request.method,
-                          extraHeaders: request.headers) { result in
-                    switch result {
-                    case .fulfilled(let data):
-                        if let response = try? JSONDecoder().decode(ActionsResponse.self, from: data) {
-                                seal.fulfill(response)
-                        } else {
-                            seal.reject(NetworkLayerError.badResponseOrStatusCode(code: 0, message: "Invalid actions response"))
-                        }
-                    case .rejected(let error): seal.reject(error)
-                    }
-                }
-            }
-        }
+        let id: UInt
+        let name: String
+        let ownerAddress: HexAddress
+        let blockchain: String
+    }
+    
+    struct ActionsTxInfo: Decodable {
+        let id: UInt64
+        let type: String
+        let blockchain: String
+        let messageToSign: String?
+    }
+    
+    struct ActionsPaymentInfo: Decodable {
+        let id: String
+        let clientSecret: String
+        let totalAmount: UInt
+    }
+    
+    struct ActionsResponse: Decodable {
+        let id: UInt64
+        let domain: ActionsDomainInfo
+        let txs: [ActionsTxInfo]
+        let paymentInfo: ActionsPaymentInfo?
+    }
     
     public func getActions(request: APIRequest) async throws -> NetworkService.ActionsResponse {
         let data = try await fetchData(for: request.url,
@@ -733,27 +530,6 @@ extension NetworkService {
         let response = try JSONDecoder().decode(ActionsResponse.self, from: data)
         return response
     }
-                
-        public func postMetaActions(_ apiRequest: APIRequest) -> Promise<Void> {
-            return Promise { seal in
-                fetchData(for: apiRequest.url,
-                          body: apiRequest.body,
-                          method: apiRequest.method,
-                          extraHeaders: apiRequest.headers) { result in
-                    switch result {
-                    case .fulfilled(let data):
-                        if let responseString = String(data: data, encoding: .utf8),
-                           responseString.lowercased() == "ok" {
-                            seal.fulfill(())
-                        } else {
-    #warning("get the list of possible errors from the endpoint")
-                            seal.reject(NetworkLayerError.parsingTxsError)
-                        }
-                    case .rejected(let error): seal.reject(error)
-                    }
-                }
-            }
-        }
     
     public func postMetaActions(_ apiRequest: APIRequest) async throws {
         let data = try await fetchData(for: apiRequest.url,
