@@ -668,3 +668,8 @@
 "LEGACY" = "Legacy";
 "MULTI_CHAIN" = "Multi-chain";
 "CHOOSE_COIN_VERSION_PULL_UP_DESCRIPTION" = "For backward compatibility with some dApps, we recommend setting up both Legacy (Ethereum) and Multi-chain.";
+
+// External wallet connection hint
+"EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_TITLE" = "No response from %@ ";
+"EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_SUBTITLE" = "Check old session in %@, check your internet connection and try again. Learn more";
+

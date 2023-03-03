@@ -733,6 +733,11 @@ extension String {
         static let legacy = "LEGACY"
         static let multiChain = "MULTI_CHAIN"
         static let chooseCoinVersionPullUpDescription = "CHOOSE_COIN_VERSION_PULL_UP_DESCRIPTION"
+        
+        // External wallet connection hint
+        static let externalWalletConnectionHintPullUpTitle = "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_TITLE"
+        static let externalWalletConnectionHintPullUpSubtitle = "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_SUBTITLE"
+
     }
     
     struct Segues {
