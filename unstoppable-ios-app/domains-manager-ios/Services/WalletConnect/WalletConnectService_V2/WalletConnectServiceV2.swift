@@ -398,16 +398,17 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let walletAddresses = WCConnectedAppsStorageV2.SessionProxy(session).getWalletAddresses()
         guard walletAddresses.count > 0 else {
             Debugger.printFailure("Wallet has insufficient info: \(String(describing: session.namespaces))", critical: true)
-            delegate?.didConnect(to: nil, with: nil)
+            delegate?.didConnect(to: nil, with: nil, successfullyAddedCallback: nil)
             return
         }
 
-        if walletStorageV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
-            walletStorageV2.save(newConnection: ExtWalletDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
-        } else {
-            Debugger.printWarning("WC2: Existing session got reconnected")
+        self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session)) { [weak self] in
+            if self?.walletStorageV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
+                self?.walletStorageV2.save(newConnection: ExtWalletDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
+            } else {
+                Debugger.printWarning("WC2: Existing session got reconnected")
+            }
         }
-        self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session))
     }
     
     private func handleConnection(session: SessionV2,
@@ -1193,10 +1194,10 @@ extension WalletConnectServiceV2 {
                              session: SessionV2Proxy,
                              requestParams: AnyCodable,
                              in wallet: UDWallet) async throws -> WalletConnectSign.Response {
-        try await WalletConnectExternalWalletHandler.shared.sendWC2Request(method: method,
-                                                                          session: session,
-                                                                          requestParams: requestParams,
-                                                                          in: wallet)
+        try await appContext.walletConnectExternalWalletHandler.sendWC2Request(method: method,
+                                                                               session: session,
+                                                                               requestParams: requestParams,
+                                                                               in: wallet)
     }
     
     struct TransactionV2: Codable {

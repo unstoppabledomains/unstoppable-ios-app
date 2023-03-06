@@ -139,10 +139,13 @@ extension ConnectExternalWalletViewPresenter: WalletConnectDelegate {
         }
     }
     
-    func didConnect(to walletAddress: HexAddress?, with wcRegistryWallet: WCRegistryWalletProxy?) {
+    func didConnect(to walletAddress: HexAddress?,
+                    with wcRegistryWallet: WCRegistryWalletProxy?,
+                    successfullyAddedCallback: (() -> Void)? ) {
         appContext.analyticsService.log(event: .didConnectToExternalWallet, withParameters: [.externalWallet: connectingWallet?.name ?? "Unknown",
-                                                                                         .viewName: analyticsName.rawValue])
+                                                                                             .viewName: analyticsName.rawValue])
         connectingWallet = nil
+
         guard let walletAddress = walletAddress else {
             Debugger.printFailure("WC wallet connected with errors, walletAddress is nil", critical: true)
             return
@@ -156,6 +159,7 @@ extension ConnectExternalWalletViewPresenter: WalletConnectDelegate {
         do {
             let wallet = try udWalletsService.addExternalWalletWith(address: walletAddress,
                                                                     walletRecord: wcWallet)
+            successfullyAddedCallback?()
             
             didConnectWallet(wallet: wallet)
         } catch WalletError.ethWalletAlreadyExists {
@@ -164,7 +168,9 @@ extension ConnectExternalWalletViewPresenter: WalletConnectDelegate {
                 self?.view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
                                             body: String.Constants.walletAlreadyConnectedError.localized())
             }
-        } catch { }
+        } catch {
+            Debugger.printFailure("Error adding a new wallet: \(error)", critical: true)
+        }
     }
     
     func didDisconnect(from accounts: [HexAddress]?, with wcRegistryWallet: WCRegistryWalletProxy?) {

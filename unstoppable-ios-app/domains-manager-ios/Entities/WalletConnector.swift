@@ -63,7 +63,9 @@ extension WalletConnector {
             var components = comps
             components.path = "/wc"
             
-            let universalDeepLinkUrl = components.url!.absoluteString + "?uri=\(escapedString)"
+            let uriPayload = wcWallet.isV2Compatible ? escapedString : uriString
+            
+            let universalDeepLinkUrl = components.url!.absoluteString + "?uri=\(uriPayload)"
             universalUrl = URL(string: universalDeepLinkUrl)!
         } else {
             universalUrl = coreUrl

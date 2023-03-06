@@ -34,6 +34,7 @@ protocol AppContextProtocol {
     var walletConnectClientService: WalletConnectClientServiceProtocol { get }
     var linkPresentationService: LinkPresentationServiceProtocol { get }
     var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol { get }
+    var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol { get }
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
 }

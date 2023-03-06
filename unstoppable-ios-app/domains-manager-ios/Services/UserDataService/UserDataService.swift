@@ -12,16 +12,7 @@ final class UserDataService { }
 // MARK: - UserDataServiceProtocol
 extension UserDataService: UserDataServiceProtocol {
     func sendUserEmailVerificationCode(to email: String) async throws {
-        try await withSafeCheckedThrowingContinuation({ completion in
-            sendCodeTo(email: email) { result in
-                switch result {
-                case .success:
-                    completion(.success(Void()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-        })
+        try await NetworkService().requestSecurityCode(for: email, operation: .mintDomains)
     }
         
     @discardableResult
@@ -38,11 +29,5 @@ extension UserDataService: UserDataServiceProtocol {
 private extension UserDataService {
     func fetchAppVersion() async throws -> AppVersionInfo {
         try await DefaultAppVersionFetcher().fetchVersion()
-    }
-    
-    func sendCodeTo(email: String, completion: @escaping (Result<Void, Error>)->()) {
-        NetworkService().requestSecurityCode(for: email, operation: .mintDomains)
-            .done { completion(.success(Void())) }
-            .catch { error in completion(.failure(error)) }
     }
 }
