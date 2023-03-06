@@ -1327,7 +1327,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     
     func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
                                                 in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 304
+        let selectionViewHeight: CGFloat = 328
         let walletName = walletRecord.name
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.externalWalletConnectionHintPullUpTitle.localized(walletName)),
                                                                      contentAlignment: .center,

@@ -671,5 +671,5 @@
 
 // External wallet connection hint
 "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_TITLE" = "No response from %@ ";
-"EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_SUBTITLE" = "Check old session in %@, check your internet connection and try again. Learn more";
+"EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_SUBTITLE" = "To resolve the issue, check old sessions in %@, ensure stable internet connection and try again. Learn more";
 
