@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import PromiseKit
 import web3swift
 
 // Legacy
@@ -50,22 +49,24 @@ struct LegacyUnitaryWallet: Codable {
 }
 
 extension LegacyUnitaryWallet {
-    func convert() -> Promise<UDWallet> {
+    func convertToUDWallet() async throws -> UDWallet {
         switch self.securityType {
-        case .normal:   guard let privateKeyEthereum = self.getPrivateKey() else {
-                        Debugger.printFailure("Failed to find priv key for wallet: \(self.address)", critical: true)
-            return Promise { seal in return seal.reject(WalletError.EthWalletPrivateKeyNotFound) }
-                        }
-                        return UDWallet.create(aliasName: self.aliasName,
-                                               type: self.type,
-                                               privateKeyEthereum: privateKeyEthereum)
-        case .hd:       guard let mnemonicsEthereum = self.getMnemonicsArray()?.mnemonicsString else {
-                        Debugger.printFailure("Failed to find mnemonics for wallet: \(self.address)", critical: true)
-                            return Promise { seal in return seal.reject(WalletError.EthWalletPrivateKeyNotFound) }
-                        }
-                        return UDWallet.create(aliasName: self.aliasName,
-                                               type: self.type,
-                                               mnemonicsEthereum: mnemonicsEthereum)
+        case .normal:
+            guard let privateKeyEthereum = self.getPrivateKey() else {
+                Debugger.printFailure("Failed to find priv key for wallet: \(self.address)", critical: true)
+                throw WalletError.EthWalletPrivateKeyNotFound
+            }
+            return try await UDWallet.create(aliasName: self.aliasName,
+                                             type: self.type,
+                                             privateKeyEthereum: privateKeyEthereum)
+        case .hd:
+            guard let mnemonicsEthereum = self.getMnemonicsArray()?.mnemonicsString else {
+                Debugger.printFailure("Failed to find mnemonics for wallet: \(self.address)", critical: true)
+                throw WalletError.EthWalletPrivateKeyNotFound
+            }
+            return try await UDWallet.create(aliasName: self.aliasName,
+                                             type: self.type,
+                                             mnemonicsEthereum: mnemonicsEthereum)
         }
     }
 }

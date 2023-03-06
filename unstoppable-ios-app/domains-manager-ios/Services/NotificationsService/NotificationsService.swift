@@ -9,16 +9,6 @@ import UIKit
 import UserNotifications
 import WalletConnectPush
 
-// MARK: - NotificationsServiceProtocol
-protocol NotificationsServiceProtocol {
-    func checkNotificationsPermissions()
-    func registerRemoteNotifications()
-    func updateTokenSubscriptions()
-    func unregisterDeviceToken()
-    func didRegisterForRemoteNotificationsWith(deviceToken: Data)
-}
-
-
 // MARK: - NotificationsService
 final class NotificationsService: NSObject {
     

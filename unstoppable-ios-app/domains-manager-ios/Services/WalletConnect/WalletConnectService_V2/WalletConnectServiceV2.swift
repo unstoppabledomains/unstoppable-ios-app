@@ -27,25 +27,31 @@ struct SocketFactory: WebSocketFactory {
     }
 }
 
-class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ConnectionDataV2> {
+class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDataV2> {
     override init() {
         super.init()
         storageKey = "CLIENT_CONNECTIONS_STORAGE_v2"
         q = DispatchQueue(label: "work-queue-client-connections_v2")
     }
     
-    func save(newConnection: WalletConnectServiceV2.ConnectionDataV2) {
+    func save(newConnection: WalletConnectServiceV2.ExtWalletDataV2) {
         super.save(newElement: newConnection)
     }
     
     @discardableResult
-    func remove(byTopic topic: String) async -> WalletConnectServiceV2.ConnectionDataV2? {
+    func remove(byTopic topic: String) async -> WalletConnectServiceV2.ExtWalletDataV2? {
         await remove(when: {$0.session.topic == topic})
     }
     
-    func find(by address: HexAddress) -> WalletConnectServiceV2.ConnectionDataV2? {
+    func find(by address: HexAddress) -> WalletConnectServiceV2.ExtWalletDataV2? {
         self.retrieveAll()
             .filter({ $0.session.getWalletAddresses().contains(address.normalized)})
+            .first
+    }
+    
+    func find(byTopic topic: String) -> WalletConnectServiceV2.ExtWalletDataV2? {
+        self.retrieveAll()
+            .filter({ $0.session.topic == topic})
             .first
     }
 }
@@ -108,7 +114,7 @@ typealias SessionV2Proxy = WCConnectedAppsStorageV2.SessionProxy
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
-    struct ConnectionDataV2: Codable, Equatable {
+    struct ExtWalletDataV2: Codable, Equatable {
         let session: WCConnectedAppsStorageV2.SessionProxy
     }
     
@@ -359,13 +365,14 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                         Debugger.printWarning("Disconnected from dApp topic: \(topic)")
                         
                         self?.appDisconnectedCallback?(UnifiedConnectAppInfo(from: removedApp))
-                    } else if let removedExtWallet = await self?.walletStorageV2.remove(byTopic: topic){
+                    } else if let toRemoveSession = self?.walletStorageV2.find(byTopic: topic) {
                         // Client part, an external wallet has killed the session
                         Debugger.printWarning("Disconnected from Wallet topic: \(topic)")
-                        self?.disconnectAppsConnected(to: removedExtWallet.session.getWalletAddresses())
-                        removedExtWallet.session.getWalletAddresses().forEach({ walletAddress in
+                        self?.disconnectAppsConnected(to: toRemoveSession.session.getWalletAddresses())
+                        toRemoveSession.session.getWalletAddresses().forEach({ walletAddress in
                             self?.updateWalletsCacheAndUi(walletAddress: walletAddress)
                         })
+                        await self?.walletStorageV2.remove(byTopic: topic)
                     } else {
                         Debugger.printFailure("Topic disconnected that was not in cache :\(topic)", critical: false)
                         return
@@ -391,16 +398,17 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let walletAddresses = WCConnectedAppsStorageV2.SessionProxy(session).getWalletAddresses()
         guard walletAddresses.count > 0 else {
             Debugger.printFailure("Wallet has insufficient info: \(String(describing: session.namespaces))", critical: true)
-            delegate?.didConnect(to: nil, with: nil)
+            delegate?.didConnect(to: nil, with: nil, successfullyAddedCallback: nil)
             return
         }
 
-        if walletStorageV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
-            walletStorageV2.save(newConnection: ConnectionDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
-        } else {
-            Debugger.printWarning("WC2: Existing session got reconnected")
+        self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session)) { [weak self] in
+            if self?.walletStorageV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
+                self?.walletStorageV2.save(newConnection: ExtWalletDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
+            } else {
+                Debugger.printWarning("WC2: Existing session got reconnected")
+            }
         }
-        self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session))
     }
     
     private func handleConnection(session: SessionV2,
@@ -1186,10 +1194,10 @@ extension WalletConnectServiceV2 {
                              session: SessionV2Proxy,
                              requestParams: AnyCodable,
                              in wallet: UDWallet) async throws -> WalletConnectSign.Response {
-        try await WalletConnectExternalWalletHandler.shared.sendWC2Request(method: method,
-                                                                          session: session,
-                                                                          requestParams: requestParams,
-                                                                          in: wallet)
+        try await appContext.walletConnectExternalWalletHandler.sendWC2Request(method: method,
+                                                                               session: session,
+                                                                               requestParams: requestParams,
+                                                                               in: wallet)
     }
     
     struct TransactionV2: Codable {
