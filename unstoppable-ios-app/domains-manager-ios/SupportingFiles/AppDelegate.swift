@@ -43,6 +43,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         StripeAPI.defaultPublishableKey = PaymentConfiguration.Stripe.defaultPublishableKey
         
         appContext.analyticsService.log(event: .appLaunch, withParameters: nil)
+//
+//        Task {
+//            let domains = await appContext.dataAggregatorService.getDomainItems()
+//            guard let domain = domains.first(where: { $0.name.contains("firstwebdomain") }) else { return }
+//
+//            appContext.persistedProfileSignaturesStorage.revokeSignatures(for: domain)
+//        }
+//
+        
         return true
     }
 

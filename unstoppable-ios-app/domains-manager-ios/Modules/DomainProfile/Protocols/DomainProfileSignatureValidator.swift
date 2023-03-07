@@ -77,7 +77,10 @@ extension DomainProfileSignatureValidator {
                                 try await NetworkService().createAndStorePersistedProfileSignature(for: domain)
                                 await view.dismiss(animated: true, completion: nil)
                                 completion(true)
-                            }  catch { }
+                            }  catch {
+                                let topView = await view.topVisibleViewController()
+                                await appContext.pullUpViewService.showWCConnectionFailedPullUp(in: topView)
+                            }
                         }
                     case .walletImported:
                         await view.dismiss(animated: true)
