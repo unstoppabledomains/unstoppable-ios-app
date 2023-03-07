@@ -24,7 +24,7 @@ final class WalletConnectExternalWalletHandler: WalletConnectExternalWalletHandl
     private var externalWalletWC1ResponseCallback: ((Swift.Result<WC1Response, Error>)->Void)?
     private var externalWalletWC2ResponseCallback: ((Swift.Result<ResponseV2, Error>)->Void)?
     
-    private var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
+    var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
 
     init() {
         setup()
@@ -179,6 +179,23 @@ extension WalletConnectExternalWalletHandler {
     }
 }
 
+// MARK: - WalletConnectExternalWalletConnectionWaiter
+extension WalletConnectExternalWalletHandler: WalletConnectExternalWalletConnectionWaiter {
+    func isWaitingForResponseFromExternalWallet() -> Bool {
+        externalWalletWC1ResponseCallback != nil || externalWalletWC2ResponseCallback != nil
+    }
+    
+    func handleExternalWalletDidNotRespond() {
+        // WC1
+        externalWalletWC1ResponseCallback?(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
+        externalWalletWC1ResponseCallback = nil
+        
+        // WC2
+        externalWalletWC2ResponseCallback?(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
+        externalWalletWC2ResponseCallback = nil
+    }
+}
+
 // MARK: - Launch external wallet
 private extension WalletConnectExternalWalletHandler {
     @MainActor
@@ -204,45 +221,6 @@ private extension WalletConnectExternalWalletHandler {
             holder.listener?.externalWalletSignerWillHandleRequestInExternalWallet()
         }
     }
-    
-    @objc func applicationDidBecomeActive() {
-        scheduleNoResponseTimerIfWaitingForResponseFromExternalWallet()
-    }
-    
-    func isWaitingForResponseFromExternalWallet() -> Bool {
-        externalWalletWC1ResponseCallback != nil || externalWalletWC2ResponseCallback != nil
-    }
-    
-    func scheduleNoResponseTimerIfWaitingForResponseFromExternalWallet() {
-        if isWaitingForResponseFromExternalWallet() {
-            scheduleNoResponseFromExternalWalletWorkItem()
-        }
-    }
-    
-    func scheduleNoResponseFromExternalWalletWorkItem() {
-        cancelNoResponseFromExternalWalletWorkItem()
-        let noResponseFromExternalWalletWorkItem = DispatchWorkItem(block: { [weak self] in
-            self?.handleExternalWalletDidNotRespond()
-        })
-        self.noResponseFromExternalWalletWorkItem = noResponseFromExternalWalletWorkItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.wcNoResponseFromExternalWalletTimeout,
-                                      execute: noResponseFromExternalWalletWorkItem)
-    }
-    
-    func cancelNoResponseFromExternalWalletWorkItem() {
-        noResponseFromExternalWalletWorkItem?.cancel()
-        noResponseFromExternalWalletWorkItem = nil
-    }
-    
-    func handleExternalWalletDidNotRespond() {
-        // WC1
-        externalWalletWC1ResponseCallback?(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
-        externalWalletWC1ResponseCallback = nil
-        
-        // WC2
-        externalWalletWC2ResponseCallback?(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
-        externalWalletWC2ResponseCallback = nil
-    }
 }
 
 // MARK: - Setup methods
@@ -260,13 +238,6 @@ private extension WalletConnectExternalWalletHandler {
                 self?.externalWalletWC2ResponseCallback?(.success(response))
                 self?.externalWalletWC2ResponseCallback = nil
             }.store(in: &publishers)
-    }
-    
-    func registerForAppBecomeActiveNotification() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(applicationDidBecomeActive),
-                                               name: UIApplication.didBecomeActiveNotification,
-                                               object: nil)
     }
 }
 
