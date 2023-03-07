@@ -151,14 +151,14 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
-        Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions: \(settledSessions)")
+        Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions:\n\(settledSessions)")
         #endif
         
         setUpAuthSubscribing()
         
         let pairings = Pair.instance.getPairings()
         #if DEBUG
-        Debugger.printInfo(topic: .WallectConnectV2, "Settled pairings: \(pairings)")
+        Debugger.printInfo(topic: .WallectConnectV2, "Settled pairings:\n\(pairings)")
         #endif
         
         // listen to the updates to domains, disconnect those dApps connected to gone domains
@@ -1346,4 +1346,25 @@ extension EthereumTransaction {
         
         return AnyCodable([accum])
     }
+}
+
+extension WalletConnectSign.Session: CustomStringConvertible {
+    public var description: String {
+        """
+<\(self.peer.name) |
+\(SessionV2Proxy(self).getWalletAddresses().map({$0.prefix6 + " "})) |
+topic: \(self.topic.prefix6) |
+pairingTopic: \(self.pairingTopic.prefix6)>\n
+"""
+    }
+}
+
+extension WalletConnectSign.Pairing: CustomStringConvertible {
+    public var description: String {
+        "<\(self.peer?.name ?? "🚨no name") | topic: \(self.topic.prefix6)>\n"
+    }
+}
+
+extension String {
+    var prefix6: String { self.prefix(6) + "..." }
 }
