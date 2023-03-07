@@ -80,7 +80,7 @@ extension String {
             case .writeAppStoreReview(let appId):
                 return "https://apps.apple.com/app/id\(appId)?action=write-review"
             case .udExternalWalletTutorial:
-                return "https://support.unstoppabledomains.com/support/solutions/articles/48001232090-unable-to-sign-transactions-with-external-wallets-in-the-unstoppable-mobile-app"
+                return "https://support.unstoppabledomains.com/support/solutions/articles/48001232090-using-external-wallets-in-the-unstoppable-domains-mobile-app"
             }
         }
         
