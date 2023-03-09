@@ -93,6 +93,7 @@ extension UDWallet {
         return compressedSignature
     }
     
+    // to delete
     func sign(messageString: String) -> String? {
         let messageData: Data?
         if messageString.droppedHexPrefix.isHexNumber {
@@ -106,6 +107,29 @@ extension UDWallet {
         }
         return HexAddress.hexPrefix + signature.dataToHexString()
     }
+    
+    
+    func signEth(messageString: String) -> String? {
+        guard messageString.droppedHexPrefix.isHexNumber else {
+            return nil
+        }
+        let data = Data(messageString.droppedHexPrefix.hexToBytes())
+        guard let signature = try? self.signPersonalEthMessage(data) else {
+            return nil
+        }
+        return HexAddress.hexPrefix + signature.dataToHexString()
+    }
+    
+    func signPersonal(messageString: String) -> String? {
+        guard let data = messageString.data(using: .utf8),
+              let signature = try? self.signPersonalEthMessage(data) else {
+            return nil
+        }
+        return HexAddress.hexPrefix + signature.dataToHexString()
+    }
+    
+    
+    
     
     static func hashed(messageString: String) -> String? {
         let messageBytes = messageString.droppedHexPrefix.hexToBytes()
