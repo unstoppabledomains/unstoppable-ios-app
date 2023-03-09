@@ -26,6 +26,7 @@ extension UDWallet {
         return signatures
     }
     
+    // to delete
     func getCryptoSignature(messageString: String) async throws -> String {
         guard self.walletState == .verified else {
             return try await signViaWalletConnect(message: messageString)
@@ -36,6 +37,32 @@ extension UDWallet {
         }
         return signature
     }
+    
+    
+    
+    func getPersonalSignature(messageString: String) async throws -> String {
+        guard self.walletState == .verified else {
+            return try await signViaWalletConnectPersonalSign(message: messageString)
+        }
+        
+        guard let signature = self.sign(messageString: messageString) else {
+            throw UDWallet.Error.failedToSignMessage
+        }
+        return signature
+    }
+    
+    func getEthSignature(messageString: String) async throws -> String {
+        guard self.walletState == .verified else {
+            return try await signViaWalletConnectEthSign(message: prepareMessageForEthSign(message: messageString))
+        }
+        
+        guard let signature = self.sign(messageString: messageString) else {
+            throw UDWallet.Error.failedToSignMessage
+        }
+        return signature
+    }
+    
+    
     
     public func signPersonalEthMessage(_ personalMessage: Data) throws -> Data? {
         guard let privateKeyString = self.getPrivateKey() else { return nil }
@@ -86,25 +113,25 @@ extension UDWallet {
         return HexAddress.hexPrefix + hash.dataToHexString()
     }
     
-    func signViaWalletConnect(message: String) async throws -> String {
+    func prepareMessageForEthSign(message: String) throws -> String {
         func willHash() -> Bool {
             guard let walletName = self.getExternalWalletName()?.lowercased() else {
                 return false
             }
             return walletName.contains("rainbow") || walletName.contains("alpha") || walletName.contains("ledger")
         }
-        
-        func prepareMessageForEthSign(message: String) throws -> String {
-            let messageToSend: String
-            if willHash() {
-                messageToSend = message
-            } else {
-                guard let hash = Self.hashed(messageString: message) else {  throw WalletConnectRequestError.failedHashPersonalMessage }
-                messageToSend = hash
-            }
-            return messageToSend
+
+        let messageToSend: String
+        if willHash() {
+            messageToSend = message
+        } else {
+            guard let hash = Self.hashed(messageString: message) else {  throw WalletConnectRequestError.failedHashPersonalMessage }
+            messageToSend = hash
         }
-        
+        return messageToSend
+    }
+    
+    func signViaWalletConnect(message: String) async throws -> String {
         if message.droppedHexPrefix.isHexNumber {
             return try await signViaWalletConnectEthSign(message: prepareMessageForEthSign(message: message))
         } else {
