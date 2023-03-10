@@ -1246,7 +1246,13 @@ extension WalletConnectServiceV2 {
         guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectRequestError.noWCSessionFound
         }
-        let params = WalletConnectServiceV2.getParamsPersonalSign(message: message, address: address)
+        let sentMessage: String
+        if message.droppedHexPrefix.isHexNumber {
+            sentMessage = message
+        } else {
+            sentMessage = "0x" + message.data(using: .utf8)!.toHexString()
+        }
+        let params = WalletConnectServiceV2.getParamsPersonalSign(message: sentMessage, address: address)
         return try await sendRequest(method: .personalSign,
                                      session: sessionSettled,
                                      requestParams: params,
