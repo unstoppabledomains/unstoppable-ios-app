@@ -308,7 +308,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
             payloadReturned = NetworkService.TxPayload(messages: messages, txCost: nil)
         }
         
-        let signatures = try await UDWallet.createSignaturesAsync(messages: payloadReturned.messages,
+        let signatures = try await UDWallet.createSignaturesByEthSign(messages: payloadReturned.messages,
                                                                   domain: domain)
         let requestSign = try NetworkService.getRequestForActionSign(id: response.id,
                                                                      response: response,

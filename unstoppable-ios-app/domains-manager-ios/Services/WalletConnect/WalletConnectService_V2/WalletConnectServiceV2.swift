@@ -545,7 +545,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         let sig: AnyCodable
         do {
-            let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
+            let sigTyped = try await udWallet.getPersonalSignature(messageString: messageString)
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address), error: \(error)", critical: false)
@@ -572,7 +572,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         let sig: AnyCodable
         do {
-            let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
+            let sigTyped = try await udWallet.getEthSignature(messageString: messageString)
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)
@@ -1246,7 +1246,13 @@ extension WalletConnectServiceV2 {
         guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectRequestError.noWCSessionFound
         }
-        let params = WalletConnectServiceV2.getParamsPersonalSign(message: message, address: address)
+        let sentMessage: String
+        if message.droppedHexPrefix.isHexNumber {
+            sentMessage = message
+        } else {
+            sentMessage = "0x" + message.data(using: .utf8)!.toHexString()
+        }
+        let params = WalletConnectServiceV2.getParamsPersonalSign(message: sentMessage, address: address)
         return try await sendRequest(method: .personalSign,
                                      session: sessionSettled,
                                      requestParams: params,
