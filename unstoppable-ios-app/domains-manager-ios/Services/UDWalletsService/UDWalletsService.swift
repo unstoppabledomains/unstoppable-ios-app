@@ -107,6 +107,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         removeFromCacheWithoutNotification(wallet: externalWallet)
         Task {
             await appContext.walletConnectServiceV2.disconnect(from: externalWallet.address)
+            try? appContext.walletConnectClientService.disconnect(walletAddress: externalWallet.address)
         }
     }
 
