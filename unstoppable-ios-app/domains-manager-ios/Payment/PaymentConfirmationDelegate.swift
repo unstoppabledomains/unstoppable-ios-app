@@ -45,7 +45,7 @@ extension PaymentConfirmationDelegate {
                     self.paymentInProgress = true
                     
                     let countryCode = Locale.current.regionCode ?? PaymentConfiguration.usCountryCode
-                    self.stripePaymentHelper!.requestPayment(countryCode: countryCode)
+                    await self.stripePaymentHelper!.requestPayment(countryCode: countryCode)
                 } catch {
                     continuation.resume(throwing: error)
                 }
