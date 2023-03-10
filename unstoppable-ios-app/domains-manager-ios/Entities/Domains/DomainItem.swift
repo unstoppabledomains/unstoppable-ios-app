@@ -92,14 +92,6 @@ extension DomainItem {
 }
 
 extension DomainItem {
-//    public func sign(message: String) async throws -> String {
-//        guard let ownerAddress = self.ownerWallet,
-//              let ownerWallet = appContext.udWalletsService.find(by: ownerAddress) else {
-//            throw NetworkLayerError.failedToFindOwnerWallet
-//        }
-//        return try await ownerWallet.getCryptoSignature(messageString: message)
-//    }
-    
     public func ethSign(message: String) async throws -> String {
         guard let ownerAddress = self.ownerWallet,
               let ownerWallet = appContext.udWalletsService.find(by: ownerAddress) else {
