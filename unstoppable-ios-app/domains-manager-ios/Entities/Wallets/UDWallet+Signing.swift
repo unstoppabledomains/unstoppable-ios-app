@@ -26,20 +26,6 @@ extension UDWallet {
         return signatures
     }
     
-    // to delete
-//    func getCryptoSignature(messageString: String) async throws -> String {
-//        guard self.walletState == .verified else {
-//            return try await signViaWalletConnect(message: messageString)
-//        }
-//
-//        guard let signature = self.sign(messageString: messageString) else {
-//            throw UDWallet.Error.failedToSignMessage
-//        }
-//        return signature
-//    }
-    
-    
-    
     func getPersonalSignature(messageString: String) async throws -> String {
         guard self.walletState == .verified else {
             return try await signViaWalletConnectPersonalSign(message: messageString)
@@ -92,22 +78,6 @@ extension UDWallet {
         let (compressedSignature, _) = SECP256K1.signForRecovery(hash: messageHash, privateKey: privateKeyData, useExtraEntropy: false)
         return compressedSignature
     }
-    
-    // to delete
-//    func sign(messageString: String) -> String? {
-//        let messageData: Data?
-//        if messageString.droppedHexPrefix.isHexNumber {
-//            messageData = Data(messageString.droppedHexPrefix.hexToBytes())
-//        } else {
-//            messageData = messageString.data(using: .utf8)
-//        }
-//        guard let data = messageData,
-//              let signature = try? self.signPersonalEthMessage(data) else {
-//            return nil
-//        }
-//        return HexAddress.hexPrefix + signature.dataToHexString()
-//    }
-//
     
     func signEth(messageString: String) -> String? {
         guard messageString.droppedHexPrefix.isHexNumber else {
