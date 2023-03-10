@@ -44,7 +44,7 @@ private extension DomainRecordsService {
             payloadReturned = NetworkService.TxPayload(messages: messages, txCost: nil)
         }
         
-        let signatures: [String] = try await UDWallet.createSignaturesAsync(messages: payloadReturned.messages, domain: domain)
+        let signatures: [String] = try await UDWallet.createSignaturesByEthSign(messages: payloadReturned.messages, domain: domain)
 
         let requestSign = try NetworkService.getRequestForActionSign(id: actionsResponse.id,
                                                          response: actionsResponse,

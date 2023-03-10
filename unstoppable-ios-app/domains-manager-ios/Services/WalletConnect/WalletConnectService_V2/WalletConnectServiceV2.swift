@@ -545,7 +545,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         let sig: AnyCodable
         do {
-            let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
+            let sigTyped = try await udWallet.getPersonalSignature(messageString: messageString)
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address), error: \(error)", critical: false)
@@ -572,7 +572,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         let sig: AnyCodable
         do {
-            let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
+            let sigTyped = try await udWallet.getEthSignature(messageString: messageString)
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)

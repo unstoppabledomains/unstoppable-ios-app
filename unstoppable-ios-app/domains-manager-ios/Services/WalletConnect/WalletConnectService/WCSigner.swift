@@ -64,7 +64,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
                                                                          messageString: messageString)
         let sig: String
         do {
-            sig = try await udWallet.getCryptoSignature(messageString: messageString)
+            sig = try await udWallet.getPersonalSignature(messageString: messageString)
         } catch {
             //TODO: If the error == WalletConnectError.failedOpenExternalApp
             // the mobile wallet app may have been deleted

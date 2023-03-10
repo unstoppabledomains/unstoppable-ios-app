@@ -14,7 +14,7 @@ import WalletConnectSwift
 
 // Signing methods
 extension UDWallet {
-    static func createSignaturesAsync(messages: [String],
+    static func createSignaturesByEthSign(messages: [String],
                                 domain: DomainItem) async throws -> [String] {
         guard let walletAddress = domain.ownerWallet else {
             throw UDWallet.Error.noWalletOwner
@@ -22,21 +22,21 @@ extension UDWallet {
         guard let wallet = UDWalletsStorage.instance.getWallet(by: walletAddress, namingService: .UNS) else {
             throw UDWallet.Error.failedToFindWallet
         }
-        let signatures =  try await wallet.multipleWalletSigs(messages: messages)
+        let signatures =  try await wallet.multipleWalletEthSigns(messages: messages)
         return signatures
     }
     
     // to delete
-    func getCryptoSignature(messageString: String) async throws -> String {
-        guard self.walletState == .verified else {
-            return try await signViaWalletConnect(message: messageString)
-        }
-        
-        guard let signature = self.sign(messageString: messageString) else {
-            throw UDWallet.Error.failedToSignMessage
-        }
-        return signature
-    }
+//    func getCryptoSignature(messageString: String) async throws -> String {
+//        guard self.walletState == .verified else {
+//            return try await signViaWalletConnect(message: messageString)
+//        }
+//
+//        guard let signature = self.sign(messageString: messageString) else {
+//            throw UDWallet.Error.failedToSignMessage
+//        }
+//        return signature
+//    }
     
     
     
@@ -45,7 +45,7 @@ extension UDWallet {
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
-        guard let signature = self.sign(messageString: messageString) else {
+        guard let signature = self.signPersonal(messageString: messageString) else {
             throw UDWallet.Error.failedToSignMessage
         }
         return signature
@@ -56,7 +56,7 @@ extension UDWallet {
             return try await signViaWalletConnectEthSign(message: prepareMessageForEthSign(message: messageString))
         }
         
-        guard let signature = self.sign(messageString: messageString) else {
+        guard let signature = self.signEth(messageString: messageString) else {
             throw UDWallet.Error.failedToSignMessage
         }
         return signature
@@ -94,20 +94,20 @@ extension UDWallet {
     }
     
     // to delete
-    func sign(messageString: String) -> String? {
-        let messageData: Data?
-        if messageString.droppedHexPrefix.isHexNumber {
-            messageData = Data(messageString.droppedHexPrefix.hexToBytes())
-        } else {
-            messageData = messageString.data(using: .utf8)
-        }
-        guard let data = messageData,
-              let signature = try? self.signPersonalEthMessage(data) else {
-            return nil
-        }
-        return HexAddress.hexPrefix + signature.dataToHexString()
-    }
-    
+//    func sign(messageString: String) -> String? {
+//        let messageData: Data?
+//        if messageString.droppedHexPrefix.isHexNumber {
+//            messageData = Data(messageString.droppedHexPrefix.hexToBytes())
+//        } else {
+//            messageData = messageString.data(using: .utf8)
+//        }
+//        guard let data = messageData,
+//              let signature = try? self.signPersonalEthMessage(data) else {
+//            return nil
+//        }
+//        return HexAddress.hexPrefix + signature.dataToHexString()
+//    }
+//
     
     func signEth(messageString: String) -> String? {
         guard messageString.droppedHexPrefix.isHexNumber else {
@@ -206,21 +206,21 @@ extension UDWallet {
         return result
     }
     
-    func multipleWalletSigs(messages: [String]) async throws -> [String]{
+    func multipleWalletEthSigns(messages: [String]) async throws -> [String]{
         var sigs = [String]()
         
         switch self.walletState {
         case .externalLinked:
             // Because it will be required to sign message in external wallet for each request, they can't be fired simultaneously
             for message in messages {
-                let result = try await self.getCryptoSignature(messageString: message)
+                let result = try await self.getEthSignature(messageString: message)
                 sigs.append(result)
             }
         case .verified:
             await withTaskGroup(of: Optional<String>.self) { group in
                 for message in messages {
                     group.addTask {
-                        try? await self.getCryptoSignature(messageString: message)
+                        try? await self.getEthSignature(messageString: message)
                     }
                 }
                 
