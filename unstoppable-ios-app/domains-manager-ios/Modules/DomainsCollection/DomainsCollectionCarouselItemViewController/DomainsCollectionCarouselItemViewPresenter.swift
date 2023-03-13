@@ -27,6 +27,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
     private var cardId = UUID()
     private weak var actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate?
     private var didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
+    private var visibleDataType: DomainsCollectionVisibleDataType = DomainsCollectionVisibleDataType.allCases.first!
     var analyticsName: Analytics.ViewName { .unspecified }
 
     init(view: DomainsCollectionCarouselItemViewProtocol,
@@ -173,9 +174,9 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }))])
         
         snapshot.appendSections([.dataTypeSelector])
-        snapshot.appendItems([.dataTypeSelector(configuration: .init(selectedDataType: .NFT,
-                                                                     dataTypeChangedCallback: { dataType in
-            print("Data type \(dataType)")
+        snapshot.appendItems([.dataTypeSelector(configuration: .init(selectedDataType: visibleDataType,
+                                                                     dataTypeChangedCallback: { [weak self] dataType in
+            self?.visibleDataTypeChanged(dataType)
         }))])
          
         if connectedApps.isEmpty {
@@ -240,6 +241,15 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             return 30
         default:
             return 40
+        }
+    }
+    
+    func visibleDataTypeChanged(_ newVisibleDataType: DomainsCollectionVisibleDataType) {
+        self.visibleDataType = newVisibleDataType
+        logButtonPressedAnalyticEvents(button: .domainHomeDataType,
+                                       parameters: [.dataType: newVisibleDataType.analyticIdentifier])
+        Task {
+            await showDomainDataWithActions(animated: true)
         }
     }
     

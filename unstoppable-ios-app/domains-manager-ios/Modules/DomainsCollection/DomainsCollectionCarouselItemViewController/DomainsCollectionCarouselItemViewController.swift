@@ -617,5 +617,14 @@ extension DomainsCollectionCarouselItemViewController {
                 return .timeIcon24
             }
         }
+        
+        var analyticIdentifier: String {
+            switch self {
+            case .NFT:
+                return "NFTs"
+            case .activity:
+                return "Activity"
+            }
+        }
     }
 }

@@ -2427,6 +2427,10 @@
 		C6B91EC029BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */; };
 		C6B91EC129BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */; };
 		C6B91EC229BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */; };
+		C6B91EC429BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */; };
+		C6B91EC529BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */; };
+		C6B91EC629BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */; };
+		C6B91EC729BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -3902,6 +3906,7 @@
 		C6B91EB329BB718100389FF5 /* StripeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeService.swift; sourceTree = "<group>"; };
 		C6B91EB929BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionDataTypeSelectionCell.swift; sourceTree = "<group>"; };
 		C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionDataTypeSelectionCell.xib; sourceTree = "<group>"; };
+		C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTsAPIRequestBuilder.swift; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -4437,6 +4442,7 @@
 			isa = PBXGroup;
 			children = (
 				30CB2D2125C2E98C00203052 /* ApiRequestBuilder.swift */,
+				C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */,
 				306DB27126936C57009D95DE /* Endpoint.swift */,
 				307B1C7D25FA258F007B14C3 /* Env-Demo.swift */,
 				29DE3B1228913DF500655675 /* Env.swift */,
@@ -8206,6 +8212,7 @@
 				29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
 				C6C995CE289D313D00367362 /* CNavComponents.swift in Sources */,
 				C66804C9280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
+				C6B91EC429BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */,
 				306C9ACD273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
 				C6A2D50A284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
 				3018AEAE27E9D50A00E8C37D /* RestoreWalletViewController.swift in Sources */,
@@ -9016,6 +9023,7 @@
 				C638683A285C0ED1000F98C4 /* AppUpdatedRequired.swift in Sources */,
 				C6109E4728E5ABFE0027D5D8 /* TestsEnum.swift in Sources */,
 				307F83FA267A339F0070A9A6 /* SceneDelegate.swift in Sources */,
+				C6B91EC629BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */,
 				C608C8332877F9D300EDEC6E /* Double.swift in Sources */,
 				C6ED3200295D433D00BC6919 /* DomainsCollectionTitleDomainInfoView.swift in Sources */,
 				C685A99D284101DA00E54044 /* DomainSelectionCell.swift in Sources */,
@@ -9643,6 +9651,7 @@
 				C638683B285C0ED1000F98C4 /* AppUpdatedRequired.swift in Sources */,
 				C6109E4828E5ABFE0027D5D8 /* TestsEnum.swift in Sources */,
 				307F85B0267B60300070A9A6 /* Debugger.swift in Sources */,
+				C6B91EC729BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */,
 				C608C8342877F9D300EDEC6E /* Double.swift in Sources */,
 				C6ED3201295D433D00BC6919 /* DomainsCollectionTitleDomainInfoView.swift in Sources */,
 				C685A99E284101DA00E54044 /* DomainSelectionCell.swift in Sources */,
@@ -10145,6 +10154,7 @@
 				29EDB61F28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
 				C6C995CF289D313D00367362 /* CNavComponents.swift in Sources */,
 				C66804CA280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
+				C6B91EC529BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */,
 				306C9ACE273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
 				C6A2D50B284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
 				3018AEAF27E9D50A00E8C37D /* RestoreWalletViewController.swift in Sources */,
