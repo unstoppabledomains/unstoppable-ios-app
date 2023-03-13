@@ -16,6 +16,7 @@ final class ChoosePrimaryDomainDuringMintingPresenter: ChoosePrimaryDomainViewPr
     override var progress: Double? { 1 }
     override var analyticsName: Analytics.ViewName { .sortDomainsDuringMinting }
     override var isSearchable: Bool { false }
+    override var numberOfElements: Int { orderedWrappers.count }
     
     init(view: ChoosePrimaryDomainViewProtocol,
          mintDomainsFlowManager: MintDomainsFlowManager,
@@ -71,16 +72,14 @@ final class ChoosePrimaryDomainDuringMintingPresenter: ChoosePrimaryDomainViewPr
     }
     
     override func didMoveItem(from fromIndex: Int, to toIndex: Int) {
-        if fromIndex < 0 || toIndex >= orderedWrappers.count {
-            Debugger.printFailure("Did move domains out of range")
-            showDataAsync()
-            return
-        }
-        
         let movedDomain = orderedWrappers[fromIndex]
         orderedWrappers.remove(at: fromIndex)
         orderedWrappers.insert(movedDomain, at: toIndex)
         logAnalytic(event: .domainMoved, parameters: [.domainName : movedDomain.domainName])
+    }
+    
+    override func moveItemsFailed() {
+        showDataAsync()
     }
     
 }
