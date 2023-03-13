@@ -59,7 +59,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         switch item {
         case .domainCard(let configuration):
             actionsDelegate?.didOccursUIAction(.domainSelected(configuration.domain))
-        case .noRecentActivities, .recentActivity:
+        case .noRecentActivities, .recentActivity, .dataTypeSelector:
             return
         }
     }
@@ -170,6 +170,12 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                                                                actionButtonPressedCallback: { [weak self] in
             self?.logButtonPressedAnalyticEvents(button: .domainCardDot,
                                                  parameters: [.domainName : domain.name])
+        }))])
+        
+        snapshot.appendSections([.dataTypeSelector])
+        snapshot.appendItems([.dataTypeSelector(configuration: .init(selectedDataType: .NFT,
+                                                                     dataTypeChangedCallback: { dataType in
+            print("Data type \(dataType)")
         }))])
          
         if connectedApps.isEmpty {

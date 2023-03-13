@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="DomainsCollectionDataTypeSelectionCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="319" height="209"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="319" height="209"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lw2-5c-iY8" customClass="SegmentPicker" customModule="domains_manager_ios" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="173" width="319" height="36"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" priority="999" constant="36" id="zqd-0Z-ugR"/>
+                        </constraints>
+                        <connections>
+                            <action selector="segmentPickerValueChanged:" destination="gTV-IL-0wX" eventType="valueChanged" id="q2a-M2-RkY"/>
+                        </connections>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="lw2-5c-iY8" secondAttribute="bottom" id="57Y-8S-JyD"/>
+                <constraint firstItem="lw2-5c-iY8" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" priority="750" constant="50" id="NHG-lM-jgC"/>
+                <constraint firstAttribute="trailing" secondItem="lw2-5c-iY8" secondAttribute="trailing" id="qhb-v5-3Ba"/>
+                <constraint firstItem="lw2-5c-iY8" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="qkH-IO-bNg"/>
+            </constraints>
+            <size key="customSize" width="319" height="209"/>
+            <connections>
+                <outlet property="segmentPicker" destination="lw2-5c-iY8" id="2Q0-f6-fx4"/>
+            </connections>
+            <point key="canvasLocation" x="176.33587786259542" y="100.35211267605634"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

@@ -120,6 +120,7 @@ extension UIImage {
     static let arrowRight = UIImage(named: "arrowRight")!
     static let timeIcon24 = UIImage(named: "timeIcon24")!
     static let dragIcon24 = UIImage(named: "dragIcon24")!
+    static let hexagonIcon24 = UIImage(named: "hexagonIcon24")!
     static let connectedAppNetworksInfoIllustration = UIImage(named: "connectedAppNetworksInfoIllustration")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!

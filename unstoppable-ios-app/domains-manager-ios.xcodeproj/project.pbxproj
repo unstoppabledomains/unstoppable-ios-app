@@ -2419,6 +2419,14 @@
 		C6B91EB529BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
 		C6B91EB629BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
 		C6B91EB729BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
+		C6B91EBB29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB929BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift */; };
+		C6B91EBC29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB929BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift */; };
+		C6B91EBD29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB929BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift */; };
+		C6B91EBE29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB929BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift */; };
+		C6B91EBF29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */; };
+		C6B91EC029BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */; };
+		C6B91EC129BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */; };
+		C6B91EC229BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -3892,6 +3900,8 @@
 		C6B6B0692976607D00D4E30F /* DomainsListSearchPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListSearchPresenter.swift; sourceTree = "<group>"; };
 		C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockChainItem.swift; sourceTree = "<group>"; };
 		C6B91EB329BB718100389FF5 /* StripeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeService.swift; sourceTree = "<group>"; };
+		C6B91EB929BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionDataTypeSelectionCell.swift; sourceTree = "<group>"; };
+		C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionDataTypeSelectionCell.xib; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -6423,6 +6433,15 @@
 			path = RearrangeDomainCell;
 			sourceTree = "<group>";
 		};
+		C6B91EB829BF0B1500389FF5 /* DomainsCollectionDataTypeSelectionCell */ = {
+			isa = PBXGroup;
+			children = (
+				C6B91EB929BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift */,
+				C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */,
+			);
+			path = DomainsCollectionDataTypeSelectionCell;
+			sourceTree = "<group>";
+		};
 		C6C4217529371428005B791B /* DomainProfileTutorial */ = {
 			isa = PBXGroup;
 			children = (
@@ -6707,6 +6726,7 @@
 		C6D6E56128193D00008C66BB /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				C6B91EB829BF0B1500389FF5 /* DomainsCollectionDataTypeSelectionCell */,
 				C6E041922951701C0080F8E3 /* DomainsCollectionNoRecentActivitiesCell */,
 				C6E0415F295054130080F8E3 /* DomainsCollectionRecentActivityCell */,
 				C6E0414F295052E10080F8E3 /* DomainsCollectionCarouselCardCell */,
@@ -7329,6 +7349,7 @@
 				C6124CC22922283D005E6537 /* DomainProfileActionCoverViewController.xib in Resources */,
 				C6E459072925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib in Resources */,
 				C6D6E58A28193ED9008C66BB /* DomainsCollectionListCell.xib in Resources */,
+				C6B91EBF29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */,
 				C60982202823D36100546392 /* PullUpCollectionViewCell.xib in Resources */,
 				C60DCEF3282D13F800F71C13 /* RenameWalletViewController.xib in Resources */,
 				C60E9B832821193400CD7593 /* WalletsListViewController.xib in Resources */,
@@ -7525,6 +7546,7 @@
 				C635194228D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.xib in Resources */,
 				30ACABB8269DE0B9004DB097 /* SF-Pro.ttf in Resources */,
 				C6A2D583284F9EC700327C47 /* ConnectedAppsListViewController.xib in Resources */,
+				C6B91EC129BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */,
 				C6D5DAB92835505200379C38 /* AddCurrencyEmptyCell.xib in Resources */,
 				C685A956284097E600E54044 /* UDDomainCardView.xib in Resources */,
 				C6AD181528D319BF0008A479 /* CollectionViewShowHideCell.xib in Resources */,
@@ -7632,6 +7654,7 @@
 				C6124CC52922283D005E6537 /* DomainProfileActionCoverViewController.xib in Resources */,
 				C6E4590A2925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib in Resources */,
 				C60982232823D36100546392 /* PullUpCollectionViewCell.xib in Resources */,
+				C6B91EC229BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */,
 				C60DCEF6282D13F800F71C13 /* RenameWalletViewController.xib in Resources */,
 				C60E9B862821193400CD7593 /* WalletsListViewController.xib in Resources */,
 				C635194F28D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.xib in Resources */,
@@ -7776,6 +7799,7 @@
 				C6124CC32922283D005E6537 /* DomainProfileActionCoverViewController.xib in Resources */,
 				C6E459082925F08600751742 /* DomainsCollectionEmptyTopInfoCell.xib in Resources */,
 				C6D6E58B28193ED9008C66BB /* DomainsCollectionListCell.xib in Resources */,
+				C6B91EC029BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib in Resources */,
 				C60982212823D36100546392 /* PullUpCollectionViewCell.xib in Resources */,
 				C60DCEF4282D13F800F71C13 /* RenameWalletViewController.xib in Resources */,
 				C60E9B842821193400CD7593 /* WalletsListViewController.xib in Resources */,
@@ -8036,6 +8060,7 @@
 				C61B3E99283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C6C99582289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
 				C6D5DAE928374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
+				C6B91EBB29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */,
 				C635193C28D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.swift in Sources */,
 				C6386843285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift in Sources */,
 				C628E37227FDE1D60044E408 /* UDSubtitleLabel.swift in Sources */,
@@ -8787,6 +8812,7 @@
 				C6456F0D27FF299800A517D5 /* UIView.swift in Sources */,
 				C6D5DAB52835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */,
 				C6098294282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift in Sources */,
+				C6B91EBD29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */,
 				C6D6E5182817F0F3008C66BB /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				3004E32E26D53F1D00B9CB6A /* UDWalletStorage.swift in Sources */,
 				C6098312282B6DDE00546392 /* RevealRecoveryPhrasePresenter.swift in Sources */,
@@ -9413,6 +9439,7 @@
 				C6456F0E27FF299800A517D5 /* UIView.swift in Sources */,
 				C6D5DAB62835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */,
 				C6098295282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift in Sources */,
+				C6B91EBE29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */,
 				C6D6E5192817F0F3008C66BB /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				3004E32F26D53F1D00B9CB6A /* UDWalletStorage.swift in Sources */,
 				C6098313282B6DDE00546392 /* RevealRecoveryPhrasePresenter.swift in Sources */,
@@ -9972,6 +9999,7 @@
 				C61B3E9A283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C6C99583289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
 				C6D5DAEA28374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
+				C6B91EBC29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */,
 				C635193D28D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.swift in Sources */,
 				C6386844285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift in Sources */,
 				C628E37327FDE1D60044E408 /* UDSubtitleLabel.swift in Sources */,

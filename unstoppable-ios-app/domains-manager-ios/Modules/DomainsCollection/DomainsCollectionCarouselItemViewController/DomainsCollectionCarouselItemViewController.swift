@@ -15,6 +15,8 @@ protocol DomainsCollectionCarouselItemViewProtocol: BaseCollectionViewController
 
 typealias DomainsCollectionCarouselItemDataSource = UICollectionViewDiffableDataSource<DomainsCollectionCarouselItemViewController.Section, DomainsCollectionCarouselItemViewController.Item>
 typealias DomainsCollectionCarouselItemSnapshot = NSDiffableDataSourceSnapshot<DomainsCollectionCarouselItemViewController.Section, DomainsCollectionCarouselItemViewController.Item>
+typealias DomainsCollectionVisibleDataType = DomainsCollectionCarouselItemViewController.VisibleDataType
+typealias DomainsCollectionVisibleDataTypeCallback = (DomainsCollectionVisibleDataType)->()
 
 final class DomainsCollectionCarouselItemViewController: BaseViewController {
     
@@ -24,7 +26,8 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     private(set) var collectionView: UICollectionView!
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainsCollectionCarouselCardCell.self,
                                                         DomainsCollectionRecentActivityCell.self,
-                                                        DomainsCollectionNoRecentActivitiesCell.self] }
+                                                        DomainsCollectionNoRecentActivitiesCell.self,
+                                                        DomainsCollectionDataTypeSelectionCell.self] }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     private var dataSource: DomainsCollectionCarouselItemDataSource!
     private(set) weak var containerViewController: BaseViewController?
@@ -210,6 +213,13 @@ private extension DomainsCollectionCarouselItemViewController {
                 cell.learnMoreButtonPressedCallback = configuration.learnMoreButtonPressedCallback
              
                 return cell
+            case .dataTypeSelector(let configuration):
+                let cell = collectionView.dequeueCellOfType(DomainsCollectionDataTypeSelectionCell.self, forIndexPath: indexPath)
+                
+                cell.setupWith(selectedDataType: configuration.selectedDataType,
+                               dataTypeChangedCallback: configuration.dataTypeChangedCallback)
+                
+                return cell 
             }
         })
         
@@ -337,6 +347,10 @@ private extension DomainsCollectionCarouselItemViewController {
                 section.interGroupSpacing = 12
                 section.contentInsets = .init(top: 0, leading: 12,
                                               bottom: 0, trailing: 12)
+            case .dataTypeSelector:
+                section = .flexibleListItemSection()
+                section.contentInsets = .init(top: 0, leading: 20,
+                                              bottom: 0, trailing: 20)
             }
             
             return section
@@ -355,12 +369,13 @@ extension DomainsCollectionCarouselItemViewController {
         case dashesSeparator(id: UUID = .init(), height: CGFloat)
         case tutorialDashesSeparator(id: UUID = .init(), height: CGFloat)
         case emptySeparator(id: UUID = .init(), height: CGFloat)
+        case dataTypeSelector
 
         var title: String {
             switch self {
             case .recentActivity:
                 return String.Constants.connectedAppsTitle.localized()
-            case .domainsCarousel, .noRecentActivities, .dashesSeparator, .tutorialDashesSeparator, .emptySeparator:
+            case .domainsCarousel, .noRecentActivities, .dashesSeparator, .tutorialDashesSeparator, .emptySeparator, .dataTypeSelector:
                 return ""
             }
         }
@@ -371,7 +386,7 @@ extension DomainsCollectionCarouselItemViewController {
                 return DomainsCollectionSectionHeader.height
             case .dashesSeparator(_, let height), .tutorialDashesSeparator(_, let height), .emptySeparator(_, let height):
                 return height
-            case .domainsCarousel, .noRecentActivities:
+            case .domainsCarousel, .noRecentActivities, .dataTypeSelector:
                 return 0
             }
         }
@@ -381,6 +396,7 @@ extension DomainsCollectionCarouselItemViewController {
         case domainCard(configuration: DomainCardConfiguration)
         case recentActivity(configuration: RecentActivitiesConfiguration)
         case noRecentActivities(configuration: NoRecentActivitiesConfiguration)
+        case dataTypeSelector(configuration: DataTypeSelectionConfiguration)
     }
     
     struct DomainCardConfiguration: Hashable {
@@ -566,5 +582,40 @@ extension DomainsCollectionCarouselItemViewController {
         case domainSelected(_ domain: DomainDisplayInfo)
         case domainNameCopied
         case rearrangeDomains
+    }
+    
+    struct DataTypeSelectionConfiguration: Hashable {
+        let selectedDataType: DomainsCollectionVisibleDataType
+        let dataTypeChangedCallback: DomainsCollectionVisibleDataTypeCallback
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.selectedDataType == rhs.selectedDataType
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(selectedDataType)
+        }
+    }
+    
+    enum VisibleDataType: Int, CaseIterable, Hashable {
+        case NFT, activity
+        
+        var title: String {
+            switch self {
+            case .NFT:
+                return "NFTs"
+            case .activity:
+                return String.Constants.activity.localized()
+            }
+        }
+        
+        var icon: UIImage {
+            switch self {
+            case .NFT:
+                return .hexagonIcon24
+            case .activity:
+                return .timeIcon24
+            }
+        }
     }
 }

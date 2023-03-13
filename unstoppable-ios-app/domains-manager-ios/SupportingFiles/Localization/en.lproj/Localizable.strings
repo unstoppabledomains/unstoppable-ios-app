@@ -655,6 +655,7 @@
 "RECENT_ACTIVITY_INFO_SUBTITLE" = "View and manage your connections to apps, metaverses, and games.";
 "SCAN_TO_CONNECT" = "Scan to connect";
 "RECENT_ACTIVITY_OPEN_APP" = "Open app";
+"ACTIVITY" = "Activity";
 
 // Domain card
 "DOMAIN_CARD_SWIPE_TO_DETAILS" = "Swipe to details";
