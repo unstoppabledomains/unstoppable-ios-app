@@ -7,19 +7,32 @@
 
 import Foundation
 
-final class NFTsAPIRequestBuilder: APIRequestBuilder {
+final class NFTsAPIRequestBuilder {
     
-    func nftsFor(walletAddress: HexAddress, offset: Int) -> APIRequestBuilder {
-        let url = l1NFTsRootURL() + "?ownerAddress=\(walletAddress)&offset=\(offset)"
+    private let limit = 50
+    
+    func nftsFor(domainName: String, cursor: String?, chains: [NFTImageChain]?) -> APIRequest {
+        var url = nftsURLFor(domainName: domainName) + "?limit=\(limit)&resolve=true"
+    
+        if let cursor {
+           url += "&cursor=\(cursor)"
+        }
+        if let chains,
+           !chains.isEmpty {
+            url += "&symbols=MATIC"
+        }
         
-        return self
+        return APIRequest(url: URL(string: url)!,
+                          headers: [:],
+                          body: "",
+                          method: .get)
     }
     
-    private func l1NFTsRootURL() -> String {
-        rootURL() + "/eth"
+    func nftsURLFor(domainName: String) -> String {
+        baseURL() + "/\(domainName)/nfts"
     }
     
-    private func rootURL() -> String  {
-        baseURL() + "/api/nfts"
+    private func baseURL() -> String  {
+       "https://" + NetworkConfig.baseProfileHost + "/api/public"
     }
 }

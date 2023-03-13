@@ -2431,6 +2431,10 @@
 		C6B91EC529BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */; };
 		C6B91EC629BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */; };
 		C6B91EC729BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */; };
+		C6B91ECB29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */; };
+		C6B91ECC29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */; };
+		C6B91ECD29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */; };
+		C6B91ECE29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -3907,6 +3911,7 @@
 		C6B91EB929BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionDataTypeSelectionCell.swift; sourceTree = "<group>"; };
 		C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionDataTypeSelectionCell.xib; sourceTree = "<group>"; };
 		C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTsAPIRequestBuilder.swift; sourceTree = "<group>"; };
+		C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletNFTsService.swift; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -5947,14 +5952,15 @@
 				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
 				C664B678291551E600A76154 /* LinkPresentationService.swift */,
 				C692C312282E303B00C31393 /* NetworkReachabilityService.swift */,
+				C6B91ECF29BF6D6100389FF5 /* WalletNFTsService */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
-				C665FC1D29B0687D009699D2 /* NotificationsService */,
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
 				C6B91EB329BB718100389FF5 /* StripeService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
+				C665FC1D29B0687D009699D2 /* NotificationsService */,
 				C63F1D0328AF31D5000A5C12 /* AnalyticsService */,
 				C61236EE292CADE1002BA97B /* AppGroupsBridge */,
 				C6109E2728E5AB310027D5D8 /* AppLaunchService */,
@@ -6446,6 +6452,14 @@
 				C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */,
 			);
 			path = DomainsCollectionDataTypeSelectionCell;
+			sourceTree = "<group>";
+		};
+		C6B91ECF29BF6D6100389FF5 /* WalletNFTsService */ = {
+			isa = PBXGroup;
+			children = (
+				C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */,
+			);
+			path = WalletNFTsService;
 			sourceTree = "<group>";
 		};
 		C6C4217529371428005B791B /* DomainProfileTutorial */ = {
@@ -8483,6 +8497,7 @@
 				C6C995D6289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */,
 				C692C313282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C655D029284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
+				C6B91ECB29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */,
 				C628E35427FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C635193828D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
 				C652629828110B8500F1D699 /* SecurityWallViewController.swift in Sources */,
@@ -9048,6 +9063,7 @@
 				C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */,
 				C664B6622914FAC100A76154 /* DomainProfileNoSocialsCell.swift in Sources */,
 				C615E0D428891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */,
+				C6B91ECD29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */,
 				C60DCEED282D13F800F71C13 /* RenameWalletViewPresenter.swift in Sources */,
 				C624D78C281BBB8D00F55530 /* UDDomainsServiceProtocol.swift in Sources */,
 				C66430FF28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */,
@@ -9676,6 +9692,7 @@
 				C606B73F2863545000DC562B /* MintingDomainsStorage.swift in Sources */,
 				C664B6632914FAC100A76154 /* DomainProfileNoSocialsCell.swift in Sources */,
 				C615E0D528891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */,
+				C6B91ECE29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */,
 				307F85B3267B60300070A9A6 /* Storage.swift in Sources */,
 				C60DCEEE282D13F800F71C13 /* RenameWalletViewPresenter.swift in Sources */,
 				C624D78D281BBB8D00F55530 /* UDDomainsServiceProtocol.swift in Sources */,
@@ -10425,6 +10442,7 @@
 				C6C995D7289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */,
 				C692C314282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C655D02A284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
+				C6B91ECC29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */,
 				C628E35527FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C635193928D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
 				C652629928110B8500F1D699 /* SecurityWallViewController.swift in Sources */,

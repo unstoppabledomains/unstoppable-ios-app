@@ -44,6 +44,7 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var userDataService: UserDataServiceProtocol = UserDataService()
     private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = WalletConnectClientService(udWalletsService: udWalletsService)
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
+    private(set) lazy var walletNFTsService: WalletNFTsServiceProtocol = WalletNFTsService()
 
     init() {
         authentificationService = AuthentificationService()
