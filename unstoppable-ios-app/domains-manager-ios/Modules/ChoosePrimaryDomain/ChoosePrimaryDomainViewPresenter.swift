@@ -31,6 +31,7 @@ class ChoosePrimaryDomainViewPresenter {
     var title: String { String.Constants.rearrangeDomainsTitle.localized() }
     var isSearchable: Bool { true }
     var analyticsName: Analytics.ViewName { .unspecified }
+    var numberOfElements: Int { 0 }
     private(set) var isSearchActive = false
     private(set) var searchKey: String = ""
     
@@ -40,6 +41,7 @@ class ChoosePrimaryDomainViewPresenter {
 
     /// Update model in child class
     func didMoveItem(from fromIndex: Int, to toIndex: Int) { }
+    func moveItemsFailed() { }
     
     // MARK: - ChoosePrimaryDomainViewPresenterProtocol
     @MainActor func viewDidLoad() { }
@@ -97,6 +99,13 @@ extension ChoosePrimaryDomainViewPresenter: ChoosePrimaryDomainViewPresenterProt
         }
         
         guard let fromOffset, let toOffset else { return }
+        
+        let validRange = 1...numberOfElements /// Offset counting starts from 1, unlike index in array that starts from 0
+        if !validRange.contains(fromOffset) || !validRange.contains(toOffset) {
+            Debugger.printFailure("Did move domains out of range", critical: true)
+            moveItemsFailed()
+            return
+        }
         
         didMoveItem(from: fromOffset - 1, to: toOffset - 1)
     }
