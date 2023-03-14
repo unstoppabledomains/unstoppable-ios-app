@@ -24,6 +24,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
     private var cardState: CarouselCardState = .expanded
     static let dashesSeparatorSectionHeight: CGFloat = 16
     private var connectedApps = [any UnifiedConnectAppInfoProtocol]()
+    private var nfts = [NFTResponse]()
     private var cardId = UUID()
     private weak var actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate?
     private var didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
@@ -60,6 +61,8 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         switch item {
         case .domainCard(let configuration):
             actionsDelegate?.didOccursUIAction(.domainSelected(configuration.domain))
+        case .nft:
+            return // Show nft details
         case .noRecentActivities, .recentActivity, .dataTypeSelector:
             return
         }
@@ -156,6 +159,10 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         let actions = await actionsForDomain()
         let connectedApps = await appContext.walletConnectServiceV2.getConnectedApps().filter({ $0.domain.isSameEntity(domain) })
         self.connectedApps = connectedApps
+        if let walletWithInfo {
+            self.nfts = (try? await appContext.walletNFTsService.getImageNFTsFor(wallet: walletWithInfo.wallet)) ?? []
+            self.nfts = self.nfts.filter({ !$0.isDomainNFT })
+        }
         await showDomainData(animated: animated, actions: actions)
     }
     
@@ -179,6 +186,54 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             self?.visibleDataTypeChanged(dataType)
         }))])
          
+        switch visibleDataType {
+        case .NFT:
+            addNFTsSection(in: &snapshot)
+        case .activity:
+            addActivitiesSection(in: &snapshot, domain: domain)
+        }
+        
+        view?.applySnapshot(snapshot, animated: animated)
+    }
+    
+    func emptySeparatorHeightForExpandedState() -> CGFloat {
+        switch deviceSize {
+        case .i4Inch:
+            return 14
+        case .i5_4Inch:
+            return 26
+        case .i5_5Inch:
+            return 50
+        case .i5_8Inch:
+            return 30
+        default:
+            return 40
+        }
+    }
+    
+    func visibleDataTypeChanged(_ newVisibleDataType: DomainsCollectionVisibleDataType) {
+        self.visibleDataType = newVisibleDataType
+        logButtonPressedAnalyticEvents(button: .domainHomeDataType,
+                                       parameters: [.dataType: newVisibleDataType.analyticIdentifier])
+        Task {
+            await showDomainDataWithActions(animated: true)
+        }
+    }
+    
+   
+}
+
+// MARK: - NFTs Section
+private extension DomainsCollectionCarouselItemViewPresenter {
+    func addNFTsSection(in snapshot: inout DomainsCollectionCarouselItemSnapshot) {
+        snapshot.appendSections([.nfts])
+        snapshot.appendItems(nfts.map({ DomainsCollectionCarouselItemViewController.Item.nft(configuration: .init(nft: $0)) }))
+    }
+}
+
+// MARK: - Activities Section
+private extension DomainsCollectionCarouselItemViewPresenter {
+    func addActivitiesSection(in snapshot: inout DomainsCollectionCarouselItemSnapshot, domain: DomainDisplayInfo) {
         if connectedApps.isEmpty {
             var isTutorialOn = false
             // Separator
@@ -214,8 +269,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                     self?.handleOpenAppAction(app)
                 }),
                                                                                                                    .disconnect(callback: { [weak self] in
-                    self?.handleDisconnectAppAction(app)
-                })]
+                                                                                                                       self?.handleDisconnectAppAction(app)
+                                                                                                                   })]
                 snapshot.appendItems([.recentActivity(configuration: .init(connectedApp: app,
                                                                            availableActions: actions,
                                                                            actionButtonPressedCallback: { [weak self] in
@@ -225,34 +280,11 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                 }))])
             }
         }
-        
-        view?.applySnapshot(snapshot, animated: animated)
     }
-    
-    func emptySeparatorHeightForExpandedState() -> CGFloat {
-        switch deviceSize {
-        case .i4Inch:
-            return 14
-        case .i5_4Inch:
-            return 26
-        case .i5_5Inch:
-            return 50
-        case .i5_8Inch:
-            return 30
-        default:
-            return 40
-        }
-    }
-    
-    func visibleDataTypeChanged(_ newVisibleDataType: DomainsCollectionVisibleDataType) {
-        self.visibleDataType = newVisibleDataType
-        logButtonPressedAnalyticEvents(button: .domainHomeDataType,
-                                       parameters: [.dataType: newVisibleDataType.analyticIdentifier])
-        Task {
-            await showDomainDataWithActions(animated: true)
-        }
-    }
-    
+}
+
+// MARK: - Actions
+private extension DomainsCollectionCarouselItemViewPresenter {
     func actionsForDomain() async -> [CardAction] {
         let domain = self.domain
         var vaultName: String?

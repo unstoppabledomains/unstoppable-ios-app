@@ -2435,6 +2435,14 @@
 		C6B91ECC29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */; };
 		C6B91ECD29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */; };
 		C6B91ECE29BF6D4E00389FF5 /* WalletNFTsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */; };
+		C6B91ED329C016E400389FF5 /* DomainsCollectionNFTCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ED129C016E400389FF5 /* DomainsCollectionNFTCell.swift */; };
+		C6B91ED429C016E400389FF5 /* DomainsCollectionNFTCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ED129C016E400389FF5 /* DomainsCollectionNFTCell.swift */; };
+		C6B91ED529C016E400389FF5 /* DomainsCollectionNFTCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ED129C016E400389FF5 /* DomainsCollectionNFTCell.swift */; };
+		C6B91ED629C016E400389FF5 /* DomainsCollectionNFTCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91ED129C016E400389FF5 /* DomainsCollectionNFTCell.swift */; };
+		C6B91ED729C016E400389FF5 /* DomainsCollectionNFTCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91ED229C016E400389FF5 /* DomainsCollectionNFTCell.xib */; };
+		C6B91ED829C016E400389FF5 /* DomainsCollectionNFTCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91ED229C016E400389FF5 /* DomainsCollectionNFTCell.xib */; };
+		C6B91ED929C016E400389FF5 /* DomainsCollectionNFTCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91ED229C016E400389FF5 /* DomainsCollectionNFTCell.xib */; };
+		C6B91EDA29C016E400389FF5 /* DomainsCollectionNFTCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6B91ED229C016E400389FF5 /* DomainsCollectionNFTCell.xib */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -3912,6 +3920,8 @@
 		C6B91EBA29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionDataTypeSelectionCell.xib; sourceTree = "<group>"; };
 		C6B91EC329BF1F6900389FF5 /* NFTsAPIRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTsAPIRequestBuilder.swift; sourceTree = "<group>"; };
 		C6B91ECA29BF6D4E00389FF5 /* WalletNFTsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletNFTsService.swift; sourceTree = "<group>"; };
+		C6B91ED129C016E400389FF5 /* DomainsCollectionNFTCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionNFTCell.swift; sourceTree = "<group>"; };
+		C6B91ED229C016E400389FF5 /* DomainsCollectionNFTCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionNFTCell.xib; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -5952,7 +5962,6 @@
 				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
 				C664B678291551E600A76154 /* LinkPresentationService.swift */,
 				C692C312282E303B00C31393 /* NetworkReachabilityService.swift */,
-				C6B91ECF29BF6D6100389FF5 /* WalletNFTsService */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
@@ -5975,6 +5984,7 @@
 				C609820E2823B69A00546392 /* UDWalletsService */,
 				C66FCCFC28448710009B9525 /* UserDataService */,
 				C60610D229A4FF6C005DC0D5 /* WalletConnect */,
+				C6B91ECF29BF6D6100389FF5 /* WalletNFTsService */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -6462,6 +6472,15 @@
 			path = WalletNFTsService;
 			sourceTree = "<group>";
 		};
+		C6B91ED029C016D000389FF5 /* DomainsCollectionNFTCell */ = {
+			isa = PBXGroup;
+			children = (
+				C6B91ED129C016E400389FF5 /* DomainsCollectionNFTCell.swift */,
+				C6B91ED229C016E400389FF5 /* DomainsCollectionNFTCell.xib */,
+			);
+			path = DomainsCollectionNFTCell;
+			sourceTree = "<group>";
+		};
 		C6C4217529371428005B791B /* DomainProfileTutorial */ = {
 			isa = PBXGroup;
 			children = (
@@ -6746,6 +6765,7 @@
 		C6D6E56128193D00008C66BB /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				C6B91ED029C016D000389FF5 /* DomainsCollectionNFTCell */,
 				C6B91EB829BF0B1500389FF5 /* DomainsCollectionDataTypeSelectionCell */,
 				C6E041922951701C0080F8E3 /* DomainsCollectionNoRecentActivitiesCell */,
 				C6E0415F295054130080F8E3 /* DomainsCollectionRecentActivityCell */,
@@ -7381,6 +7401,7 @@
 				C664B6542914C0F000A76154 /* DomainProfileMetadataCell.xib in Resources */,
 				C60981EB28225B8300546392 /* WalletDetailsTopInfoCell.xib in Resources */,
 				C669C3702912197C00837F21 /* EnterValueViewController.xib in Resources */,
+				C6B91ED729C016E400389FF5 /* DomainsCollectionNFTCell.xib in Resources */,
 				C6A2D53F284E13A300327C47 /* QRScannerPermissionsView.xib in Resources */,
 				C671E3A928FEA2D400A2B3A0 /* ManageDomainTopInfoCell.xib in Resources */,
 				C66435E4288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.xib in Resources */,
@@ -7514,6 +7535,7 @@
 				C6A223CA2869FE24005C3267 /* SocialsDomainImagePreviewView.xib in Resources */,
 				C61B3E7C283E43D000500B6D /* EnterEmailViewController.xib in Resources */,
 				30BFA4DC27E1087700644CD5 /* ProtectWallet.storyboard in Resources */,
+				C6B91ED929C016E400389FF5 /* DomainsCollectionNFTCell.xib in Resources */,
 				C635B02C283393040058F14F /* ManageDomainRecordCell.xib in Resources */,
 				307F8435267A339F0070A9A6 /* apple-app-site-association in Resources */,
 				C664B676291542E300A76154 /* DomainProfileWeb3WebsiteCell.xib in Resources */,
@@ -7686,6 +7708,7 @@
 				C664B6572914C0F000A76154 /* DomainProfileMetadataCell.xib in Resources */,
 				C6A2D542284E13A300327C47 /* QRScannerPermissionsView.xib in Resources */,
 				C669C3732912197C00837F21 /* EnterValueViewController.xib in Resources */,
+				C6B91EDA29C016E400389FF5 /* DomainsCollectionNFTCell.xib in Resources */,
 				C66435E7288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.xib in Resources */,
 				C671E3A328FEA2D200A2B3A0 /* ManageDomainTopInfoCell.xib in Resources */,
 				C66804C8280D9EC8007E6390 /* DigitalKeyboardViewController.xib in Resources */,
@@ -7831,6 +7854,7 @@
 				C664B6552914C0F000A76154 /* DomainProfileMetadataCell.xib in Resources */,
 				C60981EC28225B8300546392 /* WalletDetailsTopInfoCell.xib in Resources */,
 				C669C3712912197C00837F21 /* EnterValueViewController.xib in Resources */,
+				C6B91ED829C016E400389FF5 /* DomainsCollectionNFTCell.xib in Resources */,
 				C6A2D540284E13A300327C47 /* QRScannerPermissionsView.xib in Resources */,
 				C671E3A728FEA2D300A2B3A0 /* ManageDomainTopInfoCell.xib in Resources */,
 				C66435E5288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.xib in Resources */,
@@ -8297,6 +8321,7 @@
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824B2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C665FC1F29B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,
+				C6B91ED329C016E400389FF5 /* DomainsCollectionNFTCell.swift in Sources */,
 				C6D6E52C28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
 				C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */,
@@ -8834,6 +8859,7 @@
 				C6456F0D27FF299800A517D5 /* UIView.swift in Sources */,
 				C6D5DAB52835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */,
 				C6098294282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift in Sources */,
+				C6B91ED529C016E400389FF5 /* DomainsCollectionNFTCell.swift in Sources */,
 				C6B91EBD29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */,
 				C6D6E5182817F0F3008C66BB /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				3004E32E26D53F1D00B9CB6A /* UDWalletStorage.swift in Sources */,
@@ -9463,6 +9489,7 @@
 				C6456F0E27FF299800A517D5 /* UIView.swift in Sources */,
 				C6D5DAB62835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */,
 				C6098295282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift in Sources */,
+				C6B91ED629C016E400389FF5 /* DomainsCollectionNFTCell.swift in Sources */,
 				C6B91EBE29BF0B4700389FF5 /* DomainsCollectionDataTypeSelectionCell.swift in Sources */,
 				C6D6E5192817F0F3008C66BB /* OnboardingWalletConnectedPresenter.swift in Sources */,
 				3004E32F26D53F1D00B9CB6A /* UDWalletStorage.swift in Sources */,
@@ -10242,6 +10269,7 @@
 				C6456F162800212000A517D5 /* UIStackView.swift in Sources */,
 				C62C3FC7283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C665FC2029B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,
+				C6B91ED429C016E400389FF5 /* DomainsCollectionNFTCell.swift in Sources */,
 				C609824C2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C6D6E52D28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C61236E8292C88D1002BA97B /* ImagesStorage.swift in Sources */,

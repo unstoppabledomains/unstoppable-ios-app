@@ -70,8 +70,6 @@ enum RequestType: String {
     case actionsSign = "/actions/"
     case actions = "/actions"
     
-    // NFTs
-    case ethNFTs = "/eth"
 }
 
 struct RequestToClaim: Encodable {
@@ -237,10 +235,6 @@ class APIRequestBuilder {
         let method: String
         let params: T
     }
-    
-    func baseURL() -> String {
-        NetworkConfig.migratedBaseUrl
-    }
         
     func build() -> APIRequest {
         if let endpoint = self.endpoint {
@@ -250,7 +244,7 @@ class APIRequestBuilder {
         guard let action = self.type else { fatalError("no action specified") }
         
         let path = UDApiType.getPath(for: action).rawValue
-        var url = "\(baseURL)\(path)"
+        var url = "\(NetworkConfig.migratedBaseUrl)\(path)"
         
         
         if let email = self.email {

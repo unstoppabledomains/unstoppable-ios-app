@@ -27,7 +27,8 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainsCollectionCarouselCardCell.self,
                                                         DomainsCollectionRecentActivityCell.self,
                                                         DomainsCollectionNoRecentActivitiesCell.self,
-                                                        DomainsCollectionDataTypeSelectionCell.self] }
+                                                        DomainsCollectionDataTypeSelectionCell.self,
+                                                        DomainsCollectionNFTCell.self] }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     private var dataSource: DomainsCollectionCarouselItemDataSource!
     private(set) weak var containerViewController: BaseViewController?
@@ -219,7 +220,11 @@ private extension DomainsCollectionCarouselItemViewController {
                 cell.setupWith(selectedDataType: configuration.selectedDataType,
                                dataTypeChangedCallback: configuration.dataTypeChangedCallback)
                 
-                return cell 
+                return cell
+            case .nft(let configuration):
+                let cell = collectionView.dequeueCellOfType(DomainsCollectionNFTCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                return cell
             }
         })
         
@@ -349,8 +354,23 @@ private extension DomainsCollectionCarouselItemViewController {
                                               bottom: 0, trailing: 12)
             case .dataTypeSelector:
                 section = .flexibleListItemSection()
-                section.contentInsets = .init(top: 0, leading: 20,
-                                              bottom: 0, trailing: 20)
+                section.contentInsets = .init(top: 0, leading: 16,
+                                              bottom: 0, trailing: 16)
+            case .nfts:
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5),
+                                                      heightDimension: .fractionalHeight(1.0))
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                let inset: CGFloat = 8
+                item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+                
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                       heightDimension: .fractionalWidth(0.5))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
+                                                               subitems: [item])
+                
+                section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = .init(top: 0, leading: 8,
+                                              bottom: 0, trailing: 8)
             }
             
             return section
@@ -370,12 +390,13 @@ extension DomainsCollectionCarouselItemViewController {
         case tutorialDashesSeparator(id: UUID = .init(), height: CGFloat)
         case emptySeparator(id: UUID = .init(), height: CGFloat)
         case dataTypeSelector
+        case nfts
 
         var title: String {
             switch self {
             case .recentActivity:
                 return String.Constants.connectedAppsTitle.localized()
-            case .domainsCarousel, .noRecentActivities, .dashesSeparator, .tutorialDashesSeparator, .emptySeparator, .dataTypeSelector:
+            case .domainsCarousel, .noRecentActivities, .dashesSeparator, .tutorialDashesSeparator, .emptySeparator, .dataTypeSelector, .nfts:
                 return ""
             }
         }
@@ -386,7 +407,7 @@ extension DomainsCollectionCarouselItemViewController {
                 return DomainsCollectionSectionHeader.height
             case .dashesSeparator(_, let height), .tutorialDashesSeparator(_, let height), .emptySeparator(_, let height):
                 return height
-            case .domainsCarousel, .noRecentActivities, .dataTypeSelector:
+            case .domainsCarousel, .noRecentActivities, .dataTypeSelector, .nfts:
                 return 0
             }
         }
@@ -397,6 +418,7 @@ extension DomainsCollectionCarouselItemViewController {
         case recentActivity(configuration: RecentActivitiesConfiguration)
         case noRecentActivities(configuration: NoRecentActivitiesConfiguration)
         case dataTypeSelector(configuration: DataTypeSelectionConfiguration)
+        case nft(configuration: NFTConfiguration)
     }
     
     struct DomainCardConfiguration: Hashable {
@@ -626,5 +648,9 @@ extension DomainsCollectionCarouselItemViewController {
                 return "Activity"
             }
         }
+    }
+    
+    struct NFTConfiguration: Hashable {
+        let nft: NFTResponse
     }
 }

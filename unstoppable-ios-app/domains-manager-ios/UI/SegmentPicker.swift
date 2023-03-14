@@ -13,7 +13,7 @@ final class SegmentPicker: UIControl {
     private let contentInset: CGFloat = 4
     private let imageSegmentWidth: CGFloat = 44
     private let selectedColor: UIColor = .black
-    private let unselectedColor: UIColor = .foregroundDefault.withAlphaComponent(0.32)
+    private let unselectedColor: UIColor = .black // .foregroundDefault.withAlphaComponent(0.32)
 
     private var highlightView = UIView()
     private var segmentViews = [SegmentPickerSegmentContainerView]()

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="DomainsCollectionNFTCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="174" height="161"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="174" height="161"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bRv-cr-Jy0">
+                        <rect key="frame" x="0.0" y="0.0" width="174" height="161"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5Xm-Wl-LNO">
+                                <rect key="frame" x="0.0" y="0.0" width="174" height="161"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                        <real key="value" value="12"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </imageView>
+                            <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sBL-6a-C5h">
+                                <rect key="frame" x="4" y="4" width="24" height="24"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="0Uq-uc-oUb">
+                                    <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ethereumIcon" translatesAutoresizingMaskIntoConstraints="NO" id="gTT-xl-wYV">
+                                            <rect key="frame" x="4" y="4" width="16" height="16"/>
+                                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" secondItem="gTT-xl-wYV" secondAttribute="height" id="JJ5-4a-9k8"/>
+                                                <constraint firstAttribute="width" constant="16" id="ch1-ap-3HZ"/>
+                                            </constraints>
+                                        </imageView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="gTT-xl-wYV" firstAttribute="centerY" secondItem="0Uq-uc-oUb" secondAttribute="centerY" id="Scx-rc-Fad"/>
+                                        <constraint firstItem="gTT-xl-wYV" firstAttribute="centerX" secondItem="0Uq-uc-oUb" secondAttribute="centerX" id="rFX-4g-KIG"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="24" id="F3j-Jv-IEk"/>
+                                    <constraint firstAttribute="width" secondItem="sBL-6a-C5h" secondAttribute="height" id="Pp1-H4-fAI"/>
+                                </constraints>
+                                <blurEffect style="systemUltraThinMaterial"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                        <real key="value" value="8"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </visualEffectView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="5Xm-Wl-LNO" firstAttribute="top" secondItem="bRv-cr-Jy0" secondAttribute="top" id="65z-Wl-yi7"/>
+                            <constraint firstItem="5Xm-Wl-LNO" firstAttribute="leading" secondItem="bRv-cr-Jy0" secondAttribute="leading" id="9vD-uM-Svj"/>
+                            <constraint firstAttribute="bottom" secondItem="5Xm-Wl-LNO" secondAttribute="bottom" id="jJw-JS-e26"/>
+                            <constraint firstItem="sBL-6a-C5h" firstAttribute="top" secondItem="bRv-cr-Jy0" secondAttribute="top" constant="4" id="u2g-RE-aOe"/>
+                            <constraint firstAttribute="trailing" secondItem="5Xm-Wl-LNO" secondAttribute="trailing" id="vhJ-8x-8bD"/>
+                            <constraint firstItem="sBL-6a-C5h" firstAttribute="leading" secondItem="bRv-cr-Jy0" secondAttribute="leading" constant="4" id="zOM-ry-8qg"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="bRv-cr-Jy0" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="14R-OR-GXN"/>
+                <constraint firstAttribute="trailing" secondItem="bRv-cr-Jy0" secondAttribute="trailing" id="5r7-Di-RcS"/>
+                <constraint firstItem="bRv-cr-Jy0" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="A40-2Z-XKO"/>
+                <constraint firstAttribute="bottom" secondItem="bRv-cr-Jy0" secondAttribute="bottom" id="YGC-R7-hM4"/>
+            </constraints>
+            <size key="customSize" width="174" height="161"/>
+            <connections>
+                <outlet property="chainImageView" destination="gTT-xl-wYV" id="chS-qe-OpA"/>
+                <outlet property="nftImageView" destination="5Xm-Wl-LNO" id="pQ1-GF-f2f"/>
+            </connections>
+            <point key="canvasLocation" x="65.648854961832058" y="2.4647887323943665"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <image name="ethereumIcon" width="20" height="20"/>
+    </resources>
+</document>

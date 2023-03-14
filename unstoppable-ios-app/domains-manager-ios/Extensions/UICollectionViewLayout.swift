@@ -70,7 +70,7 @@ extension NSCollectionLayoutSection {
         let containerGroup = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                heightDimension: .absolute(height)),
-            subitem: item, count: 2)
+            subitem: item, count: numberOfItems)
         containerGroup.interItemSpacing = .fixed(contentInset)
         let section = NSCollectionLayoutSection(group: containerGroup)
         section.interGroupSpacing = contentInset

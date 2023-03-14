@@ -15,7 +15,7 @@ final class DomainTransactionsService {
 // MARK: - DomainTransactionsServiceProtocol
 extension DomainTransactionsService: DomainTransactionsServiceProtocol {
     func getCachedTransactionsFor(domainNames: [String]) -> [TransactionItem] {
-        storage.getCachedTransactionsListSync(by: domainNames)
+        storage.getCachedTransactionsListSync(by: domainNames) // Cache
     }
     
     func cacheTransactions(_ transactions: [TransactionItem]) {
