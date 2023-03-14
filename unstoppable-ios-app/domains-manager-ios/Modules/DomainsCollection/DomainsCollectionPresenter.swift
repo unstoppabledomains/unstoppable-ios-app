@@ -671,7 +671,7 @@ private extension DomainsCollectionPresenter {
     }
     
     @MainActor
-    func showNFTDetails(_ nft: NFTResponse) {
+    func showNFTDetails(_ nft: NFTModel) {
         router.showNFTDetails(nft)
     }
     

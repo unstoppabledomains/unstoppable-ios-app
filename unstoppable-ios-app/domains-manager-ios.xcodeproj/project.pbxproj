@@ -2459,6 +2459,14 @@
 		C6B91EED29C03A4B00389FF5 /* WalletNFTsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EEB29C03A4B00389FF5 /* WalletNFTsStorage.swift */; };
 		C6B91EEE29C03A4B00389FF5 /* WalletNFTsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EEB29C03A4B00389FF5 /* WalletNFTsStorage.swift */; };
 		C6B91EEF29C03A4B00389FF5 /* WalletNFTsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EEB29C03A4B00389FF5 /* WalletNFTsStorage.swift */; };
+		C6B91EF229C064CF00389FF5 /* NFTModelChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EF129C064CF00389FF5 /* NFTModelChain.swift */; };
+		C6B91EF329C064CF00389FF5 /* NFTModelChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EF129C064CF00389FF5 /* NFTModelChain.swift */; };
+		C6B91EF429C064CF00389FF5 /* NFTModelChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EF129C064CF00389FF5 /* NFTModelChain.swift */; };
+		C6B91EF529C064CF00389FF5 /* NFTModelChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EF129C064CF00389FF5 /* NFTModelChain.swift */; };
+		C6B91EF729C064E200389FF5 /* NFTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EF629C064E200389FF5 /* NFTModel.swift */; };
+		C6B91EF829C064E200389FF5 /* NFTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EF629C064E200389FF5 /* NFTModel.swift */; };
+		C6B91EF929C064E200389FF5 /* NFTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EF629C064E200389FF5 /* NFTModel.swift */; };
+		C6B91EFA29C064E200389FF5 /* NFTModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EF629C064E200389FF5 /* NFTModel.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -3942,6 +3950,8 @@
 		C6B91EDD29C0279400389FF5 /* NFTDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTDetailsViewController.swift; sourceTree = "<group>"; };
 		C6B91EDE29C0279400389FF5 /* NFTDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NFTDetailsViewController.xib; sourceTree = "<group>"; };
 		C6B91EEB29C03A4B00389FF5 /* WalletNFTsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletNFTsStorage.swift; sourceTree = "<group>"; };
+		C6B91EF129C064CF00389FF5 /* NFTModelChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTModelChain.swift; sourceTree = "<group>"; };
+		C6B91EF629C064E200389FF5 /* NFTModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTModel.swift; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -6424,6 +6434,7 @@
 				C606B740286474E000DC562B /* WalletWithInfo.swift */,
 				C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */,
 				C63902B228E2FADC00E16B42 /* WCCompatibleWallet.swift */,
+				C6B91EF029C064C100389FF5 /* NFT */,
 				C671E39D28FE973800A2B3A0 /* CarouselItems */,
 				C63538E42948891200ECABA6 /* Domains */,
 				C6109E4328E5ABFE0027D5D8 /* Mock */,
@@ -6510,6 +6521,15 @@
 				C6B91EDE29C0279400389FF5 /* NFTDetailsViewController.xib */,
 			);
 			path = NFTDetails;
+			sourceTree = "<group>";
+		};
+		C6B91EF029C064C100389FF5 /* NFT */ = {
+			isa = PBXGroup;
+			children = (
+				C6B91EF129C064CF00389FF5 /* NFTModelChain.swift */,
+				C6B91EF629C064E200389FF5 /* NFTModel.swift */,
+			);
+			path = NFT;
 			sourceTree = "<group>";
 		};
 		C6C4217529371428005B791B /* DomainProfileTutorial */ = {
@@ -8249,6 +8269,7 @@
 				C691CFD128C0A5720077C59F /* CollectionSubheadTertiaryButtonHeaderView.swift in Sources */,
 				C6166CC728ED748100004252 /* CollectionViewTitleSwitcherCell.swift in Sources */,
 				C672FD75286061E300D27078 /* WalletBackUpPassword.swift in Sources */,
+				C6B91EF729C064E200389FF5 /* NFTModel.swift in Sources */,
 				C6D5DAD428374B4600379C38 /* ManageMultiChainDomainAddressesViewController.swift in Sources */,
 				29BECD22297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift in Sources */,
 				C60C298C2834E30000626851 /* GroupedCoinRecord.swift in Sources */,
@@ -8463,6 +8484,7 @@
 				C6F6AF6928A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C624D791281BCA1F00F55530 /* SettingsViewController.swift in Sources */,
 				C689539A2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */,
+				C6B91EF229C064CF00389FF5 /* NFTModelChain.swift in Sources */,
 				C685A95B28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */,
 				C6456F2F2800520E00A517D5 /* Vibration.swift in Sources */,
 				306DB242268F4EE2009D95DE /* Extension-String.swift in Sources */,
@@ -8804,6 +8826,7 @@
 				C6C995A8289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift in Sources */,
 				30FFABA4286CA85600ADC2EA /* WCConnectedAppsStorage.swift in Sources */,
 				30B3DC8F2870DBF0006FAA64 /* WCSigner.swift in Sources */,
+				C6B91EF929C064E200389FF5 /* NFTModel.swift in Sources */,
 				C6B91EE129C0279400389FF5 /* NFTDetailsViewPresenter.swift in Sources */,
 				C61B3E9B283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C6C99584289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
@@ -9054,6 +9077,7 @@
 				C66435C3288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
 				C6C99598289D313D00367362 /* CNavigationController.swift in Sources */,
 				C6C995C0289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
+				C6B91EF429C064CF00389FF5 /* NFTModelChain.swift in Sources */,
 				C60981E928225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
 				C6F6AF7028A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6A2D59A284FA0B200327C47 /* MockWalletConnectService.swift in Sources */,
@@ -9437,6 +9461,7 @@
 				C6C995A9289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift in Sources */,
 				30FFABA5286CA85600ADC2EA /* WCConnectedAppsStorage.swift in Sources */,
 				30B3DC902870DBF0006FAA64 /* WCSigner.swift in Sources */,
+				C6B91EFA29C064E200389FF5 /* NFTModel.swift in Sources */,
 				C6B91EE229C0279400389FF5 /* NFTDetailsViewPresenter.swift in Sources */,
 				C61B3E9C283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C6C99585289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
@@ -9687,6 +9712,7 @@
 				C6D5DAE228374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
 				C66435C4288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
 				C6C99599289D313D00367362 /* CNavigationController.swift in Sources */,
+				C6B91EF529C064CF00389FF5 /* NFTModelChain.swift in Sources */,
 				C6C995C1289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C60981EA28225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
 				C6F6AF7128A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
@@ -10206,6 +10232,7 @@
 				C672FD76286061E300D27078 /* WalletBackUpPassword.swift in Sources */,
 				C6166CC828ED748100004252 /* CollectionViewTitleSwitcherCell.swift in Sources */,
 				C6D5DAD528374B4600379C38 /* ManageMultiChainDomainAddressesViewController.swift in Sources */,
+				C6B91EF829C064E200389FF5 /* NFTModel.swift in Sources */,
 				C60C298D2834E42600626851 /* GroupedCoinRecord.swift in Sources */,
 				29BECD23297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift in Sources */,
 				C66430FE28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */,
@@ -10420,6 +10447,7 @@
 				C624D792281BCA1F00F55530 /* SettingsViewController.swift in Sources */,
 				C689539B2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */,
 				C685A95C28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */,
+				C6B91EF329C064CF00389FF5 /* NFTModelChain.swift in Sources */,
 				C6456F302800520E00A517D5 /* Vibration.swift in Sources */,
 				306DB243268F4EE2009D95DE /* Extension-String.swift in Sources */,
 				C6B4099028CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,

@@ -9,7 +9,7 @@ import Foundation
 
 final class NFTsAPIRequestBuilder {
     
-    func nftsFor(domainName: String, limit: Int, cursor: String?, chains: [NFTImageChain]?) -> APIRequest {
+    func nftsFor(domainName: String, limit: Int, cursor: String?, chains: [NFTModelChain]?) -> APIRequest {
         var url = nftsURLFor(domainName: domainName) + "?limit=\(limit)&resolve=true"
     
         if let cursor {

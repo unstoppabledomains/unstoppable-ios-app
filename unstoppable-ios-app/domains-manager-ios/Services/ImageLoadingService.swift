@@ -32,7 +32,7 @@ enum ImageSource {
     case wcApp(_ appInfo: WalletConnectService.WCServiceAppInfo, size: InitialsView.InitialsSize)
     case connectedApp(_ connectedApp: any UnifiedConnectAppInfoProtocol, size: InitialsView.InitialsSize)
     case qrCode(url: URL, options: [QRCodeService.Options])
-    case nft(nft: NFTResponse)
+    case nft(nft: NFTModel)
 
     var key: String {
         switch self {

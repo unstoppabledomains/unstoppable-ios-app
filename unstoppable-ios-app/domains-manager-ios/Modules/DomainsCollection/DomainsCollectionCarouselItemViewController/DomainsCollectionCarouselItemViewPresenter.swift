@@ -24,7 +24,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
     private var cardState: CarouselCardState = .expanded
     static let dashesSeparatorSectionHeight: CGFloat = 16
     private var connectedApps = [any UnifiedConnectAppInfoProtocol]()
-    private var nfts = [NFTResponse]()
+    private var nfts: [NFTModel]?
     private var cardId = UUID()
     private weak var actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate?
     private var didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
@@ -51,6 +51,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         appContext.dataAggregatorService.addListener(self)
         appContext.appLaunchService.addListener(self)
         appContext.externalEventsService.addListener(self)
+        appContext.walletNFTsService.addListener(self)
         showDomainData(animated: false, actions: [])
         Task.detached(priority: .low) { [weak self] in
             await self?.showDomainDataWithActions(animated: false)
@@ -153,15 +154,28 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnec
     func didCompleteConnectionAttempt() { }
 }
 
+// MARK: - WalletNFTsServiceListener
+extension DomainsCollectionCarouselItemViewPresenter: WalletNFTsServiceListener {
+    func didRefreshNFTs(_ nfts: [NFTModel], for walletAddress: HexAddress) {
+        if walletWithInfo?.wallet.address == walletAddress {
+            self.nfts = nfts
+            Task {
+                await showDomainDataWithActions(animated: true)
+            }
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension DomainsCollectionCarouselItemViewPresenter {
     func showDomainDataWithActions(animated: Bool) async {
         let actions = await actionsForDomain()
         let connectedApps = await appContext.walletConnectServiceV2.getConnectedApps().filter({ $0.domain.isSameEntity(domain) })
         self.connectedApps = connectedApps
-        if let walletWithInfo {
-            self.nfts = (try? await appContext.walletNFTsService.getImageNFTsFor(wallet: walletWithInfo.wallet)) ?? []
-            self.nfts = self.nfts.filter({ !$0.isDomainNFT })
+        if self.nfts == nil,
+           let walletWithInfo {
+            let nfts = (try? await appContext.walletNFTsService.getImageNFTsFor(wallet: walletWithInfo.wallet)) ?? []
+            self.nfts = nfts.filter({ !$0.isDomainNFT })
         }
         await showDomainData(animated: animated, actions: actions)
     }
@@ -219,15 +233,15 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             await showDomainDataWithActions(animated: true)
         }
     }
-    
-   
 }
 
 // MARK: - NFTs Section
 private extension DomainsCollectionCarouselItemViewPresenter {
     func addNFTsSection(in snapshot: inout DomainsCollectionCarouselItemSnapshot) {
         snapshot.appendSections([.nfts])
-        snapshot.appendItems(nfts.map({ DomainsCollectionCarouselItemViewController.Item.nft(configuration: .init(nft: $0)) }))
+        if let nfts {
+            snapshot.appendItems(nfts.map({ DomainsCollectionCarouselItemViewController.Item.nft(configuration: .init(nft: $0)) }))
+        }
     }
 }
 

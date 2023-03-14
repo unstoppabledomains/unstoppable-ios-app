@@ -9,7 +9,7 @@ import UIKit
 
 @MainActor
 protocol NFTDetailsViewProtocol: BaseViewControllerProtocol {
-    func setWith(nft: NFTResponse)
+    func setWith(nft: NFTModel)
     func setLoadingIndicator(hidden: Bool)
     func setActionButtonWith(title: String, icon: UIImage)
 }
@@ -51,7 +51,7 @@ final class NFTDetailsViewController: BaseViewController {
 
 // MARK: - NFTDetailsViewProtocol
 extension NFTDetailsViewController: NFTDetailsViewProtocol {
-    func setWith(nft: NFTResponse) {
+    func setWith(nft: NFTModel) {
         nftNameLabel.setAttributedTextWith(text: nft.name ?? "N/A",
                                            font: .currentFont(withSize: 22, weight: .bold),
                                            textColor: .foregroundOnEmphasis,

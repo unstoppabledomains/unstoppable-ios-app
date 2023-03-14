@@ -504,7 +504,7 @@ class UDRouter: DomainProfileSignatureValidator {
         }
     }
     
-    func showNFTDetails(_ nft: NFTResponse,
+    func showNFTDetails(_ nft: NFTModel,
                         in viewController: UIViewController) {
         let vc = buildNFTDetailsModule(nft: nft)
         let nav = CNavigationController(rootViewController: vc)
@@ -884,7 +884,7 @@ private extension UDRouter {
         return vc
     }
     
-    func buildNFTDetailsModule(nft: NFTResponse) -> UIViewController {
+    func buildNFTDetailsModule(nft: NFTModel) -> UIViewController {
         let vc = NFTDetailsViewController.nibInstance()
         let presenter = NFTDetailsViewPresenter(view: vc,
                                                 nft: nft)

@@ -602,7 +602,7 @@ extension DomainsCollectionCarouselItemViewController {
     enum Action {
         case recentActivityLearnMore
         case domainSelected(_ domain: DomainDisplayInfo)
-        case nftSelected(_ nft: NFTResponse)
+        case nftSelected(_ nft: NFTModel)
         case domainNameCopied
         case rearrangeDomains
     }
@@ -652,6 +652,6 @@ extension DomainsCollectionCarouselItemViewController {
     }
     
     struct NFTConfiguration: Hashable {
-        let nft: NFTResponse
+        let nft: NFTModel
     }
 }

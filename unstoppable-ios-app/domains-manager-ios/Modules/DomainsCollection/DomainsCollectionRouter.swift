@@ -23,7 +23,7 @@ protocol DomainsCollectionRouterProtocol {
     func showAppUpdateRequired()
     func showDomainsSearch(_ domains: [DomainDisplayInfo],
                            searchCallback: @escaping DomainsListSearchCallback)
-    func showNFTDetails(_ nft: NFTResponse)
+    func showNFTDetails(_ nft: NFTModel)
 }
 
 @MainActor
@@ -160,7 +160,7 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
         self.showDomainsSearch(domains, searchCallback: searchCallback, in: viewController)
     }
     
-    func showNFTDetails(_ nft: NFTResponse) {
+    func showNFTDetails(_ nft: NFTModel) {
         guard let viewController = self.viewController else { return }
     
         showNFTDetails(nft, in: viewController)

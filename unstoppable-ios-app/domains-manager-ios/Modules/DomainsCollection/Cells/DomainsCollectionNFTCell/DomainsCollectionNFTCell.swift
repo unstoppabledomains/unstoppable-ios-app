@@ -13,7 +13,7 @@ final class DomainsCollectionNFTCell: UICollectionViewCell {
     @IBOutlet private weak var chainImageView: UIImageView!
     
     
-    private var nft: NFTResponse?
+    private var nft: NFTModel?
 
 }
 

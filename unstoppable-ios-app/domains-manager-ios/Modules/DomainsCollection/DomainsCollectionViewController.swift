@@ -745,7 +745,7 @@ extension DomainsCollectionViewController {
         case emptyListItemType(_ type: DomainsCollectionEmptyStateView.EmptyListItemType)
         case recentActivityLearnMore
         case domainSelected(_ domain: DomainDisplayInfo)
-        case nftSelected(_ nft: NFTResponse)
+        case nftSelected(_ nft: NFTModel)
         case mintingDomainSelected(_ domain: DomainDisplayInfo)
         case mintingDomainsShowMoreMintedDomainsPressed
         case rearrangeDomains

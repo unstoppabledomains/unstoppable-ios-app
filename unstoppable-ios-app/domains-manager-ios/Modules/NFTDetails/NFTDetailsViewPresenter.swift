@@ -13,10 +13,10 @@ protocol NFTDetailsViewPresenterProtocol: BasePresenterProtocol {
 
 final class NFTDetailsViewPresenter {
     private weak var view: NFTDetailsViewProtocol?
-    private let nft: NFTResponse
+    private let nft: NFTModel
     
     init(view: NFTDetailsViewProtocol,
-         nft: NFTResponse) {
+         nft: NFTModel) {
         self.view = view
         self.nft = nft
     }

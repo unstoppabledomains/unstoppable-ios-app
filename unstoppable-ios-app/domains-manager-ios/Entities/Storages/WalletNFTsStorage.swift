@@ -13,23 +13,17 @@ final class WalletNFTsStorage {
     
     private init() {}
     static var instance = WalletNFTsStorage()
-    private var storage = SpecificStorage<[NFTResponse]>(fileName: WalletNFTsStorage.storageFileName)
+    private var storage = SpecificStorage<[NFTModel]>(fileName: WalletNFTsStorage.storageFileName)
     
-    func getCachedNFTs() -> [NFTResponse] {
+    func getCachedNFTs() -> [NFTModel] {
         storage.retrieve() ?? []
     }
     
-    func getCachedNFTs(for walletAddress: HexAddress) -> [NFTResponse] {
-        let pfpInfo = getCachedNFTs()
-        
-        return pfpInfo.filter({ $0.address == walletAddress })
-    }
-    
-    func saveCachedNFTs(_ nfts: [NFTResponse]) {
+    func saveCachedNFTs(_ nfts: [NFTModel]) {
         set(newNFTs: nfts)
     }
     
-    private func set(newNFTs: [NFTResponse]) {
+    private func set(newNFTs: [NFTModel]) {
         storage.store(newNFTs)
     }
 }
