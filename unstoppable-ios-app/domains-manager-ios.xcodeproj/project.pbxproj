@@ -2415,6 +2415,10 @@
 		C6B7CF64294AF1F80005C48D /* BlockChainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */; };
 		C6B7CF65294AF1F80005C48D /* BlockChainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */; };
 		C6B7CF66294AF1F80005C48D /* BlockChainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */; };
+		C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
+		C6B91EB529BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
+		C6B91EB629BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
+		C6B91EB729BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -3887,6 +3891,7 @@
 		C6B6B05029713ED000D4E30F /* RearrangeDomainCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RearrangeDomainCell.xib; sourceTree = "<group>"; };
 		C6B6B0692976607D00D4E30F /* DomainsListSearchPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListSearchPresenter.swift; sourceTree = "<group>"; };
 		C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockChainItem.swift; sourceTree = "<group>"; };
+		C6B91EB329BB718100389FF5 /* StripeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeService.swift; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -5931,6 +5936,7 @@
 				C665FC1D29B0687D009699D2 /* NotificationsService */,
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
+				C6B91EB329BB718100389FF5 /* StripeService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
 				C63F1D0328AF31D5000A5C12 /* AnalyticsService */,
@@ -7935,6 +7941,7 @@
 				C6A2D59F28504EB300327C47 /* ConnectedAppCell.swift in Sources */,
 				C609820A2822D92300546392 /* ToastMessageService.swift in Sources */,
 				C6ECBF8B28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
+				C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */,
 				C63A352B28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C6D6E4FC2817E386008C66BB /* EnterBackupOnboardingPresenter.swift in Sources */,
 				299713D728F693F600743003 /* EIP712TypedData.swift in Sources */,
@@ -8889,6 +8896,7 @@
 				C665B9BC28334D6E005E535C /* UIUserInterfaceStyle.swift in Sources */,
 				C62C3FBF283F6E410094FC93 /* MintDomainsConfigurationViewController.swift in Sources */,
 				C6E1188528F5709D00C6AD4D /* WalletConnectPushNotificationsSubscribeInfo.swift in Sources */,
+				C6B91EB629BB718100389FF5 /* StripeService.swift in Sources */,
 				C6E1188A28F570A200C6AD4D /* WalletConnectPushNotificationsUnsubscribeInfo.swift in Sources */,
 				C679B5F82918F38100F543A7 /* DefaultCodable.swift in Sources */,
 				C650AC3F298105C900A398AB /* UDSegmentedControl.swift in Sources */,
@@ -9514,6 +9522,7 @@
 				C665B9BD28334D6E005E535C /* UIUserInterfaceStyle.swift in Sources */,
 				307F85A8267B60300070A9A6 /* StripePaymentHelper.swift in Sources */,
 				C62C3FC0283F6E410094FC93 /* MintDomainsConfigurationViewController.swift in Sources */,
+				C6B91EB729BB718100389FF5 /* StripeService.swift in Sources */,
 				C6E1188628F5709D00C6AD4D /* WalletConnectPushNotificationsSubscribeInfo.swift in Sources */,
 				C6E1188B28F570A200C6AD4D /* WalletConnectPushNotificationsUnsubscribeInfo.swift in Sources */,
 				C650AC40298105C900A398AB /* UDSegmentedControl.swift in Sources */,
@@ -9868,6 +9877,7 @@
 				C6A2D5A028504EB300327C47 /* ConnectedAppCell.swift in Sources */,
 				C628E38327FEE31D0044E408 /* DeviceHelper.swift in Sources */,
 				C6ECBF8C28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
+				C6B91EB529BB718100389FF5 /* StripeService.swift in Sources */,
 				C63A352C28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C609820B2822D92300546392 /* ToastMessageService.swift in Sources */,
 				299713D828F693F600743003 /* EIP712TypedData.swift in Sources */,

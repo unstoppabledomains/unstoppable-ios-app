@@ -14,7 +14,7 @@ import WalletConnectSwift
 
 // Signing methods
 extension UDWallet {
-    static func createSignaturesAsync(messages: [String],
+    static func createSignaturesByEthSign(messages: [String],
                                 domain: DomainItem) async throws -> [String] {
         guard let walletAddress = domain.ownerWallet else {
             throw UDWallet.Error.noWalletOwner
@@ -22,20 +22,33 @@ extension UDWallet {
         guard let wallet = UDWalletsStorage.instance.getWallet(by: walletAddress, namingService: .UNS) else {
             throw UDWallet.Error.failedToFindWallet
         }
-        let signatures =  try await wallet.multipleWalletSigs(messages: messages)
+        let signatures =  try await wallet.multipleWalletEthSigns(messages: messages)
         return signatures
     }
     
-    func getCryptoSignature(messageString: String) async throws -> String {
+    func getPersonalSignature(messageString: String) async throws -> String {
         guard self.walletState == .verified else {
-            return try await signViaWalletConnect(message: messageString)
+            return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
-        guard let signature = self.sign(messageString: messageString) else {
+        guard let signature = self.signPersonal(messageString: messageString) else {
             throw UDWallet.Error.failedToSignMessage
         }
         return signature
     }
+    
+    func getEthSignature(messageString: String) async throws -> String {
+        guard self.walletState == .verified else {
+            return try await signViaWalletConnectEthSign(message: prepareMessageForEthSign(message: messageString))
+        }
+        
+        guard let signature = self.signEth(messageString: messageString) else {
+            throw UDWallet.Error.failedToSignMessage
+        }
+        return signature
+    }
+    
+    
     
     public func signPersonalEthMessage(_ personalMessage: Data) throws -> Data? {
         guard let privateKeyString = self.getPrivateKey() else { return nil }
@@ -66,19 +79,27 @@ extension UDWallet {
         return compressedSignature
     }
     
-    func sign(messageString: String) -> String? {
-        let messageData: Data?
-        if messageString.droppedHexPrefix.isHexNumber {
-            messageData = Data(messageString.droppedHexPrefix.hexToBytes())
-        } else {
-            messageData = messageString.data(using: .utf8)
+    func signEth(messageString: String) -> String? {
+        guard messageString.droppedHexPrefix.isHexNumber else {
+            return nil
         }
-        guard let data = messageData,
+        let data = Data(messageString.droppedHexPrefix.hexToBytes())
+        guard let signature = try? self.signPersonalEthMessage(data) else {
+            return nil
+        }
+        return HexAddress.hexPrefix + signature.dataToHexString()
+    }
+    
+    func signPersonal(messageString: String) -> String? {
+        guard let data = messageString.data(using: .utf8),
               let signature = try? self.signPersonalEthMessage(data) else {
             return nil
         }
         return HexAddress.hexPrefix + signature.dataToHexString()
     }
+    
+    
+    
     
     static func hashed(messageString: String) -> String? {
         let messageBytes = messageString.droppedHexPrefix.hexToBytes()
@@ -86,25 +107,25 @@ extension UDWallet {
         return HexAddress.hexPrefix + hash.dataToHexString()
     }
     
-    func signViaWalletConnect(message: String) async throws -> String {
+    func prepareMessageForEthSign(message: String) throws -> String {
         func willHash() -> Bool {
             guard let walletName = self.getExternalWalletName()?.lowercased() else {
                 return false
             }
             return walletName.contains("rainbow") || walletName.contains("alpha") || walletName.contains("ledger")
         }
-        
-        func prepareMessageForEthSign(message: String) throws -> String {
-            let messageToSend: String
-            if willHash() {
-                messageToSend = message
-            } else {
-                guard let hash = Self.hashed(messageString: message) else {  throw WalletConnectRequestError.failedHashPersonalMessage }
-                messageToSend = hash
-            }
-            return messageToSend
+
+        let messageToSend: String
+        if willHash() {
+            messageToSend = message
+        } else {
+            guard let hash = Self.hashed(messageString: message) else {  throw WalletConnectRequestError.failedHashPersonalMessage }
+            messageToSend = hash
         }
-        
+        return messageToSend
+    }
+    
+    func signViaWalletConnect(message: String) async throws -> String {
         if message.droppedHexPrefix.isHexNumber {
             return try await signViaWalletConnectEthSign(message: prepareMessageForEthSign(message: message))
         } else {
@@ -155,21 +176,21 @@ extension UDWallet {
         return result
     }
     
-    func multipleWalletSigs(messages: [String]) async throws -> [String]{
+    func multipleWalletEthSigns(messages: [String]) async throws -> [String]{
         var sigs = [String]()
         
         switch self.walletState {
         case .externalLinked:
             // Because it will be required to sign message in external wallet for each request, they can't be fired simultaneously
             for message in messages {
-                let result = try await self.getCryptoSignature(messageString: message)
+                let result = try await self.getEthSignature(messageString: message)
                 sigs.append(result)
             }
         case .verified:
             await withTaskGroup(of: Optional<String>.self) { group in
                 for message in messages {
                     group.addTask {
-                        try? await self.getCryptoSignature(messageString: message)
+                        try? await self.getEthSignature(messageString: message)
                     }
                 }
                 

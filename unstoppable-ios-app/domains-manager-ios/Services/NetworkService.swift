@@ -171,6 +171,8 @@ struct NetworkService {
         
         urlRequest.addValue(Version.getCurrentAppVersionString() ?? "version n/a", forHTTPHeaderField: Self.appVersionHeaderKey)
         
+        guard Debugger.shouldLogHeapAnalytics || !url.absoluteString.contains("heap") else { return urlRequest }
+        
         Debugger.printInfo(topic: .Network, "--- REQUEST TO ENDPOINT")
         Debugger.printInfo(topic: .Network, "METHOD: \(method) | URL: \(url.absoluteString)")
         Debugger.printInfo(topic: .Network, "BODY: \(body)")

@@ -151,14 +151,14 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
-        Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions: \(settledSessions)")
+        Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions:\n\(settledSessions)")
         #endif
         
         setUpAuthSubscribing()
         
         let pairings = Pair.instance.getPairings()
         #if DEBUG
-        Debugger.printInfo(topic: .WallectConnectV2, "Settled pairings: \(pairings)")
+        Debugger.printInfo(topic: .WallectConnectV2, "Settled pairings:\n\(pairings)")
         #endif
         
         // listen to the updates to domains, disconnect those dApps connected to gone domains
@@ -545,7 +545,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         let sig: AnyCodable
         do {
-            let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
+            let sigTyped = try await udWallet.getPersonalSignature(messageString: messageString)
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address), error: \(error)", critical: false)
@@ -572,7 +572,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         let sig: AnyCodable
         do {
-            let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
+            let sigTyped = try await udWallet.getEthSignature(messageString: messageString)
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)
@@ -1246,7 +1246,13 @@ extension WalletConnectServiceV2 {
         guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectRequestError.noWCSessionFound
         }
-        let params = WalletConnectServiceV2.getParamsPersonalSign(message: message, address: address)
+        let sentMessage: String
+        if message.droppedHexPrefix.isHexNumber {
+            sentMessage = message
+        } else {
+            sentMessage = "0x" + message.data(using: .utf8)!.toHexString()
+        }
+        let params = WalletConnectServiceV2.getParamsPersonalSign(message: sentMessage, address: address)
         return try await sendRequest(method: .personalSign,
                                      session: sessionSettled,
                                      requestParams: params,
@@ -1346,4 +1352,25 @@ extension EthereumTransaction {
         
         return AnyCodable([accum])
     }
+}
+
+extension WalletConnectSign.Session: CustomStringConvertible {
+    public var description: String {
+        """
+<\(self.peer.name) |
+\(SessionV2Proxy(self).getWalletAddresses().map({$0.prefix6 + " "})) |
+topic: \(self.topic.prefix6) |
+pairingTopic: \(self.pairingTopic.prefix6)>\n
+"""
+    }
+}
+
+extension WalletConnectSign.Pairing: CustomStringConvertible {
+    public var description: String {
+        "<\(self.peer?.name ?? "🚨no name") | topic: \(self.topic.prefix6)>\n"
+    }
+}
+
+extension String {
+    var prefix6: String { self.prefix(6) + "..." }
 }

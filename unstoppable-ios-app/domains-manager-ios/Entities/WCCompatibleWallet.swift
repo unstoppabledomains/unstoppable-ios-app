@@ -220,7 +220,7 @@ extension WCWalletsProvider {
                     .KleverWallet, .Coinomi, .Coin98, .Argent,
                         .Guarda, .Blockchain, .Spot, .imToken, .Zelus, .Omni, .Exodus, .Zerion]
                 #else
-                return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .AlphaWallet, .Zelus, .MathWallet]
+                return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .AlphaWallet, .Zelus, .MathWallet, .Zerion]
                 #endif
             }
         }
