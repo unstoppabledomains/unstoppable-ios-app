@@ -122,6 +122,10 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
             UDVibration.buttonTap.vibrate()
             showDomainProfile(domain)
+        case .nftSelected(let nft):
+            logAnalytic(event: .nftPressed, parameters: [.nftName : nft.name ?? "N/A"])
+            UDVibration.buttonTap.vibrate()
+            showNFTDetails(nft)
         case .mintingDomainSelected(let mintingDomain):
             logAnalytic(event: .mintingDomainPressed, parameters: [.domainName : mintingDomain.name])
             didSelectMintingDomain(mintingDomain)
@@ -664,6 +668,11 @@ private extension DomainsCollectionPresenter {
                 }
             }
         }
+    }
+    
+    @MainActor
+    func showNFTDetails(_ nft: NFTResponse) {
+        router.showNFTDetails(nft)
     }
     
     @MainActor

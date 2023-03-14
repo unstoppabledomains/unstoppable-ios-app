@@ -602,6 +602,7 @@ extension DomainsCollectionCarouselItemViewController {
     enum Action {
         case recentActivityLearnMore
         case domainSelected(_ domain: DomainDisplayInfo)
+        case nftSelected(_ nft: NFTResponse)
         case domainNameCopied
         case rearrangeDomains
     }

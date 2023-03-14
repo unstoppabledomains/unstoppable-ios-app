@@ -61,8 +61,8 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         switch item {
         case .domainCard(let configuration):
             actionsDelegate?.didOccursUIAction(.domainSelected(configuration.domain))
-        case .nft:
-            return // Show nft details
+        case .nft(let configuration):
+            actionsDelegate?.didOccursUIAction(.nftSelected(configuration.nft))
         case .noRecentActivities, .recentActivity, .dataTypeSelector:
             return
         }

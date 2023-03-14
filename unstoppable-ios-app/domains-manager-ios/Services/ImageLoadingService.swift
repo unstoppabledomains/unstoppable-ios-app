@@ -32,6 +32,7 @@ enum ImageSource {
     case wcApp(_ appInfo: WalletConnectService.WCServiceAppInfo, size: InitialsView.InitialsSize)
     case connectedApp(_ connectedApp: any UnifiedConnectAppInfoProtocol, size: InitialsView.InitialsSize)
     case qrCode(url: URL, options: [QRCodeService.Options])
+    case nft(nft: NFTResponse)
 
     var key: String {
         switch self {
@@ -62,6 +63,9 @@ enum ImageSource {
             let urlKey = ImageSource.url(url).key
             let optionsKey = options.sorted(by: { $0.rawValue < $1.rawValue }).map({ "\($0.rawValue)" }).joined(separator: "_")
             return urlKey + "_" + optionsKey
+        case .nft(let nft):
+            let imageUrl = nft.imageUrl ?? nft.name ?? "-"
+            return imageUrl
         }
     }
 }
@@ -241,6 +245,11 @@ fileprivate extension ImageLoadingService {
                 return scaledImage
             }
             return nil
+        case .nft(let nft):
+            guard let imageUrl = nft.imageUrl,
+                  let url = URL(string: imageUrl) else { return nil }
+            
+            return await fetchImageFor(source: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: downsampleDescription)
         }
     }
     

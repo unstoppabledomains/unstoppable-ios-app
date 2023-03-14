@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 13.03.2023.
 //
 
-import Foundation
+import UIKit
 
 protocol WalletNFTsServiceProtocol {
     func getImageNFTsFor(wallet: UDWallet) async throws -> [NFTResponse]
@@ -76,6 +76,21 @@ enum NFTImageChain: String, Hashable, Codable {
     case SOL
     case ADA
     case HBAR
+    
+    var icon: UIImage {
+        switch self {
+        case .ETH:
+            return .ethereumIcon
+        case .MATIC:
+            return .polygonIcon
+        case .SOL:
+            return .ethereumIcon
+        case .ADA:
+            return .ethereumIcon
+        case .HBAR:
+            return .ethereumIcon
+        }
+    }
 }
 
 struct NFTImagesForChainResponse: Codable {
@@ -105,4 +120,6 @@ struct NFTResponse: Codable, Hashable {
     var chain: NFTImageChain?
     
     var isDomainNFT: Bool { tags.contains("domain") }
+    
+    var chainIcon: UIImage { chain?.icon ?? .ethereumIcon }
 }

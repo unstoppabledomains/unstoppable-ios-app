@@ -26,7 +26,7 @@ extension Analytics {
         case didConnectToExternalWallet, failedToConnectExternalWallet
         case biometricAuthFailed, biometricAuthSuccess
         case didEnterPasscode, didConfirmPasscode
-        case domainPressed, domainMoved
+        case domainPressed, domainMoved, nftPressed
         case didStartSearching, didStopSearching, didSearch
         case didSelectExportDomainPFPStyle
         case didChangeTheme
@@ -67,7 +67,7 @@ extension Analytics {
         case button // Button name
         case pageNum // Int
         case infoTopic
-        case domainName
+        case domainName, nftName
         case record
         case wallet
         case externalWallet
@@ -149,6 +149,7 @@ extension Analytics {
         case addEmail
         case failedToFetchDomainProfile, signMessageInExternalWalletToLoadDomainProfile
         case domainProfileImageDetails
+        case nftDetails
     }
 }
 

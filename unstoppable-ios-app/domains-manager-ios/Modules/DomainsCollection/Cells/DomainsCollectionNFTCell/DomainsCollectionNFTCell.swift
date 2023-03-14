@@ -13,7 +13,7 @@ final class DomainsCollectionNFTCell: UICollectionViewCell {
     @IBOutlet private weak var chainImageView: UIImageView!
     
     
-
+    private var nft: NFTResponse?
 
 }
 
@@ -21,34 +21,14 @@ final class DomainsCollectionNFTCell: UICollectionViewCell {
 extension DomainsCollectionNFTCell {
     func setWith(configuration: DomainsCollectionCarouselItemViewController.NFTConfiguration) {
         let nft = configuration.nft
-        
-        guard let imageUrl = nft.imageUrl,
-              let url = URL(string: imageUrl) else { return }
-        
-        chainImageView.image = chainIcon(for: nft)
+        self.nft = nft
+        chainImageView.image = nft.chainIcon
+        nftImageView.image = nil
         Task {
-            let image = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: nil)
+            let image = await appContext.imageLoadingService.loadImage(from: .nft(nft: nft), downsampleDescription: nil)
+            guard nft == self.nft else { return }
             nftImageView.image = image
         }
     }
 }
 
-// MARK: - Private methods
-private extension DomainsCollectionNFTCell {
-    func chainIcon(for nft: NFTResponse) -> UIImage {
-        switch nft.chain {
-        case .ETH:
-            return .ethereumIcon
-        case .MATIC:
-            return .polygonIcon
-        case .SOL:
-            return .ethereumIcon
-        case .ADA:
-            return .ethereumIcon
-        case .HBAR:
-            return .ethereumIcon
-        default:
-            return .ethereumIcon
-        }
-    }
-}

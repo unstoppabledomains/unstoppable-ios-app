@@ -503,6 +503,16 @@ class UDRouter: DomainProfileSignatureValidator {
             viewController.present(vc, animated: true)
         }
     }
+    
+    func showNFTDetails(_ nft: NFTResponse,
+                        in viewController: UIViewController) {
+        let vc = buildNFTDetailsModule(nft: nft)
+        let nav = CNavigationController(rootViewController: vc)
+        nav.modalTransitionStyle = .crossDissolve
+        nav.modalPresentationStyle = .overFullScreen
+        
+        viewController.present(nav, animated: true)
+    }
 }
 
 // MARK: - Private methods
@@ -870,6 +880,14 @@ private extension UDRouter {
         let presenter = DomainImageDetailsViewPresenter(view: vc,
                                                         domain: domain,
                                                         imageState: imageState)
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func buildNFTDetailsModule(nft: NFTResponse) -> UIViewController {
+        let vc = NFTDetailsViewController.nibInstance()
+        let presenter = NFTDetailsViewPresenter(view: vc,
+                                                nft: nft)
         vc.presenter = presenter
         return vc
     }

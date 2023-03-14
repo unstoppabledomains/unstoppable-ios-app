@@ -279,6 +279,8 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
             presenter.didOccureUIAction(.recentActivityLearnMore)
         case .domainSelected(let domain):
             presenter.didOccureUIAction(.domainSelected(domain))
+        case .nftSelected(let nft):
+            presenter.didOccureUIAction(.nftSelected(nft))
         case .domainNameCopied:
             showToast(.domainCopied)
         case .rearrangeDomains:
@@ -743,6 +745,7 @@ extension DomainsCollectionViewController {
         case emptyListItemType(_ type: DomainsCollectionEmptyStateView.EmptyListItemType)
         case recentActivityLearnMore
         case domainSelected(_ domain: DomainDisplayInfo)
+        case nftSelected(_ nft: NFTResponse)
         case mintingDomainSelected(_ domain: DomainDisplayInfo)
         case mintingDomainsShowMoreMintedDomainsPressed
         case rearrangeDomains
