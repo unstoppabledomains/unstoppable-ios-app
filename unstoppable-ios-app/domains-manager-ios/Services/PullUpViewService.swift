@@ -93,6 +93,7 @@ protocol PullUpViewServiceProtocol {
                                      in viewController: UIViewController) async throws -> CoinVersionSelectionResult
     func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
                                                 in viewController: UIViewController)
+    func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async
 }
 
 @MainActor
@@ -1345,8 +1346,25 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                      cancelButton: .gotItButton()),
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
-        presentPullUpView(in: viewController, pullUp: .connectedAppNetworksInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+        presentPullUpView(in: viewController, pullUp: .externalWalletConnectionHint, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
+    
+    
+    func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async {
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 304
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.externalWalletFailedToSignPullUpTitle.localized()),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .grimaseIcon,
+                                                                                     size: .small),
+                                                                         subtitle: .label(.text(String.Constants.externalWalletFailedToSignPullUpSubtitle.localized())),
+                                                                         cancelButton: .gotItButton()),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .externalWalletFailedToSign, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(Void()) })
+        }
+    }
+    
 }
 
 // MARK: - Private methods

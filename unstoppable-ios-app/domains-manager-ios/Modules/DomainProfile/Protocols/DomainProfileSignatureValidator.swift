@@ -79,7 +79,7 @@ extension DomainProfileSignatureValidator {
                                 completion(true)
                             }  catch {
                                 let topView = await view.topVisibleViewController()
-                                await appContext.pullUpViewService.showWCConnectionFailedPullUp(in: topView)
+                                await appContext.pullUpViewService.showExternalWalletFailedToSignPullUp(in: topView)
                             }
                         }
                     case .walletImported:
