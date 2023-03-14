@@ -28,9 +28,14 @@ extension NFTDetailsViewPresenter: NFTDetailsViewPresenterProtocol {
     func viewDidLoad() {
         view?.setWith(nft: nft)
         if let link = nft.link,
-           let host = URL(string: link)?.host,
-           host.contains("opensea") {
-            view?.setActionButtonWith(title: String.Constants.profileViewOnOpenSea.localized(), icon: .arrowTopRight)
+           let host = URL(string: link)?.host {
+            
+            if let platform = SupportedNFTPlatform.allCases.first(where: { host.contains($0.rawValue) }) {
+                setActionButtonWith(platformName: platform.title)
+            } else {
+                let host = host.replacingOccurrences(of: "www.", with: "")
+                setActionButtonWith(platformName: host)
+            }
         }
     }
     
@@ -46,5 +51,22 @@ extension NFTDetailsViewPresenter: NFTDetailsViewPresenterProtocol {
 
 // MARK: - Private functions
 private extension NFTDetailsViewPresenter {
-
+    @MainActor
+    func setActionButtonWith(platformName: String) {
+        view?.setActionButtonWith(title: String.Constants.profileViewOnN.localized(platformName), icon: .arrowTopRight)
+    }
+    
+    enum SupportedNFTPlatform: String, CaseIterable {
+        case openSea = "opensea"
+        case magicEden = "magiceden"
+        
+        var title: String {
+            switch self {
+            case .openSea:
+                return "OpenSea"
+            case .magicEden:
+                return "MagicEden"
+            }
+        }
+    }
 }

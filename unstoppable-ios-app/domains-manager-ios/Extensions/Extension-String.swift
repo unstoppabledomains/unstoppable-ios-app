@@ -701,7 +701,7 @@ extension String {
         static let profileViewNFT = "PROFILE_VIEW_NFT"
         static let profileViewPhoto = "PROFILE_VIEW_PHOTO"
         static let profileChangeNFT = "PROFILE_CHANGE_NFT"
-        static let profileViewOnOpenSea = "PROFILE_VIEW_ON_OPEN_SEA"
+        static let profileViewOnN = "PROFILE_VIEW_ON_N"
         static let profileMakePrivate = "PROFILE_MAKE_PRIVATE"
         static let profileMakePublic = "PROFILE_MAKE_PUBLIC"
         static let profileSetAccessActionDescription = "PROFILE_SET_ACCESS_ACTION_DESCRIPTION"

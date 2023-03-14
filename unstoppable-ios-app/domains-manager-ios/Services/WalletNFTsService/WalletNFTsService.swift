@@ -15,38 +15,52 @@ final class WalletNFTsService {
     
     private var dataHolder = DataHolder()
     private let limit = 50
-    
+    private var currentAsyncProcess = [HexAddress : Task<[NFTResponse], Error>]()
+
 }
 
 // MARK: - WalletNFTsServiceProtocol
 extension WalletNFTsService: WalletNFTsServiceProtocol {
     func getImageNFTsFor(wallet: UDWallet) async throws -> [NFTResponse] {
-        if let cache = await dataHolder.nftsCache[wallet.address] {
+        let walletAddress = wallet.address
+        
+        if let cache = await dataHolder.nftsCache[walletAddress] {
             return cache
         }
         
-        let domains = await appContext.dataAggregatorService.getDomainItems().filter({ $0.isOwned(by: [wallet] )})
-        guard let domain = domains.first else { return [] }
-       
-        let response = try await makeGetNFTsRequest(domainName: domain.name, cursor: nil, chains: [])
+        if let task = currentAsyncProcess[walletAddress] {
+            return try await task.value
+        }
         
-        
-        var nfts = [NFTResponse]()
-        
-        
-        try await withThrowingTaskGroup(of: [NFTResponse].self, body: { group in
-            for chainResponse in response.allChainsResponses {
-                group.addTask {
-                    return try await self.loadAllNFTsFor(chainResponse: chainResponse, domainName: domain.name)
-                }
-            }
+        let task: Task<[NFTResponse], Error> = Task.detached(priority: .high) {
+            let domains = await appContext.dataAggregatorService.getDomainItems().filter({ $0.isOwned(by: [wallet] )})
+            guard let domain = domains.first else { return [] }
+            let domainName = domain.name
             
-            for try await chainNFTs in group {
-                nfts += chainNFTs
-            }
-        })
+            let response = try await self.makeGetNFTsRequest(domainName: domainName, cursor: nil, chains: [])
+            
+            var nfts = [NFTResponse]()
+            
+            try await withThrowingTaskGroup(of: [NFTResponse].self, body: { group in
+                for chainResponse in response.allChainsResponses {
+                    group.addTask {
+                        return try await self.loadAllNFTsFor(chainResponse: chainResponse, domainName: domainName)
+                    }
+                }
+                
+                for try await chainNFTs in group {
+                    nfts += chainNFTs
+                }
+            })
+            
+            await self.dataHolder.set(nfts: nfts, forWallet: wallet.address)
+            
+            return nfts
+        }
         
-        await dataHolder.set(nfts: nfts, forWallet: wallet.address)
+        currentAsyncProcess[walletAddress] = task
+        let nfts = try await task.value
+        currentAsyncProcess[walletAddress] = nil
         
         return nfts
     }
@@ -70,7 +84,7 @@ private extension WalletNFTsService {
             let nextResponse = try await makeGetNFTsRequest(domainName: domainName, cursor: cursor, chains: [chain])
             
             guard var nextChainResponse = nextResponse.chainResponseFor(chain: chain) else {
-                Debugger.printFailure("Couldn't find request chain in response", critical: true)
+                Debugger.printFailure("Couldn't find request chain in response")
                 return chainResponse.nfts
             }
             

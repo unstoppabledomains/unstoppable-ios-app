@@ -65,7 +65,7 @@ private extension DomainImageDetailsViewPresenter {
             findAndStoreOpenSeaLink(from: imageValue)
             logButtonPressedAnalyticEvents(button: .viewPhoto, parameters: [.domainName: domainName])
             if openSeaLink != nil {
-                view?.setActionButtonWith(title: String.Constants.profileViewOnOpenSea.localized(), icon: .arrowTopRight)
+                view?.setActionButtonWith(title: String.Constants.profileViewOnN.localized("OpenSea"), icon: .arrowTopRight)
             }
         default:
             return

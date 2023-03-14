@@ -635,7 +635,7 @@
 "PROFILE_VIEW_NFT" = "View NFT";
 "PROFILE_VIEW_PHOTO" = "View photo";
 "PROFILE_CHANGE_NFT" = "Change NFT";
-"PROFILE_VIEW_ON_OPEN_SEA" = "View on OpenSea";
+"PROFILE_VIEW_ON_N" = "View on %@";
 "PROFILE_MAKE_PRIVATE" = "Make private";
 "PROFILE_MAKE_PUBLIC" = "Make public";
 "PROFILE_SET_ACCESS_ACTION_DESCRIPTION" = "Control the access people have in viewing your data.";
