@@ -8,8 +8,8 @@
 import Foundation
 
 final class UDWalletsStorage {
-    static let udWalletsStorageFileName = "ud-wallets.data"
-    static let persistedDefaultWalletKey = "persisted-ud-app-wallet_v2"
+    private static let udWalletsStorageFileName = "ud-wallets.data"
+    private static let persistedDefaultWalletKey = "persisted-ud-app-wallet_v2"
     
     private init() {}
     static var instance = UDWalletsStorage()

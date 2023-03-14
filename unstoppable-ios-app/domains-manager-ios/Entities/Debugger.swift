@@ -27,6 +27,7 @@ public struct Debugger {
         case UI = "=UI="
         case None = ""
         case Analytics = "Analtyics"
+        case NFT = "NFT"
     }
     
     static let shouldLogHeapAnalytics = false

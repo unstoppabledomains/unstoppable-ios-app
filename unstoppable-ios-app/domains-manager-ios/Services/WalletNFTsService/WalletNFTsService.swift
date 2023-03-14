@@ -14,6 +14,7 @@ protocol WalletNFTsServiceProtocol {
 final class WalletNFTsService {
     
     private var dataHolder = DataHolder()
+    private let limit = 50
     
 }
 
@@ -26,13 +27,25 @@ extension WalletNFTsService: WalletNFTsServiceProtocol {
         
         let domains = await appContext.dataAggregatorService.getDomainItems().filter({ $0.isOwned(by: [wallet] )})
         guard let domain = domains.first else { return [] }
-        let request = NFTsAPIRequestBuilder().nftsFor(domainName: domain.name, cursor: nil, chains: nil)
-        let data = try await NetworkService().fetchData(for: request.url,
-                                                        method: .get,
-                                                        extraHeaders: NetworkConfig.stagingAccessKeyIfNecessary)
-        guard var response = NFTImagesResponse.objectFromData(data, using: .convertFromSnakeCase) else { throw NetworkLayerError.responseFailedToParse }
-        response.setChains()
-        let nfts = response.nfts
+       
+        let response = try await makeGetNFTsRequest(domainName: domain.name, cursor: nil, chains: [])
+        
+        
+        var nfts = [NFTResponse]()
+        
+        
+        try await withThrowingTaskGroup(of: [NFTResponse].self, body: { group in
+            for chainResponse in response.allChainsResponses {
+                group.addTask {
+                    return try await self.loadAllNFTsFor(chainResponse: chainResponse, domainName: domain.name)
+                }
+            }
+            
+            for try await chainNFTs in group {
+                nfts += chainNFTs
+            }
+        })
+        
         await dataHolder.set(nfts: nfts, forWallet: wallet.address)
         
         return nfts
@@ -40,6 +53,52 @@ extension WalletNFTsService: WalletNFTsServiceProtocol {
 }
 
 // MARK: - Private methods
+private extension WalletNFTsService {
+    func didRefreshNFTs(_ nfts: [NFTResponse], for walletAddress: HexAddress) {
+        
+    }
+    
+    func loadAllNFTsFor(chainResponse: NFTImagesForChainResponse?, domainName: String) async throws -> [NFTResponse] {
+        guard let chainResponse else { return [] }
+        guard let chain = chainResponse.chain else {
+            Debugger.printFailure("Response chain is not specified", critical: true)
+            return []
+        }
+        
+        if chainResponse.nfts.count >= limit,
+           let cursor = chainResponse.cursor {
+            let nextResponse = try await makeGetNFTsRequest(domainName: domainName, cursor: cursor, chains: [chain])
+            
+            guard var nextChainResponse = nextResponse.chainResponseFor(chain: chain) else {
+                Debugger.printFailure("Couldn't find request chain in response", critical: true)
+                return chainResponse.nfts
+            }
+            
+            nextChainResponse.nfts += chainResponse.nfts
+            return try await loadAllNFTsFor(chainResponse: nextChainResponse, domainName: domainName)
+        } else {
+            return chainResponse.nfts
+        }
+    }
+    
+    func makeGetNFTsRequest(domainName: String, cursor: String?, chains: [NFTImageChain]) async throws -> NFTImagesResponse {
+        Debugger.printInfo(topic: .NFT, "Will get NFTs for domain: \(domainName), cursor: \(cursor ?? "Nil"), chains: \(chains.map({ $0.rawValue} ))")
+        let request = NFTsAPIRequestBuilder().nftsFor(domainName: domainName,
+                                                      limit: limit,
+                                                      cursor: cursor,
+                                                      chains: chains)
+        let data = try await NetworkService().fetchData(for: request.url,
+                                                        method: .get,
+                                                        extraHeaders: NetworkConfig.stagingAccessKeyIfNecessary)
+        guard var response = NFTImagesResponse.objectFromData(data, using: .convertFromSnakeCase) else { throw NetworkLayerError.responseFailedToParse }
+        response.prepare()
+        Debugger.printInfo(topic: .NFT, "Did get NFTs \(response.nfts.count) for domain: \(domainName), cursor: \(cursor ?? "Nil"), chains: \(chains.map({ $0.rawValue} ))")
+
+        return response
+    }
+}
+
+// MARK: - DataHolder
 private extension WalletNFTsService {
     actor DataHolder {
         var nftsCache: [HexAddress : [NFTResponse]] = [:]
@@ -57,20 +116,66 @@ struct NFTImagesResponse: Codable {
     var ADA: NFTImagesForChainResponse?
     var HBAR: NFTImagesForChainResponse?
     
-    var allChainsResponses: [NFTImagesForChainResponse?] { [ETH, MATIC, SOL, ADA, HBAR] }
+    var allChainsResponses: [NFTImagesForChainResponse] { [ETH, MATIC, SOL, ADA, HBAR].compactMap({ $0 }) }
     
-    var nfts: [NFTResponse] { allChainsResponses.compactMap({ $0 }).flatMap({ $0.nfts }) }
+    var nfts: [NFTResponse] { allChainsResponses.flatMap({ $0.nfts }) }
     
-    mutating func setChains() {
-        ETH?.setChain(.ETH)
-        MATIC?.setChain(.MATIC)
-        SOL?.setChain(.SOL)
-        ADA?.setChain(.ADA)
-        HBAR?.setChain(.HBAR)
+    mutating func prepare() {
+        ETH?.prepareWith(chain: .ETH)
+        MATIC?.prepareWith(chain: .MATIC)
+        SOL?.prepareWith(chain: .SOL)
+        ADA?.prepareWith(chain: .ADA)
+        HBAR?.prepareWith(chain: .HBAR)
+    }
+    
+    func chainResponseFor(chain: NFTImageChain) -> NFTImagesForChainResponse? {
+        switch chain {
+        case .ETH: return ETH
+        case .MATIC: return MATIC
+        case .SOL: return SOL
+        case .ADA: return ADA
+        case .HBAR: return HBAR
+        }
     }
 }
 
-enum NFTImageChain: String, Hashable, Codable {
+struct NFTImagesForChainResponse: Codable {
+    var cursor: String?
+    var enabled: Bool
+    var verified: Bool?
+    var address: String
+    var nfts: [NFTResponse]
+    var chain: NFTImageChain?
+    
+    mutating func prepareWith(chain: NFTImageChain) {
+        self.chain = chain
+        
+        for i in 0..<nfts.count {
+            nfts[i].chain = chain
+            nfts[i].address = address
+        }
+    }
+}
+
+struct NFTResponse: Codable, Hashable {
+    var name: String?
+    var description: String?
+    var imageUrl: String?
+    var `public`: Bool
+    var videoUrl: String?
+    var link: String?
+    var tags: [String]
+    var collection: String?
+    var mint: String?
+    var chain: NFTImageChain?
+    var address: String?
+    
+    var isDomainNFT: Bool { tags.contains("domain") }
+    
+    var chainIcon: UIImage { chain?.icon ?? .ethereumIcon }
+}
+
+enum NFTImageChain: String, Hashable, Codable, CaseIterable {
     case ETH
     case MATIC
     case SOL
@@ -91,35 +196,4 @@ enum NFTImageChain: String, Hashable, Codable {
             return .ethereumIcon
         }
     }
-}
-
-struct NFTImagesForChainResponse: Codable {
-    var cursor: String?
-    var enabled: Bool
-    var verified: Bool?
-    var address: String
-    var nfts: [NFTResponse]
-    
-    mutating func setChain(_ chain: NFTImageChain) {
-        for i in 0..<nfts.count {
-            nfts[i].chain = chain
-        }
-    }
-}
-
-struct NFTResponse: Codable, Hashable {
-    var name: String?
-    var description: String?
-    var imageUrl: String?
-    var `public`: Bool
-    var videoUrl: String?
-    var link: String?
-    var tags: [String]
-    var collection: String?
-    var mint: String?
-    var chain: NFTImageChain?
-    
-    var isDomainNFT: Bool { tags.contains("domain") }
-    
-    var chainIcon: UIImage { chain?.icon ?? .ethereumIcon }
 }
