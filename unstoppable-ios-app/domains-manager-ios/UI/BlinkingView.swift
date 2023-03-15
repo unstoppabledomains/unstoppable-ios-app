@@ -14,12 +14,16 @@ class BlinkingView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        flash(numberOfFlashes: .greatestFiniteMagnitude)
+        restart()
         DispatchQueue.main.async { [weak self] in
             let defaultCornerRadius = (self?.bounds.height ?? 0) / 2
             let cornerRadius = self?.customCornerRadius ?? defaultCornerRadius
             self?.layer.cornerRadius = cornerRadius
         }
+    }
+    
+    func restart() {
+        flash(numberOfFlashes: .greatestFiniteMagnitude)
     }
     
     private func flash(numberOfFlashes: Float) {

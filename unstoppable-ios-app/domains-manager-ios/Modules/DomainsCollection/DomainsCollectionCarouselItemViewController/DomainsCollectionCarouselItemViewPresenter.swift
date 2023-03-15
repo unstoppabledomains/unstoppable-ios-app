@@ -172,7 +172,7 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnec
 extension DomainsCollectionCarouselItemViewPresenter: WalletNFTsServiceListener {
     func didRefreshNFTs(_ nfts: [NFTModel], for walletAddress: HexAddress) {
         if walletWithInfo?.wallet.address == walletAddress {
-            self.nfts = nfts
+            setNFTs(nfts)
             Task {
                 await showDomainDataWithActions(animated: true)
                 await view?.endRefreshing()
@@ -190,9 +190,13 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         if self.nfts == nil,
            let walletWithInfo {
             let nfts = (try? await appContext.walletNFTsService.getImageNFTsFor(wallet: walletWithInfo.wallet)) ?? []
-            self.nfts = nfts.filter({ !$0.isDomainNFT })
+            setNFTs(nfts)
         }
         await showDomainData(animated: animated, actions: actions)
+    }
+    
+    func setNFTs(_ nfts: [NFTModel]) {
+        self.nfts = nfts.filter({ !$0.isDomainNFT })
     }
     
     @MainActor

@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -22,53 +23,64 @@
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5Xm-Wl-LNO">
                                 <rect key="frame" x="0.0" y="0.0" width="174" height="161"/>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
-                                        <real key="value" value="12"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
+                                <color key="tintColor" name="foregroundMuted"/>
                             </imageView>
-                            <visualEffectView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sBL-6a-C5h">
-                                <rect key="frame" x="4" y="4" width="24" height="24"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="0Uq-uc-oUb">
-                                    <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ethereumIcon" translatesAutoresizingMaskIntoConstraints="NO" id="gTT-xl-wYV">
-                                            <rect key="frame" x="4" y="4" width="16" height="16"/>
-                                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" secondItem="gTT-xl-wYV" secondAttribute="height" id="JJ5-4a-9k8"/>
-                                                <constraint firstAttribute="width" constant="16" id="ch1-ap-3HZ"/>
-                                            </constraints>
-                                        </imageView>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="gTT-xl-wYV" firstAttribute="centerY" secondItem="0Uq-uc-oUb" secondAttribute="centerY" id="Scx-rc-Fad"/>
-                                        <constraint firstItem="gTT-xl-wYV" firstAttribute="centerX" secondItem="0Uq-uc-oUb" secondAttribute="centerX" id="rFX-4g-KIG"/>
-                                    </constraints>
-                                </view>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sr7-Mk-Ele">
+                                <rect key="frame" x="71" y="64.666666666666671" width="32" height="32"/>
+                                <color key="tintColor" name="foregroundMuted"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="24" id="F3j-Jv-IEk"/>
-                                    <constraint firstAttribute="width" secondItem="sBL-6a-C5h" secondAttribute="height" id="Pp1-H4-fAI"/>
+                                    <constraint firstAttribute="width" constant="32" id="NMU-Mr-JzZ"/>
+                                    <constraint firstAttribute="width" secondItem="sr7-Mk-Ele" secondAttribute="height" id="uJI-9q-LcN"/>
                                 </constraints>
-                                <blurEffect style="systemUltraThinMaterial"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="86g-IG-WSc">
+                                <rect key="frame" x="4" y="4" width="24" height="24"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ethereumIcon" translatesAutoresizingMaskIntoConstraints="NO" id="gTT-xl-wYV">
+                                        <rect key="frame" x="4" y="4" width="16" height="16"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="gTT-xl-wYV" secondAttribute="height" id="JJ5-4a-9k8"/>
+                                            <constraint firstAttribute="width" constant="16" id="ch1-ap-3HZ"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" name="backgroundEmphasisOpacity2"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="24" id="ERJ-pE-XsG"/>
+                                    <constraint firstAttribute="width" secondItem="86g-IG-WSc" secondAttribute="height" multiplier="1:1" id="RR6-Wc-qBj"/>
+                                    <constraint firstItem="gTT-xl-wYV" firstAttribute="centerX" secondItem="86g-IG-WSc" secondAttribute="centerX" id="UdQ-tL-JQP"/>
+                                    <constraint firstItem="gTT-xl-wYV" firstAttribute="centerY" secondItem="86g-IG-WSc" secondAttribute="centerY" id="s6a-y8-5YA"/>
+                                </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
                                         <real key="value" value="8"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
-                            </visualEffectView>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="86g-IG-WSc" firstAttribute="top" secondItem="bRv-cr-Jy0" secondAttribute="top" constant="4" id="3oG-Ad-ams"/>
                             <constraint firstItem="5Xm-Wl-LNO" firstAttribute="top" secondItem="bRv-cr-Jy0" secondAttribute="top" id="65z-Wl-yi7"/>
                             <constraint firstItem="5Xm-Wl-LNO" firstAttribute="leading" secondItem="bRv-cr-Jy0" secondAttribute="leading" id="9vD-uM-Svj"/>
+                            <constraint firstItem="sr7-Mk-Ele" firstAttribute="centerY" secondItem="bRv-cr-Jy0" secondAttribute="centerY" id="AKD-aD-081"/>
+                            <constraint firstItem="sr7-Mk-Ele" firstAttribute="centerX" secondItem="bRv-cr-Jy0" secondAttribute="centerX" id="W1K-Th-FzJ"/>
+                            <constraint firstItem="86g-IG-WSc" firstAttribute="leading" secondItem="bRv-cr-Jy0" secondAttribute="leading" constant="4" id="gdx-D0-A96"/>
                             <constraint firstAttribute="bottom" secondItem="5Xm-Wl-LNO" secondAttribute="bottom" id="jJw-JS-e26"/>
-                            <constraint firstItem="sBL-6a-C5h" firstAttribute="top" secondItem="bRv-cr-Jy0" secondAttribute="top" constant="4" id="u2g-RE-aOe"/>
                             <constraint firstAttribute="trailing" secondItem="5Xm-Wl-LNO" secondAttribute="trailing" id="vhJ-8x-8bD"/>
-                            <constraint firstItem="sBL-6a-C5h" firstAttribute="leading" secondItem="bRv-cr-Jy0" secondAttribute="leading" constant="4" id="zOM-ry-8qg"/>
                         </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                <real key="value" value="12"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                <color key="value" name="borderSubtle"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                <real key="value" value="1"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
                     </view>
                 </subviews>
             </view>
@@ -83,12 +95,23 @@
             <size key="customSize" width="174" height="161"/>
             <connections>
                 <outlet property="chainImageView" destination="gTT-xl-wYV" id="chS-qe-OpA"/>
+                <outlet property="containerView" destination="bRv-cr-Jy0" id="I1m-Sg-IGD"/>
                 <outlet property="nftImageView" destination="5Xm-Wl-LNO" id="pQ1-GF-f2f"/>
+                <outlet property="placeholderImage" destination="sr7-Mk-Ele" id="Kbq-5C-fpe"/>
             </connections>
             <point key="canvasLocation" x="65.648854961832058" y="2.4647887323943665"/>
         </collectionViewCell>
     </objects>
     <resources>
         <image name="ethereumIcon" width="20" height="20"/>
+        <namedColor name="backgroundEmphasisOpacity2">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.15999999642372131" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="borderSubtle">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.019999999552965164" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="foregroundMuted">
+            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.71372549019607845" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>

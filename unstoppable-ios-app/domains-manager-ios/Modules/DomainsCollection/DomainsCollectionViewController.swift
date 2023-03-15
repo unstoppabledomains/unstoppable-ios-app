@@ -448,6 +448,7 @@ private extension DomainsCollectionViewController {
                currentY < cellHeight {
                 return setNotVisibleState()
             }
+            setCardState(.notVisible)
             /// Keep default behaviour
             return nil
         }
