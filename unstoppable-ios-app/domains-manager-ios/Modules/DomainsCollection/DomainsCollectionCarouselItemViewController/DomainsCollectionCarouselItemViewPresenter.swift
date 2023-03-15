@@ -11,6 +11,7 @@ import UIKit
 protocol DomainsCollectionCarouselItemViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     func didSelectItem(_ item: DomainsCollectionCarouselItemViewController.Item)
     func setCarouselCardState(_ state: CarouselCardState)
+    func didPullToRefresh()
 }
 
 final class DomainsCollectionCarouselItemViewPresenter {
@@ -83,6 +84,19 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
                 Task {
                     await self.showDomainDataWithActions(animated: true)
                 }
+            }
+        }
+    }
+    
+    @MainActor
+    func didPullToRefresh() {
+        guard let walletWithInfo else { return }
+        
+        Task {
+            do {
+                try await appContext.walletNFTsService.refreshNFTsFor(walletAddress: walletWithInfo.wallet.address)
+            } catch {
+                view?.endRefreshing()
             }
         }
     }
@@ -161,6 +175,7 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletNFTsServiceListener 
             self.nfts = nfts
             Task {
                 await showDomainDataWithActions(animated: true)
+                await view?.endRefreshing()
             }
         }
     }

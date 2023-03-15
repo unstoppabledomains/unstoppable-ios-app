@@ -44,7 +44,20 @@ extension DomainEntity {
     func isOwned(by wallet: UDWallet) -> Bool {
         guard let ownerWallet = self.ownerWallet?.normalized else { return false }
         
-        return wallet.extractEthWallet()?.address.normalized == ownerWallet || wallet.extractZilWallet()?.address.normalized == ownerWallet
+        if let ethAddress = wallet.extractEthWallet()?.address.normalized,
+           isOwned(by: ethAddress) {
+            return true
+        } else if let zilAddress = wallet.extractZilWallet()?.address.normalized,
+                  isOwned(by: zilAddress) {
+            return true
+        }
+        return false 
+    }
+    
+    func isOwned(by walletAddress: HexAddress) -> Bool {
+        guard let ownerWallet = self.ownerWallet?.normalized else { return false }
+        
+        return walletAddress == ownerWallet
     }
 }
 

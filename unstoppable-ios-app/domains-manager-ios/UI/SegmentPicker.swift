@@ -13,7 +13,7 @@ final class SegmentPicker: UIControl {
     private let contentInset: CGFloat = 4
     private let imageSegmentWidth: CGFloat = 44
     private let selectedColor: UIColor = .black
-    private let unselectedColor: UIColor = .black // .foregroundDefault.withAlphaComponent(0.32)
+    private let unselectedColor: UIColor = .foregroundDefault
 
     private var highlightView = UIView()
     private var segmentViews = [SegmentPickerSegmentContainerView]()
@@ -53,7 +53,7 @@ final class SegmentPicker: UIControl {
         case .fillParent:
             self.bounds.size = CGSize(width: superview?.bounds.width ?? 0,
                                       height: height)
-            let segmentWidth = bounds.width / CGFloat(numberOfSegments)
+            let segmentWidth = (bounds.width / CGFloat(numberOfSegments)) - contentInset
             
             for (i, segmentContainer) in segmentViews.enumerated() {
                 segmentContainer.bounds.size.width = segmentWidth

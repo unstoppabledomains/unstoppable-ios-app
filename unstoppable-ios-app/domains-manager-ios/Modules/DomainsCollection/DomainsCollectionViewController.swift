@@ -246,8 +246,9 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
                                                                    velocity: nil,
                                                                    in: viewController.collectionView) {
             for vc in getCurrentCarouselViewControllers() {
-                vc.collectionView.setContentOffset(targetPoint,
-                                                   animated: false)
+                UIView.animate(withDuration: 0.08, delay: 0) {
+                    vc.collectionView.contentOffset = targetPoint
+                }
             }
         }
         applyCurrentCardState()

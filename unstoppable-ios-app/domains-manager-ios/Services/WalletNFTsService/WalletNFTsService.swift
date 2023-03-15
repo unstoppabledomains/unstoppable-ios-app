@@ -9,6 +9,8 @@ import Foundation
 
 protocol WalletNFTsServiceProtocol {
     func getImageNFTsFor(wallet: UDWallet) async throws -> [NFTModel]
+    @discardableResult
+    func refreshNFTsFor(walletAddress: HexAddress) async throws -> [NFTModel]
     
     // Listeners
     func addListener(_ listener: WalletNFTsServiceListener)
@@ -40,7 +42,6 @@ final class WalletNFTsService {
     
     private var dataHolder = DataHolder()
     private let limit = 50
-    private var currentAsyncProcess = [HexAddress : Task<[NFTModel], Error>]()
     private var listenerHolders: [WalletNFTsServiceListenerHolder] = []
 
     init() {
@@ -58,25 +59,20 @@ extension WalletNFTsService: WalletNFTsServiceProtocol {
             let isRefreshed = await dataHolder.isAddressRefreshed(walletAddress)
             if !isRefreshed {
                 Task.detached(priority: .high) {
-                    try? await self.loadAllNFTsFor(wallet: wallet)
+                    try? await self.refreshNFTsFor(walletAddress: walletAddress)
                 }
             }
             return cache
         }
         
-        if let task = currentAsyncProcess[walletAddress] {
-            return try await task.value
-        }
-        
-        let task: Task<[NFTModel], Error> = Task.detached(priority: .high) {
-            try await self.loadAllNFTsFor(wallet: wallet)
-        }
-        
-        currentAsyncProcess[walletAddress] = task
-        let nfts = try await task.value
-        currentAsyncProcess[walletAddress] = nil
+        let nfts = try await createTaskAndLoadAllNFTsFor(walletAddress: walletAddress)
         
         return nfts
+    }
+    
+    @discardableResult
+    func refreshNFTsFor(walletAddress: HexAddress) async throws -> [NFTModel] {
+        try await self.createTaskAndLoadAllNFTsFor(walletAddress: walletAddress)
     }
     
     // Listeners
@@ -103,11 +99,26 @@ private extension WalletNFTsService {
             }
         }
     }
-  
+    
     @discardableResult
-    func loadAllNFTsFor(wallet: UDWallet) async throws -> [NFTModel] {
-        let walletAddress = wallet.address
-        let domains = await appContext.dataAggregatorService.getDomainItems().filter({ $0.isOwned(by: [wallet] )})
+    func createTaskAndLoadAllNFTsFor(walletAddress: HexAddress) async throws -> [NFTModel] {
+        if let task = await dataHolder.currentAsyncProcess[walletAddress] {
+            return try await task.value
+        }
+        
+        let task: Task<[NFTModel], Error> = Task.detached(priority: .high) {
+            try await self.loadAllNFTsFor(walletAddress: walletAddress)
+        }
+        
+        await dataHolder.addAsyncProcessTask(task, for: walletAddress)
+        let nfts = try await task.value
+        await dataHolder.addAsyncProcessTask(nil, for: walletAddress)
+        
+        return nfts
+    }
+  
+    func loadAllNFTsFor(walletAddress: HexAddress) async throws -> [NFTModel] {
+        let domains = await appContext.dataAggregatorService.getDomainItems().filter({ $0.isOwned(by: walletAddress) })
         guard let domain = domains.first else { return [] }
         let domainName = domain.name
         
@@ -187,7 +198,8 @@ private extension WalletNFTsService {
     actor DataHolder {
         var nftsCache: [HexAddress : [NFTModel]] = [:]
         var refreshedAddresses: Set<HexAddress> = []
-        
+        var currentAsyncProcess = [HexAddress : Task<[NFTModel], Error>]()
+
         func set(nfts: [NFTModel],
                  forWallet walletAddress: HexAddress,
                  isRefreshed: Bool) {
@@ -199,6 +211,10 @@ private extension WalletNFTsService {
         
         func isAddressRefreshed(_ address: HexAddress) -> Bool {
             refreshedAddresses.contains(address)
+        }
+        
+        func addAsyncProcessTask(_ task: Task<[NFTModel], Error>?, for address: HexAddress) {
+            currentAsyncProcess[address] = task
         }
         
         func getAllNFTs() -> [NFTModel] {

@@ -11,6 +11,7 @@ import UIKit
 protocol DomainsCollectionCarouselItemViewProtocol: BaseCollectionViewControllerProtocol {
     var containerViewController: BaseViewController? { get }
     func applySnapshot(_ snapshot: DomainsCollectionCarouselItemSnapshot, animated: Bool)
+    func endRefreshing()
 }
 
 typealias DomainsCollectionCarouselItemDataSource = UICollectionViewDiffableDataSource<DomainsCollectionCarouselItemViewController.Section, DomainsCollectionCarouselItemViewController.Item>
@@ -77,6 +78,9 @@ extension DomainsCollectionCarouselItemViewController: DomainsCollectionCarousel
     private func adjustCellsFor(offset: CGPoint) {
         var relativeOffset = offset
         relativeOffset.y += collectionView.contentInset.top
+        if collectionView.refreshControl?.isRefreshing  == true {
+            relativeOffset.y -= 60
+        }
         
         for cell in collectionView.visibleCells {
             if let scrollListener = cell as? ScrollViewOffsetListener {
@@ -99,6 +103,10 @@ extension DomainsCollectionCarouselItemViewController: DomainsCollectionCarousel
         self.cardState = state
         presenter.setCarouselCardState(state)
     }
+    
+    func endRefreshing() {
+        refreshControl?.endRefreshing()
+    }
 }
 
 // MARK: - DomainsCollectionCarouselItemViewProtocol
@@ -118,6 +126,11 @@ extension DomainsCollectionCarouselItemViewController: UICollectionViewDelegate 
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offset = scrollView.contentOffset
+        if offset.y > Self.scrollViewTopInset,
+           let refreshControl,
+           refreshControl.isRefreshing {
+            refreshControl.endRefreshing()
+        }
         adjustCellsFor(offset: offset)
         delegate?.carouselViewController(self, didScrollIn: scrollView)
     }
@@ -126,13 +139,22 @@ extension DomainsCollectionCarouselItemViewController: UICollectionViewDelegate 
         if !decelerate {
             didFinishScrolling()
         }
+        if let refreshControl,
+           refreshControl.isRefreshing,
+        refreshControl.bounds.height < 60 {
+            refreshControl.endRefreshing()
+        }
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        if let targetPoint = delegate?.carouselViewController(self,
+        if var targetPoint = delegate?.carouselViewController(self,
                                                               willEndDraggingAtTargetContentOffset: targetContentOffset.pointee,
                                                               velocity: velocity,
                                                               currentContentOffset: collectionView.contentOffset) {
+            if let refreshControl,
+               refreshControl.isRefreshing  == true {
+                targetPoint.y += refreshControl.bounds.height
+            }
             targetContentOffset.pointee = targetPoint
         }
     }
@@ -144,8 +166,16 @@ extension DomainsCollectionCarouselItemViewController: UICollectionViewDelegate 
 
 // MARK: - Private methods
 private extension DomainsCollectionCarouselItemViewController {
+    var refreshControl: UIRefreshControl? {
+        collectionView.refreshControl
+    }
+    
     func didFinishScrolling() {
         delegate?.carouselViewController(self, didFinishScrollingAt: collectionView.contentOffset)
+    }
+    
+    @objc func handleRefresh() {
+        presenter.didPullToRefresh()
     }
 }
 
@@ -182,9 +212,15 @@ private extension DomainsCollectionCarouselItemViewController {
         collectionView.contentInset.top = Self.scrollViewTopInset
         collectionView.clipsToBounds = false
         collectionView.decelerationRate = .init(rawValue: 0.99)
+        
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        refreshControl.backgroundColor = .backgroundDefault.withAlphaComponent(0.01)
+        collectionView.refreshControl = refreshControl
+        
         configureDataSource()
     }
-    
+   
     func configureDataSource() {
         dataSource = DomainsCollectionCarouselItemDataSource.init(collectionView: collectionView, cellProvider: { [weak self] collectionView, indexPath, item in
             switch item {

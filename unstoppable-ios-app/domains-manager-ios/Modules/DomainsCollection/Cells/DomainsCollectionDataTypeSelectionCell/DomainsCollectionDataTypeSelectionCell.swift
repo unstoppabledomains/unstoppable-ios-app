@@ -43,9 +43,11 @@ private extension DomainsCollectionDataTypeSelectionCell {
 // MARK: - Setup methods
 private extension DomainsCollectionDataTypeSelectionCell {
     func setup() {
-        segmentPicker.layoutType = .fillParent
-        for (i, dataType) in DomainsCollectionVisibleDataType.allCases.enumerated() {
-            segmentPicker.insertSegment(with: dataType.icon, title: dataType.title, at: i, animated: false)
+        UIView.performWithoutAnimation {
+            segmentPicker.layoutType = .fillParent
+            for (i, dataType) in DomainsCollectionVisibleDataType.allCases.enumerated() {
+                segmentPicker.insertSegment(with: dataType.icon, title: dataType.title, at: i, animated: false)
+            }            
         }
     }
 }
