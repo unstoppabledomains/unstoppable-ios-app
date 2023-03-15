@@ -42,6 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         StripeService.shared.setup()
         
         appContext.analyticsService.log(event: .appLaunch, withParameters: nil)
+
         return true
     }
 
