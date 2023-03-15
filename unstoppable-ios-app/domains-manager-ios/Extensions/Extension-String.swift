@@ -717,6 +717,7 @@ extension String {
         // Recent activities
         static let noRecentActivity = "NO_RECENT_ACTIVITY"
         static let noConnectedApps = "NO_CONNECTED_APPS"
+        static let noNFTs = "NO_NFTS"
         static let recentActivityInfoTitle = "RECENT_ACTIVITY_INFO_TITLE"
         static let recentActivityInfoSubtitle = "RECENT_ACTIVITY_INFO_SUBTITLE"
         static let scanToConnect = "SCAN_TO_CONNECT"

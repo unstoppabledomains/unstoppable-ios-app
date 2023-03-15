@@ -33,7 +33,7 @@
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="lw2-5c-iY8" secondAttribute="bottom" id="57Y-8S-JyD"/>
-                <constraint firstItem="lw2-5c-iY8" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" priority="750" constant="52" id="NHG-lM-jgC"/>
+                <constraint firstItem="lw2-5c-iY8" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" priority="750" constant="42" id="NHG-lM-jgC"/>
                 <constraint firstAttribute="trailing" secondItem="lw2-5c-iY8" secondAttribute="trailing" id="qhb-v5-3Ba"/>
                 <constraint firstItem="lw2-5c-iY8" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="qkH-IO-bNg"/>
             </constraints>

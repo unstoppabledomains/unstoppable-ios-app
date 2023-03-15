@@ -18,9 +18,6 @@ final class DomainsCollectionDataTypeSelectionCell: UICollectionViewCell {
         
         setup()
     }
-
- 
-    
 }
 
 // MARK: - Open methods
@@ -47,7 +44,7 @@ private extension DomainsCollectionDataTypeSelectionCell {
             segmentPicker.layoutType = .fillParent
             for (i, dataType) in DomainsCollectionVisibleDataType.allCases.enumerated() {
                 segmentPicker.insertSegment(with: dataType.icon, title: dataType.title, at: i, animated: false)
-            }            
+            }
         }
     }
 }

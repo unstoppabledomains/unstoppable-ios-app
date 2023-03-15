@@ -257,9 +257,12 @@ private extension DomainsCollectionCarouselItemViewPresenter {
 // MARK: - NFTs Section
 private extension DomainsCollectionCarouselItemViewPresenter {
     func addNFTsSection(in snapshot: inout DomainsCollectionCarouselItemSnapshot) {
-        snapshot.appendSections([.nfts])
-        if let nfts {
+        if let nfts,
+           !nfts.isEmpty {
+            snapshot.appendSections([.nfts])
             snapshot.appendItems(nfts.map({ DomainsCollectionCarouselItemViewController.Item.nft(configuration: .init(nft: $0)) }))
+        } else {
+            addEmptyState(in: &snapshot)
         }
     }
 }
@@ -268,19 +271,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
 private extension DomainsCollectionCarouselItemViewPresenter {
     func addActivitiesSection(in snapshot: inout DomainsCollectionCarouselItemSnapshot, domain: DomainDisplayInfo) {
         if connectedApps.isEmpty {
-            var isTutorialOn = false
-            // Separator
-            if !didShowSwipeDomainCardTutorial,
-               cardState == .expanded {
-                isTutorialOn = true
-                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
-                snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
-            }
-            
-            snapshot.appendSections([.noRecentActivities])
-            snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
-                self?.recentActivitiesLearnMoreButtonPressed()
-            }, isTutorialOn: isTutorialOn))])
+            addEmptyState(in: &snapshot)
         } else {
             // Spacer
             if cardState == .expanded {
@@ -313,6 +304,27 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                 }))])
             }
         }
+    }
+}
+
+// MARK: - Empty section
+private extension DomainsCollectionCarouselItemViewPresenter {
+    func addEmptyState(in snapshot: inout DomainsCollectionCarouselItemSnapshot) {
+        var isTutorialOn = false
+        // Separator
+        if !didShowSwipeDomainCardTutorial,
+           cardState == .expanded {
+            isTutorialOn = true
+            snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+            snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
+        }
+        
+        snapshot.appendSections([.noRecentActivities])
+        snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
+            self?.recentActivitiesLearnMoreButtonPressed()
+        },
+                                                                       isTutorialOn: isTutorialOn,
+                                                                       dataType: visibleDataType))])
     }
 }
 

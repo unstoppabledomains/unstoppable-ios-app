@@ -18,6 +18,7 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
     var learnMoreButtonPressedCallback: EmptyCallback?
     private let contentTopCollapsedValue: CGFloat = 64
     private var isTutorialOn: Bool = false
+    private var isLearnMoreButtonHidden: Bool = false
 
     
     override func awakeFromNib() {
@@ -25,9 +26,6 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
         
         contentTopConstraint.constant = contentTopExpandedValue()
         learnMoreButton.customCornerRadius = 16
-        titleLabel.setAttributedTextWith(text: String.Constants.noConnectedApps.localized(),
-                                         font: .currentFont(withSize: 20, weight: .bold),
-                                         textColor: .foregroundSecondary)
         learnMoreButton.setTitle(String.Constants.learnMore.localized(), image: nil)
     }
     
@@ -35,7 +33,10 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
 
 // MARK: - ScrollViewOffsetListener
 extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
-    func setCellHeight(_ cellHeight: CGFloat, isTutorialOn: Bool) {
+    func setCellHeight(_ cellHeight: CGFloat,
+                       isTutorialOn: Bool,
+                       dataType: DomainsCollectionVisibleDataType) {
+        setUIFor(dataType: dataType)
         contentHeightConstraint.constant = cellHeight
         self.isTutorialOn = isTutorialOn
     }
@@ -58,7 +59,7 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         default:
             iconImageView.alpha = 1
         }
-        learnMoreButton.alpha = expandProgress
+        learnMoreButton.alpha = isLearnMoreButtonHidden ? 0.0 : expandProgress
     }
 }
 
@@ -66,6 +67,30 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
 private extension DomainsCollectionNoRecentActivitiesCell {
     @IBAction func learnMoreButtonPressed(_ sender: Any) {
         learnMoreButtonPressedCallback?()
+    }
+    
+    func setUIFor(dataType: DomainsCollectionVisibleDataType) {
+        let title: String
+        let icon: UIImage
+        let isButtonHidden: Bool
+        
+        switch dataType {
+        case .activity:
+            title = String.Constants.noConnectedApps.localized()
+            icon = .widgetIcon
+            isButtonHidden = false
+        case .NFT:
+            title = String.Constants.noNFTs.localized()
+            icon = .hexagonIcon24
+            isButtonHidden = true
+        }
+        
+        titleLabel.setAttributedTextWith(text: title,
+                                         font: .currentFont(withSize: 20, weight: .bold),
+                                         textColor: .foregroundSecondary)
+        learnMoreButton.isUserInteractionEnabled = !isButtonHidden
+        iconImageView.image = icon
+        self.isLearnMoreButtonHidden = isButtonHidden
     }
     
     func contentTopExpandedValue() -> CGFloat {

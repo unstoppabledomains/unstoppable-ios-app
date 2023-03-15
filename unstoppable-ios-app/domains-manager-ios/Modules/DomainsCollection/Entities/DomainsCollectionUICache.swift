@@ -73,7 +73,7 @@ extension DomainsCollectionUICache {
             return cachedValue
         }
         let cardMaxY = cardHeightWithTopInset()
-        let distanceFromCardToControl: CGFloat = 28
+        let distanceFromCardToControl: CGFloat = 16 // 28
         let domainCardY = cardMaxY + collectionViewYInContainer + distanceFromCardToControl
         underCardControlYCache[collectionViewHeight] = domainCardY
         return domainCardY
