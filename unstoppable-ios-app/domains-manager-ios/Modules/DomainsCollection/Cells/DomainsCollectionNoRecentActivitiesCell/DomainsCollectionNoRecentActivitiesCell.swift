@@ -100,20 +100,20 @@ private extension DomainsCollectionNoRecentActivitiesCell {
         case .i4_7Inch:
             return isTutorialOn ? 0 : -4
         case .i5_4Inch:
-            return isTutorialOn ? 20 : 66
+            return isTutorialOn ? 20 : 24
         case .i5_5Inch:
             return isTutorialOn ? 10 : 40
         case .i5_8Inch:
-            return isTutorialOn ? 24 : 68
+            return isTutorialOn ? 24 : 30
         case .i6_1Inch:
             // IP 13Pro
             if UIScreen.main.bounds.width == 390 {
-                return isTutorialOn ? 10 : 74
+                return isTutorialOn ? 10 : 38
             }
             // IP 11
-            return isTutorialOn ? 34 : 90
+            return isTutorialOn ? 34 : 50
         case .i6_5Inch, .i6_7Inch:
-            return isTutorialOn ? 38 : 90
+            return isTutorialOn ? 38 : 40
         default:
             return 0
         }
