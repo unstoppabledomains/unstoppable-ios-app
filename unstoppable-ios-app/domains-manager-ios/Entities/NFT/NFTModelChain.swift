@@ -21,11 +21,11 @@ enum NFTModelChain: String, Hashable, Codable, CaseIterable {
         case .MATIC:
             return .polygonIcon
         case .SOL:
-            return .ethereumIcon
+            return .solanaIcon
         case .ADA:
-            return .ethereumIcon
+            return .cardanoIcon
         case .HBAR:
-            return .ethereumIcon
+            return .hederaIcon
         }
     }
 }

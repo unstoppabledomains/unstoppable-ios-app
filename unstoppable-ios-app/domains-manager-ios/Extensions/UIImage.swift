@@ -15,9 +15,14 @@ extension UIImage {
     static let passcodeIcon = UIImage(named: "passcodeIcon")!
     static let warningIconLarge = UIImage(named: "statusWarningIcon")!
     static let warningIcon = UIImage(named: "warningIcon")!
+    
     static let ethereumIcon = UIImage(named: "ethereumIcon")!
     static let polygonIcon = UIImage(named: "polygonIcon")!
     static let zilIcon = UIImage(named: "zilIcon")!
+    static let solanaIcon = UIImage(named: "solanaIcon")!
+    static let cardanoIcon = UIImage(named: "cardanoIcon")!
+    static let hederaIcon = UIImage(named: "hederaIcon")!
+
     static let externalWalletIndicator = UIImage(named: "externalWalletIndicator")!
     static let cloudIcon = UIImage(named: "cloudIcon")!
     static let checkCircleWhite = UIImage(named: "checkCircleWhite")!
