@@ -83,16 +83,24 @@ extension UDWallet {
         guard messageString.droppedHexPrefix.isHexNumber else {
             return nil
         }
-        let data = Data(messageString.droppedHexPrefix.hexToBytes())
-        guard let signature = try? self.signPersonalEthMessage(data) else {
+        return signAsHexString(messageString: messageString)
+    }
+    
+    func signPersonal(messageString: String) -> String? {
+        if messageString.droppedHexPrefix.isHexNumber {
+            return signAsHexString(messageString: messageString)
+        }
+        
+        guard let data = messageString.data(using: .utf8),
+              let signature = try? self.signPersonalEthMessage(data) else {
             return nil
         }
         return HexAddress.hexPrefix + signature.dataToHexString()
     }
     
-    func signPersonal(messageString: String) -> String? {
-        guard let data = messageString.data(using: .utf8),
-              let signature = try? self.signPersonalEthMessage(data) else {
+    private func signAsHexString(messageString: String) -> String? {
+        let data = Data(messageString.droppedHexPrefix.hexToBytes())
+        guard let signature = try? self.signPersonalEthMessage(data) else {
             return nil
         }
         return HexAddress.hexPrefix + signature.dataToHexString()
