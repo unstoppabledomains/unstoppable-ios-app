@@ -106,9 +106,6 @@ extension UDWallet {
         return HexAddress.hexPrefix + signature.dataToHexString()
     }
     
-    
-    
-    
     static func hashed(messageString: String) -> String? {
         let messageBytes = messageString.droppedHexPrefix.hexToBytes()
         guard let hash = Web3.Utils.hashPersonalMessage(Data(messageBytes)) else { return nil }
