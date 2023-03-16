@@ -100,6 +100,6 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
     }
     
     func findDuplicate(to newApp: ConnectedApp) -> [ConnectedApp] {
-        return retrieveApps().filter({ $0.appUrl.host == newApp.appUrl.host } )
+        return retrieveApps().filter({ $0.appUrl.host == newApp.appUrl.host && $0.walletAddress.normalized == newApp.walletAddress.normalized} )
     }
 }
