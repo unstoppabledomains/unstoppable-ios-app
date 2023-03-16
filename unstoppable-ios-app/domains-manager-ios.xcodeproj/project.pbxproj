@@ -2447,6 +2447,10 @@
 		C6BEEF4529C30DDE000489B9 /* FirebaseAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF4329C30DDE000489B9 /* FirebaseAuthError.swift */; };
 		C6BEEF4629C30DDE000489B9 /* FirebaseAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF4329C30DDE000489B9 /* FirebaseAuthError.swift */; };
 		C6BEEF4729C30DDE000489B9 /* FirebaseAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF4329C30DDE000489B9 /* FirebaseAuthError.swift */; };
+		C6BEEF4929C30F9B000489B9 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */; };
+		C6BEEF4A29C30F9B000489B9 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */; };
+		C6BEEF4B29C30F9B000489B9 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */; };
+		C6BEEF4C29C30F9B000489B9 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -3927,6 +3931,7 @@
 		C6BEEF3929C30D7D000489B9 /* FirebaseAuthUtilitiesProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthUtilitiesProtocol.swift; sourceTree = "<group>"; };
 		C6BEEF3E29C30D9D000489B9 /* UDFirebaseSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFirebaseSigner.swift; sourceTree = "<group>"; };
 		C6BEEF4329C30DDE000489B9 /* FirebaseAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthError.swift; sourceTree = "<group>"; };
+		C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -6463,6 +6468,7 @@
 		C6BEEF2429C30AAC000489B9 /* Authorisation */ = {
 			isa = PBXGroup;
 			children = (
+				C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */,
 				C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */,
 				C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */,
 				C6BEEF3E29C30D9D000489B9 /* UDFirebaseSigner.swift */,
@@ -8263,6 +8269,7 @@
 				C6BEEF3F29C30D9D000489B9 /* UDFirebaseSigner.swift in Sources */,
 				30BA2B45252C4E2B0097817E /* DomainItem.swift in Sources */,
 				C6C4217829371446005B791B /* DomainProfileTutorialViewController.swift in Sources */,
+				C6BEEF4929C30F9B000489B9 /* FirebaseAuthService.swift in Sources */,
 				307852642771FB030039FF40 /* DeepLinks.swift in Sources */,
 				C606B741286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C6E041622950541D0080F8E3 /* DomainsCollectionRecentActivityCell.swift in Sources */,
@@ -9028,6 +9035,7 @@
 				C6C9DEB02834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift in Sources */,
 				C6C57C3F2869C0890093FD8C /* UDDomainSharingWatchCardView.swift in Sources */,
 				C6109E9528E6AA7A0027D5D8 /* AppContextType.swift in Sources */,
+				C6BEEF4B29C30F9B000489B9 /* FirebaseAuthService.swift in Sources */,
 				C66FCCFA2844870B009B9525 /* UserDataService.swift in Sources */,
 				C6010D1C287FBEFC00FBD401 /* DomainsPurchasedDetails.swift in Sources */,
 				C664B65B2914EB0400A76154 /* EnterEmailValuePresenter.swift in Sources */,
@@ -9661,6 +9669,7 @@
 				C628E36127FDDA930044E408 /* String.swift in Sources */,
 				C6C9DEB12834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift in Sources */,
 				C6109E9628E6AA7A0027D5D8 /* AppContextType.swift in Sources */,
+				C6BEEF4C29C30F9B000489B9 /* FirebaseAuthService.swift in Sources */,
 				C6C57C402869C0890093FD8C /* UDDomainSharingWatchCardView.swift in Sources */,
 				C66FCCFB2844870B009B9525 /* UserDataService.swift in Sources */,
 				C664B65C2914EB0400A76154 /* EnterEmailValuePresenter.swift in Sources */,
@@ -10220,6 +10229,7 @@
 				C6BEEF4029C30D9D000489B9 /* UDFirebaseSigner.swift in Sources */,
 				307852652771FB030039FF40 /* DeepLinks.swift in Sources */,
 				C6C4217929371446005B791B /* DomainProfileTutorialViewController.swift in Sources */,
+				C6BEEF4A29C30F9B000489B9 /* FirebaseAuthService.swift in Sources */,
 				30AE84E1257836E2003A0142 /* DomainItem.swift in Sources */,
 				C606B742286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C6E041632950541D0080F8E3 /* DomainsCollectionRecentActivityCell.swift in Sources */,
