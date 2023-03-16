@@ -675,3 +675,6 @@
 "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_TITLE" = "No response from %@ ";
 "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_SUBTITLE" = "To resolve the issue, check old sessions in %@, ensure stable internet connection and try again. Learn more";
 
+// External wallet failed to sign
+"EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_TITLE" = "External wallet failed to sign";
+"EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE" = "Request from external wallet failed. Please try again.";

@@ -22,6 +22,7 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private var walletsWithInfo: [WalletWithInfo] = []
     var resultCallback: DomainItemSelectedCallback?
+    override var numberOfElements: Int { domains.count }
     override var analyticsName: Analytics.ViewName { configuration.analyticsView }
     
     init(view: ChoosePrimaryDomainViewProtocol,
@@ -99,16 +100,14 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
     }
    
     override func didMoveItem(from fromIndex: Int, to toIndex: Int) {
-        if fromIndex < 0 || toIndex >= domains.count {
-            Debugger.printFailure("Did move domains out of range")
-            showDataAsync()
-            return
-        }
-
         let movedDomain = domains[fromIndex]
         domains.remove(at: fromIndex)
         domains.insert(movedDomain, at: toIndex)
         logAnalytic(event: .domainMoved, parameters: [.domainName : movedDomain.name])
+    }
+    
+    override func moveItemsFailed() {
+        showDataAsync()
     }
     
     @MainActor

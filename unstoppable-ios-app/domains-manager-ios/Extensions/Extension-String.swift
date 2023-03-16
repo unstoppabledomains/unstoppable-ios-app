@@ -742,6 +742,10 @@ extension String {
         static let externalWalletConnectionHintPullUpTitle = "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_TITLE"
         static let externalWalletConnectionHintPullUpSubtitle = "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_SUBTITLE"
 
+        // External wallet failed to sign
+        static let externalWalletFailedToSignPullUpTitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_TITLE"
+        static let externalWalletFailedToSignPullUpSubtitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE"
+
     }
     
     struct Segues {

@@ -290,6 +290,8 @@ extension Analytics {
         case recentActivityInfo
         case connectedAppNetworksInfo, connectedAppDomainInfo
         case chooseCoinVersion
+        case externalWalletConnectionHint
+        case externalWalletFailedToSign
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

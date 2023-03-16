@@ -75,7 +75,11 @@ extension WalletConnectExternalWalletHandler {
                 externalWalletWC1ResponseCallback = { result in
                     switch result {
                     case .success(let response):
-                        continuation.resume(returning: response)
+                        if let error = response.error {
+                            continuation.resume(throwing: error)                            
+                        } else {
+                            continuation.resume(returning: response)
+                        }
                     case .failure(let error):
                         continuation.resume(throwing: error)
                     }
@@ -170,7 +174,12 @@ extension WalletConnectExternalWalletHandler {
             externalWalletWC2ResponseCallback = { result in
                 switch result {
                 case .success(let response):
-                    continuation.resume(returning: response)
+                    switch response.result {
+                    case .response:
+                        continuation.resume(returning: response)
+                    case .error(let rpcError):
+                        continuation.resume(throwing: rpcError)
+                    }
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }
