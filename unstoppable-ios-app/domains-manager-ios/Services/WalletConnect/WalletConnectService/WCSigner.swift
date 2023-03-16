@@ -55,8 +55,11 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         
     func handlePersonalSign(request: Request) async throws -> Response {
         
-        let messageString = try request.parameter(of: String.self, at: 0)
+        let incomingMessageString = try request.parameter(of: String.self, at: 0)
         let address = try request.parameter(of: String.self, at: 1)
+        
+        let messageString = incomingMessageString.convertedIntoReadableMessage
+        
         Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(request.jsonString)")
         
         let (_, udWallet) = try await getWalletAfterConfirmationIfNeeded(address: address,
