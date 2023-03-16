@@ -269,11 +269,7 @@ fileprivate extension ImageLoadingService {
     }
     
     func scaleIfNeededAndSaveGif(_ image: UIImage, data: Data, forKey key: String) {
-        if let adjustedData = try? image.gifDataRepresentation() {
-            storeAndCache(imageData: adjustedData, image: image, forKey: key)
-        } else {
-            storeAndCache(imageData: data, image: image, forKey: key)
-        }
+        storeAndCache(imageData: data, image: image, forKey: key)
     }
     
     func loadImage(from url: URL) async throws -> Data {
