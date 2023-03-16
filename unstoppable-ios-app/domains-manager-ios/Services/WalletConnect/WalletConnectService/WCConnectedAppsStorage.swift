@@ -98,4 +98,8 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
     func findBy(domainName: DomainName) -> [ConnectedApp]? {
         return retrieveApps().filter({ $0.domain.name == domainName } )
     }
+    
+    func findDuplicate(to newApp: ConnectedApp) -> [ConnectedApp] {
+        return retrieveApps().filter({ $0.appUrl.host == newApp.appUrl.host } )
+    }
 }

@@ -185,6 +185,12 @@ extension WalletConnectService: ServerDelegate {
                                                              appIconUrls: session.dAppInfo.peerMeta.icons,
                                                              connectionStartDate: Date())
             
+            // any existing dApps with the same url must be disconnected
+            // to avoid multiple connections to the same dApp
+            let duplicates = appsStorage.findDuplicate(to: newApp)
+            if !duplicates.isEmpty {
+                duplicates.forEach({ disconnect(app: $0) })
+            }
             do {
                 try appsStorage.save(newApp: newApp)
             } catch {
