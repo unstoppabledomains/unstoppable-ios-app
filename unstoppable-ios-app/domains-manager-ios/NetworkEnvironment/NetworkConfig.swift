@@ -42,11 +42,13 @@ struct NetworkConfig {
         }
     }
     
+    static let baseProfileProductionHost: String = "profile.unstoppabledomains.com"
+    
     static var baseProfileHost: String {
         if User.instance.getSettings().isTestnetUsed {
             return "profile.ud-staging.com"
         } else {
-            return "profile.unstoppabledomains.com"
+            return baseProfileProductionHost
         }
     }
     

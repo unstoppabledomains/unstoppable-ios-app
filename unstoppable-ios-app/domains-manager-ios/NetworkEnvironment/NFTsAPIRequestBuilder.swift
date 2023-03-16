@@ -31,6 +31,6 @@ final class NFTsAPIRequestBuilder {
     }
     
     private func baseURL() -> String  {
-       "https://" + NetworkConfig.baseProfileHost + "/api/public"
+       "https://" + NetworkConfig.baseProfileProductionHost + "/api/public"
     }
 }
