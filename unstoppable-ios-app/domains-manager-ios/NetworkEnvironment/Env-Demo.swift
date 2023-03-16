@@ -49,3 +49,11 @@ extension PaymentConfiguration {
         static let developmentKey = "<stripe-dev-key>"
     }
 }
+
+struct FirebaseKeys {
+    static let ProductionAPIKey = "<firebase-prod-api-key>"
+    static let StagingAPIKey = "<firebase-staging-api-key>"
+    
+    static let ProductionClientId = "<firebase-prod-client-id>"
+    static let StagingClientId = "<firebase-staging-client-id>"
+}
