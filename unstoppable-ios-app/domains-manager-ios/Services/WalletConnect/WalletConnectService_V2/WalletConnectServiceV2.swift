@@ -539,7 +539,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         let incomingMessageString = paramsAny[0]
         let address = try parseAddress(from: paramsAny[1])
         
-        let messageString = convertMessageIntoReadable(incomingMessageString: incomingMessageString)
+        let messageString = incomingMessageString.convertedIntoReadableMessage
         
         let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
@@ -555,14 +555,6 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         }
         
         return .response(sig)
-    }
-    
-    private func convertMessageIntoReadable(incomingMessageString: String) -> String {
-        if incomingMessageString.droppedHexPrefix.isHexNumber {
-            return String(data: Data(incomingMessageString.droppedHexPrefix.hexToBytes()), encoding: .utf8) ?? incomingMessageString
-        } else {
-            return incomingMessageString
-        }
     }
     
     func handleEthSign(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {

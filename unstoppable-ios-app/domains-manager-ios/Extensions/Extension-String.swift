@@ -822,6 +822,14 @@ extension String {
         filter(\.isHexDigit).count == count
     }
     
+    var convertedIntoReadableMessage: String {
+        if self.droppedHexPrefix.isHexNumber {
+            return String(data: Data(self.droppedHexPrefix.hexToBytes()), encoding: .utf8) ?? self
+        } else {
+            return self
+        }
+    }
+    
     static func itTook (from start: Date) -> String {
         let elapsed = Date().timeIntervalSince(start)
         return String(format: "It took %.2f sec", elapsed)
