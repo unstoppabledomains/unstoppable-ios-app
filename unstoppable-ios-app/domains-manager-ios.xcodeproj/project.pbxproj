@@ -2595,6 +2595,10 @@
 		C6C995DB289D313E00367362 /* CNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99581289D313D00367362 /* CNavigationBar.swift */; };
 		C6C995DC289D313E00367362 /* CNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99581289D313D00367362 /* CNavigationBar.swift */; };
 		C6C995DD289D313E00367362 /* CNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99581289D313D00367362 /* CNavigationBar.swift */; };
+		C6C9A80729C390F300B23675 /* FirebaseAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9A80629C390F300B23675 /* FirebaseAPIService.swift */; };
+		C6C9A80829C390F300B23675 /* FirebaseAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9A80629C390F300B23675 /* FirebaseAPIService.swift */; };
+		C6C9A80929C390F300B23675 /* FirebaseAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9A80629C390F300B23675 /* FirebaseAPIService.swift */; };
+		C6C9A80A29C390F300B23675 /* FirebaseAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9A80629C390F300B23675 /* FirebaseAPIService.swift */; };
 		C6C9DE942834A9DB00BAC36F /* TextWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9DE932834A9DB00BAC36F /* TextWhiteButton.swift */; };
 		C6C9DE952834A9DB00BAC36F /* TextWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9DE932834A9DB00BAC36F /* TextWhiteButton.swift */; };
 		C6C9DE962834A9DB00BAC36F /* TextWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9DE932834A9DB00BAC36F /* TextWhiteButton.swift */; };
@@ -3968,6 +3972,7 @@
 		C6C9957F289D313D00367362 /* CNavItemsTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavItemsTransitioning.swift; sourceTree = "<group>"; };
 		C6C99580289D313D00367362 /* CNavBarHideTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavBarHideTransitioning.swift; sourceTree = "<group>"; };
 		C6C99581289D313D00367362 /* CNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationBar.swift; sourceTree = "<group>"; };
+		C6C9A80629C390F300B23675 /* FirebaseAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAPIService.swift; sourceTree = "<group>"; };
 		C6C9DE9128349E2900BAC36F /* WalletDataValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataValidationTests.swift; sourceTree = "<group>"; };
 		C6C9DE932834A9DB00BAC36F /* TextWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWhiteButton.swift; sourceTree = "<group>"; };
 		C6C9DE982834B28F00BAC36F /* SubheadTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubheadTertiaryButton.swift; sourceTree = "<group>"; };
@@ -6469,6 +6474,7 @@
 			isa = PBXGroup;
 			children = (
 				C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */,
+				C6C9A80629C390F300B23675 /* FirebaseAPIService.swift */,
 				C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */,
 				C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */,
 				C6BEEF3E29C30D9D000489B9 /* UDFirebaseSigner.swift */,
@@ -8102,6 +8108,7 @@
 				C6E041A42951A8C20080F8E3 /* ConnectedAppImageView.swift in Sources */,
 				C689537E2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */,
 				30BA2B36252914100097817E /* Helpers.swift in Sources */,
+				C6C9A80729C390F300B23675 /* FirebaseAPIService.swift in Sources */,
 				C665FC2429B068A3009699D2 /* MockNotificationsService.swift in Sources */,
 				C624D766281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */,
 				C669C355291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */,
@@ -8698,6 +8705,7 @@
 				C62C3FAF283F67B60094FC93 /* NoDomainsToMintViewController.swift in Sources */,
 				C6C995A0289D313D00367362 /* CInteractiveTransitioningController.swift in Sources */,
 				C635B028283393040058F14F /* ManageDomainRecordCell.swift in Sources */,
+				C6C9A80929C390F300B23675 /* FirebaseAPIService.swift in Sources */,
 				C6D6E5082817E5ED008C66BB /* OnboardingAddWalletPresenter.swift in Sources */,
 				C60982322823EF3900546392 /* AddWalletNavigationController.swift in Sources */,
 				C6D6E55628193A35008C66BB /* DomainsCollectionViewController.swift in Sources */,
@@ -9332,6 +9340,7 @@
 				C62C3FB0283F67B60094FC93 /* NoDomainsToMintViewController.swift in Sources */,
 				C6C995A1289D313D00367362 /* CInteractiveTransitioningController.swift in Sources */,
 				C635B029283393040058F14F /* ManageDomainRecordCell.swift in Sources */,
+				C6C9A80A29C390F300B23675 /* FirebaseAPIService.swift in Sources */,
 				C6D6E5092817E5ED008C66BB /* OnboardingAddWalletPresenter.swift in Sources */,
 				C60982332823EF3900546392 /* AddWalletNavigationController.swift in Sources */,
 				C6D6E55728193A35008C66BB /* DomainsCollectionViewController.swift in Sources */,
@@ -10062,6 +10071,7 @@
 				C6E041A52951A8C20080F8E3 /* ConnectedAppImageView.swift in Sources */,
 				C689537F2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */,
 				30AE84D9257836E2003A0142 /* Helpers.swift in Sources */,
+				C6C9A80829C390F300B23675 /* FirebaseAPIService.swift in Sources */,
 				C665FC2529B068A3009699D2 /* MockNotificationsService.swift in Sources */,
 				C624D767281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */,
 				C669C356291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */,
