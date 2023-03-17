@@ -42,11 +42,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         StripeService.shared.setup()
         
         appContext.analyticsService.log(event: .appLaunch, withParameters: nil)
-        
-        Task {
-            await appContext.imageLoadingService.clearStoredImages()
-        }
-
         return true
     }
 
