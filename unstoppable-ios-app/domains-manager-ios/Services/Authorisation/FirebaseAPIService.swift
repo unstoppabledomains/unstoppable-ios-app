@@ -18,6 +18,13 @@ extension FirebaseAPIService {
 
 // MARK: - Private methods
 private extension FirebaseAPIService {
+    func baseAPIURL() -> String {
+        "https://\(NetworkConfig.migratedEndpoint)/api/"
+    }
+}
+
+// MARK: - Private methods
+private extension FirebaseAPIService {
     func makeFirebaseAPIDataRequest(_ apiRequest: APIRequest) async throws -> Data {
         let firebaseAPIRequest = try await prepareFirebaseAPIRequest(apiRequest)
         return try await NetworkService().makeAPIRequest(firebaseAPIRequest)
