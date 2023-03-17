@@ -249,7 +249,7 @@ fileprivate extension ImageLoadingService {
             guard let imageUrl = nft.imageUrl,
                   let url = URL(string: imageUrl) else { return nil }
             
-            return await fetchImageFor(source: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: downsampleDescription)
+            return await fetchImageFor(source: .url(url, maxSize: 256), downsampleDescription: downsampleDescription)
         }
     }
     
