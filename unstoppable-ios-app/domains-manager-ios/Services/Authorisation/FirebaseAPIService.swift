@@ -64,7 +64,7 @@ private extension FirebaseAPIService {
         let authResponse = try await UDFirebaseSigner.shared.refreshIDTokenWith(refreshToken: refreshToken)
         guard let expiresIn = TimeInterval(authResponse.expiresIn) else { throw FirebaseAPIError.failedToGetTokenExpiresData }
         
-        let expirationDate = Date().addingTimeInterval(expiresIn - 10) // Deduct 10 seconds to ensure token won't expire in between of request
+        let expirationDate = Date().addingTimeInterval(expiresIn - 10) // Deduct 10 seconds to ensure token won't expire in between of making request
         tokenData = FirebaseTokenData(idToken: authResponse.idToken,
                                       expirationDate: expirationDate,
                                       refreshToken: authResponse.refreshToken)

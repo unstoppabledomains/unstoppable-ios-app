@@ -24,9 +24,7 @@ final class SettingsCollectionViewCell: BaseListCollectionViewCell {
 extension SettingsCollectionViewCell {
     func setWith(menuItem: SettingsViewController.SettingsMenuItem) {
         accessibilityIdentifier = "Settings Collection Cell \(menuItem.title)"
-        titleLabel.setAttributedTextWith(text: menuItem.title,
-                                         font: .currentFont(withSize: 16, weight: .medium),
-                                         textColor: .foregroundDefault)
+        setTitle(menuItem.title)
         chevronContainerView.isHidden = true
         switcher.isHidden = true
         valueLabel.isHidden = true
@@ -51,11 +49,28 @@ extension SettingsCollectionViewCell {
         iconImageView.tintColor = menuItem.tintColor
         iconContainerView.backgroundColor = menuItem.backgroundColor
     }
+    
+    func setWith(loginProvider: LoginViewController.LoginProvider) {
+        setTitle(String.Constants.loginWithProviderN.localized(loginProvider.title))
+        iconImageView.image = loginProvider.icon
+        chevronContainerView.isHidden = false
+        switcher.isHidden = true
+        valueLabel.isHidden = true
+        
+        iconImageView.tintColor = .foregroundDefault
+        iconContainerView.backgroundColor = .backgroundMuted2
+    }
 }
 
 // MARK: - Private methods
 private extension SettingsCollectionViewCell {
     @IBAction func switcherValueChanged() {
         switcherValueChangedCallback?(switcher.isOn)
+    }
+    
+    func setTitle(_ title: String) {
+        titleLabel.setAttributedTextWith(text: title,
+                                         font: .currentFont(withSize: 16, weight: .medium),
+                                         textColor: .foregroundDefault)
     }
 }

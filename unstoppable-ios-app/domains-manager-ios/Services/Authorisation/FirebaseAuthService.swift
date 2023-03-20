@@ -15,6 +15,7 @@ final class FirebaseAuthService {
     
     static let shared = FirebaseAuthService()
     
+    private let keychainStorage: KeychainPrivateKeyStorage = .instance
     private let tokenKeychainKey: KeychainKey = .firebaseRefreshToken
     
     private init() { }
@@ -23,12 +24,12 @@ final class FirebaseAuthService {
 // MARK: - FirebaseAuthServiceProtocol
 extension FirebaseAuthService: FirebaseAuthServiceProtocol {
     var refreshToken: String? {
-        get { KeychainPrivateKeyStorage.instance.retrieveValue(for: tokenKeychainKey) }
+        get { keychainStorage.retrieveValue(for: tokenKeychainKey) }
         set {
             if let newValue {
-                KeychainPrivateKeyStorage.instance.store(newValue, for: tokenKeychainKey)
+                keychainStorage.store(newValue, for: tokenKeychainKey)
             } else {
-                KeychainPrivateKeyStorage.instance.clear(for: tokenKeychainKey)
+                keychainStorage.clear(for: tokenKeychainKey)
             }
         }
     }

@@ -1372,6 +1372,18 @@
 		C63A77A928F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A77A728F40B6A00F66E72 /* GhostTertiaryWhiteButton.swift */; };
 		C63A77AA28F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A77A728F40B6A00F66E72 /* GhostTertiaryWhiteButton.swift */; };
 		C63A77AB28F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A77A728F40B6A00F66E72 /* GhostTertiaryWhiteButton.swift */; };
+		C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */; };
+		C63DD36229C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */; };
+		C63DD36329C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */; };
+		C63DD36429C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */; };
+		C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */; };
+		C63DD36629C89FEC002D45B2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */; };
+		C63DD36729C89FEC002D45B2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */; };
+		C63DD36829C89FEC002D45B2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */; };
+		C63DD36929C89FEC002D45B2 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63DD36029C89FEC002D45B2 /* LoginViewController.xib */; };
+		C63DD36A29C89FEC002D45B2 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63DD36029C89FEC002D45B2 /* LoginViewController.xib */; };
+		C63DD36B29C89FEC002D45B2 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63DD36029C89FEC002D45B2 /* LoginViewController.xib */; };
+		C63DD36C29C89FEC002D45B2 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63DD36029C89FEC002D45B2 /* LoginViewController.xib */; };
 		C63F1CFF28AD099C000A5C12 /* EmptyRootCNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1CFE28AD099C000A5C12 /* EmptyRootCNavigationController.swift */; };
 		C63F1D0028AD099C000A5C12 /* EmptyRootCNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1CFE28AD099C000A5C12 /* EmptyRootCNavigationController.swift */; };
 		C63F1D0128AD099C000A5C12 /* EmptyRootCNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63F1CFE28AD099C000A5C12 /* EmptyRootCNavigationController.swift */; };
@@ -3666,6 +3678,9 @@
 		C63A352528F017220057D34B /* DomainProfileSectionsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSectionsFactory.swift; sourceTree = "<group>"; };
 		C63A352A28F017A90057D34B /* DomainProfileEmptySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileEmptySection.swift; sourceTree = "<group>"; };
 		C63A77A728F40B6A00F66E72 /* GhostTertiaryWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTertiaryWhiteButton.swift; sourceTree = "<group>"; };
+		C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewPresenter.swift; sourceTree = "<group>"; };
+		C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		C63DD36029C89FEC002D45B2 /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
 		C63F1CFE28AD099C000A5C12 /* EmptyRootCNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRootCNavigationController.swift; sourceTree = "<group>"; };
 		C63F1D0428AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsServiceEnvironment.swift; sourceTree = "<group>"; };
 		C63F1D0528AF31D5000A5C12 /* AnalyticsServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnalyticsServiceProtocol.swift; sourceTree = "<group>"; };
@@ -5490,6 +5505,16 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
+		C63DD35D29C89FCB002D45B2 /* LoginViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */,
+				C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */,
+				C63DD36029C89FEC002D45B2 /* LoginViewController.xib */,
+			);
+			path = LoginViewController;
+			sourceTree = "<group>";
+		};
 		C63F1D0328AF31D5000A5C12 /* AnalyticsService */ = {
 			isa = PBXGroup;
 			children = (
@@ -6729,6 +6754,7 @@
 				C66804B7280D9EC7007E6390 /* EnterPasscode */,
 				C685A9782840BF4D00E54044 /* InfoScreen */,
 				C6637A6E28100D180000AE56 /* LaunchViewController */,
+				C63DD35D29C89FCB002D45B2 /* LoginViewController */,
 				C61B3E68283E249800500B6D /* MintDomains */,
 				30BFA4CE27DE001B00644CD5 /* Onboarding */,
 				C681092B28042B15002D780E /* ProtectWallet */,
@@ -7363,6 +7389,7 @@
 				C6166CCB28ED748100004252 /* CollectionViewTitleSwitcherCell.xib in Resources */,
 				C692C32E282E4C6500C31393 /* SecuritySettingsAuthSelectionCell.xib in Resources */,
 				C628E32327FDA3270044E408 /* Inter-Light.ttf in Resources */,
+				C63DD36929C89FEC002D45B2 /* LoginViewController.xib in Resources */,
 				C60981F528225B9100546392 /* WalletDetailsListCell.xib in Resources */,
 				304C928E25752626007A9F01 /* apple-app-site-association in Resources */,
 				C628E33727FDA3270044E408 /* Inter-Regular.ttf in Resources */,
@@ -7493,6 +7520,7 @@
 				C6166CCD28ED748100004252 /* CollectionViewTitleSwitcherCell.xib in Resources */,
 				C6ECBF9D28D2E06C00E94309 /* GenericBadgeView.xib in Resources */,
 				C624D7AC281BCD9900F55530 /* SettingsCollectionViewCell.xib in Resources */,
+				C63DD36B29C89FEC002D45B2 /* LoginViewController.xib in Resources */,
 				C692C33C282E4C9000C31393 /* SecuritySettingsActionCell.xib in Resources */,
 				C6A2D510284DBDCD00327C47 /* QRScannerViewController.xib in Resources */,
 				30784C9027F455350034FA4A /* UDTextView.xib in Resources */,
@@ -7666,6 +7694,7 @@
 				C6166CCE28ED748100004252 /* CollectionViewTitleSwitcherCell.xib in Resources */,
 				C692C331282E4C6500C31393 /* SecuritySettingsAuthSelectionCell.xib in Resources */,
 				C628E32627FDA3270044E408 /* Inter-Light.ttf in Resources */,
+				C63DD36C29C89FEC002D45B2 /* LoginViewController.xib in Resources */,
 				C60981F828225B9100546392 /* WalletDetailsListCell.xib in Resources */,
 				C628E33A27FDA3270044E408 /* Inter-Regular.ttf in Resources */,
 				C60E9B99282127E600CD7593 /* WalletsListCell.xib in Resources */,
@@ -7810,6 +7839,7 @@
 				C6166CCC28ED748100004252 /* CollectionViewTitleSwitcherCell.xib in Resources */,
 				C692C32F282E4C6500C31393 /* SecuritySettingsAuthSelectionCell.xib in Resources */,
 				C628E32427FDA3270044E408 /* Inter-Light.ttf in Resources */,
+				C63DD36A29C89FEC002D45B2 /* LoginViewController.xib in Resources */,
 				C60981F628225B9100546392 /* WalletDetailsListCell.xib in Resources */,
 				C628E33827FDA3270044E408 /* Inter-Regular.ttf in Resources */,
 				C60E9B97282127E600CD7593 /* WalletsListCell.xib in Resources */,
@@ -8047,6 +8077,7 @@
 				3026FA2B27E885B600FE058B /* ConfirmWordsViewController.swift in Sources */,
 				C692C360282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */,
 				C6011ABD28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */,
+				C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C62247AA283B9548002A0CBD /* CAAnimation.swift in Sources */,
 				C6D6E53628193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
 				C6E1189428F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
@@ -8156,6 +8187,7 @@
 				C6098315282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
 				C6C995BA289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */,
+				C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
 				C6A2D579284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5BD281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
 				C6C995CA289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */,
@@ -9020,6 +9052,7 @@
 				C60981E928225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
 				C6F6AF7028A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6A2D59A284FA0B200327C47 /* MockWalletConnectService.swift in Sources */,
+				C63DD36729C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C6FE49DD285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */,
 				C664311728D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift in Sources */,
 				C66A9DCA28BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
@@ -9254,6 +9287,7 @@
 				C6E69FFD288AEAAF000A8346 /* ExternalEvent.swift in Sources */,
 				C6E04142295051CA0080F8E3 /* DomainsCollectionPageViewController.swift in Sources */,
 				C6D6E533281937E3008C66BB /* BaseTableViewPresenterProtocol.swift in Sources */,
+				C63DD36329C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
 				C651DC53286C115400808D4C /* WatchFaceDomainImagePreviewView.swift in Sources */,
 				307F8412267A339F0070A9A6 /* PullUpView.swift in Sources */,
 				C61C50022820E39600D1110A /* PullUpSelectionView.swift in Sources */,
@@ -9655,6 +9689,7 @@
 				C6C995C1289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C60981EA28225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
 				C6F6AF7128A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
+				C63DD36829C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C6A2D59B284FA0B200327C47 /* MockWalletConnectService.swift in Sources */,
 				C6FE49DE285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */,
 				C664311828D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift in Sources */,
@@ -9889,6 +9924,7 @@
 				C6E69FFE288AEAAF000A8346 /* ExternalEvent.swift in Sources */,
 				C6E04143295051CA0080F8E3 /* DomainsCollectionPageViewController.swift in Sources */,
 				C6D6E534281937E3008C66BB /* BaseTableViewPresenterProtocol.swift in Sources */,
+				C63DD36429C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
 				C651DC54286C115400808D4C /* WatchFaceDomainImagePreviewView.swift in Sources */,
 				307F85CB267B60300070A9A6 /* PullUpView.swift in Sources */,
 				C61C50032820E39600D1110A /* PullUpSelectionView.swift in Sources */,
@@ -10010,6 +10046,7 @@
 				C6C9DE952834A9DB00BAC36F /* TextWhiteButton.swift in Sources */,
 				3026FA2C27E885B600FE058B /* ConfirmWordsViewController.swift in Sources */,
 				C6011ABE28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */,
+				C63DD36629C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C692C361282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */,
 				C62247AB283B9548002A0CBD /* CAAnimation.swift in Sources */,
 				C6E1189528F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
@@ -10119,6 +10156,7 @@
 				C6098316282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
 				C6C995BB289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6D6E5B3281A215D008C66BB /* SegmentPicker.swift in Sources */,
+				C63DD36229C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
 				C6A2D57A284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5BE281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
 				C6C995CB289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */,
