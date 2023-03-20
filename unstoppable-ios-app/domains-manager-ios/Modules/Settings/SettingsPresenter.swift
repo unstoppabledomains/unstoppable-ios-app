@@ -62,6 +62,8 @@ extension SettingsPresenter: SettingsPresenterProtocol {
                     showLegalOptions()
                 case .homeScreen:
                     showHomeScreenDomainSelection()
+                case .websiteAccount:
+                    showLoginScreen()
                 }
             }
         }
@@ -108,6 +110,7 @@ private extension SettingsPresenter {
             #if TESTFLIGHT
             snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
             #endif
+            snapshot.appendItems([.websiteAccount])
 
             
             snapshot.appendSections([.main(2)])
@@ -198,6 +201,14 @@ private extension SettingsPresenter {
                 await view.cNavigationController?.popToRootViewController(animated: true)
             }
         }
+    }
+    
+    @MainActor
+    func showLoginScreen() {
+        guard let view,
+              let nav = view.cNavigationController else { return }
+        
+        UDRouter().showLoginScreen(in: nav)
     }
 }
 

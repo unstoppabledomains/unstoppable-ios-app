@@ -59,7 +59,8 @@ private extension LoginViewController {
 // MARK: - Setup functions
 private extension LoginViewController {
     func setup() {
-        title = String.Constants.loginWithWebTitle.localized()
+        titleLabel.setTitle(String.Constants.loginWithWebTitle.localized())
+        subtitleLabel.setSubtitle(String.Constants.loginWithWebSubtitle.localized())
         setupCollectionView()
     }
     

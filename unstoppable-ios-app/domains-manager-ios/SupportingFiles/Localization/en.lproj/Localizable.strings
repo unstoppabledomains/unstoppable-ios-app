@@ -678,6 +678,7 @@
 "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE" = "Request from external wallet failed. Please try again.";
 
 // Login
+"WEBSITE_ACCOUNT" = "Website account";
 "LOGIN_WITH_WEB_TITLE" = "Login with your website account";
 "LOGIN_WITH_WEB_SUBTITLE" = "Sync your domains and wallets with the Unstoppable app.";
 "LOGIN_WITH_PROVIDER_N" = "Continue with %@";

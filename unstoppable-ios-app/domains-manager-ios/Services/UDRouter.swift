@@ -504,6 +504,13 @@ class UDRouter: DomainProfileSignatureValidator {
             viewController.present(vc, animated: true)
         }
     }
+    
+    func showLoginScreen(in nav: CNavigationController) {
+        let vc = buildLoginModule()
+        
+        nav.pushViewController(vc, animated: true)
+    }
+    
 }
 
 // MARK: - Private methods
@@ -871,6 +878,13 @@ private extension UDRouter {
         let presenter = DomainImageDetailsViewPresenter(view: vc,
                                                         domain: domain,
                                                         imageState: imageState)
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func buildLoginModule() -> UIViewController {
+        let vc = LoginViewController.nibInstance()
+        let presenter = LoginViewPresenter(view: vc)
         vc.presenter = presenter
         return vc
     }

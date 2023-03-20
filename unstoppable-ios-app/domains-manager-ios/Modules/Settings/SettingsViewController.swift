@@ -199,6 +199,7 @@ extension SettingsViewController {
         case homeScreen(_ value: String), wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
         case rateUs, learn, twitter, support, legal
         case testnet(isOn: Bool)
+        case websiteAccount
         
         var title: String {
             switch self {
@@ -222,6 +223,17 @@ extension SettingsViewController {
                 return "Testnet"
             case .homeScreen:
                 return String.Constants.settingsHomeScreen.localized()
+            case .websiteAccount:
+                return String.Constants.websiteAccount.localized()
+            }
+        }
+        
+        var subtitle: String? {
+            switch self {
+            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen:
+                return nil
+            case .websiteAccount:
+                return "Email, Google or Twitter"
             }
         }
         
@@ -247,6 +259,8 @@ extension SettingsViewController {
                 return UIImage(named: "settingsIconTestnet")!
             case .homeScreen:
                 return .domainsProfileIcon
+            case .websiteAccount:
+                return .domainsProfileIcon
             }
         }
         
@@ -264,7 +278,7 @@ extension SettingsViewController {
                 return .brandUnstoppablePink
             case .testnet:
                 return .brandSkyBlue
-            case .rateUs, .learn, .twitter, .support, .legal:
+            case .rateUs, .learn, .twitter, .support, .legal, .websiteAccount:
                 return .backgroundMuted2
             case .homeScreen:
                 return .brandDeepPurple
@@ -277,7 +291,7 @@ extension SettingsViewController {
                 return .chevron(value: value)
             case .appearance(let appearanceStyle):
                 return .chevron(value: appearanceStyle.visibleName)
-            case .rateUs, .learn, .twitter, .support, .legal:
+            case .rateUs, .learn, .twitter, .support, .legal, .websiteAccount:
                 return .empty
             case .testnet(let isOn):
                 return .switcher(isOn: isOn)
@@ -319,6 +333,8 @@ extension SettingsViewController {
                 return .settingsLegal
             case .testnet:
                 return .settingsTestnet
+            case .websiteAccount:
+                return .settingsWebsiteAccount
             }
         }
     }
