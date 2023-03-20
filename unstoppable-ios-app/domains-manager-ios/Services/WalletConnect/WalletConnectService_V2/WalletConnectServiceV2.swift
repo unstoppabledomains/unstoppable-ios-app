@@ -17,6 +17,8 @@ import WalletConnectUtils
 import WalletConnectSign
 import WalletConnectEcho
 
+import WalletConnectChat
+
 import Starscream
 
 extension WebSocket: WebSocketConnecting { }
@@ -256,6 +258,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                                    icons: [String.Links.udLogoPng.urlString])
         
         Pair.configure(metadata: metadata)
+        
+        ChatService.shared.configure()
     }
     
     private func canSupport( _ proposal: SessionV2.Proposal) -> Bool {
@@ -1375,4 +1379,43 @@ extension WalletConnectSign.Pairing: CustomStringConvertible {
 
 extension String {
     var prefix6: String { self.prefix(6) + "..." }
+}
+
+
+// Chat
+
+
+class ChatService {
+    private init() {}
+    static let shared = ChatService()
+    
+    private var publishers = [AnyCancellable]()
+    
+    public func configure() {
+        let account = Account("eip155:137:0x94b420da794c1a8f45b70581ae015e6bd1957233")!
+        Chat.configure(account: account)
+        
+        Chat.instance.invitePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { invite in
+                print(invite)
+            }.store(in: &publishers)
+        
+        Chat.instance.socketConnectionStatusPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { socketStatus in
+                print(socketStatus)
+            }.store(in: &publishers)
+        
+        Task {
+            let publicIdentityKey = try await Chat.instance.register(account: account)
+        }
+        
+    }
+    
+    func deactivate(account: Account) {
+        // TODO: uncomment after upgrade to 1.5.2
+//        try await Chat.instance.goPrivate(account: account)
+//        try await Chat.instance.unregister(account: account)
+    }
 }
