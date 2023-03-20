@@ -208,7 +208,15 @@ private extension SettingsPresenter {
         guard let view,
               let nav = view.cNavigationController else { return }
         
-        UDRouter().showLoginScreen(in: nav)
+        if FirebaseAuthService.shared.isAuthorised {
+            Task {
+                do {
+                    try await FirebaseAPIService.shared.getParkedDomains()
+                } catch { }
+            }
+        } else {
+            UDRouter().showLoginScreen(in: nav)
+        }
     }
 }
 

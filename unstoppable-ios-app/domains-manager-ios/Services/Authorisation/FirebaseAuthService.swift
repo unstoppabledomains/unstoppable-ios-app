@@ -24,7 +24,7 @@ final class FirebaseAuthService {
 // MARK: - FirebaseAuthServiceProtocol
 extension FirebaseAuthService: FirebaseAuthServiceProtocol {
     var refreshToken: String? {
-        get { keychainStorage.retrieveValue(for: tokenKeychainKey) }
+        get { keychainStorage.retrieveValue(for: tokenKeychainKey, isCritical: false) }
         set {
             if let newValue {
                 keychainStorage.store(newValue, for: tokenKeychainKey)

@@ -29,6 +29,13 @@ extension FirebaseAPIService {
         let tokenData = try await FirebaseAuthService.shared.authorizeWithTwitterCustomToken(in: viewController)
         self.tokenData = tokenData
     }
+    
+    func getParkedDomains() async throws  {
+        let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=1&perPage=50&status=all&searchTerm&sort=name")!
+        let request = APIRequest(url: url, body: "", method: .get)
+        let data = try await makeFirebaseAPIDataRequest(request)
+        print("Ha")
+    }
 }
 
 // MARK: - Private methods
@@ -38,11 +45,19 @@ private extension FirebaseAPIService {
     }
 }
 
+
+//https://mobile-staging.api.ud-staging.com/api/user/domains?extension=All&page=1&perPage=50&status=all&searchTerm&sort=name - work
+//https://mobile-staging.api.ud-staging.com/api/user/domains?extension=All&page=1&perPage=50&searchTerm=&sort=name&status=all - dont
+
 // MARK: - Private methods
 private extension FirebaseAPIService {
     func makeFirebaseAPIDataRequest(_ apiRequest: APIRequest) async throws -> Data {
-        let firebaseAPIRequest = try await prepareFirebaseAPIRequest(apiRequest)
-        return try await NetworkService().makeAPIRequest(firebaseAPIRequest)
+        do {
+            let firebaseAPIRequest = try await prepareFirebaseAPIRequest(apiRequest)
+            return try await NetworkService().makeAPIRequest(firebaseAPIRequest)
+        } catch {
+            throw error
+        }
     }
     
     func makeFirebaseDecodableAPIDataRequest<T: Decodable>(_ apiRequest: APIRequest) async throws -> T {
