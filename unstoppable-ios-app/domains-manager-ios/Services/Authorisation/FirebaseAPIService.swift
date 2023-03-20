@@ -5,15 +5,30 @@
 //  Created by Oleg Kuplin on 17.03.2023.
 //
 
-import Foundation
+import UIKit
 
 final class FirebaseAPIService {
+    
+    static let shared = FirebaseAPIService()
     private var tokenData: FirebaseTokenData?
 }
 
 // MARK: - Open methods
 extension FirebaseAPIService {
+    func authorizeWith(email: String, password: String) async throws {
+        let tokenData = try await FirebaseAuthService.shared.authorizeWith(email: email, password: password)
+        self.tokenData = tokenData
+    }
     
+    func authorizeWithGoogle(in viewController: UIViewController) async throws {
+        let tokenData = try await FirebaseAuthService.shared.authorizeWithGoogleSignInIdToken(in: viewController)
+        self.tokenData = tokenData
+    }
+    
+    func authorizeWithTwitter(in viewController: UIViewController) async throws {
+        let tokenData = try await FirebaseAuthService.shared.authorizeWithTwitterCustomToken(in: viewController)
+        self.tokenData = tokenData
+    }
 }
 
 // MARK: - Private methods
@@ -37,7 +52,8 @@ private extension FirebaseAPIService {
     
     func prepareFirebaseAPIRequest(_ apiRequest: APIRequest) async throws -> APIRequest {
         guard let tokenData,
-              tokenData.expirationDate > Date() else {
+              let expirationDate = tokenData.expirationDate,
+              expirationDate > Date() else {
             try await refreshIdTokenIfPossible()
             return try await prepareFirebaseAPIRequest(apiRequest)
         }
@@ -66,6 +82,7 @@ private extension FirebaseAPIService {
         
         let expirationDate = Date().addingTimeInterval(expiresIn - 10) // Deduct 10 seconds to ensure token won't expire in between of making request
         tokenData = FirebaseTokenData(idToken: authResponse.idToken,
+                                      expiresIn: authResponse.expiresIn,
                                       expirationDate: expirationDate,
                                       refreshToken: authResponse.refreshToken)
     }
@@ -73,14 +90,15 @@ private extension FirebaseAPIService {
 
 // MARK: - Private methods
 private extension FirebaseAPIService {
-    struct FirebaseTokenData {
-        let idToken: String
-        let expirationDate: Date
-        let refreshToken: String
-    }
-    
     enum FirebaseAPIError: Error {
         case failedToGetTokenExpiresData
         case firebaseUserNotAuthorisedInTheApp
     }
+}
+
+struct FirebaseTokenData: Codable {
+    let idToken: String
+    let expiresIn: String
+    var expirationDate: Date?
+    let refreshToken: String
 }

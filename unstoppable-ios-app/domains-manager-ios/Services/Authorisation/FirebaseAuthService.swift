@@ -36,32 +36,33 @@ extension FirebaseAuthService: FirebaseAuthServiceProtocol {
     var isAuthorised: Bool { refreshToken != nil }
     var firebaseProfile: String { "" }
     
-    func authorizeWith(email: String, password: String) async throws -> String {
+    func authorizeWith(email: String, password: String) async throws -> FirebaseTokenData {
         let authResponse = try await UDFirebaseSigner.shared.authorizeWith(email: email, password: password)
         
-        return saveAuthResponseAndReturnIdToken(authResponse)
+        saveAuthResponse(authResponse)
+        return authResponse
     }
     
-    func authorizeWithGoogleSignInIdToken(in viewController: UIViewController) async throws -> String {
+    func authorizeWithGoogleSignInIdToken(in viewController: UIViewController) async throws -> FirebaseTokenData {
         let googleSignInToken = try await UDGoogleSigner.shared.signIn(in: viewController)
         let authResponse = try await UDFirebaseSigner.shared.authorizeWithGoogleSignInIdToken(googleSignInToken)
-      
-        return saveAuthResponseAndReturnIdToken(authResponse)
+        
+        saveAuthResponse(authResponse)
+        return authResponse
     }
     
-    func authorizeWithTwitterCustomToken(in viewController: UIViewController) async throws -> String {
+    func authorizeWithTwitterCustomToken(in viewController: UIViewController) async throws -> FirebaseTokenData {
         let customToken = try await UDTwitterSigner.shared.signIn(in: viewController)
         let authResponse = try await UDFirebaseSigner.shared.authorizeWithTwitterCustomToken(customToken)
         
-        return saveAuthResponseAndReturnIdToken(authResponse)
+        saveAuthResponse(authResponse)
+        return authResponse
     }
 }
 
 // MARK: - Private methods
 private extension FirebaseAuthService {
-    func saveAuthResponseAndReturnIdToken(_ authResponse: UDFirebaseSigner.AuthResponse) -> String {
+    func saveAuthResponse(_ authResponse: FirebaseTokenData) {
         refreshToken = authResponse.refreshToken
-
-        return authResponse.idToken
     }
 }

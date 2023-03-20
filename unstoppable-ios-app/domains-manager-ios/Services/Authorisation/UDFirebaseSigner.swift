@@ -19,7 +19,7 @@ final class UDFirebaseSigner: FirebaseAuthUtilitiesProtocol {
 
 // MARK: - Open methods
 extension UDFirebaseSigner {
-    func authorizeWith(email: String, password: String) async throws -> AuthResponse {
+    func authorizeWith(email: String, password: String) async throws -> FirebaseTokenData {
         struct RequestBody: Encodable {
             let email: String
             let password: String
@@ -30,7 +30,7 @@ extension UDFirebaseSigner {
         return try await authorizeWith(requestBody: requestBody, accountType: .password)
     }
     
-    func authorizeWithGoogleSignInIdToken(_ idToken: String) async throws -> AuthResponse {
+    func authorizeWithGoogleSignInIdToken(_ idToken: String) async throws -> FirebaseTokenData {
         struct RequestBody: Encodable {
             var postBody: String
             var requestUri: String = "https://unstoppabledomains.com"
@@ -42,7 +42,7 @@ extension UDFirebaseSigner {
         return try await authorizeWith(requestBody: requestBody, accountType: .idp)
     }
     
-    func authorizeWithTwitterCustomToken(_ customToken: String) async throws -> AuthResponse {
+    func authorizeWithTwitterCustomToken(_ customToken: String) async throws -> FirebaseTokenData {
         struct RequestBody: Encodable {
             var token: String
             var returnSecureToken: Bool = true
@@ -51,14 +51,14 @@ extension UDFirebaseSigner {
         return try await authorizeWith(requestBody: requestBody, accountType: .customToken)
     }
     
-    func refreshIDTokenWith(refreshToken: String) async throws -> AuthResponse {
+    func refreshIDTokenWith(refreshToken: String) async throws -> FirebaseTokenData {
         try await exchangeRefreshToken(refreshToken)
     }
 }
 
 // MARK: - Private methods
 private extension UDFirebaseSigner {
-    func authorizeWith(requestBody: any Encodable, accountType: GoogleSignInAccountType) async throws -> AuthResponse {
+    func authorizeWith(requestBody: any Encodable, accountType: GoogleSignInAccountType) async throws -> FirebaseTokenData {
         let urlString = "https://identitytoolkit.googleapis.com/v1/accounts:\(accountType.rawValue)?key=\(googleAPIKey)"
         
         let requestURL = URL(string: urlString)!
@@ -69,12 +69,12 @@ private extension UDFirebaseSigner {
         
         let session = URLSession.shared
         let (data, _) = try await session.data(for: request)
-        let authResponse = try JSONDecoder().decode(AuthResponse.self, from: data)
+        let authResponse = try JSONDecoder().decode(FirebaseTokenData.self, from: data)
         
         return authResponse
     }
     
-    func exchangeRefreshToken(_ refreshToken: String) async throws -> AuthResponse {
+    func exchangeRefreshToken(_ refreshToken: String) async throws -> FirebaseTokenData {
         let query: [String : String] = ["refresh_token" : refreshToken,
                                         "grant_type" : "refresh_token"]
         let queryString = buildURLQueryString(from: query)
@@ -92,7 +92,7 @@ private extension UDFirebaseSigner {
         let (data, _) = try await session.data(for: request)
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let authResponse = try decoder.decode(AuthResponse.self, from: data)
+        let authResponse = try decoder.decode(FirebaseTokenData.self, from: data)
         
         return authResponse
     }
@@ -104,14 +104,5 @@ private extension UDFirebaseSigner {
         case idp = "signInWithIdp"
         case customToken = "signInWithCustomToken"
         case password = "signInWithPassword"
-    }
-}
-
-// MARK: - Open methods
-extension UDFirebaseSigner {
-    struct AuthResponse: Codable {
-        let idToken: String
-        let refreshToken: String
-        let expiresIn: String
     }
 }

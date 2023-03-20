@@ -25,8 +25,19 @@ extension LoginViewPresenter: LoginViewPresenterProtocol {
         showData()
     }
     
+    @MainActor
     func didSelectItem(_ item: LoginViewController.Item) {
-        
+        switch item {
+        case .loginWith(let provider):
+            switch provider {
+            case .email:
+                loginWithEmail()
+            case .google:
+                loginWithGoogle()
+            case .twitter:
+                loginWithTwitter()
+            }
+        }
     }
 }
 
@@ -43,5 +54,25 @@ private extension LoginViewPresenter {
             
             await view?.applySnapshot(snapshot, animated: true)
         }
+    }
+    
+    func loginWithEmail() {
+        
+    }
+    
+    func loginWithGoogle()  {
+        Task {
+            guard let view else { return }
+    
+            do {
+                try await FirebaseAPIService.shared.authorizeWithGoogle(in: view)
+            } catch {
+                
+            }
+        }
+    }
+    
+    func loginWithTwitter() {
+        
     }
 }
