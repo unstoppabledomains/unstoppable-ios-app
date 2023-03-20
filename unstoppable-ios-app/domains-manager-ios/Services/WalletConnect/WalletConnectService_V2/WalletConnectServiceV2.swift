@@ -1392,7 +1392,13 @@ class ChatService {
     private var publishers = [AnyCancellable]()
     
     public func configure() {
-        let account = Account("eip155:137:0x94b420da794c1a8f45b70581ae015e6bd1957233")!
+        
+        let accountA = Account("eip155:137:0x94b420da794c1a8f45b70581ae015e6bd1957233")!
+        let osoiAccount = Account("--")!
+        
+        
+        let account = osoiAccount //accountA
+        let peerAccount = accountA // osoiAccount
         Chat.configure(account: account)
         
         Chat.instance.invitePublisher
@@ -1407,8 +1413,15 @@ class ChatService {
                 print(socketStatus)
             }.store(in: &publishers)
         
+        
         Task {
-            let publicIdentityKey = try await Chat.instance.register(account: account)
+            do {
+                let publicIdentityKey = try await Chat.instance.register(account: account)
+                try await Chat.instance.invite(peerAccount: peerAccount, openingMessage: "hello")
+                
+            } catch {
+                print(error)
+            }
         }
         
     }
