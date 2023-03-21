@@ -138,6 +138,8 @@ private extension WalletNFTsService {
             }
         })
         
+        nfts = nfts.clearingInvalidNFTs()
+        
         await dataHolder.set(nfts: nfts, forWallet: walletAddress, isRefreshed: true)
         await didRefreshNFTs(nfts, for: walletAddress)
         

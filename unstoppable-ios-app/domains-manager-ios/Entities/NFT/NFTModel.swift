@@ -24,3 +24,17 @@ struct NFTModel: Codable, Hashable {
     
     var chainIcon: UIImage { chain?.icon ?? .ethereumIcon }
 }
+
+extension Array where Element == NFTModel {
+    
+    func clearingInvalidNFTs() -> [NFTModel] {
+        func isValidField(_ field: String?) -> Bool {
+            guard let field else { return false }
+            
+            return !field.isEmpty
+        }
+        
+        return filter({ isValidField($0.imageUrl) || isValidField($0.videoUrl) })
+    }
+    
+}
