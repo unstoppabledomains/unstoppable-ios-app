@@ -36,6 +36,7 @@ final class FirebaseInteractionService {
     private var firebaseUser: FirebaseUser?
     private var tokenData: FirebaseTokenData?
     private var listenerHolders: [FirebaseInteractionServiceListenerHolder] = []
+    private var loadFirebaseUserTask: Task<FirebaseUser, Error>?
 
     init() {
         refreshUserProfileAsync()
@@ -62,11 +63,26 @@ extension FirebaseInteractionService {
     func getUserProfile() async throws -> FirebaseUser {
         if let firebaseUser {
             return firebaseUser
+        } else if let loadFirebaseUserTask {
+            return try await loadFirebaseUserTask.value
         }
-        let idToken = try await getIdToken()
-        let firebaseUser = try await UDFirebaseSigner.shared.getUserProfile(idToken: idToken)
-        setFirebaseUser(firebaseUser)
-        return firebaseUser
+        
+        let loadFirebaseUserTask = Task<FirebaseUser, Error> {
+            let idToken = try await getIdToken()
+            let firebaseUser = try await UDFirebaseSigner.shared.getUserProfile(idToken: idToken)
+            return firebaseUser
+        }
+        
+        self.loadFirebaseUserTask = loadFirebaseUserTask
+        do {
+            let firebaseUser = try await loadFirebaseUserTask.value
+            setFirebaseUser(firebaseUser)
+            self.loadFirebaseUserTask = nil
+            return firebaseUser
+        } catch {
+            self.loadFirebaseUserTask = nil
+            throw error
+        }
     }
     
     func getParkedDomains() async throws -> [FirebaseDomain] {
@@ -122,7 +138,7 @@ private extension FirebaseInteractionService {
     
     func refreshUserProfileAsync() {
         Task {
-            _ = try? await getUserProfile() 
+            _ = try? await getUserProfile()
         }
     }
 }
