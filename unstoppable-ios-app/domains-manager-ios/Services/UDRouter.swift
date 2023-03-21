@@ -511,6 +511,11 @@ class UDRouter: DomainProfileSignatureValidator {
         nav.pushViewController(vc, animated: true)
     }
     
+    func showLoginWithEmailScreen(in nav: CNavigationController) {
+        let vc = buildLoginWithEmailModule()
+        
+        nav.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - Private methods
@@ -885,6 +890,13 @@ private extension UDRouter {
     func buildLoginModule() -> UIViewController {
         let vc = LoginViewController.nibInstance()
         let presenter = LoginViewPresenter(view: vc)
+        vc.presenter = presenter
+        return vc
+    }
+      
+    func buildLoginWithEmailModule() -> UIViewController {
+        let vc = LoginWithEmailViewController.nibInstance()
+        let presenter = LoginWithEmailViewPresenter(view: vc)
         vc.presenter = presenter
         return vc
     }

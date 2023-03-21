@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginWithEmailViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="confirmButton" destination="TMj-e7-OJ3" id="dds-wT-NTF"/>
+                <outlet property="confirmButtonBottomConstraint" destination="HMo-rQ-i64" id="9CM-3C-aoc"/>
+                <outlet property="emailTextfield" destination="kEu-FV-bus" id="ROG-Oe-f1s"/>
+                <outlet property="hostScrollView" destination="gG6-FR-5bm" id="6be-F8-bjn"/>
+                <outlet property="passwordTextfield" destination="vda-eu-isf" id="Pyn-0d-R9O"/>
+                <outlet property="subtitleLabel" destination="37H-c3-BBk" id="YCi-8e-aFw"/>
+                <outlet property="titleLabel" destination="3qT-Ch-pOB" id="6Ll-6X-ZCJ"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gG6-FR-5bm">
+                    <rect key="frame" x="0.0" y="59" width="393" height="793"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="ySB-Cr-XUn">
+                            <rect key="frame" x="16" y="60" width="361" height="56.666666666666657"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3qT-Ch-pOB" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="164" y="0.0" width="33" height="20.333333333333332"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="37H-c3-BBk" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="160" y="36.333333333333343" width="41.333333333333343" height="20.333333333333329"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="4Wt-bb-aNk">
+                            <rect key="frame" x="16" y="148.66666666666666" width="361" height="195.99999999999997"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="90" translatesAutoresizingMaskIntoConstraints="NO" id="kEu-FV-bus" customClass="UDTextField" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="361" height="90"/>
+                                    <color key="backgroundColor" systemColor="systemGray2Color"/>
+                                </view>
+                                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="90" translatesAutoresizingMaskIntoConstraints="NO" id="vda-eu-isf" customClass="UDTextField" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="106.00000000000003" width="361" height="90"/>
+                                    <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                </view>
+                            </subviews>
+                        </stackView>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1r1-RC-yBX">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="1"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="Qll-hw-iqW"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="ySB-Cr-XUn" firstAttribute="centerX" secondItem="gG6-FR-5bm" secondAttribute="centerX" id="2ey-kV-uyR"/>
+                        <constraint firstItem="1r1-RC-yBX" firstAttribute="top" secondItem="gG6-FR-5bm" secondAttribute="top" id="77d-EE-dXA"/>
+                        <constraint firstItem="ySB-Cr-XUn" firstAttribute="leading" secondItem="odi-K2-JT1" secondAttribute="leading" constant="16" id="AnC-uB-4qb"/>
+                        <constraint firstItem="4Wt-bb-aNk" firstAttribute="top" secondItem="ySB-Cr-XUn" secondAttribute="bottom" constant="32" id="BvR-PX-TQ7"/>
+                        <constraint firstAttribute="trailing" secondItem="1r1-RC-yBX" secondAttribute="trailing" id="CFZ-Vp-hzm"/>
+                        <constraint firstItem="1r1-RC-yBX" firstAttribute="width" secondItem="gG6-FR-5bm" secondAttribute="width" id="Fx9-ZI-uHZ"/>
+                        <constraint firstAttribute="bottom" secondItem="4Wt-bb-aNk" secondAttribute="bottom" constant="330" id="NfK-cr-M7G"/>
+                        <constraint firstItem="4Wt-bb-aNk" firstAttribute="centerX" secondItem="gG6-FR-5bm" secondAttribute="centerX" id="Z6H-fz-r1a"/>
+                        <constraint firstItem="ySB-Cr-XUn" firstAttribute="top" secondItem="gG6-FR-5bm" secondAttribute="top" constant="60" id="vBz-kR-ueE"/>
+                        <constraint firstItem="4Wt-bb-aNk" firstAttribute="leading" secondItem="odi-K2-JT1" secondAttribute="leading" constant="16" id="vx3-5k-kQl"/>
+                        <constraint firstItem="1r1-RC-yBX" firstAttribute="leading" secondItem="gG6-FR-5bm" secondAttribute="leading" id="xNH-lp-kmr"/>
+                    </constraints>
+                    <viewLayoutGuide key="contentLayoutGuide" id="WyI-9U-hyh"/>
+                    <viewLayoutGuide key="frameLayoutGuide" id="odi-K2-JT1"/>
+                </scrollView>
+                <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TMj-e7-OJ3" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="784" width="361" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="ZYV-Ut-9xt"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Create password"/>
+                </button>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="gG6-FR-5bm" secondAttribute="trailing" id="2uc-eq-Tdj"/>
+                <constraint firstItem="gG6-FR-5bm" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="4cK-DU-ecS"/>
+                <constraint firstAttribute="bottom" secondItem="gG6-FR-5bm" secondAttribute="bottom" id="4zJ-BW-6Ng"/>
+                <constraint firstItem="TMj-e7-OJ3" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="CBF-di-pxJ"/>
+                <constraint firstAttribute="bottom" secondItem="TMj-e7-OJ3" secondAttribute="bottom" constant="20" id="HMo-rQ-i64"/>
+                <constraint firstItem="gG6-FR-5bm" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="WyS-qZ-ODx"/>
+                <constraint firstItem="TMj-e7-OJ3" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="aXP-PB-C3C"/>
+            </constraints>
+            <point key="canvasLocation" x="-5" y="42"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray2Color">
+            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

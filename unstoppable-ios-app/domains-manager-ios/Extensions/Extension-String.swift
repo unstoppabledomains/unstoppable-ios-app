@@ -754,6 +754,11 @@ extension String {
         static let logOut = "LOG_OUT"
         static let logOutConfirmationMessage = "LOG_OUT_CONFIRMATION_MESSAGE"
         
+        // Login with Email+Password
+        static let loginWithEmailTitle = "LOGIN_WITH_EMAIL_TITLE"
+        static let loginWithEmailSubtitle = "LOGIN_WITH_EMAIL_SUBTITLE"
+        static let password = "PASSWORD"
+
     }
     
     struct Segues {
