@@ -94,6 +94,7 @@ protocol PullUpViewServiceProtocol {
     func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
                                                 in viewController: UIViewController)
     func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async
+    func showLogoutConfirmationPullUp(in viewController: UIViewController) async throws
 }
 
 @MainActor
@@ -1365,6 +1366,32 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         }
     }
     
+    func showLogoutConfirmationPullUp(in viewController: UIViewController) async throws {
+        let selectionViewHeight: CGFloat = 368
+        var icon: UIImage?
+        if User.instance.getSettings().touchIdActivated {
+            icon = authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+        }
+        
+        let title: String = String.Constants.logOut.localized()
+        let buttonTitle: String = String.Constants.logOut.localized()
+        
+        try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .warningIconLarge,
+                                                                                     size: .small),
+                                                                         subtitle: .label(.text(String.Constants.logOutConfirmationMessage.localized())),
+                                                                         actionButton: .primaryDanger(content: .init(title: buttonTitle,
+                                                                                                                     icon: icon,
+                                                                                                                     analyticsName: .logOut,
+                                                                                                                     action: { completion(.success(Void())) })),
+                                                                         cancelButton: .cancelButton),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .logOutConfirmation, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
+        }
+    }
 }
 
 // MARK: - Private methods

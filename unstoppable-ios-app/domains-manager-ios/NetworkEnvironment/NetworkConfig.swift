@@ -75,18 +75,6 @@ struct NetworkConfig {
         return "https://polygonscan.com"
     }
     
-    static func domainPFPUrl(for domainName: String) -> String {
-        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
-        let metaHost: String
-        if isTestnetUsed {
-            metaHost = "staging.unstoppabledomains.com"
-        } else {
-            metaHost = "unstoppabledomains.com"
-        }
-        let url = "https://metadata." + metaHost + "/image-src/\(domainName)?withOverlay=false&mobileApp=true"
-        return url
-    }
-
     static func currencyIconUrl(for currency: CoinRecord) -> String {
         let url = "https://storage.googleapis.com/unstoppable-client-assets/images/icons/\(currency.ticker)/icon.svg"
         return url
@@ -100,6 +88,7 @@ struct NetworkConfig {
     static func coinsResolverURL(version: String) -> String {
         "https://" + migratedEndpoint + "/uns_resolver_keys.json?tag=\(version)"
     }
+    
 }
 
 

@@ -49,7 +49,6 @@ struct DomainDisplayInfo: Hashable, DomainEntity {
 // MARK: - Open methods
 extension DomainDisplayInfo {
     var qrCodeURL: URL? { String.Links.domainProfilePage(domainName: name).url }
-    var pfpAvatarURL: URL? { URL(string: NetworkConfig.domainPFPUrl(for: name)) }
     var pfpSource: DomainPFPInfo.PFPSource { domainPFPInfo?.source ?? .none }
     var isUpdatingRecords: Bool { state != .default }
     var isMinting: Bool { state == .minting }

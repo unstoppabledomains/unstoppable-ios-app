@@ -155,7 +155,7 @@ extension Analytics {
 extension Analytics {
     enum Button: String, Codable {
         case buyDomains, mintDomains, manageDomains, importFromTheWebsite
-        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock
+        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock, logOut
         case copyToClipboard, pasteFromClipboard
         case agreeCheckbox
         case termsOfUse, privacyPolicy
@@ -210,7 +210,7 @@ extension Analytics {
         case editProfile, manageDomain, shareLink, saveAsImage
         
         // Settings
-        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs
+        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsWebsiteAccount
         
         // Security settings
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
@@ -290,6 +290,7 @@ extension Analytics {
         case chooseCoinVersion
         case externalWalletConnectionHint
         case externalWalletFailedToSign
+        case logOutConfirmation
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

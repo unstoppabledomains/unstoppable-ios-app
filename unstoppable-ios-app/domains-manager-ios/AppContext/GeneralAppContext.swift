@@ -46,6 +46,7 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
 
     init() {
+        _ = FirebaseInteractionService.shared
         authentificationService = AuthentificationService()
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()

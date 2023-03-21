@@ -107,6 +107,7 @@ extension UIImage {
     static let refreshArrow20 = UIImage(named: "refreshArrow20")!
     static let refreshArrow24 = UIImage(named: "refreshArrow24")!
     static let mailIcon24 = UIImage(named: "mailIcon24")!
+    static let googleIcon24 = UIImage(named: "googleIcon24")!
     static let locationIcon24 = UIImage(named: "locationIcon24")!
     static let networkArrowIcon24 = UIImage(named: "networkArrowIcon24")!
     static let openQuoteIcon24 = UIImage(named: "openQuoteIcon24")!

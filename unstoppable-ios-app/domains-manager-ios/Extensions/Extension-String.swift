@@ -745,6 +745,15 @@ extension String {
         static let externalWalletFailedToSignPullUpTitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_TITLE"
         static let externalWalletFailedToSignPullUpSubtitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE"
 
+        
+        // Login
+        static let websiteAccount = "WEBSITE_ACCOUNT"
+        static let loginWithWebTitle = "LOGIN_WITH_WEB_TITLE"
+        static let loginWithWebSubtitle = "LOGIN_WITH_WEB_SUBTITLE"
+        static let loginWithProviderN = "LOGIN_WITH_PROVIDER_N"
+        static let logOut = "LOG_OUT"
+        static let logOutConfirmationMessage = "LOG_OUT_CONFIRMATION_MESSAGE"
+        
     }
     
     struct Segues {
