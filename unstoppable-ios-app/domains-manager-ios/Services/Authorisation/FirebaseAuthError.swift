@@ -14,6 +14,8 @@ enum FirebaseAuthError: Error {
     case failedToGetCodeFromCallbackURL
     case userCancelled
     
+    case failedToFetchFirebaseUserProfile
+    
     case failedToGetTokenExpiresData
     case firebaseUserNotAuthorisedInTheApp
 }

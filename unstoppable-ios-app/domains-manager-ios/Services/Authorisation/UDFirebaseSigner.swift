@@ -54,6 +54,10 @@ extension UDFirebaseSigner {
     func refreshIDTokenWith(refreshToken: String) async throws -> FirebaseTokenData {
         try await exchangeRefreshToken(refreshToken)
     }
+    
+    func getUserProfile(idToken: String) async throws -> FirebaseUser {
+        try await fetchUserProfile(idToken: idToken)
+    }
 }
 
 // MARK: - Private methods
@@ -98,6 +102,31 @@ private extension UDFirebaseSigner {
         let authResponse = try decoder.decode(FirebaseTokenData.self, from: data)
         
         return authResponse
+    }
+    
+    func fetchUserProfile(idToken: String) async throws -> FirebaseUser {
+        struct RequestBody: Codable {
+            let idToken: String
+        }
+        struct Response: Codable {
+            let users: [FirebaseUser]
+        }
+        
+        let requestBody = RequestBody(idToken: idToken)
+        let urlString = "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=\(googleAPIKey)"
+        
+        let requestURL = URL(string: urlString)!
+        var request = URLRequest(url: requestURL)
+        request.httpBody = try JSONEncoder().encode(requestBody)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let session = URLSession.shared
+        let (data, _) = try await session.data(for: request)
+        let response = try JSONDecoder().decode(Response.self, from: data)
+        guard let user = response.users.first else { throw FirebaseAuthError.failedToFetchFirebaseUserProfile }
+        
+        return user
     }
 }
 

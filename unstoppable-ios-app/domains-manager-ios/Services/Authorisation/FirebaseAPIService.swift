@@ -10,6 +10,7 @@ import UIKit
 final class FirebaseAPIService {
     
     static let shared = FirebaseAPIService()
+    private var firebaseUser: FirebaseUser?
     private var tokenData: FirebaseTokenData?
 }
 
@@ -28,6 +29,16 @@ extension FirebaseAPIService {
     func authorizeWithTwitter(in viewController: UIViewController) async throws {
         let tokenData = try await FirebaseAuthService.shared.authorizeWithTwitterCustomToken(in: viewController)
         self.tokenData = tokenData
+    }
+    
+    func getUserProfile() async throws -> FirebaseUser {
+        if let firebaseUser {
+            return firebaseUser
+        }
+        let idToken = try await getIdToken()
+        let firebaseUser = try await UDFirebaseSigner.shared.getUserProfile(idToken: idToken)
+        self.firebaseUser = firebaseUser
+        return firebaseUser
     }
     
     func getParkedDomains() async throws  {
@@ -62,21 +73,27 @@ private extension FirebaseAPIService {
     }
     
     func prepareFirebaseAPIRequest(_ apiRequest: APIRequest) async throws -> APIRequest {
-        guard let tokenData,
-              let expirationDate = tokenData.expirationDate,
-              expirationDate > Date() else {
-            try await refreshIdTokenIfPossible()
-            return try await prepareFirebaseAPIRequest(apiRequest)
-        }
+        let idToken = try await getIdToken()
          
         var headers = apiRequest.headers
-        headers["auth-firebase-id-token"] = tokenData.idToken
+        headers["auth-firebase-id-token"] = idToken
         let firebaseAPIRequest = APIRequest(url: apiRequest.url,
                                             headers: headers,
                                             body: apiRequest.body,
                                             method: apiRequest.method)
         
         return firebaseAPIRequest
+    }
+    
+    func getIdToken() async throws -> String {
+        guard let tokenData,
+              let expirationDate = tokenData.expirationDate,
+              expirationDate > Date() else {
+            try await refreshIdTokenIfPossible()
+            return try await getIdToken()
+        }
+        
+        return tokenData.idToken
     }
     
     func refreshIdTokenIfPossible() async throws {
@@ -98,11 +115,16 @@ private extension FirebaseAPIService {
                                           expirationDate: expirationDate,
                                           refreshToken: authResponse.refreshToken)
         } catch FirebaseAuthError.refreshTokenExpired {
-            FirebaseAuthService.shared.logout()
+            logout()
             throw FirebaseAuthError.refreshTokenExpired
         } catch {
             throw error
         }
+    }
+    
+    func logout() {
+        FirebaseAuthService.shared.logout()
+        firebaseUser = nil
     }
 }
 
@@ -111,4 +133,8 @@ struct FirebaseTokenData: Codable {
     let expiresIn: String
     var expirationDate: Date?
     let refreshToken: String
+}
+
+struct FirebaseUser: Codable {
+    var email: String?
 }
