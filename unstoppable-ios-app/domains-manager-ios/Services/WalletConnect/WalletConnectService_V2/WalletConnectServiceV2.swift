@@ -266,9 +266,10 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     func getChainIds(proposal: SessionV2.Proposal) throws -> [String] {
-        guard let namespace = proposal.requiredNamespaces[Self.supportedNamespace] else {
+        guard let namespace = proposal.requiredNamespaces[Self.supportedNamespace],
+              let chains = namespace.chains else {
         throw WalletConnectRequestError.invalidNamespaces }
-        let references = namespace.chains.map {$0.reference}
+        let references = chains.map { $0.reference }
         return references
     }
     
@@ -464,7 +465,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         proposal.requiredNamespaces.forEach {
             let caip2Namespace = $0.key
             let proposalNamespace = $0.value
-            let accounts = Set(proposalNamespace.chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
+            guard let chains = proposalNamespace.chains else { return }
+            let accounts = Set(chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
 
             let sessionNamespace = SessionNamespace(accounts: accounts,
                                                     methods: proposalNamespace.methods,
@@ -973,7 +975,8 @@ extension WalletConnectService {
             switch dAppInfoInternal {
             case .version1(let info): return [info.walletInfo?.chainId].compactMap({$0})
             case .version2(let info): guard let namespace = info.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else { return [] }
-                return namespace.chains.map {$0.reference}
+                guard let chains = namespace.chains else { return [] }
+                return chains.map {$0.reference}
                                         .compactMap({Int($0)})
             }
         }
@@ -1020,9 +1023,10 @@ extension AppMetadata {
 
 extension SessionV2.Proposal {
     func getChainIds() throws -> [String] {
-        guard let namespace = self.requiredNamespaces[WalletConnectServiceV2.supportedNamespace] else {
+        guard let namespace = self.requiredNamespaces[WalletConnectServiceV2.supportedNamespace],
+            let chains = namespace.chains else {
         throw WalletConnectRequestError.invalidNamespaces }
-        let references = namespace.chains.map {$0.reference}
+        let references = chains.map {$0.reference}
         return references
     }
 }
