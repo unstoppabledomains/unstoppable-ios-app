@@ -31,7 +31,7 @@ extension FirebaseAPIService {
     }
     
     func getParkedDomains() async throws  {
-        let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=1&perPage=50&status=all&searchTerm&sort=name")!
+        let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=1&perPage=50&status=all")!
         let request = APIRequest(url: url, body: "", method: .get)
         let data = try await makeFirebaseAPIDataRequest(request)
         print("Ha")
@@ -44,10 +44,6 @@ private extension FirebaseAPIService {
         "https://\(NetworkConfig.migratedEndpoint)/api/"
     }
 }
-
-
-//https://mobile-staging.api.ud-staging.com/api/user/domains?extension=All&page=1&perPage=50&status=all&searchTerm&sort=name - work
-//https://mobile-staging.api.ud-staging.com/api/user/domains?extension=All&page=1&perPage=50&searchTerm=&sort=name&status=all - dont
 
 // MARK: - Private methods
 private extension FirebaseAPIService {
@@ -86,28 +82,27 @@ private extension FirebaseAPIService {
     func refreshIdTokenIfPossible() async throws {
         if let refreshToken = FirebaseAuthService.shared.refreshToken {
             try await refreshIdTokenWith(refreshToken: refreshToken)
+        } else {
+            throw FirebaseAuthError.firebaseUserNotAuthorisedInTheApp
         }
-        
-        throw FirebaseAPIError.firebaseUserNotAuthorisedInTheApp
     }
     
     func refreshIdTokenWith(refreshToken: String) async throws {
-        let authResponse = try await UDFirebaseSigner.shared.refreshIDTokenWith(refreshToken: refreshToken)
-        guard let expiresIn = TimeInterval(authResponse.expiresIn) else { throw FirebaseAPIError.failedToGetTokenExpiresData }
-        
-        let expirationDate = Date().addingTimeInterval(expiresIn - 10) // Deduct 10 seconds to ensure token won't expire in between of making request
-        tokenData = FirebaseTokenData(idToken: authResponse.idToken,
-                                      expiresIn: authResponse.expiresIn,
-                                      expirationDate: expirationDate,
-                                      refreshToken: authResponse.refreshToken)
-    }
-}
-
-// MARK: - Private methods
-private extension FirebaseAPIService {
-    enum FirebaseAPIError: Error {
-        case failedToGetTokenExpiresData
-        case firebaseUserNotAuthorisedInTheApp
+        do {
+            let authResponse = try await UDFirebaseSigner.shared.refreshIDTokenWith(refreshToken: refreshToken)
+            guard let expiresIn = TimeInterval(authResponse.expiresIn) else { throw FirebaseAuthError.failedToGetTokenExpiresData }
+            
+            let expirationDate = Date().addingTimeInterval(expiresIn - 60) // Deduct 1 minute to ensure token won't expire in between of making request
+            tokenData = FirebaseTokenData(idToken: authResponse.idToken,
+                                          expiresIn: authResponse.expiresIn,
+                                          expirationDate: expirationDate,
+                                          refreshToken: authResponse.refreshToken)
+        } catch FirebaseAuthError.refreshTokenExpired {
+            FirebaseAuthService.shared.logout()
+            throw FirebaseAuthError.refreshTokenExpired
+        } catch {
+            throw error
+        }
     }
 }
 

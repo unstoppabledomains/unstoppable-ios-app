@@ -89,7 +89,10 @@ private extension UDFirebaseSigner {
         request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
         
         let session = URLSession.shared
-        let (data, _) = try await session.data(for: request)
+        let (data, response) = try await session.data(for: request)
+        if (response as? HTTPURLResponse)?.statusCode == 400 {
+            throw FirebaseAuthError.refreshTokenExpired
+        }
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
         let authResponse = try decoder.decode(FirebaseTokenData.self, from: data)

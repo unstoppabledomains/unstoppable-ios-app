@@ -58,6 +58,10 @@ extension FirebaseAuthService: FirebaseAuthServiceProtocol {
         saveAuthResponse(authResponse)
         return authResponse
     }
+    
+    func logout() {
+        refreshToken = nil 
+    }
 }
 
 // MARK: - Private methods

@@ -9,7 +9,11 @@ import Foundation
 
 enum FirebaseAuthError: Error {
     case unexpectedResponse
+    case refreshTokenExpired
     case failedToBuildURL
     case failedToGetCodeFromCallbackURL
     case userCancelled
+    
+    case failedToGetTokenExpiresData
+    case firebaseUserNotAuthorisedInTheApp
 }
