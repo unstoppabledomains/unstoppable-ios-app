@@ -92,7 +92,8 @@ extension FirebaseInteractionService {
         
         let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=1&perPage=50&status=all")!
         let request = APIRequest(url: url, body: "", method: .get)
-        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request, dateDecodingStrategy: .defaultDateDecodingStrategy())
+        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request,
+                                                                               dateDecodingStrategy: .defaultDateDecodingStrategy())
         
         return response.domains
     }
