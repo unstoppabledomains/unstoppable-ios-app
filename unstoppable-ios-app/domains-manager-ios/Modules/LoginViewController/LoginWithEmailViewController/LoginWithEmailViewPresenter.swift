@@ -32,7 +32,9 @@ extension LoginWithEmailViewPresenter: LoginWithEmailViewPresenterProtocol {
             
             do {
                 try await FirebaseInteractionService.shared.authorizeWith(email: email, password: password)
+                view?.cNavigationController?.popToRootViewController(animated: true)
             } catch {
+                Vibration.error.vibrate()
                 view?.setPasswordIsIncorrect()
             }
             
