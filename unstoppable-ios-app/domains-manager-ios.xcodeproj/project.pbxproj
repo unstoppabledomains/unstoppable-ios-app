@@ -11082,7 +11082,7 @@
 			repositoryURL = "https://github.com/WalletConnect/WalletConnectSwiftV2";
 			requirement = {
 				kind = exactVersion;
-				version = 1.3.2;
+				version = 1.5.1;
 			};
 		};
 		306B3D73253EE8EC00102A76 /* XCRemoteSwiftPackageReference "Web3.swift" */ = {
