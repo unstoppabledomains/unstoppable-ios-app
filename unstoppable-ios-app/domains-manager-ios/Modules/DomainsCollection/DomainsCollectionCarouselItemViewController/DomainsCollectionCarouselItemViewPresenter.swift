@@ -90,11 +90,9 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     
     @MainActor
     func didPullToRefresh() {
-        guard let walletWithInfo else { return }
-        
         Task {
             do {
-                try await appContext.walletNFTsService.refreshNFTsFor(walletAddress: walletWithInfo.wallet.address)
+                try await appContext.walletNFTsService.refreshNFTsFor(domainName: domain.name)
             } catch {
                 view?.endRefreshing()
             }
@@ -187,9 +185,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         let actions = await actionsForDomain()
         let connectedApps = await appContext.walletConnectServiceV2.getConnectedApps().filter({ $0.domain.isSameEntity(domain) })
         self.connectedApps = connectedApps
-        if self.nfts == nil,
-           let walletWithInfo {
-            let nfts = (try? await appContext.walletNFTsService.getImageNFTsFor(wallet: walletWithInfo.wallet)) ?? []
+        if self.nfts == nil {
+            let nfts = (try? await appContext.walletNFTsService.getImageNFTsFor(domainName: domain.name)) ?? []
             setNFTs(nfts)
         }
         await showDomainData(animated: animated, actions: actions)

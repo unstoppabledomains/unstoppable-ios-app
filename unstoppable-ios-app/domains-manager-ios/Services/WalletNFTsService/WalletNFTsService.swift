@@ -8,9 +8,9 @@
 import Foundation
 
 protocol WalletNFTsServiceProtocol {
-    func getImageNFTsFor(wallet: UDWallet) async throws -> [NFTModel]
+    func getImageNFTsFor(domainName: String) async throws -> [NFTModel]
     @discardableResult
-    func refreshNFTsFor(walletAddress: HexAddress) async throws -> [NFTModel]
+    func refreshNFTsFor(domainName: String) async throws -> [NFTModel]
     
     // Listeners
     func addListener(_ listener: WalletNFTsServiceListener)
@@ -18,7 +18,7 @@ protocol WalletNFTsServiceProtocol {
 }
 
 protocol WalletNFTsServiceListener: AnyObject {
-    func didRefreshNFTs(_ nfts: [NFTModel], for walletAddress: HexAddress)
+    func didRefreshNFTs(_ nfts: [NFTModel], for domainName: DomainName)
 }
 
 final class WalletNFTsServiceListenerHolder: Equatable {
@@ -52,27 +52,25 @@ final class WalletNFTsService {
 
 // MARK: - WalletNFTsServiceProtocol
 extension WalletNFTsService: WalletNFTsServiceProtocol {
-    func getImageNFTsFor(wallet: UDWallet) async throws -> [NFTModel] {
-        let walletAddress = wallet.address
-        
-        if let cache = await dataHolder.nftsCache[walletAddress] {
-            let isRefreshed = await dataHolder.isAddressRefreshed(walletAddress)
+    func getImageNFTsFor(domainName: String) async throws -> [NFTModel] {
+        if let cache = await dataHolder.nftsCache[domainName] {
+            let isRefreshed = await dataHolder.isAddressRefreshed(domainName)
             if !isRefreshed {
                 Task.detached(priority: .high) {
-                    try? await self.refreshNFTsFor(walletAddress: walletAddress)
+                    try? await self.refreshNFTsFor(domainName: domainName)
                 }
             }
             return cache
         }
         
-        let nfts = try await createTaskAndLoadAllNFTsFor(walletAddress: walletAddress)
+        let nfts = try await createTaskAndLoadAllNFTsFor(domainName: domainName)
         
         return nfts
     }
     
     @discardableResult
-    func refreshNFTsFor(walletAddress: HexAddress) async throws -> [NFTModel] {
-        try await self.createTaskAndLoadAllNFTsFor(walletAddress: walletAddress)
+    func refreshNFTsFor(domainName: String) async throws -> [NFTModel] {
+        try await self.createTaskAndLoadAllNFTsFor(domainName: domainName)
     }
     
     // Listeners
@@ -91,34 +89,34 @@ extension WalletNFTsService: WalletNFTsServiceProtocol {
 private extension WalletNFTsService {
     func loadCachedNFTs() {
         Task {
-            let nfts = WalletNFTsStorage.instance.getCachedNFTs()
-            let nftsByWallet = [HexAddress : [NFTModel]].init(grouping: nfts, by: { $0.address ?? "" })
+            let nfts = DomainNFTsStorage.instance.getCachedNFTs()
+            let nftsByDomain = [DomainName : [NFTModel]].init(grouping: nfts, by: { $0.address ?? "" })
         
-            for (address, nfts) in nftsByWallet {
-                await dataHolder.set(nfts: nfts, forWallet: address, isRefreshed: false)
+            for (domainName, nfts) in nftsByDomain {
+                await dataHolder.set(nfts: nfts, forDomain: domainName, isRefreshed: false)
             }
         }
     }
     
     @discardableResult
-    func createTaskAndLoadAllNFTsFor(walletAddress: HexAddress) async throws -> [NFTModel] {
-        if let task = await dataHolder.currentAsyncProcess[walletAddress] {
+    func createTaskAndLoadAllNFTsFor(domainName: HexAddress) async throws -> [NFTModel] {
+        if let task = await dataHolder.currentAsyncProcess[domainName] {
             return try await task.value
         }
         
         let task: Task<[NFTModel], Error> = Task.detached(priority: .high) {
-            try await self.loadAllNFTsFor(walletAddress: walletAddress)
+            try await self.loadAllNFTsFor(domainName: domainName)
         }
         
-        await dataHolder.addAsyncProcessTask(task, for: walletAddress)
+        await dataHolder.addAsyncProcessTask(task, for: domainName)
         let nfts = try await task.value
-        await dataHolder.addAsyncProcessTask(nil, for: walletAddress)
+        await dataHolder.addAsyncProcessTask(nil, for: domainName)
         
         return nfts
     }
   
-    func loadAllNFTsFor(walletAddress: HexAddress) async throws -> [NFTModel] {
-        let domains = await appContext.dataAggregatorService.getDomainItems().filter({ $0.isOwned(by: walletAddress) })
+    func loadAllNFTsFor(domainName: HexAddress) async throws -> [NFTModel] {
+        let domains = await appContext.dataAggregatorService.getDomainItems().filter({ $0.isOwned(by: domainName) })
         guard let domain = domains.first else { return [] }
         let domainName = domain.name
         
@@ -140,8 +138,8 @@ private extension WalletNFTsService {
         
         nfts = nfts.clearingInvalidNFTs()
         
-        await dataHolder.set(nfts: nfts, forWallet: walletAddress, isRefreshed: true)
-        await didRefreshNFTs(nfts, for: walletAddress)
+        await dataHolder.set(nfts: nfts, forDomain: domainName, isRefreshed: true)
+        await didRefreshNFTs(nfts, for: domainName)
         
         return nfts
     }
@@ -185,37 +183,37 @@ private extension WalletNFTsService {
         return response
     }
     
-    func didRefreshNFTs(_ nfts: [NFTModel], for walletAddress: HexAddress) async {
+    func didRefreshNFTs(_ nfts: [NFTModel], for domainName: DomainName) async {
         listenerHolders.forEach { holder in
-            holder.listener?.didRefreshNFTs(nfts, for: walletAddress)
+            holder.listener?.didRefreshNFTs(nfts, for: domainName)
         }
         
         let allNFTs = await dataHolder.getAllNFTs()
-        WalletNFTsStorage.instance.saveCachedNFTs(allNFTs)
+        DomainNFTsStorage.instance.saveCachedNFTs(allNFTs)
     }
 }
 
 // MARK: - DataHolder
 private extension WalletNFTsService {
     actor DataHolder {
-        var nftsCache: [HexAddress : [NFTModel]] = [:]
-        var refreshedAddresses: Set<HexAddress> = []
-        var currentAsyncProcess = [HexAddress : Task<[NFTModel], Error>]()
+        var nftsCache: [DomainName : [NFTModel]] = [:]
+        var refreshedAddresses: Set<DomainName> = []
+        var currentAsyncProcess = [DomainName : Task<[NFTModel], Error>]()
 
         func set(nfts: [NFTModel],
-                 forWallet walletAddress: HexAddress,
+                 forDomain domainName: DomainName,
                  isRefreshed: Bool) {
-            nftsCache[walletAddress] = nfts
+            nftsCache[domainName] = nfts
             if isRefreshed {
-                refreshedAddresses.insert(walletAddress)
+                refreshedAddresses.insert(domainName)
             }
         }
         
-        func isAddressRefreshed(_ address: HexAddress) -> Bool {
+        func isAddressRefreshed(_ address: DomainName) -> Bool {
             refreshedAddresses.contains(address)
         }
         
-        func addAsyncProcessTask(_ task: Task<[NFTModel], Error>?, for address: HexAddress) {
+        func addAsyncProcessTask(_ task: Task<[NFTModel], Error>?, for address: DomainName) {
             currentAsyncProcess[address] = task
         }
         

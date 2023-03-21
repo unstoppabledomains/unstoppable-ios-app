@@ -7,13 +7,13 @@
 
 import Foundation
 
-final class WalletNFTsStorage {
+final class DomainNFTsStorage {
     
-    private static let storageFileName = "wallet-nfts.data"
+    private static let storageFileName = "domain-nfts.data"
     
     private init() {}
-    static var instance = WalletNFTsStorage()
-    private var storage = SpecificStorage<[NFTModel]>(fileName: WalletNFTsStorage.storageFileName)
+    static var instance = DomainNFTsStorage()
+    private var storage = SpecificStorage<[NFTModel]>(fileName: DomainNFTsStorage.storageFileName)
     
     func getCachedNFTs() -> [NFTModel] {
         storage.retrieve() ?? []
