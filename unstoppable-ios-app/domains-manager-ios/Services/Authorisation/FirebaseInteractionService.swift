@@ -1,5 +1,5 @@
 //
-//  FirebaseAPIService.swift
+//  FirebaseInteractionService.swift
 //  domains-manager-ios
 //
 //  Created by Oleg Kuplin on 17.03.2023.
@@ -7,15 +7,21 @@
 
 import UIKit
 
-final class FirebaseAPIService {
+final class FirebaseInteractionService {
     
-    static let shared = FirebaseAPIService()
+    static let shared = FirebaseInteractionService()
     private var firebaseUser: FirebaseUser?
     private var tokenData: FirebaseTokenData?
+    
+    init() {
+        Task {
+            _ = try? await getUserProfile() // Refresh token and user profile 
+        }
+    }
 }
 
 // MARK: - Open methods
-extension FirebaseAPIService {
+extension FirebaseInteractionService {
     func authorizeWith(email: String, password: String) async throws {
         let tokenData = try await FirebaseAuthService.shared.authorizeWith(email: email, password: password)
         self.tokenData = tokenData
@@ -41,23 +47,28 @@ extension FirebaseAPIService {
         return firebaseUser
     }
     
-    func getParkedDomains() async throws  {
+    func getParkedDomains() async throws -> [FirebaseDomain] {
+        struct Response: Codable {
+            let domains: [FirebaseDomain]
+        }
+        
         let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=1&perPage=50&status=all")!
         let request = APIRequest(url: url, body: "", method: .get)
-        let data = try await makeFirebaseAPIDataRequest(request)
-        print("Ha")
+        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request, dateDecodingStrategy: .defaultDateDecodingStrategy())
+        
+        return response.domains
     }
 }
 
 // MARK: - Private methods
-private extension FirebaseAPIService {
+private extension FirebaseInteractionService {
     func baseAPIURL() -> String {
         "https://\(NetworkConfig.migratedEndpoint)/api/"
     }
 }
 
 // MARK: - Private methods
-private extension FirebaseAPIService {
+private extension FirebaseInteractionService {
     func makeFirebaseAPIDataRequest(_ apiRequest: APIRequest) async throws -> Data {
         do {
             let firebaseAPIRequest = try await prepareFirebaseAPIRequest(apiRequest)
@@ -67,9 +78,13 @@ private extension FirebaseAPIService {
         }
     }
     
-    func makeFirebaseDecodableAPIDataRequest<T: Decodable>(_ apiRequest: APIRequest) async throws -> T {
+    func makeFirebaseDecodableAPIDataRequest<T: Decodable>(_ apiRequest: APIRequest,
+                                                           using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                                           dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
         let firebaseAPIRequest = try await prepareFirebaseAPIRequest(apiRequest)
-        return try await NetworkService().makeDecodableAPIRequest(firebaseAPIRequest)
+        return try await NetworkService().makeDecodableAPIRequest(firebaseAPIRequest,
+                                                                  using: keyDecodingStrategy,
+                                                                  dateDecodingStrategy: dateDecodingStrategy)
     }
     
     func prepareFirebaseAPIRequest(_ apiRequest: APIRequest) async throws -> APIRequest {
@@ -138,3 +153,19 @@ struct FirebaseTokenData: Codable {
 struct FirebaseUser: Codable {
     var email: String?
 }
+
+struct FirebaseDomain: Codable {
+    var claimStatus: String
+    var internalCustody: Bool
+    var parkingExpiresAt: Date?
+    var domainId: Int
+    var blockchain: String
+    var projectedBlockchain: String
+    var geminiCustody: String?
+    var geminiCustodyExpiresAt: Date?
+    var name: String
+    var ownerAddress: String
+    var logicalOwnerAddress: String
+    var type: String
+}
+

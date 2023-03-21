@@ -65,7 +65,7 @@ private extension LoginViewPresenter {
             guard let view else { return }
     
             do {
-                try await FirebaseAPIService.shared.authorizeWithGoogle(in: view)
+                try await FirebaseInteractionService.shared.authorizeWithGoogle(in: view)
             } catch {
                 
             }

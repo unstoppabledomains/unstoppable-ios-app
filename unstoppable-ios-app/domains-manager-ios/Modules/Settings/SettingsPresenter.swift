@@ -211,7 +211,7 @@ private extension SettingsPresenter {
         if FirebaseAuthService.shared.isAuthorised {
             Task {
                 do {
-                    try await FirebaseAPIService.shared.getParkedDomains()
+                    try await FirebaseInteractionService.shared.getParkedDomains()
                 } catch { }
             }
         } else {
