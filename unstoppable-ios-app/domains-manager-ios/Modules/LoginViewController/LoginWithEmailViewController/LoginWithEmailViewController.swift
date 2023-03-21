@@ -137,6 +137,14 @@ extension LoginWithEmailViewController: UDTextFieldV2Delegate {
     }
 }
 
+
+// MARK: - UIScrollViewDelegate
+extension LoginWithEmailViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        cNavigationController?.underlyingScrollViewDidScroll(scrollView)
+    }
+}
+
 // MARK: - Private functions
 private extension LoginWithEmailViewController {
     @IBAction func confirmButtonPressed(_ sender: UIButton) {
@@ -152,6 +160,7 @@ private extension LoginWithEmailViewController {
         setupUI()
         setupTextFields()
         setupLabels()
+        hostScrollView.delegate = self
     }
     
     func setupTextFields() {
