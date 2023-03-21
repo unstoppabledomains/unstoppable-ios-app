@@ -139,11 +139,11 @@ extension LoginViewController {
         var icon: UIImage {
             switch self {
             case .email:
-                return .vaultIcon
+                return .mailIcon24
             case .google:
-                return UIImage(named: "settingsIconLock")!
+                return .googleIcon24
             case .twitter:
-                return UIImage(named: "settingsIconTwitter")!
+                return .twitterIcon24
             }
         }
     }
