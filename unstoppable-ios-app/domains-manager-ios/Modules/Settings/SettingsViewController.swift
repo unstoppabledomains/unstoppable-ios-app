@@ -35,6 +35,7 @@ final class SettingsViewController: BaseViewController {
 
         configureCollectionView()
         setup()
+        presenter.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -199,7 +200,7 @@ extension SettingsViewController {
         case homeScreen(_ value: String), wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
         case rateUs, learn, twitter, support, legal
         case testnet(isOn: Bool)
-        case websiteAccount
+        case websiteAccount(userEmail: String?)
         
         var title: String {
             switch self {
@@ -232,8 +233,8 @@ extension SettingsViewController {
             switch self {
             case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen:
                 return nil
-            case .websiteAccount:
-                return "Email, Google or Twitter"
+            case .websiteAccount(let userEmail):
+                return userEmail ?? "Email, Google or Twitter"
             }
         }
         

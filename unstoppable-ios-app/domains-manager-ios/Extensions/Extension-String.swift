@@ -751,6 +751,8 @@ extension String {
         static let loginWithWebTitle = "LOGIN_WITH_WEB_TITLE"
         static let loginWithWebSubtitle = "LOGIN_WITH_WEB_SUBTITLE"
         static let loginWithProviderN = "LOGIN_WITH_PROVIDER_N"
+        static let logOut = "LOG_OUT"
+        static let logOutConfirmationMessage = "LOG_OUT_CONFIRMATION_MESSAGE"
         
     }
     

@@ -7,16 +7,38 @@
 
 import UIKit
 
+
+protocol FirebaseInteractionServiceListener: AnyObject {
+    func firebaseUserUpdated(firebaseUser: FirebaseUser?)
+}
+
+final class FirebaseInteractionServiceListenerHolder: Equatable {
+    
+    weak var listener: FirebaseInteractionServiceListener?
+    
+    init(listener: FirebaseInteractionServiceListener) {
+        self.listener = listener
+    }
+    
+    static func == (lhs: FirebaseInteractionServiceListenerHolder, rhs: FirebaseInteractionServiceListenerHolder) -> Bool {
+        guard let lhsListener = lhs.listener,
+              let rhsListener = rhs.listener else { return false }
+        
+        return lhsListener === rhsListener
+    }
+    
+}
+
+
 final class FirebaseInteractionService {
     
     static let shared = FirebaseInteractionService()
     private var firebaseUser: FirebaseUser?
     private var tokenData: FirebaseTokenData?
-    
+    private var listenerHolders: [FirebaseInteractionServiceListenerHolder] = []
+
     init() {
-        Task {
-            _ = try? await getUserProfile() // Refresh token and user profile 
-        }
+        refreshUserProfileAsync()
     }
 }
 
@@ -24,17 +46,17 @@ final class FirebaseInteractionService {
 extension FirebaseInteractionService {
     func authorizeWith(email: String, password: String) async throws {
         let tokenData = try await FirebaseAuthService.shared.authorizeWith(email: email, password: password)
-        self.tokenData = tokenData
+        setTokenData(tokenData)
     }
     
     func authorizeWithGoogle(in viewController: UIViewController) async throws {
         let tokenData = try await FirebaseAuthService.shared.authorizeWithGoogleSignInIdToken(in: viewController)
-        self.tokenData = tokenData
+        setTokenData(tokenData)
     }
     
     func authorizeWithTwitter(in viewController: UIViewController) async throws {
         let tokenData = try await FirebaseAuthService.shared.authorizeWithTwitterCustomToken(in: viewController)
-        self.tokenData = tokenData
+        setTokenData(tokenData)
     }
     
     func getUserProfile() async throws -> FirebaseUser {
@@ -43,7 +65,7 @@ extension FirebaseInteractionService {
         }
         let idToken = try await getIdToken()
         let firebaseUser = try await UDFirebaseSigner.shared.getUserProfile(idToken: idToken)
-        self.firebaseUser = firebaseUser
+        setFirebaseUser(firebaseUser)
         return firebaseUser
     }
     
@@ -58,12 +80,50 @@ extension FirebaseInteractionService {
         
         return response.domains
     }
+    
+    func logout() {
+        FirebaseAuthService.shared.logout()
+        setFirebaseUser(nil)
+        setTokenData(nil)
+    }
+    
+    // Listeners
+    func addListener(_ listener: FirebaseInteractionServiceListener) {
+        if !listenerHolders.contains(where: { $0.listener === listener }) {
+            listenerHolders.append(.init(listener: listener))
+        }
+    }
+    
+    func removeListener(_ listener: FirebaseInteractionServiceListener) {
+        listenerHolders.removeAll(where: { $0.listener == nil || $0.listener === listener })
+    }
 }
 
 // MARK: - Private methods
 private extension FirebaseInteractionService {
     func baseAPIURL() -> String {
         "https://\(NetworkConfig.migratedEndpoint)/api/"
+    }
+    
+    func setFirebaseUser(_ firebaseUser: FirebaseUser?) {
+        self.firebaseUser = firebaseUser
+        listenerHolders.forEach { holder in
+            holder.listener?.firebaseUserUpdated(firebaseUser: firebaseUser)
+        }
+    }
+    
+    func setTokenData(_ tokenData: FirebaseTokenData?) {
+        if tokenData != nil,
+           self.tokenData == nil {
+            refreshUserProfileAsync()
+        }
+        self.tokenData = tokenData
+    }
+    
+    func refreshUserProfileAsync() {
+        Task {
+            _ = try? await getUserProfile() 
+        }
     }
 }
 
@@ -135,11 +195,6 @@ private extension FirebaseInteractionService {
         } catch {
             throw error
         }
-    }
-    
-    func logout() {
-        FirebaseAuthService.shared.logout()
-        firebaseUser = nil
     }
 }
 

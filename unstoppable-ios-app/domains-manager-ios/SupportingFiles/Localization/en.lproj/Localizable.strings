@@ -682,3 +682,5 @@
 "LOGIN_WITH_WEB_TITLE" = "Login with your website account";
 "LOGIN_WITH_WEB_SUBTITLE" = "Sync your domains and wallets with the Unstoppable app.";
 "LOGIN_WITH_PROVIDER_N" = "Continue with %@";
+"LOG_OUT" = "Log out";
+"LOG_OUT_CONFIRMATION_MESSAGE" = "You will no longer be able to manage parked domains.";

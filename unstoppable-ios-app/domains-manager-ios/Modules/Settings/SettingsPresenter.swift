@@ -17,6 +17,7 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     
     private let notificationsService: NotificationsServiceProtocol
     private let dataAggregatorService: DataAggregatorServiceProtocol
+    private var firebaseUser: FirebaseUser?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     
     init(view: SettingsViewProtocol,
@@ -26,14 +27,22 @@ final class SettingsPresenter: ViewAnalyticsLogger {
         self.notificationsService = notificationsService
         self.dataAggregatorService = dataAggregatorService
         dataAggregatorService.addListener(self)
+        FirebaseInteractionService.shared.addListener(self)
     }
     
 }
 
 // MARK: - SettingsPresenterProtocol
 extension SettingsPresenter: SettingsPresenterProtocol {
+    func viewDidLoad() {
+        Task {
+            firebaseUser = try? await FirebaseInteractionService.shared.getUserProfile()
+            showSettingsAsync()
+        }        
+    }
+    
     func viewWillAppear() {
-        showSettings()
+        showSettingsAsync()
     }
     
     func didSelectMenuItem(_ menuItem: SettingsViewController.SettingsMenuItem) {
@@ -78,7 +87,7 @@ extension SettingsPresenter: DataAggregatorServiceListener {
             case .success(let result):
                 switch result {
                 case .walletsListUpdated, .domainsUpdated, .primaryDomainChanged:
-                    showSettings()
+                    showSettingsAsync()
                 case .domainsPFPUpdated:
                     return
                 }
@@ -89,9 +98,17 @@ extension SettingsPresenter: DataAggregatorServiceListener {
     }
 }
 
+// MARK: - FirebaseInteractionServiceListener
+extension SettingsPresenter: FirebaseInteractionServiceListener {
+    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
+        self.firebaseUser = firebaseUser
+        showSettingsAsync()
+    }
+}
+
 // MARK: - Private methods
 private extension SettingsPresenter {
-    func showSettings() {
+    func showSettingsAsync() {
         Task {
             let wallets = await dataAggregatorService.getWalletsWithInfo()
             var snapshot = NSDiffableDataSourceSnapshot<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>()
@@ -110,7 +127,7 @@ private extension SettingsPresenter {
             #if TESTFLIGHT
             snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
             #endif
-            snapshot.appendItems([.websiteAccount])
+            snapshot.appendItems([.websiteAccount(userEmail: firebaseUser?.email)])
 
             
             snapshot.appendSections([.main(2)])
@@ -179,7 +196,7 @@ private extension SettingsPresenter {
         appContext.pullUpViewService.showAppearanceStyleSelectionPullUp(in: view, selectedStyle: selectedStyle) { [weak self] newStyle in
             self?.logAnalytic(event: .didChangeTheme, parameters: [.theme: newStyle.analyticsName])
             SceneDelegate.shared?.setAppearanceStyle(newStyle)
-            self?.showSettings()
+            self?.showSettingsAsync()
         }
     }
     
@@ -211,7 +228,10 @@ private extension SettingsPresenter {
         if FirebaseAuthService.shared.isAuthorised {
             Task {
                 do {
-                    try await FirebaseInteractionService.shared.getParkedDomains()
+                    try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
+                    await view.dismissPullUpMenu()
+                    try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+                    FirebaseInteractionService.shared.logout()
                 } catch { }
             }
         } else {
