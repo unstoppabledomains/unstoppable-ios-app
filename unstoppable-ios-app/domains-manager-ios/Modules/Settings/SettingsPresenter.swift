@@ -173,6 +173,7 @@ private extension SettingsPresenter {
         User.instance.update(settings: settings)
         Storage.instance.cleanAllCache()
         StripeService.shared.setup()
+        FirebaseInteractionService.shared.logout()
         updateAppVersion()
         Task { await dataAggregatorService.aggregateData() }
         notificationsService.updateTokenSubscriptions()
