@@ -168,8 +168,8 @@ extension DomainsCollectionCarouselItemViewPresenter: WalletConnectServiceConnec
 
 // MARK: - WalletNFTsServiceListener
 extension DomainsCollectionCarouselItemViewPresenter: WalletNFTsServiceListener {
-    func didRefreshNFTs(_ nfts: [NFTModel], for walletAddress: HexAddress) {
-        if walletWithInfo?.wallet.address == walletAddress {
+    func didRefreshNFTs(_ nfts: [NFTModel], for domainName: DomainName) {
+        if domain.name == domainName {
             setNFTs(nfts)
             Task {
                 await showDomainDataWithActions(animated: true)
