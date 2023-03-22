@@ -239,5 +239,21 @@ struct FirebaseDomain: Codable {
     var ownerAddress: String
     var logicalOwnerAddress: String
     var type: String
+    
+    var status: ParkingStatus {
+        .claimed
+//        if internalCustody {
+//
+//        } else {
+//
+//        }
+    }
+    
+    enum ParkingStatus {
+        case claimed
+        case freeParking // Domain purchased before Parking feature launched
+        case parked // Parking purchased and active
+        case waitingForParkingOrClaim // Domain purchased after Parking feature launched and either not parked or not claimed
+    }
 }
 
