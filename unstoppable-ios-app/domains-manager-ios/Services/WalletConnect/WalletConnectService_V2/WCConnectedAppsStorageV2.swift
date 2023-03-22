@@ -58,7 +58,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
     struct ConnectedApp: Codable, Equatable, Hashable, CustomStringConvertible {
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.sessionProxy.peer.url == rhs.sessionProxy.peer.url
+            lhs.sessionProxy == rhs.sessionProxy
         }
         
         func hash(into hasher: inout Hasher) {
