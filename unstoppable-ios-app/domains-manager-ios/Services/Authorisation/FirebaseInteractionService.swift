@@ -90,7 +90,7 @@ extension FirebaseInteractionService {
             let domains: [FirebaseDomain]
         }
         
-        let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=1&perPage=50&status=all")!
+        let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=1&perPage=500&status=unclaimed")!
         let request = APIRequest(url: url, body: "", method: .get)
         let response: Response = try await makeFirebaseDecodableAPIDataRequest(request,
                                                                                dateDecodingStrategy: .defaultDateDecodingStrategy())
@@ -229,6 +229,7 @@ struct FirebaseUser: Codable {
 struct FirebaseDomain: Codable {
     var claimStatus: String
     var internalCustody: Bool
+    var purchasedAt: Date?
     var parkingExpiresAt: Date?
     var domainId: Int
     var blockchain: String
@@ -241,19 +242,28 @@ struct FirebaseDomain: Codable {
     var type: String
     
     var status: ParkingStatus {
-        .claimed
-//        if internalCustody {
-//
-//        } else {
-//
-//        }
+        guard internalCustody else { return .claimed }
+        
+        if let parkingExpiresAt {
+            return .parked(expiresDate: parkingExpiresAt)
+        }
+        
+        if let purchasedAt,
+           purchasedAt >= Constants.parkingBetaLaunchDate {
+            return .waitingForParkingOrClaim
+        }
+        return .freeParking
     }
     
     enum ParkingStatus {
         case claimed
         case freeParking // Domain purchased before Parking feature launched
-        case parked // Parking purchased and active
+        case parked(expiresDate: Date) // Parking purchased and active
         case waitingForParkingOrClaim // Domain purchased after Parking feature launched and either not parked or not claimed
+    }
+    
+    func claimDescription() -> String {
+        "claimStatus: \(claimStatus). internalCustody: \(internalCustody). parkingStatus: \(status)"
     }
 }
 
