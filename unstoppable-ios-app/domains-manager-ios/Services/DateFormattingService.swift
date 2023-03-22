@@ -10,6 +10,7 @@ import Foundation
 protocol DateFormattingServiceProtocol {
     func formatICloudBackUpDate(_ date: Date) -> String
     func formatRecentActivityDate(_ date: Date) -> String
+    func formatParkingExpiresDate(_ date: Date) -> String
 }
 
 final class DateFormattingService {
@@ -18,6 +19,7 @@ final class DateFormattingService {
     
     private let iCloudBackUpDateFormatter = DateFormatter()
     private let recentActivityDateFormatter = DateFormatter()
+    private let parkingExpiresDateFormatter = DateFormatter()
 
     private init() {
         setup()
@@ -34,6 +36,10 @@ extension DateFormattingService: DateFormattingServiceProtocol {
     func formatRecentActivityDate(_ date: Date) -> String {
         recentActivityDateFormatter.string(from: date)
     }
+    
+    func formatParkingExpiresDate(_ date: Date) -> String {
+        parkingExpiresDateFormatter.string(from: date)
+    }
 }
 
 // MARK: - Setup methods
@@ -41,6 +47,7 @@ private extension DateFormattingService {
     func setup() {
         setupICloudBackUpDateFormatter()
         setupRecentActivityDateFormatter()
+        setupParkingExpiresDateFormatter()
     }
     
     func setupICloudBackUpDateFormatter() {
@@ -50,5 +57,10 @@ private extension DateFormattingService {
     
     func setupRecentActivityDateFormatter() {
         recentActivityDateFormatter.dateFormat = "EEEE d, HH:mm"
+    }
+    
+    func setupParkingExpiresDateFormatter() {
+        iCloudBackUpDateFormatter.dateStyle = .medium
+        iCloudBackUpDateFormatter.timeStyle = .none
     }
 }

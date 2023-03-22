@@ -689,3 +689,5 @@
 "LOGIN_WITH_EMAIL_TITLE" = "Enter your credentials";
 "LOGIN_WITH_EMAIL_SUBTITLE" = "Enter your UD email and password to obtain all of your purchased & unclaimed domains.";
 "PASSWORD" = "Password";
+"PARKED" = "Parked";
+"PARKING_TRIAL_EXPIRES_ON" = "Trial expires on %@";

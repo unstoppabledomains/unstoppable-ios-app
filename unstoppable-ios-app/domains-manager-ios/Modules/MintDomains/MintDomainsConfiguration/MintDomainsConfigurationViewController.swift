@@ -31,7 +31,9 @@ final class MintDomainsConfigurationViewController: BaseViewController {
     @IBOutlet private weak var mintDomainsButton: MainButton!
     @IBOutlet private weak var mintDomainsWarningIndicator: UIImageView!
 
-    var cellIdentifiers: [UICollectionViewCell.Type] { [MintDomainsConfigurationSelectionCell.self, MintDomainsConfigurationCardCell.self, CollectionViewHeaderCell.self] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [MintDomainsConfigurationSelectionCell.self,
+                                                        MintDomainsConfigurationCardCell.self,
+                                                        CollectionViewHeaderCell.self] }
     var presenter: MintDomainsConfigurationViewPresenterProtocol!
     private var dataSource: MintDomainsConfigurationDataSource!
     override var prefersLargeTitles: Bool { true }

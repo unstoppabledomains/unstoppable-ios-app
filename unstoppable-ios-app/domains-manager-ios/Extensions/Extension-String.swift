@@ -758,7 +758,8 @@ extension String {
         static let loginWithEmailTitle = "LOGIN_WITH_EMAIL_TITLE"
         static let loginWithEmailSubtitle = "LOGIN_WITH_EMAIL_SUBTITLE"
         static let password = "PASSWORD"
-
+        static let parked = "PARKED"
+        static let parkingExpiresOn = "PARKING_TRIAL_EXPIRES_ON"
     }
     
     struct Segues {
