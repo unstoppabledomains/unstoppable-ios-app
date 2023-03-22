@@ -86,16 +86,19 @@ extension FirebaseInteractionService {
     }
     
     func getParkedDomains() async throws -> [FirebaseDomain] {
-        struct Response: Codable {
-            let domains: [FirebaseDomain]
+        var result = [FirebaseDomain]()
+        var isThereDomainsToLoad = true
+        var page = 1
+        let perPage = 200
+        
+        while isThereDomainsToLoad {
+            let domains = try await loadParkedDomainsFor(page: page, perPage: perPage)
+            result += domains
+            page += 1
+            isThereDomainsToLoad = domains.count >= perPage
         }
         
-        let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=1&perPage=500&status=unclaimed")!
-        let request = APIRequest(url: url, body: "", method: .get)
-        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request,
-                                                                               dateDecodingStrategy: .defaultDateDecodingStrategy())
-        
-        return response.domains
+        return result
     }
     
     func logout() {
@@ -141,6 +144,19 @@ private extension FirebaseInteractionService {
         Task {
             _ = try? await getUserProfile()
         }
+    }
+    
+    func loadParkedDomainsFor(page: Int, perPage: Int) async throws -> [FirebaseDomain] {
+        struct Response: Codable {
+            let domains: [FirebaseDomain]
+        }
+        
+        let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=\(page)&perPage=\(perPage)&status=unclaimed")!
+        let request = APIRequest(url: url, body: "", method: .get)
+        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request,
+                                                                               dateDecodingStrategy: .defaultDateDecodingStrategy())
+        
+        return response.domains
     }
 }
 
@@ -263,7 +279,7 @@ struct FirebaseDomain: Codable {
     }
     
     func claimDescription() -> String {
-        "claimStatus: \(claimStatus). internalCustody: \(internalCustody). parkingStatus: \(status)"
+        "Name: \(name). claimStatus: \(claimStatus). internalCustody: \(internalCustody). parkingStatus: \(status)"
     }
 }
 

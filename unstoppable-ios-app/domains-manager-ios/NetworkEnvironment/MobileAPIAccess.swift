@@ -351,14 +351,14 @@ protocol PaginatedFetchable {
     
     init(jsonResponse: D)
     static func convert(_ json: Self.J) -> [Self]
-
+    
     static func createRequestForPaginated(for originItems: [O],
-                               page: Int,
-                               perPage: Int) throws -> APIRequest
+                                          page: Int,
+                                          perPage: Int) throws -> APIRequest
     static func fetchPaginatedData_Blocking(for originItems: [O],
                                             page: Int,
-                                            perPage: Int) async throws -> [Self] 
-   
+                                            perPage: Int) async throws -> [Self]
+    
 }
 
 extension PaginatedFetchable {
