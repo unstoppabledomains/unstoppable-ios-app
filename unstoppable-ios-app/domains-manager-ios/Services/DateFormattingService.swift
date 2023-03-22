@@ -60,7 +60,7 @@ private extension DateFormattingService {
     }
     
     func setupParkingExpiresDateFormatter() {
-        iCloudBackUpDateFormatter.dateStyle = .medium
-        iCloudBackUpDateFormatter.timeStyle = .none
+        parkingExpiresDateFormatter.dateStyle = .medium
+        parkingExpiresDateFormatter.timeStyle = .none
     }
 }

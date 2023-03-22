@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FirebaseDomainDisplayInfo: Codable {
+struct FirebaseDomainDisplayInfo: Codable, Hashable {
     
     var claimStatus: String
     var internalCustody: Bool
@@ -17,8 +17,17 @@ struct FirebaseDomainDisplayInfo: Codable {
     var name: String
     var ownerAddress: String
 
+    init(firebaseDomain: FirebaseDomain) {
+        self.claimStatus = firebaseDomain.claimStatus
+        self.internalCustody = firebaseDomain.internalCustody
+        self.purchasedAt = firebaseDomain.purchasedAt
+        self.parkingExpiresAt = firebaseDomain.parkingExpiresAt
+        self.blockchain = firebaseDomain.blockchain
+        self.name = firebaseDomain.name
+        self.ownerAddress = firebaseDomain.ownerAddress
+    }
     
-    var status: DomainParkingStatus {
+    var parkingStatus: DomainParkingStatus {
         guard internalCustody else { return .claimed }
         
         if let parkingExpiresAt {
@@ -33,7 +42,7 @@ struct FirebaseDomainDisplayInfo: Codable {
     }
     
     func claimDescription() -> String {
-        "Name: \(name). claimStatus: \(claimStatus). internalCustody: \(internalCustody). parkingStatus: \(status)"
+        "Name: \(name). claimStatus: \(claimStatus). internalCustody: \(internalCustody). parkingStatus: \(parkingStatus)"
     }
 }
 

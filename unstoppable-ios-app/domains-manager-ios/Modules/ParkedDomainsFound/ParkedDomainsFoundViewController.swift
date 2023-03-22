@@ -20,9 +20,10 @@ final class ParkedDomainsFoundViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var cellIdentifiers: [UICollectionViewCell.Type] { [] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [ParkedDomainCell.self] }
     var presenter: ParkedDomainsFoundViewPresenterProtocol!
     private var dataSource: ParkedDomainsFoundDataSource!
+    override var analyticsName: Analytics.ViewName { .parkedDomainsList }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +46,10 @@ extension ParkedDomainsFoundViewController: ParkedDomainsFoundViewProtocol {
 extension ParkedDomainsFoundViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
-        
+        switch item {
+        case .parkedDomain(let domain):
+            logAnalytic(event: .domainPressed, parameters: [.domainName: domain.name])
+        }
         presenter.didSelectItem(item)
     }
 }
@@ -71,7 +75,11 @@ private extension ParkedDomainsFoundViewController {
     func configureDataSource() {
         dataSource = ParkedDomainsFoundDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
             switch item {
-            
+            case .parkedDomain(let domain):
+                let cell = collectionView.dequeueCellOfType(ParkedDomainCell.self, forIndexPath: indexPath)
+                
+                cell.setWith(domain: domain)
+                return cell
             }
         })
     }
@@ -112,7 +120,7 @@ extension ParkedDomainsFoundViewController {
     }
     
     enum Item: Hashable {
-        
+        case parkedDomain(_ domain: FirebaseDomainDisplayInfo)
     }
     
 }

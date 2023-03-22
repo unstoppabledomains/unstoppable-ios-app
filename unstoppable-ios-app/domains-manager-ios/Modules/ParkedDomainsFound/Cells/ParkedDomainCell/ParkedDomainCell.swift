@@ -24,12 +24,48 @@ final class ParkedDomainCell: BaseListCollectionViewCell {
 // MARK: - Open methods
 extension ParkedDomainCell {
     func setWith(domain: FirebaseDomainDisplayInfo) {
+        setDomainName(domain.name)
+        Task {
+            let image = await appContext.imageLoadingService.loadImage(from: .initials(domain.name,
+                                                                                       size: .default,
+                                                                                       style: .accent),
+                                                                       downsampleDescription: nil)
+            imageView.image = image
+        }
+
+        let parkingStatus = domain.parkingStatus
+        guard let icon = iconForParkingStatus(parkingStatus),
+              let iconTint = iconTintColorForParkingStatus(parkingStatus),
+              let status = statusForParkingStatus(parkingStatus) else {
+            Debugger.printFailure("Failed to get required information for parking domain", critical: true)
+            setStatus("", icon: nil, tintColor: .foregroundSecondary)
+            return
+        }
         
+        setStatus(status, icon: icon, tintColor: iconTint)
     }
 }
 
 // MARK: - Private methods
-private extension FirebaseDomainDisplayInfo {
+private extension ParkedDomainCell {
+    func setDomainName(_ name: String) {
+        nameLabel.setAttributedTextWith(text: name,
+                                        font: .currentFont(withSize: 16, weight: .medium),
+                                        textColor: .foregroundDefault,
+                                        lineBreakMode: .byTruncatingTail)
+    }
+    
+    func setStatus(_ status: String, icon: UIImage?, tintColor: UIColor) {
+        statusLabel.setAttributedTextWith(text: status,
+                                        font: .currentFont(withSize: 14, weight: .medium),
+                                        textColor: tintColor,
+                                        lineBreakMode: .byTruncatingTail)
+
+        statusIcon.image = icon
+        statusIcon.tintColor = tintColor
+    }
+    
+    
     func iconForParkingStatus(_ parkingStatus: DomainParkingStatus) -> UIImage? {
         switch parkingStatus {
         case .claimed:
@@ -56,7 +92,7 @@ private extension FirebaseDomainDisplayInfo {
         }
     }
     
-    func subtitleParkingStatus(_ parkingStatus: DomainParkingStatus) -> String? {
+    func statusForParkingStatus(_ parkingStatus: DomainParkingStatus) -> String? {
         switch parkingStatus {
         case .claimed:
             return nil

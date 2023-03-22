@@ -14,10 +14,10 @@ protocol ParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
 final class ParkedDomainsFoundViewPresenter {
     
     private weak var view: ParkedDomainsFoundViewProtocol?
-    private let domains: [FirebaseDomain]
+    private let domains: [FirebaseDomainDisplayInfo]
     
     init(view: ParkedDomainsFoundViewProtocol,
-         domains: [FirebaseDomain]) {
+         domains: [FirebaseDomainDisplayInfo]) {
         self.view = view
         self.domains = domains
     }
@@ -29,8 +29,13 @@ extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtoc
         showData()
     }
     
+    @MainActor
     func didSelectItem(_ item: ParkedDomainsFoundViewController.Item) {
-        
+        UDVibration.buttonTap.vibrate()
+        switch item {
+        case .parkedDomain:
+            return
+        }
     }
 }
 
@@ -40,7 +45,8 @@ private extension ParkedDomainsFoundViewPresenter {
         Task {
             var snapshot = ParkedDomainsFoundSnapshot()
            
-            // Fill snapshot
+            snapshot.appendSections([.main])
+            snapshot.appendItems(domains.map({ ParkedDomainsFoundViewController.Item.parkedDomain($0) }))
             
             await view?.applySnapshot(snapshot, animated: true)
         }

@@ -92,8 +92,17 @@ private extension LoginViewPresenter {
     }
     
     @MainActor
-    func userAuthorized() {
-        view?.cNavigationController?.popViewController(animated: true)
+    func userAuthorized() async {
+        guard let nav = view?.cNavigationController else { return }
+        
+        do {
+            let domains = try await appContext.firebaseInteractionService.getParkedDomains()
+            let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
+            UDRouter().showParkedDomainsFoundModuleWith(domains: displayInfo,
+                                                        in: nav)
+        } catch {
+            authFailedWith(error: error)
+        }
     }
     
     @MainActor

@@ -517,6 +517,13 @@ class UDRouter: DomainProfileSignatureValidator {
         
         nav.pushViewController(vc, animated: true)
     }
+    
+    func showParkedDomainsFoundModuleWith(domains: [FirebaseDomainDisplayInfo],
+                                          in nav: CNavigationController) {
+        let vc = buildParkedDomainsFoundModule(domains: domains)
+                
+        nav.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - Private methods
@@ -902,6 +909,13 @@ private extension UDRouter {
         return vc
     }
     
+    func buildParkedDomainsFoundModule(domains: [FirebaseDomainDisplayInfo]) -> UIViewController {
+        let vc = ParkedDomainsFoundViewController.nibInstance()
+        let presenter = ParkedDomainsFoundViewPresenter(view: vc,
+                                                        domains: domains)
+        vc.presenter = presenter
+        return vc
+    }
 }
 
 extension UDRouter {
