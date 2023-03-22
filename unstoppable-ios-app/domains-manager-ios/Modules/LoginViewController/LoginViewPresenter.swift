@@ -70,7 +70,7 @@ private extension LoginViewPresenter {
             guard let view else { return }
     
             do {
-                try await FirebaseInteractionService.shared.authorizeWithGoogle(in: view)
+                try await appContext.firebaseInteractionService.authorizeWithGoogle(in: view)
                 await userAuthorized()
             } catch {
                 await authFailedWith(error: error)
@@ -83,7 +83,7 @@ private extension LoginViewPresenter {
             guard let view else { return }
             
             do {
-                try await FirebaseInteractionService.shared.authorizeWithTwitter(in: view)
+                try await appContext.firebaseInteractionService.authorizeWithTwitter(in: view)
                 await userAuthorized()
             } catch {
                 await authFailedWith(error: error)

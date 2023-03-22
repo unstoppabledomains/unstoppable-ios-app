@@ -9,9 +9,7 @@ import UIKit
 import AuthenticationServices
 
 final class UDGoogleSigner: NSObject, FirebaseAuthUtilitiesProtocol {
-    
-    static let shared = UDGoogleSigner()
-    
+        
     private let googleOAuthURL = "https://accounts.google.com/o/oauth2/v2/auth"
     private let googleOAuthTokenURL = "https://oauth2.googleapis.com/token"
     
@@ -23,8 +21,6 @@ final class UDGoogleSigner: NSObject, FirebaseAuthUtilitiesProtocol {
     
     private var authenticationVC: ASWebAuthenticationSession?
     private var presentingViewController: UIViewController?
-    
-    private override init() { }
     
     /// Return: ID Token
     func signIn(in viewController: UIViewController) async throws -> String {

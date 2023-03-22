@@ -9,12 +9,8 @@ import UIKit
 import WebKit
 
 final class UDTwitterSigner: NSObject {
-    
-    static let shared = UDTwitterSigner()
-    
+        
     private var baseURL: String { NetworkConfig.migratedBaseUrl }
-    
-    private override init() { }
     
 }
 

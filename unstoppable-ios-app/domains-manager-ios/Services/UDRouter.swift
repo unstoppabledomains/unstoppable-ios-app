@@ -18,7 +18,8 @@ class UDRouter: DomainProfileSignatureValidator {
         let vc = SettingsViewController.nibInstance()
         let presenter = SettingsPresenter(view: vc,
                                           notificationsService: appContext.notificationsService,
-                                          dataAggregatorService: appContext.dataAggregatorService)
+                                          dataAggregatorService: appContext.dataAggregatorService,
+                                          firebaseInteractionService: appContext.firebaseInteractionService)
         vc.presenter = presenter
         
         return vc

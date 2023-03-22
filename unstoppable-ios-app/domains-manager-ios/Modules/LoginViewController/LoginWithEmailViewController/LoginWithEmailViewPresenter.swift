@@ -31,7 +31,7 @@ extension LoginWithEmailViewPresenter: LoginWithEmailViewPresenterProtocol {
             view?.setLoadingIndicator(active: true)
             
             do {
-                try await FirebaseInteractionService.shared.authorizeWith(email: email, password: password)
+                try await appContext.firebaseInteractionService.authorizeWith(email: email, password: password)
                 view?.cNavigationController?.popToRootViewController(animated: true)
             } catch {
                 Vibration.error.vibrate()

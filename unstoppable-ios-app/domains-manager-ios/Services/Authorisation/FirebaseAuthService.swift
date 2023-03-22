@@ -8,17 +8,20 @@
 import UIKit
 
 protocol FirebaseAuthServiceProtocol {
-    
+    var isAuthorised: Bool { get }
 }
 
 final class FirebaseAuthService {
-    
-    static let shared = FirebaseAuthService()
-    
+        
     private let keychainStorage: KeychainPrivateKeyStorage = .instance
     private let tokenKeychainKey: KeychainKey = .firebaseRefreshToken
-    
-    private init() { }
+    private let twitterSigner = UDTwitterSigner()
+    private let googleSigner = UDGoogleSigner()
+    private let firebaseSigner: UDFirebaseSigner
+
+    init(firebaseSigner: UDFirebaseSigner) {
+        self.firebaseSigner = firebaseSigner
+    }
 }
 
 // MARK: - FirebaseAuthServiceProtocol
@@ -37,23 +40,23 @@ extension FirebaseAuthService: FirebaseAuthServiceProtocol {
     var firebaseProfile: String { "" }
     
     func authorizeWith(email: String, password: String) async throws -> FirebaseTokenData {
-        let authResponse = try await UDFirebaseSigner.shared.authorizeWith(email: email, password: password)
+        let authResponse = try await firebaseSigner.authorizeWith(email: email, password: password)
         
         saveAuthResponse(authResponse)
         return authResponse
     }
     
     func authorizeWithGoogleSignInIdToken(in viewController: UIViewController) async throws -> FirebaseTokenData {
-        let googleSignInToken = try await UDGoogleSigner.shared.signIn(in: viewController)
-        let authResponse = try await UDFirebaseSigner.shared.authorizeWithGoogleSignInIdToken(googleSignInToken)
+        let googleSignInToken = try await googleSigner.signIn(in: viewController)
+        let authResponse = try await firebaseSigner.authorizeWithGoogleSignInIdToken(googleSignInToken)
         
         saveAuthResponse(authResponse)
         return authResponse
     }
     
     func authorizeWithTwitterCustomToken(in viewController: UIViewController) async throws -> FirebaseTokenData {
-        let customToken = try await UDTwitterSigner.shared.signIn(in: viewController)
-        let authResponse = try await UDFirebaseSigner.shared.authorizeWithTwitterCustomToken(customToken)
+        let customToken = try await twitterSigner.signIn(in: viewController)
+        let authResponse = try await firebaseSigner.authorizeWithTwitterCustomToken(customToken)
         
         saveAuthResponse(authResponse)
         return authResponse
