@@ -156,12 +156,11 @@ private extension LoginWithEmailViewController {
     
     func setupTextFields() {
         emailTextfield.delegate = self
-        emailTextfield.setTextContentType(.username)
         emailTextfield.setKeyboardType(.emailAddress)
         passwordTextfield.delegate = self
         passwordTextfield.setSecureTextEntry(true)
         passwordTextfield.setAutocorrectionType(.no)
-        passwordTextfield.setTextContentType(.password)
+        passwordTextfield.setTextContentType(.oneTimeCode)
                 
         emailTextfield.setPlaceholder(String.Constants.email.localized())
         passwordTextfield.setPlaceholder(String.Constants.password.localized())

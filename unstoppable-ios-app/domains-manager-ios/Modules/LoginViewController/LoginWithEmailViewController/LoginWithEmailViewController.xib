@@ -90,9 +90,6 @@
                     </constraints>
                     <state key="normal" title="Button"/>
                     <buttonConfiguration key="configuration" style="plain" title="Create password"/>
-                    <connections>
-                        <action selector="confirmButtonPressed:" destination="-1" eventType="touchUpInside" id="XI2-U8-J3T"/>
-                    </connections>
                 </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>

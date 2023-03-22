@@ -71,9 +71,8 @@ private extension LoginViewPresenter {
     
             do {
                 try await FirebaseInteractionService.shared.authorizeWithGoogle(in: view)
-                await userAuthorized()
             } catch {
-                await authFailedWith(error: error)
+                
             }
         }
     }
@@ -84,25 +83,9 @@ private extension LoginViewPresenter {
             
             do {
                 try await FirebaseInteractionService.shared.authorizeWithTwitter(in: view)
-                await userAuthorized()
             } catch {
-                await authFailedWith(error: error)
+                
             }
-        }
-    }
-    
-    @MainActor
-    func userAuthorized() {
-        view?.cNavigationController?.popViewController(animated: true)
-    }
-    
-    @MainActor
-    func authFailedWith(error: Error) {
-        if let firebaseError = error as? FirebaseAuthError,
-           case .userCancelled = firebaseError {
-            return // Ignore case when user cancelled auth
-        } else {
-            view?.showAlertWith(error: error, handler: nil)
         }
     }
 }
