@@ -115,11 +115,7 @@ private extension WalletNFTsService {
         return nfts
     }
   
-    func loadAllNFTsFor(domainName: HexAddress) async throws -> [NFTModel] {
-        let domains = await appContext.dataAggregatorService.getDomainItems().filter({ $0.isOwned(by: domainName) })
-        guard let domain = domains.first else { return [] }
-        let domainName = domain.name
-        
+    func loadAllNFTsFor(domainName: HexAddress) async throws -> [NFTModel] {        
         let response = try await makeGetNFTsRequest(domainName: domainName, cursor: nil, chains: [])
         
         var nfts = [NFTModel]()
@@ -209,12 +205,12 @@ private extension WalletNFTsService {
             }
         }
         
-        func isAddressRefreshed(_ address: DomainName) -> Bool {
-            refreshedAddresses.contains(address)
+        func isAddressRefreshed(_ domainName: DomainName) -> Bool {
+            refreshedAddresses.contains(domainName)
         }
         
-        func addAsyncProcessTask(_ task: Task<[NFTModel], Error>?, for address: DomainName) {
-            currentAsyncProcess[address] = task
+        func addAsyncProcessTask(_ task: Task<[NFTModel], Error>?, for domainName: DomainName) {
+            currentAsyncProcess[domainName] = task
         }
         
         func getAllNFTs() -> [NFTModel] {
