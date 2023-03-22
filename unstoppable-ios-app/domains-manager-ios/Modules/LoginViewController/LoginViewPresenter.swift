@@ -27,7 +27,6 @@ extension LoginViewPresenter: LoginViewPresenterProtocol {
     
     @MainActor
     func didSelectItem(_ item: LoginViewController.Item) {
-        UDVibration.buttonTap.vibrate()
         switch item {
         case .loginWith(let provider):
             switch provider {
@@ -57,12 +56,8 @@ private extension LoginViewPresenter {
         }
     }
     
-    @MainActor
     func loginWithEmail() {
-        guard let view,
-            let nav = view.cNavigationController else { return }
         
-        UDRouter().showLoginWithEmailScreen(in: nav)
     }
     
     func loginWithGoogle()  {
@@ -78,14 +73,6 @@ private extension LoginViewPresenter {
     }
     
     func loginWithTwitter() {
-        Task {
-            guard let view else { return }
-            
-            do {
-                try await FirebaseInteractionService.shared.authorizeWithTwitter(in: view)
-            } catch {
-                
-            }
-        }
+        
     }
 }

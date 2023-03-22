@@ -11,7 +11,6 @@ protocol CreateBackupPasswordPresenterProtocol: BasePresenterProtocol {
     var isShowingHelp: Bool { get }
     var progress: Double? { get }
     var analyticsName: Analytics.ViewName { get }
-    
     func createPasswordButtonPressed()
     func didTapLearnMore()
 }

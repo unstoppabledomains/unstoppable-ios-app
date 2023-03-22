@@ -1751,18 +1751,6 @@
 		C666895628117C66002062B4 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666895428117C66002062B4 /* BaseViewController.swift */; };
 		C666895728117C66002062B4 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666895428117C66002062B4 /* BaseViewController.swift */; };
 		C666895828117C66002062B4 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666895428117C66002062B4 /* BaseViewController.swift */; };
-		C666E07229C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E06F29C9F1900003DECB /* LoginWithEmailViewPresenter.swift */; };
-		C666E07329C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E06F29C9F1900003DECB /* LoginWithEmailViewPresenter.swift */; };
-		C666E07429C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E06F29C9F1900003DECB /* LoginWithEmailViewPresenter.swift */; };
-		C666E07529C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E06F29C9F1900003DECB /* LoginWithEmailViewPresenter.swift */; };
-		C666E07629C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E07029C9F1900003DECB /* LoginWithEmailViewController.swift */; };
-		C666E07729C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E07029C9F1900003DECB /* LoginWithEmailViewController.swift */; };
-		C666E07829C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E07029C9F1900003DECB /* LoginWithEmailViewController.swift */; };
-		C666E07929C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E07029C9F1900003DECB /* LoginWithEmailViewController.swift */; };
-		C666E07A29C9F1900003DECB /* LoginWithEmailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C666E07129C9F1900003DECB /* LoginWithEmailViewController.xib */; };
-		C666E07B29C9F1900003DECB /* LoginWithEmailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C666E07129C9F1900003DECB /* LoginWithEmailViewController.xib */; };
-		C666E07C29C9F1900003DECB /* LoginWithEmailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C666E07129C9F1900003DECB /* LoginWithEmailViewController.xib */; };
-		C666E07D29C9F1900003DECB /* LoginWithEmailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C666E07129C9F1900003DECB /* LoginWithEmailViewController.xib */; };
 		C6670A0928D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
 		C6670A0A28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
 		C6670A0B28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
@@ -3785,9 +3773,6 @@
 		C666894A28116073002062B4 /* BorderedTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BorderedTableView.swift; sourceTree = "<group>"; };
 		C666894F2811717C002062B4 /* PasscodeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasscodeButton.swift; sourceTree = "<group>"; };
 		C666895428117C66002062B4 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
-		C666E06F29C9F1900003DECB /* LoginWithEmailViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWithEmailViewPresenter.swift; sourceTree = "<group>"; };
-		C666E07029C9F1900003DECB /* LoginWithEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWithEmailViewController.swift; sourceTree = "<group>"; };
-		C666E07129C9F1900003DECB /* LoginWithEmailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginWithEmailViewController.xib; sourceTree = "<group>"; };
 		C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupChangeReverseResolutionDomainPresenter.swift; sourceTree = "<group>"; };
 		C6670A0E28D46D6B00415EBB /* String+SHA3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+SHA3.swift"; sourceTree = "<group>"; };
 		C66804AC280D93E5007E6390 /* ObjectWithAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectWithAttributedString.swift; sourceTree = "<group>"; };
@@ -5526,7 +5511,6 @@
 				C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */,
 				C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */,
 				C63DD36029C89FEC002D45B2 /* LoginViewController.xib */,
-				C666E06E29C9F1760003DECB /* LoginWithEmailViewController */,
 			);
 			path = LoginViewController;
 			sourceTree = "<group>";
@@ -5784,16 +5768,6 @@
 				C671E3CC29014E8B00A2B3A0 /* TextButtons */,
 			);
 			path = Buttons;
-			sourceTree = "<group>";
-		};
-		C666E06E29C9F1760003DECB /* LoginWithEmailViewController */ = {
-			isa = PBXGroup;
-			children = (
-				C666E06F29C9F1900003DECB /* LoginWithEmailViewPresenter.swift */,
-				C666E07029C9F1900003DECB /* LoginWithEmailViewController.swift */,
-				C666E07129C9F1900003DECB /* LoginWithEmailViewController.xib */,
-			);
-			path = LoginWithEmailViewController;
 			sourceTree = "<group>";
 		};
 		C66804AB280D93DC007E6390 /* Protocols */ = {
@@ -7514,7 +7488,6 @@
 				C6637A7528100D3A0000AE56 /* LaunchViewController.xib in Resources */,
 				C692C359282EA63100C31393 /* AppearanceSettingsViewController.xib in Resources */,
 				C692C364282EA71C00C31393 /* AppearanceSettingsCell.xib in Resources */,
-				C666E07A29C9F1900003DECB /* LoginWithEmailViewController.xib in Resources */,
 				C6ECBF8528D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7659,7 +7632,6 @@
 				C6D5DADA28374B4600379C38 /* ManageMultiChainDomainAddressesViewController.xib in Resources */,
 				C692C325282E485C00C31393 /* SecuritySettingsViewController.xib in Resources */,
 				C63A351628F0071B0057D34B /* DomainProfileViewController.xib in Resources */,
-				C666E07C29C9F1900003DECB /* LoginWithEmailViewController.xib in Resources */,
 				C66804C7280D9EC8007E6390 /* DigitalKeyboardViewController.xib in Resources */,
 				C6D9E29028533788002CDAC2 /* UDDomainSharingCardView.xib in Resources */,
 				C60982C1282A775000546392 /* EnterBackupViewController.xib in Resources */,
@@ -7821,7 +7793,6 @@
 				C6637A7828100D3A0000AE56 /* LaunchViewController.xib in Resources */,
 				C692C35C282EA63100C31393 /* AppearanceSettingsViewController.xib in Resources */,
 				C692C367282EA71C00C31393 /* AppearanceSettingsCell.xib in Resources */,
-				C666E07D29C9F1900003DECB /* LoginWithEmailViewController.xib in Resources */,
 				C6ECBF8828D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7967,7 +7938,6 @@
 				C6637A7628100D3A0000AE56 /* LaunchViewController.xib in Resources */,
 				C692C35A282EA63100C31393 /* AppearanceSettingsViewController.xib in Resources */,
 				C692C365282EA71C00C31393 /* AppearanceSettingsCell.xib in Resources */,
-				C666E07B29C9F1900003DECB /* LoginWithEmailViewController.xib in Resources */,
 				C6ECBF8628D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -8240,7 +8210,6 @@
 				C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
 				C66FCD1A2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C6E041D8295588C90080F8E3 /* UDPageControl.swift in Sources */,
-				C666E07629C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */,
 				C6ECBF9628D2E06800E94309 /* GenericBadgeView.swift in Sources */,
 				C6E0419F2951A4E60080F8E3 /* DomainsCollectionSectionHeader.swift in Sources */,
 				C63902B828E2FB5B00E16B42 /* PaymentError.swift in Sources */,
@@ -8250,7 +8219,6 @@
 				C6C995AE289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C6D5DAF42837866800379C38 /* SecondaryDangerButton.swift in Sources */,
 				C672FD7A2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */,
-				C666E07229C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */,
 				C60610DE29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
 				C66A9DC828BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
 				C66FCCF32844863E009B9525 /* UDGradientCoverView.swift in Sources */,
@@ -8775,7 +8743,6 @@
 				C6D6E55628193A35008C66BB /* DomainsCollectionViewController.swift in Sources */,
 				C6C9DE962834A9DB00BAC36F /* TextWhiteButton.swift in Sources */,
 				3026FA2D27E885B600FE058B /* ConfirmWordsViewController.swift in Sources */,
-				C666E07829C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */,
 				C6ED3205295D451700BC6919 /* DomainsCollectionTitleSwipeTutorialView.swift in Sources */,
 				C669C37C2912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift in Sources */,
 				C692C362282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */,
@@ -9296,7 +9263,6 @@
 				C6B6858D280077F7000F9037 /* UIImage.swift in Sources */,
 				C6C9DEA22834B56200BAC36F /* ManageDomainLoadingCell.swift in Sources */,
 				C6124CDE2923C7FF005E6537 /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
-				C666E07429C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */,
 				C6ECBF8D28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C60982732824094100546392 /* ViewWithDashesProgress.swift in Sources */,
 				C6B6B02A296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
@@ -9414,7 +9380,6 @@
 				C6D6E55728193A35008C66BB /* DomainsCollectionViewController.swift in Sources */,
 				C6C9DE972834A9DB00BAC36F /* TextWhiteButton.swift in Sources */,
 				3026FA2E27E885B600FE058B /* ConfirmWordsViewController.swift in Sources */,
-				C666E07929C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */,
 				C6ED3206295D451700BC6919 /* DomainsCollectionTitleSwipeTutorialView.swift in Sources */,
 				C669C37D2912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift in Sources */,
 				C692C363282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */,
@@ -9935,7 +9900,6 @@
 				C6D6E58928193ED9008C66BB /* DomainsCollectionListCell.swift in Sources */,
 				C6B6858E280077F7000F9037 /* UIImage.swift in Sources */,
 				C6C9DEA32834B56200BAC36F /* ManageDomainLoadingCell.swift in Sources */,
-				C666E07529C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */,
 				C6124CDF2923C7FF005E6537 /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
 				C6ECBF8E28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B6B02B296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
@@ -10215,7 +10179,6 @@
 				C60C29922834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
 				C66FCD1B2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C6E041D9295588C90080F8E3 /* UDPageControl.swift in Sources */,
-				C666E07729C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */,
 				C6ECBF9728D2E06800E94309 /* GenericBadgeView.swift in Sources */,
 				C6E041A02951A4E60080F8E3 /* DomainsCollectionSectionHeader.swift in Sources */,
 				C6456F1127FF3C6B00A517D5 /* UIViewController.swift in Sources */,
@@ -10225,7 +10188,6 @@
 				C6C995AF289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C6D5DAF52837866800379C38 /* SecondaryDangerButton.swift in Sources */,
 				C672FD7B2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */,
-				C666E07329C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */,
 				C60610DF29A6571B005DC0D5 /* WalletConnectRequestType.swift in Sources */,
 				C66A9DC928BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
 				C66FCCF42844863E009B9525 /* UDGradientCoverView.swift in Sources */,

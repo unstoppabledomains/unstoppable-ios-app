@@ -684,8 +684,3 @@
 "LOGIN_WITH_PROVIDER_N" = "Continue with %@";
 "LOG_OUT" = "Log out";
 "LOG_OUT_CONFIRMATION_MESSAGE" = "You will no longer be able to manage parked domains.";
-
-// Login with Email+Password
-"LOGIN_WITH_EMAIL_TITLE" = "Enter your credentials";
-"LOGIN_WITH_EMAIL_SUBTITLE" = "Enter your UD email and password to obtain all of your purchased & unclaimed domains.";
-"PASSWORD" = "Password";
