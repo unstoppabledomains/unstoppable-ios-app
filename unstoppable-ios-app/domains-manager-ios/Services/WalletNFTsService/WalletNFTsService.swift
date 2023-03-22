@@ -99,7 +99,7 @@ private extension WalletNFTsService {
     }
     
     @discardableResult
-    func createTaskAndLoadAllNFTsFor(domainName: HexAddress) async throws -> [NFTModel] {
+    func createTaskAndLoadAllNFTsFor(domainName: DomainName) async throws -> [NFTModel] {
         if let task = await dataHolder.currentAsyncProcess[domainName] {
             return try await task.value
         }
@@ -115,7 +115,7 @@ private extension WalletNFTsService {
         return nfts
     }
   
-    func loadAllNFTsFor(domainName: HexAddress) async throws -> [NFTModel] {        
+    func loadAllNFTsFor(domainName: DomainName) async throws -> [NFTModel] {
         let response = try await makeGetNFTsRequest(domainName: domainName, cursor: nil, chains: [])
         
         var nfts = [NFTModel]()
