@@ -24,6 +24,7 @@ final class LoginViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [SettingsCollectionViewCell.self] }
     var presenter: LoginViewPresenterProtocol!
     private var dataSource: LoginDataSource!
+    override var analyticsName: Analytics.ViewName { .loginWithWebsiteAccount }
 
     override func viewDidLoad() {
         super.viewDidLoad()
