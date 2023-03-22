@@ -44,11 +44,16 @@ extension CoinRecordsService: CoinRecordsServiceProtocol {
             do {
                 let data = try await self.fetchCurrenciesData(version: version)
                 
-                guard let coins = self.parseCurrencies(from: data) else { return }
+                guard let coins = self.parseCurrencies(from: data) else {
+                    Debugger.printFailure("Failed to parse uns version: \(version)", critical: true)
+                    return
+                }
                 
                 self.setCurrencies(coins)
                 self.storeCoinRecords(data: data)
                 self.detectAndReportRecordsWithoutPrimaryChain()
+            } catch {
+                Debugger.printFailure("Failed to fetch uns version: \(version)", critical: true)
             }
         }
     }

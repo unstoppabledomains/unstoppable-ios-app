@@ -38,7 +38,7 @@ struct Constants {
     static let standardWebHosts = ["https://", "http://"]
     static let downloadedImageMaxSize: CGFloat = 512
     static let downloadedIconMaxSize: CGFloat = 128
-    static let defaultUNSReleaseVersion = "v0.6.19"
+    static let defaultUNSReleaseVersion = "v0.7.6"
     static let defaultInitials: String = "N/A"
     static let appStoreAppId = "1544748602"
     static let refreshDomainBadgesInterval: TimeInterval = 60 * 3 // 3 min
