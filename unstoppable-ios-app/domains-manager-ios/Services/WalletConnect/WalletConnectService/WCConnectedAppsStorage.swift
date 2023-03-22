@@ -24,8 +24,7 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
     struct ConnectedApp: Codable, Equatable, Hashable, CustomStringConvertible {
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.session.url.key == rhs.session.url.key
-        }
+            lhs.session == rhs.session }
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(session.url.key)
