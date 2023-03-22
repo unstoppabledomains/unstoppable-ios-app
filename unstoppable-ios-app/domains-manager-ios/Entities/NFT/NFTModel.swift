@@ -21,6 +21,14 @@ struct NFTModel: Codable, Hashable {
     var address: String?
     
     var isDomainNFT: Bool { tags.contains("domain") }
+    var isUDDomainNFT: Bool {
+        if isDomainNFT,
+           let tld = name?.components(separatedBy: ".").last,
+           User.instance.getAppVersionInfo().tlds.contains(tld) {
+            return true
+        }
+        return false 
+    }
     
     var chainIcon: UIImage { chain?.icon ?? .ethereumIcon }
 }

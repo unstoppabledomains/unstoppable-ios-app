@@ -193,7 +193,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func setNFTs(_ nfts: [NFTModel]) {
-        self.nfts = nfts.filter({ $0.public })
+        self.nfts = nfts.filter({ $0.public && !$0.isUDDomainNFT })
     }
     
     @MainActor

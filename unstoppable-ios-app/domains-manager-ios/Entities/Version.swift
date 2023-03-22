@@ -98,14 +98,15 @@ struct AppVersionInfo: Codable {
     var dotcoinDeprecationReleased: Bool?
     var mobileUnsReleaseVersion: String?
     var tlds: [String] = ["x",
-                         "crypto",
-                         "coin",
-                         "wallet",
-                         "bitcoin",
-                         "888",
-                         "nft",
-                         "dao",
-                         "zil"]
+                          "crypto",
+                          "coin",
+                          "wallet",
+                          "bitcoin",
+                          "888",
+                          "nft",
+                          "dao",
+                          "zil",
+                          "polygon"]
 }
 
 struct DefaultAppVersionFetcher: AppVersionApi {
