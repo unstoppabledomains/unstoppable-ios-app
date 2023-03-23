@@ -79,8 +79,8 @@ private extension UDGoogleSigner {
                                                               callbackURLScheme: redirectScheme) { url, error in
                 if let callbackURL = url {
                     continuation.resume(returning: callbackURL)
-                } else if let error {
-                    continuation.resume(throwing: error)
+                } else if error != nil {
+                    continuation.resume(throwing: FirebaseAuthError.userCancelled)
                 } else {
                     continuation.resume(throwing: FirebaseAuthError.unexpectedResponse)
                 }

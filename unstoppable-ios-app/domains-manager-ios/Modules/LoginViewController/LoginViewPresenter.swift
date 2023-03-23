@@ -23,6 +23,7 @@ final class LoginViewPresenter {
 extension LoginViewPresenter: LoginViewPresenterProtocol {
     func viewDidLoad() {
         showData()
+        view?.setDashesProgress(0.25)
     }
     
     @MainActor

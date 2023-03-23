@@ -9,7 +9,8 @@ import Foundation
 
 protocol ParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
     var title: String { get }
-    
+    var progress: Double? { get }
+
     func didSelectItem(_ item: ParkedDomainsFoundViewController.Item)
     func importButtonPressed()
 }
@@ -22,7 +23,8 @@ final class ParkedDomainsFoundViewPresenter {
     var title: String {
         String.Constants.pluralWeFoundNDomains.localized(domains.count)
     }
-    
+    var progress: Double? { 1 }
+
     init(view: ParkedDomainsFoundViewProtocol,
          domains: [FirebaseDomainDisplayInfo]) {
         self.view = view
@@ -34,6 +36,9 @@ final class ParkedDomainsFoundViewPresenter {
 extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtocol {
     func viewDidLoad() {
         showData()
+        Task { @MainActor in
+            view?.setDashesProgress(progress)
+        }
     }
     
     @MainActor
@@ -43,6 +48,10 @@ extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtoc
         case .parkedDomain:
             return
         }
+    }
+    
+    func importButtonPressed() {
+        
     }
 }
 

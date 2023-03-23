@@ -23,7 +23,13 @@ final class LoginWithEmailViewPresenter {
 
 // MARK: - LoginWithEmailViewPresenterProtocol
 extension LoginWithEmailViewPresenter: LoginWithEmailViewPresenterProtocol {
-    var progress: Double? { 0.25 }
+    var progress: Double? { 0.5 }
+    
+    func viewDidLoad() {
+        Task { @MainActor in 
+            view?.setDashesProgress(progress)
+        }
+    }
     
     @MainActor
     func confirmButtonPressed(email: String, password: String) {

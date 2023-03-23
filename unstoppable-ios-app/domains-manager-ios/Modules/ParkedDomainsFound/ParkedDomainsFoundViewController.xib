@@ -23,7 +23,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="cvX-62-hP7">
-                    <rect key="frame" x="0.0" y="59" width="393" height="793"/>
+                    <rect key="frame" x="0.0" y="59" width="393" height="697"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="M0S-V4-ngk">
                         <size key="itemSize" width="128" height="128"/>
@@ -52,7 +52,7 @@
                                 <constraint firstAttribute="height" constant="48" id="iNq-zu-oKx"/>
                             </constraints>
                             <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Action"/>
                             <connections>
                                 <action selector="importButtonPressed:" destination="-1" eventType="touchUpInside" id="GJe-8Z-Wpw"/>
                             </connections>
@@ -74,8 +74,8 @@
                 <constraint firstItem="6PT-nr-dgK" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="gv7-0r-dnt"/>
                 <constraint firstAttribute="trailing" secondItem="Zmr-3T-e9T" secondAttribute="trailing" id="jK9-0I-qAt"/>
                 <constraint firstItem="hFK-Hq-6Po" firstAttribute="top" secondItem="6PT-nr-dgK" secondAttribute="top" id="ogK-CQ-JIa"/>
-                <constraint firstAttribute="bottom" secondItem="cvX-62-hP7" secondAttribute="bottom" id="qyh-Fy-axJ"/>
                 <constraint firstAttribute="bottom" secondItem="hFK-Hq-6Po" secondAttribute="bottom" id="vuw-hD-Rxh"/>
+                <constraint firstItem="hFK-Hq-6Po" firstAttribute="top" secondItem="cvX-62-hP7" secondAttribute="bottom" id="weI-er-G0h"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="6PT-nr-dgK" secondAttribute="bottom" constant="14" id="y6q-cd-e8B"/>
             </constraints>
             <point key="canvasLocation" x="136.64122137404578" y="41.549295774647888"/>

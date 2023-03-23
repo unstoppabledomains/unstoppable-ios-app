@@ -231,21 +231,21 @@ private extension SettingsPresenter {
         
         if appContext.firebaseAuthService.isAuthorised {
             Task {
-//                do {
-//                    try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
-//                    await view.dismissPullUpMenu()
-//                    try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-//                    firebaseInteractionService.logout()
-//                } catch { }
-                                
                 do {
-                    let domains = try await appContext.firebaseInteractionService.getParkedDomains()
-                    let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
-                    UDRouter().showParkedDomainsFoundModuleWith(domains: displayInfo,
-                                                                in: nav)
-                } catch {
-//                    authFailedWith(error: error)
-                }
+                    try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
+                    await view.dismissPullUpMenu()
+                    try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+                    firebaseInteractionService.logout()
+                } catch { }
+                                
+//                do {
+//                    let domains = try await appContext.firebaseInteractionService.getParkedDomains()
+//                    let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
+//                    UDRouter().showParkedDomainsFoundModuleWith(domains: displayInfo,
+//                                                                in: nav)
+//                } catch {
+////                    authFailedWith(error: error)
+//                }
             }
         } else {
             UDRouter().showLoginScreen(in: nav)

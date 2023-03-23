@@ -8,7 +8,7 @@
 import UIKit
 
 @MainActor
-protocol ParkedDomainsFoundViewProtocol: BaseCollectionViewControllerProtocol {
+protocol ParkedDomainsFoundViewProtocol: BaseCollectionViewControllerProtocol & ViewWithDashesProgress{
     func applySnapshot(_ snapshot: ParkedDomainsFoundSnapshot, animated: Bool)
 }
 
@@ -19,9 +19,7 @@ typealias ParkedDomainsFoundSnapshot = NSDiffableDataSourceSnapshot<ParkedDomain
 final class ParkedDomainsFoundViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    
     @IBOutlet private weak var importButton: MainButton!
-    
     
     var cellIdentifiers: [UICollectionViewCell.Type] { [ParkedDomainCell.self] }
     var presenter: ParkedDomainsFoundViewPresenterProtocol!
@@ -30,7 +28,8 @@ final class ParkedDomainsFoundViewController: BaseViewController {
     override var largeTitleAlignment: NSTextAlignment { .center }
     override var largeTitleIcon: UIImage? { .checkmark }
     override var largeTitleIconTintColor: UIColor { .foregroundSuccess }
-    override var scrollableContentYOffset: CGFloat? { 12 }
+    override var scrollableContentYOffset: CGFloat? { 10 }
+    override var adjustLargeTitleFontSizeForSmallerDevice: Bool { true }
     override var analyticsName: Analytics.ViewName { .parkedDomainsList }
 
     override func viewDidLoad() {
@@ -45,6 +44,8 @@ final class ParkedDomainsFoundViewController: BaseViewController {
 
 // MARK: - ParkedDomainsFoundViewProtocol
 extension ParkedDomainsFoundViewController: ParkedDomainsFoundViewProtocol {
+    var progress: Double? { presenter.progress }
+
     func applySnapshot(_ snapshot: ParkedDomainsFoundSnapshot, animated: Bool) {
         dataSource.apply(snapshot, animatingDifferences: animated)
     }
@@ -86,6 +87,7 @@ private extension ParkedDomainsFoundViewController {
 // MARK: - Setup functions
 private extension ParkedDomainsFoundViewController {
     func setup() {
+        addProgressDashesView()
         setupCollectionView()
         title = presenter.title
     }
