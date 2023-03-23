@@ -108,11 +108,15 @@ private extension WalletNFTsService {
             try await self.loadAllNFTsFor(domainName: domainName)
         }
         
-        await dataHolder.addAsyncProcessTask(task, for: domainName)
-        let nfts = try await task.value
-        await dataHolder.addAsyncProcessTask(nil, for: domainName)
-        
-        return nfts
+        do {
+            await dataHolder.addAsyncProcessTask(task, for: domainName)
+            let nfts = try await task.value
+            await dataHolder.addAsyncProcessTask(nil, for: domainName)
+            return nfts
+        } catch {
+            await dataHolder.addAsyncProcessTask(nil, for: domainName)
+            throw error
+        }
     }
   
     func loadAllNFTsFor(domainName: DomainName) async throws -> [NFTModel] {
