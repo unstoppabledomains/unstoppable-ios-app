@@ -23,6 +23,11 @@ final class ParkedDomainsFoundViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [ParkedDomainCell.self] }
     var presenter: ParkedDomainsFoundViewPresenterProtocol!
     private var dataSource: ParkedDomainsFoundDataSource!
+    override var prefersLargeTitles: Bool { true }
+    override var largeTitleAlignment: NSTextAlignment { .center }
+    override var largeTitleIcon: UIImage? { .checkmark }
+    override var largeTitleIconTintColor: UIColor { .foregroundSuccess }
+    override var scrollableContentYOffset: CGFloat? { 12 }
     override var analyticsName: Analytics.ViewName { .parkedDomainsList }
 
     override func viewDidLoad() {
@@ -52,6 +57,20 @@ extension ParkedDomainsFoundViewController: UICollectionViewDelegate {
         }
         presenter.didSelectItem(item)
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        cNavigationController?.underlyingScrollViewDidScroll(scrollView)
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            cNavigationController?.underlyingScrollViewDidFinishScroll(scrollView)
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        cNavigationController?.underlyingScrollViewDidFinishScroll(scrollView)
+    }
 }
 
 // MARK: - Private functions
@@ -63,11 +82,16 @@ private extension ParkedDomainsFoundViewController {
 private extension ParkedDomainsFoundViewController {
     func setup() {
         setupCollectionView()
+        title = presenter.title
     }
     
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
+        collectionView.contentInset.top = 177
+        collectionView.register(CollectionTextHeaderReusableView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier)
         
         configureDataSource()
     }
@@ -82,6 +106,16 @@ private extension ParkedDomainsFoundViewController {
                 return cell
             }
         })
+        
+        dataSource.supplementaryViewProvider = { collectionView, elementKind, indexPath in
+            let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                       withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier,
+                                                                       for: indexPath) as! CollectionTextHeaderReusableView
+      
+            view.setHeader("Parked domains")
+            
+            return view
+        }
     }
     
     func buildLayout() -> UICollectionViewLayout {
@@ -94,6 +128,7 @@ private extension ParkedDomainsFoundViewController {
             (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             
             let layoutSection: NSCollectionLayoutSection
+            let sectionHeaderHeight = CollectionTextHeaderReusableView.Height
             
             layoutSection = .flexibleListItemSection()
             layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
@@ -101,7 +136,18 @@ private extension ParkedDomainsFoundViewController {
                                                                   bottom: 1,
                                                                   trailing: spacing + 1)
             let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
+            background.contentInsets.top = sectionHeaderHeight
             layoutSection.decorationItems = [background]
+            
+            
+            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                    heightDimension: .absolute(sectionHeaderHeight))
+            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                     elementKind: UICollectionView.elementKindSectionHeader,
+                                                                     alignment: .top)
+            layoutSection.boundarySupplementaryItems = [header]
+            
+            
             
             
             return layoutSection

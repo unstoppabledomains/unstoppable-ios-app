@@ -30,11 +30,6 @@ extension SettingsCollectionViewCell {
         switcher.isHidden = true
         valueLabel.isHidden = true
         subtitleLabel.isHidden = menuItem.subtitle == nil
-        if let subtitle = menuItem.subtitle {
-            subtitleLabel.setAttributedTextWith(text: subtitle,
-                                                font: .currentFont(withSize: 14, weight: .regular),
-                                                textColor: .foregroundDefault)
-        }
 
         switch menuItem.controlType {
         case .empty:
@@ -43,10 +38,7 @@ extension SettingsCollectionViewCell {
             chevronContainerView.isHidden = false
             if let value = value {
                 valueLabel.isHidden = false
-                valueLabel.setAttributedTextWith(text: value,
-                                                 font: .currentFont(withSize: 16, weight: .regular),
-                                                 textColor: .foregroundSecondary,
-                                                 lineBreakMode: .byTruncatingTail)
+                setValue(value)
             }
         case .switcher(let isOn):
             switcher.isHidden = false
@@ -81,5 +73,12 @@ private extension SettingsCollectionViewCell {
         titleLabel.setAttributedTextWith(text: title,
                                          font: .currentFont(withSize: 16, weight: .medium),
                                          textColor: .foregroundDefault)
+    }
+    
+    func setValue(_ value: String) {
+        valueLabel.setAttributedTextWith(text: value,
+                                         font: .currentFont(withSize: 16, weight: .regular),
+                                         textColor: .foregroundSecondary,
+                                         lineBreakMode: .byTruncatingTail)
     }
 }

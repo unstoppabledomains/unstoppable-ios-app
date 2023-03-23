@@ -8,6 +8,8 @@
 import Foundation
 
 protocol ParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
+    var title: String { get }
+    
     func didSelectItem(_ item: ParkedDomainsFoundViewController.Item)
 }
 
@@ -15,6 +17,10 @@ final class ParkedDomainsFoundViewPresenter {
     
     private weak var view: ParkedDomainsFoundViewProtocol?
     private let domains: [FirebaseDomainDisplayInfo]
+    
+    var title: String {
+        String.Constants.pluralWeFoundNDomains.localized(domains.count)
+    }
     
     init(view: ParkedDomainsFoundViewProtocol,
          domains: [FirebaseDomainDisplayInfo]) {

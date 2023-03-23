@@ -303,6 +303,7 @@ extension String {
         static let pluralMintDomainsTo = "SDICT:MINT_DOMAINS_TO"
         static let pluralMoveDomainsTo = "SDICT:MOVE_DOMAINS_TO"
         static let pluralNAppsConnected = "SDICT:N_APPS_CONNECTED"
+        static let pluralWeFoundNDomains = "SDICT:WE_FOUND_N_DOMAINS"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
