@@ -73,8 +73,23 @@ extension DomainDisplayInfo {
 
 // MARK: - State
 extension DomainDisplayInfo {
-    enum State {
-        case `default`, minting, updatingRecords
+    enum State: Hashable {
+        case `default`, minting, updatingRecords, parking(status: DomainParkingStatus)
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case (.default, .default):
+                return true
+            case (.minting, .minting):
+                return true
+            case (.updatingRecords, .updatingRecords):
+                return true
+            case (.parking, .parking):
+                return true
+            default:
+                return false
+            }
+        }
     }
 }
 

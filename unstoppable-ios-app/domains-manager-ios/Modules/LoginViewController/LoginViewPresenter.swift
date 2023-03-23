@@ -97,7 +97,7 @@ private extension LoginViewPresenter {
         guard let nav = view?.cNavigationController else { return }
         
         do {
-            let domains = try await appContext.firebaseInteractionService.getParkedDomains()
+            let domains = try await appContext.firebaseDomainsService.loadParkedDomains()
             let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
             UDRouter().showParkedDomainsFoundModuleWith(domains: displayInfo,
                                                         in: nav)

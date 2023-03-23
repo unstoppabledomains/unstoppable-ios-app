@@ -1795,6 +1795,14 @@
 		C666E0B029CB41960003DECB /* DomainParkingStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0AE29CB41960003DECB /* DomainParkingStatus.swift */; };
 		C666E0B129CB41960003DECB /* DomainParkingStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0AE29CB41960003DECB /* DomainParkingStatus.swift */; };
 		C666E0B229CB41960003DECB /* DomainParkingStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0AE29CB41960003DECB /* DomainParkingStatus.swift */; };
+		C666E0C329CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */; };
+		C666E0C429CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */; };
+		C666E0C529CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */; };
+		C666E0C629CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */; };
+		C666E0C829CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */; };
+		C666E0C929CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */; };
+		C666E0CA29CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */; };
+		C666E0CB29CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */; };
 		C6670A0928D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
 		C6670A0A28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
 		C6670A0B28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
@@ -3828,6 +3836,8 @@
 		C666E0A029CB3FEA0003DECB /* ParkedDomainCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ParkedDomainCell.xib; sourceTree = "<group>"; };
 		C666E0A929CB41350003DECB /* FirebaseDomainDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDomainDisplayInfo.swift; sourceTree = "<group>"; };
 		C666E0AE29CB41960003DECB /* DomainParkingStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainParkingStatus.swift; sourceTree = "<group>"; };
+		C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDomainsService.swift; sourceTree = "<group>"; };
+		C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDomainsStorage.swift; sourceTree = "<group>"; };
 		C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupChangeReverseResolutionDomainPresenter.swift; sourceTree = "<group>"; };
 		C6670A0E28D46D6B00415EBB /* String+SHA3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+SHA3.swift"; sourceTree = "<group>"; };
 		C66804AC280D93E5007E6390 /* ObjectWithAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectWithAttributedString.swift; sourceTree = "<group>"; };
@@ -4510,6 +4520,7 @@
 				30E549C22886DA27009833FB /* DefaultsStorage.swift */,
 				C6124CE52924C2B8005E6537 /* DomainProfileInfoStorage.swift */,
 				C63538E52949C2C100ECABA6 /* DomainsPFPInfoStorage.swift */,
+				C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */,
 				C6E6A000288AEAC6000A8346 /* ExternalEventsStorage.swift */,
 				C61236E6292C88D1002BA97B /* ImagesStorage.swift */,
 				3070B1D725AF8AF300DEC81C /* KeychainLayer.swift */,
@@ -6107,7 +6118,7 @@
 				C6B91EB329BB718100389FF5 /* StripeService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
-				C6BEEF2429C30AAC000489B9 /* Authorisation */,
+				C6BEEF2429C30AAC000489B9 /* Firebase */,
 				C63F1D0328AF31D5000A5C12 /* AnalyticsService */,
 				C61236EE292CADE1002BA97B /* AppGroupsBridge */,
 				C6109E2728E5AB310027D5D8 /* AppLaunchService */,
@@ -6592,11 +6603,12 @@
 			path = RearrangeDomainCell;
 			sourceTree = "<group>";
 		};
-		C6BEEF2429C30AAC000489B9 /* Authorisation */ = {
+		C6BEEF2429C30AAC000489B9 /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
 				C6C9A80629C390F300B23675 /* FirebaseInteractionService.swift */,
 				C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */,
+				C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */,
 				C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */,
 				C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */,
 				C6BEEF3E29C30D9D000489B9 /* UDFirebaseSigner.swift */,
@@ -6604,7 +6616,7 @@
 				C6BEEF4329C30DDE000489B9 /* FirebaseAuthError.swift */,
 				C6BEEF3429C30D5C000489B9 /* GoogleIDTokenUtilities.swift */,
 			);
-			path = Authorisation;
+			path = Firebase;
 			sourceTree = "<group>";
 		};
 		C6C4217529371428005B791B /* DomainProfileTutorial */ = {
@@ -8607,6 +8619,7 @@
 				304C66CF2807F1E800E1ACFE /* OnboardingData.swift in Sources */,
 				C6EA6D6828B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
 				C6E04152295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift in Sources */,
+				C666E0C329CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
 				C66FCD1328450A8F009B9525 /* GIFAnimationImageView.swift in Sources */,
 				C671E3C229014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift in Sources */,
 				C6A2D51E284DBDF000327C47 /* QRScannerSightView.swift in Sources */,
@@ -8666,6 +8679,7 @@
 				C60D2712295AAE420060635D /* DomainsCollectionUICache.swift in Sources */,
 				C6E1186F28F52C6E00C6AD4D /* UIViewControllerPreview.swift in Sources */,
 				C685A97B2840BF6200E54044 /* InfoScreen.swift in Sources */,
+				C666E0C829CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
 				C679B60A291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C628E34527FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
 				C6C995D6289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */,
@@ -9232,6 +9246,7 @@
 				C6FF2D9928F0238100148007 /* DomainProfileSectionChangeUIDescription.swift in Sources */,
 				C681092828042AF0002D780E /* OnboardingNavigationController.swift in Sources */,
 				C624D777281B89A800F55530 /* InitialsView.swift in Sources */,
+				C666E0CA29CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
 				C6D2F15528757C25005F4F2E /* UIImage+SVG.swift in Sources */,
 				C6109EA428E6B1CC0027D5D8 /* Toast.swift in Sources */,
 				C66435B9288E4FC00098E1B8 /* SpecificStorage.swift in Sources */,
@@ -9276,6 +9291,7 @@
 				C664312028DAB64800A9C734 /* ReverseResolutionInfoMapStorage.swift in Sources */,
 				C624D793281BCA1F00F55530 /* SettingsViewController.swift in Sources */,
 				C689539C2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */,
+				C666E0C529CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
 				C685A95D28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */,
 				C6456F312800520E00A517D5 /* Vibration.swift in Sources */,
 				306DB245268F4EE3009D95DE /* Extension-String.swift in Sources */,
@@ -9877,6 +9893,7 @@
 				C6FF2D9A28F0238100148007 /* DomainProfileSectionChangeUIDescription.swift in Sources */,
 				C681092928042AF0002D780E /* OnboardingNavigationController.swift in Sources */,
 				C624D778281B89A800F55530 /* InitialsView.swift in Sources */,
+				C666E0CB29CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
 				C6D2F15628757C25005F4F2E /* UIImage+SVG.swift in Sources */,
 				C6109EA528E6B1CC0027D5D8 /* Toast.swift in Sources */,
 				C66435BA288E4FC00098E1B8 /* SpecificStorage.swift in Sources */,
@@ -9921,6 +9938,7 @@
 				C6F6AF6C28A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C664312128DAB64800A9C734 /* ReverseResolutionInfoMapStorage.swift in Sources */,
 				C624D794281BCA1F00F55530 /* SettingsViewController.swift in Sources */,
+				C666E0C629CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
 				C689539D2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */,
 				C685A95E28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */,
 				C6456F322800520E00A517D5 /* Vibration.swift in Sources */,
@@ -10600,6 +10618,7 @@
 				C6EA6D6928B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
 				C66FCD1428450A8F009B9525 /* GIFAnimationImageView.swift in Sources */,
 				C6E04153295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift in Sources */,
+				C666E0C429CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
 				C6A2D51F284DBDF000327C47 /* QRScannerSightView.swift in Sources */,
 				C671E3C329014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift in Sources */,
 				C61C50062820FC5E00D1110A /* UISearchBar.swift in Sources */,
@@ -10659,6 +10678,7 @@
 				C60D2713295AAE420060635D /* DomainsCollectionUICache.swift in Sources */,
 				C6E1187028F52C6E00C6AD4D /* UIViewControllerPreview.swift in Sources */,
 				C685A97C2840BF6200E54044 /* InfoScreen.swift in Sources */,
+				C666E0C929CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
 				C679B60B291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C628E34627FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
 				C6C995D7289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */,

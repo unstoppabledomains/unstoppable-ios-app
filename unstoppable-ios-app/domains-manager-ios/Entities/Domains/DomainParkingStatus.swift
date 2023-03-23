@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DomainParkingStatus {
+enum DomainParkingStatus: Hashable {
     case claimed
     case freeParking // Domain purchased before Parking feature launched
     case parked(expiresDate: Date) // Parking purchased and active

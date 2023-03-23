@@ -233,6 +233,9 @@ private extension DomainsCollectionCarouselCardCell {
         case .minting:
             setIndicatorStyle(.minting)
             setStatusMessageComponent(.electricMinting)
+        case .parking(let status):
+            // TODO: - Set status
+            return
         }
     }
     
