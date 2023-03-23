@@ -267,8 +267,6 @@ private extension DomainsCollectionPresenter {
     
     @MainActor
     func resolvePrimaryDomain(domains: [DomainDisplayInfo]) async {
-     
-        
         if !isPrimaryDomainResolved(domains: domains),
            !isResolvingPrimaryDomain,
            router.isTopPresented() {
