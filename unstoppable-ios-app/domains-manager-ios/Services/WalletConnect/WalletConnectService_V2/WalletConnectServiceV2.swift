@@ -1133,7 +1133,9 @@ struct WCRegistryWalletProxy {
     }
     
     init?(_ walletInfo: SessionV2) {
-        self.host = walletInfo.peer.url
+        guard let url = URL(string: walletInfo.peer.url),
+              let host = url.host else { return nil }
+        self.host = host
     }
 }
 
@@ -1151,6 +1153,7 @@ extension WalletConnectServiceV2 {
             ],
             methods: [
                 "eth_sendTransaction",
+                "eth_signTransaction",
                 "personal_sign",
                 "eth_sign",
                 "eth_signTypedData"
