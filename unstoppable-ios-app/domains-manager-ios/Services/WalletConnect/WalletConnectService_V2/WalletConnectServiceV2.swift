@@ -1151,6 +1151,7 @@ extension WalletConnectServiceV2 {
             ],
             methods: [
                 "eth_sendTransaction",
+                "eth_signTransaction",
                 "personal_sign",
                 "eth_sign",
                 "eth_signTypedData"
