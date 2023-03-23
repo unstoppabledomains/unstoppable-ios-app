@@ -20,6 +20,9 @@ final class ParkedDomainsFoundViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+    @IBOutlet private weak var importButton: MainButton!
+    
+    
     var cellIdentifiers: [UICollectionViewCell.Type] { [ParkedDomainCell.self] }
     var presenter: ParkedDomainsFoundViewPresenterProtocol!
     private var dataSource: ParkedDomainsFoundDataSource!
@@ -75,7 +78,9 @@ extension ParkedDomainsFoundViewController: UICollectionViewDelegate {
 
 // MARK: - Private functions
 private extension ParkedDomainsFoundViewController {
-
+    @IBAction func importButtonPressed(_ sender: Any) {
+        presenter.importButtonPressed()
+    }
 }
 
 // MARK: - Setup functions

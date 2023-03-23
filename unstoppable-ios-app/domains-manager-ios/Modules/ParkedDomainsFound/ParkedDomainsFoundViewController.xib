@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ParkedDomainsFoundViewController" customModule="domains_manager_ios" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="cvX-62-hP7" id="AFE-62-kXE"/>
+                <outlet property="importButton" destination="cKH-B8-0Ga" id="QwP-WR-iAs"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -30,19 +32,59 @@
                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                     </collectionViewFlowLayout>
                 </collectionView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zmr-3T-e9T" customClass="UDGradientCoverView" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="740" width="393" height="16"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="16" id="Gb5-ab-tnG"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hFK-Hq-6Po">
+                    <rect key="frame" x="0.0" y="756" width="393" height="96"/>
+                    <color key="backgroundColor" name="backgroundDefault"/>
+                </view>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="6PT-nr-dgK">
+                    <rect key="frame" x="16" y="756" width="361" height="48"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cKH-B8-0Ga" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="361" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="iNq-zu-oKx"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <connections>
+                                <action selector="importButtonPressed:" destination="-1" eventType="touchUpInside" id="GJe-8Z-Wpw"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="hFK-Hq-6Po" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="6Ax-MT-Ndd"/>
                 <constraint firstItem="cvX-62-hP7" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="8nS-Sj-kaE"/>
+                <constraint firstItem="Zmr-3T-e9T" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="9uc-L1-0Kg"/>
+                <constraint firstItem="hFK-Hq-6Po" firstAttribute="top" secondItem="Zmr-3T-e9T" secondAttribute="bottom" id="C2f-Bo-HAm"/>
                 <constraint firstItem="cvX-62-hP7" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="GZX-Ys-mKF"/>
                 <constraint firstItem="cvX-62-hP7" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="HFX-AO-hBS"/>
+                <constraint firstItem="6PT-nr-dgK" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="RK4-NL-IPM"/>
+                <constraint firstAttribute="trailing" secondItem="hFK-Hq-6Po" secondAttribute="trailing" id="amo-B1-3Gg"/>
+                <constraint firstItem="6PT-nr-dgK" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="gv7-0r-dnt"/>
+                <constraint firstAttribute="trailing" secondItem="Zmr-3T-e9T" secondAttribute="trailing" id="jK9-0I-qAt"/>
+                <constraint firstItem="hFK-Hq-6Po" firstAttribute="top" secondItem="6PT-nr-dgK" secondAttribute="top" id="ogK-CQ-JIa"/>
                 <constraint firstAttribute="bottom" secondItem="cvX-62-hP7" secondAttribute="bottom" id="qyh-Fy-axJ"/>
+                <constraint firstAttribute="bottom" secondItem="hFK-Hq-6Po" secondAttribute="bottom" id="vuw-hD-Rxh"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="6PT-nr-dgK" secondAttribute="bottom" constant="14" id="y6q-cd-e8B"/>
             </constraints>
             <point key="canvasLocation" x="136.64122137404578" y="41.549295774647888"/>
         </view>
     </objects>
     <resources>
+        <namedColor name="backgroundDefault">
+            <color red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

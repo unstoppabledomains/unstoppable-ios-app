@@ -11,6 +11,7 @@ protocol ParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
     var title: String { get }
     
     func didSelectItem(_ item: ParkedDomainsFoundViewController.Item)
+    func importButtonPressed()
 }
 
 final class ParkedDomainsFoundViewPresenter {
