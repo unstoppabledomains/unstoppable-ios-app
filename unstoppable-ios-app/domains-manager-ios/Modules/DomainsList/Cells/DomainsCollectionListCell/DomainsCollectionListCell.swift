@@ -60,6 +60,9 @@ extension DomainsCollectionListCell {
         case .normal:
             statusMessage.setComponent(.updatingRecords)
             statusMessage.isHidden = !domainItem.isUpdatingRecords
+        case .parked:
+            statusMessage.setComponent(.deprecated(tld: ".x")) // TODO: - Parking
+            statusMessage.isHidden = false
         }
         reverseResolutionIndicatorImageView.isHidden = !domainItem.isSetForRR
     }

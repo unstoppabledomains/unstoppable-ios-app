@@ -226,6 +226,8 @@ private extension DomainsCollectionCarouselCardCell {
             case .zil:
                 setIndicatorStyle(.deprecated(tld: "zil"))
                 setStatusMessageComponent(.orangeDeprecated(tld: "zil"))
+            case .parked:
+                Debugger.printFailure("Parked domain should not have default state", critical: true)
             }
         case .updatingRecords:
             setIndicatorStyle(.updatingRecords)
@@ -234,8 +236,8 @@ private extension DomainsCollectionCarouselCardCell {
             setIndicatorStyle(.minting)
             setStatusMessageComponent(.electricMinting)
         case .parking(let status):
-            // TODO: - Set status
-            return
+            setIndicatorStyle(.parked)
+            setStatusMessageComponent(.updatingRecords) // TODO: - Parking
         }
     }
     
@@ -536,7 +538,7 @@ private extension DomainsCollectionCarouselCardCell {
 // MARK: - Private methods
 private extension DomainsCollectionCarouselCardCell {
     enum DomainIndicatorStyle: CarouselViewItem {
-        case updatingRecords, minting, deprecated(tld: String)
+        case updatingRecords, minting, deprecated(tld: String), parked
       
         var containerBackgroundColor: UIColor {
             switch self {
@@ -544,7 +546,7 @@ private extension DomainsCollectionCarouselCardCell {
                 return .brandElectricYellow
             case .minting:
                 return .brandElectricGreen
-            case .deprecated:
+            case .deprecated, .parked:
                 return .brandOrange
             }
         }
@@ -556,6 +558,8 @@ private extension DomainsCollectionCarouselCardCell {
                 return .refreshIcon
             case .deprecated:
                 return .warningIconLarge
+            case .parked:
+                return .parkingIcon24
             }
         }
         
@@ -567,19 +571,21 @@ private extension DomainsCollectionCarouselCardCell {
                 return String.Constants.mintingInProgressTitle.localized()
             case .deprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
+            case .parked:
+                return String.Constants.parkedDomain.localized()
             }
         }
         
         var tintColor: UIColor {
             switch self {
-            case .updatingRecords, .minting, .deprecated:
+            case .updatingRecords, .minting, .deprecated, .parked:
                 return .black
             }
         }
         
         var backgroundColor: UIColor {
             switch self {
-            case .updatingRecords, .minting, .deprecated:
+            case .updatingRecords, .minting, .deprecated, .parked:
                 return .clear
             }
         }

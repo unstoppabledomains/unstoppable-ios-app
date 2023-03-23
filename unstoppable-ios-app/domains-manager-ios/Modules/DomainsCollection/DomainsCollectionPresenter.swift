@@ -642,6 +642,8 @@ private extension DomainsCollectionPresenter {
                       let walletInfo = await dataAggregatorService.getWalletDisplayInfo(for: domainWallet) else { return }
                 
                 await router.showDomainProfile(domain, wallet: domainWallet, walletInfo: walletInfo, dismissCallback: { [weak self] in self?.didCloseDomainProfile(domain) })
+            case .parked:
+                return // TODO: - Parking
             }
         }
     }
