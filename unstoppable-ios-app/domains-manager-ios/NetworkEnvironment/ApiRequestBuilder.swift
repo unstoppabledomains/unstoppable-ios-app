@@ -643,6 +643,37 @@ extension Endpoint {
         )
     }
     
+    static func getGeneratedMessageToUpdateNFTs(for domain: DomainItem, body: String) -> Endpoint {
+        // https://profile.ud-staging.com/api/user/aaron.x/signature?expiry=1765522015090
+        let expiry = Int( (Date().timeIntervalSince1970 + 60_000_000) * 1000)
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/api/user/\(domain.name)/nfts/signature",
+            queryItems: [URLQueryItem(name: "expiry", value: String(expiry))],
+            body: body
+        )
+    }
+    
+    static func createNFTGallery(for domain: DomainItem,
+                                 with message: GeneratedMessage,
+                                 signature: String,
+                                 body: String) throws -> Endpoint {
+        // https://profile.ud-staging.com/api/user/aaron.x
+        let expires = "\(message.headers.expires)"
+        let headers = [
+            SignatureComponentHeaders.CodingKeys.domain.rawValue: domain.name,
+            SignatureComponentHeaders.CodingKeys.expires.rawValue: expires,
+            SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
+        ]
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/api/user/\(domain.name)/nfts",
+            queryItems: [],
+            body: body,
+            headers: headers
+        )
+    }
+    
     static func updateProfile(for domain: DomainItem,
                               with message: GeneratedMessage,
                               signature: String,

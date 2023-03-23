@@ -494,6 +494,66 @@ extension NetworkService {
         }
         return info
     }
+    
+    
+    
+    public func createNFTGallery(for domain: DomainItem) async throws  {
+        struct Request: Codable {
+            let symbol: String
+            let address: String
+            var `public`: Bool = true
+            var showAllItems: Bool = true
+        }
+        
+        let address = domain.ownerWallet!
+        let requests = [Request(symbol: "ETH", address: address),
+                        Request(symbol: "MATIC", address: address)]
+        let data = try JSONEncoder().encode(requests)
+        guard let body = String(data: data, encoding: .utf8) else { throw NetworkLayerError.responseFailedToParse }
+        try await updateUserNFTGallery(for: domain, body: body)
+    }
+    
+    private func updateUserNFTGallery(for domain: DomainItem,
+                                      body: String) async throws {
+        let message = try await getGeneratedMessageToUpdateNFTs(for: domain, body: body)
+        let signature = try await domain.personalSign(message: message.message)
+        try await updateNFTGallery(for: domain,
+                                   with: message,
+                                   signature: signature,
+                                   body: body)
+    }
+    private func getGeneratedMessageToUpdateNFTs(for domain: DomainItem,
+                                             body: String) async throws -> GeneratedMessage {
+        guard let url = Endpoint.getGeneratedMessageToUpdateNFTs(for: domain,
+                                                             body: body).url else {
+            throw NetworkLayerError.creatingURLFailed
+        }
+        let data = try await fetchData(for: url, body: body, method: .post)
+        guard let info = GeneratedMessage.objectFromData(data) else {
+            throw NetworkLayerError.failedParseProfileData
+        }
+        return info
+    }
+    
+    private func updateNFTGallery(for domain: DomainItem,
+                                  with message: GeneratedMessage,
+                                  signature: String,
+                                  body: String) async throws  {
+        let endpoint = try Endpoint.createNFTGallery(for: domain,
+                                                     with: message,
+                                                     signature: signature,
+                                                     body: body)
+        guard let url = endpoint.url else {
+            throw NetworkLayerError.creatingURLFailed
+        }
+        let data = try await fetchData(for: url,
+                                       body: body,
+                                       method: .post,
+                                       extraHeaders: endpoint.headers)
+        print("Data \(String(data: data, encoding: .utf8)). JSON: \(try? JSONSerialization.jsonObject(with: data))")
+        print("Ha")
+    }
+    
 }
 
 
