@@ -82,7 +82,12 @@ private extension DomainsCollectionNoRecentActivitiesCell {
         case .NFT:
             title = String.Constants.noNFTs.localized()
             icon = .hexagonIcon24
+            #if DEBUG
+            isButtonHidden = false
+            learnMoreButton.setTitle("Create Tokens Gallery", image: nil)
+            #else
             isButtonHidden = true
+            #endif
         }
         
         titleLabel.setAttributedTextWith(text: title,

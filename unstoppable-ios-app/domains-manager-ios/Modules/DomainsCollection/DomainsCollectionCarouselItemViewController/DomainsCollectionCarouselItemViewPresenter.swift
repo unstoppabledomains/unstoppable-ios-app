@@ -391,7 +391,20 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func recentActivitiesLearnMoreButtonPressed() {
-        actionsDelegate?.didOccursUIAction(.recentActivityLearnMore)
+        switch visibleDataType {
+        case .NFT:
+            Task {
+                do {
+                    let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
+                    try await NetworkService().createNFTGallery(for: domain)
+                    await didPullToRefresh()
+                } catch {
+                    await view?.showAlertWith(error: error, handler: nil)
+                }
+            }
+        case .activity:
+            actionsDelegate?.didOccursUIAction(.recentActivityLearnMore)
+        }
     }
 }
 

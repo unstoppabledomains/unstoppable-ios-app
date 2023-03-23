@@ -395,13 +395,13 @@ private extension DomainsCollectionCarouselItemViewController {
                                               bottom: 0, trailing: 16)
             case .nfts:
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5),
-                                                      heightDimension: .fractionalHeight(1.0))
+                                                      heightDimension: .fractionalWidth(0.5))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let inset: CGFloat = 8
                 item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
                 
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .fractionalWidth(0.5))
+                                                       heightDimension: .fractionalHeight(0.95))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
                                                                subitems: [item])
                 
