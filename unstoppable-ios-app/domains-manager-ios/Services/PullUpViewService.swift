@@ -1405,7 +1405,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: .domainsProfileIcon,
                                                                                      size: .small),
-                                                                         subtitle: .label(.text(String.Constants.pluralNDomains.localized(domainsCount)))),
+                                                                         subtitle: .label(.text(String.Constants.pluralNParkedDomains.localized(domainsCount)))),
                                                     items: UserProfileAction.allCases,
                                                     itemSelectedCallback: { legalType in
                 continuation(.success(legalType))
