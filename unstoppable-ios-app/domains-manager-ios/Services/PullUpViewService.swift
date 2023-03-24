@@ -1374,18 +1374,18 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         }
         
         let title: String = String.Constants.logOut.localized()
-        let buttonTitle: String = String.Constants.logOut.localized()
+        let buttonTitle: String = String.Constants.confirm.localized()
         
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
                                                                          contentAlignment: .center,
-                                                                         icon: .init(icon: .warningIconLarge,
+                                                                         icon: .init(icon: .logOutIcon24,
                                                                                      size: .small),
                                                                          subtitle: .label(.text(String.Constants.logOutConfirmationMessage.localized())),
-                                                                         actionButton: .primaryDanger(content: .init(title: buttonTitle,
-                                                                                                                     icon: icon,
-                                                                                                                     analyticsName: .logOut,
-                                                                                                                     action: { completion(.success(Void())) })),
+                                                                         actionButton: .main(content: .init(title: buttonTitle,
+                                                                                                            icon: icon,
+                                                                                                            analyticsName: .logOut,
+                                                                                                            action: { completion(.success(Void())) })),
                                                                          cancelButton: .cancelButton),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
