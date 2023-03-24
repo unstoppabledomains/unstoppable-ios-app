@@ -760,7 +760,10 @@ extension String {
         static let loginWithEmailSubtitle = "LOGIN_WITH_EMAIL_SUBTITLE"
         static let password = "PASSWORD"
         static let parked = "PARKED"
-        static let parkingExpiresOn = "PARKING_TRIAL_EXPIRES_ON"
+        static let parkingTrialExpiresOn = "PARKING_TRIAL_EXPIRES_ON"
+        static let parkingExpiresOn = "PARKING_EXPIRES_ON"
+        static let parkingExpired = "PARKING_EXPIRED"
+        static let parkedDomainsFoundTitle = "PARKED_DOMAINS_FOUND_TITLE"
     }
     
     struct Segues {

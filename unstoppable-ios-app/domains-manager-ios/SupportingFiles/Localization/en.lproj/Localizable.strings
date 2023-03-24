@@ -691,3 +691,6 @@
 "PASSWORD" = "Password";
 "PARKED" = "Parked";
 "PARKING_TRIAL_EXPIRES_ON" = "Trial expires on %@";
+"PARKING_EXPIRES_ON" = "Parking expires on %@";
+"PARKING_EXPIRED" = "Parking expired";
+"PARKED_DOMAINS_FOUND_TITLE" = "We found %@";

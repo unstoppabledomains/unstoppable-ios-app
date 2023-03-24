@@ -70,12 +70,8 @@ private extension ParkedDomainCell {
         switch parkingStatus {
         case .claimed:
             return nil
-        case .freeParking:
+        case .freeParking, .parked, .waitingForParkingOrClaim, .parkingExpired, .parkedButExpiresSoon:
             return .parkingIcon24
-        case .parked:
-            return .warningIcon
-        case .waitingForParkingOrClaim:
-            return .warningIcon
         }
     }
     
@@ -83,12 +79,12 @@ private extension ParkedDomainCell {
         switch parkingStatus {
         case .claimed:
             return nil
-        case .freeParking:
+        case .freeParking, .parked:
             return .foregroundSecondary
-        case .parked:
+        case .parkedButExpiresSoon, .waitingForParkingOrClaim:
             return .foregroundWarning
-        case .waitingForParkingOrClaim:
-            return .foregroundWarning
+        case .parkingExpired:
+            return .foregroundDanger
         }
     }
     
@@ -98,11 +94,20 @@ private extension ParkedDomainCell {
             return nil
         case .freeParking:
             return String.Constants.parked.localized()
-        case .parked(let expiresDate):
-            let formattedDate = DateFormattingService.shared.formatParkingExpiresDate(expiresDate)
-            return String.Constants.parkingExpiresOn.localized(formattedDate)
-        case .waitingForParkingOrClaim:
+        case .parked:
             return String.Constants.parked.localized()
+        case .parkedButExpiresSoon(let expiresDate):
+            let formattedDate = formattedExpiresDate(expiresDate)
+            return String.Constants.parkingExpiresOn.localized(formattedDate)
+        case .waitingForParkingOrClaim(let expiresDate):
+            let formattedDate = formattedExpiresDate(expiresDate)
+            return String.Constants.parkingTrialExpiresOn.localized(formattedDate)
+        case .parkingExpired:
+            return String.Constants.parkingExpired.localized()
         }
+    }
+    
+    func formattedExpiresDate(_ expiresDate: Date) -> String {
+        DateFormattingService.shared.formatParkingExpiresDate(expiresDate)
     }
 }

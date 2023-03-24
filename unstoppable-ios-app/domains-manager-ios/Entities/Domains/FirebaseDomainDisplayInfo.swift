@@ -31,12 +31,23 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
         guard internalCustody else { return .claimed }
         
         if let parkingExpiresAt {
+            if parkingExpiresAt < Date() {
+                return .parkingExpired
+            }
+            let monthDif = Calendar.current.compare(parkingExpiresAt, to: Date(), toGranularity: .month).rawValue
+            if monthDif < 1 {
+                return .parkedButExpiresSoon(expiresDate: parkingExpiresAt)
+            }
             return .parked(expiresDate: parkingExpiresAt)
         }
         
         if let purchasedAt,
            purchasedAt >= Constants.parkingBetaLaunchDate {
-            return .waitingForParkingOrClaim
+            let expiresDate = Calendar.current.date(byAdding: .day, value: 7, to: purchasedAt) ?? Date() // TODO: - Remove assumption of 7 days trial time when BE ready
+            if expiresDate < Date() {
+                return .parkingExpired
+            }
+            return .waitingForParkingOrClaim(expiresDate: expiresDate)
         }
         return .freeParking
     }
