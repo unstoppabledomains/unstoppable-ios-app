@@ -103,7 +103,8 @@ extension StatusMessage {
         case updatingRecords
         case bridgeDomainToPolygon
         case deprecated(tld: String)
-        case electricMinting, electricUpdatingRecords, orangeDeprecated(tld: String)
+        case parked(status: DomainParkingStatus)
+        case electricMinting, electricUpdatingRecords, orangeDeprecated(tld: String), orangeParked(status: DomainParkingStatus)
         
         var icon: UIImage {
             switch self {
@@ -113,6 +114,8 @@ extension StatusMessage {
                 return .warningIconLarge
             case .deprecated, .orangeDeprecated:
                 return .warningIconLarge
+            case .parked, .orangeParked:
+                return .parkingIcon24
             }
         }
         
@@ -126,6 +129,8 @@ extension StatusMessage {
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
             case .electricMinting:
                 return String.Constants.mintingInProgressTitle.localized()
+            case .parked, .orangeParked:
+                return String.Constants.parkedDomain.localized()
             }
         }
         
@@ -133,13 +138,13 @@ extension StatusMessage {
             switch self {
             case .updatingRecords:
                 return .gray
-            case .bridgeDomainToPolygon, .deprecated:
+            case .bridgeDomainToPolygon, .deprecated, .parked:
                 return .warning
             case .electricUpdatingRecords:
                 return .electricYellow
             case .electricMinting:
                 return .electricGreen
-            case .orangeDeprecated:
+            case .orangeDeprecated, .orangeParked:
                 return .orange
             }
         }
@@ -148,7 +153,7 @@ extension StatusMessage {
             switch self {
             case .updatingRecords, .electricUpdatingRecords, .electricMinting:
                 imageView.runUpdatingRecordsAnimation()
-            case .bridgeDomainToPolygon, .deprecated, .orangeDeprecated:
+            case .bridgeDomainToPolygon, .deprecated, .orangeDeprecated, .parked, .orangeParked:
                 return
             }
         }
