@@ -394,20 +394,32 @@ private extension DomainsCollectionCarouselItemViewController {
                 section.contentInsets = .init(top: 0, leading: 16,
                                               bottom: 0, trailing: 16)
             case .nfts:
-                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5),
-                                                      heightDimension: .fractionalWidth(0.5))
-                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+//                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5),
+//                                                      heightDimension: .fractionalHeight(1.0))
+//                let item = NSCollectionLayoutItem(layoutSize: itemSize)
                 let inset: CGFloat = 8
-                item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+//                item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+//
+//                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+//                                                       heightDimension: .fractionalWidth(0.5))
+//                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
+//                                                               subitems: [item])
                 
+                
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                      heightDimension: .fractionalHeight(1.0))
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
+                item.contentInsets = NSDirectionalEdgeInsets(top: inset, leading: inset, bottom: inset, trailing: inset)
+
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .fractionalHeight(0.95))
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
-                                                               subitems: [item])
+                                                       heightDimension: .fractionalWidth(0.5))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+                let spacing = CGFloat(inset)
+                
                 
                 section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = .init(top: 0, leading: 8,
-                                              bottom: 0, trailing: 8)
+                section.contentInsets = .init(top: 0, leading: inset,
+                                              bottom: 100, trailing: inset)
             }
             
             return section
