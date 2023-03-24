@@ -1803,6 +1803,10 @@
 		C666E0C929CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */; };
 		C666E0CA29CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */; };
 		C666E0CB29CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */; };
+		C666E0FC29CD594F0003DECB /* UserProfileAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0FB29CD594F0003DECB /* UserProfileAction.swift */; };
+		C666E0FD29CD594F0003DECB /* UserProfileAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0FB29CD594F0003DECB /* UserProfileAction.swift */; };
+		C666E0FE29CD594F0003DECB /* UserProfileAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0FB29CD594F0003DECB /* UserProfileAction.swift */; };
+		C666E0FF29CD594F0003DECB /* UserProfileAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0FB29CD594F0003DECB /* UserProfileAction.swift */; };
 		C6670A0928D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
 		C6670A0A28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
 		C6670A0B28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
@@ -3838,6 +3842,7 @@
 		C666E0AE29CB41960003DECB /* DomainParkingStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainParkingStatus.swift; sourceTree = "<group>"; };
 		C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDomainsService.swift; sourceTree = "<group>"; };
 		C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDomainsStorage.swift; sourceTree = "<group>"; };
+		C666E0FB29CD594F0003DECB /* UserProfileAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileAction.swift; sourceTree = "<group>"; };
 		C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupChangeReverseResolutionDomainPresenter.swift; sourceTree = "<group>"; };
 		C6670A0E28D46D6B00415EBB /* String+SHA3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+SHA3.swift"; sourceTree = "<group>"; };
 		C66804AC280D93E5007E6390 /* ObjectWithAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectWithAttributedString.swift; sourceTree = "<group>"; };
@@ -4987,6 +4992,7 @@
 			isa = PBXGroup;
 			children = (
 				C60E9BA128218DD300CD7593 /* LegalType.swift */,
+				C666E0FB29CD594F0003DECB /* UserProfileAction.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -8421,6 +8427,7 @@
 				3018AEC227EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,
 				C62247B0283CFF1B002A0CBD /* DomainTransactionsServiceProtocol.swift in Sources */,
 				3026FA2127E77AFF00FE058B /* BackupWalletViewController.swift in Sources */,
+				C666E0FC29CD594F0003DECB /* UserProfileAction.swift in Sources */,
 				C6E1187D28F555A200C6AD4D /* UICollectionViewCellPreview.swift in Sources */,
 				C692C309282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
 				C6124CEB29252E8F005E6537 /* DomainProfileSignExternalWalletViewPresenter.swift in Sources */,
@@ -9407,6 +9414,7 @@
 				C6ECBF8D28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C60982732824094100546392 /* ViewWithDashesProgress.swift in Sources */,
 				C6B6B02A296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
+				C666E0FE29CD594F0003DECB /* UserProfileAction.swift in Sources */,
 				C60610DB29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C6C9958C289D313D00367362 /* CNavigationBarBackButton.swift in Sources */,
 				C691CFCA28C070450077C59F /* SetupReverseResolutionViewController.swift in Sources */,
@@ -10054,6 +10062,7 @@
 				C6124CDF2923C7FF005E6537 /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
 				C6ECBF8E28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B6B02B296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
+				C666E0FF29CD594F0003DECB /* UserProfileAction.swift in Sources */,
 				C60610DC29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C60982742824094100546392 /* ViewWithDashesProgress.swift in Sources */,
 				C691CFCB28C070450077C59F /* SetupReverseResolutionViewController.swift in Sources */,
@@ -10420,6 +10429,7 @@
 				3018AEC327EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,
 				C62247B1283CFF1B002A0CBD /* DomainTransactionsServiceProtocol.swift in Sources */,
 				3026FA2227E77AFF00FE058B /* BackupWalletViewController.swift in Sources */,
+				C666E0FD29CD594F0003DECB /* UserProfileAction.swift in Sources */,
 				C6E1187E28F555A200C6AD4D /* UICollectionViewCellPreview.swift in Sources */,
 				C692C30A282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
 				C6124CEC29252E8F005E6537 /* DomainProfileSignExternalWalletViewPresenter.swift in Sources */,

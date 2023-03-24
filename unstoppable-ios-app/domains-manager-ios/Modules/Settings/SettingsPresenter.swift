@@ -226,18 +226,26 @@ private extension SettingsPresenter {
     
     @MainActor
     func showLoginScreen() {
-        guard let view,
+        guard let firebaseUser,
+              let view,
               let nav = view.cNavigationController else { return }
         
         if appContext.firebaseAuthService.isAuthorised {
             Task {
                 do {
-                    try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
-                    await view.dismissPullUpMenu()
-                    try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                    firebaseInteractionService.logout()
+                    let domainsCount = appContext.firebaseDomainsService.getCachedDomains().count
+                    let profileAction = try await appContext.pullUpViewService.showUserProfilePullUp(with: firebaseUser.email ?? "No email",
+                                                                                                     domainsCount: domainsCount,
+                                                                                                     in: view)
+                    switch profileAction {
+                    case .logOut:
+                        try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
+                        await view.dismissPullUpMenu()
+                        try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+                        firebaseInteractionService.logout()                        
+                    }
                 } catch { }
-                                
+                         // TODO: - Remove
 //                do {
 //                    let domains = try await appContext.firebaseInteractionService.getParkedDomains()
 //                    let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })

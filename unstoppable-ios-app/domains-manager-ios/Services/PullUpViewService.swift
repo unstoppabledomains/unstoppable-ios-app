@@ -95,6 +95,9 @@ protocol PullUpViewServiceProtocol {
                                                 in viewController: UIViewController)
     func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async
     func showLogoutConfirmationPullUp(in viewController: UIViewController) async throws
+    func showUserProfilePullUp(with email: String,
+                               domainsCount: Int,
+                               in viewController: UIViewController) async throws -> UserProfileAction
 }
 
 @MainActor
@@ -1390,6 +1393,25 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
             showOrUpdate(in: viewController, pullUp: .logOutConfirmation, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
+        }
+    }
+    
+    func showUserProfilePullUp(with email: String,
+                               domainsCount: Int,
+                               in viewController: UIViewController) async throws -> UserProfileAction {
+        try await withSafeCheckedThrowingMainActorContinuation(critical: false) { continuation in
+            let selectionViewHeight: CGFloat = 288
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(email),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .domainsProfileIcon,
+                                                                                     size: .small),
+                                                                         subtitle: .label(.text(String.Constants.pluralNDomains.localized(domainsCount)))),
+                                                    items: UserProfileAction.allCases,
+                                                    itemSelectedCallback: { legalType in
+                continuation(.success(legalType))
+            })
+            
+            showOrUpdate(in: viewController, pullUp: .settingsLegalSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
         }
     }
 }
