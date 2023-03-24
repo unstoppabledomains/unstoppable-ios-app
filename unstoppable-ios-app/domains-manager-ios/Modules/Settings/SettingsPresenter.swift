@@ -226,13 +226,18 @@ private extension SettingsPresenter {
     
     @MainActor
     func showLoginScreen() {
-        guard let firebaseUser,
-              let view,
+        guard let view,
               let nav = view.cNavigationController else { return }
         
         if appContext.firebaseAuthService.isAuthorised {
             Task {
                 do {
+                    guard let firebaseUser else {
+                        appContext.firebaseInteractionService.logout()
+                        showLoginScreen()
+                        Debugger.printFailure("Failed to get firebaser user model in authorized state", critical: true)
+                        return
+                    }
                     let domainsCount = appContext.firebaseDomainsService.getCachedDomains().count
                     let profileAction = try await appContext.pullUpViewService.showUserProfilePullUp(with: firebaseUser.email ?? "No email",
                                                                                                      domainsCount: domainsCount,
