@@ -261,7 +261,11 @@ private extension SettingsPresenter {
 //                }
             }
         } else {
-            UDRouter().showLoginScreen(in: nav)
+            UDRouter().runLoginFlow(with: .default,
+                                    loggedInCallback: { result in
+                
+            },
+                                    in: view)
         }
     }
 }

@@ -19,16 +19,19 @@ final class ParkedDomainsFoundViewPresenter {
     
     private weak var view: ParkedDomainsFoundViewProtocol?
     private let domains: [FirebaseDomainDisplayInfo]
-    
+    private weak var loginFlowManager: LoginFlowManager?
+
     var title: String {
         String.Constants.pluralWeFoundNDomains.localized(domains.count)
     }
     var progress: Double? { 1 }
 
     init(view: ParkedDomainsFoundViewProtocol,
-         domains: [FirebaseDomainDisplayInfo]) {
+         domains: [FirebaseDomainDisplayInfo],
+         loginFlowManager: LoginFlowManager) {
         self.view = view
         self.domains = domains
+        self.loginFlowManager = loginFlowManager
     }
 }
 

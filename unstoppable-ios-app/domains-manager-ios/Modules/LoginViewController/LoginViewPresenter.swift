@@ -13,9 +13,12 @@ protocol LoginViewPresenterProtocol: BasePresenterProtocol {
 
 final class LoginViewPresenter {
     private weak var view: LoginViewProtocol?
-    
-    init(view: LoginViewProtocol) {
+    private weak var loginFlowManager: LoginFlowManager?
+
+    init(view: LoginViewProtocol,
+         loginFlowManager: LoginFlowManager) {
         self.view = view
+        self.loginFlowManager = loginFlowManager
     }
 }
 
@@ -60,10 +63,9 @@ private extension LoginViewPresenter {
     
     @MainActor
     func loginWithEmail() {
-        guard let view,
-            let nav = view.cNavigationController else { return }
-        
-        UDRouter().showLoginWithEmailScreen(in: nav)
+        Task {
+            try? await loginFlowManager?.handle(action: .loginWithEmailAndPassword)
+        }
     }
     
     func loginWithGoogle()  {
@@ -94,13 +96,8 @@ private extension LoginViewPresenter {
     
     @MainActor
     func userAuthorized() async {
-        guard let nav = view?.cNavigationController else { return }
-        
         do {
-            let domains = try await appContext.firebaseDomainsService.loadParkedDomains()
-            let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
-            UDRouter().showParkedDomainsFoundModuleWith(domains: displayInfo,
-                                                        in: nav)
+            try await loginFlowManager?.handle(action: .authorized)
         } catch {
             authFailedWith(error: error)
         }
