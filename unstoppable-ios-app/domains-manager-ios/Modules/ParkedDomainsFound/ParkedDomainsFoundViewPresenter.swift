@@ -50,8 +50,10 @@ extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtoc
         }
     }
     
+    @MainActor
     func importButtonPressed() {
-        
+        view?.cNavigationController?.popToRootViewController(animated: true)
+        appContext.toastMessageService.showToast(.parkedDomainsImported(domains.count), isSticky: false)
     }
 }
 
