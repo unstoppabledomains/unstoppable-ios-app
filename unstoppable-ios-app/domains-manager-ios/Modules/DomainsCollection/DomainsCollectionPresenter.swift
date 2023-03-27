@@ -140,7 +140,9 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     func didTapSettingsButton() {
         UserDefaults.homeScreenSettingsButtonPressed = true
         updateGoToSettingsTutorialVisibility()
-        router.showSettings()
+        router.showSettings(loginCallback: { [weak self] result in
+            self?.handleLoginResult(result)
+        })
     }
 
     @MainActor
@@ -463,6 +465,24 @@ private extension DomainsCollectionPresenter {
     @MainActor
     func handleNoDomainsToMint() {
         didTapAddButton()
+    }
+    
+    func handleLoginResult(_ result: LoginFlowNavigationController.LogInResult) {
+        Task { @MainActor in
+            switch result {
+            case .loggedIn(let parkedDomains):
+                guard let parkedDomain = parkedDomains.first else { return }
+                
+                view?.runConfettiAnimation()
+                view?.showToast(.parkedDomainsImported(parkedDomains.count))
+                let domains = stateController.domains
+                if let domainIndex = domains.firstIndex(where: { $0.name == parkedDomain.name }) {
+                    setNewIndex(domainIndex)
+                }
+            case .failedToLoadParkedDomains, .cancel:
+                return
+            }
+        }
     }
 }
  

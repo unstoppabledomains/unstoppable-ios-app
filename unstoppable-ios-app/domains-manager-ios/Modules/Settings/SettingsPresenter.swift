@@ -19,13 +19,16 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let firebaseInteractionService: FirebaseInteractionServiceProtocol
     private var firebaseUser: FirebaseUser?
+    private var loginCallback: LoginFlowNavigationController.LoggedInCallback?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     
     init(view: SettingsViewProtocol,
+         loginCallback: LoginFlowNavigationController.LoggedInCallback?,
          notificationsService: NotificationsServiceProtocol,
          dataAggregatorService: DataAggregatorServiceProtocol,
          firebaseInteractionService: FirebaseInteractionServiceProtocol) {
         self.view = view
+        self.loginCallback = loginCallback
         self.notificationsService = notificationsService
         self.dataAggregatorService = dataAggregatorService
         self.firebaseInteractionService = firebaseInteractionService
@@ -226,8 +229,7 @@ private extension SettingsPresenter {
     
     @MainActor
     func showLoginScreen() {
-        guard let view,
-              let nav = view.cNavigationController else { return }
+        guard let view else { return }
         
         if appContext.firebaseAuthService.isAuthorised {
             Task {
@@ -262,8 +264,8 @@ private extension SettingsPresenter {
             }
         } else {
             UDRouter().runLoginFlow(with: .default,
-                                    loggedInCallback: { result in
-                
+                                    loggedInCallback: { [weak self] result in
+                self?.loginCallback?(result)
             },
                                     in: view)
         }

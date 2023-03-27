@@ -9,7 +9,7 @@ import UIKit
 
 @MainActor
 protocol DomainsCollectionRouterProtocol {
-    func showSettings()
+    func showSettings(loginCallback: @escaping LoginFlowNavigationController.LoggedInCallback)
     func showQRScanner(selectedDomain: DomainDisplayInfo)
     func showDomainProfile(_ domain: DomainDisplayInfo,
                            wallet: UDWallet,
@@ -65,10 +65,19 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
         navigationController.setViewControllers(viewControllers, animated: true)
     }
     
-    func showSettings() {
+    func showSettings(loginCallback: @escaping LoginFlowNavigationController.LoggedInCallback) {
         guard let navigationController = self.navigationController else { return }
         
-        showSettings(in: navigationController)
+        showSettings(in: navigationController, loginCallback: { [weak self] result in
+            loginCallback(result)
+            switch result {
+            case .cancel, .failedToLoadParkedDomains:
+                return
+            case .loggedIn(let parkedDomains):
+                guard !parkedDomains.isEmpty else { return }
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
+        })
     }
     
     func showQRScanner(selectedDomain: DomainDisplayInfo) {

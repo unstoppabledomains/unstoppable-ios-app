@@ -764,6 +764,9 @@ extension String {
         static let parkingExpiresOn = "PARKING_EXPIRES_ON"
         static let parkingExpired = "PARKING_EXPIRED"
         static let parkedDomainsFoundTitle = "PARKED_DOMAINS_FOUND_TITLE"
+        static let noParkedDomainsTitle = "NO_PARKED_DOMAINS_TITLE"
+        static let syncing = "SYNCING"
+
     }
     
     struct Segues {

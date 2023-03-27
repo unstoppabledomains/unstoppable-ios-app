@@ -26,12 +26,19 @@ final class NoParkedDomainsFoundViewController: BaseViewController {
         setup()
         presenter.viewDidLoad()
     }
-    
+ 
 }
 
 // MARK: - NoParkedDomainsFoundViewProtocol
 extension NoParkedDomainsFoundViewController: NoParkedDomainsFoundViewProtocol {
 
+}
+
+// MARK: - Actions
+private extension NoParkedDomainsFoundViewController {
+    @IBAction func confirmButtonPressed(_ sender: Any) {
+        presenter.confirmButtonPressed()
+    }
 }
 
 // MARK: - Private functions
@@ -42,6 +49,7 @@ private extension NoParkedDomainsFoundViewController {
 // MARK: - Setup functions
 private extension NoParkedDomainsFoundViewController {
     func setup() {
-        
+        confirmButton.setTitle(String.Constants.gotIt.localized(), image: nil)
+        titleLabel.setTitle(String.Constants.noParkedDomainsTitle.localized())
     }
 }

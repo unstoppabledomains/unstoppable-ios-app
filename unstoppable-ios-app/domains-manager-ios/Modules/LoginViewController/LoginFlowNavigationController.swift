@@ -48,11 +48,6 @@ final class LoginFlowNavigationController: CNavigationController {
         
         if isLastViewController(topViewController) {
             return cNavigationController?.popViewController(animated: true)
-        } else if topViewController is MintDomainsConfigurationViewController {
-            return super.popTo(EnterEmailViewController.self)
-        } else if topViewController is NoDomainsToMintViewController {
-            dismiss(result: .loggedIn(parkedDomains: []))
-            return nil
         }
         return super.popViewController(animated: animated, completion: completion)
     }
@@ -105,18 +100,22 @@ private extension LoginFlowNavigationController {
             vc.dismiss(animated: true)
         }
         cNavigationController?.transitionHandler?.isInteractionEnabled = true
-        let domainsMintedCallback = self.loggedInCallback
+        let loggedInCallback = self.loggedInCallback
         self.cNavigationController?.popViewController(animated: true) {
-            domainsMintedCallback?(result)
+            loggedInCallback?(result)
         }
     }
     
     func setSwipeGestureEnabledForCurrentState() {
         guard let topViewController = viewControllers.last else { return }
         
-        if topViewController is NoDomainsToMintViewController {
+        if topViewController is NoDomainsToMintViewController ||
+            topViewController is LoadingParkedDomainsViewPresenterProtocol ||
+            topViewController is ParkedDomainsFoundViewController {
             transitionHandler?.isInteractionEnabled = false
             cNavigationController?.transitionHandler?.isInteractionEnabled = false
+            navigationBar.alwaysShowBackButton = false
+            navigationBar.setBackButton(hidden: true)
         } else {
             transitionHandler?.isInteractionEnabled = !isLastViewController(topViewController)
             cNavigationController?.transitionHandler?.isInteractionEnabled = isLastViewController(topViewController)
@@ -124,15 +123,24 @@ private extension LoginFlowNavigationController {
     }
     
     func fetchParkedDomains() async throws {
-        let parkedDomains = try await appContext.firebaseDomainsService.loadParkedDomains()
-        let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
-
-        await MainActor.run {
-            if parkedDomains.isEmpty {
-                moveToStep(.noParkedDomains)
-            } else {
-                moveToStep(.parkedDomainsFound(parkedDomains: displayInfo))
+        do {
+            await MainActor.run {
+                moveToStep(.fetchingDomains)
             }
+            let parkedDomains = try await appContext.firebaseDomainsService.loadParkedDomains()
+            let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
+            
+            await MainActor.run {
+                if parkedDomains.isEmpty {
+                    moveToStep(.noParkedDomains)
+                } else {
+                    moveToStep(.parkedDomainsFound(parkedDomains: displayInfo))
+                }
+            }
+        } catch {
+            (topViewController as? BaseViewControllerProtocol)?.showAlertWith(error: error, handler: { [weak self] _ in
+                self?.dismiss(result: .failedToLoadParkedDomains)
+            })
         }
     }
     
@@ -193,8 +201,10 @@ private extension LoginFlowNavigationController {
             vc.presenter = presenter
             return vc
         case .fetchingDomains:
-            let vc = ChoosePrimaryDomainViewController.nibInstance()
-         
+            let vc = LoadingParkedDomainsViewController.nibInstance()
+            let presenter = LoadingParkedDomainsViewPresenter(view: vc,
+                                                              loginFlowManager: self)
+            vc.presenter = presenter
             return vc
         }
     }
@@ -231,6 +241,7 @@ extension LoginFlowNavigationController {
     
     enum Result {
         case cancel
+        case failedToLoadParkedDomains
         case loggedIn(parkedDomains: [FirebaseDomainDisplayInfo])
     }
 }

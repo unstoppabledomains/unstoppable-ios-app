@@ -695,3 +695,5 @@
 "PARKING_EXPIRES_ON" = "Parking expires on %@";
 "PARKING_EXPIRED" = "Parking expired";
 "PARKED_DOMAINS_FOUND_TITLE" = "We found %@";
+"NO_PARKED_DOMAINS_TITLE" = "There’s no parked domains yet";
+"SYNCING" = "Syncing";

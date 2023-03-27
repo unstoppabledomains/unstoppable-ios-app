@@ -9,14 +9,16 @@ import UIKit
 
 @MainActor
 class UDRouter: DomainProfileSignatureValidator {
-    func showSettings(in viewController: CNavigationController) {
-        let settingsVC = buildSettingsModule()
+    func showSettings(in viewController: CNavigationController,
+                      loginCallback: LoginFlowNavigationController.LoggedInCallback?) {
+        let settingsVC = buildSettingsModule(loginCallback: loginCallback)
         viewController.pushViewController(settingsVC, animated: true)
     }
     
-    func buildSettingsModule() -> UIViewController {
+    private func buildSettingsModule(loginCallback: LoginFlowNavigationController.LoggedInCallback?) -> UIViewController {
         let vc = SettingsViewController.nibInstance()
         let presenter = SettingsPresenter(view: vc,
+                                          loginCallback: loginCallback,
                                           notificationsService: appContext.notificationsService,
                                           dataAggregatorService: appContext.dataAggregatorService,
                                           firebaseInteractionService: appContext.firebaseInteractionService)

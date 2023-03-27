@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NoParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
-
+    func confirmButtonPressed()
 }
 
 final class NoParkedDomainsFoundViewPresenter {
@@ -24,7 +24,11 @@ final class NoParkedDomainsFoundViewPresenter {
 
 // MARK: - NoParkedDomainsFoundViewPresenterProtocol
 extension NoParkedDomainsFoundViewPresenter: NoParkedDomainsFoundViewPresenterProtocol {
-    
+    func confirmButtonPressed() {
+        Task {
+            try? await loginFlowManager?.handle(action: .importCompleted(parkedDomains: []))
+        }
+    }
 }
 
 // MARK: - Private functions
