@@ -701,3 +701,4 @@
 "PARKED_DOMAIN_INFO_PULL_UP_SUBTITLE" = "Domain stored in a special custodial wallet designed to protect against theft.";
 "PARKED_DOMAIN_EXPIRES_PULL_UP_TITLE" = "Parking trial expires on %@";
 "PARKED_DOMAIN_EXPIRES_PULL_UP_SUBTITLE" = "Parking trial expires soon. To prevent any potential conflicts, we strongly recommend that you claim or park your domain as soon as possible.";
+"USER_LOGGED_OUT_TOAST_MESSAGE" = "You have logged out of the account";

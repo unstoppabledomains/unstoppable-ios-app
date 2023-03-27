@@ -770,6 +770,7 @@ extension String {
         static let parkedDomainInfoPullUpSubtitle = "PARKED_DOMAIN_INFO_PULL_UP_SUBTITLE"
         static let parkedDomainExpiresPullUpTitle = "PARKED_DOMAIN_EXPIRES_PULL_UP_TITLE"
         static let parkedDomainExpiresPullUpSubtitle = "PARKED_DOMAIN_EXPIRES_PULL_UP_SUBTITLE"
+        static let userLoggedOutToastMessage = "USER_LOGGED_OUT_TOAST_MESSAGE"
 
     }
     

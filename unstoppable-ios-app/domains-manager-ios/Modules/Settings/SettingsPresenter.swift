@@ -133,7 +133,7 @@ private extension SettingsPresenter {
             #if TESTFLIGHT
             snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
             #endif
-            snapshot.appendItems([.websiteAccount(userEmail: firebaseUser?.email)])
+            snapshot.appendItems([.websiteAccount(user: firebaseUser)])
 
             
             snapshot.appendSections([.main(2)])
@@ -241,7 +241,7 @@ private extension SettingsPresenter {
                         return
                     }
                     let domainsCount = appContext.firebaseDomainsService.getCachedDomains().count
-                    let profileAction = try await appContext.pullUpViewService.showUserProfilePullUp(with: firebaseUser.email ?? "No email",
+                    let profileAction = try await appContext.pullUpViewService.showUserProfilePullUp(with: firebaseUser.email ?? "Twitter account",
                                                                                                      domainsCount: domainsCount,
                                                                                                      in: view)
                     switch profileAction {
@@ -249,18 +249,10 @@ private extension SettingsPresenter {
                         try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
                         await view.dismissPullUpMenu()
                         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                        firebaseInteractionService.logout()                        
+                        firebaseInteractionService.logout()
+                        await appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
                     }
                 } catch { }
-                         // TODO: - Remove
-//                do {
-//                    let domains = try await appContext.firebaseInteractionService.getParkedDomains()
-//                    let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
-//                    UDRouter().showParkedDomainsFoundModuleWith(domains: displayInfo,
-//                                                                in: nav)
-//                } catch {
-////                    authFailedWith(error: error)
-//                }
             }
         } else {
             UDRouter().runLoginFlow(with: .default,

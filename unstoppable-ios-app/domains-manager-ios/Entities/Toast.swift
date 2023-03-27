@@ -22,6 +22,7 @@ enum Toast: Hashable {
     case itemSaved(name: String)
     case itemCopied(name: String)
     case parkedDomainsImported(_ domainsCount: Int)
+    case userLoggedOut
 
     var message: String {
         switch self {
@@ -59,12 +60,14 @@ enum Toast: Hashable {
             return String.Constants.nCopied.localized(name)
         case .parkedDomainsImported(let domainsCount):
             return String.Constants.pluralNParkedDomainsImported.localized(domainsCount)
+        case .userLoggedOut:
+            return String.Constants.userLoggedOutToastMessage.localized()
         }
     }
     
     var secondaryMessage: String? {
         switch self {
-        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .noInternetConnection, .changesConfirmed, .mintingSuccessful, .mintingUnavailable, .updatingRecords, .domainCopied, .failedToRefreshBadges, .itemSaved, .itemCopied, .parkedDomainsImported:
+        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .noInternetConnection, .changesConfirmed, .mintingSuccessful, .mintingUnavailable, .updatingRecords, .domainCopied, .failedToRefreshBadges, .itemSaved, .itemCopied, .parkedDomainsImported, .userLoggedOut:
             return nil
         case .failedToFetchDomainProfileData:
             return String.Constants.refresh.localized()
@@ -75,7 +78,7 @@ enum Toast: Hashable {
     
     var style: Style {
         switch self {
-        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .changesConfirmed, .mintingSuccessful, .domainCopied, .itemSaved, .itemCopied, .parkedDomainsImported:
+        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .changesConfirmed, .mintingSuccessful, .domainCopied, .itemSaved, .itemCopied, .parkedDomainsImported, .userLoggedOut:
             return .success
         case .noInternetConnection, .updatingRecords, .mintingUnavailable, .failedToFetchDomainProfileData, .failedToUpdateProfile:
             return .dark
@@ -86,7 +89,7 @@ enum Toast: Hashable {
     
     var image: UIImage {
         switch self {
-        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .changesConfirmed, .mintingSuccessful, .domainCopied, .itemSaved, .itemCopied, .parkedDomainsImported:
+        case .walletAddressCopied, .walletAdded, .iCloudBackupRestored, .walletRemoved, .walletDisconnected, .changesConfirmed, .mintingSuccessful, .domainCopied, .itemSaved, .itemCopied, .parkedDomainsImported, .userLoggedOut:
             return .checkCircleWhite
         case .noInternetConnection:
             return .connectionOffIcon
@@ -137,6 +140,8 @@ enum Toast: Hashable {
             return lhsName == rhsName
         case (.parkedDomainsImported(let lhsCount), .parkedDomainsImported(let rhsCount)):
             return lhsCount == rhsCount
+        case (.userLoggedOut, .userLoggedOut):
+            return true
         default:
             return false
         }

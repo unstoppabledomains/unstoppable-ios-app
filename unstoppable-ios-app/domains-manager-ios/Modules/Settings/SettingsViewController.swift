@@ -200,7 +200,7 @@ extension SettingsViewController {
         case homeScreen(_ value: String), wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
         case rateUs, learn, twitter, support, legal
         case testnet(isOn: Bool)
-        case websiteAccount(userEmail: String?)
+        case websiteAccount(user: FirebaseUser?)
         
         var title: String {
             switch self {
@@ -292,8 +292,11 @@ extension SettingsViewController {
                 return .chevron(value: value)
             case .appearance(let appearanceStyle):
                 return .chevron(value: appearanceStyle.visibleName)
-            case .websiteAccount(let email):
-                return .chevron(value: email)
+            case .websiteAccount(let user):
+                if let user {
+                    return .chevron(value: user.email ?? "Twitter")
+                }
+                return .chevron(value: nil)
             case .rateUs, .learn, .twitter, .support, .legal:
                 return .empty
             case .testnet(let isOn):

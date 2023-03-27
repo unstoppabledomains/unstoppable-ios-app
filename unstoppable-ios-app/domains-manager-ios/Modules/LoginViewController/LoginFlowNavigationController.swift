@@ -92,7 +92,8 @@ private extension LoginFlowNavigationController {
     
     func isLastViewController(_ viewController: UIViewController) -> Bool {
         viewController is ParkedDomainsFoundViewController ||
-        viewController is NoParkedDomainsFoundViewController
+        viewController is NoParkedDomainsFoundViewController ||
+        viewController is LoginViewController
     }
     
     func dismiss(result: Result) {

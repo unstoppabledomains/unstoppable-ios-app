@@ -61,7 +61,7 @@ extension CarouselView {
     func set(data: [CarouselViewItem]) {
         self.data = data
         collectionView.reloadData()
-        startAutoScroll()
+        collectionView.setContentOffset(.zero, animated: false)
     }
     
     func setSideGradient(hidden: Bool) {

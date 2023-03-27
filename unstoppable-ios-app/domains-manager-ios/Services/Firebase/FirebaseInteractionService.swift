@@ -255,6 +255,6 @@ struct FirebaseTokenData: Codable {
     let refreshToken: String
 }
 
-struct FirebaseUser: Codable {
+struct FirebaseUser: Codable, Hashable {
     var email: String?
 }

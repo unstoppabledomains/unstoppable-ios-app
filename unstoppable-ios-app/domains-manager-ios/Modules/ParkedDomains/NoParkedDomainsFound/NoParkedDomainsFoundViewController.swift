@@ -26,7 +26,12 @@ final class NoParkedDomainsFoundViewController: BaseViewController {
         setup()
         presenter.viewDidLoad()
     }
- 
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        cNavigationBar?.setBackButton(hidden: true)
+    }
 }
 
 // MARK: - NoParkedDomainsFoundViewProtocol
