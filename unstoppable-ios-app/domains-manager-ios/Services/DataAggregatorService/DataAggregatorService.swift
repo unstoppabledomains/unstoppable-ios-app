@@ -281,6 +281,15 @@ extension DataAggregatorService: UDWalletsServiceListener {
     }
 }
 
+// MARK: - UDWalletsServiceListener
+extension DataAggregatorService: FirebaseInteractionServiceListener {
+    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
+        Task {
+            await reloadAndAggregateData(shouldRefreshPFP: false)
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension DataAggregatorService {
     func getDomainsWithDisplayInfo() async -> [DomainWithDisplayInfo] {

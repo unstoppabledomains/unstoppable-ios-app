@@ -477,7 +477,7 @@ private extension DomainsCollectionPresenter {
                 view?.showToast(.parkedDomainsImported(parkedDomains.count))
                 let domains = stateController.domains
                 if let domainIndex = domains.firstIndex(where: { $0.name == parkedDomain.name }) {
-                    setNewIndex(domainIndex)
+                    setNewIndex(domainIndex, animated: true)
                 }
             case .failedToLoadParkedDomains, .cancel:
                 return

@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 protocol FirebaseInteractionServiceListener: AnyObject {
     func firebaseUserUpdated(firebaseUser: FirebaseUser?)
 }

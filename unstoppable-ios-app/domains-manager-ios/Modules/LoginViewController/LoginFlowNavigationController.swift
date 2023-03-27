@@ -101,9 +101,8 @@ private extension LoginFlowNavigationController {
         }
         cNavigationController?.transitionHandler?.isInteractionEnabled = true
         let loggedInCallback = self.loggedInCallback
-        self.cNavigationController?.popViewController(animated: true) {
-            loggedInCallback?(result)
-        }
+        loggedInCallback?(result)
+        self.cNavigationController?.popViewController(animated: true) 
     }
     
     func setSwipeGestureEnabledForCurrentState() {
