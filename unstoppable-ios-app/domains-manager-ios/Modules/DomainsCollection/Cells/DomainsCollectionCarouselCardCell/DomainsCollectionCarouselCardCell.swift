@@ -236,7 +236,7 @@ private extension DomainsCollectionCarouselCardCell {
             setIndicatorStyle(.minting)
             setStatusMessageComponent(.electricMinting)
         case .parking(let status):
-            setIndicatorStyle(.parked)
+            setIndicatorStyle(.parked(status: status))
             setStatusMessageComponent(.parked(status: status))
         }
     }
@@ -394,7 +394,9 @@ private extension DomainsCollectionCarouselCardCell {
             statusMessage.frame = domainTLDLabel.frame
             statusMessage.frame.origin.x = domainNameLabel.frame.minX
             statusMessage.frame.size.height = 20
+            statusMessage.frame.size.width = domainNameCollapsedLabel.frame.width
             carouselView.frame = statusMessage.frame
+            carouselView.frame.size.width += 60
         }
     }
     
@@ -538,7 +540,7 @@ private extension DomainsCollectionCarouselCardCell {
 // MARK: - Private methods
 private extension DomainsCollectionCarouselCardCell {
     enum DomainIndicatorStyle: CarouselViewItem {
-        case updatingRecords, minting, deprecated(tld: String), parked
+        case updatingRecords, minting, deprecated(tld: String), parked(status: DomainParkingStatus)
       
         var containerBackgroundColor: UIColor {
             switch self {
@@ -571,8 +573,8 @@ private extension DomainsCollectionCarouselCardCell {
                 return String.Constants.mintingInProgressTitle.localized()
             case .deprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
-            case .parked:
-                return String.Constants.parkedDomain.localized()
+            case .parked(let status):
+                return status.title ?? String.Constants.parked.localized()
             }
         }
         

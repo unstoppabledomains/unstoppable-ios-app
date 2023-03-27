@@ -42,7 +42,8 @@ extension StatusMessage {
         label.setAttributedTextWith(text: message,
                                     font: .currentFont(withSize: 14, weight: .medium),
                                     textColor: style.color,
-                                    lineHeight: 20)
+                                    lineHeight: 20,
+                                    lineBreakMode: .byTruncatingTail)
     }
 }
 
