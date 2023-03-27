@@ -36,7 +36,7 @@ extension ParkedDomainCell {
         let parkingStatus = domain.parkingStatus
         guard let icon = iconForParkingStatus(parkingStatus),
               let iconTint = iconTintColorForParkingStatus(parkingStatus),
-              let status = statusForParkingStatus(parkingStatus) else {
+              let status = parkingStatus.title else {
             Debugger.printFailure("Failed to get required information for parking domain", critical: true)
             setStatus("", icon: nil, tintColor: .foregroundSecondary)
             return
@@ -86,28 +86,5 @@ private extension ParkedDomainCell {
         case .parkingExpired:
             return .foregroundDanger
         }
-    }
-    
-    func statusForParkingStatus(_ parkingStatus: DomainParkingStatus) -> String? {
-        switch parkingStatus {
-        case .claimed:
-            return nil
-        case .freeParking:
-            return String.Constants.parked.localized()
-        case .parked:
-            return String.Constants.parked.localized()
-        case .parkedButExpiresSoon(let expiresDate):
-            let formattedDate = formattedExpiresDate(expiresDate)
-            return String.Constants.parkingExpiresOn.localized(formattedDate)
-        case .waitingForParkingOrClaim(let expiresDate):
-            let formattedDate = formattedExpiresDate(expiresDate)
-            return String.Constants.parkingTrialExpiresOn.localized(formattedDate)
-        case .parkingExpired:
-            return String.Constants.parkingExpired.localized()
-        }
-    }
-    
-    func formattedExpiresDate(_ expiresDate: Date) -> String {
-        DateFormattingService.shared.formatParkingExpiresDate(expiresDate)
     }
 }

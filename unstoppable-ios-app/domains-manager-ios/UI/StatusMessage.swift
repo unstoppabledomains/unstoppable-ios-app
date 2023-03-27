@@ -129,8 +129,8 @@ extension StatusMessage {
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
             case .electricMinting:
                 return String.Constants.mintingInProgressTitle.localized()
-            case .parked, .orangeParked:
-                return String.Constants.parkedDomain.localized()
+            case .parked(let status), .orangeParked(let status):
+                return status.title ?? String.Constants.parkedDomain.localized()
             }
         }
         
