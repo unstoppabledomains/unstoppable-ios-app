@@ -98,6 +98,9 @@ protocol PullUpViewServiceProtocol {
     func showUserProfilePullUp(with email: String,
                                domainsCount: Int,
                                in viewController: UIViewController) async throws -> UserProfileAction
+    func showParkedDomainInfoPullUp(in viewController: UIViewController)
+    func showParkedDomainExpiresPullUp(in viewController: UIViewController,
+                                       expiresDate: Date)
 }
 
 @MainActor
@@ -1352,8 +1355,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         
         presentPullUpView(in: viewController, pullUp: .externalWalletConnectionHint, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
-    
-    
+        
     func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async {
         await withSafeCheckedMainActorContinuation(critical: false) { completion in
             let selectionViewHeight: CGFloat = 304
@@ -1414,6 +1416,37 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             showOrUpdate(in: viewController, pullUp: .settingsLegalSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
         }
     }
+    
+    func showParkedDomainInfoPullUp(in viewController: UIViewController) {
+        let selectionViewHeight: CGFloat = 304
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainInfoPullUpTitle.localized()),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .parkingIcon24,
+                                                                                 size: .small),
+                                                                     subtitle: .label(.text(String.Constants.parkedDomainInfoPullUpSubtitle.localized())),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        presentPullUpView(in: viewController, pullUp: .wcFriendlyReminder, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
+    
+    func showParkedDomainExpiresPullUp(in viewController: UIViewController,
+                                       expiresDate: Date) {
+        let expiresDateString = DateFormattingService.shared.formatParkingExpiresDate(expiresDate)
+
+        let selectionViewHeight: CGFloat = 380
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainExpiresPullUpTitle.localized(expiresDateString)),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .warningIcon,
+                                                                                 size: .small,
+                                                                                 tintColor: .foregroundWarning),
+                                                                     subtitle: .label(.text(String.Constants.parkedDomainExpiresPullUpSubtitle.localized())),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        presentPullUpView(in: viewController, pullUp: .wcFriendlyReminder, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
+    
 }
 
 // MARK: - Private methods

@@ -47,9 +47,18 @@ extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtoc
     @MainActor
     func didSelectItem(_ item: ParkedDomainsFoundViewController.Item) {
         UDVibration.buttonTap.vibrate()
+        guard let view else { return }
+        
         switch item {
-        case .parkedDomain:
-            return
+        case .parkedDomain(let domain):
+            switch domain.parkingStatus {
+            case .parkedButExpiresSoon(let expiresDate), .waitingForParkingOrClaim(let expiresDate):
+                appContext.pullUpViewService.showParkedDomainExpiresPullUp(in: view, expiresDate: expiresDate)
+            case .parked, .freeParking:
+                appContext.pullUpViewService.showParkedDomainInfoPullUp(in: view)
+            default:
+                return
+            }
         }
     }
     

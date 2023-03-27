@@ -697,3 +697,7 @@
 "PARKED_DOMAINS_FOUND_TITLE" = "We found %@";
 "NO_PARKED_DOMAINS_TITLE" = "There’s no parked domains yet";
 "SYNCING" = "Syncing";
+"PARKED_DOMAIN_INFO_PULL_UP_TITLE" = "Parked domain";
+"PARKED_DOMAIN_INFO_PULL_UP_SUBTITLE" = "Domain stored in a special custodial wallet designed to protect against theft.";
+"PARKED_DOMAIN_EXPIRES_PULL_UP_TITLE" = "Parking trial expires on %@";
+"PARKED_DOMAIN_EXPIRES_PULL_UP_SUBTITLE" = "Parking trial expires soon. To prevent any potential conflicts, we strongly recommend that you claim or park your domain as soon as possible.";
