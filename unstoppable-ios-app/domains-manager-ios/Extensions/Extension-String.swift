@@ -768,8 +768,12 @@ extension String {
         static let syncing = "SYNCING"
         static let parkedDomainInfoPullUpTitle = "PARKED_DOMAIN_INFO_PULL_UP_TITLE"
         static let parkedDomainInfoPullUpSubtitle = "PARKED_DOMAIN_INFO_PULL_UP_SUBTITLE"
-        static let parkedDomainExpiresPullUpTitle = "PARKED_DOMAIN_EXPIRES_PULL_UP_TITLE"
-        static let parkedDomainExpiresPullUpSubtitle = "PARKED_DOMAIN_EXPIRES_PULL_UP_SUBTITLE"
+        static let parkedDomainExpiresSoonPullUpTitle = "PARKED_DOMAIN_EXPIRES_SOON_PULL_UP_TITLE"
+        static let parkedDomainExpiresSoonPullUpSubtitle = "PARKED_DOMAIN_EXPIRES_SOON_PULL_UP_SUBTITLE"
+        static let parkedDomainTrialExpiresInfoPullUpTitle = "PARKED_DOMAIN_TRIAL_EXPIRES_PULL_UP_TITLE"
+        static let parkedDomainTrialExpiresInfoPullUpSubtitle = "PARKED_DOMAIN_TRIAL_EXPIRES_PULL_UP_SUBTITLE"
+        static let parkedDomainExpiredInfoPullUpTitle = "PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_TITLE"
+        static let parkedDomainExpiredInfoPullUpSubtitle = "PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_SUBTITLE"
         static let userLoggedOutToastMessage = "USER_LOGGED_OUT_TOAST_MESSAGE"
 
     }

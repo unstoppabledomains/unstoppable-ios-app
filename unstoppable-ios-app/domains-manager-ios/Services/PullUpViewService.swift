@@ -99,8 +99,11 @@ protocol PullUpViewServiceProtocol {
                                domainsCount: Int,
                                in viewController: UIViewController) async throws -> UserProfileAction
     func showParkedDomainInfoPullUp(in viewController: UIViewController)
-    func showParkedDomainExpiresPullUp(in viewController: UIViewController,
-                                       expiresDate: Date)
+    func showParkedDomainTrialExpiresPullUp(in viewController: UIViewController,
+                                            expiresDate: Date)
+    func showParkedDomainExpiresSoonPullUp(in viewController: UIViewController,
+                                           expiresDate: Date)
+    func showParkedDomainExpiredPullUp(in viewController: UIViewController)
 }
 
 @MainActor
@@ -1413,7 +1416,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                 continuation(.success(legalType))
             })
             
-            showOrUpdate(in: viewController, pullUp: .settingsLegalSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
+            showOrUpdate(in: viewController, pullUp: .loggedInUserProfile, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
         }
     }
     
@@ -1427,26 +1430,56 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                      cancelButton: .gotItButton()),
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
-        presentPullUpView(in: viewController, pullUp: .wcFriendlyReminder, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+        presentPullUpView(in: viewController, pullUp: .parkedDomainInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
     
-    func showParkedDomainExpiresPullUp(in viewController: UIViewController,
-                                       expiresDate: Date) {
+    func showParkedDomainTrialExpiresPullUp(in viewController: UIViewController,
+                                            expiresDate: Date) {
         let expiresDateString = DateFormattingService.shared.formatParkingExpiresDate(expiresDate)
-
+        
         let selectionViewHeight: CGFloat = 380
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainExpiresPullUpTitle.localized(expiresDateString)),
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainTrialExpiresInfoPullUpTitle.localized(expiresDateString)),
                                                                      contentAlignment: .center,
                                                                      icon: .init(icon: .warningIcon,
                                                                                  size: .small,
                                                                                  tintColor: .foregroundWarning),
-                                                                     subtitle: .label(.text(String.Constants.parkedDomainExpiresPullUpSubtitle.localized())),
+                                                                     subtitle: .label(.text(String.Constants.parkedDomainTrialExpiresInfoPullUpSubtitle.localized())),
                                                                      cancelButton: .gotItButton()),
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
-        presentPullUpView(in: viewController, pullUp: .wcFriendlyReminder, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+        presentPullUpView(in: viewController, pullUp: .parkedDomainTrialExpiresInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
     
+    func showParkedDomainExpiresSoonPullUp(in viewController: UIViewController,
+                                            expiresDate: Date) {
+        let expiresDateString = DateFormattingService.shared.formatParkingExpiresDate(expiresDate)
+        
+        let selectionViewHeight: CGFloat = 328
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainExpiresSoonPullUpTitle.localized(expiresDateString)),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .warningIcon,
+                                                                                 size: .small,
+                                                                                 tintColor: .foregroundWarning),
+                                                                     subtitle: .label(.text(String.Constants.parkedDomainExpiresSoonPullUpSubtitle.localized())),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        presentPullUpView(in: viewController, pullUp: .parkedDomainExpiresSoonInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
+    
+    func showParkedDomainExpiredPullUp(in viewController: UIViewController) {
+        let selectionViewHeight: CGFloat = 328
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.parkedDomainExpiredInfoPullUpTitle.localized()),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .warningIcon,
+                                                                                 size: .small,
+                                                                                 tintColor: .foregroundWarning),
+                                                                     subtitle: .label(.text(String.Constants.parkedDomainExpiredInfoPullUpSubtitle.localized())),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        presentPullUpView(in: viewController, pullUp: .parkedDomainExpiredInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
 }
 
 // MARK: - Private methods

@@ -699,6 +699,10 @@
 "SYNCING" = "Syncing";
 "PARKED_DOMAIN_INFO_PULL_UP_TITLE" = "Parked domain";
 "PARKED_DOMAIN_INFO_PULL_UP_SUBTITLE" = "Domain stored in a special custodial wallet designed to protect against theft.";
-"PARKED_DOMAIN_EXPIRES_PULL_UP_TITLE" = "Parking trial expires on %@";
-"PARKED_DOMAIN_EXPIRES_PULL_UP_SUBTITLE" = "Parking trial expires soon. To prevent any potential conflicts, we strongly recommend that you claim or park your domain as soon as possible.";
+"PARKED_DOMAIN_TRIAL_EXPIRES_PULL_UP_TITLE" = "Parking trial expires on %@";
+"PARKED_DOMAIN_TRIAL_EXPIRES_PULL_UP_SUBTITLE" = "Parking trial expires soon. To prevent any potential conflicts, we strongly recommend that you claim or park your domain as soon as possible.";
+"PARKED_DOMAIN_EXPIRES_SOON_PULL_UP_TITLE" = "Parking expires on %@";
+"PARKED_DOMAIN_EXPIRES_SOON_PULL_UP_SUBTITLE" = "Parking expires soon. To prevent any potential conflicts, we strongly recommend to extend parking subscription";
+"PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_TITLE" = "Parking expired";
+"PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_SUBTITLE" = "Your parking subscription has expired. To avoid any potential conflicts, please renew your subscription.";
 "USER_LOGGED_OUT_TOAST_MESSAGE" = "You have logged out of the account";

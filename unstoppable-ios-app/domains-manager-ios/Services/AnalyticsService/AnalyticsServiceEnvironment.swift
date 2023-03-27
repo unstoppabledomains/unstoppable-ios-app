@@ -292,7 +292,8 @@ extension Analytics {
         case chooseCoinVersion
         case externalWalletConnectionHint
         case externalWalletFailedToSign
-        case logOutConfirmation
+        case logOutConfirmation, loggedInUserProfile
+        case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
