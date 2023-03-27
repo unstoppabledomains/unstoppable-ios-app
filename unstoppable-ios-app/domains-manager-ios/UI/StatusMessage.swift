@@ -84,7 +84,7 @@ private extension StatusMessage {
 
 extension StatusMessage {
     enum Style {
-        case gray, success, warning
+        case gray, success, warning, danger
         case electricYellow, electricGreen, orange
         
         var color: UIColor {
@@ -92,6 +92,7 @@ extension StatusMessage {
             case .gray: return .foregroundSecondary
             case .success: return .foregroundSuccess
             case .warning: return .foregroundWarning
+            case .danger: return .foregroundDanger
             case .electricYellow: return .brandElectricYellow
             case .electricGreen: return .brandElectricGreen
             case .orange: return .brandOrange
@@ -104,7 +105,7 @@ extension StatusMessage {
         case bridgeDomainToPolygon
         case deprecated(tld: String)
         case parked(status: DomainParkingStatus)
-        case electricMinting, electricUpdatingRecords, orangeDeprecated(tld: String), orangeParked(status: DomainParkingStatus)
+        case electricMinting, electricUpdatingRecords, orangeDeprecated(tld: String)
         
         var icon: UIImage {
             switch self {
@@ -114,7 +115,7 @@ extension StatusMessage {
                 return .warningIconLarge
             case .deprecated, .orangeDeprecated:
                 return .warningIconLarge
-            case .parked, .orangeParked:
+            case .parked:
                 return .parkingIcon24
             }
         }
@@ -129,7 +130,7 @@ extension StatusMessage {
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
             case .electricMinting:
                 return String.Constants.mintingInProgressTitle.localized()
-            case .parked(let status), .orangeParked(let status):
+            case .parked(let status):
                 return status.title ?? String.Constants.parkedDomain.localized()
             }
         }
@@ -138,14 +139,23 @@ extension StatusMessage {
             switch self {
             case .updatingRecords:
                 return .gray
-            case .bridgeDomainToPolygon, .deprecated, .parked:
+            case .bridgeDomainToPolygon, .deprecated:
                 return .warning
             case .electricUpdatingRecords:
                 return .electricYellow
             case .electricMinting:
                 return .electricGreen
-            case .orangeDeprecated, .orangeParked:
+            case .orangeDeprecated:
                 return .orange
+            case .parked(let status):
+                switch status {
+                case .freeParking, .parked, .claimed:
+                    return .gray
+                case .parkingExpired:
+                    return .danger
+                case .waitingForParkingOrClaim, .parkedButExpiresSoon:
+                    return .warning
+                }
             }
         }
         
@@ -153,7 +163,7 @@ extension StatusMessage {
             switch self {
             case .updatingRecords, .electricUpdatingRecords, .electricMinting:
                 imageView.runUpdatingRecordsAnimation()
-            case .bridgeDomainToPolygon, .deprecated, .orangeDeprecated, .parked, .orangeParked:
+            case .bridgeDomainToPolygon, .deprecated, .orangeDeprecated, .parked:
                 return
             }
         }

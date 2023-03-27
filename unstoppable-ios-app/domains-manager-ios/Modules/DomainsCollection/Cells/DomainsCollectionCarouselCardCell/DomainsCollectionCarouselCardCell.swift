@@ -237,7 +237,7 @@ private extension DomainsCollectionCarouselCardCell {
             setStatusMessageComponent(.electricMinting)
         case .parking(let status):
             setIndicatorStyle(.parked)
-            setStatusMessageComponent(.orangeParked(status: status))
+            setStatusMessageComponent(.parked(status: status))
         }
     }
     
