@@ -107,7 +107,7 @@ extension RestoreWalletViewController: UITableViewDelegate {
         case .externalWallet:
             onboardingFlowManager.moveToStep(.connectExternalWallet)
         case .websiteAccount:
-            return
+            onboardingFlowManager.moveToStep(.loginWithWebsite)
         }
     }
 }

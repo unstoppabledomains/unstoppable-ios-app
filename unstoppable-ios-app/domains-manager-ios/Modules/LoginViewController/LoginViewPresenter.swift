@@ -11,14 +11,25 @@ protocol LoginViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: LoginViewController.Item)
 }
 
-final class LoginViewPresenter {
+class LoginViewPresenter {
     private weak var view: LoginViewProtocol?
-    private weak var loginFlowManager: LoginFlowManager?
 
-    init(view: LoginViewProtocol,
-         loginFlowManager: LoginFlowManager) {
+    init(view: LoginViewProtocol) {
         self.view = view
-        self.loginFlowManager = loginFlowManager
+    }
+    @MainActor
+    func loginWithEmailAction() { }
+    @MainActor
+    func userDidAuthorize() { }
+    
+    @MainActor
+    func authFailedWith(error: Error) {
+        if let firebaseError = error as? FirebaseAuthError,
+           case .userCancelled = firebaseError {
+            return // Ignore case when user cancelled auth
+        } else {
+            view?.showAlertWith(error: error, handler: nil)
+        }
     }
 }
 
@@ -36,7 +47,7 @@ extension LoginViewPresenter: LoginViewPresenterProtocol {
         case .loginWith(let provider):
             switch provider {
             case .email:
-                loginWithEmail()
+                loginWithEmailAction()
             case .google:
                 loginWithGoogle()
             case .twitter:
@@ -58,13 +69,6 @@ private extension LoginViewPresenter {
                                   .loginWith(provider: .twitter)])
             
             await view?.applySnapshot(snapshot, animated: true)
-        }
-    }
-    
-    @MainActor
-    func loginWithEmail() {
-        Task {
-            try? await loginFlowManager?.handle(action: .loginWithEmailAndPassword)
         }
     }
     
@@ -91,25 +95,6 @@ private extension LoginViewPresenter {
             } catch {
                 await authFailedWith(error: error)
             }
-        }
-    }
-    
-    @MainActor
-    func userDidAuthorize() async {
-        do {
-            try await loginFlowManager?.handle(action: .authorized)
-        } catch {
-            authFailedWith(error: error)
-        }
-    }
-    
-    @MainActor
-    func authFailedWith(error: Error) {
-        if let firebaseError = error as? FirebaseAuthError,
-           case .userCancelled = firebaseError {
-            return // Ignore case when user cancelled auth
-        } else {
-            view?.showAlertWith(error: error, handler: nil)
         }
     }
 }

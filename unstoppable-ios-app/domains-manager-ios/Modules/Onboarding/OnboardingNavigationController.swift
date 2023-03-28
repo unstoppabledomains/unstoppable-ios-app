@@ -354,6 +354,19 @@ private extension OnboardingNavigationController {
         case .allDone:
             let vc = HappyEndViewController.instance()
             return vc
+        case .loginWithWebsite:
+            let vc = LoginViewController.nibInstance()
+            let presenter = LoginOnboardingViewPresenter(view: vc,
+                                                         onboardingFlowManager: self)
+            vc.presenter = presenter
+            return vc
+        case .loadingParkedDomains:
+            let vc = LoadingParkedDomainsViewController.nibInstance()
+            let presenter = LoadingParkedDomainsOnboardingViewPresenter(view: vc,
+                                                                        onboardingFlowManager: self)
+            vc.presenter = presenter
+            return vc
+            
         }
     }
  
@@ -405,6 +418,9 @@ extension OnboardingNavigationController {
         case allDone = 16
         
         case existingUserTutorial = 17
+        
+        case loginWithWebsite = 18
+        case loadingParkedDomains = 19
     }
     
     struct OnboardingNavigationInfo: Codable, CustomStringConvertible {

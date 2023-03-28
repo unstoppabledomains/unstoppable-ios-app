@@ -11,15 +11,14 @@ protocol LoadingParkedDomainsViewPresenterProtocol: BasePresenterProtocol {
 
 }
 
-final class LoadingParkedDomainsViewPresenter {
+class LoadingParkedDomainsViewPresenter {
     private weak var view: LoadingParkedDomainsViewProtocol?
-    private weak var loginFlowManager: LoginFlowManager?
 
-    init(view: LoadingParkedDomainsViewProtocol,
-         loginFlowManager: LoginFlowManager) {
+    init(view: LoadingParkedDomainsViewProtocol) {
         self.view = view
-        self.loginFlowManager = loginFlowManager
     }
+    
+    func viewWillAppear() { }
 }
 
 // MARK: - LoadingParkedDomainsViewPresenterProtocol
@@ -31,3 +30,4 @@ extension LoadingParkedDomainsViewPresenter: LoadingParkedDomainsViewPresenterPr
 private extension LoadingParkedDomainsViewPresenter {
 
 }
+

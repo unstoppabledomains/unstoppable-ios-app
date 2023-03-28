@@ -177,8 +177,8 @@ private extension LoginFlowNavigationController {
         switch step {
         case .selectLoginOption:
             let vc = LoginViewController.nibInstance()
-            let presenter = LoginViewPresenter(view: vc,
-                                               loginFlowManager: self)
+            let presenter = LoginInAppViewPresenter(view: vc,
+                                                    loginFlowManager: self)
             vc.presenter = presenter
             return vc
         case .loginWithEmailAndPassword:
@@ -202,8 +202,8 @@ private extension LoginFlowNavigationController {
             return vc
         case .fetchingDomains:
             let vc = LoadingParkedDomainsViewController.nibInstance()
-            let presenter = LoadingParkedDomainsViewPresenter(view: vc,
-                                                              loginFlowManager: self)
+            let presenter = LoadingParkedDomainsInAppViewPresenter(view: vc,
+                                                                   loginFlowManager: self)
             vc.presenter = presenter
             return vc
         }

@@ -1538,6 +1538,22 @@
 		C6526DBA29D2BB3F00D6F2EB /* AppSessionInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */; };
 		C6526DBB29D2BB4000D6F2EB /* AppSessionInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */; };
 		C6526DBC29D2BB4000D6F2EB /* AppSessionInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */; };
+		C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */; };
+		C6526DC629D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */; };
+		C6526DC729D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */; };
+		C6526DC829D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */; };
+		C6526DCA29D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC929D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift */; };
+		C6526DCB29D2DC8D00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC929D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift */; };
+		C6526DCC29D2DC8D00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC929D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift */; };
+		C6526DCD29D2DC8D00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DC929D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift */; };
+		C6526DCF29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DCE29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift */; };
+		C6526DD029D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DCE29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift */; };
+		C6526DD129D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DCE29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift */; };
+		C6526DD229D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DCE29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift */; };
+		C6526DD429D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DD329D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift */; };
+		C6526DD529D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DD329D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift */; };
+		C6526DD629D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DD329D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift */; };
+		C6526DD729D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DD329D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -3812,6 +3828,10 @@
 		C652629628110B8500F1D699 /* SecurityWallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityWallViewController.swift; sourceTree = "<group>"; };
 		C652629728110B8500F1D699 /* SecurityWallViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecurityWallViewController.xib; sourceTree = "<group>"; };
 		C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionInterpreter.swift; sourceTree = "<group>"; };
+		C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginInAppViewPresenter.swift; sourceTree = "<group>"; };
+		C6526DC929D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginOnboardingViewPresenter.swift; sourceTree = "<group>"; };
+		C6526DCE29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingParkedDomainsInAppViewPresenter.swift; sourceTree = "<group>"; };
+		C6526DD329D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingParkedDomainsOnboardingViewPresenter.swift; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -5631,6 +5651,8 @@
 			children = (
 				C6A474C629D149560073415F /* LoginFlowNavigationController.swift */,
 				C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */,
+				C6526DC429D2DC8500D6F2EB /* LoginInAppViewPresenter.swift */,
+				C6526DC929D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift */,
 				C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */,
 				C63DD36029C89FEC002D45B2 /* LoginViewController.xib */,
 				C666E06E29C9F1760003DECB /* LoginWithEmailViewController */,
@@ -6589,6 +6611,8 @@
 			isa = PBXGroup;
 			children = (
 				C6A474DD29D1756D0073415F /* LoadingParkedDomainsViewPresenter.swift */,
+				C6526DCE29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift */,
+				C6526DD329D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift */,
 				C6A474DE29D1756D0073415F /* LoadingParkedDomainsViewController.swift */,
 				C6A474DF29D1756D0073415F /* LoadingParkedDomainsViewController.xib */,
 			);
@@ -8197,6 +8221,7 @@
 				C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194828D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
 				C63F1D1528AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
+				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
 				C6C995AA289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
 				C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */,
@@ -8216,6 +8241,7 @@
 				C6D0548E27FF07390036B200 /* UDTextField.swift in Sources */,
 				C62247A0283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
 				C6E1188D28F67DA200C6AD4D /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
+				C6526DCA29D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */,
 				C66804D1280D9EC8007E6390 /* OnboardingPasscodeViewController.swift in Sources */,
 				C6ED31E3295BF8DF00BC6919 /* Equatable.swift in Sources */,
 				C60982252823E4CC00546392 /* WalletDetailsAddWalletAction.swift in Sources */,
@@ -8305,6 +8331,7 @@
 				C6ECBF7A28D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */,
 				C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */,
 				C6D6E4F72817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
+				C6526DD429D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
 				C685A96F2840A59B00E54044 /* TextBlackButton.swift in Sources */,
 				C66435E0288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift in Sources */,
 				C692C31F282E485C00C31393 /* SecuritySettingsViewController.swift in Sources */,
@@ -8581,6 +8608,7 @@
 				C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
 				C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */,
 				C624D77A281BAB5000F55530 /* UDDomainsService.swift in Sources */,
+				C6526DCF29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
 				C6C75C692848E82000DD8E3F /* Sequence.swift in Sources */,
 				C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */,
 				C6C57C4D2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift in Sources */,
@@ -8986,10 +9014,13 @@
 				C6D6E53828193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
 				C63F1D0B28AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C638121E29914EDF002590E7 /* UIImage+GIF.swift in Sources */,
+				C6526DCC29D2DC8D00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */,
 				C6D6E5AF281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
 				C666E09229CB3F430003DECB /* ParkedDomainsFoundViewController.swift in Sources */,
 				C66435D1288ECC370098E1B8 /* PushNotificationsInfo.swift in Sources */,
+				C6526DD129D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
 				C669C3862912576D00837F21 /* UITextField.swift in Sources */,
+				C6526DD629D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
 				C60CA2982832501D00AB1B36 /* QRCodeServiceProvider.swift in Sources */,
 				C6456F1D2800302900A517D5 /* ConfirmWordListCell.swift in Sources */,
 				C692C36C282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */,
@@ -9424,6 +9455,7 @@
 				C689538A2834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */,
 				C60982692824012200546392 /* EnterBackupCreateLocalWalletPresenter.swift in Sources */,
 				304C66D12807F1E800E1ACFE /* OnboardingData.swift in Sources */,
+				C6526DC729D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C66FCD1528450A8F009B9525 /* GIFAnimationImageView.swift in Sources */,
 				C6A2D520284DBDF000327C47 /* QRScannerSightView.swift in Sources */,
 				C6E0414D295052180080F8E3 /* CarouselCellVisibilityLevel.swift in Sources */,
@@ -9641,10 +9673,13 @@
 				C6D6E53928193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
 				C63F1D0C28AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C638121F29914EDF002590E7 /* UIImage+GIF.swift in Sources */,
+				C6526DCD29D2DC8D00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */,
 				C6D6E5B0281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
 				C666E09329CB3F430003DECB /* ParkedDomainsFoundViewController.swift in Sources */,
 				C66435D2288ECC370098E1B8 /* PushNotificationsInfo.swift in Sources */,
+				C6526DD229D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
 				C669C3872912576D00837F21 /* UITextField.swift in Sources */,
+				C6526DD729D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
 				C60CA2992832501D00AB1B36 /* QRCodeServiceProvider.swift in Sources */,
 				C6456F1E2800302900A517D5 /* ConfirmWordListCell.swift in Sources */,
 				C692C36D282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */,
@@ -10079,6 +10114,7 @@
 				C60CA2912832501D00AB1B36 /* QRCodeService.swift in Sources */,
 				C689538B2834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */,
 				C609826A2824012200546392 /* EnterBackupCreateLocalWalletPresenter.swift in Sources */,
+				C6526DC829D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				304C66D22807F1E800E1ACFE /* OnboardingData.swift in Sources */,
 				C66FCD1628450A8F009B9525 /* GIFAnimationImageView.swift in Sources */,
 				C6E0414E295052180080F8E3 /* CarouselCellVisibilityLevel.swift in Sources */,
@@ -10220,6 +10256,7 @@
 				C603E8CA285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194928D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
 				C63F1D1628AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
+				C6526DC629D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189F28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
 				C6C995AB289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
 				C6637A7228100D3A0000AE56 /* LaunchViewController.swift in Sources */,
@@ -10239,6 +10276,7 @@
 				C6D0548F27FF07390036B200 /* UDTextField.swift in Sources */,
 				C62247A1283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
 				C6E1188E28F67DA200C6AD4D /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
+				C6526DCB29D2DC8D00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */,
 				C66804D2280D9EC8007E6390 /* OnboardingPasscodeViewController.swift in Sources */,
 				C6ED31E4295BF8E200BC6919 /* Equatable.swift in Sources */,
 				C60982262823E4CC00546392 /* WalletDetailsAddWalletAction.swift in Sources */,
@@ -10328,6 +10366,7 @@
 				C6456F1C2800302900A517D5 /* ConfirmWordListCell.swift in Sources */,
 				C692C36B282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */,
 				C645131228095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */,
+				C6526DD529D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
 				C6D6E4F82817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
 				C66435E1288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift in Sources */,
 				C685A9702840A59B00E54044 /* TextBlackButton.swift in Sources */,
@@ -10604,6 +10643,7 @@
 				C6D6E52D28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C61236E8292C88D1002BA97B /* ImagesStorage.swift in Sources */,
 				C6D6E4D52817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
+				C6526DD029D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
 				C624D77B281BAB5000F55530 /* UDDomainsService.swift in Sources */,
 				C6C75C6A2848E82000DD8E3F /* Sequence.swift in Sources */,
 				C6098323282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */,
