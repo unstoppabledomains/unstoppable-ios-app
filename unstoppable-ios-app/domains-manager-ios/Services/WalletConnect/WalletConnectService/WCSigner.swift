@@ -58,21 +58,21 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         let incomingMessageString = try request.parameter(of: String.self, at: 0)
         let address = try request.parameter(of: String.self, at: 1)
         
-        let messageString = incomingMessageString.convertedIntoReadableMessage
+        let readableMessageString = incomingMessageString.convertedIntoReadableMessage
         
         Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(request.jsonString)")
         
         let (_, udWallet) = try await getWalletAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
-                                                                         messageString: messageString)
+                                                                         messageString: readableMessageString)
         let sig: String
         do {
-            sig = try await udWallet.getPersonalSignature(messageString: messageString)
+            sig = try await udWallet.getPersonalSignature(messageString: incomingMessageString)
         } catch {
             //TODO: If the error == WalletConnectError.failedOpenExternalApp
             // the mobile wallet app may have been deleted
             
-            Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)
+            Debugger.printFailure("Failed to sign message: \(incomingMessageString) by wallet:\(address)", critical: false)
             throw error
         }
         return Response.signature(sig, for: request)

@@ -206,7 +206,7 @@ struct CoinRecord: Hashable, Comparable, CustomStringConvertible, Codable {
                                                           "BNTY" : "Bounty0x",
                                                           "ONE" : "Harmony",
                                                           "SWTH" : "Switcheo",
-                                                          "CRO" : "Crypto.com Coin",
+                                                          "CRO" : "Cronos",
                                                           "TWT" : "TWT",
                                                           "SIERRA" : "SIERRA",
                                                           "VSYS" : "VSYS",

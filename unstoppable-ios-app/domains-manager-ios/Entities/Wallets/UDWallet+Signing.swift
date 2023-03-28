@@ -14,6 +14,13 @@ import WalletConnectSwift
 
 // Signing methods
 extension UDWallet {
+    var shouldParseMessage: Bool {
+        guard let walletName = self.getExternalWalletName()?.lowercased() else {
+            return false
+        }
+        return walletName.contains("rainbow") || walletName.contains("metamask")
+    }
+    
     static func createSignaturesByEthSign(messages: [String],
                                 domain: DomainItem) async throws -> [String] {
         guard let walletAddress = domain.ownerWallet else {
@@ -28,6 +35,9 @@ extension UDWallet {
     
     func getPersonalSignature(messageString: String) async throws -> String {
         guard self.walletState == .verified else {
+            if self.shouldParseMessage {
+                return try await signViaWalletConnectPersonalSign(message: messageString.convertedIntoReadableMessage)
+            }
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
