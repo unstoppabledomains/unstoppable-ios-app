@@ -1534,6 +1534,10 @@
 		C652629D28110B8500F1D699 /* SecurityWallViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C652629728110B8500F1D699 /* SecurityWallViewController.xib */; };
 		C652629E28110B8500F1D699 /* SecurityWallViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C652629728110B8500F1D699 /* SecurityWallViewController.xib */; };
 		C652629F28110B8500F1D699 /* SecurityWallViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C652629728110B8500F1D699 /* SecurityWallViewController.xib */; };
+		C6526DB929D2BACB00D6F2EB /* AppSessionInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */; };
+		C6526DBA29D2BB3F00D6F2EB /* AppSessionInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */; };
+		C6526DBB29D2BB4000D6F2EB /* AppSessionInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */; };
+		C6526DBC29D2BB4000D6F2EB /* AppSessionInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -3807,6 +3811,7 @@
 		C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WatchFaceDomainImagePreviewView.xib; sourceTree = "<group>"; };
 		C652629628110B8500F1D699 /* SecurityWallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityWallViewController.swift; sourceTree = "<group>"; };
 		C652629728110B8500F1D699 /* SecurityWallViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecurityWallViewController.xib; sourceTree = "<group>"; };
+		C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionInterpreter.swift; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -6150,6 +6155,7 @@
 			isa = PBXGroup;
 			children = (
 				C650AC412983B20D00A398AB /* AppReviewService.swift */,
+				C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */,
 				C6EECE9C2833A42600978ED5 /* CoinRecordsService.swift */,
 				C6B6B047297039E500D4E30F /* DateFormattingService.swift */,
 				C6E69FF5288AE47D000A8346 /* ExternalEventsService.swift */,
@@ -8400,6 +8406,7 @@
 				C6C995BA289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
+				C6526DB929D2BACB00D6F2EB /* AppSessionInterpreter.swift in Sources */,
 				C6A2D579284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5BD281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
 				C6C995CA289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */,
@@ -9027,6 +9034,7 @@
 				C6C995A8289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift in Sources */,
 				30FFABA4286CA85600ADC2EA /* WCConnectedAppsStorage.swift in Sources */,
 				30B3DC8F2870DBF0006FAA64 /* WCSigner.swift in Sources */,
+				C6526DBB29D2BB4000D6F2EB /* AppSessionInterpreter.swift in Sources */,
 				C61B3E9B283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C6C99584289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
 				C6D5DAEB28374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
@@ -9681,6 +9689,7 @@
 				C6C995A9289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift in Sources */,
 				30FFABA5286CA85600ADC2EA /* WCConnectedAppsStorage.swift in Sources */,
 				30B3DC902870DBF0006FAA64 /* WCSigner.swift in Sources */,
+				C6526DBC29D2BB4000D6F2EB /* AppSessionInterpreter.swift in Sources */,
 				C61B3E9C283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C6C99585289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
 				C6D5DAEC28374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
@@ -10420,6 +10429,7 @@
 				C6C995BB289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6D6E5B3281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C63DD36229C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
+				C6526DBA29D2BB3F00D6F2EB /* AppSessionInterpreter.swift in Sources */,
 				C6A2D57A284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5BE281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
 				C6C995CB289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */,

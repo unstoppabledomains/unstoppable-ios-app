@@ -104,10 +104,6 @@ extension WalletsListViewPresenter: DataAggregatorServiceListener {
         if case .success(let resultType) = result {
             switch resultType {
             case .walletsListUpdated(let wallets):
-                if self.walletsWithInfo.isEmpty,
-                   wallets.isEmpty {
-                    return
-                }
                 walletsWithInfo = wallets
                 removeWalletsDuplicates()
                 Task { await showWallets() }
@@ -291,8 +287,6 @@ private extension WalletsListViewPresenter {
     }
     
     func showWallets() async {
-        guard !walletsWithInfo.isEmpty else { return }
-        
         var snapshot = WalletsListSnapshot()
         
         // Break wallets into groups
@@ -345,7 +339,7 @@ private extension WalletsListViewPresenter {
     }
     
     func removeWalletsDuplicates() {
-        var allWalletsWithInfo = self.walletsWithInfo
+        let allWalletsWithInfo = self.walletsWithInfo
         
         // Check for duplicates
         var walletsWithInfo = [WalletWithInfo]()
@@ -353,6 +347,8 @@ private extension WalletsListViewPresenter {
             if let displayInfo = walletWithInfo.displayInfo,
                walletsWithInfo.first(where: { $0.displayInfo == displayInfo }) == nil {
                 walletsWithInfo.append(walletWithInfo)
+            } else {
+                Debugger.printFailure("Wallet duplicate detected \(walletWithInfo)", critical: true)
             }
         }
         self.walletsWithInfo = walletsWithInfo

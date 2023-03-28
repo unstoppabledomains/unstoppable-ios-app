@@ -510,8 +510,13 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
                     }
                 case .walletsListUpdated(let wallets):
                     stateController.set(walletsWithInfo: wallets)
-                    if wallets.isEmpty {
+                    let sessionState = AppSessionInterpreter.shared.state()
+                    switch sessionState {
+                    case .walletAdded, .webAccountWithParkedDomains:
+                        return
+                    case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
                         SceneDelegate.shared?.restartOnboarding()
+                        appContext.firebaseInteractionService.logout()
                     }
                 case .primaryDomainChanged: return
                 }
