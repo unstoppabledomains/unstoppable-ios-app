@@ -19,6 +19,7 @@ final class NoParkedDomainsFoundViewController: BaseViewController {
     @IBOutlet private weak var confirmButton: MainButton!
 
     var presenter: NoParkedDomainsFoundViewPresenterProtocol!
+    override var analyticsName: Analytics.ViewName { .noParkedDomainsFound }
     
     override func viewDidLoad() {
         super.viewDidLoad()

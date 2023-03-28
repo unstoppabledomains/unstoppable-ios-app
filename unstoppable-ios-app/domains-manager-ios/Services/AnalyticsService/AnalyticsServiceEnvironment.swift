@@ -149,7 +149,7 @@ extension Analytics {
         case failedToFetchDomainProfile, signMessageInExternalWalletToLoadDomainProfile
         case domainProfileImageDetails
         case loginWithWebsiteAccount, loginWithEmailAndPassword
-        case parkedDomainsList
+        case parkedDomainsList, noParkedDomainsFound, loadingParkedDomains
     }
 }
 
@@ -251,6 +251,7 @@ extension Analytics {
         case showMoreMintingDomains
         case rearrangeDomains, searchDomains
         case moveToTop
+        case websiteAccount
     }
 }
 

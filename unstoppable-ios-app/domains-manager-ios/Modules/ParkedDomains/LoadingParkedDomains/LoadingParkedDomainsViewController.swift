@@ -17,6 +17,7 @@ final class LoadingParkedDomainsViewController: BaseViewController {
     
     @IBOutlet private weak var syncingLabel: UILabel!
     var presenter: LoadingParkedDomainsViewPresenterProtocol!
+    override var analyticsName: Analytics.ViewName { .loadingParkedDomains }
     
     override func viewDidLoad() {
         super.viewDidLoad()

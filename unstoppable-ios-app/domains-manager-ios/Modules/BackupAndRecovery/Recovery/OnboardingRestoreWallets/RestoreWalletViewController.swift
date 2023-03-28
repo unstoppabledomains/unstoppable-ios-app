@@ -65,6 +65,7 @@ extension RestoreWalletViewController: UITableViewDataSource {
         let restoreOption = restoreOptions[indexPath.row]
         
         cell.setWith(icon: restoreOption.icon,
+                     iconTintColor: .foregroundDefault,
                      iconStyle: restoreOption.iconStyle,
                      text: restoreOption.title,
                      secondaryText: restoreOption.subtitle)
@@ -105,6 +106,8 @@ extension RestoreWalletViewController: UITableViewDelegate {
             onboardingFlowManager.moveToStep(.addWatchWallet)
         case .externalWallet:
             onboardingFlowManager.moveToStep(.connectExternalWallet)
+        case .websiteAccount:
+            return
         }
     }
 }
@@ -133,7 +136,7 @@ private extension RestoreWalletViewController {
             self.restoreOptions.append(.iCloud(value: iCLoudRestoreHintValue(backedUpWallets: backedUpWallets)))
         }
         
-        self.restoreOptions.append(contentsOf: [.recoveryPhrase, .externalWallet])
+        self.restoreOptions.append(contentsOf: [.recoveryPhrase, .externalWallet, .websiteAccount])
     }
     
     func iCLoudRestoreHintValue(backedUpWallets: [BackedUpWallet]) -> String {
@@ -167,7 +170,7 @@ private extension RestoreWalletViewController {
 // MARK: - ProtectionType
 extension RestoreWalletViewController {
     enum RestoreType {
-        case iCloud(value: String), recoveryPhrase, watchWallet, externalWallet
+        case iCloud(value: String), recoveryPhrase, watchWallet, externalWallet, websiteAccount
         
         var icon: UIImage {
             switch self {
@@ -179,6 +182,8 @@ extension RestoreWalletViewController {
                 return #imageLiteral(resourceName: "watchWalletIcon")
             case .externalWallet:
                 return #imageLiteral(resourceName: "externalWalletIcon")
+            case .websiteAccount:
+                return .domainsProfileIcon
             }
         }
         
@@ -192,6 +197,8 @@ extension RestoreWalletViewController {
                 return String.Constants.connectWalletWatch.localized()
             case .externalWallet:
                 return String.Constants.connectWalletExternal.localized()
+            case .websiteAccount:
+                return String.Constants.websiteAccount.localized()
             }
         }
         
@@ -205,6 +212,8 @@ extension RestoreWalletViewController {
                 return String.Constants.connectWalletWatchHint.localized()
             case .externalWallet:
                 return String.Constants.connectWalletExternalHint.localized()
+            case .websiteAccount:
+                return "Email, Google or Twitter"
             }
         }
         
@@ -212,7 +221,7 @@ extension RestoreWalletViewController {
             switch self {
             case .iCloud:
                 return .blue
-            case .recoveryPhrase, .watchWallet, .externalWallet:
+            case .recoveryPhrase, .watchWallet, .externalWallet, .websiteAccount:
                 return .grey
             }
         }
@@ -221,7 +230,7 @@ extension RestoreWalletViewController {
             switch self {
             case .iCloud:
                 return .accent
-            case .recoveryPhrase, .watchWallet, .externalWallet:
+            case .recoveryPhrase, .watchWallet, .externalWallet, .websiteAccount:
                 return .grey
             }
         }
@@ -236,6 +245,8 @@ extension RestoreWalletViewController {
                 return .watchWallet
             case .externalWallet:
                 return .externalWallet
+            case .websiteAccount:
+                return .websiteAccount
             }
         }
     }
