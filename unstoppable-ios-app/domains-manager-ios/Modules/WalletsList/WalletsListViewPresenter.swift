@@ -82,15 +82,16 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
     }
     
     func didSelectItem(_ item: WalletsListViewController.Item) {
-        UDVibration.buttonTap.vibrate()
         Task {
             switch item {
             case .walletInfo(let walletInfo), .selectableWalletInfo(let walletInfo, _):
+                UDVibration.buttonTap.vibrate()
                 guard let wallet = walletsWithInfo.first(where: { $0.wallet.address == walletInfo.address }) else { return }
                 
                 logButtonPressedAnalyticEvents(button: .walletInList)
                 await didSelectWallet(wallet.wallet, walletInfo: walletInfo)
             case .manageICloudBackups:
+                UDVibration.buttonTap.vibrate()
                 logButtonPressedAnalyticEvents(button: .manageICloudBackups)
                 await showManageBackupsAction()
             case .empty:
