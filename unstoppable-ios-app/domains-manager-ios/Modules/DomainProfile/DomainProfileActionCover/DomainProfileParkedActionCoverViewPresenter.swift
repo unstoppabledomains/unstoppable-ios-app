@@ -7,7 +7,8 @@
 
 import Foundation
 
-typealias DomainProfileParkedActionCallback = (DomainProfileParkedActionCoverViewPresenter.ResultAction)->()
+typealias DomainProfileParkedAction = DomainProfileParkedActionCoverViewPresenter.ResultAction
+typealias DomainProfileParkedActionCallback = (DomainProfileParkedAction)->()
 
 final class DomainProfileParkedActionCoverViewPresenter: DomainProfileActionCoverViewPresenter {
     
@@ -29,11 +30,9 @@ final class DomainProfileParkedActionCoverViewPresenter: DomainProfileActionCove
         let descriptionStatusSpacer = "\n\n"
         var description = String.Constants.parkedDomainActionCoverSubtitle.localized()
         
-        
         func setSecondaryButton(description: DomainProfileActionCoverViewController.ActionButtonDescription?) {
             view?.setSecondaryButton(with: description)
         }
-        
         
         if case .parking(let status) = domain.state {
             switch status {

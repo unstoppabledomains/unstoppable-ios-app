@@ -147,7 +147,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
 
     @MainActor
     func importDomainsFromWebPressed() {
-        runMintingFlow(mode: .default)
+        runDefaultMintingFlow()
     }
      
     func didPressScanButton() {
@@ -661,10 +661,24 @@ private extension DomainsCollectionPresenter {
                 
                 await router.showDomainProfile(domain, wallet: domainWallet, walletInfo: walletInfo, dismissCallback: { [weak self] in self?.didCloseDomainProfile(domain) })
             case .parked:
-               try? await UDRouter().showDomainProfileParkedActionModule(in: view,
-                                                                     domain: domain,
-                                                                     imagesInfo: .init())
+                let action = await UDRouter().showDomainProfileParkedActionModule(in: topView,
+                                                                                  domain: domain,
+                                                                                  imagesInfo: .init())
+                switch action {
+                case .claim:
+                    runDefaultMintingFlow()
+                case .close:
+                    return
+                }
             }
+        }
+    }
+    
+    func runDefaultMintingFlow() {
+        Task {
+            let userProfile = try? await appContext.firebaseInteractionService.getUserProfile()
+            let email = userProfile?.email ?? User.instance.email
+            await router.runMintDomainsFlow(with: .default(email: email))
         }
     }
     

@@ -516,21 +516,14 @@ class UDRouter: DomainProfileSignatureValidator {
     
     func showDomainProfileParkedActionModule(in viewController: UIViewController,
                                              domain: DomainDisplayInfo,
-                                             imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo) async throws {
-        try await withSafeCheckedThrowingMainActorContinuation { completion in
+                                             imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo) async -> DomainProfileParkedAction {
+        await withSafeCheckedMainActorContinuation { completion in
             let vc = buildDomainProfileParkedModule(domain: domain,
-                                                         imagesInfo: imagesInfo,
-                                                         refreshActionCallback: { [weak viewController] result in
-                switch result {
-                case .claim:
-                    viewController?.dismiss(animated: true, completion: {
-                        completion(.success(Void()))
-                    })
-                case .close:
-                    viewController?.dismiss(animated: true, completion: {
-                        completion(.failure(UDRouterError.dismissed))
-                    })
-                }
+                                                    imagesInfo: imagesInfo,
+                                                    refreshActionCallback: { [weak viewController] result in
+                viewController?.dismiss(animated: true, completion: {
+                    completion(result)
+                })
             })
             let nav = presentInEmptyCRootNavigation(vc, in: viewController)
             nav.isModalInPresentation = true
