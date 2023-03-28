@@ -37,6 +37,8 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
                         onboardingFlowManager?.moveToStep(.parkedDomainsFound)
                     }
                 }
+            } catch FirebaseAuthError.firebaseUserNotAuthorisedInTheApp {
+                return
             } catch {
                 await view?.showAlertWith(error: error, handler: { _ in
                     appContext.firebaseInteractionService.logout()

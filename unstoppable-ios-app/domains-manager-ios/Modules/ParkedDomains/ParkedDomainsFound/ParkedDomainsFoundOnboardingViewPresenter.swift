@@ -29,7 +29,6 @@ final class ParkedDomainsFoundOnboardingViewPresenter: ParkedDomainsFoundViewPre
         } else {
             onboardingFlowManager?.moveToStep(.protectWallet)
         }
-        
     }
 }
 

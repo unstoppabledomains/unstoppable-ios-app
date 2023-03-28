@@ -168,6 +168,7 @@ extension CNavigationController {
         return nil
     }
     
+    @discardableResult
     func popTo<T: UIViewController>(_ viewControllerType: T.Type, completion: (()->())? = nil) -> UIViewController? {
         for vc in viewControllers where vc is T {
             return self.popToViewController(vc, animated: true, completion: completion)?.last

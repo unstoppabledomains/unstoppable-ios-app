@@ -17,6 +17,12 @@ final class LoginOnboardingViewPresenter: LoginViewPresenter {
         self.onboardingFlowManager = onboardingFlowManager
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        onboardingFlowManager?.setNewUserOnboardingSubFlow(.webAccount)
+    }
+    
     override func loginWithEmailAction() {
         onboardingFlowManager?.moveToStep(.loginWithEmailAndPassword)
     }
@@ -34,6 +40,8 @@ extension LoginOnboardingViewPresenter: OnboardingNavigationHandler {
 
 // MARK: - OnboardingDataHandling
 extension LoginOnboardingViewPresenter: OnboardingDataHandling {
-    func willNavigateBack() { }
+    func willNavigateBack() {
+        onboardingFlowManager?.setNewUserOnboardingSubFlow(.restore)
+    }
 }
 

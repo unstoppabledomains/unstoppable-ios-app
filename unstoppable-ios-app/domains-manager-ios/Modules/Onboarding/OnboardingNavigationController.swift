@@ -91,7 +91,7 @@ extension OnboardingNavigationController: OnboardingFlowManager {
             switch onboardingSubFlow {
             case .create:
                 pushBackupWalletsScreen()
-            case .restore:
+            case .restore, .webAccount:
                 didFinishOnboarding()
             }
         case .existingUser:
@@ -422,7 +422,7 @@ extension OnboardingNavigationController {
     }
     
     enum NewUserOnboardingSubFlow: Int, Codable {
-        case create, restore
+        case create, restore, webAccount
     }
     
     enum OnboardingStep: Int, Codable {

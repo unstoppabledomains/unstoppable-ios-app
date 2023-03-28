@@ -17,6 +17,11 @@ class LoginViewPresenter {
     init(view: LoginViewProtocol) {
         self.view = view
     }
+    
+    func viewDidLoad() {
+        showData()
+        view?.setDashesProgress(0.25)
+    }
     @MainActor
     func loginWithEmailAction() { }
     @MainActor
@@ -35,11 +40,6 @@ class LoginViewPresenter {
 
 // MARK: - LoginViewPresenterProtocol
 extension LoginViewPresenter: LoginViewPresenterProtocol {
-    func viewDidLoad() {
-        showData()
-        view?.setDashesProgress(0.25)
-    }
-    
     @MainActor
     func didSelectItem(_ item: LoginViewController.Item) {
         UDVibration.buttonTap.vibrate()
