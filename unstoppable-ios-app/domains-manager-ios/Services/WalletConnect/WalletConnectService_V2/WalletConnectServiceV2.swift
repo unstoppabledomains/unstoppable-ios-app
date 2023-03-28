@@ -421,7 +421,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         }
         
         Task {
-            let newApp = WCConnectedAppsStorageV2.ConnectedApp(walletAddress: connectionIntent.walletAddress,
+            let newApp = WCConnectedAppsStorageV2.ConnectedApp(topic: session.topic,
+                                                               walletAddress: connectionIntent.walletAddress,
                                                                domain: connectionIntent.domain,
                                                                sessionProxy: WCConnectedAppsStorageV2.SessionProxy(session),
                                                                appIconUrls: session.peer.icons,

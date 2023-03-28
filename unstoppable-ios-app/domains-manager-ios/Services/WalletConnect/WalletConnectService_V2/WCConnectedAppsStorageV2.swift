@@ -66,6 +66,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
             hasher.combine(domain)
         }
                 
+        let topic: String
         let walletAddress: HexAddress
         let domain: DomainItem
         let sessionProxy: SessionProxy
@@ -87,7 +88,6 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         var isTrusted: Bool {
             return sessionProxy.peer.isTrusted
         }
-
     }
     
     
@@ -191,6 +191,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
     let appUrlString: String
     let appInfo: WalletConnectService.WCServiceAppInfo
     let connectionStartDate: Date?
+    let topic: String
 
     var displayName: String { appName }
     var description: String { appName }
@@ -204,6 +205,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
         self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version2(WalletConnectService.ClientDataV2(appMetaData: appV2.sessionProxy.peer, proposalNamespace: appV2.proposalNamespace)),
                                                              isTrusted: appV2.isTrusted)
         self.connectionStartDate = appV2.connectionStartDate
+        self.topic = appV2.topic
     }
     
     init(from appV1: WCConnectedAppsStorage.ConnectedApp) {
@@ -215,6 +217,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
         self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version1(appV1.session),
                                                              isTrusted: WalletConnectService.isTrusted(dAppInfo: appV1.session.dAppInfo))
         self.connectionStartDate = appV1.connectionStartDate
+        self.topic = appV1.session.url.topic
     }
 }
 
