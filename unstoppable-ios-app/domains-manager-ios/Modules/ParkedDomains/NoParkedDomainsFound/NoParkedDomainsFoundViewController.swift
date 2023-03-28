@@ -43,6 +43,7 @@ extension NoParkedDomainsFoundViewController: NoParkedDomainsFoundViewProtocol {
 // MARK: - Actions
 private extension NoParkedDomainsFoundViewController {
     @IBAction func confirmButtonPressed(_ sender: Any) {
+        logButtonPressedAnalyticEvents(button: .confirm)
         presenter.confirmButtonPressed()
     }
 }

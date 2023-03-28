@@ -37,6 +37,7 @@ extension Analytics {
         case didSwipeNavigationBack
         case didSelectPhoto
         case showRateAppRequest
+        case websiteLoginOptionSelected
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
@@ -88,6 +89,7 @@ extension Analytics {
         case chainId
         case section
         case fieldName
+        case websiteLoginOption
     }
 }
 

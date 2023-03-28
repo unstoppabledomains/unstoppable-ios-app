@@ -11,8 +11,9 @@ protocol LoginViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: LoginViewController.Item)
 }
 
-class LoginViewPresenter {
+class LoginViewPresenter: ViewAnalyticsLogger {
     private(set) weak var view: LoginViewProtocol?
+    var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
 
     init(view: LoginViewProtocol) {
         self.view = view
@@ -45,6 +46,8 @@ extension LoginViewPresenter: LoginViewPresenterProtocol {
         UDVibration.buttonTap.vibrate()
         switch item {
         case .loginWith(let provider):
+            logAnalytic(event: .websiteLoginOptionSelected,
+                        parameters: [.websiteLoginOption: provider.rawValue])
             switch provider {
             case .email:
                 loginWithEmailAction()

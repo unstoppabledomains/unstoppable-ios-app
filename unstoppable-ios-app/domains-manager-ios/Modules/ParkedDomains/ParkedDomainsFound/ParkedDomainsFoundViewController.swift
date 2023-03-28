@@ -85,6 +85,7 @@ extension ParkedDomainsFoundViewController: UICollectionViewDelegate {
 // MARK: - Private functions
 private extension ParkedDomainsFoundViewController {
     @IBAction func importButtonPressed(_ sender: Any) {
+        logButtonPressedAnalyticEvents(button: .confirm)
         presenter.importButtonPressed()
     }
 }
