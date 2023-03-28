@@ -24,6 +24,11 @@ class ParkedDomainsFoundOnboardingViewPresenter: ParkedDomainsFoundViewPresenter
     }
     
     override func importButtonPressed() {
-        onboardingFlowManager?.moveToStep(.protectWallet)
+        if case .sameUserWithoutWallets = self.onboardingFlowManager?.onboardingFlow {
+            onboardingFlowManager?.didFinishOnboarding()
+        } else {
+            onboardingFlowManager?.moveToStep(.protectWallet)
+        }
+        
     }
 }

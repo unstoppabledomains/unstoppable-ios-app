@@ -151,8 +151,11 @@ private extension OnboardingNavigationController {
         
         if topViewController is HappyEndViewController || topViewController is WalletConnectedViewController {
             transitionHandler?.isInteractionEnabled = false
-        } else if topViewController is RecoveryPhraseViewController,
-                  UserDefaults.onboardingNavigationInfo?.steps.contains(.recoveryPhraseConfirmed) == true {
+        } else if (topViewController is RecoveryPhraseViewController &&
+                  UserDefaults.onboardingNavigationInfo?.steps.contains(.recoveryPhraseConfirmed) == true) ||
+        topViewController is LoadingParkedDomainsViewController ||
+        topViewController is ParkedDomainsFoundViewController ||
+        topViewController is NoParkedDomainsFoundViewController {
             transitionHandler.isInteractionEnabled = false
             DispatchQueue.main.async {
                 self.navigationBar.setBackButton(hidden: true)

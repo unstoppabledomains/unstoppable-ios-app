@@ -20,6 +20,8 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
     override func viewWillAppear() {
         super.viewWillAppear()
         
+        guard onboardingFlowManager?.onboardingData.parkedDomains == nil else { return } // Restoring steps
+        
         Task {
             do {
                 let parkedDomains = try await appContext.firebaseDomainsService.loadParkedDomains()

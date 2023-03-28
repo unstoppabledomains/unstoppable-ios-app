@@ -33,7 +33,7 @@ final class LoginWithEmailViewController: BaseViewController {
         
         setup()
         presenter.viewDidLoad()
-        emailTextfield.startEditing()
+//        emailTextfield.startEditing()
     }
     
     override func viewDidAppear(_ animated: Bool) {
