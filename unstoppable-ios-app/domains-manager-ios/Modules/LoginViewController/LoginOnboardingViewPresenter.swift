@@ -8,6 +8,7 @@
 import Foundation
 
 final class LoginOnboardingViewPresenter: LoginViewPresenter {
+    
     private weak var onboardingFlowManager: OnboardingFlowManager?
 
     init(view: LoginViewProtocol,

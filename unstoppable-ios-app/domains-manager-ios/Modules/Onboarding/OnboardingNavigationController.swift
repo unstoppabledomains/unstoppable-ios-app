@@ -366,7 +366,30 @@ private extension OnboardingNavigationController {
                                                                         onboardingFlowManager: self)
             vc.presenter = presenter
             return vc
+        case .loginWithEmailAndPassword:
+            let vc = LoginWithEmailViewController.nibInstance()
+            let presenter = LoginWithEmailOnboardingViewPresenter(view: vc,
+                                                                  onboardingFlowManager: self)
+            vc.presenter = presenter
+            return vc
+        case .noParkedDomains:
+            let vc = NoParkedDomainsFoundViewController.nibInstance()
+            let presenter = NoParkedDomainsFoundOnboardingViewPresenter(view: vc,
+                                                                        onboardingFlowManager: self)
+            vc.presenter = presenter
             
+            return vc
+        case .parkedDomainsFound:
+            guard let parkedDomains = onboardingData.parkedDomains else {
+                Debugger.printFailure("Failed to get parked domains from onboarding data", critical: true)
+                return nil }
+            
+            let vc = ParkedDomainsFoundViewController.nibInstance()
+            let presenter = ParkedDomainsFoundOnboardingViewPresenter(view: vc,
+                                                                      domains: parkedDomains,
+                                                                      onboardingFlowManager: self)
+            vc.presenter = presenter
+            return vc
         }
     }
  
@@ -421,6 +444,9 @@ extension OnboardingNavigationController {
         
         case loginWithWebsite = 18
         case loadingParkedDomains = 19
+        case loginWithEmailAndPassword = 20
+        case noParkedDomains = 21
+        case parkedDomainsFound = 22
     }
     
     struct OnboardingNavigationInfo: Codable, CustomStringConvertible {

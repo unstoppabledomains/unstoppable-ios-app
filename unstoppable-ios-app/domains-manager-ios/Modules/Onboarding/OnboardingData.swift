@@ -14,6 +14,7 @@ struct OnboardingData: Codable {
     var passcode: String?
     var backupPassword: String?
     var didRestoreWalletsFromBackUp: Bool?
+    var parkedDomains: [FirebaseDomainDisplayInfo]?
     
     func persist() {
         UserDefaults.onboardingData = self

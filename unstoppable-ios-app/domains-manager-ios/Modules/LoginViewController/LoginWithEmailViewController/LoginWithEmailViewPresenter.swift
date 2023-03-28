@@ -13,20 +13,19 @@ protocol LoginWithEmailViewPresenterProtocol: BasePresenterProtocol {
     func confirmButtonPressed(email: String, password: String)
 }
 
-final class LoginWithEmailViewPresenter {
+class LoginWithEmailViewPresenter {
     private weak var view: LoginWithEmailViewProtocol?
-    private weak var loginFlowManager: LoginFlowManager?
+    var progress: Double? { nil }
 
-    init(view: LoginWithEmailViewProtocol,
-         loginFlowManager: LoginFlowManager) {
+    init(view: LoginWithEmailViewProtocol) {
         self.view = view
-        self.loginFlowManager = loginFlowManager
     }
+    
+    func didAuthorizeAction() { }
 }
 
 // MARK: - LoginWithEmailViewPresenterProtocol
 extension LoginWithEmailViewPresenter: LoginWithEmailViewPresenterProtocol {
-    var progress: Double? { 0.5 }
     
     func viewDidLoad() {
         Task { @MainActor in
@@ -41,7 +40,7 @@ extension LoginWithEmailViewPresenter: LoginWithEmailViewPresenterProtocol {
             
             do {
                 try await appContext.firebaseInteractionService.authorizeWith(email: email, password: password)
-                try await loginFlowManager?.handle(action: .authorized)
+                didAuthorizeAction()
             } catch {
                 Vibration.error.vibrate()
                 view?.setPasswordIsIncorrect()
@@ -50,9 +49,4 @@ extension LoginWithEmailViewPresenter: LoginWithEmailViewPresenterProtocol {
             view?.setLoadingIndicator(active: false)
         }
     }
-}
-
-// MARK: - Private functions
-private extension LoginWithEmailViewPresenter {
-
 }

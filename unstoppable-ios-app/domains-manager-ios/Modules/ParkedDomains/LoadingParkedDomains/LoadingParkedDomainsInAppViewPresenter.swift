@@ -8,7 +8,7 @@
 import Foundation
 
 final class LoadingParkedDomainsInAppViewPresenter: LoadingParkedDomainsViewPresenter {
-    private weak var view: LoadingParkedDomainsViewProtocol?
+
     private weak var loginFlowManager: LoginFlowManager?
     
     init(view: LoadingParkedDomainsViewProtocol,

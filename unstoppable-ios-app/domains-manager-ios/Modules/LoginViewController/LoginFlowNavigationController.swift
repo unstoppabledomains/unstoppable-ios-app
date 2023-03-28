@@ -183,21 +183,21 @@ private extension LoginFlowNavigationController {
             return vc
         case .loginWithEmailAndPassword:
             let vc = LoginWithEmailViewController.nibInstance()
-            let presenter = LoginWithEmailViewPresenter(view: vc, loginFlowManager: self)
+            let presenter = LoginWithEmailInAppViewPresenter(view: vc, loginFlowManager: self)
             vc.presenter = presenter
             return vc
         case .noParkedDomains:
             let vc = NoParkedDomainsFoundViewController.nibInstance()
-            let presenter = NoParkedDomainsFoundViewPresenter(view: vc,
-                                                              loginFlowManager: self)
+            let presenter = NoParkedDomainsFoundInAppViewPresenter(view: vc,
+                                                                   loginFlowManager: self)
             vc.presenter = presenter
             
             return vc
         case .parkedDomainsFound(let domains):
             let vc = ParkedDomainsFoundViewController.nibInstance()
-            let presenter = ParkedDomainsFoundViewPresenter(view: vc,
-                                                            domains: domains,
-                                                            loginFlowManager: self)
+            let presenter = ParkedDomainsFoundInAppViewPresenter(view: vc,
+                                                                 domains: domains,
+                                                                 loginFlowManager: self)
             vc.presenter = presenter
             return vc
         case .fetchingDomains:

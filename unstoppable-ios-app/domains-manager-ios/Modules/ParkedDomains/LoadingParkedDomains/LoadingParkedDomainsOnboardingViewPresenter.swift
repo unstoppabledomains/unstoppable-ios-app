@@ -8,7 +8,7 @@
 import Foundation
 
 final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsViewPresenter {
-    private weak var view: LoadingParkedDomainsViewProtocol?
+
     private weak var onboardingFlowManager: OnboardingFlowManager?
 
     init(view: LoadingParkedDomainsViewProtocol,
@@ -33,6 +33,9 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
 //                    }
                 }
             } catch {
+                //TODO: - Logout
+                //TODO: - Save domains to onboarding data
+
 //                (topViewController as? BaseViewControllerProtocol)?.showAlertWith(error: error, handler: { [weak self] _ in
 //                    self?.dismiss(result: .failedToLoadParkedDomains)
 //                })

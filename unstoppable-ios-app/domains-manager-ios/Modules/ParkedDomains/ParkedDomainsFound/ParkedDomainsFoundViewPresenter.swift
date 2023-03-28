@@ -15,11 +15,10 @@ protocol ParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
     func importButtonPressed()
 }
 
-final class ParkedDomainsFoundViewPresenter {
+class ParkedDomainsFoundViewPresenter {
     
     private weak var view: ParkedDomainsFoundViewProtocol?
-    private let domains: [FirebaseDomainDisplayInfo]
-    private weak var loginFlowManager: LoginFlowManager?
+    let domains: [FirebaseDomainDisplayInfo]
 
     var title: String {
         String.Constants.pluralWeFoundNDomains.localized(domains.count)
@@ -27,12 +26,13 @@ final class ParkedDomainsFoundViewPresenter {
     var progress: Double? { 1 }
 
     init(view: ParkedDomainsFoundViewProtocol,
-         domains: [FirebaseDomainDisplayInfo],
-         loginFlowManager: LoginFlowManager) {
+         domains: [FirebaseDomainDisplayInfo]) {
         self.view = view
         self.domains = domains
-        self.loginFlowManager = loginFlowManager
     }
+    
+    @MainActor
+    func importButtonPressed() { }
 }
 
 // MARK: - ParkedDomainsFoundViewPresenterProtocol
@@ -65,13 +65,6 @@ extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtoc
             }
         }
     }
-    
-    @MainActor
-    func importButtonPressed() {
-        Task {
-            try? await loginFlowManager?.handle(action: .importCompleted(parkedDomains: domains))
-        }
-    }
 }
 
 // MARK: - Private functions
@@ -87,3 +80,5 @@ private extension ParkedDomainsFoundViewPresenter {
         }
     }
 }
+
+
