@@ -37,6 +37,7 @@ protocol AppContextProtocol {
     var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol { get }
     var firebaseInteractionService: FirebaseInteractionServiceProtocol { get }
     var firebaseAuthService: FirebaseAuthServiceProtocol { get }
+    var firebaseDomainsService: FirebaseDomainsServiceProtocol { get }
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
 }

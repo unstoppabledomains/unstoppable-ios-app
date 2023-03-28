@@ -118,6 +118,9 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         case .recentActivityLearnMore:
             logButtonPressedAnalyticEvents(button: .recentActivityLearnMore, parameters: [.domainName: getCurrentDomainName()])
             showRecentActivitiesLearMorePullUp()
+        case .parkedDomainLearnMore:
+            logButtonPressedAnalyticEvents(button: .parkedDomainLearnMore, parameters: [.domainName: getCurrentDomainName()])
+            view?.openLink(.udParkedDomainsTutorial)
         case .domainSelected(let domain):
             logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
             UDVibration.buttonTap.vibrate()
@@ -140,12 +143,14 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     func didTapSettingsButton() {
         UserDefaults.homeScreenSettingsButtonPressed = true
         updateGoToSettingsTutorialVisibility()
-        router.showSettings()
+        router.showSettings(loginCallback: { [weak self] result in
+            self?.handleLoginResult(result)
+        })
     }
 
     @MainActor
     func importDomainsFromWebPressed() {
-        runMintingFlow(mode: .default)
+        runDefaultMintingFlow()
     }
      
     func didPressScanButton() {
@@ -267,8 +272,6 @@ private extension DomainsCollectionPresenter {
     
     @MainActor
     func resolvePrimaryDomain(domains: [DomainDisplayInfo]) async {
-     
-        
         if !isPrimaryDomainResolved(domains: domains),
            !isResolvingPrimaryDomain,
            router.isTopPresented() {
@@ -466,6 +469,24 @@ private extension DomainsCollectionPresenter {
     func handleNoDomainsToMint() {
         didTapAddButton()
     }
+    
+    func handleLoginResult(_ result: LoginFlowNavigationController.LogInResult) {
+        Task { @MainActor in
+            switch result {
+            case .loggedIn(let parkedDomains):
+                guard let parkedDomain = parkedDomains.first else { return }
+                
+                view?.runConfettiAnimation()
+                view?.showToast(.parkedDomainsImported(parkedDomains.count))
+                let domains = stateController.domains
+                if let domainIndex = domains.firstIndex(where: { $0.name == parkedDomain.name }) {
+                    setNewIndex(domainIndex, animated: true)
+                }
+            case .failedToLoadParkedDomains, .cancel:
+                return
+            }
+        }
+    }
 }
  
 // MARK: - DataAggregatorServiceListener
@@ -642,7 +663,25 @@ private extension DomainsCollectionPresenter {
                       let walletInfo = await dataAggregatorService.getWalletDisplayInfo(for: domainWallet) else { return }
                 
                 await router.showDomainProfile(domain, wallet: domainWallet, walletInfo: walletInfo, dismissCallback: { [weak self] in self?.didCloseDomainProfile(domain) })
+            case .parked:
+                let action = await UDRouter().showDomainProfileParkedActionModule(in: topView,
+                                                                                  domain: domain,
+                                                                                  imagesInfo: .init())
+                switch action {
+                case .claim:
+                    runDefaultMintingFlow()
+                case .close:
+                    return
+                }
             }
+        }
+    }
+    
+    func runDefaultMintingFlow() {
+        Task {
+            let userProfile = try? await appContext.firebaseInteractionService.getUserProfile()
+            let email = userProfile?.email ?? User.instance.email
+            await router.runMintDomainsFlow(with: .default(email: email))
         }
     }
     

@@ -35,7 +35,10 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
 
 // MARK: - ScrollViewOffsetListener
 extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
-    func setCellHeight(_ cellHeight: CGFloat, isTutorialOn: Bool) {
+    func setCellHeight(_ cellHeight: CGFloat,
+                       isTutorialOn: Bool,
+                       dataType: DomainsCollectionVisibleDataType) {
+        setUIFor(dataType: dataType)
         contentHeightConstraint.constant = cellHeight
         self.isTutorialOn = isTutorialOn
     }
@@ -66,6 +69,25 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
 private extension DomainsCollectionNoRecentActivitiesCell {
     @IBAction func learnMoreButtonPressed(_ sender: Any) {
         learnMoreButtonPressedCallback?()
+    }
+    
+    func setUIFor(dataType: DomainsCollectionVisibleDataType) {
+        let title: String
+        let icon: UIImage
+        
+        switch dataType {
+        case .activity:
+            title = String.Constants.noConnectedApps.localized()
+            icon = .widgetIcon
+        case .parkedDomain:
+            title = String.Constants.parkedDomainCantConnectToApps.localized()
+            icon = .infoIcon
+        }
+        
+        titleLabel.setAttributedTextWith(text: title,
+                                         font: .currentFont(withSize: 20, weight: .bold),
+                                         textColor: .foregroundSecondary)
+        iconImageView.image = icon
     }
     
     func contentTopExpandedValue() -> CGFloat {

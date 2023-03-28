@@ -19,13 +19,16 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let firebaseInteractionService: FirebaseInteractionServiceProtocol
     private var firebaseUser: FirebaseUser?
+    private var loginCallback: LoginFlowNavigationController.LoggedInCallback?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     
     init(view: SettingsViewProtocol,
+         loginCallback: LoginFlowNavigationController.LoggedInCallback?,
          notificationsService: NotificationsServiceProtocol,
          dataAggregatorService: DataAggregatorServiceProtocol,
          firebaseInteractionService: FirebaseInteractionServiceProtocol) {
         self.view = view
+        self.loginCallback = loginCallback
         self.notificationsService = notificationsService
         self.dataAggregatorService = dataAggregatorService
         self.firebaseInteractionService = firebaseInteractionService
@@ -130,7 +133,7 @@ private extension SettingsPresenter {
             #if TESTFLIGHT
             snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
             #endif
-            snapshot.appendItems([.websiteAccount(userEmail: firebaseUser?.email)])
+            snapshot.appendItems([.websiteAccount(user: firebaseUser)])
 
             
             snapshot.appendSections([.main(2)])
@@ -226,29 +229,37 @@ private extension SettingsPresenter {
     
     @MainActor
     func showLoginScreen() {
-        guard let view,
-              let nav = view.cNavigationController else { return }
+        guard let view else { return }
         
         if appContext.firebaseAuthService.isAuthorised {
             Task {
                 do {
-                    try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
-                    await view.dismissPullUpMenu()
-                    try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                    firebaseInteractionService.logout()
+                    guard let firebaseUser else {
+                        appContext.firebaseInteractionService.logout()
+                        showLoginScreen()
+                        Debugger.printFailure("Failed to get firebaser user model in authorized state", critical: true)
+                        return
+                    }
+                    let domainsCount = appContext.firebaseDomainsService.getCachedDomains().count
+                    let profileAction = try await appContext.pullUpViewService.showUserProfilePullUp(with: firebaseUser.email ?? "Twitter account",
+                                                                                                     domainsCount: domainsCount,
+                                                                                                     in: view)
+                    switch profileAction {
+                    case .logOut:
+                        try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
+                        await view.dismissPullUpMenu()
+                        try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+                        firebaseInteractionService.logout()
+                        await appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
+                    }
                 } catch { }
-                                
-//                do {
-//                    let domains = try await appContext.firebaseInteractionService.getParkedDomains()
-//                    let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
-//                    UDRouter().showParkedDomainsFoundModuleWith(domains: displayInfo,
-//                                                                in: nav)
-//                } catch {
-////                    authFailedWith(error: error)
-//                }
             }
         } else {
-            UDRouter().showLoginScreen(in: nav)
+            UDRouter().runLoginFlow(with: .default,
+                                    loggedInCallback: { [weak self] result in
+                self?.loginCallback?(result)
+            },
+                                    in: view)
         }
     }
 }

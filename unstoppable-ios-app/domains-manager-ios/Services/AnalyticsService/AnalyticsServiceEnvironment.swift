@@ -247,7 +247,7 @@ extension Analytics {
         
         case scanToConnect
         case domainCardDot
-        case recentActivityLearnMore
+        case recentActivityLearnMore, parkedDomainLearnMore
         case showMoreMintingDomains
         case rearrangeDomains, searchDomains
         case moveToTop
@@ -292,7 +292,8 @@ extension Analytics {
         case chooseCoinVersion
         case externalWalletConnectionHint
         case externalWalletFailedToSign
-        case logOutConfirmation
+        case logOutConfirmation, loggedInUserProfile
+        case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

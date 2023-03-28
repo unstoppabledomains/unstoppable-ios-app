@@ -42,8 +42,32 @@
                     <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                     <color key="backgroundColor" white="0.0" alpha="0.56000000000000005" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="SVo-hr-NYd">
+                    <rect key="frame" x="16" y="684" width="358" height="112"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="577-m2-E5X" customClass="PrimaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="358" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="Ksz-09-rEl"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <connections>
+                                <action selector="primaryButtonPressed:" destination="-1" eventType="touchUpInside" id="Uvk-6U-s6s"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fPS-eW-lzC" customClass="RaisedTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="64" width="358" height="48"/>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <connections>
+                                <action selector="secondaryButtonPressed:" destination="-1" eventType="touchUpInside" id="qrJ-Zx-1Ub"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                </stackView>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="24" translatesAutoresizingMaskIntoConstraints="NO" id="rsh-a3-W5Z">
-                    <rect key="frame" x="16" y="255.33333333333334" width="358" height="333.33333333333326"/>
+                    <rect key="frame" x="16" y="315.33333333333331" width="358" height="213.33333333333331"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="9ub-br-Nx8">
                             <rect key="frame" x="0.0" y="0.0" width="358" height="188.33333333333334"/>
@@ -56,7 +80,7 @@
                                     </constraints>
                                 </imageView>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="IiI-MO-Tuc">
-                                    <rect key="frame" x="158.33333333333334" y="95.999999999999972" width="41.333333333333343" height="56"/>
+                                    <rect key="frame" x="158.33333333333334" y="96" width="41.333333333333343" height="56"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jH2-UL-wHf">
                                             <rect key="frame" x="0.0" y="0.0" width="41.333333333333336" height="28"/>
@@ -79,7 +103,7 @@
                                     </subviews>
                                 </stackView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2v7-er-c03">
-                                    <rect key="frame" x="158.33333333333334" y="167.99999999999997" width="41.333333333333343" height="20.333333333333343"/>
+                                    <rect key="frame" x="158.33333333333334" y="168" width="41.333333333333343" height="20.333333333333343"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
@@ -87,55 +111,19 @@
                             </subviews>
                         </stackView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="E3E-AS-UMb" customClass="DashesView" customModule="domains_manager_ios" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="212.33333333333334" width="358" height="1"/>
+                            <rect key="frame" x="0.0" y="212.33333333333331" width="358" height="1"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="H9j-9b-0VP"/>
                             </constraints>
                         </view>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="SVo-hr-NYd">
-                            <rect key="frame" x="0.0" y="237.33333333333337" width="358" height="96"/>
-                            <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="577-m2-E5X" customClass="PrimaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                    <rect key="frame" x="141.66666666666666" y="0.0" width="75" height="40"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="40" id="Ksz-09-rEl"/>
-                                    </constraints>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
-                                            <real key="value" value="20"/>
-                                        </userDefinedRuntimeAttribute>
-                                    </userDefinedRuntimeAttributes>
-                                    <connections>
-                                        <action selector="primaryButtonPressed:" destination="-1" eventType="touchUpInside" id="Uvk-6U-s6s"/>
-                                    </connections>
-                                </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fPS-eW-lzC" customClass="RaisedTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                    <rect key="frame" x="141.66666666666666" y="55.999999999999943" width="75" height="40"/>
-                                    <constraints>
-                                        <constraint firstAttribute="height" constant="40" id="G6K-hL-ngk"/>
-                                    </constraints>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
-                                            <real key="value" value="20"/>
-                                        </userDefinedRuntimeAttribute>
-                                    </userDefinedRuntimeAttributes>
-                                    <connections>
-                                        <action selector="secondaryButtonPressed:" destination="-1" eventType="touchUpInside" id="qrJ-Zx-1Ub"/>
-                                    </connections>
-                                </button>
-                            </subviews>
-                        </stackView>
                     </subviews>
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" name="brandUnstoppableBlue"/>
             <constraints>
+                <constraint firstItem="SVo-hr-NYd" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="16" id="0ML-GM-eax"/>
                 <constraint firstAttribute="bottom" secondItem="M8a-MY-gMO" secondAttribute="bottom" id="0SJ-0G-Tx8"/>
                 <constraint firstItem="rsh-a3-W5Z" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="3be-0I-79I"/>
                 <constraint firstItem="4UR-TA-NGM" firstAttribute="leading" secondItem="M8a-MY-gMO" secondAttribute="leading" id="3q0-4d-uso"/>
@@ -151,6 +139,8 @@
                 <constraint firstItem="1yA-3a-w9A" firstAttribute="bottom" secondItem="4UR-TA-NGM" secondAttribute="bottom" id="rax-fS-pxw"/>
                 <constraint firstItem="4UR-TA-NGM" firstAttribute="trailing" secondItem="M8a-MY-gMO" secondAttribute="trailing" id="u6f-6b-ZsL"/>
                 <constraint firstItem="1yA-3a-w9A" firstAttribute="top" secondItem="4UR-TA-NGM" secondAttribute="top" id="wi5-Ch-Sm3"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="SVo-hr-NYd" secondAttribute="bottom" constant="14" id="x39-D2-UFd"/>
+                <constraint firstItem="SVo-hr-NYd" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="ygC-wp-WWQ"/>
             </constraints>
             <point key="canvasLocation" x="-32.307692307692307" y="41.943127962085306"/>
         </view>

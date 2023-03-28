@@ -9,14 +9,16 @@ import UIKit
 
 @MainActor
 class UDRouter: DomainProfileSignatureValidator {
-    func showSettings(in viewController: CNavigationController) {
-        let settingsVC = buildSettingsModule()
+    func showSettings(in viewController: CNavigationController,
+                      loginCallback: LoginFlowNavigationController.LoggedInCallback?) {
+        let settingsVC = buildSettingsModule(loginCallback: loginCallback)
         viewController.pushViewController(settingsVC, animated: true)
     }
     
-    func buildSettingsModule() -> UIViewController {
+    private func buildSettingsModule(loginCallback: LoginFlowNavigationController.LoggedInCallback?) -> UIViewController {
         let vc = SettingsViewController.nibInstance()
         let presenter = SettingsPresenter(view: vc,
+                                          loginCallback: loginCallback,
                                           notificationsService: appContext.notificationsService,
                                           dataAggregatorService: appContext.dataAggregatorService,
                                           firebaseInteractionService: appContext.firebaseInteractionService)
@@ -506,24 +508,28 @@ class UDRouter: DomainProfileSignatureValidator {
         }
     }
     
-    func showLoginScreen(in nav: CNavigationController) {
-        let vc = buildLoginModule()
-        
-        nav.pushViewController(vc, animated: true)
+    func runLoginFlow(with mode: LoginFlowNavigationController.Mode,
+                      loggedInCallback: @escaping LoginFlowNavigationController.LoggedInCallback,
+                      in viewController: UIViewController) {
+        showLoginScreen(with: mode, loggedInCallback: loggedInCallback, in: viewController)
     }
     
-    func showLoginWithEmailScreen(in nav: CNavigationController) {
-        let vc = buildLoginWithEmailModule()
-        
-        nav.pushViewController(vc, animated: true)
+    func showDomainProfileParkedActionModule(in viewController: UIViewController,
+                                             domain: DomainDisplayInfo,
+                                             imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo) async -> DomainProfileParkedAction {
+        await withSafeCheckedMainActorContinuation { completion in
+            let vc = buildDomainProfileParkedModule(domain: domain,
+                                                    imagesInfo: imagesInfo,
+                                                    refreshActionCallback: { [weak viewController] result in
+                viewController?.dismiss(animated: true, completion: {
+                    completion(result)
+                })
+            })
+            let nav = presentInEmptyCRootNavigation(vc, in: viewController)
+            nav.isModalInPresentation = true
+        }
     }
     
-    func showParkedDomainsFoundModuleWith(domains: [FirebaseDomainDisplayInfo],
-                                          in nav: CNavigationController) {
-        let vc = buildParkedDomainsFoundModule(domains: domains)
-                
-        nav.pushViewController(vc, animated: true)
-    }
 }
 
 // MARK: - Private methods
@@ -563,6 +569,15 @@ private extension UDRouter {
         mintDomainsNavigationController.domainsMintedCallback = domainsMintedCallback
         viewController.cNavigationController?.pushViewController(mintDomainsNavigationController,
                                                                 animated: true)
+    }
+    
+    func showLoginScreen(with mode: LoginFlowNavigationController.Mode,
+                         loggedInCallback: @escaping LoginFlowNavigationController.LoggedInCallback,
+                         in viewController: UIViewController) {
+        let mintDomainsNavigationController = LoginFlowNavigationController(mode: mode)
+        mintDomainsNavigationController.loggedInCallback = loggedInCallback
+        viewController.cNavigationController?.pushViewController(mintDomainsNavigationController,
+                                                                 animated: true)
     }
 }
 
@@ -895,27 +910,18 @@ private extension UDRouter {
         return vc
     }
     
-    func buildLoginModule() -> UIViewController {
-        let vc = LoginViewController.nibInstance()
-        let presenter = LoginViewPresenter(view: vc)
-        vc.presenter = presenter
-        return vc
-    }
-      
-    func buildLoginWithEmailModule() -> UIViewController {
-        let vc = LoginWithEmailViewController.nibInstance()
-        let presenter = LoginWithEmailViewPresenter(view: vc)
+    func buildDomainProfileParkedModule(domain: DomainDisplayInfo,
+                                        imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo,
+                                        refreshActionCallback: @escaping DomainProfileParkedActionCallback) -> UIViewController {
+        let vc = DomainProfileActionCoverViewController.nibInstance()
+        let presenter = DomainProfileParkedActionCoverViewPresenter(view: vc,
+                                                                    domain: domain,
+                                                                    imagesInfo: imagesInfo,
+                                                                    refreshActionCallback: refreshActionCallback)
         vc.presenter = presenter
         return vc
     }
     
-    func buildParkedDomainsFoundModule(domains: [FirebaseDomainDisplayInfo]) -> UIViewController {
-        let vc = ParkedDomainsFoundViewController.nibInstance()
-        let presenter = ParkedDomainsFoundViewPresenter(view: vc,
-                                                        domains: domains)
-        vc.presenter = presenter
-        return vc
-    }
 }
 
 extension UDRouter {

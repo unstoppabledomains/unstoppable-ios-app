@@ -74,8 +74,7 @@ extension LoginWithEmailViewController: LoginWithEmailViewProtocol {
     }
     
     func setPasswordIsIncorrect() {
-        passwordTextfield.setState(.info(text: "Incorrect password or email",
-                                         style: .red))
+        passwordTextfield.setState(.error(text: "Incorrect password or email"))
     }
 }
 

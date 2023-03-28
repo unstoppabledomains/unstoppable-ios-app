@@ -7,7 +7,6 @@
 
 import UIKit
 
-
 protocol FirebaseInteractionServiceListener: AnyObject {
     func firebaseUserUpdated(firebaseUser: FirebaseUser?)
 }
@@ -34,11 +33,14 @@ protocol FirebaseInteractionServiceProtocol {
     func authorizeWithGoogle(in viewController: UIViewController) async throws
     func authorizeWithTwitter(in viewController: UIViewController) async throws
     func getUserProfile() async throws -> FirebaseUser
-    func getParkedDomains() async throws -> [FirebaseDomain]
     func logout()
     // Listeners
     func addListener(_ listener: FirebaseInteractionServiceListener)
     func removeListener(_ listener: FirebaseInteractionServiceListener)
+}
+
+protocol FirebaseDomainsLoaderProtocol {
+    func getParkedDomains() async throws -> [FirebaseDomain]
 }
 
 final class FirebaseInteractionService {
@@ -59,7 +61,7 @@ final class FirebaseInteractionService {
 }
 
 // MARK: - FirebaseInteractionServiceProtocol
-extension FirebaseInteractionService: FirebaseInteractionServiceProtocol {
+extension FirebaseInteractionService: FirebaseInteractionServiceProtocol, FirebaseDomainsLoaderProtocol {
     func authorizeWith(email: String, password: String) async throws {
         let tokenData = try await firebaseAuthService.authorizeWith(email: email, password: password)
         setTokenData(tokenData)
@@ -253,6 +255,6 @@ struct FirebaseTokenData: Codable {
     let refreshToken: String
 }
 
-struct FirebaseUser: Codable {
+struct FirebaseUser: Codable, Hashable {
     var email: String?
 }

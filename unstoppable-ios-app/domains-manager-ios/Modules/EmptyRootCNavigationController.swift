@@ -27,9 +27,9 @@ final class EmptyRootCNavigationController: CNavigationController {
     }
     
     override func popViewController(animated: Bool, completion: (()->())? = nil) -> UIViewController?  {
+        UDVibration.buttonTap.vibrate()
         guard canMoveBack else { return nil }
 
-        UDVibration.buttonTap.vibrate()
         if let cNavigationController = self.cNavigationController {
             cNavigationController.popViewController(animated: true)
         } else if topViewController is EmptyRootCNavigationController || topViewController != rootViewController {

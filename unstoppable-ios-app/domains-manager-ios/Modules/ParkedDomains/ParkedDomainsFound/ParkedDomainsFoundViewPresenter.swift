@@ -19,16 +19,19 @@ final class ParkedDomainsFoundViewPresenter {
     
     private weak var view: ParkedDomainsFoundViewProtocol?
     private let domains: [FirebaseDomainDisplayInfo]
-    
+    private weak var loginFlowManager: LoginFlowManager?
+
     var title: String {
         String.Constants.pluralWeFoundNDomains.localized(domains.count)
     }
     var progress: Double? { 1 }
 
     init(view: ParkedDomainsFoundViewProtocol,
-         domains: [FirebaseDomainDisplayInfo]) {
+         domains: [FirebaseDomainDisplayInfo],
+         loginFlowManager: LoginFlowManager) {
         self.view = view
         self.domains = domains
+        self.loginFlowManager = loginFlowManager
     }
 }
 
@@ -44,16 +47,30 @@ extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtoc
     @MainActor
     func didSelectItem(_ item: ParkedDomainsFoundViewController.Item) {
         UDVibration.buttonTap.vibrate()
+        guard let view else { return }
+        
         switch item {
-        case .parkedDomain:
-            return
+        case .parkedDomain(let domain):
+            switch domain.parkingStatus {
+            case .parkedButExpiresSoon(let expiresDate):
+                appContext.pullUpViewService.showParkedDomainExpiresSoonPullUp(in: view, expiresDate: expiresDate)
+            case .waitingForParkingOrClaim(let expiresDate):
+                appContext.pullUpViewService.showParkedDomainTrialExpiresPullUp(in: view, expiresDate: expiresDate)
+            case .parked, .freeParking:
+                appContext.pullUpViewService.showParkedDomainInfoPullUp(in: view)
+            case .parkingExpired:
+                appContext.pullUpViewService.showParkedDomainExpiredPullUp(in: view)
+            default:
+                return
+            }
         }
     }
     
     @MainActor
     func importButtonPressed() {
-        view?.cNavigationController?.popToRootViewController(animated: true)
-        appContext.toastMessageService.showToast(.parkedDomainsImported(domains.count), isSticky: false)
+        Task {
+            try? await loginFlowManager?.handle(action: .importCompleted(parkedDomains: domains))
+        }
     }
 }
 

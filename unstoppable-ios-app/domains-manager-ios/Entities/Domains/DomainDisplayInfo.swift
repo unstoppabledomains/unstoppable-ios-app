@@ -50,7 +50,14 @@ struct DomainDisplayInfo: Hashable, DomainEntity {
 extension DomainDisplayInfo {
     var qrCodeURL: URL? { String.Links.domainProfilePage(domainName: name).url }
     var pfpSource: DomainPFPInfo.PFPSource { domainPFPInfo?.source ?? .none }
-    var isUpdatingRecords: Bool { state != .default }
+    var isUpdatingRecords: Bool {
+        switch state {
+        case .minting, .updatingRecords:
+            return true
+        case .default, .parking:
+            return false
+        }
+    }
     var isMinting: Bool { state == .minting }
     var isPrimary: Bool { order == 0 } /// Primary domain now is the one user has selected to be the first
 
@@ -73,15 +80,30 @@ extension DomainDisplayInfo {
 
 // MARK: - State
 extension DomainDisplayInfo {
-    enum State {
-        case `default`, minting, updatingRecords
+    enum State: Hashable {
+        case `default`, minting, updatingRecords, parking(status: DomainParkingStatus)
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            switch (lhs, rhs) {
+            case (.default, .default):
+                return true
+            case (.minting, .minting):
+                return true
+            case (.updatingRecords, .updatingRecords):
+                return true
+            case (.parking, .parking):
+                return true
+            default:
+                return false
+            }
+        }
     }
 }
 
 // MARK: - UsageType
 extension DomainDisplayInfo {
     enum UsageType: Equatable {
-        case normal, zil, deprecated(tld: String)
+        case normal, zil, deprecated(tld: String), parked(status: DomainParkingStatus)
     }
     
     var usageType: UsageType {
@@ -90,6 +112,8 @@ extension DomainDisplayInfo {
         } else if let tld = name.getTldName(),
                   Constants.deprecatedTLDs.contains(tld) {
             return .deprecated(tld: tld)
+        } else if case .parking(let status) = state {
+            return .parked(status: status)
         }
         return .normal
     }

@@ -40,16 +40,10 @@ final class ParkedDomainsFoundViewController: BaseViewController {
         presenter.viewDidLoad()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        cNavigationController?.transitionHandler?.isInteractionEnabled = true
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        cNavigationBar?.setBackButton(hidden: true)
+//        cNavigationBar?.setBackButton(hidden: true)
     }
 }
 
@@ -101,9 +95,7 @@ private extension ParkedDomainsFoundViewController {
         addProgressDashesView()
         setupCollectionView()
         title = presenter.title
-        cNavigationController?.transitionHandler?.isInteractionEnabled = false
         importButton.setTitle(String.Constants.import.localized(), image: nil)
-        cNavigationBar?.setBackButton(hidden: true)
     }
     
     func setupCollectionView() {

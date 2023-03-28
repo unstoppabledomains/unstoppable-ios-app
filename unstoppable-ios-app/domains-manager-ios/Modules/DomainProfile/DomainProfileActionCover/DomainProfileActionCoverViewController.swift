@@ -114,6 +114,6 @@ private extension DomainProfileActionCoverViewController {
 extension DomainProfileActionCoverViewController {
     struct ActionButtonDescription {
         let title: String
-        let icon: UIImage
+        let icon: UIImage?
     }
 }
