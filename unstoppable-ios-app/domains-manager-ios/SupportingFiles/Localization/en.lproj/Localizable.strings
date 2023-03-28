@@ -706,3 +706,6 @@
 "PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_TITLE" = "Parking expired";
 "PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_SUBTITLE" = "Your parking subscription has expired. To avoid any potential conflicts, please renew your subscription.";
 "USER_LOGGED_OUT_TOAST_MESSAGE" = "You have logged out of the account";
+"PARKED_DOMAIN_ACTION_COVER_TITLE" = "Your domain is parked";
+"PARKED_DOMAIN_ACTION_COVER_SUBTITLE" = "Once a domain is parked, you are not able to manage it, as it is securely held in storage to protect against theft.";
+"CLAIM_DOMAIN" = "Claim domain";

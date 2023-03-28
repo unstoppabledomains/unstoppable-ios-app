@@ -513,6 +513,30 @@ class UDRouter: DomainProfileSignatureValidator {
                       in viewController: UIViewController) {
         showLoginScreen(with: mode, loggedInCallback: loggedInCallback, in: viewController)
     }
+    
+    func showDomainProfileParkedActionModule(in viewController: UIViewController,
+                                             domain: DomainDisplayInfo,
+                                             imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo) async throws {
+        try await withSafeCheckedThrowingMainActorContinuation { completion in
+            let vc = buildDomainProfileParkedModule(domain: domain,
+                                                         imagesInfo: imagesInfo,
+                                                         refreshActionCallback: { [weak viewController] result in
+                switch result {
+                case .claim:
+                    viewController?.dismiss(animated: true, completion: {
+                        completion(.success(Void()))
+                    })
+                case .close:
+                    viewController?.dismiss(animated: true, completion: {
+                        completion(.failure(UDRouterError.dismissed))
+                    })
+                }
+            })
+            let nav = presentInEmptyCRootNavigation(vc, in: viewController)
+            nav.isModalInPresentation = true
+        }
+    }
+    
 }
 
 // MARK: - Private methods
@@ -892,6 +916,19 @@ private extension UDRouter {
         vc.presenter = presenter
         return vc
     }
+    
+    func buildDomainProfileParkedModule(domain: DomainDisplayInfo,
+                                        imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo,
+                                        refreshActionCallback: @escaping DomainProfileParkedActionCallback) -> UIViewController {
+        let vc = DomainProfileActionCoverViewController.nibInstance()
+        let presenter = DomainProfileParkedActionCoverViewPresenter(view: vc,
+                                                                    domain: domain,
+                                                                    imagesInfo: imagesInfo,
+                                                                    refreshActionCallback: refreshActionCallback)
+        vc.presenter = presenter
+        return vc
+    }
+    
 }
 
 extension UDRouter {

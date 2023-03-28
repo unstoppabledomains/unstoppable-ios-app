@@ -775,7 +775,9 @@ extension String {
         static let parkedDomainExpiredInfoPullUpTitle = "PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_TITLE"
         static let parkedDomainExpiredInfoPullUpSubtitle = "PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_SUBTITLE"
         static let userLoggedOutToastMessage = "USER_LOGGED_OUT_TOAST_MESSAGE"
-
+        static let parkedDomainActionCoverTitle = "PARKED_DOMAIN_ACTION_COVER_TITLE"
+        static let parkedDomainActionCoverSubtitle = "PARKED_DOMAIN_ACTION_COVER_SUBTITLE"
+        static let claimDomain = "CLAIM_DOMAIN"
     }
     
     struct Segues {

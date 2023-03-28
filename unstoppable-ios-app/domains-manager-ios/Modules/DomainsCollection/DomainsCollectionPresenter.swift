@@ -661,7 +661,9 @@ private extension DomainsCollectionPresenter {
                 
                 await router.showDomainProfile(domain, wallet: domainWallet, walletInfo: walletInfo, dismissCallback: { [weak self] in self?.didCloseDomainProfile(domain) })
             case .parked:
-                return // TODO: - Parking
+               try? await UDRouter().showDomainProfileParkedActionModule(in: view,
+                                                                     domain: domain,
+                                                                     imagesInfo: .init())
             }
         }
     }
