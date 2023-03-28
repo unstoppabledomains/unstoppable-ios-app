@@ -74,7 +74,7 @@ private extension LoginViewPresenter {
     
             do {
                 try await appContext.firebaseInteractionService.authorizeWithGoogle(in: view)
-                await userAuthorized()
+                await userDidAuthorize()
             } catch {
                 await authFailedWith(error: error)
             }
@@ -87,7 +87,7 @@ private extension LoginViewPresenter {
             
             do {
                 try await appContext.firebaseInteractionService.authorizeWithTwitter(in: view)
-                await userAuthorized()
+                await userDidAuthorize()
             } catch {
                 await authFailedWith(error: error)
             }
@@ -95,7 +95,7 @@ private extension LoginViewPresenter {
     }
     
     @MainActor
-    func userAuthorized() async {
+    func userDidAuthorize() async {
         do {
             try await loginFlowManager?.handle(action: .authorized)
         } catch {
