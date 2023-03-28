@@ -303,6 +303,8 @@ extension String {
         static let pluralMintDomainsTo = "SDICT:MINT_DOMAINS_TO"
         static let pluralMoveDomainsTo = "SDICT:MOVE_DOMAINS_TO"
         static let pluralNAppsConnected = "SDICT:N_APPS_CONNECTED"
+        static let pluralWeFoundNDomains = "SDICT:WE_FOUND_N_DOMAINS"
+        static let pluralNParkedDomainsImported = "SDICT:N_PARKED_DOMAINS_IMPORTED"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -758,7 +760,11 @@ extension String {
         static let loginWithEmailTitle = "LOGIN_WITH_EMAIL_TITLE"
         static let loginWithEmailSubtitle = "LOGIN_WITH_EMAIL_SUBTITLE"
         static let password = "PASSWORD"
-
+        static let parked = "PARKED"
+        static let parkingTrialExpiresOn = "PARKING_TRIAL_EXPIRES_ON"
+        static let parkingExpiresOn = "PARKING_EXPIRES_ON"
+        static let parkingExpired = "PARKING_EXPIRED"
+        static let parkedDomainsFoundTitle = "PARKED_DOMAINS_FOUND_TITLE"
     }
     
     struct Segues {

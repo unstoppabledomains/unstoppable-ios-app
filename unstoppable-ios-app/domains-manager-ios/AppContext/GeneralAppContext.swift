@@ -26,6 +26,8 @@ final class GeneralAppContext: AppContextProtocol {
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
     let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol
     let walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
+    let firebaseInteractionService: FirebaseInteractionServiceProtocol
+    let firebaseAuthService: FirebaseAuthServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
@@ -46,7 +48,6 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
 
     init() {
-        _ = FirebaseInteractionService.shared
         authentificationService = AuthentificationService()
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()
@@ -95,9 +96,16 @@ final class GeneralAppContext: AppContextProtocol {
         
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")
+
+        let firebaseSigner = UDFirebaseSigner()
+        let firebaseAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner)
+        self.firebaseAuthService = firebaseAuthService
+        firebaseInteractionService = FirebaseInteractionService(firebaseAuthService: firebaseAuthService,
+                                                                firebaseSigner: firebaseSigner)
+
         Task {
             persistedProfileSignaturesStorage.removeExpired()
-        }
+        }        
     }
     
 }

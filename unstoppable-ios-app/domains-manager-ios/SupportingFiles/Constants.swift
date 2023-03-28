@@ -42,6 +42,7 @@ struct Constants {
     static let defaultInitials: String = "N/A"
     static let appStoreAppId = "1544748602"
     static let refreshDomainBadgesInterval: TimeInterval = 60 * 3 // 3 min
+    static let parkingBetaLaunchDate = Date(timeIntervalSince1970: 1678401000)
     
     #if DEBUG
     static let isTestingMinting: Bool = false

@@ -231,10 +231,8 @@ extension SettingsViewController {
         
         var subtitle: String? {
             switch self {
-            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen:
+            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen, .websiteAccount:
                 return nil
-            case .websiteAccount(let userEmail):
-                return userEmail ?? "Email, Google or Twitter"
             }
         }
         
@@ -279,10 +277,12 @@ extension SettingsViewController {
                 return .brandUnstoppablePink
             case .testnet:
                 return .brandSkyBlue
-            case .rateUs, .learn, .twitter, .support, .legal, .websiteAccount:
+            case .rateUs, .learn, .twitter, .support, .legal:
                 return .backgroundMuted2
             case .homeScreen:
                 return .brandDeepPurple
+            case .websiteAccount:
+                return .brandDeepBlue
             }
         }
         
@@ -292,7 +292,9 @@ extension SettingsViewController {
                 return .chevron(value: value)
             case .appearance(let appearanceStyle):
                 return .chevron(value: appearanceStyle.visibleName)
-            case .rateUs, .learn, .twitter, .support, .legal, .websiteAccount:
+            case .websiteAccount(let email):
+                return .chevron(value: email)
+            case .rateUs, .learn, .twitter, .support, .legal:
                 return .empty
             case .testnet(let isOn):
                 return .switcher(isOn: isOn)
@@ -301,7 +303,7 @@ extension SettingsViewController {
         
         var isPrimary: Bool {
             switch self {
-            case .wallets, .security, .homeScreen, .appearance, .testnet:
+            case .wallets, .security, .homeScreen, .appearance, .testnet, .websiteAccount:
                 return true
             default:
                 return false

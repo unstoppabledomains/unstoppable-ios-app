@@ -213,7 +213,7 @@ private extension CNavigationBar {
                 largeTitleImageView.frame.origin.y = Self.Constants.largeTitleOrigin.y - yOffset
                 
                 if largeTitleImageView.frame.origin.y < 0 {
-                    let covering = abs(largeTitleImageView.frame.origin.y) + Self.Constants.largeTitleOrigin.y + divider.bounds.height
+                    let covering = abs(largeTitleImageView.frame.origin.y) + divider.bounds.height
                     CNavigationHelper.setMask(with: CGRect(x: 0, y: 0, width: largeTitleImageView.bounds.width, height: covering), in: largeTitleImageView)
                 } else {
                     largeTitleImageView.layer.mask = nil
@@ -222,7 +222,7 @@ private extension CNavigationBar {
             
             
             if largeTitleLabel.frame.origin.y < 0 {
-                let covering = abs(largeTitleLabel.frame.origin.y) + Self.Constants.largeTitleOrigin.y + divider.bounds.height
+                let covering = abs(largeTitleLabel.frame.origin.y) + divider.bounds.height
                 CNavigationHelper.setMask(with: CGRect(x: 0, y: 0, width: largeTitleLabel.bounds.width, height: covering), in: largeTitleLabel)
             } else {
                 largeTitleLabel.layer.mask = nil

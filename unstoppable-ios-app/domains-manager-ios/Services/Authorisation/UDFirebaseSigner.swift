@@ -9,11 +9,7 @@ import Foundation
 
 final class UDFirebaseSigner: FirebaseAuthUtilitiesProtocol {
     
-    static let shared = UDFirebaseSigner()
-    
     private var googleAPIKey: String { FirebaseNetworkConfig.APIKey }
-    
-    private init() { }
     
 }
 

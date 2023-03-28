@@ -17,17 +17,20 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     
     private let notificationsService: NotificationsServiceProtocol
     private let dataAggregatorService: DataAggregatorServiceProtocol
+    private let firebaseInteractionService: FirebaseInteractionServiceProtocol
     private var firebaseUser: FirebaseUser?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     
     init(view: SettingsViewProtocol,
          notificationsService: NotificationsServiceProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         dataAggregatorService: DataAggregatorServiceProtocol,
+         firebaseInteractionService: FirebaseInteractionServiceProtocol) {
         self.view = view
         self.notificationsService = notificationsService
         self.dataAggregatorService = dataAggregatorService
+        self.firebaseInteractionService = firebaseInteractionService
         dataAggregatorService.addListener(self)
-        FirebaseInteractionService.shared.addListener(self)
+        firebaseInteractionService.addListener(self)
     }
     
 }
@@ -36,7 +39,7 @@ final class SettingsPresenter: ViewAnalyticsLogger {
 extension SettingsPresenter: SettingsPresenterProtocol {
     func viewDidLoad() {
         Task {
-            firebaseUser = try? await FirebaseInteractionService.shared.getUserProfile()
+            firebaseUser = try? await firebaseInteractionService.getUserProfile()
             showSettingsAsync()
         }        
     }
@@ -173,7 +176,7 @@ private extension SettingsPresenter {
         User.instance.update(settings: settings)
         Storage.instance.cleanAllCache()
         StripeService.shared.setup()
-        FirebaseInteractionService.shared.logout()
+        firebaseInteractionService.logout()
         updateAppVersion()
         Task { await dataAggregatorService.aggregateData() }
         notificationsService.updateTokenSubscriptions()
@@ -226,14 +229,23 @@ private extension SettingsPresenter {
         guard let view,
               let nav = view.cNavigationController else { return }
         
-        if FirebaseAuthService.shared.isAuthorised {
+        if appContext.firebaseAuthService.isAuthorised {
             Task {
                 do {
                     try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
                     await view.dismissPullUpMenu()
                     try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                    FirebaseInteractionService.shared.logout()
+                    firebaseInteractionService.logout()
                 } catch { }
+                                
+//                do {
+//                    let domains = try await appContext.firebaseInteractionService.getParkedDomains()
+//                    let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
+//                    UDRouter().showParkedDomainsFoundModuleWith(domains: displayInfo,
+//                                                                in: nav)
+//                } catch {
+////                    authFailedWith(error: error)
+//                }
             }
         } else {
             UDRouter().showLoginScreen(in: nav)

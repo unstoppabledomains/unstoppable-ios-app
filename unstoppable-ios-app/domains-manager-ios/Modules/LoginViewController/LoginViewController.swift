@@ -8,7 +8,7 @@
 import UIKit
 
 @MainActor
-protocol LoginViewProtocol: BaseCollectionViewControllerProtocol {
+protocol LoginViewProtocol: BaseCollectionViewControllerProtocol & ViewWithDashesProgress {
     func applySnapshot(_ snapshot: LoginSnapshot, animated: Bool)
 }
 
@@ -38,6 +38,8 @@ final class LoginViewController: BaseViewController {
 
 // MARK: - LoginViewProtocol
 extension LoginViewController: LoginViewProtocol {
+    var progress: Double? { 0.25 }
+
     func applySnapshot(_ snapshot: LoginSnapshot, animated: Bool) {
         dataSource.apply(snapshot, animatingDifferences: animated)
     }
@@ -60,6 +62,7 @@ private extension LoginViewController {
 // MARK: - Setup functions
 private extension LoginViewController {
     func setup() {
+        addProgressDashesView()
         titleLabel.setTitle(String.Constants.loginWithWebTitle.localized())
         subtitleLabel.setSubtitle(String.Constants.loginWithWebSubtitle.localized())
         setupCollectionView()

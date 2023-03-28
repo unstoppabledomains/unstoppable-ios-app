@@ -29,34 +29,49 @@ final class FirebaseInteractionServiceListenerHolder: Equatable {
     
 }
 
+protocol FirebaseInteractionServiceProtocol {
+    func authorizeWith(email: String, password: String) async throws
+    func authorizeWithGoogle(in viewController: UIViewController) async throws
+    func authorizeWithTwitter(in viewController: UIViewController) async throws
+    func getUserProfile() async throws -> FirebaseUser
+    func getParkedDomains() async throws -> [FirebaseDomain]
+    func logout()
+    // Listeners
+    func addListener(_ listener: FirebaseInteractionServiceListener)
+    func removeListener(_ listener: FirebaseInteractionServiceListener)
+}
 
 final class FirebaseInteractionService {
     
-    static let shared = FirebaseInteractionService()
+    private let firebaseAuthService: FirebaseAuthService
+    private let firebaseSigner: UDFirebaseSigner
     private var firebaseUser: FirebaseUser?
     private var tokenData: FirebaseTokenData?
     private var listenerHolders: [FirebaseInteractionServiceListenerHolder] = []
     private var loadFirebaseUserTask: Task<FirebaseUser, Error>?
 
-    init() {
+    init(firebaseAuthService: FirebaseAuthService,
+         firebaseSigner: UDFirebaseSigner) {
+        self.firebaseAuthService = firebaseAuthService
+        self.firebaseSigner = firebaseSigner
         refreshUserProfileAsync()
     }
 }
 
-// MARK: - Open methods
-extension FirebaseInteractionService {
+// MARK: - FirebaseInteractionServiceProtocol
+extension FirebaseInteractionService: FirebaseInteractionServiceProtocol {
     func authorizeWith(email: String, password: String) async throws {
-        let tokenData = try await FirebaseAuthService.shared.authorizeWith(email: email, password: password)
+        let tokenData = try await firebaseAuthService.authorizeWith(email: email, password: password)
         setTokenData(tokenData)
     }
     
     func authorizeWithGoogle(in viewController: UIViewController) async throws {
-        let tokenData = try await FirebaseAuthService.shared.authorizeWithGoogleSignInIdToken(in: viewController)
+        let tokenData = try await firebaseAuthService.authorizeWithGoogleSignInIdToken(in: viewController)
         setTokenData(tokenData)
     }
     
     func authorizeWithTwitter(in viewController: UIViewController) async throws {
-        let tokenData = try await FirebaseAuthService.shared.authorizeWithTwitterCustomToken(in: viewController)
+        let tokenData = try await firebaseAuthService.authorizeWithTwitterCustomToken(in: viewController)
         setTokenData(tokenData)
     }
     
@@ -69,7 +84,7 @@ extension FirebaseInteractionService {
         
         let loadFirebaseUserTask = Task<FirebaseUser, Error> {
             let idToken = try await getIdToken()
-            let firebaseUser = try await UDFirebaseSigner.shared.getUserProfile(idToken: idToken)
+            let firebaseUser = try await firebaseSigner.getUserProfile(idToken: idToken)
             return firebaseUser
         }
         
@@ -86,20 +101,23 @@ extension FirebaseInteractionService {
     }
     
     func getParkedDomains() async throws -> [FirebaseDomain] {
-        struct Response: Codable {
-            let domains: [FirebaseDomain]
+        var result = [FirebaseDomain]()
+        var isThereDomainsToLoad = true
+        var page = 1
+        let perPage = 200
+        
+        while isThereDomainsToLoad {
+            let domains = try await loadParkedDomainsFor(page: page, perPage: perPage)
+            result += domains
+            page += 1
+            isThereDomainsToLoad = domains.count >= perPage
         }
         
-        let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=1&perPage=50&status=all")!
-        let request = APIRequest(url: url, body: "", method: .get)
-        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request,
-                                                                               dateDecodingStrategy: .defaultDateDecodingStrategy())
-        
-        return response.domains
+        return result
     }
     
     func logout() {
-        FirebaseAuthService.shared.logout()
+        firebaseAuthService.logout()
         setFirebaseUser(nil)
         setTokenData(nil)
     }
@@ -141,6 +159,19 @@ private extension FirebaseInteractionService {
         Task {
             _ = try? await getUserProfile()
         }
+    }
+    
+    func loadParkedDomainsFor(page: Int, perPage: Int) async throws -> [FirebaseDomain] {
+        struct Response: Codable {
+            let domains: [FirebaseDomain]
+        }
+        
+        let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=\(page)&perPage=\(perPage)&status=unclaimed")!
+        let request = APIRequest(url: url, body: "", method: .get)
+        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request,
+                                                                               dateDecodingStrategy: .defaultDateDecodingStrategy())
+        
+        return response.domains
     }
 }
 
@@ -189,7 +220,7 @@ private extension FirebaseInteractionService {
     }
     
     func refreshIdTokenIfPossible() async throws {
-        if let refreshToken = FirebaseAuthService.shared.refreshToken {
+        if let refreshToken = firebaseAuthService.refreshToken {
             try await refreshIdTokenWith(refreshToken: refreshToken)
         } else {
             throw FirebaseAuthError.firebaseUserNotAuthorisedInTheApp
@@ -198,7 +229,7 @@ private extension FirebaseInteractionService {
     
     func refreshIdTokenWith(refreshToken: String) async throws {
         do {
-            let authResponse = try await UDFirebaseSigner.shared.refreshIDTokenWith(refreshToken: refreshToken)
+            let authResponse = try await firebaseSigner.refreshIDTokenWith(refreshToken: refreshToken)
             guard let expiresIn = TimeInterval(authResponse.expiresIn) else { throw FirebaseAuthError.failedToGetTokenExpiresData }
             
             let expirationDate = Date().addingTimeInterval(expiresIn - 60) // Deduct 1 minute to ensure token won't expire in between of making request
@@ -225,19 +256,3 @@ struct FirebaseTokenData: Codable {
 struct FirebaseUser: Codable {
     var email: String?
 }
-
-struct FirebaseDomain: Codable {
-    var claimStatus: String
-    var internalCustody: Bool
-    var parkingExpiresAt: Date?
-    var domainId: Int
-    var blockchain: String
-    var projectedBlockchain: String
-    var geminiCustody: String?
-    var geminiCustodyExpiresAt: Date?
-    var name: String
-    var ownerAddress: String
-    var logicalOwnerAddress: String
-    var type: String
-}
-

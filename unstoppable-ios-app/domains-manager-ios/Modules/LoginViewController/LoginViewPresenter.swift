@@ -23,6 +23,7 @@ final class LoginViewPresenter {
 extension LoginViewPresenter: LoginViewPresenterProtocol {
     func viewDidLoad() {
         showData()
+        view?.setDashesProgress(0.25)
     }
     
     @MainActor
@@ -70,8 +71,8 @@ private extension LoginViewPresenter {
             guard let view else { return }
     
             do {
-                try await FirebaseInteractionService.shared.authorizeWithGoogle(in: view)
-                await userAuthorized()
+                try await appContext.firebaseInteractionService.authorizeWithGoogle(in: view)
+                await userDidAuthorize()
             } catch {
                 await authFailedWith(error: error)
             }
@@ -83,8 +84,8 @@ private extension LoginViewPresenter {
             guard let view else { return }
             
             do {
-                try await FirebaseInteractionService.shared.authorizeWithTwitter(in: view)
-                await userAuthorized()
+                try await appContext.firebaseInteractionService.authorizeWithTwitter(in: view)
+                await userDidAuthorize()
             } catch {
                 await authFailedWith(error: error)
             }
@@ -92,8 +93,17 @@ private extension LoginViewPresenter {
     }
     
     @MainActor
-    func userAuthorized() {
-        view?.cNavigationController?.popViewController(animated: true)
+    func userDidAuthorize() async {
+        guard let nav = view?.cNavigationController else { return }
+        
+        do {
+            let domains = try await appContext.firebaseInteractionService.getParkedDomains()
+            let displayInfo = domains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
+            UDRouter().showParkedDomainsFoundModuleWith(domains: displayInfo,
+                                                        in: nav)
+        } catch {
+            authFailedWith(error: error)
+        }
     }
     
     @MainActor

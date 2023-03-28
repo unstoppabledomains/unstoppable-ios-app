@@ -266,5 +266,53 @@
 			<string>domains</string>
 		</dict>
 	</dict>
+	<key>SDICT:WE_FOUND_N_DOMAINS</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>We found %d %#@domain@</string>
+		<key>domain</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>domains</string>
+			<key>one</key>
+			<string>domain</string>
+			<key>two</key>
+			<string>domains</string>
+			<key>few</key>
+			<string>domains</string>
+			<key>many</key>
+			<string>domains</string>
+			<key>other</key>
+			<string>domains</string>
+		</dict>
+	</dict>
+	<key>SDICT:N_PARKED_DOMAINS_IMPORTED</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d parked %#@domain@ imported</string>
+		<key>domain</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>domains</string>
+			<key>one</key>
+			<string>domain</string>
+			<key>two</key>
+			<string>domains</string>
+			<key>few</key>
+			<string>domains</string>
+			<key>many</key>
+			<string>domains</string>
+			<key>other</key>
+			<string>domains</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

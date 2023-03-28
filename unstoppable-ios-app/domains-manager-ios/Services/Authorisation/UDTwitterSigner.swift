@@ -9,12 +9,8 @@ import UIKit
 import WebKit
 
 final class UDTwitterSigner: NSObject {
-    
-    static let shared = UDTwitterSigner()
-    
+        
     private var baseURL: String { NetworkConfig.migratedBaseUrl }
-    
-    private override init() { }
     
 }
 
@@ -40,6 +36,7 @@ private extension UDTwitterSigner {
         nav.isModalInPresentation = true
         
         viewController.present(nav, animated: true)
+        twitterAuthVC.loadViewIfNeeded()
         
         return twitterAuthVC
     }
@@ -88,6 +85,11 @@ private final class TwitterAuthWebViewController: UIViewController, WKNavigation
     }
     
     private func finishWithResult(_ result: TokenCompletionResult) {
+        WKWebsiteDataStore.default().httpCookieStore.getAllCookies { (cookies) in
+            for cookie in cookies where cookie.domain.lowercased().contains("twitter") {
+                WKWebsiteDataStore.default().httpCookieStore.delete(cookie, completionHandler: nil)
+            }
+        }
         completion?(result)
         completion = nil
         dismiss(animated: true)
