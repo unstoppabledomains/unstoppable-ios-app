@@ -26,19 +26,19 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
                 let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
                 
                 await MainActor.run {
-//                    if parkedDomains.isEmpty {
-//                        moveToStep(.noParkedDomains)
-//                    } else {
-//                        moveToStep(.parkedDomainsFound(parkedDomains: displayInfo))
-//                    }
+                    if parkedDomains.isEmpty {
+                        onboardingFlowManager?.moveToStep(.noParkedDomains)
+                    } else {
+                        onboardingFlowManager?.modifyOnboardingData { onboardingData in
+                            onboardingData.parkedDomains = displayInfo
+                        }
+                        onboardingFlowManager?.moveToStep(.parkedDomainsFound)
+                    }
                 }
             } catch {
-                //TODO: - Logout
-                //TODO: - Save domains to onboarding data
-
-//                (topViewController as? BaseViewControllerProtocol)?.showAlertWith(error: error, handler: { [weak self] _ in
-//                    self?.dismiss(result: .failedToLoadParkedDomains)
-//                })
+                await view?.showAlertWith(error: error, handler: { _ in
+                    appContext.firebaseInteractionService.logout()
+                })
             }
         }
     }

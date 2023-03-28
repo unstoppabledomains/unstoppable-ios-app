@@ -18,18 +18,10 @@ final class LoginOnboardingViewPresenter: LoginViewPresenter {
     }
     
     override func loginWithEmailAction() {
-        Task {
-//            try? await loginFlowManager?.handle(action: .loginWithEmailAndPassword)
-        }
+        onboardingFlowManager?.moveToStep(.loginWithEmailAndPassword)
     }
     
     override func userDidAuthorize() {
-        Task {
-//            do {
-//                try await loginFlowManager?.handle(action: .authorized)
-//            } catch {
-//                authFailedWith(error: error)
-//            }
-        }
+        onboardingFlowManager?.moveToStep(.loadingParkedDomains)
     }
 }

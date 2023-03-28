@@ -12,7 +12,7 @@ protocol LoadingParkedDomainsViewPresenterProtocol: BasePresenterProtocol {
 }
 
 class LoadingParkedDomainsViewPresenter {
-    private weak var view: LoadingParkedDomainsViewProtocol?
+    private(set) weak var view: LoadingParkedDomainsViewProtocol?
 
     init(view: LoadingParkedDomainsViewProtocol) {
         self.view = view

@@ -20,9 +20,6 @@ final class LoginWithEmailOnboardingViewPresenter: LoginWithEmailViewPresenter {
     }
     
     override func didAuthorizeAction() {
-        Task {
-            //TODO: - Logout
-//            try? await loginFlowManager?.handle(action: .authorized)
-        }
+        onboardingFlowManager?.moveToStep(.loadingParkedDomains)
     }
 }

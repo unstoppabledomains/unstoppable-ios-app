@@ -18,8 +18,6 @@ class NoParkedDomainsFoundOnboardingViewPresenter: NoParkedDomainsFoundViewPrese
     }
     
     override func confirmButtonPressed() {
-        Task {
-            
-        }
+        appContext.firebaseInteractionService.logout()
     }
 }

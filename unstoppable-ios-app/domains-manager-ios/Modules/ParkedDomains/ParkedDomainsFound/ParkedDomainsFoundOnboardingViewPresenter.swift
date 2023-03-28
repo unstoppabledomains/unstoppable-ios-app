@@ -24,8 +24,6 @@ class ParkedDomainsFoundOnboardingViewPresenter: ParkedDomainsFoundViewPresenter
     }
     
     override func importButtonPressed() {
-        Task {
-//            try? await loginFlowManager?.handle(action: .importCompleted(parkedDomains: domains))
-        }
+        onboardingFlowManager?.moveToStep(.protectWallet)
     }
 }
