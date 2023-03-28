@@ -12,7 +12,7 @@ protocol NoParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
 }
 
 class NoParkedDomainsFoundViewPresenter {
-    private weak var view: NoParkedDomainsFoundViewProtocol?
+    private(set) weak var view: NoParkedDomainsFoundViewProtocol?
 
     init(view: NoParkedDomainsFoundViewProtocol) {
         self.view = view

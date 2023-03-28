@@ -12,7 +12,7 @@ protocol LoginViewPresenterProtocol: BasePresenterProtocol {
 }
 
 class LoginViewPresenter {
-    private weak var view: LoginViewProtocol?
+    private(set) weak var view: LoginViewProtocol?
 
     init(view: LoginViewProtocol) {
         self.view = view

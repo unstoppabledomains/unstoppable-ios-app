@@ -5,9 +5,9 @@
 //  Created by Oleg Kuplin on 28.03.2023.
 //
 
-import Foundation
+import UIKit
 
-class NoParkedDomainsFoundOnboardingViewPresenter: NoParkedDomainsFoundViewPresenter {
+final class NoParkedDomainsFoundOnboardingViewPresenter: NoParkedDomainsFoundViewPresenter {
 
     private weak var onboardingFlowManager: OnboardingFlowManager?
 
@@ -21,3 +21,15 @@ class NoParkedDomainsFoundOnboardingViewPresenter: NoParkedDomainsFoundViewPrese
         appContext.firebaseInteractionService.logout()
     }
 }
+
+// MARK: - OnboardingNavigationHandler
+extension NoParkedDomainsFoundOnboardingViewPresenter: OnboardingNavigationHandler {
+    var viewController: UIViewController? { view }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .noParkedDomains }
+}
+
+// MARK: - OnboardingDataHandling
+extension NoParkedDomainsFoundOnboardingViewPresenter: OnboardingDataHandling {
+    func willNavigateBack() { }
+}
+

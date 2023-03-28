@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 28.03.2023.
 //
 
-import Foundation
+import UIKit
 
 final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsViewPresenter {
 
@@ -44,4 +44,15 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
             }
         }
     }
+}
+
+// MARK: - OnboardingNavigationHandler
+extension LoadingParkedDomainsOnboardingViewPresenter: OnboardingNavigationHandler {
+    var viewController: UIViewController? { view }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .loadingParkedDomains }
+}
+
+// MARK: - OnboardingDataHandling
+extension LoadingParkedDomainsOnboardingViewPresenter: OnboardingDataHandling {
+    func willNavigateBack() { }
 }

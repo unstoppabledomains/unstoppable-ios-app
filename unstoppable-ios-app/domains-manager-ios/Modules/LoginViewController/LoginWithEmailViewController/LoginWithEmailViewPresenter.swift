@@ -14,7 +14,7 @@ protocol LoginWithEmailViewPresenterProtocol: BasePresenterProtocol {
 }
 
 class LoginWithEmailViewPresenter {
-    private weak var view: LoginWithEmailViewProtocol?
+    private(set) weak var view: LoginWithEmailViewProtocol?
     var progress: Double? { nil }
 
     init(view: LoginWithEmailViewProtocol) {

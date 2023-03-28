@@ -17,7 +17,7 @@ protocol ParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
 
 class ParkedDomainsFoundViewPresenter {
     
-    private weak var view: ParkedDomainsFoundViewProtocol?
+    private(set) weak var view: ParkedDomainsFoundViewProtocol?
     let domains: [FirebaseDomainDisplayInfo]
 
     var title: String {

@@ -5,9 +5,9 @@
 //  Created by Oleg Kuplin on 28.03.2023.
 //
 
-import Foundation
+import UIKit
 
-class ParkedDomainsFoundOnboardingViewPresenter: ParkedDomainsFoundViewPresenter {
+final class ParkedDomainsFoundOnboardingViewPresenter: ParkedDomainsFoundViewPresenter {
     
     private weak var onboardingFlowManager: OnboardingFlowManager?
     
@@ -32,3 +32,15 @@ class ParkedDomainsFoundOnboardingViewPresenter: ParkedDomainsFoundViewPresenter
         
     }
 }
+
+// MARK: - OnboardingNavigationHandler
+extension ParkedDomainsFoundOnboardingViewPresenter: OnboardingNavigationHandler {
+    var viewController: UIViewController? { view }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .parkedDomainsFound }
+}
+
+// MARK: - OnboardingDataHandling
+extension ParkedDomainsFoundOnboardingViewPresenter: OnboardingDataHandling {
+    func willNavigateBack() { }
+}
+

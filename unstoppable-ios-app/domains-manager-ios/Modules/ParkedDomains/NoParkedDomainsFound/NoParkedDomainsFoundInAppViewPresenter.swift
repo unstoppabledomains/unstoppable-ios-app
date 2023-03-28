@@ -7,7 +7,7 @@
 
 import Foundation
 
-class NoParkedDomainsFoundInAppViewPresenter: NoParkedDomainsFoundViewPresenter {
+final class NoParkedDomainsFoundInAppViewPresenter: NoParkedDomainsFoundViewPresenter {
 
     private weak var loginFlowManager: LoginFlowManager?
     

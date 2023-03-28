@@ -361,26 +361,29 @@ private extension OnboardingNavigationController {
             let vc = LoginViewController.nibInstance()
             let presenter = LoginOnboardingViewPresenter(view: vc,
                                                          onboardingFlowManager: self)
+            addStepHandler(presenter)
             vc.presenter = presenter
             return vc
         case .loadingParkedDomains:
             let vc = LoadingParkedDomainsViewController.nibInstance()
             let presenter = LoadingParkedDomainsOnboardingViewPresenter(view: vc,
                                                                         onboardingFlowManager: self)
+            addStepHandler(presenter)
             vc.presenter = presenter
             return vc
         case .loginWithEmailAndPassword:
             let vc = LoginWithEmailViewController.nibInstance()
             let presenter = LoginWithEmailOnboardingViewPresenter(view: vc,
                                                                   onboardingFlowManager: self)
+            addStepHandler(presenter)
             vc.presenter = presenter
             return vc
         case .noParkedDomains:
             let vc = NoParkedDomainsFoundViewController.nibInstance()
             let presenter = NoParkedDomainsFoundOnboardingViewPresenter(view: vc,
                                                                         onboardingFlowManager: self)
+            addStepHandler(presenter)
             vc.presenter = presenter
-            
             return vc
         case .parkedDomainsFound:
             guard let parkedDomains = onboardingData.parkedDomains else {
@@ -391,6 +394,7 @@ private extension OnboardingNavigationController {
             let presenter = ParkedDomainsFoundOnboardingViewPresenter(view: vc,
                                                                       domains: parkedDomains,
                                                                       onboardingFlowManager: self)
+            addStepHandler(presenter)
             vc.presenter = presenter
             return vc
         }

@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 28.03.2023.
 //
 
-import Foundation
+import UIKit
 
 final class LoginOnboardingViewPresenter: LoginViewPresenter {
     
@@ -25,3 +25,15 @@ final class LoginOnboardingViewPresenter: LoginViewPresenter {
         onboardingFlowManager?.moveToStep(.loadingParkedDomains)
     }
 }
+
+// MARK: - OnboardingNavigationHandler
+extension LoginOnboardingViewPresenter: OnboardingNavigationHandler {
+    var viewController: UIViewController? { view }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .loginWithWebsite }
+}
+
+// MARK: - OnboardingDataHandling
+extension LoginOnboardingViewPresenter: OnboardingDataHandling {
+    func willNavigateBack() { }
+}
+

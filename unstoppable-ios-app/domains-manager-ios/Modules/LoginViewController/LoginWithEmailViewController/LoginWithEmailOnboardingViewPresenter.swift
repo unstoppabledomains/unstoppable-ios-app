@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 28.03.2023.
 //
 
-import Foundation
+import UIKit
 
 final class LoginWithEmailOnboardingViewPresenter: LoginWithEmailViewPresenter {
     
@@ -23,3 +23,15 @@ final class LoginWithEmailOnboardingViewPresenter: LoginWithEmailViewPresenter {
         onboardingFlowManager?.moveToStep(.loadingParkedDomains)
     }
 }
+
+// MARK: - OnboardingNavigationHandler
+extension LoginWithEmailOnboardingViewPresenter: OnboardingNavigationHandler {
+    var viewController: UIViewController? { view }
+    var onboardingStep: OnboardingNavigationController.OnboardingStep { .loginWithEmailAndPassword }
+}
+
+// MARK: - OnboardingDataHandling
+extension LoginWithEmailOnboardingViewPresenter: OnboardingDataHandling {
+    func willNavigateBack() { }
+}
+
