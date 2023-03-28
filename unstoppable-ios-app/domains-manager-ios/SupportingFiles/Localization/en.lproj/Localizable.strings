@@ -709,3 +709,4 @@
 "PARKED_DOMAIN_ACTION_COVER_TITLE" = "Your domain is parked";
 "PARKED_DOMAIN_ACTION_COVER_SUBTITLE" = "Once a domain is parked, you are not able to manage it, as it is securely held in storage to protect against theft.";
 "CLAIM_DOMAIN" = "Claim domain";
+"PARKED_DOMAIN_CANT_CONNECT_TO_APPS" = "Parked domain can't connect to apps or other activities";

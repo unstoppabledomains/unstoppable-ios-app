@@ -38,6 +38,7 @@ extension String {
         case openSeaPolygonAsset(value: String)
         case writeAppStoreReview(appId: String)
         case udExternalWalletTutorial
+        case udParkedDomainsTutorial
 
         var urlString: String {
             switch self {
@@ -81,6 +82,8 @@ extension String {
                 return "https://apps.apple.com/app/id\(appId)?action=write-review"
             case .udExternalWalletTutorial:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001232090-using-external-wallets-in-the-unstoppable-domains-mobile-app"
+            case .udParkedDomainsTutorial:
+                return "https://unstoppabledomains.com/blog/categories/announcements/article/secure-your-domains-with-ud-parking"
             }
         }
         
@@ -93,7 +96,7 @@ extension String {
         static let mobileAppName = "MOBILE_APP_NAME"
         static let mobileAppDescription = "MOBILE_APP_DESCRIPTION"
         static let udCompanyName = "UD_COMPANY_NAME"
-
+        
         // Mint Domains
         static let moveDomains = "MOVE_DOMAINS"
         static let moveSelectedDomains = "MOVE_SELECTED_DOMAINS"
@@ -113,7 +116,7 @@ extension String {
         //Payments
         static let udFeeLabel = "UD_FEE_LABEL"
         static let ethGasFeeLabel = "ETH_GAS_FEE_LABEL"
-       
+        
         // Common
         static let domain = "DOMAIN"
         static let domains = "DOMAINS"
@@ -170,7 +173,7 @@ extension String {
         static let addN = "ADD_N"
         static let rateUs = "RATE_US"
         static let both = "BOTH"
-
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
@@ -267,7 +270,7 @@ extension String {
         static let connectWalletExternal = "CONNECT_WALLET_EXTERNAL"
         static let connectWalletExternalHint = "CONNECT_WALLET_EXTERNAL_HINT"
         static let connectWalletCreateNew = "CONNECT_WALLET_CREATE_NEW"
-
+        
         // Add wallet
         static let addWalletTitle = "ADD_WALLET_TITLE"
         static let addWalletManageHint = "ADD_WALLET_MANAGE_HINT"
@@ -502,7 +505,7 @@ extension String {
         static let notifyMeWhenFinished = "NOTIFY_ME_WHEN_FINISHED"
         static let weWillNotifyYouWhenFinished = "WE_WILL_NOTIFY_YOU_WHEN_FINISHED"
         static let viewTransaction = "VIEW_TRANSACTION"
-
+        
         // Permissions
         static let warning = "WARNING"
         static let settings = "SETTINGS"
@@ -719,7 +722,7 @@ extension String {
         // Recent activities
         static let noRecentActivity = "NO_RECENT_ACTIVITY"
         static let noConnectedApps = "NO_CONNECTED_APPS"
-
+        
         static let recentActivityInfoTitle = "RECENT_ACTIVITY_INFO_TITLE"
         static let recentActivityInfoSubtitle = "RECENT_ACTIVITY_INFO_SUBTITLE"
         static let scanToConnect = "SCAN_TO_CONNECT"
@@ -728,11 +731,11 @@ extension String {
         // Domain card
         static let domainCardSwipeToDetails = "DOMAIN_CARD_SWIPE_TO_DETAILS"
         static let domainCardSwipeToCard = "DOMAIN_CARD_SWIPE_TO_CARD"
-    
+        
         // Minting-Claiming
         static let importFromTheWebsite = "IMPORT_FROM_THE_WEBSITE"
         static let storeInYourDomainVault = "STORE_IN_YOUR_DOMAIN_VAULT"
-
+        
         // Legacy tokens
         static let legacy = "LEGACY"
         static let multiChain = "MULTI_CHAIN"
@@ -741,11 +744,11 @@ extension String {
         // External wallet connection hint
         static let externalWalletConnectionHintPullUpTitle = "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_TITLE"
         static let externalWalletConnectionHintPullUpSubtitle = "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_SUBTITLE"
-
+        
         // External wallet failed to sign
         static let externalWalletFailedToSignPullUpTitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_TITLE"
         static let externalWalletFailedToSignPullUpSubtitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE"
-
+        
         // Login
         static let websiteAccount = "WEBSITE_ACCOUNT"
         static let loginWithWebTitle = "LOGIN_WITH_WEB_TITLE"
@@ -778,7 +781,9 @@ extension String {
         static let parkedDomainActionCoverTitle = "PARKED_DOMAIN_ACTION_COVER_TITLE"
         static let parkedDomainActionCoverSubtitle = "PARKED_DOMAIN_ACTION_COVER_SUBTITLE"
         static let claimDomain = "CLAIM_DOMAIN"
+        static let parkedDomainCantConnectToApps = "PARKED_DOMAIN_CANT_CONNECT_TO_APPS"
     }
+
     
     struct Segues {
         static let homeToDomainDetail = "HomeToDomainDetails"

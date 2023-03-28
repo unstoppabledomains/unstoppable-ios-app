@@ -247,7 +247,7 @@ extension Analytics {
         
         case scanToConnect
         case domainCardDot
-        case recentActivityLearnMore
+        case recentActivityLearnMore, parkedDomainLearnMore
         case showMoreMintingDomains
         case rearrangeDomains, searchDomains
         case moveToTop

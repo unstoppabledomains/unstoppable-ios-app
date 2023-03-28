@@ -118,6 +118,9 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         case .recentActivityLearnMore:
             logButtonPressedAnalyticEvents(button: .recentActivityLearnMore, parameters: [.domainName: getCurrentDomainName()])
             showRecentActivitiesLearMorePullUp()
+        case .parkedDomainLearnMore:
+            logButtonPressedAnalyticEvents(button: .parkedDomainLearnMore, parameters: [.domainName: getCurrentDomainName()])
+            view?.openLink(.udParkedDomainsTutorial)
         case .domainSelected(let domain):
             logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
             UDVibration.buttonTap.vibrate()

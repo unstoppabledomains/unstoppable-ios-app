@@ -15,6 +15,7 @@ protocol DomainsCollectionCarouselItemViewProtocol: BaseCollectionViewController
 
 typealias DomainsCollectionCarouselItemDataSource = UICollectionViewDiffableDataSource<DomainsCollectionCarouselItemViewController.Section, DomainsCollectionCarouselItemViewController.Item>
 typealias DomainsCollectionCarouselItemSnapshot = NSDiffableDataSourceSnapshot<DomainsCollectionCarouselItemViewController.Section, DomainsCollectionCarouselItemViewController.Item>
+typealias DomainsCollectionVisibleDataType = DomainsCollectionCarouselItemViewController.VisibleDataType
 
 final class DomainsCollectionCarouselItemViewController: BaseViewController {
     
@@ -205,7 +206,8 @@ private extension DomainsCollectionCarouselItemViewController {
                 
                 let cellHeight = DomainsCollectionUICache.shared.cardHeightWithTopInset()
                 cell.setCellHeight(cellHeight,
-                                   isTutorialOn: configuration.isTutorialOn)
+                                   isTutorialOn: configuration.isTutorialOn,
+                                   dataType: configuration.dataType)
                 cell.didScrollTo(offset: collectionView.offsetRelativeToInset)
                 cell.learnMoreButtonPressedCallback = configuration.learnMoreButtonPressedCallback
              
@@ -550,14 +552,18 @@ extension DomainsCollectionCarouselItemViewController {
         let id = UUID()
         var learnMoreButtonPressedCallback: EmptyCallback
         var isTutorialOn: Bool
-        
+        var dataType: DomainsCollectionVisibleDataType
+
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.id == rhs.id && lhs.isTutorialOn == rhs.isTutorialOn
+            lhs.id == rhs.id &&
+            lhs.isTutorialOn == rhs.isTutorialOn &&
+            lhs.dataType == rhs.dataType
         }
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(id)
             hasher.combine(isTutorialOn)
+            hasher.combine(dataType)
         }
     }
     
@@ -566,5 +572,11 @@ extension DomainsCollectionCarouselItemViewController {
         case domainSelected(_ domain: DomainDisplayInfo)
         case domainNameCopied
         case rearrangeDomains
+        case parkedDomainLearnMore
     }
+    
+    enum VisibleDataType: Int, CaseIterable, Hashable {
+        case parkedDomain, activity
+    }
+    
 }
