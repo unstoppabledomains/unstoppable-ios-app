@@ -743,7 +743,7 @@ extension WalletConnectServiceV2 {
     }
     
     private func detectApp(by address: HexAddress, topic: String) throws -> WCConnectedAppsStorageV2.ConnectedApp {
-        guard let connectedApp = self.appsStorageV2.find(by: address, topic: topic)?.first else {
+        guard let connectedApp = self.appsStorageV2.find(byTopic: topic) else {
             Debugger.printFailure("No connected app can sign for the wallet address \(address)", critical: true)
             throw WalletConnectRequestError.failedToFindWalletToSign
         }

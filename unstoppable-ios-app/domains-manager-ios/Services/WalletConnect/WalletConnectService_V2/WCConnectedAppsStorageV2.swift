@@ -109,19 +109,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
     }
      
     func find(by unifiedApp: UnifiedConnectAppInfo) -> ConnectedApp? {
-        retrieveApps().first(where: {unifiedApp.appName == $0.appName
-            && unifiedApp.walletAddress == $0.walletAddress
-            && unifiedApp.domain == $0.domain})
-    }
-    
-    func find(by account: HexAddress, topic: String) -> [ConnectedApp]? {
-        let byAccount = find(by: account)
-        return byAccount?.filter({$0.sessionProxy.topic.lowercased() == topic.lowercased()})
-    }
-    
-    func find(by account: HexAddress) -> [ConnectedApp]? {
-        let normalizedAccount = account.normalized
-        return retrieveApps().filter({ $0.walletAddress.normalized == normalizedAccount } )
+        retrieveApps().first(where: {unifiedApp.topic == $0.topic})
     }
     
     func find(byTopic topic: String) -> ConnectedApp? {
