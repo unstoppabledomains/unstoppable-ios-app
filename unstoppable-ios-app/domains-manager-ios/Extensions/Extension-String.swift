@@ -389,6 +389,8 @@ extension String {
         static let restoreFromICloudHelpTitle = "RESTORE_FROM_ICLOUD_HELP_TITLE"
         static let restoreFromICloudHelpText = "RESTORE_FROM_ICLOUD_HELP_TEXT"
         static let restoreFromICloudHelpTextHighlighted = "RESTORE_FROM_ICLOUD_HELP_TEXT_HIGHLIGHTED"
+        static let walletsListEmptyTitle = "WALLETS_LIST_EMPTY_TITLE"
+        static let walletsListEmptySubtitle = "WALLETS_LIST_EMPTY_SUBTITLE"
         
         // Wallet details
         static let viewRecoveryPhrase = "VIEW_RECOVERY_PHRASE"

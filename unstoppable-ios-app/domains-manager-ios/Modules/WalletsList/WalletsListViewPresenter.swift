@@ -93,6 +93,8 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
             case .manageICloudBackups:
                 logButtonPressedAnalyticEvents(button: .manageICloudBackups)
                 await showManageBackupsAction()
+            case .empty:
+                return
             }
         }
     }
@@ -289,34 +291,44 @@ private extension WalletsListViewPresenter {
     func showWallets() async {
         var snapshot = WalletsListSnapshot()
         
-        // Break wallets into groups
-        var managedWallets = [WalletWithInfo]()
-        var connectedWallets = [WalletWithInfo]()
-        
-        for wallet in walletsWithInfo {
-            if wallet.wallet.walletState == .externalLinked {
-                connectedWallets.append(wallet)
-            } else {
-                managedWallets.append(wallet)
-            }
-        }
-        
-        if !managedWallets.isEmpty {
-            snapshot.appendSections([.managed(numberOfItems: managedWallets.count)])
-            
-            let items = managedWallets
-                .compactMap({ $0.displayInfo })
-                .managedWalletsSorted()
-                .map { visibleItem(from: $0) }
-            
-            snapshot.appendItems(items)
-        }
-        
+        var isBackUpAvailable = false
         if shouldShowManageBackup,
-           networkReachabilityService?.isReachable == true {
-            let backups = udWalletsService.fetchCloudWalletClusters()
+           networkReachabilityService?.isReachable == true,
+           !udWalletsService.fetchCloudWalletClusters().isEmpty {
+            isBackUpAvailable = true
+        }
+        if walletsWithInfo.isEmpty {
+            snapshot.appendSections([.empty(isBackUpAvailable: isBackUpAvailable)])
+            snapshot.appendItems([.empty])
+            if isBackUpAvailable {
+                snapshot.appendSections([.manageICLoud])
+                snapshot.appendItems([.manageICloudBackups])
+            }
+        } else {
+            // Break wallets into groups
+            var managedWallets = [WalletWithInfo]()
+            var connectedWallets = [WalletWithInfo]()
             
-            if !backups.isEmpty {
+            for wallet in walletsWithInfo {
+                if wallet.wallet.walletState == .externalLinked {
+                    connectedWallets.append(wallet)
+                } else {
+                    managedWallets.append(wallet)
+                }
+            }
+            
+            if !managedWallets.isEmpty {
+                snapshot.appendSections([.managed(numberOfItems: managedWallets.count)])
+                
+                let items = managedWallets
+                    .compactMap({ $0.displayInfo })
+                    .managedWalletsSorted()
+                    .map { visibleItem(from: $0) }
+                
+                snapshot.appendItems(items)
+            }
+            
+            if isBackUpAvailable {
                 if managedWallets.isEmpty {
                     snapshot.appendSections([.manageICloudExtraHeight])
                 } else {
@@ -324,15 +336,15 @@ private extension WalletsListViewPresenter {
                 }
                 snapshot.appendItems([.manageICloudBackups])
             }
-        }
-        
-        if !connectedWallets.isEmpty {
-            let items = connectedWallets
-                .compactMap({ $0.displayInfo })
-                .map { visibleItem(from: $0) }
             
-            snapshot.appendSections([.connected(numberOfItems: items.count)])
-            snapshot.appendItems(items)
+            if !connectedWallets.isEmpty {
+                let items = connectedWallets
+                    .compactMap({ $0.displayInfo })
+                    .map { visibleItem(from: $0) }
+                
+                snapshot.appendSections([.connected(numberOfItems: items.count)])
+                snapshot.appendItems(items)
+            }
         }
         
         await view?.applySnapshot(snapshot, animated: false)

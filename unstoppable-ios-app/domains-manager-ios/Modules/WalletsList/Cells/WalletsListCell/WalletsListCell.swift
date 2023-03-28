@@ -56,6 +56,8 @@ extension WalletsListCell {
             primaryLabel.setAttributedTextWith(text: String.Constants.manageICloudBackups.localized(),
                                                font: .currentFont(withSize: 16, weight: .medium),
                                                textColor: .foregroundSecondary)
+        case .empty:
+            return
         }
     }
 }

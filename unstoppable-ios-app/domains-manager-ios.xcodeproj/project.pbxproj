@@ -1578,6 +1578,14 @@
 		C6526DF329D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DF129D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift */; };
 		C6526DF429D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DF129D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift */; };
 		C6526DF529D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DF129D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift */; };
+		C6526DFA29D32FC800D6F2EB /* WalletsEmptyStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DF829D32FC800D6F2EB /* WalletsEmptyStateCell.swift */; };
+		C6526DFB29D32FC800D6F2EB /* WalletsEmptyStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DF829D32FC800D6F2EB /* WalletsEmptyStateCell.swift */; };
+		C6526DFC29D32FC800D6F2EB /* WalletsEmptyStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DF829D32FC800D6F2EB /* WalletsEmptyStateCell.swift */; };
+		C6526DFD29D32FC900D6F2EB /* WalletsEmptyStateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DF829D32FC800D6F2EB /* WalletsEmptyStateCell.swift */; };
+		C6526DFE29D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */; };
+		C6526DFF29D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */; };
+		C6526E0029D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */; };
+		C6526E0129D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -3862,6 +3870,8 @@
 		C6526DE729D2E06800D6F2EB /* NoParkedDomainsFoundOnboardingViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoParkedDomainsFoundOnboardingViewPresenter.swift; sourceTree = "<group>"; };
 		C6526DEC29D2E12000D6F2EB /* ParkedDomainsFoundInAppViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkedDomainsFoundInAppViewPresenter.swift; sourceTree = "<group>"; };
 		C6526DF129D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkedDomainsFoundOnboardingViewPresenter.swift; sourceTree = "<group>"; };
+		C6526DF829D32FC800D6F2EB /* WalletsEmptyStateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsEmptyStateCell.swift; sourceTree = "<group>"; };
+		C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WalletsEmptyStateCell.xib; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -5059,9 +5069,9 @@
 				C685A94828408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift */,
 				C60E9B822821193400CD7593 /* WalletsListViewController.swift */,
 				C60E9B802821193400CD7593 /* WalletsListViewController.xib */,
+				C6526DF629D32FA600D6F2EB /* Cells */,
 				C60E9BAB2821911900CD7593 /* Entities */,
 				C60E9B9A28212FC400CD7593 /* CollectionReusableViews */,
-				C60E9B8F282127C800CD7593 /* WalletsListCell */,
 			);
 			path = WalletsList;
 			sourceTree = "<group>";
@@ -5802,6 +5812,24 @@
 				C652629728110B8500F1D699 /* SecurityWallViewController.xib */,
 			);
 			path = SecurityWallViewController;
+			sourceTree = "<group>";
+		};
+		C6526DF629D32FA600D6F2EB /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C6526DF729D32FAF00D6F2EB /* WalletsEmptyStateCell */,
+				C60E9B8F282127C800CD7593 /* WalletsListCell */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		C6526DF729D32FAF00D6F2EB /* WalletsEmptyStateCell */ = {
+			isa = PBXGroup;
+			children = (
+				C6526DF829D32FC800D6F2EB /* WalletsEmptyStateCell.swift */,
+				C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */,
+			);
+			path = WalletsEmptyStateCell;
 			sourceTree = "<group>";
 		};
 		C655D01D2846308E00E80A65 /* DataAggregatorService */ = {
@@ -7723,6 +7751,7 @@
 				C66804CD280D9EC8007E6390 /* EnterPasscodeViewController.xib in Resources */,
 				C6E041662950541D0080F8E3 /* DomainsCollectionRecentActivityCell.xib in Resources */,
 				C669C36029117B1100837F21 /* DomainProfileSocialCell.xib in Resources */,
+				C6526DFE29D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */,
 				30784C8E27F455350034FA4A /* UDTextView.xib in Resources */,
 				C628E32727FDA3270044E408 /* Inter-Medium.ttf in Resources */,
 				C685A98F2840FD4900E54044 /* ChoosePrimaryDomainViewController.xib in Resources */,
@@ -7854,6 +7883,7 @@
 				C6D5DAE528374B8400379C38 /* ManageMultiChainDomainAddressCell.xib in Resources */,
 				C6A2D525284DBDF300327C47 /* QRScannerSightView.xib in Resources */,
 				C6E04188295057FE0080F8E3 /* DomainsListViewController.xib in Resources */,
+				C6526E0029D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */,
 				C671E3A528FEA2D200A2B3A0 /* ManageDomainTopInfoCell.xib in Resources */,
 				C628E31D27FDA3270044E408 /* Inter-ExtraLight.ttf in Resources */,
 				C664B6562914C0F000A76154 /* DomainProfileMetadataCell.xib in Resources */,
@@ -8038,6 +8068,7 @@
 				30784C9127F455350034FA4A /* UDTextView.xib in Resources */,
 				C6E041692950541D0080F8E3 /* DomainsCollectionRecentActivityCell.xib in Resources */,
 				C669C36329117B1100837F21 /* DomainProfileSocialCell.xib in Resources */,
+				C6526E0129D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */,
 				C628E32A27FDA3270044E408 /* Inter-Medium.ttf in Resources */,
 				C685A9922840FD4900E54044 /* ChoosePrimaryDomainViewController.xib in Resources */,
 				C628E32E27FDA3270044E408 /* Inter-Black.ttf in Resources */,
@@ -8188,6 +8219,7 @@
 				C66804CE280D9EC8007E6390 /* EnterPasscodeViewController.xib in Resources */,
 				C6E041672950541D0080F8E3 /* DomainsCollectionRecentActivityCell.xib in Resources */,
 				C669C36129117B1100837F21 /* DomainProfileSocialCell.xib in Resources */,
+				C6526DFF29D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */,
 				30784C8F27F455350034FA4A /* UDTextView.xib in Resources */,
 				C628E32827FDA3270044E408 /* Inter-Medium.ttf in Resources */,
 				C685A9902840FD4900E54044 /* ChoosePrimaryDomainViewController.xib in Resources */,
@@ -8905,6 +8937,7 @@
 				C6E04182295057FE0080F8E3 /* DomainsListViewController.swift in Sources */,
 				C6A2D5B5285074DF00327C47 /* SignMessageRequestConfirmationView.swift in Sources */,
 				C664310128D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */,
+				C6526DFA29D32FC800D6F2EB /* WalletsEmptyStateCell.swift in Sources */,
 				C6B6B048297039E500D4E30F /* DateFormattingService.swift in Sources */,
 				C6109EA728E6B55A0027D5D8 /* AppearanceTheme.swift in Sources */,
 				C62C3FB9283F6E410094FC93 /* MintDomainsConfigurationViewPresenter.swift in Sources */,
@@ -9447,6 +9480,7 @@
 				C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */,
 				C664B6622914FAC100A76154 /* DomainProfileNoSocialsCell.swift in Sources */,
 				C615E0D428891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */,
+				C6526DFC29D32FC800D6F2EB /* WalletsEmptyStateCell.swift in Sources */,
 				C60DCEED282D13F800F71C13 /* RenameWalletViewPresenter.swift in Sources */,
 				C624D78C281BBB8D00F55530 /* UDDomainsServiceProtocol.swift in Sources */,
 				C66430FF28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */,
@@ -10112,6 +10146,7 @@
 				C606B73F2863545000DC562B /* MintingDomainsStorage.swift in Sources */,
 				C664B6632914FAC100A76154 /* DomainProfileNoSocialsCell.swift in Sources */,
 				C615E0D528891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */,
+				C6526DFD29D32FC900D6F2EB /* WalletsEmptyStateCell.swift in Sources */,
 				307F85B3267B60300070A9A6 /* Storage.swift in Sources */,
 				C60DCEEE282D13F800F71C13 /* RenameWalletViewPresenter.swift in Sources */,
 				C624D78D281BBB8D00F55530 /* UDDomainsServiceProtocol.swift in Sources */,
@@ -10958,6 +10993,7 @@
 				C6E04183295057FE0080F8E3 /* DomainsListViewController.swift in Sources */,
 				C6A2D5B6285074DF00327C47 /* SignMessageRequestConfirmationView.swift in Sources */,
 				C664310228D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */,
+				C6526DFB29D32FC800D6F2EB /* WalletsEmptyStateCell.swift in Sources */,
 				C6B6B049297039E500D4E30F /* DateFormattingService.swift in Sources */,
 				C6109EA828E6B55A0027D5D8 /* AppearanceTheme.swift in Sources */,
 				C62C3FBA283F6E410094FC93 /* MintDomainsConfigurationViewPresenter.swift in Sources */,
