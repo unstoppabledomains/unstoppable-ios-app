@@ -785,6 +785,11 @@ extension String {
         static let parkedDomainActionCoverSubtitle = "PARKED_DOMAIN_ACTION_COVER_SUBTITLE"
         static let claimDomain = "CLAIM_DOMAIN"
         static let parkedDomainCantConnectToApps = "PARKED_DOMAIN_CANT_CONNECT_TO_APPS"
+        
+        // Parked domains notifications
+        static let localNotificationParkedMultipleDomainsExpiredTitle = "LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRED_TITLE"
+        static let localNotificationParkedDomainsExpiredBody = "LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRED_BODY"
+
     }
 
     

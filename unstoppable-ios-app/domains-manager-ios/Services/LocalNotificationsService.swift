@@ -14,6 +14,17 @@ final class LocalNotificationsService {
     
     private let notificationCenter = UNUserNotificationCenter.current()
     private let calendar = Calendar.current
+    private let expiredDomainsNotificationId = "com.unstoppabledomains.notification.expired.domains"
+    private var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        return dateFormatter
+    }()
+    private var dateTimeFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy HH:mm:ss"
+        return dateFormatter
+    }()
     
     private init() { }
     
@@ -44,59 +55,124 @@ extension LocalNotificationsService: DataAggregatorServiceListener {
 // MARK: - Private methods
 private extension LocalNotificationsService {
     func checkNotificationsForParkedDomains(in domains: [DomainDisplayInfo]) {
+        removeAllLocalNotifications()
         let parkedDomains = domains.filter({ $0.isParked })
         guard !parkedDomains.isEmpty else {
-            removeAllLocalNotifications()
             return
         }
         
-        parkedDomains.forEach { domain in
-            checkLocalNotificationForParkedDomain(domain)
+        var expiredDomains = [DomainDisplayInfo]()
+        var goingToExpireDomains = [GoingToExpireDomain]()
+        
+        for domain in domains {
+            guard case .parking(let status) = domain.state else {
+                Debugger.printFailure("Checking local notification for not-parked domain", critical: true)
+                continue
+            }
+            switch status {
+            case .claimed, .freeParking:
+                continue
+            case .parkingExpired:
+                expiredDomains.append(domain)
+            case .parked(let expiresDate), .parkedButExpiresSoon(let expiresDate), .waitingForParkingOrClaim(let expiresDate):
+                goingToExpireDomains.append(GoingToExpireDomain(domain,
+                                                                expiresDate: expiresDate))
+            }
         }
+        
+        createNotificationFor(expiredDomains: expiredDomains)
+        createNotificationsFor(goingToExpireDomains: goingToExpireDomains)
     }
     
     func removeAllLocalNotifications() {
         notificationCenter.removeAllPendingNotificationRequests()
+        notificationCenter.removeAllDeliveredNotifications()
     }
     
-    func checkLocalNotificationForParkedDomain(_ domain: DomainDisplayInfo) {
-        guard case .parking(let status) = domain.state else {
-            Debugger.printFailure("Checking local notification for not-parked domain", critical: true)
-            return
+    func createNotificationFor(expiredDomains: [DomainDisplayInfo]) {
+        guard !expiredDomains.isEmpty else { return }
+        
+        Task {
+            let title: String
+            if expiredDomains.count == 1 {
+                title = expiredDomains[0].name
+            } else {
+                title = String.Constants.localNotificationParkedMultipleDomainsExpiredTitle.localized()
+            }
+            let body = String.Constants.localNotificationParkedDomainsExpiredBody.localized()
+            let date = dateByAdding(days: 3, atTime: "19:00:00")
+            
+            await createLocalNotificationWith(identifier: expiredDomainsNotificationId,
+                                              title: title,
+                                              body: body,
+                                              date: date)
+            
+        }
+    }
+    
+    func createNotificationsFor(goingToExpireDomains: [GoingToExpireDomain]) {
+        guard !goingToExpireDomains.isEmpty else { return }
+        
+        var goingToExpireDomainsWithNotificationDate = [GoingToExpireDomain]()
+        
+        for var goingToExpireDomain in goingToExpireDomains {
+            let expiresDate = goingToExpireDomain.expiresDate
+            guard let notificationDate = notificationDateFor(domainExpiresDate: expiresDate) else { continue }
+            
+            goingToExpireDomain.notificationDate = notificationDate
+            goingToExpireDomainsWithNotificationDate.append(goingToExpireDomain)
+        }
+    }
+    
+    func notificationDateFor(domainExpiresDate: Date) -> Date? {
+        let daysToExpiresDate = calendar.dateComponents([.day], from: Date(), to: domainExpiresDate).day ?? 0
+        let notificationsTime = "19:00:00"
+        
+        let notificationsCheckDays = [30, // One month before expires date
+                                      7, // One week before expires date
+                                      3, // Three days before expires date
+                                      1] // One day before expires date
+        for days in notificationsCheckDays {
+            if daysToExpiresDate > days {
+                return dateByAdding(days: -days, atTime: notificationsTime, to: domainExpiresDate)
+            }
         }
         
-        switch status {
-        case .claimed:
-            return
-        case .freeParking:
-            return // No expires date => No notification
-        case .parkingExpired:
-            return // Already expired
-        case .parked(let expiresDate), .parkedButExpiresSoon(let expiresDate), .waitingForParkingOrClaim(let expiresDate):
-            return
-        }
+        return nil
+    }
+    
+    func dateByAdding(days: Int, atTime time: String, to toDate: Date = Date()) -> Date {
+        let newDate = calendar.date(byAdding: .day, value: days, to: toDate) ?? Date()
+        var newDateString = dateFormatter.string(from: newDate)
+        newDateString += " \(time)"
+        let notificationDate = dateTimeFormatter.date(from: newDateString) ?? Date()
+        return notificationDate
     }
     
     func createLocalNotificationWith(identifier: String,
                                      title: String,
                                      body: String,
                                      date: Date,
-                                     userInfo: [String : Any],
-                                     attachments: [UNNotificationAttachment],
-                                     calendarComponets: Set<Calendar.Component> = [.weekday, .hour, .minute, .second]) async throws {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
-        content.sound = .default
-        content.badge = 1
-        content.attachments = attachments
-        content.userInfo = userInfo
-        
-        let triggerDate = calendar.dateComponents(calendarComponets, from: date)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-        
-        try await notificationCenter.add(request)
+                                     userInfo: [String : Any] = [:],
+                                     attachments: [UNNotificationAttachment] = [],
+                                     calendarComponents: Set<Calendar.Component> = [.weekday, .hour, .minute, .second]) async {
+        do {
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = body
+            content.sound = .default
+            content.badge = 1
+            content.attachments = attachments
+            content.userInfo = userInfo
+            
+            let triggerDate = calendar.dateComponents(calendarComponents, from: date)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+            let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+            
+            try await notificationCenter.add(request)
+        } catch {
+            Debugger.printFailure("Failed to create local notification with title \(title), date: \(date) with error \(error)", critical: true)
+        }
     }
     
     
@@ -126,4 +202,20 @@ private extension LocalNotificationsService {
         return nil
     }
     
+}
+
+// MARK: - Private methods
+private extension LocalNotificationsService {
+    struct GoingToExpireDomain {
+        let domain: DomainDisplayInfo
+        let expiresDate: Date
+        var notificationDate: Date
+        
+        init(_ domain: DomainDisplayInfo,
+             expiresDate: Date) {
+            self.domain = domain
+            self.expiresDate = expiresDate
+            self.notificationDate = expiresDate
+        }
+    }
 }
