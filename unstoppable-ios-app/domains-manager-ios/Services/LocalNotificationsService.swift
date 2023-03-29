@@ -56,17 +56,12 @@ extension LocalNotificationsService: DataAggregatorServiceListener {
 private extension LocalNotificationsService {
     func checkNotificationsForParkedDomains(in domains: [DomainDisplayInfo]) {
         removeAllLocalNotifications()
-        let parkedDomains = domains.filter({ $0.isParked })
-        guard !parkedDomains.isEmpty else {
-            return
-        }
-        
+     
         var expiredDomains = [DomainDisplayInfo]()
         var goingToExpireDomains = [GoingToExpireDomain]()
         
         for domain in domains {
             guard case .parking(let status) = domain.state else {
-                Debugger.printFailure("Checking local notification for not-parked domain", critical: true)
                 continue
             }
             switch status {
@@ -93,11 +88,12 @@ private extension LocalNotificationsService {
         guard !expiredDomains.isEmpty else { return }
         
         Task {
+            let expiredDomainsCount = expiredDomains.count
             let title: String
-            if expiredDomains.count == 1 {
+            if expiredDomainsCount == 1 {
                 title = expiredDomains[0].name
             } else {
-                title = String.Constants.localNotificationParkedMultipleDomainsExpiredTitle.localized()
+                title = String.Constants.localNotificationParkedMultipleDomainsExpiredTitle.localized(expiredDomainsCount)
             }
             let body = String.Constants.localNotificationParkedDomainsExpiredBody.localized()
             let date = dateByAdding(days: 3, atTime: "19:00:00")
@@ -113,28 +109,59 @@ private extension LocalNotificationsService {
     func createNotificationsFor(goingToExpireDomains: [GoingToExpireDomain]) {
         guard !goingToExpireDomains.isEmpty else { return }
         
-        var goingToExpireDomainsWithNotificationDate = [GoingToExpireDomain]()
+        var goingToExpireDomainsNotificationDetails = [GoingToExpireDomainNotificationDetails]()
         
-        for var goingToExpireDomain in goingToExpireDomains {
+        for goingToExpireDomain in goingToExpireDomains {
+            let domain = goingToExpireDomain.domain
             let expiresDate = goingToExpireDomain.expiresDate
-            guard let notificationDate = notificationDateFor(domainExpiresDate: expiresDate) else { continue }
+            guard let notificationDetails = notificationDetailsFor(domain: domain,
+                                                                   expiresDate: expiresDate) else { continue }
             
-            goingToExpireDomain.notificationDate = notificationDate
-            goingToExpireDomainsWithNotificationDate.append(goingToExpireDomain)
+            goingToExpireDomainsNotificationDetails.append(notificationDetails)
+        }
+        
+        let groupedNotificationDetails = [Date : [GoingToExpireDomainNotificationDetails]].init(grouping: goingToExpireDomainsNotificationDetails, by: { $0.notificationDate })
+        
+        for (notificationDate, notificationsDetails) in groupedNotificationDetails {
+            guard let notificationDetails = notificationsDetails.first else {
+                Debugger.printFailure("Fail state", critical: true)
+                continue
+            }
+            
+            let numberOfNotifications = notificationsDetails.count
+            let domainsPlural = String.Constants.pluralDomains.localized(numberOfNotifications)
+            let expiresInLocalized = notificationDetails.notificationPeriod.expiresInLocalized
+
+            let title: String
+            let body = String.Constants.localNotificationParkedDomainsExpiresInBody.localized(domainsPlural, expiresInLocalized)
+            if numberOfNotifications == 1 {
+                title = notificationDetails.domain.name
+            } else {
+                title = String.Constants.localNotificationParkedMultipleDomainsExpiresTitle.localized(numberOfNotifications)
+            }
+            
+            Task {
+                await createLocalNotificationWith(identifier: notificationDetails.domain.name,
+                                                  title: title,
+                                                  body: body,
+                                                  date: notificationDate)
+            }
         }
     }
     
-    func notificationDateFor(domainExpiresDate: Date) -> Date? {
-        let daysToExpiresDate = calendar.dateComponents([.day], from: Date(), to: domainExpiresDate).day ?? 0
+    func notificationDetailsFor(domain: DomainDisplayInfo,
+                             expiresDate: Date) -> GoingToExpireDomainNotificationDetails? {
+        let daysToExpiresDate = calendar.dateComponents([.day], from: Date(), to: expiresDate).day ?? 0
         let notificationsTime = "19:00:00"
-        
-        let notificationsCheckDays = [30, // One month before expires date
-                                      7, // One week before expires date
-                                      3, // Three days before expires date
-                                      1] // One day before expires date
-        for days in notificationsCheckDays {
-            if daysToExpiresDate > days {
-                return dateByAdding(days: -days, atTime: notificationsTime, to: domainExpiresDate)
+        let notificationPeriods = DomainExpiresNotificationPeriod.allCases
+       
+        for period in notificationPeriods {
+            let daysCount = period.daysCount
+            if daysToExpiresDate > daysCount {
+                let notificationDate = dateByAdding(days: -daysCount, atTime: notificationsTime, to: expiresDate)
+                return .init(domain: domain,
+                             notificationDate: notificationDate,
+                             notificationPeriod: period)
             }
         }
         
@@ -169,6 +196,7 @@ private extension LocalNotificationsService {
             let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
             let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
             
+            Debugger.printInfo(topic: .LocalNotification, "Will schedule local notification \(title) on \(date)")
             try await notificationCenter.add(request)
         } catch {
             Debugger.printFailure("Failed to create local notification with title \(title), date: \(date) with error \(error)", critical: true)
@@ -216,6 +244,45 @@ private extension LocalNotificationsService {
             self.domain = domain
             self.expiresDate = expiresDate
             self.notificationDate = expiresDate
+        }
+    }
+    
+    struct GoingToExpireDomainNotificationDetails {
+        let domain: DomainDisplayInfo
+        let notificationDate: Date
+        let notificationPeriod: DomainExpiresNotificationPeriod
+    }
+    
+    enum DomainExpiresNotificationPeriod: CaseIterable {
+        case month
+        case week
+        case threeDays
+        case oneDay
+        
+        var daysCount: Int {
+            switch self {
+            case .month:
+                return 30
+            case .week:
+                return 7
+            case .threeDays:
+                return 3
+            case .oneDay:
+                return 1
+            }
+        }
+        
+        var expiresInLocalized: String {
+            switch self {
+            case .month:
+                return "1 month"
+            case .week:
+                return "1 week"
+            case .threeDays:
+                return "3 days"
+            case .oneDay:
+                return "tomorrow"
+            }
         }
     }
 }
