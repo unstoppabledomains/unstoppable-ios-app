@@ -27,10 +27,11 @@ final class HeapAnalyticService {
 }
 
 // MARK: - AnalyticsServiceProtocol
-extension HeapAnalyticService: AnalyticsServiceProtocol {
-    func log(event: Analytics.Event, withParameters eventParameters: Analytics.EventParameters?) {
+extension HeapAnalyticService: AnalyticsServiceChildProtocol {
+    func log(event: Analytics.Event, timestamp: Date, withParameters eventParameters: Analytics.EventParameters?) {
         let bulkEvent = BulkTrackEvent(identity: identity(),
                                        event: event.rawValue,
+                                       timestamp: timestamp,
                                        properties: eventParameters)
         Task {
             await storage.storeRequest(.trackEvent(bulkEvent))

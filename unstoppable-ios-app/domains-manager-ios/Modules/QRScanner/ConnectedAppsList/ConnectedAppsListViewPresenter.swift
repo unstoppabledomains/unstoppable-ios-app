@@ -35,8 +35,8 @@ extension ConnectedAppsListViewPresenter: ConnectedAppsListViewPresenterProtocol
     func viewDidLoad() {
         Task {
             await showConnectedAppsList()
-            walletConnectService.addListener(self)
-            walletConnectServiceV2.addListener(self)
+            appContext.wcRequestsHandlingService.addListener(self)
+            appContext.wcRequestsHandlingService.addListener(self)
         }
     }
     
@@ -44,14 +44,14 @@ extension ConnectedAppsListViewPresenter: ConnectedAppsListViewPresenterProtocol
 }
 
 // MARK: - WalletConnectServiceListener
-extension ConnectedAppsListViewPresenter: WalletConnectServiceListener {
-    func didConnect(to app: PushSubscriberInfo?) {
+extension ConnectedAppsListViewPresenter: WalletConnectServiceConnectionListener {
+    func didConnect(to app: UnifiedConnectAppInfo) {
         Task {
             await showConnectedAppsList()
         }
     }
     
-    func didDisconnect(from app: PushSubscriberInfo?) {
+    func didDisconnect(from app: UnifiedConnectAppInfo) {
         Task {
             await showConnectedAppsList()
         }
@@ -140,10 +140,7 @@ private extension ConnectedAppsListViewPresenter {
             case .networksInfo:
                 await appContext.pullUpViewService.showConnectedAppNetworksInfoPullUp(in: view)
             case .disconnect:
-                switch app.appInfo.dAppInfoInternal {
-                case .version1(let session): walletConnectService.disconnect(peerId: session.dAppInfo.peerId)
-                case .version2(_): try await walletConnectServiceV2.disconnect(app: app)
-                }
+                try await walletConnectServiceV2.disconnect(app: app)
             }
         }
     }

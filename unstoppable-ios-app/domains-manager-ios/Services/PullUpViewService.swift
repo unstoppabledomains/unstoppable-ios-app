@@ -42,13 +42,13 @@ protocol PullUpViewServiceProtocol {
     func showMintDomainConfirmationPullUp(in viewController: UIViewController) async throws -> MintDomainPullUpAction
     func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration, in viewController: UIViewController) async throws -> WalletConnectService.ConnectionUISettings
     func showConnectingAppVerifiedPullUp(in viewController: UIViewController)
-    func showNetworkNotSupportedPullUp(in viewController: UIViewController)
-    func showWCRequestNotSupportedPullUp(in viewController: UIViewController)
+    func showNetworkNotSupportedPullUp(in viewController: UIViewController) async
+    func showWCRequestNotSupportedPullUp(in viewController: UIViewController) async
     func showGasFeeInfoPullUp(in viewController: UIViewController, for network: BlockchainType)
-    func showWCConnectionFailedPullUp(in viewController: UIViewController)
-    func showWCTransactionFailedPullUp(in viewController: UIViewController)
+    func showWCConnectionFailedPullUp(in viewController: UIViewController) async
+    func showWCTransactionFailedPullUp(in viewController: UIViewController) async
     func showWCInvalidQRCodePullUp(in viewController: UIViewController) async
-    func showWCLowBalancePullUp(in viewController: UIViewController)
+    func showWCLowBalancePullUp(in viewController: UIViewController) async
     func showYouAreOfflinePullUp(in viewController: UIViewController,
                                  unavailableFeature: PullUpViewService.UnavailableOfflineFeature) async
     func showShareDomainPullUp(domain: DomainDisplayInfo, qrCodeImage: UIImage, in viewController: UIViewController) async -> ShareDomainSelectionResult
@@ -91,6 +91,9 @@ protocol PullUpViewServiceProtocol {
                                           in viewController: UIViewController) async
     func showChooseCoinVersionPullUp(for coin: CoinRecord,
                                      in viewController: UIViewController) async throws -> CoinVersionSelectionResult
+    func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
+                                                in viewController: UIViewController)
+    func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async
 }
 
 @MainActor
@@ -587,56 +590,64 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         
     }
     
-    func showNetworkNotSupportedPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 304
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.networkNotSupportedInfoTitle.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .grimaseIcon,
-                                                                                 size: .small),
-                                                                     subtitle: .label(.text(String.Constants.networkNotSupportedInfoDescription.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        showOrUpdate(in: viewController, pullUp: .wcNetworkNotSupported, contentView: selectionView, height: selectionViewHeight)
+    func showNetworkNotSupportedPullUp(in viewController: UIViewController) async {
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 304
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.networkNotSupportedInfoTitle.localized()),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .grimaseIcon,
+                                                                                     size: .small),
+                                                                         subtitle: .label(.text(String.Constants.networkNotSupportedInfoDescription.localized())),
+                                                                         cancelButton: .gotItButton()),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .wcNetworkNotSupported, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(Void()) })
+        }
     }
     
-    func showWCRequestNotSupportedPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 280
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.wcRequestNotSupportedInfoTitle.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .grimaseIcon,
-                                                                                 size: .small),
-                                                                     subtitle: .label(.text(String.Constants.wcRequestNotSupportedInfoDescription.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        showOrUpdate(in: viewController, pullUp: .wcRequestNotSupported, contentView: selectionView, height: selectionViewHeight)
+    func showWCRequestNotSupportedPullUp(in viewController: UIViewController) async {
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 280
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.wcRequestNotSupportedInfoTitle.localized()),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .grimaseIcon,
+                                                                                     size: .small),
+                                                                         subtitle: .label(.text(String.Constants.wcRequestNotSupportedInfoDescription.localized())),
+                                                                         cancelButton: .gotItButton()),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .wcRequestNotSupported, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(Void()) })
+        }
     }
     
-    func showWCConnectionFailedPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 280
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.signTransactionFailedAlertTitle.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .grimaseIcon,
-                                                                                 size: .small),
-                                                                     subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        showOrUpdate(in: viewController, pullUp: .wcConnectionFailed, contentView: selectionView, height: selectionViewHeight)
+    func showWCConnectionFailedPullUp(in viewController: UIViewController) async {
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 280
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.signTransactionFailedAlertTitle.localized()),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .grimaseIcon,
+                                                                                     size: .small),
+                                                                         subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())),
+                                                                         cancelButton: .gotItButton()),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .wcConnectionFailed, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(Void()) })
+        }
     }
     
-    func showWCTransactionFailedPullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 280
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.transactionFailed.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .cancelCircleIcon,
-                                                                                 size: .small),
-                                                                     subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        showOrUpdate(in: viewController, pullUp: .wcTransactionFailed, contentView: selectionView, height: selectionViewHeight)
+    func showWCTransactionFailedPullUp(in viewController: UIViewController) async {
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 280
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.transactionFailed.localized()),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .cancelCircleIcon,
+                                                                                     size: .small),
+                                                                         subtitle: .label(.text(String.Constants.signTransactionFailedAlertDescription.localized())),
+                                                                         cancelButton: .gotItButton()),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .wcTransactionFailed, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(Void()) })
+        }
     }
     
     func showWCInvalidQRCodePullUp(in viewController: UIViewController) async {
@@ -654,17 +665,19 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         }
     }
     
-    func showWCLowBalancePullUp(in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 280
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.insufficientBalance.localized()),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .cancelCircleIcon,
-                                                                                 size: .small),
-                                                                     subtitle: .label(.text(String.Constants.walletConnectLowBalanceAlertDescription.localized())),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        showOrUpdate(in: viewController, pullUp: .wcLowBalance, contentView: selectionView, height: selectionViewHeight)
+    func showWCLowBalancePullUp(in viewController: UIViewController) async {
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 280
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.insufficientBalance.localized()),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .cancelCircleIcon,
+                                                                                     size: .small),
+                                                                         subtitle: .label(.text(String.Constants.walletConnectLowBalanceAlertDescription.localized())),
+                                                                         cancelButton: .gotItButton()),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .wcLowBalance, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(Void()) })
+        }
     }
     
     func showYouAreOfflinePullUp(in viewController: UIViewController,
@@ -1312,6 +1325,46 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             presentPullUpView(in: viewController, pullUp: .chooseCoinVersion, additionalAnalyticParameters: [.coin: ticker], contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
+    
+    func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
+                                                in viewController: UIViewController) {
+        let selectionViewHeight: CGFloat = 328
+        let walletName = walletRecord.name
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.externalWalletConnectionHintPullUpTitle.localized(walletName)),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .externalWalletIndicator,
+                                                                                 size: .large),
+                                                                     subtitle: .label(.highlightedText(.init(text: String.Constants.externalWalletConnectionHintPullUpSubtitle.localized(walletName),
+                                                                                                             highlightedText: [.init(highlightedText: String.Constants.learnMore.localized(),
+                                                                                                                                     highlightedColor: .foregroundAccent)],
+                                                                                                             analyticsActionName: .learnMore,
+                                                                                                             action: { [weak viewController] in
+            guard let viewController else { return }
+            UDVibration.buttonTap.vibrate()
+            viewController.topVisibleViewController().openLink(.udExternalWalletTutorial)
+        }))),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        presentPullUpView(in: viewController, pullUp: .externalWalletConnectionHint, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
+    
+    
+    func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async {
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 304
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.externalWalletFailedToSignPullUpTitle.localized()),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .grimaseIcon,
+                                                                                     size: .small),
+                                                                         subtitle: .label(.text(String.Constants.externalWalletFailedToSignPullUpSubtitle.localized())),
+                                                                         cancelButton: .gotItButton()),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .externalWalletFailedToSign, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(Void()) })
+        }
+    }
+    
 }
 
 // MARK: - Private methods

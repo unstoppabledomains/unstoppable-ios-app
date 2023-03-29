@@ -8,7 +8,7 @@
 import UIKit
 
 @MainActor
-protocol CoreAppCoordinatorProtocol: WalletConnectUIHandler, WalletConnectClientUIHandler, ExternalEventsUIHandler {
+protocol CoreAppCoordinatorProtocol: WalletConnectClientUIHandler, ExternalEventsUIHandler {
     func startWith(window: UIWindow)
     func showOnboarding(_ flow: OnboardingNavigationController.OnboardingFlow)
     func showHome(mintingState: DomainsCollectionMintingState)

@@ -19,6 +19,7 @@ struct StripePaymentHelper {
         self.txCost = txCost
     }
     
+    @MainActor
     mutating func requestPayment(countryCode: String) {
         let merchantIdentifier = PaymentConfiguration.Merchant.identifier
         let paymentRequest = StripeAPI.paymentRequest(withMerchantIdentifier: merchantIdentifier,

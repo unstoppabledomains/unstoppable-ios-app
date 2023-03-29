@@ -22,6 +22,7 @@ final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
     private let walletConnectClientService: WalletConnectClientServiceProtocol
+    private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     var walletRemovedCallback: EmptyCallback?
     
@@ -31,7 +32,8 @@ final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
          dataAggregatorService: DataAggregatorServiceProtocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectClientService: WalletConnectClientServiceProtocol) {
+         walletConnectClientService: WalletConnectClientServiceProtocol,
+         walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
         self.wallet = wallet
         self.walletInfo = walletInfo
@@ -39,6 +41,7 @@ final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
         self.walletConnectClientService = walletConnectClientService
+        self.walletConnectServiceV2 = walletConnectServiceV2
     }
 }
 
@@ -239,25 +242,34 @@ private extension WalletDetailsViewPresenter {
     @MainActor
     func askToRemoveWallet() {
         guard let view = self.view else { return }
-        
         Task {
             do {
                 try await appContext.pullUpViewService.showRemoveWalletPullUp(in: view, walletInfo: walletInfo)
                 await view.dismissPullUpMenu()
                 try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
-                udWalletsService.remove(wallet: wallet)
-                try? walletConnectClientService.disconnect(walletAddress: wallet.address)
-                let wallets = udWalletsService.getUserWallets()
-                if !wallets.isEmpty {
-                    if wallet.walletState == .externalLinked {
-                        appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
-                    } else {
-                        appContext.toastMessageService.showToast(.walletRemoved(walletName: walletInfo.walletSourceName), isSticky: false)
-                    }
-                }
+                await removeWallet()
                 walletRemovedCallback?()
             }
         }
+    }
+    
+    @MainActor
+    func indicateWalletRemoved() {
+        if wallet.walletState == .externalLinked {
+            appContext.toastMessageService.showToast(.walletDisconnected, isSticky: false)
+        } else {
+            appContext.toastMessageService.showToast(.walletRemoved(walletName: walletInfo.walletSourceName), isSticky: false)
+        }
+    }
+    
+    func removeWallet() async {
+        udWalletsService.remove(wallet: wallet)
+        // WC1 + WC2
+        try? walletConnectClientService.disconnect(walletAddress: wallet.address)
+        await walletConnectServiceV2.disconnect(from: wallet.address)
+        let wallets = udWalletsService.getUserWallets()
+        guard !wallets.isEmpty else { return }
+        await indicateWalletRemoved()
     }
     
     func copyAddressButtonPressed() {

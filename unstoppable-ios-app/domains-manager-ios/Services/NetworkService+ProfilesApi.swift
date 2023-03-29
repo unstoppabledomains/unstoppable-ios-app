@@ -403,7 +403,7 @@ extension NetworkService {
     @discardableResult
     public func createAndStorePersistedProfileSignature(for domain: DomainItem) async throws -> PersistedTimedSignature {
         let message = try await NetworkService().getGeneratedMessageToRetrieve(for: domain)
-        let signature = try await domain.sign(message: message.message)
+        let signature = try await domain.personalSign(message: message.message)
         let newPersistedSignature = PersistedTimedSignature(domainName: domain.name,
                                                             expires: message.headers.expires,
                                                             sign: signature,
@@ -467,7 +467,7 @@ extension NetworkService {
     private func updateUserDomainProfile(for domain: DomainItem,
                                      body: String) async throws -> SerializedUserDomainProfile {
         let message = try await getGeneratedMessageToUpdate(for: domain, body: body)
-        let signature = try await domain.sign(message: message.message)
+        let signature = try await domain.personalSign(message: message.message)
         return try await updateDomainProfile(for: domain,
                                              with: message,
                                              signature: signature,

@@ -15,13 +15,14 @@ protocol ConnectExternalWalletViewPresenterProtocol: BasePresenterProtocol, View
     func applicationWillEnterForeground()
 }
 
-class ConnectExternalWalletViewPresenter: WalletConnector {
+class ConnectExternalWalletViewPresenter: WalletConnector, WalletConnectExternalWalletConnectionWaiter {
     
     private(set) weak var view: ConnectExternalWalletViewProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     var analyticsName: Analytics.ViewName { .unspecified }
-    private var connectingWalletName: String?
+    private var connectingWallet: WCWalletsProvider.WalletRecord?
+    var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
 
     init(view: ConnectExternalWalletViewProtocol,
          udWalletsService: UDWalletsServiceProtocol,
@@ -31,7 +32,7 @@ class ConnectExternalWalletViewPresenter: WalletConnector {
         self.udWalletsService = udWalletsService
         walletConnectClientService.delegate = self
         walletConnectServiceV2.delegate = self
-      
+        registerForAppBecomeActiveNotification()
     }
     func updateUI() {}
     func didConnectWallet(wallet: UDWallet) {
@@ -40,6 +41,22 @@ class ConnectExternalWalletViewPresenter: WalletConnector {
     func viewDidLoad() { }
     func viewWillAppear() {
         showData()
+    }
+    
+    func isWaitingForResponseFromExternalWallet() -> Bool {
+        connectingWallet != nil
+    }
+    
+    func handleExternalWalletDidNotRespond() {
+        Task { @MainActor in
+            guard let view,
+                let connectingWallet else { return }
+            
+            self.connectingWallet = nil
+            Vibration.error.vibrate()
+            appContext.pullUpViewService.showExternalWalletConnectionHintPullUp(for: connectingWallet,
+                                                                                in: view)
+        }
     }
 }
 
@@ -54,7 +71,7 @@ extension ConnectExternalWalletViewPresenter: ConnectExternalWalletViewPresenter
             logButtonPressedAnalyticEvents(button: .externalWalletSelected, parameters: [.externalWallet: wcWalletSelected.name])
 
             if description.isInstalled {
-                connectingWalletName = wcWalletSelected.name
+                connectingWallet = wcWalletSelected
                 Task {
                     await self.evokeConnectExternalWallet(wcWallet: wcWalletSelected)
                 }
@@ -116,16 +133,19 @@ extension ConnectExternalWalletViewPresenter: WalletConnectDelegate {
             
             self.view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
                                        body: String.Constants.failedToConnectExternalWallet.localized())
-            appContext.analyticsService.log(event: .failedToConnectExternalWallet, withParameters: [.externalWallet: self.connectingWalletName ?? "Unknown",
+            appContext.analyticsService.log(event: .failedToConnectExternalWallet, withParameters: [.externalWallet: self.connectingWallet?.name ?? "Unknown",
                                                                                                 .viewName: self.analyticsName.rawValue])
-            self.connectingWalletName = nil
+            self.connectingWallet = nil
         }
     }
     
-    func didConnect(to walletAddress: HexAddress?, with wcRegistryWallet: WCRegistryWalletProxy?) {
-        appContext.analyticsService.log(event: .didConnectToExternalWallet, withParameters: [.externalWallet: connectingWalletName ?? "Unknown",
-                                                                                         .viewName: analyticsName.rawValue])
-        connectingWalletName = nil
+    func didConnect(to walletAddress: HexAddress?,
+                    with wcRegistryWallet: WCRegistryWalletProxy?,
+                    successfullyAddedCallback: (() -> Void)? ) {
+        appContext.analyticsService.log(event: .didConnectToExternalWallet, withParameters: [.externalWallet: connectingWallet?.name ?? "Unknown",
+                                                                                             .viewName: analyticsName.rawValue])
+        connectingWallet = nil
+
         guard let walletAddress = walletAddress else {
             Debugger.printFailure("WC wallet connected with errors, walletAddress is nil", critical: true)
             return
@@ -139,6 +159,7 @@ extension ConnectExternalWalletViewPresenter: WalletConnectDelegate {
         do {
             let wallet = try udWalletsService.addExternalWalletWith(address: walletAddress,
                                                                     walletRecord: wcWallet)
+            successfullyAddedCallback?()
             
             didConnectWallet(wallet: wallet)
         } catch WalletError.ethWalletAlreadyExists {
@@ -147,7 +168,9 @@ extension ConnectExternalWalletViewPresenter: WalletConnectDelegate {
                 self?.view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
                                             body: String.Constants.walletAlreadyConnectedError.localized())
             }
-        } catch { }
+        } catch {
+            Debugger.printFailure("Error adding a new wallet: \(error)", critical: true)
+        }
     }
     
     func didDisconnect(from accounts: [HexAddress]?, with wcRegistryWallet: WCRegistryWalletProxy?) {

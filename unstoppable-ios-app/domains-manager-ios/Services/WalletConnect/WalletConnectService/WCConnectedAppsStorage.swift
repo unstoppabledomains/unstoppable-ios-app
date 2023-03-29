@@ -24,8 +24,7 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
     struct ConnectedApp: Codable, Equatable, Hashable, CustomStringConvertible {
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.session.url.key == rhs.session.url.key
-        }
+            lhs.session == rhs.session }
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(session.url.key)
@@ -75,31 +74,15 @@ class WCConnectedAppsStorage: DefaultsStorage<WCConnectedAppsStorage.ConnectedAp
         await remove(when: {$0.session.url.key == session.url.key})
     }
         
-    func find(by address: HexAddress) -> ConnectedApp? {
-        find(by: [address])?.first
-    }
-    
-    func find(by accounts: [HexAddress]) -> [ConnectedApp]? {
-        let normalizedAccounts = accounts.map({$0.normalized})
-        return retrieveApps().filter({ normalizedAccounts
-            .contains($0.walletAddress.normalized) } )
-    }
-    
-    func find(by accounts: [HexAddress], url: URL) -> [ConnectedApp]? {
-        let byAccounts = find(by: accounts)
-        return byAccounts?.filter({$0.appUrl.host == url.host})
-    }
-    
-    func find(by accounts: [HexAddress], topic: String) -> [ConnectedApp]? {
-        let byAccounts = find(by: accounts)
-        return byAccounts?.filter({$0.session.url.topic.lowercased() == topic.lowercased()})
+    func find(byTopic topic: String) -> [ConnectedApp] {
+        return retrieveApps().filter({$0.session.url.topic.lowercased() == topic.lowercased()})
     }
         
-    func findBy(domainName: DomainName) -> [ConnectedApp]? {
+    func findBy(domainName: DomainName) -> [ConnectedApp] {
         return retrieveApps().filter({ $0.domain.name == domainName } )
     }
     
     func findDuplicate(to newApp: ConnectedApp) -> [ConnectedApp] {
-        return retrieveApps().filter({ $0.appUrl.host == newApp.appUrl.host } )
+        return retrieveApps().filter({ $0.appUrl.host == newApp.appUrl.host && $0.walletAddress.normalized == newApp.walletAddress.normalized} )
     }
 }

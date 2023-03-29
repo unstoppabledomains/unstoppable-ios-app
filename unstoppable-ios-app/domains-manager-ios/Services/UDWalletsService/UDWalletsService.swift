@@ -104,8 +104,11 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     }
     
     private func disable(externalWallet: UDWallet) {
-        removeWithoutNotification(wallet: externalWallet)
-        try? appContext.walletConnectClientService.disconnect(walletAddress: externalWallet.address)
+        removeFromCacheWithoutNotification(wallet: externalWallet)
+        Task {
+            await appContext.walletConnectServiceV2.disconnect(from: externalWallet.address)
+            try? appContext.walletConnectClientService.disconnect(walletAddress: externalWallet.address)
+        }
     }
 
     func createWalletFor(mnemonics: String) async -> UDWalletWithPrivateSeed? {
@@ -135,11 +138,11 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     }
     
     func remove(wallet: UDWallet) {
-        removeWithoutNotification(wallet: wallet)
+        removeFromCacheWithoutNotification(wallet: wallet)
         notifyListeners(.walletsUpdated(getUserWallets()))
     }
     
-    private func removeWithoutNotification(wallet: UDWallet) {
+    private func removeFromCacheWithoutNotification(wallet: UDWallet) {
         UDWalletsStorage.instance.remove(wallet: wallet)
         KeychainPrivateKeyStorage.instance.clear(for: wallet.address)
     }
@@ -306,7 +309,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
             payloadReturned = NetworkService.TxPayload(messages: messages, txCost: nil)
         }
         
-        let signatures = try await UDWallet.createSignaturesAsync(messages: payloadReturned.messages,
+        let signatures = try await UDWallet.createSignaturesByEthSign(messages: payloadReturned.messages,
                                                                   domain: domain)
         let requestSign = try NetworkService.getRequestForActionSign(id: response.id,
                                                                      response: response,
@@ -325,7 +328,39 @@ extension UDWalletsService: UDWalletsServiceProtocol {
             .build()
         return request
     }
-        
+    
+    // Migrate
+    func migrateToUdWallets(from legacyWallets: [LegacyUnitaryWallet]) async throws {
+        Debugger.printInfo(topic: .Wallet, "Migration from Legacy Wallets Storage started")
+        do {
+            var udWallets = [UDWallet]()
+            
+            try await withThrowingTaskGroup(of: UDWallet.self, body: { group in
+                for legacyWallet in legacyWallets {
+                    group.addTask {
+                        return try await legacyWallet.convertToUDWallet()
+                    }
+                }
+                
+                do {
+                    for try await udWallet in group {
+                        udWallets.append(udWallet)
+                    }
+                } catch WalletError.ethWalletAlreadyExists {
+                    Void() /// Ignore this error.
+                } catch {
+                    throw error
+                }
+                
+            })
+            store(wallets: udWallets, shouldNotify: true)
+            LegacyWalletStorage.instance.remove()
+        } catch {
+            Debugger.printFailure("Not all Wallets are migrated to UDWallets", critical: true)
+            throw WalletError.migrationError
+        }
+    }
+    
     // Listeners
     func addListener(_ listener: UDWalletsServiceListener) {
         if !listenerHolders.contains(where: { $0.listener === listener }) {

@@ -31,13 +31,14 @@ struct Constants {
     static let maximumConcurrentNetworkRequestsLimit = 3
     static let backEndThrottleErrorCode = 429
     static let setupRRPromptRepeatInterval = 7
-    static let wcConnectionTimeout: TimeInterval = 5
+    static var wcConnectionTimeout: TimeInterval = 5
+    static let wcNoResponseFromExternalWalletTimeout: TimeInterval = 0.5
     static var deprecatedTLDs: Set<String> = []
     static let imageProfileMaxSize: Int = 4_000_000 // 4 MB
     static let standardWebHosts = ["https://", "http://"]
     static let downloadedImageMaxSize: CGFloat = 512
     static let downloadedIconMaxSize: CGFloat = 128
-    static let defaultUNSReleaseVersion = "v0.6.19"
+    static let defaultUNSReleaseVersion = "v0.7.6"
     static let defaultInitials: String = "N/A"
     static let appStoreAppId = "1544748602"
     static let refreshDomainBadgesInterval: TimeInterval = 60 * 3 // 3 min

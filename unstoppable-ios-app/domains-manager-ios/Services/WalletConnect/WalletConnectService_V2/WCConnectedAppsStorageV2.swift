@@ -44,7 +44,10 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         }
         
         func getWalletAddresses() -> [HexAddress] {
-            Array(namespaces.values).map({ Array($0.accounts).map({$0.address}) }).flatMap({ $0 })
+            Array(namespaces.values).map({ Array($0.accounts)
+                .map({$0.address}) })
+                .flatMap({ $0 })
+                .map({ $0.normalized })
         }
     }
     
@@ -55,7 +58,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
     struct ConnectedApp: Codable, Equatable, Hashable, CustomStringConvertible {
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.sessionProxy.peer.url == rhs.sessionProxy.peer.url
+            lhs.sessionProxy == rhs.sessionProxy
         }
         
         func hash(into hasher: inout Hasher) {
@@ -63,6 +66,7 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
             hasher.combine(domain)
         }
                 
+        let topic: String
         let walletAddress: HexAddress
         let domain: DomainItem
         let sessionProxy: SessionProxy
@@ -84,7 +88,6 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
         var isTrusted: Bool {
             return sessionProxy.peer.isTrusted
         }
-
     }
     
     
@@ -106,19 +109,13 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
     }
      
     func find(by unifiedApp: UnifiedConnectAppInfo) -> ConnectedApp? {
-        retrieveApps().first(where: {unifiedApp.appName == $0.appName
-            && unifiedApp.walletAddress == $0.walletAddress
-            && unifiedApp.domain == $0.domain})
+        retrieveApps().first(where: {unifiedApp.topic == $0.topic})
     }
     
-    func find(by account: HexAddress, topic: String) -> [ConnectedApp]? {
-        let byAccount = find(by: account)
-        return byAccount?.filter({$0.sessionProxy.topic.lowercased() == topic.lowercased()})
-    }
-    
-    func find(by account: HexAddress) -> [ConnectedApp]? {
-        let normalizedAccount = account.normalized
-        return retrieveApps().filter({ $0.walletAddress.normalized == normalizedAccount } )
+    func find(byTopic topic: String) -> ConnectedApp? {
+        return retrieveApps()
+            .filter({ $0.sessionProxy.topic == topic } )
+            .first
     }
 }
 
@@ -182,6 +179,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
     let appUrlString: String
     let appInfo: WalletConnectService.WCServiceAppInfo
     let connectionStartDate: Date?
+    let topic: String
 
     var displayName: String { appName }
     var description: String { appName }
@@ -195,6 +193,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
         self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version2(WalletConnectService.ClientDataV2(appMetaData: appV2.sessionProxy.peer, proposalNamespace: appV2.proposalNamespace)),
                                                              isTrusted: appV2.isTrusted)
         self.connectionStartDate = appV2.connectionStartDate
+        self.topic = appV2.topic
     }
     
     init(from appV1: WCConnectedAppsStorage.ConnectedApp) {
@@ -206,6 +205,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
         self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version1(appV1.session),
                                                              isTrusted: WalletConnectService.isTrusted(dAppInfo: appV1.session.dAppInfo))
         self.connectionStartDate = appV1.connectionStartDate
+        self.topic = appV1.session.url.topic
     }
 }
 

@@ -7,18 +7,20 @@
 
 import Foundation
 import Web3
+import WalletConnectSwift
 
 final class MockWalletConnectService {
     
 //    private let mockAppNames = ["Foundation", "OpenSea", "LooksRare", "Rarible"]
 //    private var connectedApps: [ConnectedApp] = []
 //    private var didInitApps = false
+    
 }
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectService: WalletConnectServiceProtocol {
     func completeTx(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumTransaction {
-        throw WalletConnectError.walletConnectNil
+        throw WalletConnectRequestError.noWCSessionFound
     }
     
     func disconnect(peerId: String) {
@@ -29,10 +31,10 @@ extension MockWalletConnectService: WalletConnectServiceProtocol {
         []
     }
     
-    func setUIHandler(_ uiHandler: WalletConnectUIHandler) {
+    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) {
         
     }
-    
+    func connectAsync(to requestURL: WCURL) { }
     func connectAsync(to request: WalletConnectService.ConnectWalletRequest) {
         
     }
@@ -49,23 +51,7 @@ extension MockWalletConnectService: WalletConnectServiceProtocol {
         
     }
     
-    func expectConnection(from connectedApp: any UnifiedConnectAppInfoProtocol) {
-        
-    }
-    
-    func didRemove(wallet: UDWallet) {
-        
-    }
-    
     func didLostOwnership(to domain: DomainItem) {
-        
-    }
-    
-    func addListener(_ listener: WalletConnectServiceListener) {
-        
-    }
-    
-    func removeListener(_ listener: WalletConnectServiceListener) {
         
     }
 }

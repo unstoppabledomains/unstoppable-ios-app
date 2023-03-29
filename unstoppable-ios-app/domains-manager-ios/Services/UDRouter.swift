@@ -397,6 +397,7 @@ class UDRouter: DomainProfileSignatureValidator {
                                   wallet: UDWallet,
                                   walletInfo: WalletDisplayInfo,
                                   sourceScreen: DomainProfileViewPresenter.SourceScreen) -> UIViewController {
+        let walletInfo = WalletDisplayInfo(wallet: wallet, domainsCount: walletInfo.domainsCount) ?? walletInfo
         let vc = DomainProfileViewController.nibInstance()
         let presenter = DomainProfileViewPresenter(view: vc,
                                                    domain: domain,
@@ -555,7 +556,8 @@ private extension UDRouter {
                                                    dataAggregatorService: appContext.dataAggregatorService,
                                                    networkReachabilityService: appContext.networkReachabilityService,
                                                    udWalletsService: appContext.udWalletsService,
-                                                   walletConnectClientService: appContext.walletConnectClientService)
+                                                   walletConnectClientService: appContext.walletConnectClientService,
+                                                   walletConnectServiceV2: appContext.walletConnectServiceV2)
         presenter.walletRemovedCallback = walletRemovedCallback
         vc.presenter = presenter
         

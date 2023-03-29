@@ -78,7 +78,6 @@ class DefaultsStorage<T: Equatable> where T: Codable {
         guard let arrayObject = UserDefaults.standard
             .object(forKey: storageKey) as? Data else { return [] }
         guard let array = try? JSONDecoder().decode([T].self, from: arrayObject) else {
-            Debugger.printFailure("Failed to decode connection intents from data: \(String(data: arrayObject, encoding: .utf8) ?? "n/a")", critical: false)
             return []
         }
         return array

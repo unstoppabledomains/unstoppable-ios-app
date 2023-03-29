@@ -12,16 +12,10 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var externalEventsService: ExternalEventsServiceProtocol = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
                                                                                                        dataAggregatorService: dataAggregatorService,
                                                                                                        udWalletsService: udWalletsService,
-                                                                                                       walletConnectServiceV2: walletConnectServiceV2)
+                                                                                                       walletConnectServiceV2: walletConnectServiceV2, walletConnectRequestsHandlingService: wcRequestsHandlingService)
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
-    private(set) lazy var notificationsService: NotificationsServiceProtocol = {
-        NotificationsService(externalEventsService: externalEventsService,
-                             permissionsService: permissionsService,
-                             udWalletsService: udWalletsService,
-                             walletConnectService: walletConnectService,
-                             walletConnectServiceV2: walletConnectServiceV2)
-    }()
+    private(set) lazy var notificationsService: NotificationsServiceProtocol = { MockNotificationsService() }()
     private(set) lazy var permissionsService: PermissionsServiceProtocol = PermissionsService()
     private(set) lazy var pullUpViewService: PullUpViewServiceProtocol = PullUpViewService(authentificationService: authentificationService)
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
@@ -39,7 +33,7 @@ final class MockContext: AppContextProtocol {
                                   walletsService: udWalletsService,
                                   transactionsService: domainTransactionsService)
     }()
-    private(set) lazy var deepLinksService: DeepLinksServiceProtocol = DeepLinksService(externalEventsService: externalEventsService)
+    private(set) lazy var deepLinksService: DeepLinksServiceProtocol = DeepLinksService(externalEventsService: externalEventsService, coreAppCoordinator: coreAppCoordinator)
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = MockDomainRecordsService()
     private(set) lazy var domainTransactionsService: DomainTransactionsServiceProtocol = MockDomainTransactionsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()
@@ -51,8 +45,9 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var walletConnectServiceV2: WalletConnectServiceV2Protocol = MockWalletConnectServiceV2()
     private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = MockWalletConnectClientManager()
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
+    private(set) lazy var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol = MockWCRequestsHandlingService()
+    private(set) lazy var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol = MockWalletConnectExternalWalletHandler()
 
-    
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
 }
 
