@@ -30,7 +30,9 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
          configuration: Configuration,
          dataAggregatorService: DataAggregatorServiceProtocol,
          resultCallback: @escaping DomainItemSelectedCallback) {
-        self.domains = domains
+        let notParkedDomains = domains.filter({ !$0.isParked })
+        let parkedDomains = domains.filter({ $0.isParked })
+        self.domains = notParkedDomains + parkedDomains
         self.configuration = configuration
         self.dataAggregatorService = dataAggregatorService
         super.init(view: view)
@@ -158,8 +160,7 @@ private extension ChooseNewPrimaryDomainPresenter {
         var snapshot = ChoosePrimaryDomainSnapshot()
         var domains = self.domains
         
-        func addDomainsListToSnapshot() {
-            snapshot.appendSections([.allDomains])
+        func addDomainToCurrentSection(_ domains: [DomainDisplayInfo]) {
             snapshot.appendItems(domains.map({ domain in
                 let walletWithInfo = walletsWithRR.first(where: { $0.displayInfo?.reverseResolutionDomain?.isSameEntity(domain) == true })
                 let displayInfo = walletWithInfo?.displayInfo
@@ -167,6 +168,28 @@ private extension ChooseNewPrimaryDomainPresenter {
                                                                      reverseResolutionWalletInfo: displayInfo,
                                                                      isSearching: isSearchActive)
             }))
+        }
+        
+        func addDomainsListToSnapshot() {
+            var notParkedDomains = [DomainDisplayInfo]()
+            var parkedDomains = [DomainDisplayInfo]()
+            
+            for domain in domains {
+                if domain.isParked {
+                    parkedDomains.append(domain)
+                } else {
+                    notParkedDomains.append(domain)
+                }
+            }
+            
+            if !notParkedDomains.isEmpty {
+                snapshot.appendSections([.allDomains])
+                addDomainToCurrentSection(notParkedDomains)
+            }
+            if !parkedDomains.isEmpty {
+                snapshot.appendSections([.parkedDomains])
+                addDomainToCurrentSection(parkedDomains)
+            }
         }
                 
         if isSearchActive {

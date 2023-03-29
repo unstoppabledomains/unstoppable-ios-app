@@ -763,6 +763,7 @@ extension String {
         static let password = "PASSWORD"
         static let parked = "PARKED"
         static let parkedDomain = "PARKED_DOMAIN"
+        static let parkedDomains = "PARKED_DOMAINS"
         static let parkingTrialExpiresOn = "PARKING_TRIAL_EXPIRES_ON"
         static let parkingExpiresOn = "PARKING_EXPIRES_ON"
         static let parkingExpired = "PARKING_EXPIRED"

@@ -76,7 +76,7 @@ extension OnboardingNavigationController: CNavigationControllerDelegate {
         checkSwipeGestureEnabled()
     }
 }
-
+ 
 // MARK: - OnboardingFlowManager
 extension OnboardingNavigationController: OnboardingFlowManager {
     func didSetupProtectWallet() {

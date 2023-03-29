@@ -59,6 +59,12 @@ extension DomainDisplayInfo {
         }
     }
     var isMinting: Bool { state == .minting }
+    var isParked: Bool {
+        if case .parking = state {
+            return true
+        }
+        return false
+    }
     var isPrimary: Bool { order == 0 } /// Primary domain now is the one user has selected to be the first
 
     func isReverseResolutionChangeAllowed() -> Bool {
