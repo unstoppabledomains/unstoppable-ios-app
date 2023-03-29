@@ -91,7 +91,7 @@ private extension LocalNotificationsService {
             let expiredDomainsCount = expiredDomains.count
             let title: String
             if expiredDomainsCount == 1 {
-                title = expiredDomains[0].name
+                title = String.Constants.localNotificationParkedSingleDomainExpiredTitle.localized(expiredDomains[0].name)
             } else {
                 title = String.Constants.localNotificationParkedMultipleDomainsExpiredTitle.localized(expiredDomainsCount)
             }
@@ -135,7 +135,7 @@ private extension LocalNotificationsService {
             let title: String
             let body = String.Constants.localNotificationParkedDomainsExpiresInBody.localized(domainsPlural, expiresInLocalized)
             if numberOfNotifications == 1 {
-                title = notificationDetails.domain.name
+                title = String.Constants.localNotificationParkedSingleDomainExpiresTitle.localized(notificationDetails.domain.name) 
             } else {
                 title = String.Constants.localNotificationParkedMultipleDomainsExpiresTitle.localized(numberOfNotifications)
             }

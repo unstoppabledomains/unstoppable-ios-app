@@ -715,7 +715,9 @@
 "PARKED_DOMAIN_CANT_CONNECT_TO_APPS" = "Parked domain can't connect to apps or other activities";
 
 // Parked domains notifications
-"LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRED_TITLE" = "Your %i parked domains has expired";
+"LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRED_TITLE" = "%@ parking has expired";
+"LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRED_TITLE" = "%i parked domains has expired";
 "LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRED_BODY" = "Please visit our website to extend parking or claim";
 "LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRES_IN_BODY" = "Your %@ expires in %@. Please visit our website to extend parking or claim.";
-"LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRES_TITLE" = "Your %i domains expires soon";
+"LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRES_TITLE" = "%@ parking expires soon";
+"LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRES_TITLE" = "%i domains parking expires soon";
