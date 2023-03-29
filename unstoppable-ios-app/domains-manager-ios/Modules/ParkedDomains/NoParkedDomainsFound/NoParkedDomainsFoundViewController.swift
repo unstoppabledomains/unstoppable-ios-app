@@ -8,7 +8,7 @@
 import UIKit
 
 @MainActor
-protocol NoParkedDomainsFoundViewProtocol: BaseViewControllerProtocol {
+protocol NoParkedDomainsFoundViewProtocol: BaseViewControllerProtocol & ViewWithDashesProgress {
 
 }
 
@@ -37,7 +37,7 @@ final class NoParkedDomainsFoundViewController: BaseViewController {
 
 // MARK: - NoParkedDomainsFoundViewProtocol
 extension NoParkedDomainsFoundViewController: NoParkedDomainsFoundViewProtocol {
-
+    var progress: Double? { nil }
 }
 
 // MARK: - Actions
@@ -56,6 +56,7 @@ private extension NoParkedDomainsFoundViewController {
 // MARK: - Setup functions
 private extension NoParkedDomainsFoundViewController {
     func setup() {
+        addProgressDashesView()
         confirmButton.setTitle(String.Constants.gotIt.localized(), image: nil)
         titleLabel.setTitle(String.Constants.noParkedDomainsTitle.localized())
     }

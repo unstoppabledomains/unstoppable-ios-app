@@ -109,7 +109,7 @@ private extension LoginFlowNavigationController {
     func setSwipeGestureEnabledForCurrentState() {
         guard let topViewController = viewControllers.last else { return }
         
-        if topViewController is NoDomainsToMintViewController ||
+        if topViewController is NoParkedDomainsFoundViewController ||
             topViewController is LoadingParkedDomainsViewPresenterProtocol ||
             topViewController is ParkedDomainsFoundViewController {
             transitionHandler?.isInteractionEnabled = false

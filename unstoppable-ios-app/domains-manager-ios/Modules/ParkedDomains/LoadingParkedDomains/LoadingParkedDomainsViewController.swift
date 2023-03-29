@@ -33,6 +33,7 @@ final class LoadingParkedDomainsViewController: BaseViewController {
         super.viewWillAppear(animated)
         
         presenter.viewWillAppear()
+        cNavigationBar?.setBackButton(hidden: true)
     }
     
     override func viewDidAppear(_ animated: Bool) {
