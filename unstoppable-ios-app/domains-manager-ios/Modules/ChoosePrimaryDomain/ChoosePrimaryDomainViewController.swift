@@ -216,10 +216,6 @@ extension ChoosePrimaryDomainViewController: UICollectionViewDropDelegate {
             return presenter.proposalForItemsWithDropSession(session, destinationIndexPath: destinationIndexPath)
         }
         return UICollectionViewDropProposal(operation: .forbidden)
-//        if let destinationIndexPath,
-//           let item = dataSource.itemIdentifier(for: destinationIndexPath) {
-//            print("Item \(item)")
-//        }
     }
 }
 
