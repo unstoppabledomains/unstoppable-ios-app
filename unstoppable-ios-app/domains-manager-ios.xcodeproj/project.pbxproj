@@ -991,6 +991,10 @@
 		C61FD05728FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05828FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05928FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
+		C6209F9929D41B9700D573EB /* LocalNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6209F9729D4180500D573EB /* LocalNotificationsService.swift */; };
+		C6209F9A29D41B9700D573EB /* LocalNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6209F9729D4180500D573EB /* LocalNotificationsService.swift */; };
+		C6209F9B29D41B9800D573EB /* LocalNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6209F9729D4180500D573EB /* LocalNotificationsService.swift */; };
+		C6209F9C29D41B9800D573EB /* LocalNotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6209F9729D4180500D573EB /* LocalNotificationsService.swift */; };
 		C62247A0283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */; };
 		C62247A1283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */; };
 		C62247A2283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */ = {isa = PBXBuildFile; fileRef = C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */; };
@@ -3722,6 +3726,7 @@
 		C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpSelectionView.swift; sourceTree = "<group>"; };
 		C61C50042820FC5E00D1110A /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
 		C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainHandler.swift; sourceTree = "<group>"; };
+		C6209F9729D4180500D573EB /* LocalNotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsService.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
 		C62247A4283B92C0002A0CBD /* UDNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDNavigationController.swift; sourceTree = "<group>"; };
 		C62247A9283B9548002A0CBD /* CAAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAAnimation.swift; sourceTree = "<group>"; };
@@ -6244,6 +6249,7 @@
 				C681092028041325002D780E /* GIFAnimationsService.swift */,
 				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
 				C664B678291551E600A76154 /* LinkPresentationService.swift */,
+				C6209F9729D4180500D573EB /* LocalNotificationsService.swift */,
 				C692C312282E303B00C31393 /* NetworkReachabilityService.swift */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
@@ -8794,6 +8800,7 @@
 				C63538E62949C2C100ECABA6 /* DomainsPFPInfoStorage.swift in Sources */,
 				C6456F252800308200A517D5 /* UICollectionViewCell.swift in Sources */,
 				C6456F3428005D8500A517D5 /* UITextView.swift in Sources */,
+				C6209F9929D41B9700D573EB /* LocalNotificationsService.swift in Sources */,
 				30BFA4E427E24A4700644CD5 /* RecoveryPhraseViewController.swift in Sources */,
 				3018AEB327EA091000E8C37D /* EnterBackupViewController.swift in Sources */,
 				C664B679291551E600A76154 /* LinkPresentationService.swift in Sources */,
@@ -9493,6 +9500,7 @@
 				3026FA1927E7678200FE058B /* CreateWalletViewController.swift in Sources */,
 				C609827828251FBA00546392 /* ImportNewWalletPresenter.swift in Sources */,
 				C62C3F92283F35610094FC93 /* CodeVerificationView.swift in Sources */,
+				C6209F9B29D41B9800D573EB /* LocalNotificationsService.swift in Sources */,
 				307F83FF267A339F0070A9A6 /* UDWalletZil.swift in Sources */,
 				C6010D21287FC99400FBD401 /* Task.swift in Sources */,
 				C664310E28D8BEB600A9C734 /* ConnectExternalWalletCell.swift in Sources */,
@@ -10159,6 +10167,7 @@
 				C6EECEB42833BBE300978ED5 /* DomainRecordsData.swift in Sources */,
 				3026FA1A27E7678200FE058B /* CreateWalletViewController.swift in Sources */,
 				C609827928251FBA00546392 /* ImportNewWalletPresenter.swift in Sources */,
+				C6209F9C29D41B9800D573EB /* LocalNotificationsService.swift in Sources */,
 				C62C3F93283F35610094FC93 /* CodeVerificationView.swift in Sources */,
 				C6010D22287FC99400FBD401 /* Task.swift in Sources */,
 				C664310F28D8BEB600A9C734 /* ConnectExternalWalletCell.swift in Sources */,
@@ -10850,6 +10859,7 @@
 				C63538E72949C2C100ECABA6 /* DomainsPFPInfoStorage.swift in Sources */,
 				C6456F3528005D8500A517D5 /* UITextView.swift in Sources */,
 				30BFA4E527E24A4700644CD5 /* RecoveryPhraseViewController.swift in Sources */,
+				C6209F9A29D41B9700D573EB /* LocalNotificationsService.swift in Sources */,
 				3018AEB427EA091000E8C37D /* EnterBackupViewController.swift in Sources */,
 				C691CFA928C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
 				C664B67A291551E600A76154 /* LinkPresentationService.swift in Sources */,
