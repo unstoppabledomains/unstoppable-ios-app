@@ -70,7 +70,7 @@ private extension ParkedDomainCell {
         switch parkingStatus {
         case .claimed:
             return nil
-        case .freeParking, .parked, .waitingForParkingOrClaim, .parkingExpired, .parkedButExpiresSoon:
+        case .freeParking, .parked, .parkingTrial, .parkingExpired, .parkedButExpiresSoon:
             return .parkingIcon24
         }
     }
@@ -81,7 +81,7 @@ private extension ParkedDomainCell {
             return nil
         case .freeParking, .parked:
             return .foregroundSecondary
-        case .parkedButExpiresSoon, .waitingForParkingOrClaim:
+        case .parkedButExpiresSoon, .parkingTrial:
             return .foregroundWarning
         case .parkingExpired:
             return .foregroundDanger
