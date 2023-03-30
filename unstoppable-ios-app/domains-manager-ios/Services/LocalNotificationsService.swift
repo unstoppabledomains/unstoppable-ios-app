@@ -196,7 +196,7 @@ private extension LocalNotificationsService {
             let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
             let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
             
-            Debugger.printInfo(topic: .LocalNotification, "Will schedule local notification \(title) on \(date)")
+            Debugger.printInfo(topic: .LocalNotification, "Will schedule local notification with Title: '\(title)'. Body: \(body). Notification date: \(date)")
             try await notificationCenter.add(request)
         } catch {
             Debugger.printFailure("Failed to create local notification with title \(title), date: \(date) with error \(error)", critical: true)
@@ -275,13 +275,13 @@ private extension LocalNotificationsService {
         var expiresInLocalized: String {
             switch self {
             case .month:
-                return "1 month"
+                return String.Constants.localNotificationParkingExpirePeriodInOneMonth.localized()
             case .week:
-                return "1 week"
+                return String.Constants.localNotificationParkingExpirePeriodInOneWeek.localized()
             case .threeDays:
-                return "3 days"
+                return String.Constants.localNotificationParkingExpirePeriodInThreeDays.localized()
             case .oneDay:
-                return "tomorrow"
+                return String.Constants.localNotificationParkingExpirePeriodInTomorrow.localized()
             }
         }
     }

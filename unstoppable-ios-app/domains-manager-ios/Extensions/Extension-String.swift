@@ -792,9 +792,13 @@ extension String {
         static let localNotificationParkedMultipleDomainsExpiredTitle = "LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRED_TITLE"
         static let localNotificationParkedDomainsExpiredBody = "LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRED_BODY"
         static let localNotificationParkedDomainsExpiresInBody = "LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRES_IN_BODY"
+        static let localNotificationParkingExpirePeriodInOneMonth = "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_MONTH"
+        static let localNotificationParkingExpirePeriodInOneWeek = "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_WEEK"
+        static let localNotificationParkingExpirePeriodInThreeDays = "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_THREE_DAYS"
+        static let localNotificationParkingExpirePeriodInTomorrow = "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_TOMORROW"
         static let localNotificationParkedSingleDomainExpiresTitle = "LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRES_TITLE"
         static let localNotificationParkedMultipleDomainsExpiresTitle = "LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRES_TITLE"
-
+        
     }
 
     
