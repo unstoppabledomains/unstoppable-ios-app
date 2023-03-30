@@ -54,7 +54,7 @@ extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtoc
             switch domain.parkingStatus {
             case .parkedButExpiresSoon(let expiresDate):
                 appContext.pullUpViewService.showParkedDomainExpiresSoonPullUp(in: view, expiresDate: expiresDate)
-            case .waitingForParkingOrClaim(let expiresDate):
+            case .parkingTrial(let expiresDate):
                 appContext.pullUpViewService.showParkedDomainTrialExpiresPullUp(in: view, expiresDate: expiresDate)
             case .parked, .freeParking:
                 appContext.pullUpViewService.showParkedDomainInfoPullUp(in: view)

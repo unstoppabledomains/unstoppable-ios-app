@@ -13,6 +13,7 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
     var internalCustody: Bool
     var purchasedAt: Date?
     var parkingExpiresAt: Date?
+    var parkingTrialEndsAt: Date?
     var blockchain: String
     var name: String
     var ownerAddress: String
@@ -22,6 +23,7 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
         self.internalCustody = firebaseDomain.internalCustody
         self.purchasedAt = firebaseDomain.purchasedAt
         self.parkingExpiresAt = firebaseDomain.parkingExpiresAt
+        self.parkingTrialEndsAt = firebaseDomain.parkingTrialEndsAt
         self.blockchain = firebaseDomain.blockchain
         self.name = firebaseDomain.name
         self.ownerAddress = firebaseDomain.ownerAddress
@@ -43,11 +45,11 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
         
         if let purchasedAt,
            purchasedAt >= Constants.parkingBetaLaunchDate {
-            let expiresDate = Calendar.current.date(byAdding: .day, value: 7, to: purchasedAt) ?? Date() // TODO: - Remove assumption of 7 days trial time when BE ready
+            let expiresDate = parkingTrialEndsAt ?? Calendar.current.date(byAdding: .day, value: 7, to: purchasedAt) ?? Date() // Fallback to old assumption of 7 days trial after purchased
             if expiresDate < Date() {
                 return .parkingExpired
             }
-            return .waitingForParkingOrClaim(expiresDate: expiresDate)
+            return .parkingTrial(expiresDate: expiresDate)
         }
         return .freeParking
     }
