@@ -143,8 +143,8 @@ extension Analytics {
         case selectFirstDomainForReverseResolution, changeDomainForReverseResolution
         case domainProfile, domainProfileTutorial
         case cropPhoto
-        case addSocialTwitter, addSocialDiscord, addSocialTelegram, addSocialReddit, addSocialYouTube
-        case verifySocialTwitter, verifySocialDiscord, verifySocialTelegram, verifySocialReddit, verifySocialYouTube
+        case addSocialTwitter, addSocialDiscord, addSocialTelegram, addSocialReddit, addSocialYouTube, addSocialLinkedIn, addSocialGitHub
+        case verifySocialTwitter, verifySocialDiscord, verifySocialTelegram, verifySocialReddit, verifySocialYouTube, verifySocialLinkedIn, verifySocialGitHub
         case addEmail
         case failedToFetchDomainProfile, signMessageInExternalWalletToLoadDomainProfile
         case domainProfileImageDetails

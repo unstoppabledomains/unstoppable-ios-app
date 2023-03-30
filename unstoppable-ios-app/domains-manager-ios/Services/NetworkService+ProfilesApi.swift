@@ -248,6 +248,8 @@ struct SocialAccounts: Codable {
     var youtube: SerializedDomainSocialAccount?
     var reddit: SerializedDomainSocialAccount?
     var telegram: SerializedDomainSocialAccount?
+    var linkedin: SerializedDomainSocialAccount?
+    var github: SerializedDomainSocialAccount?
 }
 
 struct SerializedDomainSocialAccount: Codable, Hashable {
@@ -524,6 +526,8 @@ struct ProfileUpdateRequest: Encodable, Hashable {
         case youtube = "youtube"
         case reddit = "reddit"
         case telegram = "telegram"
+        case linkedIn = "linkedin"
+        case gitHub = "github"
         
         init(_ account: SocialAccount) {
             switch account.accountType {
@@ -532,6 +536,8 @@ struct ProfileUpdateRequest: Encodable, Hashable {
             case .youtube: self = .youtube
             case .reddit: self = .reddit
             case .telegram: self = .telegram
+            case .linkedIn: self = .linkedIn
+            case .gitHub: self = .gitHub
             }
         }
     }
@@ -646,6 +652,8 @@ struct SocialAccount: Hashable, Encodable {
         case youtube = "youtube"
         case reddit = "reddit"
         case telegram = "telegram"
+        case linkedIn = "linkedin"
+        case gitHub = "github"
     }
     
     struct LocationContainer: Encodable {

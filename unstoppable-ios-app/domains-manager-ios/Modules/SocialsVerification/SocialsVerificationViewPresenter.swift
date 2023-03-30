@@ -49,6 +49,8 @@ private extension SocialsVerificationViewPresenter {
         case .telegram: return .verifySocialTelegram
         case .reddit: return .verifySocialReddit
         case .youTube: return .verifySocialYouTube
+        case .linkedIn: return .verifySocialLinkedIn
+        case .gitHub: return .verifySocialGitHub
         }
     }
 }
