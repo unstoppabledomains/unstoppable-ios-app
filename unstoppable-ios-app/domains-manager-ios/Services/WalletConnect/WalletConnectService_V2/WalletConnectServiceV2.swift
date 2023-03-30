@@ -421,7 +421,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         }
         
         Task {
-            let newApp = WCConnectedAppsStorageV2.ConnectedApp(walletAddress: connectionIntent.walletAddress,
+            let newApp = WCConnectedAppsStorageV2.ConnectedApp(topic: session.topic,
+                                                               walletAddress: connectionIntent.walletAddress,
                                                                domain: connectionIntent.domain,
                                                                sessionProxy: WCConnectedAppsStorageV2.SessionProxy(session),
                                                                appIconUrls: session.peer.icons,
@@ -742,7 +743,7 @@ extension WalletConnectServiceV2 {
     }
     
     private func detectApp(by address: HexAddress, topic: String) throws -> WCConnectedAppsStorageV2.ConnectedApp {
-        guard let connectedApp = self.appsStorageV2.find(by: address, topic: topic)?.first else {
+        guard let connectedApp = self.appsStorageV2.find(byTopic: topic) else {
             Debugger.printFailure("No connected app can sign for the wallet address \(address)", critical: true)
             throw WalletConnectRequestError.failedToFindWalletToSign
         }

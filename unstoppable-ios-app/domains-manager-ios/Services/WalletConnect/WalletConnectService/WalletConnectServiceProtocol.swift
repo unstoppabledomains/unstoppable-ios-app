@@ -17,7 +17,6 @@ protocol WalletConnectServiceProtocol {
     func disconnect(peerId: String)
     func getConnectedAppsV1() -> [WCConnectedAppsStorage.ConnectedApp]
     
-    func didRemove(wallet: UDWallet)
     func didLostOwnership(to domain: DomainItem)
     
     func completeTx(transaction: EthereumTransaction,
