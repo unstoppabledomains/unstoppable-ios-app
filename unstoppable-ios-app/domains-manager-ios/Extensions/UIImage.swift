@@ -130,6 +130,8 @@ extension UIImage {
     static let telegramIcon24 = UIImage(named: "telegramIcon24")!
     static let redditIcon24 = UIImage(named: "redditIcon24")!
     static let youTubeIcon24 = UIImage(named: "youTubeIcon24")!
+    static let linkedInIcon24 = UIImage(named: "linkedInIcon24")!
+    static let gitHubIcon24 = UIImage(named: "gitHubIcon24")!
     
     // System SF symbols
     static let personCropCircle = UIImage(systemName: "person.crop.circle")

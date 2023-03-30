@@ -164,6 +164,7 @@ extension DomainProfileTopInfoCell {
     func setImageFor(state: DomainProfileTopInfoData.ImageState,
                      in imageView: UIImageView,
                      actionButton: UIButton) {
+        imageView.image = nil
         Task {
             switch state {
             case .untouched(source: let source):
@@ -174,7 +175,7 @@ extension DomainProfileTopInfoCell {
                     let image = await appContext.imageLoadingService.loadImage(from: .url(url,
                                                                                           maxSize: Constants.downloadedImageMaxSize),
                                                                                downsampleDescription: nil)
-                    imageView.image = image 
+                    imageView.image = image
                 case .none:
                     imageView.image = nil
                 }
