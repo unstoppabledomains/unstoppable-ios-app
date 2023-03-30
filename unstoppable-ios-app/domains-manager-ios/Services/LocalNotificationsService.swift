@@ -69,7 +69,7 @@ private extension LocalNotificationsService {
                 continue
             case .parkingExpired:
                 expiredDomains.append(domain)
-            case .parked(let expiresDate), .parkedButExpiresSoon(let expiresDate), .waitingForParkingOrClaim(let expiresDate):
+            case .parked(let expiresDate), .parkedButExpiresSoon(let expiresDate), .parkingTrial(let expiresDate):
                 goingToExpireDomains.append(GoingToExpireDomain(domain,
                                                                 expiresDate: expiresDate))
             }
