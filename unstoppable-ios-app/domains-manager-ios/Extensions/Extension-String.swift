@@ -37,6 +37,7 @@ extension String {
         case openSeaETHAsset(value: String)
         case openSeaPolygonAsset(value: String)
         case writeAppStoreReview(appId: String)
+        case udExternalWalletTutorial
 
         var urlString: String {
             switch self {
@@ -78,6 +79,8 @@ extension String {
                 return "https://opensea.io/assets/matic/\(value)"
             case .writeAppStoreReview(let appId):
                 return "https://apps.apple.com/app/id\(appId)?action=write-review"
+            case .udExternalWalletTutorial:
+                return "https://support.unstoppabledomains.com/support/solutions/articles/48001232090-using-external-wallets-in-the-unstoppable-domains-mobile-app"
             }
         }
         
@@ -733,6 +736,15 @@ extension String {
         static let legacy = "LEGACY"
         static let multiChain = "MULTI_CHAIN"
         static let chooseCoinVersionPullUpDescription = "CHOOSE_COIN_VERSION_PULL_UP_DESCRIPTION"
+        
+        // External wallet connection hint
+        static let externalWalletConnectionHintPullUpTitle = "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_TITLE"
+        static let externalWalletConnectionHintPullUpSubtitle = "EXTERNAL_WALLET_CONNECTION_HINT_PULLUP_SUBTITLE"
+
+        // External wallet failed to sign
+        static let externalWalletFailedToSignPullUpTitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_TITLE"
+        static let externalWalletFailedToSignPullUpSubtitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE"
+
     }
     
     struct Segues {
@@ -807,6 +819,14 @@ extension String {
     
     var isHexNumber: Bool {
         filter(\.isHexDigit).count == count
+    }
+    
+    var convertedIntoReadableMessage: String {
+        if self.droppedHexPrefix.isHexNumber {
+            return String(data: Data(self.droppedHexPrefix.hexToBytes()), encoding: .utf8) ?? self
+        } else {
+            return self
+        }
     }
     
     static func itTook (from start: Date) -> String {

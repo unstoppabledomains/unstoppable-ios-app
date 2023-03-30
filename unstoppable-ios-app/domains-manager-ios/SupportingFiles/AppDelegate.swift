@@ -7,7 +7,6 @@
 
 import UIKit
 import Bugsnag
-import Stripe
 
 protocol AppDelegateProtocol {
     var appContext: AppContextProtocol { get }
@@ -40,9 +39,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         Bugsnag.start()
 
-        StripeAPI.defaultPublishableKey = PaymentConfiguration.Stripe.defaultPublishableKey
+        StripeService.shared.setup()
         
         appContext.analyticsService.log(event: .appLaunch, withParameters: nil)
+
         return true
     }
 

@@ -151,14 +151,14 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
-        Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions: \(settledSessions)")
+        Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions:\n\(settledSessions)")
         #endif
         
         setUpAuthSubscribing()
         
         let pairings = Pair.instance.getPairings()
         #if DEBUG
-        Debugger.printInfo(topic: .WallectConnectV2, "Settled pairings: \(pairings)")
+        Debugger.printInfo(topic: .WallectConnectV2, "Settled pairings:\n\(pairings)")
         #endif
         
         // listen to the updates to domains, disconnect those dApps connected to gone domains
@@ -266,9 +266,10 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     func getChainIds(proposal: SessionV2.Proposal) throws -> [String] {
-        guard let namespace = proposal.requiredNamespaces[Self.supportedNamespace] else {
+        guard let namespace = proposal.requiredNamespaces[Self.supportedNamespace],
+              let chains = namespace.chains else {
         throw WalletConnectRequestError.invalidNamespaces }
-        let references = namespace.chains.map {$0.reference}
+        let references = chains.map { $0.reference }
         return references
     }
     
@@ -420,7 +421,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         }
         
         Task {
-            let newApp = WCConnectedAppsStorageV2.ConnectedApp(walletAddress: connectionIntent.walletAddress,
+            let newApp = WCConnectedAppsStorageV2.ConnectedApp(topic: session.topic,
+                                                               walletAddress: connectionIntent.walletAddress,
                                                                domain: connectionIntent.domain,
                                                                sessionProxy: WCConnectedAppsStorageV2.SessionProxy(session),
                                                                appIconUrls: session.peer.icons,
@@ -464,7 +466,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         proposal.requiredNamespaces.forEach {
             let caip2Namespace = $0.key
             let proposalNamespace = $0.value
-            let accounts = Set(proposalNamespace.chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
+            guard let chains = proposalNamespace.chains else { return }
+            let accounts = Set(chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
 
             let sessionNamespace = SessionNamespace(accounts: accounts,
                                                     methods: proposalNamespace.methods,
@@ -536,8 +539,10 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             Debugger.printFailure("Invalid parameters", critical: true)
             throw WalletConnectRequestError.failedBuildParams
         }
-        let messageString = paramsAny[0]
+        let incomingMessageString = paramsAny[0]
         let address = try parseAddress(from: paramsAny[1])
+        
+        let messageString = incomingMessageString.convertedIntoReadableMessage
         
         let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
@@ -545,7 +550,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         let sig: AnyCodable
         do {
-            let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
+            let sigTyped = try await udWallet.getPersonalSignature(messageString: messageString)
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address), error: \(error)", critical: false)
@@ -572,7 +577,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         let sig: AnyCodable
         do {
-            let sigTyped = try await udWallet.getCryptoSignature(messageString: messageString)
+            let sigTyped = try await udWallet.getEthSignature(messageString: messageString)
             sig = AnyCodable(sigTyped)
         } catch {
             Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)
@@ -738,7 +743,7 @@ extension WalletConnectServiceV2 {
     }
     
     private func detectApp(by address: HexAddress, topic: String) throws -> WCConnectedAppsStorageV2.ConnectedApp {
-        guard let connectedApp = self.appsStorageV2.find(by: address, topic: topic)?.first else {
+        guard let connectedApp = self.appsStorageV2.find(byTopic: topic) else {
             Debugger.printFailure("No connected app can sign for the wallet address \(address)", critical: true)
             throw WalletConnectRequestError.failedToFindWalletToSign
         }
@@ -971,7 +976,8 @@ extension WalletConnectService {
             switch dAppInfoInternal {
             case .version1(let info): return [info.walletInfo?.chainId].compactMap({$0})
             case .version2(let info): guard let namespace = info.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else { return [] }
-                return namespace.chains.map {$0.reference}
+                guard let chains = namespace.chains else { return [] }
+                return chains.map {$0.reference}
                                         .compactMap({Int($0)})
             }
         }
@@ -1018,9 +1024,10 @@ extension AppMetadata {
 
 extension SessionV2.Proposal {
     func getChainIds() throws -> [String] {
-        guard let namespace = self.requiredNamespaces[WalletConnectServiceV2.supportedNamespace] else {
+        guard let namespace = self.requiredNamespaces[WalletConnectServiceV2.supportedNamespace],
+            let chains = namespace.chains else {
         throw WalletConnectRequestError.invalidNamespaces }
-        let references = namespace.chains.map {$0.reference}
+        let references = chains.map {$0.reference}
         return references
     }
 }
@@ -1127,7 +1134,9 @@ struct WCRegistryWalletProxy {
     }
     
     init?(_ walletInfo: SessionV2) {
-        self.host = walletInfo.peer.url
+        guard let url = URL(string: walletInfo.peer.url),
+              let host = url.host else { return nil }
+        self.host = host
     }
 }
 
@@ -1145,6 +1154,7 @@ extension WalletConnectServiceV2 {
             ],
             methods: [
                 "eth_sendTransaction",
+                "eth_signTransaction",
                 "personal_sign",
                 "eth_sign",
                 "eth_signTypedData"
@@ -1246,7 +1256,13 @@ extension WalletConnectServiceV2 {
         guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
             throw WalletConnectRequestError.noWCSessionFound
         }
-        let params = WalletConnectServiceV2.getParamsPersonalSign(message: message, address: address)
+        let sentMessage: String
+        if message.droppedHexPrefix.isHexNumber {
+            sentMessage = message
+        } else {
+            sentMessage = "0x" + message.data(using: .utf8)!.toHexString()
+        }
+        let params = WalletConnectServiceV2.getParamsPersonalSign(message: sentMessage, address: address)
         return try await sendRequest(method: .personalSign,
                                      session: sessionSettled,
                                      requestParams: params,
@@ -1346,4 +1362,25 @@ extension EthereumTransaction {
         
         return AnyCodable([accum])
     }
+}
+
+extension WalletConnectSign.Session: CustomStringConvertible {
+    public var description: String {
+        """
+<\(self.peer.name) |
+\(SessionV2Proxy(self).getWalletAddresses().map({$0.prefix6 + " "})) |
+topic: \(self.topic.prefix6) |
+pairingTopic: \(self.pairingTopic.prefix6)>\n
+"""
+    }
+}
+
+extension WalletConnectSign.Pairing: CustomStringConvertible {
+    public var description: String {
+        "<\(self.peer?.name ?? "🚨no name") | topic: \(self.topic.prefix6)>\n"
+    }
+}
+
+extension String {
+    var prefix6: String { self.prefix(6) + "..." }
 }

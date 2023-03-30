@@ -46,5 +46,6 @@ extension PaymentConfiguration {
         #else
         static let defaultPublishableKey = "<stripe-live-key>"
         #endif
+        static let developmentKey = "<stripe-dev-key>"
     }
 }

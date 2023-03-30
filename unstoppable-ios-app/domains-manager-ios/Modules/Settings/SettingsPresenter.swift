@@ -152,6 +152,7 @@ private extension SettingsPresenter {
         }
         User.instance.update(settings: settings)
         Storage.instance.cleanAllCache()
+        StripeService.shared.setup()
         updateAppVersion()
         Task { await dataAggregatorService.aggregateData() }
         notificationsService.updateTokenSubscriptions()

@@ -138,7 +138,9 @@ struct CoinRecord: Hashable, Comparable, CustomStringConvertible, Codable {
                                                               "SWEAT" : "NEP-141",
                                                               "FET" : "FETCHAI",
                                                               "BNB" : "BEP20",
-                                                              "USDC" : "ERC20"]
+                                                              "USDC" : "ERC20",
+                                                              "MCONTENT" : "BEP20",
+                                                              "HI" : "ERC20"]
     
     private static let fullNamesMap: [String : String] = ["BTC" : "Bitcoin",
                                                           "ETH" : "Ethereum",
@@ -204,7 +206,7 @@ struct CoinRecord: Hashable, Comparable, CustomStringConvertible, Codable {
                                                           "BNTY" : "Bounty0x",
                                                           "ONE" : "Harmony",
                                                           "SWTH" : "Switcheo",
-                                                          "CRO" : "Crypto.com Coin",
+                                                          "CRO" : "Cronos",
                                                           "TWT" : "TWT",
                                                           "SIERRA" : "SIERRA",
                                                           "VSYS" : "VSYS",

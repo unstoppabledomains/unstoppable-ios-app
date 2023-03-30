@@ -107,6 +107,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         removeFromCacheWithoutNotification(wallet: externalWallet)
         Task {
             await appContext.walletConnectServiceV2.disconnect(from: externalWallet.address)
+            try? appContext.walletConnectClientService.disconnect(walletAddress: externalWallet.address)
         }
     }
 
@@ -308,7 +309,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
             payloadReturned = NetworkService.TxPayload(messages: messages, txCost: nil)
         }
         
-        let signatures = try await UDWallet.createSignaturesAsync(messages: payloadReturned.messages,
+        let signatures = try await UDWallet.createSignaturesByEthSign(messages: payloadReturned.messages,
                                                                   domain: domain)
         let requestSign = try NetworkService.getRequestForActionSign(id: response.id,
                                                                      response: response,

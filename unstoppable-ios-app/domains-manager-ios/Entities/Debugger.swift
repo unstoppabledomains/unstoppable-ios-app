@@ -29,6 +29,8 @@ public struct Debugger {
         case Analytics = "Analtyics"
     }
     
+    static let shouldLogHeapAnalytics = false
+    
     static let allowedTopics = DebugTopic.allCases.filter({ $0.rawValue.first != "/"})
     static func printInfo(topic: DebugTopic = .None, _ s: String) {
         //#if TESTFLIGHT

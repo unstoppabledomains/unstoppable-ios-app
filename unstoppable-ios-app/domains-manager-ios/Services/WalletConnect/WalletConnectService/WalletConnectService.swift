@@ -158,18 +158,13 @@ extension WalletConnectService: ServerDelegate {
     }
     
     func server(_ server: Server, didConnect session: Session) {
-        guard let accounts = session.walletInfo?.accounts  else {
-            Debugger.printWarning("Session connected with no wallet addresses")
-            reportConnectionAttempt(with: WalletConnectRequestError.failedConnectionRequest)
-            return
-        }
         if let pendingIntent = intentsStorage.retrieveIntents().first {
             // connection initiated by UI
             handleConnectionAsync(session: session,
                              with: pendingIntent)
-        } else if let currentApps = appsStorage.find(by: accounts, url: session.dAppInfo.peerMeta.url) {
+        } else if appsStorage.find(byTopic: session.url.topic).count > 0 {
             // re-connection
-            Debugger.printInfo(topic: .WallectConnect, "Reconnected apps: \(currentApps)")
+            Debugger.printInfo(topic: .WallectConnect, "Reconnected apps: \(appsStorage.find(byTopic: session.url.topic))")
         } else {
             Debugger.printFailure("Session connected with no relevant wallet", critical: true)
             reportConnectionAttempt(with: WalletConnectRequestError.failedConnectionRequest)
@@ -258,14 +253,9 @@ extension WalletConnectService: WalletConnectServiceProtocol {
         try? self.server.disconnect(from: toDisconnect.session)
     }
 
-    func didRemove(wallet: UDWallet) {
-        if let appsToDisconnect = appsStorage.find(by: [wallet.address]) {
-            appsToDisconnect.forEach { try? server.disconnect(from: $0.session) }
-        }
-    }
-    
     func didLostOwnership(to domain: DomainItem) {
-        if let appsToDisconnect = appsStorage.findBy(domainName: domain.name) {
+        let appsToDisconnect = appsStorage.findBy(domainName: domain.name)
+        if appsToDisconnect.count > 0 {
             appsToDisconnect.forEach { try? server.disconnect(from: $0.session) }
         }
     }
