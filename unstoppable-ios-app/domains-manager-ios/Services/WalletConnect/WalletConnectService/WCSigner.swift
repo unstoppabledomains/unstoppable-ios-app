@@ -33,7 +33,7 @@ protocol WalletConnectV1RequestHandlingServiceProtocol {
 
 extension WalletConnectV1RequestHandlingServiceProtocol {
     func detectConnectedApp(by walletAddress: HexAddress, request: Request) throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet) {
-        guard let connectedApp = WCConnectedAppsStorage.shared.find(by: [walletAddress], topic: request.url.topic)?.first,
+        guard let connectedApp = WCConnectedAppsStorage.shared.find(byTopic: request.url.topic).first,
               let udWallet = appContext.udWalletsService.find(by: walletAddress) else {
             Debugger.printFailure("No connected app can sign for the wallet address \(walletAddress) from request \(request)", critical: true)
             throw WalletConnectRequestError.failedToFindWalletToSign
@@ -58,21 +58,21 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         let incomingMessageString = try request.parameter(of: String.self, at: 0)
         let address = try request.parameter(of: String.self, at: 1)
         
-        let messageString = incomingMessageString.convertedIntoReadableMessage
+        let readableMessageString = incomingMessageString.convertedIntoReadableMessage
         
         Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(request.jsonString)")
         
         let (_, udWallet) = try await getWalletAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
-                                                                         messageString: messageString)
+                                                                         messageString: readableMessageString)
         let sig: String
         do {
-            sig = try await udWallet.getPersonalSignature(messageString: messageString)
+            sig = try await udWallet.getPersonalSignature(messageString: incomingMessageString)
         } catch {
             //TODO: If the error == WalletConnectError.failedOpenExternalApp
             // the mobile wallet app may have been deleted
             
-            Debugger.printFailure("Failed to sign message: \(messageString) by wallet:\(address)", critical: false)
+            Debugger.printFailure("Failed to sign message: \(incomingMessageString) by wallet:\(address)", critical: false)
             throw error
         }
         return Response.signature(sig, for: request)
@@ -268,7 +268,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
     
     func handleGetTransactionCount(request: Request) async throws -> Response {
         let walletAddress = try request.parameter(of: HexAddress.self, at: 0)
-        guard let app = WCConnectedAppsStorage.shared.find(by: walletAddress),
+        guard let app = WCConnectedAppsStorage.shared.find(byTopic: request.url.topic).first,
               let chainId = app.session.walletInfo?.chainId else {
             Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
             throw WalletConnectRequestError.failedToDetermineChainId

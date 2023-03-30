@@ -51,10 +51,6 @@ extension MockWalletConnectService: WalletConnectServiceProtocol {
         
     }
     
-    func didRemove(wallet: UDWallet) {
-        
-    }
-    
     func didLostOwnership(to domain: DomainItem) {
         
     }
