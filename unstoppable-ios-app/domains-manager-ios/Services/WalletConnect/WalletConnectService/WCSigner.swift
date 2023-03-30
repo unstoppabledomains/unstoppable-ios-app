@@ -33,7 +33,7 @@ protocol WalletConnectV1RequestHandlingServiceProtocol {
 
 extension WalletConnectV1RequestHandlingServiceProtocol {
     func detectConnectedApp(by walletAddress: HexAddress, request: Request) throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet) {
-        guard let connectedApp = WCConnectedAppsStorage.shared.find(by: [walletAddress], topic: request.url.topic)?.first,
+        guard let connectedApp = WCConnectedAppsStorage.shared.find(byTopic: request.url.topic).first,
               let udWallet = appContext.udWalletsService.find(by: walletAddress) else {
             Debugger.printFailure("No connected app can sign for the wallet address \(walletAddress) from request \(request)", critical: true)
             throw WalletConnectRequestError.failedToFindWalletToSign
@@ -268,7 +268,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
     
     func handleGetTransactionCount(request: Request) async throws -> Response {
         let walletAddress = try request.parameter(of: HexAddress.self, at: 0)
-        guard let app = WCConnectedAppsStorage.shared.find(by: walletAddress),
+        guard let app = WCConnectedAppsStorage.shared.find(byTopic: request.url.topic).first,
               let chainId = app.session.walletInfo?.chainId else {
             Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
             throw WalletConnectRequestError.failedToDetermineChainId
