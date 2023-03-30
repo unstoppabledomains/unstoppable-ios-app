@@ -12,7 +12,7 @@ enum DomainParkingStatus: Hashable {
     case freeParking // Domain purchased before Parking feature launched
     case parked(expiresDate: Date) // Parking purchased and active
     case parkedButExpiresSoon(expiresDate: Date)
-    case waitingForParkingOrClaim(expiresDate: Date) // Domain purchased after Parking feature launched and either not parked or not claimed
+    case parkingTrial(expiresDate: Date) // Domain purchased after Parking feature launched and either not parked or not claimed
     case parkingExpired // Purchased parking or trial is expired
     
     var title: String? {
@@ -26,7 +26,7 @@ enum DomainParkingStatus: Hashable {
         case .parkedButExpiresSoon(let expiresDate):
             let formattedDate = formattedExpiresDate(expiresDate)
             return String.Constants.parkingExpiresOn.localized(formattedDate)
-        case .waitingForParkingOrClaim(let expiresDate):
+        case .parkingTrial(let expiresDate):
             let formattedDate = formattedExpiresDate(expiresDate)
             return String.Constants.parkingTrialExpiresOn.localized(formattedDate)
         case .parkingExpired:

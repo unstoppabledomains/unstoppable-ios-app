@@ -179,6 +179,10 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         }
         
         if case .parking = domain.state {
+            if isTutorialOn {
+                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+                snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
+            }
             snapshot.appendSections([.noRecentActivities])
             snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
                 self?.recentActivitiesLearnMoreButtonPressed()
@@ -201,8 +205,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                 }
                 
                 // Separator
-                if !didShowSwipeDomainCardTutorial,
-                   cardState == .expanded {
+                if isTutorialOn {
                     snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
                 } else {
                     snapshot.appendSections([.dashesSeparator(height: Self.dashesSeparatorSectionHeight)])

@@ -11,32 +11,46 @@ protocol LoginViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: LoginViewController.Item)
 }
 
-final class LoginViewPresenter {
-    private weak var view: LoginViewProtocol?
-    private weak var loginFlowManager: LoginFlowManager?
+class LoginViewPresenter: ViewAnalyticsLogger {
+    private(set) weak var view: LoginViewProtocol?
+    var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
 
-    init(view: LoginViewProtocol,
-         loginFlowManager: LoginFlowManager) {
+    init(view: LoginViewProtocol) {
         self.view = view
-        self.loginFlowManager = loginFlowManager
+    }
+    
+    func viewDidLoad() {
+        showData()
+        view?.setDashesProgress(0.25)
+    }
+    @MainActor
+    func loginWithEmailAction() { }
+    @MainActor
+    func userDidAuthorize() { }
+    
+    @MainActor
+    func authFailedWith(error: Error) {
+        if let firebaseError = error as? FirebaseAuthError,
+           case .userCancelled = firebaseError {
+            return // Ignore case when user cancelled auth
+        } else {
+            view?.showAlertWith(error: error, handler: nil)
+        }
     }
 }
 
 // MARK: - LoginViewPresenterProtocol
 extension LoginViewPresenter: LoginViewPresenterProtocol {
-    func viewDidLoad() {
-        showData()
-        view?.setDashesProgress(0.25)
-    }
-    
     @MainActor
     func didSelectItem(_ item: LoginViewController.Item) {
         UDVibration.buttonTap.vibrate()
         switch item {
         case .loginWith(let provider):
+            logAnalytic(event: .websiteLoginOptionSelected,
+                        parameters: [.websiteLoginOption: provider.rawValue])
             switch provider {
             case .email:
-                loginWithEmail()
+                loginWithEmailAction()
             case .google:
                 loginWithGoogle()
             case .twitter:
@@ -58,13 +72,6 @@ private extension LoginViewPresenter {
                                   .loginWith(provider: .twitter)])
             
             await view?.applySnapshot(snapshot, animated: true)
-        }
-    }
-    
-    @MainActor
-    func loginWithEmail() {
-        Task {
-            try? await loginFlowManager?.handle(action: .loginWithEmailAndPassword)
         }
     }
     
@@ -91,25 +98,6 @@ private extension LoginViewPresenter {
             } catch {
                 await authFailedWith(error: error)
             }
-        }
-    }
-    
-    @MainActor
-    func userDidAuthorize() async {
-        do {
-            try await loginFlowManager?.handle(action: .authorized)
-        } catch {
-            authFailedWith(error: error)
-        }
-    }
-    
-    @MainActor
-    func authFailedWith(error: Error) {
-        if let firebaseError = error as? FirebaseAuthError,
-           case .userCancelled = firebaseError {
-            return // Ignore case when user cancelled auth
-        } else {
-            view?.showAlertWith(error: error, handler: nil)
         }
     }
 }

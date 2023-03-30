@@ -154,7 +154,7 @@ extension StatusMessage {
                     return .gray
                 case .parkingExpired:
                     return .danger
-                case .waitingForParkingOrClaim, .parkedButExpiresSoon:
+                case .parkingTrial, .parkedButExpiresSoon:
                     return .warning
                 }
             }

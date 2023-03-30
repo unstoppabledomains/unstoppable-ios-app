@@ -34,11 +34,6 @@ extension TutorialViewPresenter: TutorialViewPresenterProtocol {
         onboardingFlowManager?.moveToStep(.restoreWallet)
     }
     
-    func didPressIHaveWalletButton() {
-        onboardingFlowManager?.setNewUserOnboardingSubFlow(.restore)
-        onboardingFlowManager?.moveToStep(.restoreWallet)
-    }
-    
     func didPressBuyDomain() {
         guard let view = self.view else { return }
         

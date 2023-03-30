@@ -316,6 +316,8 @@
 "ADD_TO_BACKUP_NEW_WALLET_SUBTITLE" = "Save an encrypted copy of your recovery phrase on iCloud.";
 "ADD_TO_CURRENT_BACKUP_NEW_WALLET_TITLE" = "Enter current backup password";
 "CREATE_VAULT" = "Create vault";
+"WALLETS_LIST_EMPTY_TITLE" = "No wallets";
+"WALLETS_LIST_EMPTY_SUBTITLE" = "Create or import your wallet by clicking «+» icon at the top right corner.";
 
 // Wallet details
 "VIEW_RECOVERY_PHRASE" = "View recovery phrase";

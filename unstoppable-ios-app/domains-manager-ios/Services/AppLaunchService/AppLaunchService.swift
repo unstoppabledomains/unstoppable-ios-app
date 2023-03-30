@@ -64,13 +64,28 @@ private extension AppLaunchService {
             do {
                 try await initialWalletsCheck()
                 
+//                #if DEBUG
+//                var settings = User.instance.getSettings()
+//                settings.networkType = .testnet
+//                User.instance.update(settings: settings)
+//                #endif
+                
                 let appVersion = User.instance.getAppVersionInfo()
                 await appVersionUpdated(appVersion)
                 
                 let onboardingDone = User.instance.getSettings().onboardingDone ?? false
-                let wallets = udWalletsService.getUserWallets()
+                let shouldRunOnboarding: Bool
+                let sessionState = AppSessionInterpreter.shared.state()
+                switch sessionState {
+                case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
+                    shouldRunOnboarding = true
+                    appContext.firebaseInteractionService.logout()
+                case .walletAdded, .webAccountWithParkedDomains:
+                    shouldRunOnboarding = false
+                }
                 
-                if wallets.isEmpty || !onboardingDone {
+                if shouldRunOnboarding || !onboardingDone {
+                    let wallets = udWalletsService.getUserWallets()
                     let onboardingFlow: OnboardingNavigationController.OnboardingFlow
                     
                     if wallets.isEmpty {

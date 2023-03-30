@@ -126,7 +126,7 @@ extension LoginViewController {
         case loginWith(provider: LoginProvider)
     }
     
-    enum LoginProvider: Hashable {
+    enum LoginProvider: String, Hashable {
         case email, google, twitter
         
         var title: String {

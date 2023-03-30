@@ -250,7 +250,7 @@ private extension SettingsPresenter {
                         await view.dismissPullUpMenu()
                         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
                         firebaseInteractionService.logout()
-                        await appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
+                        appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
                     }
                 } catch { }
             }

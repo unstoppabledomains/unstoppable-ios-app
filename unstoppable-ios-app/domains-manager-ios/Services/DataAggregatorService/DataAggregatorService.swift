@@ -259,6 +259,7 @@ extension DataAggregatorService: UDWalletsServiceListener {
                 if wallets.count != walletsCount {
                     await reloadAndAggregateData()
                 }
+                await checkAppSessionAndLogOutIfNeeded()
             case .reverseResolutionDomainChanged(let domainName, let txIds):
                 var transactions = transactionsService.getCachedTransactionsFor(domainNames: [domainName])
                 let newTransactions = txIds.map({TransactionItem(id: $0,
@@ -286,12 +287,25 @@ extension DataAggregatorService: FirebaseInteractionServiceListener {
     func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
         Task {
             await reloadAndAggregateData(shouldRefreshPFP: false)
+            await checkAppSessionAndLogOutIfNeeded()
         }
     }
 }
 
 // MARK: - Private methods
 private extension DataAggregatorService {
+    @MainActor
+    func checkAppSessionAndLogOutIfNeeded() {
+        let sessionState = AppSessionInterpreter.shared.state()
+        switch sessionState {
+        case .walletAdded, .webAccountWithParkedDomains:
+            return
+        case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
+            SceneDelegate.shared?.restartOnboarding()
+            appContext.firebaseInteractionService.logout()
+        }
+    }
+    
     func getDomainsWithDisplayInfo() async -> [DomainWithDisplayInfo] {
         let currentDomains = await dataHolder.domainsWithDisplayInfo
         guard currentDomains.isEmpty else {

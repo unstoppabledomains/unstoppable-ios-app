@@ -36,7 +36,7 @@ final class DomainProfileParkedActionCoverViewPresenter: DomainProfileActionCove
         
         if case .parking(let status) = domain.state {
             switch status {
-            case .parked(let expiresDate), .parkedButExpiresSoon(let expiresDate), .waitingForParkingOrClaim(let expiresDate):
+            case .parked(let expiresDate), .parkedButExpiresSoon(let expiresDate), .parkingTrial(let expiresDate):
                 let formattedExpiresDate = DateFormattingService.shared.formatParkingExpiresDate(expiresDate)
                 description += descriptionStatusSpacer + String.Constants.parkingExpiresOn.localized(formattedExpiresDate)
                 setSecondaryButton(description: .init(title: String.Constants.claimDomain.localized(), icon: nil))

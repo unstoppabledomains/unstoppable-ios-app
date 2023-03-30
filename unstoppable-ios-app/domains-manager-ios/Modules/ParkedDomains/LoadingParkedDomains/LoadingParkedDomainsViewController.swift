@@ -17,6 +17,7 @@ final class LoadingParkedDomainsViewController: BaseViewController {
     
     @IBOutlet private weak var syncingLabel: UILabel!
     var presenter: LoadingParkedDomainsViewPresenterProtocol!
+    override var analyticsName: Analytics.ViewName { .loadingParkedDomains }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,10 +29,18 @@ final class LoadingParkedDomainsViewController: BaseViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        presenter.viewWillAppear()
+        cNavigationBar?.setBackButton(hidden: true)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         cNavigationBar?.setBackButton(hidden: true)
+        presenter.viewDidAppear()
     }
 }
 

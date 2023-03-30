@@ -15,11 +15,10 @@ protocol ParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
     func importButtonPressed()
 }
 
-final class ParkedDomainsFoundViewPresenter {
+class ParkedDomainsFoundViewPresenter {
     
-    private weak var view: ParkedDomainsFoundViewProtocol?
-    private let domains: [FirebaseDomainDisplayInfo]
-    private weak var loginFlowManager: LoginFlowManager?
+    private(set) weak var view: ParkedDomainsFoundViewProtocol?
+    let domains: [FirebaseDomainDisplayInfo]
 
     var title: String {
         String.Constants.pluralWeFoundNDomains.localized(domains.count)
@@ -27,12 +26,13 @@ final class ParkedDomainsFoundViewPresenter {
     var progress: Double? { 1 }
 
     init(view: ParkedDomainsFoundViewProtocol,
-         domains: [FirebaseDomainDisplayInfo],
-         loginFlowManager: LoginFlowManager) {
+         domains: [FirebaseDomainDisplayInfo]) {
         self.view = view
         self.domains = domains
-        self.loginFlowManager = loginFlowManager
     }
+    
+    @MainActor
+    func importButtonPressed() { }
 }
 
 // MARK: - ParkedDomainsFoundViewPresenterProtocol
@@ -54,7 +54,7 @@ extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtoc
             switch domain.parkingStatus {
             case .parkedButExpiresSoon(let expiresDate):
                 appContext.pullUpViewService.showParkedDomainExpiresSoonPullUp(in: view, expiresDate: expiresDate)
-            case .waitingForParkingOrClaim(let expiresDate):
+            case .parkingTrial(let expiresDate):
                 appContext.pullUpViewService.showParkedDomainTrialExpiresPullUp(in: view, expiresDate: expiresDate)
             case .parked, .freeParking:
                 appContext.pullUpViewService.showParkedDomainInfoPullUp(in: view)
@@ -63,13 +63,6 @@ extension ParkedDomainsFoundViewPresenter: ParkedDomainsFoundViewPresenterProtoc
             default:
                 return
             }
-        }
-    }
-    
-    @MainActor
-    func importButtonPressed() {
-        Task {
-            try? await loginFlowManager?.handle(action: .importCompleted(parkedDomains: domains))
         }
     }
 }
@@ -87,3 +80,5 @@ private extension ParkedDomainsFoundViewPresenter {
         }
     }
 }
+
+

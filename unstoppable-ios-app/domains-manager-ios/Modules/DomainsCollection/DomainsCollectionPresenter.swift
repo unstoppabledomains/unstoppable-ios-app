@@ -510,9 +510,6 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
                     }
                 case .walletsListUpdated(let wallets):
                     stateController.set(walletsWithInfo: wallets)
-                    if wallets.isEmpty {
-                        SceneDelegate.shared?.restartOnboarding()
-                    }
                 case .primaryDomainChanged: return
                 }
             case .failure:
@@ -604,10 +601,11 @@ private extension DomainsCollectionPresenter {
     
     @MainActor
     func updateUIControlsVisibility() {
-        let isEmpty = stateController.domains.isEmpty
-        view?.setScanButtonHidden(isEmpty)
-        view?.setAddButtonHidden(isEmpty)
-        view?.setEmptyState(hidden: !isEmpty)
+        let domains = stateController.domains
+        let isScanHidden = domains.first(where: { $0.isInteractable }) == nil
+        view?.setScanButtonHidden(isScanHidden)
+        view?.setAddButtonHidden(domains.isEmpty)
+        view?.setEmptyState(hidden: !domains.isEmpty)
     }
     
     @MainActor

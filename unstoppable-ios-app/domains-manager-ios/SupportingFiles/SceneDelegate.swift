@@ -166,6 +166,8 @@ extension SceneDelegate: SceneDelegateProtocol {
     }
     
     func restartOnboarding() {
+        guard User.instance.getSettings().onboardingDone == true else { return }
+        
         appContext.analyticsService.log(event: .willRestartOnboarding, withParameters: nil)
         var settings = User.instance.getSettings()
         settings.onboardingDone = false

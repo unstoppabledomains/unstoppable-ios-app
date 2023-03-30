@@ -11,27 +11,15 @@ protocol NoParkedDomainsFoundViewPresenterProtocol: BasePresenterProtocol {
     func confirmButtonPressed()
 }
 
-final class NoParkedDomainsFoundViewPresenter {
-    private weak var view: NoParkedDomainsFoundViewProtocol?
-    private weak var loginFlowManager: LoginFlowManager?
+class NoParkedDomainsFoundViewPresenter {
+    private(set) weak var view: NoParkedDomainsFoundViewProtocol?
 
-    init(view: NoParkedDomainsFoundViewProtocol,
-         loginFlowManager: LoginFlowManager) {
+    init(view: NoParkedDomainsFoundViewProtocol) {
         self.view = view
-        self.loginFlowManager = loginFlowManager
     }
+    
+    func confirmButtonPressed() { }
 }
 
 // MARK: - NoParkedDomainsFoundViewPresenterProtocol
-extension NoParkedDomainsFoundViewPresenter: NoParkedDomainsFoundViewPresenterProtocol {
-    func confirmButtonPressed() {
-        Task {
-            try? await loginFlowManager?.handle(action: .importCompleted(parkedDomains: []))
-        }
-    }
-}
-
-// MARK: - Private functions
-private extension NoParkedDomainsFoundViewPresenter {
-
-}
+extension NoParkedDomainsFoundViewPresenter: NoParkedDomainsFoundViewPresenterProtocol { }

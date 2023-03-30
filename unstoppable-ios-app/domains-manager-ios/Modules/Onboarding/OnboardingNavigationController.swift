@@ -91,7 +91,7 @@ extension OnboardingNavigationController: OnboardingFlowManager {
             switch onboardingSubFlow {
             case .create:
                 pushBackupWalletsScreen()
-            case .restore:
+            case .restore, .webAccount:
                 didFinishOnboarding()
             }
         case .existingUser:
@@ -151,8 +151,11 @@ private extension OnboardingNavigationController {
         
         if topViewController is HappyEndViewController || topViewController is WalletConnectedViewController {
             transitionHandler?.isInteractionEnabled = false
-        } else if topViewController is RecoveryPhraseViewController,
-                  UserDefaults.onboardingNavigationInfo?.steps.contains(.recoveryPhraseConfirmed) == true {
+        } else if (topViewController is RecoveryPhraseViewController &&
+                  UserDefaults.onboardingNavigationInfo?.steps.contains(.recoveryPhraseConfirmed) == true) ||
+        topViewController is LoadingParkedDomainsViewController ||
+        topViewController is ParkedDomainsFoundViewController ||
+        topViewController is NoParkedDomainsFoundViewController {
             transitionHandler.isInteractionEnabled = false
             DispatchQueue.main.async {
                 self.navigationBar.setBackButton(hidden: true)
@@ -354,6 +357,46 @@ private extension OnboardingNavigationController {
         case .allDone:
             let vc = HappyEndViewController.instance()
             return vc
+        case .loginWithWebsite:
+            let vc = LoginViewController.nibInstance()
+            let presenter = LoginOnboardingViewPresenter(view: vc,
+                                                         onboardingFlowManager: self)
+            addStepHandler(presenter)
+            vc.presenter = presenter
+            return vc
+        case .loadingParkedDomains:
+            let vc = LoadingParkedDomainsViewController.nibInstance()
+            let presenter = LoadingParkedDomainsOnboardingViewPresenter(view: vc,
+                                                                        onboardingFlowManager: self)
+            addStepHandler(presenter)
+            vc.presenter = presenter
+            return vc
+        case .loginWithEmailAndPassword:
+            let vc = LoginWithEmailViewController.nibInstance()
+            let presenter = LoginWithEmailOnboardingViewPresenter(view: vc,
+                                                                  onboardingFlowManager: self)
+            addStepHandler(presenter)
+            vc.presenter = presenter
+            return vc
+        case .noParkedDomains:
+            let vc = NoParkedDomainsFoundViewController.nibInstance()
+            let presenter = NoParkedDomainsFoundOnboardingViewPresenter(view: vc,
+                                                                        onboardingFlowManager: self)
+            addStepHandler(presenter)
+            vc.presenter = presenter
+            return vc
+        case .parkedDomainsFound:
+            guard let parkedDomains = onboardingData.parkedDomains else {
+                Debugger.printFailure("Failed to get parked domains from onboarding data", critical: true)
+                return nil }
+            
+            let vc = ParkedDomainsFoundViewController.nibInstance()
+            let presenter = ParkedDomainsFoundOnboardingViewPresenter(view: vc,
+                                                                      domains: parkedDomains,
+                                                                      onboardingFlowManager: self)
+            addStepHandler(presenter)
+            vc.presenter = presenter
+            return vc
         }
     }
  
@@ -379,7 +422,7 @@ extension OnboardingNavigationController {
     }
     
     enum NewUserOnboardingSubFlow: Int, Codable {
-        case create, restore
+        case create, restore, webAccount
     }
     
     enum OnboardingStep: Int, Codable {
@@ -405,6 +448,12 @@ extension OnboardingNavigationController {
         case allDone = 16
         
         case existingUserTutorial = 17
+        
+        case loginWithWebsite = 18
+        case loadingParkedDomains = 19
+        case loginWithEmailAndPassword = 20
+        case noParkedDomains = 21
+        case parkedDomainsFound = 22
     }
     
     struct OnboardingNavigationInfo: Codable, CustomStringConvertible {

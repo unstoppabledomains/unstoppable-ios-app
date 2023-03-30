@@ -143,9 +143,13 @@ private extension FirebaseInteractionService {
     }
     
     func setFirebaseUser(_ firebaseUser: FirebaseUser?) {
+        let shouldNotifyListeners = firebaseUser != self.firebaseUser
         self.firebaseUser = firebaseUser
-        listenerHolders.forEach { holder in
-            holder.listener?.firebaseUserUpdated(firebaseUser: firebaseUser)
+        
+        if shouldNotifyListeners  {
+            listenerHolders.forEach { holder in
+                holder.listener?.firebaseUserUpdated(firebaseUser: firebaseUser)
+            }
         }
     }
     
