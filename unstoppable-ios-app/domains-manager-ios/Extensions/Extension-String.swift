@@ -715,6 +715,7 @@ extension String {
         static let profileBadgesUpToDate = "PROFILE_BADGES_UP_TO_DATE"
         static let profileBadgesLeaderboardRankMessage = "PROFILE_BADGES_LEADERBOARD_RANK_MESSAGE"
         static let profileBadgesLeaderboardHoldersMessage = "PROFILE_BADGES_LEADERBOARD_HOLDERS_MESSAGE"
+        static let profileBadgesSponsoredByMessage = "PROFILE_BADGES_LEADERBOARD_SPONSORED_BY_MESSAGE"
         
         // Recent activities
         static let noRecentActivity = "NO_RECENT_ACTIVITY"

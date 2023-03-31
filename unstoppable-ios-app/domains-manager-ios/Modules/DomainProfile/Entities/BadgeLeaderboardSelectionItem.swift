@@ -10,7 +10,7 @@ import UIKit
 struct BadgeLeaderboardSelectionItem: PullUpCollectionViewCellItem {
     
     var title: String {
-        String.Constants.profileBadgesLeaderboardRankMessage.localized(badgeDetailedInfo.usage.rank)
+        String.Constants.profileBadgesLeaderboardRankMessage.localized(largeNumberFormatter.string(from: badgeDetailedInfo.usage.rank as NSNumber) ?? "")
     }
     var icon: UIImage {
         get async {
@@ -18,7 +18,7 @@ struct BadgeLeaderboardSelectionItem: PullUpCollectionViewCellItem {
         }
     }
     var subtitle: String? {
-        String.Constants.profileBadgesLeaderboardHoldersMessage.localized(badgeDetailedInfo.usage.holders)
+        String.Constants.profileBadgesLeaderboardHoldersMessage.localized(largeNumberFormatter.string(from: badgeDetailedInfo.usage.holders as NSNumber) ?? "")
     }
     var disclosureIndicatorStyle: PullUpDisclosureIndicatorStyle { .topRight }
     
