@@ -62,6 +62,12 @@ let currencyNumberFormatter: NumberFormatter = {
     return formatter
 }()
 
+let largeNumberFormatter: NumberFormatter = {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    return formatter
+}()
+
 struct Env {
     static let IOS = "ios"
     

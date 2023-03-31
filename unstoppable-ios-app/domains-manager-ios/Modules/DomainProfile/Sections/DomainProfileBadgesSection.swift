@@ -29,6 +29,13 @@ final class DomainProfileBadgesSection {
         self.state = state
         setBadgesUpToDateFor(nextRefreshDate: badgesData.refresh?.next)
     }
+    
+    static func numberOfBadgesInTheRow() -> Int {
+        if deviceSize == .i4Inch {
+            return 4
+        }
+        return 5
+    }
 }
 
 // MARK: - DomainProfileSection
@@ -57,7 +64,7 @@ extension DomainProfileBadgesSection: DomainProfileSection {
     
     func fill(snapshot: inout DomainProfileSnapshot, withGeneralData generalData: DomainProfileGeneralData) {
         snapshot.appendSections([.dashesSeparator()])
-        let maxItems = 6
+        let maxItems = Self.numberOfBadgesInTheRow() * 3
         switch state {
         case .default, .updatingRecords, .loadingError, .updatingProfile:
             let isRefreshBadgesButtonEnabled = state == .default || state == .updatingRecords
@@ -170,10 +177,13 @@ private extension DomainProfileBadgesSection {
     }
 
     func didSelect(displayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo) {
-        guard let view = controller?.viewController else { return }
-        
         Task { @MainActor in
-            appContext.pullUpViewService.showBadgeInfoPullUp(in: view, badgeDisplayInfo: displayInfo)
+            guard let view = controller?.viewController,
+                  let domain = controller?.generalData.domain else { return }
+            
+            appContext.pullUpViewService.showBadgeInfoPullUp(in: view,
+                                                             badgeDisplayInfo: displayInfo,
+                                                             domainName: domain.name)
         }
     }
     
@@ -238,7 +248,16 @@ extension BadgesInfo {
                        .init(code: "4", name: "NFT Domain", logo: "", description: "Holder"),
                        .init(code: "5", name: "NFT Domain", logo: "", description: "Holder"),
                        .init(code: "6", name: "NFT Domain", logo: "", description: "Holder"),
-                       .init(code: "7", name: "NFT Domain", logo: "", description: "Holder")],
+                       .init(code: "7", name: "NFT Domain", logo: "", description: "Holder"),
+                       .init(code: "8", name: "NFT Domain", logo: "", description: "Holder"),
+                       .init(code: "9", name: "NFT Domain", logo: "", description: "Holder"),
+                       .init(code: "10", name: "NFT Domain", logo: "", description: "Holder"),
+                       .init(code: "11", name: "NFT Domain", logo: "", description: "Holder"),
+                       .init(code: "12", name: "NFT Domain", logo: "", description: "Holder"),
+                       .init(code: "13", name: "NFT Domain", logo: "", description: "Holder"),
+                       .init(code: "14", name: "NFT Domain", logo: "", description: "Holder"),
+                       .init(code: "15", name: "NFT Domain", logo: "", description: "Holder"),
+                       .init(code: "16", name: "NFT Domain", logo: "", description: "Holder")],
               refresh: .init(last: Date(), next: Date()))
     }
 }

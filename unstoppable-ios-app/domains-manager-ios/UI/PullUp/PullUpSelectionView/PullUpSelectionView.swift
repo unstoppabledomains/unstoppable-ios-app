@@ -23,6 +23,9 @@ final class PullUpSelectionView<Item: PullUpCollectionViewCellItem>: UIView, UIC
     private var currentMinYAnchor: NSLayoutYAxisAnchor!
     
     private var configuration: PullUpSelectionViewConfiguration!
+    private let titleTag = 1
+    private let extraTitleTag = 2
+    private let subtitleTag = 3
     var items = [Item]()
     var itemSelectedCallback: ItemCallback?
     
@@ -73,18 +76,25 @@ final class PullUpSelectionView<Item: PullUpCollectionViewCellItem>: UIView, UIC
         pullUpView?.cancel()
     }
     
-    @objc private func didTapLabel() {
-        switch configuration.title {
-        case .highlightedText(let textDescription):
-            logButtonPressed(textDescription.analyticsActionName?.rawValue ?? "unspecified")
-            textDescription.action?()
-            return
-        case .none, .text:
-            Void()
+    @objc private func didTapLabel(_ tapGesture: UITapGestureRecognizer) {
+        guard let label = tapGesture.view else { return }
+        
+        var tappedLabel: PullUpSelectionViewConfiguration.LabelType?
+        
+        if label.tag == titleTag {
+            tappedLabel = configuration.title
+        } else if label.tag == extraTitleTag {
+            tappedLabel = configuration.extraTitle
+        } else if label.tag == subtitleTag {
+            switch configuration.subtitle {
+            case .label(let label):
+                tappedLabel = label
+            case .none, .button:
+                return
+            }
         }
         
-        switch configuration.subtitle {
-        case .label(let label):
+        if let label = tappedLabel {
             switch label {
             case .highlightedText(let textDescription):
                 logButtonPressed(textDescription.analyticsActionName?.rawValue ?? "unspecified")
@@ -92,9 +102,6 @@ final class PullUpSelectionView<Item: PullUpCollectionViewCellItem>: UIView, UIC
             case .text:
                 return
             }
-            return
-        case .none, .button:
-            return
         }
     }
     
@@ -127,6 +134,7 @@ private extension PullUpSelectionView {
         setupIcon()
         setupCustomHeader()
         setupTitleLabel()
+        setupExtraTitleLabel()
         setupSubtitle()
         setupExtraViews()
         setupCollectionView()
@@ -165,6 +173,7 @@ private extension PullUpSelectionView {
         titleLabel = UILabel(frame: CGRect(x: 16, y: 0, width: 200, height: 28))
         titleLabel.numberOfLines = 0
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.tag = titleTag
         
         let title: String
         var highlightedTextDescription: PullUpSelectionViewConfiguration.HighlightedText?
@@ -205,10 +214,20 @@ private extension PullUpSelectionView {
         currentMinYAnchor = titleLabel.bottomAnchor
     }
     
+    func setupExtraTitleLabel() {
+        guard let extraTitle = configuration.extraTitle else { return }
+        
+        let extraTitleView = buildSubtitleView(.label(extraTitle))
+        extraTitleView.tag = extraTitleTag
+        addSubview(extraTitleView)
+        alignToTitleView(extraTitleView, andUpdateCurrentMin: 8)
+    }
+    
     func setupSubtitle() {
         guard let subtitle = configuration.subtitle else { return }
         
         let subtitleView = buildSubtitleView(subtitle)
+        subtitleView.tag = subtitleTag
         addSubview(subtitleView)
         alignToTitleView(subtitleView, andUpdateCurrentMin: 8)
     }
@@ -374,6 +393,9 @@ private extension PullUpSelectionView {
         case .applePay(let content):
             button = ApplePayButton()
             buttonContent = content
+        case .raisedTertiary(let content):
+            button = RaisedTertiaryButton()
+            buttonContent = content
         }
         
         button.bounds.size.height = buttonType.height
@@ -442,6 +464,7 @@ private extension PullUpSelectionView {
 struct PullUpSelectionViewConfiguration {
     var customHeader: UIView? = nil
     var title: LabelType?
+    var extraTitle: LabelType? = nil
     var contentAlignment: ContentAlignment
     var icon: IconContent? = nil
     var subtitle: Subtitle? = nil
@@ -552,10 +575,11 @@ struct PullUpSelectionViewConfiguration {
         case secondaryDanger(content: ButtonContent)
         case textTertiary(content: ButtonContent)
         case applePay(content: ButtonContent)
+        case raisedTertiary(content: ButtonContent)
         
         var height: CGFloat {
             switch self {
-            case .main, .secondary, .primaryDanger, .secondaryDanger, .applePay:
+            case .main, .secondary, .primaryDanger, .secondaryDanger, .applePay, .raisedTertiary:
                 return 48
             case .textTertiary:
                 return 24
@@ -564,14 +588,14 @@ struct PullUpSelectionViewConfiguration {
         
         func callAction() {
             switch self {
-            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content):
+            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content):
                 content.action?()
             }
         }
         
         var content: ButtonContent {
             switch self {
-            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content):
+            case .main(let content), .secondary(let content), .textTertiary(let content), .primaryDanger(let content), .secondaryDanger(let content), .applePay(let content), .raisedTertiary(let content):
                 return content
             }
         }

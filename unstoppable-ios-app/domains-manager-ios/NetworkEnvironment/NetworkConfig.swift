@@ -34,6 +34,14 @@ struct NetworkConfig {
         return "https://ud.me/"
     }
     
+    static var badgesLeaderboardUrl: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return "https://ud-staging.com/badge/leaderboard"
+        }
+        return "https://unstoppabledomains.com/badge/leaderboard"
+    }
+    
     static var baseResolveUrl: String {
         if User.instance.getSettings().isTestnetUsed {
             return "https://resolve.ud-staging.com"

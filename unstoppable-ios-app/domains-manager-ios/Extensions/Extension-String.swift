@@ -39,6 +39,9 @@ extension String {
         case writeAppStoreReview(appId: String)
         case udExternalWalletTutorial
         case udParkedDomainsTutorial
+        case showcaseDomainBadge(domainName: String, badgeCode: String)
+        case badgesLeaderboard
+        case generic(url: String)
 
         var urlString: String {
             switch self {
@@ -84,6 +87,13 @@ extension String {
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001232090-using-external-wallets-in-the-unstoppable-domains-mobile-app"
             case .udParkedDomainsTutorial:
                 return "https://unstoppabledomains.com/blog/categories/announcements/article/secure-your-domains-with-ud-parking"
+            case .showcaseDomainBadge(let domainName, let badgeCode):
+                let profileURL = Links.domainProfilePage(domainName: domainName).urlString
+                return profileURL + "?openBadgeCode=\(badgeCode)"
+            case .badgesLeaderboard:
+                return NetworkConfig.badgesLeaderboardUrl
+            case .generic(let url):
+                return url
             }
         }
         
@@ -721,6 +731,9 @@ extension String {
         static let profileSocialsEmptyMessage = "PROFILE_SOCIALS_EMPTY_MESSAGE"
         static let profileRefreshingBadgesTitle = "PROFILE_REFRESHING_BADGES_TITLE"
         static let profileBadgesUpToDate = "PROFILE_BADGES_UP_TO_DATE"
+        static let profileBadgesLeaderboardRankMessage = "PROFILE_BADGES_LEADERBOARD_RANK_MESSAGE"
+        static let profileBadgesLeaderboardHoldersMessage = "PROFILE_BADGES_LEADERBOARD_HOLDERS_MESSAGE"
+        static let profileBadgesSponsoredByMessage = "PROFILE_BADGES_LEADERBOARD_SPONSORED_BY_MESSAGE"
         
         // Recent activities
         static let noRecentActivity = "NO_RECENT_ACTIVITY"
