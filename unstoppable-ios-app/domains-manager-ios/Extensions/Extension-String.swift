@@ -38,6 +38,9 @@ extension String {
         case openSeaPolygonAsset(value: String)
         case writeAppStoreReview(appId: String)
         case udExternalWalletTutorial
+        case showcaseDomainBadge(domainName: String, badgeCode: String)
+        case badgesLeaderboard
+        case generic(url: String)
 
         var urlString: String {
             switch self {
@@ -81,6 +84,13 @@ extension String {
                 return "https://apps.apple.com/app/id\(appId)?action=write-review"
             case .udExternalWalletTutorial:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001232090-using-external-wallets-in-the-unstoppable-domains-mobile-app"
+            case .showcaseDomainBadge(let domainName, let badgeCode):
+                let profileURL = Links.domainProfilePage(domainName: domainName).urlString
+                return profileURL + "?openBadgeCode=\(badgeCode)"
+            case .badgesLeaderboard:
+                return NetworkConfig.badgesLeaderboardUrl
+            case .generic(let url):
+                return url 
             }
         }
         

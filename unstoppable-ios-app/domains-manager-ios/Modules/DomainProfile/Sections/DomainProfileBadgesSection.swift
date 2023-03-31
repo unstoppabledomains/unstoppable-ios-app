@@ -177,10 +177,13 @@ private extension DomainProfileBadgesSection {
     }
 
     func didSelect(displayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo) {
-        guard let view = controller?.viewController else { return }
-        
         Task { @MainActor in
-            appContext.pullUpViewService.showBadgeInfoPullUp(in: view, badgeDisplayInfo: displayInfo)
+            guard let view = controller?.viewController,
+                  let domain = controller?.generalData.domain else { return }
+            
+            appContext.pullUpViewService.showBadgeInfoPullUp(in: view,
+                                                             badgeDisplayInfo: displayInfo,
+                                                             domainName: domain.name)
         }
     }
     
