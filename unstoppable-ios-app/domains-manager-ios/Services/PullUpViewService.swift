@@ -1001,20 +1001,41 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             }
             
             var leaderboardItems = [BadgeLeaderboardSelectionItem]()
+            var subtitle: PullUpSelectionViewConfiguration.Subtitle = .label(.text(description))
+            var extraTitle: PullUpSelectionViewConfiguration.LabelType?
+            var actionButton: PullUpSelectionViewConfiguration.ButtonType?
+            
             if !badgeDisplayInfo.isExploreWeb3Badge,
                let badgeDetailedInfo = try? await NetworkService().fetchBadgeDetailedInfo(for: badge) {
                 let leaderboardItem = BadgeLeaderboardSelectionItem(badgeDetailedInfo: badgeDetailedInfo)
                 leaderboardItems.append(leaderboardItem)
                 selectionViewHeight += 72 + 48 // Leaderboard cell height + vertical margins
+                
+                if let sponsor = badgeDetailedInfo.badge.sponsor {
+                    let text = String.Constants.profileBadgesSponsoredByMessage.localized(sponsor)
+                    extraTitle = .highlightedText(.init(text: text,
+                                                        highlightedText: [.init(highlightedText: text,
+                                                                                highlightedColor: .foregroundAccent)],
+                                                        analyticsActionName: .badgeSponsor, action: { [weak self] in
+                        UDVibration.buttonTap.vibrate()
+                        // TODO: - Show sponsor page in web view
+                    }))
+                    selectionViewHeight += 24 + 8 // Label height + vertical margins
+                }
             }
             
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(badge.name),
+                                                                         extraTitle: extraTitle,
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: badgeIcon,
                                                                                      size: badge.isUDBadge ? .small : .large),
-                                                                         subtitle: .label(.text(description)),
+                                                                         subtitle: subtitle,
+                                                                         actionButton: actionButton,
                                                                          cancelButton: .gotItButton()),
-                                                    items: leaderboardItems)
+                                                    items: leaderboardItems,
+                                                    itemSelectedCallback: { _ in
+                // TODO: - Show leaderboard
+            })
             
             showOrUpdate(in: viewController, pullUp: .badgeInfo, contentView: selectionView, height: selectionViewHeight)
         }

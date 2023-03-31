@@ -295,6 +295,7 @@ struct BadgesInfo: Codable, Hashable {
         let logo:  String
         let description: String
         var linkUrl: String?
+        var sponsor: String?
         
         var isUDBadge: Bool {
             guard let linkUrl,
