@@ -294,6 +294,14 @@ struct BadgesInfo: Codable, Hashable {
         let name: String
         let logo:  String
         let description: String
+        var linkUrl: String?
+        
+        var isUDBadge: Bool {
+            guard let linkUrl,
+                  let url = URL(string: linkUrl) else { return true }
+            
+            return url.host?.contains("unstoppabledomains") == true
+        }
     }
         
     struct BadgesRefreshInfo: Codable, Hashable {
