@@ -475,6 +475,10 @@ private extension DomainProfileViewController {
             
             let section = self?.section(at: IndexPath(item: 0, section: sectionIndex))
             var layoutSection: NSCollectionLayoutSection = .flexibleListItemSection()
+            let layoutSectionInset = NSDirectionalEdgeInsets(top: 1,
+                                                             leading: spacing + 1,
+                                                             bottom: 1,
+                                                             trailing: spacing + 1)
 
             func addBackgroundWithTopInset(_ topInset: CGFloat, bottomInset: CGFloat? = nil) {
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackgroundWhiteWithAlpha.reuseIdentifier)
@@ -496,10 +500,7 @@ private extension DomainProfileViewController {
             }
             
             func setSectionContentInset() {
-                layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
-                                                                      leading: spacing + 1,
-                                                                      bottom: 1,
-                                                                      trailing: spacing + 1)
+                layoutSection.contentInsets = layoutSectionInset
             }
             
             func addFooter(_ footer: String) {
@@ -539,8 +540,25 @@ private extension DomainProfileViewController {
                 setSectionContentInset()
                 addHeader()
             case .badges:
-                layoutSection = .multipleListItemSection(height: 56, numberOfItems: 2)
+                let badgeSize: CGFloat = 64
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(badgeSize),
+                                                                                     heightDimension: .absolute(badgeSize)))
+                let numberOfItems = DomainProfileBadgesSection.numberOfBadgesInTheRow()
+                let containerGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                                                                           heightDimension: .absolute(badgeSize)),
+                                                                        subitem: item, count: numberOfItems)
+                let containerWidth = layoutEnvironment.container.contentSize.width
+                let horizontalInset = layoutSectionInset.leading + layoutSectionInset.trailing
+                let groupWidth = containerWidth - horizontalInset
+                let groupFreeSpacing = groupWidth - (badgeSize * CGFloat(numberOfItems))
+                let groupItemSpacing = groupFreeSpacing / CGFloat(numberOfItems - 1)
+                containerGroup.interItemSpacing = .fixed(groupItemSpacing)
+                
+                layoutSection = NSCollectionLayoutSection(group: containerGroup)
+                layoutSection.interGroupSpacing = 8
+                
                 setSectionContentInset()
+                
                 addHeader()
             case .footer(let footer):
                 setSectionContentInset()

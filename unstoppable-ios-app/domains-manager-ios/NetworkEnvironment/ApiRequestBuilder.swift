@@ -590,6 +590,16 @@ extension Endpoint {
         )
     }
     
+    static func getBadgeDetailedInfo(for badge: BadgesInfo.BadgeInfo) -> Endpoint {
+        // https://profile.unstoppabledomains.com/api/badges/opensea-tothemoonalisa
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/api/badges/\(badge.code)",
+            queryItems: [],
+            body: ""
+        )
+    }
+    
     static let yearInSecs: TimeInterval = 60 * 60 * 24 * 356
     static func getGeneratedMessageToRetrieve(for domain: DomainItem) -> Endpoint {
         // https://profile.ud-staging.com/api/user/aaron.x/signature?expiry=1765522015090
