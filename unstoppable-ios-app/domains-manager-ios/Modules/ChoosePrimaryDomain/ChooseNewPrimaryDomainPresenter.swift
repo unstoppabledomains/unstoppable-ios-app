@@ -106,6 +106,7 @@ final class ChooseNewPrimaryDomainPresenter: ChoosePrimaryDomainViewPresenter {
         domains.remove(at: fromIndex)
         domains.insert(movedDomain, at: toIndex)
         logAnalytic(event: .domainMoved, parameters: [.domainName : movedDomain.name])
+        showDataAsync()
     }
     
     override func moveItemsFailed() {

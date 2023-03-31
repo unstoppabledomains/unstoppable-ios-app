@@ -212,10 +212,15 @@ extension ChoosePrimaryDomainViewController: UICollectionViewDropDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
-        if let object = session.items.first?.localObject as? IndexPath, let destinationIndexPath = destinationIndexPath, object.section == destinationIndexPath.section {
-            return presenter.proposalForItemsWithDropSession(session, destinationIndexPath: destinationIndexPath)
+        
+        guard let dragItemIndexPath = session.items.first?.localObject as? IndexPath,
+              let destinationIndexPath = destinationIndexPath,
+              dragItemIndexPath.section == destinationIndexPath.section else {
+            return UICollectionViewDropProposal(operation: .forbidden)
         }
-        return UICollectionViewDropProposal(operation: .forbidden)
+        
+        return presenter.proposalForItemsWithDropSession(session,
+                                                         destinationIndexPath: destinationIndexPath)
     }
 }
 
