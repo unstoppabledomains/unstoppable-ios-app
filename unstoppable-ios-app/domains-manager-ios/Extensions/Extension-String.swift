@@ -301,6 +301,7 @@ extension String {
         static let pluralNWallets = "SDICT:N_WALLETS"
         static let pluralNVaults = "SDICT:N_VAULTS"
         static let pluralNDomains = "SDICT:N_DOMAINS"
+        static let pluralDomains = "SDICT:DOMAINS"
         static let pluralMintDomains = "SDICT:MINT_DOMAINS"
         static let pluralMoveDomains = "SDICT:MOVE_DOMAINS"
         static let pluralMintDomainsTo = "SDICT:MINT_DOMAINS_TO"
@@ -785,6 +786,19 @@ extension String {
         static let parkedDomainActionCoverSubtitle = "PARKED_DOMAIN_ACTION_COVER_SUBTITLE"
         static let claimDomain = "CLAIM_DOMAIN"
         static let parkedDomainCantConnectToApps = "PARKED_DOMAIN_CANT_CONNECT_TO_APPS"
+        
+        // Parked domains notifications
+        static let localNotificationParkedSingleDomainExpiredTitle = "LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRED_TITLE"
+        static let localNotificationParkedMultipleDomainsExpiredTitle = "LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRED_TITLE"
+        static let localNotificationParkedDomainsExpiredBody = "LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRED_BODY"
+        static let localNotificationParkedDomainsExpiresInBody = "LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRES_IN_BODY"
+        static let localNotificationParkingExpirePeriodInOneMonth = "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_MONTH"
+        static let localNotificationParkingExpirePeriodInOneWeek = "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_WEEK"
+        static let localNotificationParkingExpirePeriodInThreeDays = "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_THREE_DAYS"
+        static let localNotificationParkingExpirePeriodInTomorrow = "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_TOMORROW"
+        static let localNotificationParkedSingleDomainExpiresTitle = "LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRES_TITLE"
+        static let localNotificationParkedMultipleDomainsExpiresTitle = "LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRES_TITLE"
+        
     }
 
     

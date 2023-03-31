@@ -37,11 +37,9 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
                         onboardingFlowManager?.moveToStep(.parkedDomainsFound)
                     }
                 }
-            } catch FirebaseAuthError.firebaseUserNotAuthorisedInTheApp {
-                return
             } catch {
-                await view?.showAlertWith(error: error, handler: { _ in
-                    appContext.firebaseInteractionService.logout()
+                await view?.showAlertWith(error: error, handler: { [weak self] _ in
+                    self?.failedToLoadParkedDomains()
                 })
             }
         }
@@ -57,4 +55,14 @@ extension LoadingParkedDomainsOnboardingViewPresenter: OnboardingNavigationHandl
 // MARK: - OnboardingDataHandling
 extension LoadingParkedDomainsOnboardingViewPresenter: OnboardingDataHandling {
     func willNavigateBack() { }
+}
+
+// MARK: - Private methods
+private extension LoadingParkedDomainsOnboardingViewPresenter {
+    func failedToLoadParkedDomains() {
+        Task { @MainActor in
+            appContext.firebaseInteractionService.logout()
+            view?.cNavigationController?.popTo(LoginViewController.self)
+        }
+    }
 }

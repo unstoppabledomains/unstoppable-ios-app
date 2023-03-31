@@ -713,3 +713,15 @@
 "PARKED_DOMAIN_ACTION_COVER_SUBTITLE" = "Once a domain is parked, you are not able to manage it, as it is securely held in storage to protect against theft.";
 "CLAIM_DOMAIN" = "Claim domain";
 "PARKED_DOMAIN_CANT_CONNECT_TO_APPS" = "Parked domain can't connect to apps or other activities";
+
+// Parked domains notifications
+"LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRED_TITLE" = "%@ parking has expired";
+"LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRED_TITLE" = "Your %i parked domains have expired";
+"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRED_BODY" = "Please visit our website to extend parking or claim";
+"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRES_IN_BODY" = "Your %@ expires in %@. Please visit our website to extend parking or claim.";
+"LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_MONTH" = "1 month";
+"LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_WEEK" = "1 week";
+"LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_THREE_DAYS" = "3 days";
+"LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_TOMORROW" = "tomorrow";
+"LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRES_TITLE" = "%@ parking expires soon";
+"LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRES_TITLE" = "%i domains parking expire soon";

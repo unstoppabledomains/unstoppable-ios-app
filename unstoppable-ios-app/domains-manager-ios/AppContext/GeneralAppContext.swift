@@ -107,6 +107,7 @@ final class GeneralAppContext: AppContextProtocol {
         firebaseDomainsService = FirebaseDomainsService(firebaseInteractionService: firebaseInteractionService)
         
         firebaseInteractionService.addListener(dataAggregatorService)
+        dataAggregatorService.addListener(LocalNotificationsService.shared)
         Task {
             persistedProfileSignaturesStorage.removeExpired()
         }
