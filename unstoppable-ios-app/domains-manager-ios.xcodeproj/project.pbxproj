@@ -940,6 +940,10 @@
 		C616C2D92806DBC600C212DC /* ExternalWalletMake.swift in Sources */ = {isa = PBXBuildFile; fileRef = C616C2D72806DBC600C212DC /* ExternalWalletMake.swift */; };
 		C616C2DA2806DBC600C212DC /* ExternalWalletMake.swift in Sources */ = {isa = PBXBuildFile; fileRef = C616C2D72806DBC600C212DC /* ExternalWalletMake.swift */; };
 		C616C2DB2806DBC600C212DC /* ExternalWalletMake.swift in Sources */ = {isa = PBXBuildFile; fileRef = C616C2D72806DBC600C212DC /* ExternalWalletMake.swift */; };
+		C617370029D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61736FF29D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift */; };
+		C617370129D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61736FF29D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift */; };
+		C617370229D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61736FF29D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift */; };
+		C617370329D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61736FF29D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift */; };
 		C61B3E6B283E24BB00500B6D /* MintDomainsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E69283E24BB00500B6D /* MintDomainsNavigationController.swift */; };
 		C61B3E6C283E24BB00500B6D /* MintDomainsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E69283E24BB00500B6D /* MintDomainsNavigationController.swift */; };
 		C61B3E6D283E24BB00500B6D /* MintDomainsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61B3E69283E24BB00500B6D /* MintDomainsNavigationController.swift */; };
@@ -3521,6 +3525,7 @@
 		C6166CC528ED748100004252 /* CollectionViewTitleSwitcherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewTitleSwitcherCell.swift; sourceTree = "<group>"; };
 		C6166CC628ED748100004252 /* CollectionViewTitleSwitcherCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewTitleSwitcherCell.xib; sourceTree = "<group>"; };
 		C616C2D72806DBC600C212DC /* ExternalWalletMake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalWalletMake.swift; sourceTree = "<group>"; };
+		C61736FF29D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeLeaderboardSelectionItem.swift; sourceTree = "<group>"; };
 		C61B3E69283E24BB00500B6D /* MintDomainsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintDomainsNavigationController.swift; sourceTree = "<group>"; };
 		C61B3E6F283E43D000500B6D /* EnterEmailViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterEmailViewPresenter.swift; sourceTree = "<group>"; };
 		C61B3E70283E43D000500B6D /* EnterEmailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterEmailViewController.swift; sourceTree = "<group>"; };
@@ -5429,6 +5434,7 @@
 		C63A351F28F016680057D34B /* Entities */ = {
 			isa = PBXGroup;
 			children = (
+				C61736FF29D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift */,
 				C6124CE02924C236005E6537 /* CachedDomainProfileInfo.swift */,
 				C63902C128E307A900E16B42 /* CryptoEditingGroupedRecord.swift */,
 				C63902C628E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift */,
@@ -8032,6 +8038,7 @@
 				C6C995A6289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift in Sources */,
 				30FFABA2286CA85600ADC2EA /* WCConnectedAppsStorage.swift in Sources */,
 				C65DEA3E29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */,
+				C617370029D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */,
 				30B3DC8D2870DBEF006FAA64 /* WCSigner.swift in Sources */,
 				C61B3E99283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C6C99582289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
@@ -9170,6 +9177,7 @@
 				C6420BFC28AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift in Sources */,
 				C60E9B8D2821193400CD7593 /* WalletsListViewController.swift in Sources */,
 				2930E1A728AFA31E0002D280 /* Debug-Tools-Dev.swift in Sources */,
+				C617370229D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */,
 				C61B3E86283E626400500B6D /* UserDataValidator.swift in Sources */,
 				C6E69FFD288AEAAF000A8346 /* ExternalEvent.swift in Sources */,
 				C6E04142295051CA0080F8E3 /* DomainsCollectionPageViewController.swift in Sources */,
@@ -9796,6 +9804,7 @@
 				29DE3B1628913DF500655675 /* Env.swift in Sources */,
 				C6420BFD28AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift in Sources */,
 				C60E9B8E2821193400CD7593 /* WalletsListViewController.swift in Sources */,
+				C617370329D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */,
 				C61B3E87283E626400500B6D /* UserDataValidator.swift in Sources */,
 				C6E69FFE288AEAAF000A8346 /* ExternalEvent.swift in Sources */,
 				C6E04143295051CA0080F8E3 /* DomainsCollectionPageViewController.swift in Sources */,
@@ -9968,6 +9977,7 @@
 				C6C995A7289D313D00367362 /* CNavigationControllerSlidePushAnimation.swift in Sources */,
 				30FFABA3286CA85600ADC2EA /* WCConnectedAppsStorage.swift in Sources */,
 				C65DEA3F29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */,
+				C617370129D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */,
 				30B3DC8E2870DBF0006FAA64 /* WCSigner.swift in Sources */,
 				C61B3E9A283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
 				C6C99583289D313D00367362 /* CNavigationBarContentView.swift in Sources */,

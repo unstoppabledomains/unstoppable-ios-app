@@ -982,7 +982,8 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                         useCase: .pullUp)
     }
     
-    func showBadgeInfoPullUp(in viewController: UIViewController, badgeDisplayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo) {
+    func showBadgeInfoPullUp(in viewController: UIViewController,
+                             badgeDisplayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo) {
         let badge = badgeDisplayInfo.badge
         var selectionViewHeight: CGFloat = 256
         let description = badge.description
@@ -999,13 +1000,21 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                 badgeIcon = image
             }
             
+            var leaderboardItems = [BadgeLeaderboardSelectionItem]()
+            if !badgeDisplayInfo.isExploreWeb3Badge,
+               let badgeDetailedInfo = try? await NetworkService().fetchBadgeDetailedInfo(for: badge) {
+                let leaderboardItem = BadgeLeaderboardSelectionItem(badgeDetailedInfo: badgeDetailedInfo)
+                leaderboardItems.append(leaderboardItem)
+                selectionViewHeight += 72 + 48 // Leaderboard cell height + vertical margins
+            }
+            
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(badge.name),
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: badgeIcon,
-                                                                                     size: .small),
+                                                                                     size: badge.isUDBadge ? .small : .large),
                                                                          subtitle: .label(.text(description)),
                                                                          cancelButton: .gotItButton()),
-                                                    items: PullUpSelectionViewEmptyItem.allCases)
+                                                    items: leaderboardItems)
             
             showOrUpdate(in: viewController, pullUp: .badgeInfo, contentView: selectionView, height: selectionViewHeight)
         }

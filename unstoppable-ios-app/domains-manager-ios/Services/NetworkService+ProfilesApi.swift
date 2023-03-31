@@ -310,6 +310,18 @@ struct BadgesInfo: Codable, Hashable {
     }
 }
 
+struct BadgeDetailedInfo: Codable, Hashable {
+    let badge: BadgesInfo.BadgeInfo
+    let usage: Leaderboard
+    
+    struct Leaderboard: Codable, Hashable {
+        let rank: Int
+        let holders: Int
+        let domains: Int
+        let featured: [String]
+    }
+}
+
 struct RefreshBadgesResponse: Codable {
     let ok: Bool
     let refresh: Bool
@@ -379,6 +391,19 @@ extension NetworkService {
             throw NetworkLayerError.failedParseProfileData
         }
         return response
+    }
+    
+    public func fetchBadgeDetailedInfo(for badge: BadgesInfo.BadgeInfo) async throws -> BadgeDetailedInfo {
+        // https://profile.unstoppabledomains.com/api/badges/opensea-tothemoonalisa
+        guard let url = Endpoint.getBadgeDetailedInfo(for: badge).url else {
+            throw NetworkLayerError.creatingURLFailed
+        }
+        let data = try await fetchData(for: url, method: .get)
+        guard let info = BadgeDetailedInfo.objectFromData(data,
+                                                          dateDecodingStrategy: .badgesDateDecodingStrategy()) else {
+            throw NetworkLayerError.failedParseProfileData
+        }
+        return info
     }
     
     public func fetchUserDomainProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedUserDomainProfile {
