@@ -15,14 +15,18 @@ final class LocalNotificationsService {
     private let notificationCenter = UNUserNotificationCenter.current()
     private let calendar = Calendar.current
     private let expiredDomainsNotificationId = "com.unstoppabledomains.notification.expired.domains"
-    private var dateFormatter: DateFormatter
+    private let dateFormatter: DateFormatter
     private let dateTimeFormatter: DateFormatter
     
     private init() {
+        let locale = Locale(identifier: "en_US_POSIX")
+
         dateFormatter = DateFormatter()
+        dateFormatter.locale = locale
         dateFormatter.dateFormat = "dd.MM.yyyy"
         
         dateTimeFormatter = DateFormatter()
+        dateTimeFormatter.locale = locale
         dateTimeFormatter.dateFormat = "dd.MM.yyyy HH:mm:ss"
     }
     
