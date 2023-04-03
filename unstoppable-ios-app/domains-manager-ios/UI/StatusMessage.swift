@@ -150,7 +150,7 @@ extension StatusMessage {
                 return .orange
             case .parked(let status):
                 switch status {
-                case .freeParking, .parked, .claimed:
+                case .parked, .claimed:
                     return .gray
                 case .parkingExpired:
                     return .danger
