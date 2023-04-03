@@ -9,6 +9,7 @@ import Foundation
 
 enum DomainParkingStatus: Hashable {
     case claimed
+    case freeParking // Domain purchased before Parking feature launched
     case parked(expiresDate: Date) // Parking purchased and active
     case parkedButExpiresSoon(expiresDate: Date)
     case parkingTrial(expiresDate: Date) // Domain purchased after Parking feature launched and either not parked or not claimed
@@ -18,6 +19,8 @@ enum DomainParkingStatus: Hashable {
         switch self {
         case .claimed:
             return nil
+        case .freeParking:
+            return String.Constants.parked.localized()
         case .parked:
             return String.Constants.parked.localized()
         case .parkedButExpiresSoon(let expiresDate):

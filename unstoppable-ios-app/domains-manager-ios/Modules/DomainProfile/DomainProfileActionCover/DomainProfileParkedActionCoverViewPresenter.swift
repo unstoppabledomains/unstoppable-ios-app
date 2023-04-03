@@ -43,7 +43,7 @@ final class DomainProfileParkedActionCoverViewPresenter: DomainProfileActionCove
             case .parkingExpired:
                 description += descriptionStatusSpacer + String.Constants.parkingExpired.localized()
                 setSecondaryButton(description: nil)
-            case .claimed:
+            case .freeParking, .claimed:
                 setSecondaryButton(description: .init(title: String.Constants.claimDomain.localized(), icon: nil))
             }
         }

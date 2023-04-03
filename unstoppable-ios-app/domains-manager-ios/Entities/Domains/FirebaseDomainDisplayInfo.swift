@@ -43,21 +43,15 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
             return .parked(expiresDate: parkingExpiresAt)
         }
         
-        if let parkingTrialEndsAt {
-            if parkingTrialEndsAt < Date() {
+        if let purchasedAt,
+           purchasedAt >= Constants.parkingBetaLaunchDate {
+            let expiresDate = parkingTrialEndsAt ?? Calendar.current.date(byAdding: .day, value: 7, to: purchasedAt) ?? Date() // Fallback to old assumption of 7 days trial after purchase
+            if expiresDate < Date() {
                 return .parkingExpired
             }
-            return .parkingTrial(expiresDate: parkingTrialEndsAt)
+            return .parkingTrial(expiresDate: expiresDate)
         }
-        
-        Debugger.printFailure("Domain without parking and trial dates: \(name)", critical: true)
-        
-        let expiresDate = Calendar.current.date(byAdding: .day, value: 7, to: purchasedAt ?? Date()) ?? Date() // Fallback to old assumption of 7 days trial after purchase
-        if expiresDate < Date() {
-            return .parkingExpired
-        }
-
-        return .parkingTrial(expiresDate: expiresDate)
+        return .freeParking
     }
     
     func claimDescription() -> String {

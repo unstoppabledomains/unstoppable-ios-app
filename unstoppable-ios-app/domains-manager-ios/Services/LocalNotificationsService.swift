@@ -65,7 +65,7 @@ private extension LocalNotificationsService {
                 continue
             }
             switch status {
-            case .claimed:
+            case .claimed, .freeParking:
                 continue
             case .parkingExpired:
                 expiredDomains.append(domain)
