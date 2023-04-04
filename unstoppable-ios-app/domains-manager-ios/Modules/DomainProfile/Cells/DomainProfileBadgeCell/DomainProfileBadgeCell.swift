@@ -10,8 +10,8 @@ import UIKit
 final class DomainProfileBadgeCell: BaseListCollectionViewCell {
     
     @IBOutlet private weak var badgeIconImageView: UIImageView!
-    @IBOutlet private weak var badgeNameLabel: UILabel!
-    @IBOutlet private weak var badgeDescriptionLabel: UILabel!
+    @IBOutlet private weak var iconSizeConstraint: NSLayoutConstraint!
+    
     
     override var containerColor: UIColor { isExploreWeb3Badge ? .clear : .white.withAlphaComponent(0.16) }
     override var backgroundContainerColor: UIColor { .clear }
@@ -24,20 +24,22 @@ final class DomainProfileBadgeCell: BaseListCollectionViewCell {
         badgeIconImageView.tintColor = .white
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        containerView.layer.cornerRadius = bounds.height / 2
+    }
 }
 
 // MARK: - Open methods
 extension DomainProfileBadgeCell {
     func setWith(displayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo) {
+        iconSizeConstraint.constant = displayInfo.badge.isUDBadge ? 40 : 56
+        badgeIconImageView.layer.cornerRadius = displayInfo.badge.isUDBadge ? 0 : 28
         set(badgeIcon: displayInfo.defaultIcon)
         if displayInfo.isExploreWeb3Badge {
-            badgeDescriptionLabel.isHidden = false
-            set(badgeName: String.Constants.profileBadgeExploreWeb3TitleShort.localized())
-            set(badgeDescription: String.Constants.profileBadgeExploreWeb3DescriptionShort.localized())
             containerView.layer.borderColor = UIColor.white.withAlphaComponent(0.16).cgColor
         } else {
-            badgeDescriptionLabel.isHidden = true
-            set(badgeName: displayInfo.badge.name)
             containerView.layer.borderColor = UIColor.clear.cgColor
             Task {
                 if let image = await displayInfo.loadBadgeIcon() {
@@ -53,20 +55,6 @@ extension DomainProfileBadgeCell {
 
 // MARK: - Private methods
 private extension DomainProfileBadgeCell {
-    func set(badgeName: String) {
-        badgeNameLabel.setAttributedTextWith(text: badgeName,
-                                             font: .currentFont(withSize: 16, weight: .medium),
-                                             textColor: .white,
-                                             lineBreakMode: .byTruncatingTail)
-    }
-    
-    func set(badgeDescription: String) {
-        badgeDescriptionLabel.setAttributedTextWith(text: badgeDescription,
-                                                    font: .currentFont(withSize: 12, weight: .medium),
-                                                    textColor: .white.withAlphaComponent(0.56),
-                                                    lineBreakMode: .byTruncatingTail)
-    }
-    
     func set(badgeIcon: UIImage) {
         badgeIconImageView.image = badgeIcon
     }

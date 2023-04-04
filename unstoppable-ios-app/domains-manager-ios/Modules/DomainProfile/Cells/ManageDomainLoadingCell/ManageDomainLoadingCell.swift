@@ -37,6 +37,7 @@ final class ManageDomainLoadingCell: BaseListCollectionViewCell {
     
     func set(uiConfiguration: UIConfiguration) {
         self.uiConfiguration = uiConfiguration
+        containerView.layer.cornerRadius = uiConfiguration.customCornerRadius ?? 12
         updateAppearance()
     }
     
@@ -67,10 +68,12 @@ extension ManageDomainLoadingCell {
     struct UIConfiguration: Hashable {
         let containerColor: UIColor
         let backgroundContainerColor: UIColor
+        var customCornerRadius: CGFloat?
         
         static let `default` = UIConfiguration(containerColor: .clear,
                                                backgroundContainerColor: .clear)
         static let profileBadges = UIConfiguration(containerColor: .white.withAlphaComponent(0.16),
-                                                   backgroundContainerColor: .clear)
+                                                   backgroundContainerColor: .clear,
+                                                   customCornerRadius: 32)
     }
 }

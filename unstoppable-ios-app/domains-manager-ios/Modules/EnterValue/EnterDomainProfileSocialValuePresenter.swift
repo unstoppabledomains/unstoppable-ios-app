@@ -41,7 +41,7 @@ final class EnterDomainProfileSocialValuePresenter: EnterValueViewPresenter, Web
             let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
             
             isValid = predicate.evaluate(with: value)
-        case .youTube:
+        case .youTube, .linkedIn, .gitHub:
             isValid = isWebsiteValid(value)
         }
         
@@ -81,6 +81,8 @@ private extension EnterDomainProfileSocialValuePresenter {
         case .telegram: return .addSocialTelegram
         case .reddit: return .addSocialReddit
         case .youTube: return .addSocialYouTube
+        case .linkedIn: return .addSocialLinkedIn
+        case .gitHub: return .addSocialGitHub
         }
     }
     
@@ -91,6 +93,8 @@ private extension EnterDomainProfileSocialValuePresenter {
         case .telegram: return "@"
         case .reddit: return "u/"
         case .youTube: return nil
+        case .linkedIn: return nil
+        case .gitHub: return nil
         }
     }
     
@@ -101,6 +105,8 @@ private extension EnterDomainProfileSocialValuePresenter {
         case .telegram: return ".*\\B@(?=\\w{5,32}\\b)[a-zA-Z0-9]+(?:_[a-zA-Z0-9]+)*.*"
         case .reddit: return "u/[A-Za-z0-9_-]+"
         case .youTube: return ""
+        case .gitHub: return ""
+        case .linkedIn: return ""
         }
     }
 }
