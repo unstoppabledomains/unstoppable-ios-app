@@ -64,12 +64,6 @@ private extension AppLaunchService {
             do {
                 try await initialWalletsCheck()
                 
-//                #if DEBUG
-//                var settings = User.instance.getSettings()
-//                settings.networkType = .testnet
-//                User.instance.update(settings: settings)
-//                #endif
-                
                 let appVersion = User.instance.getAppVersionInfo()
                 await appVersionUpdated(appVersion)
                 
