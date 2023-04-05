@@ -8,6 +8,7 @@
 import UIKit
 import UserNotifications
 import WalletConnectPush
+import WalletConnectEcho
 
 // MARK: - NotificationsService
 final class NotificationsService: NSObject {
@@ -168,17 +169,18 @@ fileprivate extension NotificationsService {
     }
     
     func configureWC2PN() {
+        guard let clientId = try? Networking.interactor.getClientId() else { return }
         #if DEBUG
-        Push.configure(environment: .sandbox)
+        Echo.configure(clientId: clientId, environment: .sandbox)
         #else
-        Push.configure(environment: .production)
+        Echo.configure(clientId: clientId, environment: .production)
         #endif
     }
     
     func registerForWC2PN(deviceToken: Data) {
         Task {
             do {
-                try await Push.wallet.register(deviceToken: deviceToken)
+                try await Echo.instance.register(deviceToken: deviceToken)
                 Debugger.printInfo(topic: .PNs, "Did register device token with WC2")
             } catch {
                 Debugger.printInfo(topic: .PNs, "Failed to register device token with WC2 with error: \(error)")
