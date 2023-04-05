@@ -186,7 +186,7 @@ private extension SignTransactionDomainSelectionViewController {
             guard let section = self?.section(at: indexPath) else { return nil }
             
             switch section {
-            case .walletDomains(let walletName, let balance):
+            case .walletDomains(let walletName, _, let balance):
                 let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
                                                                            withReuseIdentifier: SignTransactionDomainSelectionSectionHeaderView.reuseIdentifier,
                                                                            for: indexPath) as! SignTransactionDomainSelectionSectionHeaderView
@@ -263,7 +263,7 @@ private extension SignTransactionDomainSelectionViewController {
 // MARK: - Collection elements
 extension SignTransactionDomainSelectionViewController {
     enum Section: Hashable {
-        case selectedDomain, walletDomains(walletName: String, balance: WalletBalance?), emptyState
+        case selectedDomain, walletDomains(walletName: String, walletAddress: String, balance: WalletBalance?), emptyState
         
         var headerHeight: CGFloat {
             switch self {

@@ -204,6 +204,7 @@ private extension SignTransactionDomainSelectionViewPresenter {
                 for info in sortedInfos {
                     /// Add section for wallet's domains
                     snapshot.appendSections([.walletDomains(walletName: info.name,
+                                                            walletAddress: info.address,
                                                             balance: info.balance)])
                     
                     let domains = walletsToDomains[info] ?? []
