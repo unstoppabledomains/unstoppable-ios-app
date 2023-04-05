@@ -120,8 +120,13 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         let completedTx = try await completeTx(transaction: _tx, chainId: chainIdInt)
         
         
+        guard let chainIdInt = connectedApp.session.walletInfo?.chainId else {
+            Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
+            throw WalletConnectRequestError.failedToDetermineChainId
+        }
+        
         let sig = try await udWallet.getTxSignature(ethTx: completedTx,
-                                                    chainId: BigUInt(connectedApp.session.dAppInfo.getChainId()),
+                                                    chainId: BigUInt(chainIdInt),
                                                     request: request)
         return Response.signature(sig, for: request)
     }

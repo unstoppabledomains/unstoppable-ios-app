@@ -974,8 +974,12 @@ extension WalletConnectService {
         
         func getChainIds() -> [Int] {
             switch dAppInfoInternal {
-            case .version1(let info): return [info.walletInfo?.chainId].compactMap({$0})
-            case .version2(let info): guard let namespace = info.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else { return [] }
+            case .version1(let info):
+                return [info.walletInfo?.chainId].compactMap({$0})
+            case .version2(let info):
+                guard let namespace = info.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else {
+                    return []
+                }
                 guard let chains = namespace.chains else { return [] }
                 return chains.map {$0.reference}
                                         .compactMap({Int($0)})
