@@ -593,7 +593,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
             let udWallet = try detectWallet(by: walletAddress)
-            let chainIdInt = try getChainIdFrom(request: request)
+            let chainIdInt = try request.getChainId()
             let completedTx = try await appContext.walletConnectService.completeTx(transaction: tx, chainId: chainIdInt)
             
             let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
@@ -648,7 +648,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
             let udWallet = try detectWallet(by: walletAddress)
-            let chainIdInt = try getChainIdFrom(request: request)
+            let chainIdInt = try request.getChainId()
             let completedTx = try await appContext.walletConnectService.completeTx(transaction: tx, chainId: chainIdInt)
             
             let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
@@ -715,14 +715,6 @@ extension WalletConnectServiceV2: DataAggregatorServiceListener {
 
 // MARK: - Private methods
 private extension WalletConnectServiceV2 {
-    func getChainIdFrom(request: WalletConnectSign.Request) throws -> Int {
-        guard let chainIdInt = Int(request.chainId.reference) else {
-            Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
-            throw WalletConnectRequestError.failedToDetermineChainId
-        }
-        return chainIdInt
-    }
-    
     func findWalletConnectSessionFor(walletAddress: HexAddress) throws -> WCConnectedAppsStorageV2.SessionProxy {
         guard let sessionWithExtWallet = findSessions(by: walletAddress).first else {
             Debugger.printFailure("Failed to find session for WC", critical: false)
