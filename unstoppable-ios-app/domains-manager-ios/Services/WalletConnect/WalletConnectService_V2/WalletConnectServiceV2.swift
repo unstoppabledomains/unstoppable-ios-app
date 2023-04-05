@@ -597,6 +597,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             let completedTx = try await appContext.walletConnectService.completeTx(transaction: tx, chainId: chainIdInt)
             
             let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
+                                                                      chainId: chainIdInt,
                                                                       request: request,
                                                                       transaction: completedTx)
             
@@ -650,6 +651,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             let completedTx = try await appContext.walletConnectService.completeTx(transaction: tx, chainId: chainIdInt)
             
             let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
+                                                                      chainId: chainIdInt,
                                                                       request: request,
                                                                       transaction: completedTx)
             
@@ -768,12 +770,14 @@ extension WalletConnectServiceV2 {
     }
     
     private func getClientAfterConfirmationIfNeeded(address: HexAddress,
+                                                    chainId: Int,
                                                     request: WalletConnectSign.Request,
                                                     transaction: EthereumTransaction) async throws -> (WCConnectedAppsStorageV2.ConnectedApp, UDWallet) {
         guard let cost = WalletConnectService.TxDisplayDetails(tx: transaction) else { throw WalletConnectRequestError.failedToBuildCompleteTransaction }
         return try await getClientAfterConfirmation_generic(address: address, request: request) {
             WCRequestUIConfiguration.payment(SignPaymentTransactionUIConfiguration(connectionConfig: $0,
                                                                                    walletAddress: address,
+                                                                                   chainId: chainId,
                                                                                    cost: cost))
         }
     }
