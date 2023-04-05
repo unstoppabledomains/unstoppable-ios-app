@@ -152,6 +152,7 @@ extension UDWallet {
         let sessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
         if  sessions.count > 0 {
             let response = try await appContext.walletConnectServiceV2.sendPersonalSign(sessions: sessions,
+                                                                                        chainId: 1, // chain here makes no difference
                                                                                         message: message,
                                                                                         address: address,
                                                                                         in: self)
@@ -170,6 +171,7 @@ extension UDWallet {
         let sessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
         if  sessions.count > 0 {
             let response = try await appContext.walletConnectServiceV2.sendEthSign(sessions: sessions,
+                                                                                   chainId: 1, // chain here makes no difference
                                                                                    message: message,
                                                                                    address: address,
                                                                                    in: self)

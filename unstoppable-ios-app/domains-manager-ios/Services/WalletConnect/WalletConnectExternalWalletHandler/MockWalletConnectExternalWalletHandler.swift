@@ -39,7 +39,7 @@ final class MockWalletConnectExternalWalletHandler: WalletConnectExternalWalletH
         try await wc1Response()
     }
     
-    func sendWC2Request(method: WalletConnectRequestType, session: SessionV2Proxy, requestParams: Commons.AnyCodable, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+    func sendWC2Request(method: WalletConnectRequestType, session: SessionV2Proxy, chainId: Int, requestParams: Commons.AnyCodable, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         throw WalletConnectRequestError.externalWalletFailedToSign
     }
     

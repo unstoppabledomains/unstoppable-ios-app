@@ -10,17 +10,17 @@ import Web3
 import WalletConnectSwift
 
 extension UDWallet {
-    func getTxSignature(ethTx: EthereumTransaction, chainId: BigUInt, request: Request) async throws -> String {
+    func getTxSignature(ethTx: EthereumTransaction, chainId: Int, request: Request) async throws -> String {
         guard self.walletState == .verified else {
-            return try await signTransactionViaWalletConnect(ethTx: ethTx, request: request)
+            return try await signTransactionViaWalletConnect(ethTx: ethTx, request: request, chainId: chainId)
         }
         
-        let signature = try signTxLocally_V1(ethTx: ethTx, chainId: chainId)
+        let signature = try signTxLocally_V1(ethTx: ethTx, chainId: BigUInt(chainId))
         return signature
     }
     
     func signTransactionViaWalletConnect(ethTx: EthereumTransaction,
-                                         request: Request) async throws -> String {
+                                         request: Request, chainId: Int) async throws -> String {
         if let session_V1 = appContext.walletConnectClientService.findSessions(by: address).first {
             
             return try await singTxViaWalletConnect_V1(sessionWithExtWallet: session_V1,
@@ -31,7 +31,7 @@ extension UDWallet {
         let sessions_V2 = appContext.walletConnectServiceV2.findSessions(by: address)
         if sessions_V2.count > 0 {
             return try await appContext.walletConnectServiceV2.signTxViaWalletConnect_V2(udWallet: self,
-                                                                                         sessions: sessions_V2,
+                                                                                         sessions: sessions_V2, chainId: chainId,
                                                                                          tx: ethTx)
         }
         

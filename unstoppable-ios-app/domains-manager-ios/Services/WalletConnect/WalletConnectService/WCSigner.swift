@@ -128,7 +128,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         }
         
         let sig = try await udWallet.getTxSignature(ethTx: completedTx,
-                                                    chainId: BigUInt(chainIdInt),
+                                                    chainId: chainIdInt,
                                                     request: request)
         return Response.signature(sig, for: request)
     }
