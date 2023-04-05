@@ -151,23 +151,24 @@ extension WalletConnectExternalWalletHandler {
     }
 }
 
+
+extension Blockchain {
+    init? (chainId: Int) {
+        self.init(namespace: "eip155", reference: "\(chainId)")
+    }
+}
 // MARK: - WC2 methods
 extension WalletConnectExternalWalletHandler {
     func sendWC2Request(method: WalletConnectRequestType,
                         session: SessionV2Proxy,
+                        chainId: Int,
                         requestParams: AnyCodable,
                         in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         // TODO: - Check for there's already callback set?
-        guard let chainIdString = Array(session.namespaces.values)
-            .lazy
-            .map({ Array($0.accounts) })
-            .flatMap({ $0 })
-            .map({ $0.blockchainIdentifier })
-            .first,
-              let chainId = Blockchain(chainIdString) else {
+        guard let chain = Blockchain(chainId: chainId) else {
             throw WalletConnectRequestError.failedToDetermineChainId
         }
-        let request = Request(topic: session.topic, method: method.string, params: requestParams, chainId: chainId)
+        let request = WalletConnectSign.Request(topic: session.topic, method: method.string, params: requestParams, chainId: chain)
         try await Sign.instance.request(params: request)
         try await launchExternalWalletAndNotifyListeners(wallet)
         return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<WalletConnectSign.Response, Swift.Error>) in
