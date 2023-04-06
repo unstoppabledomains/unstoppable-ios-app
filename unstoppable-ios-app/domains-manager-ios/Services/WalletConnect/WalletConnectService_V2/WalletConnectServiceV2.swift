@@ -72,12 +72,13 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> WalletConnectServiceV2.Wc2ConnectionType
     func disconnect(from wcWallet: HexAddress) async
     
-    func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response
-    func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress,
+    func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response
+    func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress,
                      in wallet: UDWallet) async throws -> WalletConnectSign.Response
     func handle(response: WalletConnectSign.Response) throws -> String
     func signTxViaWalletConnect_V2(udWallet: UDWallet,
                                    sessions: [SessionV2Proxy],
+                                   chainId: Int,
                                    tx: EthereumTransaction) async throws -> String
 }
 
@@ -113,7 +114,6 @@ typealias ResponseV2 = WalletConnectSign.Response
 typealias SessionV2Proxy = WCConnectedAppsStorageV2.SessionProxy
 
 class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
-    
     struct ExtWalletDataV2: Codable, Equatable {
         let session: WCConnectedAppsStorageV2.SessionProxy
     }
@@ -593,16 +593,18 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
             let udWallet = try detectWallet(by: walletAddress)
-            let chainIdInt = try getChainIdFrom(request: request)
+            let chainIdInt = try request.getChainId()
             let completedTx = try await appContext.walletConnectService.completeTx(transaction: tx, chainId: chainIdInt)
             
             let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
+                                                                      chainId: chainIdInt,
                                                                       request: request,
                                                                       transaction: completedTx)
             
             guard udWallet.walletState != .externalLinked else {
                 let sessionsWithExtWallet = findSessions(by: walletAddress)
                 let response = try await signTxViaWalletConnectV2(sessions: sessionsWithExtWallet,
+                                                                  chainId: chainIdInt,
                                                                   txParams: request.params,
                                                                   in: udWallet)
                 let sigString = try handle(response: response)
@@ -646,16 +648,18 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 throw WalletConnectRequestError.failedToFindWalletToSign
             }
             let udWallet = try detectWallet(by: walletAddress)
-            let chainIdInt = try getChainIdFrom(request: request)
+            let chainIdInt = try request.getChainId()
             let completedTx = try await appContext.walletConnectService.completeTx(transaction: tx, chainId: chainIdInt)
             
             let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
+                                                                      chainId: chainIdInt,
                                                                       request: request,
                                                                       transaction: completedTx)
             
             guard udWallet.walletState != .externalLinked else {
                 let sessionsWithExtWallet = findSessions(by: walletAddress)
                 let response = try await proceedSendTxViaWC_2(sessions: sessionsWithExtWallet,
+                                                              chainId: chainIdInt,
                                                               txParams: request.params,
                                                               in: udWallet)
                 let respCodable = AnyCodable(response)
@@ -711,20 +715,22 @@ extension WalletConnectServiceV2: DataAggregatorServiceListener {
 
 // MARK: - Private methods
 private extension WalletConnectServiceV2 {
-    func getChainIdFrom(request: WalletConnectSign.Request) throws -> Int {
-        guard let chainIdInt = Int(request.chainId.reference) else {
-            Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
-            throw WalletConnectRequestError.failedToDetermineChainId
-        }
-        return chainIdInt
-    }
-    
     func findWalletConnectSessionFor(walletAddress: HexAddress) throws -> WCConnectedAppsStorageV2.SessionProxy {
         guard let sessionWithExtWallet = findSessions(by: walletAddress).first else {
             Debugger.printFailure("Failed to find session for WC", critical: false)
             throw WalletConnectRequestError.noWCSessionFound
         }
         return sessionWithExtWallet
+    }
+}
+
+private extension WalletConnectSign.Request {
+    func getChainId() throws -> Int {
+        guard let chainIdInt = Int(self.chainId.reference) else {
+            Debugger.printFailure("Failed to find chainId for request: \(self)", critical: true)
+            throw WalletConnectRequestError.failedToDetermineChainId
+        }
+        return chainIdInt
     }
 }
 
@@ -768,12 +774,14 @@ extension WalletConnectServiceV2 {
     }
     
     private func getClientAfterConfirmationIfNeeded(address: HexAddress,
+                                                    chainId: Int,
                                                     request: WalletConnectSign.Request,
                                                     transaction: EthereumTransaction) async throws -> (WCConnectedAppsStorageV2.ConnectedApp, UDWallet) {
         guard let cost = WalletConnectService.TxDisplayDetails(tx: transaction) else { throw WalletConnectRequestError.failedToBuildCompleteTransaction }
         return try await getClientAfterConfirmation_generic(address: address, request: request) {
             WCRequestUIConfiguration.payment(SignPaymentTransactionUIConfiguration(connectionConfig: $0,
                                                                                    walletAddress: address,
+                                                                                   chainId: chainId,
                                                                                    cost: cost))
         }
     }
@@ -863,6 +871,7 @@ extension WalletConnectServiceV2 {
     }
     
     private func proceedSendTxViaWC_2(sessions: [SessionV2Proxy],
+                                      chainId: Int,
                                       txParams: AnyCodable,
                                       in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         let onlyActive = pickOnlyActiveSessions(from: sessions)
@@ -871,6 +880,7 @@ extension WalletConnectServiceV2 {
         }
         return try await sendRequest(method: .ethSendTransaction,
                                      session: sessionSettled,
+                                     chainId: chainId,
                                      requestParams: txParams,
                                      in: wallet)
     }
@@ -974,8 +984,12 @@ extension WalletConnectService {
         
         func getChainIds() -> [Int] {
             switch dAppInfoInternal {
-            case .version1(let info): return [info.walletInfo?.chainId].compactMap({$0})
-            case .version2(let info): guard let namespace = info.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else { return [] }
+            case .version1(let info):
+                return [info.walletInfo?.chainId].compactMap({$0})
+            case .version2(let info):
+                guard let namespace = info.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else {
+                    return []
+                }
                 guard let chains = namespace.chains else { return [] }
                 return chains.map {$0.reference}
                                         .compactMap({Int($0)})
@@ -1055,7 +1069,7 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
-    func signTxViaWalletConnect_V2(udWallet: UDWallet, sessions: [SessionV2Proxy], tx: EthereumTransaction) async throws -> String {
+    func signTxViaWalletConnect_V2(udWallet: UDWallet, sessions: [SessionV2Proxy], chainId: Int, tx: EthereumTransaction) async throws -> String {
         return ""
     }
     
@@ -1063,11 +1077,11 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
     }
     
-    func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+    func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         throw WalletConnectRequestError.failedToSignMessage
     }
     
-    func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], message: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+    func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         throw WalletConnectRequestError.failedToSignMessage
     }
         
@@ -1202,10 +1216,12 @@ extension WalletConnectServiceV2 {
     
     private func sendRequest(method: WalletConnectRequestType,
                              session: SessionV2Proxy,
+                             chainId: Int,
                              requestParams: AnyCodable,
                              in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         try await appContext.walletConnectExternalWalletHandler.sendWC2Request(method: method,
                                                                                session: session,
+                                                                               chainId: chainId,
                                                                                requestParams: requestParams,
                                                                                in: wallet)
     }
@@ -1237,6 +1253,7 @@ extension WalletConnectServiceV2 {
     }
     
     private func signTxViaWalletConnectV2(sessions: [SessionV2Proxy],
+                                          chainId: Int,
                                           txParams: AnyCodable,
                                           in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
@@ -1244,12 +1261,13 @@ extension WalletConnectServiceV2 {
         }
         return try await sendRequest(method: .ethSignTransaction,
                                      session: sessionSettled,
+                                     chainId: chainId,
                                      requestParams: txParams,
                                      in: wallet)
     }
     
-    
     func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy],
+                          chainId: Int,
                           message: String,
                           address: HexAddress,
                           in wallet: UDWallet) async throws -> WalletConnectSign.Response {
@@ -1265,11 +1283,13 @@ extension WalletConnectServiceV2 {
         let params = WalletConnectServiceV2.getParamsPersonalSign(message: sentMessage, address: address)
         return try await sendRequest(method: .personalSign,
                                      session: sessionSettled,
+                                     chainId: chainId,
                                      requestParams: params,
                                      in: wallet)
     }
     
     func sendEthSign(sessions: [SessionV2Proxy],
+                     chainId: Int,
                      message: String,
                      address: HexAddress,
                      in wallet: UDWallet) async throws -> WalletConnectSign.Response {
@@ -1279,6 +1299,7 @@ extension WalletConnectServiceV2 {
         let params = WalletConnectServiceV2.getParamsEthSign(message: message, address: address)
         return try await sendRequest(method: .ethSign,
                                      session: sessionSettled,
+                                     chainId: chainId,
                                      requestParams: params,
                                      in: wallet)
     }
@@ -1324,8 +1345,10 @@ extension Pairing {
 extension WalletConnectServiceV2 {
     func signTxViaWalletConnect_V2(udWallet: UDWallet,
                                    sessions: [SessionV2Proxy],
+                                   chainId: Int,
                                    tx: EthereumTransaction) async throws -> String {
         let response = try await signTxViaWalletConnectV2(sessions: sessions,
+                                                          chainId: chainId,
                                                           txParams: tx.convertToAnyCodable(),
                                                           in: udWallet)
         let sigString = try appContext.walletConnectServiceV2.handle(response: response)

@@ -254,10 +254,15 @@ private extension WCRequestsHandlingService {
             case .ethSignedTypedData:
                 response = try await wcSigner.handleSignTypedData(request: request)
             }
-            walletConnectServiceV1.sendResponse(response)
+            wcSigner.sendResponse(response)
             notifyDidHandleExternalWCRequestWith(result: .success(()))
         } catch {
-            walletConnectServiceV1.sendResponse(.invalid(request))
+            if let uiError = error as? WalletConnectUIError,
+               uiError == .cancelled {
+                wcSigner.sendResponse(.reject(request))
+            } else {
+                wcSigner.sendResponse(.invalid(request))
+            }
             await handleRPCRequestFailed(error: error)
         }
     }
@@ -286,11 +291,11 @@ private extension WCRequestsHandlingService {
                 throw WalletConnectRequestError.methodUnsupported
             }
             for response in responses {
-                try await walletConnectServiceV2.sendResponse(response, toRequest: request)
+                try await wcSigner.sendResponse(response, toRequest: request)
             }
             notifyDidHandleExternalWCRequestWith(result: .success(()))
         } catch {
-            try? await walletConnectServiceV2.sendResponse(.error(.internalError), toRequest: request)
+            try? await wcSigner.sendResponse(.error(.internalError), toRequest: request)
             await handleRPCRequestFailed(error: error)
         }
     }

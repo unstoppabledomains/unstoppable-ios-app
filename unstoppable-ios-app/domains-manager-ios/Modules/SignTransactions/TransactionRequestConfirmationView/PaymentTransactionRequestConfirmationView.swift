@@ -10,6 +10,7 @@ import UIKit
 struct SignPaymentTransactionUIConfiguration {
     let connectionConfig: WalletConnectService.ConnectionConfig
     let walletAddress: HexAddress
+    let chainId: Int
     let cost: WalletConnectService.TxDisplayDetails
     
     var isGasFeeOnlyTransaction: Bool {
@@ -80,7 +81,7 @@ private extension PaymentTransactionRequestConfirmationView {
     func refresh() async throws {
         guard let configuration = self.configuration else { return }
         
-        let chainId = configuration.connectionConfig.appInfo.getChainIds().first! // FIXME:
+        let chainId = configuration.chainId
         let blockchainType: BlockchainType = (try? UnsConfigManager.getBlockchainType(from: chainId)) ?? .Ethereum
         let balance = try await appContext.udWalletsService.getBalanceFor(walletAddress: configuration.walletAddress, blockchainType: blockchainType, forceRefresh: true)
         costView?.setWith(cost: configuration.cost,
