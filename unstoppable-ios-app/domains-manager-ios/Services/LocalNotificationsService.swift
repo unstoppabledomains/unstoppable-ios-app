@@ -153,13 +153,28 @@ private extension LocalNotificationsService {
     
     func notificationDetailsFor(domain: DomainDisplayInfo,
                              expiresDate: Date) -> GoingToExpireDomainNotificationDetails? {
-        let daysToExpiresDate = calendar.dateComponents([.day], from: Date(), to: expiresDate).day ?? 0
-        let notificationsTime = "19:00:00"
+        let notificationHour = 19
+        let notificationsTime = "\(notificationHour):00:00"
+
+        var currentDate = Date()
+        let hours = calendar.component(.hour, from: currentDate)
+        if hours >= notificationHour {
+            /// Skip current day in counting notification days diff because it is already later than notification time
+            /// Example:
+            /// Domain expire date: Jan 2nd
+            /// Today is a Jan 1st.
+            /// Raw time diff will be = 1 day
+            /// If today's time is earlier than notificationHour, we can set notification to one day before expiration on today at notificationHour
+            /// But if today's time is later than notificationHour, we will schedule notification to the past time. 
+            currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? Date()
+        }
+        
+        let daysToExpiresDate = calendar.dateComponents([.day], from: currentDate, to: expiresDate).day ?? 0
         let notificationPeriods = DomainExpiresNotificationPeriod.allCases
        
         for period in notificationPeriods {
             let daysCount = period.daysCount
-            if daysToExpiresDate > daysCount {
+            if daysToExpiresDate >= daysCount {
                 let notificationDate = dateByAdding(days: -daysCount, atTime: notificationsTime, to: expiresDate)
                 return .init(domain: domain,
                              notificationDate: notificationDate,
