@@ -164,22 +164,12 @@ extension UDWallet {
         }
     }
     
-    func sendTxViaWalletConnect(message: String) async throws {
-        let session = try detectWCSessionType()
-        switch session {
-        case .wc1(let wc1Session):
-            print("wc1") //TODO:
-        case .wc2(let wc2Sessions):
-            print("wc2") //TODO:
-        }
-    }
-    
     enum WCSession {
         case wc1(Session)
         case wc2([WCConnectedAppsStorageV2.SessionProxy])
     }
     
-    private func detectWCSessionType() throws -> WCSession {
+    func detectWCSessionType() throws -> WCSession {
         let sessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
         if  sessions.count > 0 { return .wc2(sessions) }
         guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {

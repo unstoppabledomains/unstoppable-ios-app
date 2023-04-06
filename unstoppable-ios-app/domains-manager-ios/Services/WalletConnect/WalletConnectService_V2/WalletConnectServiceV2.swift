@@ -80,6 +80,11 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
                                    sessions: [SessionV2Proxy],
                                    chainId: Int,
                                    tx: EthereumTransaction) async throws -> String
+    
+    func proceedSendTxViaWC_2(sessions: [SessionV2Proxy],
+                                      chainId: Int,
+                                      txParams: AnyCodable,
+                                      in wallet: UDWallet) async throws -> WalletConnectSign.Response
 }
 
 protocol WalletConnectV2RequestHandlingServiceProtocol {
@@ -870,7 +875,7 @@ extension WalletConnectServiceV2 {
         
     }
     
-    private func proceedSendTxViaWC_2(sessions: [SessionV2Proxy],
+    func proceedSendTxViaWC_2(sessions: [SessionV2Proxy],
                                       chainId: Int,
                                       txParams: AnyCodable,
                                       in wallet: UDWallet) async throws -> WalletConnectSign.Response {
@@ -1069,6 +1074,10 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func proceedSendTxViaWC_2(sessions: [SessionV2Proxy], chainId: Int, txParams: Commons.AnyCodable, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+        throw WalletConnectRequestError.noWCSessionFound
+    }
+    
     func signTxViaWalletConnect_V2(udWallet: UDWallet, sessions: [SessionV2Proxy], chainId: Int, tx: EthereumTransaction) async throws -> String {
         return ""
     }
@@ -1406,4 +1415,23 @@ extension WalletConnectSign.Pairing: CustomStringConvertible {
 
 extension String {
     var prefix6: String { self.prefix(6) + "..." }
+}
+
+extension UDWallet {
+    func sendTxViaWalletConnect(request: WalletConnectSign.Request,
+                                chainId: Int) async throws {
+        let session = try detectWCSessionType()
+        switch session {
+        case .wc1(let wc1Session):
+            print("wc1") //TODO:
+        case .wc2(let wc2Sessions):
+            let response = try await appContext.walletConnectServiceV2.proceedSendTxViaWC_2(sessions: wc2Sessions,
+                                                          chainId: chainId,
+                                                          txParams: request.params,
+                                                          in: self)
+            let respCodable = AnyCodable(response)
+            // return .response(respCodable)
+            return
+        }
+    }
 }
