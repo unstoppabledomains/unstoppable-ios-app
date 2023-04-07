@@ -121,8 +121,8 @@ private extension LocalNotificationsService {
             
             goingToExpireDomainsNotificationDetails.append(notificationDetails)
         }
-        
-        let groupedNotificationDetails = [Date : [GoingToExpireDomainNotificationDetails]].init(grouping: goingToExpireDomainsNotificationDetails, by: { $0.notificationDate })
+       
+        let groupedNotificationDetails = [NotificationDateWithPeriod : [GoingToExpireDomainNotificationDetails]].init(grouping: goingToExpireDomainsNotificationDetails, by: { $0.notificationDateWithPeriod })
         
         for (notificationDate, notificationsDetails) in groupedNotificationDetails {
             guard let notificationDetails = notificationsDetails.first else {
@@ -146,7 +146,7 @@ private extension LocalNotificationsService {
                 await createLocalNotificationWith(identifier: notificationDetails.domain.name,
                                                   title: title,
                                                   body: body,
-                                                  date: notificationDate)
+                                                  date: notificationDate.notificationDate)
             }
         }
     }
@@ -268,9 +268,18 @@ private extension LocalNotificationsService {
         let domain: DomainDisplayInfo
         let notificationDate: Date
         let notificationPeriod: DomainExpiresNotificationPeriod
+        
+        var notificationDateWithPeriod: NotificationDateWithPeriod {
+            .init(notificationDate: notificationDate, period: notificationPeriod)
+        }
     }
     
-    enum DomainExpiresNotificationPeriod: CaseIterable {
+    struct NotificationDateWithPeriod: Hashable {
+        let notificationDate: Date
+        let period: DomainExpiresNotificationPeriod
+    }
+    
+    enum DomainExpiresNotificationPeriod: CaseIterable, Hashable {
         case month
         case week
         case threeDays
