@@ -194,6 +194,30 @@
 			<string>domains</string>
 		</dict>
 	</dict>
+	<key>SDICT:EXPIRE</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@expire@</string>
+		<key>expire</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>expire</string>
+			<key>one</key>
+			<string>expires</string>
+			<key>two</key>
+			<string>expire</string>
+			<key>few</key>
+			<string>expire</string>
+			<key>many</key>
+			<string>expire</string>
+			<key>other</key>
+			<string>expire</string>
+		</dict>
+	</dict>
 	<key>SDICT:MINT_DOMAINS</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

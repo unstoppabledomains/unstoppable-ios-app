@@ -320,6 +320,7 @@ extension String {
         static let pluralWeFoundNDomains = "SDICT:WE_FOUND_N_DOMAINS"
         static let pluralNParkedDomains = "SDICT:N_PARKED_DOMAINS"
         static let pluralNParkedDomainsImported = "SDICT:N_PARKED_DOMAINS_IMPORTED"
+        static let pluralExpire = "SDICT:EXPIRE"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"

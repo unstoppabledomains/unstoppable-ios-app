@@ -133,9 +133,11 @@ private extension LocalNotificationsService {
             let numberOfNotifications = notificationsDetails.count
             let domainsPlural = String.Constants.pluralDomains.localized(numberOfNotifications)
             let expiresInLocalized = notificationDetails.notificationPeriod.expiresInLocalized
-
+            let expirePlural = String.Constants.pluralExpire.localized(numberOfNotifications)
+            
+            
             let title: String
-            let body = String.Constants.localNotificationParkedDomainsExpiresInBody.localized(domainsPlural, expiresInLocalized)
+            let body = String.Constants.localNotificationParkedDomainsExpiresInBody.localized(domainsPlural, expirePlural, expiresInLocalized)
             if numberOfNotifications == 1 {
                 title = String.Constants.localNotificationParkedSingleDomainExpiresTitle.localized(notificationDetails.domain.name) 
             } else {
