@@ -169,7 +169,7 @@ private extension LocalNotificationsService {
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? Date()
         }
         
-        let daysToExpiresDate = calendar.dateComponents([.day], from: currentDate, to: expiresDate).day ?? 0
+        let daysToExpiresDate = calendar.dateComponents([.day], from: calendar.startOfDay(for: currentDate), to: calendar.startOfDay(for: expiresDate)).day ?? 0
         let notificationPeriods = DomainExpiresNotificationPeriod.allCases
        
         for period in notificationPeriods {
@@ -189,7 +189,7 @@ private extension LocalNotificationsService {
         let newDate = calendar.date(byAdding: .day, value: days, to: toDate) ?? Date()
         var newDateString = dateFormatter.string(from: newDate)
         newDateString += " \(time)"
-        let notificationDate = dateTimeFormatter.date(from: newDateString) ?? Date()
+        let notificationDate = dateTimeFormatter.date(from: newDateString) ?? toDate
         return notificationDate
     }
     
