@@ -723,7 +723,7 @@
 "LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRED_BODY" = "Please visit our website to extend Parking or Claim";
 "LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRES_TITLE" = "%@ Parking expires soon";
 "LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRES_TITLE" = "Parking for %i domains expire soon";
-"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRES_IN_BODY" = "Your %@ %@ %@. Please visit our website to extend Parking or Claim."; // Your domain/domains expires/expire in {period}...
+"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRES_IN_BODY" = "Your %@ %@ %@. Please visit our website to extend Parking or Claim"; // Your domain/domains expires/expire in {period}...
 "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_MONTH" = "in 1 month";
 "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_WEEK" = "in 1 week";
 "LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_THREE_DAYS" = "in 3 days";
