@@ -166,6 +166,7 @@ private extension LoginWithEmailViewController {
         emailTextfield.setTextContentType(.username)
         emailTextfield.setKeyboardType(.emailAddress)
         passwordTextfield.delegate = self
+        passwordTextfield.setPlaceholderStyle(.default)
         passwordTextfield.setSecureTextEntry(true)
         passwordTextfield.setAutocorrectionType(.no)
         passwordTextfield.setTextContentType(.password)
