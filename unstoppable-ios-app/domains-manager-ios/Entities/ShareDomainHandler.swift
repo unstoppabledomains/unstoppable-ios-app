@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import CoreNFC
 
 final class ShareDomainHandler: NSObject {
     
@@ -91,16 +90,17 @@ final class ShareDomainHandler: NSObject {
                     saveImage(result.image)
                 }
             case .shareViaNFC:
-                // TODO: - Analytics
-                
+                logButtonPressedAnalyticEvent(button: .createNFCTag, in: analyticsLogger)
+
                 await view.dismissPullUpMenu()
                 do {
-                    let uriPayloadFromURL = NFCNDEFPayload.wellKnownTypeURIPayload(url: String.Links.domainProfilePage(domainName: domain.name).url!)!
-                    
-                    let message = NFCNDEFMessage(records: [uriPayloadFromURL])
-                    try await NFCService.shared.writeMessage(message)
+                    guard let url = String.Links.domainProfilePage(domainName: domain.name).url else {
+                        Debugger.printFailure("Failed to get url from domain profile to write NFC tag", critical: true)
+                        return
+                    }
+                    try await NFCService.shared.writeURL(url)
                 } catch {
-                    print("Error \(error)")
+                    Debugger.printFailure("Failed to write NFC tag", critical: false)
                 }
             }
         }

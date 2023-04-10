@@ -28,7 +28,33 @@ final class NFCService: NSObject {
 
 // MARK: - Open methods
 extension NFCService {
-    @available(*, renamed: "beginScanning()")
+    func beginScanning() async throws -> [NFCNDEFMessage] {
+        return try await withCheckedThrowingContinuation { continuation in
+            beginScanning() { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+    
+    func writeURL(_ url: URL) async throws {
+        guard let uriPayloadFromURL = NFCNDEFPayload.wellKnownTypeURIPayload(url: url) else {
+            throw NFCServiceError.failedToCreatePayload
+        }
+        let message = NFCNDEFMessage(records: [uriPayloadFromURL])
+        try await writeMessage(message)
+    }
+
+    func writeMessage(_ message: NFCNDEFMessage) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            writeMessage(message) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+}
+
+// MARK: - NFCNDEFReaderSessionDelegate
+extension NFCService: NFCNDEFReaderSessionDelegate {
     func beginScanning(completionCallback: @escaping NFCScanningResultCallback) {
         guard session == nil else {
             completionCallback(.failure(.busy))
@@ -46,15 +72,6 @@ extension NFCService {
         session?.begin()
     }
     
-    func beginScanning() async throws -> [NFCNDEFMessage] {
-        return try await withCheckedThrowingContinuation { continuation in
-            beginScanning() { result in
-                continuation.resume(with: result)
-            }
-        }
-    }
-    
-    @available(*, renamed: "writeMessage(_:)")
     func writeMessage(_ message: NFCNDEFMessage, completionCallback: @escaping NFCWritingResultCallback) {
         guard session == nil else {
             completionCallback(.failure(.busy))
@@ -68,17 +85,6 @@ extension NFCService {
         session?.begin()
     }
     
-    func writeMessage(_ message: NFCNDEFMessage) async throws {
-        return try await withCheckedThrowingContinuation { continuation in
-            writeMessage(message) { result in
-                continuation.resume(with: result)
-            }
-        }
-    }
-}
-
-// MARK: - NFCNDEFReaderSessionDelegate
-extension NFCService: NFCNDEFReaderSessionDelegate {
     func readerSession(_ session: NFCNDEFReaderSession, didDetectNDEFs messages: [NFCNDEFMessage]) {
         switch mode {
         case .read:
@@ -230,6 +236,7 @@ private extension NFCService {
 // MARK: - NFCServiceError
 enum NFCServiceError: Error {
     case busy
+    case failedToCreatePayload
     
     case readingNotAvailable
     case readerError(_ error: NFCReaderError)
