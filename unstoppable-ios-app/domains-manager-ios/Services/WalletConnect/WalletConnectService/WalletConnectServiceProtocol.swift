@@ -21,6 +21,11 @@ protocol WalletConnectServiceProtocol {
     
     func completeTx(transaction: EthereumTransaction,
                             chainId: Int) async throws -> EthereumTransaction
+    
+    func proceedSendTxViaWC(by udWallet: UDWallet,
+                                    during session: Session,
+                                    in request: Request,
+                                    transaction: EthereumTransaction) async throws -> Response
 }
 
 typealias WCExternalRequestResult = Result<Void, Error>
