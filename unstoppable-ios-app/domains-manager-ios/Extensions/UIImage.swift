@@ -130,6 +130,8 @@ extension UIImage {
     static let linkedInIcon24 = UIImage(named: "linkedInIcon24")!
     static let gitHubIcon24 = UIImage(named: "gitHubIcon24")!
     
+
+    
     // System SF symbols
     static let personCropCircle = UIImage(systemName: "person.crop.circle")
     static let arrowUpRightCircle = UIImage(systemName: "arrowshape.turn.up.right.circle")
@@ -150,6 +152,13 @@ extension UIImage {
     static let systemLock = UIImage(systemName: "lock")!
     static let systemGlobe = UIImage(systemName: "globe")!
     static let systemChevronUpDown = UIImage(systemName: "chevron.up.chevron.down")!
+    static var systemNFCIcon: UIImage {
+        if #available(iOS 15.0, *) {
+            return UIImage(systemName: "cdot.radiowaves.up.forward")!
+        } else {
+            return UIImage(systemName: "dot.radiowaves.forward")!
+        }
+    }
     
 }
 

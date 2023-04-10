@@ -758,6 +758,8 @@ extension String {
         static let externalWalletFailedToSignPullUpTitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_TITLE"
         static let externalWalletFailedToSignPullUpSubtitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE"
 
+        // NFC
+        static let createNFCTag = "CREATE_NFC_TAG"
     }
     
     struct Segues {

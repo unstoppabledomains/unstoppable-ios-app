@@ -105,11 +105,11 @@ private extension ShareDomainImagePullUpView {
         
         let shareNFCCell = tv.dequeueCellOfType(TableViewSelectionCell.self)
         add(cell: shareNFCCell, to: shareNFCListItem)
-        shareNFCCell.setWith(icon: UIImage(systemName: "dot.radiowaves.up.forward")!,
-                                iconTintColor: .foregroundOnEmphasis,
-                                iconStyle: .accent,
-                                text: "Create NFC Tag",                                                                 
-                                secondaryText: nil)
+        shareNFCCell.setWith(icon: .systemNFCIcon,
+                             iconTintColor: .foregroundOnEmphasis,
+                             iconStyle: .accent,
+                             text: String.Constants.createNFCTag.localized(),
+                             secondaryText: nil)
         
         shareNFCCell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(shareViaNFCPressed)))
     }
