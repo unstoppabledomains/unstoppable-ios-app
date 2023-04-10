@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreNFC
 
 final class ShareDomainHandler: NSObject {
     
@@ -54,7 +55,7 @@ final class ShareDomainHandler: NSObject {
                 return
             case .shareLink:
                 logButtonPressedAnalyticEvent(button: .shareLink, in: analyticsLogger)
-
+                
                 await view.dismissPullUpMenu()
                 let domainPreviewView = await SocialsDomainImagePreviewView()
                 let avatarImage = await appContext.imageLoadingService.loadImage(from: .domain(domain),
@@ -84,10 +85,22 @@ final class ShareDomainHandler: NSObject {
                                                              originalDomainImage: originalImage,
                                                              qrImage: qrImage)
                 if let result = try? await appContext.pullUpViewService.showSaveDomainImageTypePullUp(description: description,
-                                                                                                     in: view) {
+                                                                                                      in: view) {
                     selectedStyleName = result.style.name
                     await view.dismissPullUpMenu()
                     saveImage(result.image)
+                }
+            case .shareViaNFC:
+                // TODO: - Analytics
+                
+                await view.dismissPullUpMenu()
+                do {
+                    let uriPayloadFromURL = NFCNDEFPayload.wellKnownTypeURIPayload(url: String.Links.domainProfilePage(domainName: domain.name).url!)!
+                    
+                    let message = NFCNDEFMessage(records: [uriPayloadFromURL])
+                    try await NFCService.shared.writeMessage(message)
+                } catch {
+                    print("Error \(error)")
                 }
             }
         }
