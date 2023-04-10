@@ -67,7 +67,7 @@ private extension NotificationService {
             setReverseResolutionRemovedContent(in: notificationContent, domainName: domainName, wallet: wallet, completion: completion)
         case .walletConnectRequest(let dAppName, let domainName):
             setWalletConnectRequestContent(in: notificationContent, dAppName: dAppName, domainName: domainName, completion: completion)
-        case .wcDeepLink:
+        case .wcDeepLink, .parkingStatusLocal:
             return
         case .domainProfileUpdated(let domainName):
             setDomainProfileUpdatedContent(in: notificationContent, domainName: domainName, completion: completion)

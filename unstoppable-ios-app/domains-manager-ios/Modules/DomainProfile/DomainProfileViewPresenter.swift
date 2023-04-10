@@ -292,7 +292,7 @@ extension DomainProfileViewPresenter: ExternalEventsServiceListener {
                 if domainNames.contains(dataHolder.domain.name) {
                     refreshData()
                 }
-            case .wcDeepLink, .walletConnectRequest:
+            case .wcDeepLink, .walletConnectRequest, .parkingStatusLocal:
                 return
             }
         }

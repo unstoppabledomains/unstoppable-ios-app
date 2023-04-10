@@ -110,7 +110,7 @@ extension DomainsCollectionCarouselItemViewPresenter: ExternalEventsServiceListe
     func didReceive(event: ExternalEvent) {
         Task {
             switch event {
-            case .mintingFinished, .domainTransferred, .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainProfileUpdated:
+            case .mintingFinished, .domainTransferred, .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainProfileUpdated, .parkingStatusLocal:
                 await showDomainDataWithActions(animated: false)
             case .wcDeepLink, .walletConnectRequest:
                 return

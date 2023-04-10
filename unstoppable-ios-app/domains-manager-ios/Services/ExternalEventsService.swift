@@ -148,6 +148,8 @@ private extension ExternalEventsService {
                 try? await coreAppCoordinator.handle(uiFlow: .showPullUpLoading)
             case .wcDeepLink:
                 handle(event: event)
+            case .parkingStatusLocal:
+                return
             }
         }
     }
@@ -216,6 +218,8 @@ private extension ExternalEventsService {
         case .walletConnectRequest:
             walletConnectRequestsHandlingService.expectConnection()
             return .showPullUpLoading
+        case .parkingStatusLocal:
+            throw EventsHandlingError.ignoreEvent
         }
     }
     
@@ -269,5 +273,7 @@ extension ExternalEventsService {
         case invalidWCURL
         case cantFindWallet, walletWithoutDisplayInfo
         case cantFindConnectedApp
+        
+        case ignoreEvent
     }
 }

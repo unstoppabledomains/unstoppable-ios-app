@@ -17,7 +17,8 @@ final class LocalNotificationsService {
     private let expiredDomainsNotificationId = "com.unstoppabledomains.notification.expired.domains"
     private let dateFormatter: DateFormatter
     private let dateTimeFormatter: DateFormatter
-    
+    private let parkingStatusNotificationHour = 19
+
     private init() {
         let locale = Locale(identifier: "en_US_POSIX")
 
@@ -98,12 +99,13 @@ private extension LocalNotificationsService {
                 title = String.Constants.localNotificationParkedMultipleDomainsExpiredTitle.localized(expiredDomainsCount)
             }
             let body = String.Constants.localNotificationParkedDomainsExpiredBody.localized()
-            let date = dateByAdding(days: 3, atTime: "19:00:00")
+            let date = dateByAdding(days: 3, atTime: "\(parkingStatusNotificationHour):00:00")
             
             await createLocalNotificationWith(identifier: expiredDomainsNotificationId,
                                               title: title,
                                               body: body,
-                                              date: date)
+                                              date: date,
+                                              userInfo: domainParkingStatusNotificationUserInfo())
             
         }
     }
@@ -148,26 +150,25 @@ private extension LocalNotificationsService {
                 await createLocalNotificationWith(identifier: notificationDetails.domain.name,
                                                   title: title,
                                                   body: body,
-                                                  date: notificationDate.notificationDate)
+                                                  date: notificationDate.notificationDate,
+                                                  userInfo: domainParkingStatusNotificationUserInfo())
             }
         }
     }
     
     func notificationDetailsFor(domain: DomainDisplayInfo,
                              expiresDate: Date) -> GoingToExpireDomainNotificationDetails? {
-        let notificationHour = 19
-        let notificationsTime = "\(notificationHour):00:00"
 
         var currentDate = Date()
         let hours = calendar.component(.hour, from: currentDate)
-        if hours >= notificationHour {
+        if hours >= parkingStatusNotificationHour {
             /// Skip current day in counting notification days diff because it is already later than notification time
             /// Example:
             /// Domain expire date: Jan 2nd
             /// Today is a Jan 1st.
             /// Raw time diff will be = 1 day
             /// If today's time is earlier than notificationHour, we can set notification to one day before expiration on today at notificationHour
-            /// But if today's time is later than notificationHour, we will schedule notification to the past time. 
+            /// But if today's time is later than notificationHour, we will schedule notification to the past time.
             currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate) ?? Date()
         }
         
@@ -177,7 +178,8 @@ private extension LocalNotificationsService {
         for period in notificationPeriods {
             let daysCount = period.daysCount
             if daysToExpiresDate >= daysCount {
-                let notificationDate = dateByAdding(days: -daysCount, atTime: notificationsTime, to: expiresDate)
+                let notificationTime = "\(parkingStatusNotificationHour):00:00"
+                let notificationDate = dateByAdding(days: -daysCount, atTime: notificationTime, to: expiresDate)
                 return .init(domain: domain,
                              notificationDate: notificationDate,
                              notificationPeriod: period)
@@ -222,6 +224,9 @@ private extension LocalNotificationsService {
         }
     }
     
+    func domainParkingStatusNotificationUserInfo() -> [String : Any] {
+        ["type" : ExternalEvent.PushNotificationType.parkingStatusLocal.rawValue]
+    }
     
     func getPendingNotifications() async -> [UNNotificationRequest] {
         await notificationCenter.pendingNotificationRequests()

@@ -33,6 +33,7 @@ extension Analytics {
         case didRecognizeQRCode
         case didSelectChainNetwork
         case didReceivePushNotification
+        case didReceiveLocalPushNotification
         case didOpenDeepLink
         case didSwipeNavigationBack
         case didSelectPhoto

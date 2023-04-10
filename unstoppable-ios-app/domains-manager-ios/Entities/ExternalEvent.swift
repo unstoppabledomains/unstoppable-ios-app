@@ -16,6 +16,8 @@ enum ExternalEvent: Codable, Hashable {
     case walletConnectRequest(dAppName: String, domainName: String?)
     case wcDeepLink(_ wcURL: URL)
     case domainProfileUpdated(domainName: String)
+   
+    case parkingStatusLocal
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
         guard let eventTypeRaw = json["type"] as? String,
@@ -79,6 +81,8 @@ enum ExternalEvent: Codable, Hashable {
                 return nil
             }
             self = .domainProfileUpdated(domainName: domainName)
+        case .parkingStatusLocal:
+            self = .parkingStatusLocal
         }
     }
     
@@ -88,6 +92,8 @@ enum ExternalEvent: Codable, Hashable {
             return .didReceivePushNotification
         case .wcDeepLink:
             return .didOpenDeepLink
+        case .parkingStatusLocal:
+            return .didReceiveLocalPushNotification
         }
     }
     
@@ -118,6 +124,8 @@ enum ExternalEvent: Codable, Hashable {
         case .domainProfileUpdated(let domainName):
             return [.pushNotification: "domainProfileUpdated",
                     .domainName: domainName]
+        case .parkingStatusLocal:
+            return [:]
         }
     }
 }
@@ -130,8 +138,9 @@ extension ExternalEvent {
 }
 
 // MARK: - Private methods
-private extension ExternalEvent {
+extension ExternalEvent {
     enum PushNotificationType: String {
+        // Remote
         case recordsUpdated = "RecordsUpdated"
         case mintingFinished = "MintingFinished"
         case domainTransferred = "DomainTransferred"
@@ -139,6 +148,9 @@ private extension ExternalEvent {
         case reverseResolutionRemoved = "ReverseResolutionRemoved"
         case walletConnectRequest = "WalletConnectNotification"
         case domainProfileUpdated = "DomainProfileUpdated"
+        
+        // Local
+        case parkingStatusLocal = "ParkingStatusLocal"
     }
 }
 
