@@ -108,7 +108,7 @@ private extension ShareDomainImagePullUpView {
         shareNFCCell.setWith(icon: UIImage(systemName: "dot.radiowaves.up.forward")!,
                                 iconTintColor: .foregroundOnEmphasis,
                                 iconStyle: .accent,
-                                text: "Share via NFC",
+                                text: "Create NFC Tag",                                                                 
                                 secondaryText: nil)
         
         shareNFCCell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(shareViaNFCPressed)))
