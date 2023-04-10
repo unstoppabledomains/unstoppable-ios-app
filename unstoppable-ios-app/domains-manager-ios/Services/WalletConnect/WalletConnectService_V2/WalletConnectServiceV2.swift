@@ -659,16 +659,6 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                       transaction: completedTx)
             
             guard udWallet.walletState != .externalLinked else {
-                /*
-                let sessionsWithExtWallet = findSessions(by: walletAddress)
-                let response = try await proceedSendTxViaWC_2(sessions: sessionsWithExtWallet,
-                                                              chainId: chainIdInt,
-                                                              txParams: request.params,
-                                                              in: udWallet)
-                let respCodable = AnyCodable(response)
-                Debugger.printInfo(topic: .WallectConnect, "Successfully sent TX via external wallet: \(udWallet.address)")
-                return .response(respCodable)
-                 */
                 let response = try await udWallet.sendTxViaWalletConnect(request: request, chainId: chainIdInt)
                 return response
             }
