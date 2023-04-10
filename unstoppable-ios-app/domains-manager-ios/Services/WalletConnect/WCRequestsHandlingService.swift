@@ -281,7 +281,8 @@ private extension WCRequestsHandlingService {
             case .ethGetTransactionCount:
                 responses = [try await wcSigner.handleGetTransactionCount(request: request)]
             case .ethSendTransaction:
-                responses = try await wcSigner.handleSendTx(request: request)
+                let response = try await wcSigner.handleSendTx(request: request)
+                responses = [response]
             case .ethSendRawTransaction:
                 responses = [try await wcSigner.handleSendRawTx(request: request)]
             case .ethSignedTypedData:

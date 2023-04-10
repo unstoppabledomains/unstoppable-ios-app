@@ -116,8 +116,8 @@ struct WCRegistryWalletProxy {
 
 extension UDWallet {
     func sendTxViaWalletConnect(request: WalletConnectSign.Request,
-                                chainId: Int) async throws {
-        func sendSingleTx(tx: EthereumTransaction) async throws {
+                                chainId: Int) async throws -> JSONRPC.RPCResult {
+        func sendSingleTx(tx: EthereumTransaction) async throws -> JSONRPC.RPCResult {
             let session = try detectWCSessionType()
             switch session {
             case .wc1(let wc1Session):
@@ -126,32 +126,26 @@ extension UDWallet {
                 let result = try response.result(as: String.self)
                 
                 print(result)
-//                let responseV2: WalletConnectSign.Response = Response.init(url: <#T##WCURL#>, jsonString: <#T##String#>)
-                // return response
+                let respCodable = AnyCodable(result)
+                return .response(respCodable)
                 
             case .wc2(let wc2Sessions):
                 let response: WalletConnectSign.Response = try await appContext.walletConnectServiceV2.proceedSendTxViaWC_2(sessions: wc2Sessions,
-                                                              chainId: chainId,
-                                                              txParams: request.params,
-                                                              in: self)
+                                                                                                                            chainId: chainId,
+                                                                                                                            txParams: request.params,
+                                                                                                                            in: self)
                 let respCodable = AnyCodable(response)
-                // return .response(respCodable)
                 print(response)
-                return
+                return .response(respCodable)
             }
         }
         
-        guard let transactionsToSign = try? request.params.getTransactions() else {
+        guard let transactionToSign = try? request.params.getTransactions().first else {
             throw WalletConnectRequestError.failedBuildParams
         }
         
-        var responses = [JSONRPC.RPCResult]()
-        for tx in transactionsToSign {
-            let response = try await sendSingleTx(tx: tx)
-//            responses.append(response)
-        }
-        
-//        return responses
+        let response = try await sendSingleTx(tx: transactionToSign)
+        return response
     }
     
 }

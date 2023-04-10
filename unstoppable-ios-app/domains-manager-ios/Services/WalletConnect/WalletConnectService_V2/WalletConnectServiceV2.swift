@@ -96,7 +96,7 @@ protocol WalletConnectV2RequestHandlingServiceProtocol {
     func handlePersonalSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleEthSign(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleSignTx(request: WalletConnectSign.Request) async throws -> [WalletConnectSign.RPCResult]
-    func handleSendTx(request: WalletConnectSign.Request) async throws -> [WalletConnectSign.RPCResult]
+    func handleSendTx(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleGetTransactionCount(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleSendRawTx(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleSignTypedData(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
@@ -644,7 +644,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         return responses
     }
     
-    func handleSendTx(request: WalletConnectSign.Request) async throws -> [JSONRPC.RPCResult] {
+    func handleSendTx(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
         @Sendable func handleSingleSendTx(tx: EthereumTransaction) async throws -> JSONRPC.RPCResult {
             guard let walletAddress = tx.from?.hex(eip55: true) else {
                 throw WalletConnectRequestError.failedToFindWalletToSign
@@ -669,8 +669,8 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                 Debugger.printInfo(topic: .WallectConnect, "Successfully sent TX via external wallet: \(udWallet.address)")
                 return .response(respCodable)
                  */
-                try await udWallet.sendTxViaWalletConnect(request: request, chainId: chainIdInt)
-                return .response(AnyCodable("TODO"))
+                let response = try await udWallet.sendTxViaWalletConnect(request: request, chainId: chainIdInt)
+                return response
             }
             
             let hash = try await sendTx(transaction: completedTx,
@@ -681,17 +681,12 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             return .response(hashCodable)
         }
         
-        guard let transactionsToSend = try? request.params.get([EthereumTransaction].self) else {
+        guard let transactionToSend = try request.params.get([EthereumTransaction].self).first else {
             throw WalletConnectRequestError.failedBuildParams
         }
        
-        var responses = [JSONRPC.RPCResult]()
-        for tx in transactionsToSend {
-            let response = try await handleSingleSendTx(tx: tx)
-            responses.append(response)
-        }
-        
-        return responses
+        let response = try await handleSingleSendTx(tx: transactionToSend)
+        return response
     }
     
     func handleGetTransactionCount(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
