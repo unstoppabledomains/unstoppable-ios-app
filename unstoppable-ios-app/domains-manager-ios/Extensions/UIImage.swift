@@ -154,7 +154,7 @@ extension UIImage {
     static let systemChevronUpDown = UIImage(systemName: "chevron.up.chevron.down")!
     static var systemNFCIcon: UIImage {
         if #available(iOS 15.0, *) {
-            return UIImage(systemName: "cdot.radiowaves.up.forward")!
+            return UIImage(systemName: "dot.radiowaves.up.forward")!
         } else {
             return UIImage(systemName: "dot.radiowaves.forward")!
         }
