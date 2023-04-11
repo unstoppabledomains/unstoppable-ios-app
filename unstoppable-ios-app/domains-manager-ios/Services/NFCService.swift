@@ -28,6 +28,8 @@ final class NFCService: NSObject {
 
 // MARK: - Open methods
 extension NFCService {
+    var isNFCSupported: Bool { NFCNDEFReaderSession.readingAvailable }
+    
     func beginScanning() async throws -> [NFCNDEFMessage] {
         return try await withCheckedThrowingContinuation { continuation in
             beginScanning() { result in

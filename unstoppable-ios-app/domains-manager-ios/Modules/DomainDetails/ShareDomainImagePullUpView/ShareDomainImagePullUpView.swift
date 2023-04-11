@@ -102,16 +102,19 @@ private extension ShareDomainImagePullUpView {
 
         saveAsImageCell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(saveAsImageItemPressed)))
         
-        
-        let shareNFCCell = tv.dequeueCellOfType(TableViewSelectionCell.self)
-        add(cell: shareNFCCell, to: shareNFCListItem)
-        shareNFCCell.setWith(icon: .nfcIcon20,
-                             iconTintColor: .foregroundDefault,
-                             iconStyle: .grey,
-                             text: String.Constants.createNFCTag.localized(),
-                             secondaryText: nil)
-        
-        shareNFCCell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(shareViaNFCPressed)))
+        if NFCService.shared.isNFCSupported {
+            let shareNFCCell = tv.dequeueCellOfType(TableViewSelectionCell.self)
+            add(cell: shareNFCCell, to: shareNFCListItem)
+            shareNFCCell.setWith(icon: .nfcIcon20,
+                                 iconTintColor: .foregroundDefault,
+                                 iconStyle: .grey,
+                                 text: String.Constants.createNFCTag.localized(),
+                                 secondaryText: nil)
+            
+            shareNFCCell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(shareViaNFCPressed)))
+        } else {
+            shareNFCListItem.isHidden = true 
+        }
     }
     
     func add(cell: UIView, to superview: UIView) {
