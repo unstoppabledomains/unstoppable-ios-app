@@ -218,7 +218,7 @@ extension WCWalletsProvider {
                 #if DEBUG
                 return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .AlphaWallet, .MathWallet, .ONTO,
                     .KleverWallet, .Coinomi, .Coin98, .Argent,
-                        .Guarda, .Blockchain, .Spot, .imToken, .Zelus, .Omni, .Exodus, .Zerion]
+                        .Guarda, .Blockchain, .Spot, .imToken, .Zelus, .Omni, .Exodus, .Zerion, .CryptoComDeFiWallet]
                 #else
                 return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .AlphaWallet, .Zelus, .MathWallet, .Zerion]
                 #endif

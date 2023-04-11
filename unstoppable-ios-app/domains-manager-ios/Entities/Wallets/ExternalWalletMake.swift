@@ -95,6 +95,7 @@ extension ExternalWalletMake {
         case .Zelus: return UIImage(named: "walletZelus")!
         case .Omni: return .cancelCircleIcon
         case .Exodus: return .cancelCircleIcon
+        case .CryptoComDeFiWallet: return .cancelCircleIcon
         case .Zerion: return UIImage(named: "walletZerion")!
         default: return .init()
         }
@@ -116,6 +117,7 @@ extension ExternalWalletMake {
         case .Coin98: return "id1561969966"
         case .Argent: return "id1358741926"
         case .Blockchain: return "id493253309"
+        case .CryptoComDeFiWallet: return "id1512048310"
         case .Zerion: return "id1456732565"
         default: return .init()
         }
