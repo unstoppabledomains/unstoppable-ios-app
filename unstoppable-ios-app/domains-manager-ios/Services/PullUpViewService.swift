@@ -700,7 +700,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     
     func showShareDomainPullUp(domain: DomainDisplayInfo, qrCodeImage: UIImage, in viewController: UIViewController) async -> ShareDomainSelectionResult {
         await withSafeCheckedMainActorContinuation(critical: false) { completion in
-            let selectionViewHeight: CGFloat = 584
+            let selectionViewHeight: CGFloat = NFCService.shared.isNFCSupported ? 584 : 512
             let shareDomainPullUpView = ShareDomainImagePullUpView()
             shareDomainPullUpView.setWithDomain(domain, qrImage: qrCodeImage)
             var isSelected = false
