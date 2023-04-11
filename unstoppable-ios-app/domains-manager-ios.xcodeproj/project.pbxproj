@@ -920,6 +920,10 @@
 		C6124CF129253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */; };
 		C6124CF229253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */; };
 		C6124CF329253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */; };
+		C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
+		C613C22329E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
+		C613C22429E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
+		C613C22529E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
 		C615E0D228891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D328891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D428891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
@@ -3524,6 +3528,7 @@
 		C6124CE52924C2B8005E6537 /* DomainProfileInfoStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileInfoStorage.swift; sourceTree = "<group>"; };
 		C6124CEA29252E8F005E6537 /* DomainProfileSignExternalWalletViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignExternalWalletViewPresenter.swift; sourceTree = "<group>"; };
 		C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExistingExternalWalletPresenter.swift; sourceTree = "<group>"; };
+		C613C22129E3BEEC0001A3AF /* NFCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCService.swift; sourceTree = "<group>"; };
 		C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionSearchEmptyCell.swift; sourceTree = "<group>"; };
 		C615E0D128891BC10082490B /* DomainsCollectionSearchEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionSearchEmptyCell.xib; sourceTree = "<group>"; };
 		C6166CBE28EC179E00004252 /* SafeContinuation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeContinuation.swift; sourceTree = "<group>"; };
@@ -5945,6 +5950,7 @@
 				C692C312282E303B00C31393 /* NetworkReachabilityService.swift */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
+				C613C22129E3BEEC0001A3AF /* NFCService.swift */,
 				C665FC1D29B0687D009699D2 /* NotificationsService */,
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
@@ -7954,6 +7960,7 @@
 				C609820A2822D92300546392 /* ToastMessageService.swift in Sources */,
 				C6ECBF8B28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */,
+				C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C63A352B28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C6D6E4FC2817E386008C66BB /* EnterBackupOnboardingPresenter.swift in Sources */,
 				299713D728F693F600743003 /* EIP712TypedData.swift in Sources */,
@@ -8880,6 +8887,7 @@
 				C606B743286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C685A9892840FD4900E54044 /* ChoosePrimaryDomainViewPresenter.swift in Sources */,
 				C6A2D52A284DC45B00327C47 /* PermissionsService.swift in Sources */,
+				C613C22429E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C6C995B4289D313D00367362 /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				30784C8B27F455100034FA4A /* UDTextView.swift in Sources */,
 				C65DEA7D29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
@@ -9508,6 +9516,7 @@
 				C606B744286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C685A98A2840FD4900E54044 /* ChoosePrimaryDomainViewPresenter.swift in Sources */,
 				C6A2D52B284DC45B00327C47 /* PermissionsService.swift in Sources */,
+				C613C22529E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C6C995B5289D313D00367362 /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				30784C8C27F455100034FA4A /* UDTextView.swift in Sources */,
 				C65DEA7E29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
@@ -9896,6 +9905,7 @@
 				C628E38327FEE31D0044E408 /* DeviceHelper.swift in Sources */,
 				C6ECBF8C28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B91EB529BB718100389FF5 /* StripeService.swift in Sources */,
+				C613C22329E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C63A352C28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C609820B2822D92300546392 /* ToastMessageService.swift in Sources */,
 				299713D828F693F600743003 /* EIP712TypedData.swift in Sources */,

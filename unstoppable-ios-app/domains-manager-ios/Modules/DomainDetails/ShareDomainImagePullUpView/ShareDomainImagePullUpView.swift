@@ -11,6 +11,7 @@ enum ShareDomainSelectionResult {
     case cancel
     case shareLink
     case saveAsImage
+    case shareViaNFC
 }
 
 typealias ShareDomainSelectionCallback = (ShareDomainSelectionResult)->()
@@ -21,6 +22,7 @@ final class ShareDomainImagePullUpView: UIView, SelfNameable, NibInstantiateable
     
     @IBOutlet private weak var domainSharingView: UDDomainSharingCardView!
     @IBOutlet private weak var shareLinkListItem: UIView!
+    @IBOutlet private weak var shareNFCListItem: UIView!
     @IBOutlet private weak var saveAsImageListItem: UIView!
     private var saveAsImageCell: TableViewSelectionCell!
     
@@ -64,6 +66,10 @@ private extension ShareDomainImagePullUpView {
             }
         }
     }
+    
+    @objc func shareViaNFCPressed(_ sender: Any) {
+        selectionCallback?(.shareViaNFC)
+    }
 }
 
 // MARK: - Setup methods
@@ -95,6 +101,17 @@ private extension ShareDomainImagePullUpView {
         saveAsImageCell.setSecondaryTextStyle(.grey)
 
         saveAsImageCell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(saveAsImageItemPressed)))
+        
+        
+        let shareNFCCell = tv.dequeueCellOfType(TableViewSelectionCell.self)
+        add(cell: shareNFCCell, to: shareNFCListItem)
+        shareNFCCell.setWith(icon: .nfcIcon20,
+                             iconTintColor: .foregroundDefault,
+                             iconStyle: .grey,
+                             text: String.Constants.createNFCTag.localized(),
+                             secondaryText: nil)
+        
+        shareNFCCell.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(shareViaNFCPressed)))
     }
     
     func add(cell: UIView, to superview: UIView) {
