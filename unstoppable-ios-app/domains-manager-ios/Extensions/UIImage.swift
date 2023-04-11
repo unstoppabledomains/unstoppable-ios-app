@@ -121,6 +121,7 @@ extension UIImage {
     static let timeIcon24 = UIImage(named: "timeIcon24")!
     static let dragIcon24 = UIImage(named: "dragIcon24")!
     static let connectedAppNetworksInfoIllustration = UIImage(named: "connectedAppNetworksInfoIllustration")!
+    static let nfcIcon20 = UIImage(named: "nfcIcon20")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
@@ -152,14 +153,7 @@ extension UIImage {
     static let systemLock = UIImage(systemName: "lock")!
     static let systemGlobe = UIImage(systemName: "globe")!
     static let systemChevronUpDown = UIImage(systemName: "chevron.up.chevron.down")!
-    static var systemNFCIcon: UIImage {
-        if #available(iOS 15.0, *) {
-            return UIImage(systemName: "dot.radiowaves.up.forward")!
-        } else {
-            return UIImage(systemName: "dot.radiowaves.forward")!
-        }
-    }
-    
+
 }
 
 extension UIImage {

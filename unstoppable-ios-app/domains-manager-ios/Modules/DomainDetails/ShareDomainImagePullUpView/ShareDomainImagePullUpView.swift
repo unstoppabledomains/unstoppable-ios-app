@@ -105,9 +105,9 @@ private extension ShareDomainImagePullUpView {
         
         let shareNFCCell = tv.dequeueCellOfType(TableViewSelectionCell.self)
         add(cell: shareNFCCell, to: shareNFCListItem)
-        shareNFCCell.setWith(icon: .systemNFCIcon,
-                             iconTintColor: .foregroundOnEmphasis,
-                             iconStyle: .accent,
+        shareNFCCell.setWith(icon: .nfcIcon20,
+                             iconTintColor: .foregroundDefault,
+                             iconStyle: .grey,
                              text: String.Constants.createNFCTag.localized(),
                              secondaryText: nil)
         
