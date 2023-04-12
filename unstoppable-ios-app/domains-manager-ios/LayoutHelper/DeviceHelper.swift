@@ -179,6 +179,17 @@ public enum Model : String {
          AppleTV_4K         = "Apple TV 4K",
          
          unrecognized       = "?unrecognized?"
+    
+    var isNFCSupported: Bool {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return false }
+        
+        switch self {
+        case.iPhone4, .iPhone4S, .iPhone5, .iPhone5S, .iPhone5C, .iPhone6, .iPhone6Plus, .iPhone6S, .iPhone6SPlus, .iPhoneSE, .iPhone7, .iPhone7Plus, .iPhone8, .iPhone8Plus, .iPhoneX:
+            return false
+        default:
+            return true
+        }
+    }
 }
 
 extension UIDevice {

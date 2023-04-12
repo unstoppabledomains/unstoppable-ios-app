@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 10.04.2023.
 //
 
-import Foundation
+import UIKit
 import CoreNFC
 
 typealias NFCScanningResult = Result<[NFCNDEFMessage], NFCServiceError>
@@ -28,7 +28,7 @@ final class NFCService: NSObject {
 
 // MARK: - Open methods
 extension NFCService {
-    var isNFCSupported: Bool { NFCNDEFReaderSession.readingAvailable }
+    var isNFCSupported: Bool { NFCNDEFReaderSession.readingAvailable && UIDevice.current.type.isNFCSupported }
     
     func beginScanning() async throws -> [NFCNDEFMessage] {
         return try await withCheckedThrowingContinuation { continuation in
