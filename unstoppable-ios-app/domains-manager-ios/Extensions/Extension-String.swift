@@ -41,6 +41,7 @@ extension String {
         case showcaseDomainBadge(domainName: String, badgeCode: String)
         case badgesLeaderboard
         case generic(url: String)
+        case unableToCreateAccountTutorial
 
         var urlString: String {
             switch self {
@@ -90,7 +91,9 @@ extension String {
             case .badgesLeaderboard:
                 return NetworkConfig.badgesLeaderboardUrl
             case .generic(let url):
-                return url 
+                return url
+            case .unableToCreateAccountTutorial:
+                return "https://support.unstoppabledomains.com/support/solutions/articles/48001237087-mobile-app-unable-to-create-account"
             }
         }
         
@@ -339,7 +342,8 @@ extension String {
         static let connectionLost = "CONNECTION_LOST"
         static let pleaseCheckInternetConnection = "PLEASE_CHECK_INTERNET_CONNECTION"
         static let failedToPickImageFromPhotoLibraryErrorMessage = "FAILED_TO_PICK_IMAGE_FROM_PHOTO_LIBRARY_ERROR_MESSAGE"
-        
+        static let unableToCreateAccount = "UNABLE_TO_CREATE_ACCOUNT"
+
         // iCloud not enabled
         static let iCloudNotEnabledAlertTitle = "ICLOUD_NOT_ENABLED_ALERT_TITLE"
         static let iCloudNotEnabledAlertMessage = "ICLOUD_NOT_ENABLED_ALERT_MESSAGE"
@@ -759,6 +763,8 @@ extension String {
         static let externalWalletFailedToSignPullUpTitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_TITLE"
         static let externalWalletFailedToSignPullUpSubtitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE"
 
+        // NFC
+        static let createNFCTag = "CREATE_NFC_TAG"
     }
     
     struct Segues {

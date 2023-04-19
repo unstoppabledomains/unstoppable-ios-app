@@ -68,6 +68,7 @@
 "CONNECTION_LOST" = "Connection lost";
 "PLEASE_CHECK_INTERNET_CONNECTION" = "Please check your connection and try again.";
 "FAILED_TO_PICK_IMAGE_FROM_PHOTO_LIBRARY_ERROR_MESSAGE" = "Unexpected error occurred when tried to use selected image";
+"UNABLE_TO_CREATE_ACCOUNT" = "Unable to create account";
 
 // NetworkLayerError
 "invalidTxCostError" = "Failed to fetch the cost of transaction from the server. Please try again later.";
@@ -681,3 +682,6 @@
 // External wallet failed to sign
 "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_TITLE" = "External wallet failed to sign";
 "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE" = "Request from external wallet failed. Please try again.";
+
+// NFC
+"CREATE_NFC_TAG" = "Create NFC Tag";

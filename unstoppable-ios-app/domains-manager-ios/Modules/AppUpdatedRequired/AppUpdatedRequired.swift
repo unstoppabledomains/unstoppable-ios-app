@@ -38,6 +38,6 @@ private extension AppUpdatedRequired {
     func setup() {
         titleLabel.setTitle(String.Constants.appUpdateRequiredTitle.localized())
         subtitleLabel.setSubtitle(String.Constants.appUpdateRequiredSubtitle.localized())
-        updateButton.setTitle(String.Constants.updated.localized(), image: nil)
+        updateButton.setTitle(String.Constants.update.localized(), image: nil)
     }
 }

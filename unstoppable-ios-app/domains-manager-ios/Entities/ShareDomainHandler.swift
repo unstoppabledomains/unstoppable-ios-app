@@ -54,7 +54,7 @@ final class ShareDomainHandler: NSObject {
                 return
             case .shareLink:
                 logButtonPressedAnalyticEvent(button: .shareLink, in: analyticsLogger)
-
+                
                 await view.dismissPullUpMenu()
                 let domainPreviewView = await SocialsDomainImagePreviewView()
                 let avatarImage = await appContext.imageLoadingService.loadImage(from: .domain(domain),
@@ -84,10 +84,23 @@ final class ShareDomainHandler: NSObject {
                                                              originalDomainImage: originalImage,
                                                              qrImage: qrImage)
                 if let result = try? await appContext.pullUpViewService.showSaveDomainImageTypePullUp(description: description,
-                                                                                                     in: view) {
+                                                                                                      in: view) {
                     selectedStyleName = result.style.name
                     await view.dismissPullUpMenu()
                     saveImage(result.image)
+                }
+            case .shareViaNFC:
+                logButtonPressedAnalyticEvent(button: .createNFCTag, in: analyticsLogger)
+
+                await view.dismissPullUpMenu()
+                do {
+                    guard let url = String.Links.domainProfilePage(domainName: domain.name).url else {
+                        Debugger.printFailure("Failed to get url from domain profile to write NFC tag", critical: true)
+                        return
+                    }
+                    try await NFCService.shared.writeURL(url)
+                } catch {
+                    Debugger.printFailure("Failed to write NFC tag", critical: false)
                 }
             }
         }

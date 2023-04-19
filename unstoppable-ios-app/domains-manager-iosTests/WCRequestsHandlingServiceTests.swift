@@ -665,9 +665,9 @@ private final class MockWCServiceV2: WalletConnectV2RequestHandlingServiceProtoc
         return [response]
     }
     
-    func handleSendTx(request: WalletConnectSign.Request) async throws -> [JSONRPC.RPCResult] {
+    func handleSendTx(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
         let response = try await getResponse()
-        return [response]
+        return response
     }
     
     func handleGetTransactionCount(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {

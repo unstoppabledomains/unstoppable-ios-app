@@ -47,56 +47,56 @@
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-        <string>trust</string>
-        <string>awallet</string>
-        <string>argent</string>
-        <string>atoken</string>
-        <string>gnosissafe</string>
-        <string>kleverwallet</string>
-        <string>mathwallet</string>
-        <string>metamask</string>
-        <string>rainbow</string>
-        <string>celo</string>
-        <string>zel</string>
-        <string>fuse.cash</string>
-        <string>spot</string>
-        <string>omni</string>
-        <string>zerion</string>
-        <string>cryptowallet</string>
-        <string>ledgerlive</string>
-        <string>1inch</string>
-        <string>aktionaria</string>
-        <string>autonomy-wc</string>
-        <string>avacus</string>
-        <string>bitpay</string>
-        <string>bridgewallet</string>
-        <string>cybavowallet</string>
-        <string>coin98</string>
-        <string>zeluswallet</string>
-        <string>coinstats</string>
-        <string>coingrig</string>
-        <string>coinomi</string>
-        <string>dcent</string>
-        <string>defiantapp</string>
-        <string>easypocket</string>
-        <string>edge</string>
-        <string>eidoo</string>
-        <string>essentials</string>
-        <string>ellipal</string>
-        <string>flare</string>
-        <string>hashme</string>
-        <string>julwallet</string>
-        <string>keyring</string>
-        <string>kyberswap</string>
-        <string>lobstr</string>
-        <string>leadwallet</string>
-        <string>mykeywalletconnect</string>
-        <string>nefti</string>
-        <string>o3wallet</string>
-        <string>ontoprovider</string>
-        <string>orangewallet</string>
-        <string>safemoon</string>
-        <string>safepalwallet</string>
+		<string>trust</string>
+		<string>awallet</string>
+		<string>argent</string>
+		<string>atoken</string>
+		<string>gnosissafe</string>
+		<string>kleverwallet</string>
+		<string>mathwallet</string>
+		<string>metamask</string>
+		<string>rainbow</string>
+		<string>celo</string>
+		<string>zel</string>
+		<string>fuse.cash</string>
+		<string>spot</string>
+		<string>omni</string>
+		<string>zerion</string>
+		<string>cryptowallet</string>
+		<string>ledgerlive</string>
+		<string>1inch</string>
+		<string>aktionaria</string>
+		<string>autonomy-wc</string>
+		<string>avacus</string>
+		<string>bitpay</string>
+		<string>bridgewallet</string>
+		<string>cybavowallet</string>
+		<string>coin98</string>
+		<string>zeluswallet</string>
+		<string>coinstats</string>
+		<string>coingrig</string>
+		<string>coinomi</string>
+		<string>dcent</string>
+		<string>defiantapp</string>
+		<string>easypocket</string>
+		<string>edge</string>
+		<string>eidoo</string>
+		<string>essentials</string>
+		<string>ellipal</string>
+		<string>flare</string>
+		<string>hashme</string>
+		<string>julwallet</string>
+		<string>keyring</string>
+		<string>kyberswap</string>
+		<string>lobstr</string>
+		<string>leadwallet</string>
+		<string>mykeywalletconnect</string>
+		<string>nefti</string>
+		<string>o3wallet</string>
+		<string>ontoprovider</string>
+		<string>orangewallet</string>
+		<string>safemoon</string>
+		<string>safepalwallet</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -169,9 +169,11 @@
 		<key>apiKey</key>
 		<string>bc471d79e666ce83787724f3b14c8562</string>
 	</dict>
-    <key>NSUserActivityTypes</key>
-    <array>
-        <string>INSendMessageIntent</string>
-    </array>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>INSendMessageIntent</string>
+	</array>
+	<key>NFCReaderUsageDescription</key>
+	<string>NFC tag to read NDEF messages into the application</string>
 </dict>
 </plist>

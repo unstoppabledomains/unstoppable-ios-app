@@ -32,13 +32,19 @@ protocol WalletConnectV1RequestHandlingServiceProtocol {
 }
 
 extension WalletConnectV1RequestHandlingServiceProtocol {
-    func detectConnectedApp(by walletAddress: HexAddress, request: Request) throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet) {
+    func detectConnectedApp(by walletAddress: HexAddress, request: Request) throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet, Int) {
         guard let connectedApp = WCConnectedAppsStorage.shared.find(byTopic: request.url.topic).first,
               let udWallet = appContext.udWalletsService.find(by: walletAddress) else {
             Debugger.printFailure("No connected app can sign for the wallet address \(walletAddress) from request \(request)", critical: true)
             throw WalletConnectRequestError.failedToFindWalletToSign
         }
-        return (connectedApp, udWallet)
+        
+        guard let chainIdInt = connectedApp.session.walletInfo?.chainId else {
+            Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
+            throw WalletConnectRequestError.failedToDetermineChainId
+        }
+        
+        return (connectedApp, udWallet, chainIdInt)
     }
 }
 
@@ -62,7 +68,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         
         Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(request.jsonString)")
         
-        let (_, udWallet) = try await getWalletAfterConfirmationIfNeeded(address: address,
+        let (_, udWallet, _) = try await getWalletAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
                                                                          messageString: readableMessageString)
         let sig: String
@@ -109,19 +115,20 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
             throw WalletConnectRequestError.failedToFindWalletToSign
         }
         
-        let (connectedApp, udWallet) = try await getWalletAfterConfirmationIfNeeded(address: address,
+        let (connectedApp, udWallet, chainIdInt) = try await getWalletAfterConfirmationIfNeeded(address: address,
                                                                                     request: request,
                                                                                     transaction: _tx)
+        
+        let completedTx = try await completeTx(transaction: _tx, chainId: chainIdInt)
+        
         
         guard let chainIdInt = connectedApp.session.walletInfo?.chainId else {
             Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
             throw WalletConnectRequestError.failedToDetermineChainId
         }
-        let completedTx = try await completeTx(transaction: _tx, chainId: chainIdInt)
-        
         
         let sig = try await udWallet.getTxSignature(ethTx: completedTx,
-                                                    chainId: BigUInt(connectedApp.session.dAppInfo.getChainId()),
+                                                    chainId: chainIdInt,
                                                     request: request)
         return Response.signature(sig, for: request)
     }
@@ -137,15 +144,10 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
             throw WalletConnectRequestError.failedToFindWalletToSign
         }
         
-        let (connectedApp, udWallet) = try detectConnectedApp(by: walletAddress, request: request)
-        guard let chainIdInt = connectedApp.session.walletInfo?.chainId else {
-            Debugger.printFailure("Failed to find chainId for request: \(request)", critical: true)
-            throw WalletConnectRequestError.failedToDetermineChainId
-        }
-        
+        let (_, udWallet, chainIdInt) = try detectConnectedApp(by: walletAddress, request: request)
         let completedTx = try await completeTx(transaction: _transaction,  chainId: chainIdInt)
         
-        let (_, _) = try await getWalletAfterConfirmationIfNeeded(address: walletAddress,
+        let (_, _, _) = try await getWalletAfterConfirmationIfNeeded(address: walletAddress,
                                                                   request: request,
                                                                   transaction: completedTx)
         guard udWallet.walletState != .externalLinked else {
@@ -238,7 +240,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         
         Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(request.jsonString)")
         // TODO: - Roman. For not external wallet, it will ask confirmation and then fail.
-        let (_, udWallet) = try await self.getWalletAfterConfirmationIfNeeded(address: walletAddress,
+        let (_, udWallet, _) = try await self.getWalletAfterConfirmationIfNeeded(address: walletAddress,
                                                                               request: request,
                                                                               messageString: dataString)
         
@@ -281,28 +283,29 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
     
     private func getWalletAfterConfirmationIfNeeded(address: HexAddress,
                                             request: Request,
-                                            transaction: EthereumTransaction) async throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet) {
+                                            transaction: EthereumTransaction) async throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet, Int) {
         guard let cost = TxDisplayDetails(tx: transaction) else { throw WalletConnectRequestError.failedToBuildCompleteTransaction }
-        return try await getWalletAfterConfirmation_generic(address: address, request: request) {
-            WCRequestUIConfiguration.payment(SignPaymentTransactionUIConfiguration(connectionConfig: $0,
+        return try await getWalletAfterConfirmation_generic(address: address, request: request) { config, chainId in
+            WCRequestUIConfiguration.payment(SignPaymentTransactionUIConfiguration(connectionConfig: config,
                                                                                    walletAddress: address,
+                                                                                   chainId: chainId,
                                                                                    cost: cost))
         }
     }
     
     private func getWalletAfterConfirmationIfNeeded(address: HexAddress,
                                             request: Request,
-                                            messageString: String) async throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet) {
-        try await getWalletAfterConfirmation_generic(address: address, request: request) {
-            WCRequestUIConfiguration.signMessage(SignMessageTransactionUIConfiguration(connectionConfig: $0,
+                                            messageString: String) async throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet, Int) {
+        try await getWalletAfterConfirmation_generic(address: address, request: request) { config, _ in
+            WCRequestUIConfiguration.signMessage(SignMessageTransactionUIConfiguration(connectionConfig: config,
                                                                                        signingMessage: messageString))
         }
     }
     
     private func getWalletAfterConfirmation_generic(address: HexAddress,
                                              request: Request,
-                                             uiConfigBuilder: (ConnectionConfig)-> WCRequestUIConfiguration ) async throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet) {
-        let (connectedApp, udWallet) = try detectConnectedApp(by: address, request: request)
+                                             uiConfigBuilder: (ConnectionConfig, Int)-> WCRequestUIConfiguration ) async throws -> (WCConnectedAppsStorage.ConnectedApp, UDWallet, Int) {
+        let (connectedApp, udWallet, chainId) = try detectConnectedApp(by: address, request: request)
         
         if udWallet.walletState != .externalLinked {
             guard let uiHandler = self.uiHandler else {
@@ -312,13 +315,13 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
 
             let connectionConfig = ConnectionConfig(domain: connectedApp.domain,
                                                     appInfo: Self.appInfo(from: connectedApp.session))
-            let uiConfig = uiConfigBuilder(connectionConfig)
+            let uiConfig = uiConfigBuilder(connectionConfig, chainId)
             try await uiHandler.getConfirmationToConnectServer(config: uiConfig)
         }
-        return (connectedApp, udWallet)
+        return (connectedApp, udWallet, chainId)
     }
     
-    private func proceedSendTxViaWC(by udWallet: UDWallet,
+    func proceedSendTxViaWC(by udWallet: UDWallet,
                                     during session: Session,
                                     in request: Request,
                                     transaction: EthereumTransaction) async throws -> Response {

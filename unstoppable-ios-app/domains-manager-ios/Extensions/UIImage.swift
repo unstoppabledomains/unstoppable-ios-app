@@ -128,6 +128,7 @@ extension UIImage {
     static let hexagonIcon24 = UIImage(named: "hexagonIcon24")!
     static let connectedAppNetworksInfoIllustration = UIImage(named: "connectedAppNetworksInfoIllustration")!
     static let pictureLandscapeIcon32 = UIImage(named: "pictureLandscapeIcon32")!
+    static let nfcIcon20 = UIImage(named: "nfcIcon20")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
@@ -136,6 +137,8 @@ extension UIImage {
     static let youTubeIcon24 = UIImage(named: "youTubeIcon24")!
     static let linkedInIcon24 = UIImage(named: "linkedInIcon24")!
     static let gitHubIcon24 = UIImage(named: "gitHubIcon24")!
+    
+
     
     // System SF symbols
     static let personCropCircle = UIImage(systemName: "person.crop.circle")
@@ -157,7 +160,7 @@ extension UIImage {
     static let systemLock = UIImage(systemName: "lock")!
     static let systemGlobe = UIImage(systemName: "globe")!
     static let systemChevronUpDown = UIImage(systemName: "chevron.up.chevron.down")!
-    
+
 }
 
 extension UIImage {

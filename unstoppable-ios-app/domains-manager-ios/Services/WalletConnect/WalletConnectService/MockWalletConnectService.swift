@@ -19,6 +19,10 @@ final class MockWalletConnectService {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectService: WalletConnectServiceProtocol {
+    func proceedSendTxViaWC(by udWallet: UDWallet, during session: WalletConnectSwift.Session, in request: WalletConnectSwift.Request, transaction: EthereumTransaction) async throws -> WalletConnectSwift.Response {
+        throw WalletConnectRequestError.noWCSessionFound
+    }
+    
     func completeTx(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumTransaction {
         throw WalletConnectRequestError.noWCSessionFound
     }

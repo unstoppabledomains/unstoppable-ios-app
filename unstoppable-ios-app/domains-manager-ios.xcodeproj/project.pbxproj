@@ -22,6 +22,10 @@
 		29150FBC2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */; };
 		29150FBD2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */; };
 		29150FBE2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */; };
+		291A9C6A29E444CF00527FF1 /* WC_v1+v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */; };
+		291A9C6B29E444CF00527FF1 /* WC_v1+v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */; };
+		291A9C6C29E444CF00527FF1 /* WC_v1+v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */; };
+		291A9C6D29E444CF00527FF1 /* WC_v1+v2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */; };
 		2930E1A728AFA31E0002D280 /* Debug-Tools-Dev.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302EAF3126332DC200CAFE8B /* Debug-Tools-Dev.swift */; };
 		29344C1D2963779D0091B40B /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = 29344C1C2963779D0091B40B /* WalletConnect */; };
 		29344C1F2963779D0091B40B /* WalletConnectPairing in Frameworks */ = {isa = PBXBuildFile; productRef = 29344C1E2963779D0091B40B /* WalletConnectPairing */; };
@@ -916,6 +920,10 @@
 		C6124CF129253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */; };
 		C6124CF229253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */; };
 		C6124CF329253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */; };
+		C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
+		C613C22329E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
+		C613C22429E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
+		C613C22529E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
 		C615E0D228891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D328891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D428891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
@@ -3299,6 +3307,7 @@
 /* Begin PBXFileReference section */
 		290A60412950A89900882109 /* WalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushSubscriberInfo.swift; sourceTree = "<group>"; };
+		291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WC_v1+v2.swift"; sourceTree = "<group>"; };
 		295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCConnectedAppsStorageV2.swift; sourceTree = "<group>"; };
 		2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDWallet+SigningTransaction.swift"; sourceTree = "<group>"; };
 		299713BD28F6927500743003 /* ABIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIType.swift; sourceTree = "<group>"; };
@@ -3567,6 +3576,7 @@
 		C6124CE52924C2B8005E6537 /* DomainProfileInfoStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileInfoStorage.swift; sourceTree = "<group>"; };
 		C6124CEA29252E8F005E6537 /* DomainProfileSignExternalWalletViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignExternalWalletViewPresenter.swift; sourceTree = "<group>"; };
 		C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExistingExternalWalletPresenter.swift; sourceTree = "<group>"; };
+		C613C22129E3BEEC0001A3AF /* NFCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCService.swift; sourceTree = "<group>"; };
 		C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionSearchEmptyCell.swift; sourceTree = "<group>"; };
 		C615E0D128891BC10082490B /* DomainsCollectionSearchEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionSearchEmptyCell.xib; sourceTree = "<group>"; };
 		C6166CBE28EC179E00004252 /* SafeContinuation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeContinuation.swift; sourceTree = "<group>"; };
@@ -4263,6 +4273,7 @@
 			isa = PBXGroup;
 			children = (
 				290A60412950A89900882109 /* WalletConnectServiceV2.swift */,
+				291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */,
 				295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */,
 				29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */,
 			);
@@ -6001,6 +6012,8 @@
 				C692C312282E303B00C31393 /* NetworkReachabilityService.swift */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
+				C613C22129E3BEEC0001A3AF /* NFCService.swift */,
+				C665FC1D29B0687D009699D2 /* NotificationsService */,
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
 				C6B91EB329BB718100389FF5 /* StripeService.swift */,
@@ -8072,6 +8085,7 @@
 				C609820A2822D92300546392 /* ToastMessageService.swift in Sources */,
 				C6ECBF8B28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */,
+				C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C63A352B28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C6D6E4FC2817E386008C66BB /* EnterBackupOnboardingPresenter.swift in Sources */,
 				299713D728F693F600743003 /* EIP712TypedData.swift in Sources */,
@@ -8283,6 +8297,7 @@
 				C66430FD28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */,
 				C6010D15287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */,
 				C60610D429A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
+				291A9C6A29E444CF00527FF1 /* WC_v1+v2.swift in Sources */,
 				C6C42182293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
 				C62C3F96283F40D30094FC93 /* CodeVerificationCharacterView.swift in Sources */,
 				C642A6B5284118E800299C6E /* MintingDomainListCell.swift in Sources */,
@@ -9011,6 +9026,7 @@
 				C606B743286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C685A9892840FD4900E54044 /* ChoosePrimaryDomainViewPresenter.swift in Sources */,
 				C6A2D52A284DC45B00327C47 /* PermissionsService.swift in Sources */,
+				C613C22429E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C6C995B4289D313D00367362 /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				30784C8B27F455100034FA4A /* UDTextView.swift in Sources */,
 				C65DEA7D29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
@@ -9296,6 +9312,7 @@
 				C6B6B03B296EA86300D4E30F /* SignTransactionDomainSelectionHeaderView.swift in Sources */,
 				3048B47927FA149C00253BB7 /* WalletConnectedViewController.swift in Sources */,
 				C6D6E58828193ED9008C66BB /* DomainsCollectionListCell.swift in Sources */,
+				291A9C6C29E444CF00527FF1 /* WC_v1+v2.swift in Sources */,
 				C6B6858D280077F7000F9037 /* UIImage.swift in Sources */,
 				C6C9DEA22834B56200BAC36F /* ManageDomainLoadingCell.swift in Sources */,
 				C6124CDE2923C7FF005E6537 /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
@@ -9647,6 +9664,7 @@
 				C606B744286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C685A98A2840FD4900E54044 /* ChoosePrimaryDomainViewPresenter.swift in Sources */,
 				C6A2D52B284DC45B00327C47 /* PermissionsService.swift in Sources */,
+				C613C22529E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C6C995B5289D313D00367362 /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				30784C8C27F455100034FA4A /* UDTextView.swift in Sources */,
 				C65DEA7E29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
@@ -9932,6 +9950,7 @@
 				C6B6B03C296EA86300D4E30F /* SignTransactionDomainSelectionHeaderView.swift in Sources */,
 				307F85C5267B60300070A9A6 /* NetworkConfig.swift in Sources */,
 				3048B47A27FA149C00253BB7 /* WalletConnectedViewController.swift in Sources */,
+				291A9C6D29E444CF00527FF1 /* WC_v1+v2.swift in Sources */,
 				C6D6E58928193ED9008C66BB /* DomainsCollectionListCell.swift in Sources */,
 				C6B6858E280077F7000F9037 /* UIImage.swift in Sources */,
 				C6C9DEA32834B56200BAC36F /* ManageDomainLoadingCell.swift in Sources */,
@@ -10038,6 +10057,7 @@
 				C628E38327FEE31D0044E408 /* DeviceHelper.swift in Sources */,
 				C6ECBF8C28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B91EB529BB718100389FF5 /* StripeService.swift in Sources */,
+				C613C22329E3BEEC0001A3AF /* NFCService.swift in Sources */,
 				C63A352C28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C609820B2822D92300546392 /* ToastMessageService.swift in Sources */,
 				299713D828F693F600743003 /* EIP712TypedData.swift in Sources */,
@@ -10249,6 +10269,7 @@
 				C6010D16287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */,
 				C62C3F97283F40D30094FC93 /* CodeVerificationCharacterView.swift in Sources */,
 				C60610D529A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
+				291A9C6B29E444CF00527FF1 /* WC_v1+v2.swift in Sources */,
 				C6C42183293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
 				C642A6B6284118E800299C6E /* MintingDomainListCell.swift in Sources */,
 				C685A98C2840FD4900E54044 /* ChoosePrimaryDomainViewController.swift in Sources */,
@@ -10846,7 +10867,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.0;
+				MARKETING_VERSION = 4.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -10871,7 +10892,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.0;
+				MARKETING_VERSION = 4.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -10980,7 +11001,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.0;
+				MARKETING_VERSION = 4.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -11006,7 +11027,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.0;
+				MARKETING_VERSION = 4.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -11031,7 +11052,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.0;
+				MARKETING_VERSION = 4.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -11056,7 +11077,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.0;
+				MARKETING_VERSION = 4.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -11081,7 +11102,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.0;
+				MARKETING_VERSION = 4.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -11104,7 +11125,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.0;
+				MARKETING_VERSION = 4.5.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
