@@ -61,7 +61,7 @@ extension DomainProfileSocialsSection: DomainProfileSection {
             if addedSocials.isEmpty {
                 snapshot.appendSections([.noSocials(headerDescription: sectionHeaderDescription)])
                 snapshot.appendItems([.noSocials(displayInfo: .init(id: id, manageButtonPressedCallback: { [weak self] in
-//                    self?.logProfileSectionButtonPressedAnalyticEvent(button: .addCurrency, parameters: [:])
+                    self?.logProfileSectionButtonPressedAnalyticEvent(button: .manageOnTheWebsite, parameters: [:])
                     self?.controller?.manageDataOnTheWebsite()
                 }))])
             } else {
@@ -126,11 +126,11 @@ private extension DomainProfileSocialsSection {
         let secondaryTitle = numberOfAddedSocials == 0 ? "" : String(numberOfAddedSocials)
         var headerButton: DomainProfileSectionHeader.HeaderButton?
         if numberOfAddedSocials > 0 {
-            headerButton = .init(title: "Manage",
+            headerButton = .init(title: String.Constants.manage.localized(),
                                  icon: .systemSquareAndPencil,
                                  isEnabled: isButtonEnabled,
                                  action: { [weak self] in
-                //                    self?.logProfileSectionButtonPressedAnalyticEvent(button: .addCurrency, parameters: [:])
+                                    self?.logProfileSectionButtonPressedAnalyticEvent(button: .manageOnTheWebsite, parameters: [:])
                 self?.controller?.manageDataOnTheWebsite()
             })
         }

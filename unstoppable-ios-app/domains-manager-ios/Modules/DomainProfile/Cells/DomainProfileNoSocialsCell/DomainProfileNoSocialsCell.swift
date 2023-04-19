@@ -13,7 +13,7 @@ final class DomainProfileNoSocialsCell: UICollectionViewCell {
     @IBOutlet private weak var containerView: UIView!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var subtitleLabel: UILabel!
-    @IBOutlet private weak var manageButton: UIButton!
+    @IBOutlet private weak var manageButton: RaisedTertiaryButton!
     
     private var manageButtonPressedCallback: EmptyCallback?
     
@@ -29,9 +29,7 @@ final class DomainProfileNoSocialsCell: UICollectionViewCell {
                                          font: .currentFont(withSize: 14, weight: .regular),
                                          textColor: .white.withAlphaComponent(0.32),
                                          lineHeight: 20)
-        manageButton.setAttributedTextWith(text: "Manage on the website",
-                                           font: .currentFont(withSize: 16, weight: .medium),
-                                           textColor: .white.withAlphaComponent(0.56))
+        manageButton.setTitle(String.Constants.manageOnTheWebsite.localized(), image: nil)
     }
 
 }
