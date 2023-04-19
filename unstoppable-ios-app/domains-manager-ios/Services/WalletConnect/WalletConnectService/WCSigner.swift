@@ -321,7 +321,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         return (connectedApp, udWallet, chainId)
     }
     
-    private func proceedSendTxViaWC(by udWallet: UDWallet,
+    func proceedSendTxViaWC(by udWallet: UDWallet,
                                     during session: Session,
                                     in request: Request,
                                     transaction: EthereumTransaction) async throws -> Response {

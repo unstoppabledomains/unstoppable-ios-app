@@ -164,22 +164,27 @@ extension NotificationsService: WalletConnectServiceConnectionListener {
 
 // MARK: - Private methods
 fileprivate extension NotificationsService {
-    func configure() {
-        configureWC2PN()
-    }
+    func configure() { }
     
-    func configureWC2PN() {
-        guard let clientId = try? Networking.interactor.getClientId() else { return }
+    func configureWC2PN() -> Bool {
+        guard let clientId = try? Networking.interactor.getClientId() else {
+            Debugger.printFailure("Did fail to get client id from WC2 and configure Echo.")
+            return false
+        }
         #if DEBUG
         Echo.configure(clientId: clientId, environment: .sandbox)
         #else
         Echo.configure(clientId: clientId, environment: .production)
         #endif
+        
+        return true
     }
     
     func registerForWC2PN(deviceToken: Data) {
+        guard configureWC2PN() else { return }
+        
         Task {
-            do {
+            do {                
                 try await Echo.instance.register(deviceToken: deviceToken)
                 Debugger.printInfo(topic: .PNs, "Did register device token with WC2")
             } catch {

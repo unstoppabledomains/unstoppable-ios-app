@@ -212,7 +212,7 @@ extension Analytics {
         case viewTransaction, notifyWhenFinished
         
         // Domain details
-        case editProfile, manageDomain, shareLink, saveAsImage
+        case editProfile, manageDomain, shareLink, saveAsImage, createNFCTag
         
         // Settings
         case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsWebsiteAccount

@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 25.05.2022.
 //
 
-import Foundation
+import UIKit
 
 protocol EnterEmailViewPresenterProtocol: BasePresenterProtocol {
     var progress: Double? { get }
@@ -50,7 +50,14 @@ extension EnterEmailViewPresenter: EnterEmailViewPresenterProtocol {
             } catch {
                 await MainActor.run {
                     view?.setLoadingIndicator(active: false)
-                    view?.showAlertWith(error: error, handler: nil)
+                    if let networkError = error as? NetworkLayerError,
+                       case .badResponseOrStatusCode(_, let message) = networkError,
+                       let message,
+                       message.contains("Can't create user with following email") {
+                        showUnableToCreateAccountAlert()
+                    } else {
+                        view?.showAlertWith(error: error, handler: nil)
+                    }
                 }
             }
         }
@@ -60,6 +67,15 @@ extension EnterEmailViewPresenter: EnterEmailViewPresenterProtocol {
 // MARK: - Private functions
 private extension EnterEmailViewPresenter {
  
-    
+    @MainActor
+    func showUnableToCreateAccountAlert() {
+        let alert = UIAlertController(title: String.Constants.unableToCreateAccount.localized(), message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+        alert.addAction(UIAlertAction(title: String.Constants.learnMore.localized(), style: .default, handler: { [weak self] _ in
+            self?.view?.openLink(.unableToCreateAccountTutorial)
+        }))
+        
+        view?.present(alert, animated: true)
+    }
 
 }
