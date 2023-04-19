@@ -87,7 +87,7 @@ extension String {
             case .udExternalWalletTutorial:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001232090-using-external-wallets-in-the-unstoppable-domains-mobile-app"
             case .udParkedDomainsTutorial:
-                return "https://unstoppabledomains.com/blog/categories/announcements/article/secure-your-domains-with-ud-parking"
+                return "https://support.unstoppabledomains.com/support/solutions/articles/48001235057-ud-parking"
             case .showcaseDomainBadge(let domainName, let badgeCode):
                 let profileURL = Links.domainProfilePage(domainName: domainName).urlString
                 return profileURL + "?openBadgeCode=\(badgeCode)"
