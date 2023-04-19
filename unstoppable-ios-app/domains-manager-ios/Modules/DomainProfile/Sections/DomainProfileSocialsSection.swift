@@ -56,11 +56,14 @@ extension DomainProfileSocialsSection: DomainProfileSection {
             let sectionHeaderDescription = sectionHeader(numberOfAddedSocials: addedSocialsCount,
                                                          isLoading: false,
                                                          isButtonVisible: true,
-                                                         isButtonEnabled: true)
+                                                         isButtonEnabled: state == .default)
             
             if addedSocials.isEmpty {
                 snapshot.appendSections([.noSocials(headerDescription: sectionHeaderDescription)])
-                snapshot.appendItems([.noSocials])
+                snapshot.appendItems([.noSocials(displayInfo: .init(id: id, manageButtonPressedCallback: { [weak self] in
+//                    self?.logProfileSectionButtonPressedAnalyticEvent(button: .addCurrency, parameters: [:])
+                    self?.controller?.manageDataOnTheWebsite()
+                }))])
             } else {
                 let section: DomainProfileViewController.Section = .socials(headerDescription: sectionHeaderDescription)
                 snapshot.appendSections([section])
@@ -121,10 +124,20 @@ private extension DomainProfileSocialsSection {
                        isButtonVisible: Bool,
                        isButtonEnabled: Bool) -> DomainProfileSectionHeader.HeaderDescription {
         let secondaryTitle = numberOfAddedSocials == 0 ? "" : String(numberOfAddedSocials)
+        var headerButton: DomainProfileSectionHeader.HeaderButton?
+        if numberOfAddedSocials > 0 {
+            headerButton = .init(title: "Manage",
+                                 icon: .systemSquareAndPencil,
+                                 isEnabled: isButtonEnabled,
+                                 action: { [weak self] in
+                //                    self?.logProfileSectionButtonPressedAnalyticEvent(button: .addCurrency, parameters: [:])
+                self?.controller?.manageDataOnTheWebsite()
+            })
+        }
 
         return .init(title: String.Constants.domainProfileSectionSocialsName.localized(),
                      secondaryTitle: secondaryTitle,
-                     button: nil,
+                     button: headerButton,
                      isLoading: isLoading,
                      id: id)
     }

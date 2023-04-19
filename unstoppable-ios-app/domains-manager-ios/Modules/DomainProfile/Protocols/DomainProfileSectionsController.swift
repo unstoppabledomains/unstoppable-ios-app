@@ -18,4 +18,5 @@ protocol DomainProfileSectionsController: AnyObject, ViewAnalyticsLogger {
     func backgroundImageDidUpdate(_ image: UIImage?)
     func avatarImageDidUpdate(_ image: UIImage?, avatarType: DomainProfileImageType)
     func updateAccessPreferences(attribute: ProfileUpdateRequest.Attribute, resultCallback: @escaping UpdateProfileAccessResultCallback)
+    func manageDataOnTheWebsite()
 }

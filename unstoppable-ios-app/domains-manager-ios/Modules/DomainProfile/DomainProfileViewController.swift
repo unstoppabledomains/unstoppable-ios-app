@@ -378,9 +378,10 @@ private extension DomainProfileViewController {
                 cell.setWith(displayInfo: displayInfo)
                 
                 return cell
-            case .noSocials:
+            case .noSocials(let displayInfo):
                 let cell = collectionView.dequeueCellOfType(DomainProfileNoSocialsCell.self, forIndexPath: indexPath)
-                
+                cell.setWith(displayInfo: displayInfo)
+
                 return cell
             case .badge(let displayInfo):
                 let cell = collectionView.dequeueCellOfType(DomainProfileBadgeCell.self, forIndexPath: indexPath)
@@ -613,7 +614,7 @@ extension DomainProfileViewController {
                      style: ManageDomainLoadingCell.Style = .default,
                      uiConfiguration: ManageDomainLoadingCell.UIConfiguration = .default)
         case social(displayInfo: DomainProfileSocialsDisplayInfo)
-        case noSocials
+        case noSocials(displayInfo: DomainProfileSocialsEmptyDisplayInfo)
         case record(displayInfo: ManageDomainRecordDisplayInfo)
         case badge(displayInfo: DomainProfileBadgeDisplayInfo)
         case web3Website(displayInfo: DomainProfileWeb3WebsiteDisplayInfo), web3WebsiteLoading(id: UUID = .init())

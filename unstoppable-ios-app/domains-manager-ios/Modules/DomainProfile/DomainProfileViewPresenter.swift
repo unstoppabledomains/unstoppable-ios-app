@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 @MainActor
 protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
@@ -26,7 +27,7 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
     func didTapMintedOnChainButton()
 }
 
-final class DomainProfileViewPresenter: ViewAnalyticsLogger, WebsiteURLValidator, DomainProfileSignatureValidator {
+final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteURLValidator, DomainProfileSignatureValidator {
     
     var analyticsName: Analytics.ViewName { .domainProfile }
 
@@ -68,6 +69,7 @@ final class DomainProfileViewPresenter: ViewAnalyticsLogger, WebsiteURLValidator
         self.domainTransactionsService = domainTransactionsService
         self.coinRecordsService = coinRecordsService
         self.dataAggregatorService = dataAggregatorService
+        super.init()
         dataAggregatorService.addListener(self)
         externalEventsService.addListener(self)
     }
@@ -349,6 +351,25 @@ extension DomainProfileViewPresenter: DomainProfileSectionsController {
                     })
                 }
             }
+        }
+    }
+    
+    @MainActor
+    func manageDataOnTheWebsite() {
+        guard let url = URL(string: "https://unstoppabledomains.com/manage?page=profile&domain=\(generalData.domain.name)") else { return }
+        
+        let safariVC = SFSafariViewController(url: url)
+        safariVC.delegate = self
+        view?.present(safariVC, animated: true)
+    }
+}
+
+// MARK: - SFSafariViewControllerDelegate
+extension DomainProfileViewPresenter: SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        Task {
+            await fetchProfileData()
+            await updateProfileFinished()
         }
     }
 }
