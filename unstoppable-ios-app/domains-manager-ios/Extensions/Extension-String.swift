@@ -343,6 +343,8 @@ extension String {
         static let pleaseCheckInternetConnection = "PLEASE_CHECK_INTERNET_CONNECTION"
         static let failedToPickImageFromPhotoLibraryErrorMessage = "FAILED_TO_PICK_IMAGE_FROM_PHOTO_LIBRARY_ERROR_MESSAGE"
         static let unableToCreateAccount = "UNABLE_TO_CREATE_ACCOUNT"
+        static let unableToFindAccountTitle = "UNABLE_TO_FIND_ACCOUNT_TITLE"
+        static let unableToFindAccountMessage = "UNABLE_TO_FIND_ACCOUNT_MESSAGE"
 
         // iCloud not enabled
         static let iCloudNotEnabledAlertTitle = "ICLOUD_NOT_ENABLED_ALERT_TITLE"
