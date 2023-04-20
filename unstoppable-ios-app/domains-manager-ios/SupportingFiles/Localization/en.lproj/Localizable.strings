@@ -131,6 +131,8 @@
 "ADD_N" = "Add %@";
 "RATE_US" = "Rate us";
 "BOTH" = "Both";
+"MANAGE" = "Manage";
+"MANAGE_ON_THE_WEBSITE" = "Manage on the website";
 
 /* ONBOARDING */
 // Tutorial screens

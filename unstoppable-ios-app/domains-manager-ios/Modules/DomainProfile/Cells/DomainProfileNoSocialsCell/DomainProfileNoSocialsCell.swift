@@ -13,6 +13,9 @@ final class DomainProfileNoSocialsCell: UICollectionViewCell {
     @IBOutlet private weak var containerView: UIView!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var subtitleLabel: UILabel!
+    @IBOutlet private weak var manageButton: RaisedTertiaryButton!
+    
+    private var manageButtonPressedCallback: EmptyCallback?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,6 +29,22 @@ final class DomainProfileNoSocialsCell: UICollectionViewCell {
                                          font: .currentFont(withSize: 14, weight: .regular),
                                          textColor: .white.withAlphaComponent(0.32),
                                          lineHeight: 20)
+        manageButton.setTitle(String.Constants.manageOnTheWebsite.localized(), image: nil)
     }
 
+}
+
+// MARK: - Open methods
+extension DomainProfileNoSocialsCell {
+    func setWith(displayInfo: DomainProfileViewController.DomainProfileSocialsEmptyDisplayInfo) {
+        manageButtonPressedCallback = displayInfo.manageButtonPressedCallback
+    }
+}
+
+// MARK: - Private methods
+private extension DomainProfileNoSocialsCell {
+    @IBAction func manageButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+        manageButtonPressedCallback?()
+    }
 }

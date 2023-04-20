@@ -183,7 +183,9 @@ extension String {
         static let addN = "ADD_N"
         static let rateUs = "RATE_US"
         static let both = "BOTH"
-
+        static let manage = "MANAGE"
+        static let manageOnTheWebsite = "MANAGE_ON_THE_WEBSITE"
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
