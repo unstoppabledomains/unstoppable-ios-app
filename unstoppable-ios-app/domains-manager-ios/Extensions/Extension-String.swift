@@ -184,7 +184,6 @@ extension String {
         static let rateUs = "RATE_US"
         static let both = "BOTH"
         static let manage = "MANAGE"
-        static let manageOnTheWebsite = "MANAGE_ON_THE_WEBSITE"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -734,7 +733,8 @@ extension String {
         static let profileBadgesLeaderboardRankMessage = "PROFILE_BADGES_LEADERBOARD_RANK_MESSAGE"
         static let profileBadgesLeaderboardHoldersMessage = "PROFILE_BADGES_LEADERBOARD_HOLDERS_MESSAGE"
         static let profileBadgesSponsoredByMessage = "PROFILE_BADGES_LEADERBOARD_SPONSORED_BY_MESSAGE"
-        
+        static let profileAddSocialProfiles = "PROFILE_ADD_SOCIAL_PROFILES"
+
         // Recent activities
         static let noRecentActivity = "NO_RECENT_ACTIVITY"
         static let noConnectedApps = "NO_CONNECTED_APPS"

@@ -132,7 +132,6 @@
 "RATE_US" = "Rate us";
 "BOTH" = "Both";
 "MANAGE" = "Manage";
-"MANAGE_ON_THE_WEBSITE" = "Manage on the website";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -655,6 +654,7 @@
 "PROFILE_BADGES_LEADERBOARD_RANK_MESSAGE" = "#%@ on leaderboard";
 "PROFILE_BADGES_LEADERBOARD_HOLDERS_MESSAGE" = "%@ holders";
 "PROFILE_BADGES_LEADERBOARD_SPONSORED_BY_MESSAGE" = "Sponsored by %@";
+"PROFILE_ADD_SOCIAL_PROFILES" = "Add your social media profiles";
 
 // Recent activities
 "NO_RECENT_ACTIVITY" = "No recent activity";

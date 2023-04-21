@@ -252,7 +252,6 @@ extension DomainProfileViewController {
     
     struct DomainProfileSocialsEmptyDisplayInfo: Hashable {
         let id: UUID
-        let manageButtonPressedCallback: EmptyCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id
