@@ -1204,7 +1204,20 @@ extension WalletConnectServiceV2 {
     private func pickOnlyActiveSessions(from sessions: [SessionV2Proxy]) -> [SessionV2Proxy] {
         let settledSessions = Sign.instance.getSessions()
         let settledSessionsTopics = settledSessions.map { $0.topic }
-        return sessions.filter({ settledSessionsTopics.contains($0.topic)})
+        let foundActiveSessions = sessions.filter({ settledSessionsTopics.contains($0.topic)})
+        if foundActiveSessions.count > 0 { return foundActiveSessions }
+        // TODO: find pairing and try to reconnect
+        
+        guard let pairingTopic = sessions.first?.pairingTopic else { return [] }
+        Task {
+            do {
+                try await Sign.instance.connect(requiredNamespaces: namespaces, topic: pairingTopic)
+            } catch {
+                //TODO: failed to reconnect
+                print("failed to reconnect")
+            }
+        }
+        return []
     }
     
     func handle(response: WalletConnectSign.Response) throws -> String {
