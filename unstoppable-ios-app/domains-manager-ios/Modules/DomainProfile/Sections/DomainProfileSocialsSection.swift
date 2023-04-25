@@ -56,11 +56,11 @@ extension DomainProfileSocialsSection: DomainProfileSection {
             let sectionHeaderDescription = sectionHeader(numberOfAddedSocials: addedSocialsCount,
                                                          isLoading: false,
                                                          isButtonVisible: true,
-                                                         isButtonEnabled: true)
+                                                         isButtonEnabled: state == .default)
             
             if addedSocials.isEmpty {
                 snapshot.appendSections([.noSocials(headerDescription: sectionHeaderDescription)])
-                snapshot.appendItems([.noSocials])
+                snapshot.appendItems([.noSocials(displayInfo: .init(id: id))])
             } else {
                 let section: DomainProfileViewController.Section = .socials(headerDescription: sectionHeaderDescription)
                 snapshot.appendSections([section])
@@ -121,10 +121,17 @@ private extension DomainProfileSocialsSection {
                        isButtonVisible: Bool,
                        isButtonEnabled: Bool) -> DomainProfileSectionHeader.HeaderDescription {
         let secondaryTitle = numberOfAddedSocials == 0 ? "" : String(numberOfAddedSocials)
-
+        let headerButton: DomainProfileSectionHeader.HeaderButton? = .init(title: String.Constants.manage.localized(),
+                                                                           icon: .systemSquareAndPencil,
+                                                                           isEnabled: isButtonEnabled,
+                                                                           action: { [weak self] in
+            self?.logProfileSectionButtonPressedAnalyticEvent(button: .manageOnTheWebsite, parameters: [:])
+            self?.controller?.manageDataOnTheWebsite()
+        })
+        
         return .init(title: String.Constants.domainProfileSectionSocialsName.localized(),
                      secondaryTitle: secondaryTitle,
-                     button: nil,
+                     button: headerButton,
                      isLoading: isLoading,
                      id: id)
     }

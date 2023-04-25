@@ -90,12 +90,12 @@ extension ExternalWalletMake {
         case .Coin98: return .cancelCircleIcon
         case .Argent: return .cancelCircleIcon
         case .Blockchain: return .cancelCircleIcon
-        case .Spot: return .cancelCircleIcon
+        case .Spot: return UIImage(named: "walletSpot")!
         case .imToken: return .cancelCircleIcon
         case .Zelus: return UIImage(named: "walletZelus")!
-        case .Omni: return .cancelCircleIcon
+        case .Omni: return UIImage(named: "walletOmni")!
         case .Exodus: return .cancelCircleIcon
-        case .CryptoComDeFiWallet: return .cancelCircleIcon
+        case .CryptoComDeFiWallet: return UIImage(named: "walletCryptoComDeFi")!
         case .Zerion: return UIImage(named: "walletZerion")!
         default: return .init()
         }
@@ -119,6 +119,10 @@ extension ExternalWalletMake {
         case .Blockchain: return "id493253309"
         case .CryptoComDeFiWallet: return "id1512048310"
         case .Zerion: return "id1456732565"
+        case .Omni: return "id1569375204"
+        case .Zelus: return "id1588430343"
+        case .Exodus: return "id1414384820"
+        case .Spot: return "id1390560448"
         default: return .init()
         }
     }

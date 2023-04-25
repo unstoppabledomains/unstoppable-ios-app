@@ -13,13 +13,13 @@ final class DomainProfileNoSocialsCell: UICollectionViewCell {
     @IBOutlet private weak var containerView: UIView!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var subtitleLabel: UILabel!
-    
+        
     override func awakeFromNib() {
         super.awakeFromNib()
         
         containerView.layer.borderWidth = 1
         containerView.layer.borderColor = UIColor.white.withAlphaComponent(0.16).cgColor
-        titleLabel.setAttributedTextWith(text: String.Constants.comingSoon.localized(),
+        titleLabel.setAttributedTextWith(text: String.Constants.profileAddSocialProfiles.localized(),
                                          font: .currentFont(withSize: 16, weight: .medium),
                                          textColor: .white.withAlphaComponent(0.56))
         subtitleLabel.setAttributedTextWith(text: String.Constants.profileSocialsEmptyMessage.localized(),
@@ -28,4 +28,9 @@ final class DomainProfileNoSocialsCell: UICollectionViewCell {
                                          lineHeight: 20)
     }
 
+}
+
+// MARK: - Open methods
+extension DomainProfileNoSocialsCell {
+    func setWith(displayInfo: DomainProfileViewController.DomainProfileSocialsEmptyDisplayInfo) { }
 }

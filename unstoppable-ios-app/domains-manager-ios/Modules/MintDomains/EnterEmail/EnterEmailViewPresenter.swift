@@ -53,8 +53,13 @@ extension EnterEmailViewPresenter: EnterEmailViewPresenterProtocol {
                     if let networkError = error as? NetworkLayerError,
                        case .badResponseOrStatusCode(_, let message) = networkError,
                        let message,
-                       message.contains("Can't create user with following email") {
-                        showUnableToCreateAccountAlert()
+                       let specificError = SpecificError.allCases.first(where: { message.contains($0.rawValue) }) {
+                        switch specificError {
+                        case .unableToCreateAccount:
+                            showUnableToCreateAccountAlert()
+                        case .unableToFindAccount:
+                            showAccountNotFoundAlert()
+                        }
                     } else {
                         view?.showAlertWith(error: error, handler: nil)
                     }
@@ -66,10 +71,11 @@ extension EnterEmailViewPresenter: EnterEmailViewPresenterProtocol {
 
 // MARK: - Private functions
 private extension EnterEmailViewPresenter {
- 
     @MainActor
     func showUnableToCreateAccountAlert() {
-        let alert = UIAlertController(title: String.Constants.unableToCreateAccount.localized(), message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: String.Constants.unableToCreateAccount.localized(),
+                                      message: nil,
+                                      preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel))
         alert.addAction(UIAlertAction(title: String.Constants.learnMore.localized(), style: .default, handler: { [weak self] _ in
             self?.view?.openLink(.unableToCreateAccountTutorial)
@@ -77,5 +83,18 @@ private extension EnterEmailViewPresenter {
         
         view?.present(alert, animated: true)
     }
+    
+    @MainActor
+    func showAccountNotFoundAlert() {
+        view?.showSimpleAlert(title: String.Constants.unableToFindAccountTitle.localized(),
+                              body: String.Constants.unableToFindAccountMessage.localized())
+    }
+}
 
+// MARK: - Private methods
+private extension EnterEmailViewPresenter {
+    enum SpecificError: String, CaseIterable {
+        case unableToCreateAccount = "Can't create user with following email"
+        case unableToFindAccount = "Can't load user with email:"
+    }
 }

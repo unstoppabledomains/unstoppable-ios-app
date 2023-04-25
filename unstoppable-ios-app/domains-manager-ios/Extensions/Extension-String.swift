@@ -186,6 +186,7 @@ extension String {
         static let addN = "ADD_N"
         static let rateUs = "RATE_US"
         static let both = "BOTH"
+        static let manage = "MANAGE"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -351,6 +352,8 @@ extension String {
         static let pleaseCheckInternetConnection = "PLEASE_CHECK_INTERNET_CONNECTION"
         static let failedToPickImageFromPhotoLibraryErrorMessage = "FAILED_TO_PICK_IMAGE_FROM_PHOTO_LIBRARY_ERROR_MESSAGE"
         static let unableToCreateAccount = "UNABLE_TO_CREATE_ACCOUNT"
+        static let unableToFindAccountTitle = "UNABLE_TO_FIND_ACCOUNT_TITLE"
+        static let unableToFindAccountMessage = "UNABLE_TO_FIND_ACCOUNT_MESSAGE"
 
         // iCloud not enabled
         static let iCloudNotEnabledAlertTitle = "ICLOUD_NOT_ENABLED_ALERT_TITLE"
@@ -739,7 +742,8 @@ extension String {
         static let profileBadgesLeaderboardRankMessage = "PROFILE_BADGES_LEADERBOARD_RANK_MESSAGE"
         static let profileBadgesLeaderboardHoldersMessage = "PROFILE_BADGES_LEADERBOARD_HOLDERS_MESSAGE"
         static let profileBadgesSponsoredByMessage = "PROFILE_BADGES_LEADERBOARD_SPONSORED_BY_MESSAGE"
-        
+        static let profileAddSocialProfiles = "PROFILE_ADD_SOCIAL_PROFILES"
+
         // Recent activities
         static let noRecentActivity = "NO_RECENT_ACTIVITY"
         static let noConnectedApps = "NO_CONNECTED_APPS"
