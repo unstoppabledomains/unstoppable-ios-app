@@ -60,10 +60,7 @@ extension DomainProfileSocialsSection: DomainProfileSection {
             
             if addedSocials.isEmpty {
                 snapshot.appendSections([.noSocials(headerDescription: sectionHeaderDescription)])
-                snapshot.appendItems([.noSocials(displayInfo: .init(id: id, manageButtonPressedCallback: { [weak self] in
-                    self?.logProfileSectionButtonPressedAnalyticEvent(button: .manageOnTheWebsite, parameters: [:])
-                    self?.controller?.manageDataOnTheWebsite()
-                }))])
+                snapshot.appendItems([.noSocials(displayInfo: .init(id: id))])
             } else {
                 let section: DomainProfileViewController.Section = .socials(headerDescription: sectionHeaderDescription)
                 snapshot.appendSections([section])
@@ -124,17 +121,14 @@ private extension DomainProfileSocialsSection {
                        isButtonVisible: Bool,
                        isButtonEnabled: Bool) -> DomainProfileSectionHeader.HeaderDescription {
         let secondaryTitle = numberOfAddedSocials == 0 ? "" : String(numberOfAddedSocials)
-        var headerButton: DomainProfileSectionHeader.HeaderButton?
-        if numberOfAddedSocials > 0 {
-            headerButton = .init(title: String.Constants.manage.localized(),
-                                 icon: .systemSquareAndPencil,
-                                 isEnabled: isButtonEnabled,
-                                 action: { [weak self] in
-                                    self?.logProfileSectionButtonPressedAnalyticEvent(button: .manageOnTheWebsite, parameters: [:])
-                self?.controller?.manageDataOnTheWebsite()
-            })
-        }
-
+        let headerButton: DomainProfileSectionHeader.HeaderButton? = .init(title: String.Constants.manage.localized(),
+                                                                           icon: .systemSquareAndPencil,
+                                                                           isEnabled: isButtonEnabled,
+                                                                           action: { [weak self] in
+            self?.logProfileSectionButtonPressedAnalyticEvent(button: .manageOnTheWebsite, parameters: [:])
+            self?.controller?.manageDataOnTheWebsite()
+        })
+        
         return .init(title: String.Constants.domainProfileSectionSocialsName.localized(),
                      secondaryTitle: secondaryTitle,
                      button: headerButton,

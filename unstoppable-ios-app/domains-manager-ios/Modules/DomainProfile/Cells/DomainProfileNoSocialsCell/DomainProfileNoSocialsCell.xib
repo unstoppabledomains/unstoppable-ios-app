@@ -21,7 +21,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="321" height="160"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="bKB-hc-ceR">
-                                <rect key="frame" x="24" y="40" width="273" height="80"/>
+                                <rect key="frame" x="24" y="48" width="273" height="64"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="QIV-ix-dMi">
                                         <rect key="frame" x="92.666666666666686" y="0.0" width="88" height="24"/>
@@ -53,30 +53,19 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="zhW-XE-VA3">
-                                        <rect key="frame" x="99" y="40" width="75" height="40"/>
+                                        <rect key="frame" x="115.99999999999999" y="40" width="41.333333333333329" height="24"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6nO-6L-c3X" customClass="RaisedTertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="75" height="40"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGv-G0-Ty1">
+                                                <rect key="frame" x="0.0" y="0.0" width="41.333333333333336" height="24"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="40" id="bPS-4T-Pxw"/>
-                                                </constraints>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                                                <connections>
-                                                    <action selector="manageButtonPressed" destination="gTV-IL-0wX" eventType="touchUpInside" id="hzp-yB-afP"/>
-                                                </connections>
-                                            </button>
-                                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kGv-G0-Ty1">
-                                                <rect key="frame" x="17.000000000000004" y="0.0" width="41.333333333333343" height="24"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="24" id="vgn-1G-Ag8"/>
+                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="24" id="vgn-1G-Ag8"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qIh-Nj-Fgp">
-                                                <rect key="frame" x="17.000000000000004" y="0.0" width="41.333333333333343" height="0.0"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="41.333333333333336" height="0.0"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -112,7 +101,6 @@
             <size key="customSize" width="321" height="179"/>
             <connections>
                 <outlet property="containerView" destination="4cz-2g-JBK" id="KSv-NF-FPu"/>
-                <outlet property="manageButton" destination="6nO-6L-c3X" id="G0g-pm-6sZ"/>
                 <outlet property="subtitleLabel" destination="qIh-Nj-Fgp" id="0D3-WO-LZl"/>
                 <outlet property="titleLabel" destination="kGv-G0-Ty1" id="YS6-Wn-MLd"/>
             </connections>
