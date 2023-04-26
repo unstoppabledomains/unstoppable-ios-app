@@ -406,6 +406,18 @@
 		30FFABA3286CA85600ADC2EA /* WCConnectedAppsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30FFABA1286CA85600ADC2EA /* WCConnectedAppsStorage.swift */; };
 		30FFABA4286CA85600ADC2EA /* WCConnectedAppsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30FFABA1286CA85600ADC2EA /* WCConnectedAppsStorage.swift */; };
 		30FFABA5286CA85600ADC2EA /* WCConnectedAppsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30FFABA1286CA85600ADC2EA /* WCConnectedAppsStorage.swift */; };
+		C600AB8329F807F60089107B /* DomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8229F807F60089107B /* DomainTransferService.swift */; };
+		C600AB8429F807F60089107B /* DomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8229F807F60089107B /* DomainTransferService.swift */; };
+		C600AB8529F807F60089107B /* DomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8229F807F60089107B /* DomainTransferService.swift */; };
+		C600AB8629F807F60089107B /* DomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8229F807F60089107B /* DomainTransferService.swift */; };
+		C600AB8829F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8729F807FF0089107B /* DomainTransferServiceProtocol.swift */; };
+		C600AB8929F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8729F807FF0089107B /* DomainTransferServiceProtocol.swift */; };
+		C600AB8A29F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8729F807FF0089107B /* DomainTransferServiceProtocol.swift */; };
+		C600AB8B29F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8729F807FF0089107B /* DomainTransferServiceProtocol.swift */; };
+		C600AB8D29F8085D0089107B /* MockDomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8C29F8085D0089107B /* MockDomainTransferService.swift */; };
+		C600AB8E29F8085D0089107B /* MockDomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8C29F8085D0089107B /* MockDomainTransferService.swift */; };
+		C600AB8F29F8085D0089107B /* MockDomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8C29F8085D0089107B /* MockDomainTransferService.swift */; };
+		C600AB9029F8085D0089107B /* MockDomainTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB8C29F8085D0089107B /* MockDomainTransferService.swift */; };
 		C6010D15287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6010D14287EE5C700FBD401 /* BuyDomainsWebViewController.swift */; };
 		C6010D16287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6010D14287EE5C700FBD401 /* BuyDomainsWebViewController.swift */; };
 		C6010D17287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6010D14287EE5C700FBD401 /* BuyDomainsWebViewController.swift */; };
@@ -3379,6 +3391,9 @@
 		30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolutionInitTests.swift; sourceTree = "<group>"; };
 		30F6A88F277BB5310086D70B /* UnsConfigManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsConfigManagerTests.swift; sourceTree = "<group>"; };
 		30FFABA1286CA85600ADC2EA /* WCConnectedAppsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCConnectedAppsStorage.swift; sourceTree = "<group>"; };
+		C600AB8229F807F60089107B /* DomainTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransferService.swift; sourceTree = "<group>"; };
+		C600AB8729F807FF0089107B /* DomainTransferServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransferServiceProtocol.swift; sourceTree = "<group>"; };
+		C600AB8C29F8085D0089107B /* MockDomainTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDomainTransferService.swift; sourceTree = "<group>"; };
 		C6010D14287EE5C700FBD401 /* BuyDomainsWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyDomainsWebViewController.swift; sourceTree = "<group>"; };
 		C6010D19287FBEFC00FBD401 /* DomainsPurchasedDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsPurchasedDetails.swift; sourceTree = "<group>"; };
 		C6010D1E287FC99400FBD401 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
@@ -4482,6 +4497,16 @@
 				30B6582226A9E19C004F707F /* StripeCore.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C600AB8129F807D60089107B /* DomainTransferService */ = {
+			isa = PBXGroup;
+			children = (
+				C600AB8729F807FF0089107B /* DomainTransferServiceProtocol.swift */,
+				C600AB8229F807F60089107B /* DomainTransferService.swift */,
+				C600AB8C29F8085D0089107B /* MockDomainTransferService.swift */,
+			);
+			path = DomainTransferService;
 			sourceTree = "<group>";
 		};
 		C6011ABA28F4043700342666 /* Cells */ = {
@@ -5964,6 +5989,7 @@
 				C6FE49DF285CBAB60058F9D1 /* CoreAppCoordinator */,
 				C655D01D2846308E00E80A65 /* DataAggregatorService */,
 				C62C3F9F283F606C0094FC93 /* DeepLinksService */,
+				C600AB8129F807D60089107B /* DomainTransferService */,
 				C6EECE952833A2F700978ED5 /* DomainRecordsService */,
 				C62247AE283CFF07002A0CBD /* DomainTransactionsService */,
 				C60CA2882832501D00AB1B36 /* QRCodeService */,
@@ -7955,6 +7981,7 @@
 				C62247B5283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
 				C61B3E7F283E441200500B6D /* EnterEmailToMintDomainsPresenter.swift in Sources */,
 				C628E38227FEE31D0044E408 /* DeviceHelper.swift in Sources */,
+				C600AB8D29F8085D0089107B /* MockDomainTransferService.swift in Sources */,
 				C6D2F13028729585005F4F2E /* DomainDisplayInfo.swift in Sources */,
 				C6A2D59F28504EB300327C47 /* ConnectedAppCell.swift in Sources */,
 				C609820A2822D92300546392 /* ToastMessageService.swift in Sources */,
@@ -8371,6 +8398,7 @@
 				C6010D1F287FC99400FBD401 /* Task.swift in Sources */,
 				C692C30E282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
 				30E549C32886DA27009833FB /* DefaultsStorage.swift in Sources */,
+				C600AB8329F807F60089107B /* DomainTransferService.swift in Sources */,
 				307B1D322603C087007B14C3 /* UDWalletZil.swift in Sources */,
 				C6456F202800303D00A517D5 /* ConfirmWordConfirmationCell.swift in Sources */,
 				C6F6AF6928A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
@@ -8417,6 +8445,7 @@
 				C6D6E4DE2817BF09008C66BB /* OnboardingProtocols.swift in Sources */,
 				C6D6E59928194AC9008C66BB /* TextTertiaryButton.swift in Sources */,
 				C6109E9828E6AA860027D5D8 /* GeneralAppContext.swift in Sources */,
+				C600AB8829F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */,
 				C645130C280808ED00413C51 /* Codable.swift in Sources */,
 				C6E041C4295499100080F8E3 /* DomainsCollectionTitleView.swift in Sources */,
 				C6C995A2289D313D00367362 /* CNavigationControllerChildTransitioning.swift in Sources */,
@@ -8654,6 +8683,7 @@
 				C6C995A0289D313D00367362 /* CInteractiveTransitioningController.swift in Sources */,
 				C635B028283393040058F14F /* ManageDomainRecordCell.swift in Sources */,
 				C6D6E5082817E5ED008C66BB /* OnboardingAddWalletPresenter.swift in Sources */,
+				C600AB8A29F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */,
 				C60982322823EF3900546392 /* AddWalletNavigationController.swift in Sources */,
 				C6D6E55628193A35008C66BB /* DomainsCollectionViewController.swift in Sources */,
 				C6C9DE962834A9DB00BAC36F /* TextWhiteButton.swift in Sources */,
@@ -8691,6 +8721,7 @@
 				C6C995D4289D313D00367362 /* CNavItemsTransitioning.swift in Sources */,
 				C6E1189B28F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6ED320A295D4C4F00BC6919 /* DomainsCollectionTitleMintingProgressView.swift in Sources */,
+				C600AB8F29F8085D0089107B /* MockDomainTransferService.swift in Sources */,
 				30EFBBDE27F4754E00B8D667 /* MainButton.swift in Sources */,
 				C6109E9A28E6AA860027D5D8 /* GeneralAppContext.swift in Sources */,
 				C66FCD0F2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
@@ -8838,6 +8869,7 @@
 				C66804CB280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
 				306C9ACF273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
 				C6A2D50C284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
+				C600AB8529F807F60089107B /* DomainTransferService.swift in Sources */,
 				3018AEB027E9D50A00E8C37D /* RestoreWalletViewController.swift in Sources */,
 				C6E041D029554C370080F8E3 /* GhostTertiaryButton.swift in Sources */,
 				C6124CCE29223066005E6537 /* DomainAvatarImageView.swift in Sources */,
@@ -9283,6 +9315,7 @@
 				C6C995A1289D313D00367362 /* CInteractiveTransitioningController.swift in Sources */,
 				C635B029283393040058F14F /* ManageDomainRecordCell.swift in Sources */,
 				C6D6E5092817E5ED008C66BB /* OnboardingAddWalletPresenter.swift in Sources */,
+				C600AB8B29F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */,
 				C60982332823EF3900546392 /* AddWalletNavigationController.swift in Sources */,
 				C6D6E55728193A35008C66BB /* DomainsCollectionViewController.swift in Sources */,
 				C6C9DE972834A9DB00BAC36F /* TextWhiteButton.swift in Sources */,
@@ -9320,6 +9353,7 @@
 				C6C995D5289D313D00367362 /* CNavItemsTransitioning.swift in Sources */,
 				C6E1189C28F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6ED320B295D4C4F00BC6919 /* DomainsCollectionTitleMintingProgressView.swift in Sources */,
+				C600AB9029F8085D0089107B /* MockDomainTransferService.swift in Sources */,
 				30EFBBDF27F4754E00B8D667 /* MainButton.swift in Sources */,
 				C6109E9B28E6AA860027D5D8 /* GeneralAppContext.swift in Sources */,
 				C66FCD102844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
@@ -9467,6 +9501,7 @@
 				C6C995D1289D313D00367362 /* CNavComponents.swift in Sources */,
 				C66804CC280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
 				306C9AD0273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
+				C600AB8629F807F60089107B /* DomainTransferService.swift in Sources */,
 				C6A2D50D284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
 				C6E041D129554C370080F8E3 /* GhostTertiaryButton.swift in Sources */,
 				C6124CCF29223066005E6537 /* DomainAvatarImageView.swift in Sources */,
@@ -9900,6 +9935,7 @@
 				C609821D2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C62247B6283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
 				C61B3E80283E441200500B6D /* EnterEmailToMintDomainsPresenter.swift in Sources */,
+				C600AB8E29F8085D0089107B /* MockDomainTransferService.swift in Sources */,
 				C6D2F13128729585005F4F2E /* DomainDisplayInfo.swift in Sources */,
 				C6A2D5A028504EB300327C47 /* ConnectedAppCell.swift in Sources */,
 				C628E38327FEE31D0044E408 /* DeviceHelper.swift in Sources */,
@@ -10316,6 +10352,7 @@
 				C692C30F282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
 				30E549C42886DA27009833FB /* DefaultsStorage.swift in Sources */,
 				307B1D332603C087007B14C3 /* UDWalletZil.swift in Sources */,
+				C600AB8429F807F60089107B /* DomainTransferService.swift in Sources */,
 				C6456F212800303D00A517D5 /* ConfirmWordConfirmationCell.swift in Sources */,
 				C6F6AF6A28A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C624D792281BCA1F00F55530 /* SettingsViewController.swift in Sources */,
@@ -10362,6 +10399,7 @@
 				C6D6E59A28194AC9008C66BB /* TextTertiaryButton.swift in Sources */,
 				C645130D280808ED00413C51 /* Codable.swift in Sources */,
 				C6109E9928E6AA860027D5D8 /* GeneralAppContext.swift in Sources */,
+				C600AB8929F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */,
 				C6C995A3289D313D00367362 /* CNavigationControllerChildTransitioning.swift in Sources */,
 				C6E041C5295499100080F8E3 /* DomainsCollectionTitleView.swift in Sources */,
 				C670695728981C84001FD241 /* TextWarningButton.swift in Sources */,
