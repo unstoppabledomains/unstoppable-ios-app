@@ -39,7 +39,8 @@ final class UDTextField: UIView, SelfNameable, NibInstantiateable {
     
     private var uiConfiguration = UIConfiguration()
     private var state: State = .default
-    private var placeholderStyle: PlaceholderStyle = .title
+    private var placeholderStyle: PlaceholderStyle = .title(additionalHint: nil)
+    private var rightViewType: RightViewType = .clear
     
     weak var delegate: UDTextFieldV2Delegate?
     
@@ -79,7 +80,12 @@ extension UDTextField {
         textField.keyboardType = keyboardType
     }
     
-    func setClearButtonMode(_ clearButtonMode: UITextField.ViewMode) {
+    func setRightViewType(_ rightViewType: RightViewType) {
+        self.rightViewType = rightViewType
+        setCurrentRightView()
+    }
+    
+    func setRightViewMode(_ clearButtonMode: UITextField.ViewMode) {
         textField.rightViewMode = clearButtonMode
     }
     
@@ -88,14 +94,26 @@ extension UDTextField {
     }
     
     func setPlaceholder(_ placeholder: String) {
-        switch placeholderStyle {
-        case .default:
-            placeholderLabel.isHidden = true
+        func setTextFieldPlaceholder(_ placeholder: String) {
             textField.attributedPlaceholder = NSAttributedString(string: placeholder,
                                                                  attributes: [.foregroundColor: UIColor.foregroundSecondary,
                                                                               .font: UIFont.currentFont(withSize: 16, weight: .regular)])
-        case .title:
+        }
+        
+        switch placeholderStyle {
+        case .default:
+            placeholderLabel.isHidden = true
+            setTextFieldPlaceholder(placeholder)
+        case .title(let additionalHint):
             let fontSize: CGFloat = (textField.isFirstResponder || !text.isEmpty) ? 12 : 16
+            
+            if let additionalHint {
+                setTextFieldPlaceholder(additionalHint)
+            } else {
+                textField.attributedPlaceholder = nil
+            }
+            
+            
             placeholderLabel.setAttributedTextWith(text: placeholder,
                                                    font: .currentFont(withSize: fontSize, weight: .regular),
                                                    textColor: .foregroundSecondary)
@@ -195,11 +213,6 @@ private extension UDTextField {
             self?.textField.becomeFirstResponder()
         } completion: { _ in }
     }
-    
-    @objc func didTapClearButton() {
-        UDVibration.buttonTap.vibrate()
-        setText("")
-    }
 }
 
 // MARK: - Private methods
@@ -259,7 +272,7 @@ private extension UDTextField {
         setupInputContainerView()
         setupEyeButton()
         setupTextField()
-        addClearButton()
+        setCurrentRightView()
         setupInfoContainerView()
         setSecureTextEntry(false)
     }
@@ -288,12 +301,9 @@ private extension UDTextField {
         textField.rightViewMode = .never
     }
     
-    func addClearButton() {
-        let clearButton = UIButton()
-        clearButton.addTarget(self, action: #selector(didTapClearButton), for: .touchUpInside)
-        clearButton.setImage(.crossWhite, for: .normal)
-        clearButton.tintColor = .foregroundMuted
-        textField.rightView = clearButton
+    func setCurrentRightView() {
+        let rightView = rightViewForType(rightViewType)
+        textField.rightView = rightView
     }
     
     func setupInfoContainerView() {
@@ -302,6 +312,63 @@ private extension UDTextField {
     
     func updateBorder() {
         inputContainerView.layer.borderColor = textField.isFirstResponder ? UIColor.clear.cgColor : UIColor.borderDefault.cgColor
+    }
+}
+
+// MARK: - Right view
+private extension UDTextField {
+    func rightViewForType(_ rightViewType: RightViewType) -> UIView {
+        switch rightViewType {
+        case .clear:
+            return rightViewClearButton()
+        case .paste:
+            return rightViewPasteButton()
+        case .loading:
+            return rightViewLoading()
+        case .success:
+            return rightViewSuccess()
+        }
+    }
+    
+    func rightViewClearButton() -> UIView {
+        let clearButton = UIButton()
+        clearButton.addTarget(self, action: #selector(didTapClearButton), for: .touchUpInside)
+        clearButton.setImage(.crossWhite, for: .normal)
+        clearButton.tintColor = .foregroundMuted
+        return clearButton
+    }
+    
+    @objc func didTapClearButton() {
+        UDVibration.buttonTap.vibrate()
+        setText("")
+    }
+    
+    func rightViewPasteButton() -> UIView {
+        let pasteButton = UIButton()
+        pasteButton.setTitle(String.Constants.paste.localized(), for: .normal)
+        pasteButton.addTarget(self, action: #selector(didTapPasteButton), for: .touchUpInside)
+        pasteButton.tintColor = .foregroundAccent
+        return pasteButton
+    }
+    
+    @objc func didTapPasteButton() {
+        UDVibration.buttonTap.vibrate()
+        let pasteboard = UIPasteboard.general.string
+        setText(pasteboard ?? "")
+    }
+    
+    func rightViewLoading() -> UIView {
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.startAnimating()
+        return activityIndicator
+    }
+    
+    func rightViewSuccess() -> UIView {
+        let view = UIImageView(image: .checkCircle)
+        view.tintColor = .foregroundSuccess
+        
+        return view
     }
 }
 
@@ -355,7 +422,14 @@ extension UDTextField {
     
     enum PlaceholderStyle {
         case `default`
-        case title
+        case title(additionalHint: String?)
+    }
+    
+    enum RightViewType {
+        case clear
+        case paste
+        case loading
+        case success
     }
 }
 

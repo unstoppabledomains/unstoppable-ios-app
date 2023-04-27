@@ -10,7 +10,8 @@ import UIKit
 @MainActor
 protocol EnterValueViewProtocol: BaseViewControllerProtocol & ViewWithDashesProgress {
     func set(title: String, icon: UIImage?, tintColor: UIColor?)
-    func setPlaceholder(_ placeholder: String)
+    func setPlaceholder(_ placeholder: String, style: UDTextField.PlaceholderStyle)
+    func setTextFieldRightViewType(_ rightViewType: UDTextField.RightViewType)
     func setValue(_ value: String)
     func setContinueButtonEnabled(_ isEnabled: Bool)
     func setKeyboardType(_ keyboardType: UIKeyboardType)
@@ -75,8 +76,13 @@ extension EnterValueViewController: EnterValueViewProtocol {
         iconImageView.isHidden = icon == nil
     }
     
-    func setPlaceholder(_ placeholder: String) {
+    func setPlaceholder(_ placeholder: String, style: UDTextField.PlaceholderStyle) {
+        udTextField.setPlaceholderStyle(style)
         udTextField.setPlaceholder(placeholder)
+    }
+    
+    func setTextFieldRightViewType(_ rightViewType: UDTextField.RightViewType) {
+        udTextField.setRightViewType(rightViewType)
     }
     
     func setValue(_ value: String) {
@@ -134,9 +140,9 @@ private extension EnterValueViewController {
 private extension EnterValueViewController {
     func updateClearButton() {
         if udTextField.text.isEmpty {
-            udTextField.setClearButtonMode(.never)
+            udTextField.setRightViewMode(.never)
         } else {
-            udTextField.setClearButtonMode(.always)
+            udTextField.setRightViewMode(.always)
         }
     }
 }
@@ -154,8 +160,7 @@ private extension EnterValueViewController {
     func setupTextFields() {
         udTextField.delegate = self
         udTextField.setAutocorrectionType(.no)
-        udTextField.setPlaceholderStyle(.default)
-        udTextField.setClearButtonMode(.always)
+        udTextField.setRightViewMode(.always)
     }
     
     func setupUI() {

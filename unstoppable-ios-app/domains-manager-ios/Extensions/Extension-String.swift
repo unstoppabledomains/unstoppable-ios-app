@@ -772,6 +772,18 @@ extension String {
         // Transfer
         static let transfer = "TRANSFER"
         static let transferDomain = "TRANSFER_DOMAIN"
+        static let recipient = "RECIPIENT"
+        static let domainNameOrAddress = "DOMAIN_NAME_OR_ADDRESS"
+        static let transferDomainRecipientNotResolvedError = "TRANSFER_DOMAIN_RECIPIENT_NOT_RESOLVED_ERROR"
+        static let transferDomainRecipientAddressInvalidError = "TRANSFER_DOMAIN_RECIPIENT_ADDRESS_INVALID_ERROR"
+        static let transferDomainRecipientSameWalletError = "TRANSFER_DOMAIN_RECIPIENT_SAME_WALLET_ERROR"
+        static let reviewAndConfirm = "REVIEW_AND_CONFIRM"
+        static let transferConsentActionIrreversible = "TRANSFER_CONSENT_ACTION_IRREVERSIBLE"
+        static let transferConsentNotExchange = "TRANSFER_CONSENT_NOT_EXCHANGE"
+        static let transferConsentValidAddress = "TRANSFER_CONSENT_VALID_ADDRESS"
+        static let clearRecordsUponTransfer = "CLEAR_RECORDS_UPON_TRANSFER"
+        static let optional = "OPTIONAL"
+        static let transferInProgress = "TRANSFER_IN_PROGRESS"
 
     }
     

@@ -28,6 +28,22 @@ final class EnterTransferDomainRecipientValuePresenter: EnterValueViewPresenter 
         view?.set(title: String.Constants.transferDomain.localized(),
                   icon: nil,
                   tintColor: nil)
+        view?.setPlaceholder(String.Constants.recipient.localized(),
+                             style: .title(additionalHint: String.Constants.domainNameOrAddress.localized()))
+        view?.setTextFieldRightViewType(.paste)
     }
     
+    override func valueDidChange(_ value: String) {
+        self.value = value
+        
+        if value.trimmedSpaces.isEmpty {
+            view?.setTextFieldRightViewType(.paste)
+        } else {
+            view?.setTextFieldRightViewType(.loading)
+            Task {
+                try? await Task.sleep(seconds: 0.5)
+                view?.setTextFieldRightViewType(.success)
+            }
+        }
+    }
 }

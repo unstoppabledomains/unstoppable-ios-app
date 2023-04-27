@@ -28,10 +28,10 @@ final class EnterDomainProfileSocialValuePresenter: EnterValueViewPresenter, Web
         view?.set(title: String.Constants.addN.localized(socialType.title),
                   icon: socialType.icon,
                   tintColor: socialType.styleColor)
-        view?.setPlaceholder(socialType.placeholder)
+        view?.setPlaceholder(socialType.placeholder, style: .default)
     }
     
-    override func valueValidationError() -> String? {
+    override func valueValidationError() async -> String? {
         guard let value = self.value else { return nil }
         
         var isValid: Bool = true
