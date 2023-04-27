@@ -28,6 +28,7 @@ final class TransactionInProgressViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [MintDomainsConfigurationCardCell.self,
                                                         MintingDomainListCell.self,
                                                         CollectionViewHeaderCell.self,
+                                                        DomainTransactionInProgressCell.self,
                                                         ReverseResolutionTransactionInProgressCardCell.self] }
     var presenter: TransactionInProgressViewPresenterProtocol!
     override var isNavBarHidden: Bool { presenter.isNavBarHidden }
@@ -108,10 +109,16 @@ private extension TransactionInProgressViewController {
     func configureDataSource() {
         dataSource = TransactionInProgressDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
             switch item {
-            case .card(let domainName):
+            case .nameCard(let domainName):
                 let cell = collectionView.dequeueCellOfType(MintDomainsConfigurationCardCell.self, forIndexPath: indexPath)
                 
                 cell.setWith(domainName: domainName)
+                collectionView.isScrollEnabled = false
+                return cell
+            case .domainCard(let domain):
+                let cell = collectionView.dequeueCellOfType(DomainTransactionInProgressCell.self, forIndexPath: indexPath)
+                
+                cell.setWith(domain: domain)
                 collectionView.isScrollEnabled = false
                 return cell
             case .reverseResolutionCard(let domain, let walletInfo):
@@ -141,8 +148,12 @@ private extension TransactionInProgressViewController {
                 cell.setRunningProgressAnimation()
                 
                 let buttonTitle = isGranted ? String.Constants.weWillNotifyYouWhenFinished.localized() : String.Constants.notifyMeWhenFinished.localized()
+                var subtitleDescription: CollectionViewHeaderCell.SubtitleDescription?
+                if let subtitle = content.subtitle {
+                    subtitleDescription = .init(subtitle: subtitle)
+                }
                 cell.setTitle(content.title,
-                              subtitleDescription: .init(subtitle: content.subtitle),
+                              subtitleDescription: subtitleDescription,
                               icon: .refreshIcon,
                               buttonConfiguration: .init(title: buttonTitle,
                                                          image: .bellIcon,
@@ -198,7 +209,8 @@ extension TransactionInProgressViewController {
     
     enum Item: Hashable {
         case header(_ headerDescription: HeaderDescription)
-        case card(domain: String)
+        case nameCard(domain: String)
+        case domainCard(domain: DomainDisplayInfo)
         case reverseResolutionCard(domain: DomainDisplayInfo, walletInfo: WalletDisplayInfo)
         case firstMintingList(domain: String, isSelectable: Bool)
         case mintingList(domain: DomainDisplayInfo, isSelectable: Bool)
@@ -221,6 +233,7 @@ extension TransactionInProgressViewController {
             case unspecified
             case minting
             case reverseResolution
+            case transfer
             
             var title: String {
                 switch self {
@@ -230,9 +243,11 @@ extension TransactionInProgressViewController {
                     return String.Constants.mintingInProgressTitle.localized()
                 case .reverseResolution:
                     return String.Constants.reverseResolutionSetupInProgressTitle.localized()
+                case .transfer:
+                    return String.Constants.transferInProgress.localized()
                 }
             }
-            var subtitle: String {
+            var subtitle: String? {
                 switch self {
                 case .unspecified:
                     return "Unspecified"
@@ -240,6 +255,8 @@ extension TransactionInProgressViewController {
                     return String.Constants.mintingInProgressSubtitle.localized()
                 case .reverseResolution:
                     return String.Constants.reverseResolutionSetupInProgressSubtitle.localized()
+                case .transfer:
+                    return nil
                 }
             }
             

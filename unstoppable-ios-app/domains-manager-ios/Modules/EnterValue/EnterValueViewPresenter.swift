@@ -23,7 +23,7 @@ class EnterValueViewPresenter {
     var progress: Double? { nil }
     var analyticsName: Analytics.ViewName { .unspecified }
     private(set) weak var view: EnterValueViewProtocol?
-    private(set) var value: String?
+    var value: String?
     
     init(view: EnterValueViewProtocol, value: String?) {
         self.view = view

@@ -687,3 +687,20 @@
 
 // NFC
 "CREATE_NFC_TAG" = "Create NFC Tag";
+
+// Transfer
+"TRANSFER" = "Transfer";
+"TRANSFER_DOMAIN" = "Transfer domain";
+"RECIPIENT" = "Recipient";
+"DOMAIN_NAME_OR_ADDRESS" = "Domain name or address";
+"TRANSFER_DOMAIN_RECIPIENT_NOT_RESOLVED_ERROR" = "Domain name couldn't be resolved";
+"TRANSFER_DOMAIN_RECIPIENT_ADDRESS_INVALID_ERROR" = "Wallet address is incorrect";
+"TRANSFER_DOMAIN_RECIPIENT_SAME_WALLET_ERROR" = "Transfering domain to same wallet is not possible";
+"REVIEW_AND_CONFIRM" = "Review and confirm";
+"TRANSFER_CONSENT_ACTION_IRREVERSIBLE" = "I understand that I am transferring ownership of this domain and this action is irreversible";
+"TRANSFER_CONSENT_NOT_EXCHANGE" = "I’m not transferring to an exchange address";
+"TRANSFER_CONSENT_VALID_ADDRESS" = "I’m transferring to an ETH or Polygon wallet address";
+"CLEAR_RECORDS_UPON_TRANSFER" = "Clear records upon transfer";
+"OPTIONAL" = "Optional";
+"TRANSFER_IN_PROGRESS" = "Transfer in progress";
+

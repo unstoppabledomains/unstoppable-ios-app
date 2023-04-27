@@ -768,6 +768,23 @@ extension String {
 
         // NFC
         static let createNFCTag = "CREATE_NFC_TAG"
+        
+        // Transfer
+        static let transfer = "TRANSFER"
+        static let transferDomain = "TRANSFER_DOMAIN"
+        static let recipient = "RECIPIENT"
+        static let domainNameOrAddress = "DOMAIN_NAME_OR_ADDRESS"
+        static let transferDomainRecipientNotResolvedError = "TRANSFER_DOMAIN_RECIPIENT_NOT_RESOLVED_ERROR"
+        static let transferDomainRecipientAddressInvalidError = "TRANSFER_DOMAIN_RECIPIENT_ADDRESS_INVALID_ERROR"
+        static let transferDomainRecipientSameWalletError = "TRANSFER_DOMAIN_RECIPIENT_SAME_WALLET_ERROR"
+        static let reviewAndConfirm = "REVIEW_AND_CONFIRM"
+        static let transferConsentActionIrreversible = "TRANSFER_CONSENT_ACTION_IRREVERSIBLE"
+        static let transferConsentNotExchange = "TRANSFER_CONSENT_NOT_EXCHANGE"
+        static let transferConsentValidAddress = "TRANSFER_CONSENT_VALID_ADDRESS"
+        static let clearRecordsUponTransfer = "CLEAR_RECORDS_UPON_TRANSFER"
+        static let optional = "OPTIONAL"
+        static let transferInProgress = "TRANSFER_IN_PROGRESS"
+
     }
     
     struct Segues {
@@ -855,5 +872,19 @@ extension String {
     static func itTook (from start: Date) -> String {
         let elapsed = Date().timeIntervalSince(start)
         return String(format: "It took %.2f sec", elapsed)
+    }
+    
+    func isMatchingRegexPattern(_ regexPattern: String) -> Bool {
+        guard let regex = try? NSRegularExpression(pattern: regexPattern, options: .caseInsensitive) else {
+            Debugger.printFailure("Regex cannot be used", critical: true)
+            return !self.isEmpty
+        }
+        let fullRange = NSRange(0..<self.count)
+        
+        if let result = regex.firstMatch(in: self, options: [], range: fullRange),
+           result.numberOfRanges > 0 {
+            return true
+        }
+        return false
     }
 }
