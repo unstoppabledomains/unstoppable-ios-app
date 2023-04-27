@@ -2029,6 +2029,14 @@
 		C673D58729FA3867001CC77C /* ReviewTransferDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D58129FA3867001CC77C /* ReviewTransferDetailsCell.xib */; };
 		C673D58829FA3867001CC77C /* ReviewTransferDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D58129FA3867001CC77C /* ReviewTransferDetailsCell.xib */; };
 		C673D58929FA3867001CC77C /* ReviewTransferDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D58129FA3867001CC77C /* ReviewTransferDetailsCell.xib */; };
+		C673D58D29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D58B29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift */; };
+		C673D58E29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D58B29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift */; };
+		C673D58F29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D58B29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift */; };
+		C673D59029FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D58B29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift */; };
+		C673D59129FA3E26001CC77C /* ReviewTransferSwitcherCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D58C29FA3E26001CC77C /* ReviewTransferSwitcherCell.xib */; };
+		C673D59229FA3E26001CC77C /* ReviewTransferSwitcherCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D58C29FA3E26001CC77C /* ReviewTransferSwitcherCell.xib */; };
+		C673D59329FA3E26001CC77C /* ReviewTransferSwitcherCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D58C29FA3E26001CC77C /* ReviewTransferSwitcherCell.xib */; };
+		C673D59429FA3E26001CC77C /* ReviewTransferSwitcherCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D58C29FA3E26001CC77C /* ReviewTransferSwitcherCell.xib */; };
 		C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
 		C6745990280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
 		C6745991280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
@@ -3844,6 +3852,8 @@
 		C673D57129FA3645001CC77C /* ReviewAndConfirmTransferViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewAndConfirmTransferViewController.xib; sourceTree = "<group>"; };
 		C673D58029FA3867001CC77C /* ReviewTransferDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewTransferDetailsCell.swift; sourceTree = "<group>"; };
 		C673D58129FA3867001CC77C /* ReviewTransferDetailsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewTransferDetailsCell.xib; sourceTree = "<group>"; };
+		C673D58B29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewTransferSwitcherCell.swift; sourceTree = "<group>"; };
+		C673D58C29FA3E26001CC77C /* ReviewTransferSwitcherCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewTransferSwitcherCell.xib; sourceTree = "<group>"; };
 		C674598E280E9CA20074CBE5 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		C679B5EB2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileWeb3WebsiteLoadingCell.swift; sourceTree = "<group>"; };
 		C679B5EC2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileWeb3WebsiteLoadingCell.xib; sourceTree = "<group>"; };
@@ -5986,6 +5996,7 @@
 		C673D57E29FA384C001CC77C /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				C673D58A29FA3DCC001CC77C /* ReviewTransferSwitcherCell */,
 				C673D57F29FA3853001CC77C /* ReviewTransferDetailsCell */,
 			);
 			path = Cells;
@@ -5998,6 +6009,15 @@
 				C673D58129FA3867001CC77C /* ReviewTransferDetailsCell.xib */,
 			);
 			path = ReviewTransferDetailsCell;
+			sourceTree = "<group>";
+		};
+		C673D58A29FA3DCC001CC77C /* ReviewTransferSwitcherCell */ = {
+			isa = PBXGroup;
+			children = (
+				C673D58B29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift */,
+				C673D58C29FA3E26001CC77C /* ReviewTransferSwitcherCell.xib */,
+			);
+			path = ReviewTransferSwitcherCell;
 			sourceTree = "<group>";
 		};
 		C674598D280E9C560074CBE5 /* WebViewController */ = {
@@ -7476,6 +7496,7 @@
 				C6E04156295053100080F8E3 /* DomainsCollectionCarouselCardCell.xib in Resources */,
 				C60982E8282A7CE000546392 /* ConfirmWordListCell.xib in Resources */,
 				303CB4B6273A894F0064495D /* resolver-keys.json in Resources */,
+				C673D59129FA3E26001CC77C /* ReviewTransferSwitcherCell.xib in Resources */,
 				3064868D2527253C00388026 /* LaunchScreen.storyboard in Resources */,
 				C692C33A282E4C9000C31393 /* SecuritySettingsActionCell.xib in Resources */,
 				C68953822834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */,
@@ -7605,6 +7626,7 @@
 				C669C3AB2912AD4200837F21 /* DomainProfileBadgeCell.xib in Resources */,
 				C665B9B728325282005E535C /* DomainDetailsViewController.xib in Resources */,
 				3018AEBF27EB2AF200E8C37D /* HappyEnd.storyboard in Resources */,
+				C673D59329FA3E26001CC77C /* ReviewTransferSwitcherCell.xib in Resources */,
 				C6A2D562284F3E3200327C47 /* SignTransactionDomainSelectionViewController.xib in Resources */,
 				C60982B2282A737400546392 /* CreateWalletViewController.xib in Resources */,
 				C692C330282E4C6500C31393 /* SecuritySettingsAuthSelectionCell.xib in Resources */,
@@ -7783,6 +7805,7 @@
 				C6E04159295053100080F8E3 /* DomainsCollectionCarouselCardCell.xib in Resources */,
 				307F85FF267B60300070A9A6 /* LaunchScreen.storyboard in Resources */,
 				C692C33D282E4C9000C31393 /* SecuritySettingsActionCell.xib in Resources */,
+				C673D59429FA3E26001CC77C /* ReviewTransferSwitcherCell.xib in Resources */,
 				C68953852834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */,
 				C6D0F43F283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib in Resources */,
 				C6C57C5B2869DC810093FD8C /* WallpaperDomainImagePreviewView.xib in Resources */,
@@ -7929,6 +7952,7 @@
 				C6E04157295053100080F8E3 /* DomainsCollectionCarouselCardCell.xib in Resources */,
 				C60982E9282A7CE000546392 /* ConfirmWordListCell.xib in Resources */,
 				303CB4B7273A894F0064495D /* resolver-keys.json in Resources */,
+				C673D59229FA3E26001CC77C /* ReviewTransferSwitcherCell.xib in Resources */,
 				C692C33B282E4C9000C31393 /* SecuritySettingsActionCell.xib in Resources */,
 				C68953832834CB730046CBA3 /* AddCurrencyViewController.xib in Resources */,
 				C6D0F43D283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib in Resources */,
@@ -8497,6 +8521,7 @@
 				30BFA4D027DE0C1400644CD5 /* TutorialViewController.swift in Sources */,
 				C63538E62949C2C100ECABA6 /* DomainsPFPInfoStorage.swift in Sources */,
 				C6456F252800308200A517D5 /* UICollectionViewCell.swift in Sources */,
+				C673D58D29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */,
 				C6456F3428005D8500A517D5 /* UITextView.swift in Sources */,
 				30BFA4E427E24A4700644CD5 /* RecoveryPhraseViewController.swift in Sources */,
 				3018AEB327EA091000E8C37D /* EnterBackupViewController.swift in Sources */,
@@ -9042,6 +9067,7 @@
 				C62C3FBF283F6E410094FC93 /* MintDomainsConfigurationViewController.swift in Sources */,
 				C6E1188528F5709D00C6AD4D /* WalletConnectPushNotificationsSubscribeInfo.swift in Sources */,
 				C6B91EB629BB718100389FF5 /* StripeService.swift in Sources */,
+				C673D58F29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */,
 				C6E1188A28F570A200C6AD4D /* WalletConnectPushNotificationsUnsubscribeInfo.swift in Sources */,
 				C679B5F82918F38100F543A7 /* DefaultCodable.swift in Sources */,
 				C650AC3F298105C900A398AB /* UDSegmentedControl.swift in Sources */,
@@ -9679,6 +9705,7 @@
 				307F85A8267B60300070A9A6 /* StripePaymentHelper.swift in Sources */,
 				C62C3FC0283F6E410094FC93 /* MintDomainsConfigurationViewController.swift in Sources */,
 				C6B91EB729BB718100389FF5 /* StripeService.swift in Sources */,
+				C673D59029FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */,
 				C6E1188628F5709D00C6AD4D /* WalletConnectPushNotificationsSubscribeInfo.swift in Sources */,
 				C6E1188B28F570A200C6AD4D /* WalletConnectPushNotificationsUnsubscribeInfo.swift in Sources */,
 				C650AC40298105C900A398AB /* UDSegmentedControl.swift in Sources */,
@@ -10466,6 +10493,7 @@
 				C6456F262800308200A517D5 /* UICollectionViewCell.swift in Sources */,
 				C63538E72949C2C100ECABA6 /* DomainsPFPInfoStorage.swift in Sources */,
 				C6456F3528005D8500A517D5 /* UITextView.swift in Sources */,
+				C673D58E29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */,
 				30BFA4E527E24A4700644CD5 /* RecoveryPhraseViewController.swift in Sources */,
 				3018AEB427EA091000E8C37D /* EnterBackupViewController.swift in Sources */,
 				C691CFA928C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,

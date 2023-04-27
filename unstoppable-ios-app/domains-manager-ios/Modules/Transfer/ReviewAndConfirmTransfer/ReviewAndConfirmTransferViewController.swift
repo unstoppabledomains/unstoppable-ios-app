@@ -20,7 +20,8 @@ final class ReviewAndConfirmTransferViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     var cellIdentifiers: [UICollectionViewCell.Type] { [CollectionViewHeaderCell.self,
-                                                        ReviewTransferDetailsCell.self] }
+                                                        ReviewTransferDetailsCell.self,
+                                                        ReviewTransferSwitcherCell.self] }
     var presenter: ReviewAndConfirmTransferViewPresenterProtocol!
     private var dataSource: ReviewAndConfirmTransferDataSource!
     override var scrollableContentYOffset: CGFloat? { 23 }
@@ -102,6 +103,11 @@ private extension ReviewAndConfirmTransferViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .switcher(let configuration):
+                let cell = collectionView.dequeueCellOfType(ReviewTransferSwitcherCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
     }
@@ -130,9 +136,11 @@ private extension ReviewAndConfirmTransferViewController {
             switch section {
             case .header, .transferDetails, .none:
                 Void()
+            case .consentItems:
+                layoutSection.interGroupSpacing = -11
+                addBackground()
             default:
-                let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
-                layoutSection.decorationItems = [background]
+                addBackground()
             }
             
             
@@ -159,10 +167,45 @@ extension ReviewAndConfirmTransferViewController {
     enum Item: Hashable {
         case header
         case transferDetails(configuration: TransferDetailsConfiguration)
+        case switcher(configuration: TransferSwitcherConfiguration)
     }
     
     struct TransferDetailsConfiguration: Hashable {
         let domain: DomainDisplayInfo
         let recipient: TransferDomainNavigationManager.RecipientType
+    }
+    
+    struct TransferSwitcherConfiguration: Hashable {
+        let isOn: Bool
+        let type: TransferSwitcherCellType
+    }
+    
+    enum TransferSwitcherCellType: Hashable {
+        case consentIrreversible
+        case consentNotExchange
+        case consentValidAddress
+        case clearRecords
+        
+        var title: String {
+            switch self {
+            case .consentIrreversible:
+                return String.Constants.transferConsentActionIrreversible.localized()
+            case .consentNotExchange:
+                return String.Constants.transferConsentNotExchange.localized()
+            case .consentValidAddress:
+                return String.Constants.transferConsentValidAddress.localized()
+            case .clearRecords:
+                return String.Constants.clearRecordsUponTransfer.localized()
+            }
+        }
+        
+        var subtitle: String? {
+            switch self {
+            case .consentIrreversible, .consentNotExchange, .consentValidAddress:
+                return nil
+            case .clearRecords:
+                return String.Constants.optional.localized()
+            }
+        }
     }
 }

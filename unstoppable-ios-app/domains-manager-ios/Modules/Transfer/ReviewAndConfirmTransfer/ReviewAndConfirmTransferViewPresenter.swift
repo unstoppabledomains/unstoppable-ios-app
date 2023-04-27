@@ -60,6 +60,18 @@ private extension ReviewAndConfirmTransferViewPresenter {
             snapshot.appendItems([.transferDetails(configuration: .init(domain: domain,
                                                                         recipient: recipient))])
             
+            snapshot.appendSections([.consentItems])
+            snapshot.appendItems([.switcher(configuration: .init(isOn: false,
+                                                                 type: .consentIrreversible)),
+                                  .switcher(configuration: .init(isOn: false,
+                                                                 type: .consentNotExchange)),
+                                  .switcher(configuration: .init(isOn: false,
+                                                                 type: .consentValidAddress))])
+            
+            snapshot.appendSections([.clearRecords])
+            snapshot.appendItems([.switcher(configuration: .init(isOn: false,
+                                                                 type: .clearRecords))])
+            
             await view?.applySnapshot(snapshot, animated: true)
         }
     }
