@@ -21,7 +21,7 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
          domainDisplayInfo: DomainDisplayInfo,
          transactionsService: DomainTransactionsServiceProtocol,
          notificationsService: NotificationsServiceProtocol,
-         transferDomainFlowManager: TransferDomainFlowManager) {
+         transferDomainFlowManager: TransferDomainFlowManager?) {
         self.domainDisplayInfo = domainDisplayInfo
         self.transferDomainFlowManager = transferDomainFlowManager
         super.init(view: view,
@@ -69,10 +69,15 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
     
     @MainActor
     override func dismiss() {
+        guard let transferDomainFlowManager else {
+            super.dismiss()
+            return
+        }
+        
         stopTimer()
         
         Task {
-            try? await transferDomainFlowManager?.handle(action: .transactionFinished)
+            try? await transferDomainFlowManager.handle(action: .transactionFinished)
         }
     }
 }

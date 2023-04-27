@@ -513,6 +513,29 @@ class UDRouter: DomainProfileSignatureValidator {
             viewController.present(vc, animated: true)
         }
     }
+    
+    func showTransferInProgressScreen(domain: DomainDisplayInfo,
+                                      transferDomainFlowManager: TransferDomainFlowManager?,
+                                      in viewController: UIViewController) {
+        let vc = buildTransferInProgressModule(domain: domain,
+                                               transferDomainFlowManager: transferDomainFlowManager)
+        
+        presentInEmptyCRootNavigation(vc, in: viewController)
+    }
+    
+    func buildTransferInProgressModule(domain: DomainDisplayInfo,
+                                       transferDomainFlowManager: TransferDomainFlowManager?) -> UIViewController {
+        let vc = TransactionInProgressViewController.nibInstance()
+        let presenter = TransferDomainTransactionInProgressViewPresenter(view: vc,
+                                                                         domainDisplayInfo: domain,
+                                                                         transactionsService: appContext.domainTransactionsService,
+                                                                         notificationsService: appContext.notificationsService,
+                                                                         transferDomainFlowManager: transferDomainFlowManager)
+        
+        vc.presenter = presenter
+        return vc
+    }
+    
 }
 
 // MARK: - Private methods

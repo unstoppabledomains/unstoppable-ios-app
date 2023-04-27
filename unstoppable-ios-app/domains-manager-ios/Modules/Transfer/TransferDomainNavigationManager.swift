@@ -68,6 +68,9 @@ extension TransferDomainNavigationManager: TransferDomainFlowManager {
                                                                       to: recipient.ownerAddress,
                                                                       configuration: configuration,
                                                                       paymentConfirmationDelegate: topViewController)
+            Task.detached {
+                await appContext.dataAggregatorService.aggregateData()
+            }
             moveToStep(.transferInProgressOf(domain: domainDisplayInfo))
         case .transactionFinished:
             dismiss(result: .transferred)
@@ -164,15 +167,8 @@ private extension TransferDomainNavigationManager {
             return vc
         case .transferInProgressOf(let domain):
             self.didTransferDomain = true
-            let vc = TransactionInProgressViewController.nibInstance()
-            let presenter = TransferDomainTransactionInProgressViewPresenter(view: vc,
-                                                                             domainDisplayInfo: domain,
-                                                                             transactionsService: appContext.domainTransactionsService,
-                                                                             notificationsService: appContext.notificationsService,
-                                                                             transferDomainFlowManager: self)
-            
-            vc.presenter = presenter
-            return vc
+            return UDRouter().buildTransferInProgressModule(domain: domain,
+                                                            transferDomainFlowManager: self)
         }
     }
 }
