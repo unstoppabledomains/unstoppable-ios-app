@@ -134,7 +134,7 @@ extension Analytics {
         case mintDomainsConfiguration
         case chooseFirstPrimaryDomain, choosePrimaryDomainDuringMinting, changePrimaryDomainFromSettings // Deprecated
         case sortDomainsForTheFirstTime, sortDomainsDuringMinting, sortDomainsFromSettings, sortDomainsFromHome, sortDomainsFromHomeSearch
-        case primaryDomainMintingInProgress
+        case primaryDomainMintingInProgress, transferInProgress, reverseResolutionTransactionInProgress
         case domainDetails
         case settings, securitySettings
         case walletDetails, renameWallet
@@ -148,7 +148,7 @@ extension Analytics {
         case addEmail
         case failedToFetchDomainProfile, signMessageInExternalWalletToLoadDomainProfile
         case domainProfileImageDetails
-        case transferEnterRecipient
+        case transferEnterRecipient, transferReviewAndConfirm
     }
 }
 
@@ -250,6 +250,7 @@ extension Analytics {
         case showMoreMintingDomains
         case rearrangeDomains, searchDomains
         case moveToTop
+        case resetRecords
     }
 }
 

@@ -15,20 +15,13 @@ final class TransferDomainNavigationManager: CNavigationController {
     
     typealias TransferResultCallback = ((Result)->())
     
-    private let dataAggregatorService: DataAggregatorServiceProtocol = appContext.dataAggregatorService
-    private let udWalletsService: UDWalletsServiceProtocol = appContext.udWalletsService
     private var mode: Mode!
-    private var wallet: UDWallet?
-    private var walletInfo: WalletDisplayInfo?
+    private var didTransferDomain = false
     var transferResultCallback: TransferResultCallback?
     
-    convenience init(mode: Mode,
-                     wallet: UDWallet,
-                     walletInfo: WalletDisplayInfo) {
+    convenience init(mode: Mode) {
         self.init()
         self.mode = mode
-        self.wallet = wallet
-        self.walletInfo = walletInfo
     }
     
     override func viewDidLoad() {
@@ -50,7 +43,7 @@ final class TransferDomainNavigationManager: CNavigationController {
         }
         
         if self.isLastViewController(topViewController) {
-            self.dismiss(result: .cancelled)
+            self.dismiss(result: didTransferDomain ?.transferred : .cancelled)
         }
         
         return super.popViewController(animated: animated)
@@ -64,17 +57,20 @@ extension TransferDomainNavigationManager: TransferDomainFlowManager {
         switch action {
         case .recipientSelected(let recipient, let domain):
             moveToStep(.reviewAndConfirmTransferOf(domain: domain, recipient: recipient))
-        case .confirmedTransferOf(let domain, let recipient):
-            Void()
-//            guard let topViewController = self.topViewController as? PaymentConfirmationDelegate else {
-//                dismiss(result: .cancelled)
-//                Debugger.printFailure("Failed to get payment confirmation delegate to set RR", critical: true)
-//                return
-//            }
-//            let domain = try await dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
-//            try await udWalletsService.setReverseResolution(to: domain,
-//                                                            paymentConfirmationDelegate: topViewController)
-//            dismiss(result: .transferred(domain: domainDisplayInfo))
+        case .confirmedTransferOf(let domainDisplayInfo, let recipient, let configuration ):
+            guard let topViewController = self.topViewController as? PaymentConfirmationDelegate else {
+                dismiss(result: .cancelled)
+                Debugger.printFailure("Failed to get payment confirmation delegate to set RR", critical: true)
+                return
+            }
+            let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
+            try await appContext.domainTransferService.transferDomain(domain: domain,
+                                                                      to: recipient.ownerAddress,
+                                                                      configuration: configuration,
+                                                                      paymentConfirmationDelegate: topViewController)
+            moveToStep(.transferInProgressOf(domain: domainDisplayInfo))
+        case .transactionFinished:
+            dismiss(result: .transferred)
         }
     }
 }
@@ -112,14 +108,14 @@ private extension TransferDomainNavigationManager {
     }
     
     func isLastViewController(_ viewController: UIViewController) -> Bool {
-        viewController == rootViewController
+        viewController == rootViewController ||
+        viewController is TransactionInProgressViewController
     }
     
     func dismiss(result: Result) {
         view.endEditing(true)
-        dismiss(animated: true) { [weak self] in
-            self?.transferResultCallback?(result)
-        }
+        transferResultCallback?(result)
+        dismiss(animated: true)
     }
 }
 
@@ -148,12 +144,6 @@ private extension TransferDomainNavigationManager {
     }
     
     func createStep(_ step: Step) -> UIViewController? {
-        guard let wallet = self.wallet,
-              let walletInfo = self.walletInfo else {
-            Debugger.printFailure("Wallet is not set for RR setup", critical: true)
-            return nil
-        }
-       
         switch step {
         case .selectRecipientFor(let domain):
             let vc = EnterValueViewController.nibInstance()
@@ -173,7 +163,16 @@ private extension TransferDomainNavigationManager {
             vc.presenter = presenter
             return vc
         case .transferInProgressOf(let domain):
-            return nil
+            self.didTransferDomain = true
+            let vc = TransactionInProgressViewController.nibInstance()
+            let presenter = TransferDomainTransactionInProgressViewPresenter(view: vc,
+                                                                             domainDisplayInfo: domain,
+                                                                             transactionsService: appContext.domainTransactionsService,
+                                                                             notificationsService: appContext.notificationsService,
+                                                                             transferDomainFlowManager: self)
+            
+            vc.presenter = presenter
+            return vc
         }
     }
 }
@@ -191,12 +190,13 @@ extension TransferDomainNavigationManager {
     
     enum Action {
         case recipientSelected(recipient: RecipientType, forDomain: DomainDisplayInfo)
-        case confirmedTransferOf(domain: DomainDisplayInfo, recipient: RecipientType)
+        case confirmedTransferOf(domain: DomainDisplayInfo, recipient: RecipientType, configuration: TransferDomainConfiguration)
+        case transactionFinished
     }
     
     enum Result {
         case cancelled
-        case transferred(domain: DomainDisplayInfo)
+        case transferred
     }
     
     enum RecipientType: Hashable {

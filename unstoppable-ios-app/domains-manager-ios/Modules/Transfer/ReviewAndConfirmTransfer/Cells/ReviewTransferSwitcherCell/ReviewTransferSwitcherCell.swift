@@ -13,6 +13,8 @@ final class ReviewTransferSwitcherCell: UICollectionViewCell {
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var switcher: UISwitch!
     
+    private var valueChangedCallback: ((Bool)->())?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -22,6 +24,7 @@ final class ReviewTransferSwitcherCell: UICollectionViewCell {
 // MARK: - Open methods
 extension ReviewTransferSwitcherCell {
     func setWith(configuration: ReviewAndConfirmTransferViewController.TransferSwitcherConfiguration) {
+        valueChangedCallback = configuration.valueChangedCallback
         switcher.isOn = configuration.isOn
         
         let title = configuration.type.title
@@ -41,6 +44,6 @@ extension ReviewTransferSwitcherCell {
 // MARK: - Actions
 private extension ReviewTransferSwitcherCell {
     @IBAction func switchValueChanged(_ sender: Any) {
-        
+        valueChangedCallback?(switcher.isOn)
     }
 }

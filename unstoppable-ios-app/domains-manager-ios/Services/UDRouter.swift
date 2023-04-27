@@ -181,16 +181,12 @@ class UDRouter: DomainProfileSignatureValidator {
     }
     
     func runTransferDomainFlow(with mode: TransferDomainNavigationManager.Mode,
-                               wallet: UDWallet,
-                               walletDisplayInfo: WalletDisplayInfo,
                                transferResultCallback: @escaping TransferDomainNavigationManager.TransferResultCallback,
                                in viewController: UIViewController) {
-        let mintDomainsNavigationController = TransferDomainNavigationManager(mode: mode, wallet: wallet, walletInfo: walletDisplayInfo)
+        let mintDomainsNavigationController = TransferDomainNavigationManager(mode: mode)
         mintDomainsNavigationController.modalPresentationStyle = .fullScreen
         mintDomainsNavigationController.transferResultCallback = transferResultCallback
         viewController.present(mintDomainsNavigationController, animated: true)
-//        viewController.cNavigationController?.pushViewController(mintDomainsNavigationController,
-//                                                                 animated: true)
     }
     
     func showWalletSelectionToMintDomainsScreen(selectedWallet: UDWallet?,

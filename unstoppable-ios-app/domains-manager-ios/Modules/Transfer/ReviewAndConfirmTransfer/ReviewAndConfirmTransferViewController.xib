@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ReviewAndConfirmTransferViewController" customModule="domains_manager_ios" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="Rib-oz-jf0" id="sK6-fl-14H"/>
+                <outlet property="transferButton" destination="WJ4-iq-aYz" id="zU2-Ae-oM0"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -30,6 +31,17 @@
                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                     </collectionViewFlowLayout>
                 </collectionView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WJ4-iq-aYz" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="16" y="756" width="361" height="48"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="50v-vb-aJe"/>
+                    </constraints>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                    <connections>
+                        <action selector="transferButtonPressed" destination="-1" eventType="touchUpInside" id="Mve-Rf-9za"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -37,7 +49,10 @@
                 <constraint firstItem="Rib-oz-jf0" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="7sm-FG-mFp"/>
                 <constraint firstItem="Rib-oz-jf0" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="9Ky-Yn-P2q"/>
                 <constraint firstItem="Rib-oz-jf0" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="Hdg-Ah-x0V"/>
+                <constraint firstItem="WJ4-iq-aYz" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="Qzx-Ni-3IV"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="WJ4-iq-aYz" secondAttribute="bottom" constant="14" id="ScH-QV-gTT"/>
                 <constraint firstAttribute="bottom" secondItem="Rib-oz-jf0" secondAttribute="bottom" id="tui-VX-H8S"/>
+                <constraint firstItem="WJ4-iq-aYz" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="uZY-eg-Ift"/>
             </constraints>
             <point key="canvasLocation" x="17.557251908396946" y="41.549295774647888"/>
         </view>

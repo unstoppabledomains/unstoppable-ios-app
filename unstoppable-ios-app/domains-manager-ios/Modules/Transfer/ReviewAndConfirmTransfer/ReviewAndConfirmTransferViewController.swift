@@ -10,6 +10,8 @@ import UIKit
 @MainActor
 protocol ReviewAndConfirmTransferViewProtocol: BaseCollectionViewControllerProtocol & ViewWithDashesProgress {
     func applySnapshot(_ snapshot: ReviewAndConfirmTransferSnapshot, animated: Bool)
+    func setTransferButtonEnabled(_ isEnabled: Bool)
+    func setLoadingIndicator(active: Bool)
 }
 
 typealias ReviewAndConfirmTransferDataSource = UICollectionViewDiffableDataSource<ReviewAndConfirmTransferViewController.Section, ReviewAndConfirmTransferViewController.Item>
@@ -19,9 +21,14 @@ typealias ReviewAndConfirmTransferSnapshot = NSDiffableDataSourceSnapshot<Review
 final class ReviewAndConfirmTransferViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet private weak var transferButton: MainButton!
+
+    override var analyticsName: Analytics.ViewName { presenter.analyticsName }
+    
     var cellIdentifiers: [UICollectionViewCell.Type] { [CollectionViewHeaderCell.self,
                                                         ReviewTransferDetailsCell.self,
-                                                        ReviewTransferSwitcherCell.self] }
+                                                        ReviewTransferSwitcherCell.self,
+                                                        DomainTransactionInProgressCell.self] }
     var presenter: ReviewAndConfirmTransferViewPresenterProtocol!
     private var dataSource: ReviewAndConfirmTransferDataSource!
     override var scrollableContentYOffset: CGFloat? { 23 }
@@ -43,6 +50,20 @@ extension ReviewAndConfirmTransferViewController: ReviewAndConfirmTransferViewPr
     func applySnapshot(_ snapshot: ReviewAndConfirmTransferSnapshot, animated: Bool) {
         dataSource.apply(snapshot, animatingDifferences: animated)
     }
+    
+    func setTransferButtonEnabled(_ isEnabled: Bool) {
+        transferButton.isEnabled = isEnabled
+    }
+    
+    func setLoadingIndicator(active: Bool) {
+        transferButton.isUserInteractionEnabled = !active
+        if active {
+            transferButton.showLoadingIndicator()
+        } else {
+            transferButton.hideLoadingIndicator()
+        }
+    }
+    
 }
 
 // MARK: - UICollectionViewDelegate
@@ -68,6 +89,14 @@ extension ReviewAndConfirmTransferViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - Actions
+private extension ReviewAndConfirmTransferViewController {
+    @IBAction func transferButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .transfer)
+        presenter.transferButtonPressed()
+    }
+}
+
 // MARK: - Private functions
 private extension ReviewAndConfirmTransferViewController {
 
@@ -78,6 +107,7 @@ private extension ReviewAndConfirmTransferViewController {
     func setup() {
         addProgressDashesView()
         setupCollectionView()
+        transferButton.setTitle(String.Constants.transfer.localized(), image: nil)
     }
     
     func setupCollectionView() {
@@ -176,8 +206,20 @@ extension ReviewAndConfirmTransferViewController {
     }
     
     struct TransferSwitcherConfiguration: Hashable {
+    
         let isOn: Bool
         let type: TransferSwitcherCellType
+        var valueChangedCallback: ((Bool)->())
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.isOn == rhs.isOn &&
+            lhs.type == rhs.type
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(isOn)
+            hasher.combine(type)
+        }
     }
     
     enum TransferSwitcherCellType: Hashable {

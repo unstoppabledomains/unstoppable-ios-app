@@ -43,9 +43,19 @@ private extension ReviewTransferDetailsCell {
     }
     
     func setValue(_ value: String, to label: UILabel) {
+        let width = label.superview?.bounds.width ?? 0
+        let font = UIFont.currentFont(withSize: 16, weight: .medium)
         label.setAttributedTextWith(text: value,
-                                    font: .currentFont(withSize: 16, weight: .medium),
+                                    font: font,
                                     textColor: .foregroundDefault,
                                     lineBreakMode: .byTruncatingTail)
+        
+        let requiredWidth = value.width(withConstrainedHeight: label.bounds.height, font: font)
+        if requiredWidth > width {
+            label.adjustsFontSizeToFitWidth = true
+            label.minimumScaleFactor = 0.85
+        } else {
+            label.adjustsFontSizeToFitWidth = false
+        }
     }
 }

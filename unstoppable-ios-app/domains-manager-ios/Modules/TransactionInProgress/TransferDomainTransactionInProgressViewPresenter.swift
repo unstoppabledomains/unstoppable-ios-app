@@ -1,33 +1,29 @@
 //
-//  ReverseResolutionTransactionInProgressViewPresenter.swift
+//  TransferDomainTransactionInProgressViewPresenter.swift
 //  domains-manager-ios
 //
-//  Created by Oleg Kuplin on 15.09.2022.
+//  Created by Oleg Kuplin on 27.04.2023.
 //
 
 import Foundation
 
-class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProgressViewPresenter {
+class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgressViewPresenter {
     
-    override var analyticsName: Analytics.ViewName { .reverseResolutionTransactionInProgress }
-    private let domain: DomainItem
     private let domainDisplayInfo: DomainDisplayInfo
-    private let walletInfo: WalletDisplayInfo
-    private let dataAggregatorService: DataAggregatorServiceProtocol
     private var domainTransaction: TransactionItem?
-    override var content: TransactionInProgressViewController.HeaderDescription.Content { .reverseResolution }
+    override var analyticsName: Analytics.ViewName { .primaryDomainMintingInProgress }
+    override var content: TransactionInProgressViewController.HeaderDescription.Content { .transfer }
     
+    
+    private weak var transferDomainFlowManager: TransferDomainFlowManager?
+
     init(view: TransactionInProgressViewProtocol,
-         domain: DomainItem,
          domainDisplayInfo: DomainDisplayInfo,
-         walletInfo: WalletDisplayInfo,
          transactionsService: DomainTransactionsServiceProtocol,
          notificationsService: NotificationsServiceProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
-        self.domain = domain
+         transferDomainFlowManager: TransferDomainFlowManager) {
         self.domainDisplayInfo = domainDisplayInfo
-        self.walletInfo = walletInfo
-        self.dataAggregatorService = dataAggregatorService
+        self.transferDomainFlowManager = transferDomainFlowManager
         super.init(view: view,
                    transactionsService: transactionsService,
                    notificationsService: notificationsService)
@@ -36,9 +32,9 @@ class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProg
     
     override func fillUpMintingDomains(in snapshot: inout TransactionInProgressSnapshot) {
         snapshot.appendSections([.card])
-        snapshot.appendItems([.reverseResolutionCard(domain: domainDisplayInfo, walletInfo: walletInfo)])
+        snapshot.appendItems([.domainCard(domain: domainDisplayInfo)])
     }
-        
+    
     override func viewTransactionButtonPressed() {
         Task {
             guard let transactionHash = self.domainTransaction?.transactionHash else { return }
@@ -49,37 +45,46 @@ class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProg
     
     override func refreshMintingTransactions() {
         Task {
-            let transactions = try await transactionsService.updateTransactionsListFor(domains: [domain.name])
-
+            let transactions = try await transactionsService.updateTransactionsListFor(domains: [domainDisplayInfo.name])
+            
             if let domainReverseResolutionTransaction = transactions
-                                                            .filterPending(extraCondition: {$0.operation == .setReverseResolution})
-                                                            .first {
+                .filterPending(extraCondition: { $0.operation == .transferDomain })
+                .first {
                 domainTransaction = domainReverseResolutionTransaction
             } else {
                 domainTransaction = nil
             }
-
+            
             await view?.setActionButtonHidden(domainTransaction?.transactionHash == nil)
             if domainTransaction == nil {
                 await dismiss()
                 if !isNotificationPermissionsGranted {
-                    await dataAggregatorService.aggregateData()
+                    await appContext.dataAggregatorService.aggregateData()
                 }
             } else {
                 await showData()
             }
         }
     }
+    
+    @MainActor
+    override func dismiss() {
+        stopTimer()
+        
+        Task {
+            try? await transferDomainFlowManager?.handle(action: .transactionFinished)
+        }
+    }
 }
 
 // MARK: - ExternalEventsServiceListener
-extension ReverseResolutionTransactionInProgressViewPresenter: ExternalEventsServiceListener {
+extension TransferDomainTransactionInProgressViewPresenter: ExternalEventsServiceListener {
     func didReceive(event: ExternalEvent) {
         Task {
             switch event {
-            case .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved:
+            case .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainTransferred:
                 refreshMintingTransactions()
-            case .wcDeepLink, .walletConnectRequest, .domainTransferred, .mintingFinished, .domainProfileUpdated:
+            case .wcDeepLink, .walletConnectRequest, .mintingFinished, .domainProfileUpdated:
                 return
             }
         }

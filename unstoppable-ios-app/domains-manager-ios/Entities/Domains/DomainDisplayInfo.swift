@@ -75,7 +75,7 @@ extension DomainDisplayInfo {
 // MARK: - State
 extension DomainDisplayInfo {
     enum State {
-        case `default`, minting, updatingRecords
+        case `default`, minting, updatingRecords, transfer
     }
 }
 

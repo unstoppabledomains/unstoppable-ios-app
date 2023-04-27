@@ -34,7 +34,7 @@ final class MintingInProgressViewPresenter: BaseMintingTransactionInProgressView
     override func fillUpMintingDomains(in snapshot: inout TransactionInProgressSnapshot) {
         if pendingDomains.count == 1 {
             snapshot.appendSections([.card])
-            snapshot.appendItems([.card(domain: pendingDomains[0].name)])
+            snapshot.appendItems([.nameCard(domain: pendingDomains[0].name)])
         } else {
             snapshot.appendSections([.list])
             snapshot.appendItems(pendingDomains.map({

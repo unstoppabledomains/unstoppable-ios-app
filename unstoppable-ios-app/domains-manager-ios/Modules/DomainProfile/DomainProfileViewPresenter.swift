@@ -206,9 +206,14 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
         guard let view else { return }
         
         UDRouter().runTransferDomainFlow(with: .singleDomainTransfer(domain: dataHolder.domain),
-                                         wallet: dataHolder.wallet,
-                                         walletDisplayInfo: dataHolder.walletInfo,
-                                         transferResultCallback: { result in },
+                                         transferResultCallback: { [weak self] result in
+            switch result {
+            case .cancelled:
+                return
+            case .transferred:
+                self?.view?.presentingViewController?.dismiss(animated: true)
+            }
+        },
                                          in: view)
     }
 }

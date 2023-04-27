@@ -43,6 +43,16 @@ class BaseTransactionInProgressViewPresenter {
     @MainActor func setActionButtonStyle() {
         view?.setActionButtonStyle(.viewTransaction)
     }
+    
+    @MainActor
+    func dismiss() {
+        stopTimer()
+        if view?.presentedViewController != nil {
+            view?.presentingViewController?.dismiss(animated: true)
+        } else {
+            view?.dismiss(animated: true)
+        }
+    }
 }
 
 // MARK: - MintingInProgressViewPresenterProtocol
@@ -81,16 +91,6 @@ extension BaseTransactionInProgressViewPresenter {
         fillUpMintingDomains(in: &snapshot)
         
         view?.applySnapshot(snapshot, animated: true)
-    }
-    
-    @MainActor
-    func dismiss() {
-        stopTimer()
-        if view?.presentedViewController != nil {
-            view?.presentingViewController?.dismiss(animated: true)
-        } else {
-            view?.dismiss(animated: true)
-        }
     }
 }
 
