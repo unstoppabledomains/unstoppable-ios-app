@@ -25,6 +25,7 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
     func didTapCopyDomainButton()
     func didTapAboutProfilesButton()
     func didTapMintedOnChainButton()
+    func didTapTransferButton()
 }
 
 final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteURLValidator, DomainProfileSignatureValidator {
@@ -199,6 +200,16 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
         
         let chain = dataHolder.domain.getBlockchainType()
         appContext.pullUpViewService.showDomainMintedOnChainDescriptionPullUp(in: view, chain: chain)
+    }
+    
+    func didTapTransferButton() {
+        guard let view else { return }
+        
+        UDRouter().runTransferDomainFlow(with: .singleDomainTransfer(domain: dataHolder.domain),
+                                         wallet: dataHolder.wallet,
+                                         walletDisplayInfo: dataHolder.walletInfo,
+                                         transferResultCallback: { result in },
+                                         in: view)
     }
 }
 
@@ -1024,6 +1035,11 @@ private extension DomainProfileViewPresenter {
                 viewWalletSubtitle = "\(domainName) \u{2B82} \(walletAddress)"
             }
             topActionsGroup.append(.viewWallet(subtitle: viewWalletSubtitle))
+            
+            if domain.isInteractable,
+               state == .default {
+                topActionsGroup.append(.transfer)
+            }
             
             if isSetReverseResolutionActionAvailable, isSetReverseResolutionActionVisible {
                 switch state {

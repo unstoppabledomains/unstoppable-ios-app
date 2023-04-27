@@ -768,6 +768,11 @@ extension String {
 
         // NFC
         static let createNFCTag = "CREATE_NFC_TAG"
+        
+        // Transfer
+        static let transfer = "TRANSFER"
+        static let transferDomain = "TRANSFER_DOMAIN"
+
     }
     
     struct Segues {

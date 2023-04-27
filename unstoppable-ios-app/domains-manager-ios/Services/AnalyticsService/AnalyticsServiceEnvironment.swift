@@ -236,7 +236,7 @@ extension Analytics {
         
         // Domain profile
         case banner, avatar, qrCode, publicProfile
-        case copyDomain, aboutProfile, mintedOnChain, badgeSponsor
+        case copyDomain, aboutProfile, mintedOnChain, badgeSponsor, transfer
         case domainProfileGeneralInfo, domainProfileMetadata, domainProfileWeb3Website
         case uploadPhoto, changePhoto, removePhoto, viewPhoto
         case badge

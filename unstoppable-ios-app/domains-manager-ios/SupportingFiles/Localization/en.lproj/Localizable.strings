@@ -687,3 +687,8 @@
 
 // NFC
 "CREATE_NFC_TAG" = "Create NFC Tag";
+
+// Transfer
+"TRANSFER" = "Transfer";
+"TRANSFER_DOMAIN" = "Transfer domain";
+

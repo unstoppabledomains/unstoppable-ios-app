@@ -89,7 +89,7 @@ extension TransferDomainNavigationManager: CNavigationControllerDelegate {
 // MARK: - UIAdaptivePresentationControllerDelegate
 extension TransferDomainNavigationManager: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        TransferResultCallback?(.cancelled)
+        transferResultCallback?(.cancelled)
     }
 }
 

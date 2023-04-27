@@ -25,6 +25,9 @@ final class EnterTransferDomainRecipientValuePresenter: EnterValueViewPresenter 
         super.viewDidLoad()
         
         view?.setDashesProgress(0.25)
+        view?.set(title: String.Constants.transferDomain.localized(),
+                  icon: nil,
+                  tintColor: nil)
     }
     
 }
