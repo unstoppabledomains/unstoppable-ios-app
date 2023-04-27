@@ -51,6 +51,10 @@ class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDat
             .filter({ $0.session.topic == topic})
             .first
     }
+    
+    func substitute(walletData: WalletConnectServiceV2.ExtWalletDataV2, at index: Int) {
+        self.substitute(element: walletData, at: index)
+    }
 }
 
 protocol WalletConnectServiceV2Protocol: AnyObject {
@@ -154,6 +158,10 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
         Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions:\n\(settledSessions)")
+//        print(settledSessions.first!.expiryDate)
+//        Task {
+//            try! await Sign.instance.disconnect(topic: settledSessions.first!.topic)
+//        }
         #endif
         
         setUpAuthSubscribing()
@@ -404,6 +412,21 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             delegate?.didConnect(to: nil, with: nil, successfullyAddedCallback: nil)
             return
         }
+        
+        
+        ///
+        ///
+        
+        if let walletToUpdateSession = self.walletStorageV2.retrieveAll().enumerated().filter({$0.element.session.pairingTopic == session.pairingTopic}).first {
+            let newData = WalletConnectServiceV2.ExtWalletDataV2(session: SessionV2Proxy(session))
+            self.walletStorageV2.substitute(walletData: newData, at: walletToUpdateSession.offset)
+            Debugger.printWarning("WC2: Connected to a new session with the old pairing")
+            return
+        }
+        
+        
+        ///
+        ///
 
         self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session)) { [weak self] in
             if self?.walletStorageV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
@@ -1206,16 +1229,32 @@ extension WalletConnectServiceV2 {
         let settledSessionsTopics = settledSessions.map { $0.topic }
         let foundActiveSessions = sessions.filter({ settledSessionsTopics.contains($0.topic)})
         if foundActiveSessions.count > 0 { return foundActiveSessions }
-        // TODO: find pairing and try to reconnect
         
+        
+        // no active sessions found::
         guard let pairingTopic = sessions.first?.pairingTopic else { return [] }
+        
+        // check if it active: Sign.instance.getPairings()
+        // if not -- kill the Connected Ext Wallet and show UI to re-connect
+        // return
+        
+        // active paring found::
         Task {
             do {
                 try await Sign.instance.connect(requiredNamespaces: namespaces, topic: pairingTopic)
+                
             } catch {
                 //TODO: failed to reconnect
                 print("failed to reconnect")
             }
+            print("Request to reconnect sent")
+            // TODO: show UI and wait until 'Agreed'
+            // launch Ext Wallet
+            // return
+
+            //
+            
+            // TODO IN SETTLED SESSION CALLBACK: replace old session record for the new one (find by pairingTopic)
         }
         return []
     }
