@@ -83,6 +83,7 @@ extension EnterValueViewController: EnterValueViewProtocol {
     
     func setTextFieldRightViewType(_ rightViewType: UDTextField.RightViewType) {
         udTextField.setRightViewType(rightViewType)
+        updateClearButton()
     }
     
     func setValue(_ value: String) {
@@ -139,7 +140,8 @@ private extension EnterValueViewController {
 // MARK: - Private functions
 private extension EnterValueViewController {
     func updateClearButton() {
-        if udTextField.text.isEmpty {
+        if udTextField.text.isEmpty,
+           udTextField.rightViewType == .clear {
             udTextField.setRightViewMode(.never)
         } else {
             udTextField.setRightViewMode(.always)
@@ -160,7 +162,6 @@ private extension EnterValueViewController {
     func setupTextFields() {
         udTextField.delegate = self
         udTextField.setAutocorrectionType(.no)
-        udTextField.setRightViewMode(.always)
     }
     
     func setupUI() {

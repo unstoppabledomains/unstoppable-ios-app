@@ -40,7 +40,7 @@ final class UDTextField: UIView, SelfNameable, NibInstantiateable {
     private var uiConfiguration = UIConfiguration()
     private var state: State = .default
     private var placeholderStyle: PlaceholderStyle = .title(additionalHint: nil)
-    private var rightViewType: RightViewType = .clear
+    private(set) var rightViewType: RightViewType = .clear
     
     weak var delegate: UDTextFieldV2Delegate?
     
@@ -255,7 +255,13 @@ private extension UDTextField {
         switch placeholderStyle {
         case .default:
             return false
-        case .title:
+        case .title(let additionalHint):
+            if additionalHint != nil {
+                return false 
+            } else if textField.isFirstResponder {
+                return false
+            }
+            
             if let text {
                 return text.isEmpty
             }
@@ -303,6 +309,7 @@ private extension UDTextField {
     
     func setCurrentRightView() {
         let rightView = rightViewForType(rightViewType)
+        textField.rightViewType = rightViewType
         textField.rightView = rightView
     }
     
@@ -345,9 +352,13 @@ private extension UDTextField {
     
     func rightViewPasteButton() -> UIView {
         let pasteButton = UIButton()
-        pasteButton.setTitle(String.Constants.paste.localized(), for: .normal)
+        let font = UIFont.currentFont(withSize: 16, weight: .medium)
+        let text = String.Constants.paste.localized()
+        let height: CGFloat = 24
+        pasteButton.setAttributedTextWith(text: text, font: font, textColor: .foregroundAccent)
+        let textWidth = text.width(withConstrainedHeight: 24, font: font)
+        pasteButton.bounds.size = CGSize(width: textWidth, height: height)
         pasteButton.addTarget(self, action: #selector(didTapPasteButton), for: .touchUpInside)
-        pasteButton.tintColor = .foregroundAccent
         return pasteButton
     }
     
@@ -430,17 +441,47 @@ extension UDTextField {
         case paste
         case loading
         case success
+        
+        var yOffset: CGFloat {
+            switch self {
+            case .clear, .paste, .loading, .success:
+                return -8
+            }
+        }
+        
+        var size: CGSize {
+            switch self {
+            case .clear, .loading, .success:
+                return .square(size: 20)
+            case .paste:
+                let font = UIFont.currentFont(withSize: 16, weight: .medium)
+                let text = String.Constants.paste.localized()
+                let height: CGFloat = 24
+                let textWidth = text.width(withConstrainedHeight: 24, font: font)
+                return CGSize(width: textWidth, height: height)
+            }
+        }
     }
 }
 
 final class CustomTextField: UITextField {
+    
+    var rightViewType: UDTextField.RightViewType = .clear
+        
     override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
-        let buttonSize: CGFloat = 20
-        let x = bounds.width - buttonSize
-        let y = (bounds.height / 2) - (buttonSize / 2)
+        let buttonSize: CGSize = rightViewType.size
+        let x = bounds.width - buttonSize.width
+        let y = (bounds.height / 2) - (buttonSize.height / 2)
+        let yOffset = rightViewType.yOffset
         return CGRect(x: x,
-               y: y,
-               width: buttonSize,
-               height: buttonSize)
+                      y: y + yOffset,
+                      width: buttonSize.width,
+                      height: buttonSize.height)
+    }
+    
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        var newBounds = super.editingRect(forBounds: bounds)
+        newBounds.size.width -= 12
+        return newBounds
     }
 }
