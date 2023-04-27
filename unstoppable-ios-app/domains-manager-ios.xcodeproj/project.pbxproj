@@ -422,6 +422,10 @@
 		C600AB9929FA0CFF0089107B /* TransferDomainNavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB9729FA0CFF0089107B /* TransferDomainNavigationManager.swift */; };
 		C600AB9A29FA0CFF0089107B /* TransferDomainNavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB9729FA0CFF0089107B /* TransferDomainNavigationManager.swift */; };
 		C600AB9B29FA0CFF0089107B /* TransferDomainNavigationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB9729FA0CFF0089107B /* TransferDomainNavigationManager.swift */; };
+		C600AB9D29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB9C29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift */; };
+		C600AB9E29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB9C29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift */; };
+		C600AB9F29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB9C29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift */; };
+		C600ABA029FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C600AB9C29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift */; };
 		C6010D15287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6010D14287EE5C700FBD401 /* BuyDomainsWebViewController.swift */; };
 		C6010D16287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6010D14287EE5C700FBD401 /* BuyDomainsWebViewController.swift */; };
 		C6010D17287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6010D14287EE5C700FBD401 /* BuyDomainsWebViewController.swift */; };
@@ -3399,6 +3403,7 @@
 		C600AB8729F807FF0089107B /* DomainTransferServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransferServiceProtocol.swift; sourceTree = "<group>"; };
 		C600AB8C29F8085D0089107B /* MockDomainTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDomainTransferService.swift; sourceTree = "<group>"; };
 		C600AB9729FA0CFF0089107B /* TransferDomainNavigationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferDomainNavigationManager.swift; sourceTree = "<group>"; };
+		C600AB9C29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterTransferDomainRecipientValuePresenter.swift; sourceTree = "<group>"; };
 		C6010D14287EE5C700FBD401 /* BuyDomainsWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyDomainsWebViewController.swift; sourceTree = "<group>"; };
 		C6010D19287FBEFC00FBD401 /* DomainsPurchasedDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsPurchasedDetails.swift; sourceTree = "<group>"; };
 		C6010D1E287FC99400FBD401 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
@@ -5809,6 +5814,7 @@
 				C669C3652912197C00837F21 /* EnterValueViewPresenter.swift */,
 				C669C3792912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift */,
 				C664B6582914EB0400A76154 /* EnterEmailValuePresenter.swift */,
+				C600AB9C29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift */,
 				C669C3662912197C00837F21 /* EnterValueViewController.swift */,
 				C669C3672912197C00837F21 /* EnterValueViewController.xib */,
 			);
@@ -8161,6 +8167,7 @@
 				C6C4218729379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				C65DEA7B29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
 				C60E9BA228218DD300CD7593 /* LegalType.swift in Sources */,
+				C600AB9D29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */,
 				C6045B87281C160000B16761 /* SettingsFooterView.swift in Sources */,
 				C628E34F27FDB2A30044E408 /* UITableView.swift in Sources */,
 				C66804D9280D9EC8007E6390 /* SetupPasscodeViewController.swift in Sources */,
@@ -8913,6 +8920,7 @@
 				307F83EC267A339F0070A9A6 /* DomainItem.swift in Sources */,
 				C692C30B282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
 				C692C353282EA63100C31393 /* AppearanceSettingsViewPresenter.swift in Sources */,
+				C600AB9F29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */,
 				C6E1188F28F67DA200C6AD4D /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C671E3AE28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */,
 				C60981DC2822565300546392 /* WalletDetailsViewController.swift in Sources */,
@@ -9546,6 +9554,7 @@
 				3026FA2427E77AFF00FE058B /* BackupWalletViewController.swift in Sources */,
 				C692C30C282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
 				C692C354282EA63100C31393 /* AppearanceSettingsViewPresenter.swift in Sources */,
+				C600ABA029FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */,
 				C6E1189028F67DA200C6AD4D /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C671E3AF28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */,
 				C60981DD2822565300546392 /* WalletDetailsViewController.swift in Sources */,
@@ -10118,6 +10127,7 @@
 				C6C4218829379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				C65DEA7C29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
 				C60E9BA328218DD300CD7593 /* LegalType.swift in Sources */,
+				C600AB9E29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */,
 				C6045B88281C160000B16761 /* SettingsFooterView.swift in Sources */,
 				C628E35027FDB2A30044E408 /* UITableView.swift in Sources */,
 				C66804DA280D9EC8007E6390 /* SetupPasscodeViewController.swift in Sources */,

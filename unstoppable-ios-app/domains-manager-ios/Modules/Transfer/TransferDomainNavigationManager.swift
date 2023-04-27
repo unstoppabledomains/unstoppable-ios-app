@@ -13,14 +13,14 @@ protocol TransferDomainFlowManager: AnyObject {
 
 final class TransferDomainNavigationManager: CNavigationController {
     
-    typealias ReverseResolutionSetCallback = ((Result)->())
+    typealias TransferResultCallback = ((Result)->())
     
     private let dataAggregatorService: DataAggregatorServiceProtocol = appContext.dataAggregatorService
     private let udWalletsService: UDWalletsServiceProtocol = appContext.udWalletsService
     private var mode: Mode!
     private var wallet: UDWallet?
     private var walletInfo: WalletDisplayInfo?
-    var reverseResolutionSetCallback: ReverseResolutionSetCallback?
+    var transferResultCallback: TransferResultCallback?
     
     convenience init(mode: Mode,
                      wallet: UDWallet,
@@ -89,7 +89,7 @@ extension TransferDomainNavigationManager: CNavigationControllerDelegate {
 // MARK: - UIAdaptivePresentationControllerDelegate
 extension TransferDomainNavigationManager: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        reverseResolutionSetCallback?(.cancelled)
+        TransferResultCallback?(.cancelled)
     }
 }
 
@@ -118,7 +118,7 @@ private extension TransferDomainNavigationManager {
     func dismiss(result: Result) {
         view.endEditing(true)
         dismiss(animated: true) { [weak self] in
-            self?.reverseResolutionSetCallback?(result)
+            self?.transferResultCallback?(result)
         }
     }
 }
@@ -156,15 +156,12 @@ private extension TransferDomainNavigationManager {
        
         switch step {
         case .selectRecipientFor(let domain):
-            return nil
-//            let vc = SetupReverseResolutionViewController.nibInstance()
-//            let presenter = SetupWalletsReverseResolutionPresenter(view: vc,
-//                                                                   wallet: wallet,
-//                                                                   walletInfo: walletInfo,
-//                                                                   udWalletsService: udWalletsService,
-//                                                                   setupWalletsReverseResolutionFlowManager: self)
-//            vc.presenter = presenter
-//            return vc
+            let vc = EnterValueViewController.nibInstance()
+            let presenter = EnterTransferDomainRecipientValuePresenter(view: vc,
+                                                                       domain: domain,
+                                                                       transferDomainFlowManager: self)
+            vc.presenter = presenter
+            return vc
         case .reviewAndConfirmTransferOf(let mode, let recipient):
             return nil
 //            let vc = ChooseReverseResolutionDomainViewController.nibInstance()

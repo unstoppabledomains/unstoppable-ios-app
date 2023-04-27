@@ -9,7 +9,7 @@ import UIKit
 
 @MainActor
 protocol EnterValueViewProtocol: BaseViewControllerProtocol & ViewWithDashesProgress {
-    func set(title: String, icon: UIImage, tintColor: UIColor?)
+    func set(title: String, icon: UIImage?, tintColor: UIColor?)
     func setPlaceholder(_ placeholder: String)
     func setValue(_ value: String)
     func setContinueButtonEnabled(_ isEnabled: Bool)
@@ -68,10 +68,11 @@ final class EnterValueViewController: BaseViewController {
 extension EnterValueViewController: EnterValueViewProtocol {
     var progress: Double? { presenter.progress }
 
-    func set(title: String, icon: UIImage, tintColor: UIColor?) {
+    func set(title: String, icon: UIImage?, tintColor: UIColor?) {
         titleLabel.setTitle(title)
         iconImageView.image = icon
         iconImageView.tintColor = tintColor ?? .foregroundMuted
+        iconImageView.isHidden = icon == nil
     }
     
     func setPlaceholder(_ placeholder: String) {
