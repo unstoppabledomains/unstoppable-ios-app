@@ -31,7 +31,7 @@ final class EnterDomainProfileSocialValuePresenter: EnterValueViewPresenter, Web
         view?.setPlaceholder(socialType.placeholder, style: .default)
     }
     
-    override func valueValidationError() async -> String? {
+    override func valueValidationError() -> String? {
         guard let value = self.value else { return nil }
         
         var isValid: Bool = true
