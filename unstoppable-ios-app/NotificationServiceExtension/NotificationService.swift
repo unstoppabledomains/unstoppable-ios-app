@@ -71,6 +71,8 @@ private extension NotificationService {
             return
         case .domainProfileUpdated(let domainName):
             setDomainProfileUpdatedContent(in: notificationContent, domainName: domainName, completion: completion)
+        case .badgeAdded(let domainName, let count):
+            setBadgeAddedContent(in: notificationContent, domainName: domainName, count: count, completion: completion)
         }
     }
     
@@ -169,6 +171,17 @@ private extension NotificationService {
                                         completion: @escaping NotificationContentCallback) {
         notificationContent.title = domainName
         notificationContent.body = String.Constants.domainProfileUpdated.localized()
+        loadDomainAvatarFor(domainName: domainName,
+                            in: notificationContent,
+                            completion: completion)
+    }
+    
+    func setBadgeAddedContent(in notificationContent: UNMutableNotificationContent,
+                              domainName: String,
+                              count: Int,
+                              completion: @escaping NotificationContentCallback) {
+        notificationContent.title = domainName
+        notificationContent.body = count > 1 ? String.Constants.badgesAdded.localized(count) : String.Constants.badgeAdded.localized()
         loadDomainAvatarFor(domainName: domainName,
                             in: notificationContent,
                             completion: completion)
