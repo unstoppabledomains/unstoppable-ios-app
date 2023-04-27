@@ -22,4 +22,7 @@ protocol UDDomainsServiceProtocol {
     
     func findDomains(by domainNames: [String]) -> [DomainItem]
     func getAllDomains() -> [DomainItem]
+    
+    // Resolution
+    func resolveDomainOwnerFor(domainName: DomainName) async -> HexAddress?
 }

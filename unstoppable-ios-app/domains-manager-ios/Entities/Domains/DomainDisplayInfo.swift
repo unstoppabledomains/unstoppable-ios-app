@@ -53,6 +53,7 @@ extension DomainDisplayInfo {
     var pfpSource: DomainPFPInfo.PFPSource { domainPFPInfo?.source ?? .none }
     var isUpdatingRecords: Bool { state != .default }
     var isMinting: Bool { state == .minting }
+    var isTransferring: Bool { state == .transfer }
     var isPrimary: Bool { order == 0 } /// Primary domain now is the one user has selected to be the first
 
     func isReverseResolutionChangeAllowed() -> Bool {
@@ -75,7 +76,7 @@ extension DomainDisplayInfo {
 // MARK: - State
 extension DomainDisplayInfo {
     enum State {
-        case `default`, minting, updatingRecords
+        case `default`, minting, updatingRecords, transfer
     }
 }
 

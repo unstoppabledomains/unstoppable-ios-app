@@ -153,7 +153,8 @@ extension UIImage {
     static let systemLock = UIImage(systemName: "lock")!
     static let systemGlobe = UIImage(systemName: "globe")!
     static let systemChevronUpDown = UIImage(systemName: "chevron.up.chevron.down")!
-
+    static let systemArrowTurnUpRight = UIImage(systemName: "arrow.turn.up.right")!
+    
 }
 
 extension UIImage {

@@ -233,6 +233,9 @@ private extension DomainsCollectionCarouselCardCell {
         case .minting:
             setIndicatorStyle(.minting)
             setStatusMessageComponent(.electricMinting)
+        case .transfer:
+            setIndicatorStyle(.transfer)
+            setStatusMessageComponent(.transfer)
         }
     }
     
@@ -533,13 +536,13 @@ private extension DomainsCollectionCarouselCardCell {
 // MARK: - Private methods
 private extension DomainsCollectionCarouselCardCell {
     enum DomainIndicatorStyle: CarouselViewItem {
-        case updatingRecords, minting, deprecated(tld: String)
+        case updatingRecords, minting, deprecated(tld: String), transfer
       
         var containerBackgroundColor: UIColor {
             switch self {
             case .updatingRecords:
                 return .brandElectricYellow
-            case .minting:
+            case .minting, .transfer:
                 return .brandElectricGreen
             case .deprecated:
                 return .brandOrange
@@ -549,7 +552,7 @@ private extension DomainsCollectionCarouselCardCell {
         /// CarouselViewItem properties
         var icon: UIImage {
             switch self {
-            case .updatingRecords, .minting:
+            case .updatingRecords, .minting, .transfer:
                 return .refreshIcon
             case .deprecated:
                 return .warningIconLarge
@@ -564,19 +567,21 @@ private extension DomainsCollectionCarouselCardCell {
                 return String.Constants.mintingInProgressTitle.localized()
             case .deprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
+            case .transfer:
+                return String.Constants.transferInProgress.localized()
             }
         }
         
         var tintColor: UIColor {
             switch self {
-            case .updatingRecords, .minting, .deprecated:
+            case .updatingRecords, .minting, .deprecated, .transfer:
                 return .black
             }
         }
         
         var backgroundColor: UIColor {
             switch self {
-            case .updatingRecords, .minting, .deprecated:
+            case .updatingRecords, .minting, .deprecated, .transfer:
                 return .clear
             }
         }

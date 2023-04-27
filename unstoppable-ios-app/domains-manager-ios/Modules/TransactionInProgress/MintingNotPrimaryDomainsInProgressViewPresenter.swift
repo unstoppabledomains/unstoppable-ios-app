@@ -36,7 +36,7 @@ final class MintingNotPrimaryDomainsInProgressViewPresenter: BaseMintingTransact
         
         if pendingDomainsWithInfo.count == 1 {
             snapshot.appendSections([.card])
-            snapshot.appendItems([.card(domain: pendingDomainsWithInfo[0].displayInfo.name)])
+            snapshot.appendItems([.nameCard(domain: pendingDomainsWithInfo[0].displayInfo.name)])
         } else {
             snapshot.appendSections([.list])
             snapshot.appendItems(pendingDomainsWithInfo.map({

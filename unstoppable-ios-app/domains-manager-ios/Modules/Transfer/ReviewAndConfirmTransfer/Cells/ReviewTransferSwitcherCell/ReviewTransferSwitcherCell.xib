@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="ReviewTransferSwitcherCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="324" height="109"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="324" height="109"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="VFE-Uw-q7R">
+                        <rect key="frame" x="16" y="14" width="292" height="81"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="WhI-Mc-xeF">
+                                <rect key="frame" x="0.0" y="20.333333333333332" width="243" height="40.333333333333343"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HlL-MH-ter">
+                                        <rect key="frame" x="0.0" y="0.0" width="243" height="20.333333333333332"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E2g-83-Kkm">
+                                        <rect key="frame" x="0.0" y="20.333333333333329" width="243" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="vsq-yg-gmB"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="obC-pz-3K7">
+                                <rect key="frame" x="243" y="25" width="51" height="31"/>
+                                <color key="onTintColor" name="backgroundAccentEmphasis"/>
+                                <connections>
+                                    <action selector="switchValueChanged:" destination="gTV-IL-0wX" eventType="valueChanged" id="cBs-o3-wzo"/>
+                                </connections>
+                            </switch>
+                        </subviews>
+                    </stackView>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="VFE-Uw-q7R" secondAttribute="bottom" constant="14" id="42X-IF-yxX"/>
+                <constraint firstItem="VFE-Uw-q7R" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="14" id="GdO-Jc-YMk"/>
+                <constraint firstItem="VFE-Uw-q7R" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="Ity-AP-nRj"/>
+                <constraint firstItem="VFE-Uw-q7R" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="jjn-bH-XpJ"/>
+                <constraint firstItem="VFE-Uw-q7R" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="sIX-9f-sMe"/>
+            </constraints>
+            <size key="customSize" width="324" height="109"/>
+            <connections>
+                <outlet property="subtitleLabel" destination="E2g-83-Kkm" id="aPv-Ro-qWL"/>
+                <outlet property="switcher" destination="obC-pz-3K7" id="RIv-YN-Awp"/>
+                <outlet property="titleLabel" destination="HlL-MH-ter" id="ZCB-Tf-QUQ"/>
+            </connections>
+            <point key="canvasLocation" x="210.68702290076334" y="20.774647887323944"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="backgroundAccentEmphasis">
+            <color red="0.050999999046325684" green="0.40400001406669617" blue="0.99599999189376831" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

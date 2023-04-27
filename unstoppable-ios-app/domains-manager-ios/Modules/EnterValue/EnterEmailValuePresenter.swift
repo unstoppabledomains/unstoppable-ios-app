@@ -29,7 +29,7 @@ final class EnterEmailValuePresenter: EnterValueViewPresenter, UserDataValidator
         view?.set(title: String.Constants.addN.localized(String.Constants.email.localized().lowercased()),
                   icon: .mailIcon24,
                   tintColor: .foregroundSecondary)
-        view?.setPlaceholder(String.Constants.addYourEmailAddress.localized())
+        view?.setPlaceholder(String.Constants.addYourEmailAddress.localized(), style: .default)
         view?.setKeyboardType(.emailAddress)
     }
     

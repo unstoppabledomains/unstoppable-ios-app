@@ -64,17 +64,7 @@ struct CoinRecord: Hashable, Comparable, CustomStringConvertible, Codable {
     }
     
     func validate(_ proposedAddress: String) -> Bool {
-        guard let regex = try? NSRegularExpression(pattern: regexPattern, options: .caseInsensitive) else {
-            Debugger.printFailure("Regex cannot be used", critical: true)
-            return !proposedAddress.isEmpty
-        }
-        let fullRange = NSRange(0..<proposedAddress.count)
-        
-        if let result = regex.firstMatch(in: proposedAddress, options: [], range: fullRange),
-           result.numberOfRanges > 0 {
-            return true
-        }
-        return false
+        proposedAddress.isMatchingRegexPattern(regexPattern)
     }
     
     private static let primaryChainsMap: [String : String] = ["ELA" : "ELA",
