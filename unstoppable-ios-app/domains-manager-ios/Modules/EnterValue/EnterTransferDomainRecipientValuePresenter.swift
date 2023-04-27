@@ -11,7 +11,7 @@ final class EnterTransferDomainRecipientValuePresenter: EnterValueViewPresenter 
     
     private weak var transferDomainFlowManager: TransferDomainFlowManager?
     private let domain: DomainDisplayInfo
-    private var recipient: String?
+    private var recipient: TransferDomainNavigationManager.RecipientType?
     override var progress: Double? { 0.25 }
     override var analyticsName: Analytics.ViewName { .addEmail }
     
@@ -26,7 +26,7 @@ final class EnterTransferDomainRecipientValuePresenter: EnterValueViewPresenter 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view?.setDashesProgress(0.25)
+        view?.setDashesProgress(progress)
         view?.set(title: String.Constants.transferDomain.localized(),
                   icon: nil,
                   tintColor: nil)
@@ -54,15 +54,22 @@ final class EnterTransferDomainRecipientValuePresenter: EnterValueViewPresenter 
                         return
                     }
                     
-                    didEnterValidRecipient(ownerAddress)
+                    didEnterValidRecipient(.resolvedDomain(name: value, walletAddress: ownerAddress))
                 }
             } else {
                 if value.isMatchingRegexPattern(Constants.ETHRegexPattern) {
-                    didEnterValidRecipient(value)
+                    didEnterValidRecipient(.walletAddress(value))
                 } else {
                     didEnterInvalidRecipient(error: .walletAddressIncorrect)
                 }
             }
+        }
+    }
+    
+    override func didTapContinueButton() {
+        guard let recipient else { return }
+        Task {
+            try? await transferDomainFlowManager?.handle(action: .recipientSelected(recipient: recipient, forDomain: domain))
         }
     }
 }
@@ -70,8 +77,8 @@ final class EnterTransferDomainRecipientValuePresenter: EnterValueViewPresenter 
 // MARK: - Private methods
 private extension EnterTransferDomainRecipientValuePresenter {
     @MainActor
-    func didEnterValidRecipient(_ recipient: String) {
-        guard recipient != domain.ownerWallet else {
+    func didEnterValidRecipient(_ recipient: TransferDomainNavigationManager.RecipientType) {
+        guard recipient.ownerAddress != domain.ownerWallet else {
             didEnterInvalidRecipient(error: .transferringToSameWallet)
             return
         }

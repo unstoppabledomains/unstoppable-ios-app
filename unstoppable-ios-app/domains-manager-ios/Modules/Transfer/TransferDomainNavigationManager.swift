@@ -162,29 +162,16 @@ private extension TransferDomainNavigationManager {
                                                                        transferDomainFlowManager: self)
             vc.presenter = presenter
             return vc
-        case .reviewAndConfirmTransferOf(let mode, let recipient):
-            return nil
-//            let vc = ChooseReverseResolutionDomainViewController.nibInstance()
-//            let presenter: ChooseReverseResolutionDomainViewPresenterProtocol
-//
-//            switch mode {
-//            case .chooseFirst:
-//                presenter = SelectWalletsReverseResolutionDomainViewPresenter(view: vc,
-//                                                                              wallet: wallet,
-//                                                                              walletInfo: walletInfo,
-//                                                                              setupWalletsReverseResolutionFlowManager: self,
-//                                                                              dataAggregatorService: dataAggregatorService)
-//            case .changeExisting(let currentDomain):
-//                presenter = ChangeWalletsReverseResolutionDomainViewPresenter(view: vc,
-//                                                                              wallet: wallet,
-//                                                                              walletInfo: walletInfo,
-//                                                                              currentDomain: currentDomain,
-//                                                                              setupWalletsReverseResolutionFlowManager: self,
-//                                                                              dataAggregatorService: dataAggregatorService)
-//            }
-//
-//            vc.presenter = presenter
-//            return vc
+        case .reviewAndConfirmTransferOf(let domain, let recipient):
+            let vc = ReviewAndConfirmTransferViewController.nibInstance()
+            let presenter = ReviewAndConfirmTransferViewPresenter(view: vc,
+                                                                  domain: domain,
+                                                                  recipient: recipient,
+                                                                  mode: mode,
+                                                                  transferDomainFlowManager: self)
+            
+            vc.presenter = presenter
+            return vc
         case .transferInProgressOf(let domain):
             return nil
         }
@@ -212,8 +199,24 @@ extension TransferDomainNavigationManager {
         case transferred(domain: DomainDisplayInfo)
     }
     
-    enum RecipientType {
+    enum RecipientType: Hashable {
         case walletAddress(String)
         case resolvedDomain(name: String, walletAddress: String)
+        
+        var visibleName: String {
+            switch self {
+            case .walletAddress(let address):
+                return address.walletAddressTruncated
+            case .resolvedDomain(let name, _):
+                return name
+            }
+        }
+        
+        var ownerAddress: String {
+            switch self {
+            case .walletAddress(let address), .resolvedDomain(_, let address):
+                return address
+            }
+        }
     }
 }
