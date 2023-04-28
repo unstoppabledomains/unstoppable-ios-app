@@ -295,29 +295,11 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     func setReverseResolution(to domain: DomainItem,
                               paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws {
         let request = try getRequestForActionReverseResolution(domain, remove: false)
-        let response = try await NetworkService().getActions(request: request)
-        
-        let blockchain = try BlockchainType.getType(abbreviation: response.domain.blockchain)
-        
-        let payloadReturned: NetworkService.TxPayload
-        if let paymentInfo = response.paymentInfo  {
-            let payloadFormed = try DomainItem.createTxPayload(blockchain: blockchain, paymentInfo: paymentInfo, txs: response.txs)
-            payloadReturned = try await paymentConfirmationDelegate.fetchPaymentConfirmationAsync(for: domain, payload: payloadFormed)
-        } else {
-            let messages = response.txs.compactMap { $0.messageToSign }
-            guard messages.count == response.txs.count else { throw NetworkLayerError.noMessageError }
-            payloadReturned = NetworkService.TxPayload(messages: messages, txCost: nil)
-        }
-        
-        let signatures = try await UDWallet.createSignaturesByEthSign(messages: payloadReturned.messages,
-                                                                  domain: domain)
-        let requestSign = try NetworkService.getRequestForActionSign(id: response.id,
-                                                                     response: response,
-                                                                     signatures: signatures)
-        try await NetworkService().postMetaActions(requestSign)
-        
+        let txs = try await NetworkService().makeActionsAPIRequest(request,
+                                                                   forDomain: domain,
+                                                                   paymentConfirmationDelegate: paymentConfirmationDelegate)
         Debugger.printInfo("Successful setReverseResolution for domain: \(domain.name)")
-        let txIds = response.txs.map({$0.id})
+        let txIds = txs.map({$0.id})
         self.notifyListeners(.reverseResolutionDomainChanged(domainName: domain.name,
                                                              txIds: txIds))
     }

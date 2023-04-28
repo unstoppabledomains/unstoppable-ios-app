@@ -36,6 +36,7 @@ protocol AppContextProtocol {
     var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol { get }
     var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol { get }
     var walletNFTsService: WalletNFTsServiceProtocol { get }
+    var domainTransferService: DomainTransferServiceProtocol { get }
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
 }

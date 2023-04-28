@@ -640,6 +640,9 @@ private extension DomainsCollectionPresenter {
                 guard !domain.isMinting else {
                     await showDomainMintingInProgress(domain)
                     return }
+                guard !domain.isTransferring else {
+                    await showDomainTransferringInProgress(domain)
+                    return }
                 
                 let walletsWithInfo = await stateController.walletsWithInfo
                 guard let domainWallet = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) })?.wallet,
@@ -686,6 +689,13 @@ private extension DomainsCollectionPresenter {
         let mintingDomainWithDisplayInfo = MintingDomainWithDisplayInfo(mintingDomain: mintingDomain,
                                                                         displayInfo: domain)
         showMintingInProgress(mintingDomainsWithDisplayInfo: [mintingDomainWithDisplayInfo])
+    }
+    
+    @MainActor
+    func showDomainTransferringInProgress(_ domain: DomainDisplayInfo) {
+        guard let view else { return }
+        
+        UDRouter().showTransferInProgressScreen(domain: domain, transferDomainFlowManager: nil, in: view)
     }
     
     @MainActor

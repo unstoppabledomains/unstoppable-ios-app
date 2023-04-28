@@ -76,3 +76,4 @@ extension BaseMintingTransactionInProgressViewPresenter {
     var pendingDomains: [MintingDomain] { mintingDomains.filter({ $0.isMinting })}
 }
 
+

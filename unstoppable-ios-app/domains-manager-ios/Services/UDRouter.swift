@@ -180,6 +180,15 @@ class UDRouter: DomainProfileSignatureValidator {
                               in: viewController)
     }
     
+    func runTransferDomainFlow(with mode: TransferDomainNavigationManager.Mode,
+                               transferResultCallback: @escaping TransferDomainNavigationManager.TransferResultCallback,
+                               in viewController: UIViewController) {
+        let mintDomainsNavigationController = TransferDomainNavigationManager(mode: mode)
+        mintDomainsNavigationController.modalPresentationStyle = .fullScreen
+        mintDomainsNavigationController.transferResultCallback = transferResultCallback
+        viewController.present(mintDomainsNavigationController, animated: true)
+    }
+    
     func showWalletSelectionToMintDomainsScreen(selectedWallet: UDWallet?,
                                                 in viewController: UIViewController) async throws -> UDWallet {
         try await withSafeCheckedThrowingMainActorContinuation { completion in
@@ -513,6 +522,28 @@ class UDRouter: DomainProfileSignatureValidator {
         nav.modalPresentationStyle = .overFullScreen
         
         viewController.present(nav, animated: true)
+    }
+    
+    func showTransferInProgressScreen(domain: DomainDisplayInfo,
+                                      transferDomainFlowManager: TransferDomainFlowManager?,
+                                      in viewController: UIViewController) {
+        let vc = buildTransferInProgressModule(domain: domain,
+                                               transferDomainFlowManager: transferDomainFlowManager)
+        
+        presentInEmptyCRootNavigation(vc, in: viewController)
+    }
+    
+    func buildTransferInProgressModule(domain: DomainDisplayInfo,
+                                       transferDomainFlowManager: TransferDomainFlowManager?) -> UIViewController {
+        let vc = TransactionInProgressViewController.nibInstance()
+        let presenter = TransferDomainTransactionInProgressViewPresenter(view: vc,
+                                                                         domainDisplayInfo: domain,
+                                                                         transactionsService: appContext.domainTransactionsService,
+                                                                         notificationsService: appContext.notificationsService,
+                                                                         transferDomainFlowManager: transferDomainFlowManager)
+        
+        vc.presenter = presenter
+        return vc
     }
 }
 

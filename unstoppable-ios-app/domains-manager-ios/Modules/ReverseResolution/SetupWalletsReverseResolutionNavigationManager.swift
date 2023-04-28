@@ -58,7 +58,7 @@ final class SetupWalletsReverseResolutionNavigationManager: CNavigationControlle
     
 }
 
-// MARK: - CreateLocalWalletFlowManager
+// MARK: - SetupWalletsReverseResolutionFlowManager
 extension SetupWalletsReverseResolutionNavigationManager: SetupWalletsReverseResolutionFlowManager {
     func handle(action: Action) async throws {
         switch action {

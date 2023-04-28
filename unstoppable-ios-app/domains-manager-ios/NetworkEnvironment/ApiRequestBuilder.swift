@@ -391,10 +391,13 @@ extension APIRequestBuilder {
         enum CodingKeys: CodingKey {
             case records
             case remove
+            case to
+            case resetRecords
         }
         
         case reverseResolution(Bool)
         case updateRecords([RecordToUpdate])
+        case transfer(receiverAddress: String, configuration: TransferDomainConfiguration)
         
         func encode(to encoder: Encoder) throws {
             
@@ -410,8 +413,13 @@ extension APIRequestBuilder {
             
             var container = encoder.container(keyedBy: CodingKeys.self)
             switch self {
-            case .reverseResolution(let remove): try container.encode(remove, forKey: .remove)
-            case .updateRecords(let records): var nested = container.nestedContainer(keyedBy: DynamicKey.self, forKey: .records)
+            case .reverseResolution(let remove):
+                try container.encode(remove, forKey: .remove)
+            case .transfer(let receiverAddress, let configuration):
+                try container.encode(receiverAddress, forKey: .to)
+                try container.encode(configuration.resetRecords, forKey: .resetRecords)
+            case .updateRecords(let records):
+                var nested = container.nestedContainer(keyedBy: DynamicKey.self, forKey: .records)
                 try records.forEach {
                     guard let key = DynamicKey(stringValue: $0.resolveKey()) else {
                         throw APIRequestError.invalidKeyForEncoding
@@ -432,6 +440,7 @@ extension APIRequestBuilder {
     enum DomainActionType: String, Encodable {
         case setReverseResolution = "SetReverseResolution"
         case updateRecords = "UpdateRecords"
+        case transfer = "Transfer"
     }
     
     func actionPostReverseResolution(for domain: DomainItem,
@@ -461,6 +470,28 @@ extension APIRequestBuilder {
                                                               gasCompensationPolicy: .alwaysCompensate,
                                                               action: .updateRecords,
                                                               parameters: Params.updateRecords(records)))
+        
+        guard let body = String(data: jsonData, encoding: .utf8) else {
+            Debugger.printFailure("Cannot stringify encoded JSON", critical: true)
+            throw APIRequestError.failedStringifyJson
+        }
+        
+        self.body = body
+        self.method = .post
+        return self
+    }
+    
+    func actionPostTransferDomain(_ domain: DomainItem,
+                                  to receiverAddress: HexAddress,
+                                  configuration: TransferDomainConfiguration) throws -> APIRequestBuilder {
+        self.type = .actions
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        let jsonData = try encoder.encode(ActionRequest(domain: domain.name,
+                                                        gasCompensationPolicy: .alwaysCompensate,
+                                                        action: .transfer,
+                                                        parameters: Params.transfer(receiverAddress: receiverAddress,
+                                                                                    configuration: configuration)))
         
         guard let body = String(data: jsonData, encoding: .utf8) else {
             Debugger.printFailure("Cannot stringify encoded JSON", critical: true)

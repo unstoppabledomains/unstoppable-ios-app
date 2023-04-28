@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="DomainTransactionInProgressCell" customModule="domains_manager_ios" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="310" height="371"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="310" height="371"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ahA-fP-EVZ" customClass="UDDomainSharingCardView" customModule="domains_manager_ios" customModuleProvider="target">
+                        <rect key="frame" x="23" y="16" width="264" height="338"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="ahA-fP-EVZ" secondAttribute="height" multiplier="200/256" id="Nhz-1c-56I"/>
+                            <constraint firstAttribute="width" constant="264" id="yyZ-mL-hMK"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="ahA-fP-EVZ" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="4Ah-0h-K1k"/>
+                <constraint firstAttribute="bottom" secondItem="ahA-fP-EVZ" secondAttribute="bottom" priority="999" constant="16" id="4tZ-FH-O3y"/>
+                <constraint firstItem="ahA-fP-EVZ" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="16" id="9UV-OV-3Ua"/>
+            </constraints>
+            <size key="customSize" width="310" height="371"/>
+            <connections>
+                <outlet property="domainCardView" destination="ahA-fP-EVZ" id="uq7-hm-98N"/>
+            </connections>
+            <point key="canvasLocation" x="218.32061068702288" y="-44.014084507042256"/>
+        </collectionViewCell>
+    </objects>
+</document>

@@ -79,6 +79,11 @@ extension UDDomainsService: UDDomainsServiceProtocol {
                                         userEmail: userEmail,
                                         securityCode: securityCode)
     }
+    
+    // Resolution
+    func resolveDomainOwnerFor(domainName: DomainName) async -> HexAddress? {
+        return try? await NetworkService().fetchDomainOwner(for: domainName)
+    }
 }
 
 // MARK: - Private methods
