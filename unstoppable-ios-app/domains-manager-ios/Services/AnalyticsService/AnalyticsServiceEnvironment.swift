@@ -154,6 +154,7 @@ extension Analytics {
         case loginWithWebsiteAccount, loginWithEmailAndPassword
         case parkedDomainsList, noParkedDomainsFound, loadingParkedDomains
         case transferEnterRecipient, transferReviewAndConfirm
+        case inviteFriends
     }
 }
 
@@ -216,8 +217,8 @@ extension Analytics {
         case editProfile, manageDomain, shareLink, saveAsImage, createNFCTag
         
         // Settings
-        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsWebsiteAccount
-        
+        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsWebsiteAccount, settingsInviteFriends
+
         // Security settings
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
         
@@ -257,6 +258,9 @@ extension Analytics {
         case moveToTop
         case websiteAccount
         case resetRecords
+        
+        // Referral
+        case inviteFriendInfo, copyLink
     }
 }
 

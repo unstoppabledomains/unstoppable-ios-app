@@ -16,8 +16,8 @@ enum ExternalEvent: Codable, Hashable {
     case walletConnectRequest(dAppName: String, domainName: String?)
     case wcDeepLink(_ wcURL: URL)
     case domainProfileUpdated(domainName: String)
-   
     case parkingStatusLocal
+    case badgeAdded(domainName: String, count: Int)
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
         guard let eventTypeRaw = json["type"] as? String,
@@ -83,12 +83,33 @@ enum ExternalEvent: Codable, Hashable {
             self = .domainProfileUpdated(domainName: domainName)
         case .parkingStatusLocal:
             self = .parkingStatusLocal
+        case .badgeAdded:
+            guard let domainName = json["domainName"] as? String else {
+                Debugger.printFailure("No domain name in badge added notification", critical: true)
+                return nil
+            }
+            
+            var count: Int?
+
+            if let countValue = json["count"] as? Int {
+                count = countValue
+            } else if let countString = json["count"] as? String,
+               let countValue = Int(countString) {
+                count = countValue
+            }
+            
+            guard let count else {
+                Debugger.printFailure("No count property in badge added notification", critical: true)
+                return nil
+            }
+            
+            self = .badgeAdded(domainName: domainName, count: count)
         }
     }
     
     var analyticsEvent: Analytics.Event {
         switch self {
-        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated:
+        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded:
             return .didReceivePushNotification
         case .wcDeepLink:
             return .didOpenDeepLink
@@ -126,6 +147,10 @@ enum ExternalEvent: Codable, Hashable {
                     .domainName: domainName]
         case .parkingStatusLocal:
             return [:]
+        case .badgeAdded(let domainName, let count):
+            return [.pushNotification: "badgeAdded",
+                    .count: "\(count)",
+                    .domainName: domainName]
         }
     }
 }
@@ -151,6 +176,7 @@ extension ExternalEvent {
         
         // Local
         case parkingStatusLocal = "ParkingStatusLocal"
+        case badgeAdded = "DomainBadgesAddedMessage"
     }
 }
 

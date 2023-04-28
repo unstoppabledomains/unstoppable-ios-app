@@ -89,7 +89,7 @@ extension TransferDomainTransactionInProgressViewPresenter: ExternalEventsServic
             switch event {
             case .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainTransferred:
                 refreshMintingTransactions()
-            case .wcDeepLink, .walletConnectRequest, .mintingFinished, .domainProfileUpdated, .parkingStatusLocal:
+            case .wcDeepLink, .walletConnectRequest, .mintingFinished, .domainProfileUpdated, .parkingStatusLocal, .badgeAdded:
                 return
             }
         }

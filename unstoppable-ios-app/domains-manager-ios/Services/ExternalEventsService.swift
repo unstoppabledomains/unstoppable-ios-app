@@ -150,6 +150,8 @@ private extension ExternalEventsService {
                 handle(event: event)
             case .parkingStatusLocal:
                 return
+            case .badgeAdded:
+                return
             }
         }
     }
@@ -174,7 +176,7 @@ private extension ExternalEventsService {
     
     func uiFlowFor(event: ExternalEvent) async throws -> ExternalEventUIFlow {
         switch event {
-        case .recordsUpdated(let domainName), .domainTransferred(let domainName), .reverseResolutionSet(let domainName, _), .reverseResolutionRemoved(let domainName, _), .domainProfileUpdated(let domainName):
+        case .recordsUpdated(let domainName), .domainTransferred(let domainName), .reverseResolutionSet(let domainName, _), .reverseResolutionRemoved(let domainName, _), .domainProfileUpdated(let domainName), .badgeAdded(let domainName, _):
             AppGroupsBridgeService.shared.clearChanges(for: domainName)
             guard let domain = (try await findDomainsWith(domainNames: [domainName])).first else {
                 throw EventsHandlingError.cantFindDomain

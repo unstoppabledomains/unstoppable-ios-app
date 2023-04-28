@@ -2173,6 +2173,22 @@
 		C673D5A229FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */; };
 		C673D5A329FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */; };
 		C673D5A429FA588B001CC77C /* DomainTransactionInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */; };
+		C673D5AC29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */; };
+		C673D5AD29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */; };
+		C673D5AE29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */; };
+		C673D5AF29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */; };
+		C673D5B029FB725B001CC77C /* InviteFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */; };
+		C673D5B129FB725B001CC77C /* InviteFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */; };
+		C673D5B229FB725B001CC77C /* InviteFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */; };
+		C673D5B329FB725B001CC77C /* InviteFriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */; };
+		C673D5B429FB725B001CC77C /* InviteFriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */; };
+		C673D5B529FB725B001CC77C /* InviteFriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */; };
+		C673D5B629FB725B001CC77C /* InviteFriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */; };
+		C673D5B729FB725B001CC77C /* InviteFriendsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */; };
+		C673D5BA29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */; };
+		C673D5BB29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */; };
+		C673D5BC29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */; };
+		C673D5BD29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */; };
 		C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
 		C6745990280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
 		C6745991280E9CA20074CBE5 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
@@ -4092,6 +4108,10 @@
 		C673D59529FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransferDomainTransactionInProgressViewPresenter.swift; sourceTree = "<group>"; };
 		C673D59B29FA588B001CC77C /* DomainTransactionInProgressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTransactionInProgressCell.swift; sourceTree = "<group>"; };
 		C673D59C29FA588B001CC77C /* DomainTransactionInProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainTransactionInProgressCell.xib; sourceTree = "<group>"; };
+		C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewPresenter.swift; sourceTree = "<group>"; };
+		C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendsViewController.swift; sourceTree = "<group>"; };
+		C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InviteFriendsViewController.xib; sourceTree = "<group>"; };
+		C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteFriendStepView.swift; sourceTree = "<group>"; };
 		C674598E280E9CA20074CBE5 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		C679B5EB2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileWeb3WebsiteLoadingCell.swift; sourceTree = "<group>"; };
 		C679B5EC2918BCDF00F543A7 /* DomainProfileWeb3WebsiteLoadingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileWeb3WebsiteLoadingCell.xib; sourceTree = "<group>"; };
@@ -6364,6 +6384,25 @@
 			path = DomainTransactionInProgressCell;
 			sourceTree = "<group>";
 		};
+		C673D5A829FB723E001CC77C /* InviteFriends */ = {
+			isa = PBXGroup;
+			children = (
+				C673D5A929FB725B001CC77C /* InviteFriendsViewPresenter.swift */,
+				C673D5AA29FB725B001CC77C /* InviteFriendsViewController.swift */,
+				C673D5AB29FB725B001CC77C /* InviteFriendsViewController.xib */,
+				C673D5B829FB7266001CC77C /* Views */,
+			);
+			path = InviteFriends;
+			sourceTree = "<group>";
+		};
+		C673D5B829FB7266001CC77C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C673D5B929FB75A7001CC77C /* InviteFriendStepView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		C674598D280E9C560074CBE5 /* WebViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -7203,6 +7242,7 @@
 				C669C3642912196300837F21 /* EnterValue */,
 				C66804B7280D9EC7007E6390 /* EnterPasscode */,
 				C685A9782840BF4D00E54044 /* InfoScreen */,
+				C673D5A829FB723E001CC77C /* InviteFriends */,
 				C6637A6E28100D180000AE56 /* LaunchViewController */,
 				C63DD35D29C89FCB002D45B2 /* LoginViewController */,
 				C61B3E68283E249800500B6D /* MintDomains */,
@@ -7819,6 +7859,7 @@
 				C673D57A29FA3645001CC77C /* ReviewAndConfirmTransferViewController.xib in Resources */,
 				C60982D4282A7A8E00546392 /* AddWalletViewController.xib in Resources */,
 				30974924259B75EF00846137 /* Assets.xcassets in Resources */,
+				C673D5B429FB725B001CC77C /* InviteFriendsViewController.xib in Resources */,
 				C60982DE282A7B6B00546392 /* WalletConnectedViewController.xib in Resources */,
 				C685A954284097E600E54044 /* UDDomainCardView.xib in Resources */,
 				C66FCD1E2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib in Resources */,
@@ -8087,6 +8128,7 @@
 				C6D5DAB92835505200379C38 /* AddCurrencyEmptyCell.xib in Resources */,
 				C685A956284097E600E54044 /* UDDomainCardView.xib in Resources */,
 				C6AD181528D319BF0008A479 /* CollectionViewShowHideCell.xib in Resources */,
+				C673D5B629FB725B001CC77C /* InviteFriendsViewController.xib in Resources */,
 				C62C8DC728DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib in Resources */,
 				C60982F6282A7D7200546392 /* ConfirmWordConfirmationCell.xib in Resources */,
 				C60982BC282A768700546392 /* CreatePasswordViewController.xib in Resources */,
@@ -8144,6 +8186,7 @@
 				C673D57D29FA3645001CC77C /* ReviewAndConfirmTransferViewController.xib in Resources */,
 				307F85DE267B60300070A9A6 /* Localizable.strings in Resources */,
 				307F85E2267B60300070A9A6 /* Assets.xcassets in Resources */,
+				C673D5B729FB725B001CC77C /* InviteFriendsViewController.xib in Resources */,
 				C60982E1282A7B6B00546392 /* WalletConnectedViewController.xib in Resources */,
 				C685A957284097E600E54044 /* UDDomainCardView.xib in Resources */,
 				C66FCD212845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib in Resources */,
@@ -8299,6 +8342,7 @@
 				C673D57B29FA3645001CC77C /* ReviewAndConfirmTransferViewController.xib in Resources */,
 				30AE84FB257836E2003A0142 /* Localizable.strings in Resources */,
 				3097492D259B75F400846137 /* Assets.xcassets in Resources */,
+				C673D5B529FB725B001CC77C /* InviteFriendsViewController.xib in Resources */,
 				C60982DF282A7B6B00546392 /* WalletConnectedViewController.xib in Resources */,
 				C685A955284097E600E54044 /* UDDomainCardView.xib in Resources */,
 				C66FCD1F2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib in Resources */,
@@ -8511,6 +8555,7 @@
 				C60DCEEF282D13F800F71C13 /* RenameWalletViewController.swift in Sources */,
 				C6668941281150FA002062B4 /* SecondaryButton.swift in Sources */,
 				C62247BA283CFF23002A0CBD /* MockDomainTransactionsService.swift in Sources */,
+				C673D5AC29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */,
 				306486CD25273C4400388026 /* User.swift in Sources */,
 				C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */,
 				C6A474E429D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
@@ -8671,6 +8716,7 @@
 				C6FF2DA628F02B1700148007 /* DomainProfileSectionUIChangeType.swift in Sources */,
 				C664311528D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift in Sources */,
 				C666893728114D7A002062B4 /* LinkButton.swift in Sources */,
+				C673D5B029FB725B001CC77C /* InviteFriendsViewController.swift in Sources */,
 				C60981D62822565300546392 /* WalletDetailsViewPresenter.swift in Sources */,
 				C66689502811717C002062B4 /* PasscodeButton.swift in Sources */,
 				C669C3682912197C00837F21 /* EnterValueViewPresenter.swift in Sources */,
@@ -8922,6 +8968,7 @@
 				C66FCD082844F06B009B9525 /* ChooseNewPrimaryDomainPresenter.swift in Sources */,
 				C62C3FA1283F60720094FC93 /* DeepLinksServiceProtocol.swift in Sources */,
 				C664B670291542E300A76154 /* DomainProfileWeb3WebsiteCell.swift in Sources */,
+				C673D5BA29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */,
 				306665E12778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
 				30AE8521257837B5003A0142 /* NetworkConfig.swift in Sources */,
 				C6D5DAC1283629D800379C38 /* MockDomainRecordsService.swift in Sources */,
@@ -9429,6 +9476,7 @@
 				C66FCD1C2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C600AB9A29FA0CFF0089107B /* TransferDomainNavigationManager.swift in Sources */,
 				C6456F1227FF3C6B00A517D5 /* UIViewController.swift in Sources */,
+				C673D5BC29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */,
 				C6C995B0289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C63A77AA28F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */,
 				C63902C428E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */,
@@ -9738,6 +9786,7 @@
 				C60610EC29A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift in Sources */,
 				C6E041642950541D0080F8E3 /* DomainsCollectionRecentActivityCell.swift in Sources */,
 				C666E0AC29CB41350003DECB /* FirebaseDomainDisplayInfo.swift in Sources */,
+				C673D5AE29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */,
 				C60982532823FBB500546392 /* BaseRecoveryPhrasePresenter.swift in Sources */,
 				C6420BF528AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */,
 				C6ED31F8295D372A00BC6919 /* DomainsCollectionDashesSwipeTutorialHeader.swift in Sources */,
@@ -9814,6 +9863,7 @@
 				C655D02B284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35627FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C652629A28110B8500F1D699 /* SecurityWallViewController.swift in Sources */,
+				C673D5B229FB725B001CC77C /* InviteFriendsViewController.swift in Sources */,
 				C6124CD329223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C6A474E629D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C63A352D28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
@@ -10110,6 +10160,7 @@
 				C66FCD1D2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C600AB9B29FA0CFF0089107B /* TransferDomainNavigationManager.swift in Sources */,
 				C6456F1327FF3C6B00A517D5 /* UIViewController.swift in Sources */,
+				C673D5BD29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */,
 				C6C995B1289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C63A77AB28F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */,
 				C6D5DAF72837866800379C38 /* SecondaryDangerButton.swift in Sources */,
@@ -10419,6 +10470,7 @@
 				C60610ED29A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift in Sources */,
 				C6E041652950541D0080F8E3 /* DomainsCollectionRecentActivityCell.swift in Sources */,
 				C666E0AD29CB41350003DECB /* FirebaseDomainDisplayInfo.swift in Sources */,
+				C673D5AF29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */,
 				C6C995DD289D313E00367362 /* CNavigationBar.swift in Sources */,
 				C60982542823FBB500546392 /* BaseRecoveryPhrasePresenter.swift in Sources */,
 				C6ED31F9295D372B00BC6919 /* DomainsCollectionDashesSwipeTutorialHeader.swift in Sources */,
@@ -10495,6 +10547,7 @@
 				C692C316282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C655D02C284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35727FDB8560044E408 /* DashesProgressView.swift in Sources */,
+				C673D5B329FB725B001CC77C /* InviteFriendsViewController.swift in Sources */,
 				C6124CD429223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C6A474E729D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C63A352E28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
@@ -10612,6 +10665,7 @@
 				C64836BE282BCAFB007BD3F1 /* PrimaryDangerButton.swift in Sources */,
 				C60DCEF0282D13F800F71C13 /* RenameWalletViewController.swift in Sources */,
 				C6668942281150FA002062B4 /* SecondaryButton.swift in Sources */,
+				C673D5AD29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */,
 				C62247BB283CFF23002A0CBD /* MockDomainTransactionsService.swift in Sources */,
 				C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */,
 				C6A474E529D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
@@ -10772,6 +10826,7 @@
 				C6FF2DA728F02B1700148007 /* DomainProfileSectionUIChangeType.swift in Sources */,
 				C664311628D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift in Sources */,
 				C666893828114D7A002062B4 /* LinkButton.swift in Sources */,
+				C673D5B129FB725B001CC77C /* InviteFriendsViewController.swift in Sources */,
 				C60981D72822565300546392 /* WalletDetailsViewPresenter.swift in Sources */,
 				C66689512811717C002062B4 /* PasscodeButton.swift in Sources */,
 				C669C3692912197C00837F21 /* EnterValueViewPresenter.swift in Sources */,
@@ -11023,6 +11078,7 @@
 				C66FCD092844F06B009B9525 /* ChooseNewPrimaryDomainPresenter.swift in Sources */,
 				C62C3FA2283F60720094FC93 /* DeepLinksServiceProtocol.swift in Sources */,
 				C664B671291542E300A76154 /* DomainProfileWeb3WebsiteCell.swift in Sources */,
+				C673D5BB29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */,
 				306665E22778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
 				30AE84E6257836E2003A0142 /* SceneDelegate.swift in Sources */,
 				C6D5DAC2283629D800379C38 /* MockDomainRecordsService.swift in Sources */,
