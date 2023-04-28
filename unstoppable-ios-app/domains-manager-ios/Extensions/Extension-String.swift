@@ -377,7 +377,8 @@ extension String {
         static let settingsFollowTwitter = "SETTINGS_FOLLOW_TWITTER"
         static let settingsSupportNFeedback = "SETTINGS_SUPPORT_N_FEEDBACK"
         static let settingsLegal = "SETTINGS_LEGAL"
-        
+        static let settingsInviteFriends = "SETTINGS_INVITE_FRIENDS"
+
         static let settingsSecurityPasscode = "SETTINGS_SECURITY_PASSCODE"
         static let settingsSecurityChangePasscode = "SETTINGS_SECURITY_CHANGE_PASSCODE"
         static let settingsSecurityRequireWhenOpeningHeader = "SETTINGS_SECURITY_REQUIRE_WHEN_OPENING_HEADER"

@@ -294,6 +294,7 @@
 "SETTINGS_FOLLOW_TWITTER" = "Follow us on Twitter";
 "SETTINGS_SUPPORT_N_FEEDBACK" = "Support & feedback";
 "SETTINGS_LEGAL" = "Legal";
+"SETTINGS_INVITE_FRIENDS" = "Invite friends";
 
 "SETTINGS_SECURITY_PASSCODE" = "Passcode";
 "SETTINGS_SECURITY_CHANGE_PASSCODE" = "Change passcode";

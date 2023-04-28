@@ -62,6 +62,8 @@ extension SettingsPresenter: SettingsPresenterProtocol {
                     showLegalOptions()
                 case .homeScreen:
                     showHomeScreenDomainSelection()
+                case .inviteFriends:
+                    return
                 }
             }
         }
@@ -111,6 +113,9 @@ private extension SettingsPresenter {
 
             
             snapshot.appendSections([.main(2)])
+            if !interactableDomains.isEmpty {
+                snapshot.appendItems([.inviteFriends])
+            }
             snapshot.appendItems(SettingsViewController.SettingsMenuItem.supplementaryItems)
             
             snapshot.appendSections([.main(3)])

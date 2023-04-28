@@ -211,7 +211,7 @@ extension Analytics {
         case editProfile, manageDomain, shareLink, saveAsImage, createNFCTag
         
         // Settings
-        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs
+        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsInviteFriends
         
         // Security settings
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
