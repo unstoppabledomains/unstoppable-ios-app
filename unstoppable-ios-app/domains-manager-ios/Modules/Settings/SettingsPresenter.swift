@@ -62,6 +62,8 @@ extension SettingsPresenter: SettingsPresenterProtocol {
                     showLegalOptions()
                 case .homeScreen:
                     showHomeScreenDomainSelection()
+                case .inviteFriends:
+                    showInviteFriendsScreen()
                 }
             }
         }
@@ -111,6 +113,9 @@ private extension SettingsPresenter {
 
             
             snapshot.appendSections([.main(2)])
+            if !interactableDomains.isEmpty {
+                snapshot.appendItems([.inviteFriends])
+            }
             snapshot.appendItems(SettingsViewController.SettingsMenuItem.supplementaryItems)
             
             snapshot.appendSections([.main(3)])
@@ -196,6 +201,26 @@ private extension SettingsPresenter {
             case .domainsOrderSet(let domains), .domainsOrderAndReverseResolutionSet(let domains, _):
                 await dataAggregatorService.setDomainsOrder(using: domains)
                 await view.cNavigationController?.popToRootViewController(animated: true)
+            }
+        }
+    }
+    
+    @MainActor
+    func showInviteFriendsScreen() {
+        Task {
+            do {
+                guard let nav = view?.cNavigationController else { return }
+                
+                let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
+                guard let domainDisplayInfo = interactableDomains.first else { return }
+                
+                let domain = try await dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
+                
+                UDRouter().showInviteFriendsScreen(domain: domain,
+                                                   in: nav)
+            } catch {
+                Debugger.printFailure("Failed to get domain for referral code", critical: true)
+                view?.showAlertWith(error: error, handler: nil)
             }
         }
     }

@@ -80,6 +80,12 @@ extension UDDomainsService: UDDomainsServiceProtocol {
                                         securityCode: securityCode)
     }
     
+    func getReferralCodeFor(domain: DomainItem) async throws -> String? {
+        let profile = try await NetworkService().fetchPublicProfile(for: domain,
+                                                                    fields: [.referralCode])
+        return profile.referralCode
+    }
+    
     // Resolution
     func resolveDomainOwnerFor(domainName: DomainName) async -> HexAddress? {
         return try? await NetworkService().fetchDomainOwner(for: domainName)

@@ -199,6 +199,7 @@ extension SettingsViewController {
         case homeScreen(_ value: String), wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
         case rateUs, learn, twitter, support, legal
         case testnet(isOn: Bool)
+        case inviteFriends
         
         var title: String {
             switch self {
@@ -222,6 +223,8 @@ extension SettingsViewController {
                 return "Testnet"
             case .homeScreen:
                 return String.Constants.settingsHomeScreen.localized()
+            case .inviteFriends:
+                return String.Constants.settingsInviteFriends.localized()
             }
         }
         
@@ -247,6 +250,8 @@ extension SettingsViewController {
                 return UIImage(named: "settingsIconTestnet")!
             case .homeScreen:
                 return .domainsProfileIcon
+            case .inviteFriends:
+                return .giftBoxIcon20
             }
         }
         
@@ -264,7 +269,7 @@ extension SettingsViewController {
                 return .brandUnstoppablePink
             case .testnet:
                 return .brandSkyBlue
-            case .rateUs, .learn, .twitter, .support, .legal:
+            case .rateUs, .learn, .twitter, .support, .legal, .inviteFriends:
                 return .backgroundMuted2
             case .homeScreen:
                 return .brandDeepPurple
@@ -277,7 +282,7 @@ extension SettingsViewController {
                 return .chevron(value: value)
             case .appearance(let appearanceStyle):
                 return .chevron(value: appearanceStyle.visibleName)
-            case .rateUs, .learn, .twitter, .support, .legal:
+            case .rateUs, .learn, .twitter, .support, .legal, .inviteFriends:
                 return .empty
             case .testnet(let isOn):
                 return .switcher(isOn: isOn)
@@ -319,6 +324,8 @@ extension SettingsViewController {
                 return .settingsLegal
             case .testnet:
                 return .settingsTestnet
+            case .inviteFriends:
+                return .settingsInviteFriends
             }
         }
     }
