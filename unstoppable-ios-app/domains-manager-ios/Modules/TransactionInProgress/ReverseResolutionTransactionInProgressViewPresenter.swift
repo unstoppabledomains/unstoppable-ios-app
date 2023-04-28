@@ -79,7 +79,7 @@ extension ReverseResolutionTransactionInProgressViewPresenter: ExternalEventsSer
             switch event {
             case .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved:
                 refreshMintingTransactions()
-            case .wcDeepLink, .walletConnectRequest, .domainTransferred, .mintingFinished, .domainProfileUpdated:
+            case .wcDeepLink, .walletConnectRequest, .domainTransferred, .mintingFinished, .domainProfileUpdated, .badgeAdded:
                 return
             }
         }
