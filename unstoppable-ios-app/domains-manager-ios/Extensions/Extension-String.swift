@@ -43,6 +43,7 @@ extension String {
         case generic(url: String)
         case unableToCreateAccountTutorial
         case referralTutorial
+        case referralLink(code: String)
 
         var urlString: String {
             switch self {
@@ -97,6 +98,8 @@ extension String {
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001237087-mobile-app-unable-to-create-account"
             case .referralTutorial:
                 return "https://unstoppabledomains.com/refer-a-friend"
+            case .referralLink(let code):
+                return "\(NetworkConfig.migratedBaseUrl)/?ref=\(code)"
             }
         }
         
@@ -187,7 +190,8 @@ extension String {
         static let rateUs = "RATE_US"
         static let both = "BOTH"
         static let manage = "MANAGE"
-        
+        static let link = "LINK"
+
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"

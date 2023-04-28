@@ -207,9 +207,22 @@ private extension SettingsPresenter {
     
     @MainActor
     func showInviteFriendsScreen() {
-        guard let nav = view?.cNavigationController else { return }
-        
-        UDRouter().showInviteFriendsScreen(in: nav)
+        Task {
+            do {
+                guard let nav = view?.cNavigationController else { return }
+                
+                let interactableDomains = await dataAggregatorService.getDomainsDisplayInfo().interactableItems()
+                guard let domainDisplayInfo = interactableDomains.first else { return }
+                
+                let domain = try await dataAggregatorService.getDomainWith(name: domainDisplayInfo.name)
+                
+                UDRouter().showInviteFriendsScreen(domain: domain,
+                                                   in: nav)
+            } catch {
+                Debugger.printFailure("Failed to get domain for referral code", critical: true)
+                view?.showAlertWith(error: error, handler: nil)
+            }
+        }
     }
 }
 
