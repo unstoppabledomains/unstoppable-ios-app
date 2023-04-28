@@ -21,6 +21,7 @@ final class InviteFriendsViewController: BaseViewController {
     @IBOutlet private weak var shareButton: MainButton!
     @IBOutlet private weak var stepsStackView: UIStackView!
     
+    override var analyticsName: Analytics.ViewName { .inviteFriends }
     var presenter: InviteFriendsViewPresenterProtocol!
     
     override func viewDidLoad() {

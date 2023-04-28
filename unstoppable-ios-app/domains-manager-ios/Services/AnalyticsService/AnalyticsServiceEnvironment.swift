@@ -149,6 +149,7 @@ extension Analytics {
         case failedToFetchDomainProfile, signMessageInExternalWalletToLoadDomainProfile
         case domainProfileImageDetails
         case transferEnterRecipient, transferReviewAndConfirm
+        case inviteFriends
     }
 }
 
