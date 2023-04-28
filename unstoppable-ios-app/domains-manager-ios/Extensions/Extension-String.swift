@@ -42,6 +42,8 @@ extension String {
         case badgesLeaderboard
         case generic(url: String)
         case unableToCreateAccountTutorial
+        case referralTutorial
+        case referralLink(code: String)
 
         var urlString: String {
             switch self {
@@ -94,6 +96,10 @@ extension String {
                 return url
             case .unableToCreateAccountTutorial:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001237087-mobile-app-unable-to-create-account"
+            case .referralTutorial:
+                return "https://unstoppabledomains.com/refer-a-friend"
+            case .referralLink(let code):
+                return "\(NetworkConfig.migratedBaseUrl)/?ref=\(code)"
             }
         }
         
@@ -184,7 +190,8 @@ extension String {
         static let rateUs = "RATE_US"
         static let both = "BOTH"
         static let manage = "MANAGE"
-        
+        static let link = "LINK"
+
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
@@ -377,7 +384,8 @@ extension String {
         static let settingsFollowTwitter = "SETTINGS_FOLLOW_TWITTER"
         static let settingsSupportNFeedback = "SETTINGS_SUPPORT_N_FEEDBACK"
         static let settingsLegal = "SETTINGS_LEGAL"
-        
+        static let settingsInviteFriends = "SETTINGS_INVITE_FRIENDS"
+
         static let settingsSecurityPasscode = "SETTINGS_SECURITY_PASSCODE"
         static let settingsSecurityChangePasscode = "SETTINGS_SECURITY_CHANGE_PASSCODE"
         static let settingsSecurityRequireWhenOpeningHeader = "SETTINGS_SECURITY_REQUIRE_WHEN_OPENING_HEADER"
@@ -786,6 +794,13 @@ extension String {
         static let optional = "OPTIONAL"
         static let transferInProgress = "TRANSFER_IN_PROGRESS"
 
+        // Referral
+        static let inviteFriendsTitle = "INVITE_FRIENDS_TITLE"
+        static let inviteFriendsSubtitle = "INVITE_FRIENDS_SUBTITLE"
+        static let inviteFriendsStep1Message = "INVITE_FRIENDS_STEP_1_MESSAGE"
+        static let inviteFriendsStep2Message = "INVITE_FRIENDS_STEP_2_MESSAGE"
+        static let inviteFriendsStep3Message = "INVITE_FRIENDS_STEP_3_MESSAGE"
+        static let copyLink = "COPY_LINK"
     }
     
     struct Segues {

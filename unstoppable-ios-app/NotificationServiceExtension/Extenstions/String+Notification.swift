@@ -28,6 +28,9 @@ extension String {
         case reverseResolutionRemoved = "NOTIFICATION_REVERSE_RESOLUTION_REMOVED"
 
         case domainProfileUpdated = "NOTIFICATION_DOMAIN_PROFILE_UPDATED"
+        
+        case badgeAdded = "NOTIFICATION_BADGE_ADDED"
+        case badgesAdded = "NOTIFICATION_BADGES_ADDED"
 
         case walletConnectRequest = "NOTIFICATION_WALLET_CONNECT_REQUEST"
 

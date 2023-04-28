@@ -545,6 +545,13 @@ class UDRouter: DomainProfileSignatureValidator {
         vc.presenter = presenter
         return vc
     }
+    
+    func showInviteFriendsScreen(domain: DomainItem,
+                                 in nav: CNavigationController) {
+        let vc = buildInviteFriendsModule(domain: domain)
+        
+        nav.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - Private methods
@@ -924,6 +931,13 @@ private extension UDRouter {
         return vc
     }
     
+    func buildInviteFriendsModule(domain: DomainItem) -> UIViewController {
+        let vc = InviteFriendsViewController.nibInstance()
+        let presenter = InviteFriendsViewPresenter(view: vc,
+                                                   domain: domain)
+        vc.presenter = presenter
+        return vc
+    }
 }
 
 extension UDRouter {

@@ -10,6 +10,7 @@ import Foundation
 struct SerializedPublicDomainProfile: Decodable {
     let profile: PublicDomainProfileAttributes
     let socialAccounts: SocialAccounts?
+    let referralCode: String?
 }
 
 struct SerializedUserDomainProfile: Codable {
@@ -736,7 +737,7 @@ struct ProfileUpdateRequest: Encodable, Hashable {
 }
 
 enum GetDomainProfileField: String {
-    case profile, socialAccounts, messaging, cryptoVerifications, records, humanityCheck
+    case profile, socialAccounts, messaging, cryptoVerifications, records, humanityCheck, referralCode
 }
 
 struct SocialAccount: Hashable, Encodable {

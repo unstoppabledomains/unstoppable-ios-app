@@ -151,6 +151,7 @@ extension Analytics {
         case domainProfileImageDetails
         case nftDetails
         case transferEnterRecipient, transferReviewAndConfirm
+        case inviteFriends
     }
 }
 
@@ -213,7 +214,7 @@ extension Analytics {
         case editProfile, manageDomain, shareLink, saveAsImage, createNFCTag
         
         // Settings
-        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs
+        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsInviteFriends
         
         // Security settings
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
@@ -253,6 +254,9 @@ extension Analytics {
         case rearrangeDomains, searchDomains
         case moveToTop
         case resetRecords
+        
+        // Referral
+        case inviteFriendInfo, copyLink
     }
 }
 
