@@ -63,7 +63,7 @@ extension SettingsPresenter: SettingsPresenterProtocol {
                 case .homeScreen:
                     showHomeScreenDomainSelection()
                 case .inviteFriends:
-                    return
+                    showInviteFriendsScreen()
                 }
             }
         }
@@ -203,6 +203,13 @@ private extension SettingsPresenter {
                 await view.cNavigationController?.popToRootViewController(animated: true)
             }
         }
+    }
+    
+    @MainActor
+    func showInviteFriendsScreen() {
+        guard let nav = view?.cNavigationController else { return }
+        
+        UDRouter().showInviteFriendsScreen(in: nav)
     }
 }
 

@@ -251,6 +251,9 @@ extension Analytics {
         case rearrangeDomains, searchDomains
         case moveToTop
         case resetRecords
+        
+        // Referral
+        case inviteFriendInfo, copyLink
     }
 }
 

@@ -705,3 +705,10 @@
 "OPTIONAL" = "Optional";
 "TRANSFER_IN_PROGRESS" = "Transfer in progress";
 
+// Referral
+"INVITE_FRIENDS_TITLE" = "Give $10, get $10";
+"INVITE_FRIENDS_SUBTITLE" = "Get $10 in credits when someone makes a $40+ purchase domain using your referral link.";
+"INVITE_FRIENDS_STEP_1_MESSAGE" = "Share your invite link with a friend";
+"INVITE_FRIENDS_STEP_2_MESSAGE" = "Your friend makes a first purchase of $40 or more";
+"INVITE_FRIENDS_STEP_3_MESSAGE" = "You receive $10 credit as a thank you for the referral";
+"COPY_LINK" = "Copy link";

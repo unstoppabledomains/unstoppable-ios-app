@@ -42,6 +42,7 @@ extension String {
         case badgesLeaderboard
         case generic(url: String)
         case unableToCreateAccountTutorial
+        case referralTutorial
 
         var urlString: String {
             switch self {
@@ -94,6 +95,8 @@ extension String {
                 return url
             case .unableToCreateAccountTutorial:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001237087-mobile-app-unable-to-create-account"
+            case .referralTutorial:
+                return "https://unstoppabledomains.com/refer-a-friend"
             }
         }
         
@@ -786,6 +789,13 @@ extension String {
         static let optional = "OPTIONAL"
         static let transferInProgress = "TRANSFER_IN_PROGRESS"
 
+        // Referral
+        static let inviteFriendsTitle = "INVITE_FRIENDS_TITLE"
+        static let inviteFriendsSubtitle = "INVITE_FRIENDS_SUBTITLE"
+        static let inviteFriendsStep1Message = "INVITE_FRIENDS_STEP_1_MESSAGE"
+        static let inviteFriendsStep2Message = "INVITE_FRIENDS_STEP_2_MESSAGE"
+        static let inviteFriendsStep3Message = "INVITE_FRIENDS_STEP_3_MESSAGE"
+        static let copyLink = "COPY_LINK"
     }
     
     struct Segues {
