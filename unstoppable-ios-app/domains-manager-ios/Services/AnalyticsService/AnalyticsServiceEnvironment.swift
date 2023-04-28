@@ -137,7 +137,7 @@ extension Analytics {
         case mintDomainsConfiguration
         case chooseFirstPrimaryDomain, choosePrimaryDomainDuringMinting, changePrimaryDomainFromSettings // Deprecated
         case sortDomainsForTheFirstTime, sortDomainsDuringMinting, sortDomainsFromSettings, sortDomainsFromHome, sortDomainsFromHomeSearch
-        case primaryDomainMintingInProgress
+        case primaryDomainMintingInProgress, transferInProgress, reverseResolutionTransactionInProgress
         case domainDetails
         case settings, securitySettings
         case walletDetails, renameWallet
@@ -153,6 +153,7 @@ extension Analytics {
         case domainProfileImageDetails
         case loginWithWebsiteAccount, loginWithEmailAndPassword
         case parkedDomainsList, noParkedDomainsFound, loadingParkedDomains
+        case transferEnterRecipient, transferReviewAndConfirm
     }
 }
 
@@ -241,7 +242,7 @@ extension Analytics {
         
         // Domain profile
         case banner, avatar, qrCode, publicProfile
-        case copyDomain, aboutProfile, mintedOnChain, badgeSponsor
+        case copyDomain, aboutProfile, mintedOnChain, badgeSponsor, transfer
         case domainProfileGeneralInfo, domainProfileMetadata, domainProfileWeb3Website
         case uploadPhoto, changePhoto, removePhoto, viewPhoto
         case badge
@@ -255,6 +256,7 @@ extension Analytics {
         case rearrangeDomains, searchDomains
         case moveToTop
         case websiteAccount
+        case resetRecords
     }
 }
 

@@ -52,7 +52,7 @@ extension DomainDisplayInfo {
     var pfpSource: DomainPFPInfo.PFPSource { domainPFPInfo?.source ?? .none }
     var isUpdatingRecords: Bool {
         switch state {
-        case .minting, .updatingRecords:
+        case .minting, .updatingRecords, .transfer:
             return true
         case .default, .parking:
             return false
@@ -65,6 +65,7 @@ extension DomainDisplayInfo {
         }
         return false
     }
+    var isTransferring: Bool { state == .transfer }
     var isPrimary: Bool { order == 0 } /// Primary domain now is the one user has selected to be the first
 
     func isReverseResolutionChangeAllowed() -> Bool {
@@ -87,7 +88,7 @@ extension DomainDisplayInfo {
 // MARK: - State
 extension DomainDisplayInfo {
     enum State: Hashable {
-        case `default`, minting, updatingRecords, parking(status: DomainParkingStatus)
+        case `default`, minting, updatingRecords, parking(status: DomainParkingStatus), transfer
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             switch (lhs, rhs) {
@@ -98,6 +99,8 @@ extension DomainDisplayInfo {
             case (.updatingRecords, .updatingRecords):
                 return true
             case (.parking, .parking):
+                return true
+            case (.transfer, .transfer):
                 return true
             default:
                 return false

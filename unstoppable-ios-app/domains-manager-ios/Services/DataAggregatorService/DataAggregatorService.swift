@@ -500,7 +500,13 @@ private extension DataAggregatorService {
         // Aggregate domain display info
         var domainsWithDisplayInfo = [DomainWithDisplayInfo]()
         for domain in domains {
-            let domainState: DomainDisplayInfo.State = transactions.containPending(domain) ? .updatingRecords : .default
+            var domainState: DomainDisplayInfo.State = .default
+            if transactions.filterPending(extraCondition: { $0.operation == .transferDomain }).first(where: { $0.domainName == domain.name }) != nil {
+                domainState = .transfer
+            } else if transactions.containPending(domain) {
+                domainState = .updatingRecords
+            }
+            
             let domainPFPInfo = pfpInfo.first(where: { $0.domainName == domain.name })
             let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
             let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,

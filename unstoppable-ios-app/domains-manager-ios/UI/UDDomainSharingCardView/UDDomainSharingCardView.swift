@@ -52,7 +52,7 @@ final class UDDomainSharingCardView: UIView, SelfNameable, NibInstantiateable {
         setupBlurEffect()
     }
     
-    func setWith(domain: DomainDisplayInfo, qrImage: UIImage) {
+    func setWith(domain: DomainDisplayInfo, qrImage: UIImage?) {
         setWith(domain: domain)
         setWith(qrImage: qrImage)
         Task {
@@ -112,8 +112,8 @@ private extension UDDomainSharingCardView {
         }
     }
     
-    func setWith(qrImage: UIImage) {
-        qrCodeImageView.image = qrImage.transparentImage()
+    func setWith(qrImage: UIImage?) {
+        qrCodeImageView.image = qrImage?.transparentImage()
     }
     
     func setWith(avatarImage: UIImage?) {

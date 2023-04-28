@@ -107,10 +107,11 @@ extension StatusMessage {
         case deprecated(tld: String)
         case parked(status: DomainParkingStatus)
         case electricMinting, electricUpdatingRecords, orangeDeprecated(tld: String)
+        case transfer
         
         var icon: UIImage {
             switch self {
-            case .updatingRecords, .electricUpdatingRecords, .electricMinting:
+            case .updatingRecords, .electricUpdatingRecords, .electricMinting, .transfer:
                 return .refreshIcon
             case .bridgeDomainToPolygon:
                 return .warningIconLarge
@@ -133,6 +134,8 @@ extension StatusMessage {
                 return String.Constants.mintingInProgressTitle.localized()
             case .parked(let status):
                 return status.title ?? String.Constants.parkedDomain.localized()
+            case .transfer:
+                return String.Constants.transferInProgress.localized()
             }
         }
         
@@ -144,7 +147,7 @@ extension StatusMessage {
                 return .warning
             case .electricUpdatingRecords:
                 return .electricYellow
-            case .electricMinting:
+            case .electricMinting, .transfer:
                 return .electricGreen
             case .orangeDeprecated:
                 return .orange
@@ -162,7 +165,7 @@ extension StatusMessage {
         
         func applyAdditionalBehaviour(on imageView: UIImageView) {
             switch self {
-            case .updatingRecords, .electricUpdatingRecords, .electricMinting:
+            case .updatingRecords, .electricUpdatingRecords, .electricMinting, .transfer:
                 imageView.runUpdatingRecordsAnimation()
             case .bridgeDomainToPolygon, .deprecated, .orangeDeprecated, .parked:
                 return

@@ -544,4 +544,31 @@ extension NetworkService {
             throw NetworkLayerError.parsingTxsError
         }
     }
+    
+    @discardableResult
+    func makeActionsAPIRequest(_ request: APIRequest,
+                               forDomain domain: DomainItem,
+                               paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws -> [ActionsTxInfo] {
+        let actionsResponse = try await NetworkService().getActions(request: request)
+        let blockchain = try BlockchainType.getType(abbreviation: actionsResponse.domain.blockchain)
+        
+        let payloadReturned: NetworkService.TxPayload
+        if let paymentInfo = actionsResponse.paymentInfo {
+            let payloadFormed = try DomainItem.createTxPayload(blockchain: blockchain, paymentInfo: paymentInfo, txs: actionsResponse.txs)
+            payloadReturned = try await paymentConfirmationDelegate.fetchPaymentConfirmationAsync(for: domain, payload: payloadFormed)
+        } else {
+            let messages = actionsResponse.txs.compactMap { $0.messageToSign }
+            guard messages.count == actionsResponse.txs.count else { throw NetworkLayerError.noMessageError }
+            payloadReturned = NetworkService.TxPayload(messages: messages, txCost: nil)
+        }
+        
+        let signatures: [String] = try await UDWallet.createSignaturesByEthSign(messages: payloadReturned.messages, domain: domain)
+        
+        let requestSign = try NetworkService.getRequestForActionSign(id: actionsResponse.id,
+                                                                     response: actionsResponse,
+                                                                     signatures: signatures)
+        try await NetworkService().postMetaActions(requestSign)
+        
+        return actionsResponse.txs
+    }
 }

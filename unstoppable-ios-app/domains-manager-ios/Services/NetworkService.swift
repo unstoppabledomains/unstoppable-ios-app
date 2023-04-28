@@ -379,6 +379,7 @@ extension NetworkService {
         struct MetaData: Decodable {
             let domain: String?
             let resolver: String?
+            let owner: String?
         }
         
         let meta: MetaData
@@ -408,6 +409,15 @@ extension NetworkService {
                                                         extraHeaders: MetadataNetworkConfig.authHeader)
         let response = try JSONDecoder().decode(ResolveDomainsApiResponse.self, from: data)
         return response.meta.domain
+    }
+    
+    func fetchDomainOwner(for domainName: DomainName) async throws -> HexAddress? {
+        let url = URL(string: "\(NetworkConfig.baseResolveUrl)/domains/\(domainName)")!
+        let data = try await NetworkService().fetchData(for: url,
+                                                        method: .get,
+                                                        extraHeaders: MetadataNetworkConfig.authHeader)
+        let response = try JSONDecoder().decode(ResolveDomainsApiResponse.self, from: data)
+        return response.meta.owner
     }
     
     private func getRegex(for expandedTicker: String, coins: [CoinRecord]) -> String? {
