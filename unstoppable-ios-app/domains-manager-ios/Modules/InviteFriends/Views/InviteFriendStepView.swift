@@ -79,6 +79,7 @@ private extension InviteFriendStepView {
         contentStack = UIStackView(arrangedSubviews: [numberContainerView, messageLabel])
         contentStack.axis = .horizontal
         contentStack.spacing = 16
+        contentStack.alignment = .center
         contentStack.embedInSuperView(self)
     }
 }
