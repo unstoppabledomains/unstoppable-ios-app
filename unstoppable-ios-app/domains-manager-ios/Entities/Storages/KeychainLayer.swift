@@ -107,7 +107,7 @@ extension PrivateKeyStorage {
             Debugger.printInfo("Cleared private key for wallet: \(key)")
             return
         } catch {
-            Debugger.printInfo("Failed to clear the priv key for the wallet: \(key)")
+            Debugger.printInfo("Failed to clear the priv key for the wallet: \(key) with error \(error.localizedDescription)")
             return
         }
     }
