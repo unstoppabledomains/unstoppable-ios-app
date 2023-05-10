@@ -60,7 +60,7 @@ extension PrivateKeyStorage {
             try valet.setString(privateKey, forKey: pubKeyHex.normalized)
             Debugger.printInfo("Stored private key for wallet: \(pubKeyHex)")
         } catch {
-            Debugger.printFailure("Failed to store the priv key for the wallet: \(pubKeyHex)", critical: true)
+            Debugger.printFailure("Failed to store the priv key for the wallet: \(pubKeyHex) with error \(error.localizedDescription)", critical: true)
             return
         }
     }
@@ -75,9 +75,7 @@ extension PrivateKeyStorage {
             Debugger.printInfo("Retrieved private key for key: \(key)")
             return value
         } catch {
-            if isCritical {
-                Debugger.printFailure("Failed to get the priv key for the key: \(key)", critical: isCritical)
-            }
+            Debugger.printFailure("Failed to get the priv key for the key: \(key) with error \(error.localizedDescription)", critical: isCritical)
             return nil
         }
     }
@@ -94,9 +92,7 @@ extension PrivateKeyStorage {
             Debugger.printInfo("Retrieved private key for key: \(pubKeyHex) (non-normalized)")
             return value
         } catch {
-            if isCritical {
-                Debugger.printFailure("Failed to get the priv key for the key: \(pubKeyHex)", critical: isCritical)
-            }
+            Debugger.printFailure("Failed to get the priv key for the key: \(pubKeyHex) with error \(error.localizedDescription)", critical: isCritical)
             return nil
         }
     }
