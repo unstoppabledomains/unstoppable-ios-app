@@ -13,7 +13,7 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
     var internalCustody: Bool
     var purchasedAt: Date?
     var parkingExpiresAt: Date?
-    var parkingTrialEndsAt: Date?
+    var parkingTrial: Bool?
     var blockchain: String
     var name: String
     var ownerAddress: String
@@ -23,7 +23,7 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
         self.internalCustody = firebaseDomain.internalCustody
         self.purchasedAt = firebaseDomain.purchasedAt
         self.parkingExpiresAt = firebaseDomain.parkingExpiresAt
-        self.parkingTrialEndsAt = firebaseDomain.parkingTrialEndsAt
+        self.parkingTrial = firebaseDomain.parkingTrial
         self.blockchain = firebaseDomain.blockchain
         self.name = firebaseDomain.name
         self.ownerAddress = firebaseDomain.ownerAddress
@@ -36,18 +36,16 @@ struct FirebaseDomainDisplayInfo: Codable, Hashable {
             if parkingExpiresAt < Date() {
                 return .parkingExpired
             }
+            
+            if parkingTrial == true {
+                return .parkingTrial(expiresDate: parkingExpiresAt)
+            }
+            
             let monthDif = Calendar.current.compare(parkingExpiresAt, to: Date(), toGranularity: .month).rawValue
             if monthDif < 1 {
                 return .parkedButExpiresSoon(expiresDate: parkingExpiresAt)
             }
             return .parked(expiresDate: parkingExpiresAt)
-        }
-        
-        if let parkingTrialEndsAt {
-            if parkingTrialEndsAt < Date() {
-                return .parkingExpired
-            }
-            return .parkingTrial(expiresDate: parkingTrialEndsAt)
         }
         
         return .freeParking
