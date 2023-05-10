@@ -96,6 +96,7 @@ protocol PullUpViewServiceProtocol {
     func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
                                                 in viewController: UIViewController)
     func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async
+    func showApplePayRequiredPullUp(in viewController: UIViewController)
 }
 
 @MainActor
@@ -1350,6 +1351,19 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             
             showOrUpdate(in: viewController, pullUp: .externalWalletFailedToSign, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(Void()) })
         }
+    }
+    
+    func showApplePayRequiredPullUp(in viewController: UIViewController) {
+        let selectionViewHeight: CGFloat = 304
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.applePayRequiredPullUpTitle.localized()),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .grimaseIcon,
+                                                                                 size: .small),
+                                                                     subtitle: .label(.text(String.Constants.applePayRequiredPullUpMessage.localized())),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        presentPullUpView(in: viewController, pullUp: .applePayRequired, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
     
 }
