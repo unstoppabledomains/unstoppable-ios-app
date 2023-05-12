@@ -190,8 +190,8 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         return reverseResolutionMap.first(where: { $0.value == domainName }) != nil
     }
     
-    func aggregateData() async {
-        await reloadAndAggregateData()
+    func aggregateData(shouldRefreshPFP: Bool) async {
+        await reloadAndAggregateData(shouldRefreshPFP: shouldRefreshPFP)
     }
     
     func mintDomains(_ domains: [String],
@@ -282,16 +282,6 @@ extension DataAggregatorService: UDWalletsServiceListener {
     }
 }
 
-// MARK: - UDWalletsServiceListener
-extension DataAggregatorService: FirebaseInteractionServiceListener {
-    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
-        Task {
-            await reloadAndAggregateData(shouldRefreshPFP: false)
-            await checkAppSessionAndLogOutIfNeeded()
-        }
-    }
-}
-
 // MARK: - Private methods
 private extension DataAggregatorService {
     @MainActor
@@ -303,6 +293,7 @@ private extension DataAggregatorService {
         case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
             SceneDelegate.shared?.restartOnboarding()
             appContext.firebaseInteractionService.logout()
+            Task { await aggregateData(shouldRefreshPFP: false) }
         }
     }
     

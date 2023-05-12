@@ -86,7 +86,7 @@ private extension AppLaunchService {
                         onboardingFlow = .newUser(subFlow: nil)
                     } else {
                         Task.detached { [weak self] in
-                            await self?.dataAggregatorService.aggregateData()
+                            await self?.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
                         }
                         onboardingFlow = .existingUser(wallets: wallets)
                     }
@@ -147,7 +147,7 @@ private extension AppLaunchService {
         }
 
         Task {
-            await dataAggregatorService.aggregateData()
+            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
             let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
             await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: mintingState)))

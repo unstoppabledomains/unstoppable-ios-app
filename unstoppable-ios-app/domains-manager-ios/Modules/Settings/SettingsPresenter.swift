@@ -186,7 +186,7 @@ private extension SettingsPresenter {
         StripeService.shared.setup()
         firebaseInteractionService.logout()
         updateAppVersion()
-        Task { await dataAggregatorService.aggregateData() }
+        Task { await dataAggregatorService.aggregateData(shouldRefreshPFP: true) }
         notificationsService.updateTokenSubscriptions()
     }
     
@@ -256,6 +256,7 @@ private extension SettingsPresenter {
                         try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
                         firebaseInteractionService.logout()
                         appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
+                        await dataAggregatorService.aggregateData(shouldRefreshPFP: true) 
                     }
                 } catch { }
             }

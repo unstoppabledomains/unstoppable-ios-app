@@ -125,7 +125,7 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
         notifyListenersWith(result: .success(.domainsUpdated(domains)))
     }
     
-    func aggregateData() async {
+    func aggregateData(shouldRefreshPFP: Bool) async {
         
     }
     

@@ -129,7 +129,7 @@ private extension LoginFlowNavigationController {
             }
             let parkedDomains = try await appContext.firebaseDomainsService.loadParkedDomains()
             let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
-            await appContext.dataAggregatorService.aggregateData()
+            await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: false)
             
             await MainActor.run {
                 if parkedDomains.isEmpty {

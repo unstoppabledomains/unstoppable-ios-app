@@ -59,7 +59,7 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
             if domainTransaction == nil {
                 await dismiss()
                 if !isNotificationPermissionsGranted {
-                    await appContext.dataAggregatorService.aggregateData()
+                    await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: false)
                 }
             } else {
                 await showData()

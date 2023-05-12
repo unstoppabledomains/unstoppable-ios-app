@@ -140,10 +140,12 @@ private extension ExternalEventsService {
         Task {
             switch event {
             case .recordsUpdated(let domainName):
-                await dataAggregatorService.aggregateData()
+                await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
                 AppGroupsBridgeService.shared.clearChanges(for: domainName)
-            case .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .domainProfileUpdated:
-                await dataAggregatorService.aggregateData()
+            case .mintingFinished, .domainTransferred, .domainProfileUpdated:
+                await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
+            case .reverseResolutionSet, .reverseResolutionRemoved:
+                await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
             case .walletConnectRequest:
                 try? await coreAppCoordinator.handle(uiFlow: .showPullUpLoading)
             case .wcDeepLink:
@@ -184,7 +186,7 @@ private extension ExternalEventsService {
             let walletWithInfo = try await findWalletWithInfo(for: domain)
 
             Task.detached(priority: .high) { [weak self] in
-                await self?.dataAggregatorService.aggregateData()
+                await self?.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
             }
             
             return .showDomainProfile(domain: domain, walletWithInfo: walletWithInfo)

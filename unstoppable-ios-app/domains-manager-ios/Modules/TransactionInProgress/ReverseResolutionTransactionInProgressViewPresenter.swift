@@ -63,7 +63,7 @@ class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProg
             if domainTransaction == nil {
                 await dismiss()
                 if !isNotificationPermissionsGranted {
-                    await dataAggregatorService.aggregateData()
+                    await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
                 }
             } else {
                 await showData()
