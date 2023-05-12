@@ -602,8 +602,11 @@ private extension DomainsCollectionPresenter {
     @MainActor
     func updateUIControlsVisibility() {
         let domains = stateController.domains
-        let isScanHidden = domains.first(where: { $0.isInteractable }) == nil
-        view?.setScanButtonHidden(isScanHidden)
+        if !domains.isEmpty {
+            view?.setScanButtonHidden(!domains[currentIndex].isInteractable)
+        } else {
+            view?.setScanButtonHidden(true)
+        }
         view?.setAddButtonHidden(domains.isEmpty)
         view?.setEmptyState(hidden: !domains.isEmpty)
     }
