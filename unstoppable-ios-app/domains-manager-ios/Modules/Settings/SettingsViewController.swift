@@ -234,10 +234,8 @@ extension SettingsViewController {
         
         var subtitle: String? {
             switch self {
-            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen, .websiteAccount:
+            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen, .websiteAccount, .inviteFriends:
                 return nil
-            case .inviteFriends:
-                return String.Constants.settingsInviteFriends.localized()
             }
         }
         
