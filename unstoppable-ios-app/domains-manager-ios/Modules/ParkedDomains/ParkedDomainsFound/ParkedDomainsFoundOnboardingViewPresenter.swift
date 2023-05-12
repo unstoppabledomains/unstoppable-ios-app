@@ -12,7 +12,7 @@ final class ParkedDomainsFoundOnboardingViewPresenter: ParkedDomainsFoundViewPre
     private weak var onboardingFlowManager: OnboardingFlowManager?
     
     override var title: String {
-        String.Constants.pluralWeFoundNDomains.localized(domains.count)
+        String.Constants.pluralWeFoundNDomains.localized(domains.count, domains.count)
     }
     override var progress: Double? { 1 }
     
