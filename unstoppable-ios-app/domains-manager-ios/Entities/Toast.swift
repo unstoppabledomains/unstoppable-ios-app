@@ -59,7 +59,7 @@ enum Toast: Hashable {
         case .itemCopied(let name):
             return String.Constants.nCopied.localized(name)
         case .parkedDomainsImported(let domainsCount):
-            return String.Constants.pluralNParkedDomainsImported.localized(domainsCount)
+            return String.Constants.pluralNParkedDomainsImported.localized(domainsCount, domainsCount)
         case .userLoggedOut:
             return String.Constants.userLoggedOutToastMessage.localized()
         }

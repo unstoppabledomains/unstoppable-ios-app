@@ -21,7 +21,7 @@ class ParkedDomainsFoundViewPresenter {
     let domains: [FirebaseDomainDisplayInfo]
 
     var title: String {
-        String.Constants.pluralWeFoundNDomains.localized(domains.count)
+        String.Constants.pluralWeFoundNDomains.localized(domains.count, domains.count)
     }
     var progress: Double? { 1 }
 
