@@ -209,7 +209,6 @@ private extension LocalNotificationsService {
             content.title = title
             content.body = body
             content.sound = .default
-            content.badge = 1
             content.attachments = attachments
             content.userInfo = userInfo
             

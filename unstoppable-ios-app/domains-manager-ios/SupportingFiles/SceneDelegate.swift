@@ -104,6 +104,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneWillEnterForeground(_ scene: UIScene) {
         notifyListenersActivationStateChanged(scene.activationState)
+        UIApplication.shared.applicationIconBadgeNumber = 0
 
         appContext.analyticsService.log(event: .appGoesToForeground, withParameters: nil)
         guard didResolveInitialViewController else { return }
