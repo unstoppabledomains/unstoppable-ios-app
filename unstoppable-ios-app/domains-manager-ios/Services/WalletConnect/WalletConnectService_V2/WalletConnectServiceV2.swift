@@ -1214,10 +1214,8 @@ extension WalletConnectServiceV2 {
         let settledSessionsTopics = settledSessions.map { $0.topic }
         let foundActiveSessions = sessions.filter({ settledSessionsTopics.contains($0.topic)})
         if foundActiveSessions.count > 0 { return foundActiveSessions }
-        
-        
-        // no active sessions found::
-        
+
+        // no active sessions found -- remove the target wallet and kill the pairing
         Debugger.printWarning("No active sessions found for: \(sessions.first?.getWalletAddresses().first ?? "wallet address n/a")")
         let targetWalletAddresses = sessions.flatMap({$0.getWalletAddresses()})
         disconnectAppsConnected(to: targetWalletAddresses)
