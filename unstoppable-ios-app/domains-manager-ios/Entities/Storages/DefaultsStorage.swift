@@ -22,14 +22,6 @@ class DefaultsStorage<T: Equatable> where T: Codable {
         }
     }
     
-    func substitute(element: T, at index: Int) {
-        q.async {
-            var all = self.getAllFromDefaults()
-            all[index] = element
-            try? self.store(elements: all)
-        }
-    }
-    
     func retrieveAll() -> [T] {
         var result: [T] = []
         q.sync {

@@ -51,10 +51,6 @@ class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDat
             .filter({ $0.session.topic == topic})
             .first
     }
-    
-    func substitute(walletData: WalletConnectServiceV2.ExtWalletDataV2, at index: Int) {
-        self.substitute(element: walletData, at: index)
-    }
 }
 
 protocol WalletConnectServiceV2Protocol: AnyObject {
@@ -158,11 +154,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
         Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions:\n\(settledSessions)")
-//        print(settledSessions.first!.expiryDate)
-//        Task {
-//            try! await Sign.instance.disconnect(topic: settledSessions[0].topic)
-//            try! await Sign.instance.disconnect(topic: settledSessions[1].topic)
-//        }
+        print(settledSessions.first!.expiryDate)
         #endif
         
         setUpAuthSubscribing()
