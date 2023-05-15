@@ -160,7 +160,8 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions:\n\(settledSessions)")
 //        print(settledSessions.first!.expiryDate)
 //        Task {
-//            try! await Sign.instance.disconnect(topic: settledSessions.first!.topic)
+//            try! await Sign.instance.disconnect(topic: settledSessions[0].topic)
+//            try! await Sign.instance.disconnect(topic: settledSessions[1].topic)
 //        }
         #endif
         
@@ -390,7 +391,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     }
                 }
             }.store(in: &publishers)
-        
     }
     
     private func updateWalletsCacheAndUi(walletAddress: HexAddress) {
@@ -1232,29 +1232,23 @@ extension WalletConnectServiceV2 {
         
         
         // no active sessions found::
-        guard let pairingTopic = sessions.first?.pairingTopic else { return [] }
         
-        // check if it active: Sign.instance.getPairings()
-        // if not -- kill the Connected Ext Wallet and show UI to re-connect
-        // return
-        
-        // active paring found::
-        Task {
-            do {
-                try await Sign.instance.connect(requiredNamespaces: namespaces, topic: pairingTopic)
-                
-            } catch {
-                //TODO: failed to reconnect
-                print("failed to reconnect")
+        Debugger.printWarning("No active sessions found for: \(sessions.first?.getWalletAddresses().first ?? "wallet address n/a")")
+        let targetWalletAddresses = sessions.flatMap({$0.getWalletAddresses()})
+        disconnectAppsConnected(to: targetWalletAddresses)
+        targetWalletAddresses.forEach({ walletAddress in
+            updateWalletsCacheAndUi(walletAddress: walletAddress)
+        })
+        sessions.map({$0.topic}).forEach({ topic in
+            Task {
+                await walletStorageV2.remove(byTopic: topic)
             }
-            print("Request to reconnect sent")
-            // TODO: show UI and wait until 'Agreed'
-            // launch Ext Wallet
-            // return
-
-            //
-            
-            // TODO IN SETTLED SESSION CALLBACK: replace old session record for the new one (find by pairingTopic)
+        })
+        
+        Task {
+            if let pairingTopic = sessions.first?.pairingTopic {
+                try? await Pair.instance.disconnect(topic: pairingTopic)
+            }
         }
         return []
     }
