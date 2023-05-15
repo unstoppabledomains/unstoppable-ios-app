@@ -115,9 +115,11 @@ extension LoginWithEmailViewController: UDTextFieldV2Delegate {
         if udTextField == passwordTextfield {
             self.didAutoFillCredentials = true
             self.passwordTextfield.startEditing()
+            confirmButton.isUserInteractionEnabled = false
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
                 self?.didAutoFillCredentials = false
+                self?.confirmButton.isUserInteractionEnabled = buttonEnabled
             }
         }
     }
@@ -133,7 +135,8 @@ extension LoginWithEmailViewController: UDTextFieldV2Delegate {
            udTextField.text.isValidEmail() {
             passwordTextfield.startEditing()
         } else if udTextField == passwordTextfield,
-                  confirmButton.isEnabled {
+                  confirmButton.isEnabled,
+                  confirmButton.isUserInteractionEnabled {
             confirmButtonPressed(confirmButton)
             returnResponder()
         } else {
