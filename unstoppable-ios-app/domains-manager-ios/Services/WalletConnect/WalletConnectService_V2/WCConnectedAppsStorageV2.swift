@@ -32,12 +32,14 @@ class WCConnectedAppsStorageV2: DefaultsStorage<WCConnectedAppsStorageV2.Connect
     
     struct SessionProxy: Codable, Equatable {
         public let topic: String
+        public let pairingTopic: String
         public let peer: AppMetadata
         public let namespaces: [String: SessionNamespace]
         public let expiryDate: Date
         
         init(_ session: WalletConnectSign.Session) {
             self.topic = session.topic
+            self.pairingTopic = session.pairingTopic
             self.peer = session.peer
             self.namespaces = session.namespaces
             self.expiryDate = session.expiryDate

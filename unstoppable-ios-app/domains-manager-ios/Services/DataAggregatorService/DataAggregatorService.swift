@@ -107,7 +107,7 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         let domainsWithInfo = await getDomainsWithDisplayInfo()
         let domains = Array(domainsWithInfo.lazy.filter({ names.contains($0.name) }).map({ $0.domain }))
         if domains.count != names.count {
-            Debugger.printFailure("Not all domain items were found", critical: true)
+            Debugger.printFailure("Not all domain items were found", critical: false)
         }
         
         return domains
