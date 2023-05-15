@@ -501,6 +501,16 @@ private extension DomainProfileViewPresenter {
         }
         
         let updatedChanges = updatedRequests.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.changes })
+        
+        func checkForApplePayErrorAndShowUpdateFailedPullUpFor(errors: [UpdateDomainProfileError],
+                                       requiredPullUp: ( ()async throws->())) async throws {
+            let paymentsError = errors.compactMap({ $0.error as? PaymentError })
+            if let _ = paymentsError.first(where: { $0 == .applePayNotSupported }) {
+                await appContext.pullUpViewService.showApplePayRequiredPullUp(in: view)
+            } else {
+                try await requiredPullUp()
+            }
+        }
    
         do {
             if updateErrors.isEmpty {
@@ -525,11 +535,14 @@ private extension DomainProfileViewPresenter {
                 await view.dismissPullUpMenu()
                 
                 let numberOfFailedAttempts = await dataHolder.numberOfFailedToUpdateProfileAttempts
-                if numberOfFailedAttempts >= 3 {
-                    try await appContext.pullUpViewService.showTryUpdateDomainProfileLaterPullUp(in: view)
-                } else {
-                    try await appContext.pullUpViewService.showUpdateDomainProfileFailedPullUp(in: view)
-                }
+                try await checkForApplePayErrorAndShowUpdateFailedPullUpFor(errors: updateErrors, requiredPullUp: {
+                    if numberOfFailedAttempts >= 3 {
+                        try await appContext.pullUpViewService.showTryUpdateDomainProfileLaterPullUp(in: view)
+                    } else {
+                        try await appContext.pullUpViewService.showUpdateDomainProfileFailedPullUp(in: view)
+                    }
+                })
+                
                 await view.dismissPullUpMenu()
                 let failedRequestsWithChanges = updateErrors.map({ $0.request })
                 await perform(requestsWithChanges: failedRequestsWithChanges)
@@ -557,7 +570,10 @@ private extension DomainProfileViewPresenter {
                 let failedUIChanges = failedRequestsWithChanges.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.changes }).map { $0.uiChange }
                 let failedUIChangeItems = failedUIChanges.map({ DomainProfileSectionUIChangeFailedItem(failedChangeType: $0) })
                 
-                try await appContext.pullUpViewService.showUpdateDomainProfileSomeChangesFailedPullUp(in: view, changes: failedUIChangeItems)
+                try await checkForApplePayErrorAndShowUpdateFailedPullUpFor(errors: updateErrors, requiredPullUp: {
+                    try await appContext.pullUpViewService.showUpdateDomainProfileSomeChangesFailedPullUp(in: view, changes: failedUIChangeItems)
+                })
+                
                 await view.dismissPullUpMenu()
                 await perform(requestsWithChanges: failedRequestsWithChanges)
             }

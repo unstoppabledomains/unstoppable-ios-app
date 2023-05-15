@@ -304,6 +304,7 @@ extension Analytics {
         case externalWalletFailedToSign
         case logOutConfirmation, loggedInUserProfile
         case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
+        case applePayRequired
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

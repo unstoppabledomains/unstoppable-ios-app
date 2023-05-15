@@ -106,6 +106,7 @@ protocol PullUpViewServiceProtocol {
     func showParkedDomainExpiresSoonPullUp(in viewController: UIViewController,
                                            expiresDate: Date)
     func showParkedDomainExpiredPullUp(in viewController: UIViewController)
+    func showApplePayRequiredPullUp(in viewController: UIViewController)
 }
 
 @MainActor
@@ -1466,6 +1467,19 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
         presentPullUpView(in: viewController, pullUp: .parkedDomainExpiredInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
+
+    func showApplePayRequiredPullUp(in viewController: UIViewController) {
+        let selectionViewHeight: CGFloat = 304
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.applePayRequiredPullUpTitle.localized()),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .grimaseIcon,
+                                                                                 size: .small),
+                                                                     subtitle: .label(.text(String.Constants.applePayRequiredPullUpMessage.localized())),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        presentPullUpView(in: viewController, pullUp: .applePayRequired, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
 }
 
