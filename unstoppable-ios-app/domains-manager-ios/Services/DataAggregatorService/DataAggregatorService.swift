@@ -282,6 +282,23 @@ extension DataAggregatorService: UDWalletsServiceListener {
     }
 }
 
+// MARK: - FirebaseInteractionServiceListener
+extension DataAggregatorService: FirebaseInteractionServiceListener {
+    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
+        Task {
+            if firebaseUser != nil {
+                let parkedDomains = await loadParkedDomains()
+                await fillDomainsDataFromCache(parkedDomains: parkedDomains)
+                let updatedDomains = await dataHolder.domainsWithDisplayInfo
+                notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: updatedDomains))))
+            }
+            
+            await reloadAndAggregateData(shouldRefreshPFP: false)
+            await checkAppSessionAndLogOutIfNeeded()
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension DataAggregatorService {
     @MainActor
@@ -308,16 +325,20 @@ private extension DataAggregatorService {
     }
     
     func fillDomainsDataFromCache() async {
+        let cachedParkedDomains = appContext.firebaseDomainsService.getCachedDomains()
+        await fillDomainsDataFromCache(parkedDomains: cachedParkedDomains)
+    }
+    
+    func fillDomainsDataFromCache(parkedDomains: [FirebaseDomain]) async {
         let wallets = await getWallets()
         let cachedDomains = domainsService.getCachedDomainsFor(wallets: wallets)
-        let cachedFirebaseDomains = appContext.firebaseDomainsService.getCachedDomains()
         let domainNames = cachedDomains.map({ $0.name }) + (MintingDomainsStorage.retrieveMintingDomains().map({ $0.name }))
         let cachedTransactions = transactionsService.getCachedTransactionsFor(domainNames: domainNames)
         let cachedReverseResolutionMap = ReverseResolutionInfoMapStorage.retrieveReverseResolutionMap()
         let cachedPFPInfo = domainsService.getCachedDomainsPFPInfo()
         await buildDomainsDisplayInfoDataWith(domains: cachedDomains,
                                               pfpInfo: cachedPFPInfo,
-                                              parkedDomains: cachedFirebaseDomains,
+                                              parkedDomains: parkedDomains,
                                               withTransactions: cachedTransactions,
                                               reverseResolutionMap: cachedReverseResolutionMap)
     }
