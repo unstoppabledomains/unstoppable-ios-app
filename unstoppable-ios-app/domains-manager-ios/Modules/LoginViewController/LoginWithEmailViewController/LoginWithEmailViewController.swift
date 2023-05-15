@@ -114,11 +114,9 @@ extension LoginWithEmailViewController: UDTextFieldV2Delegate {
         }
         if udTextField == passwordTextfield {
             self.didAutoFillCredentials = true
-            DispatchQueue.main.async {
-                self.passwordTextfield.startEditing()
-            }
+            self.passwordTextfield.startEditing()
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
                 self?.didAutoFillCredentials = false
             }
         }
