@@ -413,21 +413,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             return
         }
         
-        
-        ///
-        ///
-        
-        if let walletToUpdateSession = self.walletStorageV2.retrieveAll().enumerated().filter({$0.element.session.pairingTopic == session.pairingTopic}).first {
-            let newData = WalletConnectServiceV2.ExtWalletDataV2(session: SessionV2Proxy(session))
-            self.walletStorageV2.substitute(walletData: newData, at: walletToUpdateSession.offset)
-            Debugger.printWarning("WC2: Connected to a new session with the old pairing")
-            return
-        }
-        
-        
-        ///
-        ///
-
         self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session)) { [weak self] in
             if self?.walletStorageV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
                 self?.walletStorageV2.save(newConnection: ExtWalletDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
