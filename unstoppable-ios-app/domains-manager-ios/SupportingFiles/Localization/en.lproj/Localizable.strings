@@ -71,6 +71,8 @@
 "UNABLE_TO_CREATE_ACCOUNT" = "Unable to create account";
 "UNABLE_TO_FIND_ACCOUNT_TITLE" = "We failed to find an account associated with this email";
 "UNABLE_TO_FIND_ACCOUNT_MESSAGE" = "Please visit web site to create account.";
+"INCORRECT_EMAIL_ERROR" = "Incorrect email";
+"INCORRECT_PASSWORD_OR_EMAIL_ERROR" = "Incorrect password or email";
 
 // NetworkLayerError
 "invalidTxCostError" = "Failed to fetch the cost of transaction from the server. Please try again later.";

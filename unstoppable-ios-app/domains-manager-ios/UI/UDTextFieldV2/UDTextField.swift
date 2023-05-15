@@ -61,6 +61,9 @@ final class UDTextField: UIView, SelfNameable, NibInstantiateable {
         
         updateBorder()
     }
+    
+    override var isFirstResponder: Bool { textField.isFirstResponder }
+    
 }
 
 // MARK: - Open methods

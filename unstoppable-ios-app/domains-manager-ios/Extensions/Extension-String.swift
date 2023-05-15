@@ -351,7 +351,6 @@ extension String {
         static let failedToCreateWatchWallet = "FAILED_TO_CREATE_WATCH_WALLET"
         static let walletAlreadyConnectedError = "WALLET_ALREADY_CONNECTED_ERROR"
         static let failedToConnectExternalWallet = "FAILED_TO_CONNECT_EXTERNAL_WALLET"
-        
         static let pleaseTryAgain = "PLEASE_TRY_AGAIN"
         static let somethingWentWrong = "SOMETHING_WENT_WRONG"
         static let transactionFailed = "TRANSACTION_FAILED"
@@ -361,6 +360,8 @@ extension String {
         static let unableToCreateAccount = "UNABLE_TO_CREATE_ACCOUNT"
         static let unableToFindAccountTitle = "UNABLE_TO_FIND_ACCOUNT_TITLE"
         static let unableToFindAccountMessage = "UNABLE_TO_FIND_ACCOUNT_MESSAGE"
+        static let incorrectEmailError = "INCORRECT_EMAIL_ERROR"
+        static let incorrectPasswordOrEmailError = "INCORRECT_PASSWORD_OR_EMAIL_ERROR"
 
         // iCloud not enabled
         static let iCloudNotEnabledAlertTitle = "ICLOUD_NOT_ENABLED_ALERT_TITLE"

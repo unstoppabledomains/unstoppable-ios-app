@@ -27,6 +27,8 @@ final class LoginWithEmailViewController: BaseViewController {
     var presenter: LoginWithEmailViewPresenterProtocol!
     override var isObservingKeyboard: Bool { true }
     override var analyticsName: Analytics.ViewName { .loginWithEmailAndPassword }
+    
+    private var didAutoFillCredentials = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,7 +75,7 @@ extension LoginWithEmailViewController: LoginWithEmailViewProtocol {
     }
     
     func setPasswordIsIncorrect() {
-        passwordTextfield.setState(.error(text: "Incorrect password or email"))
+        passwordTextfield.setState(.error(text: String.Constants.incorrectPasswordOrEmailError.localized()))
     }
 }
 
@@ -85,6 +87,8 @@ extension LoginWithEmailViewController: UDTextFieldV2Delegate {
         }
         if udTextField == emailTextfield {
             return udTextField.text.isValidEmail()
+        } else if didAutoFillCredentials {
+            return false
         }
         
         return true
@@ -102,11 +106,21 @@ extension LoginWithEmailViewController: UDTextFieldV2Delegate {
             if input.isValidEmail() {
                 udTextField.setState(.default)
             } else {
-                udTextField.setState(.info(text: "Incorrect email",
+                udTextField.setState(.info(text: String.Constants.incorrectEmailError.localized(),
                                            style: .red))
             }
         } else {
             udTextField.setState(.default)
+        }
+        if udTextField == passwordTextfield {
+            self.didAutoFillCredentials = true
+            DispatchQueue.main.async {
+                self.passwordTextfield.startEditing()
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+                self?.didAutoFillCredentials = false
+            }
         }
     }
     
