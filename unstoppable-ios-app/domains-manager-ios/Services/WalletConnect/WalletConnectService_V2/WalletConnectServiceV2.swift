@@ -154,7 +154,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
         Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions:\n\(settledSessions)")
-        print(settledSessions.first!.expiryDate)
         #endif
         
         setUpAuthSubscribing()
