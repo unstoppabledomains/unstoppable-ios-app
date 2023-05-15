@@ -296,6 +296,7 @@ extension Analytics {
         case chooseCoinVersion
         case externalWalletConnectionHint
         case externalWalletFailedToSign
+        case applePayRequired
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

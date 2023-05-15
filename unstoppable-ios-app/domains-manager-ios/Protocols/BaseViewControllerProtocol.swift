@@ -36,6 +36,13 @@ extension BaseViewControllerProtocol {
     
     func showAlertWith(error: Error, handler: ((UIAlertAction) -> Void)? = nil) {
         view.endEditing(true)
+        
+        if let paymentError = error as? PaymentError,
+           paymentError == .applePayNotSupported {
+            appContext.pullUpViewService.showApplePayRequiredPullUp(in: self)
+            return
+        }
+        
         var message: String
         let title: String
         
