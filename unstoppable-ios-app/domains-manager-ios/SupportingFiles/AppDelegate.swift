@@ -30,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
+        Debugger.setAllowedTopicsSet(.debugDefault)
         #endif
         
         setVersionAndBuildNumber()

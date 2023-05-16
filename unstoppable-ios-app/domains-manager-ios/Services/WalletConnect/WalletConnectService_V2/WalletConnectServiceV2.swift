@@ -153,14 +153,14 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
         
         let settledSessions = Sign.instance.getSessions()
         #if DEBUG
-        Debugger.printInfo(topic: .WallectConnectV2, "Connected sessions:\n\(settledSessions)")
+        Debugger.printInfo(topic: .WalletConnectV2, "Connected sessions:\n\(settledSessions)")
         #endif
         
         setUpAuthSubscribing()
         
         let pairings = Pair.instance.getPairings()
         #if DEBUG
-        Debugger.printInfo(topic: .WallectConnectV2, "Settled pairings:\n\(pairings)")
+        Debugger.printInfo(topic: .WalletConnectV2, "Settled pairings:\n\(pairings)")
         #endif
         
         // listen to the updates to domains, disconnect those dApps connected to gone domains
@@ -285,7 +285,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     private func handleSessionProposal( _ proposal: SessionV2.Proposal) async throws -> HexAddress {
         guard canSupport(proposal) else {
-            Debugger.printInfo(topic: .WallectConnectV2, "DApp requires more networks than our app supports")
+            Debugger.printInfo(topic: .WalletConnectV2, "DApp requires more networks than our app supports")
             throw WalletConnectRequestError.networkNotSupported
         }
         guard let uiHandler = self.uiHandler else { //
@@ -317,7 +317,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                                                                         walletAddress: walletAddressToConnect,
                                                                         requiredNamespaces: proposal.requiredNamespaces,
                                                                         appData: proposal.proposer))
-        Debugger.printInfo("Confirmed to connect to \(proposal.proposer.name)")
+        Debugger.printInfo(topic: .WalletConnectV2, "Confirmed to connect to \(proposal.proposer.name)")
         return walletAddressToConnect
     }
     
@@ -349,7 +349,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                         self?.handleConnection(session: session,
                                          with: pendingIntent)
                     } else {
-                        Debugger.printInfo(topic: .WallectConnectV2, "App connected with no intent \(session.peer.name)")
+                        Debugger.printInfo(topic: .WalletConnectV2, "App connected with no intent \(session.peer.name)")
                     }
                     self?.pendingProposal = nil
                 } else {
@@ -382,7 +382,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     }
                 }
             }.store(in: &publishers)
-        
     }
     
     private func updateWalletsCacheAndUi(walletAddress: HexAddress) {
@@ -396,7 +395,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     private func addToCacheAndNotifyUi(with session: SessionV2) {
-        Debugger.printInfo("WC2: CLIENT DID CONNECT - SESSION: \(session)")
+        Debugger.printInfo(topic: .WalletConnectV2, "CLIENT DID CONNECT - SESSION: \(session)")
         
         let walletAddresses = WCConnectedAppsStorageV2.SessionProxy(session).getWalletAddresses()
         guard walletAddresses.count > 0 else {
@@ -404,7 +403,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             delegate?.didConnect(to: nil, with: nil, successfullyAddedCallback: nil)
             return
         }
-
+        
         self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session)) { [weak self] in
             if self?.walletStorageV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
                 self?.walletStorageV2.save(newConnection: ExtWalletDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
@@ -439,7 +438,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                 Debugger.printFailure("Failed to encode session: \(session)", critical: true)
             }
             
-            Debugger.printInfo("Connected to \(session.peer.name)")
+            Debugger.printInfo(topic: .WalletConnectV2, "Connected to \(session.peer.name)")
             reportConnectionCompletion(result: .success(UnifiedConnectAppInfo(from: newApp)))
             intentsStorage.removeAll()
         }
@@ -452,7 +451,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
   
     @MainActor
     private func reject(proposalId: String, reason: RejectionReason) {
-        Debugger.printInfo(topic: .WallectConnectV2, "[WALLET] Reject Session: \(proposalId)")
+        Debugger.printInfo(topic: .WalletConnectV2, "[WALLET] Reject Session: \(proposalId)")
         Task {
             do {
                 try await Sign.instance.reject(proposalId: proposalId, reason: reason)
@@ -483,7 +482,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 
     @MainActor
     private func approve(proposalId: String, namespaces: [String: SessionNamespace]) {
-        Debugger.printInfo(topic: .WallectConnectV2, "[WALLET] Approve Session: \(proposalId)")
+        Debugger.printInfo(topic: .WalletConnectV2, "[WALLET] Approve Session: \(proposalId)")
         Task {
             do {
                 try await Sign.instance.approve(proposalId: proposalId, namespaces: namespaces)
@@ -506,7 +505,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol {
     @MainActor
     internal func pairClient(uri: WalletConnectURI) async throws {
-        Debugger.printInfo(topic: .WallectConnectV2, "[WALLET] Pairing to: \(uri)")
+        Debugger.printInfo(topic: .WalletConnectV2, "[WALLET] Pairing to: \(uri)")
         try await Pair.instance.pair(uri: uri)
     }
     
@@ -534,7 +533,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     }
     
     func handlePersonalSign(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
-        Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(String(describing: request.jsonString))")
+        Debugger.printInfo(topic: .WalletConnectV2, "Incoming request with payload: \(String(describing: request.jsonString))")
         
         guard let paramsAny = request.params.value as? [String],
               paramsAny.count >= 2 else {
@@ -563,7 +562,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     }
     
     func handleEthSign(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
-        Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(String(describing: request.jsonString))")
+        Debugger.printInfo(topic: .WalletConnectV2, "Incoming request with payload: \(String(describing: request.jsonString))")
         
         guard let paramsAny = request.params.value as? [String],
               paramsAny.count >= 2 else {
@@ -611,7 +610,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                                                   in: udWallet)
                 let sigString = try handle(response: response)
                 let sig = AnyCodable(sigString)
-                Debugger.printInfo(topic: .WallectConnect, "Successfully signed TX via external wallet: \(udWallet.address)")
+                Debugger.printInfo(topic: .WalletConnectV2, "Successfully signed TX via external wallet: \(udWallet.address)")
                 return .response(sig)
             }
             
@@ -667,7 +666,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
                                         udWallet: udWallet,
                                         chainIdInt: chainIdInt)
             let hashCodable = AnyCodable(hash)
-            Debugger.printInfo(topic: .WallectConnect, "Successfully sent TX via internal wallet: \(udWallet.address)")
+            Debugger.printInfo(topic: .WalletConnectV2, "Successfully sent TX via internal wallet: \(udWallet.address)")
             return .response(hashCodable)
         }
         
@@ -834,7 +833,7 @@ extension WalletConnectServiceV2 {
             let chainId = EthereumQuantity(quantity: BigUInt(chainIdInt))
 
             let gweiAmount = (transaction.gas ?? 0).quantity * (transaction.gasPrice ?? 0).quantity + (transaction.value ?? 0).quantity
-            Debugger.printInfo(topic: .WallectConnect, "Total balance should be \(gweiAmount / ( BigUInt(10).power(12)) ) millionth of eth")
+            Debugger.printInfo(topic: .WalletConnectV2, "Total balance should be \(gweiAmount / ( BigUInt(10).power(12)) ) millionth of eth")
 
             do {
                 try transaction.sign(with: privateKey, chainId: chainId).promise
@@ -1204,7 +1203,28 @@ extension WalletConnectServiceV2 {
     private func pickOnlyActiveSessions(from sessions: [SessionV2Proxy]) -> [SessionV2Proxy] {
         let settledSessions = Sign.instance.getSessions()
         let settledSessionsTopics = settledSessions.map { $0.topic }
-        return sessions.filter({ settledSessionsTopics.contains($0.topic)})
+        let foundActiveSessions = sessions.filter({ settledSessionsTopics.contains($0.topic)})
+        if foundActiveSessions.count > 0 { return foundActiveSessions }
+
+        // no active sessions found -- remove the target wallet and kill the pairing
+        Debugger.printWarning("No active sessions found for: \(sessions.first?.getWalletAddresses().first ?? "wallet address n/a")")
+        let targetWalletAddresses = sessions.flatMap({$0.getWalletAddresses()})
+        disconnectAppsConnected(to: targetWalletAddresses)
+        targetWalletAddresses.forEach({ walletAddress in
+            updateWalletsCacheAndUi(walletAddress: walletAddress)
+        })
+        sessions.map({$0.topic}).forEach({ topic in
+            Task {
+                await walletStorageV2.remove(byTopic: topic)
+            }
+        })
+        
+        Task {
+            if let pairingTopic = sessions.first?.pairingTopic {
+                try? await Pair.instance.disconnect(topic: pairingTopic)
+            }
+        }
+        return []
     }
     
     func handle(response: WalletConnectSign.Response) throws -> String {

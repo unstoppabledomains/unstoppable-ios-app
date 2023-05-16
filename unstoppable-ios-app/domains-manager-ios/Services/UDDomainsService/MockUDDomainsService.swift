@@ -128,7 +128,7 @@ private extension MockUDDomainsService {
                 newDomain.ownerWallet = wallet
             }
             
-            Debugger.printInfo("Will add domain \(newDomain.name)")
+            Debugger.printInfo(topic: .Domain, "Will add domain \(newDomain.name)")
 
             self.domains.append(newDomain)
             return newDomain

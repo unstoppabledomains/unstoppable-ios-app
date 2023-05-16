@@ -132,7 +132,7 @@ private extension CoinRecordsService {
             do {
                 try fileManager.createDirectory(atPath: coinRecordsFolderPath.path, withIntermediateDirectories: true, attributes: nil)
             } catch {
-                Debugger.printInfo("Error: Couldn't create directory for coin records")
+                Debugger.printInfo(topic: .FileSystem, "Error: Couldn't create directory for coin records")
             }
         }
     }
@@ -142,7 +142,7 @@ private extension CoinRecordsService {
             let url = pathForCoinRecords()
             try data.write(to: url)
         } catch {
-            Debugger.printInfo("Error: Couldn't save coin records to files")
+            Debugger.printInfo(topic: .FileSystem, "Error: Couldn't save coin records to files")
         }
     }
     

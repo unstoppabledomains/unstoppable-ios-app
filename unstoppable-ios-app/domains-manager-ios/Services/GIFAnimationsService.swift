@@ -63,7 +63,7 @@ extension GIFAnimationsService {
     func createGIFImageWithData(_ data: Data,
                                 maskingType: GIFMaskingType? = nil) async -> UIImage? {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else {
-            Debugger.printInfo("image doesn't exist")
+            Debugger.printInfo(topic: .Images, "image doesn't exist")
             return nil
         }
         
@@ -102,11 +102,11 @@ private extension GIFAnimationsService {
     func createGIFImageWithURL(_ gifUrl: String,
                                maskingType: GIFMaskingType?) async -> UIImage? {
         guard let bundleURL = URL(string: gifUrl) else {
-            Debugger.printInfo("image named \"\(gifUrl)\" doesn't exist")
+            Debugger.printInfo(topic: .Images, "image named \"\(gifUrl)\" doesn't exist")
             return nil
         }
         guard let imageData = try? Data(contentsOf: bundleURL) else {
-            Debugger.printInfo("image named \"\(gifUrl)\" into NSData")
+            Debugger.printInfo(topic: .Images, "image named \"\(gifUrl)\" into NSData")
             return nil
         }
         
@@ -117,11 +117,11 @@ private extension GIFAnimationsService {
                                 maskingType: GIFMaskingType?) async -> UIImage? {
         guard let bundleURL = Bundle.main
             .url(forResource: name, withExtension: "gif") else {
-            Debugger.printInfo("This image named \"\(name)\" does not exist")
+            Debugger.printInfo(topic: .Images, "This image named \"\(name)\" does not exist")
             return nil
         }
         guard let imageData = try? Data(contentsOf: bundleURL) else {
-            Debugger.printInfo("Cannot turn image named \"\(name)\" into NSData")
+            Debugger.printInfo(topic: .Images, "Cannot turn image named \"\(name)\" into NSData")
             return nil
         }
         
@@ -133,7 +133,10 @@ private extension GIFAnimationsService {
         let start = Date()
         let count = CGImageSourceGetCount(source)
         let (images, delays) = try await extractImagesWithDelays(from: source, maskingType: maskingType)
-        Debugger.printWarning("\(String.itTook(from: start)) to prepare animation")
+        Debugger.printTimeSensitiveInfo(topic: .Images,
+                                        "to prepare animation",
+                                        startDate: start,
+                                        timeout: 2)
         
         let duration: Int = {
             var sum = 0
@@ -176,7 +179,7 @@ private extension GIFAnimationsService {
         if count <= 1 {
             throw GIFPreparationError.oneOrLessFrames
         }
-        Debugger.printInfo(topic: .UI, "Extracting \(count) images for gif")
+        Debugger.printInfo(topic: .Images, "Extracting \(count) images for gif")
         guard let cgImage = cgContext.makeImage() else {
             throw GIFPreparationError.failedToMakeCGImage
         }

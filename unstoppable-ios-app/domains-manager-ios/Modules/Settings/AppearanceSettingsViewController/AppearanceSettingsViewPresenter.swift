@@ -54,7 +54,7 @@ private extension AppearanceSettingsViewPresenter {
         guard let view = self.view else { return }
         
         appContext.pullUpViewService.showAppearanceStyleSelectionPullUp(in: view, selectedStyle: selectedStyle) { [weak self] newStyle in
-            Debugger.printInfo("New style \(newStyle.rawValue)")
+            Debugger.printInfo(topic: .UI, "New style \(newStyle.rawValue)")
             SceneDelegate.shared?.setAppearanceStyle(newStyle)
             self?.displayUI()
         }
