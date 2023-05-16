@@ -945,12 +945,7 @@ extension String {
             return self
         }
     }
-    
-    static func itTook (from start: Date) -> String {
-        let elapsed = Date().timeIntervalSince(start)
-        return String(format: "It took %.2f sec", elapsed)
-    }
-    
+  
     func isMatchingRegexPattern(_ regexPattern: String) -> Bool {
         guard let regex = try? NSRegularExpression(pattern: regexPattern, options: .caseInsensitive) else {
             Debugger.printFailure("Regex cannot be used", critical: true)

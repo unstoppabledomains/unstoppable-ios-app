@@ -28,7 +28,7 @@ extension ImagesStorage {
             let imagePath = pathForStoredImageAtKey(key)
             try data.write(to: URL(fileURLWithPath: imagePath))
         } catch {
-            Debugger.printInfo("Error: Couldn't save cached image to files")
+            Debugger.printInfo(topic: .Images, "Error: Couldn't save cached image to files")
         }
     }
     
@@ -59,7 +59,7 @@ private extension ImagesStorage {
             do {
                 try fileManager.createDirectory(atPath: storedImagesPath as String, withIntermediateDirectories: true, attributes: nil)
             } catch {
-                Debugger.printInfo("Error: Couldn't create directory for cached images")
+                Debugger.printInfo(topic: .Images, "Error: Couldn't create directory for cached images")
             }
         }
     }

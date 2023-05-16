@@ -353,7 +353,7 @@ private extension DataAggregatorService {
         loadDomainsPFPTask?.cancel()
         await stopRefreshTimer()
         do {
-            Debugger.printInfo("Will reload and aggregate data")
+            Debugger.printInfo(topic: .DataAggregation, "Will reload and aggregate data")
             let startTime = Date()
             async let domainsTask = domainsService.updateDomainsList(for: dataHolder.wallets)
             async let reverseResolutionTask = fetchIntoCacheReverseResolutionInfo()
@@ -392,10 +392,16 @@ private extension DataAggregatorService {
             let wallets = await getWalletsWithInfo()
             notifyListenersWith(result: .success(.walletsListUpdated(wallets)))
             walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
-            Debugger.printWarning("Did aggregate data for \(finalDomains.count) domains for \(Date().timeIntervalSince(startTime))")
+            Debugger.printTimeSensitiveInfo(topic: .DataAggregation,
+                                            "to aggregate data for \(finalDomains.count) domains",
+                                            startDate: startTime,
+                                            timeout: 3)
             if shouldRefreshPFP {
                 await loadDomainsPFPIfTooLarge()
-                Debugger.printWarning("Did aggregate data with PFP for \(finalDomains.count) domains for \(Date().timeIntervalSince(startTime))")
+                Debugger.printTimeSensitiveInfo(topic: .DataAggregation,
+                                                "to aggregate data with PFP for \(finalDomains.count) domains",
+                                                startDate: startTime,
+                                                timeout: 5)                
             }
         } catch NetworkLayerError.connectionLost {
             await reloadAndAggregateData(shouldRefreshPFP: shouldRefreshPFP)
@@ -616,7 +622,7 @@ private extension DataAggregatorService {
     @MainActor
     func startRefreshTimer() {
         stopRefreshTimer()
-        Debugger.printInfo("Will startRefreshTimer")
+        Debugger.printInfo(topic: .DataAggregation, "Will startRefreshTimer")
         refreshTimer = Timer.scheduledTimer(timeInterval: Constants.updateInterval,
                                             target: self,
                                             selector: #selector(refreshData),
@@ -626,7 +632,7 @@ private extension DataAggregatorService {
     
     @MainActor
     func stopRefreshTimer() {
-        Debugger.printInfo("Will stopRefreshTimer")
+        Debugger.printInfo(topic: .DataAggregation, "Will stopRefreshTimer")
         refreshTimer?.invalidate()
         refreshTimer = nil
     }

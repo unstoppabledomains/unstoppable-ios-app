@@ -11,6 +11,8 @@ import Bugsnag
 // Light debugger
 public struct Debugger {
     enum DebugTopic: String, CaseIterable {
+        case None = ""
+
         case Transactions = "TXS"
         case Wallet = "WLT"
         case Domain = "DMN"
@@ -18,21 +20,49 @@ public struct Debugger {
         case Payments = "PMNT"
         case Network = "WEB"
         case PNs = "PNs"
-        case FileSystem = "/FIL"
+        case FileSystem = "FIL"
         case UniversalLink = "ULINK"
-        case Navigation = "/NAV"
+        case Navigation = "NAV"
         case Security = "SCRTY"
-        case WallectConnect = "WC"
-        case WallectConnectV2 = "WC_V2"
+        case WalletConnect = "WC"
+        case WalletConnectV2 = "WC_V2"
         case UI = "=UI="
-        case None = ""
         case Analytics = "Analtyics"
         case LocalNotification = "LN"
+        case Images = "IMG"
+        case DataAggregation = "AGGR"
     }
     
-    static let shouldLogHeapAnalytics = false
+    enum DebugTopicsSet {
+        case all
+        case debugDefault
+        case debugWalletConnect
+        case debugUI
+        
+        var allowedTopics: [DebugTopic] {
+            switch self {
+            case .all:
+                return DebugTopic.allCases
+            case .debugDefault:
+                return topicsExcluding([.Network, .PNs, .Analytics, .Images, .FileSystem, .Navigation])
+            case .debugWalletConnect:
+                return [.Wallet, .Domain, .Error, .FileSystem, .WalletConnect, .WalletConnectV2]
+            case .debugUI:
+                return [.Error, .Navigation, .UI, .Images]
+            }
+        }
+        
+        private func topicsExcluding(_ excludedTopics: [DebugTopic]) -> [DebugTopic] {
+            DebugTopic.allCases.filter({ !excludedTopics.contains($0) })
+        }
+    }
+        
+    static private var allowedTopics = DebugTopic.allCases
     
-    static let allowedTopics = DebugTopic.allCases.filter({ $0.rawValue.first != "/"})
+    static func setAllowedTopicsSet(_ topicsSet: DebugTopicsSet) {
+        self.allowedTopics = topicsSet.allowedTopics
+    }
+    
     static func printInfo(topic: DebugTopic = .None, _ s: String) {
         //#if TESTFLIGHT
         if topic == .None {
@@ -42,6 +72,16 @@ public struct Debugger {
             print ("🟩 \(topic.rawValue): \(s)")
         }
         //#endif
+    }
+    
+    static func printTimeSensitiveInfo(topic: DebugTopic, _ s: String, startDate: Date, timeout: TimeInterval) {
+        let message = "\(String.itTook(from: startDate)) \(s)"
+        let timeAfterStart = Date().timeIntervalSince(startDate)
+        if timeAfterStart > timeout {
+            printWarning(message)
+        } else {
+            printInfo(topic: topic, message)
+        }
     }
     
     public static func printFailure(_ s: String, critical: Bool = false) {

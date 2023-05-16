@@ -197,7 +197,10 @@ fileprivate extension ImageLoadingService {
                 
                 
                 if let image = await fetchImageFor(source: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: downsampleDescription) {
-                    Debugger.printWarning("\(String.itTook(from: start)) to load domain pfp")
+                    Debugger.printTimeSensitiveInfo(topic: .Images,
+                                                    "to load domain pfp",
+                                                    startDate: start,
+                                                    timeout: 3)
                     return image
                 }
                 return nil
@@ -328,7 +331,7 @@ fileprivate extension ImageLoadingService {
         #if DEBUG
         self.cacheKeys.insert(key)
         let cacheSize = cacheKeys.compactMap({ imageCache.object(forKey: $0 as NSString)?.size }).map({ $0.width * $0.height * 4 }).reduce(0, { $0 + $1 })
-        Debugger.printInfo("Did cache image with size \(image.size) for key \(key)\nCurrent images cache memory usage: \(cacheSize)")
+        Debugger.printInfo(topic: .Images, "Did cache image with size \(image.size) for key \(key)\nCurrent images cache memory usage: \(cacheSize)")
         #endif
     }
     
