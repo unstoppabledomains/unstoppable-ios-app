@@ -190,8 +190,8 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         return reverseResolutionMap.first(where: { $0.value == domainName }) != nil
     }
     
-    func aggregateData() async {
-        await reloadAndAggregateData()
+    func aggregateData(shouldRefreshPFP: Bool) async {
+        await reloadAndAggregateData(shouldRefreshPFP: shouldRefreshPFP)
     }
     
     func mintDomains(_ domains: [String],
@@ -259,6 +259,7 @@ extension DataAggregatorService: UDWalletsServiceListener {
                 if wallets.count != walletsCount {
                     await reloadAndAggregateData()
                 }
+                await checkAppSessionAndLogOutIfNeeded()
             case .reverseResolutionDomainChanged(let domainName, let txIds):
                 var transactions = transactionsService.getCachedTransactionsFor(domainNames: [domainName])
                 let newTransactions = txIds.map({TransactionItem(id: $0,
@@ -281,8 +282,38 @@ extension DataAggregatorService: UDWalletsServiceListener {
     }
 }
 
+// MARK: - FirebaseInteractionServiceListener
+extension DataAggregatorService: FirebaseInteractionServiceListener {
+    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
+        Task {
+            if firebaseUser != nil {
+                let parkedDomains = await loadParkedDomains()
+                await fillDomainsDataFromCache(parkedDomains: parkedDomains)
+                let updatedDomains = await dataHolder.domainsWithDisplayInfo
+                notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: updatedDomains))))
+            }
+            
+            await reloadAndAggregateData(shouldRefreshPFP: false)
+            await checkAppSessionAndLogOutIfNeeded()
+        }
+    }
+}
+
 // MARK: - Private methods
 private extension DataAggregatorService {
+    @MainActor
+    func checkAppSessionAndLogOutIfNeeded() {
+        let sessionState = AppSessionInterpreter.shared.state()
+        switch sessionState {
+        case .walletAdded, .webAccountWithParkedDomains:
+            return
+        case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
+            SceneDelegate.shared?.restartOnboarding()
+            appContext.firebaseInteractionService.logout()
+            Task { await aggregateData(shouldRefreshPFP: false) }
+        }
+    }
+    
     func getDomainsWithDisplayInfo() async -> [DomainWithDisplayInfo] {
         let currentDomains = await dataHolder.domainsWithDisplayInfo
         guard currentDomains.isEmpty else {
@@ -294,6 +325,11 @@ private extension DataAggregatorService {
     }
     
     func fillDomainsDataFromCache() async {
+        let cachedParkedDomains = appContext.firebaseDomainsService.getCachedDomains()
+        await fillDomainsDataFromCache(parkedDomains: cachedParkedDomains)
+    }
+    
+    func fillDomainsDataFromCache(parkedDomains: [FirebaseDomain]) async {
         let wallets = await getWallets()
         let cachedDomains = domainsService.getCachedDomainsFor(wallets: wallets)
         let domainNames = cachedDomains.map({ $0.name }) + (MintingDomainsStorage.retrieveMintingDomains().map({ $0.name }))
@@ -302,6 +338,7 @@ private extension DataAggregatorService {
         let cachedPFPInfo = domainsService.getCachedDomainsPFPInfo()
         await buildDomainsDisplayInfoDataWith(domains: cachedDomains,
                                               pfpInfo: cachedPFPInfo,
+                                              parkedDomains: parkedDomains,
                                               withTransactions: cachedTransactions,
                                               reverseResolutionMap: cachedReverseResolutionMap)
     }
@@ -320,11 +357,12 @@ private extension DataAggregatorService {
             let startTime = Date()
             async let domainsTask = domainsService.updateDomainsList(for: dataHolder.wallets)
             async let reverseResolutionTask = fetchIntoCacheReverseResolutionInfo()
+            async let parkedDomainsTask = loadParkedDomains()
             
-            let (domains, reverseResolutionMap) = try await (domainsTask, reverseResolutionTask)
+            let (domains, reverseResolutionMap, parkedDomains) = try await (domainsTask, reverseResolutionTask, parkedDomainsTask)
             let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomains().map({ $0.name })
 
-            guard !domains.isEmpty || !mintingDomainsNames.isEmpty else {
+            guard !domains.isEmpty || !mintingDomainsNames.isEmpty  || !parkedDomains.isEmpty else {
                 await dataHolder.setDataWith(domainsWithDisplayInfo: [],
                                              reverseResolutionMap: reverseResolutionMap)
                 notifyListenersWith(result: .success(.domainsUpdated([])))
@@ -344,6 +382,7 @@ private extension DataAggregatorService {
             let domainsPFPInfo = try await loadDomainsPFPIfNotTooLarge(domains)
             await buildDomainsDisplayInfoDataWith(domains: domains,
                                                   pfpInfo: domainsPFPInfo,
+                                                  parkedDomains: parkedDomains,
                                                   withTransactions: transactions,
                                                   reverseResolutionMap: reverseResolutionMap)
             
@@ -373,6 +412,12 @@ private extension DataAggregatorService {
             notifyListenersWith(result: .failure(error))
         }
         await startRefreshTimer()
+    }
+    
+    func loadParkedDomains() async -> [FirebaseDomain] {
+        let domains = try? await appContext.firebaseDomainsService.loadParkedDomains()
+        
+        return domains ?? []
     }
         
     func loadDomainsPFPIfNotTooLarge(_ domains: [DomainItem]) async throws -> [DomainPFPInfo] {
@@ -464,6 +509,7 @@ private extension DataAggregatorService {
     
     func buildDomainsDisplayInfoDataWith(domains: [DomainItem],
                                          pfpInfo: [DomainPFPInfo],
+                                         parkedDomains: [FirebaseDomain],
                                          withTransactions transactions: [TransactionItem],
                                          reverseResolutionMap: ReverseResolutionInfoMap) async {
         
@@ -487,6 +533,19 @@ private extension DataAggregatorService {
                                                       order: order,
                                                       isSetForRR: rrDomainsList.contains(domain.name))
             
+            domainsWithDisplayInfo.append(.init(domain: domain,
+                                                displayInfo: domainDisplayInfo))
+        }
+        
+        for parkedDomain in parkedDomains {
+            let parkedDomainDisplayInfo = FirebaseDomainDisplayInfo(firebaseDomain: parkedDomain)
+            let domain = DomainItem(name: parkedDomain.name, ownerWallet: parkedDomain.ownerAddress, status: .unclaimed)
+            let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
+            let domainDisplayInfo = DomainDisplayInfo(name: parkedDomain.name,
+                                                      ownerWallet: parkedDomain.ownerAddress,
+                                                      state: .parking(status: parkedDomainDisplayInfo.parkingStatus),
+                                                      order: order,
+                                                      isSetForRR: false)
             domainsWithDisplayInfo.append(.init(domain: domain,
                                                 displayInfo: domainDisplayInfo))
         }

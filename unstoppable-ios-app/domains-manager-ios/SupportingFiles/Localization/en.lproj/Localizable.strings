@@ -71,6 +71,8 @@
 "UNABLE_TO_CREATE_ACCOUNT" = "Unable to create account";
 "UNABLE_TO_FIND_ACCOUNT_TITLE" = "We failed to find an account associated with this email";
 "UNABLE_TO_FIND_ACCOUNT_MESSAGE" = "Please visit web site to create account.";
+"INCORRECT_EMAIL_ERROR" = "Incorrect email";
+"INCORRECT_PASSWORD_OR_EMAIL_ERROR" = "Incorrect password or email";
 
 // NetworkLayerError
 "invalidTxCostError" = "Failed to fetch the cost of transaction from the server. Please try again later.";
@@ -322,6 +324,8 @@
 "ADD_TO_BACKUP_NEW_WALLET_SUBTITLE" = "Save an encrypted copy of your recovery phrase on iCloud.";
 "ADD_TO_CURRENT_BACKUP_NEW_WALLET_TITLE" = "Enter current backup password";
 "CREATE_VAULT" = "Create vault";
+"WALLETS_LIST_EMPTY_TITLE" = "No wallets";
+"WALLETS_LIST_EMPTY_SUBTITLE" = "Create or import your wallet by clicking «+» icon at the top right corner.";
 
 // Wallet details
 "VIEW_RECOVERY_PHRASE" = "View recovery phrase";
@@ -686,6 +690,53 @@
 // External wallet failed to sign
 "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_TITLE" = "External wallet failed to sign";
 "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE" = "Request from external wallet failed. Please try again.";
+
+// Login
+"WEBSITE_ACCOUNT" = "Website account";
+"LOGIN_WITH_WEB_TITLE" = "Login with your website account";
+"LOGIN_WITH_WEB_SUBTITLE" = "Sync your domains and wallets with the Unstoppable app.";
+"LOGIN_WITH_PROVIDER_N" = "Continue with %@";
+"LOG_OUT" = "Log out";
+"LOG_OUT_CONFIRMATION_MESSAGE" = "You will no longer be able to manage parked domains.";
+
+// Login with Email+Password
+"LOGIN_WITH_EMAIL_TITLE" = "Enter your credentials";
+"LOGIN_WITH_EMAIL_SUBTITLE" = "Enter your UD email and password to obtain all of your purchased & unclaimed domains.";
+"PASSWORD" = "Password";
+"PARKED" = "Parked";
+"PARKED_DOMAIN" = "Parked domain";
+"PARKED_DOMAINS" = "Parked domains";
+"PARKING_TRIAL_EXPIRES_ON" = "Trial expires on %@";
+"PARKING_EXPIRES_ON" = "Parking expires on %@";
+"PARKING_EXPIRED" = "Parking expired";
+"PARKED_DOMAINS_FOUND_TITLE" = "We found %@";
+"NO_PARKED_DOMAINS_TITLE" = "There’s no parked domains yet";
+"SYNCING" = "Syncing";
+"PARKED_DOMAIN_INFO_PULL_UP_TITLE" = "Parked domain";
+"PARKED_DOMAIN_INFO_PULL_UP_SUBTITLE" = "Domain stored in a special custodial wallet designed to protect against theft.";
+"PARKED_DOMAIN_TRIAL_EXPIRES_PULL_UP_TITLE" = "Parking trial expires on %@";
+"PARKED_DOMAIN_TRIAL_EXPIRES_PULL_UP_SUBTITLE" = "Parking trial expires soon. To prevent any potential conflicts, we strongly recommend that you claim or park your domain as soon as possible.";
+"PARKED_DOMAIN_EXPIRES_SOON_PULL_UP_TITLE" = "Parking expires on %@";
+"PARKED_DOMAIN_EXPIRES_SOON_PULL_UP_SUBTITLE" = "Parking expires soon. To prevent any potential conflicts, we strongly recommend to extend parking subscription";
+"PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_TITLE" = "Parking expired";
+"PARKED_DOMAIN_EXPIRED_INFO_PULL_UP_SUBTITLE" = "Your parking subscription has expired. To avoid any potential conflicts, please renew your subscription.";
+"USER_LOGGED_OUT_TOAST_MESSAGE" = "You have logged out of the account";
+"PARKED_DOMAIN_ACTION_COVER_TITLE" = "Your domain is parked";
+"PARKED_DOMAIN_ACTION_COVER_SUBTITLE" = "Once a domain is parked, you are not able to manage it, as it is securely held in storage to protect against theft.";
+"CLAIM_DOMAIN" = "Claim domain";
+"PARKED_DOMAIN_CANT_CONNECT_TO_APPS" = "Parked domain can't connect to apps or other activities";
+
+// Parked domains notifications
+"LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRED_TITLE" = "%@ Parking has expired";
+"LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRED_TITLE" = "Your %i Parked domains have expired";
+"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRED_BODY" = "Please visit our website to extend Parking or Claim";
+"LOCAL_NOTIFICATION_PARKED_SINGLE_DOMAIN_EXPIRES_TITLE" = "%@ Parking expires soon";
+"LOCAL_NOTIFICATION_PARKED_MULTIPLE_DOMAINS_EXPIRES_TITLE" = "Parking for %i domains expire soon";
+"LOCAL_NOTIFICATION_PARKED_DOMAINS_EXPIRES_IN_BODY" = "Your %@ %@ %@. Please visit our website to extend Parking or Claim"; // Your domain/domains expires/expire in {period}...
+"LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_MONTH" = "in 1 month";
+"LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_ONE_WEEK" = "in 1 week";
+"LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_THREE_DAYS" = "in 3 days";
+"LOCAL_NOTIFICATION_PARKING_EXPIRE_PERIOD_IN_TOMORROW" = "tomorrow";
 
 // NFC
 "CREATE_NFC_TAG" = "Create NFC Tag";

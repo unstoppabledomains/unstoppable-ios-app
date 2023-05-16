@@ -67,7 +67,7 @@ extension BaseViewControllerProtocol {
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: String.Constants.ok.localized().uppercased(),
                                       style: .cancel,
-                                      handler: nil))
+                                      handler: handler))
         present(alert, animated: true, completion: nil)
     }
     

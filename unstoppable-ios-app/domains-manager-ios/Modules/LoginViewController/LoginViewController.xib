@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LoginViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="collectionView" destination="LD0-Xt-QK3" id="KmE-YU-KnW"/>
+                <outlet property="subtitleLabel" destination="Rwx-ZD-J8o" id="ghD-ek-SjC"/>
+                <outlet property="titleLabel" destination="QmH-VA-lYq" id="npJ-JP-hX8"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="LD0-Xt-QK3">
+                    <rect key="frame" x="0.0" y="225" width="393" height="627"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="BmM-j3-3cz">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="6bF-XA-ovd">
+                    <rect key="frame" x="16" y="119" width="361" height="70"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter backup password" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QmH-VA-lYq" customClass="UDTitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="361" height="33.666666666666664"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="28"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rwx-ZD-J8o" customClass="UDSubtitleLabel" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="49.666666666666657" width="361" height="20.333333333333329"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="6bF-XA-ovd" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="2PP-6Q-E1C"/>
+                <constraint firstAttribute="bottom" secondItem="LD0-Xt-QK3" secondAttribute="bottom" id="4eG-lt-jOz"/>
+                <constraint firstItem="LD0-Xt-QK3" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="QwC-v5-XEU"/>
+                <constraint firstAttribute="trailing" secondItem="LD0-Xt-QK3" secondAttribute="trailing" id="Vdf-8H-JWd"/>
+                <constraint firstItem="6bF-XA-ovd" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="tSV-BO-jhG"/>
+                <constraint firstItem="LD0-Xt-QK3" firstAttribute="top" secondItem="6bF-XA-ovd" secondAttribute="bottom" constant="36" id="vak-g3-r0J"/>
+                <constraint firstItem="6bF-XA-ovd" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="60" id="wa5-gz-7BU"/>
+            </constraints>
+            <point key="canvasLocation" x="14.503816793893129" y="41.549295774647888"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

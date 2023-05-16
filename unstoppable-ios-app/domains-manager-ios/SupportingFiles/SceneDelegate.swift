@@ -104,6 +104,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneWillEnterForeground(_ scene: UIScene) {
         notifyListenersActivationStateChanged(scene.activationState)
+        UIApplication.shared.applicationIconBadgeNumber = 0
 
         appContext.analyticsService.log(event: .appGoesToForeground, withParameters: nil)
         guard didResolveInitialViewController else { return }
@@ -166,6 +167,8 @@ extension SceneDelegate: SceneDelegateProtocol {
     }
     
     func restartOnboarding() {
+        guard User.instance.getSettings().onboardingDone == true else { return }
+        
         appContext.analyticsService.log(event: .willRestartOnboarding, withParameters: nil)
         var settings = User.instance.getSettings()
         settings.onboardingDone = false

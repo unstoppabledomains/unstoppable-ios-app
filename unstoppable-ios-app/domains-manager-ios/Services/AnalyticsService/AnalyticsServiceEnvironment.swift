@@ -33,10 +33,12 @@ extension Analytics {
         case didRecognizeQRCode
         case didSelectChainNetwork
         case didReceivePushNotification
+        case didReceiveLocalPushNotification
         case didOpenDeepLink
         case didSwipeNavigationBack
         case didSelectPhoto
         case showRateAppRequest
+        case websiteLoginOptionSelected
         
         // Domains Collection
         case mintingDomainsPressed, mintingDomainPressed, swipeToScanning, swipeToHome
@@ -88,6 +90,7 @@ extension Analytics {
         case chainId
         case section
         case fieldName
+        case websiteLoginOption
     }
 }
 
@@ -148,6 +151,8 @@ extension Analytics {
         case addEmail
         case failedToFetchDomainProfile, signMessageInExternalWalletToLoadDomainProfile
         case domainProfileImageDetails
+        case loginWithWebsiteAccount, loginWithEmailAndPassword
+        case parkedDomainsList, noParkedDomainsFound, loadingParkedDomains
         case transferEnterRecipient, transferReviewAndConfirm
         case inviteFriends
     }
@@ -157,7 +162,7 @@ extension Analytics {
 extension Analytics {
     enum Button: String, Codable {
         case buyDomains, mintDomains, manageDomains, importFromTheWebsite
-        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock
+        case skip, `continue`, learnMore, done, update, close, confirm, clear, share, cancel, gotIt, delete, pay, later, edit, verify, open, refresh, tryAgain, next, lock, logOut
         case copyToClipboard, pasteFromClipboard
         case agreeCheckbox
         case termsOfUse, privacyPolicy
@@ -212,8 +217,8 @@ extension Analytics {
         case editProfile, manageDomain, shareLink, saveAsImage, createNFCTag
         
         // Settings
-        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsInviteFriends
-        
+        case settingsWallets, settingsSecurity, settingsTheme, settingsLearn, settingsTwitter, settingsSupport, settingsLegal, settingsTestnet, settingsHomeScreen, settingsRateUs, settingsWebsiteAccount, settingsInviteFriends
+
         // Security settings
         case securitySettingsPasscode, securitySettingsBiometric, securitySettingsRequireSAWhenOpen
         
@@ -247,10 +252,11 @@ extension Analytics {
         
         case scanToConnect
         case domainCardDot
-        case recentActivityLearnMore
+        case recentActivityLearnMore, parkedDomainLearnMore
         case showMoreMintingDomains
         case rearrangeDomains, searchDomains
         case moveToTop
+        case websiteAccount
         case resetRecords
         
         // Referral
@@ -296,6 +302,8 @@ extension Analytics {
         case chooseCoinVersion
         case externalWalletConnectionHint
         case externalWalletFailedToSign
+        case logOutConfirmation, loggedInUserProfile
+        case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
         case applePayRequired
         
         // Disabled

@@ -16,6 +16,7 @@ enum ExternalEvent: Codable, Hashable {
     case walletConnectRequest(dAppName: String, domainName: String?)
     case wcDeepLink(_ wcURL: URL)
     case domainProfileUpdated(domainName: String)
+    case parkingStatusLocal
     case badgeAdded(domainName: String, count: Int)
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
@@ -80,6 +81,8 @@ enum ExternalEvent: Codable, Hashable {
                 return nil
             }
             self = .domainProfileUpdated(domainName: domainName)
+        case .parkingStatusLocal:
+            self = .parkingStatusLocal
         case .badgeAdded:
             guard let domainName = json["domainName"] as? String else {
                 Debugger.printFailure("No domain name in badge added notification", critical: true)
@@ -110,6 +113,8 @@ enum ExternalEvent: Codable, Hashable {
             return .didReceivePushNotification
         case .wcDeepLink:
             return .didOpenDeepLink
+        case .parkingStatusLocal:
+            return .didReceiveLocalPushNotification
         }
     }
     
@@ -140,6 +145,8 @@ enum ExternalEvent: Codable, Hashable {
         case .domainProfileUpdated(let domainName):
             return [.pushNotification: "domainProfileUpdated",
                     .domainName: domainName]
+        case .parkingStatusLocal:
+            return [:]
         case .badgeAdded(let domainName, let count):
             return [.pushNotification: "badgeAdded",
                     .count: "\(count)",
@@ -156,8 +163,9 @@ extension ExternalEvent {
 }
 
 // MARK: - Private methods
-private extension ExternalEvent {
+extension ExternalEvent {
     enum PushNotificationType: String {
+        // Remote
         case recordsUpdated = "RecordsUpdated"
         case mintingFinished = "MintingFinished"
         case domainTransferred = "DomainTransferred"
@@ -165,6 +173,9 @@ private extension ExternalEvent {
         case reverseResolutionRemoved = "ReverseResolutionRemoved"
         case walletConnectRequest = "WalletConnectNotification"
         case domainProfileUpdated = "DomainProfileUpdated"
+        
+        // Local
+        case parkingStatusLocal = "ParkingStatusLocal"
         case badgeAdded = "DomainBadgesAddedMessage"
     }
 }

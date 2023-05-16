@@ -77,11 +77,12 @@ extension ChoosePrimaryDomainViewPresenter: ChoosePrimaryDomainViewPresenterProt
         let object = IndexPathItemProvider(indexPath: indexPath)
         let provider = NSItemProvider(object: object)
         let dragItem = UIDragItem(itemProvider: provider)
+        dragItem.localObject = indexPath
         return dragItem
     }
     
     func proposalForItemsWithDropSession(_ session: UIDropSession, destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
-        UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+        return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
     }
     
     func didMoveItemsWith(transaction: ChoosePrimaryDomainMoveTransaction) {

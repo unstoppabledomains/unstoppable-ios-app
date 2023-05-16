@@ -21,7 +21,8 @@ final class WalletsListViewController: BaseViewController {
 
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var cellIdentifiers: [UICollectionViewCell.Type] { [WalletsListCell.self] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [WalletsListCell.self,
+                                                        WalletsEmptyStateCell.self] }
     var presenter: WalletsListViewPresenterProtocol!
     override var navBackStyle: NavBackIconStyle { presenter.navBackStyle }
     override var scrollableContentYOffset: CGFloat? { 36 }
@@ -116,11 +117,18 @@ private extension WalletsListViewController {
     
     func configureDataSource() {
         dataSource = WalletsListDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
-            let cell = collectionView.dequeueCellOfType(WalletsListCell.self, forIndexPath: indexPath)
-            
-            cell.setWith(item: item)
-          
-            return cell
+            switch item {
+            case .walletInfo, .selectableWalletInfo, .manageICloudBackups:
+                let cell = collectionView.dequeueCellOfType(WalletsListCell.self, forIndexPath: indexPath)
+                
+                cell.setWith(item: item)
+                
+                return cell
+            case .empty:
+                let cell = collectionView.dequeueCellOfType(WalletsEmptyStateCell.self, forIndexPath: indexPath)
+                                
+                return cell
+            }
         })
         
         dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
@@ -170,6 +178,18 @@ private extension WalletsListViewController {
                                                                          elementKind: UICollectionView.elementKindSectionHeader,
                                                                          alignment: .top)
                 layoutSection.boundarySupplementaryItems = [header]
+            case .empty(let isBackUpAvailable):
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                                     heightDimension: .fractionalHeight(1.0)))
+                item.contentInsets = .zero
+                let height: CGFloat = isBackUpAvailable ? 0.8 : 0.9
+                let containerGroup = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                       heightDimension: .fractionalHeight(height)),
+                    subitems: [item])
+                let section = NSCollectionLayoutSection(group: containerGroup)
+                
+                return section
             case .manageICLoud, .none:
                 Void()
             }
@@ -197,6 +217,7 @@ extension WalletsListViewController {
 extension WalletsListViewController {
     enum Section: Hashable {
         case managed(numberOfItems: Int), manageICLoud, manageICloudExtraHeight, connected(numberOfItems: Int)
+        case empty(isBackUpAvailable: Bool)
         
         var headerHeight: CGFloat {
             switch self {
@@ -204,7 +225,7 @@ extension WalletsListViewController {
                 return WalletsListHeaderView.Height
             case .manageICloudExtraHeight:
                 return 32
-            case .manageICLoud:
+            case .manageICLoud, .empty:
                 return 0
             }
         }
@@ -215,6 +236,8 @@ extension WalletsListViewController {
                 return BaseListCollectionViewCell.height
             case .manageICLoud, .manageICloudExtraHeight:
                 return 56
+            case .empty:
+                return 0
             }
         }
         
@@ -224,7 +247,7 @@ extension WalletsListViewController {
                 return String.Constants.managed.localized()
             case .connected:
                 return String.Constants.connected.localized()
-            case .manageICLoud, .manageICloudExtraHeight:
+            case .manageICLoud, .manageICloudExtraHeight, .empty:
                 return ""
             }
         }
@@ -234,5 +257,6 @@ extension WalletsListViewController {
         case walletInfo(_ walletInfo: WalletDisplayInfo)
         case selectableWalletInfo(_ walletInfo: WalletDisplayInfo, isSelected: Bool)
         case manageICloudBackups
+        case empty
     }
 }

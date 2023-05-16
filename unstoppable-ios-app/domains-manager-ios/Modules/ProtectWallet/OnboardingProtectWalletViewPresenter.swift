@@ -41,7 +41,7 @@ extension OnboardingProtectWalletViewPresenter: ProtectWalletViewPresenterProtoc
             }
         case .newUser(let subFlow), .sameUserWithoutWallets(let subFlow):
             switch subFlow {
-            case .create:
+            case .create, .webAccount:
                 vaultsPlural = String.Constants.vault.localized().lowercased()
             case .restore:
                 vaultsPlural = String.Constants.wallet.localized().lowercased()

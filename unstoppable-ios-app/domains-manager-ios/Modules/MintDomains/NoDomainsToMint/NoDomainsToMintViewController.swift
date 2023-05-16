@@ -16,7 +16,7 @@ protocol NoDomainsToMintViewProtocol: BaseViewControllerProtocol {
 final class NoDomainsToMintViewController: BaseViewController {
     
     @IBOutlet private weak var titleLabel: UDTitleLabel!
-    @IBOutlet weak var importButton: SecondaryButton!
+    @IBOutlet private weak var importButton: SecondaryButton!
     
     override var navBackStyle: BaseViewController.NavBackIconStyle { .cancel }
     override var analyticsName: Analytics.ViewName { .noDomainsToMint }

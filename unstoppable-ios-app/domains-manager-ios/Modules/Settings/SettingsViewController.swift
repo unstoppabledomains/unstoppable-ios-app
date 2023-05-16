@@ -35,6 +35,7 @@ final class SettingsViewController: BaseViewController {
 
         configureCollectionView()
         setup()
+        presenter.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -199,6 +200,7 @@ extension SettingsViewController {
         case homeScreen(_ value: String), wallets(_ value: String), security(_ value: String), appearance(_ value: UIUserInterfaceStyle)
         case rateUs, learn, twitter, support, legal
         case testnet(isOn: Bool)
+        case websiteAccount(user: FirebaseUser?)
         case inviteFriends
         
         var title: String {
@@ -223,8 +225,17 @@ extension SettingsViewController {
                 return "Testnet"
             case .homeScreen:
                 return String.Constants.settingsHomeScreen.localized()
+            case .websiteAccount:
+                return String.Constants.websiteAccount.localized()
             case .inviteFriends:
                 return String.Constants.settingsInviteFriends.localized()
+            }
+        }
+        
+        var subtitle: String? {
+            switch self {
+            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen, .websiteAccount, .inviteFriends:
+                return nil
             }
         }
         
@@ -250,6 +261,8 @@ extension SettingsViewController {
                 return UIImage(named: "settingsIconTestnet")!
             case .homeScreen:
                 return .domainsProfileIcon
+            case .websiteAccount:
+                return .domainsProfileIcon
             case .inviteFriends:
                 return .giftBoxIcon20
             }
@@ -273,6 +286,8 @@ extension SettingsViewController {
                 return .backgroundMuted2
             case .homeScreen:
                 return .brandDeepPurple
+            case .websiteAccount:
+                return .brandDeepBlue
             }
         }
         
@@ -282,6 +297,11 @@ extension SettingsViewController {
                 return .chevron(value: value)
             case .appearance(let appearanceStyle):
                 return .chevron(value: appearanceStyle.visibleName)
+            case .websiteAccount(let user):
+                if let user {
+                    return .chevron(value: user.email ?? "Twitter")
+                }
+                return .chevron(value: nil)
             case .rateUs, .learn, .twitter, .support, .legal, .inviteFriends:
                 return .empty
             case .testnet(let isOn):
@@ -291,7 +311,7 @@ extension SettingsViewController {
         
         var isPrimary: Bool {
             switch self {
-            case .wallets, .security, .homeScreen, .appearance, .testnet:
+            case .wallets, .security, .homeScreen, .appearance, .testnet, .websiteAccount:
                 return true
             default:
                 return false
@@ -324,6 +344,8 @@ extension SettingsViewController {
                 return .settingsLegal
             case .testnet:
                 return .settingsTestnet
+            case .websiteAccount:
+                return .settingsWebsiteAccount
             case .inviteFriends:
                 return .settingsInviteFriends
             }

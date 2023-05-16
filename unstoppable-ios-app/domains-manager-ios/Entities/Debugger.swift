@@ -27,7 +27,8 @@ public struct Debugger {
         case WalletConnect = "WC"
         case WalletConnectV2 = "WC_V2"
         case UI = "=UI="
-        case Analytics = "Analytics"
+        case Analytics = "Analtyics"
+        case LocalNotification = "LN"
         case Images = "IMG"
         case DataAggregation = "AGGR"
     }
