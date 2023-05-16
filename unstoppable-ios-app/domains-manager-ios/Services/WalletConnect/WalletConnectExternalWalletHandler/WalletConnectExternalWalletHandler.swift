@@ -211,7 +211,7 @@ private extension WalletConnectExternalWalletHandler {
     @MainActor
     func launchExternalWalletAndNotifyListeners(_ wallet: UDWallet) throws {
         guard let wcWallet = wallet.getExternalWallet(),
-              let nativePrefix = wcWallet.getNativeAppLink(),
+              let nativePrefix = wcWallet.getUniversalAppLink(),
               let url = URL(string: nativePrefix) else {
             throw WalletConnectRequestError.failedToFindExternalAppLink
         }

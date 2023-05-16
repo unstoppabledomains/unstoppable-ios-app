@@ -800,6 +800,11 @@ extension String {
         static let inviteFriendsStep2Message = "INVITE_FRIENDS_STEP_2_MESSAGE"
         static let inviteFriendsStep3Message = "INVITE_FRIENDS_STEP_3_MESSAGE"
         static let copyLink = "COPY_LINK"
+        
+        // Apple Pay required
+        static let applePayRequiredPullUpTitle = "APPLE_PAY_REQUIRED_PULL_UP_TITLE"
+        static let applePayRequiredPullUpMessage = "APPLE_PAY_REQUIRED_PULL_UP_MESSAGE"
+        
     }
     
     struct Segues {

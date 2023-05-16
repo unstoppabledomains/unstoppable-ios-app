@@ -382,7 +382,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
                     }
                 }
             }.store(in: &publishers)
-        
     }
     
     private func updateWalletsCacheAndUi(walletAddress: HexAddress) {
@@ -404,7 +403,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             delegate?.didConnect(to: nil, with: nil, successfullyAddedCallback: nil)
             return
         }
-
+        
         self.delegate?.didConnect(to: walletAddresses.first, with: WCRegistryWalletProxy(session)) { [weak self] in
             if self?.walletStorageV2.retrieveAll().filter({$0.session == WCConnectedAppsStorageV2.SessionProxy(session)}).first == nil {
                 self?.walletStorageV2.save(newConnection: ExtWalletDataV2(session: WCConnectedAppsStorageV2.SessionProxy(session)))
@@ -1204,7 +1203,28 @@ extension WalletConnectServiceV2 {
     private func pickOnlyActiveSessions(from sessions: [SessionV2Proxy]) -> [SessionV2Proxy] {
         let settledSessions = Sign.instance.getSessions()
         let settledSessionsTopics = settledSessions.map { $0.topic }
-        return sessions.filter({ settledSessionsTopics.contains($0.topic)})
+        let foundActiveSessions = sessions.filter({ settledSessionsTopics.contains($0.topic)})
+        if foundActiveSessions.count > 0 { return foundActiveSessions }
+
+        // no active sessions found -- remove the target wallet and kill the pairing
+        Debugger.printWarning("No active sessions found for: \(sessions.first?.getWalletAddresses().first ?? "wallet address n/a")")
+        let targetWalletAddresses = sessions.flatMap({$0.getWalletAddresses()})
+        disconnectAppsConnected(to: targetWalletAddresses)
+        targetWalletAddresses.forEach({ walletAddress in
+            updateWalletsCacheAndUi(walletAddress: walletAddress)
+        })
+        sessions.map({$0.topic}).forEach({ topic in
+            Task {
+                await walletStorageV2.remove(byTopic: topic)
+            }
+        })
+        
+        Task {
+            if let pairingTopic = sessions.first?.pairingTopic {
+                try? await Pair.instance.disconnect(topic: pairingTopic)
+            }
+        }
+        return []
     }
     
     func handle(response: WalletConnectSign.Response) throws -> String {
