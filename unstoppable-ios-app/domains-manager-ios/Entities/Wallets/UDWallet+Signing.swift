@@ -170,8 +170,8 @@ extension UDWallet {
     }
     
     func detectWCSessionType() throws -> WCSession {
-        let sessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
-        if  sessions.count > 0 { return .wc2(sessions) }
+        let walletSessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
+        if  walletSessions.count > 0 { return .wc2(walletSessions) }
         guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
             Debugger.printFailure("Failed to find session for WC", critical: false)
             throw WalletConnectRequestError.noWCSessionFound

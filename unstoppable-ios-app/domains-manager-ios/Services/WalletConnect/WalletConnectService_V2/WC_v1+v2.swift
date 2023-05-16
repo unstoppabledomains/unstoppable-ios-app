@@ -118,14 +118,11 @@ extension UDWallet {
     func sendTxViaWalletConnect(request: WalletConnectSign.Request,
                                 chainId: Int) async throws -> JSONRPC.RPCResult {
         func sendSingleTx(tx: EthereumTransaction) async throws -> JSONRPC.RPCResult {
-            let session = try detectWCSessionType()
+            let session = try detectWCSessionType() // fetch from sessions cache
             switch session {
             case .wc1(let wc1Session):
-                
                 let response: WalletConnectSwift.Response = try await appContext.walletConnectExternalWalletHandler.sendTxViaWalletConnect_V1(session: wc1Session, tx: tx, in: self)
                 let result = try response.result(as: String.self)
-                
-                print(result)
                 let respCodable = AnyCodable(result)
                 return .response(respCodable)
                 
@@ -135,7 +132,6 @@ extension UDWallet {
                                                                                                                             txParams: request.params,
                                                                                                                             in: self)
                 let respCodable = AnyCodable(response)
-                print(response)
                 return .response(respCodable)
             }
         }

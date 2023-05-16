@@ -523,12 +523,16 @@ extension NetworkService {
     }
     
     public func getActions(request: APIRequest) async throws -> NetworkService.ActionsResponse {
-        let data = try await fetchData(for: request.url,
-                                       body: request.body,
-                                       method: request.method,
-                                       extraHeaders: request.headers)
-        let response = try JSONDecoder().decode(ActionsResponse.self, from: data)
-        return response
+        do {
+            let data = try await fetchData(for: request.url,
+                                           body: request.body,
+                                           method: request.method,
+                                           extraHeaders: request.headers)
+            let response = try JSONDecoder().decode(ActionsResponse.self, from: data)
+            return response
+        } catch {
+            throw error
+        }
     }
     
     public func postMetaActions(_ apiRequest: APIRequest) async throws {
