@@ -125,11 +125,11 @@ extension WalletConnectClientService: WalletConnectSwift.ClientDelegate {
     
     func client(_ client: Client, didConnect url: WCURL) {
         // do nothing
-        Debugger.printInfo("WC: CLIENT DID CONNECT - WCURL: \(url)")
+        Debugger.printInfo(topic: .WalletConnect, "CLIENT DID CONNECT - WCURL: \(url)")
     }
     
     func client(_ client: Client, didConnect session: Session) {
-        Debugger.printInfo("WC: CLIENT DID CONNECT - SESSION: \(session)")
+        Debugger.printInfo(topic: .WalletConnect, "CLIENT DID CONNECT - SESSION: \(session)")
         guard let walletAddress = session.walletInfo?.accounts.first else {
             Debugger.printFailure("Wallet has insufficient info: \(String(describing: session.walletInfo))", critical: true)
             delegate?.didConnect(to: nil, with: nil) { }
