@@ -36,7 +36,10 @@ extension UDDomainsService: UDDomainsServiceProtocol {
         let start = Date()
         let (unsDomainArray, zilDomainsArray) = try await (fetchUNSDomainsTask, fetchZILDomainsTask)
         let combinedDomains = unsDomainArray + zilDomainsArray
-        Debugger.printWarning("\(String.itTook(from: start)) to load \((combinedDomains).count) domains for \(wallets.count) wallets")
+        Debugger.printTimeSensitiveInfo(topic: .Domain,
+                                        "to load \((combinedDomains).count) domains for \(wallets.count) wallets",
+                                        startDate: start,
+                                        timeout: 2)
 
         try await storage.updateDomainsToCache_Blocking(unsDomainArray,
                                                         of: .UNS,
@@ -170,8 +173,10 @@ private extension UDDomainsService {
                 }
             }
         })
-        
-        Debugger.printWarning("\(String.itTook(from: start)) to load \(domains.count) domains pfps")
+        Debugger.printTimeSensitiveInfo(topic: .Domain,
+                                        "to load \(domains.count) domains pfps",
+                                        startDate: start,
+                                        timeout: 3)
         
         return domainsPFPInfo
     }

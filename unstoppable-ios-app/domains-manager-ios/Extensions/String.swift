@@ -96,3 +96,10 @@ extension String {
         URL(string: "https://ipfs.io/ipfs/" + self)
     }
 }
+
+extension String {
+    static func itTook(from start: Date) -> String {
+        let elapsed = Date().timeIntervalSince(start)
+        return String(format: "It took %.2f sec", elapsed)
+    }
+}

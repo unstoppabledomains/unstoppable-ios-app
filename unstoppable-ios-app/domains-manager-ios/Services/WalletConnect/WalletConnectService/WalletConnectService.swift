@@ -96,10 +96,10 @@ extension WalletConnectService: ServerDelegate {
     func server(_ server: Server, shouldStart session: Session, completion: @escaping (Session.WalletInfo) -> Void) {
         Task {
             if let timeStamp = connectRequestTimeStamp {
-                let timeAfterConnectRequest = Date().timeIntervalSince(timeStamp)
-                if timeAfterConnectRequest > 10 {
-                    Debugger.printFailure("It took \(timeAfterConnectRequest) sec for WC to respond to connection request ", critical: false)
-                }
+                Debugger.printTimeSensitiveInfo(topic: .WalletConnect,
+                                                "for WC to respond to connection request",
+                                                startDate: timeStamp,
+                                                timeout: 10)
                 connectRequestTimeStamp = nil
             }
             
@@ -147,7 +147,7 @@ extension WalletConnectService: ServerDelegate {
                 
                 let walletInfo = buildWalletInfo(chainId: selectedChainId,
                                                  walletAddressToConnect: walletAddressToConnect)
-                Debugger.printInfo("Confirmed to connect to \(session.dAppInfo.getDappName())")
+                Debugger.printInfo(topic: .WalletConnect, "Confirmed to connect to \(session.dAppInfo.getDappName())")
                 completion(walletInfo)
             } catch {
                 reportConnectionAttempt(with: error)
@@ -164,7 +164,7 @@ extension WalletConnectService: ServerDelegate {
                              with: pendingIntent)
         } else if appsStorage.find(byTopic: session.url.topic).count > 0 {
             // re-connection
-            Debugger.printInfo(topic: .WallectConnect, "Reconnected apps: \(appsStorage.find(byTopic: session.url.topic))")
+            Debugger.printInfo(topic: .WalletConnect, "Reconnected apps: \(appsStorage.find(byTopic: session.url.topic))")
         } else {
             Debugger.printFailure("Session connected with no relevant wallet", critical: true)
             reportConnectionAttempt(with: WalletConnectRequestError.failedConnectionRequest)
@@ -192,7 +192,7 @@ extension WalletConnectService: ServerDelegate {
                 Debugger.printFailure("Failed to encode session: \(session)", critical: true)
             }
             
-            Debugger.printInfo("Connected to \(session.dAppInfo.getDappName())")
+            Debugger.printInfo(topic: .WalletConnect, "Connected to \(session.dAppInfo.getDappName())")
             reportConnectionCompletion(result: .success(UnifiedConnectAppInfo(from: newApp)))
             intentsStorage.removeAll()
         }

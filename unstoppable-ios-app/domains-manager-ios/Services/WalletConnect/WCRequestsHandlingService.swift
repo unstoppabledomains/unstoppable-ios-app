@@ -398,7 +398,7 @@ private extension WCRequestsHandlingService {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] sessionProposal in
                 Task { [weak self] in
-                    Debugger.printInfo(topic: .WallectConnectV2, "Did receive session proposal")
+                    Debugger.printInfo(topic: .WalletConnectV2, "Did receive session proposal")
                     self?.addNewRequest(.connectionProposal(sessionProposal))
                 }
             }.store(in: &publishers)
@@ -409,7 +409,7 @@ private extension WCRequestsHandlingService {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] sessionRequest in
                 let methodString = sessionRequest.method
-                Debugger.printInfo(topic: .WallectConnectV2, "Did receive session request, method: \(methodString)")
+                Debugger.printInfo(topic: .WalletConnectV2, "Did receive session request, method: \(methodString)")
                 let requestType = WalletConnectRequestType(rawValue: methodString)
                 
                 self?.stopConnectionTimeout()

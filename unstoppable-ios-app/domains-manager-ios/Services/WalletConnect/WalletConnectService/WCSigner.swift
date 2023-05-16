@@ -66,7 +66,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         
         let readableMessageString = incomingMessageString.convertedIntoReadableMessage
         
-        Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(request.jsonString)")
+        Debugger.printInfo(topic: .WalletConnect, "Incoming request with payload: \(request.jsonString)")
         
         let (_, udWallet, _) = try await getWalletAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
@@ -157,7 +157,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
             }
             
             let response = try await proceedSendTxViaWC(by: udWallet, during: sessionWithExtWallet, in: request, transaction: completedTx)
-            Debugger.printInfo(topic: .WallectConnect, "Successfully sent TX via external wallet: \(udWallet.address)")
+            Debugger.printInfo(topic: .WalletConnect, "Successfully sent TX via external wallet: \(udWallet.address)")
             return response
         }
         
@@ -205,7 +205,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         let chainId = EthereumQuantity(quantity: BigUInt(chainIdInt))
         
         let gweiAmount = (transaction.gas ?? 0).quantity * (transaction.gasPrice ?? 0).quantity + (transaction.value ?? 0).quantity
-        Debugger.printInfo(topic: .WallectConnect, "Total balance should be \(gweiAmount / ( BigUInt(10).power(12)) ) millionth of eth")
+        Debugger.printInfo(topic: .WalletConnect, "Total balance should be \(gweiAmount / ( BigUInt(10).power(12)) ) millionth of eth")
         let signedTransaction = try transaction.sign(with: privateKey, chainId: chainId)
         return try await withSafeCheckedThrowingContinuation({ completion in
             signedTransaction.promise
@@ -238,7 +238,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         let walletAddress = try request.parameter(of: String.self, at: 0)
         let dataString = try request.parameter(of: String.self, at: 1)
         
-        Debugger.printInfo(topic: .WallectConnect, "Incoming request with payload: \(request.jsonString)")
+        Debugger.printInfo(topic: .WalletConnect, "Incoming request with payload: \(request.jsonString)")
         // TODO: - Roman. For not external wallet, it will ask confirmation and then fail.
         let (_, udWallet, _) = try await self.getWalletAfterConfirmationIfNeeded(address: walletAddress,
                                                                               request: request,
@@ -361,7 +361,7 @@ extension WalletConnectService {
                     completion(nil)
                     return
                 }
-                Debugger.printInfo(topic: .WallectConnect, "Fetched nonce successfully: \(nonceString)")
+                Debugger.printInfo(topic: .WalletConnect, "Fetched nonce successfully: \(nonceString)")
                 completion(nonceString)
             }
         }
@@ -393,7 +393,7 @@ extension WalletConnectService {
                         completion(.failure(WalletConnectRequestError.failedFetchGas))
                         return
                     }
-                    Debugger.printInfo(topic: .WallectConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
+                    Debugger.printInfo(topic: .WalletConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
                     completion(.success(result))
                 case .rejected(let error):
                     if let jrpcError = error as? NetworkService.JRPCError {
@@ -433,7 +433,7 @@ extension WalletConnectService {
                     completion(nil)
                     return
                 }
-                Debugger.printInfo(topic: .WallectConnect, "Fetched gasPrice successfully: \(gasPrice)")
+                Debugger.printInfo(topic: .WalletConnect, "Fetched gasPrice successfully: \(gasPrice)")
                 completion(BigUInt(gasPrice.droppedHexPrefix, radix: 16))
             }
         }
