@@ -23,6 +23,7 @@ protocol DomainsCollectionRouterProtocol {
     func showAppUpdateRequired()
     func showDomainsSearch(_ domains: [DomainDisplayInfo],
                            searchCallback: @escaping DomainsListSearchCallback)
+    func showChatsListScreen()
 }
 
 @MainActor
@@ -166,6 +167,12 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
         guard let viewController = self.viewController else { return }
 
         self.showDomainsSearch(domains, searchCallback: searchCallback, in: viewController)
+    }
+    
+    func showChatsListScreen() {
+        guard let navigationController = self.navigationController else { return }
+        
+        showChatsListScreen(in: navigationController)
     }
 }
 

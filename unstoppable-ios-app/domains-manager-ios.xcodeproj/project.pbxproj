@@ -1622,6 +1622,18 @@
 		C6526DFF29D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */; };
 		C6526E0029D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */; };
 		C6526E0129D32FC900D6F2EB /* WalletsEmptyStateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */; };
+		C65271E12A148D91001A084C /* ChatsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */; };
+		C65271E22A148D91001A084C /* ChatsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */; };
+		C65271E32A148D91001A084C /* ChatsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */; };
+		C65271E42A148D91001A084C /* ChatsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */; };
+		C65271E52A148D91001A084C /* ChatsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65271DF2A148D91001A084C /* ChatsListViewController.swift */; };
+		C65271E62A148D91001A084C /* ChatsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65271DF2A148D91001A084C /* ChatsListViewController.swift */; };
+		C65271E72A148D91001A084C /* ChatsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65271DF2A148D91001A084C /* ChatsListViewController.swift */; };
+		C65271E82A148D91001A084C /* ChatsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65271DF2A148D91001A084C /* ChatsListViewController.swift */; };
+		C65271E92A148D91001A084C /* ChatsListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65271E02A148D91001A084C /* ChatsListViewController.xib */; };
+		C65271EA2A148D91001A084C /* ChatsListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65271E02A148D91001A084C /* ChatsListViewController.xib */; };
+		C65271EB2A148D91001A084C /* ChatsListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65271E02A148D91001A084C /* ChatsListViewController.xib */; };
+		C65271EC2A148D91001A084C /* ChatsListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65271E02A148D91001A084C /* ChatsListViewController.xib */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -3977,6 +3989,9 @@
 		C6526DF129D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkedDomainsFoundOnboardingViewPresenter.swift; sourceTree = "<group>"; };
 		C6526DF829D32FC800D6F2EB /* WalletsEmptyStateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsEmptyStateCell.swift; sourceTree = "<group>"; };
 		C6526DF929D32FC800D6F2EB /* WalletsEmptyStateCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WalletsEmptyStateCell.xib; sourceTree = "<group>"; };
+		C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsListViewPresenter.swift; sourceTree = "<group>"; };
+		C65271DF2A148D91001A084C /* ChatsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsListViewController.swift; sourceTree = "<group>"; };
+		C65271E02A148D91001A084C /* ChatsListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatsListViewController.xib; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -5975,6 +5990,16 @@
 			path = WalletsEmptyStateCell;
 			sourceTree = "<group>";
 		};
+		C65271DD2A148D74001A084C /* Messaging */ = {
+			isa = PBXGroup;
+			children = (
+				C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */,
+				C65271DF2A148D91001A084C /* ChatsListViewController.swift */,
+				C65271E02A148D91001A084C /* ChatsListViewController.xib */,
+			);
+			path = Messaging;
+			sourceTree = "<group>";
+		};
 		C655D01D2846308E00E80A65 /* DataAggregatorService */ = {
 			isa = PBXGroup;
 			children = (
@@ -7250,6 +7275,7 @@
 				C673D5A829FB723E001CC77C /* InviteFriends */,
 				C6637A6E28100D180000AE56 /* LaunchViewController */,
 				C63DD35D29C89FCB002D45B2 /* LoginViewController */,
+				C65271DD2A148D74001A084C /* Messaging */,
 				C61B3E68283E249800500B6D /* MintDomains */,
 				30BFA4CE27DE001B00644CD5 /* Onboarding */,
 				C666E08829CB3F1D0003DECB /* ParkedDomains */,
@@ -7991,6 +8017,7 @@
 				C6D6E55828193A35008C66BB /* DomainsCollectionViewController.xib in Resources */,
 				C6B6859628008748000F9037 /* allDoneConfettiAnimation.gif in Resources */,
 				C62C8DC528DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib in Resources */,
+				C65271E92A148D91001A084C /* ChatsListViewController.xib in Resources */,
 				C635B02A283393040058F14F /* ManageDomainRecordCell.xib in Resources */,
 				C6A223C82869FE24005C3267 /* SocialsDomainImagePreviewView.xib in Resources */,
 				C6637A7528100D3A0000AE56 /* LaunchViewController.xib in Resources */,
@@ -8101,6 +8128,7 @@
 				C638683E285C0ED1000F98C4 /* AppUpdatedRequired.xib in Resources */,
 				C628E33527FDA3270044E408 /* Inter-Bold.ttf in Resources */,
 				C6D0F43E283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib in Resources */,
+				C65271EB2A148D91001A084C /* ChatsListViewController.xib in Resources */,
 				C628E33E27FDA63F0044E408 /* Colors.xcassets in Resources */,
 				C628E33127FDA3270044E408 /* Inter-ExtraBold.ttf in Resources */,
 				C6D5DAE528374B8400379C38 /* ManageMultiChainDomainAddressCell.xib in Resources */,
@@ -8318,6 +8346,7 @@
 				C6D6E55B28193A35008C66BB /* DomainsCollectionViewController.xib in Resources */,
 				C6B6859928008748000F9037 /* allDoneConfettiAnimation.gif in Resources */,
 				C62C8DC828DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib in Resources */,
+				C65271EC2A148D91001A084C /* ChatsListViewController.xib in Resources */,
 				C635B02D283393040058F14F /* ManageDomainRecordCell.xib in Resources */,
 				C6A223CB2869FE24005C3267 /* SocialsDomainImagePreviewView.xib in Resources */,
 				C6637A7828100D3A0000AE56 /* LaunchViewController.xib in Resources */,
@@ -8474,6 +8503,7 @@
 				C6D6E55928193A35008C66BB /* DomainsCollectionViewController.xib in Resources */,
 				C6B6859728008748000F9037 /* allDoneConfettiAnimation.gif in Resources */,
 				C62C8DC628DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib in Resources */,
+				C65271EA2A148D91001A084C /* ChatsListViewController.xib in Resources */,
 				C635B02B283393040058F14F /* ManageDomainRecordCell.xib in Resources */,
 				C6A223C92869FE24005C3267 /* SocialsDomainImagePreviewView.xib in Resources */,
 				C6637A7628100D3A0000AE56 /* LaunchViewController.xib in Resources */,
@@ -9044,6 +9074,7 @@
 				C63538E62949C2C100ECABA6 /* DomainsPFPInfoStorage.swift in Sources */,
 				C6456F252800308200A517D5 /* UICollectionViewCell.swift in Sources */,
 				C673D58D29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */,
+				C65271E52A148D91001A084C /* ChatsListViewController.swift in Sources */,
 				C6456F3428005D8500A517D5 /* UITextView.swift in Sources */,
 				C6209F9929D41B9700D573EB /* LocalNotificationsService.swift in Sources */,
 				30BFA4E427E24A4700644CD5 /* RecoveryPhraseViewController.swift in Sources */,
@@ -9054,6 +9085,7 @@
 				C60E9B9C2821347F00CD7593 /* WalletsListHeaderView.swift in Sources */,
 				C669C37A2912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift in Sources */,
 				C6FF2D9C28F0245F00148007 /* DomainProfileSectionsController.swift in Sources */,
+				C65271E12A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
 				C6109E9328E6AA7A0027D5D8 /* AppContextType.swift in Sources */,
 				295506F02954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */,
 				C669C37F29124C2600837F21 /* SocialsType.swift in Sources */,
@@ -9270,6 +9302,7 @@
 				C6BEEF4629C30DDE000489B9 /* FirebaseAuthError.swift in Sources */,
 				C603E8CB285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C673D59829FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift in Sources */,
+				C65271E72A148D91001A084C /* ChatsListViewController.swift in Sources */,
 				C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */,
 				C63F1D1728AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
 				C6C995AC289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
@@ -9304,6 +9337,7 @@
 				307F83C7267A339F0070A9A6 /* UDWalletEthereum.swift in Sources */,
 				C6C99590289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
 				C6124CBC2922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift in Sources */,
+				C65271E32A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
 				C609821E2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C62247B7283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
 				C61B3E81283E441200500B6D /* EnterEmailToMintDomainsPresenter.swift in Sources */,
@@ -9955,6 +9989,7 @@
 				C6BEEF4729C30DDE000489B9 /* FirebaseAuthError.swift in Sources */,
 				C603E8CC285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C673D59929FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift in Sources */,
+				C65271E82A148D91001A084C /* ChatsListViewController.swift in Sources */,
 				C6C421732934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */,
 				C63F1D1828AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
 				C6C995AD289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
@@ -9989,6 +10024,7 @@
 				307F8580267B60300070A9A6 /* UDWalletEthereum.swift in Sources */,
 				C6C99591289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
 				C6124CBD2922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift in Sources */,
+				C65271E42A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
 				C609821F2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C62247B8283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
 				C61B3E82283E441200500B6D /* EnterEmailToMintDomainsPresenter.swift in Sources */,
@@ -11157,6 +11193,7 @@
 				C63538E72949C2C100ECABA6 /* DomainsPFPInfoStorage.swift in Sources */,
 				C6456F3528005D8500A517D5 /* UITextView.swift in Sources */,
 				C673D58E29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */,
+				C65271E62A148D91001A084C /* ChatsListViewController.swift in Sources */,
 				30BFA4E527E24A4700644CD5 /* RecoveryPhraseViewController.swift in Sources */,
 				C6209F9A29D41B9700D573EB /* LocalNotificationsService.swift in Sources */,
 				3018AEB427EA091000E8C37D /* EnterBackupViewController.swift in Sources */,
@@ -11167,6 +11204,7 @@
 				C6A2D5AC285062C200327C47 /* BaseSignTransactionView.swift in Sources */,
 				C669C37B2912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift in Sources */,
 				C6FF2D9D28F0245F00148007 /* DomainProfileSectionsController.swift in Sources */,
+				C65271E22A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
 				C6109E9428E6AA7A0027D5D8 /* AppContextType.swift in Sources */,
 				295506F12954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */,
 				C669C38029124C2600837F21 /* SocialsType.swift in Sources */,

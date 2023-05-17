@@ -218,7 +218,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     }
     
     func didTapMessagingButton() {
-        
+        router.showChatsListScreen()
     }
 }
 
