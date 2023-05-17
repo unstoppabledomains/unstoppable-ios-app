@@ -24,6 +24,7 @@ protocol DomainsCollectionPresenterProtocol: BasePresenterProtocol {
     func didMintDomains(result: MintDomainsNavigationController.MintDomainsResult)
     func didRecognizeQRCode()
     func didTapAddButton()
+    func didTapMessagingButton()
 }
 
 final class DomainsCollectionPresenter: ViewAnalyticsLogger {
@@ -214,6 +215,10 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
                 }
             }
         }
+    }
+    
+    func didTapMessagingButton() {
+        
     }
 }
 

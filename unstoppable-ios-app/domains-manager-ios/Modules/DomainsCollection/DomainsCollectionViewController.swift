@@ -216,7 +216,7 @@ extension DomainsCollectionViewController: DomainsCollectionViewProtocol {
             }
         } else {
             if navigationItem.rightBarButtonItem == nil {
-                addAddBarButton()
+                addRightBarButtons()
                 cNavigationController?.updateNavigationBar()
             }
         }
@@ -603,6 +603,12 @@ private extension DomainsCollectionViewController {
         UDVibration.buttonTap.vibrate()
         presenter.didTapAddButton()
     }
+    
+    @objc func didTapMessagingButton() {
+        logButtonPressedAnalyticEvents(button: .messaging)
+        UDVibration.buttonTap.vibrate()
+        presenter.didTapMessagingButton()
+    }
 }
 
 // MARK: - Private methods
@@ -672,18 +678,23 @@ private extension DomainsCollectionViewController {
     }
     
     func setupNavBar() {
-        addAddBarButton()
+        addRightBarButtons()
         titleView = DomainsCollectionTitleView(frame: .zero)
         titleView.delegate = self
         setTitleViewFor(cardState: cardState)
         navigationItem.titleView = titleView
     }
     
-    func addAddBarButton() {
-        let rightBarButton = UIBarButtonItem(image: .plusIconNav, style: .plain, target: self, action: #selector(didTapAddButton))
-        rightBarButton.tintColor = .foregroundDefault
-        rightBarButton.accessibilityIdentifier = "Domains Collection Plus Button"
-        navigationItem.rightBarButtonItem = rightBarButton
+    func addRightBarButtons() {
+        let addBarButton = UIBarButtonItem(image: .plusIconNav, style: .plain, target: self, action: #selector(didTapAddButton))
+        addBarButton.tintColor = .foregroundDefault
+        addBarButton.accessibilityIdentifier = "Domains Collection Plus Button"
+        
+        let messagingButton = DomainsCollectionMessagingBarButton()
+        messagingButton.pressedCallback = { [weak self] in self?.didTapMessagingButton() }
+        let messagingBarButton = UIBarButtonItem(customView: messagingButton)
+        
+        navigationItem.rightBarButtonItems = [addBarButton, messagingBarButton]
     }
 
     func addSettingsButton() {

@@ -193,7 +193,7 @@ extension Analytics {
         case importWithPKOrSP, watchWallet, externalWallet
         
         // Domains collection
-        case homeTopControl, settings, plus
+        case homeTopControl, settings, plus, messaging
         
         // Confirm words (from recovery phrase)
         case correctWord, incorrectWord, forgotPassword
