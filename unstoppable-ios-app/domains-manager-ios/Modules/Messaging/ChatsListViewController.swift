@@ -19,11 +19,12 @@ typealias ChatsListSnapshot = NSDiffableDataSourceSnapshot<ChatsListViewControll
 final class ChatsListViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    var cellIdentifiers: [UICollectionViewCell.Type] { [ChatListCell.self] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [ChatListCell.self,
+                                                        ChatListDomainSelectionCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
     
-    override var scrollableContentYOffset: CGFloat? { 48 }
+    override var scrollableContentYOffset: CGFloat? { 66 }
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { cSearchBarConfiguration }
     private var searchBar: UDSearchBar = UDSearchBar()
     private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
@@ -90,6 +91,11 @@ private extension ChatsListViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .domainSelection(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListDomainSelectionCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
     }
@@ -100,19 +106,34 @@ private extension ChatsListViewController {
         let config = UICollectionViewCompositionalLayoutConfiguration()
         config.interSectionSpacing = spacing
         
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: {
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self]
             (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             
             let layoutSection: NSCollectionLayoutSection
-            
-            layoutSection = .flexibleListItemSection()
+            let section = self?.section(at: IndexPath(item: 0, section: sectionIndex))
+
+            switch section {
+            case .channels, .none:
+                layoutSection = .flexibleListItemSection()
+         
+                let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
+                layoutSection.decorationItems = [background]
+            case .domainsSelection:
+                let leadingItem = NSCollectionLayoutItem(
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .estimated(40),
+                                                       heightDimension: .fractionalHeight(1)))
+                let containerGroup = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .estimated(40),
+                                                       heightDimension: .absolute(36)),
+                    subitems: [leadingItem])
+                layoutSection = NSCollectionLayoutSection(group: containerGroup)
+                layoutSection.interGroupSpacing = 8
+                layoutSection.orthogonalScrollingBehavior = .continuous
+            }
             layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
                                                                   leading: spacing + 1,
                                                                   bottom: 1,
                                                                   trailing: spacing + 1)
-            let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
-            layoutSection.decorationItems = [background]
-            
             
             return layoutSection
             
@@ -121,19 +142,32 @@ private extension ChatsListViewController {
         
         return layout
     }
+    
+    func section(at indexPath: IndexPath) -> Section? {
+        self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
+    }
+    
 }
 
 // MARK: - Collection elements
 extension ChatsListViewController {
     enum Section: Hashable {
-        case channels
+        case domainsSelection, channels
     }
     
     enum Item: Hashable {
         case channel(configuration: ChatChannelUIConfiguration)
+        case domainSelection(configuration: DomainSelectionUIConfiguration)
     }
     
     struct ChatChannelUIConfiguration: Hashable {
         let channelType: ChatChannelType
+    }
+    
+    
+    struct DomainSelectionUIConfiguration: Hashable {
+        let domain: DomainDisplayInfo
+        let isSelected: Bool
+        let unreadMessagesCount: Int
     }
 }

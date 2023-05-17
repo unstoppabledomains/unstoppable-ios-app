@@ -13,8 +13,7 @@ final class ChatListCell: BaseListCollectionViewCell {
     @IBOutlet private weak var chatNameLabel: UILabel!
     @IBOutlet private weak var timeLabel: UILabel!
     @IBOutlet private weak var lastMessageLabel: UILabel!
-    @IBOutlet private weak var badgeView: UIView!
-    @IBOutlet private weak var badgeCounterLabel: UILabel!
+    @IBOutlet private weak var badgeView: UnreadMessagesBadgeView!
     
 }
 
@@ -52,10 +51,7 @@ extension ChatListCell {
             lastMessageLabel.text = ""
         }
         
-        badgeView.isHidden = channelType.unreadMessagesCount == 0
-        badgeCounterLabel.setAttributedTextWith(text: String(channelType.unreadMessagesCount),
-                                                font: .currentFont(withSize: 11, weight: .semibold),
-                                                textColor: .white)
+        badgeView.setUnreadMessagesCount(channelType.unreadMessagesCount)
     }
 }
 

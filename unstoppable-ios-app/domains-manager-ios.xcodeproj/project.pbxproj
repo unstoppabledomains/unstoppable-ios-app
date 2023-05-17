@@ -1678,6 +1678,18 @@
 		C652722C2A14B395001A084C /* MockMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722A2A14B395001A084C /* MockMessagingService.swift */; };
 		C652722D2A14B395001A084C /* MockMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722A2A14B395001A084C /* MockMessagingService.swift */; };
 		C652722E2A14B395001A084C /* MockMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722A2A14B395001A084C /* MockMessagingService.swift */; };
+		C65272312A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722F2A14BD69001A084C /* ChatListDomainSelectionCell.swift */; };
+		C65272322A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722F2A14BD69001A084C /* ChatListDomainSelectionCell.swift */; };
+		C65272332A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722F2A14BD69001A084C /* ChatListDomainSelectionCell.swift */; };
+		C65272342A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722F2A14BD69001A084C /* ChatListDomainSelectionCell.swift */; };
+		C65272352A14BD69001A084C /* ChatListDomainSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65272302A14BD69001A084C /* ChatListDomainSelectionCell.xib */; };
+		C65272362A14BD69001A084C /* ChatListDomainSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65272302A14BD69001A084C /* ChatListDomainSelectionCell.xib */; };
+		C65272372A14BD69001A084C /* ChatListDomainSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65272302A14BD69001A084C /* ChatListDomainSelectionCell.xib */; };
+		C65272382A14BD69001A084C /* ChatListDomainSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65272302A14BD69001A084C /* ChatListDomainSelectionCell.xib */; };
+		C652723C2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652723B2A14C223001A084C /* UnreadMessagesBadgeView.swift */; };
+		C652723D2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652723B2A14C223001A084C /* UnreadMessagesBadgeView.swift */; };
+		C652723E2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652723B2A14C223001A084C /* UnreadMessagesBadgeView.swift */; };
+		C652723F2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652723B2A14C223001A084C /* UnreadMessagesBadgeView.swift */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -4047,6 +4059,9 @@
 		C652721A2A149E41001A084C /* MessageDateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDateFormatter.swift; sourceTree = "<group>"; };
 		C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingServiceProtocol.swift; sourceTree = "<group>"; };
 		C652722A2A14B395001A084C /* MockMessagingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMessagingService.swift; sourceTree = "<group>"; };
+		C652722F2A14BD69001A084C /* ChatListDomainSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListDomainSelectionCell.swift; sourceTree = "<group>"; };
+		C65272302A14BD69001A084C /* ChatListDomainSelectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatListDomainSelectionCell.xib; sourceTree = "<group>"; };
+		C652723B2A14C223001A084C /* UnreadMessagesBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnreadMessagesBadgeView.swift; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -6051,6 +6066,7 @@
 				C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */,
 				C65271DF2A148D91001A084C /* ChatsListViewController.swift */,
 				C65271E02A148D91001A084C /* ChatsListViewController.xib */,
+				C652723A2A14C215001A084C /* Views */,
 				C65271F92A148FC4001A084C /* Entities */,
 				C65271ED2A148F92001A084C /* Cells */,
 			);
@@ -6060,6 +6076,7 @@
 		C65271ED2A148F92001A084C /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				C65272392A14BD6E001A084C /* ChatListDomainSelectionCell */,
 				C65271F82A148FA8001A084C /* ChatListCell */,
 			);
 			path = Cells;
@@ -6111,6 +6128,23 @@
 				C652722A2A14B395001A084C /* MockMessagingService.swift */,
 			);
 			path = MessagingService;
+			sourceTree = "<group>";
+		};
+		C65272392A14BD6E001A084C /* ChatListDomainSelectionCell */ = {
+			isa = PBXGroup;
+			children = (
+				C652722F2A14BD69001A084C /* ChatListDomainSelectionCell.swift */,
+				C65272302A14BD69001A084C /* ChatListDomainSelectionCell.xib */,
+			);
+			path = ChatListDomainSelectionCell;
+			sourceTree = "<group>";
+		};
+		C652723A2A14C215001A084C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C652723B2A14C223001A084C /* UnreadMessagesBadgeView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		C655D01D2846308E00E80A65 /* DataAggregatorService */ = {
@@ -8055,6 +8089,7 @@
 				C615E0D628891BC10082490B /* DomainsCollectionSearchEmptyCell.xib in Resources */,
 				C679B615291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib in Resources */,
 				C6E04199295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.xib in Resources */,
+				C65272352A14BD69001A084C /* ChatListDomainSelectionCell.xib in Resources */,
 				C692C323282E485C00C31393 /* SecuritySettingsViewController.xib in Resources */,
 				C60982C9282A78CA00546392 /* RecoveryPhraseViewController.xib in Resources */,
 				C6A2D5A328504EB300327C47 /* ConnectedAppCell.xib in Resources */,
@@ -8190,6 +8225,7 @@
 				C673D57C29FA3645001CC77C /* ReviewAndConfirmTransferViewController.xib in Resources */,
 				307F842A267A339F0070A9A6 /* Assets.xcassets in Resources */,
 				30A280392714217200FD3759 /* wallets-registry.json in Resources */,
+				C65272372A14BD69001A084C /* ChatListDomainSelectionCell.xib in Resources */,
 				C679B617291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib in Resources */,
 				C60982B7282A762C00546392 /* BackupWalletViewController.xib in Resources */,
 				C62C3FC3283F6E410094FC93 /* MintDomainsConfigurationViewController.xib in Resources */,
@@ -8386,6 +8422,7 @@
 				C692C326282E485C00C31393 /* SecuritySettingsViewController.xib in Resources */,
 				C679B618291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib in Resources */,
 				C6E0419C295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.xib in Resources */,
+				C65272382A14BD69001A084C /* ChatListDomainSelectionCell.xib in Resources */,
 				C6A2D5A628504EB300327C47 /* ConnectedAppCell.xib in Resources */,
 				C60982CC282A78CA00546392 /* RecoveryPhraseViewController.xib in Resources */,
 				C6D6E58D28193ED9008C66BB /* DomainsCollectionListCell.xib in Resources */,
@@ -8544,6 +8581,7 @@
 				C60982D0282A79E200546392 /* RestoreWalletViewController.xib in Resources */,
 				C679B616291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib in Resources */,
 				C6E0419A295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.xib in Resources */,
+				C65272362A14BD69001A084C /* ChatListDomainSelectionCell.xib in Resources */,
 				C692C324282E485C00C31393 /* SecuritySettingsViewController.xib in Resources */,
 				C6A2D5A428504EB300327C47 /* ConnectedAppCell.xib in Resources */,
 				C60982CA282A78CA00546392 /* RecoveryPhraseViewController.xib in Resources */,
@@ -8675,6 +8713,7 @@
 				C63F1D1528AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
 				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
+				C65272312A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
 				C6C995AA289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
 				C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */,
 				C66804D5280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
@@ -8962,6 +9001,7 @@
 				C6010D15287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */,
 				C60610D429A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
 				291A9C6A29E444CF00527FF1 /* WC_v1+v2.swift in Sources */,
+				C652723C2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */,
 				C6C42182293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
 				C62C3F96283F40D30094FC93 /* CodeVerificationCharacterView.swift in Sources */,
 				C642A6B5284118E800299C6E /* MintingDomainListCell.swift in Sources */,
@@ -9481,6 +9521,7 @@
 				C66804C3280D9EC8007E6390 /* DigitalKeyboardViewController.swift in Sources */,
 				C609831C282B707C00546392 /* UINavigationController.swift in Sources */,
 				C6A2D55A284F3E3200327C47 /* SignTransactionDomainSelectionViewPresenter.swift in Sources */,
+				C652723E2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */,
 				C6D9E29628535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */,
 				C6C995C4289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
 				C6E0415D295053DC0080F8E3 /* UIScrollView.swift in Sources */,
@@ -9726,6 +9767,7 @@
 				C628E36F27FDE0D50044E408 /* UDTitleLabel.swift in Sources */,
 				C61FD05828FD3F540088CFDD /* ShareDomainHandler.swift in Sources */,
 				3018AEC427EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,
+				C65272332A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
 				C62247B2283CFF1B002A0CBD /* DomainTransactionsServiceProtocol.swift in Sources */,
 				C6C4218929379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				3026FA2327E77AFF00FE058B /* BackupWalletViewController.swift in Sources */,
@@ -10178,6 +10220,7 @@
 				C66804C4280D9EC8007E6390 /* DigitalKeyboardViewController.swift in Sources */,
 				C609831D282B707C00546392 /* UINavigationController.swift in Sources */,
 				C6A2D55B284F3E3200327C47 /* SignTransactionDomainSelectionViewPresenter.swift in Sources */,
+				C652723F2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */,
 				C6D9E29728535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */,
 				C6C995C5289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
 				C6E0415E295053DC0080F8E3 /* UIScrollView.swift in Sources */,
@@ -10423,6 +10466,7 @@
 				C6F6AF6628A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */,
 				C61FD05928FD3F540088CFDD /* ShareDomainHandler.swift in Sources */,
 				C628E37027FDE0D50044E408 /* UDTitleLabel.swift in Sources */,
+				C65272342A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
 				3018AEC527EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,
 				C6C4218A29379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				C62247B3283CFF1C002A0CBD /* DomainTransactionsServiceProtocol.swift in Sources */,
@@ -10824,6 +10868,7 @@
 				C63F1D1628AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
 				C6526DC629D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189F28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
+				C65272322A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
 				C6C995AB289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
 				C6637A7228100D3A0000AE56 /* LaunchViewController.swift in Sources */,
 				C66804D6280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
@@ -11111,6 +11156,7 @@
 				C62C3F97283F40D30094FC93 /* CodeVerificationCharacterView.swift in Sources */,
 				C60610D529A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
 				291A9C6B29E444CF00527FF1 /* WC_v1+v2.swift in Sources */,
+				C652723D2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */,
 				C6C42183293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
 				C642A6B6284118E800299C6E /* MintingDomainListCell.swift in Sources */,
 				C685A98C2840FD4900E54044 /* ChoosePrimaryDomainViewController.swift in Sources */,

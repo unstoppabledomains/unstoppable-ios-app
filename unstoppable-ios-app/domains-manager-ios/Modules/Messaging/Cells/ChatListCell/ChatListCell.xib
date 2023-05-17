@@ -81,25 +81,9 @@
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zIZ-G5-Ira">
                                                         <rect key="frame" x="260" y="0.0" width="60" height="50"/>
                                                         <subviews>
-                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JMX-Lc-gxp">
+                                                            <view contentMode="scaleToFill" placeholderIntrinsicWidth="16" placeholderIntrinsicHeight="16" translatesAutoresizingMaskIntoConstraints="NO" id="JMX-Lc-gxp" customClass="UnreadMessagesBadgeView" customModule="domains_manager_ios" customModuleProvider="target">
                                                                 <rect key="frame" x="44" y="2" width="16" height="16"/>
-                                                                <subviews>
-                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9tR-lH-Ukd">
-                                                                        <rect key="frame" x="4" y="-2" width="8" height="20.333333333333332"/>
-                                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                                        <nil key="textColor"/>
-                                                                        <nil key="highlightedColor"/>
-                                                                    </label>
-                                                                </subviews>
                                                                 <color key="backgroundColor" name="foregroundAccent"/>
-                                                                <constraints>
-                                                                    <constraint firstItem="9tR-lH-Ukd" firstAttribute="centerX" secondItem="JMX-Lc-gxp" secondAttribute="centerX" id="0B4-2x-KDS"/>
-                                                                    <constraint firstItem="9tR-lH-Ukd" firstAttribute="leading" secondItem="JMX-Lc-gxp" secondAttribute="leading" constant="4" id="1fo-iL-pm7"/>
-                                                                    <constraint firstAttribute="width" constant="16" id="6SA-SB-YVC"/>
-                                                                    <constraint firstItem="9tR-lH-Ukd" firstAttribute="centerY" secondItem="JMX-Lc-gxp" secondAttribute="centerY" id="Btm-4q-otR"/>
-                                                                    <constraint firstAttribute="trailing" secondItem="9tR-lH-Ukd" secondAttribute="trailing" constant="4" id="QM0-SG-bgb"/>
-                                                                    <constraint firstAttribute="height" constant="16" id="WAH-jK-QWT"/>
-                                                                </constraints>
                                                                 <userDefinedRuntimeAttributes>
                                                                     <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
                                                                         <real key="value" value="8"/>
@@ -143,7 +127,6 @@
             <size key="customSize" width="408" height="102"/>
             <connections>
                 <outlet property="avatarImageView" destination="q93-ez-iwd" id="YBH-q6-KWB"/>
-                <outlet property="badgeCounterLabel" destination="9tR-lH-Ukd" id="19C-c8-zAV"/>
                 <outlet property="badgeView" destination="JMX-Lc-gxp" id="tmq-uF-g5Q"/>
                 <outlet property="chatNameLabel" destination="O1n-ib-iGi" id="JBF-FH-tQR"/>
                 <outlet property="containerView" destination="x4U-D8-9XQ" id="5ap-ZZ-mJy"/>

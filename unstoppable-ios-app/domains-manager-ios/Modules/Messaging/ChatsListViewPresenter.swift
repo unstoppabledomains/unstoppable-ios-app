@@ -29,7 +29,16 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     }
     
     func didSelectItem(_ item: ChatsListViewController.Item) {
-        
+        UDVibration.buttonTap.vibrate()
+        switch item {
+        case .domainSelection(let configuration):
+            guard !configuration.isSelected else { return }
+            
+            selectedDomain = configuration.domain
+            showData()
+        case .channel(let configuration):
+            return
+        }
     }
 }
 
@@ -43,8 +52,13 @@ private extension ChatsListViewPresenter {
             
             guard let selectedDomain else { return }
             
-            let channels = await appContext.messagingService.getChannelsForDomain(selectedDomain)
+            snapshot.appendSections([.domainsSelection])
+            snapshot.appendItems(domains.map({ ChatsListViewController.Item.domainSelection(configuration: .init(domain: $0,
+                                                                                                                 isSelected: $0.isSameEntity(selectedDomain),
+                                                                                                                 unreadMessagesCount: Int(arc4random_uniform(2)))) }))
             
+            
+            let channels = await appContext.messagingService.getChannelsForDomain(selectedDomain)
             snapshot.appendSections([.channels])
             snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channelType: $0)) }))
             
