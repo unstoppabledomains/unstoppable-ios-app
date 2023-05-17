@@ -19,7 +19,7 @@ typealias ChatsListSnapshot = NSDiffableDataSourceSnapshot<ChatsListViewControll
 final class ChatsListViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
-    var cellIdentifiers: [UICollectionViewCell.Type] { [] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [ChatListCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
 
@@ -70,7 +70,11 @@ private extension ChatsListViewController {
     func configureDataSource() {
         dataSource = ChatsListDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
             switch item {
-            
+            case .channel(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
     }
@@ -111,7 +115,10 @@ extension ChatsListViewController {
     }
     
     enum Item: Hashable {
-        
+        case channel(configuration: ChatChannelUIConfiguration)
     }
     
+    struct ChatChannelUIConfiguration: Hashable {
+        let channelType: ChatChannelType
+    }
 }
