@@ -29,6 +29,7 @@ public struct Debugger {
         case UI = "=UI="
         case Analytics = "Analtyics"
         case NFT = "NFT"
+        case LocalNotification = "LN"
         case Images = "IMG"
         case DataAggregation = "AGGR"
     }

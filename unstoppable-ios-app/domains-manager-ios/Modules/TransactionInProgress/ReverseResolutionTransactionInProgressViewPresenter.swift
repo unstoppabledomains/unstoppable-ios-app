@@ -63,7 +63,7 @@ class ReverseResolutionTransactionInProgressViewPresenter: BaseTransactionInProg
             if domainTransaction == nil {
                 await dismiss()
                 if !isNotificationPermissionsGranted {
-                    await dataAggregatorService.aggregateData()
+                    await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
                 }
             } else {
                 await showData()
@@ -79,7 +79,7 @@ extension ReverseResolutionTransactionInProgressViewPresenter: ExternalEventsSer
             switch event {
             case .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved:
                 refreshMintingTransactions()
-            case .wcDeepLink, .walletConnectRequest, .domainTransferred, .mintingFinished, .domainProfileUpdated, .badgeAdded:
+            case .wcDeepLink, .walletConnectRequest, .domainTransferred, .mintingFinished, .domainProfileUpdated, .parkingStatusLocal, .badgeAdded:
                 return
             }
         }

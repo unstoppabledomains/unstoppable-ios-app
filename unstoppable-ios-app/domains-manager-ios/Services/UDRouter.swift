@@ -9,16 +9,19 @@ import UIKit
 
 @MainActor
 class UDRouter: DomainProfileSignatureValidator {
-    func showSettings(in viewController: CNavigationController) {
-        let settingsVC = buildSettingsModule()
+    func showSettings(in viewController: CNavigationController,
+                      loginCallback: LoginFlowNavigationController.LoggedInCallback?) {
+        let settingsVC = buildSettingsModule(loginCallback: loginCallback)
         viewController.pushViewController(settingsVC, animated: true)
     }
     
-    func buildSettingsModule() -> UIViewController {
+    private func buildSettingsModule(loginCallback: LoginFlowNavigationController.LoggedInCallback?) -> UIViewController {
         let vc = SettingsViewController.nibInstance()
         let presenter = SettingsPresenter(view: vc,
+                                          loginCallback: loginCallback,
                                           notificationsService: appContext.notificationsService,
-                                          dataAggregatorService: appContext.dataAggregatorService)
+                                          dataAggregatorService: appContext.dataAggregatorService,
+                                          firebaseInteractionService: appContext.firebaseInteractionService)
         vc.presenter = presenter
         
         return vc
@@ -524,6 +527,28 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(nav, animated: true)
     }
     
+    func runLoginFlow(with mode: LoginFlowNavigationController.Mode,
+                      loggedInCallback: @escaping LoginFlowNavigationController.LoggedInCallback,
+                      in viewController: UIViewController) {
+        showLoginScreen(with: mode, loggedInCallback: loggedInCallback, in: viewController)
+    }
+    
+    func showDomainProfileParkedActionModule(in viewController: UIViewController,
+                                             domain: DomainDisplayInfo,
+                                             imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo) async -> DomainProfileParkedAction {
+        await withSafeCheckedMainActorContinuation { completion in
+            let vc = buildDomainProfileParkedModule(domain: domain,
+                                                    imagesInfo: imagesInfo,
+                                                    refreshActionCallback: { [weak viewController] result in
+                viewController?.dismiss(animated: true, completion: {
+                    completion(result)
+                })
+            })
+            let nav = presentInEmptyCRootNavigation(vc, in: viewController)
+            nav.isModalInPresentation = true
+        }
+    }
+    
     func showTransferInProgressScreen(domain: DomainDisplayInfo,
                                       transferDomainFlowManager: TransferDomainFlowManager?,
                                       in viewController: UIViewController) {
@@ -591,6 +616,15 @@ private extension UDRouter {
         mintDomainsNavigationController.domainsMintedCallback = domainsMintedCallback
         viewController.cNavigationController?.pushViewController(mintDomainsNavigationController,
                                                                 animated: true)
+    }
+    
+    func showLoginScreen(with mode: LoginFlowNavigationController.Mode,
+                         loggedInCallback: @escaping LoginFlowNavigationController.LoggedInCallback,
+                         in viewController: UIViewController) {
+        let mintDomainsNavigationController = LoginFlowNavigationController(mode: mode)
+        mintDomainsNavigationController.loggedInCallback = loggedInCallback
+        viewController.cNavigationController?.pushViewController(mintDomainsNavigationController,
+                                                                 animated: true)
     }
 }
 
@@ -927,6 +961,18 @@ private extension UDRouter {
         let vc = NFTDetailsViewController.nibInstance()
         let presenter = NFTDetailsViewPresenter(view: vc,
                                                 nft: nft)
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func buildDomainProfileParkedModule(domain: DomainDisplayInfo,
+                                        imagesInfo: DomainProfileActionCoverViewPresenter.DomainImagesInfo,
+                                        refreshActionCallback: @escaping DomainProfileParkedActionCallback) -> UIViewController {
+        let vc = DomainProfileActionCoverViewController.nibInstance()
+        let presenter = DomainProfileParkedActionCoverViewPresenter(view: vc,
+                                                                    domain: domain,
+                                                                    imagesInfo: imagesInfo,
+                                                                    refreshActionCallback: refreshActionCallback)
         vc.presenter = presenter
         return vc
     }

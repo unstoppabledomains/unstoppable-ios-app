@@ -59,7 +59,7 @@ class TransferDomainTransactionInProgressViewPresenter: BaseTransactionInProgres
             if domainTransaction == nil {
                 await dismiss()
                 if !isNotificationPermissionsGranted {
-                    await appContext.dataAggregatorService.aggregateData()
+                    await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: false)
                 }
             } else {
                 await showData()
@@ -89,7 +89,7 @@ extension TransferDomainTransactionInProgressViewPresenter: ExternalEventsServic
             switch event {
             case .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainTransferred:
                 refreshMintingTransactions()
-            case .wcDeepLink, .walletConnectRequest, .mintingFinished, .domainProfileUpdated, .badgeAdded:
+            case .wcDeepLink, .walletConnectRequest, .mintingFinished, .domainProfileUpdated, .parkingStatusLocal, .badgeAdded:
                 return
             }
         }

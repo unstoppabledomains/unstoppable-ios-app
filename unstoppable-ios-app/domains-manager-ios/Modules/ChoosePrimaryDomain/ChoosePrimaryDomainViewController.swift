@@ -212,7 +212,15 @@ extension ChoosePrimaryDomainViewController: UICollectionViewDropDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
-        return presenter.proposalForItemsWithDropSession(session, destinationIndexPath: destinationIndexPath)
+        
+        guard let dragItemIndexPath = session.items.first?.localObject as? IndexPath,
+              let destinationIndexPath = destinationIndexPath,
+              dragItemIndexPath.section == destinationIndexPath.section else {
+            return UICollectionViewDropProposal(operation: .forbidden)
+        }
+        
+        return presenter.proposalForItemsWithDropSession(session,
+                                                         destinationIndexPath: destinationIndexPath)
     }
 }
 
@@ -290,6 +298,10 @@ private extension ChoosePrimaryDomainViewController {
         collectionView.dropDelegate = self
         collectionView.collectionViewLayout = buildLayout()
         collectionView.contentInset.top = 286
+        collectionView.register(CollectionTextHeaderReusableView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier)
+        
         configureDataSource()
     }
     
@@ -332,6 +344,17 @@ private extension ChoosePrimaryDomainViewController {
             }
         })
         
+        
+        dataSource.supplementaryViewProvider = { collectionView, elementKind, indexPath in
+            let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                       withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier,
+                                                                       for: indexPath) as! CollectionTextHeaderReusableView
+            
+            view.setHeader(String.Constants.parkedDomains.localized())
+            
+            return view
+        }
+        
         dataSource.reorderingHandlers.canReorderItem = { item in return item.isDraggable }
         dataSource.reorderingHandlers.didReorder = { [weak self] transaction in
             self?.presenter.didMoveItemsWith(transaction: transaction)
@@ -373,10 +396,18 @@ private extension ChoosePrimaryDomainViewController {
             }
             
             switch section {
-            case .allDomains:
+            case .allDomains, .parkedDomains:
                 layoutSection.contentInsets.top = 16
                 layoutSection.interGroupSpacing = 4
                 setBackground()
+                if case .parkedDomains = section {
+                    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                            heightDimension: .absolute(section?.headerHeight ?? 0))
+                    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                             elementKind: UICollectionView.elementKindSectionHeader,
+                                                                             alignment: .top)
+                    layoutSection.boundarySupplementaryItems = [header]
+                }
             case .header, .none, .searchEmptyState:
                 Void()
             }
@@ -396,12 +427,13 @@ extension ChoosePrimaryDomainViewController {
         case header
         case allDomains
         case searchEmptyState
+        case parkedDomains
         
         var headerHeight: CGFloat {
             switch self {
             case .header, .searchEmptyState:
                 return 0
-            case .allDomains:
+            case .allDomains, .parkedDomains:
                 return CollectionTextHeaderReusableView.Height
             }
         }
@@ -412,7 +444,7 @@ extension ChoosePrimaryDomainViewController {
                 return 32
             case .searchEmptyState:
                 return 340
-            case .allDomains:
+            case .allDomains, .parkedDomains:
                 return 64
             }
         }

@@ -91,6 +91,27 @@ struct NetworkService {
         ).resume()
     }
     
+    func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest,
+                                               using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                               dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
+        let data = try await makeAPIRequest(apiRequest)
+        
+        if let object = T.objectFromData(data,
+                                         using: keyDecodingStrategy,
+                                         dateDecodingStrategy: dateDecodingStrategy) {
+            return object
+        } else {
+            throw NetworkLayerError.parsingDomainsError
+        }
+    }
+    
+    func makeAPIRequest(_ apiRequest: APIRequest) async throws -> Data {
+        try await fetchData(for: apiRequest.url,
+                            body: apiRequest.body,
+                            method: apiRequest.method,
+                            extraHeaders: apiRequest.headers)
+    }
+    
     func fetchData(for url: URL,
                    body: String = "",
                    method: HttpRequestMethod = .post,

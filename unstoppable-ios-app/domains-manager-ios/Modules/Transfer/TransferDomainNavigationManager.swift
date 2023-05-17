@@ -69,7 +69,7 @@ extension TransferDomainNavigationManager: TransferDomainFlowManager {
                                                                       configuration: configuration,
                                                                       paymentConfirmationDelegate: topViewController)
             Task.detached {
-                await appContext.dataAggregatorService.aggregateData()
+                await appContext.dataAggregatorService.aggregateData(shouldRefreshPFP: false)
             }
             moveToStep(.transferInProgressOf(domain: domainDisplayInfo))
         case .transactionFinished:

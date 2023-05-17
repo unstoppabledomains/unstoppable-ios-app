@@ -286,6 +286,8 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
             showToast(.domainCopied)
         case .rearrangeDomains:
             presenter.didOccureUIAction(.rearrangeDomains)
+        case .parkedDomainLearnMore:
+            presenter.didOccureUIAction(.parkedDomainLearnMore)
         }
     }
 }
@@ -752,5 +754,6 @@ extension DomainsCollectionViewController {
         case mintingDomainsShowMoreMintedDomainsPressed
         case rearrangeDomains
         case searchPressed
+        case parkedDomainLearnMore
     }
 }

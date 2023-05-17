@@ -377,7 +377,7 @@ extension NetworkService {
         }
         let data = try await fetchData(for: url, method: .get)
         guard let info = BadgesInfo.objectFromData(data,
-                                                   dateDecodingStrategy: .badgesDateDecodingStrategy()) else {
+                                                   dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
             throw NetworkLayerError.failedParseProfileData
         }
         return info
@@ -389,7 +389,7 @@ extension NetworkService {
         }
         let data = try await fetchData(for: url, method: .get)
         guard let response = RefreshBadgesResponse.objectFromData(data,
-                                                                  dateDecodingStrategy: .badgesDateDecodingStrategy()) else {
+                                                                  dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
             throw NetworkLayerError.failedParseProfileData
         }
         return response
@@ -402,7 +402,7 @@ extension NetworkService {
         }
         let data = try await fetchData(for: url, method: .get)
         guard let info = BadgeDetailedInfo.objectFromData(data,
-                                                          dateDecodingStrategy: .badgesDateDecodingStrategy()) else {
+                                                          dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
             throw NetworkLayerError.failedParseProfileData
         }
         return info

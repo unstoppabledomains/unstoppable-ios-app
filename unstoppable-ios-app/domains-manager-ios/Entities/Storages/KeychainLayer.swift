@@ -27,6 +27,7 @@ enum ValetError: String, LocalizedError {
 enum KeychainKey: String {
     case passcode = "SA_passcode_key"
     case analyticsId = "analytics_uuid"
+    case firebaseRefreshToken = "firebase_refresh_token"
 }
 
 protocol ValetProtocol {

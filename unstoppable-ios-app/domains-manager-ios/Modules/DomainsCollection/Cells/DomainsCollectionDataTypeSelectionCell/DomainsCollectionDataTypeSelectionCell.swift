@@ -42,7 +42,8 @@ private extension DomainsCollectionDataTypeSelectionCell {
     func setup() {
         UIView.performWithoutAnimation {
             segmentPicker.layoutType = .fillParent
-            for (i, dataType) in DomainsCollectionVisibleDataType.allCases.enumerated() {
+            let types: [DomainsCollectionVisibleDataType] = [.NFT, .activity]
+            for (i, dataType) in types.enumerated() {
                 segmentPicker.insertSegment(with: dataType.icon, title: dataType.title, at: i, animated: false)
             }
         }

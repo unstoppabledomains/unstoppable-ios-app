@@ -310,7 +310,7 @@ extension DomainProfileViewPresenter: ExternalEventsServiceListener {
                 if domainNames.contains(dataHolder.domain.name) {
                     refreshData()
                 }
-            case .wcDeepLink, .walletConnectRequest:
+            case .wcDeepLink, .walletConnectRequest, .parkingStatusLocal:
                 return
             }
         }
@@ -524,7 +524,7 @@ private extension DomainProfileViewPresenter {
                     await self?.updateProfileFinished()
                 }
                 Task.detached { [weak self] in
-                    await self?.dataAggregatorService.aggregateData()
+                    await self?.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
                 }
                 UserDefaults.didEverUpdateDomainProfile = true
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)

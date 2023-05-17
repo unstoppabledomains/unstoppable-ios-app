@@ -226,6 +226,8 @@ private extension DomainsCollectionCarouselCardCell {
             case .zil:
                 setIndicatorStyle(.deprecated(tld: "zil"))
                 setStatusMessageComponent(.orangeDeprecated(tld: "zil"))
+            case .parked:
+                Debugger.printFailure("Parked domain should not have default state", critical: true)
             }
         case .updatingRecords:
             setIndicatorStyle(.updatingRecords)
@@ -233,6 +235,9 @@ private extension DomainsCollectionCarouselCardCell {
         case .minting:
             setIndicatorStyle(.minting)
             setStatusMessageComponent(.electricMinting)
+        case .parking(let status):
+            setIndicatorStyle(.parked(status: status))
+            setStatusMessageComponent(.parked(status: status))
         case .transfer:
             setIndicatorStyle(.transfer)
             setStatusMessageComponent(.transfer)
@@ -392,7 +397,9 @@ private extension DomainsCollectionCarouselCardCell {
             statusMessage.frame = domainTLDLabel.frame
             statusMessage.frame.origin.x = domainNameLabel.frame.minX
             statusMessage.frame.size.height = 20
+            statusMessage.frame.size.width = domainNameCollapsedLabel.frame.width
             carouselView.frame = statusMessage.frame
+            carouselView.frame.size.width += 60
         }
     }
     
@@ -536,7 +543,7 @@ private extension DomainsCollectionCarouselCardCell {
 // MARK: - Private methods
 private extension DomainsCollectionCarouselCardCell {
     enum DomainIndicatorStyle: CarouselViewItem {
-        case updatingRecords, minting, deprecated(tld: String), transfer
+        case updatingRecords, minting, deprecated(tld: String), parked(status: DomainParkingStatus), transfer
       
         var containerBackgroundColor: UIColor {
             switch self {
@@ -544,7 +551,7 @@ private extension DomainsCollectionCarouselCardCell {
                 return .brandElectricYellow
             case .minting, .transfer:
                 return .brandElectricGreen
-            case .deprecated:
+            case .deprecated, .parked:
                 return .brandOrange
             }
         }
@@ -556,6 +563,8 @@ private extension DomainsCollectionCarouselCardCell {
                 return .refreshIcon
             case .deprecated:
                 return .warningIconLarge
+            case .parked:
+                return .parkingIcon24
             }
         }
         
@@ -567,6 +576,8 @@ private extension DomainsCollectionCarouselCardCell {
                 return String.Constants.mintingInProgressTitle.localized()
             case .deprecated(let tld):
                 return String.Constants.tldHasBeenDeprecated.localized(tld)
+            case .parked(let status):
+                return status.title ?? String.Constants.parked.localized()
             case .transfer:
                 return String.Constants.transferInProgress.localized()
             }
@@ -574,14 +585,14 @@ private extension DomainsCollectionCarouselCardCell {
         
         var tintColor: UIColor {
             switch self {
-            case .updatingRecords, .minting, .deprecated, .transfer:
+            case .updatingRecords, .minting, .deprecated, .parked, .transfer:
                 return .black
             }
         }
         
         var backgroundColor: UIColor {
             switch self {
-            case .updatingRecords, .minting, .deprecated, .transfer:
+            case .updatingRecords, .minting, .deprecated, .parked, .transfer:
                 return .clear
             }
         }

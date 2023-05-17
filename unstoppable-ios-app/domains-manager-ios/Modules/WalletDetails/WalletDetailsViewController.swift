@@ -97,7 +97,6 @@ private extension WalletDetailsViewController {
     
     func configureDataSource() {
         dataSource = WalletDetailsDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
-            
             switch item {
             case .topInfo(let topInfo):
                 let cell = collectionView.dequeueCellOfType(WalletDetailsTopInfoCell.self, forIndexPath: indexPath)
@@ -117,7 +116,6 @@ private extension WalletDetailsViewController {
                 return cell
             }
         })
-        
     }
     
     func buildLayout() -> UICollectionViewLayout {

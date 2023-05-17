@@ -19,6 +19,7 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
     private let contentTopCollapsedValue: CGFloat = 64
     private var isTutorialOn: Bool = false
     private var isLearnMoreButtonHidden: Bool = false
+    private var dataType: DomainsCollectionVisibleDataType = .activity
 
     
     override func awakeFromNib() {
@@ -39,6 +40,7 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         setUIFor(dataType: dataType)
         contentHeightConstraint.constant = cellHeight
         self.isTutorialOn = isTutorialOn
+        self.dataType = dataType
     }
     
     func didScrollTo(offset: CGPoint) {
@@ -50,7 +52,13 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         let progressHeight = dif * (1 - expandProgress)
         contentTopConstraint.constant = baseHeight + progressHeight
         
-
+        switch dataType {
+        case .parkedDomain:
+            learnMoreButton.alpha = 1
+        case .activity, .NFT:
+            learnMoreButton.alpha = isLearnMoreButtonHidden ? 0.0 : expandProgress
+        }
+        
         switch deviceSize {
         case .i4_7Inch, .i4Inch:
             iconImageView.alpha = expandProgress
@@ -59,7 +67,6 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         default:
             iconImageView.alpha = 1
         }
-        learnMoreButton.alpha = isLearnMoreButtonHidden ? 0.0 : expandProgress
     }
 }
 
@@ -79,6 +86,7 @@ private extension DomainsCollectionNoRecentActivitiesCell {
             title = String.Constants.noConnectedApps.localized()
             icon = .widgetIcon
             isButtonHidden = false
+            learnMoreButton.setTitle(String.Constants.learnMore.localized(), image: nil)
         case .NFT:
             title = String.Constants.noNFTs.localized()
             icon = .hexagonIcon24
@@ -88,11 +96,17 @@ private extension DomainsCollectionNoRecentActivitiesCell {
             #else
             isButtonHidden = true
             #endif
+        case .parkedDomain:
+            title = String.Constants.parkedDomainCantConnectToApps.localized()
+            icon = .infoIcon
+            isButtonHidden = false
+            learnMoreButton.setTitle(String.Constants.learnMore.localized(), image: nil)
         }
         
         titleLabel.setAttributedTextWith(text: title,
                                          font: .currentFont(withSize: 20, weight: .bold),
                                          textColor: .foregroundSecondary)
+
         learnMoreButton.isUserInteractionEnabled = !isButtonHidden
         iconImageView.image = icon
         self.isLearnMoreButtonHidden = isButtonHidden

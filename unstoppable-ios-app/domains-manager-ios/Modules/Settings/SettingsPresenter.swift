@@ -17,23 +17,38 @@ final class SettingsPresenter: ViewAnalyticsLogger {
     
     private let notificationsService: NotificationsServiceProtocol
     private let dataAggregatorService: DataAggregatorServiceProtocol
+    private let firebaseInteractionService: FirebaseInteractionServiceProtocol
+    private var firebaseUser: FirebaseUser?
+    private var loginCallback: LoginFlowNavigationController.LoggedInCallback?
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     
     init(view: SettingsViewProtocol,
+         loginCallback: LoginFlowNavigationController.LoggedInCallback?,
          notificationsService: NotificationsServiceProtocol,
-         dataAggregatorService: DataAggregatorServiceProtocol) {
+         dataAggregatorService: DataAggregatorServiceProtocol,
+         firebaseInteractionService: FirebaseInteractionServiceProtocol) {
         self.view = view
+        self.loginCallback = loginCallback
         self.notificationsService = notificationsService
         self.dataAggregatorService = dataAggregatorService
+        self.firebaseInteractionService = firebaseInteractionService
         dataAggregatorService.addListener(self)
+        firebaseInteractionService.addListener(self)
     }
     
 }
 
 // MARK: - SettingsPresenterProtocol
 extension SettingsPresenter: SettingsPresenterProtocol {
+    func viewDidLoad() {
+        Task {
+            firebaseUser = try? await firebaseInteractionService.getUserProfile()
+            showSettingsAsync()
+        }        
+    }
+    
     func viewWillAppear() {
-        showSettings()
+        showSettingsAsync()
     }
     
     func didSelectMenuItem(_ menuItem: SettingsViewController.SettingsMenuItem) {
@@ -62,6 +77,8 @@ extension SettingsPresenter: SettingsPresenterProtocol {
                     showLegalOptions()
                 case .homeScreen:
                     showHomeScreenDomainSelection()
+                case .websiteAccount:
+                    showLoginScreen()
                 case .inviteFriends:
                     showInviteFriendsScreen()
                 }
@@ -78,7 +95,7 @@ extension SettingsPresenter: DataAggregatorServiceListener {
             case .success(let result):
                 switch result {
                 case .walletsListUpdated, .domainsUpdated, .primaryDomainChanged:
-                    showSettings()
+                    showSettingsAsync()
                 case .domainsPFPUpdated:
                     return
                 }
@@ -89,9 +106,17 @@ extension SettingsPresenter: DataAggregatorServiceListener {
     }
 }
 
+// MARK: - FirebaseInteractionServiceListener
+extension SettingsPresenter: FirebaseInteractionServiceListener {
+    func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
+        self.firebaseUser = firebaseUser
+        showSettingsAsync()
+    }
+}
+
 // MARK: - Private methods
 private extension SettingsPresenter {
-    func showSettings() {
+    func showSettingsAsync() {
         Task {
             let wallets = await dataAggregatorService.getWalletsWithInfo()
             var snapshot = NSDiffableDataSourceSnapshot<SettingsViewController.Section, SettingsViewController.SettingsMenuItem>()
@@ -110,6 +135,7 @@ private extension SettingsPresenter {
             #if TESTFLIGHT
             snapshot.appendItems([.testnet(isOn: User.instance.getSettings().isTestnetUsed)])
             #endif
+            snapshot.appendItems([.websiteAccount(user: firebaseUser)])
 
             
             snapshot.appendSections([.main(2)])
@@ -158,8 +184,9 @@ private extension SettingsPresenter {
         User.instance.update(settings: settings)
         Storage.instance.cleanAllCache()
         StripeService.shared.setup()
+        firebaseInteractionService.logout()
         updateAppVersion()
-        Task { await dataAggregatorService.aggregateData() }
+        Task { await dataAggregatorService.aggregateData(shouldRefreshPFP: true) }
         notificationsService.updateTokenSubscriptions()
     }
     
@@ -181,7 +208,7 @@ private extension SettingsPresenter {
         appContext.pullUpViewService.showAppearanceStyleSelectionPullUp(in: view, selectedStyle: selectedStyle) { [weak self] newStyle in
             self?.logAnalytic(event: .didChangeTheme, parameters: [.theme: newStyle.analyticsName])
             SceneDelegate.shared?.setAppearanceStyle(newStyle)
-            self?.showSettings()
+            self?.showSettingsAsync()
         }
     }
     
@@ -202,6 +229,43 @@ private extension SettingsPresenter {
                 await dataAggregatorService.setDomainsOrder(using: domains)
                 await view.cNavigationController?.popToRootViewController(animated: true)
             }
+        }
+    }
+    
+    @MainActor
+    func showLoginScreen() {
+        guard let view else { return }
+        
+        if appContext.firebaseAuthService.isAuthorised {
+            Task {
+                do {
+                    guard let firebaseUser else {
+                        appContext.firebaseInteractionService.logout()
+                        showLoginScreen()
+                        Debugger.printFailure("Failed to get firebaser user model in authorized state", critical: true)
+                        return
+                    }
+                    let domainsCount = appContext.firebaseDomainsService.getCachedDomains().count
+                    let profileAction = try await appContext.pullUpViewService.showUserProfilePullUp(with: firebaseUser.email ?? "Twitter account",
+                                                                                                     domainsCount: domainsCount,
+                                                                                                     in: view)
+                    switch profileAction {
+                    case .logOut:
+                        try await appContext.pullUpViewService.showLogoutConfirmationPullUp(in: view)
+                        await view.dismissPullUpMenu()
+                        try await appContext.authentificationService.verifyWith(uiHandler: view, purpose: .confirm)
+                        firebaseInteractionService.logout()
+                        appContext.toastMessageService.showToast(.userLoggedOut, isSticky: false)
+                        await dataAggregatorService.aggregateData(shouldRefreshPFP: true) 
+                    }
+                } catch { }
+            }
+        } else {
+            UDRouter().runLoginFlow(with: .default,
+                                    loggedInCallback: { [weak self] result in
+                self?.loginCallback?(result)
+            },
+                                    in: view)
         }
     }
     

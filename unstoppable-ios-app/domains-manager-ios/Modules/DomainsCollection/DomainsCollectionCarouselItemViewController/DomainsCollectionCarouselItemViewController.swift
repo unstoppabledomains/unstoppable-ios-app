@@ -638,7 +638,7 @@ extension DomainsCollectionCarouselItemViewController {
         var learnMoreButtonPressedCallback: EmptyCallback
         var isTutorialOn: Bool
         var dataType: DomainsCollectionVisibleDataType
-        
+
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id &&
             lhs.isTutorialOn == rhs.isTutorialOn &&
@@ -658,6 +658,7 @@ extension DomainsCollectionCarouselItemViewController {
         case nftSelected(_ nft: NFTModel)
         case domainNameCopied
         case rearrangeDomains
+        case parkedDomainLearnMore
     }
     
     struct DataTypeSelectionConfiguration: Hashable {
@@ -674,13 +675,13 @@ extension DomainsCollectionCarouselItemViewController {
     }
     
     enum VisibleDataType: Int, CaseIterable, Hashable {
-        case NFT, activity
+        case NFT, activity, parkedDomain
         
         var title: String {
             switch self {
             case .NFT:
                 return "NFTs"
-            case .activity:
+            case .activity, .parkedDomain:
                 return String.Constants.activity.localized()
             }
         }
@@ -689,7 +690,7 @@ extension DomainsCollectionCarouselItemViewController {
             switch self {
             case .NFT:
                 return .hexagonIcon24
-            case .activity:
+            case .activity, .parkedDomain:
                 return .timeIcon24
             }
         }
@@ -698,7 +699,7 @@ extension DomainsCollectionCarouselItemViewController {
             switch self {
             case .NFT:
                 return "NFTs"
-            case .activity:
+            case .activity, .parkedDomain:
                 return "Activity"
             }
         }
@@ -707,4 +708,5 @@ extension DomainsCollectionCarouselItemViewController {
     struct NFTConfiguration: Hashable {
         let nft: NFTModel
     }
+    
 }
