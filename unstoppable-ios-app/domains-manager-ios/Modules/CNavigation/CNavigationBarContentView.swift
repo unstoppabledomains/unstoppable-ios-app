@@ -345,7 +345,7 @@ private extension CNavigationBarContentView {
     }
     
     func calculateInlineSearchBarY() -> CGFloat {
-        let searchBarY: CGFloat = 76
+        let searchBarY: CGFloat = Constants.inlineSearchBarY
         return isSearchActive ? 0 : (searchBarY - yOffset)
     }
     

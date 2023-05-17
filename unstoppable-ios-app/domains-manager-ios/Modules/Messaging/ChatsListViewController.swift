@@ -72,7 +72,7 @@ private extension ChatsListViewController {
 private extension ChatsListViewController {
     func setup() {
         setupCollectionView()
-        title = "Chats"
+        title = String.Constants.chats.localized()
     }
     
     func setupCollectionView() {

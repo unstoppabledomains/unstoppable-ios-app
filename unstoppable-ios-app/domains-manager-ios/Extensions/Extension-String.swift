@@ -861,6 +861,9 @@ extension String {
         static let applePayRequiredPullUpTitle = "APPLE_PAY_REQUIRED_PULL_UP_TITLE"
         static let applePayRequiredPullUpMessage = "APPLE_PAY_REQUIRED_PULL_UP_MESSAGE"
         
+        // Messaging
+        static let chats = "CHATS"
+        
     }
 
     

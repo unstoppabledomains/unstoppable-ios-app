@@ -53,10 +53,13 @@ private extension ChatsListViewPresenter {
             guard let selectedDomain else { return }
             
             snapshot.appendSections([.domainsSelection])
-            snapshot.appendItems(domains.map({ ChatsListViewController.Item.domainSelection(configuration: .init(domain: $0,
-                                                                                                                 isSelected: $0.isSameEntity(selectedDomain),
-                                                                                                                 unreadMessagesCount: Int(arc4random_uniform(2)))) }))
-            
+            for domain in domains {
+                let unreadMessagesCount = await appContext.messagingService.getNumberOfUnreadMessagesInChannelsForDomain(domain)
+                let item = ChatsListViewController.Item.domainSelection(configuration: .init(domain: domain,
+                                                                                             isSelected: domain.isSameEntity(selectedDomain),
+                                                                                             unreadMessagesCount: unreadMessagesCount))
+                snapshot.appendItems([item])
+            }
             
             let channels = await appContext.messagingService.getChannelsForDomain(selectedDomain)
             snapshot.appendSections([.channels])

@@ -26,6 +26,13 @@ extension MockMessagingService: MessagingServiceProtocol {
         return channels
     }
     
+    func getNumberOfUnreadMessagesInChannelsForDomain(_ domain: DomainDisplayInfo) async -> Int {
+        let channels = await getChannelsForDomain(domain)
+        let unreadMessagesSum = channels.reduce(0, { $0 + $1.unreadMessagesCount })
+        
+        return unreadMessagesSum
+    }
+    
     func getMessagesForChannel(_ channel: ChatChannelType) async -> [ChatMessageType] {
         channelsMessages[channel] ?? []
     }

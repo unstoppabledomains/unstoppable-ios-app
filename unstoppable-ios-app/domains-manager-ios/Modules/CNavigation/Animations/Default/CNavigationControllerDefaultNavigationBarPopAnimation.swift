@@ -154,6 +154,7 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
     private let targetX: CGFloat
     private let titleCenter: CGPoint
     private let hasTitleView: Bool
+    private var searchBarView: UIView?
 
     init?(navBarContent: CNavigationBarContentView,
           newTitle: String?,
@@ -172,6 +173,7 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
         titleLabel.alpha = 0
         titleLabel.frame.origin.x = navBarContent.backButton.label.frame.minX
         targetX = navBarContent.frame.width
+        searchBarView = navBarContent.searchBarConfiguration?.searchBarView
     }
     
     func addAnimations() {
@@ -180,6 +182,7 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
         transitionFromTitle.frame.origin.x = targetX
         transitionFromTitle.alpha = 0
         titleLabel.center = titleCenter
+        searchBarView?.frame.origin.x = UIScreen.main.bounds.width
     }
     
     func addAdditionalAnimation(in animator: UIViewPropertyAnimator, duration: TimeInterval) {

@@ -768,3 +768,6 @@
 // Apple Pay required
 "APPLE_PAY_REQUIRED_PULL_UP_TITLE" = "Please configure Apple Pay";
 "APPLE_PAY_REQUIRED_PULL_UP_MESSAGE" = "Apple Pay is required to pay gas fees to update domains on Ethereum";
+
+// Messaging
+"CHATS" = "Chats";
