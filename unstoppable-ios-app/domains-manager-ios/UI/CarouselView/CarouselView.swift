@@ -59,6 +59,8 @@ final class CarouselView: UIView {
 // MARK: - Open methods
 extension CarouselView {
     func set(data: [CarouselViewItem]) {
+        guard data.map({ $0.text }) != self.data.map({ $0.text }) else { return }
+        
         self.data = data
         collectionView.reloadData()
         startAutoScroll()

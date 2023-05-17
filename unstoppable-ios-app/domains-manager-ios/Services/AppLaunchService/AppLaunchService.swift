@@ -68,16 +68,25 @@ private extension AppLaunchService {
                 await appVersionUpdated(appVersion)
                 
                 let onboardingDone = User.instance.getSettings().onboardingDone ?? false
-                let wallets = udWalletsService.getUserWallets()
+                let shouldRunOnboarding: Bool
+                let sessionState = AppSessionInterpreter.shared.state()
+                switch sessionState {
+                case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
+                    shouldRunOnboarding = true
+                    appContext.firebaseInteractionService.logout()
+                case .walletAdded, .webAccountWithParkedDomains:
+                    shouldRunOnboarding = false
+                }
                 
-                if wallets.isEmpty || !onboardingDone {
+                if shouldRunOnboarding || !onboardingDone {
+                    let wallets = udWalletsService.getUserWallets()
                     let onboardingFlow: OnboardingNavigationController.OnboardingFlow
                     
                     if wallets.isEmpty {
                         onboardingFlow = .newUser(subFlow: nil)
                     } else {
                         Task.detached { [weak self] in
-                            await self?.dataAggregatorService.aggregateData()
+                            await self?.dataAggregatorService.aggregateData(shouldRefreshPFP: true)
                         }
                         onboardingFlow = .existingUser(wallets: wallets)
                     }
@@ -138,7 +147,7 @@ private extension AppLaunchService {
         }
 
         Task {
-            await dataAggregatorService.aggregateData()
+            await dataAggregatorService.aggregateData(shouldRefreshPFP: true)
             let domains = await dataAggregatorService.getDomainsDisplayInfo()
             let mintingState = await mintingStateFor(domains: domains, mintingDomains: mintingDomains)
             await handleInitialState(await stateMachine.stateAfter(event: .didLoadData(mintingState: mintingState)))

@@ -24,6 +24,7 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
     var scrollableContentYOffset: CGFloat? { nil }
     var largeTitleAlignment: NSTextAlignment { .left }
     var largeTitleIcon: UIImage? { nil }
+    var largeTitleIconTintColor: UIColor { .foregroundMuted }
     var largeTitleIconSize: CGSize? { nil }
     var adjustLargeTitleFontSizeForSmallerDevice: Bool { false }
     var analyticsName: Analytics.ViewName { .unspecified }
@@ -103,7 +104,7 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
         return .init(navBarLargeTitleAttributes: attributes,
                      largeTitleIcon: largeTitleIcon,
                      largeTitleIconSize: largeTitleIconSize,
-                     iconTintColor: .foregroundMuted)
+                     iconTintColor: largeTitleIconTintColor)
     }
     var isNavBarHidden: Bool { false }
     var navBarDividerColor: UIColor { .borderDefault }

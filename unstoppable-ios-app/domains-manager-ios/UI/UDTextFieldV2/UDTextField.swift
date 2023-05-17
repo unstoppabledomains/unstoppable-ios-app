@@ -61,6 +61,9 @@ final class UDTextField: UIView, SelfNameable, NibInstantiateable {
         
         updateBorder()
     }
+    
+    override var isFirstResponder: Bool { textField.isFirstResponder }
+    
 }
 
 // MARK: - Open methods
@@ -174,9 +177,9 @@ extension UDTextField: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         updateBorder()
-        textField.isHidden = false
         updateBackground()
         updatePlaceholder()
+        textField.isHidden = false
         delegate?.didBeginEditing(self)
     }
     
@@ -227,6 +230,7 @@ private extension UDTextField {
             placeholder = self.placeholderLabel.attributedText?.string ?? ""
         }
         self.setPlaceholder(placeholder)
+        textField.isHidden = isTextFieldHidden(for: textField.text)
     }
     
     func updateBackground() {

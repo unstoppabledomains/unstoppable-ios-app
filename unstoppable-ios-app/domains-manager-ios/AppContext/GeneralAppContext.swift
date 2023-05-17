@@ -26,6 +26,9 @@ final class GeneralAppContext: AppContextProtocol {
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
     let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol
     let walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
+    let firebaseInteractionService: FirebaseInteractionServiceProtocol
+    let firebaseAuthService: FirebaseAuthServiceProtocol
+    let firebaseDomainsService: FirebaseDomainsServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
@@ -63,13 +66,13 @@ final class GeneralAppContext: AppContextProtocol {
         self.coreAppCoordinator = coreAppCoordinator
         walletConnectService.setUIHandler(coreAppCoordinator)
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
-     
         
-        dataAggregatorService = DataAggregatorService(domainsService: udDomainsService,
-                                                      walletsService: udWalletsService,
-                                                      transactionsService: domainTransactionsService,
-                                                      walletConnectServiceV2: walletConnectServiceV2)
         
+        let dataAggregatorService = DataAggregatorService(domainsService: udDomainsService,
+                                                          walletsService: udWalletsService,
+                                                          transactionsService: domainTransactionsService,
+                                                          walletConnectServiceV2: walletConnectServiceV2)
+        self.dataAggregatorService = dataAggregatorService
         
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
                                                               walletConnectServiceV2: walletConnectServiceV2,
@@ -95,6 +98,17 @@ final class GeneralAppContext: AppContextProtocol {
         
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")
+        
+        let firebaseSigner = UDFirebaseSigner()
+        let firebaseAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner)
+        self.firebaseAuthService = firebaseAuthService
+        let firebaseInteractionService = FirebaseInteractionService(firebaseAuthService: firebaseAuthService,
+                                                                    firebaseSigner: firebaseSigner)
+        self.firebaseInteractionService = firebaseInteractionService
+        firebaseDomainsService = FirebaseDomainsService(firebaseInteractionService: firebaseInteractionService)
+        
+        firebaseInteractionService.addListener(dataAggregatorService)
+        dataAggregatorService.addListener(LocalNotificationsService.shared)
         Task {
             persistedProfileSignaturesStorage.removeExpired()
         }

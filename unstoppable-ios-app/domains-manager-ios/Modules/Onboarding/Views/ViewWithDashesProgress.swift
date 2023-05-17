@@ -38,11 +38,10 @@ extension ViewWithDashesProgress {
     }
     
     func pushNavBarAnimatedTransitioning(to viewController: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if let viewWithDashesProgress = viewController as? ViewWithDashesProgress,
-           let progress = viewWithDashesProgress.progress {
+        if let viewWithDashesProgress = viewController as? ViewWithDashesProgress {
             
             return DashesProgressNavBarPushAnimation(animationDuration: CNavigationHelper.DefaultNavAnimationDuration,
-                                                     toProgress: progress)
+                                                     toProgress: viewWithDashesProgress.progress)
         }
         return nil
     }

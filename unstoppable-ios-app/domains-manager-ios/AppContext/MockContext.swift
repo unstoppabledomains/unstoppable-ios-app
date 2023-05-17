@@ -47,6 +47,10 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol = MockWCRequestsHandlingService()
     private(set) lazy var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol = MockWalletConnectExternalWalletHandler()
+    private(set) lazy var firebaseInteractionService: FirebaseInteractionServiceProtocol = FirebaseInteractionService(firebaseAuthService: firebaseAuthService as! FirebaseAuthService,
+                                                                                                                      firebaseSigner: UDFirebaseSigner())
+    private(set) lazy var firebaseAuthService: FirebaseAuthServiceProtocol = FirebaseAuthService(firebaseSigner: UDFirebaseSigner())
+    private(set) lazy var firebaseDomainsService: FirebaseDomainsServiceProtocol = FirebaseDomainsService(firebaseInteractionService: firebaseInteractionService as! FirebaseDomainsLoaderProtocol)
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = MockDomainTransferService()
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()

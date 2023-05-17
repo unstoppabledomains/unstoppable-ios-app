@@ -21,7 +21,7 @@ final class WalletsListHeaderView: CollectionTextHeaderReusableView {
             contentView.isHidden = false
             let header = section.headerTitle + " ･ " + "\(numberOfItems)"
             setHeader(header)
-        case .manageICLoud, .manageICloudExtraHeight:
+        case .manageICLoud, .manageICloudExtraHeight, .empty:
             contentView.isHidden = true
             return
         }

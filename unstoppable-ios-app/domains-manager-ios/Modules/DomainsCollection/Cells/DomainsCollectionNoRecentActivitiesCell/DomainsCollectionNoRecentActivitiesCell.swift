@@ -18,6 +18,7 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
     var learnMoreButtonPressedCallback: EmptyCallback?
     private let contentTopCollapsedValue: CGFloat = 64
     private var isTutorialOn: Bool = false
+    private var dataType: DomainsCollectionVisibleDataType = .activity
 
     
     override func awakeFromNib() {
@@ -35,9 +36,13 @@ final class DomainsCollectionNoRecentActivitiesCell: UICollectionViewCell {
 
 // MARK: - ScrollViewOffsetListener
 extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
-    func setCellHeight(_ cellHeight: CGFloat, isTutorialOn: Bool) {
+    func setCellHeight(_ cellHeight: CGFloat,
+                       isTutorialOn: Bool,
+                       dataType: DomainsCollectionVisibleDataType) {
+        setUIFor(dataType: dataType)
         contentHeightConstraint.constant = cellHeight
         self.isTutorialOn = isTutorialOn
+        self.dataType = dataType
     }
     
     func didScrollTo(offset: CGPoint) {
@@ -49,7 +54,13 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         let progressHeight = dif * (1 - expandProgress)
         contentTopConstraint.constant = baseHeight + progressHeight
         
-
+        switch dataType {
+        case .parkedDomain:
+            learnMoreButton.alpha = 1
+        case .activity:
+            learnMoreButton.alpha = expandProgress
+        }
+        
         switch deviceSize {
         case .i4_7Inch, .i4Inch:
             iconImageView.alpha = expandProgress
@@ -58,7 +69,6 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
         default:
             iconImageView.alpha = 1
         }
-        learnMoreButton.alpha = expandProgress
     }
 }
 
@@ -66,6 +76,25 @@ extension DomainsCollectionNoRecentActivitiesCell: ScrollViewOffsetListener {
 private extension DomainsCollectionNoRecentActivitiesCell {
     @IBAction func learnMoreButtonPressed(_ sender: Any) {
         learnMoreButtonPressedCallback?()
+    }
+    
+    func setUIFor(dataType: DomainsCollectionVisibleDataType) {
+        let title: String
+        let icon: UIImage
+        
+        switch dataType {
+        case .activity:
+            title = String.Constants.noConnectedApps.localized()
+            icon = .widgetIcon
+        case .parkedDomain:
+            title = String.Constants.parkedDomainCantConnectToApps.localized()
+            icon = .infoIcon
+        }
+        
+        titleLabel.setAttributedTextWith(text: title,
+                                         font: .currentFont(withSize: 20, weight: .bold),
+                                         textColor: .foregroundSecondary)
+        iconImageView.image = icon
     }
     
     func contentTopExpandedValue() -> CGFloat {

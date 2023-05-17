@@ -25,7 +25,10 @@ extension DomainTransactionsService: DomainTransactionsServiceProtocol {
     func updateTransactionsListFor(domains: [String]) async throws -> [TransactionItem] {
         let start = Date()
         let transactions = try await txsFetcherFactory.createFetcher().fetchAllTxs(for: domains)
-        Debugger.printWarning("\(String.itTook(from: start)) to load \(transactions.count) transactions for \(domains.count) domains")
+        Debugger.printTimeSensitiveInfo(topic: .Transactions,
+                                        "to load \(transactions.count) transactions for \(domains.count) domains",
+                                        startDate: start,
+                                        timeout: 2)
         storage.injectTxsUpdate_Blocking(transactions)
         return transactions
     }

@@ -76,6 +76,7 @@ final class ChoosePrimaryDomainDuringMintingPresenter: ChoosePrimaryDomainViewPr
         orderedWrappers.remove(at: fromIndex)
         orderedWrappers.insert(movedDomain, at: toIndex)
         logAnalytic(event: .domainMoved, parameters: [.domainName : movedDomain.domainName])
+        showDataAsync()
     }
     
     override func moveItemsFailed() {

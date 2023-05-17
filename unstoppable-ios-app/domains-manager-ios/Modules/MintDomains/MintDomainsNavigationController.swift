@@ -19,7 +19,7 @@ final class MintDomainsNavigationController: CNavigationController {
     typealias MintDomainsResult = Result
 
     private var mintedDomains: [DomainDisplayInfo] = []
-    private var mode: Mode = .default
+    private var mode: Mode = .default(email: User.instance.email)
     private var mintingData: MintingData = MintingData()
     
     private let dataAggregatorService: DataAggregatorServiceProtocol = appContext.dataAggregatorService
@@ -230,8 +230,8 @@ private extension MintDomainsNavigationController {
         setupBackButtonAlwaysVisible()
         
         switch mode {
-        case .default:
-            if let initialViewController = createStep(.enterEmail(User.instance.email, shouldAutoSendEmail: false)) {
+        case .default(let email):
+            if let initialViewController = createStep(.enterEmail(email, shouldAutoSendEmail: false)) {
                 setViewControllers([initialViewController], animated: false)
             }
         case .domainsPurchased(let details):
@@ -337,7 +337,7 @@ private extension MintDomainsNavigationController {
 
 extension MintDomainsNavigationController {
     enum Mode {
-        case `default`
+        case `default`(email: String?)
         case mintingInProgress(domains: [MintingDomain])
         case deepLink(email: String, code: String)
         case domainsPurchased(details: DomainsPurchasedDetails)

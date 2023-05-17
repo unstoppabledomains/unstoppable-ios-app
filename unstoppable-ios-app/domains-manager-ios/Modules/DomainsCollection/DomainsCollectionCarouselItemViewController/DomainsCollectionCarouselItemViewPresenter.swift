@@ -110,7 +110,7 @@ extension DomainsCollectionCarouselItemViewPresenter: ExternalEventsServiceListe
     func didReceive(event: ExternalEvent) {
         Task {
             switch event {
-            case .mintingFinished, .domainTransferred, .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainProfileUpdated:
+            case .mintingFinished, .domainTransferred, .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainProfileUpdated, .parkingStatusLocal:
                 await showDomainDataWithActions(animated: false)
             case .wcDeepLink, .walletConnectRequest, .badgeAdded:
                 return
@@ -171,53 +171,66 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             self?.logButtonPressedAnalyticEvents(button: .domainCardDot,
                                                  parameters: [.domainName : domain.name])
         }))])
-         
-        if connectedApps.isEmpty {
-            var isTutorialOn = false
-            // Separator
-            if !didShowSwipeDomainCardTutorial,
-               cardState == .expanded {
-                isTutorialOn = true
+        
+        var isTutorialOn = false
+        if !didShowSwipeDomainCardTutorial,
+           cardState == .expanded {
+            isTutorialOn = true
+        }
+        
+        if case .parking = domain.state {
+            if isTutorialOn {
                 snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
                 snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
             }
-            
             snapshot.appendSections([.noRecentActivities])
             snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
                 self?.recentActivitiesLearnMoreButtonPressed()
-            }, isTutorialOn: isTutorialOn))])
+            }, isTutorialOn: isTutorialOn, dataType: .parkedDomain))])
         } else {
-            // Spacer
-            if cardState == .expanded {
-                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
-            }
-            
-            // Separator
-            if !didShowSwipeDomainCardTutorial,
-               cardState == .expanded {
-                snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
+            if connectedApps.isEmpty {
+                if isTutorialOn {
+                    snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+                    snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
+                }
+                
+                snapshot.appendSections([.noRecentActivities])
+                snapshot.appendItems([.noRecentActivities(configuration: .init(learnMoreButtonPressedCallback: { [weak self] in
+                    self?.recentActivitiesLearnMoreButtonPressed()
+                }, isTutorialOn: isTutorialOn, dataType: .activity))])
             } else {
-                snapshot.appendSections([.dashesSeparator(height: Self.dashesSeparatorSectionHeight)])
-            }
-            
-            // Recent activities
-            snapshot.appendSections([.recentActivity(numberOfActivities: connectedApps.count)])
-            for app in connectedApps {
-                let actions: [DomainsCollectionCarouselItemViewController.RecentActivitiesConfiguration.Action] = [.openApp(callback: { [weak self] in
-                    self?.handleOpenAppAction(app)
-                }),
-                                                                                                                   .disconnect(callback: { [weak self] in
-                    self?.handleDisconnectAppAction(app)
-                })]
-                snapshot.appendItems([.recentActivity(configuration: .init(connectedApp: app,
-                                                                           availableActions: actions,
-                                                                           actionButtonPressedCallback: { [weak self] in
-                    self?.logButtonPressedAnalyticEvents(button: .connectedAppDot,
-                                                         parameters: [.wcAppName : app.displayName,
-                                                                      .domainName: domain.name])
-                }))])
+                // Spacer
+                if cardState == .expanded {
+                    snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+                }
+                
+                // Separator
+                if isTutorialOn {
+                    snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
+                } else {
+                    snapshot.appendSections([.dashesSeparator(height: Self.dashesSeparatorSectionHeight)])
+                }
+                
+                // Recent activities
+                snapshot.appendSections([.recentActivity(numberOfActivities: connectedApps.count)])
+                for app in connectedApps {
+                    let actions: [DomainsCollectionCarouselItemViewController.RecentActivitiesConfiguration.Action] = [.openApp(callback: { [weak self] in
+                        self?.handleOpenAppAction(app)
+                    }),
+                                                                                                                       .disconnect(callback: { [weak self] in
+                                                                                                                           self?.handleDisconnectAppAction(app)
+                                                                                                                       })]
+                    snapshot.appendItems([.recentActivity(configuration: .init(connectedApp: app,
+                                                                               availableActions: actions,
+                                                                               actionButtonPressedCallback: { [weak self] in
+                        self?.logButtonPressedAnalyticEvents(button: .connectedAppDot,
+                                                             parameters: [.wcAppName : app.displayName,
+                                                                          .domainName: domain.name])
+                    }))])
+                }
             }
         }
+         
         
         view?.applySnapshot(snapshot, animated: animated)
     }
@@ -301,7 +314,11 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func recentActivitiesLearnMoreButtonPressed() {
-        actionsDelegate?.didOccursUIAction(.recentActivityLearnMore)
+        if case .parking = domain.state {
+            actionsDelegate?.didOccursUIAction(.parkedDomainLearnMore)
+        } else {
+            actionsDelegate?.didOccursUIAction(.recentActivityLearnMore)
+        }
     }
 }
 
