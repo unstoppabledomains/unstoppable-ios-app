@@ -22,7 +22,16 @@ final class ChatsListViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatListCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
-
+    
+    override var scrollableContentYOffset: CGFloat? { 48 }
+    override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { cSearchBarConfiguration }
+    private var searchBar: UDSearchBar = UDSearchBar()
+    private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
+        .init(searchBarPlacement: .inline) { [weak self] in
+            self?.searchBar ?? UIView()
+        }
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -47,6 +56,10 @@ extension ChatsListViewController: UICollectionViewDelegate {
         
         presenter.didSelectItem(item)
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        cNavigationController?.underlyingScrollViewDidScroll(scrollView)
+    }
 }
 
 // MARK: - Private functions
@@ -58,12 +71,14 @@ private extension ChatsListViewController {
 private extension ChatsListViewController {
     func setup() {
         setupCollectionView()
+        title = "Chats"
     }
     
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
-        
+        collectionView.contentInset.top = 140
+
         configureDataSource()
     }
     
@@ -110,8 +125,8 @@ private extension ChatsListViewController {
 
 // MARK: - Collection elements
 extension ChatsListViewController {
-    enum Section: Int, Hashable {
-        case main
+    enum Section: Hashable {
+        case channels
     }
     
     enum Item: Hashable {

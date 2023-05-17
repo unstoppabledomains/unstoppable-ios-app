@@ -45,7 +45,8 @@ extension ChatListCell {
             lastMessageLabel.setAttributedTextWith(text: lastMessageText,
                                                    font: .currentFont(withSize: 14, weight: .regular),
                                                    textColor: .foregroundSecondary,
-                                                   lineHeight: 20)
+                                                   lineHeight: 20,
+                                                   lineBreakMode: .byTruncatingTail)
         } else {
             timeLabel.text = ""
             lastMessageLabel.text = ""

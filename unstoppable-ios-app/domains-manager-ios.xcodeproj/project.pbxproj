@@ -1670,6 +1670,14 @@
 		C652721C2A149E41001A084C /* MessageDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652721A2A149E41001A084C /* MessageDateFormatter.swift */; };
 		C652721D2A149E41001A084C /* MessageDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652721A2A149E41001A084C /* MessageDateFormatter.swift */; };
 		C652721E2A149E41001A084C /* MessageDateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652721A2A149E41001A084C /* MessageDateFormatter.swift */; };
+		C65272212A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */; };
+		C65272222A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */; };
+		C65272232A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */; };
+		C65272242A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */; };
+		C652722B2A14B395001A084C /* MockMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722A2A14B395001A084C /* MockMessagingService.swift */; };
+		C652722C2A14B395001A084C /* MockMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722A2A14B395001A084C /* MockMessagingService.swift */; };
+		C652722D2A14B395001A084C /* MockMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722A2A14B395001A084C /* MockMessagingService.swift */; };
+		C652722E2A14B395001A084C /* MockMessagingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652722A2A14B395001A084C /* MockMessagingService.swift */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -4037,6 +4045,8 @@
 		C652720E2A14936C001A084C /* ChatChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannel.swift; sourceTree = "<group>"; };
 		C65272152A149453001A084C /* ChatChannelType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatChannelType.swift; sourceTree = "<group>"; };
 		C652721A2A149E41001A084C /* MessageDateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDateFormatter.swift; sourceTree = "<group>"; };
+		C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingServiceProtocol.swift; sourceTree = "<group>"; };
+		C652722A2A14B395001A084C /* MockMessagingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMessagingService.swift; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -6094,6 +6104,15 @@
 			path = Channels;
 			sourceTree = "<group>";
 		};
+		C652721F2A14B31E001A084C /* MessagingService */ = {
+			isa = PBXGroup;
+			children = (
+				C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */,
+				C652722A2A14B395001A084C /* MockMessagingService.swift */,
+			);
+			path = MessagingService;
+			sourceTree = "<group>";
+		};
 		C655D01D2846308E00E80A65 /* DataAggregatorService */ = {
 			isa = PBXGroup;
 			children = (
@@ -6578,7 +6597,6 @@
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
 				C613C22129E3BEEC0001A3AF /* NFCService.swift */,
-				C665FC1D29B0687D009699D2 /* NotificationsService */,
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
 				C6B91EB329BB718100389FF5 /* StripeService.swift */,
@@ -6596,6 +6614,8 @@
 				C6EECE952833A2F700978ED5 /* DomainRecordsService */,
 				C62247AE283CFF07002A0CBD /* DomainTransactionsService */,
 				C60CA2882832501D00AB1B36 /* QRCodeService */,
+				C652721F2A14B31E001A084C /* MessagingService */,
+				C665FC1D29B0687D009699D2 /* NotificationsService */,
 				C624D783281BB67F00F55530 /* UDDomainsService */,
 				C609820E2823B69A00546392 /* UDWalletsService */,
 				C66FCCFC28448710009B9525 /* UserDataService */,
@@ -9107,6 +9127,7 @@
 				C66FCD082844F06B009B9525 /* ChooseNewPrimaryDomainPresenter.swift in Sources */,
 				C62C3FA1283F60720094FC93 /* DeepLinksServiceProtocol.swift in Sources */,
 				C664B670291542E300A76154 /* DomainProfileWeb3WebsiteCell.swift in Sources */,
+				C65272212A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */,
 				C673D5BA29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */,
 				306665E12778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
 				30AE8521257837B5003A0142 /* NetworkConfig.swift in Sources */,
@@ -9239,6 +9260,7 @@
 				C65271FB2A148FCD001A084C /* ChatMessage.swift in Sources */,
 				C665B9AD28325282005E535C /* DomainDetailsViewPresenter.swift in Sources */,
 				C6526DE829D2E06800D6F2EB /* NoParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
+				C652722B2A14B395001A084C /* MockMessagingService.swift in Sources */,
 				C6EECE9D2833A42600978ED5 /* CoinRecordsService.swift in Sources */,
 				C6D5DAEF2837682300379C38 /* RecordChangeType.swift in Sources */,
 				C689537A2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */,
@@ -9570,6 +9592,7 @@
 				307F83DD267A339F0070A9A6 /* Constants.swift in Sources */,
 				C61B3E92283E708500500B6D /* EnterEmailVerificationCodeViewController.swift in Sources */,
 				C6FE49D8285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */,
+				C652722D2A14B395001A084C /* MockMessagingService.swift in Sources */,
 				C6526DEA29D2E06800D6F2EB /* NoParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C6A2D568284F3FC700327C47 /* SignTransactionDomainSelectionSectionHeaderView.swift in Sources */,
 				C62247A7283B92C0002A0CBD /* UDNavigationController.swift in Sources */,
@@ -9930,6 +9953,7 @@
 				C669C36E2912197C00837F21 /* EnterValueViewController.swift in Sources */,
 				C6124CE82924C2B8005E6537 /* DomainProfileInfoStorage.swift in Sources */,
 				30BFA4D227DE0C1500644CD5 /* TutorialViewController.swift in Sources */,
+				C65272232A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */,
 				C6456F272800308200A517D5 /* UICollectionViewCell.swift in Sources */,
 				C6456F3628005D8500A517D5 /* UITextView.swift in Sources */,
 				30BFA4E627E24A4700644CD5 /* RecoveryPhraseViewController.swift in Sources */,
@@ -10265,6 +10289,7 @@
 				307F8596267B60300070A9A6 /* Constants.swift in Sources */,
 				C61B3E93283E708500500B6D /* EnterEmailVerificationCodeViewController.swift in Sources */,
 				C6FE49D9285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */,
+				C652722E2A14B395001A084C /* MockMessagingService.swift in Sources */,
 				C6526DEB29D2E06800D6F2EB /* NoParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C6A2D569284F3FC700327C47 /* SignTransactionDomainSelectionSectionHeaderView.swift in Sources */,
 				C62247A8283B92C0002A0CBD /* UDNavigationController.swift in Sources */,
@@ -10625,6 +10650,7 @@
 				C669C36F2912197C00837F21 /* EnterValueViewController.swift in Sources */,
 				C6124CE92924C2B8005E6537 /* DomainProfileInfoStorage.swift in Sources */,
 				306DB24C268F5EB7009D95DE /* Extension-String.swift in Sources */,
+				C65272242A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */,
 				30BFA4D327DE0C1500644CD5 /* TutorialViewController.swift in Sources */,
 				C6456F282800308200A517D5 /* UICollectionViewCell.swift in Sources */,
 				C6456F3728005D8500A517D5 /* UITextView.swift in Sources */,
@@ -11250,6 +11276,7 @@
 				C66FCD092844F06B009B9525 /* ChooseNewPrimaryDomainPresenter.swift in Sources */,
 				C62C3FA2283F60720094FC93 /* DeepLinksServiceProtocol.swift in Sources */,
 				C664B671291542E300A76154 /* DomainProfileWeb3WebsiteCell.swift in Sources */,
+				C65272222A14B32F001A084C /* MessagingServiceProtocol.swift in Sources */,
 				C673D5BB29FB75A7001CC77C /* InviteFriendStepView.swift in Sources */,
 				306665E22778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
 				30AE84E6257836E2003A0142 /* SceneDelegate.swift in Sources */,
@@ -11382,6 +11409,7 @@
 				C65271FC2A148FCD001A084C /* ChatMessage.swift in Sources */,
 				C665B9AE28325282005E535C /* DomainDetailsViewPresenter.swift in Sources */,
 				C6526DE929D2E06800D6F2EB /* NoParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
+				C652722C2A14B395001A084C /* MockMessagingService.swift in Sources */,
 				C6EECE9E2833A42600978ED5 /* CoinRecordsService.swift in Sources */,
 				C6D5DAF02837682300379C38 /* RecordChangeType.swift in Sources */,
 				C689537B2834CB730046CBA3 /* AddCurrencyViewPresenter.swift in Sources */,

@@ -48,6 +48,7 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = WalletConnectClientService(udWalletsService: udWalletsService)
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
+    private(set) lazy var messagingService: MessagingServiceProtocol = MockMessagingService() // TODO: - Update to real when it will be possible
 
     init() {
         authentificationService = AuthentificationService()
