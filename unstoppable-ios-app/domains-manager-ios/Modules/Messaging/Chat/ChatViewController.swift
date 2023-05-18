@@ -10,6 +10,9 @@ import UIKit
 @MainActor
 protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool)
+    func startTyping()
+    func setInputText(_ text: String)
+    func setPlaceholder(_ placeholder: String)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -19,6 +22,8 @@ typealias ChatSnapshot = NSDiffableDataSourceSnapshot<ChatViewController.Section
 final class ChatViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet private weak var chatInputView: ChatInputView!
+
     var cellIdentifiers: [UICollectionViewCell.Type] { [] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
@@ -38,6 +43,18 @@ extension ChatViewController: ChatViewProtocol {
     func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool) {
         dataSource.apply(snapshot, animatingDifferences: animated)
     }
+    
+    func startTyping() {
+        chatInputView.startEditing()
+    }
+    
+    func setInputText(_ text: String) {
+        chatInputView.setText(text)
+    }
+    
+    func setPlaceholder(_ placeholder: String) {
+        chatInputView.setPlaceholder(placeholder)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -49,15 +66,42 @@ extension ChatViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - ChatInputViewDelegate
+extension ChatViewController: ChatInputViewDelegate {
+    func chatInputView(_ chatInputView: ChatInputView, didTypeText text: String) {
+//        presenter.didTypeText(text)
+    }
+    
+    func chatInputView(_ chatInputView: ChatInputView, didSentText text: String) {
+//        presenter.didPressSendText(text)
+    }
+    
+    func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
+        calculateCollectionBottomInset()
+//        presenter.didAdjustTextHeight()
+    }
+}
+
 // MARK: - Private functions
 private extension ChatViewController {
-
+    func calculateCollectionBottomInset() {
+        let keyboardHeight = isKeyboardOpened ? keyboardFrame.height : 0
+        collectionView.contentInset.bottom = chatInputView.bounds.height + keyboardHeight + 12
+    }
 }
 
 // MARK: - Setup functions
 private extension ChatViewController {
     func setup() {
+        setupInputView()
         setupCollectionView()
+    }
+    
+    func setupInputView() {
+        chatInputView.frame.origin.x = 0
+        chatInputView.frame.origin.y = self.view.bounds.height - ChatInputView.height
+        chatInputView.delegate = self
+        chatInputView.setPlaceholder("Message as sandy.nft...")
     }
     
     func setupCollectionView() {

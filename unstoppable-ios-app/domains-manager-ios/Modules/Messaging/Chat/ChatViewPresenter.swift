@@ -12,10 +12,14 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
 }
 
 final class ChatViewPresenter {
-    private weak var view: ChatViewProtocol?
     
-    init(view: ChatViewProtocol) {
+    private weak var view: ChatViewProtocol?
+    private let channel: ChatChannel
+    
+    init(view: ChatViewProtocol,
+         channel: ChatChannel) {
         self.view = view
+        self.channel = channel
     }
 }
 
