@@ -164,7 +164,6 @@ extension ChatsListViewController {
         let channelType: ChatChannelType
     }
     
-    
     struct DomainSelectionUIConfiguration: Hashable {
         let domain: DomainDisplayInfo
         let isSelected: Bool
