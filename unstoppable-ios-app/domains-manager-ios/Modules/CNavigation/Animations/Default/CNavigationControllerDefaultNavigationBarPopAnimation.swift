@@ -33,6 +33,7 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         // Type of transition
         let toPreferLarge = toNavChild?.prefersLargeTitles ?? false
         let fromPreferLarge = fromNavChild?.prefersLargeTitles ?? false
+        let searchBarConfiguration = toNavChild?.searchBarConfiguration
         let fromYOffset = CNavigationHelper.contentYOffset(in: fromViewController.view)
         let isLargeTitleCollapsed = CNavigationBarScrollingController().isLargeTitleHidden(navBar.largeTitleLabel,
                                                                                            in: navBar,
@@ -48,7 +49,10 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         switch (fromPreferLarge, toPreferLarge) {
         case (false, false):
             backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, newBackButtonTitle: newBackButtonTitle, isLastViewController: isLastViewController, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
-            titleTransitioning = TitleTransitioningSmallToSmall(navBarContent: navBarContent, newTitle: toViewController.title, newNavComponents: newNavComponents)!
+            titleTransitioning = TitleTransitioningSmallToSmall(navBarContent: navBarContent,
+                                                                newTitle: toViewController.title,
+                                                                newNavComponents: newNavComponents,
+                                                                searchBarConfiguration: searchBarConfiguration)!
             navBarContent.titleLabel.textColor = toNavChild?.navBarTitleAttributes?[.foregroundColor] as? UIColor
         case (false, true):
             backButtonTransitioning = BackButtonTransitioningLargeToLarge(navBar: navBar, newBackButtonTitle: newBackButtonTitle, isLastViewController: isLastViewController, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
@@ -56,7 +60,11 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         case (true, false):
             if isLargeTitleCollapsed {
                 backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, newBackButtonTitle: newBackButtonTitle, isLastViewController: isLastViewController, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
-                titleTransitioning = TitleTransitioningSmallToSmall(navBarContent: navBarContent, newTitle: toViewController.title, newNavComponents: newNavComponents)!
+                titleTransitioning = TitleTransitioningSmallToSmall(navBarContent:
+                                                                        navBarContent, newTitle:
+                                                                        toViewController.title,
+                                                                    newNavComponents: newNavComponents,
+                                                                    searchBarConfiguration: searchBarConfiguration)!
             } else {
                 backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, newBackButtonTitle: newBackButtonTitle, isLastViewController: isLastViewController, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
                 titleTransitioning = TitleTransitioningLargeToSmall(navBar: navBar, newTitle: toViewController.title, newNavComponents: newNavComponents)!
@@ -65,7 +73,10 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         case (true, true):
             if isLargeTitleCollapsed {
                 backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, newBackButtonTitle: newBackButtonTitle, isLastViewController: isLastViewController, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
-                titleTransitioning = TitleTransitioningSmallToSmall(navBarContent: navBarContent, newTitle: toViewController.title, newNavComponents: newNavComponents)!
+                titleTransitioning = TitleTransitioningSmallToSmall(navBarContent: navBarContent,
+                                                                    newTitle: toViewController.title,
+                                                                    newNavComponents: newNavComponents,
+                                                                    searchBarConfiguration: searchBarConfiguration)!
             } else {
                 backButtonTransitioning = BackButtonTransitioningLargeToLarge(navBar: navBar, newBackButtonTitle: newBackButtonTitle, isLastViewController: isLastViewController, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
                 titleTransitioning = TitleTransitioningLargeToLarge(navBar: navBar, newTitle: toViewController.title)!
@@ -154,11 +165,13 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
     private let targetX: CGFloat
     private let titleCenter: CGPoint
     private let hasTitleView: Bool
-    private var searchBarView: UIView?
+    private var currentSearchBarView: UIView?
+    private var popSearchBarView: UIView?
 
     init?(navBarContent: CNavigationBarContentView,
           newTitle: String?,
-          newNavComponents: CNavComponents) {
+          newNavComponents: CNavComponents,
+          searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration?) {
         let transitionFromTitle = CNavigationHelper.makeEfficientCopy(of: navBarContent.titleLabel)
         
         self.hasTitleView = newNavComponents.titleView != nil
@@ -173,7 +186,19 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
         titleLabel.alpha = 0
         titleLabel.frame.origin.x = navBarContent.backButton.label.frame.minX
         targetX = navBarContent.frame.width
-        searchBarView = navBarContent.searchBarConfiguration?.searchBarView
+        currentSearchBarView = navBarContent.searchBarConfiguration?.searchBarView
+        
+        if let searchBarConfiguration,
+           case .inline = searchBarConfiguration.searchBarPlacement {
+            let searchBar = searchBarConfiguration.searchBarViewBuilder()
+            self.popSearchBarView = searchBar
+            
+            navBarContent.addSubview(searchBar)
+            searchBar.frame = CGRect(x: -navBarContent.bounds.width,
+                                     y: CNavigationBarContentView.Constants.inlineSearchBarY,
+                                     width: navBarContent.bounds.width,
+                                     height: 36)
+        }
     }
     
     func addAnimations() {
@@ -182,7 +207,8 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
         transitionFromTitle.frame.origin.x = targetX
         transitionFromTitle.alpha = 0
         titleLabel.center = titleCenter
-        searchBarView?.frame.origin.x = UIScreen.main.bounds.width
+        currentSearchBarView?.frame.origin.x = UIScreen.main.bounds.width
+        popSearchBarView?.frame.origin.x = 0
     }
     
     func addAdditionalAnimation(in animator: UIViewPropertyAnimator, duration: TimeInterval) {

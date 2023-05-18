@@ -170,7 +170,8 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
     private let hasTitleView: Bool
     private let currentTitleLabelAlpha: CGFloat
     private let currentTitleViewAlpha: CGFloat?
-    private var searchBarView: UIView?
+    private var currentSearchBarView: UIView?
+    private var pushSearchBarView: UIView?
     
     init?(navBar: CNavigationBarContentView,
           newTitle: String?,
@@ -191,11 +192,12 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
         navBar.set(title: newTitle)
         titleLabel.alpha = 0
         titleLabel.frame.origin.x = navBar.bounds.width
-        
+        currentSearchBarView = navBar.searchBarConfiguration?.searchBarView
+
         if let searchBarConfiguration,
            case .inline = searchBarConfiguration.searchBarPlacement {
             let searchBar = searchBarConfiguration.searchBarViewBuilder()
-            self.searchBarView = searchBar
+            self.pushSearchBarView = searchBar
             
             navBar.addSubview(searchBar)
             searchBar.frame = CGRect(x: navBar.bounds.width,
@@ -211,7 +213,8 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
         if !hasTitleView {
             titleLabel.alpha = 1
         }
-        searchBarView?.frame.origin.x = 0
+        pushSearchBarView?.frame.origin.x = 0
+        currentSearchBarView?.frame.origin.x = -UIScreen.main.bounds.width
     }
     
     func addAdditionalAnimation(in animator: UIViewPropertyAnimator, duration: TimeInterval) {
@@ -236,7 +239,7 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
             titleView?.alpha = currentTitleViewAlpha
         }
         transitionFromTitle.removeFromSuperview()
-        searchBarView?.removeFromSuperview()
+        pushSearchBarView?.removeFromSuperview()
     }
 }
 
