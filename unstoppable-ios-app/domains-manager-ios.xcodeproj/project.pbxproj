@@ -1730,6 +1730,10 @@
 		C65272812A165A3D001A084C /* ChatSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652727F2A165A3D001A084C /* ChatSender.swift */; };
 		C65272822A165A3D001A084C /* ChatSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652727F2A165A3D001A084C /* ChatSender.swift */; };
 		C65272832A165A3D001A084C /* ChatSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652727F2A165A3D001A084C /* ChatSender.swift */; };
+		C65272852A166E75001A084C /* ChatTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272842A166E75001A084C /* ChatTitleView.swift */; };
+		C65272862A166E75001A084C /* ChatTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272842A166E75001A084C /* ChatTitleView.swift */; };
+		C65272872A166E75001A084C /* ChatTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272842A166E75001A084C /* ChatTitleView.swift */; };
+		C65272882A166E75001A084C /* ChatTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272842A166E75001A084C /* ChatTitleView.swift */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -4112,6 +4116,7 @@
 		C65272752A15FBB2001A084C /* ChatTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTextCell.swift; sourceTree = "<group>"; };
 		C65272762A15FBB2001A084C /* ChatTextCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatTextCell.xib; sourceTree = "<group>"; };
 		C652727F2A165A3D001A084C /* ChatSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSender.swift; sourceTree = "<group>"; };
+		C65272842A166E75001A084C /* ChatTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTitleView.swift; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -6233,6 +6238,7 @@
 				C652725B2A15DD7E001A084C /* ObserveKeyboardAccessoryView.swift */,
 				C65272602A15DDBA001A084C /* ChatInputView.swift */,
 				C652726A2A15E483001A084C /* ChatTextView.swift */,
+				C65272842A166E75001A084C /* ChatTitleView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -9010,6 +9016,7 @@
 				299713C828F692D700743003 /* ABIError.swift in Sources */,
 				C61B3E90283E708500500B6D /* EnterEmailVerificationCodeViewController.swift in Sources */,
 				C6FE49D6285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */,
+				C65272852A166E75001A084C /* ChatTitleView.swift in Sources */,
 				C6A2D566284F3FC600327C47 /* SignTransactionDomainSelectionSectionHeaderView.swift in Sources */,
 				C62247A5283B92C0002A0CBD /* UDNavigationController.swift in Sources */,
 				C60610E329A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */,
@@ -9599,6 +9606,7 @@
 				C624D7A1281BCB9B00F55530 /* UDRouter.swift in Sources */,
 				C6D0549027FF07390036B200 /* UDTextField.swift in Sources */,
 				C62247A2283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
+				C65272872A166E75001A084C /* ChatTitleView.swift in Sources */,
 				C66804D3280D9EC8007E6390 /* OnboardingPasscodeViewController.swift in Sources */,
 				C60982272823E4CC00546392 /* WalletDetailsAddWalletAction.swift in Sources */,
 				C6A2D57F284F9EC700327C47 /* ConnectedAppsListViewController.swift in Sources */,
@@ -10306,6 +10314,7 @@
 				C624D7A2281BCB9B00F55530 /* UDRouter.swift in Sources */,
 				C6D0549127FF07390036B200 /* UDTextField.swift in Sources */,
 				C62247A3283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
+				C65272882A166E75001A084C /* ChatTitleView.swift in Sources */,
 				C66804D4280D9EC8007E6390 /* OnboardingPasscodeViewController.swift in Sources */,
 				C60982282823E4CC00546392 /* WalletDetailsAddWalletAction.swift in Sources */,
 				C6A2D580284F9EC700327C47 /* ConnectedAppsListViewController.swift in Sources */,
@@ -11189,6 +11198,7 @@
 				299713C928F692D700743003 /* ABIError.swift in Sources */,
 				C61B3E91283E708500500B6D /* EnterEmailVerificationCodeViewController.swift in Sources */,
 				C6FE49D7285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */,
+				C65272862A166E75001A084C /* ChatTitleView.swift in Sources */,
 				C6A2D567284F3FC700327C47 /* SignTransactionDomainSelectionSectionHeaderView.swift in Sources */,
 				C62247A6283B92C0002A0CBD /* UDNavigationController.swift in Sources */,
 				C60610E429A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */,

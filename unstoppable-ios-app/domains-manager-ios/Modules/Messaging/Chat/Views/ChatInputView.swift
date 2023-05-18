@@ -170,13 +170,14 @@ extension ChatInputView: UITextViewDelegate {
 // MARK: - Actions
 private extension ChatInputView {
     @objc func sendButtonPressed() {
+        UDVibration.buttonTap.vibrate()
         let text = textView.text ?? ""
         delegate?.chatInputView(self, didSentText: text)
         checkTextHeight()
     }
     
     @objc func leadingButtonPressed() {
-        
+        UDVibration.buttonTap.vibrate()
     }
 }
 

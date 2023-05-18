@@ -13,6 +13,7 @@ protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
     func startTyping()
     func setInputText(_ text: String)
     func setPlaceholder(_ placeholder: String)
+    func setTitleOfType(_ titleType: ChatTitleView.TitleType)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -23,6 +24,7 @@ final class ChatViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet private weak var chatInputView: ChatInputView!
+    private var titleView: ChatTitleView!
 
     override var scrollableContentYOffset: CGFloat? { 13 }
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self] }
@@ -37,6 +39,12 @@ final class ChatViewController: BaseViewController {
         presenter.viewDidLoad()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        cNavigationBar?.navBarContentView.setTitleView(hidden: false, animated: true)
+        presenter.viewWillAppear()
+    }
 }
 
 // MARK: - ChatViewProtocol
@@ -56,6 +64,10 @@ extension ChatViewController: ChatViewProtocol {
     func setPlaceholder(_ placeholder: String) {
         chatInputView.setPlaceholder(placeholder)
     }
+    
+    func setTitleOfType(_ titleType: ChatTitleView.TitleType) {
+        titleView.setTitleOfType(titleType)
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -74,11 +86,11 @@ extension ChatViewController: UICollectionViewDelegate {
 // MARK: - ChatInputViewDelegate
 extension ChatViewController: ChatInputViewDelegate {
     func chatInputView(_ chatInputView: ChatInputView, didTypeText text: String) {
-//        presenter.didTypeText(text)
+        presenter.didTypeText(text)
     }
     
     func chatInputView(_ chatInputView: ChatInputView, didSentText text: String) {
-//        presenter.didPressSendText(text)
+        presenter.didPressSendText(text)
     }
     
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
@@ -99,6 +111,7 @@ private extension ChatViewController {
 private extension ChatViewController {
     func setup() {
         setupInputView()
+        setupNavBar()
         setupCollectionView()
     }
     
@@ -107,6 +120,11 @@ private extension ChatViewController {
         chatInputView.frame.origin.y = self.view.bounds.height - ChatInputView.height
         chatInputView.delegate = self
         chatInputView.setPlaceholder("Message as sandy.nft...")
+    }
+    
+    func setupNavBar() {
+        titleView = ChatTitleView()
+        navigationItem.titleView = titleView 
     }
     
     func setupCollectionView() {

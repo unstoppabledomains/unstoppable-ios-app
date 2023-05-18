@@ -10,6 +10,9 @@ import Foundation
 @MainActor
 protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: ChatViewController.Item)
+    
+    func didTypeText(_ text: String)
+    func didPressSendText(_ text: String)
 }
 
 @MainActor
@@ -28,10 +31,19 @@ final class ChatViewPresenter {
 // MARK: - ChatViewPresenterProtocol
 extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
+        setupTitle()
         showData()
     }
     
     func didSelectItem(_ item: ChatViewController.Item) {
+        
+    }
+    
+    func didTypeText(_ text: String) {
+        
+    }
+    
+    func didPressSendText(_ text: String) {
         
     }
 }
@@ -47,7 +59,7 @@ private extension ChatViewPresenter {
             snapshot.appendSections([.messages])
             snapshot.appendItems(messages.map({ createSnapshotItemFrom(message: $0) }))
             
-            await view?.applySnapshot(snapshot, animated: true)
+            view?.applySnapshot(snapshot, animated: true)
         }
     }
     
@@ -55,6 +67,13 @@ private extension ChatViewPresenter {
         switch message {
         case .text(let message):
             return .textMessage(configuration: .init(message: message))
+        }
+    }
+    
+    func setupTitle() {
+        Task {
+            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+            view?.setTitleOfType(.domain(domains[0]))
         }
     }
 }

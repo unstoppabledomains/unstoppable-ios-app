@@ -543,6 +543,8 @@ private extension DomainsCollectionViewController {
     func updateTitleVisibility(for yOffset: CGFloat,
                                in navBar: CNavigationBar,
                                cardState: CarouselCardState) {
+        guard cNavigationController?.topViewController == self else { return }
+        
         if havingMintingDomains {
             setNavBarTitleViewHidden(false, in: navBar)
         } else if !didShowSwipeDomainCardTutorial {
