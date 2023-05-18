@@ -449,7 +449,7 @@ extension CNavigationBarContentView {
     }
     
     struct Constants {
-        static let inlineSearchBarY: CGFloat = 76
+        static let inlineSearchBarY: CGFloat = 56
     }
     
 }
