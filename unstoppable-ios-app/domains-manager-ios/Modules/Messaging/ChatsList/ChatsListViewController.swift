@@ -24,7 +24,7 @@ final class ChatsListViewController: BaseViewController {
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
     
-    override var scrollableContentYOffset: CGFloat? { 66 }
+    override var scrollableContentYOffset: CGFloat? { 48 }
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { cSearchBarConfiguration }
     private var searchBar: UDSearchBar = UDSearchBar()
     private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
@@ -78,7 +78,7 @@ private extension ChatsListViewController {
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
-        collectionView.contentInset.top = 140
+        collectionView.contentInset.top = 110
 
         configureDataSource()
     }
@@ -101,7 +101,7 @@ private extension ChatsListViewController {
     }
     
     func buildLayout() -> UICollectionViewLayout {
-        let spacing: CGFloat = UICollectionView.SideOffset
+        let spacing: CGFloat = 18
         
         let config = UICollectionViewCompositionalLayoutConfiguration()
         config.interSectionSpacing = spacing

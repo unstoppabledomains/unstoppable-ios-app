@@ -45,6 +45,7 @@ final class CNavigationBarContentView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        let currentHeight = bounds.size.height
         bounds.size.height = CNavigationBar.Constants.navigationBarHeight
         titleLabel.frame.size = CNavigationHelper.sizeOf(label: titleLabel, withConstrainedSize: bounds.size)
         let contentCenter = CNavigationHelper.center(of: bounds)
@@ -102,8 +103,13 @@ final class CNavigationBarContentView: UIView {
                 }
          
                 let origin = frame.origin
-                bounds.size.height = max(bounds.size.height, searchBar.frame.maxY)
-                frame.origin = origin
+                let newHeight = max(bounds.size.height, searchBar.frame.maxY)
+                bounds.size.height = newHeight
+                
+                let shouldFixOrigin = currentHeight != newHeight
+                if shouldFixOrigin {
+                    frame.origin = origin
+                }
             }
             bringSubviewToFront(searchBar)
         }
