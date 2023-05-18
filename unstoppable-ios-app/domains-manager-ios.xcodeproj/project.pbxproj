@@ -6063,12 +6063,8 @@
 		C65271DD2A148D74001A084C /* Messaging */ = {
 			isa = PBXGroup;
 			children = (
-				C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */,
-				C65271DF2A148D91001A084C /* ChatsListViewController.swift */,
-				C65271E02A148D91001A084C /* ChatsListViewController.xib */,
-				C652723A2A14C215001A084C /* Views */,
+				C65272482A15D8EA001A084C /* ChatsList */,
 				C65271F92A148FC4001A084C /* Entities */,
-				C65271ED2A148F92001A084C /* Cells */,
 			);
 			path = Messaging;
 			sourceTree = "<group>";
@@ -6145,6 +6141,18 @@
 				C652723B2A14C223001A084C /* UnreadMessagesBadgeView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		C65272482A15D8EA001A084C /* ChatsList */ = {
+			isa = PBXGroup;
+			children = (
+				C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */,
+				C65271DF2A148D91001A084C /* ChatsListViewController.swift */,
+				C65271E02A148D91001A084C /* ChatsListViewController.xib */,
+				C652723A2A14C215001A084C /* Views */,
+				C65271ED2A148F92001A084C /* Cells */,
+			);
+			path = ChatsList;
 			sourceTree = "<group>";
 		};
 		C655D01D2846308E00E80A65 /* DataAggregatorService */ = {
