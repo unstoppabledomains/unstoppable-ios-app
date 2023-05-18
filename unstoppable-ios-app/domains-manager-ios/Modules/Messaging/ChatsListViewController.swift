@@ -29,7 +29,7 @@ final class ChatsListViewController: BaseViewController {
     private var searchBar: UDSearchBar = UDSearchBar()
     private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
         .init(searchBarPlacement: .inline) { [weak self] in
-            self?.searchBar ?? UIView()
+            self?.searchBar ?? UDSearchBar()
         }
     }()
     

@@ -101,7 +101,9 @@ final class CNavigationBarContentView: UIView {
                                               in: searchBar)
                 }
          
+                let origin = frame.origin
                 bounds.size.height = max(bounds.size.height, searchBar.frame.maxY)
+                frame.origin = origin
             }
             bringSubviewToFront(searchBar)
         }
@@ -244,14 +246,6 @@ extension CNavigationBarContentView {
                 }
             }
         case .inline:
-            animationDuration = 0 // Animation disabled for now
-            searchBar.frame.origin = CGPoint(x: 0,
-                                             y: calculateInlineSearchBarY())
-            
-            afterAnimationAction = { [weak searchBar] in
-                searchBar?.layer.mask = nil
-            }
-            
             views.forEach { view in
                 if let view {
                     if isSearchActive {
@@ -346,7 +340,7 @@ private extension CNavigationBarContentView {
     
     func calculateInlineSearchBarY() -> CGFloat {
         let searchBarY: CGFloat = Constants.inlineSearchBarY
-        return isSearchActive ? 0 : (searchBarY - yOffset)
+        return isSearchActive ? ((CNavigationBar.Constants.navigationBarHeight - UDSearchBar.searchContainerHeight) / 2) : (searchBarY - yOffset)
     }
     
     func addSearchControllerWith(searchBarConfiguration: SearchBarConfiguration) {
@@ -354,6 +348,11 @@ private extension CNavigationBarContentView {
         let searchBarView = searchBarConfiguration.searchBarViewBuilder()
         addSubview(searchBarView)
         self.searchBarConfiguration?.searchBarView = searchBarView
+        if case .inline = searchBarConfiguration.searchBarPlacement {
+            searchBarView.responderChangedCallback = { [weak self] isActive in
+                self?.setSearchActive(isActive, animated: true)
+            }
+        }
 
         switch searchBarConfiguration.searchBarPlacement {
         case .rightBarButton:
@@ -431,13 +430,13 @@ extension CNavigationBarContentView {
     struct SearchBarConfiguration {
         let id: UUID
         var searchBarPlacement: SearchBarPlacement = .rightBarButton
-        var searchBarViewBuilder: (()->(UIView))
+        var searchBarViewBuilder: (()->(UDSearchBar))
         
-        var searchBarView: UIView?
+        var searchBarView: UDSearchBar?
         
         internal init(id: UUID = .init(),
                       searchBarPlacement: CNavigationBarContentView.SearchBarPlacement = .rightBarButton,
-                      searchBarViewBuilder: @escaping (() -> (UIView))) {
+                      searchBarViewBuilder: @escaping (() -> (UDSearchBar))) {
             self.id = id
             self.searchBarPlacement = searchBarPlacement
             self.searchBarViewBuilder = searchBarViewBuilder
