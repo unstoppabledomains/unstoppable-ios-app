@@ -24,7 +24,8 @@ final class ChatViewController: BaseViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet private weak var chatInputView: ChatInputView!
 
-    var cellIdentifiers: [UICollectionViewCell.Type] { [] }
+    override var scrollableContentYOffset: CGFloat? { 13 }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
 
@@ -63,6 +64,10 @@ extension ChatViewController: UICollectionViewDelegate {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
         
         presenter.didSelectItem(item)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        cNavigationController?.underlyingScrollViewDidScroll(scrollView)
     }
 }
 
@@ -107,14 +112,19 @@ private extension ChatViewController {
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
-        
+        collectionView.contentInset.top = 50
+
         configureDataSource()
     }
     
     func configureDataSource() {
         dataSource = ChatDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
             switch item {
-            
+            case .textMessage(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatTextCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
     }
@@ -128,19 +138,10 @@ private extension ChatViewController {
         let layout = UICollectionViewCompositionalLayout(sectionProvider: {
             (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             
-            let layoutSection: NSCollectionLayoutSection
+            let layout: NSCollectionLayoutSection = .flexibleListItemSection(height: 60)
+            layout.interGroupSpacing = spacing
             
-            layoutSection = .flexibleListItemSection()
-            layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
-                                                                  leading: spacing + 1,
-                                                                  bottom: 1,
-                                                                  trailing: spacing + 1)
-            let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
-            layoutSection.decorationItems = [background]
-            
-            
-            return layoutSection
-            
+            return layout
         }, configuration: config)
         layout.register(CollectionReusableRoundedBackground.self, forDecorationViewOfKind: CollectionReusableRoundedBackground.reuseIdentifier)
         
@@ -150,12 +151,15 @@ private extension ChatViewController {
 
 // MARK: - Collection elements
 extension ChatViewController {
-    enum Section: Int, Hashable {
-        case main
+    enum Section: Hashable {
+        case messages
     }
     
     enum Item: Hashable {
-        
+        case textMessage(configuration: TextMessageUIConfiguration)
     }
     
+    struct TextMessageUIConfiguration: Hashable {
+        let message: ChatTextMessage
+    }
 }

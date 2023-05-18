@@ -39,7 +39,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             selectedDomain = configuration.domain
             showData()
         case .channel(let configuration):
-            openChannel(configuration.channelType.channel)
+            openChannel(configuration.channelType)
         }
     }
 }
@@ -78,9 +78,9 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    func openChannel(_ channel: ChatChannel) {
+    func openChannel(_ channelType: ChatChannelType) {
         guard let nav = view?.cNavigationController else { return }
         
-        UDRouter().showChatScreen(channel: channel, in: nav)
+        UDRouter().showChatScreen(channelType: channelType, in: nav)
     }
 }

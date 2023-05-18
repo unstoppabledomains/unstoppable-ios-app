@@ -41,10 +41,16 @@ struct MessageDateFormatter {
         } else if (date.dateDifferenceBetween(date: Date()).day ?? 0) <= 6 {
             return weekdayFormatter.string(from: date)
         } else if date.isCurrentYear {
-            let formatted = shortDateFormatter.string(from: date)
-            var components = formatted.components(separatedBy: ".")
-            components.removeLast()
-            return components.joined(separator: ".")
+            var formatted = shortDateFormatter.string(from: date)
+            
+            for char in formatted.reversed() {
+                formatted.removeLast()
+                if Int(String(char)) == nil {
+                    break
+                }
+            }
+            
+            return formatted
         }
         
         return shortDateFormatter.string(from: date)

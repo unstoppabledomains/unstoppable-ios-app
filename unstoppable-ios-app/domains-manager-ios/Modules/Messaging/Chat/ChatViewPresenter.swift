@@ -7,19 +7,21 @@
 
 import Foundation
 
+@MainActor
 protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: ChatViewController.Item)
 }
 
+@MainActor
 final class ChatViewPresenter {
     
     private weak var view: ChatViewProtocol?
-    private let channel: ChatChannel
+    private let channelType: ChatChannelType
     
     init(view: ChatViewProtocol,
-         channel: ChatChannel) {
+         channelType: ChatChannelType) {
         self.view = view
-        self.channel = channel
+        self.channelType = channelType
     }
 }
 
@@ -39,10 +41,20 @@ private extension ChatViewPresenter {
     func showData() {
         Task {
             var snapshot = ChatSnapshot()
-           
-            // Fill snapshot
+            
+            let messages = await appContext.messagingService.getMessagesForChannel(channelType)
+            
+            snapshot.appendSections([.messages])
+            snapshot.appendItems(messages.map({ createSnapshotItemFrom(message: $0) }))
             
             await view?.applySnapshot(snapshot, animated: true)
+        }
+    }
+    
+    func createSnapshotItemFrom(message: ChatMessageType) -> ChatViewController.Item {
+        switch message {
+        case .text(let message):
+            return .textMessage(configuration: .init(message: message))
         }
     }
 }

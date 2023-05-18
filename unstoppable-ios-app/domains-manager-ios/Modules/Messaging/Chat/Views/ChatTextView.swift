@@ -49,7 +49,7 @@ private extension ChatTextView {
         font = .currentFont(withSize: 16, weight: .regular)
         textContainerInset.left = ChatTextView.ContainerInset
         textContainerInset.right = ChatTextView.ContainerInset
-        textContainerInset.top = 12
+        textContainerInset.top = 10
         setUIForCurrentActiveState()
     }
     

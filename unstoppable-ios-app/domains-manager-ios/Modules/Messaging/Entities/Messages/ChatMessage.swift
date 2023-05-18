@@ -10,11 +10,11 @@ import Foundation
 class ChatMessage: Hashable {
     
     let id: UUID
-    let sender: String
+    let sender: ChatSender
     let time: Date
     let avatarURL: URL?
     
-    init(id: UUID = .init(), sender: DomainName, time: Date, avatarURL: URL? = nil) {
+    init(id: UUID = .init(), sender: ChatSender, time: Date, avatarURL: URL? = nil) {
         self.id = id
         self.sender = sender
         self.time = time

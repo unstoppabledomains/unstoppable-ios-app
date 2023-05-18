@@ -1726,6 +1726,10 @@
 		C652727C2A15FBB2001A084C /* ChatTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65272762A15FBB2001A084C /* ChatTextCell.xib */; };
 		C652727D2A15FBB2001A084C /* ChatTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65272762A15FBB2001A084C /* ChatTextCell.xib */; };
 		C652727E2A15FBB2001A084C /* ChatTextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C65272762A15FBB2001A084C /* ChatTextCell.xib */; };
+		C65272802A165A3D001A084C /* ChatSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652727F2A165A3D001A084C /* ChatSender.swift */; };
+		C65272812A165A3D001A084C /* ChatSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652727F2A165A3D001A084C /* ChatSender.swift */; };
+		C65272822A165A3D001A084C /* ChatSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652727F2A165A3D001A084C /* ChatSender.swift */; };
+		C65272832A165A3D001A084C /* ChatSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652727F2A165A3D001A084C /* ChatSender.swift */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -4107,6 +4111,7 @@
 		C652726A2A15E483001A084C /* ChatTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTextView.swift; sourceTree = "<group>"; };
 		C65272752A15FBB2001A084C /* ChatTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTextCell.swift; sourceTree = "<group>"; };
 		C65272762A15FBB2001A084C /* ChatTextCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatTextCell.xib; sourceTree = "<group>"; };
+		C652727F2A165A3D001A084C /* ChatSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSender.swift; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -6137,6 +6142,7 @@
 			isa = PBXGroup;
 			children = (
 				C652721A2A149E41001A084C /* MessageDateFormatter.swift */,
+				C652727F2A165A3D001A084C /* ChatSender.swift */,
 				C65272142A14937A001A084C /* Channels */,
 				C65272132A149370001A084C /* Messages */,
 			);
@@ -9441,6 +9447,7 @@
 				301EFCBB25E6CD1500DEB2C1 /* Version.swift in Sources */,
 				30B3DC9728763294006FAA64 /* WCConnectionIntentStorage.swift in Sources */,
 				C665B9B128325282005E535C /* DomainDetailsViewController.swift in Sources */,
+				C65272802A165A3D001A084C /* ChatSender.swift in Sources */,
 				3070B1D825AF8AF300DEC81C /* KeychainLayer.swift in Sources */,
 				C60D2712295AAE420060635D /* DomainsCollectionUICache.swift in Sources */,
 				C6E1186F28F52C6E00C6AD4D /* UIViewControllerPreview.swift in Sources */,
@@ -9661,6 +9668,7 @@
 				C6ECBF7C28D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */,
 				295506F22954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */,
 				C65272072A1491E8001A084C /* ChatMessageType.swift in Sources */,
+				C65272822A165A3D001A084C /* ChatSender.swift in Sources */,
 				C6D6E53828193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
 				C63F1D0B28AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C638121E29914EDF002590E7 /* UIImage+GIF.swift in Sources */,
@@ -10367,6 +10375,7 @@
 				C6ECBF7D28D2C86F00E94309 /* ReverseResolutionTransactionInProgressViewPresenter.swift in Sources */,
 				295506F32954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */,
 				C65272082A1491E8001A084C /* ChatMessageType.swift in Sources */,
+				C65272832A165A3D001A084C /* ChatSender.swift in Sources */,
 				C6D6E53928193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
 				C63F1D0C28AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C638121F29914EDF002590E7 /* UIImage+GIF.swift in Sources */,
@@ -11617,6 +11626,7 @@
 				301EFCBC25E6CD1500DEB2C1 /* Version.swift in Sources */,
 				30B3DC9828763294006FAA64 /* WCConnectionIntentStorage.swift in Sources */,
 				C665B9B228325282005E535C /* DomainDetailsViewController.swift in Sources */,
+				C65272812A165A3D001A084C /* ChatSender.swift in Sources */,
 				3070B1D925AF8AF300DEC81C /* KeychainLayer.swift in Sources */,
 				C60D2713295AAE420060635D /* DomainsCollectionUICache.swift in Sources */,
 				C6E1187028F52C6E00C6AD4D /* UIViewControllerPreview.swift in Sources */,
