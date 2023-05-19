@@ -36,7 +36,7 @@ final class DomainsListViewController: BaseViewController {
     private var searchBar: UDSearchBar = UDSearchBar()
     private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
         .init(searchBarPlacement: .inline) { [weak self] in
-            self?.searchBar ?? UIView()
+            self?.searchBar ?? UDSearchBar()
         }
     }()
 
@@ -113,7 +113,6 @@ extension DomainsListViewController: UDSearchBarDelegate {
 // MARK: - Private functions
 private extension DomainsListViewController {
     func setSearchBarActive(_ isActive: Bool) {
-        cNavigationBar?.setSearchActive(isActive, animated: true)
         let topInset: CGFloat = isActive ? 84 : 140
         collectionView.contentInset.top = topInset
         DispatchQueue.main.asyncAfter(deadline: .now()) {

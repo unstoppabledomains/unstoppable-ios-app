@@ -43,34 +43,67 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
         let newNavComponents = CNavComponents(viewController: toViewController)
         let backTitleVisible = toNavChild?.navBackButtonConfiguration.backTitleVisible ?? true
         let largeTitleConfiguration = toNavChild?.largeTitleConfiguration
+        let searchBarConfiguration = toNavChild?.searchBarConfiguration
 
         let titleTransitioning: CNavBarTitleTransitioning
         let backButtonTransitioning: CNavBarTitleTransitioning
         switch (fromPreferLarge, toPreferLarge) {
         case (false, false):
-            backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, backButtonTitle: backButtonTitle, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
-            titleTransitioning = TitleTransitioningSmallToSmall(navBar: navBarContent, newTitle: newTitle, newNavComponents: newNavComponents)!
+            backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent,
+                                                                          backButtonTitle: backButtonTitle,
+                                                                          oldNavComponents: oldNavComponents,
+                                                                          newNavComponents: newNavComponents)!
+            titleTransitioning = TitleTransitioningSmallToSmall(navBar: navBarContent,
+                                                                newTitle: newTitle,
+                                                                newNavComponents: newNavComponents,
+                                                                searchBarConfiguration: searchBarConfiguration)!
         case (false, true):
-            backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, backButtonTitle: backButtonTitle, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
+            backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent,
+                                                                          backButtonTitle: backButtonTitle,
+                                                                          oldNavComponents: oldNavComponents,
+                                                                          newNavComponents: newNavComponents)!
             titleTransitioning = TitleTransitioningSmallToLarge(navBar: navBar,
                                                                 newTitle: newTitle,
                                                                 largeTitleConfiguration: largeTitleConfiguration,
                                                                 attributes: toNavChild?.largeTitleConfiguration?.navBarLargeTitleAttributes ?? navBar.largeTitleAttributes)!
         case (true, false):
             if isLargeTitleCollapsed {
-                backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, backButtonTitle: backButtonTitle, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
-                titleTransitioning = TitleTransitioningSmallToSmall(navBar: navBarContent, newTitle: newTitle, newNavComponents: newNavComponents)!
+                backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent,
+                                                                              backButtonTitle: backButtonTitle,
+                                                                              oldNavComponents: oldNavComponents,
+                                                                              newNavComponents: newNavComponents)!
+                titleTransitioning = TitleTransitioningSmallToSmall(navBar: navBarContent,
+                                                                    newTitle: newTitle,
+                                                                    newNavComponents: newNavComponents,
+                                                                    searchBarConfiguration: searchBarConfiguration)!
             } else {
-                backButtonTransitioning = BackButtonTransitioningLargeToLarge(navBar: navBar, newTitle: newTitle, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents, backTitleVisible: backTitleVisible)!
-                titleTransitioning = TitleTransitioningLargeToSmall(navBar: navBar, newTitle: newTitle, newNavComponents: newNavComponents)!
+                backButtonTransitioning = BackButtonTransitioningLargeToLarge(navBar: navBar,
+                                                                              newTitle: newTitle,
+                                                                              oldNavComponents: oldNavComponents,
+                                                                              newNavComponents: newNavComponents,
+                                                                              backTitleVisible: backTitleVisible)!
+                titleTransitioning = TitleTransitioningLargeToSmall(navBar: navBar,
+                                                                    newTitle: newTitle,
+                                                                    newNavComponents: newNavComponents)!
             }
         case (true, true):
             if isLargeTitleCollapsed {
-                backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent, backButtonTitle: backButtonTitle, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents)!
-                titleTransitioning = TitleTransitioningSmallToSmall(navBar: navBarContent, newTitle: newTitle, newNavComponents: newNavComponents)!
+                backButtonTransitioning = BackButtonTransitioningSmallToSmall(navBarContent: navBarContent,
+                                                                              backButtonTitle: backButtonTitle,
+                                                                              oldNavComponents: oldNavComponents,
+                                                                              newNavComponents: newNavComponents)!
+                titleTransitioning = TitleTransitioningSmallToSmall(navBar: navBarContent,
+                                                                    newTitle: newTitle,
+                                                                    newNavComponents: newNavComponents,
+                                                                    searchBarConfiguration: searchBarConfiguration)!
             } else {
-                backButtonTransitioning = BackButtonTransitioningLargeToLarge(navBar: navBar, newTitle: newTitle, oldNavComponents: oldNavComponents, newNavComponents: newNavComponents, backTitleVisible: backTitleVisible)!
-                titleTransitioning = TitleTransitioningLargeToLarge(navBar: navBar, newTitle: newTitle)!
+                backButtonTransitioning = BackButtonTransitioningLargeToLarge(navBar: navBar,
+                                                                              newTitle: newTitle,
+                                                                              oldNavComponents: oldNavComponents,
+                                                                              newNavComponents: newNavComponents,
+                                                                              backTitleVisible: backTitleVisible)!
+                titleTransitioning = TitleTransitioningLargeToLarge(navBar: navBar,
+                                                                    newTitle: newTitle)!
             }
         }
         
@@ -137,10 +170,12 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
     private let hasTitleView: Bool
     private let currentTitleLabelAlpha: CGFloat
     private let currentTitleViewAlpha: CGFloat?
+    private var searchBarView: UIView?
     
     init?(navBar: CNavigationBarContentView,
           newTitle: String?,
-          newNavComponents: CNavComponents) {
+          newNavComponents: CNavComponents,
+          searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration?) {
         let transitionFromTitle = CNavigationHelper.makeEfficientCopy(of: navBar.titleLabel)
         
         self.hasTitleView = newNavComponents.titleView != nil
@@ -156,6 +191,18 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
         navBar.set(title: newTitle)
         titleLabel.alpha = 0
         titleLabel.frame.origin.x = navBar.bounds.width
+        
+        if let searchBarConfiguration,
+           case .inline = searchBarConfiguration.searchBarPlacement {
+            let searchBar = searchBarConfiguration.searchBarViewBuilder()
+            self.searchBarView = searchBar
+            
+            navBar.addSubview(searchBar)
+            searchBar.frame = CGRect(x: navBar.bounds.width,
+                                     y: CNavigationBarContentView.Constants.inlineSearchBarY,
+                                     width: navBar.bounds.width,
+                                     height: 36)
+        }
     }
     
     func addAnimations() {
@@ -164,6 +211,7 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
         if !hasTitleView {
             titleLabel.alpha = 1
         }
+        searchBarView?.frame.origin.x = 0
     }
     
     func addAdditionalAnimation(in animator: UIViewPropertyAnimator, duration: TimeInterval) {
@@ -188,6 +236,7 @@ private struct TitleTransitioningSmallToSmall: CNavBarTitleTransitioning {
             titleView?.alpha = currentTitleViewAlpha
         }
         transitionFromTitle.removeFromSuperview()
+        searchBarView?.removeFromSuperview()
     }
 }
 

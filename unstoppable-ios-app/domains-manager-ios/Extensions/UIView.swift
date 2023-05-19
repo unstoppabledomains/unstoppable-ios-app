@@ -239,13 +239,15 @@ extension UIView {
               y: bounds.height / 2)
     }
     
-    func forceLayout(animated: Bool = false) {
+    func forceLayout(animated: Bool = false, additionalAnimation: EmptyCallback? = nil) {
         if animated {
             UIView.animate(withDuration: 0.25) {
+                additionalAnimation?()
                 self.setNeedsLayout()
                 self.layoutIfNeeded()
             }
         } else {
+            additionalAnimation?()
             setNeedsLayout()
             layoutIfNeeded()
         }

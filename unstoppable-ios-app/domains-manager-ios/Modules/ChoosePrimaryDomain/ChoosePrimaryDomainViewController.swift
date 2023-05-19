@@ -58,7 +58,7 @@ final class ChoosePrimaryDomainViewController: BaseViewController {
     private var searchBar: UDSearchBar = UDSearchBar()
     private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
         .init { [weak self] in
-            self?.searchBar ?? UIView()
+            self?.searchBar ?? UDSearchBar()
         }
     }()
     

@@ -127,6 +127,7 @@ extension UIImage {
     static let nfcIcon20 = UIImage(named: "nfcIcon20")!
     static let giftBoxIcon20 = UIImage(named: "giftBoxIcon20")!
     static let helpCircleIcon24 = UIImage(named: "helpCircleIcon24")!
+    static let messageCircleIcon24 = UIImage(named: "messageCircleIcon24")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

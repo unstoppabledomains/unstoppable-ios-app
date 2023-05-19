@@ -39,6 +39,7 @@ protocol AppContextProtocol {
     var firebaseAuthService: FirebaseAuthServiceProtocol { get }
     var firebaseDomainsService: FirebaseDomainsServiceProtocol { get }
     var domainTransferService: DomainTransferServiceProtocol { get }
+    var messagingService: MessagingServiceProtocol { get }
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
 }

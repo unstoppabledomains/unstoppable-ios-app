@@ -18,20 +18,20 @@ protocol UDSearchBarDelegate: AnyObject {
 final class UDSearchBar: UIView {
     
     // Container
-    private let searchContainerHeight: CGFloat = 36
+    static let searchContainerHeight: CGFloat = 36
     private let containerSidePadding: CGFloat = 16
     private let inContainerSidePadding: CGFloat = 12
     // Search icon
     private let searchIconSize: CGFloat = 20
-    private lazy var searchIconY: CGFloat = (searchContainerHeight - searchIconSize) / 2
+    private lazy var searchIconY: CGFloat = (UDSearchBar.searchContainerHeight - searchIconSize) / 2
     // TextField
     private let searchToTextFieldPadding: CGFloat = 8
     private let textFieldHeight: CGFloat = 24
-    private lazy var textFieldY: CGFloat = (searchContainerHeight - textFieldHeight) / 2
+    private lazy var textFieldY: CGFloat = (UDSearchBar.searchContainerHeight - textFieldHeight) / 2
     // Clear button
     private let clearButtonSize: CGFloat = 16
     private let clearButtonToTextFieldPadding: CGFloat = 8
-    private lazy var clearButtonY: CGFloat = (searchContainerHeight - clearButtonSize) / 2
+    private lazy var clearButtonY: CGFloat = (UDSearchBar.searchContainerHeight - clearButtonSize) / 2
     // Cancel button
     private let cancelButtonHeight: CGFloat = 24
     private let cancelButtonToContainerPadding: CGFloat = 16
@@ -46,6 +46,7 @@ final class UDSearchBar: UIView {
     private var isEnabled: Bool = true
     var shouldAnimateStateUpdate = true
     weak var delegate: UDSearchBarDelegate?
+    var responderChangedCallback: ((Bool)->())?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -76,9 +77,9 @@ final class UDSearchBar: UIView {
         }
         
         let containerFrame = CGRect(x: containerSidePadding,
-                                    y: (bounds.height - searchContainerHeight) / 2,
+                                    y: (bounds.height - UDSearchBar.searchContainerHeight) / 2,
                                     width: containerWidth,
-                                    height: searchContainerHeight)
+                                    height: UDSearchBar.searchContainerHeight)
         containerView.frame = containerFrame
         
         searchIconView.frame.origin = CGPoint(x: inContainerSidePadding, y: searchIconY)
@@ -94,6 +95,7 @@ final class UDSearchBar: UIView {
     
     override var isFirstResponder: Bool { textField.isFirstResponder }
     
+    @discardableResult
     override func becomeFirstResponder() -> Bool {
         textField.becomeFirstResponder()
     }
@@ -135,17 +137,22 @@ extension UDSearchBar {
 // MARK: - UITextFieldDelegate
 extension UDSearchBar: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        state = .focused
         delegate?.udSearchBarTextDidBeginEditing(self)
-        checkCancelButtonVisibility()
-        forceLayout(animated: shouldAnimateStateUpdate)
+        responderChangedCallback?(true)
+        forceLayout(animated: shouldAnimateStateUpdate, additionalAnimation: { [weak self] in
+            self?.state = .focused
+            self?.checkCancelButtonVisibility()
+        })
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
-        state = isEnabled ? .idle : .disabled
         delegate?.udSearchBarTextDidEndEditing(self)
-        checkCancelButtonVisibility()
-        forceLayout(animated: shouldAnimateStateUpdate)
+        responderChangedCallback?(false)
+        let isEnabled = self.isEnabled
+        forceLayout(animated: shouldAnimateStateUpdate, additionalAnimation: { [weak self] in
+            self?.state = isEnabled ? .idle : .disabled
+            self?.checkCancelButtonVisibility()
+        })
     }
 }
 
@@ -178,14 +185,14 @@ private extension UDSearchBar {
     }
     
     func checkCancelButtonVisibility() {
-        cancelButton.isHidden = !isFirstResponder
+        cancelButton.alpha = isFirstResponder ? 1 : 0
     }
 }
 
 // MARK: - Setup methods
 private extension UDSearchBar {
     func setup() {
-        bounds.size.height = searchContainerHeight
+        bounds.size.height = UDSearchBar.searchContainerHeight
         setupContainerView()
         setupSearchIconView()
         setupTextFields()
