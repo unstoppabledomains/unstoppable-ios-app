@@ -180,7 +180,7 @@ extension CNavigationBarContentView {
         setNeedsLayout()
         layoutIfNeeded()
     }
-
+    
     func setBarButtons(_ leftItems: [UIBarButtonItem], rightItems: [UIBarButtonItem]) {
         leftBarViews.forEach { view in
             view.removeFromSuperview()
