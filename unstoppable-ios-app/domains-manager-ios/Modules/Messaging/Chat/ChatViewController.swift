@@ -109,7 +109,6 @@ extension ChatViewController: ChatInputViewDelegate {
     
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
         calculateCollectionBottomInset()
-//        presenter.didAdjustTextHeight()
     }
 }
 
@@ -133,7 +132,6 @@ private extension ChatViewController {
         chatInputView.frame.origin.x = 0
         chatInputView.frame.origin.y = self.view.bounds.height - ChatInputView.height
         chatInputView.delegate = self
-        chatInputView.setPlaceholder("Message as sandy.nft...")
     }
     
     func setupNavBar() {

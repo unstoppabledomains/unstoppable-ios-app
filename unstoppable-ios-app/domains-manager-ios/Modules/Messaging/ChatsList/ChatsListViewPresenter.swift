@@ -79,8 +79,9 @@ private extension ChatsListViewPresenter {
     }
     
     func openChannel(_ channelType: ChatChannelType) {
-        guard let nav = view?.cNavigationController else { return }
+        guard let nav = view?.cNavigationController,
+            let selectedDomain else { return }
         
-        UDRouter().showChatScreen(channelType: channelType, in: nav)
+        UDRouter().showChatScreen(channelType: channelType, domain: selectedDomain, in: nav)
     }
 }

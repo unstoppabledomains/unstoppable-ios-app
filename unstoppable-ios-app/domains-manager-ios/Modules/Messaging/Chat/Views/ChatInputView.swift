@@ -73,7 +73,9 @@ final class ChatInputView: UIView {
                                 width: textViewWidth,
                                 height: textViewHeight)
         placeholderLabel.frame = textView.bounds
-        placeholderLabel.frame.origin.x = ChatTextView.ContainerInset + 2.5
+        let placeholderHorizontalInset = ChatTextView.ContainerInset + 2.5
+        placeholderLabel.frame.origin.x = placeholderHorizontalInset
+        placeholderLabel.frame.size.width -= (placeholderHorizontalInset * 2)
         
         self.frame.size.height = textViewHeight + (textViewVerticalOffset * 2) + bottomInset
         if isKeyboardOpened {
@@ -121,7 +123,8 @@ extension ChatInputView {
     func setPlaceholder(_ placeholder: String) {
         placeholderLabel.setAttributedTextWith(text: placeholder,
                                                font: .currentFont(withSize: 16, weight: .regular),
-                                               textColor: .foregroundSecondary)
+                                               textColor: .foregroundSecondary,
+                                               lineBreakMode: .byTruncatingTail)
     }
 }
 

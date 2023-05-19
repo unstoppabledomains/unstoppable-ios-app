@@ -773,3 +773,4 @@
 "CHATS" = "Chats";
 "TODAY" = "Today";
 "YESTERDAY" = "Yesterday";
+"CHAT_INPUT_PLACEHOLDER_AS_DOMAIN" = "Message as %@...";

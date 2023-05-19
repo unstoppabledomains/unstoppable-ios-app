@@ -20,11 +20,14 @@ final class ChatViewPresenter {
     
     private weak var view: ChatViewProtocol?
     private let channelType: ChatChannelType
+    private let domain: DomainDisplayInfo
     
     init(view: ChatViewProtocol,
-         channelType: ChatChannelType) {
+         channelType: ChatChannelType,
+         domain: DomainDisplayInfo) {
         self.view = view
         self.channelType = channelType
+        self.domain = domain
     }
 }
 
@@ -32,6 +35,7 @@ final class ChatViewPresenter {
 extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
         setupTitle()
+        setupPlaceholder()
         showData(completion: { [weak self] in self?.view?.scrollToTheBottom(animated: false) })
     }
     
@@ -85,5 +89,9 @@ private extension ChatViewPresenter {
                 view?.setTitleOfType(.domainName(domainName, pfpInfo: pfpInfo))
             }
         }
+    }
+    
+    func setupPlaceholder() {
+        view?.setPlaceholder(String.Constants.chatInputPlaceholderAsDomain.localized(domain.name))
     }
 }
