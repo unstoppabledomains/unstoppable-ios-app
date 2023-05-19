@@ -145,6 +145,9 @@ private extension ChatViewController {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
         collectionView.contentInset.top = 50
+        collectionView.register(ChatSectionHeaderView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: ChatSectionHeaderView.reuseIdentifier)
 
         configureDataSource()
     }
@@ -159,6 +162,25 @@ private extension ChatViewController {
                 return cell
             }
         })
+        
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
+            let section = self?.section(at: indexPath)
+
+            switch section {
+            case .messages(let title):
+                let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                           withReuseIdentifier: ChatSectionHeaderView.reuseIdentifier,
+                                                                           for: indexPath) as! ChatSectionHeaderView
+                view.setTitle(title)
+                return view
+            case .none:
+                return nil
+            }
+        }
+    }
+    
+    func section(at indexPath: IndexPath) -> Section? {
+        self.dataSource.snapshot().sectionIdentifiers[indexPath.section]
     }
     
     func buildLayout() -> UICollectionViewLayout {
@@ -170,10 +192,17 @@ private extension ChatViewController {
         let layout = UICollectionViewCompositionalLayout(sectionProvider: {
             (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             
-            let layout: NSCollectionLayoutSection = .flexibleListItemSection(height: 60)
-            layout.interGroupSpacing = spacing
+            let layoutSection: NSCollectionLayoutSection = .flexibleListItemSection(height: 60)
+            layoutSection.interGroupSpacing = spacing
             
-            return layout
+            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                    heightDimension: .absolute(ChatSectionHeaderView.Height))
+            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                     elementKind: UICollectionView.elementKindSectionHeader,
+                                                                     alignment: .top)
+            layoutSection.boundarySupplementaryItems = [header]
+            
+            return layoutSection
         }, configuration: config)
         layout.register(CollectionReusableRoundedBackground.self, forDecorationViewOfKind: CollectionReusableRoundedBackground.reuseIdentifier)
         
@@ -184,7 +213,7 @@ private extension ChatViewController {
 // MARK: - Collection elements
 extension ChatViewController {
     enum Section: Hashable {
-        case messages
+        case messages(title: String)
     }
     
     enum Item: Hashable {

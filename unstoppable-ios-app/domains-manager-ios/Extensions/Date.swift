@@ -46,6 +46,10 @@ extension Date {
         Date.isoCalendar.isDateInToday(self)
     }
     
+    var yesterday: Date {
+        Date.isoCalendar.date(byAdding: .day, value: -1, to: self)!
+    }
+    
     var weekNumber: Int {
         Date.isoCalendar.component(.weekOfYear, from: self)
     }

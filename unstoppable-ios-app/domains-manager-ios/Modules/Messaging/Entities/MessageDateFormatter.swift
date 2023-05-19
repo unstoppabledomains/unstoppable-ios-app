@@ -33,9 +33,17 @@ struct MessageDateFormatter {
         formatter.timeStyle = .none
         return formatter
     }()
+    static let mediumDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.setLocalizedDateFormatFromTemplate("MMMdd")
+        return formatter
+    }()
+ 
+    static func formatMessageDate(_ date: Date) -> String {
+        todayFormatter.string(from: date)
+    }
     
-    
-    static func formatDate(_ date: Date) -> String {
+    static func formatChannelDate(_ date: Date) -> String {
         if date.isToday {
             return todayFormatter.string(from: date)
         } else if (date.dateDifferenceBetween(date: Date()).day ?? 0) <= 6 {
@@ -51,6 +59,18 @@ struct MessageDateFormatter {
             }
             
             return formatted
+        }
+        
+        return shortDateFormatter.string(from: date)
+    }
+    
+    static func formatMessagesSectionDate(_ date: Date) -> String {
+        if date.isToday {
+            return String.Constants.today.localized()
+        } else if date.yesterday.dayStart == date.dayStart {
+            return String.Constants.yesterday.localized()
+        } else if date.isCurrentYear {
+            return mediumDateFormatter.string(from: date)
         }
         
         return shortDateFormatter.string(from: date)

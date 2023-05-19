@@ -863,7 +863,8 @@ extension String {
         
         // Messaging
         static let chats = "CHATS"
-        
+        static let today = "TODAY"
+        static let yesterday = "YESTERDAY"
     }
 
     

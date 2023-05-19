@@ -771,3 +771,5 @@
 
 // Messaging
 "CHATS" = "Chats";
+"TODAY" = "Today";
+"YESTERDAY" = "Yesterday";

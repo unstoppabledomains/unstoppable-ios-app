@@ -53,7 +53,7 @@ extension ChatTextCell {
                                               lineHeight: 24)
         
         let timeColor: UIColor = textMessage.sender == .user ? .foregroundOnEmphasisOpacity : .foregroundSecondary
-        let formatterTime = MessageDateFormatter.formatDate(textMessage.time)
+        let formatterTime = MessageDateFormatter.formatMessageDate(textMessage.time)
         timeLabel.setAttributedTextWith(text: formatterTime,
                                         font: .currentFont(withSize: 12, weight: .regular),
                                         textColor: timeColor,
