@@ -72,8 +72,12 @@ private extension ChatViewPresenter {
     
     func setupTitle() {
         Task {
-            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-            view?.setTitleOfType(.domain(domains[0]))
+            switch channelType {
+            case .domain(let channel):
+                let domainName = channel.domainName
+                let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName)
+                view?.setTitleOfType(.domainName(domainName, pfpInfo: pfpInfo))
+            }
         }
     }
 }

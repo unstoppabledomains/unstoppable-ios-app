@@ -52,8 +52,8 @@ final class ChatTitleView: UIView {
 extension ChatTitleView {
     func setTitleOfType(_ titleType: TitleType) {
         switch titleType {
-        case .domain(let domain):
-            setWithDomain(domain)
+        case .domainName(let domainName, let pfpInfo):
+            setWithDomainName(domainName, pfpInfo: pfpInfo)
         }
         setNeedsLayout()
         layoutIfNeeded()
@@ -69,15 +69,31 @@ private extension ChatTitleView {
         return title.width(withConstrainedHeight: .greatestFiniteMagnitude, font: font)
     }
     
-    func setWithDomain(_ domain: DomainDisplayInfo) {
-        Task {
-            iconImageView.image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain,
-                                                                                                             size: .default),
-                                                                                 downsampleDescription: nil)
+    func setWithDomainName(_ domainName: DomainName, pfpInfo: DomainPFPInfo?) {
+        if let pfpSource = pfpInfo?.source {
+            Task {
+                if let image = await appContext.imageLoadingService.loadImage(from: .domainPFPSource(pfpSource),
+                                                                              downsampleDescription: nil) {
+                    iconImageView.image = image
+                } else {
+                    setIconWithInitialsFor(name: domainName)
+                }
+            }
+        } else {
+            setIconWithInitialsFor(name: domainName)
         }
-        titleLabel.setAttributedTextWith(text: domain.name,
+        titleLabel.setAttributedTextWith(text: domainName,
                                          font: .currentFont(withSize: 16, weight: .semibold),
                                          textColor: .foregroundDefault)
+    }
+    
+    func setIconWithInitialsFor(name: String) {
+        Task {
+            iconImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(name,
+                                                                                                 size: .default,
+                                                                                                 style: .accent),
+                                                                                 downsampleDescription: nil)
+        }
     }
 }
 
@@ -94,7 +110,7 @@ private extension ChatTitleView {
         iconImageView.layer.cornerRadius = iconSize / 2
         iconImageView.layer.borderWidth = 1
         iconImageView.layer.borderColor = UIColor.borderSubtle.cgColor
-        iconImageView.clipsToBounds = true 
+        iconImageView.clipsToBounds = true
         addSubview(iconImageView)
     }
     
@@ -108,6 +124,6 @@ private extension ChatTitleView {
 // MARK: - Open methods
 extension ChatTitleView {
     enum TitleType {
-        case domain(_ domain: DomainDisplayInfo)
+        case domainName(_ domainName: DomainName, pfpInfo: DomainPFPInfo?)
     }
 }

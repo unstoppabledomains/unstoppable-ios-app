@@ -359,7 +359,11 @@ extension NetworkService {
     
     //MARK: public methods
     public func fetchPublicProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
-        guard let url = Endpoint.getPublicProfile(for: domain,
+        try await fetchPublicProfile(for: domain.name, fields: fields)
+    }
+    
+    public func fetchPublicProfile(for domainName: DomainName, fields: Set<GetDomainProfileField>) async throws -> SerializedPublicDomainProfile {
+        guard let url = Endpoint.getPublicProfile(for: domainName,
                                                   fields: fields).url else {
             throw NetworkLayerError.creatingURLFailed
         }
