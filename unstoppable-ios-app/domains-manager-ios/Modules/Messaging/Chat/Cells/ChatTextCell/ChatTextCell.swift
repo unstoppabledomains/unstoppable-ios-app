@@ -34,7 +34,7 @@ final class ChatTextCell: UICollectionViewCell {
         switch sender {
         case .user, .none:
             containerView.layer.shadowPath = nil
-        case .opponent:
+        case .friend:
             containerView.applyFigmaShadow(style: .xSmall)
         }
     }

@@ -85,7 +85,7 @@ private extension MockMessagingService {
         if bools.randomElement() == true {
             return .user
         }
-        return .opponent
+        return .friend
     }
     
     func createMockLastMessageForChannelWithSender(_ sender: ChatSender) -> ChatMessageType {

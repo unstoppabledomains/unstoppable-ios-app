@@ -8,5 +8,5 @@
 import Foundation
 
 enum ChatSender: Hashable {
-    case user, opponent
+    case user, friend
 }

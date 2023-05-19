@@ -63,9 +63,10 @@ extension ChatTitleView {
 // MARK: - Private methods
 private extension ChatTitleView {
     func calculateTitleLabelWidth() -> CGFloat {
-        guard let font = titleLabel.font else { return 0 }
+        guard let font = titleLabel.font,
+              let title = titleLabel.attributedString?.string else { return 0 }
         
-        let title = titleLabel.attributedString.string
+        
         return title.width(withConstrainedHeight: .greatestFiniteMagnitude, font: font)
     }
     
