@@ -9,11 +9,12 @@ import UIKit
 
 @MainActor
 protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
-    func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool)
+    func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool, completion: EmptyCallback?)
     func startTyping()
     func setInputText(_ text: String)
     func setPlaceholder(_ placeholder: String)
     func setTitleOfType(_ titleType: ChatTitleView.TitleType)
+    func scrollToTheBottom(animated: Bool)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -49,8 +50,8 @@ final class ChatViewController: BaseViewController {
 
 // MARK: - ChatViewProtocol
 extension ChatViewController: ChatViewProtocol {
-    func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool) {
-        dataSource.apply(snapshot, animatingDifferences: animated)
+    func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool, completion: EmptyCallback?) {
+        dataSource.apply(snapshot, animatingDifferences: animated, completion: completion)
     }
     
     func startTyping() {
@@ -67,6 +68,19 @@ extension ChatViewController: ChatViewProtocol {
     
     func setTitleOfType(_ titleType: ChatTitleView.TitleType) {
         titleView.setTitleOfType(titleType)
+    }
+    
+    func scrollToTheBottom(animated: Bool) {
+        let snapshot = dataSource.snapshot()
+        let sections = snapshot.sectionIdentifiers
+        
+        guard let section = sections.last else { return }
+        
+        let itemsCount = snapshot.numberOfItems(inSection: section)
+        guard itemsCount > 0 else { return }
+        
+        let indexPath = IndexPath(item: itemsCount - 1, section: sections.count - 1)
+        collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
     }
 }
 

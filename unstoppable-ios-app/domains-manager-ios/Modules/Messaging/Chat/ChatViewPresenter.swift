@@ -32,7 +32,7 @@ final class ChatViewPresenter {
 extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
         setupTitle()
-        showData()
+        showData(completion: { [weak self] in self?.view?.scrollToTheBottom(animated: false) })
     }
     
     func didSelectItem(_ item: ChatViewController.Item) {
@@ -50,7 +50,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
 
 // MARK: - Private functions
 private extension ChatViewPresenter {
-    func showData() {
+    func showData(completion: EmptyCallback? = nil) {
         Task {
             var snapshot = ChatSnapshot()
             
@@ -59,7 +59,7 @@ private extension ChatViewPresenter {
             snapshot.appendSections([.messages])
             snapshot.appendItems(messages.map({ createSnapshotItemFrom(message: $0) }))
             
-            view?.applySnapshot(snapshot, animated: true)
+            view?.applySnapshot(snapshot, animated: true, completion: completion)
         }
     }
     
