@@ -24,6 +24,7 @@ final class ChatInputView: UIView {
     private var sendButton: UIButtonWithExtendedTappableArea!
     private var leadingButton: UIButtonWithExtendedTappableArea!
     private var loadingIndicator: UIActivityIndicatorView!
+    private var topBorderView: UIView!
     
     private var leadingButtonSize: CGFloat = 21
     private let sendButtonSize: CGFloat = 40
@@ -59,6 +60,7 @@ final class ChatInputView: UIView {
         let bottomInset = isKeyboardOpened ? 0 : self.bottomInset
         self.frame.size.width = superview.bounds.width
         self.frame.origin.x = 0
+        topBorderView.frame = CGRect(x: 0, y: 0, width: bounds.width, height: 1)
         
         leadingButton.frame.origin.x = leadingHorizontalOffset
         
@@ -125,6 +127,13 @@ extension ChatInputView {
                                                font: .currentFont(withSize: 16, weight: .regular),
                                                textColor: .foregroundSecondary,
                                                lineBreakMode: .byTruncatingTail)
+    }
+    
+    func setTopBorderHidden(_ isHidden: Bool, animated: Bool) {
+        let animationDuration: TimeInterval = animated ? 0.25 : 0.0
+        UIView.animate(withDuration: animationDuration) {
+            self.topBorderView.alpha = isHidden ? 0 : 1
+        }
     }
 }
 
@@ -240,13 +249,14 @@ private extension ChatInputView {
         setupSendButton()
         setupLeadingButton()
         setupLoadingIndicator()
+        setupTopBorder()
         KeyboardService.shared.addListener(self)
         setState(.default)
         setPlaceholder()
     }
     
     func setupBackgroundBlur() {
-        backgroundBlur = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterial))
+        backgroundBlur = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterial))
         backgroundBlur.frame = bounds
         backgroundBlur.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         addSubview(backgroundBlur)
@@ -305,6 +315,11 @@ private extension ChatInputView {
         addSubview(loadingIndicator)
     }
     
+    func setupTopBorder() {
+        topBorderView = UIView()
+        topBorderView.backgroundColor = .borderDefault
+        addSubview(topBorderView)
+    }
 }
 
 // MARK: - Open methods

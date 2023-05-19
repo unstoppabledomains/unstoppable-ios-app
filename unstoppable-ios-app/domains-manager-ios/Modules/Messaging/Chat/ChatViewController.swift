@@ -71,15 +71,8 @@ extension ChatViewController: ChatViewProtocol {
     }
     
     func scrollToTheBottom(animated: Bool) {
-        let snapshot = dataSource.snapshot()
-        let sections = snapshot.sectionIdentifiers
+        guard let indexPath = getLastItemIndexPath() else { return }
         
-        guard let section = sections.last else { return }
-        
-        let itemsCount = snapshot.numberOfItems(inSection: section)
-        guard itemsCount > 0 else { return }
-        
-        let indexPath = IndexPath(item: itemsCount - 1, section: sections.count - 1)
         collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
     }
 }
@@ -94,6 +87,13 @@ extension ChatViewController: UICollectionViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         cNavigationController?.underlyingScrollViewDidScroll(scrollView)
+        if let lastItemIndexPath = getLastItemIndexPath(),
+           let cell = collectionView.cellForItem(at: lastItemIndexPath) {
+            let cellFrameInView = collectionView.convert(cell.frame, to: view)
+            let isChatInputViewTopBorderVisible = cellFrameInView.maxY >= chatInputView.frame.minY
+            chatInputView.setTopBorderHidden(!isChatInputViewTopBorderVisible,
+                                             animated: true)
+        }
     }
 }
 
@@ -118,6 +118,19 @@ private extension ChatViewController {
         let keyboardHeight = isKeyboardOpened ? keyboardFrame.height : 0
         collectionView.contentInset.bottom = chatInputView.bounds.height + keyboardHeight + 12
     }
+    
+    func getLastItemIndexPath() -> IndexPath? {
+        guard let snapshot = dataSource?.snapshot() else { return nil }
+        let sections = snapshot.sectionIdentifiers
+        
+        guard let section = sections.last else { return nil }
+        
+        let itemsCount = snapshot.numberOfItems(inSection: section)
+        guard itemsCount > 0 else { return nil }
+        
+        let indexPath = IndexPath(item: itemsCount - 1, section: sections.count - 1)
+        return indexPath
+    }
 }
 
 // MARK: - Setup functions
@@ -131,6 +144,7 @@ private extension ChatViewController {
     func setupInputView() {
         chatInputView.frame.origin.x = 0
         chatInputView.frame.origin.y = self.view.bounds.height - ChatInputView.height
+        chatInputView.setTopBorderHidden(true, animated: false)
         chatInputView.delegate = self
     }
     
