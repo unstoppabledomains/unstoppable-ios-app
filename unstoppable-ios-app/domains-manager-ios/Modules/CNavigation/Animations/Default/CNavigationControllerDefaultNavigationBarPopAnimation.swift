@@ -36,6 +36,9 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
             cNav.navigationBar.setBackButton(hidden: true)
         }
         
+        let navItemsTransitionPerformer = NavBarItemsTransitionPerformer()
+        navItemsTransitionPerformer.setupWithCurrent(navBarContentView: navBar.navBarContentView)
+        
         navBar.setBackButton(hidden: true)
         let navBarSnapshot = UIImageView(frame: navBar.frame)
         navBarSnapshot.image = navBar.toImageInWindowHierarchy()
@@ -46,6 +49,8 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         navBar.setupWith(child: toNavChild, navigationItem: toViewController.navigationItem)
         navBar.navBarContentView.setTitleView(hidden: toViewController.navigationItem.titleView?.alpha == 0, animated: false)
         CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)
+        navItemsTransitionPerformer.setupWithNew(navBarContentView: navBar.navBarContentView)
+        navItemsTransitionPerformer.addToWindow(navBar.window)
         navBar.navBarBlur.alpha = isBlurActive ? 1 : 0
         navBar.divider.alpha = isBlurActive ? 1 : 0
         navBar.frame.origin.x = -containerView.bounds.width
@@ -64,6 +69,8 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
                     }
                 }
             })
+            
+            navItemsTransitionPerformer.performAnimationsWith(duration: duration)
         }
         
         animator.addCompletion { position in
@@ -71,10 +78,13 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
                 navBar.frame.origin = .zero
                 navBarSnapshot.removeFromSuperview()
                 navBackButtonSnapshot.removeFromSuperview()
+
                 if position == .end {
+                    navItemsTransitionPerformer.finishTransition(isFinished: true)
                     CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)
                     navBar.setBackButton(hidden: isBackButtonHidden)
                 } else {
+                    navItemsTransitionPerformer.finishTransition(isFinished: false)
                     navBar.setupWith(child: fromNavChild, navigationItem: fromViewController.navigationItem)
                     navBar.setBackButton(hidden: false)
                     if let cNav = fromViewController as? CNavigationController {
