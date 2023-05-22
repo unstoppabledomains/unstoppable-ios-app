@@ -146,6 +146,32 @@ extension UIView {
         return image
     }
     
+    /// This function will works properly with snapshot of blur
+    func toImageInWindowHierarchy(afterScreenUpdates: Bool = true) -> UIImage? {
+        guard let window else { return nil }
+         
+        UIGraphicsBeginImageContextWithOptions(window.bounds.size, false, 20)
+        
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        context.interpolationQuality = .high
+        context.setAllowsFontSmoothing(true)
+        context.setShouldSmoothFonts(true)
+        context.setAllowsAntialiasing(true)
+        context.setShouldAntialias(true)
+        
+        window.drawHierarchy(in: window.bounds, afterScreenUpdates: afterScreenUpdates)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return image?.cropTo(rect: frame)
+    }
+    
+    func renderedImageView() -> UIImageView {
+        let imageView = UIImageView(frame: frame)
+        imageView.image = self.renderedImage()
+        return imageView
+    }
+    
     func renderedImage() -> UIImage {
         let renderer = UIGraphicsImageRenderer(bounds: bounds)
         return renderer.image { rendererContext in

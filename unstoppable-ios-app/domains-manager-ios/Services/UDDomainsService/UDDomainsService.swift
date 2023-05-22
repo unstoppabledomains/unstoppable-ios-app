@@ -67,7 +67,7 @@ extension UDDomainsService: UDDomainsServiceProtocol {
         
         if let profile = (try? await NetworkService().fetchPublicProfile(for: domainName,
                                                                          fields: [.profile, .records])) {
-            Debugger.printTimeSensitiveInfo(topic: .Domain,
+            Debugger.printTimeSensitiveInfo(topic: .Images,
                                             "to load \(domainName) domain pfp",
                                             startDate: start,
                                             timeout: 1)

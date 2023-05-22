@@ -33,7 +33,7 @@ extension MockMessagingService: MessagingServiceProtocol {
         return unreadMessagesSum
     }
     
-    func getMessagesForChannel(_ channel: ChatChannelType) async -> [ChatMessageType] {
+    func getMessagesForChannel(_ channel: ChatChannelType) -> [ChatMessageType] {
         if let cachedMessages = channelsMessages[channel] {
             return cachedMessages
         }
@@ -49,7 +49,7 @@ private extension MockMessagingService {
     func createMockChannelsFor(domain: DomainDisplayInfo) -> [ChatChannelType] {
         var channels = [ChatChannelType]()
         var mockDomainChatInfos = getMockDomainChatInfos()
-        let numberOfChannelsToTake = max(1, arc4random_uniform(UInt32(mockDomainChatInfos.count)))
+        let numberOfChannelsToTake = mockDomainChatInfos.count // max(1, arc4random_uniform(UInt32(mockDomainChatInfos.count)))
         
         for _ in 0..<numberOfChannelsToTake {
             if let randomChat = mockDomainChatInfos.randomElement() {
@@ -76,6 +76,24 @@ private extension MockMessagingService {
          .init(domainName: "iurevych.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/misterfirst.x/3efb99b7-9d84-4037-b8b3-7bdd610cbb6b.png"),
          .init(domainName: "ryan.crypto",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto2",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto3",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto4",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto5",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto6",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto7",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto8",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto9",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto10",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png")]
     }
     
