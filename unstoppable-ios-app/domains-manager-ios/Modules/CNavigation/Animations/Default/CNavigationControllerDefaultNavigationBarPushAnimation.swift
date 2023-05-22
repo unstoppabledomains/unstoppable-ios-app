@@ -25,7 +25,7 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
         /// Back button logic
         navBar.setBackButton(hidden: false)
         let navBackButtonSnapshot = navBar.navBarContentView.backButton.renderedImageView()
-        navBackButtonSnapshot.frame.origin = navBar.navBarContentView.convert(navBar.navBarContentView.backButton.frame, to: navBar).origin
+        navBackButtonSnapshot.frame = navBar.navBarContentView.backButton.calculateFrameInWindow()
         navBar.setBackButton(hidden: true)
         if isBackButtonHidden {
             navBackButtonSnapshot.alpha = 0
@@ -33,7 +33,8 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
         
         let navBarSnapshot = UIImageView(frame: navBar.frame)
         navBarSnapshot.image = navBar.toImageInWindowHierarchy()
-        navBar.superview?.addSubview(navBarSnapshot)
+        navBarSnapshot.frame = navBar.calculateFrameInWindow()
+        navBar.window?.addSubview(navBarSnapshot)
         navBar.window?.addSubview(navBackButtonSnapshot)
 
         navBar.setupWith(child: toNavChild, navigationItem: toViewController.navigationItem)

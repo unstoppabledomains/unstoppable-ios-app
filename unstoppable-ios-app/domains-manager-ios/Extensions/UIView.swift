@@ -164,8 +164,9 @@ extension UIView {
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        let croppingRect = CGRect(origin: CGPoint(x: frame.origin.x * scale,
-                                                  y: frame.origin.y * scale),
+        let frameInWindow = calculateFrameInWindow()
+        let croppingRect = CGRect(origin: CGPoint(x: frameInWindow.origin.x * scale,
+                                                  y: frameInWindow.origin.y * scale),
                                   size: CGSize(width: bounds.width * scale,
                                                height: bounds.height * scale))
         guard let cgIImage = image?.cgImage?.cropping(to: croppingRect) else { return nil }
@@ -175,6 +176,15 @@ extension UIView {
                                orientation: UIImage.Orientation.up)
         
         return newImage
+    }
+    
+    func calculateFrameInWindow() -> CGRect {
+        guard let window else { return frame }
+        
+        if let superview {
+            return superview.convert(frame, to: window)
+        }
+        return convert(frame, to: window)
     }
     
     func renderedImageView() -> UIImageView {
