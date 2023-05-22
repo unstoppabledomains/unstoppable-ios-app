@@ -59,35 +59,10 @@ extension UDWallet {
     }
     
     
-    
-    public func signPersonalEthMessage(_ personalMessage: Data) throws -> Data? {
-        guard let privateKeyString = self.getPrivateKey() else { return nil }
-        return try UDWallet.signPersonalEthMessage(personalMessage, with: privateKeyString)
-    }
-    
-    public func signHashedMessage(_ hash: Data) throws -> Data? {
-        guard let privateKeyString = self.getPrivateKey() else { return nil }
-        return try UDWallet.signMessageHash(messageHash: hash, with: privateKeyString)
-    }
-    
-    static public func signPersonalEthMessage(_ personalMessage: Data,
-                                       with privateKeyString: String) throws -> Data? {
-        guard let hash = Web3.Utils.hashPersonalMessage(personalMessage) else { return nil }
-        return try signMessageHash(messageHash: hash, with: privateKeyString)
-    }
-    
-    static public func signMessageHash(messageHash: Data,
-                                       with privateKeyString: String) throws -> Data? {
-        var privateKey = Data(privateKeyString.droppedHexPrefix.hexToBytes())
-        defer { Data.zero(&privateKey) }
-        return try signMessageHash(messageHash: messageHash, with: privateKey)
-    }
-    
-    static public func signMessageHash(messageHash: Data,
-                                       with privateKeyData: Data) throws -> Data? {
-        let (compressedSignature, _) = SECP256K1.signForRecovery(hash: messageHash, privateKey: privateKeyData, useExtraEntropy: false)
-        return compressedSignature
-    }
+//    public func signHashedMessage(_ hash: Data) throws -> Data? {
+//        guard let privateKeyString = self.getPrivateKey() else { return nil }
+//        return try UDWallet.signMessageHash(messageHash: hash, with: privateKeyString)
+//    }
     
     func signEth(messageString: String) -> String? {
         guard messageString.droppedHexPrefix.isHexNumber else {
@@ -96,21 +71,9 @@ extension UDWallet {
         return signAsHexString(messageString: messageString)
     }
     
-    func signPersonal(messageString: String) -> String? {
-        if messageString.droppedHexPrefix.isHexNumber {
-            return signAsHexString(messageString: messageString)
-        }
-        
-        guard let data = messageString.data(using: .utf8),
-              let signature = try? self.signPersonalEthMessage(data) else {
-            return nil
-        }
-        return HexAddress.hexPrefix + signature.dataToHexString()
-    }
-    
     private func signAsHexString(messageString: String) -> String? {
         let data = Data(messageString.droppedHexPrefix.hexToBytes())
-        guard let signature = try? self.signPersonalEthMessage(data) else {
+        guard let signature = try? self.signPersonalMessage(data) else {
             return nil
         }
         return HexAddress.hexPrefix + signature.dataToHexString()
@@ -231,5 +194,46 @@ extension UDWallet {
         }
         guard messages.count == sigs.count else { throw UDWallet.Error.failedSignature }
         return sigs
+    }
+}
+
+//core maethods
+
+extension UDWallet {
+    
+    func signPersonal(messageString: String) -> String? {
+        if messageString.droppedHexPrefix.isHexNumber {
+            return signAsHexString(messageString: messageString)
+        }
+        
+        guard let data = messageString.data(using: .utf8),
+              let signature = try? self.signPersonalMessage(data) else {
+            return nil
+        }
+        return HexAddress.hexPrefix + signature.dataToHexString()
+    }
+    
+    public func signPersonalMessage(_ personalMessage: Data) throws -> Data? {
+        guard let privateKeyString = self.getPrivateKey() else { return nil }
+        return try UDWallet.signPersonalMessage(personalMessage, with: privateKeyString)
+    }
+    
+    static public func signPersonalMessage(_ personalMessage: Data,
+                                       with privateKeyString: String) throws -> Data? {
+        guard let hash = Web3.Utils.hashPersonalMessage(personalMessage) else { return nil }
+        return try signMessageHash(messageHash: hash, with: privateKeyString)
+    }
+    
+    static public func signMessageHash(messageHash: Data,
+                                       with privateKeyString: String) throws -> Data? {
+        var privateKey = Data(privateKeyString.droppedHexPrefix.hexToBytes())
+        defer { Data.zero(&privateKey) }
+        return try signMessageHash(messageHash: messageHash, with: privateKey)
+    }
+    
+    static public func signMessageHash(messageHash: Data,
+                                       with privateKeyData: Data) throws -> Data? {
+        let (compressedSignature, _) = SECP256K1.signForRecovery(hash: messageHash, privateKey: privateKeyData, useExtraEntropy: false)
+        return compressedSignature
     }
 }
