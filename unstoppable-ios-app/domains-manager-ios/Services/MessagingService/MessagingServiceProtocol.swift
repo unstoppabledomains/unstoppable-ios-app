@@ -11,5 +11,5 @@ import Foundation
 protocol MessagingServiceProtocol {
     func getChannelsForDomain(_ domain: DomainDisplayInfo) async -> [ChatChannelType]
     func getNumberOfUnreadMessagesInChannelsForDomain(_ domain: DomainDisplayInfo) async -> Int
-    func getMessagesForChannel(_ channel: ChatChannelType) async -> [ChatMessageType]
+    func getMessagesForChannel(_ channel: ChatChannelType) -> [ChatMessageType]
 }

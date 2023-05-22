@@ -52,8 +52,8 @@ final class ChatTitleView: UIView {
 extension ChatTitleView {
     func setTitleOfType(_ titleType: TitleType) {
         switch titleType {
-        case .domainName(let domainName, let pfpInfo):
-            setWithDomainName(domainName, pfpInfo: pfpInfo)
+        case .domainName(let domainName):
+            setWithDomainName(domainName)
         }
         setNeedsLayout()
         layoutIfNeeded()
@@ -70,20 +70,22 @@ private extension ChatTitleView {
         return title.width(withConstrainedHeight: .greatestFiniteMagnitude, font: font)
     }
     
-    func setWithDomainName(_ domainName: DomainName, pfpInfo: DomainPFPInfo?) {
-        if let pfpSource = pfpInfo?.source {
-            Task {
-                if let image = await appContext.imageLoadingService.loadImage(from: .domainPFPSource(pfpSource),
-                                                                              downsampleDescription: nil) {
-                    iconImageView.image = image
-                } else {
-                    setIconWithInitialsFor(name: domainName)
-                }
+    func setWithDomainName(_ domainName: DomainName) {
+        setTitle(domainName)
+        Task {
+            let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName)
+            if let pfpInfo,
+               let image = await appContext.imageLoadingService.loadImage(from: .domainPFPSource(pfpInfo.source),
+                                                                          downsampleDescription: nil) {
+                iconImageView.image = image
+            } else {
+                setIconWithInitialsFor(name: domainName)
             }
-        } else {
-            setIconWithInitialsFor(name: domainName)
         }
-        titleLabel.setAttributedTextWith(text: domainName,
+    }
+    
+    func setTitle(_ title: String) {
+        titleLabel.setAttributedTextWith(text: title,
                                          font: .currentFont(withSize: 16, weight: .semibold),
                                          textColor: .foregroundDefault)
     }
@@ -125,6 +127,6 @@ private extension ChatTitleView {
 // MARK: - Open methods
 extension ChatTitleView {
     enum TitleType {
-        case domainName(_ domainName: DomainName, pfpInfo: DomainPFPInfo?)
+        case domainName(_ domainName: DomainName)
     }
 }

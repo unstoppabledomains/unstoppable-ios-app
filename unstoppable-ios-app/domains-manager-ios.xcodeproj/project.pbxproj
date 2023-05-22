@@ -2939,22 +2939,6 @@
 		C6C995C7289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */; };
 		C6C995C8289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */; };
 		C6C995C9289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */; };
-		C6C995CA289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957D289D313D00367362 /* CNavBarTitleTransitioning.swift */; };
-		C6C995CB289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957D289D313D00367362 /* CNavBarTitleTransitioning.swift */; };
-		C6C995CC289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957D289D313D00367362 /* CNavBarTitleTransitioning.swift */; };
-		C6C995CD289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957D289D313D00367362 /* CNavBarTitleTransitioning.swift */; };
-		C6C995CE289D313D00367362 /* CNavComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957E289D313D00367362 /* CNavComponents.swift */; };
-		C6C995CF289D313D00367362 /* CNavComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957E289D313D00367362 /* CNavComponents.swift */; };
-		C6C995D0289D313D00367362 /* CNavComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957E289D313D00367362 /* CNavComponents.swift */; };
-		C6C995D1289D313D00367362 /* CNavComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957E289D313D00367362 /* CNavComponents.swift */; };
-		C6C995D2289D313D00367362 /* CNavItemsTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957F289D313D00367362 /* CNavItemsTransitioning.swift */; };
-		C6C995D3289D313D00367362 /* CNavItemsTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957F289D313D00367362 /* CNavItemsTransitioning.swift */; };
-		C6C995D4289D313D00367362 /* CNavItemsTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957F289D313D00367362 /* CNavItemsTransitioning.swift */; };
-		C6C995D5289D313D00367362 /* CNavItemsTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957F289D313D00367362 /* CNavItemsTransitioning.swift */; };
-		C6C995D6289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99580289D313D00367362 /* CNavBarHideTransitioning.swift */; };
-		C6C995D7289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99580289D313D00367362 /* CNavBarHideTransitioning.swift */; };
-		C6C995D8289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99580289D313D00367362 /* CNavBarHideTransitioning.swift */; };
-		C6C995D9289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99580289D313D00367362 /* CNavBarHideTransitioning.swift */; };
 		C6C995DA289D313E00367362 /* CNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99581289D313D00367362 /* CNavigationBar.swift */; };
 		C6C995DB289D313E00367362 /* CNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99581289D313D00367362 /* CNavigationBar.swift */; };
 		C6C995DC289D313E00367362 /* CNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99581289D313D00367362 /* CNavigationBar.swift */; };
@@ -4422,10 +4406,6 @@
 		C6C99579289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerDefaultPopAnimation.swift; sourceTree = "<group>"; };
 		C6C9957A289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerDefaultNavigationBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBaseTransitioningAnimation.swift; sourceTree = "<group>"; };
-		C6C9957D289D313D00367362 /* CNavBarTitleTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavBarTitleTransitioning.swift; sourceTree = "<group>"; };
-		C6C9957E289D313D00367362 /* CNavComponents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavComponents.swift; sourceTree = "<group>"; };
-		C6C9957F289D313D00367362 /* CNavItemsTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavItemsTransitioning.swift; sourceTree = "<group>"; };
-		C6C99580289D313D00367362 /* CNavBarHideTransitioning.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavBarHideTransitioning.swift; sourceTree = "<group>"; };
 		C6C99581289D313D00367362 /* CNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationBar.swift; sourceTree = "<group>"; };
 		C6C9A80629C390F300B23675 /* FirebaseInteractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseInteractionService.swift; sourceTree = "<group>"; };
 		C6C9DE9128349E2900BAC36F /* WalletDataValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataValidationTests.swift; sourceTree = "<group>"; };
@@ -7381,7 +7361,6 @@
 				C6C99571289D313D00367362 /* Slide */,
 				C6C99576289D313D00367362 /* Default */,
 				C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */,
-				C6C9957C289D313D00367362 /* Transitioning */,
 			);
 			path = Animations;
 			sourceTree = "<group>";
@@ -7406,17 +7385,6 @@
 				C6C9957A289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift */,
 			);
 			path = Default;
-			sourceTree = "<group>";
-		};
-		C6C9957C289D313D00367362 /* Transitioning */ = {
-			isa = PBXGroup;
-			children = (
-				C6C9957D289D313D00367362 /* CNavBarTitleTransitioning.swift */,
-				C6C9957E289D313D00367362 /* CNavComponents.swift */,
-				C6C9957F289D313D00367362 /* CNavItemsTransitioning.swift */,
-				C6C99580289D313D00367362 /* CNavBarHideTransitioning.swift */,
-			);
-			path = Transitioning;
 			sourceTree = "<group>";
 		};
 		C6C9DE9D2834B55100BAC36F /* ManageDomainLoadingCell */ = {
@@ -8978,7 +8946,6 @@
 				C6D5DABC2836021300379C38 /* CryptoRecord.swift in Sources */,
 				C665B9C028335808005E535C /* ListItemView.swift in Sources */,
 				C692C31B282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
-				C6C995D2289D313D00367362 /* CNavItemsTransitioning.swift in Sources */,
 				30EFBBDC27F4754E00B8D667 /* MainButton.swift in Sources */,
 				C66FCD0D2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
 				C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */,
@@ -9072,7 +9039,6 @@
 				C6526DB929D2BACB00D6F2EB /* AppSessionInterpreter.swift in Sources */,
 				C6A2D579284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5BD281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
-				C6C995CA289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */,
 				C671E39F28FE974900A2B3A0 /* UDCarouselFeature.swift in Sources */,
 				C609826C2824013500546392 /* EnterBackupBasePresenter.swift in Sources */,
 				C6668946281151F6002062B4 /* TertiaryButton.swift in Sources */,
@@ -9165,7 +9131,6 @@
 				C6D6E5452819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
 				C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
 				29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
-				C6C995CE289D313D00367362 /* CNavComponents.swift in Sources */,
 				C66804C9280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
 				306C9ACD273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
 				C6A2D50A284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
@@ -9477,7 +9442,6 @@
 				C666E0C829CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
 				C679B60A291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C628E34527FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
-				C6C995D6289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */,
 				C692C313282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C655D029284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35427FDB8560044E408 /* DashesProgressView.swift in Sources */,
@@ -9722,7 +9686,6 @@
 				C673D59F29FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */,
 				C665B9C228335808005E535C /* ListItemView.swift in Sources */,
 				C692C31D282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
-				C6C995D4289D313D00367362 /* CNavItemsTransitioning.swift in Sources */,
 				C6E1189B28F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6ED320A295D4C4F00BC6919 /* DomainsCollectionTitleMintingProgressView.swift in Sources */,
 				C600AB8F29F8085D0089107B /* MockDomainTransferService.swift in Sources */,
@@ -9814,7 +9777,6 @@
 				C6A2D57B284F9EC700327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5BF281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
 				C6109E2D28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */,
-				C6C995CC289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */,
 				C609826E2824013500546392 /* EnterBackupBasePresenter.swift in Sources */,
 				C6109E3528E5AB310027D5D8 /* AuthentificationService.swift in Sources */,
 				C6BEEF2829C30AEB000489B9 /* UDTwitterSigner.swift in Sources */,
@@ -9885,7 +9847,6 @@
 				C63F1D1328AF31D5000A5C12 /* AnalyticsService.swift in Sources */,
 				C66435D6288EE4A00098E1B8 /* MetadataNetworkConfig.swift in Sources */,
 				C6D6E5472819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
-				C6C995D0289D313D00367362 /* CNavComponents.swift in Sources */,
 				C66804CB280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
 				306C9ACF273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
 				C6A2D50C284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
@@ -10227,7 +10188,6 @@
 				307F8409267A339F0070A9A6 /* KeychainLayer.swift in Sources */,
 				C685A97D2840BF6200E54044 /* InfoScreen.swift in Sources */,
 				C628E34727FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
-				C6C995D8289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */,
 				C692C315282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C6B366B82A173AC700DE512B /* ChatSectionHeaderView.swift in Sources */,
 				C655D02B284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
@@ -10431,7 +10391,6 @@
 				C673D5A029FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */,
 				C665B9C328335808005E535C /* ListItemView.swift in Sources */,
 				C692C31E282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
-				C6C995D5289D313D00367362 /* CNavItemsTransitioning.swift in Sources */,
 				C6E1189C28F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6ED320B295D4C4F00BC6919 /* DomainsCollectionTitleMintingProgressView.swift in Sources */,
 				C600AB9029F8085D0089107B /* MockDomainTransferService.swift in Sources */,
@@ -10522,7 +10481,6 @@
 				C6D6E5B5281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C6A2D57C284F9EC700327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5C0281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
-				C6C995CD289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */,
 				C6109E2E28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */,
 				C609826F2824013500546392 /* EnterBackupBasePresenter.swift in Sources */,
 				C6668949281151F6002062B4 /* TertiaryButton.swift in Sources */,
@@ -10595,7 +10553,6 @@
 				C63F1D1428AF31D5000A5C12 /* AnalyticsService.swift in Sources */,
 				C66435D7288EE4A00098E1B8 /* MetadataNetworkConfig.swift in Sources */,
 				C6D6E5482819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
-				C6C995D1289D313D00367362 /* CNavComponents.swift in Sources */,
 				C66804CC280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
 				306C9AD0273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
 				C600AB8629F807F60089107B /* DomainTransferService.swift in Sources */,
@@ -10937,7 +10894,6 @@
 				307F85C2267B60300070A9A6 /* KeychainLayer.swift in Sources */,
 				C685A97E2840BF6200E54044 /* InfoScreen.swift in Sources */,
 				C628E34827FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
-				C6C995D9289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */,
 				C6B366B92A173AC700DE512B /* ChatSectionHeaderView.swift in Sources */,
 				C692C316282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C655D02C284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
@@ -11163,7 +11119,6 @@
 				C6D5DABD2836021300379C38 /* CryptoRecord.swift in Sources */,
 				C665B9C128335808005E535C /* ListItemView.swift in Sources */,
 				C692C31C282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
-				C6C995D3289D313D00367362 /* CNavItemsTransitioning.swift in Sources */,
 				30EFBBDD27F4754E00B8D667 /* MainButton.swift in Sources */,
 				C66FCD0E2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
 				C6F6AF5A28A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */,
@@ -11257,7 +11212,6 @@
 				C6526DBA29D2BB3F00D6F2EB /* AppSessionInterpreter.swift in Sources */,
 				C6A2D57A284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5BE281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
-				C6C995CB289D313D00367362 /* CNavBarTitleTransitioning.swift in Sources */,
 				C671E3A028FE974900A2B3A0 /* UDCarouselFeature.swift in Sources */,
 				C609826D2824013500546392 /* EnterBackupBasePresenter.swift in Sources */,
 				C6668947281151F6002062B4 /* TertiaryButton.swift in Sources */,
@@ -11350,7 +11304,6 @@
 				C6D6E5462819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
 				C61002EB2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
 				29EDB61F28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
-				C6C995CF289D313D00367362 /* CNavComponents.swift in Sources */,
 				C66804CA280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
 				306C9ACE273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
 				C6A2D50B284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
@@ -11662,7 +11615,6 @@
 				C666E0C929CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
 				C679B60B291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C628E34627FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
-				C6C995D7289D313D00367362 /* CNavBarHideTransitioning.swift in Sources */,
 				C692C314282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C655D02A284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35527FDB8560044E408 /* DashesProgressView.swift in Sources */,

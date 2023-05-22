@@ -51,12 +51,10 @@ final class BackToSettingsNavBarPopAnimation: CBaseTransitioningAnimation {
         }
         
         let duration = transitionDuration(using: transitionContext)
-        let animator = UIViewPropertyAnimator(duration: duration,
-                                              controlPoint1: CNavigationHelper.AnimationCurveControlPoint1,
-                                              controlPoint2: CNavigationHelper.AnimationCurveControlPoint2) {
+        let animator = createAnimatorIn(transitionContext: transitionContext) {
             navBarContent.titleLabel.frame.origin.x = navBarContent.bounds.width // Move title to the right
             navBar.titleLabel.alpha = 0
-        }
+        } 
         
         animator.addAnimations {
             UIView.animateKeyframes(withDuration: duration, delay: 0.0, animations: {

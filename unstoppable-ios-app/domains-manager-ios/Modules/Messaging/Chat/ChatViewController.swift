@@ -45,6 +45,13 @@ final class ChatViewController: BaseViewController {
         
         cNavigationBar?.navBarContentView.setTitleView(hidden: false, animated: true)
         presenter.viewWillAppear()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            UIView.performWithoutAnimation {
+                let yOffset = CNavigationHelper.contentYOffset(of: self.collectionView)
+                self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
+            }
+        }
     }
 }
 
@@ -73,7 +80,7 @@ extension ChatViewController: ChatViewProtocol {
     func scrollToTheBottom(animated: Bool) {
         guard let indexPath = getLastItemIndexPath() else { return }
         
-        collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
+        self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
     }
 }
 

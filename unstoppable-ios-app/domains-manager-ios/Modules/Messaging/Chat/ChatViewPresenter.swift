@@ -36,7 +36,11 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
         setupTitle()
         setupPlaceholder()
-        showData(completion: { [weak self] in self?.view?.scrollToTheBottom(animated: false) })
+        showData(animated: false, completion: { [weak self] in
+            DispatchQueue.main.async {
+                self?.view?.scrollToTheBottom(animated: false)
+            }
+        })
     }
     
     func didSelectItem(_ item: ChatViewController.Item) {
@@ -54,23 +58,21 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
 
 // MARK: - Private functions
 private extension ChatViewPresenter {
-    func showData(completion: EmptyCallback? = nil) {
-        Task {
-            var snapshot = ChatSnapshot()
-            
-            let messages = await appContext.messagingService.getMessagesForChannel(channelType)
-            let groupedMessages = [Date : [ChatMessageType]].init(grouping: messages, by: { $0.time.dayStart })
-            let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })
-            
-            for date in sortedDates {
-                let messages = groupedMessages[date] ?? []
-                let title = MessageDateFormatter.formatMessagesSectionDate(date)
-                snapshot.appendSections([.messages(title: title)])
-                snapshot.appendItems(messages.map({ createSnapshotItemFrom(message: $0) }))
-            }
-            
-            view?.applySnapshot(snapshot, animated: true, completion: completion)
+    func showData(animated: Bool, completion: EmptyCallback? = nil) {
+        var snapshot = ChatSnapshot()
+        
+        let messages = appContext.messagingService.getMessagesForChannel(channelType)
+        let groupedMessages = [Date : [ChatMessageType]].init(grouping: messages, by: { $0.time.dayStart })
+        let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })
+        
+        for date in sortedDates {
+            let messages = groupedMessages[date] ?? []
+            let title = MessageDateFormatter.formatMessagesSectionDate(date)
+            snapshot.appendSections([.messages(title: title)])
+            snapshot.appendItems(messages.map({ createSnapshotItemFrom(message: $0) }))
         }
+        
+        view?.applySnapshot(snapshot, animated: animated, completion: completion)
     }
     
     func createSnapshotItemFrom(message: ChatMessageType) -> ChatViewController.Item {
@@ -81,13 +83,10 @@ private extension ChatViewPresenter {
     }
     
     func setupTitle() {
-        Task {
-            switch channelType {
-            case .domain(let channel):
-                let domainName = channel.domainName
-                let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName)
-                view?.setTitleOfType(.domainName(domainName, pfpInfo: pfpInfo))
-            }
+        switch channelType {
+        case .domain(let channel):
+            let domainName = channel.domainName
+            view?.setTitleOfType(.domainName(domainName))
         }
     }
     

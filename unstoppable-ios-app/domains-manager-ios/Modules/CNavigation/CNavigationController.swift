@@ -273,6 +273,8 @@ private extension CNavigationController {
         topViewController?.beginAppearanceTransition(false, animated: animated)
         viewController.beginAppearanceTransition(true, animated: animated)
         containerView.addSubview(viewController.view)
+        viewController.view.setNeedsLayout()
+        viewController.view.layoutIfNeeded()
         delegate?.navigationController(self, willShow: viewController, animated: animated)
         
         func finishPush() {
@@ -285,20 +287,20 @@ private extension CNavigationController {
         if animated,
            let topViewController = self.topViewController,
            topViewController != viewController {
-            let transition = transitionHandler.navigationController(self,
-                                                                    animationControllerFor: .push,
-                                                                    from: topViewController,
-                                                                    to: viewController) ?? CNavigationControllerDefaultPushAnimation(animationDuration: animationDuration)
+            let transition = self.transitionHandler.navigationController(self,
+                                                                         animationControllerFor: .push,
+                                                                         from: topViewController,
+                                                                         to: viewController) ?? CNavigationControllerDefaultPushAnimation(animationDuration: self.animationDuration)
             let context = NavigationTransitioningContext(containerView: containerView,
                                                          isAnimated: animated,
                                                          fromViewController: topViewController,
                                                          toViewController: viewController,
                                                          with: transition)
             
-            let navTransition = transitionHandler.navigationController(self,
-                                                                       navBarAnimationControllerFor: .push,
-                                                                       from: topViewController,
-                                                                       to: viewController) ?? CNavigationControllerDefaultNavigationBarPushAnimation(animationDuration: animationDuration)
+            let navTransition = self.transitionHandler.navigationController(self,
+                                                                            navBarAnimationControllerFor: .push,
+                                                                            from: topViewController,
+                                                                            to: viewController) ?? CNavigationControllerDefaultNavigationBarPushAnimation(animationDuration: self.animationDuration)
             
             if let animator = transition.interruptibleAnimator?(using: context) {
                 context.set(navigationAnimator: navTransition.interruptibleAnimator!(using: context))
@@ -309,9 +311,9 @@ private extension CNavigationController {
                 transition.animationEnded?(true)
                 topViewController.endAppearanceTransition()
                 finishPush()
-                navigationBar.setBackButton(hidden: false)
+                self.navigationBar.setBackButton(hidden: false)
                 viewController.endAppearanceTransition()
-                delegate?.navigationController(self, didShow: viewController, animated: animated)
+                self.delegate?.navigationController(self, didShow: viewController, animated: animated)
             }
             
             func cancelTransition() {
@@ -323,11 +325,11 @@ private extension CNavigationController {
                 topViewController.beginAppearanceTransition(true, animated: animated)
                 topViewController.endAppearanceTransition()
                 
-                setTransitioning(false)
+                self.setTransitioning(false)
             }
             
-            if let interactive = transitionHandler.navigationController(self,
-                                                                   interactionControllerFor: transition) {
+            if let interactive = self.transitionHandler.navigationController(self,
+                                                                             interactionControllerFor: transition) {
                 interactive.startInteractiveTransition(context)
             } else {
                 transition.animateTransition(using: context)
