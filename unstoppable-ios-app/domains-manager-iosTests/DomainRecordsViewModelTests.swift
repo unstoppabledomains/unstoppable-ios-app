@@ -152,7 +152,7 @@ class SignatureTests: XCTestCase {
         UDWalletWithPrivateSeed.create(aliasName: "", type: .generatedLocally, privateKeyEthereum: privateKey)
             .done { (wallet: UDWalletWithPrivateSeed) -> Void in
                 let personalMessage = Data(message.droppedHexPrefix.hexToBytes())
-                let sig = try! UDWallet.signPersonalEthMessage(personalMessage, with: privateKey)
+                let sig = try! UDWallet.signPersonalMessage(personalMessage, with: privateKey)
                 let sigString = sig!.toHexString()
                 XCTAssertEqual(HexAddress.hexPrefix + sigString, "0x69d4da1dd5eef16e05ef54526e55e14bcff1c183daffe96007982624072592da4f0e958cca733cc77f7c81eec5cb95b538e9403175bae294844dd1a664a060b61b")
                 exp.fulfill()
