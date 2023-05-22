@@ -2711,6 +2711,14 @@
 		C6B366B72A173AC700DE512B /* ChatSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366B52A173AC700DE512B /* ChatSectionHeaderView.swift */; };
 		C6B366B82A173AC700DE512B /* ChatSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366B52A173AC700DE512B /* ChatSectionHeaderView.swift */; };
 		C6B366B92A173AC700DE512B /* ChatSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366B52A173AC700DE512B /* ChatSectionHeaderView.swift */; };
+		C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */; };
+		C6B366CE2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */; };
+		C6B366CF2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */; };
+		C6B366D02A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */; };
+		C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */; };
+		C6B366D32A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */; };
+		C6B366D42A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */; };
+		C6B366D52A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */; };
 		C6B4098F28CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B4098E28CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift */; };
 		C6B4099028CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B4098E28CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift */; };
 		C6B4099128CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B4098E28CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift */; };
@@ -4349,6 +4357,8 @@
 		C6AD180D28D319BF0008A479 /* CollectionViewShowHideCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewShowHideCell.swift; sourceTree = "<group>"; };
 		C6AD180E28D319BF0008A479 /* CollectionViewShowHideCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewShowHideCell.xib; sourceTree = "<group>"; };
 		C6B366B52A173AC700DE512B /* ChatSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSectionHeaderView.swift; sourceTree = "<group>"; };
+		C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarItemsTransitionPerformer.swift; sourceTree = "<group>"; };
+		C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavBarBackButtonTransitionPerformer.swift; sourceTree = "<group>"; };
 		C6B4098E28CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupReverseResolutionNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6B5136128320707001E99B5 /* EnterBackupToRestoreWalletsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterBackupToRestoreWalletsPresenter.swift; sourceTree = "<group>"; };
 		C6B5136728322EA1001E99B5 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
@@ -7178,6 +7188,15 @@
 			path = CollectionReusableViews;
 			sourceTree = "<group>";
 		};
+		C6B366CB2A1BA19A00DE512B /* Transition */ = {
+			isa = PBXGroup;
+			children = (
+				C6B366CC2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift */,
+				C6B366D12A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift */,
+			);
+			path = Transition;
+			sourceTree = "<group>";
+		};
 		C6B51366283225C6001E99B5 /* Entities */ = {
 			isa = PBXGroup;
 			children = (
@@ -7361,6 +7380,7 @@
 				C6C99571289D313D00367362 /* Slide */,
 				C6C99576289D313D00367362 /* Default */,
 				C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */,
+				C6B366CB2A1BA19A00DE512B /* Transition */,
 			);
 			path = Animations;
 			sourceTree = "<group>";
@@ -8928,6 +8948,7 @@
 				C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */,
 				C6D6E4F72817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
 				C6526DD429D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
+				C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
 				C685A96F2840A59B00E54044 /* TextBlackButton.swift in Sources */,
 				C66435E0288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift in Sources */,
 				C692C31F282E485C00C31393 /* SecuritySettingsViewController.swift in Sources */,
@@ -9207,6 +9228,7 @@
 				C6873E1B2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */,
 				C664B6502914C0F000A76154 /* DomainProfileMetadataCell.swift in Sources */,
 				C6456F152800212000A517D5 /* UIStackView.swift in Sources */,
+				C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824B2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C665FC1F29B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,
@@ -9610,6 +9632,7 @@
 				307F83C7267A339F0070A9A6 /* UDWalletEthereum.swift in Sources */,
 				C6C99590289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
 				C6124CBC2922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift in Sources */,
+				C6B366D42A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
 				C65271E32A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
 				C609821E2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C62247B7283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
@@ -9703,6 +9726,7 @@
 				C61236E9292C88D2002BA97B /* ImagesStorage.swift in Sources */,
 				C6D6E55F28193A41008C66BB /* DomainsCollectionPresenter.swift in Sources */,
 				C64513092808089400413C51 /* UserDefaults.swift in Sources */,
+				C6B366CF2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C6C9959C289D313D00367362 /* CNavigationControllerChild.swift in Sources */,
 				C6DF987D290FBA4C0098733A /* DomainProfileGenericChangeDescription.swift in Sources */,
 				C6011AB328F3FA1500342666 /* DomainProfileTopInfoSection.swift in Sources */,
@@ -10315,6 +10339,7 @@
 				307F8580267B60300070A9A6 /* UDWalletEthereum.swift in Sources */,
 				C6C99591289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
 				C6124CBD2922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift in Sources */,
+				C6B366D52A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
 				C65271E42A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
 				C609821F2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C62247B8283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
@@ -10408,6 +10433,7 @@
 				C61236EA292C88D2002BA97B /* ImagesStorage.swift in Sources */,
 				C6D6E56028193A41008C66BB /* DomainsCollectionPresenter.swift in Sources */,
 				C645130A2808089400413C51 /* UserDefaults.swift in Sources */,
+				C6B366D02A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C6C9959D289D313D00367362 /* CNavigationControllerChild.swift in Sources */,
 				C6DF987E290FBA4C0098733A /* DomainProfileGenericChangeDescription.swift in Sources */,
 				C6011AB428F3FA1500342666 /* DomainProfileTopInfoSection.swift in Sources */,
@@ -11101,6 +11127,7 @@
 				C692C36B282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */,
 				C645131228095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */,
 				C6526DD529D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
+				C6B366D32A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
 				C6D6E4F82817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
 				C66435E1288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift in Sources */,
 				C685A9702840A59B00E54044 /* TextBlackButton.swift in Sources */,
@@ -11380,6 +11407,7 @@
 				C6873E1C2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */,
 				C664B6512914C0F000A76154 /* DomainProfileMetadataCell.swift in Sources */,
 				C6D6E54128193851008C66BB /* UITableViewCell.swift in Sources */,
+				C6B366CE2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C6456F162800212000A517D5 /* UIStackView.swift in Sources */,
 				C62C3FC7283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C665FC2029B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,

@@ -28,13 +28,12 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         let isBlurActive = toYOffset > contentOffset
         let duration = transitionDuration(using: transitionContext)
 
-        /// Back button logic
-        let navBackButtonSnapshot = navBar.navBarContentView.backButton.renderedImageView()
-        navBackButtonSnapshot.frame = navBar.navBarContentView.backButton.calculateFrameInWindow()
         
-        if let cNav = fromViewController as? CNavigationController {
-            cNav.navigationBar.setBackButton(hidden: true)
-        }
+        /// Back button
+        let navBarBackButtonTransitionPerformer = NavBarBackButtonTransitionPerformer(navOperation: .pop)
+        navBarBackButtonTransitionPerformer.prepareForTransition(navBar: navBar,
+                                                                 fromViewController: fromViewController,
+                                                                 toViewController: toViewController)
         
         let navItemsTransitionPerformer = NavBarItemsTransitionPerformer()
         navItemsTransitionPerformer.setupWithCurrent(navBarContentView: navBar.navBarContentView)
@@ -44,8 +43,8 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         navBarSnapshot.image = navBar.toImageInWindowHierarchy()
         navBarSnapshot.frame = navBar.calculateFrameInWindow()
         navBar.window?.addSubview(navBarSnapshot)
-        navBar.window?.addSubview(navBackButtonSnapshot)
-        
+        navBarBackButtonTransitionPerformer.addToWindow(navBar.window)
+
         navBar.setupWith(child: toNavChild, navigationItem: toViewController.navigationItem)
         navBar.navBarContentView.setTitleView(hidden: toViewController.navigationItem.titleView?.alpha == 0, animated: false)
         CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)
@@ -63,13 +62,11 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         animator.addAnimations {
             UIView.animateKeyframes(withDuration: duration, delay: 0.0, animations: {
                 UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.4) {
-                    /// Back button logic
-                    if isBackButtonHidden {
-                        navBackButtonSnapshot.alpha = 0
-                    }
+                  
                 }
             })
             
+            navBarBackButtonTransitionPerformer.performAnimationsWith(duration: duration)
             navItemsTransitionPerformer.performAnimationsWith(duration: duration)
         }
         
@@ -77,14 +74,13 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
             UIView.performWithoutAnimation {
                 navBar.frame.origin = .zero
                 navBarSnapshot.removeFromSuperview()
-                navBackButtonSnapshot.removeFromSuperview()
+                navBarBackButtonTransitionPerformer.finishTransition(isFinished: position == .end)
+                navItemsTransitionPerformer.finishTransition(isFinished: position == .end)
 
                 if position == .end {
-                    navItemsTransitionPerformer.finishTransition(isFinished: true)
                     CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)
                     navBar.setBackButton(hidden: isBackButtonHidden)
                 } else {
-                    navItemsTransitionPerformer.finishTransition(isFinished: false)
                     navBar.setupWith(child: fromNavChild, navigationItem: fromViewController.navigationItem)
                     navBar.setBackButton(hidden: false)
                     if let cNav = fromViewController as? CNavigationController {
