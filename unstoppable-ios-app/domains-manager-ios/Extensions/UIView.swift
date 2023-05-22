@@ -150,7 +150,8 @@ extension UIView {
     func toImageInWindowHierarchy(afterScreenUpdates: Bool = true) -> UIImage? {
         guard let window else { return nil }
          
-        UIGraphicsBeginImageContextWithOptions(window.bounds.size, false, 20)
+        let scale = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(window.bounds.size, false, 0)
         
         guard let context = UIGraphicsGetCurrentContext() else { return nil }
         context.interpolationQuality = .high
@@ -163,7 +164,17 @@ extension UIView {
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image?.cropTo(rect: frame)
+        let croppingRect = CGRect(origin: CGPoint(x: frame.origin.x * scale,
+                                                  y: frame.origin.y * scale),
+                                  size: CGSize(width: bounds.width * scale,
+                                               height: bounds.height * scale))
+        guard let cgIImage = image?.cgImage?.cropping(to: croppingRect) else { return nil }
+        
+        let newImage = UIImage(cgImage: cgIImage,
+                               scale: scale,
+                               orientation: UIImage.Orientation.up)
+        
+        return newImage
     }
     
     func renderedImageView() -> UIImageView {
