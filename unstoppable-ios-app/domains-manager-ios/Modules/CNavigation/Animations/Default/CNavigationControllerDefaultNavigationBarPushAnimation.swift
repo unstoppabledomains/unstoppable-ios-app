@@ -28,9 +28,9 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
         
         /// Back button
         let navBarBackButtonTransitionPerformer = NavBarBackButtonTransitionPerformer(navOperation: .push)
-        navBarBackButtonTransitionPerformer.prepareForTransition(navBar: navBar,
-                                                                 fromViewController: fromViewController,
-                                                                 toViewController: toViewController)
+        navBarBackButtonTransitionPerformer.prepareForTransitionWithCurrent(navBar: navBar,
+                                                                            fromViewController: fromViewController,
+                                                                            toViewController: toViewController)
         /// Nav items
         let navItemsTransitionPerformer = NavBarItemsTransitionPerformer()
         navItemsTransitionPerformer.setupWithCurrent(navBarContentView: navBar.navBarContentView)
@@ -39,10 +39,11 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
         navBarSnapshot.image = navBar.toImageInWindowHierarchy()
         navBarSnapshot.frame = navBar.calculateFrameInWindow()
         navBar.window?.addSubview(navBarSnapshot)
-        navBarBackButtonTransitionPerformer.addToWindow(navBar.window)
 
         navBar.setupWith(child: toNavChild, navigationItem: toViewController.navigationItem)
         CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)
+        navBarBackButtonTransitionPerformer.prepareForTransitionWithNew(navBar: navBar)
+        navBarBackButtonTransitionPerformer.addToWindow(navBar.window)
         navItemsTransitionPerformer.setupWithNew(navBarContentView: navBar.navBarContentView)
         navItemsTransitionPerformer.addToWindow(navBar.window)
         navBar.frame.origin.x = containerView.bounds.width

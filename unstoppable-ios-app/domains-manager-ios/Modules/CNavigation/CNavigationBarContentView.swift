@@ -119,6 +119,8 @@ final class CNavigationBarContentView: UIView {
 
 // MARK: - Open methods
 extension CNavigationBarContentView {
+    var isBackButtonHidden: Bool { backButton.alpha == 0 }
+    
     func setBackButton(hidden: Bool) {
         backButton.alpha = hidden ? 0 : 1
     }
