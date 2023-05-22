@@ -36,7 +36,12 @@ extension UDWallet {
     func getPersonalSignature(messageString: String) async throws -> String {
         guard self.walletState == .verified else {
             if self.shouldParseMessage {
-                return try await signViaWalletConnectPersonalSign(message: messageString.convertedIntoReadableMessage)
+                
+//                let message = messageString.convertedIntoReadableMessage
+//                let messageBytes = message.droppedHexPrefix.hexToBytes()
+
+                let message = messageString.convertedIntoReadableMessage
+                return try await signViaWalletConnectPersonalSign(message: prepareMessageForEthSign(message: message))
             }
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
