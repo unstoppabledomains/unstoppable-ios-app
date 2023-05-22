@@ -171,14 +171,12 @@ extension CNavigationBarContentView {
     func set(titleView: UIView?) {
         self.titleView?.removeFromSuperview()
         if let titleView = titleView {
-            titleView.alpha = 1
             addSubview(titleView)
             titleLabel.alpha = 0
         } else {
             titleLabel.alpha = isTitleHidden ? 0 : 1
         }
         self.titleView = titleView
-        titleView?.alpha = isTitleViewHidden ? 0 : 1
         setNeedsLayout()
         layoutIfNeeded()
     }

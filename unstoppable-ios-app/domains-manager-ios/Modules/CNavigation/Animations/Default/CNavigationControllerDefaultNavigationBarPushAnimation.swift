@@ -40,8 +40,10 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
         navBarSnapshot.frame = navBar.calculateFrameInWindow()
         navBar.window?.addSubview(navBarSnapshot)
 
-        navBar.setupWith(child: toNavChild, navigationItem: toViewController.navigationItem)
-        CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)
+        UIView.performWithoutAnimation {
+            navBar.setupWith(child: toNavChild, navigationItem: toViewController.navigationItem)
+            CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)            
+        }
         navBarBackButtonTransitionPerformer.prepareForTransitionWithNew(navBar: navBar)
         navBarBackButtonTransitionPerformer.addToWindow(navBar.window)
         navItemsTransitionPerformer.setupWithNew(navBarContentView: navBar.navBarContentView)

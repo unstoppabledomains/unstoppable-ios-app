@@ -44,9 +44,11 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         navBarSnapshot.frame = navBar.calculateFrameInWindow()
         navBar.window?.addSubview(navBarSnapshot)
 
-        navBar.setupWith(child: toNavChild, navigationItem: toViewController.navigationItem)
-        navBar.navBarContentView.setTitleView(hidden: toViewController.navigationItem.titleView?.alpha == 0, animated: false)
-        CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)
+        UIView.performWithoutAnimation {
+            navBar.setupWith(child: toNavChild, navigationItem: toViewController.navigationItem)
+            navBar.navBarContentView.setTitleView(hidden: toViewController.navigationItem.titleView?.alpha == 0, animated: false)
+            CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)
+        }
         navBarBackButtonTransitionPerformer.prepareForTransitionWithNew(navBar: navBar)
         navBarBackButtonTransitionPerformer.addToWindow(navBar.window)
         navItemsTransitionPerformer.setupWithNew(navBarContentView: navBar.navBarContentView)
@@ -61,11 +63,7 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         }
         
         animator.addAnimations {
-            UIView.animateKeyframes(withDuration: duration, delay: 0.0, animations: {
-                UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.4) {
-                  
-                }
-            })
+            UIView.animateKeyframes(withDuration: duration, delay: 0.0, animations: { })
             
             navBarBackButtonTransitionPerformer.performAnimationsWith(duration: duration)
             navItemsTransitionPerformer.performAnimationsWith(duration: duration)
