@@ -16,11 +16,15 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
         
         let navBar = nav.navigationBar!
         let containerView = transitionContext.containerView
-        let fromNavChild = fromViewController as? CNavigationControllerChild
-        let toNavChild = toViewController as? CNavigationControllerChild
+        let fromNavChild = fromViewController.cNavigationControllerChild
+        let toNavChild = toViewController.cNavigationControllerChild
         let isBackButtonHidden = navBar.backButton.alpha == 0
         let toYOffset = CNavigationHelper.contentYOffset(in: toViewController.view)
         let duration = transitionDuration(using: transitionContext)
+        
+        if let cNav = toViewController as? CNavigationController {
+            cNav.navigationBar.setBackButton(hidden: true)
+        }
         
         /// Back button logic
         navBar.setBackButton(hidden: false)
@@ -48,7 +52,7 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
 
         animator.addAnimations {
             UIView.animateKeyframes(withDuration: duration, delay: 0.0, animations: {
-                UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.8) {
+                UIView.addKeyframe(withRelativeStartTime: 0.0, relativeDuration: 0.6) {
                     navBarSnapshot.alpha = 0
                 }
                 
@@ -68,7 +72,10 @@ final class CNavigationControllerDefaultNavigationBarPushAnimation: CBaseTransit
                 navBar.setBackButton(hidden: isBackButtonHidden)
                 navBar.setupWith(child: fromNavChild, navigationItem: fromViewController.navigationItem)
             } else {
-                navBar.setBackButton(hidden: false)                
+                navBar.setBackButton(hidden: false)
+                if let cNav = toViewController as? CNavigationController {
+                    cNav.navigationBar.setBackButton(hidden: false)
+                }
             }
         }
         

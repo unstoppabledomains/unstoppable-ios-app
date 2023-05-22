@@ -21,16 +21,20 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
         let containerView = transitionContext.containerView
         let isLastViewController = toViewController == fromViewController.cNavigationController?.rootViewController
         let isBackButtonHidden = isLastViewController
-        let fromNavChild = fromViewController as? CNavigationControllerChild
-        let toNavChild = toViewController as? CNavigationControllerChild
+        let fromNavChild = fromViewController.cNavigationControllerChild
+        let toNavChild = toViewController.cNavigationControllerChild
         let toYOffset = CNavigationHelper.contentYOffset(in: toViewController.view)
         let contentOffset = (toViewController as? CNavigationControllerChild)?.scrollableContentYOffset ?? 0
-        let isBlurActive = toYOffset >= contentOffset
+        let isBlurActive = toYOffset > contentOffset
         let duration = transitionDuration(using: transitionContext)
 
         /// Back button logic
         let navBackButtonSnapshot = navBar.navBarContentView.backButton.renderedImageView()
         navBackButtonSnapshot.frame = navBar.navBarContentView.backButton.calculateFrameInWindow()
+        
+        if let cNav = fromViewController as? CNavigationController {
+            cNav.navigationBar.setBackButton(hidden: true)
+        }
         
         navBar.setBackButton(hidden: true)
         let navBarSnapshot = UIImageView(frame: navBar.frame)
@@ -73,6 +77,9 @@ final class CNavigationControllerDefaultNavigationBarPopAnimation: CBaseTransiti
                 } else {
                     navBar.setupWith(child: fromNavChild, navigationItem: fromViewController.navigationItem)
                     navBar.setBackButton(hidden: false)
+                    if let cNav = fromViewController as? CNavigationController {
+                        cNav.navigationBar.setBackButton(hidden: false)
+                    }
                     navBar.navBarContentView.setTitleView(hidden: fromIsTitleHidden, animated: false)
                     CNavigationBarScrollingController().setYOffset(fromYOffset, in: navBar)
                     navBar.navBarBlur.alpha = fromBlurAlpha

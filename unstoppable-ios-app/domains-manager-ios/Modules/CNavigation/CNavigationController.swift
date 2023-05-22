@@ -31,7 +31,7 @@ class CNavigationController: UIViewController {
     var rootViewController: UIViewController?
     var viewControllers = [UIViewController]()
     var topViewController: UIViewController? { viewControllers.last }
-    var canMoveBack: Bool { (topViewController as? CNavigationControllerChild)?.shouldPopOnBackButton() ?? true }
+    var canMoveBack: Bool { topViewController?.cNavigationControllerChild?.shouldPopOnBackButton() ?? true }
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -206,7 +206,7 @@ extension CNavigationController {
     func updateNavigationBar() {
         guard let topViewController = self.topViewController else { return }
         
-        let navChild = topViewController as? CNavigationControllerChild
+        let navChild = topViewController.cNavigationControllerChild
         
         UIView.performWithoutAnimation {
             navigationBar.setupWith(child: navChild, navigationItem: topViewController.navigationItem)
@@ -251,7 +251,7 @@ private extension CNavigationController {
     }
     
     func updateNavBarScrollingState(in scrollView: UIScrollView) {
-        if let customBehaviour = (topViewController as? CNavigationControllerChild)?.customScrollingBehaviour(yOffset: CNavigationHelper.contentYOffset(of: scrollView),
+        if let customBehaviour = topViewController?.cNavigationControllerChild?.customScrollingBehaviour(yOffset: CNavigationHelper.contentYOffset(of: scrollView),
                                                                                                               in: navigationBar) {
             customBehaviour()
         } else {
@@ -472,6 +472,14 @@ private extension CNavigationController {
 extension UIViewController {
     var cNavigationController: CNavigationController? { parent as? CNavigationController }
     var cNavigationBar: CNavigationBar? { cNavigationController?.navigationBar }
+    var cNavigationControllerChild: CNavigationControllerChild? {
+        if let child = self as? CNavigationControllerChild {
+            return child
+        } else if let nav = self as? CNavigationController {
+            return nav.topViewController?.cNavigationControllerChild
+        }
+        return nil
+    }
 }
 
 extension CNavigationController {
