@@ -21,14 +21,11 @@ final class InfoScreen: BaseViewController {
     override var analyticsName: Analytics.ViewName { .infoScreen }
     override var additionalAppearAnalyticParameters: Analytics.EventParameters { [.infoTopic : preset.rawValue] }
     
-    static func instantiate(preset: Preset,
-                            dismissCallback: EmptyCallback?) -> UIViewController {
+    static func instantiate(preset: Preset) -> UIViewController {
         let vc = InfoScreen.nibInstance()
         vc.preset = preset
-        let nav = EmptyRootCNavigationController(rootViewController: vc)
-        nav.dismissCallback = dismissCallback
         
-        return nav
+        return vc
     }
     
     

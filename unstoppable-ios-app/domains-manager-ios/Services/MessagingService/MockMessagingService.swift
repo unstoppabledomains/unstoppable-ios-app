@@ -33,8 +33,14 @@ extension MockMessagingService: MessagingServiceProtocol {
         return unreadMessagesSum
     }
     
-    func getMessagesForChannel(_ channel: ChatChannelType) async -> [ChatMessageType] {
-        channelsMessages[channel] ?? []
+    func getMessagesForChannel(_ channel: ChatChannelType) -> [ChatMessageType] {
+        if let cachedMessages = channelsMessages[channel] {
+            return cachedMessages
+        }
+        
+        let messages = createMockMessages().sorted(by: { $0.time < $1.time })
+        channelsMessages[channel] = messages
+        return messages
     }
 }
 
@@ -43,12 +49,13 @@ private extension MockMessagingService {
     func createMockChannelsFor(domain: DomainDisplayInfo) -> [ChatChannelType] {
         var channels = [ChatChannelType]()
         var mockDomainChatInfos = getMockDomainChatInfos()
-        let numberOfChannelsToTake = max(1, arc4random_uniform(UInt32(mockDomainChatInfos.count)))
+        let numberOfChannelsToTake = mockDomainChatInfos.count // max(1, arc4random_uniform(UInt32(mockDomainChatInfos.count)))
         
         for _ in 0..<numberOfChannelsToTake {
             if let randomChat = mockDomainChatInfos.randomElement() {
+                let sender = createRandomChatSender()
                 let newChannel = DomainChatChannel(avatarURL: URL(string: randomChat.imageURL),
-                                                   lastMessage: createMockLastMessageForChannelWithDomain(randomChat.domainName),
+                                                   lastMessage: createMockLastMessageForChannelWithSender(sender),
                                                    unreadMessagesCount: createMockChannelUnreadMessagesCount(),
                                                    domainName: randomChat.domainName)
                 channels.append(.domain(channel: newChannel))
@@ -69,11 +76,40 @@ private extension MockMessagingService {
          .init(domainName: "iurevych.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/misterfirst.x/3efb99b7-9d84-4037-b8b3-7bdd610cbb6b.png"),
          .init(domainName: "ryan.crypto",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto2",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto3",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto4",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto5",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto6",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto7",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto8",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto9",
+               imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
+         .init(domainName: "ryan.crypto10",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png")]
     }
     
-    func createMockLastMessageForChannelWithDomain(_ friendDomain: DomainName) -> ChatMessageType {
-        .text(message: .init(sender: friendDomain, time: creatMockLastMessageDate(), text: mockLastMessageTexts.randomElement()!))
+    func createRandomChatSender() -> ChatSender {
+        let bools = [true, false]
+        
+        if bools.randomElement() == true {
+            return .user
+        }
+        return .friend
+    }
+    
+    func createMockLastMessageForChannelWithSender(_ sender: ChatSender) -> ChatMessageType {
+        .text(message: .init(sender: sender,
+                             time: createMockMessageDate(),
+                             text: mockLastMessageTexts.randomElement()!))
     }
     
     struct MockDomainChatInfo: Hashable {
@@ -81,7 +117,7 @@ private extension MockMessagingService {
         let imageURL: String
     }
     
-    func creatMockLastMessageDate() -> Date {
+    func createMockMessageDate() -> Date {
         let timePassed = arc4random_uniform(604800)
         return Date().addingTimeInterval(-Double(timePassed))
     }
@@ -96,5 +132,24 @@ private extension MockMessagingService {
         "Thanks for chatting with me today. Let's catch up again soon!",
         "Alright, time for bed. Goodnight!",
         "It was nice talking to you. Let's continue this conversation another time"]
+    }
+    
+    func createMockMessages() -> [ChatMessageType] {
+        let numberOfMessages = arc4random_uniform(40) + 1
+        
+        var messages = [ChatMessageType]()
+        
+        for _ in 0..<numberOfMessages {
+            let sender = createRandomChatSender()
+            let time = createMockMessageDate()
+            let text = mockLastMessageTexts.randomElement()!
+            let textMessage = ChatTextMessage(sender: sender,
+                                              time: time,
+                                              text: text)
+            let messageType = ChatMessageType.text(message: textMessage)
+            messages.append(messageType)
+        }
+        
+        return messages
     }
 }

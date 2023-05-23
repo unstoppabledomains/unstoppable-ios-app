@@ -10,24 +10,22 @@ import Foundation
 enum ChatChannelType: Hashable {
     case domain(channel: DomainChatChannel)
     
-    var avatarURL: URL? {
+    var channel: ChatChannel {
         switch self {
         case .domain(let channel):
-            return channel.avatarURL
+            return channel
         }
+    }
+    
+    var avatarURL: URL? {
+        channel.avatarURL
     }
     
     var lastMessage: ChatMessageType? {
-        switch self {
-        case .domain(let channel):
-            return channel.lastMessage
-        }
+        channel.lastMessage
     }
     
     var unreadMessagesCount: Int {
-        switch self {
-        case .domain(let channel):
-            return channel.unreadMessagesCount
-        }
+        channel.unreadMessagesCount
     }
 }

@@ -23,9 +23,7 @@ final class CNavigationControllerDefaultPopAnimation: CBaseTransitioningAnimatio
         fadeView.backgroundColor = .black.withAlphaComponent(0.2)
         toViewController.view.addSubview(fadeView)
         
-        let animator = UIViewPropertyAnimator(duration: transitionDuration(using: transitionContext),
-                                              controlPoint1: CNavigationHelper.AnimationCurveControlPoint1,
-                                              controlPoint2: CNavigationHelper.AnimationCurveControlPoint2) {
+        let animator = createAnimatorIn(transitionContext: transitionContext) {
             fromViewController.view.frame = containerView.bounds.offsetBy(dx: containerView.frame.width, dy: 0)
             toViewController.view.frame = containerView.bounds
             fromViewController.navigationController?.navigationBar.layoutIfNeeded()

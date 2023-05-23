@@ -35,7 +35,7 @@ extension ChatListCell {
                                             textColor: .foregroundDefault)
         
         if let lastMessage = channelType.lastMessage {
-            let time = MessageDateFormatter.formatDate(lastMessage.time)
+            let time = MessageDateFormatter.formatChannelDate(lastMessage.time)
             timeLabel.setAttributedTextWith(text: time,
                                             font: .currentFont(withSize: 13, weight: .regular),
                                             textColor: .foregroundSecondary)

@@ -11,7 +11,7 @@ final class ChatTextMessage: ChatMessage {
     
     let text: String
     
-    internal init(id: UUID = .init(), sender: DomainName, time: Date, avatarURL: URL? = nil, text: String) {
+    internal init(id: UUID = .init(), sender: ChatSender, time: Date, avatarURL: URL? = nil, text: String) {
         self.text = text
         super.init(id: id, sender: sender, time: time, avatarURL: avatarURL)
     }

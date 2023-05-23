@@ -7,10 +7,12 @@
 
 import Foundation
 
+@MainActor
 protocol ChatsListViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: ChatsListViewController.Item)
 }
 
+@MainActor
 final class ChatsListViewPresenter {
     
     private weak var view: ChatsListViewProtocol?
@@ -37,7 +39,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             selectedDomain = configuration.domain
             showData()
         case .channel(let configuration):
-            return
+            openChannel(configuration.channelType)
         }
     }
 }
@@ -65,7 +67,7 @@ private extension ChatsListViewPresenter {
             snapshot.appendSections([.channels])
             snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channelType: $0)) }))
             
-            await view?.applySnapshot(snapshot, animated: true)
+            view?.applySnapshot(snapshot, animated: true)
         }
     }
     
@@ -74,5 +76,12 @@ private extension ChatsListViewPresenter {
             domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
             selectedDomain = domains.first
         }
+    }
+    
+    func openChannel(_ channelType: ChatChannelType) {
+        guard let nav = view?.cNavigationController,
+            let selectedDomain else { return }
+        
+        UDRouter().showChatScreen(channelType: channelType, domain: selectedDomain, in: nav)
     }
 }

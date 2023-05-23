@@ -593,10 +593,16 @@ extension Endpoint {
     static func getPublicProfile(for domain: DomainItem,
                                  fields: Set<GetDomainProfileField>) -> Endpoint {
         // https://profile.ud-staging.com/api/public/aaron.x
+        return getPublicProfile(for: domain.name, fields: fields)
+    }
+    
+    static func getPublicProfile(for domainName: DomainName,
+                                 fields: Set<GetDomainProfileField>) -> Endpoint {
+        // https://profile.ud-staging.com/api/public/aaron.x
         let fieldsQuery = fields.map({ $0.rawValue }).joined(separator: ",")
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/public/\(domain.name)",
+            path: "/api/public/\(domainName)",
             queryItems: [URLQueryItem(name: "fields", value: fieldsQuery)],
             body: ""
         )

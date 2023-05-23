@@ -119,6 +119,8 @@ final class CNavigationBarContentView: UIView {
 
 // MARK: - Open methods
 extension CNavigationBarContentView {
+    var isBackButtonHidden: Bool { backButton.alpha == 0 }
+    
     func setBackButton(hidden: Bool) {
         backButton.alpha = hidden ? 0 : 1
     }
@@ -169,18 +171,16 @@ extension CNavigationBarContentView {
     func set(titleView: UIView?) {
         self.titleView?.removeFromSuperview()
         if let titleView = titleView {
-            titleView.alpha = 1
             addSubview(titleView)
             titleLabel.alpha = 0
         } else {
             titleLabel.alpha = isTitleHidden ? 0 : 1
         }
         self.titleView = titleView
-        titleView?.alpha = isTitleViewHidden ? 0 : 1
         setNeedsLayout()
         layoutIfNeeded()
     }
-
+    
     func setBarButtons(_ leftItems: [UIBarButtonItem], rightItems: [UIBarButtonItem]) {
         leftBarViews.forEach { view in
             view.removeFromSuperview()

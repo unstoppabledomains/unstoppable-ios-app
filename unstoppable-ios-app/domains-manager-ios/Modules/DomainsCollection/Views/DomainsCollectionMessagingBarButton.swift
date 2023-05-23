@@ -29,7 +29,7 @@ final class DomainsCollectionMessagingBarButton: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        frame = CGRect(origin: .zero, size: .square(size: size))
+        frame.size = .square(size: size)
         messageButton.center = localCenter
     }
     

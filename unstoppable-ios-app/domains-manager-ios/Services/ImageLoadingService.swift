@@ -26,6 +26,7 @@ enum ImageSource {
     case url(_ url: URL, maxSize: CGFloat? = nil)
     case initials(_ name: String, size: InitialsView.InitialsSize, style: InitialsView.Style)
     case domain(_ domainItem: DomainDisplayInfo)
+    case domainPFPSource(_ domainPFPSource: DomainPFPInfo.PFPSource)
     case domainInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case domainItemOrInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case currency(_ currency: CoinRecord, size: InitialsView.InitialsSize, style: InitialsView.Style)
@@ -44,7 +45,9 @@ enum ImageSource {
             }
             return initials + "_\(initialsSize.rawValue)_\(style.rawValue)"
         case .domain(let domainItem):
-            return domainItem.pfpSource.value
+            return ImageSource.domainPFPSource(domainItem.pfpSource).key
+        case .domainPFPSource(let pfpSource):
+            return pfpSource.value
         case .domainInitials(let domainItem, let size):
             return ImageSource.initials(domainItem.name, size: size, style: .accent).key
         case .domainItemOrInitials(let domainItem, let size):
@@ -190,7 +193,10 @@ fileprivate extension ImageLoadingService {
             }
             return nil
         case .domain(let domainItem):
-            switch domainItem.pfpSource {
+            return await fetchImageFor(source: .domainPFPSource(domainItem.pfpSource),
+                                       downsampleDescription: downsampleDescription)
+        case .domainPFPSource(let pfpSource):
+            switch pfpSource {
             case .nft(let imagePath), .nonNFT(let imagePath):
                 guard let url = URL(string: imagePath) else { return nil }
                 let start = Date()
