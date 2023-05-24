@@ -41,12 +41,10 @@ extension PushAPIService {
         guard let walletAddress = domain.ownerWallet else { throw PushServiceError.noOwnerWalletInDomain }
         
         let urlString = URLSList.CREATE_USER_URL()
-        let chainId = 137 //80001
         let pgpPair = try generatePGPKeyPair()
         let publicKey = try await preparePublicKey(pgpPair: pgpPair, domain: domain)
         let encryptedPrivateKey = try await preparePrivateKey(pgpPair: pgpPair, domain: domain)
-        let body = CreateUserRequestBody(chainId: chainId,
-                                         walletAddress: walletAddress,
+        let body = CreateUserRequestBody(walletAddress: walletAddress,
                                          name: domain.name,
                                          publicKey: publicKey,
                                          encryptedPrivateKey: encryptedPrivateKey,
@@ -85,9 +83,8 @@ private extension PushAPIService {
         
         var bodyString: String = ""
         if let body {
-            let data = body.jsonData()!
-            guard let bodyStringEncoded = String(data: data, encoding: .utf8) else { throw NetworkLayerError.responseFailedToParse }
-            bodyString = bodyStringEncoded
+            guard let bodyStringEncoded = body.jsonString() else { throw NetworkLayerError.responseFailedToParse }
+            bodyString = bodyStringEncoded //.replacingOccurrences(of: "\\", with: "")
         }
         
         return APIRequest(url: url, headers: headers, body: bodyString, method: method)
@@ -102,6 +99,8 @@ private extension PushAPIService {
         case failedToConvertStringToData
         case failedToConvertDataToString
         case failedToCreatePGPKeysPair
+        case failedToRestorePGPKey
+        case failedToSignMessageWithPGPKey
         case failedToCreateRandomData
     }
     
@@ -110,6 +109,10 @@ private extension PushAPIService {
         let salt: String?
         let nonce: String
         let preKey: String?
+        
+        var requestString: String {
+            "{\"ciphertext\":\(ciphertext),\"salt\":\(salt!),\"nonce\":\(nonce),\"preKey\":\(preKey!)}"
+        }
     }
     
     struct CreateUserRequestBody: Codable {
@@ -125,8 +128,7 @@ private extension PushAPIService {
         let sigType: String?
         let verificationProof: String?
         
-        init(chainId: Int,
-             walletAddress: String,
+        init(walletAddress: String,
              name: String,
              publicKey: String,
              encryptedPrivateKey: EncryptedPrivateKeyTypeV2,
@@ -295,9 +297,38 @@ private extension PushAPIService {
         let publicKeyString = publicKeyData.base64EncodedString()
         let privateKeyString = privateKeyData.base64EncodedString()
         
+        // SecKeyCreateSignature - Create signature (Algorithm?)
         
         return PGPKeyPair(publicKey: publicKeyString,
                           privateKey: privateKeyString)
+    }
+    
+    func restorePGPKey(key: String) throws -> SecKey {
+        let restoreParameters: [String: Any] = [kSecAttrKeyType as String: kSecAttrKeyTypeRSA,
+                                                kSecAttrKeyClass as String: kSecAttrKeyClassPrivate]
+        var restoreError: Unmanaged<CFError>?
+        guard let restoredData = Data(base64Encoded: key) else { throw PushServiceError.failedToConvertStringToData }
+        guard let restoredKey = SecKeyCreateWithData(restoredData as CFData,
+                                                  restoreParameters as CFDictionary,
+                                                     &restoreError) else {
+            throw PushServiceError.failedToRestorePGPKey
+        }
+        
+        return restoredKey
+    }
+    
+    func signMessage(_ message: String, by pgpPrivateKey: SecKey) throws -> String {
+        guard let dataToSign = message.data(using: .utf8) else { throw PushServiceError.failedToConvertStringToData }
+        
+        var error: Unmanaged<CFError>?
+        guard let signedData = SecKeyCreateSignature(pgpPrivateKey,
+                                                     .rsaSignatureMessagePSSSHA256, // Check which algo is used
+                                                     dataToSign as CFData,
+                                                     &error) else {
+            throw PushServiceError.failedToSignMessageWithPGPKey
+        }
+        
+        return (signedData as Data).base64EncodedString()
     }
 }
 
