@@ -97,7 +97,7 @@ struct NetworkConfig {
         "https://" + migratedEndpoint + "/uns_resolver_keys.json?tag=\(version)"
     }
     
-    static var pushBaseURL: String {
+    static var basePushURL: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
             return "https://backend-staging.epns.io/apis"
