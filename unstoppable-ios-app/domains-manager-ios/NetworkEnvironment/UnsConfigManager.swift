@@ -106,26 +106,34 @@ struct UnsConfigManager {
         return nil
     }
     
-    static let blockchainNamesMapForClient = [ 1: "Ethereum",
-                                               4: "Ethereum: Rinkby",
-                                               5: "Ethereum: Goerli",
-                                               137: "Polygon",
-                                               80001: "Polygon: Mumbai"]
-    
     static func getBlockchainNameForClient(by id: Int) -> String {
-        blockchainNamesMapForClient[id] ?? "not defined by chainId:\(id)"
+        BlockchainNetwork(rawValue: id)?.nameForClient ?? "not defined by chainId:\(id)"
     }
     
-    
-    static let blockchainNamesMap = [ 1: "mainnet", 4: "rinkby", 5: "goerli",
-                                   137: "polygon-mainnet", 80001: "polygon-mumbai"]
-    
-    enum BlockchainEnvironment: BlockchainConfigData.RawValue {
-        case mainnet = "1/137"
-        case testnet = "5/80001"
+    enum BlockchainEnvironment {
+        case mainnet
+        case testnet
+        
+        var l1Network: BlockchainNetwork {
+            switch self {
+            case .mainnet:
+                return .ethMainnet
+            case .testnet:
+                return .ethGoerli
+            }
+        }
+        
+        var l2Network: BlockchainNetwork {
+            switch self {
+            case .mainnet:
+                return .polygonMainnet
+            case .testnet:
+                return .polygonMumbai
+            }
+        }
         
         func getBlockchainConfigData() -> BlockchainConfigData {
-            BlockchainConfigData(rawValue: self.rawValue)!
+            BlockchainConfigData(environment: self)
         }
     }
     
@@ -140,17 +148,15 @@ struct UnsConfigManager {
     }
     
     static func getBlockchainType(from chainId: Int?) throws -> BlockchainType {
-        guard let main = BlockchainConfigData(rawValue: BlockchainEnvironment.mainnet.rawValue),
-              let test = BlockchainConfigData(rawValue: BlockchainEnvironment.testnet.rawValue) else {
-            Debugger.printFailure("Failed to build BlockchainConfigData for chainId:\(chainId)", critical: true)
-            throw Error.invalidChainId
-        }
+        let main = BlockchainConfigData(environment: .mainnet)
+        let test = BlockchainConfigData(environment: .testnet)
         
         switch chainId {
         case main.l1.id, test.l1.id: return .Ethereum
         case main.l2.id, test.l2.id: return .Matic
-        default:    Debugger.printFailure("Invalid chain id for UnsConfig: \(chainId)", critical: false)
-                    throw Error.invalidChainId
+        default:
+            Debugger.printFailure("Invalid chain id for UnsConfig: \(chainId)", critical: false)
+            throw Error.invalidChainId
         }
     }
     
@@ -164,30 +170,17 @@ struct UnsConfigManager {
         }
     }
     
-    struct BlockchainConfigData: RawRepresentable, Equatable {
-        typealias RawValue = String
-        static let separator: Character = "/"
+    struct BlockchainConfigData: Equatable {
+        let l1: BlockchainNetwork
+        let l2: BlockchainNetwork
         
-        let l1: (id: Int, name: String)
-        let l2: (id: Int, name: String)
-        
-        init?(rawValue: RawValue) {
-            let ids = rawValue.split(separator: Self.separator)
-            guard let l1Id = Int(ids[0]) else { return nil }
-            guard let l2Id = Int(ids[1]) else { return nil }
-            self.l1 = (id: l1Id, name: blockchainNamesMap[l1Id]!)
-            self.l2 = (id: l2Id, name: blockchainNamesMap[l2Id]!)
+        init(environment: BlockchainEnvironment) {
+            self.init(l1: environment.l1Network, l2: environment.l2Network)
         }
         
-        var rawValue: String {
-            return "\(l1)\(Self.separator)\(l2)"
-        }
-        
-        func getBlockchainIds(layerId: UnsConfigManager.BlockchainLayerId) -> (id: Int, name: String) {
-            switch layerId {
-            case .l1: return self.l1
-            case .l2: return self.l2
-            }
+        init(l1: BlockchainNetwork, l2: BlockchainNetwork) {
+            self.l1 = l1
+            self.l2 = l2
         }
         
         func getNetworkId(type: BlockchainType) -> Int?{

@@ -226,7 +226,7 @@ extension NetworkService {
     }
     
     func getJRPCProviderUrl(chainId: Int) -> URL? {
-        guard let netName = UnsConfigManager.blockchainNamesMap[chainId] else { return nil }
+        guard let netName = BlockchainNetwork(rawValue: chainId)?.name else { return nil }
         return URL(string: "https://\(netName).infura.io/v3/\(NetworkService.chooseInfuraProjectId())")!
     }
     

@@ -84,3 +84,44 @@ struct Env {
 var appContext: AppContextProtocol {
     return AppDelegate.shared.appContext
 }
+
+
+enum BlockchainNetwork: Int, CaseIterable {
+    case ethMainnet = 1
+    case ethRinkby = 4
+    case ethGoerli = 5
+    case polygonMainnet = 137
+    case polygonMumbai = 80001
+    
+    var id: Int { rawValue }
+    
+    var name: String {
+        switch self {
+        case .ethMainnet:
+            return "mainnet"
+        case .ethRinkby:
+            return "rinkby"
+        case .ethGoerli:
+            return "goerli"
+        case .polygonMainnet:
+            return "polygon-mainnet"
+        case .polygonMumbai:
+            return "polygon-mumbai"
+        }
+    }
+    
+    var nameForClient: String {
+        switch self {
+        case .ethMainnet:
+            return "Ethereum"
+        case .ethRinkby:
+            return "Ethereum: Rinkby"
+        case .ethGoerli:
+            return "Ethereum: Goerli"
+        case .polygonMainnet:
+            return "Polygon"
+        case .polygonMumbai:
+            return "Polygon: Mumbai"
+        }
+    }
+}
