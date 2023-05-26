@@ -1043,6 +1043,14 @@
 		C61ECD6F2A20AB4A00E97D70 /* PushMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */; };
 		C61ECD702A20AB4A00E97D70 /* PushMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */; };
 		C61ECD712A20AB4A00E97D70 /* PushMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */; };
+		C61ECD742A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */; };
+		C61ECD752A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */; };
+		C61ECD762A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */; };
+		C61ECD772A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */; };
+		C61ECD792A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */; };
+		C61ECD7A2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */; };
+		C61ECD7B2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */; };
+		C61ECD7C2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */; };
 		C61FD05628FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05728FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05828FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
@@ -3967,6 +3975,8 @@
 		C61ECD632A20A9D300E97D70 /* PushChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChat.swift; sourceTree = "<group>"; };
 		C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushConnectionRequest.swift; sourceTree = "<group>"; };
 		C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessage.swift; sourceTree = "<group>"; };
+		C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushGroupChatDTO.swift; sourceTree = "<group>"; };
+		C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushGroupChatMember.swift; sourceTree = "<group>"; };
 		C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainHandler.swift; sourceTree = "<group>"; };
 		C6209F9729D4180500D573EB /* LocalNotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsService.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
@@ -5652,13 +5662,23 @@
 			isa = PBXGroup;
 			children = (
 				C6B366D62A1C715000DE512B /* PushAPIService.swift */,
-				C61ECD5E2A20A92C00E97D70 /* PushUser.swift */,
-				C61ECD632A20A9D300E97D70 /* PushChat.swift */,
-				C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */,
-				C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */,
 				C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */,
+				C61ECD722A20E85E00E97D70 /* Entities */,
 			);
 			path = Push;
+			sourceTree = "<group>";
+		};
+		C61ECD722A20E85E00E97D70 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				C61ECD5E2A20A92C00E97D70 /* PushUser.swift */,
+				C61ECD632A20A9D300E97D70 /* PushChat.swift */,
+				C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */,
+				C61ECD732A20E87100E97D70 /* PushGroupChatDTO.swift */,
+				C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */,
+				C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		C62247AE283CFF07002A0CBD /* DomainTransactionsService */ = {
@@ -9275,6 +9295,7 @@
 				C68017862886730300524712 /* CurrencyImageLoader.swift in Sources */,
 				C60610D929A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C669C3A52912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */,
+				C61ECD742A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */,
 				C66804DD280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */,
 				309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */,
 				C6109E5028E5AC310027D5D8 /* WalletConnectClientService.swift in Sources */,
@@ -9561,6 +9582,7 @@
 				29150FBB2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */,
 				C666894B28116073002062B4 /* BorderedTableView.swift in Sources */,
 				C6FECF46282D0694008DAA49 /* ResizableRoundedImageView.swift in Sources */,
+				C61ECD792A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */,
 				C6EECE972833A3E400978ED5 /* CoinRecord.swift in Sources */,
 				29DE3B1328913DF500655675 /* Env.swift in Sources */,
 				C664B6492914BE3D00A76154 /* DomainProfileMetadataSection.swift in Sources */,
@@ -9718,6 +9740,7 @@
 				C6C995C4289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
 				C6E0415D295053DC0080F8E3 /* UIScrollView.swift in Sources */,
 				C692C32C282E4C6500C31393 /* SecuritySettingsAuthSelectionCell.swift in Sources */,
+				C61ECD762A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */,
 				C638680D2858DA0F000F98C4 /* KeepingAnimationImageView.swift in Sources */,
 				C6E041DA295588C90080F8E3 /* UDPageControl.swift in Sources */,
 				C6D6E529281932FF008C66BB /* BaseViewControllerProtocol.swift in Sources */,
@@ -9972,6 +9995,7 @@
 				C62247B2283CFF1B002A0CBD /* DomainTransactionsServiceProtocol.swift in Sources */,
 				C6C4218929379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				3026FA2327E77AFF00FE058B /* BackupWalletViewController.swift in Sources */,
+				C61ECD7B2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */,
 				C673D58429FA3867001CC77C /* ReviewTransferDetailsCell.swift in Sources */,
 				307F83EC267A339F0070A9A6 /* DomainItem.swift in Sources */,
 				C692C30B282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
@@ -10432,6 +10456,7 @@
 				C6C995C5289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
 				C6E0415E295053DC0080F8E3 /* UIScrollView.swift in Sources */,
 				C692C32D282E4C6500C31393 /* SecuritySettingsAuthSelectionCell.swift in Sources */,
+				C61ECD772A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */,
 				C638680E2858DA0F000F98C4 /* KeepingAnimationImageView.swift in Sources */,
 				C6E041DB295588C90080F8E3 /* UDPageControl.swift in Sources */,
 				C6D6E52A281932FF008C66BB /* BaseViewControllerProtocol.swift in Sources */,
@@ -10686,6 +10711,7 @@
 				3018AEC527EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,
 				C6C4218A29379D09005B791B /* DomainProfileTutorialItemPrivacyViewController.swift in Sources */,
 				C62247B3283CFF1C002A0CBD /* DomainTransactionsServiceProtocol.swift in Sources */,
+				C61ECD7C2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */,
 				C673D58529FA3867001CC77C /* ReviewTransferDetailsCell.swift in Sources */,
 				3026FA2427E77AFF00FE058B /* BackupWalletViewController.swift in Sources */,
 				C692C30C282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
@@ -11475,6 +11501,7 @@
 				C68017872886730300524712 /* CurrencyImageLoader.swift in Sources */,
 				C60610DA29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C669C3A62912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */,
+				C61ECD752A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */,
 				C66804DE280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */,
 				30AE84E4257836E2003A0142 /* AppDelegate.swift in Sources */,
 				C6109E5128E5AC310027D5D8 /* WalletConnectClientService.swift in Sources */,
@@ -11761,6 +11788,7 @@
 				29150FBC2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */,
 				C666894C28116073002062B4 /* BorderedTableView.swift in Sources */,
 				C6FECF47282D0694008DAA49 /* ResizableRoundedImageView.swift in Sources */,
+				C61ECD7A2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */,
 				C6EECE982833A3E400978ED5 /* CoinRecord.swift in Sources */,
 				29DE3B1428913DF500655675 /* Env.swift in Sources */,
 				C664B64A2914BE3D00A76154 /* DomainProfileMetadataSection.swift in Sources */,
