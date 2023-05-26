@@ -1027,6 +1027,22 @@
 		C61ECD5B2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
 		C61ECD5C2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
 		C61ECD5D2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
+		C61ECD5F2A20A92C00E97D70 /* PushUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD5E2A20A92C00E97D70 /* PushUser.swift */; };
+		C61ECD602A20A92C00E97D70 /* PushUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD5E2A20A92C00E97D70 /* PushUser.swift */; };
+		C61ECD612A20A92C00E97D70 /* PushUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD5E2A20A92C00E97D70 /* PushUser.swift */; };
+		C61ECD622A20A92C00E97D70 /* PushUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD5E2A20A92C00E97D70 /* PushUser.swift */; };
+		C61ECD642A20A9D300E97D70 /* PushChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD632A20A9D300E97D70 /* PushChat.swift */; };
+		C61ECD652A20A9D300E97D70 /* PushChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD632A20A9D300E97D70 /* PushChat.swift */; };
+		C61ECD662A20A9D300E97D70 /* PushChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD632A20A9D300E97D70 /* PushChat.swift */; };
+		C61ECD672A20A9D300E97D70 /* PushChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD632A20A9D300E97D70 /* PushChat.swift */; };
+		C61ECD692A20AADE00E97D70 /* PushConnectionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */; };
+		C61ECD6A2A20AADE00E97D70 /* PushConnectionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */; };
+		C61ECD6B2A20AADE00E97D70 /* PushConnectionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */; };
+		C61ECD6C2A20AADE00E97D70 /* PushConnectionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */; };
+		C61ECD6E2A20AB4A00E97D70 /* PushMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */; };
+		C61ECD6F2A20AB4A00E97D70 /* PushMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */; };
+		C61ECD702A20AB4A00E97D70 /* PushMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */; };
+		C61ECD712A20AB4A00E97D70 /* PushMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */; };
 		C61FD05628FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05728FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05828FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
@@ -3947,6 +3963,10 @@
 		C61C50042820FC5E00D1110A /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
 		C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketNetworkService.swift; sourceTree = "<group>"; };
 		C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushWebSocketsService.swift; sourceTree = "<group>"; };
+		C61ECD5E2A20A92C00E97D70 /* PushUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushUser.swift; sourceTree = "<group>"; };
+		C61ECD632A20A9D300E97D70 /* PushChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChat.swift; sourceTree = "<group>"; };
+		C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushConnectionRequest.swift; sourceTree = "<group>"; };
+		C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessage.swift; sourceTree = "<group>"; };
 		C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainHandler.swift; sourceTree = "<group>"; };
 		C6209F9729D4180500D573EB /* LocalNotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsService.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
@@ -5632,6 +5652,10 @@
 			isa = PBXGroup;
 			children = (
 				C6B366D62A1C715000DE512B /* PushAPIService.swift */,
+				C61ECD5E2A20A92C00E97D70 /* PushUser.swift */,
+				C61ECD632A20A9D300E97D70 /* PushChat.swift */,
+				C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */,
+				C61ECD6D2A20AB4A00E97D70 /* PushMessage.swift */,
 				C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */,
 			);
 			path = Push;
@@ -9090,6 +9114,7 @@
 				C6E0415B295053DC0080F8E3 /* UIScrollView.swift in Sources */,
 				C61236F5292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */,
 				C6098315282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
+				C61ECD6E2A20AB4A00E97D70 /* PushMessage.swift in Sources */,
 				C6C995BA289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
@@ -9330,6 +9355,7 @@
 				306665E12778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
 				30AE8521257837B5003A0142 /* NetworkConfig.swift in Sources */,
 				C6D5DAC1283629D800379C38 /* MockDomainRecordsService.swift in Sources */,
+				C61ECD5F2A20A92C00E97D70 /* PushUser.swift in Sources */,
 				C68953922834CD280046CBA3 /* CollectionTextHeaderReusableView.swift in Sources */,
 				C6109E9D28E6AA910027D5D8 /* MockContext.swift in Sources */,
 				C62C3F9B283F5C3F0094FC93 /* DeepLinksService.swift in Sources */,
@@ -9384,6 +9410,7 @@
 				C6526DDE29D2DF7800D6F2EB /* LoginWithEmailOnboardingViewPresenter.swift in Sources */,
 				C692C30E282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
 				30E549C32886DA27009833FB /* DefaultsStorage.swift in Sources */,
+				C61ECD692A20AADE00E97D70 /* PushConnectionRequest.swift in Sources */,
 				C600AB8329F807F60089107B /* DomainTransferService.swift in Sources */,
 				307B1D322603C087007B14C3 /* UDWalletZil.swift in Sources */,
 				C6456F202800303D00A517D5 /* ConfirmWordConfirmationCell.swift in Sources */,
@@ -9505,6 +9532,7 @@
 				C655D029284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35427FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C635193828D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
+				C61ECD642A20A9D300E97D70 /* PushChat.swift in Sources */,
 				C652629828110B8500F1D699 /* SecurityWallViewController.swift in Sources */,
 				3034E2B6252DB02400A20477 /* NetworkService.swift in Sources */,
 				C608C82C2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift in Sources */,
@@ -9740,7 +9768,9 @@
 				C60CA29C2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */,
 				C6637A6C2810074D0000AE56 /* SecurityWindow.swift in Sources */,
 				C6D6E53D28193822008C66BB /* BaseCollectionViewControllerProtocol.swift in Sources */,
+				C61ECD662A20A9D300E97D70 /* PushChat.swift in Sources */,
 				C6C57C5F2869DC860093FD8C /* WallpaperDomainImagePreviewView.swift in Sources */,
+				C61ECD6B2A20AADE00E97D70 /* PushConnectionRequest.swift in Sources */,
 				C6D5DABE2836021300379C38 /* CryptoRecord.swift in Sources */,
 				C6E1187F28F555A200C6AD4D /* UICollectionViewCellPreview.swift in Sources */,
 				C673D59F29FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */,
@@ -9921,6 +9951,7 @@
 				C63902B528E2FADC00E16B42 /* WCCompatibleWallet.swift in Sources */,
 				C66A26EC28B4C22F005470B9 /* BaseOperation.swift in Sources */,
 				299713D428F6933F00743003 /* ABIEncoder.swift in Sources */,
+				C61ECD612A20A92C00E97D70 /* PushUser.swift in Sources */,
 				C6EA6D6A28B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
 				307F83E9267A339F0070A9A6 /* TransactionProtocol.swift in Sources */,
 				30B3DC9428758E9B006FAA64 /* CurrencyExchangeRates.swift in Sources */,
@@ -10262,6 +10293,7 @@
 				C6A474E629D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C63A352D28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C6B6B045296FF7D600D4E30F /* DomainsSortOrderStorage.swift in Sources */,
+				C61ECD702A20AB4A00E97D70 /* PushMessage.swift in Sources */,
 				307F840A267A339F0070A9A6 /* NetworkService.swift in Sources */,
 				C608C82E2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift in Sources */,
 				C6C99594289D313D00367362 /* CNavigationHelper.swift in Sources */,
@@ -10450,7 +10482,9 @@
 				C60CA29D2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */,
 				C6637A6D2810074D0000AE56 /* SecurityWindow.swift in Sources */,
 				C6D6E53E28193822008C66BB /* BaseCollectionViewControllerProtocol.swift in Sources */,
+				C61ECD672A20A9D300E97D70 /* PushChat.swift in Sources */,
 				C6C57C602869DC860093FD8C /* WallpaperDomainImagePreviewView.swift in Sources */,
+				C61ECD6C2A20AADE00E97D70 /* PushConnectionRequest.swift in Sources */,
 				C6D5DABF2836021300379C38 /* CryptoRecord.swift in Sources */,
 				C6E1188028F555A200C6AD4D /* UICollectionViewCellPreview.swift in Sources */,
 				C673D5A029FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */,
@@ -10631,6 +10665,7 @@
 				C63902B628E2FADC00E16B42 /* WCCompatibleWallet.swift in Sources */,
 				302005D1267B7FB3004BDD0A /* PaymentConfiguration.swift in Sources */,
 				299713D528F6933F00743003 /* ABIEncoder.swift in Sources */,
+				C61ECD622A20A92C00E97D70 /* PushUser.swift in Sources */,
 				C66A26ED28B4C22F005470B9 /* BaseOperation.swift in Sources */,
 				C6EA6D6B28B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
 				30B3DC9528758E9B006FAA64 /* CurrencyExchangeRates.swift in Sources */,
@@ -10972,6 +11007,7 @@
 				C6A474E729D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C63A352E28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C6B6B046296FF7D600D4E30F /* DomainsSortOrderStorage.swift in Sources */,
+				C61ECD712A20AB4A00E97D70 /* PushMessage.swift in Sources */,
 				C652629B28110B8500F1D699 /* SecurityWallViewController.swift in Sources */,
 				C608C82F2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift in Sources */,
 				307F85C4267B60300070A9A6 /* Extensions.swift in Sources */,
@@ -11278,6 +11314,7 @@
 				C6E0415C295053DC0080F8E3 /* UIScrollView.swift in Sources */,
 				C61236F6292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */,
 				C6098316282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
+				C61ECD6F2A20AB4A00E97D70 /* PushMessage.swift in Sources */,
 				C6C995BB289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6D6E5B3281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C63DD36229C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,
@@ -11518,6 +11555,7 @@
 				306665E22778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
 				30AE84E6257836E2003A0142 /* SceneDelegate.swift in Sources */,
 				C6D5DAC2283629D800379C38 /* MockDomainRecordsService.swift in Sources */,
+				C61ECD602A20A92C00E97D70 /* PushUser.swift in Sources */,
 				C68953932834CD280046CBA3 /* CollectionTextHeaderReusableView.swift in Sources */,
 				C6109E9E28E6AA910027D5D8 /* MockContext.swift in Sources */,
 				C62C3F9C283F5C3F0094FC93 /* DeepLinksService.swift in Sources */,
@@ -11572,6 +11610,7 @@
 				C6526DDF29D2DF7800D6F2EB /* LoginWithEmailOnboardingViewPresenter.swift in Sources */,
 				30E549C42886DA27009833FB /* DefaultsStorage.swift in Sources */,
 				307B1D332603C087007B14C3 /* UDWalletZil.swift in Sources */,
+				C61ECD6A2A20AADE00E97D70 /* PushConnectionRequest.swift in Sources */,
 				C600AB8429F807F60089107B /* DomainTransferService.swift in Sources */,
 				C6456F212800303D00A517D5 /* ConfirmWordConfirmationCell.swift in Sources */,
 				C6F6AF6A28A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
@@ -11693,6 +11732,7 @@
 				C655D02A284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35527FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C635193928D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
+				C61ECD652A20A9D300E97D70 /* PushChat.swift in Sources */,
 				C652629928110B8500F1D699 /* SecurityWallViewController.swift in Sources */,
 				C608C82D2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift in Sources */,
 				30AE84ED257836E2003A0142 /* Extensions.swift in Sources */,

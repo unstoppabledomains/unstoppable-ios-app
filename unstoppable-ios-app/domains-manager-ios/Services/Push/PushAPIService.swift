@@ -54,12 +54,13 @@ extension PushAPIService {
         let request = try apiRequestWith(urlString: urlString,
                                          body: body,
                                          method: .post)
-        
-        print(request)
-        
+                
         return try await makeDataRequestWith(request: request)
     }
     
+    func getUser(for domain: DomainDisplayInfo) async throws {
+        
+    }
 }
 
 // MARK: - Private methods
@@ -150,6 +151,29 @@ private extension PushAPIService {
         }
     }
     
+    struct SendMessageRequestBody: Codable {
+        let fromCAIP10: String
+        let toCAIP10: String
+        let fromDID: String
+        let toDID: String
+        let messageType: String
+        let messageContent: String
+        let signature: String
+        let sigType: String
+        let timestamp: Int?
+        let encType: String
+        let encryptedSecret: String
+        let verificationProof: String
+    }
+    
+    struct ApproveConnectionRequestBody: Codable {
+        let toDID: String
+        let fromDID: String
+        let signature: String
+        let status: String
+        let sigType: String
+        let verificationProof: String?
+    }
 }
 
 // MARK: - Tools
