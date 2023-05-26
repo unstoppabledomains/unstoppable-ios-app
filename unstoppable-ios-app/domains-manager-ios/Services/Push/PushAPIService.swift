@@ -30,18 +30,33 @@ final class PushAPIService {
 
 private extension PushAPIService.URLSList {
     static let V1_URL = baseAPIURL.appendingURLPathComponent("v1")
+    static let CHAT_URL = V1_URL.appendingURLPathComponent("chat")
+    static let CHAT_USERS_URL = CHAT_URL.appendingURLPathComponent("users")
     
-    static func CREATE_USER_URL() -> String {
-        V1_URL.appendingURLPathComponents("users")
+    static var CREATE_USER_URL: String { V1_URL.appendingURLPathComponents("users") }
+    static var GET_USER_URL: String { V1_URL.appendingURLPathComponents("users") }
+    static func GET_CHATS_URL(userEIP: String) -> String {
+        CHAT_USERS_URL.appendingURLPathComponents(userEIP, "chats")
+    }
+    static func GET_CONNECTION_REQUESTS_URL(userEIP: String) -> String {
+        CHAT_USERS_URL.appendingURLPathComponents(userEIP, "requests")
+    }
+    static func GET_CHAT_MESSAGES_URL(threadHash: String) -> String {
+        CHAT_URL.appendingURLPathComponents("conversationhash", threadHash)
+    }
+    static var SEND_CHAT_MESSAGE_URL: String {
+        CHAT_URL.appendingURLPathComponents("message")
+    }
+    static var ACCEPT_CONNECTION_REQUEST_URL: String {
+        CHAT_URL.appendingURLPathComponents("request", "accept")
     }
 }
 
 // MARK: - Open methods
 extension PushAPIService {
-    func createUser(for domain: DomainItem) async throws -> Data  {
-        guard let walletAddress = domain.ownerWallet else { throw PushServiceError.noOwnerWalletInDomain }
-        
-        let urlString = URLSList.CREATE_USER_URL()
+    func createUser(for domain: DomainItem) async throws {
+        let walletAddress = try getWalletAddressOf(domain: domain)
+        let urlString = URLSList.CREATE_USER_URL
         let pgpPair = try generatePGPKeyPair()
         let publicKey = try await preparePublicKey(pgpPair: pgpPair, domain: domain)
         let encryptedPrivateKey = try await preparePrivateKey(pgpPair: pgpPair, domain: domain)
@@ -55,11 +70,98 @@ extension PushAPIService {
                                          body: body,
                                          method: .post)
                 
-        return try await makeDataRequestWith(request: request)
+        try await makeDataRequestWith(request: request)
     }
     
-    func getUser(for domain: DomainDisplayInfo) async throws {
+    func getUser(for domain: DomainDisplayInfo) async throws -> PushUser {
+        let walletAddress = try getWalletAddressOf(domain: domain)
+        let queryComponents = ["caip10" : walletAddress]
+        let urlString = URLSList.GET_USER_URL.appendingURLQueryComponents(queryComponents)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
         
+        return try await getDecodableObjectWith(request: request)
+    }
+    
+    func getChats(for domain: DomainDisplayInfo,
+                  page: Int,
+                  limit: Int) async throws -> [PushChat] {
+        let walletAddress = try getWalletAddressOf(domain: domain)
+        let userEIP = "eip155:\(walletAddress)"
+        let queryComponents = ["page" : String(page),
+                               "limit" : String(limit)]
+        let urlString = URLSList.GET_CHATS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
+        
+        let response: ChatsResponse = try await getDecodableObjectWith(request: request)
+        return response.chats
+    }
+    
+    func getConnectionRequests(for domain: DomainDisplayInfo,
+                  page: Int,
+                  limit: Int) async throws -> [PushConnectionRequest] {
+        let walletAddress = try getWalletAddressOf(domain: domain)
+        let userEIP = "eip155:\(walletAddress)"
+        let queryComponents = ["page" : String(page),
+                               "limit" : String(limit)]
+        let urlString = URLSList.GET_CONNECTION_REQUESTS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
+        
+        return try await getDecodableObjectWith(request: request)
+    }
+    
+    func getChatMessages(threadHash: String,
+                         fetchLimit: Int) async throws -> [PushMessage] {
+        let queryComponents = ["fetchLimit" : String(fetchLimit)]
+        let urlString = URLSList.GET_CHAT_MESSAGES_URL(threadHash: threadHash).appendingURLQueryComponents(queryComponents)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
+        
+        return try await getDecodableObjectWith(request: request)
+    }
+    
+    func sendMessages(fromUser: PushUser,
+                      toUser: PushUser) async throws {
+        let urlString = URLSList.SEND_CHAT_MESSAGE_URL
+        // TODO: - Fill in
+        let body = SendMessageRequestBody(fromCAIP10: fromUser.did,
+                                          toCAIP10: toUser.did,
+                                          fromDID: fromUser.did,
+                                          toDID: toUser.did,
+                                          messageType: "Text", //  "Text" | "Image" | "File" | "GIF"
+                                          messageContent: "",
+                                          signature: "",
+                                          sigType: "",
+                                          timestamp: Int(Date().timeIntervalSince1970),
+                                          encType: "",
+                                          encryptedSecret: "",
+                                          verificationProof: "")
+        
+        let request = try apiRequestWith(urlString: urlString,
+                                         body: body,
+                                         method: .post)
+        
+        try await makeDataRequestWith(request: request)
+    }
+    
+    func approveConnectionRequest(fromUser: PushUser,
+                                  toUser: PushUser) async throws {
+        let urlString = URLSList.ACCEPT_CONNECTION_REQUEST_URL
+        // TODO: - Fill in
+        let body = ApproveConnectionRequestBody(toDID: toUser.did,
+                                                fromDID: fromUser.did,
+                                                signature: "",
+                                                status: "",
+                                                sigType: "",
+                                                verificationProof: "")
+        
+        let request = try apiRequestWith(urlString: urlString,
+                                         body: body,
+                                         method: .post)
+        
+        try await makeDataRequestWith(request: request)
     }
 }
 
@@ -174,10 +276,22 @@ private extension PushAPIService {
         let sigType: String
         let verificationProof: String?
     }
+    
+    struct ChatsResponse: Codable {
+        let chats: [PushChat]
+    }
 }
 
 // MARK: - Tools
 private extension PushAPIService {
+    func getWalletAddressOf(domain: any DomainEntity) throws -> String {
+        guard let walletAddress = domain.ownerWallet else {
+            Debugger.printFailure("Failed to get owner wallet for domain \(domain.name)", critical: true)
+            throw PushServiceError.noOwnerWalletInDomain
+        }
+        
+        return walletAddress
+    }
     
     func preparePublicKey(pgpPair: PGPKeyPair, domain: DomainItem) async throws -> String {
         let publicKeyHash = try hashPersonalMessage(pgpPair.publicKey)
@@ -364,5 +478,9 @@ extension String {
     
     func appendingURLPathComponents(_ pathComponents: String...) -> String {
         return self + "/" + pathComponents.joined(separator: "/")
+    }
+    
+    func appendingURLQueryComponents(_ components: [String : String]) -> String {
+        self + "?" + components.compactMap({ "\($0.key)=\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) }).joined(separator: "&")
     }
 }
