@@ -1023,6 +1023,10 @@
 		C61ECD2B2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
 		C61ECD2C2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
 		C61ECD2D2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
+		C61ECD5A2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
+		C61ECD5B2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
+		C61ECD5C2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
+		C61ECD5D2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
 		C61FD05628FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05728FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05828FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
@@ -3942,6 +3946,7 @@
 		C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpSelectionView.swift; sourceTree = "<group>"; };
 		C61C50042820FC5E00D1110A /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
 		C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketNetworkService.swift; sourceTree = "<group>"; };
+		C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushWebSocketsService.swift; sourceTree = "<group>"; };
 		C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainHandler.swift; sourceTree = "<group>"; };
 		C6209F9729D4180500D573EB /* LocalNotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsService.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
@@ -5623,6 +5628,15 @@
 			path = PullUpSelectionView;
 			sourceTree = "<group>";
 		};
+		C61ECD582A207BC500E97D70 /* Push */ = {
+			isa = PBXGroup;
+			children = (
+				C6B366D62A1C715000DE512B /* PushAPIService.swift */,
+				C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */,
+			);
+			path = Push;
+			sourceTree = "<group>";
+		};
 		C62247AE283CFF07002A0CBD /* DomainTransactionsService */ = {
 			isa = PBXGroup;
 			children = (
@@ -6743,7 +6757,6 @@
 				C613C22129E3BEEC0001A3AF /* NFCService.swift */,
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
-				C6B366D62A1C715000DE512B /* PushAPIService.swift */,
 				C6B91EB329BB718100389FF5 /* StripeService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
@@ -6762,6 +6775,7 @@
 				C652721F2A14B31E001A084C /* MessagingService */,
 				C6B366DB2A1C715D00DE512B /* Networking */,
 				C665FC1D29B0687D009699D2 /* NotificationsService */,
+				C61ECD582A207BC500E97D70 /* Push */,
 				C624D783281BB67F00F55530 /* UDDomainsService */,
 				C609820E2823B69A00546392 /* UDWalletsService */,
 				C66FCCFC28448710009B9525 /* UserDataService */,
@@ -8956,6 +8970,7 @@
 				C6011ABD28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */,
 				C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C62247AA283B9548002A0CBD /* CAAnimation.swift in Sources */,
+				C61ECD5A2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */,
 				C6D6E53628193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
 				C6E1189428F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
 				C6D6E5AD281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
@@ -10021,6 +10036,7 @@
 				C6124CE32924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C61236F7292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */,
 				C6A474E229D1756D0073415F /* LoadingParkedDomainsViewPresenter.swift in Sources */,
+				C61ECD5C2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */,
 				C6A2D54C284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,
 				C65272182A149453001A084C /* ChatChannelType.swift in Sources */,
 				C6E04197295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.swift in Sources */,
@@ -10730,6 +10746,7 @@
 				C6E041B729546AB60080F8E3 /* DomainsCollectionCarouselViewController.swift in Sources */,
 				C6124CE42924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C6A474E329D1756D0073415F /* LoadingParkedDomainsViewPresenter.swift in Sources */,
+				C61ECD5D2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */,
 				C61236F8292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */,
 				C65272192A149453001A084C /* ChatChannelType.swift in Sources */,
 				C6A2D54D284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,
@@ -11141,6 +11158,7 @@
 				C6011ABE28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */,
 				C63DD36629C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C692C361282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */,
+				C61ECD5B2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */,
 				C62247AB283B9548002A0CBD /* CAAnimation.swift in Sources */,
 				C6E1189528F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
 				C6D6E53728193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,

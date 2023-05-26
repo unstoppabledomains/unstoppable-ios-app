@@ -23,12 +23,13 @@ final class PushAPIService {
         static let baseURL: String = {
             NetworkConfig.basePushURL
         }()
+        static let baseAPIURL: String = baseURL.appendingURLPathComponent("apis")
     }
     
 }
 
 private extension PushAPIService.URLSList {
-    static let V1_URL = baseURL.appendingURLPathComponent("v1")
+    static let V1_URL = baseAPIURL.appendingURLPathComponent("v1")
     
     static func CREATE_USER_URL() -> String {
         V1_URL.appendingURLPathComponents("users")

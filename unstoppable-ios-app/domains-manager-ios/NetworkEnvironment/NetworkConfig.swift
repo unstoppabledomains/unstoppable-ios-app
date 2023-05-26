@@ -100,9 +100,9 @@ struct NetworkConfig {
     static var basePushURL: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
-            return "https://backend-staging.epns.io/apis"
+            return "https://backend-staging.epns.io"
         } else {
-            return "https://backend.epns.io/apis"
+            return "https://backend.epns.io"
         }
     }
 }

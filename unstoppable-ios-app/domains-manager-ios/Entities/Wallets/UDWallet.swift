@@ -50,6 +50,17 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return "Polygon"
         }
     }
+    
+    func supportedChainId(isTestNet: Bool) -> Int? {
+        switch self {
+        case .Ethereum:
+            return isTestNet ? 5 : 1 // Goerly or Mainnet
+        case .Matic:
+            return isTestNet ? 80001 : 137 // Mumbai or
+        case .Zilliqa:
+            return nil 
+        }
+    }
 }
 
 struct WalletIconSpec {
