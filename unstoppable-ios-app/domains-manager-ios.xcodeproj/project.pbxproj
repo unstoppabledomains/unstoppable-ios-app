@@ -1019,6 +1019,10 @@
 		C61C50062820FC5E00D1110A /* UISearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C50042820FC5E00D1110A /* UISearchBar.swift */; };
 		C61C50072820FC5E00D1110A /* UISearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C50042820FC5E00D1110A /* UISearchBar.swift */; };
 		C61C50082820FC5E00D1110A /* UISearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61C50042820FC5E00D1110A /* UISearchBar.swift */; };
+		C61ECD2A2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
+		C61ECD2B2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
+		C61ECD2C2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
+		C61ECD2D2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
 		C61FD05628FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05728FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05828FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
@@ -3937,6 +3941,7 @@
 		C61B3E98283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterEmailVerificationCodeToMintDomainsPresenter.swift; sourceTree = "<group>"; };
 		C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpSelectionView.swift; sourceTree = "<group>"; };
 		C61C50042820FC5E00D1110A /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
+		C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketNetworkService.swift; sourceTree = "<group>"; };
 		C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainHandler.swift; sourceTree = "<group>"; };
 		C6209F9729D4180500D573EB /* LocalNotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsService.swift; sourceTree = "<group>"; };
 		C622479F283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackgroundWhiteWithAlpha.swift; sourceTree = "<group>"; };
@@ -4931,6 +4936,7 @@
 				C66435D3288EE4A00098E1B8 /* MetadataNetworkConfig.swift */,
 				3091944F2582B4DD00D132B9 /* MobileAPIAccess.swift */,
 				30AE8520257837B5003A0142 /* NetworkConfig.swift */,
+				C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */,
 				C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */,
 				306665E02778AE72005F6F55 /* UnsConfigManager.swift */,
 			);
@@ -8871,6 +8877,7 @@
 				C6526DD929D2DF6E00D6F2EB /* LoginWithEmailInAppViewPresenter.swift in Sources */,
 				29BECD182979BE4000662FC1 /* Date.swift in Sources */,
 				C6A2D57D284F9EC700327C47 /* ConnectedAppsListViewController.swift in Sources */,
+				C61ECD2A2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */,
 				C679B605291A579500F543A7 /* DomainProfileUpdatingRecordsSection.swift in Sources */,
 				C6E0414B295052180080F8E3 /* CarouselCellVisibilityLevel.swift in Sources */,
 				C64836BD282BCAFB007BD3F1 /* PrimaryDangerButton.swift in Sources */,
@@ -9835,6 +9842,7 @@
 				C6873E1D2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */,
 				C60C29932834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
 				C6B7CF65294AF1F80005C48D /* BlockChainItem.swift in Sources */,
+				C61ECD2C2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */,
 				C66FCD1C2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C600AB9A29FA0CFF0089107B /* TransferDomainNavigationManager.swift in Sources */,
 				C6456F1227FF3C6B00A517D5 /* UIViewController.swift in Sources */,
@@ -10543,6 +10551,7 @@
 				C6873E1E2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */,
 				C6109E3A28E5AB310027D5D8 /* AppLaunchServiceProtocol.swift in Sources */,
 				C6B7CF66294AF1F80005C48D /* BlockChainItem.swift in Sources */,
+				C61ECD2D2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */,
 				C66FCD1D2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C600AB9B29FA0CFF0089107B /* TransferDomainNavigationManager.swift in Sources */,
 				C6456F1327FF3C6B00A517D5 /* UIViewController.swift in Sources */,
@@ -11053,6 +11062,7 @@
 				C6526DDA29D2DF6E00D6F2EB /* LoginWithEmailInAppViewPresenter.swift in Sources */,
 				29BECD192979BE4000662FC1 /* Date.swift in Sources */,
 				C6A2D57E284F9EC700327C47 /* ConnectedAppsListViewController.swift in Sources */,
+				C61ECD2B2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */,
 				C679B606291A579500F543A7 /* DomainProfileUpdatingRecordsSection.swift in Sources */,
 				C6E0414C295052180080F8E3 /* CarouselCellVisibilityLevel.swift in Sources */,
 				C61B3E6B283E24BB00500B6D /* MintDomainsNavigationController.swift in Sources */,
