@@ -130,7 +130,7 @@ extension PushAPIService {
                                           toCAIP10: toUser.did,
                                           fromDID: fromUser.did,
                                           toDID: toUser.did,
-                                          messageType: .text
+                                          messageType: .text,
                                           messageContent: "",
                                           signature: "",
                                           sigType: "",
