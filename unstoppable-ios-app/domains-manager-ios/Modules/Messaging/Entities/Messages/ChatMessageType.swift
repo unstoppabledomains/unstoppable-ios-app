@@ -9,7 +9,7 @@ import Foundation
 
 enum ChatMessageType: Hashable {
     case text(message: ChatTextMessage)
-    
+    // "Image" | "File" | "GIF"
     var time: Date {
         switch self {
         case .text(let message):
