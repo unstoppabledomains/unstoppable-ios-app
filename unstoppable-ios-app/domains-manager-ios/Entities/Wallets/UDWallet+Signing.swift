@@ -103,14 +103,6 @@ extension UDWallet {
         return messageToSend
     }
     
-    func signViaWalletConnect(message: String) async throws -> String {
-        if message.droppedHexPrefix.isHexNumber {
-            return try await signViaWalletConnectEthSign(message: prepareMessageForEthSign(message: message))
-        } else {
-            return try await signViaWalletConnectPersonalSign(message: message)
-        }
-    }
-    
     func signViaWalletConnectPersonalSign(message: String) async throws -> String {
         let session = try detectWCSessionType()
         switch session {
