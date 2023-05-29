@@ -46,18 +46,10 @@ extension UDWallet {
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
-        if messageString.droppedHexPrefix.isHexNumber {
-            if let sign = signPersonalAsHexString(messageString: messageString) {
-                return sign
-            } else {
-                throw UDWallet.Error.failedToSignMessage
-            }
-        } else {
-            guard let signature = self.signPersonal(messageString: messageString) else {
-                throw UDWallet.Error.failedToSignMessage
-            }
-            return signature
+        guard let signature = self.signPersonal(messageString: messageString) else {
+            throw UDWallet.Error.failedToSignMessage
         }
+        return signature
     }
     
     func getEthSignature(messageString: String) async throws -> String {
