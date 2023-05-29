@@ -53,7 +53,7 @@ extension WalletConnectExternalWalletHandler {
     typealias WC1ClientResponseTuple = (WC1Client, WC1ResponseCallback)
     typealias WC1ClientCallBlock = (WC1ClientResponseTuple) throws -> ()
     
-    private func submitWC1TransactionToExternalWallet(in wallet: UDWallet,
+    private func submitWC1RequestToExternalWallet(in wallet: UDWallet,
                                                       clientCallBlock: WC1ClientCallBlock) async throws -> WalletConnectSwift.Response {
         // TODO: - Check for there's already callback set?
         do {
@@ -94,7 +94,7 @@ extension WalletConnectExternalWalletHandler {
                                           walletAddress: HexAddress,
                                           message: String,
                                           in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
-        try await submitWC1TransactionToExternalWallet(in: wallet) { client, completion in
+        try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
             try client.eth_signTypedData(url: session.url,
                                          account: walletAddress,
                                          message: message,
@@ -108,7 +108,7 @@ extension WalletConnectExternalWalletHandler {
         guard let transaction = Client.Transaction(ethTx: tx) else {
             throw WalletConnectRequestError.failedCreateTxForExtWallet
         }
-        return try await submitWC1TransactionToExternalWallet(in: wallet) { client, completion in
+        return try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
             try client.eth_sendTransaction(url: session.url,
                                            transaction: transaction,
                                            completion: completion)
@@ -121,7 +121,7 @@ extension WalletConnectExternalWalletHandler {
         guard let transaction = Client.Transaction(ethTx: tx) else {
             throw WalletConnectRequestError.failedCreateTxForExtWallet
         }
-        return try await submitWC1TransactionToExternalWallet(in: wallet) { client, completion in
+        return try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
             try client.eth_signTransaction(url: session.url,
                                            transaction: transaction,
                                            completion: completion)
@@ -131,7 +131,7 @@ extension WalletConnectExternalWalletHandler {
     func signPersonalSignViaWalletConnect_V1(session: WalletConnectSwift.Session,
                                              message: String,
                                              in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
-        try await submitWC1TransactionToExternalWallet(in: wallet) { client, completion in
+        try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
             try client.personal_sign(url: session.url,
                                      message: message,
                                      account: wallet.address,
@@ -142,7 +142,7 @@ extension WalletConnectExternalWalletHandler {
     func signConnectEthSignViaWalletConnect_V1(session: WalletConnectSwift.Session,
                                                message: String,
                                                in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
-        try await submitWC1TransactionToExternalWallet(in: wallet) { client, completion in
+        try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
             try client.eth_sign(url: session.url,
                                 account: wallet.address,
                                 message: message,
