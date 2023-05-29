@@ -41,7 +41,7 @@ extension UDWallet {
 //                let messageBytes = message.droppedHexPrefix.hexToBytes()
 
                 let message = messageString.convertedIntoReadableMessage
-                return try await signViaWalletConnectPersonalSign(message: prepareMessageForEthSign(message: message))
+                return try await signViaWalletConnectPersonalSign(message: message)
             }
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
