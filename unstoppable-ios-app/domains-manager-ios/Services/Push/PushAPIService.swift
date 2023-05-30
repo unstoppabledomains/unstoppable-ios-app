@@ -11,10 +11,6 @@ import CryptoKit
 
 final class PushAPIService {
     
-    static let shared = PushAPIService()
-    
-    private init() { }
-    
     private let networkService = NetworkService()
     
     private let encryptionType = "eip191-aes256-gcm-hkdf-sha256"
@@ -54,7 +50,7 @@ private extension PushAPIService.URLSList {
 
 // MARK: - Open methods
 extension PushAPIService {
-    func createUser(for domain: DomainItem) async throws {
+    func createUser(for domain: DomainItem) async throws -> PushUser {
         let walletAddress = try getWalletAddressOf(domain: domain)
         let urlString = URLSList.CREATE_USER_URL
         let pgpPair = try generatePGPKeyPair()
@@ -70,10 +66,10 @@ extension PushAPIService {
                                          body: body,
                                          method: .post)
                 
-        try await makeDataRequestWith(request: request)
+        return try await getDecodableObjectWith(request: request)
     }
     
-    func getUser(for domain: DomainDisplayInfo) async throws -> PushUser {
+    func getUser(for domain: any DomainEntity) async throws -> PushUser {
         let walletAddress = try getWalletAddressOf(domain: domain)
         let queryComponents = ["caip10" : walletAddress]
         let urlString = URLSList.GET_USER_URL.appendingURLQueryComponents(queryComponents)

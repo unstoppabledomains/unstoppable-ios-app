@@ -11,9 +11,9 @@ final class DomainChatChannel: ChatChannel {
     
     let domainName: DomainName
     
-    init(id: UUID = .init(),
+    init(id: String,
          avatarURL: URL?,
-         lastMessage: ChatMessageType,
+         lastMessage: ChatMessageType?,
          unreadMessagesCount: Int,
          domainName: DomainName) {
         self.domainName = domainName

@@ -9,12 +9,12 @@ import Foundation
 
 class ChatChannel: Hashable {
     
-    let id: UUID
+    let id: String
     let avatarURL: URL?
     let lastMessage: ChatMessageType?
     let unreadMessagesCount: Int
    
-    init(id: UUID = .init(),
+    init(id: String,
          avatarURL: URL?,
          lastMessage: ChatMessageType?,
          unreadMessagesCount: Int) {

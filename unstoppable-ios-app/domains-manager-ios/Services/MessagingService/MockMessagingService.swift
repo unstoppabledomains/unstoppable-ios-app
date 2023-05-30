@@ -54,7 +54,8 @@ private extension MockMessagingService {
         for _ in 0..<numberOfChannelsToTake {
             if let randomChat = mockDomainChatInfos.randomElement() {
                 let sender = createRandomChatSender()
-                let newChannel = DomainChatChannel(avatarURL: URL(string: randomChat.imageURL),
+                let newChannel = DomainChatChannel(id: UUID().uuidString,
+                                                   avatarURL: URL(string: randomChat.imageURL),
                                                    lastMessage: createMockLastMessageForChannelWithSender(sender),
                                                    unreadMessagesCount: createMockChannelUnreadMessagesCount(),
                                                    domainName: randomChat.domainName)
