@@ -13,15 +13,18 @@ class ChatChannel: Hashable {
     let avatarURL: URL?
     let lastMessage: ChatMessageType?
     let unreadMessagesCount: Int
+    var threadHash: String
    
     init(id: String,
          avatarURL: URL?,
          lastMessage: ChatMessageType?,
-         unreadMessagesCount: Int) {
+         unreadMessagesCount: Int,
+         threadHash: String) {
         self.id = id
         self.avatarURL = avatarURL
         self.lastMessage = lastMessage
         self.unreadMessagesCount = unreadMessagesCount
+        self.threadHash = threadHash
     }
     
     static func == (lhs: ChatChannel, rhs: ChatChannel) -> Bool {

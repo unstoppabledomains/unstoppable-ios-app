@@ -254,7 +254,7 @@ private extension PushAPIService {
         let toCAIP10: String
         let fromDID: String
         let toDID: String
-        let messageType: MessageType
+        let messageType: PushMessageType
         let messageContent: String
         let signature: String
         let sigType: String
@@ -262,13 +262,6 @@ private extension PushAPIService {
         let encType: String
         let encryptedSecret: String
         let verificationProof: String
-        
-        enum MessageType: String, Codable {
-            case text = "Text"
-            case image = "Image"
-            case file = "File"
-            case gif = "GIF"
-        }
     }
     
     struct ApproveConnectionRequestBody: Codable {

@@ -15,8 +15,13 @@ final class DomainChatChannel: ChatChannel {
          avatarURL: URL?,
          lastMessage: ChatMessageType?,
          unreadMessagesCount: Int,
-         domainName: DomainName) {
+         domainName: DomainName,
+         threadHash: String) {
         self.domainName = domainName
-        super.init(id: id, avatarURL: avatarURL, lastMessage: lastMessage, unreadMessagesCount: unreadMessagesCount)
+        super.init(id: id,
+                   avatarURL: avatarURL,
+                   lastMessage: lastMessage,
+                   unreadMessagesCount: unreadMessagesCount,
+                   threadHash: threadHash)
     }
 }

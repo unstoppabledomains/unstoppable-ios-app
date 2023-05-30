@@ -12,7 +12,7 @@ struct PushMessage: Hashable, Codable {
     let toCAIP10: String
     let fromDID: String
     let toDID: String
-    let messageType: String
+    let messageType: PushMessageType
     let messageContent: String
     let signature: String
     let sigType: String

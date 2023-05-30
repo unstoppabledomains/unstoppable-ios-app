@@ -58,7 +58,8 @@ private extension MockMessagingService {
                                                    avatarURL: URL(string: randomChat.imageURL),
                                                    lastMessage: createMockLastMessageForChannelWithSender(sender),
                                                    unreadMessagesCount: createMockChannelUnreadMessagesCount(),
-                                                   domainName: randomChat.domainName)
+                                                   domainName: randomChat.domainName,
+                                                   threadHash: "")
                 channels.append(.domain(channel: newChannel))
                 mockDomainChatInfos.removeAll(where: { $0 == randomChat })
             }
@@ -108,7 +109,8 @@ private extension MockMessagingService {
     }
     
     func createMockLastMessageForChannelWithSender(_ sender: ChatSender) -> ChatMessageType {
-        .text(message: .init(sender: sender,
+        .text(message: .init(id: UUID().uuidString,
+                             sender: sender,
                              time: createMockMessageDate(),
                              text: mockLastMessageTexts.randomElement()!))
     }
@@ -144,7 +146,8 @@ private extension MockMessagingService {
             let sender = createRandomChatSender()
             let time = createMockMessageDate()
             let text = mockLastMessageTexts.randomElement()!
-            let textMessage = ChatTextMessage(sender: sender,
+            let textMessage = ChatTextMessage(id: UUID().uuidString,
+                                              sender: sender,
                                               time: time,
                                               text: text)
             let messageType = ChatMessageType.text(message: textMessage)

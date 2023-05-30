@@ -36,6 +36,14 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let channelTypes = pushChats.map({ convertPushChatToChannelType($0) })
         return channelTypes
     }
+    
+    func getMessagesForChannel(_ channel: ChatChannelType,
+                               fetchLimit: Int) async throws -> [ChatMessageType] {
+        let threadHash = channel.channel.threadHash
+        let pushMessages = try await pushService.getChatMessages(threadHash: threadHash, fetchLimit: fetchLimit)
+        let messageTypes = pushMessages.compactMap({ convertPushChatMessageToMessageType($0) })
+        return messageTypes
+    }
 }
 
 // MARK: - Private methods
@@ -52,7 +60,34 @@ private extension PushMessagingAPIService {
                                         avatarURL: URL(string: pushChat.profilePicture),
                                         lastMessage: nil,
                                         unreadMessagesCount: 0,
-                                        domainName: pushChat.name)
+                                        domainName: pushChat.name,
+                                        threadHash: pushChat.threadhash)
         return .domain(channel: channel)
+    }
+    
+    func convertPushChatMessageToMessageType(_ pushMessage: PushMessage) -> ChatMessageType? {
+        switch pushMessage.messageType {
+        case .text:
+            var time = Date()
+            if let timestampt = pushMessage.timestamp {
+                time = Date(timeIntervalSince1970: TimeInterval(timestampt))
+            }
+            // TODO: - Review required info to parse chat message
+            let textMessage = ChatTextMessage(id: pushMessage.signature,
+                                              sender: .friend,
+                                              time: time,
+                                              avatarURL: nil,
+                                              text: pushMessage.messageContent) // Decrypt
+            return .text(message: textMessage)
+        default:
+            return nil // Not supported for now
+        }
+    }
+}
+
+// MARK: - Open methods
+extension PushMessagingAPIService {
+    enum PushMessagingAPIServiceError: Error {
+        case incorrectDataState
     }
 }
