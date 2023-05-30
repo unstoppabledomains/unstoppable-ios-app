@@ -13,3 +13,21 @@ protocol MessagingServiceProtocol {
     func getNumberOfUnreadMessagesInChannelsForDomain(_ domain: DomainDisplayInfo) async -> Int
     func getMessagesForChannel(_ channel: ChatChannelType) -> [ChatMessageType]
 }
+
+
+protocol MessagingAPIServiceProtocol { }
+protocol MessagingWebSocketsServiceProtocol { }
+
+typealias MessagingWebSocketEventCallback = (MessagingWebSocketEvent)->()
+enum MessagingWebSocketEvent {
+    case userFeeds
+    case userSpamFeeds
+    case chatReceivedMessage
+    case chatGroups
+}
+
+
+protocol MessagingStorageServiceProtocol { }
+
+
+

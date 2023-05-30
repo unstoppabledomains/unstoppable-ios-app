@@ -1051,6 +1051,10 @@
 		C61ECD7A2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */; };
 		C61ECD7B2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */; };
 		C61ECD7C2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD782A20E8BD00E97D70 /* PushGroupChatMember.swift */; };
+		C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = C61ECD852A25AB4200E97D70 /* SocketIO */; };
+		C61ECD882A25BB0000E97D70 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = C61ECD872A25BB0000E97D70 /* SocketIO */; };
+		C61ECD8A2A25BB2B00E97D70 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = C61ECD892A25BB2B00E97D70 /* SocketIO */; };
+		C61ECD8C2A25BB3600E97D70 /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = C61ECD8B2A25BB3600E97D70 /* SocketIO */; };
 		C61FD05628FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05728FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
 		C61FD05828FD3F540088CFDD /* ShareDomainHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */; };
@@ -4620,6 +4624,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				30AD0D792704634600F42ACC /* Zesame in Frameworks */,
+				C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */,
 				306B3D77253EE8EC00102A76 /* Web3ContractABI in Frameworks */,
 				290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */,
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
@@ -4666,6 +4671,7 @@
 				29344C1F2963779D0091B40B /* WalletConnectPairing in Frameworks */,
 				307BEF0126AEEFDE009EC445 /* Stripe in Frameworks */,
 				C634028C2886549200AB5D38 /* SVGKit in Frameworks */,
+				C61ECD8A2A25BB2B00E97D70 /* SocketIO in Frameworks */,
 				307F841B267A339F0070A9A6 /* Web3 in Frameworks */,
 				307F841C267A339F0070A9A6 /* Zesame in Frameworks */,
 				29344C1D2963779D0091B40B /* WalletConnect in Frameworks */,
@@ -4680,6 +4686,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				307F85D1267B60300070A9A6 /* Web3ContractABI in Frameworks */,
+				C61ECD882A25BB0000E97D70 /* SocketIO in Frameworks */,
 				307F85D2267B60300070A9A6 /* Valet in Frameworks */,
 				29D249892950B51B00193970 /* WalletConnectNetworking in Frameworks */,
 				30D89F5D26A9EB6500251C2D /* Bugsnag in Frameworks */,
@@ -4709,6 +4716,7 @@
 				30AE84F3257836E2003A0142 /* Web3ContractABI in Frameworks */,
 				30AD0D82270478BF00F42ACC /* WalletConnectSwift in Frameworks */,
 				307BEF0926AEF04B009EC445 /* web3swift in Frameworks */,
+				C61ECD8C2A25BB3600E97D70 /* SocketIO in Frameworks */,
 				C634028A2886548D00AB5D38 /* SVGKit in Frameworks */,
 				30AE84F4257836E2003A0142 /* Web3 in Frameworks */,
 				307BEF0326AEF022009EC445 /* BigInt in Frameworks */,
@@ -6243,6 +6251,7 @@
 			children = (
 				C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */,
 				C652722A2A14B395001A084C /* MockMessagingService.swift */,
+				C61ECD582A207BC500E97D70 /* Push */,
 			);
 			path = MessagingService;
 			sourceTree = "<group>";
@@ -6819,7 +6828,6 @@
 				C652721F2A14B31E001A084C /* MessagingService */,
 				C6B366DB2A1C715D00DE512B /* Networking */,
 				C665FC1D29B0687D009699D2 /* NotificationsService */,
-				C61ECD582A207BC500E97D70 /* Push */,
 				C624D783281BB67F00F55530 /* UDDomainsService */,
 				C609820E2823B69A00546392 /* UDWalletsService */,
 				C66FCCFC28448710009B9525 /* UserDataService */,
@@ -7975,6 +7983,7 @@
 				290A60512950AA1600882109 /* WalletConnectRouter */,
 				290A60532950AA1600882109 /* WalletConnectVerify */,
 				C63812232993E009002590E7 /* Valet */,
+				C61ECD852A25AB4200E97D70 /* SocketIO */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -8047,6 +8056,7 @@
 				29344C1C2963779D0091B40B /* WalletConnect */,
 				29344C1E2963779D0091B40B /* WalletConnectPairing */,
 				29344C202963779D0091B40B /* WalletConnectPush */,
+				C61ECD892A25BB2B00E97D70 /* SocketIO */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 307F8458267A339F0070A9A6 /* domains-manager-ios TESTFLIGHT RELEASE.app */;
@@ -8086,6 +8096,7 @@
 				29D2498C2950B51B00193970 /* WalletConnectPush */,
 				29D2498E2950B51B00193970 /* WalletConnectRouter */,
 				29D249902950B51B00193970 /* WalletConnectVerify */,
+				C61ECD872A25BB0000E97D70 /* SocketIO */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 307F8610267B60300070A9A6 /* domains-manager-ios  TESTFLIGHT DEV.app */;
@@ -8117,6 +8128,7 @@
 				30AD0D81270478BF00F42ACC /* WalletConnectSwift */,
 				3035CF66273574F300545D92 /* Zesame */,
 				C63402892886548D00AB5D38 /* SVGKit */,
+				C61ECD8B2A25BB3600E97D70 /* SocketIO */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 30AE8515257836E2003A0142 /* domains-manager-ios Dev Env.app */;
@@ -8188,6 +8200,7 @@
 				C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */,
 				290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */,
 				C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */,
+				C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -12579,6 +12592,14 @@
 				version = 6.25.2;
 			};
 		};
+		C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
+			requirement = {
+				kind = exactVersion;
+				version = 15.2.0;
+			};
+		};
 		C63402862886547C00AB5D38 /* XCRemoteSwiftPackageReference "SVGKit-Light" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/unstoppabledomains/SVGKit-Light";
@@ -12872,6 +12893,26 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 30D89F5926A9EB5500251C2D /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */;
 			productName = Bugsnag;
+		};
+		C61ECD852A25AB4200E97D70 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
+		};
+		C61ECD872A25BB0000E97D70 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
+		};
+		C61ECD892A25BB2B00E97D70 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
+		};
+		C61ECD8B2A25BB3600E97D70 /* SocketIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */;
+			productName = SocketIO;
 		};
 		C63402872886547C00AB5D38 /* SVGKit */ = {
 			isa = XCSwiftPackageProductDependency;
