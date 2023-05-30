@@ -1,22 +1,22 @@
 //
-//  PushWebSocketsService.swift
+//  PushMessagingWebSocketsService.swift
 //  domains-manager-ios
 //
-//  Created by Oleg Kuplin on 26.05.2023.
+//  Created by Oleg Kuplin on 30.05.2023.
 //
 
 import Foundation
 import SocketIO
 
-final class PushWebSocketsService {
+final class PushMessagingWebSocketsService {
     
     private var socketServices = [WebSocketNetworkService]()
     private var domainNameToConnectionMap: [DomainName : SocketManager] = [:]
     
 }
 
-// MARK: - Open methods
-extension PushWebSocketsService: MessagingWebSocketsServiceProtocol {
+// MARK: - MessagingWebSocketsServiceProtocol
+extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
     func subscribeFor(domain: DomainItem,
                       isTestnet: Bool,
                       eventCallback: @escaping MessagingWebSocketEventCallback) throws {
@@ -60,25 +60,25 @@ extension PushWebSocketsService: MessagingWebSocketsServiceProtocol {
 }
 
 // MARK: - Private methods
-private extension PushWebSocketsService {
+private extension PushMessagingWebSocketsService {
     func buildConnectionFor(domain: DomainItem, isTestnet: Bool) throws -> SocketManager {
         let url = NetworkConfig.basePushURL
         let eipAddress = try buildEIP155AddressFrom(domain: domain, isTestnet: isTestnet)
         let params: [String : Any] = ["address" : eipAddress]
         
         var config: SocketIOClientConfiguration = []
-        #if DEBUG
+#if DEBUG
         config = [.log(true),
                   .connectParams(params),
                   .reconnectAttempts(-1),
                   .reconnectWait(10),
                   .reconnectWaitMax(Int(Constants.updateInterval))]
-        #else
+#else
         config = [.connectParams(params),
                   .reconnectAttempts(-1),
                   .reconnectWait(10),
                   .reconnectWaitMax(Int(Constants.updateInterval))]
-        #endif
+#endif
         
         let manager = SocketManager(socketURL: URL(string: url)!,
                                     config: config)
@@ -126,7 +126,7 @@ private extension PushWebSocketsService {
 }
 
 // MARK: - Private methods
-private extension PushWebSocketsService {
+private extension PushMessagingWebSocketsService {
     enum Events: String {
         case connect = "CONNECT"
         case disconnect = "DISCONNECT"
@@ -138,7 +138,7 @@ private extension PushWebSocketsService {
 }
 
 // MARK: - Open methods
-extension PushWebSocketsService {
+extension PushMessagingWebSocketsService {
     enum PushWebSocketError: Error {
         case failedToCreateEIP155Address
     }

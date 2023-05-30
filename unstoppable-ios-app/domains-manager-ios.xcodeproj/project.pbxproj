@@ -1023,10 +1023,6 @@
 		C61ECD2B2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
 		C61ECD2C2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
 		C61ECD2D2A205A4800E97D70 /* WebSocketNetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */; };
-		C61ECD5A2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
-		C61ECD5B2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
-		C61ECD5C2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
-		C61ECD5D2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */; };
 		C61ECD5F2A20A92C00E97D70 /* PushUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD5E2A20A92C00E97D70 /* PushUser.swift */; };
 		C61ECD602A20A92C00E97D70 /* PushUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD5E2A20A92C00E97D70 /* PushUser.swift */; };
 		C61ECD612A20A92C00E97D70 /* PushUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61ECD5E2A20A92C00E97D70 /* PushUser.swift */; };
@@ -3578,10 +3574,10 @@
 		C6F9FBDA2A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */; };
 		C6F9FBDB2A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */; };
 		C6F9FBDC2A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */; };
-		C6F9FBDE2A25C5AF00102F81 /* MessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* MessagingWebSocketsService.swift */; };
-		C6F9FBDF2A25C5AF00102F81 /* MessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* MessagingWebSocketsService.swift */; };
-		C6F9FBE02A25C5AF00102F81 /* MessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* MessagingWebSocketsService.swift */; };
-		C6F9FBE12A25C5AF00102F81 /* MessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* MessagingWebSocketsService.swift */; };
+		C6F9FBDE2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
+		C6F9FBDF2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
+		C6F9FBE02A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
+		C6F9FBE12A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
 		C6F9FBE32A25C5C600102F81 /* MessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */; };
 		C6F9FBE42A25C5C600102F81 /* MessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */; };
 		C6F9FBE52A25C5C600102F81 /* MessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */; };
@@ -4014,7 +4010,6 @@
 		C61C4FFF2820E39600D1110A /* PullUpSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpSelectionView.swift; sourceTree = "<group>"; };
 		C61C50042820FC5E00D1110A /* UISearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISearchBar.swift; sourceTree = "<group>"; };
 		C61ECD292A205A4800E97D70 /* WebSocketNetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketNetworkService.swift; sourceTree = "<group>"; };
-		C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushWebSocketsService.swift; sourceTree = "<group>"; };
 		C61ECD5E2A20A92C00E97D70 /* PushUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushUser.swift; sourceTree = "<group>"; };
 		C61ECD632A20A9D300E97D70 /* PushChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChat.swift; sourceTree = "<group>"; };
 		C61ECD682A20AADE00E97D70 /* PushConnectionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushConnectionRequest.swift; sourceTree = "<group>"; };
@@ -4655,7 +4650,7 @@
 		C6F9FBCE2A25C41900102F81 /* MessagingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingService.swift; sourceTree = "<group>"; };
 		C6F9FBD32A25C4ED00102F81 /* ChatUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUser.swift; sourceTree = "<group>"; };
 		C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingAPIService.swift; sourceTree = "<group>"; };
-		C6F9FBDD2A25C5AF00102F81 /* MessagingWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingWebSocketsService.swift; sourceTree = "<group>"; };
+		C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingWebSocketsService.swift; sourceTree = "<group>"; };
 		C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingStorageService.swift; sourceTree = "<group>"; };
 		C6F9FBE72A25CB5800102F81 /* PushMessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessageType.swift; sourceTree = "<group>"; };
 		C6FAFDE528119E0400734E0F /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
@@ -5720,7 +5715,6 @@
 			isa = PBXGroup;
 			children = (
 				C6B366D62A1C715000DE512B /* PushAPIService.swift */,
-				C61ECD592A207BE200E97D70 /* PushWebSocketsService.swift */,
 				C61ECD722A20E85E00E97D70 /* Entities */,
 			);
 			path = Push;
@@ -8005,7 +7999,7 @@
 			isa = PBXGroup;
 			children = (
 				C6F9FBB72A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift */,
-				C6F9FBDD2A25C5AF00102F81 /* MessagingWebSocketsService.swift */,
+				C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */,
 				C6F9FBBD2A25C32700102F81 /* MessagingWebSocketEvent.swift */,
 			);
 			path = WebSockets;
@@ -9119,7 +9113,6 @@
 				C6011ABD28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */,
 				C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C62247AA283B9548002A0CBD /* CAAnimation.swift in Sources */,
-				C61ECD5A2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */,
 				C6D6E53628193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
 				C6E1189428F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
 				C6D6E5AD281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
@@ -9452,7 +9445,7 @@
 				C6AD180F28D319BF0008A479 /* CollectionViewShowHideCell.swift in Sources */,
 				C6C995BE289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C60981E728225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
-				C6F9FBDE2A25C5AF00102F81 /* MessagingWebSocketsService.swift in Sources */,
+				C6F9FBDE2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */,
 				C6F6AF6E28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6A2D598284FA0B200327C47 /* MockWalletConnectService.swift in Sources */,
 				C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */,
@@ -10000,7 +9993,7 @@
 				C6B6859228007C09000F9037 /* UDCheckBox.swift in Sources */,
 				C6D6E50E2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
 				C666893428114B0E002062B4 /* BaseButton.swift in Sources */,
-				C6F9FBE02A25C5AF00102F81 /* MessagingWebSocketsService.swift in Sources */,
+				C6F9FBE02A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */,
 				C681092328041325002D780E /* GIFAnimationsService.swift in Sources */,
 				C609825E2823FF7700546392 /* BaseConfirmRecoveryWordsPresenter.swift in Sources */,
 				C6098317282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
@@ -10212,7 +10205,6 @@
 				C6124CE32924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C61236F7292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */,
 				C6A474E229D1756D0073415F /* LoadingParkedDomainsViewPresenter.swift in Sources */,
-				C61ECD5C2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */,
 				C6A2D54C284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,
 				C65272182A149453001A084C /* ChatChannelType.swift in Sources */,
 				C6E04197295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.swift in Sources */,
@@ -10726,7 +10718,7 @@
 				C63902CA28E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift in Sources */,
 				C6D6E50F2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
 				C666893528114B0E002062B4 /* BaseButton.swift in Sources */,
-				C6F9FBE12A25C5AF00102F81 /* MessagingWebSocketsService.swift in Sources */,
+				C6F9FBE12A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */,
 				C681092428041325002D780E /* GIFAnimationsService.swift in Sources */,
 				C609825F2823FF7700546392 /* BaseConfirmRecoveryWordsPresenter.swift in Sources */,
 				C6098318282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
@@ -10938,7 +10930,6 @@
 				C6E041B729546AB60080F8E3 /* DomainsCollectionCarouselViewController.swift in Sources */,
 				C6124CE42924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C6A474E329D1756D0073415F /* LoadingParkedDomainsViewPresenter.swift in Sources */,
-				C61ECD5D2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */,
 				C61236F8292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */,
 				C65272192A149453001A084C /* ChatChannelType.swift in Sources */,
 				C6A2D54D284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,
@@ -11355,7 +11346,6 @@
 				C6011ABE28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */,
 				C63DD36629C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C692C361282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */,
-				C61ECD5B2A207BE200E97D70 /* PushWebSocketsService.swift in Sources */,
 				C62247AB283B9548002A0CBD /* CAAnimation.swift in Sources */,
 				C6E1189528F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
 				C6D6E53728193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
@@ -11688,7 +11678,7 @@
 				C6C99597289D313D00367362 /* CNavigationController.swift in Sources */,
 				C6C995BF289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C60981E828225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
-				C6F9FBDF2A25C5AF00102F81 /* MessagingWebSocketsService.swift in Sources */,
+				C6F9FBDF2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */,
 				C6F6AF6F28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6A2D599284FA0B200327C47 /* MockWalletConnectService.swift in Sources */,
 				C6E041AA2951F3DE0080F8E3 /* EmptyCollectionSectionFooter.swift in Sources */,

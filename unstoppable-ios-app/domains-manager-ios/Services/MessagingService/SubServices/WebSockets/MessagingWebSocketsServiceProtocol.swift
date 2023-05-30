@@ -7,5 +7,7 @@
 
 import Foundation
 
-protocol MessagingWebSocketsServiceProtocol { }
+protocol MessagingWebSocketsServiceProtocol {
+    
+}
 
