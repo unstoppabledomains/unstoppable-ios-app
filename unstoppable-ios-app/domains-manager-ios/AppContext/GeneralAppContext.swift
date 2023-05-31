@@ -29,6 +29,7 @@ final class GeneralAppContext: AppContextProtocol {
     let firebaseInteractionService: FirebaseInteractionServiceProtocol
     let firebaseAuthService: FirebaseAuthServiceProtocol
     let firebaseDomainsService: FirebaseDomainsServiceProtocol
+    let messagingService: MessagingServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
@@ -48,7 +49,6 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = WalletConnectClientService(udWalletsService: udWalletsService)
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
-    private(set) lazy var messagingService: MessagingServiceProtocol = MockMessagingService() // TODO: - Update to real when it will be possible
 
     init() {
         authentificationService = AuthentificationService()
@@ -110,6 +110,13 @@ final class GeneralAppContext: AppContextProtocol {
         
         firebaseInteractionService.addListener(dataAggregatorService)
         dataAggregatorService.addListener(LocalNotificationsService.shared)
+        let messagingAPIService: MessagingAPIServiceProtocol = PushMessagingAPIService()
+        let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = PushMessagingWebSocketsService()
+        let messagingStorageService: MessagingStorageServiceProtocol = CoreDataMessagingStorageService()
+        messagingService = MessagingService(apiService: messagingAPIService,
+                                            webSocketsService: messagingWebSocketsService,
+                                            storageProtocol: messagingStorageService)
+        
         Task {
             persistedProfileSignaturesStorage.removeExpired()
         }

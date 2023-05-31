@@ -69,8 +69,8 @@ private extension PushMessagingAPIService {
         switch pushMessage.messageType {
         case .text:
             var time = Date()
-            if let timestampt = pushMessage.timestamp {
-                time = Date(timeIntervalSince1970: TimeInterval(timestampt))
+            if let timestamp = pushMessage.timestamp {
+                time = Date(timeIntervalSince1970: TimeInterval(timestamp))
             }
             // TODO: - Review required info to parse chat message
             let textMessage = ChatTextMessage(id: pushMessage.signature,

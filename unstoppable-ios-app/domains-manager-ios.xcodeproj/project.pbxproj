@@ -3578,10 +3578,10 @@
 		C6F9FBDF2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
 		C6F9FBE02A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
 		C6F9FBE12A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
-		C6F9FBE32A25C5C600102F81 /* MessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */; };
-		C6F9FBE42A25C5C600102F81 /* MessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */; };
-		C6F9FBE52A25C5C600102F81 /* MessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */; };
-		C6F9FBE62A25C5C600102F81 /* MessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */; };
+		C6F9FBE32A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */; };
+		C6F9FBE42A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */; };
+		C6F9FBE52A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */; };
+		C6F9FBE62A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */; };
 		C6F9FBE82A25CB5800102F81 /* PushMessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE72A25CB5800102F81 /* PushMessageType.swift */; };
 		C6F9FBE92A25CB5800102F81 /* PushMessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE72A25CB5800102F81 /* PushMessageType.swift */; };
 		C6F9FBEA2A25CB5800102F81 /* PushMessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE72A25CB5800102F81 /* PushMessageType.swift */; };
@@ -4651,7 +4651,7 @@
 		C6F9FBD32A25C4ED00102F81 /* ChatUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUser.swift; sourceTree = "<group>"; };
 		C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingAPIService.swift; sourceTree = "<group>"; };
 		C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingWebSocketsService.swift; sourceTree = "<group>"; };
-		C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingStorageService.swift; sourceTree = "<group>"; };
+		C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessagingStorageService.swift; sourceTree = "<group>"; };
 		C6F9FBE72A25CB5800102F81 /* PushMessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessageType.swift; sourceTree = "<group>"; };
 		C6FAFDE528119E0400734E0F /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
 		C6FE49D5285CBAA50058F9D1 /* CoreAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreAppCoordinator.swift; sourceTree = "<group>"; };
@@ -8018,7 +8018,7 @@
 			isa = PBXGroup;
 			children = (
 				C6F9FBC92A25C39400102F81 /* MessagingStorageServiceProtocol.swift */,
-				C6F9FBE22A25C5C600102F81 /* MessagingStorageService.swift */,
+				C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -9268,7 +9268,7 @@
 				C6E0419F2951A4E60080F8E3 /* DomainsCollectionSectionHeader.swift in Sources */,
 				C63902B828E2FB5B00E16B42 /* PaymentError.swift in Sources */,
 				C6109E3328E5AB310027D5D8 /* AuthentificationService.swift in Sources */,
-				C6F9FBE32A25C5C600102F81 /* MessagingStorageService.swift in Sources */,
+				C6F9FBE32A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */,
 				C6456F1027FF3C6B00A517D5 /* UIViewController.swift in Sources */,
 				C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */,
 				C6C995AE289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
@@ -10471,7 +10471,7 @@
 				C6109E9F28E6AA910027D5D8 /* MockContext.swift in Sources */,
 				C679B607291A579500F543A7 /* DomainProfileUpdatingRecordsSection.swift in Sources */,
 				C6FECF48282D0694008DAA49 /* ResizableRoundedImageView.swift in Sources */,
-				C6F9FBE52A25C5C600102F81 /* MessagingStorageService.swift in Sources */,
+				C6F9FBE52A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */,
 				C6EECE992833A3E400978ED5 /* CoinRecord.swift in Sources */,
 				29DE3B1528913DF500655675 /* Env.swift in Sources */,
 				C6420BFC28AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift in Sources */,
@@ -11196,7 +11196,7 @@
 				C6109EA028E6AA910027D5D8 /* MockContext.swift in Sources */,
 				C679B608291A579500F543A7 /* DomainProfileUpdatingRecordsSection.swift in Sources */,
 				C666894E28116073002062B4 /* BorderedTableView.swift in Sources */,
-				C6F9FBE62A25C5C600102F81 /* MessagingStorageService.swift in Sources */,
+				C6F9FBE62A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */,
 				C6FECF49282D0694008DAA49 /* ResizableRoundedImageView.swift in Sources */,
 				C6EECE9A2833A3E400978ED5 /* CoinRecord.swift in Sources */,
 				29DE3B1628913DF500655675 /* Env.swift in Sources */,
@@ -11501,7 +11501,7 @@
 				C6E041A02951A4E60080F8E3 /* DomainsCollectionSectionHeader.swift in Sources */,
 				C6456F1127FF3C6B00A517D5 /* UIViewController.swift in Sources */,
 				C63902B928E2FB5B00E16B42 /* PaymentError.swift in Sources */,
-				C6F9FBE42A25C5C600102F81 /* MessagingStorageService.swift in Sources */,
+				C6F9FBE42A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */,
 				C6109E3428E5AB310027D5D8 /* AuthentificationService.swift in Sources */,
 				C6B7CF64294AF1F80005C48D /* BlockChainItem.swift in Sources */,
 				C6C995AF289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,

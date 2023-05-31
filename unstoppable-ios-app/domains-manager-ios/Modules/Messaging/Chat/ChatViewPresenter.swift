@@ -21,6 +21,7 @@ final class ChatViewPresenter {
     private weak var view: ChatViewProtocol?
     private let channelType: ChatChannelType
     private let domain: DomainDisplayInfo
+    private let fetchLimit: Int = 20
     
     init(view: ChatViewProtocol,
          channelType: ChatChannelType,
@@ -59,20 +60,26 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
 // MARK: - Private functions
 private extension ChatViewPresenter {
     func showData(animated: Bool, completion: EmptyCallback? = nil) {
-        var snapshot = ChatSnapshot()
-        
-        let messages = appContext.messagingService.getMessagesForChannel(channelType)
-        let groupedMessages = [Date : [ChatMessageType]].init(grouping: messages, by: { $0.time.dayStart })
-        let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })
-        
-        for date in sortedDates {
-            let messages = groupedMessages[date] ?? []
-            let title = MessageDateFormatter.formatMessagesSectionDate(date)
-            snapshot.appendSections([.messages(title: title)])
-            snapshot.appendItems(messages.map({ createSnapshotItemFrom(message: $0) }))
+        Task {
+            do {
+                var snapshot = ChatSnapshot()
+                
+                let messages = try await appContext.messagingService.getMessagesForChannel(channelType, fetchLimit: fetchLimit)
+                let groupedMessages = [Date : [ChatMessageType]].init(grouping: messages, by: { $0.time.dayStart })
+                let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })
+                
+                for date in sortedDates {
+                    let messages = groupedMessages[date] ?? []
+                    let title = MessageDateFormatter.formatMessagesSectionDate(date)
+                    snapshot.appendSections([.messages(title: title)])
+                    snapshot.appendItems(messages.map({ createSnapshotItemFrom(message: $0) }))
+                }
+                
+                view?.applySnapshot(snapshot, animated: animated, completion: completion)
+            } catch {
+                Debugger.printFailure(error.localizedDescription) // TODO: - Handle error
+            }
         }
-        
-        view?.applySnapshot(snapshot, animated: animated, completion: completion)
     }
     
     func createSnapshotItemFrom(message: ChatMessageType) -> ChatViewController.Item {

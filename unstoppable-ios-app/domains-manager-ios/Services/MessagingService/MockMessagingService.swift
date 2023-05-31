@@ -16,7 +16,9 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
-    func getChannelsForDomain(_ domain: DomainDisplayInfo) async -> [ChatChannelType] {
+    func getChannelsForDomain(_ domain: DomainDisplayInfo,
+                              page: Int,
+                              limit: Int) async throws -> [ChatChannelType] {
         if let cachedChannels = domainsChannels[domain.name] {
             return cachedChannels
         }
@@ -26,14 +28,15 @@ extension MockMessagingService: MessagingServiceProtocol {
         return channels
     }
     
-    func getNumberOfUnreadMessagesInChannelsForDomain(_ domain: DomainDisplayInfo) async -> Int {
-        let channels = await getChannelsForDomain(domain)
+    func getNumberOfUnreadMessagesInChannelsForDomain(_ domain: DomainDisplayInfo) async throws -> Int {
+        let channels = try await getChannelsForDomain(domain, page: 0, limit: 0)
         let unreadMessagesSum = channels.reduce(0, { $0 + $1.unreadMessagesCount })
         
         return unreadMessagesSum
     }
     
-    func getMessagesForChannel(_ channel: ChatChannelType) -> [ChatMessageType] {
+    func getMessagesForChannel(_ channel: ChatChannelType,
+                               fetchLimit: Int) async throws -> [ChatMessageType] {
         if let cachedMessages = channelsMessages[channel] {
             return cachedMessages
         }
