@@ -30,6 +30,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                  signer: domain,
                                                                  version: .PGP_V3,
                                                                  progressHook: nil))
+        walletToPushUserCache[wallet] = pushUser
         let chatUser = convertPushUserToChatUser(pushUser)
         return chatUser
     }
@@ -39,8 +40,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                limit: Int) async throws -> [MessagingChat] {
         let user = try await getPushUserFor(wallet: wallet)
         let domain = try await getReverseResolutionDomainItem(for: wallet)
-        let env = getCurrentPushEnvironment()
         let pgpPrivateKey = try await Push.User.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
+        let env = getCurrentPushEnvironment()
         let pushChats = try await Push.Chats.getChats(options: .init(account: wallet,
                                                                      pgpPrivateKey: pgpPrivateKey,
                                                                      toDecrypt: true,
@@ -58,6 +59,22 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     func getMessagesForChat(_ chat: MessagingChat,
                             fetchLimit: Int) async throws -> [MessagingChatMessage] {
+        let chatMetadata: ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
+        guard let threadHash = chatMetadata.threadHash else {
+            return [] // NULL threadHash means there's no messages in the chat yet
+        }
+        
+        let wallet = chat.displayInfo.thisUserDetails.wallet
+        let user = try await getPushUserFor(wallet: wallet)
+        let domain = try await getReverseResolutionDomainItem(for: wallet)
+        let pgpPrivateKey = try await Push.User.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
+        let env = getCurrentPushEnvironment()
+        let messages = try await Push.Chats.History(threadHash: threadHash,
+                                                    limit: fetchLimit,
+                                                    pgpPrivateKey: pgpPrivateKey,
+                                                    env: env)
+        
+        // TODO: - Convert
         return []
 //        let threadHash = channel.channel.threadHash
 //        let pushMessages = try await pushService.getChatMessages(threadHash: threadHash, fetchLimit: fetchLimit)
@@ -72,7 +89,6 @@ private extension PushMessagingAPIService {
         if let pushUser = walletToPushUserCache[wallet] {
             return pushUser
         }
-        let domain = try await getReverseResolutionDomainItem(for: wallet)
         let env = getCurrentPushEnvironment()
         guard let pushUser = try await Push.User.get(account: wallet, env: env) else {
             throw PushMessagingAPIServiceError.failedToGetPushUser
@@ -126,6 +142,24 @@ private extension PushMessagingAPIService {
 //            return nil // Not supported for now
 //        }
 //    }
+    
+    func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
+        guard let data else {
+            throw PushMessagingAPIServiceError.failedToDecodeServiceData
+        }
+        guard let serviceMetadata = T.objectFromData(data) else {
+            throw PushMessagingAPIServiceError.failedToDecodeServiceData
+        }
+        
+        return serviceMetadata
+    }
+}
+
+// MARK: - Private methods
+private extension PushMessagingAPIService {
+    struct ChatServiceMetadata: Codable {
+        let threadHash: String?
+    }
 }
 
 // MARK: - Open methods
@@ -135,6 +169,8 @@ extension PushMessagingAPIService {
         case noOwnerWalletInDomain
         case failedToGetPushUser
         case incorrectDataState
+        
+        case failedToDecodeServiceData
     }
 }
 
