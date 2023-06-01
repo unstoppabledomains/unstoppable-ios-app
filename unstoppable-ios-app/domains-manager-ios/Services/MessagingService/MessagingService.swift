@@ -13,7 +13,8 @@ final class MessagingService {
     let webSocketsService: MessagingWebSocketsServiceProtocol
     let storageProtocol: MessagingStorageServiceProtocol
         
-    private var domainsToChatsCache: [String : [MessagingChat]] = [:]
+    private var walletsToChatsCache: [String : [MessagingChat]] = [:]
+    private var chatToMessagesCache: [String : [MessagingChatMessage]] = [:]
     
     init(apiService: MessagingAPIServiceProtocol,
          webSocketsService: MessagingWebSocketsServiceProtocol,
@@ -28,25 +29,31 @@ final class MessagingService {
 // MARK: - Open methods
 extension MessagingService: MessagingServiceProtocol {
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
-                               page: Int,
+                               page: Int, // Starting from 1
                                limit: Int) async throws -> [MessagingChatDisplayInfo] {
         guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
-        if let cache = domainsToChatsCache[wallet] {
+        let cacheId = wallet
+        if let cache = walletsToChatsCache[cacheId] {
             return cache.map { $0.displayInfo }
         }
         let chats = try await apiService.getChatsListForWallet(wallet, page: page, limit: limit)
-        
+        walletsToChatsCache[cacheId] = chats
         return chats.map { $0.displayInfo }
     }
     
     // Fetch limit is 30 max
     func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        let allChats = domainsToChatsCache.reduce([MessagingChat](), { $0 + $1.value })
+        let cacheId = chat.id
+        if let cache = chatToMessagesCache[cacheId] {
+            return cache.map { $0.displayInfo }
+        }
+        let allChats = walletsToChatsCache.reduce([MessagingChat](), { $0 + $1.value })
         guard let chat = allChats.first(where: { $0.displayInfo.id == chat.id }) else { throw MessagingServiceError.chatNotFound }
                 
         let messages = try await apiService.getMessagesForChat(chat, fetchLimit: fetchLimit)
-        
+        chatToMessagesCache[cacheId] = messages
+
         return messages.map { $0.displayInfo }
     }
 }

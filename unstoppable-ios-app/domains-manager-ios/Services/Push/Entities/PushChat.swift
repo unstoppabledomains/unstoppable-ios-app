@@ -18,7 +18,7 @@ struct PushChat: Codable, Hashable {
     let threadhash: String?
     let intent: String
     let intentSentBy: String
-    let intentTimestamp: Date
+    let intentTimestamp: String
     let combinedDID: String
     let groupInformation: PushGroupChatDTO?
 }

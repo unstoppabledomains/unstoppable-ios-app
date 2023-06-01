@@ -45,21 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         appContext.analyticsService.log(event: .appLaunch, withParameters: nil)
         
-        Task {
-            do {
-                let convHash = try await Push.Chats.ConversationHash(conversationId: "0x557Fc13812460e5414D9881cB3659902E9501041",
-                                                                     account: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52",
-                                                                     env: .PROD)
-              
-                
-                print(convHash)
-                print("")
-            } catch {
-                print(error.localizedDescription)
-                print("")
-            }
-        }
-
         return true
     }
 

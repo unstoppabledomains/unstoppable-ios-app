@@ -59,7 +59,7 @@ private extension ChatsListViewPresenter {
                 snapshot.appendSections([.domainsSelection])
                 
                 let chatsList = try await appContext.messagingService.getChatsListForDomain(selectedDomain,
-                                                                                           page: 0,
+                                                                                           page: 1,
                                                                                            limit: fetchLimit)
                 snapshot.appendSections([.channels])
                 snapshot.appendItems(chatsList.map({ ChatsListViewController.Item.channel(configuration: .init(chat: $0)) }))

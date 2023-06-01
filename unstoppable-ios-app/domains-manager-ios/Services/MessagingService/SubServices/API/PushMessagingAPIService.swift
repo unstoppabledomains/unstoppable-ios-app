@@ -141,7 +141,7 @@ private extension PushMessagingAPIService {
         func convertChatMembersToUserDisplayInfo(_ members: [PushGroupChatMember]) -> [MessagingChatUserDisplayInfo] {
             members.compactMap({
                 if $0.wallet == userWallet {
-                    return nil // Exclude current user from other members list 
+                    return nil // Exclude current user from other members list
                 } else {
                     return getWalletAddressFrom(eip155String: $0.wallet)
                 }
@@ -157,7 +157,7 @@ private extension PushMessagingAPIService {
                                                                pendingMembers: pendingMembers)
             chatType = .group(groupChatDetails)
         } else {
-            let fromUserEip = pushChat.intent
+            let fromUserEip = pushChat.intentSentBy
             guard let fromUserWallet = getWalletAddressFrom(eip155String: fromUserEip),
                   let toUserEip = pushChat.did,
                   let toUserWallet = getWalletAddressFrom(eip155String: toUserEip) else { return nil }

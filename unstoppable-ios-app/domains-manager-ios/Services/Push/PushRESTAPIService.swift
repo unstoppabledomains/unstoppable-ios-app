@@ -55,18 +55,19 @@ extension PushRESTAPIService {
         let userEIP = createEIPFormatFor(wallet: wallet)
         let queryComponents = ["page" : String(page),
                                "limit" : String(limit)]
-        let urlString: String
-        
         if isRequests {
-            urlString = URLSList.GET_CHATS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+            let urlString = URLSList.GET_CONNECTION_REQUESTS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+            let request = try apiRequestWith(urlString: urlString,
+                                             method: .get)
+            let response: ChatsRequestsResponse = try await getDecodableObjectWith(request: request)
+            return response.requests
         } else {
-            urlString = URLSList.GET_CONNECTION_REQUESTS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
-        }
-        let request = try apiRequestWith(urlString: urlString,
-                                         method: .get)
-        
-        let response: ChatsResponse = try await getDecodableObjectWith(request: request)
-        return response.chats
+            let urlString = URLSList.GET_CHATS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+            let request = try apiRequestWith(urlString: urlString,
+                                             method: .get)
+            let response: ChatsResponse = try await getDecodableObjectWith(request: request)
+            return response.chats
+        } 
     }
     
     func getChatMessages(threadHash: String,
@@ -172,6 +173,10 @@ private extension PushRESTAPIService {
     
     struct ChatsResponse: Codable {
         let chats: [PushChat]
+    }
+    
+    struct ChatsRequestsResponse: Codable {
+        let requests: [PushChat]
     }
     
     struct InboxResponse: Codable {
