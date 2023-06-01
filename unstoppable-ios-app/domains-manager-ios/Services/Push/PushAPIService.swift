@@ -8,6 +8,7 @@
 import Foundation
 import web3swift
 import CryptoKit
+import Push
 
 final class PushAPIService {
     
@@ -51,6 +52,10 @@ private extension PushAPIService.URLSList {
 // MARK: - Open methods
 extension PushAPIService {
     func createUser(for domain: DomainItem) async throws -> PushUser {
+        let convHash = try await Chats.ConversationHash(conversationId: "0x557Fc13812460e5414D9881cB3659902E9501041", account: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52")
+//        let hist = try await Chats.History(threadHash: "bafyreidozcvm6h4j5j6o45xvpg6drwodd3t6kyrcpm6ptp642q3oegu6u4", limit: 10, pgpPrivateKey: "", env: .PROD)
+        
+//        print(convHash)
         let walletAddress = try getWalletAddressOf(domain: domain)
         let urlString = URLSList.CREATE_USER_URL
         let pgpPair = try generatePGPKeyPair()

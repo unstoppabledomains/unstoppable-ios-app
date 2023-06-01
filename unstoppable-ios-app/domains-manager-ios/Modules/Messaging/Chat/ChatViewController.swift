@@ -245,6 +245,7 @@ extension ChatViewController {
     }
     
     struct TextMessageUIConfiguration: Hashable {
-        let message: ChatTextMessage
+        let message: MessagingChatMessageDisplayInfo
+        let textMessageDisplayInfo: MessagingChatMessageTextTypeDisplayInfo
     }
 }

@@ -7,9 +7,7 @@
 
 import Foundation
 
-struct ChatUser {
+struct MessagingChatUserDisplayInfo: Hashable {
     let wallet: String
-    let avatarURL: String?
-    let about: String?
-    let name: String?
+    var domain: DomainDisplayInfo? = nil
 }

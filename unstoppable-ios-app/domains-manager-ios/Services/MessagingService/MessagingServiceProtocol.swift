@@ -9,10 +9,30 @@ import Foundation
 
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
-    func getChannelsForDomain(_ domain: DomainDisplayInfo,
+    func getChatsListForDomain(_ domain: DomainDisplayInfo,
                               page: Int,
-                              limit: Int) async throws -> [ChatChannelType]
-    func getNumberOfUnreadMessagesInChannelsForDomain(_ domain: DomainDisplayInfo) async throws -> Int
-    func getMessagesForChannel(_ channel: ChatChannelType,
-                               fetchLimit: Int) async throws -> [ChatMessageType]
+                              limit: Int) async throws -> [MessagingChatDisplayInfo]
+    func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
+                            fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo]
 }
+
+//protocol MessagingServiceListener: AnyObject {
+//    func messagingChannelsListUpdated(_ channelsList: [ChatChannelType], for user: MessagingChatUserDisplayInfo)
+//}
+//
+//final class MessagingListenerHolder: Equatable {
+//
+//    weak var listener: MessagingServiceListener?
+//
+//    init(listener: MessagingServiceListener) {
+//        self.listener = listener
+//    }
+//
+//    static func == (lhs: MessagingListenerHolder, rhs: MessagingListenerHolder) -> Bool {
+//        guard let lhsListener = lhs.listener,
+//              let rhsListener = rhs.listener else { return false }
+//
+//        return lhsListener === rhsListener
+//    }
+//
+//}

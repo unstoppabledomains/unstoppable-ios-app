@@ -20,27 +20,27 @@ final class ChatListCell: BaseListCollectionViewCell {
 // MARK: - Open methods
 extension ChatListCell {
     func setWith(configuration: ChatsListViewController.ChatChannelUIConfiguration) {
-        let channelType = configuration.channelType
+        let chat = configuration.chat
         avatarImageView.image = .domainSharePlaceholder
-        if let avatarURL = channelType.avatarURL {
+        if let avatarURL = chat.avatarURL {
             Task {
                 let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: nil)
                 self.avatarImageView.image = image
             }
         }
         
-        let chatName = chatNameFrom(channelType: channelType)
+        let chatName = chatNameFrom(chat: chat)
         chatNameLabel.setAttributedTextWith(text: chatName,
                                             font: .currentFont(withSize: 16, weight: .medium),
                                             textColor: .foregroundDefault)
         
-        if let lastMessage = channelType.lastMessage {
+        if let lastMessage = chat.lastMessage {
             let time = MessageDateFormatter.formatChannelDate(lastMessage.time)
             timeLabel.setAttributedTextWith(text: time,
                                             font: .currentFont(withSize: 13, weight: .regular),
                                             textColor: .foregroundSecondary)
             
-            let lastMessageText = lastMessageTextFrom(messageType: lastMessage)
+            let lastMessageText = lastMessageTextFrom(message: lastMessage)
             lastMessageLabel.setAttributedTextWith(text: lastMessageText,
                                                    font: .currentFont(withSize: 14, weight: .regular),
                                                    textColor: .foregroundSecondary,
@@ -51,24 +51,26 @@ extension ChatListCell {
             lastMessageLabel.text = ""
         }
         
-        badgeView.setUnreadMessagesCount(channelType.unreadMessagesCount)
+        badgeView.setUnreadMessagesCount(chat.unreadMessagesCount)
     }
 }
 
 
 // MARK: - Private methods
 private extension ChatListCell {
-    func chatNameFrom(channelType: ChatChannelType) -> String {
-        switch channelType {
-        case .domain(let channel):
-            return channel.domainName
-        }
+    func chatNameFrom(chat: MessagingChatDisplayInfo) -> String {
+        ""
+//        switch chat {
+//        case .domain(let channel):
+//            return channel.domainName
+//        }
     }
     
-    func lastMessageTextFrom(messageType: ChatMessageType) -> String  {
-        switch messageType {
-        case .text(let message):
-            return message.text
-        }
+    func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo?) -> String  {
+        ""
+//        switch messageType {
+//        case .text(let message):
+//            return message.text
+//        }
     }
 }

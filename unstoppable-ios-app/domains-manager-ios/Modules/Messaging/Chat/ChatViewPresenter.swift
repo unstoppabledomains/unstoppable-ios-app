@@ -19,15 +19,15 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
 final class ChatViewPresenter {
     
     private weak var view: ChatViewProtocol?
-    private let channelType: ChatChannelType
+    private let chat: MessagingChatDisplayInfo
     private let domain: DomainDisplayInfo
     private let fetchLimit: Int = 20
     
     init(view: ChatViewProtocol,
-         channelType: ChatChannelType,
+         chat: MessagingChatDisplayInfo,
          domain: DomainDisplayInfo) {
         self.view = view
-        self.channelType = channelType
+        self.chat = chat
         self.domain = domain
     }
 }
@@ -64,8 +64,8 @@ private extension ChatViewPresenter {
             do {
                 var snapshot = ChatSnapshot()
                 
-                let messages = try await appContext.messagingService.getMessagesForChannel(channelType, fetchLimit: fetchLimit)
-                let groupedMessages = [Date : [ChatMessageType]].init(grouping: messages, by: { $0.time.dayStart })
+                let messages = try await appContext.messagingService.getMessagesForChat(chat, fetchLimit: 30)
+                let groupedMessages = [Date : [MessagingChatMessageDisplayInfo]].init(grouping: messages, by: { $0.time.dayStart })
                 let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })
                 
                 for date in sortedDates {
@@ -82,19 +82,19 @@ private extension ChatViewPresenter {
         }
     }
     
-    func createSnapshotItemFrom(message: ChatMessageType) -> ChatViewController.Item {
-        switch message {
-        case .text(let message):
-            return .textMessage(configuration: .init(message: message))
+    func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item {
+        switch message.type {
+        case .text(let textMessageDisplayInfo):
+            return .textMessage(configuration: .init(message: message, textMessageDisplayInfo: textMessageDisplayInfo))
         }
     }
     
     func setupTitle() {
-        switch channelType {
-        case .domain(let channel):
-            let domainName = channel.domainName
-            view?.setTitleOfType(.domainName(domainName))
-        }
+//        switch chat {
+//        case .domain(let channel):
+//            let domainName = channel.domainName
+//            view?.setTitleOfType(.domainName(domainName))
+//        }
     }
     
     func setupPlaceholder() {

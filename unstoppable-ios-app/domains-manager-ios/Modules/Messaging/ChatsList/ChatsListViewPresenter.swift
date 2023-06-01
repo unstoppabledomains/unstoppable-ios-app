@@ -40,7 +40,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             selectedDomain = configuration.domain
             showData()
         case .channel(let configuration):
-            openChannel(configuration.channelType)
+            openChat(configuration.chat)
         }
     }
 }
@@ -58,9 +58,11 @@ private extension ChatsListViewPresenter {
                 
                 snapshot.appendSections([.domainsSelection])
                 
-                let channels = try await appContext.messagingService.getChannelsForDomain(selectedDomain, page: 0, limit: fetchLimit)
+                let chatsList = try await appContext.messagingService.getChatsListForDomain(selectedDomain,
+                                                                                           page: 0,
+                                                                                           limit: fetchLimit)
                 snapshot.appendSections([.channels])
-                snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channelType: $0)) }))
+                snapshot.appendItems(chatsList.map({ ChatsListViewController.Item.channel(configuration: .init(chat: $0)) }))
                 
                 view?.applySnapshot(snapshot, animated: true)
             } catch {
@@ -76,10 +78,10 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    func openChannel(_ channelType: ChatChannelType) {
+    func openChat(_ chat: MessagingChatDisplayInfo) {
         guard let nav = view?.cNavigationController,
             let selectedDomain else { return }
         
-        UDRouter().showChatScreen(channelType: channelType, domain: selectedDomain, in: nav)
+        UDRouter().showChatScreen(chat: chat, domain: selectedDomain, in: nav)
     }
 }

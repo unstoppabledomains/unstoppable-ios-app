@@ -9,13 +9,13 @@ import Foundation
 
 struct PushChat: Codable, Hashable {
     let chatId: String
-    let did: String
-    let wallets: String
-    let profilePicture: String
-    let publicKey: String
-    let about: String
-    let name: String
-    let threadhash: String
+    let did: String?
+    let wallets: String?
+    let profilePicture: String?
+    let publicKey: String?
+    let about: String?
+    let name: String?
+    let threadhash: String?
     let intent: String
     let intentSentBy: String
     let intentTimestamp: Date

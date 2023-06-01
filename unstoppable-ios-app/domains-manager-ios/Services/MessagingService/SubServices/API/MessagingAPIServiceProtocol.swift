@@ -8,11 +8,11 @@
 import Foundation
 
 protocol MessagingAPIServiceProtocol {
-    func getChannels(for domain: DomainDisplayInfo,
-                     page: Int,
-                     limit: Int) async throws -> [ChatChannelType]
-    func getMessagesForChannel(_ channel: ChatChannelType,
-                               fetchLimit: Int) async throws -> [ChatMessageType]
+    func getChatsListForWallet(_ wallet: HexAddress,
+                               page: Int,
+                               limit: Int) async throws -> [MessagingChat]
+    func getMessagesForChat(_ chat: MessagingChat,
+                            fetchLimit: Int) async throws -> [MessagingChatMessage]
 }
 
 

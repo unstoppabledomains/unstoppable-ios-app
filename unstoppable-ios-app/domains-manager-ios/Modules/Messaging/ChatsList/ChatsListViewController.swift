@@ -161,7 +161,7 @@ extension ChatsListViewController {
     }
     
     struct ChatChannelUIConfiguration: Hashable {
-        let channelType: ChatChannelType
+        let chat: MessagingChatDisplayInfo
     }
     
     struct DomainSelectionUIConfiguration: Hashable {
