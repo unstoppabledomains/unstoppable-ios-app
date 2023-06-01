@@ -60,6 +60,7 @@ private extension MockMessagingService {
                                                     avatarURL: avatarURL,
                                                     type: .private(.init(otherUser: sender.userDisplayInfo)),
                                                     unreadMessagesCount: unreadMessagesCount,
+                                                    isApproved: true,
                                                     lastMessage: lastMessage)
                 
                 chats.append(chat)

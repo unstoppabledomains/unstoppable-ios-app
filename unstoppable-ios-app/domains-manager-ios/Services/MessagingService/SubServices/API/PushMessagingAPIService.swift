@@ -38,23 +38,37 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getChatsListForWallet(_ wallet: HexAddress,
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {
-        let user = try await getPushUserFor(wallet: wallet)
-        let domain = try await getReverseResolutionDomainItem(for: wallet)
-        let pgpPrivateKey = try await Push.User.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
-        let env = getCurrentPushEnvironment()
-        let pushChats = try await Push.Chats.getChats(options: .init(account: wallet,
-                                                                     pgpPrivateKey: pgpPrivateKey,
-                                                                     toDecrypt: true,
-                                                                     page: page,
-                                                                     limit: limit,
-                                                                     env: env))
+//        let user = try await getPushUserFor(wallet: wallet)
+//        let domain = try await getReverseResolutionDomainItem(for: wallet)
+//        let pgpPrivateKey = try await Push.User.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
+//        let env = getCurrentPushEnvironment()
+//        let pushChats = try await Push.Chats.getChats(options: .init(account: wallet,
+//                                                                     pgpPrivateKey: pgpPrivateKey,
+//                                                                     toDecrypt: true,
+//                                                                     page: page,
+//                                                                     limit: limit,
+//                                                                     env: env))
         // TODO: - Convert
+        let pushChats = try await pushService.getChats(for: wallet,
+                                                       page: page,
+                                                       limit: limit,
+                                                       isRequests: false)
         return []
-//        let pushChats = try await pushService.getChats(for: domain,
-//                                                       page: page,
-//                                                       limit: limit)
 //        let channelTypes = pushChats.map({ convertPushChatToChannelType($0) })
 //        return channelTypes
+    }
+    
+    func getChatRequestsForWallet(_ wallet: HexAddress,
+                               page: Int,
+                               limit: Int) async throws -> [MessagingChat] {
+        // TODO: - Convert
+        let pushChats = try await pushService.getChats(for: wallet,
+                                                       page: page,
+                                                       limit: limit,
+                                                       isRequests: true)
+        return []
+        //        let channelTypes = pushChats.map({ convertPushChatToChannelType($0) })
+        //        return channelTypes
     }
     
     func getMessagesForChat(_ chat: MessagingChat,
@@ -80,6 +94,15 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
 //        let pushMessages = try await pushService.getChatMessages(threadHash: threadHash, fetchLimit: fetchLimit)
 //        let messageTypes = pushMessages.compactMap({ convertPushChatMessageToMessageType($0) })
 //        return messageTypes
+    }
+    
+    func sendMessage(_ messageType: MessagingChatMessageDisplayType,
+                     in chat: MessagingChat) async throws {
+        // TODO: - Use Push SDK when ready
+    }
+    
+    func makeChatRequest(_ chat: MessagingChat, approved: Bool) async throws {
+        // TODO: - Use Push SDK when ready
     }
 }
 

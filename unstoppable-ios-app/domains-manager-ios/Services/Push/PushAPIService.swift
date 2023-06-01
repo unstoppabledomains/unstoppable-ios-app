@@ -18,7 +18,7 @@ final class PushAPIService {
     
     enum URLSList {
         static let baseURL: String = {
-            NetworkConfig.basePushURL
+            NetworkConfig.basePushURL // TODO: - Move from NetworkConfig to PushEnv file
         }()
         static let baseAPIURL: String = baseURL.appendingURLPathComponent("apis")
     }
@@ -84,33 +84,25 @@ extension PushAPIService {
         return try await getDecodableObjectWith(request: request)
     }
     
-    func getChats(for domain: DomainDisplayInfo,
+    func getChats(for wallet: String,
                   page: Int,
-                  limit: Int) async throws -> [PushChat] {
-        let walletAddress = try getWalletAddressOf(domain: domain)
-        let userEIP = "eip155:\(walletAddress)"
+                  limit: Int,
+                  isRequests: Bool) async throws -> [PushChat] {
+        let userEIP = "eip155:\(wallet)"
         let queryComponents = ["page" : String(page),
                                "limit" : String(limit)]
-        let urlString = URLSList.GET_CHATS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+        let urlString: String
+        
+        if isRequests {
+            urlString = URLSList.GET_CHATS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+        } else {
+            urlString = URLSList.GET_CONNECTION_REQUESTS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+        }
         let request = try apiRequestWith(urlString: urlString,
                                          method: .get)
         
         let response: ChatsResponse = try await getDecodableObjectWith(request: request)
         return response.chats
-    }
-    
-    func getConnectionRequests(for domain: DomainDisplayInfo,
-                  page: Int,
-                  limit: Int) async throws -> [PushConnectionRequest] {
-        let walletAddress = try getWalletAddressOf(domain: domain)
-        let userEIP = "eip155:\(walletAddress)"
-        let queryComponents = ["page" : String(page),
-                               "limit" : String(limit)]
-        let urlString = URLSList.GET_CONNECTION_REQUESTS_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
-        let request = try apiRequestWith(urlString: urlString,
-                                         method: .get)
-        
-        return try await getDecodableObjectWith(request: request)
     }
     
     func getChatMessages(threadHash: String,
