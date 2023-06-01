@@ -12,4 +12,4 @@ enum PushMessageType: String, Codable {
     case image = "Image"
     case file = "File"
     case gif = "GIF"
-    }
+}

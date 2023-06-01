@@ -10,7 +10,7 @@ import Push
 
 final class PushMessagingAPIService {
     
-    private let pushService: PushAPIService = PushAPIService()
+    private let pushRESTService = PushRESTAPIService()
     
     private var walletToPushUserCache: [HexAddress : Push.User] = [:]
     
@@ -49,7 +49,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
 //                                                                     limit: limit,
 //                                                                     env: env))
         // TODO: - Convert
-        let pushChats = try await pushService.getChats(for: wallet,
+        let pushChats = try await pushRESTService.getChats(for: wallet,
                                                        page: page,
                                                        limit: limit,
                                                        isRequests: false)
@@ -59,11 +59,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func getChatRequestsForWallet(_ wallet: HexAddress,
-                               page: Int,
-                               limit: Int) async throws -> [MessagingChat] {
+                                  page: Int,
+                                  limit: Int) async throws -> [MessagingChat] {
         // TODO: - Convert
-        let pushChats = try await pushService.getChats(for: wallet,
-                                                       page: page,
+        let pushChats = try await pushRESTService.getChats(for: wallet,
+                                                           page: page,
                                                        limit: limit,
                                                        isRequests: true)
         return []
