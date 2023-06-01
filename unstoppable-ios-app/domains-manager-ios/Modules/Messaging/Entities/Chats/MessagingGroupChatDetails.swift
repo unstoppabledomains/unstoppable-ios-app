@@ -8,5 +8,6 @@
 import Foundation
 
 struct MessagingGroupChatDetails: Hashable {
-    let groupMembers: [MessagingChatUserDisplayInfo]
+    let members: [MessagingChatUserDisplayInfo]
+    let pendingMembers: [MessagingChatUserDisplayInfo]
 }

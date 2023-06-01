@@ -48,27 +48,28 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
 //                                                                     page: page,
 //                                                                     limit: limit,
 //                                                                     env: env))
-        // TODO: - Convert
         let pushChats = try await pushRESTService.getChats(for: wallet,
                                                        page: page,
                                                        limit: limit,
                                                        isRequests: false)
-        return []
-//        let channelTypes = pushChats.map({ convertPushChatToChannelType($0) })
-//        return channelTypes
+        
+        let chats = pushChats.compactMap({ convertPushChatToChat($0,
+                                                                 userWallet: wallet,
+                                                                 isApproved: true) })
+        return chats
     }
     
     func getChatRequestsForWallet(_ wallet: HexAddress,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChat] {
-        // TODO: - Convert
         let pushChats = try await pushRESTService.getChats(for: wallet,
                                                            page: page,
                                                            limit: limit,
                                                            isRequests: true)
-        return []
-        //        let channelTypes = pushChats.map({ convertPushChatToChannelType($0) })
-        //        return channelTypes
+        let chats = pushChats.compactMap({ convertPushChatToChat($0,
+                                                                 userWallet: wallet,
+                                                                 isApproved: false) })
+        return chats
     }
     
     func getMessagesForChat(_ chat: MessagingChat,
@@ -133,23 +134,65 @@ private extension PushMessagingAPIService {
                                      domain: nil)
     }
     
-//    func convertPushChatToChannelType(_ pushChat: PushChat) -> ChatChannelType {
-//        let channel = DomainChatChannel(id: pushChat.chatId,
-//                                        avatarURL: URL(string: pushChat.profilePicture!),
-//                                        lastMessage: nil,
-//                                        unreadMessagesCount: 0,
-//                                        domainName: pushChat.name!,
-//                                        threadHash: pushChat.threadhash!)
-//        return .domain(channel: channel)
-//    }
+    func convertPushChatToChat(_ pushChat: PushChat,
+                               userWallet: String,
+                               isApproved: Bool) -> MessagingChat? {
+        
+        func convertChatMembersToUserDisplayInfo(_ members: [PushGroupChatMember]) -> [MessagingChatUserDisplayInfo] {
+            members.compactMap({
+                if $0.wallet == userWallet {
+                    return nil // Exclude current user from other members list 
+                } else {
+                    return getWalletAddressFrom(eip155String: $0.wallet)
+                }
+            }).map({ MessagingChatUserDisplayInfo(wallet: $0) })
+        }
+        
+        let thisUserInfo = MessagingChatUserDisplayInfo(wallet: userWallet)
+        let chatType: MessagingChatType
+        if let groupInfo = pushChat.groupInformation {
+            let members = convertChatMembersToUserDisplayInfo(groupInfo.members)
+            let pendingMembers = convertChatMembersToUserDisplayInfo(groupInfo.pendingMembers)
+            let groupChatDetails = MessagingGroupChatDetails(members: members,
+                                                               pendingMembers: pendingMembers)
+            chatType = .group(groupChatDetails)
+        } else {
+            let fromUserEip = pushChat.intent
+            guard let fromUserWallet = getWalletAddressFrom(eip155String: fromUserEip),
+                  let toUserEip = pushChat.did,
+                  let toUserWallet = getWalletAddressFrom(eip155String: toUserEip) else { return nil }
+            let otherUserWallet = userWallet == fromUserWallet ? toUserWallet : fromUserWallet
+            let otherUserInfo = MessagingChatUserDisplayInfo(wallet: otherUserWallet)
+            let privateChatDetails = MessagingPrivateChatDetails(otherUser: otherUserInfo)
+            chatType = .private(privateChatDetails)
+        }
+        
+        var avatarURL: URL?
+        if let profilePicture = pushChat.profilePicture {
+            avatarURL = URL(string: profilePicture)
+        }
+     
+        let displayInfo = MessagingChatDisplayInfo(id: pushChat.chatId,
+                                                   thisUserDetails: thisUserInfo,
+                                                   avatarURL: avatarURL,
+                                                   type: chatType,
+                                                   unreadMessagesCount: 0,
+                                                   isApproved: isApproved,
+                                                   lastMessage: nil)
+        
+        let metadataModel = ChatServiceMetadata(threadHash: pushChat.threadhash)
+        let serviceMetadata = metadataModel.jsonData()
+        let chat = MessagingChat(displayInfo: displayInfo,
+                                    serviceMetadata: serviceMetadata)
+        return chat
+    }
 
     func convertPushMessageToChatMessage(_ pushMessage: Push.Message,
                                          in chat: MessagingChat) -> MessagingChatMessage? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID) else { return nil }
         
         switch pushMessage.messageType {
-        case "TEXT":
-            // TODO: - Review required info to parse chat message
+        case "Text":
             var time = Date()
             var id = "\(pushMessage.fromDID)_\(pushMessage.messageContent)"
             
