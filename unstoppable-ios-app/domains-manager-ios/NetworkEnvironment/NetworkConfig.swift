@@ -96,15 +96,6 @@ struct NetworkConfig {
     static func coinsResolverURL(version: String) -> String {
         "https://" + migratedEndpoint + "/uns_resolver_keys.json?tag=\(version)"
     }
-    
-    static var basePushURL: String {
-        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
-        if isTestnetUsed {
-            return "https://backend-staging.epns.io"
-        } else {
-            return "https://backend.epns.io"
-        }
-    }
 }
 
 

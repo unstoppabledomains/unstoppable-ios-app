@@ -18,7 +18,7 @@ final class PushRESTAPIService {
     
     enum URLSList {
         static let baseURL: String = {
-            NetworkConfig.basePushURL // TODO: - Move from NetworkConfig to PushEnv file
+            PushEnvironment.baseURL
         }()
         static let baseAPIURL: String = baseURL.appendingURLPathComponent("apis")
     }
@@ -148,7 +148,7 @@ private extension PushRESTAPIService {
         var bodyString: String = ""
         if let body {
             guard let bodyStringEncoded = body.jsonString() else { throw NetworkLayerError.responseFailedToParse }
-            bodyString = bodyStringEncoded //.replacingOccurrences(of: "\\", with: "")
+            bodyString = bodyStringEncoded
         }
         
         return APIRequest(url: url, headers: headers, body: bodyString, method: method)

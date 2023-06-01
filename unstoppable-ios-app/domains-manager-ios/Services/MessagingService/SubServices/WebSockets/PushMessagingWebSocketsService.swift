@@ -62,7 +62,7 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
 // MARK: - Private methods
 private extension PushMessagingWebSocketsService {
     func buildConnectionFor(domain: DomainItem, isTestnet: Bool) throws -> SocketManager {
-        let url = NetworkConfig.basePushURL
+        let url = PushEnvironment.baseURL
         let eipAddress = try buildEIP155AddressFrom(domain: domain, isTestnet: isTestnet)
         let params: [String : Any] = ["address" : eipAddress]
         

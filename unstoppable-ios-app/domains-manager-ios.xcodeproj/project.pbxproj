@@ -1135,6 +1135,10 @@
 		C62396AF2A28DA2900363F60 /* PushSearchUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396AD2A28DA2900363F60 /* PushSearchUser.swift */; };
 		C62396B02A28DA2900363F60 /* PushSearchUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396AD2A28DA2900363F60 /* PushSearchUser.swift */; };
 		C62396B12A28DA2900363F60 /* PushSearchUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396AD2A28DA2900363F60 /* PushSearchUser.swift */; };
+		C62396B32A28DE3B00363F60 /* PushEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396B22A28DE3B00363F60 /* PushEnvironment.swift */; };
+		C62396B42A28DE3B00363F60 /* PushEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396B22A28DE3B00363F60 /* PushEnvironment.swift */; };
+		C62396B52A28DE3B00363F60 /* PushEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396B22A28DE3B00363F60 /* PushEnvironment.swift */; };
+		C62396B62A28DE3B00363F60 /* PushEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396B22A28DE3B00363F60 /* PushEnvironment.swift */; };
 		C624D766281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C624D765281A8BF500F55530 /* UICollectionViewLayout.swift */; };
 		C624D767281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C624D765281A8BF500F55530 /* UICollectionViewLayout.swift */; };
 		C624D768281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C624D765281A8BF500F55530 /* UICollectionViewLayout.swift */; };
@@ -4060,6 +4064,7 @@
 		C62396A32A28D51000363F60 /* PushInboxNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushInboxNotification.swift; sourceTree = "<group>"; };
 		C62396A82A28D7D200363F60 /* PushChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChannel.swift; sourceTree = "<group>"; };
 		C62396AD2A28DA2900363F60 /* PushSearchUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushSearchUser.swift; sourceTree = "<group>"; };
+		C62396B22A28DE3B00363F60 /* PushEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushEnvironment.swift; sourceTree = "<group>"; };
 		C624D765281A8BF500F55530 /* UICollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewLayout.swift; sourceTree = "<group>"; };
 		C624D76A281AD2B900F55530 /* FABButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FABButton.swift; sourceTree = "<group>"; };
 		C624D76F281B884600F55530 /* ImageLoadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoadingService.swift; sourceTree = "<group>"; };
@@ -5748,6 +5753,7 @@
 			isa = PBXGroup;
 			children = (
 				C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */,
+				C62396B22A28DE3B00363F60 /* PushEnvironment.swift */,
 				C61ECD722A20E85E00E97D70 /* Entities */,
 			);
 			path = Push;
@@ -9268,6 +9274,7 @@
 				3026FA1C27E76F6600FE058B /* ProtectWalletViewController.swift in Sources */,
 				C6F9FBC52A25C38900102F81 /* MessagingAPIServiceProtocol.swift in Sources */,
 				C671E3C829014D7700A2B3A0 /* RaisedWhiteButton.swift in Sources */,
+				C62396B32A28DE3B00363F60 /* PushEnvironment.swift in Sources */,
 				C6E1189928F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6B6859028007C09000F9037 /* UDCheckBox.swift in Sources */,
 				C6D6E50C2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
@@ -10048,6 +10055,7 @@
 				C6A2D57B284F9EC700327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5BF281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
 				C6109E2D28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */,
+				C62396B52A28DE3B00363F60 /* PushEnvironment.swift in Sources */,
 				C609826E2824013500546392 /* EnterBackupBasePresenter.swift in Sources */,
 				C6109E3528E5AB310027D5D8 /* AuthentificationService.swift in Sources */,
 				C6BEEF2829C30AEB000489B9 /* UDTwitterSigner.swift in Sources */,
@@ -10778,6 +10786,7 @@
 				C6A2D57C284F9EC700327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C6D6E5C0281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
 				C6109E2E28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */,
+				C62396B62A28DE3B00363F60 /* PushEnvironment.swift in Sources */,
 				C609826F2824013500546392 /* EnterBackupBasePresenter.swift in Sources */,
 				C6668949281151F6002062B4 /* TertiaryButton.swift in Sources */,
 				C6BEEF2929C30AEB000489B9 /* UDTwitterSigner.swift in Sources */,
@@ -11516,6 +11525,7 @@
 				3026FA1D27E76F6600FE058B /* ProtectWalletViewController.swift in Sources */,
 				C6F9FBC62A25C38900102F81 /* MessagingAPIServiceProtocol.swift in Sources */,
 				C671E3C929014D7700A2B3A0 /* RaisedWhiteButton.swift in Sources */,
+				C62396B42A28DE3B00363F60 /* PushEnvironment.swift in Sources */,
 				C6E1189A28F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6B6859128007C09000F9037 /* UDCheckBox.swift in Sources */,
 				C6D6E50D2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
