@@ -13,9 +13,7 @@ import Push
 final class PushRESTAPIService {
     
     private let networkService = NetworkService()
-    
-    private let encryptionType = "eip191-aes256-gcm-hkdf-sha256"
-    
+        
     enum URLSList {
         static let baseURL: String = {
             PushEnvironment.baseURL

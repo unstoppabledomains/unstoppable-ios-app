@@ -64,8 +64,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         // TODO: - Convert
         let pushChats = try await pushRESTService.getChats(for: wallet,
                                                            page: page,
-                                                       limit: limit,
-                                                       isRequests: true)
+                                                           limit: limit,
+                                                           isRequests: true)
         return []
         //        let channelTypes = pushChats.map({ convertPushChatToChannelType($0) })
         //        return channelTypes
@@ -83,17 +83,13 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let domain = try await getReverseResolutionDomainItem(for: wallet)
         let pgpPrivateKey = try await Push.User.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
         let env = getCurrentPushEnvironment()
-        let messages = try await Push.Chats.History(threadHash: threadHash,
+        let pushMessages = try await Push.Chats.History(threadHash: threadHash,
                                                     limit: fetchLimit,
                                                     pgpPrivateKey: pgpPrivateKey,
                                                     env: env)
         
-        // TODO: - Convert
-        return []
-//        let threadHash = channel.channel.threadHash
-//        let pushMessages = try await pushService.getChatMessages(threadHash: threadHash, fetchLimit: fetchLimit)
-//        let messageTypes = pushMessages.compactMap({ convertPushChatMessageToMessageType($0) })
-//        return messageTypes
+        let messages = pushMessages.compactMap({ convertPushMessageToChatMessage($0, in: chat) })
+        return messages
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
@@ -146,25 +142,43 @@ private extension PushMessagingAPIService {
 //                                        threadHash: pushChat.threadhash!)
 //        return .domain(channel: channel)
 //    }
-//
-//    func convertPushChatMessageToMessageType(_ pushMessage: PushMessage) -> ChatMessageType? {
-//        switch pushMessage.messageType {
-//        case .text:
-//            var time = Date()
-//            if let timestamp = pushMessage.timestamp {
-//                time = Date(timeIntervalSince1970: TimeInterval(timestamp))
-//            }
-//            // TODO: - Review required info to parse chat message
-//            let textMessage = ChatTextMessage(id: pushMessage.signature,
-//                                              sender: .otherUser(.init(wallet: pushMessage.fromDID)),
-//                                              time: time,
-//                                              avatarURL: nil,
-//                                              text: pushMessage.messageContent) // Decrypt
-//            return .text(message: textMessage)
-//        default:
-//            return nil // Not supported for now
-//        }
-//    }
+
+    func convertPushMessageToChatMessage(_ pushMessage: Push.Message,
+                                         in chat: MessagingChat) -> MessagingChatMessage? {
+        guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID) else { return nil }
+        
+        switch pushMessage.messageType {
+        case "TEXT":
+            // TODO: - Review required info to parse chat message
+            var time = Date()
+            var id = "\(pushMessage.fromDID)_\(pushMessage.messageContent)"
+            
+            if let timestamp = pushMessage.timestamp {
+                time = Date(timeIntervalSince1970: TimeInterval(timestamp))
+                id += "_\(timestamp)"
+            }
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: pushMessage.messageContent)
+            let userDisplayInfo = MessagingChatUserDisplayInfo(wallet: senderWallet)
+            let sender: MessagingChatSender
+            if chat.displayInfo.thisUserDetails.wallet == senderWallet {
+                sender = .thisUser(userDisplayInfo)
+            } else {
+                sender = .otherUser(userDisplayInfo)
+            }
+            let displayInfo = MessagingChatMessageDisplayInfo(id: id,
+                                                              chatId: chat.displayInfo.id,
+                                                              senderType: sender,
+                                                              time: time,
+                                                              type: .text(textDisplayInfo),
+                                                              isRead: false,
+                                                              isSending: false)
+            let textMessage = MessagingChatMessage(displayInfo: displayInfo,
+                                                   serviceMetadata: nil)
+            return textMessage
+        default:
+            return nil // Not supported for now
+        }
+    }
     
     func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
         guard let data else {
@@ -182,6 +196,14 @@ private extension PushMessagingAPIService {
 private extension PushMessagingAPIService {
     struct ChatServiceMetadata: Codable {
         let threadHash: String?
+    }
+    
+    func getWalletAddressFrom(eip155String: String) -> String? {
+        let components = eip155String.components(separatedBy: ":")
+        if components.count == 2 {
+            return components[1]
+        }
+        return nil
     }
 }
 
