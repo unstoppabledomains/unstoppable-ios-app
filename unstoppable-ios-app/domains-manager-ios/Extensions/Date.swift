@@ -8,6 +8,12 @@
 import Foundation
 
 extension Date {
+    init(millisecondsSince1970: Int) {
+        self.init(timeIntervalSince1970: TimeInterval(millisecondsSince1970 / 1000))
+    }
+}
+
+extension Date {
     static var format: String { "HH:mm E, d MMM y" }
     
     var string: String {

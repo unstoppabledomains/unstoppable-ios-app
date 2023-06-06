@@ -38,16 +38,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getChatsListForWallet(_ wallet: HexAddress,
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {
-//        let user = try await getPushUserFor(wallet: wallet)
-//        let domain = try await getReverseResolutionDomainItem(for: wallet)
-//        let pgpPrivateKey = try await Push.User.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
-//        let env = getCurrentPushEnvironment()
-//        let pushChats = try await Push.Chats.getChats(options: .init(account: wallet,
-//                                                                     pgpPrivateKey: pgpPrivateKey,
-//                                                                     toDecrypt: true,
-//                                                                     page: page,
-//                                                                     limit: limit,
-//                                                                     env: env))
         let pushChats = try await pushRESTService.getChats(for: wallet,
                                                        page: page,
                                                        limit: limit,
@@ -197,7 +187,7 @@ private extension PushMessagingAPIService {
             var id = "\(pushMessage.fromDID)_\(pushMessage.messageContent)"
             
             if let timestamp = pushMessage.timestamp {
-                time = Date(timeIntervalSince1970: TimeInterval(timestamp))
+                time = Date(millisecondsSince1970: timestamp)
                 id += "_\(timestamp)"
             }
             let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: pushMessage.messageContent)
