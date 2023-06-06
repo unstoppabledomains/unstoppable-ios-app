@@ -34,6 +34,8 @@ extension ChatListDataTypeSelectionCell {
             segmentedControl.insertSegment(withTitle: dataType.title,
                                            at: i,
                                            animated: false)
+            segmentedControl.setBadgeValue(dataTypeConfiguration.badge,
+                                           forSegment: i)
         }
         
         segmentedControl.selectedSegmentIndex = dataTypes.firstIndex(of: configuration.selectedDataType) ?? 0

@@ -24,11 +24,6 @@ final class UnreadMessagesBadgeView: UIView {
         setup()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        
-    }
 }
 
 // MARK: - Open methods
