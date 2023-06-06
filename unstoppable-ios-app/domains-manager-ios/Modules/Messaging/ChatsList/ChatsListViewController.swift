@@ -22,7 +22,8 @@ final class ChatsListViewController: BaseViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatListCell.self,
                                                         ChatListDomainSelectionCell.self,
-                                                        ChatListDataTypeSelectionCell.self] }
+                                                        ChatListDataTypeSelectionCell.self,
+                                                        ChatListRequestsCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
     
@@ -88,7 +89,7 @@ private extension ChatsListViewController {
     func configureDataSource() {
         dataSource = ChatsListDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
             switch item {
-            case .channel(let configuration):
+            case .chat(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
                 
@@ -100,6 +101,11 @@ private extension ChatsListViewController {
                 return cell
             case .dataTypeSelection(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListDataTypeSelectionCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
+            case .chatRequests(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListRequestsCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
                 
                 return cell
@@ -165,12 +171,13 @@ extension ChatsListViewController {
     }
     
     enum Item: Hashable {
-        case channel(configuration: ChatChannelUIConfiguration)
+        case chat(configuration: ChatUIConfiguration)
         case domainSelection(configuration: DomainSelectionUIConfiguration)
         case dataTypeSelection(configuration: DataTypeSelectionUIConfiguration)
+        case chatRequests(configuration: ChatRequestsUIConfiguration)
     }
     
-    struct ChatChannelUIConfiguration: Hashable {
+    struct ChatUIConfiguration: Hashable {
         let chat: MessagingChatDisplayInfo
     }
     
@@ -212,5 +219,9 @@ extension ChatsListViewController {
                 return String.Constants.appsInbox.localized()
             }
         }
+    }
+    
+    struct ChatRequestsUIConfiguration: Hashable {
+        let numberOfRequests: Int
     }
 }

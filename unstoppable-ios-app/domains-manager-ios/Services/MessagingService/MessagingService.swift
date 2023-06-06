@@ -14,6 +14,7 @@ final class MessagingService {
     let storageProtocol: MessagingStorageServiceProtocol
         
     private var walletsToChatsCache: [String : [MessagingChat]] = [:]
+    private var walletsToChatRequestsCache: [String : [MessagingChat]] = [:]
     private var chatToMessagesCache: [String : [MessagingChatMessage]] = [:]
     
     init(apiService: MessagingAPIServiceProtocol,
@@ -46,11 +47,11 @@ extension MessagingService: MessagingServiceProtocol {
                                   limit: Int) async throws -> [MessagingChatDisplayInfo] {
         guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
         let cacheId = wallet
-        if let cache = walletsToChatsCache[cacheId] {
+        if let cache = walletsToChatRequestsCache[cacheId] {
             return cache.map { $0.displayInfo }
         }
         let chats = try await apiService.getChatRequestsForWallet(wallet, page: page, limit: limit)
-        walletsToChatsCache[cacheId] = chats
+        walletsToChatRequestsCache[cacheId] = chats
         return chats.map { $0.displayInfo }
     }
 

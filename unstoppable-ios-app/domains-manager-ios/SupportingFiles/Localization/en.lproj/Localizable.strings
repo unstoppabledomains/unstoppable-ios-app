@@ -775,3 +775,5 @@
 "YESTERDAY" = "Yesterday";
 "CHAT_INPUT_PLACEHOLDER_AS_DOMAIN" = "Message as %@...";
 "APPS_INBOX" = "Apps Inbox";
+"CHAT_REQUESTS" = "Chat Requests";
+"N_PEOPLE_YOU_MAY_KNOW" = "%i people you may know";

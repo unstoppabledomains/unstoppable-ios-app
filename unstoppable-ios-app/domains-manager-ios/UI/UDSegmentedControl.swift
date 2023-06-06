@@ -46,8 +46,12 @@ final class UDSegmentedControl: UISegmentedControl {
 // MARK: - Setup methods
 private extension UDSegmentedControl {
     func setup() {
-     
-        setTitleTextAttributes([.font: UIFont.currentFont(withSize: 14, weight: .semibold)], for: .normal)
+        let font: UIFont = .currentFont(withSize: 14, weight: .semibold)
+        setTitleTextAttributes([.font: font],
+                               for: .normal)
+        setTitleTextAttributes([.font: font,
+                                .foregroundColor: UIColor.black],
+                               for: .selected)
     }
 }
 

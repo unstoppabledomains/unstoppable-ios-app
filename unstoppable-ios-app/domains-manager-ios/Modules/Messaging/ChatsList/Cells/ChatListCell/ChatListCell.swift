@@ -19,7 +19,7 @@ final class ChatListCell: BaseListCollectionViewCell {
 
 // MARK: - Open methods
 extension ChatListCell {
-    func setWith(configuration: ChatsListViewController.ChatChannelUIConfiguration) {
+    func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
         let chat = configuration.chat
         avatarImageView.image = .domainSharePlaceholder
         if let avatarURL = chat.avatarURL {
