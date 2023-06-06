@@ -63,7 +63,7 @@ private extension ChatListCell {
         case .private(let otherUserDetails):
             return otherUserDetails.otherUser.displayName
         case .group(let groupDetails):
-            return ""
+            return "" // <GROUP_CHAT>
         }
     }
     

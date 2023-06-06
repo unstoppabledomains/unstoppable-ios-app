@@ -12,6 +12,7 @@ protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
 }
 
+typealias ChatsListDataType = ChatsListViewController.DataType
 typealias ChatsListDataSource = UICollectionViewDiffableDataSource<ChatsListViewController.Section, ChatsListViewController.Item>
 typealias ChatsListSnapshot = NSDiffableDataSourceSnapshot<ChatsListViewController.Section, ChatsListViewController.Item>
 
@@ -20,7 +21,8 @@ final class ChatsListViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatListCell.self,
-                                                        ChatListDomainSelectionCell.self] }
+                                                        ChatListDomainSelectionCell.self,
+                                                        ChatListDataTypeSelectionCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
     
@@ -96,6 +98,11 @@ private extension ChatsListViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .dataTypeSelection(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListDataTypeSelectionCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
     }
@@ -118,6 +125,8 @@ private extension ChatsListViewController {
          
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
                 layoutSection.decorationItems = [background]
+            case .dataTypeSelection:
+                layoutSection = .flexibleListItemSection()
             case .domainsSelection:
                 let leadingItem = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .estimated(40),
@@ -152,12 +161,13 @@ private extension ChatsListViewController {
 // MARK: - Collection elements
 extension ChatsListViewController {
     enum Section: Hashable {
-        case domainsSelection, channels
+        case domainsSelection, channels, dataTypeSelection
     }
     
     enum Item: Hashable {
         case channel(configuration: ChatChannelUIConfiguration)
         case domainSelection(configuration: DomainSelectionUIConfiguration)
+        case dataTypeSelection(configuration: DataTypeSelectionUIConfiguration)
     }
     
     struct ChatChannelUIConfiguration: Hashable {
@@ -168,5 +178,39 @@ extension ChatsListViewController {
         let domain: DomainDisplayInfo
         let isSelected: Bool
         let unreadMessagesCount: Int
+    }
+    
+    struct DataTypeSelectionUIConfiguration: Hashable {
+        let dataTypesConfigurations: [DataTypeUIConfiguration]
+        let selectedDataType: DataType
+        var dataTypeChangedCallback: (DataType)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.dataTypesConfigurations == rhs.dataTypesConfigurations &&
+            lhs.selectedDataType == rhs.selectedDataType
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(dataTypesConfigurations)
+            hasher.combine(selectedDataType)
+        }
+    }
+    
+    struct DataTypeUIConfiguration: Hashable {
+        let dataType: DataType
+        let badge: Int
+    }
+    
+    enum DataType: Hashable {
+        case chats, inbox
+        
+        var title: String {
+            switch self {
+            case .chats:
+                return String.Constants.chats.localized()
+            case .inbox:
+                return String.Constants.appsInbox.localized()
+            }
+        }
     }
 }

@@ -112,7 +112,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             
             return chatMessage
         case .group(let groupDetails):
-            throw PushMessagingAPIServiceError.sendMessageInGroupChatNotSupported  // Group chats not supported for now
+            throw PushMessagingAPIServiceError.sendMessageInGroupChatNotSupported  // <GROUP_CHAT> Group chats not supported for now
         }
     }
     

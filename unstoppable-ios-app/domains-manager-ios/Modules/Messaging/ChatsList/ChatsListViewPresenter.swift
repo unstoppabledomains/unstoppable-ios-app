@@ -19,6 +19,8 @@ final class ChatsListViewPresenter {
     private var domains: [DomainDisplayInfo] = []
     private var selectedDomain: DomainDisplayInfo?
     private let fetchLimit: Int = 10
+    private var chatsList: [MessagingChatDisplayInfo] = []
+    private var selectedDataType: ChatsListDataType = .chats
     
     init(view: ChatsListViewProtocol) {
         self.view = view
@@ -28,7 +30,7 @@ final class ChatsListViewPresenter {
 // MARK: - ChatsListViewPresenterProtocol
 extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     func viewDidLoad() {
-        showData()
+        loadAndShowData()
     }
     
     func didSelectItem(_ item: ChatsListViewController.Item) {
@@ -41,33 +43,57 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             showData()
         case .channel(let configuration):
             openChat(configuration.chat)
+        case .dataTypeSelection:
+            return
         }
     }
 }
 
 // MARK: - Private functions
 private extension ChatsListViewPresenter {
-    func showData() {
+    func loadAndShowData() {
         Task {
             do {
                 await loadDomains()
-                var snapshot = ChatsListSnapshot()
-                
-                
                 guard let selectedDomain else { return }
-                
-                snapshot.appendSections([.domainsSelection])
-                
-                let chatsList = try await appContext.messagingService.getChatsListForDomain(selectedDomain,
-                                                                                           page: 1,
-                                                                                           limit: fetchLimit)
-                snapshot.appendSections([.channels])
-                snapshot.appendItems(chatsList.map({ ChatsListViewController.Item.channel(configuration: .init(chat: $0)) }))
-                
-                view?.applySnapshot(snapshot, animated: true)
+
+                chatsList = try await appContext.messagingService.getChatsListForDomain(selectedDomain,
+                                                                                        page: 1,
+                                                                                        limit: fetchLimit)
+                showData()
             } catch {
-                Debugger.printFailure(error.localizedDescription) // TODO: - Handle error
+                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
             }
+        }
+    }
+    
+    func showData() {
+        var snapshot = ChatsListSnapshot()
+        
+        let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
+        snapshot.appendSections([.dataTypeSelection])
+        snapshot.appendItems([.dataTypeSelection(configuration: dataTypeSelectionUIConfiguration)])
+        
+        switch selectedDataType {
+        case .chats:
+            snapshot.appendSections([.channels])
+            snapshot.appendItems(chatsList.map({ ChatsListViewController.Item.channel(configuration: .init(chat: $0)) }))
+        case .inbox:
+            Void()
+        }
+        
+        view?.applySnapshot(snapshot, animated: true)
+    }
+    
+    func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
+        let chatsBadge = 0
+        let inboxBadge = 0
+        
+        return .init(dataTypesConfigurations: [.init(dataType: .chats, badge: chatsBadge),
+                                               .init(dataType: .inbox, badge: inboxBadge)],
+                     selectedDataType: selectedDataType) { [weak self] newSelectedDataType in
+            self?.selectedDataType = newSelectedDataType
+            self?.showData()
         }
     }
     
