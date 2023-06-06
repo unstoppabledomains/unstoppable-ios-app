@@ -10,4 +10,8 @@ import Foundation
 struct MessagingChatUserDisplayInfo: Hashable {
     let wallet: String
     var domain: DomainDisplayInfo? = nil
+    
+    var displayName: String {
+        domain?.name ?? wallet.walletAddressTruncated
+    }
 }

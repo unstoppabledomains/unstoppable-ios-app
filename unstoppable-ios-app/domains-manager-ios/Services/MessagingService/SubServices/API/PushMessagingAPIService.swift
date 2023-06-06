@@ -12,7 +12,7 @@ final class PushMessagingAPIService {
     
     private let pushRESTService = PushRESTAPIService()
     
-    private var walletToPushUserCache: [HexAddress : Push.User] = [:]
+    private var walletToPushUserCache: [HexAddress : PushUser] = [:]
     
 }
 
@@ -26,7 +26,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func createUser(for domain: DomainItem) async throws -> MessagingChatUserDisplayInfo {
         let wallet = try await domain.getAddress()
         let env = getCurrentPushEnvironment()
-        let pushUser = try await Push.User.create(options: .init(env: env,
+        let pushUser = try await PushUser.create(options: .init(env: env,
                                                                  signer: domain,
                                                                  version: .PGP_V3,
                                                                  progressHook: nil))
@@ -70,11 +70,9 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         }
         
         let wallet = chat.displayInfo.thisUserDetails.wallet
-        let user = try await getPushUserFor(wallet: wallet)
-        let domain = try await getReverseResolutionDomainItem(for: wallet)
-        let pgpPrivateKey = try await Push.User.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(wallet: wallet)
         let env = getCurrentPushEnvironment()
-        let pushMessages = try await Push.Chats.History(threadHash: threadHash,
+        let pushMessages = try await Push.PushChat.History(threadHash: threadHash,
                                                     limit: fetchLimit,
                                                     pgpPrivateKey: pgpPrivateKey,
                                                     env: env)
@@ -84,26 +82,74 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
-                     in chat: MessagingChat) async throws {
-        // TODO: - Use Push SDK when ready
+                     in chat: MessagingChat) async throws -> MessagingChatMessage {
+        let env = getCurrentPushEnvironment()
+        let pushMessageContent = getPushMessageContentFrom(displayType: messageType)
+        let pushMessageType = getPushMessageTypeFrom(displayType: messageType)
+        let sender = chat.displayInfo.thisUserDetails
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(wallet: sender.wallet)
+
+        switch chat.displayInfo.type {
+        case .private(let otherUserDetails):
+            let receiver = otherUserDetails.otherUser
+            let sendOptions = Push.PushChat.SendOptions(messageContent: pushMessageContent,
+                                                        messageType: pushMessageType.rawValue,
+                                                        receiverAddress: receiver.wallet,
+                                                        account: sender.wallet,
+                                                        pgpPrivateKey: pgpPrivateKey,
+                                                        env: env)
+            let chatMetadata: ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
+            let isConversationFirst = chatMetadata.threadHash == nil
+            
+            let message: Push.Message
+            if isConversationFirst {
+                message = try await Push.PushChat.sendIntent(sendOptions)
+            } else {
+                message = try await Push.PushChat.sendMessage(sendOptions)
+            }
+            
+            guard let chatMessage = convertPushMessageToChatMessage(message, in: chat) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
+            
+            return chatMessage
+        case .group(let groupDetails):
+            throw PushMessagingAPIServiceError.sendMessageInGroupChatNotSupported  // Group chats not supported for now
+        }
     }
     
     func makeChatRequest(_ chat: MessagingChat, approved: Bool) async throws {
-        // TODO: - Use Push SDK when ready
+        guard approved else { throw PushMessagingAPIServiceError.declineRequestNotSupported }
+        guard case .private(let otherUserDetails) = chat.displayInfo.type else { throw PushMessagingAPIServiceError.sendMessageInGroupChatNotSupported }
+        
+        let env = getCurrentPushEnvironment()
+        let sender = chat.displayInfo.thisUserDetails
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(wallet: sender.wallet)
+
+        let approveOptions = Push.PushChat.ApproveOptions(fromAddress: sender.wallet ,
+                                                          toAddress: otherUserDetails.otherUser.wallet,
+                                                          privateKey: pgpPrivateKey,
+                                                          env: env)
+        _ = try await Push.PushChat.approve(approveOptions)
     }
 }
 
 // MARK: - Private methods
 private extension PushMessagingAPIService {
-    func getPushUserFor(wallet: HexAddress) async throws -> Push.User {
+    func getPushUserFor(wallet: HexAddress) async throws -> PushUser {
         if let pushUser = walletToPushUserCache[wallet] {
             return pushUser
         }
         let env = getCurrentPushEnvironment()
-        guard let pushUser = try await Push.User.get(account: wallet, env: env) else {
+        guard let pushUser = try await PushUser.get(account: wallet, env: env) else {
             throw PushMessagingAPIServiceError.failedToGetPushUser
         }
         return pushUser
+    }
+    
+    func getPGPPrivateKeyFor(wallet: HexAddress) async throws -> String {
+        let user = try await getPushUserFor(wallet: wallet)
+        let domain = try await getReverseResolutionDomainItem(for: wallet)
+        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
+        return pgpPrivateKey
     }
     
     func getReverseResolutionDomainItem(for wallet: HexAddress) async throws -> DomainItem {
@@ -119,7 +165,7 @@ private extension PushMessagingAPIService {
         return isTestnetUsed ? .DEV : .PROD
     }
     
-    func convertPushUserToChatUser(_ pushUser: Push.User) -> MessagingChatUserDisplayInfo {
+    func convertPushUserToChatUser(_ pushUser: PushUser) -> MessagingChatUserDisplayInfo {
         MessagingChatUserDisplayInfo(wallet: pushUser.wallets,
                                      domain: nil)
     }
@@ -179,10 +225,11 @@ private extension PushMessagingAPIService {
 
     func convertPushMessageToChatMessage(_ pushMessage: Push.Message,
                                          in chat: MessagingChat) -> MessagingChatMessage? {
-        guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID) else { return nil }
+        guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
+              let messageType = PushMessageType(rawValue: pushMessage.messageType) else { return nil }
         
-        switch pushMessage.messageType {
-        case "Text":
+        switch messageType {
+        case .text:
             var time = Date()
             var id = "\(pushMessage.fromDID)_\(pushMessage.messageContent)"
             
@@ -223,6 +270,20 @@ private extension PushMessagingAPIService {
         
         return serviceMetadata
     }
+   
+    func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType) -> String {
+        switch displayType {
+        case .text(let details):
+            return details.text
+        }
+    }
+    
+    func getPushMessageTypeFrom(displayType: MessagingChatMessageDisplayType) -> PushMessageType {
+        switch displayType {
+        case .text:
+            return .text
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -238,6 +299,13 @@ private extension PushMessagingAPIService {
         }
         return nil
     }
+    
+    enum PushMessageType: String {
+        case text = "Text"
+        case image = "Image"
+        case file = "File"
+        case gif = "GIF"
+    }
 }
 
 // MARK: - Open methods
@@ -249,6 +317,9 @@ extension PushMessagingAPIService {
         case incorrectDataState
         
         case failedToDecodeServiceData
+        case failedToConvertPushMessage
+        case sendMessageInGroupChatNotSupported
+        case declineRequestNotSupported
     }
 }
 

@@ -74,7 +74,7 @@ private extension ChatsListViewPresenter {
     func loadDomains() async {
         if domains.isEmpty {
             domains = await appContext.dataAggregatorService.getDomainsDisplayInfo().filter({ $0.isSetForRR })
-            selectedDomain = domains.first
+            selectedDomain = domains.last
         }
     }
     

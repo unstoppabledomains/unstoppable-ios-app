@@ -59,11 +59,12 @@ extension ChatListCell {
 // MARK: - Private methods
 private extension ChatListCell {
     func chatNameFrom(chat: MessagingChatDisplayInfo) -> String {
-        ""
-//        switch chat {
-//        case .domain(let channel):
-//            return channel.domainName
-//        }
+        switch chat.type {
+        case .private(let otherUserDetails):
+            return otherUserDetails.otherUser.displayName
+        case .group(let groupDetails):
+            return ""
+        }
     }
     
     func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo?) -> String  {
