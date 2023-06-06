@@ -197,7 +197,7 @@ private extension PushMessagingAPIService {
             guard let fromUserWallet = getWalletAddressFrom(eip155String: fromUserEip),
                   let toUserEip = pushChat.did,
                   let toUserWallet = getWalletAddressFrom(eip155String: toUserEip) else { return nil }
-            let otherUserWallet = userWallet == fromUserWallet ? toUserWallet : fromUserWallet
+            let otherUserWallet = userWallet.lowercased() == fromUserWallet.lowercased() ? toUserWallet : fromUserWallet
             let otherUserInfo = MessagingChatUserDisplayInfo(wallet: otherUserWallet)
             let privateChatDetails = MessagingPrivateChatDetails(otherUser: otherUserInfo)
             chatType = .private(privateChatDetails)
@@ -207,7 +207,7 @@ private extension PushMessagingAPIService {
         if let profilePicture = pushChat.profilePicture {
             avatarURL = URL(string: profilePicture)
         }
-     
+        
         let displayInfo = MessagingChatDisplayInfo(id: pushChat.chatId,
                                                    thisUserDetails: thisUserInfo,
                                                    avatarURL: avatarURL,
@@ -251,7 +251,7 @@ private extension PushMessagingAPIService {
                                                               time: time,
                                                               type: .text(textDisplayInfo),
                                                               isRead: false,
-                                                              isSending: false)
+                                                              deliveryState: .delivered)
             let textMessage = MessagingChatMessage(displayInfo: displayInfo,
                                                    serviceMetadata: nil)
             return textMessage

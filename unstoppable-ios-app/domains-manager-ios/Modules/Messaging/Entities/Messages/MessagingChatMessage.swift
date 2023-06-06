@@ -8,6 +8,6 @@
 import Foundation
 
 struct MessagingChatMessage: Hashable {
-    let displayInfo: MessagingChatMessageDisplayInfo
+    var displayInfo: MessagingChatMessageDisplayInfo
     let serviceMetadata: Data?
 }

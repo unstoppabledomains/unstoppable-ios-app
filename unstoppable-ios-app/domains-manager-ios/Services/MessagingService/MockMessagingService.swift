@@ -28,6 +28,12 @@ extension MockMessagingService: MessagingServiceProtocol {
         return chats
     }
     
+    func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
+                                  page: Int,
+                                  limit: Int) async throws -> [MessagingChatDisplayInfo] {
+        []
+    }
+     
     func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         if let cachedMessages = chatsMessages[chat] {
@@ -38,6 +44,13 @@ extension MockMessagingService: MessagingServiceProtocol {
         chatsMessages[chat] = messages
         return messages
     }
+    
+    func sendMessage(_ messageType: MessagingChatMessageDisplayType,
+                     in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo {
+        throw NSError()
+    }
+    
+    func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
 }
 
 // MARK: - Private methods
@@ -119,7 +132,7 @@ private extension MockMessagingService {
               time: createMockMessageDate(),
               type: .text(.init(text: mockLastMessageTexts.randomElement()!)),
               isRead: true,
-              isSending: false)
+              deliveryState: .delivered)
     }
     
     struct MockDomainChatInfo: Hashable {
@@ -159,7 +172,7 @@ private extension MockMessagingService {
                                                           time: time,
                                                           type: .text(.init(text: text)),
                                                           isRead: true,
-                                                          isSending: false)
+                                                          deliveryState: .delivered)
             messages.append(message)
         }
         

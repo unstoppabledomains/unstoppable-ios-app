@@ -14,5 +14,12 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     let time: Date
     let type: MessagingChatMessageDisplayType
     let isRead: Bool
-    let isSending: Bool
+    var deliveryState: DeliveryState
+}
+
+// MARK: - Open methods
+extension MessagingChatMessageDisplayInfo {
+    enum DeliveryState {
+        case delivered, sending, failedToSend
+    }
 }
