@@ -869,6 +869,9 @@ extension String {
         static let appsInbox = "APPS_INBOX"
         static let chatRequests = "CHAT_REQUESTS"
         static let nPeopleYouMayKnow = "N_PEOPLE_YOU_MAY_KNOW"
+        static let sending = "SENDING"
+        static let sendingFailed = "SENDING_FAILED"
+        static let tapToRetry = "TAP_TO_RETRY"
     }
 
     

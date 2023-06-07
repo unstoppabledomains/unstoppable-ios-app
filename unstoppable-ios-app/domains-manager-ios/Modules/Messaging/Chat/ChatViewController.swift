@@ -245,7 +245,24 @@ extension ChatViewController {
     }
     
     struct TextMessageUIConfiguration: Hashable {
+        
         let message: MessagingChatMessageDisplayInfo
         let textMessageDisplayInfo: MessagingChatMessageTextTypeDisplayInfo
+        var actionCallback: (ChatMessageAction)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.message == rhs.message &&
+            lhs.textMessageDisplayInfo == rhs.textMessageDisplayInfo
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(message)
+            hasher.combine(textMessageDisplayInfo)
+        }
+    }
+    
+    enum ChatMessageAction: Hashable {
+        case resend
+        case delete
     }
 }

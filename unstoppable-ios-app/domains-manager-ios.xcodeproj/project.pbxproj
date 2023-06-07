@@ -499,6 +499,10 @@
 		C60610FD29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
 		C60610FE29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
 		C60610FF29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */; };
+		C60686382A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */; };
+		C60686392A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */; };
+		C606863A2A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */; };
+		C606863B2A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73D2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
@@ -3899,6 +3903,7 @@
 		C60610E729A7469A005DC0D5 /* WCRequestsHandlingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCRequestsHandlingServiceTests.swift; sourceTree = "<group>"; };
 		C60610E929A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV1SignTransactionHandler.swift; sourceTree = "<group>"; };
 		C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonWithExtendedTappableArea.swift; sourceTree = "<group>"; };
+		C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FABRaisedTertiaryButton.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
@@ -6553,6 +6558,7 @@
 				C666893128114B0E002062B4 /* BaseButton.swift */,
 				C624D76A281AD2B900F55530 /* FABButton.swift */,
 				C6D5DAC728365A3400379C38 /* FABCounterButton.swift */,
+				C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */,
 				C6E041CD29554C370080F8E3 /* GhostTertiaryButton.swift */,
 				C63A77A728F40B6A00F66E72 /* GhostTertiaryWhiteButton.swift */,
 				C666893628114D7A002062B4 /* LinkButton.swift */,
@@ -9591,6 +9597,7 @@
 				C608C8312877F9D300EDEC6E /* Double.swift in Sources */,
 				C685A99B284101DA00E54044 /* DomainSelectionCell.swift in Sources */,
 				C60D2717295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift in Sources */,
+				C60686382A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */,
 				C681092628042AF0002D780E /* OnboardingNavigationController.swift in Sources */,
 				C673D57229FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */,
 				C679B5FB2919327100F543A7 /* DomainProfileSectionDataChangeType.swift in Sources */,
@@ -10236,6 +10243,7 @@
 				307F83EF267A339F0070A9A6 /* StripePaymentHelper.swift in Sources */,
 				C666E0A329CB3FEA0003DECB /* ParkedDomainCell.swift in Sources */,
 				C671E3F02902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift in Sources */,
+				C606863A2A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */,
 				C664312528DACB4100A9C734 /* RaisedTertiaryButton.swift in Sources */,
 				C606B743286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C685A9892840FD4900E54044 /* ChoosePrimaryDomainViewPresenter.swift in Sources */,
@@ -10968,6 +10976,7 @@
 				307F85A5267B60300070A9A6 /* DomainItem.swift in Sources */,
 				C666E0A429CB3FEA0003DECB /* ParkedDomainCell.swift in Sources */,
 				C671E3F12902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift in Sources */,
+				C606863B2A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */,
 				C664312628DACB4100A9C734 /* RaisedTertiaryButton.swift in Sources */,
 				C606B744286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C685A98A2840FD4900E54044 /* ChoosePrimaryDomainViewPresenter.swift in Sources */,
@@ -11845,6 +11854,7 @@
 				C608C8322877F9D300EDEC6E /* Double.swift in Sources */,
 				C685A99C284101DA00E54044 /* DomainSelectionCell.swift in Sources */,
 				C60D2718295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift in Sources */,
+				C60686392A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */,
 				C681092728042AF0002D780E /* OnboardingNavigationController.swift in Sources */,
 				C673D57329FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */,
 				C679B5FC2919327100F543A7 /* DomainProfileSectionDataChangeType.swift in Sources */,

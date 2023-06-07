@@ -20,6 +20,8 @@ protocol MessagingServiceProtocol {
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
+    func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
     
     // Listeners
     func addListener(_ listener: MessagingServiceListener)

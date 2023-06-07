@@ -60,14 +60,16 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
 
 // MARK: - MessagingServiceListener
 extension ChatViewPresenter: MessagingServiceListener {
-    func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
-        switch messagingDataType {
-        case .chats:
-            return
-        case .messages(let messages, let chatId):
-            if chatId == chat.id {
-                self.messages = messages
-                showData(animated: true, scrollToBottomAnimated: true)
+    nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
+        Task { @MainActor in
+            switch messagingDataType {
+            case .chats:
+                return
+            case .messages(let messages, let chatId):
+                if chatId == chat.id {
+                    self.messages = messages
+                    showData(animated: true, scrollToBottomAnimated: true)
+                }
             }
         }
     }
@@ -94,6 +96,7 @@ private extension ChatViewPresenter {
         })
     }
     
+    @MainActor
     func showData(animated: Bool, completion: EmptyCallback? = nil) {
         var snapshot = ChatSnapshot()
         
@@ -113,7 +116,9 @@ private extension ChatViewPresenter {
     func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item {
         switch message.type {
         case .text(let textMessageDisplayInfo):
-            return .textMessage(configuration: .init(message: message, textMessageDisplayInfo: textMessageDisplayInfo))
+            return .textMessage(configuration: .init(message: message, textMessageDisplayInfo: textMessageDisplayInfo, actionCallback: { [weak self] action in
+                self?.handleChatMessageAction(action, forMessage: message)
+            }))
         }
     }
     
@@ -134,6 +139,16 @@ private extension ChatViewPresenter {
     func setupPlaceholder() {
         view?.setPlaceholder(String.Constants.chatInputPlaceholderAsDomain.localized(domain.name))
     }
+    
+    func handleChatMessageAction(_ action: ChatViewController.ChatMessageAction,
+                                 forMessage message: MessagingChatMessageDisplayInfo) {
+        switch action {
+        case .resend:
+            try? appContext.messagingService.resendMessage(message)
+        case .delete:
+            appContext.messagingService.deleteMessage(message)
+        }
+    }
 }
 
 // MARK: - Send message
@@ -153,3 +168,5 @@ private extension ChatViewPresenter {
         }
     }
 }
+
+var FAIL_COUNTER = 0

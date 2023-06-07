@@ -107,6 +107,31 @@ extension MessagingService: MessagingServiceProtocol {
         // TODO: - Reload chats list?
     }
     
+    func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws {
+        let cacheId = message.chatId
+        let messagingChat = try getMessagingChatWith(chatId: cacheId)
+        var updatedMessage = message
+        updatedMessage.deliveryState = .sending
+        let newMessage = MessagingChatMessage(displayInfo: updatedMessage, serviceMetadata: nil)
+
+        replaceCacheMessage(.init(displayInfo: message,
+                                  serviceMetadata: nil),
+                            with: newMessage,
+                            cacheId: cacheId)
+        notifyMessagesChanges(chatId: cacheId)
+        sendMessageToBE(message: newMessage, messageType: updatedMessage.type, in: messagingChat)
+    }
+    
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) {
+        let cacheId = message.chatId
+        var messages = chatToMessagesCache[cacheId] ?? []
+        if let i = messages.firstIndex(where: { $0.displayInfo.id == message.id }) {
+            messages.remove(at: i)
+            chatToMessagesCache[cacheId] = messages
+            notifyMessagesChanges(chatId: cacheId)
+        }
+    }
+    
     // Listeners
     func addListener(_ listener: MessagingServiceListener) {
         if !listenerHolders.contains(where: { $0.listener === listener }) {
@@ -122,8 +147,12 @@ extension MessagingService: MessagingServiceProtocol {
 // MARK: - Private methods
 private extension MessagingService {
     func getMessagingChatFor(displayInfo: MessagingChatDisplayInfo) throws -> MessagingChat {
+        try getMessagingChatWith(chatId: displayInfo.id)
+    }
+    
+    func getMessagingChatWith(chatId: String) throws -> MessagingChat {
         let allChats = walletsToChatsCache.reduce([MessagingChat](), { $0 + $1.value })
-        guard let chat = allChats.first(where: { $0.displayInfo.id == displayInfo.id }) else { throw MessagingServiceError.chatNotFound }
+        guard let chat = allChats.first(where: { $0.displayInfo.id == chatId }) else { throw MessagingServiceError.chatNotFound }
         
         return chat
     }
@@ -134,6 +163,10 @@ private extension MessagingService {
         Task {
             let chatId = chat.displayInfo.id
             do {
+                if FAIL_COUNTER == 0 {
+                    FAIL_COUNTER += 1
+                    throw NSError()
+                }
                 let sentMessage = try await apiService.sendMessage(messageType, in: chat)
                 replaceCacheMessage(message,
                                     with: sentMessage,
