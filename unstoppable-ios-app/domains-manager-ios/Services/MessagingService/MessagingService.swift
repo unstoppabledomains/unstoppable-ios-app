@@ -96,7 +96,8 @@ extension MessagingService: MessagingServiceProtocol {
         messages.append(newMessage)
         chatToMessagesCache[cacheId] = messages
         sendMessageToBE(message: newMessage, messageType: messageType, in: messagingChat)
-        
+        notifyMessagesChanges(chatId: cacheId)
+
         return newMessageDisplayInfo
     }
     

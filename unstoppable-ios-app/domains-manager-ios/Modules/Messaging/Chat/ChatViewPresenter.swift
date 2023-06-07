@@ -36,6 +36,7 @@ final class ChatViewPresenter {
 // MARK: - ChatViewPresenterProtocol
 extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
+        appContext.messagingService.addListener(self)
         setupTitle()
         setupPlaceholder()
         loadAndShowData()
@@ -54,6 +55,21 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         
         view?.setInputText("")
         sendTextMesssage(text)
+    }
+}
+
+// MARK: - MessagingServiceListener
+extension ChatViewPresenter: MessagingServiceListener {
+    func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
+        switch messagingDataType {
+        case .chats:
+            return
+        case .messages(let messages, let chatId):
+            if chatId == chat.id {
+                self.messages = messages
+                showData(animated: true, scrollToBottomAnimated: true)
+            }
+        }
     }
 }
 
@@ -130,9 +146,7 @@ private extension ChatViewPresenter {
     
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
         do {
-            // TODO: - Probably should expect all messages from listener notification
-            let newMessage = try appContext.messagingService.sendMessage(type, in: chat)
-            messages.append(newMessage)
+            let _ = try appContext.messagingService.sendMessage(type, in: chat)
             showData(animated: true, scrollToBottomAnimated: true)
         } catch {
             view?.showAlertWith(error: error, handler: nil)

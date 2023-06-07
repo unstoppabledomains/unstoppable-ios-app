@@ -31,6 +31,7 @@ final class ChatsListViewPresenter {
 // MARK: - ChatsListViewPresenterProtocol
 extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     func viewDidLoad() {
+        appContext.messagingService.addListener(self)
         loadAndShowData()
     }
     
@@ -47,6 +48,25 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         case .chatRequests:
             showChatRequests()
         case .dataTypeSelection:
+            return
+        }
+    }
+}
+
+// MARK: - MessagingServiceListener
+extension ChatsListViewPresenter: MessagingServiceListener {
+    func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
+        switch messagingDataType {
+        case .chats(let chats, let isRequests, let wallet):
+            if wallet == selectedDomain?.ownerWallet {
+                if isRequests {
+                    requestsList = chats
+                } else {
+                    chatsList = chats
+                }
+                showData()
+            }
+        case .messages:
             return
         }
     }
