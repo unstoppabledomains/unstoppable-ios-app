@@ -866,6 +866,9 @@ extension String {
         static let today = "TODAY"
         static let yesterday = "YESTERDAY"
         static let chatInputPlaceholderAsDomain = "CHAT_INPUT_PLACEHOLDER_AS_DOMAIN"
+        static let appsInbox = "APPS_INBOX"
+        static let chatRequests = "CHAT_REQUESTS"
+        static let nPeopleYouMayKnow = "N_PEOPLE_YOU_MAY_KNOW"
     }
 
     

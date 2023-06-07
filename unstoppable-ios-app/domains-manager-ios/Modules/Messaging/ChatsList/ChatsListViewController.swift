@@ -12,6 +12,7 @@ protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
 }
 
+typealias ChatsListDataType = ChatsListViewController.DataType
 typealias ChatsListDataSource = UICollectionViewDiffableDataSource<ChatsListViewController.Section, ChatsListViewController.Item>
 typealias ChatsListSnapshot = NSDiffableDataSourceSnapshot<ChatsListViewController.Section, ChatsListViewController.Item>
 
@@ -20,7 +21,9 @@ final class ChatsListViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatListCell.self,
-                                                        ChatListDomainSelectionCell.self] }
+                                                        ChatListDomainSelectionCell.self,
+                                                        ChatListDataTypeSelectionCell.self,
+                                                        ChatListRequestsCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
     
@@ -65,14 +68,26 @@ extension ChatsListViewController: UICollectionViewDelegate {
 
 // MARK: - Private functions
 private extension ChatsListViewController {
-
+    @objc func newMessageButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+    }
 }
 
 // MARK: - Setup functions
 private extension ChatsListViewController {
     func setup() {
+        setupNavigation()
         setupCollectionView()
         title = String.Constants.chats.localized()
+    }
+    
+    func setupNavigation() {
+        let newMessageButton = UIBarButtonItem(image: .newMessageIcon,
+                                               style: .plain,
+                                               target: self,
+                                               action: #selector(newMessageButtonPressed))
+        newMessageButton.tintColor = .foregroundDefault
+        navigationItem.rightBarButtonItem = newMessageButton
     }
     
     func setupCollectionView() {
@@ -86,13 +101,23 @@ private extension ChatsListViewController {
     func configureDataSource() {
         dataSource = ChatsListDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
             switch item {
-            case .channel(let configuration):
+            case .chat(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
                 
                 return cell
             case .domainSelection(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListDomainSelectionCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
+            case .dataTypeSelection(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListDataTypeSelectionCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
+            case .chatRequests(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListRequestsCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
                 
                 return cell
@@ -118,6 +143,8 @@ private extension ChatsListViewController {
          
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
                 layoutSection.decorationItems = [background]
+            case .dataTypeSelection:
+                layoutSection = .flexibleListItemSection()
             case .domainsSelection:
                 let leadingItem = NSCollectionLayoutItem(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .estimated(40),
@@ -152,15 +179,17 @@ private extension ChatsListViewController {
 // MARK: - Collection elements
 extension ChatsListViewController {
     enum Section: Hashable {
-        case domainsSelection, channels
+        case domainsSelection, channels, dataTypeSelection
     }
     
     enum Item: Hashable {
-        case channel(configuration: ChatChannelUIConfiguration)
+        case chat(configuration: ChatUIConfiguration)
         case domainSelection(configuration: DomainSelectionUIConfiguration)
+        case dataTypeSelection(configuration: DataTypeSelectionUIConfiguration)
+        case chatRequests(configuration: ChatRequestsUIConfiguration)
     }
     
-    struct ChatChannelUIConfiguration: Hashable {
+    struct ChatUIConfiguration: Hashable {
         let chat: MessagingChatDisplayInfo
     }
     
@@ -168,5 +197,43 @@ extension ChatsListViewController {
         let domain: DomainDisplayInfo
         let isSelected: Bool
         let unreadMessagesCount: Int
+    }
+    
+    struct DataTypeSelectionUIConfiguration: Hashable {
+        let dataTypesConfigurations: [DataTypeUIConfiguration]
+        let selectedDataType: DataType
+        var dataTypeChangedCallback: (DataType)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.dataTypesConfigurations == rhs.dataTypesConfigurations &&
+            lhs.selectedDataType == rhs.selectedDataType
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(dataTypesConfigurations)
+            hasher.combine(selectedDataType)
+        }
+    }
+    
+    struct DataTypeUIConfiguration: Hashable {
+        let dataType: DataType
+        let badge: Int
+    }
+    
+    enum DataType: Hashable {
+        case chats, inbox
+        
+        var title: String {
+            switch self {
+            case .chats:
+                return String.Constants.chats.localized()
+            case .inbox:
+                return String.Constants.appsInbox.localized()
+            }
+        }
+    }
+    
+    struct ChatRequestsUIConfiguration: Hashable {
+        let numberOfRequests: Int
     }
 }

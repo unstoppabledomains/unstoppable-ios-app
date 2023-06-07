@@ -130,6 +130,8 @@ extension UIImage {
     static let messageCircleIcon24 = UIImage(named: "messageCircleIcon24")!
     static let plusIcon18 = UIImage(named: "plusIcon18")!
     static let arrowUp24 = UIImage(named: "arrowUp24")!
+    static let chatRequestsIcon = UIImage(named: "chatRequestsIcon")!
+    static let newMessageIcon = UIImage(named: "newMessageIcon")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

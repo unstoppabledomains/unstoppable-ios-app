@@ -19,7 +19,7 @@ final class ChatListCell: BaseListCollectionViewCell {
 
 // MARK: - Open methods
 extension ChatListCell {
-    func setWith(configuration: ChatsListViewController.ChatChannelUIConfiguration) {
+    func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
         let chat = configuration.chat
         avatarImageView.image = .domainSharePlaceholder
         if let avatarURL = chat.avatarURL {
@@ -63,7 +63,7 @@ private extension ChatListCell {
         case .private(let otherUserDetails):
             return otherUserDetails.otherUser.displayName
         case .group(let groupDetails):
-            return ""
+            return "" // <GROUP_CHAT>
         }
     }
     

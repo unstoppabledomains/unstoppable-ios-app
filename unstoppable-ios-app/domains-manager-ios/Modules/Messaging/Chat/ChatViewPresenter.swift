@@ -111,7 +111,7 @@ private extension ChatViewPresenter {
                 view?.setTitleOfType(.walletAddress(otherUser.wallet))
             }
         case .group(let groupDetails):
-            return // Not supported for now
+            return // <GROUP_CHAT> Not supported for now
         }
     }
     

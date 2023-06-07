@@ -256,7 +256,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         getUserWallets().forEach({ updateWalletInStorage($0, backedUpState: false) })
         notifyListeners(.walletsUpdated(getUserWallets()))
     }
-
+    
     // Balance
     func getBalanceFor(walletAddress: HexAddress, blockchainType: BlockchainType, forceRefresh: Bool) async throws -> WalletBalance {
         let layerId = try UnsConfigManager.getBlockchainLayerId(for: blockchainType)
