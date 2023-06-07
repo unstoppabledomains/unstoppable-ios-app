@@ -39,6 +39,8 @@ extension MessagingService: MessagingServiceProtocol {
         }
         let chats = try await apiService.getChatsListForWallet(wallet, page: page, limit: limit)
         walletsToChatsCache[cacheId] = chats
+        setupSocketConnection(domain: domain)
+        
         return chats.map { $0.displayInfo }
     }
     
@@ -135,6 +137,31 @@ private extension MessagingService {
         if let i = messages.firstIndex(where: { $0.displayInfo.id == messageToReplace.displayInfo.id }) {
             messages[i] = newMessage
             chatToMessagesCache[cacheId] = messages
+        }
+    }
+    
+    func setupSocketConnection(domain: DomainDisplayInfo) {
+        Task {
+            do {
+                let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
+                try webSocketsService.subscribeFor(domain: domain,
+                                                   eventCallback: { [weak self] event in
+                    self?.handleWebSocketEvent(event)
+                })
+            }
+        }
+    }
+    
+    func handleWebSocketEvent(_ event: MessagingWebSocketEvent) {
+        switch event {
+        case .userFeeds(let feeds):
+            return
+        case .userSpamFeeds(let feeds):
+            return
+        case .chatGroups:
+            return
+        case .chatReceivedMessage:
+            return
         }
     }
 }

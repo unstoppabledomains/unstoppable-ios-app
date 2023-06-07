@@ -8,6 +8,7 @@
 import Foundation
 
 protocol MessagingWebSocketsServiceProtocol {
-    
+    func subscribeFor(domain: DomainItem,
+                      eventCallback: @escaping MessagingWebSocketEventCallback) throws
 }
 

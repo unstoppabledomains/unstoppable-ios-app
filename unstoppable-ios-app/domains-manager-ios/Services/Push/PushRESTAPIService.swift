@@ -176,12 +176,17 @@ private extension PushRESTAPIService {
         let requests: [PushChat]
     }
     
-    struct InboxResponse: Codable {
-        let feeds: [PushInboxNotification]
-    }
+  
     
     struct ChannelsSearchResponse: Codable {
         let channels: [PushChannel]
+    }
+}
+
+// MARK: - Open methods
+extension PushRESTAPIService {
+    struct InboxResponse: Codable {
+        let feeds: [PushInboxNotification]
     }
 }
 

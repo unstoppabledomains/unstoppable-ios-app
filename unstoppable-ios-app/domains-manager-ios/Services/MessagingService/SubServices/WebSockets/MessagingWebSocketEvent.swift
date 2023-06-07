@@ -10,8 +10,8 @@ import Foundation
 typealias MessagingWebSocketEventCallback = (MessagingWebSocketEvent)->()
 
 enum MessagingWebSocketEvent {
-    case userFeeds
-    case userSpamFeeds
+    case userFeeds(_ feeds: [PushInboxNotification])
+    case userSpamFeeds(_ feeds: [PushInboxNotification])
     case chatReceivedMessage
     case chatGroups
 }
