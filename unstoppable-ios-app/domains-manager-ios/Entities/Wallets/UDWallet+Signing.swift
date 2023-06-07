@@ -36,10 +36,6 @@ extension UDWallet {
     func getPersonalSignature(messageString: String) async throws -> String {
         guard self.walletState == .verified else {
             if self.shouldParseMessage {
-                
-//                let message = messageString.convertedIntoReadableMessage
-//                let messageBytes = message.droppedHexPrefix.hexToBytes()
-
                 let message = messageString.convertedIntoReadableMessage
                 return try await signViaWalletConnectPersonalSign(message: message)
             }
@@ -107,7 +103,14 @@ extension UDWallet {
         let session = try detectWCSessionType()
         switch session {
         case .wc1(let wc1Session):
-            let response = try await appContext.walletConnectExternalWalletHandler.signPersonalSignViaWalletConnect_V1(session: wc1Session, message: message, in: self)
+            let messageToSend: String
+            if message.droppedHexPrefix.isHexNumber {
+                let data = message.droppedHexPrefix.hexToBytes()
+                messageToSend = String (bytes: data, encoding: .default)!
+            } else {
+                messageToSend = message
+            }
+            let response = try await appContext.walletConnectExternalWalletHandler.signPersonalSignViaWalletConnect_V1(session: wc1Session, message: messageToSend, in: self)
             return try handleResponse(response: response)
         case .wc2(let wc2Sessions):
             let response = try await appContext.walletConnectServiceV2.sendPersonalSign(sessions: wc2Sessions,

@@ -279,6 +279,16 @@ class SignatureTests: XCTestCase {
         XCTAssertEqual(signed!.hexString.dropLast(2), "4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b9156201".dropLast(2))
     }
     
+    func testConvertHashMessageIntoString() {
+        let message = "0x070678b2c6913be3e6a50a10aabfd5ec2513fa6dff0219c2f53d0222d35478fa"
+        let data = Data(message.droppedHexPrefix.hexToBytes())
+        XCTAssertEqual(data.count, 32)
+        let m = String(data: data, encoding: .default)!
+        
+        XCTAssertEqual(m.count, 32)
+        XCTAssertEqual(message.lowercased(), "0x" + m.unicodeScalarToHex!.lowercased())
+    }
+    
 //    func testSignHashOpenSea() {
 //        let cow = "cow".data(using: .utf8)!
 //        let privateKeyData = Crypto.hash(cow)
