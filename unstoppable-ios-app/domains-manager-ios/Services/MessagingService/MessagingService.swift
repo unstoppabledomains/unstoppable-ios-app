@@ -16,7 +16,8 @@ final class MessagingService {
     private var walletsToChatsCache: [String : [MessagingChat]] = [:]
     private var walletsToChatRequestsCache: [String : [MessagingChat]] = [:]
     private var chatToMessagesCache: [String : [MessagingChatMessage]] = [:]
-    
+    private var listenerHolders: [MessagingListenerHolder] = []
+
     init(apiService: MessagingAPIServiceProtocol,
          webSocketsService: MessagingWebSocketsServiceProtocol,
          storageProtocol: MessagingStorageServiceProtocol) {
@@ -41,7 +42,9 @@ extension MessagingService: MessagingServiceProtocol {
         walletsToChatsCache[cacheId] = chats
         setupSocketConnection(domain: domain)
         
-        return chats.map { $0.displayInfo }
+        let chatsDisplayInfo = chats.map { $0.displayInfo }
+        notifyListenersChangedDataType(.chats(chatsDisplayInfo, isRequests: false, wallet: wallet))
+        return chatsDisplayInfo
     }
     
     func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
@@ -54,7 +57,10 @@ extension MessagingService: MessagingServiceProtocol {
         }
         let chats = try await apiService.getChatRequestsForWallet(wallet, page: page, limit: limit)
         walletsToChatRequestsCache[cacheId] = chats
-        return chats.map { $0.displayInfo }
+        
+        let chatsDisplayInfo = chats.map { $0.displayInfo }
+        notifyListenersChangedDataType(.chats(chatsDisplayInfo, isRequests: true, wallet: wallet))
+        return chatsDisplayInfo
     }
 
     // Fetch limit is 30 max
@@ -68,6 +74,7 @@ extension MessagingService: MessagingServiceProtocol {
         let messages = try await apiService.getMessagesForChat(chat, fetchLimit: fetchLimit)
         chatToMessagesCache[cacheId] = messages
 
+        notifyMessagesChanges(chatId: cacheId)
         return messages.map { $0.displayInfo }
     }
     
@@ -96,6 +103,18 @@ extension MessagingService: MessagingServiceProtocol {
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws {
         let chat = try getMessagingChatFor(displayInfo: chat)
         try await apiService.makeChatRequest(chat, approved: approved)
+        // TODO: - Reload chats list?
+    }
+    
+    // Listeners
+    func addListener(_ listener: MessagingServiceListener) {
+        if !listenerHolders.contains(where: { $0.listener === listener }) {
+            listenerHolders.append(.init(listener: listener))
+        }
+    }
+    
+    func removeListener(_ listener: MessagingServiceListener) {
+        listenerHolders.removeAll(where: { $0.listener == nil || $0.listener === listener })
     }
 }
 
@@ -112,21 +131,21 @@ private extension MessagingService {
                          messageType: MessagingChatMessageDisplayType,
                          in chat: MessagingChat) {
         Task {
-            let cacheId = chat.displayInfo.id
+            let chatId = chat.displayInfo.id
             do {
                 let sentMessage = try await apiService.sendMessage(messageType, in: chat)
                 replaceCacheMessage(message,
                                     with: sentMessage,
-                                    cacheId: cacheId)
+                                    cacheId: chatId)
             } catch {
                 var failedMessage = message
                 failedMessage.displayInfo.deliveryState = .failedToSend
                 replaceCacheMessage(message,
                                     with: failedMessage,
-                                    cacheId: cacheId)
+                                    cacheId: chatId)
             }
             
-            // TODO: - Notify listeners
+            notifyMessagesChanges(chatId: chatId)
         }
     }
     
@@ -162,6 +181,17 @@ private extension MessagingService {
             return
         case .chatReceivedMessage:
             return
+        }
+    }
+    
+    func notifyMessagesChanges(chatId: String) {
+        let messages = (chatToMessagesCache[chatId] ?? []).map({ $0.displayInfo })
+        notifyListenersChangedDataType(.messages(messages, chatId: chatId))
+    }
+    
+    func notifyListenersChangedDataType(_ messagingDataType: MessagingDataType) {
+        listenerHolders.forEach { holder in
+            holder.listener?.messagingDataTypeDidUpdated(messagingDataType)
         }
     }
 }

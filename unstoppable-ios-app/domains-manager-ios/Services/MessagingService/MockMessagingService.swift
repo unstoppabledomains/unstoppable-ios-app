@@ -51,6 +51,8 @@ extension MockMessagingService: MessagingServiceProtocol {
     }
     
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
+    func addListener(_ listener: MessagingServiceListener) {}
+    func removeListener(_ listener: MessagingServiceListener) {}
 }
 
 // MARK: - Private methods
