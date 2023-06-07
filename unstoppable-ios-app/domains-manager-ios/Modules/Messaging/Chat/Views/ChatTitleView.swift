@@ -54,6 +54,8 @@ extension ChatTitleView {
         switch titleType {
         case .domainName(let domainName):
             setWithDomainName(domainName)
+        case .walletAddress(let walletAddress):
+            setWithWalletAddress(walletAddress)
         }
         setNeedsLayout()
         layoutIfNeeded()
@@ -82,6 +84,11 @@ private extension ChatTitleView {
                 setIconWithInitialsFor(name: domainName)
             }
         }
+    }
+    
+    func setWithWalletAddress(_ walletAddress: HexAddress) {
+        setTitle(walletAddress.walletAddressTruncated)
+        iconImageView.image = nil // TODO: - Update when design is ready
     }
     
     func setTitle(_ title: String) {
@@ -128,5 +135,6 @@ private extension ChatTitleView {
 extension ChatTitleView {
     enum TitleType {
         case domainName(_ domainName: DomainName)
+        case walletAddress(_ walletAddress: HexAddress)
     }
 }

@@ -31,6 +31,7 @@ final class ChatViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
+    override var isObservingKeyboard: Bool { true }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,6 +53,10 @@ final class ChatViewController: BaseViewController {
                 self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
             }
         }
+    }
+    
+    override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
+        scrollToTheBottom(animated: true)
     }
 }
 
@@ -240,6 +245,7 @@ extension ChatViewController {
     }
     
     struct TextMessageUIConfiguration: Hashable {
-        let message: ChatTextMessage
+        let message: MessagingChatMessageDisplayInfo
+        let textMessageDisplayInfo: MessagingChatMessageTextTypeDisplayInfo
     }
 }

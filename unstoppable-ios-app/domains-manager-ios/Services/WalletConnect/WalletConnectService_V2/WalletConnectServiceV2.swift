@@ -136,7 +136,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     var sanitizedClientId: String?
 
     static let supportedNamespace = "eip155"
-    static let supportedReferences: Set<String> = Set(UnsConfigManager.blockchainNamesMapForClient.map({String($0.key)}))
+    static let supportedReferences: Set<String> = Set(BlockchainNetwork.allCases.map({ String($0.id) }))
     
     var appDisconnectedCallback: WCAppDisconnectedCallback?
     var willHandleRequestCallback: EmptyCallback?

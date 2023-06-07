@@ -96,7 +96,6 @@ struct NetworkConfig {
     static func coinsResolverURL(version: String) -> String {
         "https://" + migratedEndpoint + "/uns_resolver_keys.json?tag=\(version)"
     }
-    
 }
 
 

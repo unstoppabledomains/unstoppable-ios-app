@@ -14,7 +14,7 @@ final class ChatTextCell: UICollectionViewCell {
     @IBOutlet private weak var timeLabel: UILabel!
     
     private var textViewSideConstraints: [NSLayoutConstraint] = []
-    private var sender: ChatSender?
+    private var sender: MessagingChatSender?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -32,9 +32,9 @@ final class ChatTextCell: UICollectionViewCell {
         super.layoutSubviews()
         
         switch sender {
-        case .user, .none:
+        case .thisUser, .none:
             containerView.layer.shadowPath = nil
-        case .friend:
+        case .otherUser:
             containerView.applyFigmaShadow(style: .xSmall)
         }
     }
@@ -45,27 +45,27 @@ final class ChatTextCell: UICollectionViewCell {
 extension ChatTextCell {
     func setWith(configuration: ChatViewController.TextMessageUIConfiguration) {
         let textMessage = configuration.message
-        let messageColor: UIColor = textMessage.sender == .user ? .white : .foregroundDefault
+        let messageColor: UIColor = textMessage.senderType.isThisUser ? .white : .foregroundDefault
         
-        messageTextView.setAttributedTextWith(text: textMessage.text,
+        messageTextView.setAttributedTextWith(text: configuration.textMessageDisplayInfo.text,
                                               font: .currentFont(withSize: 16, weight: .regular),
                                               textColor: messageColor,
                                               lineHeight: 24)
         
-        let timeColor: UIColor = textMessage.sender == .user ? .foregroundOnEmphasisOpacity : .foregroundSecondary
+        let timeColor: UIColor = textMessage.senderType.isThisUser ? .foregroundOnEmphasisOpacity : .foregroundSecondary
         let formatterTime = MessageDateFormatter.formatMessageDate(textMessage.time)
         timeLabel.setAttributedTextWith(text: formatterTime,
                                         font: .currentFont(withSize: 12, weight: .regular),
                                         textColor: timeColor,
                                         lineHeight: 16)
         
-        guard sender != textMessage.sender else {
+        guard sender != textMessage.senderType else {
             return }
         
         self.removeConstraints(textViewSideConstraints)
         let leadingConstraint: NSLayoutConstraint
         let trailingConstraint: NSLayoutConstraint
-        if textMessage.sender == .user {
+        if textMessage.senderType.isThisUser {
             leadingConstraint = containerView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 24)
             trailingConstraint = trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 8)
             containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
@@ -74,9 +74,9 @@ extension ChatTextCell {
             trailingConstraint = trailingAnchor.constraint(greaterThanOrEqualTo: containerView.trailingAnchor, constant: 24)
             containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
         }
-        setBubbleUI(sender: textMessage.sender)
+        setBubbleUI(sender: textMessage.senderType)
         
-        self.sender = textMessage.sender
+        self.sender = textMessage.senderType
         textViewSideConstraints = [leadingConstraint, trailingConstraint]
         NSLayoutConstraint.activate(textViewSideConstraints)
     }
@@ -84,8 +84,8 @@ extension ChatTextCell {
 
 // MARK: - Private methods
 private extension ChatTextCell {
-    func setBubbleUI(sender: ChatSender?) {
-        if sender == .user {
+    func setBubbleUI(sender: MessagingChatSender?) {
+        if sender?.isThisUser == true {
             containerView.backgroundColor = .backgroundAccentEmphasis
         } else {
             containerView.backgroundColor = .backgroundOverlay

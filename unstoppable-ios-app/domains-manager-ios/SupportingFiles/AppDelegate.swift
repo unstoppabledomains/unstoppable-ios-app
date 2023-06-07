@@ -7,6 +7,7 @@
 
 import UIKit
 import Bugsnag
+import Push
 
 protocol AppDelegateProtocol {
     var appContext: AppContextProtocol { get }
@@ -30,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
-        Debugger.setAllowedTopicsSet(.debugDefault)
+        Debugger.setAllowedTopicsSet(.all)
         #endif
         
         setVersionAndBuildNumber()
@@ -43,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         StripeService.shared.setup()
         
         appContext.analyticsService.log(event: .appLaunch, withParameters: nil)
-
+        
         return true
     }
 

@@ -9,61 +9,79 @@ import Foundation
 
 final class MockMessagingService {
    
-    private var domainsChannels: [DomainName: [ChatChannelType]] = [:]
-    private var channelsMessages: [ChatChannelType : [ChatMessageType]] = [:]
+    private var domainsChats: [DomainName: [MessagingChatDisplayInfo]] = [:]
+    private var chatsMessages: [MessagingChatDisplayInfo : [MessagingChatMessageDisplayInfo]] = [:]
     
 }
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
-    func getChannelsForDomain(_ domain: DomainDisplayInfo) async -> [ChatChannelType] {
-        if let cachedChannels = domainsChannels[domain.name] {
-            return cachedChannels
+    func getChatsListForDomain(_ domain: DomainDisplayInfo,
+                               page: Int,
+                               limit: Int) async throws -> [MessagingChatDisplayInfo] {
+        if let cachedChats = domainsChats[domain.name] {
+            return cachedChats
         }
         
-        let channels = createMockChannelsFor(domain: domain).sorted(by: { $0.lastMessage?.time ?? Date() > $1.lastMessage?.time ?? Date() })
-        domainsChannels[domain.name] = channels
-        return channels
+        let chats = createMockChatsFor(domain: domain).sorted(by: { $0.lastMessage?.time ?? Date() > $1.lastMessage?.time ?? Date() })
+        domainsChats[domain.name] = chats
+        return chats
     }
     
-    func getNumberOfUnreadMessagesInChannelsForDomain(_ domain: DomainDisplayInfo) async -> Int {
-        let channels = await getChannelsForDomain(domain)
-        let unreadMessagesSum = channels.reduce(0, { $0 + $1.unreadMessagesCount })
-        
-        return unreadMessagesSum
+    func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
+                                  page: Int,
+                                  limit: Int) async throws -> [MessagingChatDisplayInfo] {
+        []
     }
-    
-    func getMessagesForChannel(_ channel: ChatChannelType) -> [ChatMessageType] {
-        if let cachedMessages = channelsMessages[channel] {
+     
+    func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
+                            fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        if let cachedMessages = chatsMessages[chat] {
             return cachedMessages
         }
         
-        let messages = createMockMessages().sorted(by: { $0.time < $1.time })
-        channelsMessages[channel] = messages
+        let messages = createMockMessages(chatId: chat.id).sorted(by: { $0.time < $1.time })
+        chatsMessages[chat] = messages
         return messages
     }
+    
+    func sendMessage(_ messageType: MessagingChatMessageDisplayType,
+                     in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo {
+        throw NSError()
+    }
+    
+    func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
 }
 
 // MARK: - Private methods
 private extension MockMessagingService {
-    func createMockChannelsFor(domain: DomainDisplayInfo) -> [ChatChannelType] {
-        var channels = [ChatChannelType]()
+    func createMockChatsFor(domain: DomainDisplayInfo) -> [MessagingChatDisplayInfo] {
+        var chats = [MessagingChatDisplayInfo]()
         var mockDomainChatInfos = getMockDomainChatInfos()
-        let numberOfChannelsToTake = mockDomainChatInfos.count // max(1, arc4random_uniform(UInt32(mockDomainChatInfos.count)))
+        let numberOfChatsToTake = mockDomainChatInfos.count // max(1, arc4random_uniform(UInt32(mockDomainChatInfos.count)))
         
-        for _ in 0..<numberOfChannelsToTake {
+        for _ in 0..<numberOfChatsToTake {
             if let randomChat = mockDomainChatInfos.randomElement() {
+                let chatId = UUID().uuidString
                 let sender = createRandomChatSender()
-                let newChannel = DomainChatChannel(avatarURL: URL(string: randomChat.imageURL),
-                                                   lastMessage: createMockLastMessageForChannelWithSender(sender),
-                                                   unreadMessagesCount: createMockChannelUnreadMessagesCount(),
-                                                   domainName: randomChat.domainName)
-                channels.append(.domain(channel: newChannel))
+                let avatarURL = URL(string: randomChat.imageURL)
+                let lastMessage = createMockLastMessageForChatWithSender(sender,
+                                                                            chatId: chatId)
+                let unreadMessagesCount = createMockChatUnreadMessagesCount()
+                let chat = MessagingChatDisplayInfo(id: chatId,
+                                                    thisUserDetails: sender.userDisplayInfo,
+                                                    avatarURL: avatarURL,
+                                                    type: .private(.init(otherUser: sender.userDisplayInfo)),
+                                                    unreadMessagesCount: unreadMessagesCount,
+                                                    isApproved: true,
+                                                    lastMessage: lastMessage)
+                
+                chats.append(chat)
                 mockDomainChatInfos.removeAll(where: { $0 == randomChat })
             }
         }
         
-        return channels
+        return chats
     }
     
     func getMockDomainChatInfos() -> [MockDomainChatInfo] {
@@ -77,39 +95,44 @@ private extension MockMessagingService {
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/misterfirst.x/3efb99b7-9d84-4037-b8b3-7bdd610cbb6b.png"),
          .init(domainName: "ryan.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
-         .init(domainName: "ryan.crypto2",
+         .init(domainName: "ryan2.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
-         .init(domainName: "ryan.crypto3",
+         .init(domainName: "ryan3.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
-         .init(domainName: "ryan.crypto4",
+         .init(domainName: "ryan4.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
-         .init(domainName: "ryan.crypto5",
+         .init(domainName: "ryan5.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
-         .init(domainName: "ryan.crypto6",
+         .init(domainName: "ryan6.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
-         .init(domainName: "ryan.crypto7",
+         .init(domainName: "ryan7.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
-         .init(domainName: "ryan.crypto8",
+         .init(domainName: "ryan8.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
-         .init(domainName: "ryan.crypto9",
+         .init(domainName: "ryan9.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png"),
-         .init(domainName: "ryan.crypto10",
+         .init(domainName: "ryan10.crypto",
                imageURL: "https://storage.googleapis.com/unstoppable-client-assets/images/domain/oleg.kuplin.wallet/ae428a7f-c4a1-450a-aab4-202b4603aef9.png")]
     }
     
-    func createRandomChatSender() -> ChatSender {
+    func createRandomChatSender() -> MessagingChatSender {
         let bools = [true, false]
-        
+        let info = MessagingChatUserDisplayInfo(wallet: "")
         if bools.randomElement() == true {
-            return .user
+            return .thisUser(info)
         }
-        return .friend
+        return .otherUser(info)
     }
     
-    func createMockLastMessageForChannelWithSender(_ sender: ChatSender) -> ChatMessageType {
-        .text(message: .init(sender: sender,
-                             time: createMockMessageDate(),
-                             text: mockLastMessageTexts.randomElement()!))
+    func createMockLastMessageForChatWithSender(_ sender: MessagingChatSender,
+                                                   chatId: String) -> MessagingChatMessageDisplayInfo {
+        .init(id: UUID().uuidString,
+              chatId: chatId,
+              senderType: sender,
+              time: createMockMessageDate(),
+              type: .text(.init(text: mockLastMessageTexts.randomElement()!)),
+              isRead: true,
+              deliveryState: .delivered)
     }
     
     struct MockDomainChatInfo: Hashable {
@@ -122,7 +145,7 @@ private extension MockMessagingService {
         return Date().addingTimeInterval(-Double(timePassed))
     }
     
-    func createMockChannelUnreadMessagesCount() -> Int {
+    func createMockChatUnreadMessagesCount() -> Int {
         Int(arc4random_uniform(10))
     }
     
@@ -134,20 +157,23 @@ private extension MockMessagingService {
         "It was nice talking to you. Let's continue this conversation another time"]
     }
     
-    func createMockMessages() -> [ChatMessageType] {
+    func createMockMessages(chatId: String) -> [MessagingChatMessageDisplayInfo] {
         let numberOfMessages = arc4random_uniform(40) + 1
         
-        var messages = [ChatMessageType]()
+        var messages = [MessagingChatMessageDisplayInfo]()
         
         for _ in 0..<numberOfMessages {
             let sender = createRandomChatSender()
             let time = createMockMessageDate()
             let text = mockLastMessageTexts.randomElement()!
-            let textMessage = ChatTextMessage(sender: sender,
-                                              time: time,
-                                              text: text)
-            let messageType = ChatMessageType.text(message: textMessage)
-            messages.append(messageType)
+            let message = MessagingChatMessageDisplayInfo(id: UUID().uuidString,
+                                                          chatId: chatId,
+                                                          senderType: sender,
+                                                          time: time,
+                                                          type: .text(.init(text: text)),
+                                                          isRead: true,
+                                                          deliveryState: .delivered)
+            messages.append(message)
         }
         
         return messages

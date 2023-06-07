@@ -18,6 +18,7 @@ final class ChatsListViewPresenter {
     private weak var view: ChatsListViewProtocol?
     private var domains: [DomainDisplayInfo] = []
     private var selectedDomain: DomainDisplayInfo?
+    private let fetchLimit: Int = 10
     
     init(view: ChatsListViewProtocol) {
         self.view = view
@@ -39,7 +40,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             selectedDomain = configuration.domain
             showData()
         case .channel(let configuration):
-            openChannel(configuration.channelType)
+            openChat(configuration.chat)
         }
     }
 }
@@ -48,40 +49,39 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
 private extension ChatsListViewPresenter {
     func showData() {
         Task {
-            await loadDomains()
-            var snapshot = ChatsListSnapshot()
-           
-            
-            guard let selectedDomain else { return }
-            
-            snapshot.appendSections([.domainsSelection])
-            for domain in domains {
-                let unreadMessagesCount = await appContext.messagingService.getNumberOfUnreadMessagesInChannelsForDomain(domain)
-                let item = ChatsListViewController.Item.domainSelection(configuration: .init(domain: domain,
-                                                                                             isSelected: domain.isSameEntity(selectedDomain),
-                                                                                             unreadMessagesCount: unreadMessagesCount))
-                snapshot.appendItems([item])
+            do {
+                await loadDomains()
+                var snapshot = ChatsListSnapshot()
+                
+                
+                guard let selectedDomain else { return }
+                
+                snapshot.appendSections([.domainsSelection])
+                
+                let chatsList = try await appContext.messagingService.getChatsListForDomain(selectedDomain,
+                                                                                           page: 1,
+                                                                                           limit: fetchLimit)
+                snapshot.appendSections([.channels])
+                snapshot.appendItems(chatsList.map({ ChatsListViewController.Item.channel(configuration: .init(chat: $0)) }))
+                
+                view?.applySnapshot(snapshot, animated: true)
+            } catch {
+                Debugger.printFailure(error.localizedDescription) // TODO: - Handle error
             }
-            
-            let channels = await appContext.messagingService.getChannelsForDomain(selectedDomain)
-            snapshot.appendSections([.channels])
-            snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channelType: $0)) }))
-            
-            view?.applySnapshot(snapshot, animated: true)
         }
     }
     
     func loadDomains() async {
         if domains.isEmpty {
-            domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-            selectedDomain = domains.first
+            domains = await appContext.dataAggregatorService.getDomainsDisplayInfo().filter({ $0.isSetForRR })
+            selectedDomain = domains.last
         }
     }
     
-    func openChannel(_ channelType: ChatChannelType) {
+    func openChat(_ chat: MessagingChatDisplayInfo) {
         guard let nav = view?.cNavigationController,
             let selectedDomain else { return }
         
-        UDRouter().showChatScreen(channelType: channelType, domain: selectedDomain, in: nav)
+        UDRouter().showChatScreen(chat: chat, domain: selectedDomain, in: nav)
     }
 }

@@ -47,11 +47,16 @@ extension Decodable {
     static func genericObjectFromData<T: Decodable>(_ data: Data,
                                                     using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                     dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) -> T? {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = keyDecodingStrategy
-        decoder.dateDecodingStrategy = dateDecodingStrategy
-        let object = try? decoder.decode(T.self, from: data)
-        return object
+        do {
+            let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = keyDecodingStrategy
+            decoder.dateDecodingStrategy = dateDecodingStrategy
+            let object = try decoder.decode(T.self, from: data)
+            return object
+        } catch {
+            Debugger.printInfo("Failed to parse \(self) with error \((error as NSError).userInfo)")
+            return nil
+        }
     }
     
 }
