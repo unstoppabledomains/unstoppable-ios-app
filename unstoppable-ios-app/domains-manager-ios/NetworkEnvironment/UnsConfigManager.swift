@@ -170,6 +170,19 @@ struct UnsConfigManager {
         }
     }
     
+    static func getBlockchainNetwork(for blockchainType: BlockchainType,
+                                     isTestNet: Bool) -> BlockchainNetwork? {
+        let environment: BlockchainEnvironment = isTestNet ? .testnet : .mainnet
+        switch blockchainType {
+        case .Ethereum:
+            return environment.l1Network
+        case .Matic:
+            return environment.l2Network
+        case .Zilliqa:
+            return nil
+        }
+    }
+    
     struct BlockchainConfigData: Equatable {
         let l1: BlockchainNetwork
         let l2: BlockchainNetwork
