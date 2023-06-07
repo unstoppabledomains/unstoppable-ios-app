@@ -88,7 +88,7 @@ private extension ChatViewPresenter {
             let messages = groupedMessages[date] ?? []
             let title = MessageDateFormatter.formatMessagesSectionDate(date)
             snapshot.appendSections([.messages(title: title)])
-            snapshot.appendItems(messages.map({ createSnapshotItemFrom(message: $0) }))
+            snapshot.appendItems(messages.sorted(by: { $0.time < $1.time }).map({ createSnapshotItemFrom(message: $0) }))
         }
         
         view?.applySnapshot(snapshot, animated: animated, completion: completion)

@@ -16,11 +16,43 @@ import WalletConnectEcho
 
 import Starscream
 
-extension WebSocket: WebSocketConnecting { }
+final class WCWebSocket: WebSocket, WebSocketConnecting {
+    var isConnected: Bool = false
+    var onConnect: (() -> Void)?
+    var onDisconnect: ((Error?) -> Void)?
+    var onText: ((String) -> Void)?
+    
+    convenience init(url: URL) {
+        let req = URLRequest(url: url)
+        self.init(request: req)
+        
+        self.onEvent = { [weak self] event in
+            switch event {
+            case .connected:
+                self?.isConnected = true
+                self?.onConnect?()
+            case .error:
+                return
+            case .cancelled:
+                self?.isConnected = false
+                self?.onDisconnect?(nil)
+            case .disconnected:
+                self?.isConnected = false
+                self?.onDisconnect?(nil)
+            case .text(let msg):
+                self?.onText?(msg)
+            case .binary:
+                return
+            case _:
+                break
+            }
+        }
+    }
+}
 
 struct SocketFactory: WebSocketFactory {
     func create(with url: URL) -> WebSocketConnecting {
-        return WebSocket(url: url)
+        return WCWebSocket(url: url)
     }
 }
 
