@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="WOE-6U-Mk7" customClass="UDSegmentedControl" customModule="domains_manager_ios" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="84"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="74"/>
                         <constraints>
                             <constraint firstAttribute="height" priority="999" constant="36" id="WRM-7f-1bd"/>
                         </constraints>
@@ -38,7 +38,7 @@
                 <constraint firstAttribute="trailing" secondItem="WOE-6U-Mk7" secondAttribute="trailing" id="PQ8-Xy-Puc"/>
                 <constraint firstItem="WOE-6U-Mk7" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="YsM-LW-ofQ"/>
                 <constraint firstItem="WOE-6U-Mk7" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="ebE-K2-EYN"/>
-                <constraint firstAttribute="bottom" secondItem="WOE-6U-Mk7" secondAttribute="bottom" id="zpi-Qi-f5H"/>
+                <constraint firstAttribute="bottom" secondItem="WOE-6U-Mk7" secondAttribute="bottom" constant="10" id="zpi-Qi-f5H"/>
             </constraints>
             <size key="customSize" width="414" height="83"/>
             <connections>
