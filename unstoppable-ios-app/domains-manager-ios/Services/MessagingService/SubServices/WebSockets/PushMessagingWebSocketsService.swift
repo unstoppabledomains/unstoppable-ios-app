@@ -32,6 +32,7 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
         let connection = try buildConnectionFor(domain: domain)
         let socket = connection.defaultSocket
         socket.onAny { [weak self] event in
+            print("LOGO: - Any event: \(event)")
             guard let pushEvent = Events(rawValue: event.event) else {
                 Debugger.printWarning("Unknowned Push socket event: \(event.event)")
                 return

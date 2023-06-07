@@ -168,5 +168,3 @@ private extension ChatViewPresenter {
         }
     }
 }
-
-var FAIL_COUNTER = 0

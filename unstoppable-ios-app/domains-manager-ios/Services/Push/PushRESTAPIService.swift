@@ -41,6 +41,12 @@ private extension PushRESTAPIService.URLSList {
     static func GET_INBOX_URL(userEIP: String) -> String {
         GET_USER_URL.appendingURLPathComponents(userEIP, "feeds")
     }
+    static func GET_CHANNELS_URL(userEIP: String) -> String {
+        GET_USER_URL.appendingURLPathComponents(userEIP, "subscriptions")
+    }
+    static func GET_CHANNEL_DETAILS_URL(channelEIP: String) -> String {
+        V1_URL.appendingURLPathComponents("channels", channelEIP)
+    }
 }
 
 // MARK: - Open methods
@@ -49,7 +55,7 @@ extension PushRESTAPIService {
                   page: Int,
                   limit: Int,
                   isRequests: Bool) async throws -> [PushChat] {
-        let userEIP = createEIPFormatFor(wallet: wallet)
+        let userEIP = createEIPFormatFor(address: wallet)
         let queryComponents = ["page" : String(page),
                                "limit" : String(limit)]
         if isRequests {
@@ -77,25 +83,31 @@ extension PushRESTAPIService {
         return try await getDecodableObjectWith(request: request)
     }
     
-    func getNotificationsInbox(for wallet: String,
-                               page: Int,
-                               limit: Int,
-                               isSpam: Bool) async throws -> [PushInboxNotification] {
-        let userEIP = createEIPFormatFor(wallet: wallet)
-        let queryComponents = ["page" : String(page),
-                               "limit" : String(limit),
-                               "spam": String(isSpam)]
-        let urlString = URLSList.GET_INBOX_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+    func getSubscribedChannelsIds(for wallet: String) async throws -> [String] {
+        let userEIP = createEIPFormatFor(address: wallet)
+        let urlString = URLSList.GET_CHANNELS_URL(userEIP: userEIP)
         let request = try apiRequestWith(urlString: urlString,
                                          method: .get)
+        let response: ChannelSubscriptionsResponse = try await getDecodableObjectWith(request: request)
+       
         
-        let response: InboxResponse = try await getDecodableObjectWith(request: request)
-        return response.feeds
+        return response.subscriptions.map({ $0.channel })
     }
     
+    func getChannelDetails(for channelId: String) async throws -> PushChannel {
+        let userEIP = createEIPFormatFor(address: channelId, chain: 1)
+        let urlString = URLSList.GET_CHANNEL_DETAILS_URL(channelEIP: userEIP)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
+        let response: PushChannel = try await getDecodableObjectWith(request: request)
+        
+        return response
+    }
+    
+
     func searchForChannels(page: Int,
-                               limit: Int,
-                               isSpam: Bool,
+                           limit: Int,
+                           isSpam: Bool,
                            query: String) async throws -> [PushChannel] {
         let queryComponents = ["page" : String(page),
                                "limit" : String(limit),
@@ -108,8 +120,24 @@ extension PushRESTAPIService {
         return response.channels
     }
     
+    func getNotificationsInbox(for wallet: String,
+                               page: Int,
+                               limit: Int,
+                               isSpam: Bool) async throws -> [PushInboxNotification] {
+        let userEIP = createEIPFormatFor(address: wallet)
+        let queryComponents = ["page" : String(page),
+                               "limit" : String(limit),
+                               "spam": String(isSpam)]
+        let urlString = URLSList.GET_INBOX_URL(userEIP: userEIP).appendingURLQueryComponents(queryComponents)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
+        
+        let response: InboxResponse = try await getDecodableObjectWith(request: request)
+        return response.feeds
+    }
+    
     func searchForUsers(for wallet: String) async throws -> [PushSearchUser] {
-        let userEIP = createEIPFormatFor(wallet: wallet)
+        let userEIP = createEIPFormatFor(address: wallet)
         let queryComponents = ["caip10" : userEIP]
         let urlString = URLSList.SEARCH_USERS_URL.appendingURLQueryComponents(queryComponents)
 
@@ -150,8 +178,11 @@ private extension PushRESTAPIService {
         return APIRequest(url: url, headers: headers, body: bodyString, method: method)
     }
     
-    func createEIPFormatFor(wallet: HexAddress) -> String {
-        return "eip155:\(wallet)"
+    func createEIPFormatFor(address: HexAddress, chain: Int? = nil) -> String {
+        if let chain {
+            return "eip155:\(chain):\(address)"
+        }
+        return "eip155:\(address)"
     }
 }
 
@@ -176,7 +207,13 @@ private extension PushRESTAPIService {
         let requests: [PushChat]
     }
     
-  
+    struct ChannelSubscriptionsResponse: Codable {
+        let subscriptions: [ChannelSubscriptionHolder]
+    }
+    
+    struct ChannelSubscriptionHolder: Codable {
+        let channel: String
+    }
     
     struct ChannelsSearchResponse: Codable {
         let channels: [PushChannel]

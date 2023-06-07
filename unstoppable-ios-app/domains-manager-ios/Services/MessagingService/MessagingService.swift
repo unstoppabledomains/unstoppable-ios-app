@@ -30,6 +30,7 @@ final class MessagingService {
 
 // MARK: - Open methods
 extension MessagingService: MessagingServiceProtocol {
+    // Chats list
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
                                page: Int, // Starting from 1
                                limit: Int) async throws -> [MessagingChatDisplayInfo] {
@@ -63,6 +64,7 @@ extension MessagingService: MessagingServiceProtocol {
         return chatsDisplayInfo
     }
 
+    // Messages
     // Fetch limit is 30 max
     func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
@@ -132,6 +134,12 @@ extension MessagingService: MessagingServiceProtocol {
         }
     }
     
+    // Channels
+    func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] {
+        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
+        return try await apiService.getSubscribedChannelsFor(domain: domain)
+    }
+    
     // Listeners
     func addListener(_ listener: MessagingServiceListener) {
         if !listenerHolders.contains(where: { $0.listener === listener }) {
@@ -163,10 +171,6 @@ private extension MessagingService {
         Task {
             let chatId = chat.displayInfo.id
             do {
-                if FAIL_COUNTER == 0 {
-                    FAIL_COUNTER += 1
-                    throw NSError()
-                }
                 let sentMessage = try await apiService.sendMessage(messageType, in: chat)
                 replaceCacheMessage(message,
                                     with: sentMessage,

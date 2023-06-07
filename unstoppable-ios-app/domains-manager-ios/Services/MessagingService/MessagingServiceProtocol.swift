@@ -9,12 +9,15 @@ import Foundation
 
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
+    // Chats list
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
                               page: Int,
                               limit: Int) async throws -> [MessagingChatDisplayInfo]
     func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChatDisplayInfo]
+    
+    // Messages
     func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
@@ -22,6 +25,9 @@ protocol MessagingServiceProtocol {
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
+    
+    // Channels
+    func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel]
     
     // Listeners
     func addListener(_ listener: MessagingServiceListener)

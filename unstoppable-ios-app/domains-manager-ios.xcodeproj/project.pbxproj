@@ -503,6 +503,10 @@
 		C60686392A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */; };
 		C606863A2A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */; };
 		C606863B2A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */; };
+		C606863D2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */; };
+		C606863E2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */; };
+		C606863F2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */; };
+		C60686402A30D3D300927396 /* MessagingNewsChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */; };
 		C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73D2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
 		C606B73E2863545000DC562B /* MintingDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C606B73B2863545000DC562B /* MintingDomainsStorage.swift */; };
@@ -3904,6 +3908,7 @@
 		C60610E929A756D3005DC0D5 /* WalletConnectV1SignTransactionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectV1SignTransactionHandler.swift; sourceTree = "<group>"; };
 		C60610FB29AC9983005DC0D5 /* UIButtonWithExtendedTappableArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIButtonWithExtendedTappableArea.swift; sourceTree = "<group>"; };
 		C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FABRaisedTertiaryButton.swift; sourceTree = "<group>"; };
+		C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingNewsChannel.swift; sourceTree = "<group>"; };
 		C606B73B2863545000DC562B /* MintingDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MintingDomainsStorage.swift; sourceTree = "<group>"; };
 		C606B740286474E000DC562B /* WalletWithInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfo.swift; sourceTree = "<group>"; };
 		C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletWithInfoAndBalance.swift; sourceTree = "<group>"; };
@@ -6328,6 +6333,7 @@
 				C652721A2A149E41001A084C /* MessageDateFormatter.swift */,
 				C652727F2A165A3D001A084C /* MessagingChatSender.swift */,
 				C6F9FBD32A25C4ED00102F81 /* MessagingChatUserDisplayInfo.swift */,
+				C606863C2A30D3D300927396 /* MessagingNewsChannel.swift */,
 				C65272142A14937A001A084C /* Chats */,
 				C65272132A149370001A084C /* Messages */,
 			);
@@ -9692,6 +9698,7 @@
 				C6E04152295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift in Sources */,
 				C666E0C329CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
 				C66FCD1328450A8F009B9525 /* GIFAnimationImageView.swift in Sources */,
+				C606863D2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */,
 				C671E3C229014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift in Sources */,
 				C65272662A15DEB9001A084C /* KeyboardService.swift in Sources */,
 				C6A2D51E284DBDF000327C47 /* QRScannerSightView.swift in Sources */,
@@ -10079,6 +10086,7 @@
 				C63A350E28F0071B0057D34B /* DomainProfileViewPresenter.swift in Sources */,
 				C63A352328F016780057D34B /* DomainProfileSectionType.swift in Sources */,
 				29EDB62028FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
+				C606863F2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */,
 				C6BEEF3729C30D5C000489B9 /* GoogleIDTokenUtilities.swift in Sources */,
 				C664310328D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */,
 				29150FBD2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */,
@@ -10812,6 +10820,7 @@
 				C63A350F28F0071B0057D34B /* DomainProfileViewPresenter.swift in Sources */,
 				C63A352428F016780057D34B /* DomainProfileSectionType.swift in Sources */,
 				29EDB62128FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
+				C60686402A30D3D300927396 /* MessagingNewsChannel.swift in Sources */,
 				C6BEEF3829C30D5C000489B9 /* GoogleIDTokenUtilities.swift in Sources */,
 				C664310428D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */,
 				29150FBE2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */,
@@ -11949,6 +11958,7 @@
 				C6E04153295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift in Sources */,
 				C666E0C429CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
 				C6A2D51F284DBDF000327C47 /* QRScannerSightView.swift in Sources */,
+				C606863E2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */,
 				C671E3C329014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift in Sources */,
 				C65272672A15DEB9001A084C /* KeyboardService.swift in Sources */,
 				C61C50062820FC5E00D1110A /* UISearchBar.swift in Sources */,

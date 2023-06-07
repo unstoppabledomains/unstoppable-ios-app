@@ -130,6 +130,27 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                           env: env)
         _ = try await Push.PushChat.approve(approveOptions)
     }
+    
+    func getSubscribedChannelsFor(domain: DomainItem) async throws -> [MessagingNewsChannel] {
+        let wallet = try await domain.getAddress()
+        let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: wallet)
+        guard !subscribedChannelsIds.isEmpty else { return [] }
+        
+        var channels = [PushChannel]()
+        try await withThrowingTaskGroup(of: PushChannel.self, body: { group in
+            for id in subscribedChannelsIds {
+                group.addTask {
+                    try await self.pushRESTService.getChannelDetails(for: id)
+                }
+            }
+            
+            for try await channel in group {
+                channels.append(channel)
+            }
+        })
+        
+        return channels.map({ convertPushChannelToMessagingChannel($0) })
+    }
 }
 
 // MARK: - Private methods
@@ -258,6 +279,20 @@ private extension PushMessagingAPIService {
         default:
             return nil // Not supported for now
         }
+    }
+    
+    func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel) -> MessagingNewsChannel {
+        MessagingNewsChannel(id: String(pushChannel.id),
+                             name: pushChannel.name,
+                             info: pushChannel.info,
+                             url: pushChannel.url,
+                             icon: pushChannel.icon,
+                             verifiedStatus: pushChannel.verified_status,
+                             activationStatus: pushChannel.activation_status,
+                             counter: pushChannel.counter,
+                             blocked: pushChannel.blocked,
+                             isAliasVerified: pushChannel.is_alias_verified,
+                             subscriberCount: pushChannel.subscriber_count)
     }
     
     func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {

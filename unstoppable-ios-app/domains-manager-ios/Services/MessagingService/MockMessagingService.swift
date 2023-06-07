@@ -53,6 +53,9 @@ extension MockMessagingService: MessagingServiceProtocol {
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws { }
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) { }
+    func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
+
+    
     func addListener(_ listener: MessagingServiceListener) {}
     func removeListener(_ listener: MessagingServiceListener) {}
 }

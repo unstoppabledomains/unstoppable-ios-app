@@ -19,6 +19,7 @@ protocol MessagingAPIServiceProtocol {
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat) async throws -> MessagingChatMessage
     func makeChatRequest(_ chat: MessagingChat, approved: Bool) async throws
+    func getSubscribedChannelsFor(domain: DomainItem) async throws -> [MessagingNewsChannel]
 }
 
 
