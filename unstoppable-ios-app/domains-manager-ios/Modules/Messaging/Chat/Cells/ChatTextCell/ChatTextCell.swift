@@ -12,6 +12,7 @@ final class ChatTextCell: UICollectionViewCell {
     @IBOutlet private weak var containerView: UIView!
     @IBOutlet private weak var messageTextView: UITextView!
     @IBOutlet private weak var timeLabel: UILabel!
+    @IBOutlet private weak var timeStackView: UIStackView!
     
     private var textViewSideConstraints: [NSLayoutConstraint] = []
     private var sender: MessagingChatSender?
@@ -52,7 +53,7 @@ extension ChatTextCell {
                                               textColor: messageColor,
                                               lineHeight: 24)
         
-        let timeColor: UIColor = textMessage.senderType.isThisUser ? .foregroundOnEmphasisOpacity : .foregroundSecondary
+        let timeColor: UIColor = .foregroundSecondary
         let formatterTime = MessageDateFormatter.formatMessageDate(textMessage.time)
         timeLabel.setAttributedTextWith(text: formatterTime,
                                         font: .currentFont(withSize: 12, weight: .regular),
@@ -69,10 +70,12 @@ extension ChatTextCell {
             leadingConstraint = containerView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 24)
             trailingConstraint = trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 8)
             containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
+            timeStackView.alignment = .trailing
         } else {
             leadingConstraint = containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
             trailingConstraint = trailingAnchor.constraint(greaterThanOrEqualTo: containerView.trailingAnchor, constant: 24)
             containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+            timeStackView.alignment = .leading
         }
         setBubbleUI(sender: textMessage.senderType)
         
