@@ -11,8 +11,8 @@ final class UDSegmentedControl: UISegmentedControl {
     
     private let segmentInset: CGFloat = 6
     private let segmentImage: UIImage? = UIImage(color: .white)
-    private var badgeViewDetails: [Int: BadgeViewDetails] = [:]
-
+    static let segmentFont: UIFont = .currentFont(withSize: 14, weight: .semibold)
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -40,71 +40,28 @@ final class UDSegmentedControl: UISegmentedControl {
             foregroundImageView.layer.masksToBounds = true
             foregroundImageView.layer.cornerRadius = foregroundImageView.bounds.height / 2
         }
-        
-        DispatchQueue.main.async {
-            self.setupBadges()
-        }
     }
-    
 }
 
 // MARK: - Open methods
 extension UDSegmentedControl {
-    func setBadgeValue(_ badge: Int, forSegment segment: Int) {
-//        if badge > 0 {
-//            if let badgeViewDetails = badgeViewDetails[segment] {
-//                badgeViewDetails.badgeView.setUnreadMessagesCount(badge)
-//            } else {
-//                let badgeView = UnreadMessagesBadgeView()
-//                addSubview(badgeView)
-//                badgeView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-//                let leadingConstraint = badgeView.leadingAnchor.constraint(equalTo: leadingAnchor)
-//                leadingConstraint.isActive = true
-//
-//                let badgeDetails = BadgeViewDetails(badgeView: badgeView,
-//                                                    leadingConstraint: leadingConstraint)
-//                self.badgeViewDetails[segment] = badgeDetails
-//            }
-//        } else {
-//            badgeViewDetails[segment]?.badgeView.removeFromSuperview()
-//        }
-    }
+  
 }
 
 // MARK: - Setup methods
 private extension UDSegmentedControl {
     func setup() {
-        let font: UIFont = .currentFont(withSize: 14, weight: .semibold)
+        let font: UIFont = UDSegmentedControl.segmentFont
         setTitleTextAttributes([.font: font],
                                for: .normal)
         setTitleTextAttributes([.font: font,
                                 .foregroundColor: UIColor.black],
                                for: .selected)
+        addTarget(self, action: #selector(segmentValueChanged), for: .valueChanged)
     }
     
-    func setupBadges() {
-        if !self.badgeViewDetails.isEmpty {
-            let labels = self.allSubviewsOfType(UILabel.self)
-            self.badgeViewDetails.forEach { (segment, badgeViewDetails) in
-                if let title = self.titleForSegment(at: segment),
-                   let segmentLabel = labels.first(where: { $0.text == title }) {
-                    let segmentLabelFrame = self.convert(segmentLabel.frame, from: segmentLabel)
-                    let leadingSpace = segmentLabelFrame.maxX + 8
-                    if badgeViewDetails.leadingConstraint.constant != leadingSpace {
-                        badgeViewDetails.leadingConstraint.constant = leadingSpace
-                    }
-                    self.bringSubviewToFront(badgeViewDetails.badgeView)
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Private methods
-private extension UDSegmentedControl {
-    struct BadgeViewDetails {
-        let badgeView: UnreadMessagesBadgeView
-        let leadingConstraint: NSLayoutConstraint
+    @objc func segmentValueChanged() {
+        UDVibration.buttonTap.vibrate()
     }
 }
 

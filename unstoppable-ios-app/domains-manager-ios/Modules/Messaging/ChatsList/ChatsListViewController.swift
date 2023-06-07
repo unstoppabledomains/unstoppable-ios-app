@@ -68,14 +68,26 @@ extension ChatsListViewController: UICollectionViewDelegate {
 
 // MARK: - Private functions
 private extension ChatsListViewController {
-
+    @objc func newMessageButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+    }
 }
 
 // MARK: - Setup functions
 private extension ChatsListViewController {
     func setup() {
+        setupNavigation()
         setupCollectionView()
         title = String.Constants.chats.localized()
+    }
+    
+    func setupNavigation() {
+        let newMessageButton = UIBarButtonItem(image: .newMessageIcon,
+                                               style: .plain,
+                                               target: self,
+                                               action: #selector(newMessageButtonPressed))
+        newMessageButton.tintColor = .foregroundDefault
+        navigationItem.rightBarButtonItem = newMessageButton
     }
     
     func setupCollectionView() {

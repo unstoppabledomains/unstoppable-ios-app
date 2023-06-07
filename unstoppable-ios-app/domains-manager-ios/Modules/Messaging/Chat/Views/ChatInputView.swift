@@ -32,7 +32,7 @@ final class ChatInputView: UIView {
     private let trailingHorizontalOffset: CGFloat = 16
     private let textViewVerticalOffset: CGFloat = 8
     private let textViewToSendButtonOffset: CGFloat = 8
-    private let maxTextViewHeight: CGFloat = 220
+    private let maxTextViewHeight: CGFloat = 208
     private var keyboardHeight: CGFloat? = nil
     private var movedKeyboardFrame: CGRect = .zero
     private var bottomInset: CGFloat { superview?.safeAreaInsets.bottom ?? 0 }

@@ -35,6 +35,10 @@ extension UnreadMessagesBadgeView {
                                            textColor: .white,
                                            alignment: .center)
     }
+    
+    func setStyle(_ style: Style) {
+        backgroundColor = style.backgroundColor
+    }
 }
 
 // MARK: - Setup methods
@@ -44,7 +48,7 @@ private extension UnreadMessagesBadgeView {
         widthAnchor.constraint(greaterThanOrEqualToConstant: size).isActive = true
         heightAnchor.constraint(equalToConstant: size).isActive = true
         layer.cornerRadius = size / 2
-        backgroundColor = .foregroundAccent
+        backgroundColor = Style.blue.backgroundColor
         
         setupCounterLabel()
     }
@@ -58,5 +62,21 @@ private extension UnreadMessagesBadgeView {
         NSLayoutConstraint.activate([counterLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
                                      counterLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
                                      counterLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4)])
+    }
+}
+
+// MARK: - Open methods
+extension UnreadMessagesBadgeView {
+    enum Style {
+        case blue, black
+        
+        var backgroundColor: UIColor {
+            switch self {
+            case .blue:
+                return .foregroundAccent
+            case .black:
+                return .black
+            }
+        }
     }
 }

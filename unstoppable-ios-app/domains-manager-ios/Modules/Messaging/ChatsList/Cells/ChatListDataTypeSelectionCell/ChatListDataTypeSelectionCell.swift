@@ -13,10 +13,19 @@ final class ChatListDataTypeSelectionCell: UICollectionViewCell {
     
     private var dataTypeChangedCallback: ((ChatsListDataType)->())?
     private var dataTypes: [ChatsListDataType] = []
-    
+    private var badgeViewDetails: [Int: BadgeViewDetails] = [:]
+
     override func awakeFromNib() {
         super.awakeFromNib()
         
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        DispatchQueue.main.async {
+            self.setupBadges()
+        }
     }
 }
 
@@ -34,11 +43,60 @@ extension ChatListDataTypeSelectionCell {
             segmentedControl.insertSegment(withTitle: dataType.title,
                                            at: i,
                                            animated: false)
-            segmentedControl.setBadgeValue(dataTypeConfiguration.badge,
-                                           forSegment: i)
+            setBadgeValue(dataTypeConfiguration.badge,
+                          forSegment: i)
         }
         
         segmentedControl.selectedSegmentIndex = dataTypes.firstIndex(of: configuration.selectedDataType) ?? 0
+    }
+}
+
+// MARK: - Private methods
+private extension ChatListDataTypeSelectionCell {
+    func setBadgeValue(_ badge: Int, forSegment segment: Int) {
+        if badge > 0 {
+            if let badgeViewDetails = badgeViewDetails[segment] {
+                badgeViewDetails.badgeView.setUnreadMessagesCount(badge)
+            } else {
+                let badgeView = UnreadMessagesBadgeView()
+                badgeView.setUnreadMessagesCount(badge)
+                addSubview(badgeView)
+                badgeView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+                let leadingConstraint = badgeView.leadingAnchor.constraint(equalTo: leadingAnchor)
+                leadingConstraint.isActive = true
+                
+                let badgeDetails = BadgeViewDetails(badgeView: badgeView,
+                                                    leadingConstraint: leadingConstraint)
+                self.badgeViewDetails[segment] = badgeDetails
+            }
+        } else {
+            badgeViewDetails[segment]?.badgeView.removeFromSuperview()
+        }
+    }
+    
+    func setupBadges() {
+        if !self.badgeViewDetails.isEmpty {
+            let segmentWidth = segmentedControl.bounds.width / CGFloat(segmentedControl.numberOfSegments)
+            let labels = segmentedControl.allSubviewsOfType(UILabel.self)
+            for segment in 0..<segmentedControl.numberOfSegments {
+                guard let title = segmentedControl.titleForSegment(at: segment) else { continue }
+                
+                let titleWidth = title.width(withConstrainedHeight: bounds.height,
+                                             font: UDSegmentedControl.segmentFont)
+                let maxX = (segmentWidth / 2) + (titleWidth / 2) + (segmentWidth * CGFloat(segment)) + 8
+                
+                badgeViewDetails[segment]?.leadingConstraint.constant = maxX
+                badgeViewDetails[segment]?.badgeView.setStyle(segment == segmentedControl.selectedSegmentIndex ? .blue : .black)
+            }
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension ChatListDataTypeSelectionCell {
+    struct BadgeViewDetails {
+        let badgeView: UnreadMessagesBadgeView
+        let leadingConstraint: NSLayoutConstraint
     }
 }
 
