@@ -175,7 +175,7 @@ struct UDWallet: Codable {
     
     static func create(backedupWallet: BackedUpWallet, password: String) async throws -> UDWalletWithPrivateSeed {
         let encryptedArray = backedupWallet.encryptedPrivateSeed.description.hexToBytes()
-        guard  let privateKeyOrSeed = try? iCloudWalletStorage.decrypt(encryptedMessage: encryptedArray,
+        guard  let privateKeyOrSeed = try? Encrypting.decrypt(encryptedMessage: encryptedArray,
                                                                        password: password) else {
             Debugger.printFailure("Failed to decrypt private key or seed in \(backedupWallet)", critical: true)
             throw ValetError.failedToDecrypt

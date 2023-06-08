@@ -38,6 +38,10 @@
 		2959AC4829A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */; };
 		2959AC4929A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */; };
 		2959AC4A29A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */; };
+		296BB61F2A309DD90068EEEC /* Encrypting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296BB61E2A309DD90068EEEC /* Encrypting.swift */; };
+		296BB6202A309DD90068EEEC /* Encrypting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296BB61E2A309DD90068EEEC /* Encrypting.swift */; };
+		296BB6212A309DD90068EEEC /* Encrypting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296BB61E2A309DD90068EEEC /* Encrypting.swift */; };
+		296BB6222A309DD90068EEEC /* Encrypting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296BB61E2A309DD90068EEEC /* Encrypting.swift */; };
 		299713BE28F6927500743003 /* ABIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713BD28F6927500743003 /* ABIType.swift */; };
 		299713BF28F6927500743003 /* ABIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713BD28F6927500743003 /* ABIType.swift */; };
 		299713C028F6927500743003 /* ABIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299713BD28F6927500743003 /* ABIType.swift */; };
@@ -3774,6 +3778,7 @@
 		291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WC_v1+v2.swift"; sourceTree = "<group>"; };
 		295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCConnectedAppsStorageV2.swift; sourceTree = "<group>"; };
 		2959AC4629A61916006387DD /* UDWallet+SigningTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDWallet+SigningTransaction.swift"; sourceTree = "<group>"; };
+		296BB61E2A309DD90068EEEC /* Encrypting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encrypting.swift; sourceTree = "<group>"; };
 		299713BD28F6927500743003 /* ABIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIType.swift; sourceTree = "<group>"; };
 		299713C228F692AB00743003 /* ABIValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIValue.swift; sourceTree = "<group>"; };
 		299713C728F692D700743003 /* ABIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ABIError.swift; sourceTree = "<group>"; };
@@ -6932,6 +6937,7 @@
 				C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */,
 				C6EECE9C2833A42600978ED5 /* CoinRecordsService.swift */,
 				C6B6B047297039E500D4E30F /* DateFormattingService.swift */,
+				296BB61E2A309DD90068EEEC /* Encrypting.swift */,
 				C6E69FF5288AE47D000A8346 /* ExternalEventsService.swift */,
 				C681092028041325002D780E /* GIFAnimationsService.swift */,
 				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
@@ -9323,6 +9329,7 @@
 				C60610E329A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */,
 				C6386871285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
 				C62C8DC928DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */,
+				296BB61F2A309DD90068EEEC /* Encrypting.swift in Sources */,
 				C6386871285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
 				C6526DED29D2E12000D6F2EB /* ParkedDomainsFoundInAppViewPresenter.swift in Sources */,
 				C6D6E4ED2817CA5C008C66BB /* CreateBackupPasswordOnboardingPresenter.swift in Sources */,
@@ -10346,8 +10353,12 @@
 				C6C4217A29371446005B791B /* DomainProfileTutorialViewController.swift in Sources */,
 				29AEA04D292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */,
 				C61236F2292CAE07002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift in Sources */,
+                C65955FD287C63C700319ACC /* UIImage+Colors.swift in Sources */,
 				C65955FD287C63C700319ACC /* UIImage+Colors.swift in Sources */,
+                C623969C2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
 				C623969C2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
+                296BB6212A309DD90068EEEC /* Encrypting.swift in Sources */,
+				296BB6212A309DD90068EEEC /* Encrypting.swift in Sources */,
 				C6D5DAE128374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
 				C66435C3288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
 				C6C99598289D313D00367362 /* CNavigationController.swift in Sources */,
@@ -11084,6 +11095,7 @@
 				29AEA04E292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */,
 				C61236F3292CAE08002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift in Sources */,
 				C623969D2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
+				296BB6222A309DD90068EEEC /* Encrypting.swift in Sources */,
 				C65955FE287C63C700319ACC /* UIImage+Colors.swift in Sources */,
 				C6D5DAE228374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
 				C66435C4288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
@@ -11589,6 +11601,7 @@
 				C60610E429A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */,
 				C6386872285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
 				C62C8DCA28DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */,
+				296BB6202A309DD90068EEEC /* Encrypting.swift in Sources */,
 				C6386872285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
 				C6526DEE29D2E12000D6F2EB /* ParkedDomainsFoundInAppViewPresenter.swift in Sources */,
 				C6D6E4EE2817CA5C008C66BB /* CreateBackupPasswordOnboardingPresenter.swift in Sources */,
