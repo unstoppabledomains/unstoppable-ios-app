@@ -48,6 +48,12 @@ final class ChatViewController: BaseViewController {
         presenter.viewWillAppear()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        hideKeyboard()
+    }
+    
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
         scrollToTheBottom(animated: true)
     }
