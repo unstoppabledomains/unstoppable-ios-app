@@ -46,13 +46,6 @@ final class ChatViewController: BaseViewController {
         
         cNavigationBar?.navBarContentView.setTitleView(hidden: false, animated: true)
         presenter.viewWillAppear()
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            UIView.performWithoutAnimation {
-                let yOffset = CNavigationHelper.contentYOffset(of: self.collectionView)
-                self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
-            }
-        }
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
@@ -86,6 +79,10 @@ extension ChatViewController: ChatViewProtocol {
         guard let indexPath = getLastItemIndexPath() else { return }
         
         self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
+        UIView.performWithoutAnimation {
+            let yOffset = CNavigationHelper.contentYOffset(of: self.collectionView)
+            self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
+        }
     }
 }
 
