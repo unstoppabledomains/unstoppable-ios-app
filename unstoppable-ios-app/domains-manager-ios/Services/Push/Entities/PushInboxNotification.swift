@@ -11,7 +11,7 @@ import Foundation
 struct PushInboxNotification: Codable {
     let payloadId: Int
     let sender: String
-    let epoch: String
+    let epoch: Date
     let payload: Payload
     let source: String
     let etime: String?
@@ -45,7 +45,7 @@ extension PushInboxNotification {
     struct Data: Codable {
         let app: String
         let sid: String
-        let url: String
+        let url: URL
         let acta: String
         let aimg: String
         let amsg: String

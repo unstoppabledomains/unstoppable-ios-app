@@ -16,6 +16,7 @@ final class MessagingService {
     private var walletsToChatsCache: [String : [MessagingChat]] = [:]
     private var walletsToChatRequestsCache: [String : [MessagingChat]] = [:]
     private var chatToMessagesCache: [String : [MessagingChatMessage]] = [:]
+    private var walletToChannelsCache: [String : [MessagingNewsChannel]] = [:]
     private var listenerHolders: [MessagingListenerHolder] = []
 
     init(apiService: MessagingAPIServiceProtocol,
@@ -136,8 +137,29 @@ extension MessagingService: MessagingServiceProtocol {
     
     // Channels
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] {
-        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
-        return try await apiService.getSubscribedChannelsFor(domain: domain)
+        guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
+        if let channels = walletToChannelsCache[wallet] {
+            return channels
+        }
+        
+        let channels = try await apiService.getSubscribedChannelsFor(wallet: wallet)
+        walletToChannelsCache[wallet] = channels
+        return channels
+    }
+    
+    func getNotificationsInboxFor(domain: DomainDisplayInfo,
+                                  page: Int,
+                                  limit: Int,
+                                  isSpam: Bool) async throws -> [MessagingNewsChannelFeed] {
+        guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
+        
+        let feed = try await apiService.getNotificationsInboxFor(wallet: wallet,
+                                                                 page: page,
+                                                                 limit: limit,
+                                                                 isSpam: isSpam)
+        
+        
+        return feed
     }
     
     // Listeners

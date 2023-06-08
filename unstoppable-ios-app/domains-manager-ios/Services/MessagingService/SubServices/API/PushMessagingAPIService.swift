@@ -131,8 +131,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         _ = try await Push.PushChat.approve(approveOptions)
     }
     
-    func getSubscribedChannelsFor(domain: DomainItem) async throws -> [MessagingNewsChannel] {
-        let wallet = try await domain.getAddress()
+    func getSubscribedChannelsFor(wallet: HexAddress) async throws -> [MessagingNewsChannel] {
         let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: wallet)
         guard !subscribedChannelsIds.isEmpty else { return [] }
         
@@ -150,6 +149,15 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         })
         
         return channels.map({ convertPushChannelToMessagingChannel($0) })
+    }
+    
+    func getNotificationsInboxFor(wallet: HexAddress,
+                                  page: Int,
+                                  limit: Int,
+                                  isSpam: Bool) async throws -> [MessagingNewsChannelFeed] {
+        let inbox = try await pushRESTService.getNotificationsInbox(for: wallet, page: page, limit: limit, isSpam: isSpam)
+        
+        return inbox.map({ convertPushInboxToChannelFeed($0) })
     }
 }
 
@@ -293,6 +301,14 @@ private extension PushMessagingAPIService {
                              blocked: pushChannel.blocked,
                              isAliasVerified: pushChannel.is_alias_verified,
                              subscriberCount: pushChannel.subscriber_count)
+    }
+    
+    func convertPushInboxToChannelFeed(_ pushNotification: PushInboxNotification) -> MessagingNewsChannelFeed {
+        MessagingNewsChannelFeed(id: String(pushNotification.payloadId),
+                                 title: pushNotification.payload.data.asub,
+                                 message: pushNotification.payload.data.amsg,
+                                 link: pushNotification.payload.data.url,
+                                 time: pushNotification.epoch)
     }
     
     func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
