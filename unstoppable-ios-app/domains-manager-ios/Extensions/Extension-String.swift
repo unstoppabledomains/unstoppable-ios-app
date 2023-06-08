@@ -332,6 +332,7 @@ extension String {
         static let pluralNParkedDomains = "SDICT:N_PARKED_DOMAINS"
         static let pluralNParkedDomainsImported = "SDICT:N_PARKED_DOMAINS_IMPORTED"
         static let pluralExpire = "SDICT:EXPIRE"
+        static let pluralNMessages = "SDICT:N_MESSAGES"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -872,6 +873,7 @@ extension String {
         static let sending = "SENDING"
         static let sendingFailed = "SENDING_FAILED"
         static let tapToRetry = "TAP_TO_RETRY"
+        static let spam = "SPAM"
     }
 
     

@@ -21,40 +21,38 @@ final class ChatListCell: BaseListCollectionViewCell {
 extension ChatListCell {
     func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
         let chat = configuration.chat
-        avatarImageView.image = .domainSharePlaceholder
-        if let avatarURL = chat.avatarURL {
-            Task {
-                let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: nil)
-                self.avatarImageView.image = image
-            }
-        }
+        setAvatarFrom(url: chat.avatarURL)
         
         let chatName = chatNameFrom(chat: chat)
-        chatNameLabel.setAttributedTextWith(text: chatName,
-                                            font: .currentFont(withSize: 16, weight: .medium),
-                                            textColor: .foregroundDefault)
-        
+        setNameText(chatName)
+        badgeView.setUnreadMessagesCount(chat.unreadMessagesCount)
+
         if let lastMessage = chat.lastMessage {
-            let time = MessageDateFormatter.formatChannelDate(lastMessage.time)
-            timeLabel.setAttributedTextWith(text: time,
-                                            font: .currentFont(withSize: 13, weight: .regular),
-                                            textColor: .foregroundSecondary)
+            setTimeText(lastMessage.time)
             
             let lastMessageText = lastMessageTextFrom(message: lastMessage)
-            lastMessageLabel.setAttributedTextWith(text: lastMessageText,
-                                                   font: .currentFont(withSize: 14, weight: .regular),
-                                                   textColor: .foregroundSecondary,
-                                                   lineHeight: 20,
-                                                   lineBreakMode: .byTruncatingTail)
+            setLastMessageText(lastMessageText)
         } else {
-            timeLabel.text = ""
-            lastMessageLabel.text = ""
+            setTimeText(nil)
+            setLastMessageText("")
         }
+    }
+    
+    func setWith(configuration: ChatsListViewController.ChannelUIConfiguration) {
+        let channel = configuration.channel
+        setAvatarFrom(url: channel.icon)
+        setNameText(channel.name)
+        badgeView.setUnreadMessagesCount(channel.unreadMessagesCount)
         
-        badgeView.setUnreadMessagesCount(chat.unreadMessagesCount)
+        if let lastMessage = channel.lastMessage {
+            setTimeText(lastMessage.time)
+            setLastMessageText(lastMessage.title)
+        } else {
+            setTimeText(nil)
+            setLastMessageText("")
+        }
     }
 }
-
 
 // MARK: - Private methods
 private extension ChatListCell {
@@ -67,11 +65,45 @@ private extension ChatListCell {
         }
     }
     
-    func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo?) -> String  {
-        ""
-//        switch messageType {
-//        case .text(let message):
-//            return message.text
-//        }
+    func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo) -> String  {
+        switch message.type {
+        case .text(let description):
+            return description.text
+        }
+    }
+    
+    func setNameText(_ text: String) {
+        chatNameLabel.setAttributedTextWith(text: text,
+                                            font: .currentFont(withSize: 16, weight: .medium),
+                                            textColor: .foregroundDefault)
+    }
+    
+    func setLastMessageText(_ text: String) {
+        lastMessageLabel.setAttributedTextWith(text: text,
+                                               font: .currentFont(withSize: 14, weight: .regular),
+                                               textColor: .foregroundSecondary,
+                                               lineHeight: 20,
+                                               lineBreakMode: .byTruncatingTail)
+    }
+    
+    func setTimeText(_ time: Date?) {
+        var text = ""
+        if let time {
+            text = MessageDateFormatter.formatChannelDate(time)
+        }
+
+        timeLabel.setAttributedTextWith(text: text,
+                                        font: .currentFont(withSize: 13, weight: .regular),
+                                        textColor: .foregroundSecondary)
+    }
+    
+    func setAvatarFrom(url: URL?) {
+        avatarImageView.image = .domainSharePlaceholder
+        if let avatarURL = url {
+            Task {
+                let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: nil)
+                self.avatarImageView.image = image
+            }
+        }
     }
 }

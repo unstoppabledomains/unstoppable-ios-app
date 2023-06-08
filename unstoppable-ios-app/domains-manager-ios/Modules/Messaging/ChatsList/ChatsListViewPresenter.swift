@@ -21,6 +21,7 @@ final class ChatsListViewPresenter {
     private let fetchLimit: Int = 10
     private var chatsList: [MessagingChatDisplayInfo] = []
     private var requestsList: [MessagingChatDisplayInfo] = []
+    private var channels: [MessagingNewsChannel] = []
     private var selectedDataType: ChatsListDataType = .chats
     
     init(view: ChatsListViewProtocol) {
@@ -47,6 +48,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             openChat(configuration.chat)
         case .chatRequests:
             showChatRequests()
+        case .channel(let configuration):
+            openChannel(configuration.channel)
         case .dataTypeSelection:
             return
         }
@@ -61,10 +64,25 @@ extension ChatsListViewPresenter: MessagingServiceListener {
            case .chats(let chats, let isRequests, let wallet):
                if wallet == selectedDomain?.ownerWallet {
                    if isRequests {
-                       requestsList = chats
+                       if requestsList != chats {
+                           requestsList = chats
+                           showData()
+                       }
                    } else {
-                       chatsList = chats
+                       if chatsList != chats {
+                           chatsList = chats
+                           showData()
+                       }
                    }
+               }
+           case .channels(let channels, let wallet):
+               if wallet == selectedDomain?.ownerWallet {
+//                   if isRequests {
+//                       requestsList = chats
+//                   } else {
+//                       chatsList = chats
+//                   }
+                   self.channels = channels
                    showData()
                }
            case .messages:
@@ -94,6 +112,7 @@ private extension ChatsListViewPresenter {
                 
                 self.chatsList = chatsList
                 self.requestsList = requestsList
+                self.channels = channels
                 
                 showData()
             } catch {
@@ -113,11 +132,17 @@ private extension ChatsListViewPresenter {
         case .chats:
             snapshot.appendSections([.channels])
             if !requestsList.isEmpty {
-                snapshot.appendItems([.chatRequests(configuration: .init(numberOfRequests: requestsList.count))])
+                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                         numberOfRequests: requestsList.count))])
             }
             snapshot.appendItems(chatsList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
         case .inbox:
-            Void()
+            snapshot.appendSections([.channels])
+            if !requestsList.isEmpty {
+                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                         numberOfRequests: requestsList.count))])
+            }
+            snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }
         
         view?.applySnapshot(snapshot, animated: true)
@@ -151,6 +176,10 @@ private extension ChatsListViewPresenter {
     }
     
     func showChatRequests() {
+        
+    }
+    
+    func openChannel(_ channel: MessagingNewsChannel) {
         
     }
 }

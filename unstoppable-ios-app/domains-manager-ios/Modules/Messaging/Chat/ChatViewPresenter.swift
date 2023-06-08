@@ -63,7 +63,7 @@ extension ChatViewPresenter: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
         Task { @MainActor in
             switch messagingDataType {
-            case .chats:
+            case .chats, .channels:
                 return
             case .messages(let messages, let chatId):
                 if chatId == chat.id {

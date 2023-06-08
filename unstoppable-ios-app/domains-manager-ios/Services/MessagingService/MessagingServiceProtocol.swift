@@ -58,4 +58,5 @@ final class MessagingListenerHolder: Equatable {
 enum MessagingDataType {
     case chats(_ chats: [MessagingChatDisplayInfo], isRequests: Bool, wallet: String)
     case messages(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case channels(_ channels: [MessagingNewsChannel], wallet: String)
 }

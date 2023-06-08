@@ -300,7 +300,8 @@ private extension PushMessagingAPIService {
                              counter: pushChannel.counter,
                              blocked: pushChannel.blocked,
                              isAliasVerified: pushChannel.is_alias_verified,
-                             subscriberCount: pushChannel.subscriber_count)
+                             subscriberCount: pushChannel.subscriber_count,
+                             unreadMessagesCount: 0)
     }
     
     func convertPushInboxToChannelFeed(_ pushNotification: PushInboxNotification) -> MessagingNewsChannelFeed {

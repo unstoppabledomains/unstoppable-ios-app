@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MessagingNewsChannelFeed {
+struct MessagingNewsChannelFeed: Hashable {
     let id: String
     let title: String
     let message: String
