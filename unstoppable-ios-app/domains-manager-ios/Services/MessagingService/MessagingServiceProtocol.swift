@@ -18,7 +18,7 @@ protocol MessagingServiceProtocol {
                                   limit: Int) async throws -> [MessagingChatDisplayInfo]
     
     // Messages
-    func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo

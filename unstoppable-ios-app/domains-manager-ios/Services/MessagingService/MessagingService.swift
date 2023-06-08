@@ -67,16 +67,20 @@ extension MessagingService: MessagingServiceProtocol {
 
     // Messages
     // Fetch limit is 30 max
-    func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        let cacheId = chat.id
+        let cacheId = chatDisplayInfo.id
         if let cache = chatToMessagesCache[cacheId] {
             return cache.map { $0.displayInfo }
         }
-        let chat = try getMessagingChatFor(displayInfo: chat)
+        let chat = try getMessagingChatFor(displayInfo: chatDisplayInfo)
         let messages = try await apiService.getMessagesForChat(chat, fetchLimit: fetchLimit)
         chatToMessagesCache[cacheId] = messages
-
+        if let lastMessage = messages.first {
+            setLastMessage(lastMessage.displayInfo,
+                           to: chatDisplayInfo)
+            notifyChatsChanged(wallet: chatDisplayInfo.thisUserDetails.wallet)
+        }
         notifyMessagesChanges(chatId: cacheId)
         return messages.map { $0.displayInfo }
     }
@@ -94,7 +98,9 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     type: messageType,
                                                                     isRead: false,
                                                                     deliveryState: .sending)
-        
+        setLastMessage(newMessageDisplayInfo,
+                       to: chat)
+        notifyChatsChanged(wallet: chat.thisUserDetails.wallet)
         let newMessage = MessagingChatMessage(displayInfo: newMessageDisplayInfo, serviceMetadata: nil)
         messages.append(newMessage)
         chatToMessagesCache[cacheId] = messages
@@ -249,9 +255,24 @@ private extension MessagingService {
         notifyListenersChangedDataType(.messages(messages, chatId: chatId))
     }
     
+    func notifyChatsChanged(wallet: String) {
+        let chats = (walletsToChatsCache[wallet] ?? []).map { $0.displayInfo }
+        notifyListenersChangedDataType(.chats(chats, isRequests: false, wallet: wallet))
+    }
+    
     func notifyListenersChangedDataType(_ messagingDataType: MessagingDataType) {
         listenerHolders.forEach { holder in
             holder.listener?.messagingDataTypeDidUpdated(messagingDataType)
+        }
+    }
+    
+    func setLastMessage(_ lastMessage: MessagingChatMessageDisplayInfo,
+                        to chat: MessagingChatDisplayInfo) {
+        let wallet = chat.thisUserDetails.wallet
+        var chats = walletsToChatsCache[wallet] ?? []
+        if let i = chats.firstIndex(where: { $0.displayInfo.id == chat.id }) {
+            chats[i].displayInfo.lastMessage = lastMessage
+            walletsToChatsCache[wallet] = chats
         }
     }
 }
