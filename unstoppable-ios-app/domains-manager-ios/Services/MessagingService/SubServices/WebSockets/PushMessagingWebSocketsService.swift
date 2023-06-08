@@ -7,18 +7,18 @@
 
 import Foundation
 import SocketIO
+import Push
 
 final class PushMessagingWebSocketsService {
     
     private var socketServices = [WebSocketNetworkService]()
-    private var domainNameToConnectionMap: [DomainName : SocketManager] = [:]
+    private var domainNameToConnectionMap: [DomainName : PushConnection] = [:]
     
 }
 
 // MARK: - MessagingWebSocketsServiceProtocol
 extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
     func subscribeFor(domain: DomainItem,
-                      isTestnet: Bool,
                       eventCallback: @escaping MessagingWebSocketEventCallback) throws {
         if let connection = domainNameToConnectionMap[domain.name] {
             switch connection.status {
@@ -29,21 +29,20 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
             }
             return
         }
-        
-        let connection = try buildConnectionFor(domain: domain, isTestnet: isTestnet)
-        let socket = connection.defaultSocket
-        socket.onAny { [weak self] event in
+     
+        let pushConnection = try buildPushConnectionFor(domain: domain)
+        pushConnection.onAny = { [weak self] event in
             guard let pushEvent = Events(rawValue: event.event) else {
-                Debugger.printFailure("Unknowned Push socket event: \(event.event)")
+                Debugger.printWarning("Unknowned Push socket event: \(event.event)")
                 return
             }
             if let messagingEvent = self?.convertPushEventToMessagingEvent(pushEvent, data: event.items) {
                 eventCallback(messagingEvent)
             }
         }
-        socket.connect()
-        
-        domainNameToConnectionMap[domain.name] = connection
+        pushConnection.connect()
+
+        domainNameToConnectionMap[domain.name] = pushConnection
     }
     
     func unsubscribeFrom(domain: DomainItem) {
@@ -61,10 +60,18 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
 
 // MARK: - Private methods
 private extension PushMessagingWebSocketsService {
-    func buildConnectionFor(domain: DomainItem, isTestnet: Bool) throws -> SocketManager {
+    func buildPushConnectionFor(domain: DomainItem) throws -> PushConnection {
+        let feedsConnection = try buildConnectionFor(domain: domain, connectionType: .feed)
+        let chatsConnection = try buildConnectionFor(domain: domain, connectionType: .chats)
+        
+        return PushConnection(feedsConnection: feedsConnection,
+                              chatsConnection: chatsConnection)
+    }
+    
+    func buildConnectionFor(domain: DomainItem,
+                            connectionType: ConnectionType) throws -> Connection {
         let url = PushEnvironment.baseURL
-        let eipAddress = try buildEIP155AddressFrom(domain: domain, isTestnet: isTestnet)
-        let params: [String : Any] = ["address" : eipAddress]
+        let params = try getConnectionParametersFor(domain: domain, connectionType: connectionType)
         
         var config: SocketIOClientConfiguration = []
 #if DEBUG
@@ -83,57 +90,163 @@ private extension PushMessagingWebSocketsService {
         let manager = SocketManager(socketURL: URL(string: url)!,
                                     config: config)
         
-        return manager
+        return Connection(socketManager: manager, type: connectionType)
     }
     
-    func buildEIP155AddressFrom(domain: DomainItem, isTestnet: Bool) throws -> String {
-        guard let walletAddress = domain.ownerWallet else {
+    func getConnectionParametersFor(domain: DomainItem,
+                                    connectionType: ConnectionType) throws -> [String : Any] {
+        switch connectionType {
+        case .feed:
+            let eipAddress = try buildEIP155AddressFrom(domain: domain, shouldIncludeChain: true)
+            
+            return ["address" : eipAddress]
+        case .chats:
+            let eipAddress = try buildEIP155AddressFrom(domain: domain, shouldIncludeChain: false)
+            return ["did" : eipAddress,
+                    "mode" : "chat"]
+        }
+    }
+    
+    func buildEIP155AddressFrom(domain: DomainItem, shouldIncludeChain: Bool) throws -> String {
+        guard var walletAddress = domain.ownerWallet else {
             Debugger.printFailure("Failed to get owner wallet from domain", critical: true)
             throw PushWebSocketError.failedToCreateEIP155Address
         }
-        
+        if let wallet = appContext.udWalletsService.find(by: walletAddress),
+           let ethAddress = wallet.ethWallet?.address { // Temporary solution until Push will be come address case agnostic
+            walletAddress = ethAddress
+        }
         guard let blockchain = domain.blockchain else {
             Debugger.printFailure("Failed to get blockchain from domain", critical: true)
             throw PushWebSocketError.failedToCreateEIP155Address
         }
         
-        let env: UnsConfigManager.BlockchainEnvironment = isTestnet ? .testnet : .mainnet
-        let configData = env.getBlockchainConfigData()
-        
-        guard let chainId = configData.getNetworkId(type: blockchain) else {
-            Debugger.printFailure("Failed to get chain id from blockchain", critical: true)
-            throw PushWebSocketError.failedToCreateEIP155Address
+        if shouldIncludeChain {
+            let env: UnsConfigManager.BlockchainEnvironment
+            if User.instance.getSettings().isTestnetUsed {
+                env = .testnet
+            } else {
+                env = .mainnet
+            }
+            let configData = env.getBlockchainConfigData()
+            
+            guard let chainId = configData.getNetworkId(type: blockchain) else {
+                Debugger.printFailure("Failed to get chain id from blockchain", critical: true)
+                throw PushWebSocketError.failedToCreateEIP155Address
+            }
+            
+            return "eip155:\(chainId):\(walletAddress)"
+        } else {
+            return "eip155:\(walletAddress)"
         }
-        
-        return "eip155:\(chainId):\(walletAddress)"
     }
     
     func convertPushEventToMessagingEvent(_ pushEvent: Events, data: [Any]?) -> MessagingWebSocketEvent? {
         // TODO: - Test and adjust events, names and payload
-        switch pushEvent {
-        case .connect, .disconnect:
+        do {
+            switch pushEvent {
+            case .connect, .disconnect:
+                return nil
+            case .userFeeds:
+                let userFeed: PushRESTAPIService.InboxResponse = try parseEntityFrom(data: data)
+                return .userFeeds(userFeed.feeds)
+            case .userSpamFeeds:
+                let userFeed: PushRESTAPIService.InboxResponse = try parseEntityFrom(data: data)
+                return .userSpamFeeds(userFeed.feeds)
+            case .chatReceivedMessage:
+                let pushMessages: Push.Message = try parseEntityFrom(data: data)
+                let messages = [pushMessages].compactMap { PushEntitiesTransformer.convertPushMessageToChatMessage($0) }
+                return .chatReceivedMessage(messages)
+            case .chatGroups:
+                return .chatGroups
+            }
+        } catch {
             return nil
-        case .userFeeds:
-            return .userFeeds
-        case .userSpamFeeds:
-            return .userSpamFeeds
-        case .chatReceivedMessage:
-            return .chatReceivedMessage
-        case .chatGroups:
-            return .chatGroups
         }
+    }
+    
+    func parseEntityFrom<T: Codable>(data: [Any]?) throws -> T {
+        guard let data,
+              let dict = data.first as? [String : Any] else {
+            throw PushWebSocketError.failedToGetPayloadData
+        }
+        
+        guard let entity = T.objectFromJSON(dict) else {
+            throw PushWebSocketError.failedToParsePayloadData
+        }
+        return entity
     }
 }
 
 // MARK: - Private methods
 private extension PushMessagingWebSocketsService {
     enum Events: String {
-        case connect = "CONNECT"
-        case disconnect = "DISCONNECT"
-        case userFeeds = "USER_FEEDS"
-        case userSpamFeeds = "USER_SPAM_FEEDS"
-        case chatReceivedMessage = "CHAT_RECEIVED_MESSAGE"
+        case connect
+        case disconnect
+        case userFeeds = "feed"
+        case userSpamFeeds = "spam"
+        case chatReceivedMessage = "CHATS"
         case chatGroups = "CHAT_GROUPS"
+    }
+    
+    enum ConnectionType {
+        case feed, chats
+    }
+    
+    struct Connection {
+        let socketManager: SocketManager
+        let type: ConnectionType
+        
+        var status: SocketIOStatus { socketManager.status }
+        
+        func connect() {
+            socketManager.defaultSocket.connect()
+        }
+        
+        func reconnect() {
+            socketManager.reconnect()
+        }
+        
+        func disconnect() {
+            socketManager.disconnect()
+        }
+    }
+    
+    final class PushConnection {
+     
+        let feedsConnection: Connection
+        let chatsConnection: Connection
+        
+        var onAny: ((SocketAnyEvent) -> ())?
+        var status: SocketIOStatus { feedsConnection.status }
+        
+        init(feedsConnection: Connection, chatsConnection: Connection) {
+            self.feedsConnection = feedsConnection
+            self.chatsConnection = chatsConnection
+            
+            feedsConnection.socketManager.defaultSocket.onAny { [weak self] event in
+                self?.onAny?(event)
+            }
+            
+            chatsConnection.socketManager.defaultSocket.onAny { [weak self] event in
+                self?.onAny?(event)
+            }
+        }
+        
+        func connect() {
+            feedsConnection.connect()
+            chatsConnection.connect()
+        }
+        
+        func reconnect() {
+            feedsConnection.reconnect()
+            chatsConnection.reconnect()
+        }
+        
+        func disconnect() {
+            feedsConnection.disconnect()
+            chatsConnection.disconnect()
+        }
     }
 }
 
@@ -141,5 +254,7 @@ private extension PushMessagingWebSocketsService {
 extension PushMessagingWebSocketsService {
     enum PushWebSocketError: Error {
         case failedToCreateEIP155Address
+        case failedToGetPayloadData
+        case failedToParsePayloadData
     }
 }

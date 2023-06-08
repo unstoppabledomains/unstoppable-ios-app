@@ -36,6 +36,7 @@ final class ChatViewPresenter {
 // MARK: - ChatViewPresenterProtocol
 extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
+        appContext.messagingService.addListener(self)
         setupTitle()
         setupPlaceholder()
         loadAndShowData()
@@ -54,6 +55,23 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         
         view?.setInputText("")
         sendTextMesssage(text)
+    }
+}
+
+// MARK: - MessagingServiceListener
+extension ChatViewPresenter: MessagingServiceListener {
+    nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
+        Task { @MainActor in
+            switch messagingDataType {
+            case .chats, .channels:
+                return
+            case .messages(let messages, let chatId):
+                if chatId == chat.id {
+                    self.messages = messages
+                    showData(animated: true, scrollToBottomAnimated: true)
+                }
+            }
+        }
     }
 }
 
@@ -78,6 +96,7 @@ private extension ChatViewPresenter {
         })
     }
     
+    @MainActor
     func showData(animated: Bool, completion: EmptyCallback? = nil) {
         var snapshot = ChatSnapshot()
         
@@ -88,7 +107,7 @@ private extension ChatViewPresenter {
             let messages = groupedMessages[date] ?? []
             let title = MessageDateFormatter.formatMessagesSectionDate(date)
             snapshot.appendSections([.messages(title: title)])
-            snapshot.appendItems(messages.map({ createSnapshotItemFrom(message: $0) }))
+            snapshot.appendItems(messages.sorted(by: { $0.time < $1.time }).map({ createSnapshotItemFrom(message: $0) }))
         }
         
         view?.applySnapshot(snapshot, animated: animated, completion: completion)
@@ -97,7 +116,9 @@ private extension ChatViewPresenter {
     func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item {
         switch message.type {
         case .text(let textMessageDisplayInfo):
-            return .textMessage(configuration: .init(message: message, textMessageDisplayInfo: textMessageDisplayInfo))
+            return .textMessage(configuration: .init(message: message, textMessageDisplayInfo: textMessageDisplayInfo, actionCallback: { [weak self] action in
+                self?.handleChatMessageAction(action, forMessage: message)
+            }))
         }
     }
     
@@ -118,6 +139,16 @@ private extension ChatViewPresenter {
     func setupPlaceholder() {
         view?.setPlaceholder(String.Constants.chatInputPlaceholderAsDomain.localized(domain.name))
     }
+    
+    func handleChatMessageAction(_ action: ChatViewController.ChatMessageAction,
+                                 forMessage message: MessagingChatMessageDisplayInfo) {
+        switch action {
+        case .resend:
+            try? appContext.messagingService.resendMessage(message)
+        case .delete:
+            appContext.messagingService.deleteMessage(message)
+        }
+    }
 }
 
 // MARK: - Send message
@@ -130,9 +161,7 @@ private extension ChatViewPresenter {
     
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
         do {
-            // TODO: - Probably should expect all messages from listener notification
-            let newMessage = try appContext.messagingService.sendMessage(type, in: chat)
-            messages.append(newMessage)
+            let _ = try appContext.messagingService.sendMessage(type, in: chat)
             showData(animated: true, scrollToBottomAnimated: true)
         } catch {
             view?.showAlertWith(error: error, handler: nil)

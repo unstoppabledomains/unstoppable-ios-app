@@ -121,6 +121,11 @@ private extension ChatsListViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .channel(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
     }
@@ -187,6 +192,7 @@ extension ChatsListViewController {
         case domainSelection(configuration: DomainSelectionUIConfiguration)
         case dataTypeSelection(configuration: DataTypeSelectionUIConfiguration)
         case chatRequests(configuration: ChatRequestsUIConfiguration)
+        case channel(configuration: ChannelUIConfiguration)
     }
     
     struct ChatUIConfiguration: Hashable {
@@ -234,6 +240,13 @@ extension ChatsListViewController {
     }
     
     struct ChatRequestsUIConfiguration: Hashable {
+        let dataType: DataType
         let numberOfRequests: Int
     }
+    
+    
+    struct ChannelUIConfiguration: Hashable {
+        let channel: MessagingNewsChannel
+    }
+    
 }

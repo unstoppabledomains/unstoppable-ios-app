@@ -194,6 +194,30 @@
 			<string>domains</string>
 		</dict>
 	</dict>
+	<key>SDICT:N_MESSAGES</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@message@</string>
+		<key>message</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>messages</string>
+			<key>one</key>
+			<string>message</string>
+			<key>two</key>
+			<string>messages</string>
+			<key>few</key>
+			<string>messages</string>
+			<key>many</key>
+			<string>messages</string>
+			<key>other</key>
+			<string>messages</string>
+		</dict>
+	</dict>
 	<key>SDICT:EXPIRE</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

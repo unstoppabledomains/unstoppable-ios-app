@@ -9,36 +9,54 @@ import Foundation
 
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
+    // Chats list
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
                               page: Int,
                               limit: Int) async throws -> [MessagingChatDisplayInfo]
     func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChatDisplayInfo]
-    func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
+    
+    // Messages
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
+    func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
+    
+    // Channels
+    func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel]
+    
+    // Listeners
+    func addListener(_ listener: MessagingServiceListener)
+    func removeListener(_ listener: MessagingServiceListener)
 }
 
-//protocol MessagingServiceListener: AnyObject {
-//    func messagingChannelsListUpdated(_ channelsList: [ChatChannelType], for user: MessagingChatUserDisplayInfo)
-//}
-//
-//final class MessagingListenerHolder: Equatable {
-//
-//    weak var listener: MessagingServiceListener?
-//
-//    init(listener: MessagingServiceListener) {
-//        self.listener = listener
-//    }
-//
-//    static func == (lhs: MessagingListenerHolder, rhs: MessagingListenerHolder) -> Bool {
-//        guard let lhsListener = lhs.listener,
-//              let rhsListener = rhs.listener else { return false }
-//
-//        return lhsListener === rhsListener
-//    }
-//
-//}
+protocol MessagingServiceListener: AnyObject {
+    func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType)
+}
+
+final class MessagingListenerHolder: Equatable {
+
+    weak var listener: MessagingServiceListener?
+
+    init(listener: MessagingServiceListener) {
+        self.listener = listener
+    }
+
+    static func == (lhs: MessagingListenerHolder, rhs: MessagingListenerHolder) -> Bool {
+        guard let lhsListener = lhs.listener,
+              let rhsListener = rhs.listener else { return false }
+
+        return lhsListener === rhsListener
+    }
+
+}
+
+enum MessagingDataType {
+    case chats(_ chats: [MessagingChatDisplayInfo], wallet: String)
+    case messages(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case channels(_ channels: [MessagingNewsChannel], wallet: String)
+}

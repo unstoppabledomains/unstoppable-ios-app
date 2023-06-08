@@ -13,8 +13,8 @@ struct PushChannel: Codable {
     let ipfshash: String
     let name: String
     let info: String
-    let url: String
-    let icon: String
+    let url: URL
+    let icon: URL
     let processed: Int
     let attempts: Int
     let verified_status: Int

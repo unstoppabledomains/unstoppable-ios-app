@@ -46,13 +46,12 @@ final class ChatViewController: BaseViewController {
         
         cNavigationBar?.navBarContentView.setTitleView(hidden: false, animated: true)
         presenter.viewWillAppear()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            UIView.performWithoutAnimation {
-                let yOffset = CNavigationHelper.contentYOffset(of: self.collectionView)
-                self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
-            }
-        }
+        hideKeyboard()
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
@@ -86,6 +85,10 @@ extension ChatViewController: ChatViewProtocol {
         guard let indexPath = getLastItemIndexPath() else { return }
         
         self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
+        UIView.performWithoutAnimation {
+            let yOffset = CNavigationHelper.contentYOffset(of: self.collectionView)
+            self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
+        }
     }
 }
 
@@ -245,7 +248,24 @@ extension ChatViewController {
     }
     
     struct TextMessageUIConfiguration: Hashable {
+        
         let message: MessagingChatMessageDisplayInfo
         let textMessageDisplayInfo: MessagingChatMessageTextTypeDisplayInfo
+        var actionCallback: (ChatMessageAction)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.message == rhs.message &&
+            lhs.textMessageDisplayInfo == rhs.textMessageDisplayInfo
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(message)
+            hasher.combine(textMessageDisplayInfo)
+        }
+    }
+    
+    enum ChatMessageAction: Hashable {
+        case resend
+        case delete
     }
 }

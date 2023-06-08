@@ -95,8 +95,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/socketio/socket.io-client-swift",
       "state" : {
-        "revision" : "36db2ff0ebc7239187f9b382fd318e122da71caa",
-        "version" : "15.2.0"
+        "branch" : "master",
+        "revision" : "a1ed825835a2d8c2555938e96557ccc05e4bebf3"
       }
     },
     {
@@ -104,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/daltoniam/Starscream.git",
       "state" : {
-        "revision" : "a063fda2b8145a231953c20e7a646be254365396",
-        "version" : "3.1.2"
+        "revision" : "df8d82047f6654d8e4b655d1b1525c64e1059d21",
+        "version" : "4.0.4"
       }
     },
     {
@@ -177,7 +177,7 @@
       "location" : "https://github.com/unstoppabledomains/web3swift.git",
       "state" : {
         "branch" : "develop",
-        "revision" : "119464ccee9e9ba3c09276bf69636ce5c9c7bf18"
+        "revision" : "e75faaf3e2889627aeca1090b07a30be5ff3388f"
       }
     },
     {

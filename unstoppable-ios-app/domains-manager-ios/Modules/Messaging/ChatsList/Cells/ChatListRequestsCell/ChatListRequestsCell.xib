@@ -125,6 +125,7 @@
             <size key="customSize" width="315" height="98"/>
             <connections>
                 <outlet property="containerView" destination="fhg-xw-B0V" id="mF8-uB-Qah"/>
+                <outlet property="iconImageView" destination="cI1-wE-MFb" id="fEH-2C-oEv"/>
                 <outlet property="subtitleLabel" destination="3JW-vb-dyd" id="3Tv-5A-rCf"/>
                 <outlet property="titleLabel" destination="8pi-5o-RwM" id="jrM-sz-JeL"/>
             </connections>

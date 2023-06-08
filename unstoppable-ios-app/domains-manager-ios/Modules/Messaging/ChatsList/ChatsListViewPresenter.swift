@@ -20,7 +20,7 @@ final class ChatsListViewPresenter {
     private var selectedDomain: DomainDisplayInfo?
     private let fetchLimit: Int = 10
     private var chatsList: [MessagingChatDisplayInfo] = []
-    private var requestsList: [MessagingChatDisplayInfo] = []
+    private var channels: [MessagingNewsChannel] = []
     private var selectedDataType: ChatsListDataType = .chats
     
     init(view: ChatsListViewProtocol) {
@@ -31,6 +31,7 @@ final class ChatsListViewPresenter {
 // MARK: - ChatsListViewPresenterProtocol
 extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     func viewDidLoad() {
+        appContext.messagingService.addListener(self)
         loadAndShowData()
     }
     
@@ -46,9 +47,34 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             openChat(configuration.chat)
         case .chatRequests:
             showChatRequests()
+        case .channel(let configuration):
+            openChannel(configuration.channel)
         case .dataTypeSelection:
             return
         }
+    }
+}
+
+// MARK: - MessagingServiceListener
+extension ChatsListViewPresenter: MessagingServiceListener {
+   nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
+       Task { @MainActor in
+           switch messagingDataType {
+           case .chats(let chats, let wallet):
+               if wallet == selectedDomain?.ownerWallet,
+                  chatsList != chats {
+                   chatsList = chats
+                   showData()
+               }
+           case .channels(let channels, let wallet):
+               if wallet == selectedDomain?.ownerWallet {
+                   self.channels = channels
+                   showData()
+               }
+           case .messages:
+               return
+           }
+       }
     }
 }
 
@@ -66,10 +92,12 @@ private extension ChatsListViewPresenter {
                 async let requestsListTask = appContext.messagingService.getChatRequestsForDomain(selectedDomain,
                                                                                                page: 1,
                                                                                                limit: fetchLimit)
-                let (chatsList, requestsList) = try await (chatsListTask, requestsListTask)
+                async let channelsTask = appContext.messagingService.getSubscribedChannelsFor(domain: selectedDomain)
                 
-                self.chatsList = chatsList
-                self.requestsList = requestsList
+                let (chatsList, requestsList, channels) = try await (chatsListTask, requestsListTask, channelsTask)
+                
+                self.chatsList = chatsList + requestsList
+                self.channels = channels
                 
                 showData()
             } catch {
@@ -88,12 +116,21 @@ private extension ChatsListViewPresenter {
         switch selectedDataType {
         case .chats:
             snapshot.appendSections([.channels])
+            let requestsList = chatsList.filter({ !$0.isApproved })
+            let approvedList = chatsList.filter({ $0.isApproved })
             if !requestsList.isEmpty {
-                snapshot.appendItems([.chatRequests(configuration: .init(numberOfRequests: requestsList.count))])
+                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                         numberOfRequests: requestsList.count))])
             }
-            snapshot.appendItems(chatsList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+            snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
         case .inbox:
-            Void()
+            snapshot.appendSections([.channels])
+            let requestsList = chatsList.filter({ !$0.isApproved })
+            if !requestsList.isEmpty {
+                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                         numberOfRequests: requestsList.count))])
+            }
+            snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }
         
         view?.applySnapshot(snapshot, animated: true)
@@ -113,8 +150,9 @@ private extension ChatsListViewPresenter {
     
     func loadDomains() async {
         if domains.isEmpty {
-            domains = await appContext.dataAggregatorService.getDomainsDisplayInfo().filter({ $0.isSetForRR })
-            selectedDomain = domains.last
+            let allDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+            domains = allDomains.filter({ $0.isSetForRR })
+            selectedDomain = domains.last ?? allDomains.first
         }
     }
     
@@ -126,6 +164,10 @@ private extension ChatsListViewPresenter {
     }
     
     func showChatRequests() {
+        
+    }
+    
+    func openChannel(_ channel: MessagingNewsChannel) {
         
     }
 }
