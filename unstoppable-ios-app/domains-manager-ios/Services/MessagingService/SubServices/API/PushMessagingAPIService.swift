@@ -32,6 +32,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                 progressHook: nil))
         walletToPushUserCache[wallet] = pushUser
         let chatUser = PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
+        
+        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: pushUser.encryptedPrivateKey, signer: domain)
+        KeychainPGPKeysStorage.savePGPKey(pgpPrivateKey,
+                                          forIdentifier: wallet)
+        
         return chatUser
     }
     
@@ -176,9 +181,13 @@ private extension PushMessagingAPIService {
     }
     
     func getPGPPrivateKeyFor(wallet: HexAddress) async throws -> String {
+        if let key = KeychainPGPKeysStorage.getPGPKeyFor(identifier: wallet) {
+            return key
+        }
         let user = try await getPushUserFor(wallet: wallet)
         let domain = try await getReverseResolutionDomainItem(for: wallet)
         let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
+        KeychainPGPKeysStorage.savePGPKey(pgpPrivateKey, forIdentifier: wallet)
         return pgpPrivateKey
     }
     
