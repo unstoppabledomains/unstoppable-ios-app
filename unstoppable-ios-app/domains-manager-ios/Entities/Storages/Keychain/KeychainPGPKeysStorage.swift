@@ -8,30 +8,35 @@
 import Foundation
 import Valet
 
-struct KeychainPGPKeysStorage: PrivateKeyStorage {
+protocol KeychainPGPKeysStorageProtocol {
+    func savePGPKey(_ pgpKey: String, forIdentifier identifier: String)
+    func getPGPKeyFor(identifier: String) -> String?
+}
+
+struct KeychainPGPKeysStorage: PrivateKeyStorage, KeychainPGPKeysStorageProtocol {
     let valet: ValetProtocol
     
     static let keychainName = "unstoppable-keychain-pgp-keys"
-    private static let pgpPrefix = "pgp_"
+    private let pgpPrefix = "pgp_"
     
     private init() {
         valet = Valet.valet(with: Identifier(nonEmpty: Self.keychainName)!,
                             accessibility: .whenUnlockedThisDeviceOnly)
     }
     
-    static var instance = KeychainPGPKeysStorage()
+    static var instance: KeychainPGPKeysStorageProtocol = KeychainPGPKeysStorage()
     
-    static func savePGPKey(_ pgpKey: String, forIdentifier identifier: String) {
+    func savePGPKey(_ pgpKey: String, forIdentifier identifier: String) {
         let key = getKeyFor(identifier: identifier)
-        Self.instance.store(value: pgpKey, for: key)
+        store(value: pgpKey, for: key)
     }
     
-    static func getPGPKeyFor(identifier: String) -> String? {
+    func getPGPKeyFor(identifier: String) -> String? {
         let key = getKeyFor(identifier: identifier)
-        return Self.instance.retrieveValue(for: key, isCritical: false)
+        return retrieveValue(for: key, isCritical: false)
     }
     
-    private static func getKeyFor(identifier: String) -> String {
+    private func getKeyFor(identifier: String) -> String {
         pgpPrefix + identifier
     }
 }
