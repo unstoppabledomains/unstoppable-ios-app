@@ -34,8 +34,7 @@ extension MessagingService: MessagingServiceProtocol {
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
                                page: Int, // Starting from 1
                                limit: Int) async throws -> [MessagingChatDisplayInfo] {
-        guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
-        
+        let wallet = try getDomainEthWalletAddress(domain)
         let chats = try await apiService.getChatsListForWallet(wallet, page: page, limit: limit)
         appendChatsToCache(chats, wallet: wallet)
         setupSocketConnection(domain: domain)
@@ -48,24 +47,12 @@ extension MessagingService: MessagingServiceProtocol {
     func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChatDisplayInfo] {
-        guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
-    
+        let wallet = try getDomainEthWalletAddress(domain)
         let chats = try await apiService.getChatRequestsForWallet(wallet, page: page, limit: limit)
         appendChatsToCache(chats, wallet: wallet)
         let chatsDisplayInfo = chats.map { $0.displayInfo }
         notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: wallet))
         return chatsDisplayInfo
-    }
-    
-    func appendChatsToCache(_ chats: [MessagingChat], wallet: HexAddress) {
-        var currentChats = walletsToChatsCache[wallet] ?? []
-        for chat in chats {
-            if let i = currentChats.firstIndex(where: { $0.displayInfo.id == chat.displayInfo.id }) {
-                currentChats.remove(at: i)
-            }
-        }
-        currentChats.append(contentsOf: chats)
-        walletsToChatsCache[wallet] = currentChats
     }
 
     // Messages
@@ -146,7 +133,7 @@ extension MessagingService: MessagingServiceProtocol {
     
     // Channels
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] {
-        guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
+        let wallet = try getDomainEthWalletAddress(domain)
         if let channels = walletToChannelsCache[wallet] {
             return channels
         }
@@ -160,8 +147,7 @@ extension MessagingService: MessagingServiceProtocol {
                                   page: Int,
                                   limit: Int,
                                   isSpam: Bool) async throws -> [MessagingNewsChannelFeed] {
-        guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
-        
+        let wallet = try getDomainEthWalletAddress(domain)
         let feed = try await apiService.getNotificationsInboxFor(wallet: wallet,
                                                                  page: page,
                                                                  limit: limit,
@@ -185,6 +171,14 @@ extension MessagingService: MessagingServiceProtocol {
 
 // MARK: - Private methods
 private extension MessagingService {
+    func getDomainEthWalletAddress(_ domain: DomainDisplayInfo) throws -> String {
+        guard let walletAddress = domain.ownerWallet,
+              let wallet = appContext.udWalletsService.find(by: walletAddress),
+              let ethAddress = wallet.ethWallet?.address else { throw MessagingServiceError.domainWithoutWallet }
+        
+        return ethAddress
+    }
+    
     func getMessagingChatFor(displayInfo: MessagingChatDisplayInfo) throws -> MessagingChat {
         try getMessagingChatWith(chatId: displayInfo.id)
     }
@@ -194,6 +188,17 @@ private extension MessagingService {
         guard let chat = allChats.first(where: { $0.displayInfo.id == chatId }) else { throw MessagingServiceError.chatNotFound }
         
         return chat
+    }
+    
+    func appendChatsToCache(_ chats: [MessagingChat], wallet: HexAddress) {
+        var currentChats = walletsToChatsCache[wallet] ?? []
+        for chat in chats {
+            if let i = currentChats.firstIndex(where: { $0.displayInfo.id == chat.displayInfo.id }) {
+                currentChats.remove(at: i)
+            }
+        }
+        currentChats.append(contentsOf: chats)
+        walletsToChatsCache[wallet] = currentChats
     }
     
     func sendMessageToBE(message: MessagingChatMessage,

@@ -672,7 +672,10 @@ private extension DataAggregatorService {
         }
         
         func reverseResolutionDomainName(for walletAddress: HexAddress) -> DomainName? {
-            reverseResolutionMap[walletAddress] ?? nil
+            if let key = reverseResolutionMap.keys.first(where: { $0.lowercased() == walletAddress.lowercased() }) {
+                return reverseResolutionMap[key] ?? nil
+            }
+            return nil
         }
         
         func sortDomainsToDisplay() {

@@ -158,7 +158,7 @@ struct PushEntitiesTransformer {
     static func getWalletAddressFrom(eip155String: String) -> String? {
         let components = eip155String.components(separatedBy: ":")
         if components.count == 2 {
-            return components[1].lowercased()
+            return components[1]
         }
         return nil
     }

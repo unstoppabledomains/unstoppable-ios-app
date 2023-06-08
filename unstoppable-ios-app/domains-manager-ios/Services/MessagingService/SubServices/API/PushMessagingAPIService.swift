@@ -171,6 +171,7 @@ private extension PushMessagingAPIService {
         guard let pushUser = try await PushUser.get(account: wallet, env: env) else {
             throw PushMessagingAPIServiceError.failedToGetPushUser
         }
+        walletToPushUserCache[wallet] = pushUser
         return pushUser
     }
     
