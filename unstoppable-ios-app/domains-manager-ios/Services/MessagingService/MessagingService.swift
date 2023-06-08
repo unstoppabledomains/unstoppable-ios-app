@@ -14,7 +14,6 @@ final class MessagingService {
     let storageProtocol: MessagingStorageServiceProtocol
         
     private var walletsToChatsCache: [String : [MessagingChat]] = [:]
-    private var walletsToChatRequestsCache: [String : [MessagingChat]] = [:]
     private var chatToMessagesCache: [String : [MessagingChatMessage]] = [:]
     private var walletToChannelsCache: [String : [MessagingNewsChannel]] = [:]
     private var listenerHolders: [MessagingListenerHolder] = []
@@ -36,16 +35,13 @@ extension MessagingService: MessagingServiceProtocol {
                                page: Int, // Starting from 1
                                limit: Int) async throws -> [MessagingChatDisplayInfo] {
         guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
-        let cacheId = wallet
-        if let cache = walletsToChatsCache[cacheId] {
-            return cache.map { $0.displayInfo }
-        }
+        
         let chats = try await apiService.getChatsListForWallet(wallet, page: page, limit: limit)
-        walletsToChatsCache[cacheId] = chats
+        appendChatsToCache(chats, wallet: wallet)
         setupSocketConnection(domain: domain)
         
         let chatsDisplayInfo = chats.map { $0.displayInfo }
-        notifyListenersChangedDataType(.chats(chatsDisplayInfo, isRequests: false, wallet: wallet))
+        notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: wallet))
         return chatsDisplayInfo
     }
     
@@ -53,16 +49,23 @@ extension MessagingService: MessagingServiceProtocol {
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChatDisplayInfo] {
         guard let wallet = domain.ownerWallet else { throw MessagingServiceError.domainWithoutWallet }
-        let cacheId = wallet
-        if let cache = walletsToChatRequestsCache[cacheId] {
-            return cache.map { $0.displayInfo }
-        }
+    
         let chats = try await apiService.getChatRequestsForWallet(wallet, page: page, limit: limit)
-        walletsToChatRequestsCache[cacheId] = chats
-        
+        appendChatsToCache(chats, wallet: wallet)
         let chatsDisplayInfo = chats.map { $0.displayInfo }
-        notifyListenersChangedDataType(.chats(chatsDisplayInfo, isRequests: true, wallet: wallet))
+        notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: wallet))
         return chatsDisplayInfo
+    }
+    
+    func appendChatsToCache(_ chats: [MessagingChat], wallet: HexAddress) {
+        var currentChats = walletsToChatsCache[wallet] ?? []
+        for chat in chats {
+            if let i = currentChats.firstIndex(where: { $0.displayInfo.id == chat.displayInfo.id }) {
+                currentChats.remove(at: i)
+            }
+        }
+        currentChats.append(contentsOf: chats)
+        walletsToChatsCache[wallet] = currentChats
     }
 
     // Messages
@@ -257,7 +260,7 @@ private extension MessagingService {
     
     func notifyChatsChanged(wallet: String) {
         let chats = (walletsToChatsCache[wallet] ?? []).map { $0.displayInfo }
-        notifyListenersChangedDataType(.chats(chats, isRequests: false, wallet: wallet))
+        notifyListenersChangedDataType(.chats(chats, wallet: wallet))
     }
     
     func notifyListenersChangedDataType(_ messagingDataType: MessagingDataType) {

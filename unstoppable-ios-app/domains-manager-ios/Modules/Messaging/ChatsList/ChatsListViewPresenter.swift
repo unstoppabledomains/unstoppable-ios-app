@@ -20,7 +20,6 @@ final class ChatsListViewPresenter {
     private var selectedDomain: DomainDisplayInfo?
     private let fetchLimit: Int = 10
     private var chatsList: [MessagingChatDisplayInfo] = []
-    private var requestsList: [MessagingChatDisplayInfo] = []
     private var channels: [MessagingNewsChannel] = []
     private var selectedDataType: ChatsListDataType = .chats
     
@@ -61,27 +60,14 @@ extension ChatsListViewPresenter: MessagingServiceListener {
    nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
        Task { @MainActor in
            switch messagingDataType {
-           case .chats(let chats, let isRequests, let wallet):
-               if wallet == selectedDomain?.ownerWallet {
-                   if isRequests {
-                       if requestsList != chats {
-                           requestsList = chats
-                           showData()
-                       }
-                   } else {
-                       if chatsList != chats {
-                           chatsList = chats
-                           showData()
-                       }
-                   }
+           case .chats(let chats, let wallet):
+               if wallet == selectedDomain?.ownerWallet,
+                  chatsList != chats {
+                   chatsList = chats
+                   showData()
                }
            case .channels(let channels, let wallet):
                if wallet == selectedDomain?.ownerWallet {
-//                   if isRequests {
-//                       requestsList = chats
-//                   } else {
-//                       chatsList = chats
-//                   }
                    self.channels = channels
                    showData()
                }
@@ -110,8 +96,7 @@ private extension ChatsListViewPresenter {
                 
                 let (chatsList, requestsList, channels) = try await (chatsListTask, requestsListTask, channelsTask)
                 
-                self.chatsList = chatsList
-                self.requestsList = requestsList
+                self.chatsList = chatsList + requestsList
                 self.channels = channels
                 
                 showData()
@@ -131,13 +116,16 @@ private extension ChatsListViewPresenter {
         switch selectedDataType {
         case .chats:
             snapshot.appendSections([.channels])
+            let requestsList = chatsList.filter({ !$0.isApproved })
+            let approvedList = chatsList.filter({ $0.isApproved })
             if !requestsList.isEmpty {
                 snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
                                                                          numberOfRequests: requestsList.count))])
             }
-            snapshot.appendItems(chatsList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+            snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
         case .inbox:
             snapshot.appendSections([.channels])
+            let requestsList = chatsList.filter({ !$0.isApproved })
             if !requestsList.isEmpty {
                 snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
                                                                          numberOfRequests: requestsList.count))])
