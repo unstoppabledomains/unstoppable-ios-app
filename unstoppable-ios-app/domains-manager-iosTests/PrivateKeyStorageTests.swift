@@ -50,9 +50,9 @@ class PrivateKeyStorageTests: XCTestCase {
         
         do {
             try messagesAndPasswords.forEach {
-                let encrypted = try iCloudWalletStorage.encrypt(message: $0.0, with: $0.1)
+                let encrypted = try Encrypting.encrypt(message: $0.0, with: $0.1)
                 
-                let decrypted = try iCloudWalletStorage.decrypt(encryptedMessage: encrypted.hexToBytes(), password: $0.1)
+                let decrypted = try Encrypting.decrypt(encryptedMessage: encrypted.hexToBytes(), password: $0.1)
                 
                 XCTAssert($0.0 == decrypted, "Decrypted must be equal to the origin")
             }

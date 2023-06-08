@@ -25,11 +25,11 @@ struct BackedUpWallet {
         
         if udWallet.type == .privateKeyEntered {
             guard let pk = udWallet.getPrivateKey(),
-                  let pkEncrypted = try? iCloudWalletStorage.encrypt(message: pk, with: password) else { return nil }
+                  let pkEncrypted = try? Encrypting.encrypt(message: pk, with: password) else { return nil }
             self.encryptedPrivateSeed = Seed.encryptedPrivateKey(pkEncrypted)
         } else {
             guard let mnem = udWallet.getMnemonics(),
-                  let mnemEncrypted = try? iCloudWalletStorage.encrypt(message: mnem, with: password) else { return nil }
+                  let mnemEncrypted = try? Encrypting.encrypt(message: mnem, with: password) else { return nil }
             self.encryptedPrivateSeed = Seed.encryptedSeedPhrase(mnemEncrypted)
         }
     }
