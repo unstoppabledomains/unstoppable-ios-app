@@ -16,4 +16,8 @@ enum PushEnvironment {
             return "https://backend.epns.io"
         }
     }
+    
+    struct ChatServiceMetadata: Codable {
+        let threadHash: String?
+    }
 }

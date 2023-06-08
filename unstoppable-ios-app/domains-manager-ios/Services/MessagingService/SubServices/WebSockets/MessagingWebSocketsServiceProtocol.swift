@@ -12,3 +12,11 @@ protocol MessagingWebSocketsServiceProtocol {
                       eventCallback: @escaping MessagingWebSocketEventCallback) throws
 }
 
+struct MessagingWebSocketMessageEntity {
+    let id: String
+    let senderDisplayInfo: MessagingChatUserDisplayInfo
+    let senderWallet: String
+    let receiverWallet: String
+    let time: Date
+    let type: MessagingChatMessageDisplayType
+}

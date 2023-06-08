@@ -12,6 +12,6 @@ typealias MessagingWebSocketEventCallback = (MessagingWebSocketEvent)->()
 enum MessagingWebSocketEvent {
     case userFeeds(_ feeds: [PushInboxNotification])
     case userSpamFeeds(_ feeds: [PushInboxNotification])
-    case chatReceivedMessage
+    case chatReceivedMessage(_ messages: [MessagingWebSocketMessageEntity])
     case chatGroups
 }

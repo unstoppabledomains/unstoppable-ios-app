@@ -248,7 +248,19 @@ private extension MessagingService {
             return
         case .chatGroups:
             return
-        case .chatReceivedMessage:
+        case .chatReceivedMessage(let messages):
+            let messages = messages.compactMap({ convertMessagingWebSocketMessageEntityToMessage($0) })
+            
+            for message in messages {
+                var messages = chatToMessagesCache[message.displayInfo.chatId] ?? []
+                messages.append(message)
+                chatToMessagesCache[message.displayInfo.chatId] = messages
+            }
+            
+            let chatIds = Set(messages.map({ $0.displayInfo.chatId }))
+            for chatId in chatIds {
+                notifyMessagesChanges(chatId: chatId)
+            }
             return
         }
     }
@@ -277,6 +289,28 @@ private extension MessagingService {
             chats[i].displayInfo.lastMessage = lastMessage
             walletsToChatsCache[wallet] = chats
         }
+    }
+    
+    func convertMessagingWebSocketMessageEntityToMessage(_ messageEntity: MessagingWebSocketMessageEntity) -> MessagingChatMessage? {
+        guard let chats: [MessagingChat] = walletsToChatsCache[messageEntity.receiverWallet],
+              let chat = chats.first(where: { chat in
+                  switch chat.displayInfo.type {
+                  case .private(let details):
+                      return details.otherUser.wallet == messageEntity.senderWallet
+                  case .group:
+                      return false
+                  }
+              }) else { return nil }
+        let messageDisplayInfo = MessagingChatMessageDisplayInfo(id: messageEntity.id,
+                                                                 chatId: chat.displayInfo.id,
+                                                                 senderType: .otherUser(messageEntity.senderDisplayInfo),
+                                                                 time: messageEntity.time,
+                                                                 type: messageEntity.type,
+                                                                 isRead: false,
+                                                                 deliveryState: .delivered)
+        let message = MessagingChatMessage(displayInfo: messageDisplayInfo,
+                                           serviceMetadata: nil)
+        return message
     }
 }
 
