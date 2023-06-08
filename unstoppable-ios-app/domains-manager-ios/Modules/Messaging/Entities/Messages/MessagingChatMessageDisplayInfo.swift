@@ -19,7 +19,7 @@ struct MessagingChatMessageDisplayInfo: Hashable {
 
 // MARK: - Open methods
 extension MessagingChatMessageDisplayInfo {
-    enum DeliveryState {
+    enum DeliveryState: Int {
         case delivered, sending, failedToSend
     }
 }
