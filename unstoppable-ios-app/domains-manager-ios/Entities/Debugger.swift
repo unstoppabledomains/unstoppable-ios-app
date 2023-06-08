@@ -31,6 +31,7 @@ public struct Debugger {
         case LocalNotification = "LN"
         case Images = "IMG"
         case DataAggregation = "AGGR"
+        case CoreData = "CD"
     }
     
     enum DebugTopicsSet {
