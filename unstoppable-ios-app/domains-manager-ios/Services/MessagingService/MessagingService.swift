@@ -254,15 +254,15 @@ private extension MessagingService {
         case .chatGroups:
             return
         case .chatReceivedMessage(let messages):
-            let messages = messages.compactMap({ convertMessagingWebSocketMessageEntityToMessage($0) })
+            let chatMessages = messages.compactMap({ convertMessagingWebSocketMessageEntityToMessage($0) })
             
-            for message in messages {
-                var messages = chatToMessagesCache[message.displayInfo.chatId] ?? []
-                messages.append(message)
-                chatToMessagesCache[message.displayInfo.chatId] = messages
+            for chatMessage in chatMessages {
+                var messages = chatToMessagesCache[chatMessage.displayInfo.chatId] ?? []
+                messages.append(chatMessage)
+                chatToMessagesCache[chatMessage.displayInfo.chatId] = messages
             }
             
-            let chatIds = Set(messages.map({ $0.displayInfo.chatId }))
+            let chatIds = Set(chatMessages.map({ $0.displayInfo.chatId }))
             for chatId in chatIds {
                 notifyMessagesChanges(chatId: chatId)
             }
