@@ -8,12 +8,13 @@
 import Foundation
 import CoreData
 
-final class CoreDataService {
+class CoreDataService {
         
     private let persistentContainer: NSPersistentContainer
     
     var currentContext: NSManagedObjectContext { viewContext }
     var viewContext: NSManagedObjectContext { persistentContainer.viewContext }
+    private(set) var backgroundContext: NSManagedObjectContext!
     
     init() {
         persistentContainer = NSPersistentContainer(name: "CoreDataModel")
@@ -44,26 +45,6 @@ extension CoreDataService {
         currentContext.reset()
     }
     
-    func deleteObject(_ object: NSManagedObject, shouldSaveContext: Bool = true) {
-        currentContext.delete(object)
-        saveContext(if: shouldSaveContext)
-    }
-    
-    func deleteObjects(_ objects: [NSManagedObject], shouldSaveContext: Bool = true) {
-        objects.forEach { object in
-            currentContext.delete(object)
-        }
-        saveContext(if: shouldSaveContext)
-    }
-}
-
-// MARK: - Private methods
-private extension CoreDataService {
-    func didLoadPersistentContainer() {
-        Debugger.printInfo(topic: .CoreData, "Did load persistent container")
-        currentContext.automaticallyMergesChangesFromParent = true
-    }
-    
     func createEntity<T: NSManagedObject>() throws -> T {
         guard let object = NSEntityDescription.insertNewObject(forEntityName: T.className, into: currentContext) as? T else { throw CoreDataError.failedToInsertObject }
         
@@ -82,9 +63,30 @@ private extension CoreDataService {
             saveContext()
         }
     }
+    
+    func deleteObject(_ object: NSManagedObject, shouldSaveContext: Bool = true) {
+        currentContext.delete(object)
+        saveContext(if: shouldSaveContext)
+    }
+    
+    func deleteObjects(_ objects: [NSManagedObject], shouldSaveContext: Bool = true) {
+        objects.forEach { object in
+            currentContext.delete(object)
+        }
+        saveContext(if: shouldSaveContext)
+    }
+}
+
+// MARK: - Private methods
+private extension CoreDataService {
+    func didLoadPersistentContainer() {
+        Debugger.printInfo(topic: .CoreData, "Did load persistent container")
+        viewContext.automaticallyMergesChangesFromParent = true
+        backgroundContext = persistentContainer.newBackgroundContext()
+        backgroundContext.automaticallyMergesChangesFromParent = true
+    }
 }
 
 enum CoreDataError: Error {
     case failedToInsertObject
-    case userIdNotSet
 }

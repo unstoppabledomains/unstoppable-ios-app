@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import CoreData
 
-final class CoreDataMessagingStorageService {
+final class CoreDataMessagingStorageService: CoreDataService {
+    
+    override var currentContext: NSManagedObjectContext { backgroundContext }
     
 }
 
