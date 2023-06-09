@@ -1826,6 +1826,14 @@
 		C6538DCD2A32269000B63E84 /* NSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DCB2A32269000B63E84 /* NSObject.swift */; };
 		C6538DCE2A32269000B63E84 /* NSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DCB2A32269000B63E84 /* NSObject.swift */; };
 		C6538DCF2A32269000B63E84 /* NSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DCB2A32269000B63E84 /* NSObject.swift */; };
+		C6538DD32A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DD22A330F7900B63E84 /* MessagingContentDecrypterService.swift */; };
+		C6538DD42A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DD22A330F7900B63E84 /* MessagingContentDecrypterService.swift */; };
+		C6538DD52A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DD22A330F7900B63E84 /* MessagingContentDecrypterService.swift */; };
+		C6538DD62A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DD22A330F7900B63E84 /* MessagingContentDecrypterService.swift */; };
+		C6538DD82A3313A900B63E84 /* PushMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DD72A3313A900B63E84 /* PushMessagingContentDecrypterService.swift */; };
+		C6538DD92A3313A900B63E84 /* PushMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DD72A3313A900B63E84 /* PushMessagingContentDecrypterService.swift */; };
+		C6538DDA2A3313A900B63E84 /* PushMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DD72A3313A900B63E84 /* PushMessagingContentDecrypterService.swift */; };
+		C6538DDB2A3313A900B63E84 /* PushMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DD72A3313A900B63E84 /* PushMessagingContentDecrypterService.swift */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -4294,6 +4302,8 @@
 		C6538DC12A32244400B63E84 /* CoreDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CoreDataModel.xcdatamodel; sourceTree = "<group>"; };
 		C6538DC62A32248C00B63E84 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
 		C6538DCB2A32269000B63E84 /* NSObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSObject.swift; sourceTree = "<group>"; };
+		C6538DD22A330F7900B63E84 /* MessagingContentDecrypterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingContentDecrypterService.swift; sourceTree = "<group>"; };
+		C6538DD72A3313A900B63E84 /* PushMessagingContentDecrypterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingContentDecrypterService.swift; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -6504,6 +6514,15 @@
 			path = Keychain;
 			sourceTree = "<group>";
 		};
+		C6538DD12A330F6600B63E84 /* Descryption */ = {
+			isa = PBXGroup;
+			children = (
+				C6538DD22A330F7900B63E84 /* MessagingContentDecrypterService.swift */,
+				C6538DD72A3313A900B63E84 /* PushMessagingContentDecrypterService.swift */,
+			);
+			path = Descryption;
+			sourceTree = "<group>";
+		};
 		C655D01D2846308E00E80A65 /* DataAggregatorService */ = {
 			isa = PBXGroup;
 			children = (
@@ -8140,6 +8159,7 @@
 		C6F9FBB62A25C2F900102F81 /* SubServices */ = {
 			isa = PBXGroup;
 			children = (
+				C6538DD12A330F6600B63E84 /* Descryption */,
 				C6F9FBC32A25C35C00102F81 /* Storage */,
 				C6F9FBC22A25C33100102F81 /* API */,
 				C6F9FBBC2A25C31C00102F81 /* WebSockets */,
@@ -9260,6 +9280,7 @@
 				C6B6B028296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
 				C60982562823FDE100546392 /* CreateLocalWalletRecoveryPhrasePresenter.swift in Sources */,
 				C62C3FAD283F67B60094FC93 /* NoDomainsToMintViewController.swift in Sources */,
+				C6538DD32A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */,
 				C635B026283393040058F14F /* ManageDomainRecordCell.swift in Sources */,
 				C6DF987B290FBA4C0098733A /* DomainProfileGenericChangeDescription.swift in Sources */,
 				C6E04195295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.swift in Sources */,
@@ -9837,6 +9858,7 @@
 				C679B60A291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C628E34527FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
 				C692C313282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
+				C6538DD82A3313A900B63E84 /* PushMessagingContentDecrypterService.swift in Sources */,
 				C655D029284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35427FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C635193828D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,
@@ -10300,6 +10322,7 @@
 				C61ECD7B2A20E8BD00E97D70 /* PushGroupChatMember.swift in Sources */,
 				C62396A12A288AE300363F60 /* MessagingChat.swift in Sources */,
 				C673D58429FA3867001CC77C /* ReviewTransferDetailsCell.swift in Sources */,
+				C6538DDA2A3313A900B63E84 /* PushMessagingContentDecrypterService.swift in Sources */,
 				307F83EC267A339F0070A9A6 /* DomainItem.swift in Sources */,
 				C692C30B282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
 				C692C353282EA63100C31393 /* AppearanceSettingsViewPresenter.swift in Sources */,
@@ -10633,6 +10656,7 @@
 				C6124CD329223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C6A474E629D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C63A352D28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
+				C6538DD52A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */,
 				C62396832A288A9400363F60 /* MessagingChatMessageDisplayInfo.swift in Sources */,
 				C6B6B045296FF7D600D4E30F /* DomainsSortOrderStorage.swift in Sources */,
 				C61ECD702A20AB4A00E97D70 /* PushMessage.swift in Sources */,
@@ -11362,6 +11386,7 @@
 				29AEA05829367785003BB5B4 /* UDWallet+Signing.swift in Sources */,
 				307F85C1267B60300070A9A6 /* Version.swift in Sources */,
 				30B3DC9A28763295006FAA64 /* WCConnectionIntentStorage.swift in Sources */,
+				C6538DD62A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */,
 				C665B9B428325282005E535C /* DomainDetailsViewController.swift in Sources */,
 				307F85C2267B60300070A9A6 /* KeychainLayer.swift in Sources */,
 				C685A97E2840BF6200E54044 /* InfoScreen.swift in Sources */,
@@ -11438,6 +11463,7 @@
 				C624D7B2281BCDB600F55530 /* BaseListCollectionViewCell.swift in Sources */,
 				C63A351D28F0152E0057D34B /* DomainProfileSection.swift in Sources */,
 				C6526DE629D2E05F00D6F2EB /* NoParkedDomainsFoundInAppViewPresenter.swift in Sources */,
+				C6538DDB2A3313A900B63E84 /* PushMessagingContentDecrypterService.swift in Sources */,
 				C6A2D5B8285074E000327C47 /* SignMessageRequestConfirmationView.swift in Sources */,
 				C6E041D6295553B40080F8E3 /* UDButton.swift in Sources */,
 				C62C3FBC283F6E410094FC93 /* MintDomainsConfigurationViewPresenter.swift in Sources */,
@@ -11550,6 +11576,7 @@
 				C6B6B029296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
 				307B1CEB2602775D007B14C3 /* UDWallet.swift in Sources */,
 				C60982572823FDE100546392 /* CreateLocalWalletRecoveryPhrasePresenter.swift in Sources */,
+				C6538DD42A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */,
 				C62C3FAE283F67B60094FC93 /* NoDomainsToMintViewController.swift in Sources */,
 				C6DF987C290FBA4C0098733A /* DomainProfileGenericChangeDescription.swift in Sources */,
 				C6E04196295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.swift in Sources */,
@@ -12127,6 +12154,7 @@
 				C679B60B291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C628E34627FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
 				C692C314282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
+				C6538DD92A3313A900B63E84 /* PushMessagingContentDecrypterService.swift in Sources */,
 				C655D02A284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35527FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C635193928D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */,

@@ -9,9 +9,10 @@ import Foundation
 
 final class MessagingService {
 
-    let apiService: MessagingAPIServiceProtocol
-    let webSocketsService: MessagingWebSocketsServiceProtocol
-    let storageService: MessagingStorageServiceProtocol
+    private let apiService: MessagingAPIServiceProtocol
+    private let webSocketsService: MessagingWebSocketsServiceProtocol
+    private let storageService: MessagingStorageServiceProtocol
+    private let decrypterService: MessagingContentDecrypterService
         
     private var walletsToChatsCache: [String : [MessagingChat]] = [:]
     private var chatToMessagesCache: [String : [MessagingChatMessage]] = [:]
@@ -20,10 +21,12 @@ final class MessagingService {
 
     init(apiService: MessagingAPIServiceProtocol,
          webSocketsService: MessagingWebSocketsServiceProtocol,
-         storageProtocol: MessagingStorageServiceProtocol) {
+         storageProtocol: MessagingStorageServiceProtocol,
+         decrypterService: MessagingContentDecrypterService) {
         self.apiService = apiService
         self.webSocketsService = webSocketsService
         self.storageService = storageProtocol
+        self.decrypterService = decrypterService
     }
     
 }
@@ -37,7 +40,7 @@ extension MessagingService: MessagingServiceProtocol {
             do {
                 let wallet = try getDomainEthWalletAddress(domain)
 
-                let allLocalChats = try await storageService.getChatsFor(wallet: wallet)
+                let allLocalChats = try await storageService.getChatsFor(decrypter: decrypterService, wallet: wallet)
                 let localChats = allLocalChats.filter { $0.displayInfo.isApproved}
                 let localRequests = allLocalChats.filter { !$0.displayInfo.isApproved}
                 
@@ -102,7 +105,7 @@ extension MessagingService: MessagingServiceProtocol {
                         return localChat
                     } else {
                         if let lastMessage = try await self.apiService.getMessagesForChat(remoteChat, fetchLimit: 1).first {
-                            await self.storageService.saveMessages([lastMessage])
+                            await self.storageService.saveMessages([lastMessage])  
                             var updatedChat = remoteChat
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
                             return updatedChat
@@ -126,7 +129,7 @@ extension MessagingService: MessagingServiceProtocol {
                                page: Int, // Starting from 1
                                limit: Int) async throws -> [MessagingChatDisplayInfo] {
         let wallet = try getDomainEthWalletAddress(domain)
-        let chats = try await storageService.getChatsFor(wallet: wallet)
+        let chats = try await storageService.getChatsFor(decrypter: decrypterService, wallet: wallet)
         
         let chatsDisplayInfo = chats.map { $0.displayInfo }
         return chatsDisplayInfo

@@ -82,7 +82,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                            pgpPrivateKey: pgpPrivateKey,
                                                            env: env)
         
-        let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0, in: chat, shouldDecrypt: false) })
+        let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0, in: chat, pgpKey: pgpPrivateKey) })
         return messages
     }
     
@@ -115,7 +115,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             
             guard let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
                                                                                             in: chat,
-                                                                                            shouldDecrypt: true) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
+                                                                                            pgpKey: pgpPrivateKey) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
             
             return chatMessage
         case .group(let groupDetails):

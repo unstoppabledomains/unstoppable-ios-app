@@ -140,7 +140,8 @@ private extension MockMessagingService {
               chatId: chatId,
               senderType: sender,
               time: createMockMessageDate(),
-              type: .text(.init(text: mockLastMessageTexts.randomElement()!)),
+              type: .text(.init(text: mockLastMessageTexts.randomElement()!,
+                                encryptedText: mockLastMessageTexts.randomElement()!)),
               isRead: true,
               deliveryState: .delivered)
     }
@@ -180,7 +181,8 @@ private extension MockMessagingService {
                                                           chatId: chatId,
                                                           senderType: sender,
                                                           time: time,
-                                                          type: .text(.init(text: text)),
+                                                          type: .text(.init(text: text,
+                                                                           encryptedText: text)),
                                                           isRead: true,
                                                           deliveryState: .delivered)
             messages.append(message)

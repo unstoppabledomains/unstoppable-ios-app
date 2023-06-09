@@ -154,7 +154,8 @@ private extension ChatViewPresenter {
 // MARK: - Send message
 private extension ChatViewPresenter {
     func sendTextMesssage(_ text: String) {
-        let textTypeDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
+        let textTypeDetails = MessagingChatMessageTextTypeDisplayInfo(text: text,
+                                                                      encryptedText: text)
         let messageType = MessagingChatMessageDisplayType.text(textTypeDetails)
         sendMessageOfType(messageType)
     }

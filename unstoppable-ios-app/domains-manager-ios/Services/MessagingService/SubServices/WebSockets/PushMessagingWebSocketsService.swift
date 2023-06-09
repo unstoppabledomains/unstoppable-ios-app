@@ -153,12 +153,17 @@ private extension PushMessagingWebSocketsService {
                 let userFeed: PushRESTAPIService.InboxResponse = try parseEntityFrom(data: data)
                 return .userSpamFeeds(userFeed.feeds)
             case .chatReceivedMessage:
-                let pushMessages: Push.Message = try parseEntityFrom(data: data)
-                let messages = [pushMessages].compactMap { PushEntitiesTransformer.convertPushMessageToChatMessage($0) }
-                return .chatReceivedMessage(messages)
+                let pushMessage: Push.Message = try parseEntityFrom(data: data)
+                
+                if let wallet = PushEntitiesTransformer.getWalletAddressFrom(eip155String: pushMessage.fromDID),
+                   let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet) {
+                    let messages = [pushMessage].compactMap { PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity($0, pgpKey: pgpKey) }
+                    return .chatReceivedMessage(messages)
+                }
             case .chatGroups:
                 return .chatGroups
             }
+            return nil
         } catch {
             return nil
         }

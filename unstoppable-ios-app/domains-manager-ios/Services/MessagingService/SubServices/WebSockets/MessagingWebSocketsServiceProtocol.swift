@@ -19,4 +19,5 @@ struct MessagingWebSocketMessageEntity {
     let receiverWallet: String
     let time: Date
     let type: MessagingChatMessageDisplayType
+    let serviceMetadata: Data?
 }
