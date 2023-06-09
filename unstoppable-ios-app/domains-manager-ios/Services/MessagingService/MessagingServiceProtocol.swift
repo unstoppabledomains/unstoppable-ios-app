@@ -9,6 +9,8 @@ import Foundation
 
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
+    func refreshForDomain(_ domain: DomainDisplayInfo)
+    
     // Chats list
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
                               page: Int,

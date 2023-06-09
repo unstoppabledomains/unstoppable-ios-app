@@ -16,6 +16,8 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
+    func refreshForDomain(_ domain: DomainDisplayInfo) { }
+    
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
                                page: Int,
                                limit: Int) async throws -> [MessagingChatDisplayInfo] {

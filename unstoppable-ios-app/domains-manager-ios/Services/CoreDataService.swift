@@ -32,9 +32,9 @@ class CoreDataService {
 extension CoreDataService {
     func saveContext() {
         Debugger.printInfo(topic: .CoreData, "Save context")
-        if currentContext.hasChanges {
+        if self.currentContext.hasChanges {
             do {
-                try currentContext.save()
+                try self.currentContext.save()
             } catch {
                 Debugger.printFailure("An error occurred while saving context, error: \(error)", critical: true)
             }
@@ -51,10 +51,13 @@ extension CoreDataService {
         return object
     }
     
-    func getEntities<T: NSManagedObject>() throws -> [T] {
+    func getEntities<T: NSManagedObject>(predicate: NSPredicate? = nil,
+                                         sortDescriptions: [NSSortDescriptor]? = nil) throws -> [T] {
         let request = T.fetchRequest()
         request.includesPropertyValues = true
         request.returnsObjectsAsFaults = false
+        request.predicate = predicate
+        request.sortDescriptors = sortDescriptions
         return try currentContext.fetch(request) as? [T] ?? []
     }
     
@@ -81,7 +84,7 @@ extension CoreDataService {
 private extension CoreDataService {
     func didLoadPersistentContainer() {
         Debugger.printInfo(topic: .CoreData, "Did load persistent container")
-        let mergePolicy = NSMergePolicyType.mergeByPropertyObjectTrumpMergePolicyType
+        let mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy 
         viewContext.automaticallyMergesChangesFromParent = true
         viewContext.mergePolicy = mergePolicy
         backgroundContext = persistentContainer.newBackgroundContext()

@@ -11,7 +11,12 @@ import CoreData
 final class CoreDataMessagingStorageService: CoreDataService {
     
     override var currentContext: NSManagedObjectContext { backgroundContext }
+    private var contextHolder: ContextHolder!
     
+    override init() {
+        super.init()
+        contextHolder = ContextHolder(context: currentContext)
+    }
 }
 
 // MARK: - MessagingStorageServiceProtocol
@@ -22,15 +27,30 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         return coreDataMessages.compactMap { convertCoreDataMessageToChatMessage($0) }
     }
     
-    func saveMessages(_ messages: [MessagingChatMessage]) async throws {
-        let coreDataMessages = messages.compactMap { (try? convertChatMessageToCoreDataMessage($0)) }
-        saveContext()
+    func saveMessages(_ messages: [MessagingChatMessage]) async {
+        let _ = messages.compactMap { (try? convertChatMessageToCoreDataMessage($0)) }
+        await contextHolder.save()
     }
     
-    func getChats() async throws -> [MessagingChat] {
-        let coreDataMessages: [CoreDataMessagingChat] = try getEntities()
+    func getChatsFor(wallet: String) async throws -> [MessagingChat] {
+        let predicate = NSPredicate(format: "thisUserWallet == %@", wallet)
+        let timeSortDescriptor = NSSortDescriptor(key: "lastMessageTime", ascending: false)
+        let coreDataChats: [CoreDataMessagingChat] = try getEntities(predicate: predicate,
+                                                                     sortDescriptions: [timeSortDescriptor])
         
-        return coreDataMessages.compactMap { convertCoreDataChatToMessagingChat($0) }
+        return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0) }
+    }
+    
+    func saveChats(_ chats: [MessagingChat]) async {
+        let _ = chats.compactMap { (try? convertMessagingChatToCoreDataChat($0)) }
+        await contextHolder.save()
+    }
+    
+    func clear() {
+        do {
+            let coreDataChats: [CoreDataMessagingChat] = try getEntities()
+            deleteObjects(coreDataChats, shouldSaveContext: true)
+        } catch { }
     }
 }
 
@@ -139,7 +159,7 @@ private extension CoreDataMessagingStorageService {
                                                    type: chatType,
                                                    unreadMessagesCount: 0,
                                                    isApproved: coreDataChat.isApproved,
-                                                   lastMessageTime: lastMessage?.time ?? Date(),
+                                                   lastMessageTime: coreDataChat.lastMessageTime!,
                                                    lastMessage: lastMessage)
         
         return MessagingChat(displayInfo: displayInfo,
@@ -154,11 +174,27 @@ private extension CoreDataMessagingStorageService {
         coreDataChat.id = displayInfo.id
         coreDataChat.avatarURL = displayInfo.avatarURL?.absoluteString
         coreDataChat.isApproved = displayInfo.isApproved
+        coreDataChat.lastMessageTime = displayInfo.lastMessageTime
+        
+        if let lastMessage = chat.displayInfo.lastMessage,
+           let lastCoreDataMessage = getCoreDataMessageWith(id: lastMessage.id) {
+            coreDataChat.lastMessage = lastCoreDataMessage
+        }
         
         saveThisUserDetails(displayInfo.thisUserDetails, to: coreDataChat)
         saveChatType(displayInfo.type, to: coreDataChat)
         
         return coreDataChat
+    }
+    
+    func getCoreDataMessageWith(id: String) -> CoreDataMessagingChatMessage? {
+        do {
+            let predicate = NSPredicate(format: "id == %@", id)
+            let messages: [CoreDataMessagingChatMessage] = try getEntities(predicate: predicate)
+            return messages.first
+        } catch {
+            return nil
+        }
     }
     
     // This user details
@@ -199,6 +235,28 @@ private extension CoreDataMessagingStorageService {
             coreDataChat.type = 1
             coreDataChat.groupMemberWallets = details.members.map { $0.wallet }
             coreDataChat.groupPendingMemberWallets = details.pendingMembers.map { $0.wallet }
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension CoreDataMessagingStorageService {
+    actor ContextHolder {
+        let context: NSManagedObjectContext
+        
+        init(context: NSManagedObjectContext) {
+            self.context = context
+        }
+        
+        func save() {
+            Debugger.printInfo(topic: .CoreData, "Save context")
+            if self.context.hasChanges {
+                do {
+                    try self.context.save()
+                } catch {
+                    Debugger.printFailure("An error occurred while saving context, error: \(error)", critical: true)
+                }
+            }
         }
     }
 }

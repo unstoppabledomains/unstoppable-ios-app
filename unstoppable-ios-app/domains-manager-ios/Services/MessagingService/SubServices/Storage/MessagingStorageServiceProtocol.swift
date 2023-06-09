@@ -7,4 +7,9 @@
 
 import Foundation
 
-protocol MessagingStorageServiceProtocol { }
+protocol MessagingStorageServiceProtocol {
+    func getMessages() async throws -> [MessagingChatMessage]
+    func saveMessages(_ messages: [MessagingChatMessage]) async
+    func getChatsFor(wallet: String) async throws -> [MessagingChat]
+    func saveChats(_ chats: [MessagingChat]) async
+}

@@ -10,4 +10,8 @@ import Foundation
 struct MessagingChat: Hashable {
     var displayInfo: MessagingChatDisplayInfo
     let serviceMetadata: Data?
+    
+    func isUpToDateWith(otherChat: MessagingChat) -> Bool {
+        serviceMetadata == otherChat.serviceMetadata
+    }
 }

@@ -11,7 +11,7 @@ final class MessagingService {
 
     let apiService: MessagingAPIServiceProtocol
     let webSocketsService: MessagingWebSocketsServiceProtocol
-    let storageProtocol: MessagingStorageServiceProtocol
+    let storageService: MessagingStorageServiceProtocol
         
     private var walletsToChatsCache: [String : [MessagingChat]] = [:]
     private var chatToMessagesCache: [String : [MessagingChatMessage]] = [:]
@@ -23,24 +23,112 @@ final class MessagingService {
          storageProtocol: MessagingStorageServiceProtocol) {
         self.apiService = apiService
         self.webSocketsService = webSocketsService
-        self.storageProtocol = storageProtocol
+        self.storageService = storageProtocol
     }
     
 }
 
 // MARK: - Open methods
 extension MessagingService: MessagingServiceProtocol {
+    func refreshForDomain(_ domain: DomainDisplayInfo) {
+        Task {
+            setupSocketConnection(domain: domain)
+
+            do {
+                let wallet = try getDomainEthWalletAddress(domain)
+
+                let allLocalChats = try await storageService.getChatsFor(wallet: wallet)
+                let localChats = allLocalChats.filter { $0.displayInfo.isApproved}
+                let localRequests = allLocalChats.filter { !$0.displayInfo.isApproved}
+                
+                async let remoteChatsTask = updatedLocalChats(localChats, forWallet: wallet, isRequests: false)
+                async let remoteRequestsTask = updatedLocalChats(localRequests, forWallet: wallet, isRequests: true)
+                
+                let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
+                let allRemoteChats = remoteChats + remoteRequests
+                
+                let updatedChats = try await refreshChatsMetadata(remoteChats: allRemoteChats, localChats: allLocalChats)
+                await storageService.saveChats(updatedChats)
+                
+                let chatsDisplayInfo = updatedChats.map { $0.displayInfo }.sorted(by: { $0.lastMessageTime > $1.lastMessageTime})
+                notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: domain.ownerWallet!))
+            } catch {
+                // TODO: - Handle error
+            }
+        }
+    }
+    
+    private func updatedLocalChats(_ localChats: [MessagingChat],
+                                   forWallet wallet: String,
+                                   isRequests: Bool) async throws -> [MessagingChat] {
+        var remoteChats = [MessagingChat]()
+        let limit = 30
+        var page = 1
+        while true {
+            let chatsPage: [MessagingChat]
+            if isRequests {
+                chatsPage = try await apiService.getChatRequestsForWallet(wallet, page: 1, limit: limit)
+            } else {
+                chatsPage = try await apiService.getChatsListForWallet(wallet, page: 1, limit: limit)
+            }
+            
+            remoteChats.append(contentsOf: chatsPage)
+            if chatsPage.count < limit {
+                /// Loaded all chats
+                break
+            } else if let lastPageChat = chatsPage.last,
+                      let localChat = localChats.first(where: { $0.displayInfo.id == lastPageChat.displayInfo.id }),
+                      lastPageChat.isUpToDateWith(otherChat: localChat) {
+                /// No changes for other chats
+                break
+            } else {
+                page += 1
+            }
+        }
+        
+        await storageService.saveChats(remoteChats)
+        
+        return remoteChats
+    }
+    
+    private func refreshChatsMetadata(remoteChats: [MessagingChat], localChats: [MessagingChat]) async throws -> [MessagingChat] {
+        var updatedChats = [MessagingChat]()
+        
+        try await withThrowingTaskGroup(of: MessagingChat.self, body: { group in
+            for remoteChat in remoteChats {
+                group.addTask {
+                    if let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
+                       localChat.isUpToDateWith(otherChat: remoteChat) {
+                        return localChat
+                    } else {
+                        if let lastMessage = try await self.apiService.getMessagesForChat(remoteChat, fetchLimit: 1).first {
+                            await self.storageService.saveMessages([lastMessage])
+                            var updatedChat = remoteChat
+                            updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
+                            return updatedChat
+                        } else {
+                            return remoteChat
+                        }
+                    }
+                }
+            }
+            
+            for try await chat in group {
+                updatedChats.append(chat)
+            }
+        })
+
+        return updatedChats
+    }
+    
     // Chats list
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
                                page: Int, // Starting from 1
                                limit: Int) async throws -> [MessagingChatDisplayInfo] {
         let wallet = try getDomainEthWalletAddress(domain)
-        let chats = try await apiService.getChatsListForWallet(wallet, page: page, limit: limit)
-        appendChatsToCache(chats, wallet: wallet)
-        setupSocketConnection(domain: domain)
+        let chats = try await storageService.getChatsFor(wallet: wallet)
         
         let chatsDisplayInfo = chats.map { $0.displayInfo }
-        notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: wallet))
         return chatsDisplayInfo
     }
     
