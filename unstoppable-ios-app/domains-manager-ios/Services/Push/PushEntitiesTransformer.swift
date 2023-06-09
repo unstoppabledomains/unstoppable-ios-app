@@ -52,12 +52,20 @@ struct PushEntitiesTransformer {
             avatarURL = URL(string: profilePicture)
         }
         
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions.insert(.withFractionalSeconds)
+        var lastMessageTime = Date()
+        if let date = formatter.date(from: pushChat.intentTimestamp)  {
+            lastMessageTime = date
+        }
+        
         let displayInfo = MessagingChatDisplayInfo(id: pushChat.chatId,
                                                    thisUserDetails: thisUserInfo,
                                                    avatarURL: avatarURL,
                                                    type: chatType,
                                                    unreadMessagesCount: 0,
                                                    isApproved: isApproved,
+                                                   lastMessageTime: lastMessageTime,
                                                    lastMessage: nil)
         
         let metadataModel = PushEnvironment.ChatServiceMetadata(threadHash: pushChat.threadhash)
@@ -68,12 +76,19 @@ struct PushEntitiesTransformer {
     }
     
     static func convertPushMessageToChatMessage(_ pushMessage: Push.Message,
-                                                in chat: MessagingChat) -> MessagingChatMessage? {
+                                                in chat: MessagingChat,
+                                                shouldDecrypt: Bool) -> MessagingChatMessage? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
               let messageType = PushMessageType(rawValue: pushMessage.messageType) else { return nil }
         
         switch messageType {
         case .text:
+            var messageContent = pushMessage.messageContent
+            if shouldDecrypt,
+               let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: chat.displayInfo.thisUserDetails.wallet),
+               let decryptedMessage = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) {
+                messageContent = decryptedMessage
+            }
             var time = Date()
             var id = "\(pushMessage.fromDID)_\(pushMessage.messageContent)"
             
@@ -81,7 +96,7 @@ struct PushEntitiesTransformer {
                 time = Date(millisecondsSince1970: timestamp)
                 id += "_\(timestamp)"
             }
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: pushMessage.messageContent)
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: messageContent)
             let userDisplayInfo = MessagingChatUserDisplayInfo(wallet: senderWallet)
             let sender: MessagingChatSender
             if chat.displayInfo.thisUserDetails.wallet == senderWallet {
@@ -109,8 +124,15 @@ struct PushEntitiesTransformer {
               let receiverWallet = getWalletAddressFrom(eip155String: pushMessage.toDID),
               let messageType = PushMessageType(rawValue: pushMessage.messageType) else { return nil }
         
+        
         switch messageType {
         case .text:
+            var messageContent = pushMessage.messageContent
+            if let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: receiverWallet),
+               let decryptedMessage = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) {
+                messageContent = decryptedMessage
+            }
+
             var time = Date()
             var id = "\(pushMessage.fromDID)_\(pushMessage.messageContent)"
             
@@ -118,7 +140,7 @@ struct PushEntitiesTransformer {
                 time = Date(millisecondsSince1970: timestamp)
                 id += "_\(timestamp)"
             }
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: pushMessage.messageContent)
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: messageContent)
             let senderDisplayInfo = MessagingChatUserDisplayInfo(wallet: senderWallet)
             let messageEntity = MessagingWebSocketMessageEntity(id: id,
                                                                 senderDisplayInfo: senderDisplayInfo,

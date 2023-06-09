@@ -81,6 +81,7 @@ private extension MockMessagingService {
                                                     type: .private(.init(otherUser: sender.userDisplayInfo)),
                                                     unreadMessagesCount: unreadMessagesCount,
                                                     isApproved: true,
+                                                    lastMessageTime: lastMessage.time,
                                                     lastMessage: lastMessage)
                 
                 chats.append(chat)

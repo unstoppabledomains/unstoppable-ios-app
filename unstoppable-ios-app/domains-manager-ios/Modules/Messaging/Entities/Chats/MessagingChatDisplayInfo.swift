@@ -14,5 +14,6 @@ struct MessagingChatDisplayInfo: Hashable {
     let type: MessagingChatType
     let unreadMessagesCount: Int
     let isApproved: Bool
+    var lastMessageTime: Date
     var lastMessage: MessagingChatMessageDisplayInfo?
 }

@@ -142,7 +142,6 @@ private extension PushMessagingWebSocketsService {
     }
     
     func convertPushEventToMessagingEvent(_ pushEvent: Events, data: [Any]?) -> MessagingWebSocketEvent? {
-        // TODO: - Test and adjust events, names and payload
         do {
             switch pushEvent {
             case .connect, .disconnect:
