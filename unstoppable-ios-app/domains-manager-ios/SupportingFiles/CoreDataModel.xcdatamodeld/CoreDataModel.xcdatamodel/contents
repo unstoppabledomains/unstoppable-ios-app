@@ -66,4 +66,14 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="CoreDataMessagingUserInfo" representedClassName="CoreDataMessagingUserInfo" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="pfpURL" optional="YES" attributeType="String"/>
+        <attribute name="wallet" attributeType="String" defaultValueString=""/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="wallet"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
 </model>

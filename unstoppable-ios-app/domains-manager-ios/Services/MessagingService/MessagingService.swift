@@ -55,6 +55,8 @@ extension MessagingService: MessagingServiceProtocol {
                 
                 let chatsDisplayInfo = updatedChats.map { $0.displayInfo }.sorted(by: { $0.lastMessageTime > $1.lastMessageTime})
                 notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: domain.ownerWallet!))
+                
+                refreshUsersInfoFor(domain: domain)
             } catch {
                 // TODO: - Handle error
             }
@@ -122,6 +124,52 @@ extension MessagingService: MessagingServiceProtocol {
         })
 
         return updatedChats
+    }
+    
+    private func refreshUsersInfoFor(domain: DomainDisplayInfo) {
+        Task {
+            do {
+                let wallet = try getDomainEthWalletAddress(domain)
+                let chats = try await storageService.getChatsFor(decrypter: decrypterService,
+                                                                 wallet: wallet)
+                await withTaskGroup(of: Void.self, body: { group in
+                    for chat in chats {
+                        group.addTask {
+                            if let otherUserInfo = try? await self.loadUserInfoFor(chat: chat) {
+                                await self.storageService.saveMessagingDomainInfo(otherUserInfo)
+                            }
+                            return Void()
+                        }
+                    }
+                    
+                    for await _ in group {
+                        Void()
+                    }
+                })
+                
+                let updatedChats = try await storageService.getChatsFor(decrypter: decrypterService,
+                                                                 wallet: wallet)
+                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, wallet: domain.ownerWallet!))
+            } catch { }
+        }
+    }
+    
+    private func loadUserInfoFor(chat: MessagingChat) async throws -> MessagingChatUserDisplayInfo? {
+        switch chat.displayInfo.type {
+        case .private(let details):
+            let wallet = details.otherUser.wallet
+            if let domain = await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
+               !domain.isEmpty {
+                let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
+                return MessagingChatUserDisplayInfo(wallet: wallet,
+                                                    domainName: domain,
+                                                    pfpURL: pfpInfo?.pfpURL)
+            }
+            
+            return nil
+        case .group(let details):
+            return nil // <GROUP_CHAT> Not supported for now
+        }
     }
     
     // Chats list

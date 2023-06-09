@@ -21,7 +21,13 @@ final class ChatListCell: BaseListCollectionViewCell {
 extension ChatListCell {
     func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
         let chat = configuration.chat
-        setAvatarFrom(url: chat.avatarURL)
+        if case .private(let info) = chat.type,
+           let pfpURL = info.otherUser.pfpURL,
+           let url = URL(string: pfpURL) {
+            setAvatarFrom(url: url)
+        } else {
+            setAvatarFrom(url: chat.avatarURL)
+        }
         
         let chatName = chatNameFrom(chat: chat)
         setNameText(chatName)

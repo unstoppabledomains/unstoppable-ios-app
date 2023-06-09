@@ -41,6 +41,7 @@ protocol UDWalletsServiceProtocol {
     
     // Reverse Resolution
     func reverseResolutionDomainName(for wallet: UDWallet) async -> DomainName?
+    func reverseResolutionDomainName(for walletAddress: HexAddress) async -> DomainName?
     func setReverseResolution(to domain: DomainItem,
                                    paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws
     

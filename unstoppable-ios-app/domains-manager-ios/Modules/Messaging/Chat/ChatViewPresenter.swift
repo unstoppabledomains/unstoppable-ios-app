@@ -126,7 +126,7 @@ private extension ChatViewPresenter {
         switch chat.type {
         case .private(let chatDetails):
             let otherUser = chatDetails.otherUser
-            if let domainName = otherUser.domain?.name {
+            if let domainName = otherUser.domainName {
                 view?.setTitleOfType(.domainName(domainName))
             } else {
                 view?.setTitleOfType(.walletAddress(otherUser.wallet))

@@ -32,7 +32,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     
     func saveMessages(_ messages: [MessagingChatMessage]) async {
         let _ = messages.compactMap { (try? convertChatMessageToCoreDataMessage($0)) }
-        await contextHolder.save()
+        contextHolder.save()
     }
     
     func getChatsFor(decrypter: MessagingContentDecrypterService,
@@ -48,7 +48,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     
     func saveChats(_ chats: [MessagingChat]) async {
         let _ = chats.compactMap { (try? convertMessagingChatToCoreDataChat($0)) }
-        await contextHolder.save()
+        contextHolder.save()
     }
     
     func clear() {
@@ -59,6 +59,11 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities()
             deleteObjects(coreDataMessages, shouldSaveContext: true)
         } catch { }
+    }
+    
+    func saveMessagingDomainInfo(_ info: MessagingChatUserDisplayInfo) async {
+        let _ = try? convertChatUserDisplayInfoToMessagingUserInfo(info)
+        contextHolder.save()
     }
 }
 
@@ -231,7 +236,13 @@ private extension CoreDataMessagingStorageService {
     func getChatType(from coreDataChat: CoreDataMessagingChat) -> MessagingChatType? {
         if coreDataChat.type == 0,
            let otherUserWallet = coreDataChat.otherUserWallet {
-            let privateChatDetails = MessagingPrivateChatDetails(otherUser: .init(wallet: otherUserWallet))
+            var otherUserInfo = MessagingChatUserDisplayInfo(wallet: otherUserWallet)
+            if let userInfo = getCoreDataDomainInfoFor(wallet: otherUserWallet) {
+                otherUserInfo.domainName = userInfo.name
+                otherUserInfo.pfpURL = userInfo.pfpURL
+            }
+            let privateChatDetails = MessagingPrivateChatDetails(otherUser: otherUserInfo)
+            
             return .private(privateChatDetails)
         } else if coreDataChat.type == 1,
                   let memberWallets = coreDataChat.groupMemberWallets,
@@ -262,20 +273,41 @@ private extension CoreDataMessagingStorageService {
 
 // MARK: - Private methods
 private extension CoreDataMessagingStorageService {
-    actor ContextHolder {
+    func convertChatUserDisplayInfoToMessagingUserInfo(_ displayInfo: MessagingChatUserDisplayInfo) throws -> CoreDataMessagingUserInfo {
+        let coreDataUserInfo: CoreDataMessagingUserInfo = try createEntity()
+        coreDataUserInfo.wallet = displayInfo.wallet
+        coreDataUserInfo.name = displayInfo.domainName
+        coreDataUserInfo.pfpURL = displayInfo.pfpURL
+        
+        return coreDataUserInfo
+    }
+    
+    func getCoreDataDomainInfoFor(wallet: String) -> CoreDataMessagingUserInfo? {
+        let predicate = NSPredicate(format: "wallet == %@", wallet)
+        let infos: [CoreDataMessagingUserInfo]? = try? getEntities(predicate: predicate)
+        return infos?.first
+    }
+}
+
+// MARK: - ContextHolder
+private extension CoreDataMessagingStorageService {
+    final class ContextHolder {
         let context: NSManagedObjectContext
+        private let queue = DispatchQueue(label: "com.unstoppabledomains.coredata.context")
         
         init(context: NSManagedObjectContext) {
             self.context = context
         }
         
         func save() {
-            Debugger.printInfo(topic: .CoreData, "Save context")
-            if self.context.hasChanges {
-                do {
-                    try self.context.save()
-                } catch {
-                    Debugger.printFailure("An error occurred while saving context, error: \(error)", critical: true)
+            queue.sync {
+                Debugger.printInfo(topic: .CoreData, "Save context")
+                if self.context.hasChanges {
+                    do {
+                        try self.context.save()
+                    } catch {
+                        Debugger.printFailure("An error occurred while saving context, error: \(error)", critical: true)
+                    }
                 }
             }
         }

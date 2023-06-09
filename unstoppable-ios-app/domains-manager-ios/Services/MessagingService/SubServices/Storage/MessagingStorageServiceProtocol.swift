@@ -14,4 +14,6 @@ protocol MessagingStorageServiceProtocol {
     func getChatsFor(decrypter: MessagingContentDecrypterService,
                      wallet: String) async throws -> [MessagingChat]
     func saveChats(_ chats: [MessagingChat]) async
+    
+    func saveMessagingDomainInfo(_ info: MessagingChatUserDisplayInfo) async
 }

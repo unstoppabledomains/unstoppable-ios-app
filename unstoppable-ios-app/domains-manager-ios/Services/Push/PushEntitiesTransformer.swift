@@ -11,7 +11,8 @@ import Push
 struct PushEntitiesTransformer {
     static func convertPushUserToChatUser(_ pushUser: PushUser) -> MessagingChatUserDisplayInfo {
         MessagingChatUserDisplayInfo(wallet: pushUser.wallets,
-                                     domain: nil)
+                                     domainName: nil,
+                                     pfpURL: nil)
     }
     
     static func convertPushChatToChat(_ pushChat: PushChat,
