@@ -81,9 +81,12 @@ extension CoreDataService {
 private extension CoreDataService {
     func didLoadPersistentContainer() {
         Debugger.printInfo(topic: .CoreData, "Did load persistent container")
+        let mergePolicy = NSMergePolicyType.mergeByPropertyObjectTrumpMergePolicyType
         viewContext.automaticallyMergesChangesFromParent = true
+        viewContext.mergePolicy = mergePolicy
         backgroundContext = persistentContainer.newBackgroundContext()
         backgroundContext.automaticallyMergesChangesFromParent = true
+        backgroundContext.mergePolicy = mergePolicy
     }
 }
 

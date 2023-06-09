@@ -2,6 +2,8 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F66" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CoreDataMessagingChat" representedClassName="CoreDataMessagingChat" syncable="YES" codeGenerationType="class">
         <attribute name="avatarURL" optional="YES" attributeType="String"/>
+        <attribute name="groupMemberWallets" optional="YES" attributeType="Transformable" customClassName="[String]"/>
+        <attribute name="groupPendingMemberWallets" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isApproved" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="otherUserWallet" optional="YES" attributeType="String"/>
@@ -10,6 +12,11 @@
         <attribute name="type" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="lastMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingChatMessage" inverseName="lastInChat" inverseEntity="CoreDataMessagingChatMessage"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CoreDataMessagingChatMessage" inverseName="chat" inverseEntity="CoreDataMessagingChatMessage"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="CoreDataMessagingChatMessage" representedClassName="CoreDataMessagingChatMessage" syncable="YES" codeGenerationType="class">
         <attribute name="chatId" attributeType="String" defaultValueString=""/>
@@ -24,6 +31,11 @@
         <attribute name="time" attributeType="Date" defaultDateTimeInterval="707930820" usesScalarValueType="NO"/>
         <relationship name="chat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingChat" inverseName="messages" inverseEntity="CoreDataMessagingChat"/>
         <relationship name="lastInChat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingChat" inverseName="lastMessage" inverseEntity="CoreDataMessagingChat"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="CoreDataMessagingNewsChannel" representedClassName="CoreDataMessagingNewsChannel" syncable="YES" codeGenerationType="class">
         <attribute name="blocked" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
@@ -35,6 +47,11 @@
         <attribute name="url" attributeType="String" defaultValueString=""/>
         <relationship name="feed" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CoreDataMessagingNewsChannelFeed" inverseName="channel" inverseEntity="CoreDataMessagingNewsChannelFeed"/>
         <relationship name="lastFeed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannelFeed" inverseName="lastInChannel" inverseEntity="CoreDataMessagingNewsChannelFeed"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="CoreDataMessagingNewsChannelFeed" representedClassName="CoreDataMessagingNewsChannelFeed" syncable="YES" codeGenerationType="class">
         <attribute name="id" attributeType="String" defaultValueString=""/>
@@ -44,5 +61,10 @@
         <attribute name="title" attributeType="String" defaultValueString=""/>
         <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannel" inverseName="feed" inverseEntity="CoreDataMessagingNewsChannel"/>
         <relationship name="lastInChannel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannel" inverseName="lastFeed" inverseEntity="CoreDataMessagingNewsChannel"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
 </model>
