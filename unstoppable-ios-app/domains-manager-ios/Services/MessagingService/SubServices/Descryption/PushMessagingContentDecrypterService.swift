@@ -20,6 +20,8 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
             return text
         }
         
-        return text // TODO: - Use function from the SDK to decrypt the message
+        return try Push.PushChat.decryptMessage(text,
+                                                encryptedSecret: messageMetadata.encryptedSecret,
+                                                privateKeyArmored: pgpKey)
     }
 }

@@ -79,7 +79,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentPushEnvironment()
         let pushMessages = try await Push.PushChat.History(threadHash: threadHash,
                                                            limit: fetchLimit,
-                                                           pgpPrivateKey: pgpPrivateKey,
+                                                           pgpPrivateKey: "",
+                                                           toDecrypt: false,
                                                            env: env)
         
         let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0, in: chat, pgpKey: pgpPrivateKey) })
