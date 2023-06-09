@@ -49,7 +49,10 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func clear() {
         do {
             let coreDataChats: [CoreDataMessagingChat] = try getEntities()
-            deleteObjects(coreDataChats, shouldSaveContext: true)
+            deleteObjects(coreDataChats, shouldSaveContext: false)
+
+            let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities()
+            deleteObjects(coreDataMessages, shouldSaveContext: true)
         } catch { }
     }
 }
