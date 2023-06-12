@@ -22,9 +22,8 @@ extension ChatListCell {
     func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
         let chat = configuration.chat
         if case .private(let info) = chat.type,
-           let pfpURL = info.otherUser.pfpURL,
-           let url = URL(string: pfpURL) {
-            setAvatarFrom(url: url)
+           let pfpURL = info.otherUser.pfpURL {
+            setAvatarFrom(url: pfpURL)
         } else {
             setAvatarFrom(url: chat.avatarURL)
         }

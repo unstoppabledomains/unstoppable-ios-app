@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F66" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CoreDataMessagingChat" representedClassName="CoreDataMessagingChat" syncable="YES" codeGenerationType="class">
-        <attribute name="avatarURL" optional="YES" attributeType="String"/>
+        <attribute name="avatarURL" optional="YES" attributeType="URI"/>
         <attribute name="groupMemberWallets" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="groupPendingMemberWallets" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
@@ -38,27 +38,30 @@
     </entity>
     <entity name="CoreDataMessagingNewsChannel" representedClassName="CoreDataMessagingNewsChannel" syncable="YES" codeGenerationType="class">
         <attribute name="blocked" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="icon" attributeType="String" defaultValueString=""/>
+        <attribute name="icon" attributeType="URI" defaultValueString=""/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="info" attributeType="String" defaultValueString=""/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="subscriberCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="url" attributeType="String" defaultValueString=""/>
-        <relationship name="feed" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CoreDataMessagingNewsChannelFeed" inverseName="channel" inverseEntity="CoreDataMessagingNewsChannelFeed"/>
+        <attribute name="url" attributeType="URI" defaultValueString=""/>
+        <attribute name="verifiedStatus" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="wallet" optional="YES" attributeType="String"/>
         <relationship name="lastFeed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannelFeed" inverseName="lastInChannel" inverseEntity="CoreDataMessagingNewsChannelFeed"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
+                <constraint value="wallet"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
     <entity name="CoreDataMessagingNewsChannelFeed" representedClassName="CoreDataMessagingNewsChannelFeed" syncable="YES" codeGenerationType="class">
+        <attribute name="channelId" attributeType="String" defaultValueString=""/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
-        <attribute name="link" attributeType="String" defaultValueString=""/>
+        <attribute name="isRead" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="link" attributeType="URI" defaultValueString=""/>
         <attribute name="message" attributeType="String" defaultValueString=""/>
         <attribute name="time" attributeType="Date" defaultDateTimeInterval="707931660" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String" defaultValueString=""/>
-        <relationship name="channel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannel" inverseName="feed" inverseEntity="CoreDataMessagingNewsChannel"/>
         <relationship name="lastInChannel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannel" inverseName="lastFeed" inverseEntity="CoreDataMessagingNewsChannel"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -68,7 +71,7 @@
     </entity>
     <entity name="CoreDataMessagingUserInfo" representedClassName="CoreDataMessagingUserInfo" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="pfpURL" optional="YES" attributeType="String"/>
+        <attribute name="pfpURL" optional="YES" attributeType="URI"/>
         <attribute name="wallet" attributeType="String" defaultValueString=""/>
         <uniquenessConstraints>
             <uniquenessConstraint>

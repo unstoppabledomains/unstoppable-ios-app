@@ -176,10 +176,7 @@ struct PushEntitiesTransformer {
                              url: pushChannel.url,
                              icon: pushChannel.icon,
                              verifiedStatus: pushChannel.verified_status,
-                             activationStatus: pushChannel.activation_status,
-                             counter: pushChannel.counter,
                              blocked: pushChannel.blocked,
-                             isAliasVerified: pushChannel.is_alias_verified,
                              subscriberCount: pushChannel.subscriber_count,
                              unreadMessagesCount: 0)
     }
@@ -189,7 +186,8 @@ struct PushEntitiesTransformer {
                                  title: pushNotification.payload.data.asub,
                                  message: pushNotification.payload.data.amsg,
                                  link: pushNotification.payload.data.url,
-                                 time: pushNotification.epoch)
+                                 time: pushNotification.epoch,
+                                 isRead: false)
     }
     
     static func getWalletAddressFrom(eip155String: String) -> String? {

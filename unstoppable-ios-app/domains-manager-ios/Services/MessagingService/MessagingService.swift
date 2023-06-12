@@ -136,7 +136,7 @@ extension MessagingService: MessagingServiceProtocol {
                     for chat in chats {
                         group.addTask {
                             if let otherUserInfo = try? await self.loadUserInfoFor(chat: chat) {
-                                await self.storageService.saveMessagingDomainInfo(otherUserInfo)
+                                await self.storageService.saveMessagingUserInfo(otherUserInfo)
                             }
                             return Void()
                         }
@@ -161,9 +161,14 @@ extension MessagingService: MessagingServiceProtocol {
             if let domain = await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
                !domain.isEmpty {
                 let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
+                var pfpURL: URL?
+                if let urlString = pfpInfo?.pfpURL,
+                   let url = URL(string: urlString) {
+                    pfpURL = url
+                }
                 return MessagingChatUserDisplayInfo(wallet: wallet,
                                                     domainName: domain,
-                                                    pfpURL: pfpInfo?.pfpURL)
+                                                    pfpURL: pfpURL)
             }
             
             return nil

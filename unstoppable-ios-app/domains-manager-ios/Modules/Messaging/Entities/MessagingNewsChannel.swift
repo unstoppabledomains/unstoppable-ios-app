@@ -14,10 +14,10 @@ struct MessagingNewsChannel: Hashable {
     let url: URL
     let icon: URL
     let verifiedStatus: Int
-    let activationStatus: Int
-    let counter: Int?
+//    let activationStatus: Int
+//    let counter: Int?
     let blocked: Int
-    let isAliasVerified: Int
+//    let isAliasVerified: Int
     let subscriberCount: Int
     let unreadMessagesCount: Int
     var lastMessage: MessagingNewsChannelFeed?
