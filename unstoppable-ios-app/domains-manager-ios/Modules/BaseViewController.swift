@@ -120,7 +120,10 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
     
     func shouldPopOnBackButton() -> Bool { true }
     func customScrollingBehaviour(yOffset: CGFloat, in navBar: CNavigationBar) -> (()->())? { nil }
-
+    func setupHideKeyboardTap() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
 }
 
 // MARK: - BaseViewControllerProtocol
@@ -154,6 +157,10 @@ private extension BaseViewController {
     
     func removeKeyboardObservers() {
         KeyboardService.shared.removeListener(self)
+    }
+    
+    @objc func dismissKeyboard() {
+        hideKeyboard()
     }
 }
 

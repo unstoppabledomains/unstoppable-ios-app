@@ -154,6 +154,7 @@ private extension ChatViewController {
         setupInputView()
         setupNavBar()
         setupCollectionView()
+        setupHideKeyboardTap()
     }
     
     func setupInputView() {

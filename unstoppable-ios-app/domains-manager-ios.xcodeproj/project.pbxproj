@@ -1802,6 +1802,18 @@
 		C65272862A166E75001A084C /* ChatTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272842A166E75001A084C /* ChatTitleView.swift */; };
 		C65272872A166E75001A084C /* ChatTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272842A166E75001A084C /* ChatTitleView.swift */; };
 		C65272882A166E75001A084C /* ChatTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65272842A166E75001A084C /* ChatTitleView.swift */; };
+		C6538DB22A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DB12A32164300B63E84 /* KeychainPrivateKeyStorage.swift */; };
+		C6538DB32A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DB12A32164300B63E84 /* KeychainPrivateKeyStorage.swift */; };
+		C6538DB42A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DB12A32164300B63E84 /* KeychainPrivateKeyStorage.swift */; };
+		C6538DB52A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DB12A32164300B63E84 /* KeychainPrivateKeyStorage.swift */; };
+		C6538DB72A32164F00B63E84 /* iCloudPrivateKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DB62A32164F00B63E84 /* iCloudPrivateKeyStorage.swift */; };
+		C6538DB82A32164F00B63E84 /* iCloudPrivateKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DB62A32164F00B63E84 /* iCloudPrivateKeyStorage.swift */; };
+		C6538DB92A32164F00B63E84 /* iCloudPrivateKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DB62A32164F00B63E84 /* iCloudPrivateKeyStorage.swift */; };
+		C6538DBA2A32164F00B63E84 /* iCloudPrivateKeyStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DB62A32164F00B63E84 /* iCloudPrivateKeyStorage.swift */; };
+		C6538DBC2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DBB2A32168500B63E84 /* KeychainPGPKeysStorage.swift */; };
+		C6538DBD2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DBB2A32168500B63E84 /* KeychainPGPKeysStorage.swift */; };
+		C6538DBE2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DBB2A32168500B63E84 /* KeychainPGPKeysStorage.swift */; };
+		C6538DBF2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6538DBB2A32168500B63E84 /* KeychainPGPKeysStorage.swift */; };
 		C655D01F284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D020284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
 		C655D021284630A100E80A65 /* DataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655D01E284630A100E80A65 /* DataAggregatorService.swift */; };
@@ -4264,6 +4276,9 @@
 		C65272762A15FBB2001A084C /* ChatTextCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatTextCell.xib; sourceTree = "<group>"; };
 		C652727F2A165A3D001A084C /* MessagingChatSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatSender.swift; sourceTree = "<group>"; };
 		C65272842A166E75001A084C /* ChatTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTitleView.swift; sourceTree = "<group>"; };
+		C6538DB12A32164300B63E84 /* KeychainPrivateKeyStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainPrivateKeyStorage.swift; sourceTree = "<group>"; };
+		C6538DB62A32164F00B63E84 /* iCloudPrivateKeyStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudPrivateKeyStorage.swift; sourceTree = "<group>"; };
+		C6538DBB2A32168500B63E84 /* KeychainPGPKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainPGPKeysStorage.swift; sourceTree = "<group>"; };
 		C655D01E284630A100E80A65 /* DataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorService.swift; sourceTree = "<group>"; };
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
@@ -5065,7 +5080,6 @@
 				C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */,
 				C6E6A000288AEAC6000A8346 /* ExternalEventsStorage.swift */,
 				C61236E6292C88D1002BA97B /* ImagesStorage.swift */,
-				3070B1D725AF8AF300DEC81C /* KeychainLayer.swift */,
 				29BECD1C2979BE8800662FC1 /* SecureHashStorage.swift */,
 				29BECD0D2979BD7B00662FC1 /* CloudStorage.swift */,
 				30972CC3258A62A700D7E229 /* LocalStorage.swift */,
@@ -5077,6 +5091,7 @@
 				3004E32B26D53F1D00B9CB6A /* UDWalletStorage.swift */,
 				29AEA04F292F941F003BB5B4 /* PersistedSignaturesStorage.swift */,
 				29AEA04A292F7D60003BB5B4 /* SecurePersistedStorage.swift */,
+				C6538DB02A32161400B63E84 /* Keychain */,
 			);
 			path = Storages;
 			sourceTree = "<group>";
@@ -6459,6 +6474,17 @@
 				C65272762A15FBB2001A084C /* ChatTextCell.xib */,
 			);
 			path = ChatTextCell;
+			sourceTree = "<group>";
+		};
+		C6538DB02A32161400B63E84 /* Keychain */ = {
+			isa = PBXGroup;
+			children = (
+				3070B1D725AF8AF300DEC81C /* KeychainLayer.swift */,
+				C6538DB62A32164F00B63E84 /* iCloudPrivateKeyStorage.swift */,
+				C6538DB12A32164300B63E84 /* KeychainPrivateKeyStorage.swift */,
+				C6538DBB2A32168500B63E84 /* KeychainPGPKeysStorage.swift */,
+			);
+			path = Keychain;
 			sourceTree = "<group>";
 		};
 		C655D01D2846308E00E80A65 /* DataAggregatorService */ = {
@@ -9162,6 +9188,7 @@
 				C6C4218C293A1E21005B791B /* UDConfigurableButton.swift in Sources */,
 				C60DCEEF282D13F800F71C13 /* RenameWalletViewController.swift in Sources */,
 				C66107992A31A4BC0076782F /* PushEntitiesTransformer.swift in Sources */,
+				C6538DB22A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */,
 				C6668941281150FA002062B4 /* SecondaryButton.swift in Sources */,
 				C62247BA283CFF23002A0CBD /* MockDomainTransactionsService.swift in Sources */,
 				C673D5AC29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */,
@@ -9227,6 +9254,7 @@
 				C669C38C2912632100837F21 /* SocialsVerificationViewPresenter.swift in Sources */,
 				C6D6E5062817E5ED008C66BB /* OnboardingAddWalletPresenter.swift in Sources */,
 				C60982302823EF3900546392 /* AddWalletNavigationController.swift in Sources */,
+				C6538DBC2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */,
 				C6124CD129223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C6D6E55428193A35008C66BB /* DomainsCollectionViewController.swift in Sources */,
 				C6BEEF3029C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */,
@@ -9468,6 +9496,7 @@
 				29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
 				C66804C9280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
 				306C9ACD273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
+				C6538DB72A32164F00B63E84 /* iCloudPrivateKeyStorage.swift in Sources */,
 				C6A2D50A284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
 				3018AEAE27E9D50A00E8C37D /* RestoreWalletViewController.swift in Sources */,
 				309194EF2582C52400D132B9 /* MobileAPIAccess.swift in Sources */,
@@ -9975,6 +10004,7 @@
 				C6D6E4FE2817E386008C66BB /* EnterBackupOnboardingPresenter.swift in Sources */,
 				C624D7B6281BCFC600F55530 /* IconBorderedContainerView.swift in Sources */,
 				C66804C3280D9EC8007E6390 /* DigitalKeyboardViewController.swift in Sources */,
+				C6538DBE2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */,
 				C609831C282B707C00546392 /* UINavigationController.swift in Sources */,
 				C6A2D55A284F3E3200327C47 /* SignTransactionDomainSelectionViewPresenter.swift in Sources */,
 				C652723E2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */,
@@ -10283,6 +10313,7 @@
 				C6C995B4289D313D00367362 /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				30784C8B27F455100034FA4A /* UDTextView.swift in Sources */,
 				C65DEA7D29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
+				C6538DB42A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */,
 				C6D6E4F42817CC97008C66BB /* OnboardingRecoveryPhrasePresenter.swift in Sources */,
 				C635195328D0441000FC6AF8 /* SetupWalletsReverseResolutionPresenter.swift in Sources */,
 				C679B5FD2919327100F543A7 /* DomainProfileSectionDataChangeType.swift in Sources */,
@@ -10353,11 +10384,11 @@
 				C6C4217A29371446005B791B /* DomainProfileTutorialViewController.swift in Sources */,
 				29AEA04D292F7D60003BB5B4 /* SecurePersistedStorage.swift in Sources */,
 				C61236F2292CAE07002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift in Sources */,
-                C65955FD287C63C700319ACC /* UIImage+Colors.swift in Sources */,
 				C65955FD287C63C700319ACC /* UIImage+Colors.swift in Sources */,
-                C623969C2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
+				C65955FD287C63C700319ACC /* UIImage+Colors.swift in Sources */,
 				C623969C2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
-                296BB6212A309DD90068EEEC /* Encrypting.swift in Sources */,
+				C623969C2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
+				296BB6212A309DD90068EEEC /* Encrypting.swift in Sources */,
 				296BB6212A309DD90068EEEC /* Encrypting.swift in Sources */,
 				C6D5DAE128374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
 				C66435C3288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
@@ -10566,6 +10597,7 @@
 				30B3DC9928763295006FAA64 /* WCConnectionIntentStorage.swift in Sources */,
 				C665B9B328325282005E535C /* DomainDetailsViewController.swift in Sources */,
 				307F8409267A339F0070A9A6 /* KeychainLayer.swift in Sources */,
+				C6538DB92A32164F00B63E84 /* iCloudPrivateKeyStorage.swift in Sources */,
 				C685A97D2840BF6200E54044 /* InfoScreen.swift in Sources */,
 				C628E34727FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
 				C692C315282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
@@ -11066,6 +11098,7 @@
 				C6456F182800212000A517D5 /* UIStackView.swift in Sources */,
 				C62C3FC9283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824E2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
+				C6538DB52A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */,
 				C6D6E52F28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C6F9FBEB2A25CB5800102F81 /* PushMessageType.swift in Sources */,
 				C6D6E4D72817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
@@ -11336,6 +11369,7 @@
 				C6D6E58928193ED9008C66BB /* DomainsCollectionListCell.swift in Sources */,
 				C6B6858E280077F7000F9037 /* UIImage.swift in Sources */,
 				C6C9DEA32834B56200BAC36F /* ManageDomainLoadingCell.swift in Sources */,
+				C6538DBF2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */,
 				C6526DDC29D2DF6E00D6F2EB /* LoginWithEmailInAppViewPresenter.swift in Sources */,
 				C666E07529C9F1900003DECB /* LoginWithEmailViewPresenter.swift in Sources */,
 				C6124CDF2923C7FF005E6537 /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
@@ -11384,6 +11418,7 @@
 				C623968E2A288AB300363F60 /* MessagingPrivateChatDetails.swift in Sources */,
 				C669C39C291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift in Sources */,
 				C61002A3293E075300462983 /* DomainProfileDataToClipboardCopier.swift in Sources */,
+				C6538DBA2A32164F00B63E84 /* iCloudPrivateKeyStorage.swift in Sources */,
 				C6045B8F281C2AA900B16761 /* EmptyCollectionReusableView.swift in Sources */,
 				C63A352928F017220057D34B /* DomainProfileSectionsFactory.swift in Sources */,
 			);
@@ -11434,6 +11469,7 @@
 				C6C4218D293A1E21005B791B /* UDConfigurableButton.swift in Sources */,
 				C64836BE282BCAFB007BD3F1 /* PrimaryDangerButton.swift in Sources */,
 				C661079A2A31A4BC0076782F /* PushEntitiesTransformer.swift in Sources */,
+				C6538DB32A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */,
 				C60DCEF0282D13F800F71C13 /* RenameWalletViewController.swift in Sources */,
 				C6668942281150FA002062B4 /* SecondaryButton.swift in Sources */,
 				C673D5AD29FB725B001CC77C /* InviteFriendsViewPresenter.swift in Sources */,
@@ -11499,6 +11535,7 @@
 				C669C38D2912632100837F21 /* SocialsVerificationViewPresenter.swift in Sources */,
 				C635B027283393040058F14F /* ManageDomainRecordCell.swift in Sources */,
 				C6D6E5072817E5ED008C66BB /* OnboardingAddWalletPresenter.swift in Sources */,
+				C6538DBD2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */,
 				C6124CD229223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C60982312823EF3900546392 /* AddWalletNavigationController.swift in Sources */,
 				C6BEEF3129C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */,
@@ -11740,6 +11777,7 @@
 				29EDB61F28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
 				C66804CA280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
 				306C9ACE273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
+				C6538DB82A32164F00B63E84 /* iCloudPrivateKeyStorage.swift in Sources */,
 				C6A2D50B284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
 				3018AEAF27E9D50A00E8C37D /* RestoreWalletViewController.swift in Sources */,
 				302005D2267B7FB3004BDD0A /* PaymentConfiguration.swift in Sources */,
@@ -12915,7 +12953,7 @@
 			repositoryURL = "https://github.com/ethereum-push-notification-service/push-swift-sdk";
 			requirement = {
 				kind = exactVersion;
-				version = 0.4.0;
+				version = 0.5.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

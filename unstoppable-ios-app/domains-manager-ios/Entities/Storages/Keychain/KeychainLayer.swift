@@ -123,30 +123,6 @@ extension PrivateKeyStorage {
     }
 }
 
-struct KeychainPrivateKeyStorage: PrivateKeyStorage {
-    let valet: ValetProtocol
-    static let keychainName = "unstoppable-keychain"
-    private init() {
-        valet = Valet.valet(with: Identifier(nonEmpty: Self.keychainName)!,
-                            accessibility: .whenUnlockedThisDeviceOnly)
-    }
-    
-    static var instance = KeychainPrivateKeyStorage()
-    
-    static func retrievePasscode() -> String? {
-        Self.instance.retrieveValue(for: .passcode, isCritical: false)
-    }
-}
-
-struct iCloudPrivateKeyStorage: PrivateKeyStorage {
-    let valet: ValetProtocol
-    static let iCloudName = "unstoppable-icloud-storage"
-    init() {
-        valet = Valet.iCloudValet(with: Identifier(nonEmpty: Self.iCloudName)!,
-                                  accessibility: .whenUnlocked)
-    }
-}
-
 enum Seed: CustomStringConvertible, Equatable {
     case encryptedPrivateKey (String)
     case encryptedSeedPhrase (String)
