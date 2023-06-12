@@ -70,12 +70,53 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
+                            options: MessagingAPIServiceLoadMessagesOptions,
                             fetchLimit: Int) async throws -> [MessagingChatMessage] {
-        let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
-        guard let threadHash = chatMetadata.threadHash else {
-            return [] // NULL threadHash means there's no messages in the chat yet
+        switch options {
+        case .default:
+            let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
+            guard let threadHash = chatMetadata.threadHash else {
+                return [] // NULL threadHash means there's no messages in the chat yet
+            }
+            return try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit)
+        case .before(let message):
+            let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: message.serviceMetadata)
+            guard let threadHash = messageMetadata.link else {
+                return []
+            }
+            return try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit)
+        case .after(let message):
+            let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
+            guard var threadHash = chatMetadata.threadHash else {
+                return []
+            }
+            
+            var messages = [MessagingChatMessage]()
+            
+            while true {
+                let chunkMessages = try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit)
+                if let i = chunkMessages.firstIndex(where: { $0.displayInfo.id == message.displayInfo.id }) {
+                    let missingMessages = Array(chunkMessages[..<i])
+                    messages.append(contentsOf: missingMessages)
+                    break
+                } else {
+                    messages.append(contentsOf: chunkMessages)
+                    guard !chunkMessages.isEmpty else { break }
+                    
+                    let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: chunkMessages.last!.serviceMetadata)
+                    guard let hash = messageMetadata.link else { break }
+                    threadHash = hash
+                }
+            }
+            
+            return messages
         }
         
+    }
+    
+    private func getPreviousMessagesForChat(_ chat: MessagingChat,
+                                            threadHash: String,
+                                            fetchLimit: Int) async throws -> [MessagingChatMessage] {
         let wallet = chat.displayInfo.thisUserDetails.wallet
         let pgpPrivateKey = try await getPGPPrivateKeyFor(wallet: wallet)
         let env = getCurrentPushEnvironment()

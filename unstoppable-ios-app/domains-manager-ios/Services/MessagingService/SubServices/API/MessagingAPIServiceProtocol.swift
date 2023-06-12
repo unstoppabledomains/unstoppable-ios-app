@@ -18,6 +18,7 @@ protocol MessagingAPIServiceProtocol {
     
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
+                            options: MessagingAPIServiceLoadMessagesOptions,
                             fetchLimit: Int) async throws -> [MessagingChatMessage]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat) async throws -> MessagingChatMessage
@@ -34,4 +35,8 @@ protocol MessagingAPIServiceProtocol {
                     limit: Int) async throws -> [MessagingNewsChannelFeed]
 }
 
-
+enum MessagingAPIServiceLoadMessagesOptions {
+    case `default`
+    case before(message: MessagingChatMessage)
+    case after(message: MessagingChatMessage)
+}

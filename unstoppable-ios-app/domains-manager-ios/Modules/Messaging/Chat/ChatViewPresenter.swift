@@ -10,6 +10,7 @@ import Foundation
 @MainActor
 protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: ChatViewController.Item)
+    func willDisplayItem(_ item: ChatViewController.Item)
     
     func didTypeText(_ text: String)
     func didPressSendText(_ text: String)
@@ -21,8 +22,10 @@ final class ChatViewPresenter {
     private weak var view: ChatViewProtocol?
     private let chat: MessagingChatDisplayInfo
     private let domain: DomainDisplayInfo
-    private let fetchLimit: Int = 20
+    private let fetchLimit: Int = 8
     private var messages: [MessagingChatMessageDisplayInfo] = []
+    private var chatState: ChatContentState = .upToDate
+    private var isLoadingMore = false
     
     init(view: ChatViewProtocol,
          chat: MessagingChatDisplayInfo,
@@ -46,6 +49,24 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         
     }
     
+    func willDisplayItem(_ item: ChatViewController.Item) {
+        let messageId = item.messageId
+        guard let messageIndex = messages.firstIndex(where: { $0.id == messageId }) else {
+            Debugger.printFailure("Failed to find will display message with id \(messageId) in the list", critical: true)
+            return }
+        
+        if messageIndex >= (messages.count - 4) {
+            switch chatState {
+            case .hasUnloadedMessagesBefore(let message):
+                loadMoreMessagesBefore(message: message)
+            case .upToDate:
+                return
+            case .hasUnreadMessagesAfter:
+                return
+            }
+        }
+    }
+    
     func didTypeText(_ text: String) {
         
     }
@@ -67,7 +88,8 @@ extension ChatViewPresenter: MessagingServiceListener {
                 return
             case .messages(let messages, let chatId):
                 if chatId == chat.id {
-                    self.messages = messages
+                    self.addMessages(messages)
+                    checkIfUpToDate()
                     showData(animated: true, scrollToBottomAnimated: true)
                 }
             }
@@ -80,12 +102,82 @@ private extension ChatViewPresenter {
     func loadAndShowData() {
         Task {
             do {
-                messages = try await appContext.messagingService.getCachedMessagesForChat(chat)
                 showData(animated: false, scrollToBottomAnimated: false)
+                if let lastMessage = chat.lastMessage {
+                    messages = [lastMessage]
+                }
+                
+                let messagesBefore = try await appContext.messagingService.getMessagesForChat(chat,
+                                                                                              before: chat.lastMessage,
+                                                                                              limit: fetchLimit)
+                addMessages(messagesBefore)
+                
+                if !messages.first!.isRead,
+                   let firstReadMessage = messages.first(where: { $0.isRead }) {
+                    self.chatState = .hasUnreadMessagesAfter(message: firstReadMessage)
+                } else {
+                    checkIfUpToDate()
+                }
+                
+                switch chatState {
+                case .upToDate, .hasUnloadedMessagesBefore:
+                    showData(animated: false, scrollToBottomAnimated: false)
+                case .hasUnreadMessagesAfter(let message):
+                    messages = messages.filter({ $0.isRead })
+                    showData(animated: false, scrollToBottomAnimated: false)
+                    let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
+                                                                                                  after: message,
+                                                                                                  limit: fetchLimit)
+                    addMessages(unreadMessages)
+                    showData(animated: true)
+                }
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
             }
         }
+    }
+    
+    func loadMoreMessagesBefore(message: MessagingChatMessageDisplayInfo) {
+        guard !isLoadingMore else { return }
+        
+        isLoadingMore = true
+        Task {
+            do {
+                let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
+                                                                                              before: message,
+                                                                                              limit: fetchLimit)
+                addMessages(unreadMessages)
+                checkIfUpToDate()
+                showData(animated: true)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+            }
+            isLoadingMore = false
+        }
+    }
+    
+    func checkIfUpToDate() {
+        guard !messages.isEmpty else {
+            chatState = .upToDate
+            return
+        }
+         if messages.last!.isFirstInChat {
+            self.chatState = .upToDate
+        } else {
+            self.chatState = .hasUnloadedMessagesBefore(message: messages.last!)
+        }
+    }
+    
+    func addMessages(_ messages: [MessagingChatMessageDisplayInfo]) {
+        for message in messages {
+            if let i = self.messages.firstIndex(where: { $0.id == message.id }) {
+                self.messages[i] = message
+            } else {
+                self.messages.append(message)
+            }
+        }
+        
+        self.messages.sort(by: { $0.time > $1.time })
     }
     
     func showData(animated: Bool, scrollToBottomAnimated: Bool) {
@@ -144,7 +236,7 @@ private extension ChatViewPresenter {
                                  forMessage message: MessagingChatMessageDisplayInfo) {
         switch action {
         case .resend:
-            try? appContext.messagingService.resendMessage(message)
+            Task { try? await appContext.messagingService.resendMessage(message) }
         case .delete:
             appContext.messagingService.deleteMessage(message)
         }
@@ -162,10 +254,19 @@ private extension ChatViewPresenter {
     
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
         do {
-            let _ = try appContext.messagingService.sendMessage(type, in: chat)
+            Task { let _ = try await appContext.messagingService.sendMessage(type, in: chat) }
             showData(animated: true, scrollToBottomAnimated: true)
         } catch {
             view?.showAlertWith(error: error, handler: nil)
         }
+    }
+}
+
+// MARK: - Private methods
+private extension ChatViewPresenter {
+    enum ChatContentState {
+        case upToDate
+        case hasUnloadedMessagesBefore(message: MessagingChatMessageDisplayInfo)
+        case hasUnreadMessagesAfter(message: MessagingChatMessageDisplayInfo)
     }
 }

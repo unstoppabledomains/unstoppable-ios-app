@@ -17,11 +17,15 @@ protocol MessagingServiceProtocol {
     // Messages
     func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo]
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo]
+                            before message: MessagingChatMessageDisplayInfo?,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
+                            after message: MessagingChatMessageDisplayInfo,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
-                     in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo
+                     in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
-    func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws
+    func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
     
     // Channels

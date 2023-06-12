@@ -31,8 +31,13 @@ extension MockMessagingService: MessagingServiceProtocol {
     func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
         try await getMessagesForChat(chatDisplayInfo, fetchLimit: 30)
     }
-    
-    func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
+                            before message: MessagingChatMessageDisplayInfo?,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
+                            after message: MessagingChatMessageDisplayInfo,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
+    private func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         if let cachedMessages = chatsMessages[chat] {
             return cachedMessages
@@ -142,6 +147,7 @@ private extension MockMessagingService {
               type: .text(.init(text: mockLastMessageTexts.randomElement()!,
                                 encryptedText: mockLastMessageTexts.randomElement()!)),
               isRead: true,
+              isFirstInChat: false,
               deliveryState: .delivered)
     }
     
@@ -183,6 +189,7 @@ private extension MockMessagingService {
                                                           type: .text(.init(text: text,
                                                                            encryptedText: text)),
                                                           isRead: true,
+                                                          isFirstInChat: false,
                                                           deliveryState: .delivered)
             messages.append(message)
         }

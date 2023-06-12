@@ -106,8 +106,10 @@ extension MessagingService: MessagingServiceProtocol {
                        localChat.isUpToDateWith(otherChat: remoteChat) {
                         return localChat
                     } else {
-                        if let lastMessage = try? await self.apiService.getMessagesForChat(remoteChat, fetchLimit: 1).first {
-                            await self.storageService.saveMessages([lastMessage])  
+                        if let lastMessage = try? await self.apiService.getMessagesForChat(remoteChat,
+                                                                                           options: .default,
+                                                                                           fetchLimit: 1).first {
+                            await self.storageService.saveMessages([lastMessage])
                             var updatedChat = remoteChat
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
                             return updatedChat
@@ -194,27 +196,90 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        let cacheId = chatDisplayInfo.id
-        if let cache = chatToMessagesCache[cacheId] {
-            return cache.map { $0.displayInfo }
+                            before message: MessagingChatMessageDisplayInfo?,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        if let message,
+           message.isFirstInChat {
+            return [] // There's no messages before this message
         }
-        let chat = try getMessagingChatFor(displayInfo: chatDisplayInfo)
-        let messages = try await apiService.getMessagesForChat(chat, fetchLimit: fetchLimit)
-        chatToMessagesCache[cacheId] = messages
-        if let lastMessage = messages.first {
-            setLastMessage(lastMessage.displayInfo,
-                           to: chatDisplayInfo)
-            notifyChatsChanged(wallet: chatDisplayInfo.thisUserDetails.wallet)
+        
+        let cachedMessages = try await storageService.getMessagesFor(chat: chatDisplayInfo,
+                                                                     decrypter: decrypterService,
+                                                                     before: message,
+                                                                     limit: limit)
+        if !cachedMessages.isEmpty {
+            return cachedMessages.map { $0.displayInfo }
         }
-        notifyMessagesChanges(chatId: cacheId)
+        
+        let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo)
+        let options: MessagingAPIServiceLoadMessagesOptions
+        if let message,
+           let chatMessage = await storageService.getMessageWith(id: message.id,
+                                                                 in: chatDisplayInfo,
+                                                                 decrypter: decrypterService) {
+            options = .before(message: chatMessage)
+        } else {
+            options = .default
+        }
+        
+        return try await getAndStoreMessagesForChat(chat, options: options, limit: limit)
+    }
+ 
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
+                            after message: MessagingChatMessageDisplayInfo,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        let cachedMessages = try await storageService.getMessagesFor(chat: chatDisplayInfo,
+                                                                     decrypter: decrypterService,
+                                                                     after: message,
+                                                                     limit: limit)
+        if !cachedMessages.isEmpty {
+            return cachedMessages.map { $0.displayInfo }
+        }
+        
+        let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo)
+        guard let chatMessage = await storageService.getMessageWith(id: message.id,
+                                                                    in: chatDisplayInfo,
+                                                                    decrypter: decrypterService) else { throw MessagingServiceError.messageNotFound }
+        
+        return try await getAndStoreMessagesForChat(chat, options: .after(message: chatMessage), limit: limit)
+    }
+    
+    
+    private func getAndStoreMessagesForChat(_ chat: MessagingChat,
+                                            options: MessagingAPIServiceLoadMessagesOptions,
+                                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        var messages = try await apiService.getMessagesForChat(chat,
+                                                               options: options,
+                                                               fetchLimit: limit)
+        
+        // Check for message is first in the chat when load earlier before 
+        if case .before(let message) = options {
+            if !messages.isEmpty,
+               messages.count < limit {
+                messages[messages.count - 1].displayInfo.isFirstInChat = true
+            } else if messages.isEmpty,
+                      let storedMessage = await self.storageService.getMessageWith(id: message.displayInfo.id,
+                                                                                   in: chat.displayInfo,
+                                                                                   decrypter: self.decrypterService) {
+                Task.detached {
+                    var updatedMessage = storedMessage
+                    updatedMessage.displayInfo.isFirstInChat = true
+                    try? await self.storageService.replaceMessage(storedMessage,
+                                                                  with: updatedMessage)
+                    self.notifyListenersChangedDataType(.messages([updatedMessage.displayInfo],
+                                                                  chatId: chat.displayInfo.id))
+                }
+            }
+        }
+        
+        await storageService.saveMessages(messages)
         return messages.map { $0.displayInfo }
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
-                     in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo {
+                     in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
         let cacheId = chat.id
-        let messagingChat = try getMessagingChatFor(displayInfo: chat)
+        let messagingChat = try await getMessagingChatFor(displayInfo: chat)
         var messages = chatToMessagesCache[cacheId] ?? []
         
         let newMessageDisplayInfo = MessagingChatMessageDisplayInfo(id: UUID().uuidString,
@@ -223,6 +288,7 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     time: Date(),
                                                                     type: messageType,
                                                                     isRead: false,
+                                                                    isFirstInChat: false,
                                                                     deliveryState: .sending)
         setLastMessage(newMessageDisplayInfo,
                        to: chat)
@@ -237,14 +303,14 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws {
-        let chat = try getMessagingChatFor(displayInfo: chat)
+        let chat = try await getMessagingChatFor(displayInfo: chat)
         try await apiService.makeChatRequest(chat, approved: approved)
         // TODO: - Reload chats list?
     }
     
-    func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws {
+    func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws {
         let cacheId = message.chatId
-        let messagingChat = try getMessagingChatWith(chatId: cacheId)
+        let messagingChat = try await getMessagingChatWith(chatId: cacheId)
         var updatedMessage = message
         updatedMessage.deliveryState = .sending
         let newMessage = MessagingChatMessage(displayInfo: updatedMessage, serviceMetadata: nil)
@@ -353,13 +419,13 @@ private extension MessagingService {
         return ethAddress
     }
     
-    func getMessagingChatFor(displayInfo: MessagingChatDisplayInfo) throws -> MessagingChat {
-        try getMessagingChatWith(chatId: displayInfo.id)
+    func getMessagingChatFor(displayInfo: MessagingChatDisplayInfo) async throws -> MessagingChat {
+        try await getMessagingChatWith(chatId: displayInfo.id)
     }
     
-    func getMessagingChatWith(chatId: String) throws -> MessagingChat {
-        let allChats = walletsToChatsCache.reduce([MessagingChat](), { $0 + $1.value })
-        guard let chat = allChats.first(where: { $0.displayInfo.id == chatId }) else { throw MessagingServiceError.chatNotFound }
+    func getMessagingChatWith(chatId: String) async throws -> MessagingChat {
+        guard let chat = await storageService.getChatWith(id: chatId,
+                                                          decrypter: decrypterService) else { throw MessagingServiceError.chatNotFound }
         
         return chat
     }
@@ -486,6 +552,7 @@ private extension MessagingService {
                                                                  time: messageEntity.time,
                                                                  type: messageEntity.type,
                                                                  isRead: false,
+                                                                 isFirstInChat: false,
                                                                  deliveryState: .delivered)
         let message = MessagingChatMessage(displayInfo: messageDisplayInfo,
                                            serviceMetadata: nil)
@@ -498,5 +565,6 @@ extension MessagingService {
     enum MessagingServiceError: Error {
         case domainWithoutWallet
         case chatNotFound
+        case messageNotFound
     }
 }

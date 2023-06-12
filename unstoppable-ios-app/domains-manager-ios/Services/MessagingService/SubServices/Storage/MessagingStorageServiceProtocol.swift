@@ -11,11 +11,26 @@ protocol MessagingStorageServiceProtocol {
     // Messages
     func getMessagesFor(chat: MessagingChatDisplayInfo,
                         decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage]
+    func getMessagesFor(chat: MessagingChatDisplayInfo,
+                        decrypter: MessagingContentDecrypterService,
+                        before message: MessagingChatMessageDisplayInfo?,
+                        limit: Int) async throws -> [MessagingChatMessage]
+    func getMessagesFor(chat: MessagingChatDisplayInfo,
+                        decrypter: MessagingContentDecrypterService,
+                        after message: MessagingChatMessageDisplayInfo,
+                        limit: Int) async throws -> [MessagingChatMessage]
+    func getMessageWith(id: String,
+                        in chat: MessagingChatDisplayInfo,
+                        decrypter: MessagingContentDecrypterService) async -> MessagingChatMessage?
     func saveMessages(_ messages: [MessagingChatMessage]) async
+    func replaceMessage(_ messageToReplace: MessagingChatMessage,
+                        with newMessage: MessagingChatMessage) async throws
     
     // Chats
     func getChatsFor(decrypter: MessagingContentDecrypterService,
                      wallet: String) async throws -> [MessagingChat]
+    func getChatWith(id: String,
+                     decrypter: MessagingContentDecrypterService) async -> MessagingChat?
     func saveChats(_ chats: [MessagingChat]) async
     
     // User info

@@ -110,6 +110,12 @@ extension ChatViewController: UICollectionViewDelegate {
                                              animated: true)
         }
     }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        
+        presenter.willDisplayItem(item)
+    }
 }
 
 // MARK: - ChatInputViewDelegate
@@ -246,6 +252,13 @@ extension ChatViewController {
     
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
+        
+        var messageId: String {
+            switch self {
+            case .textMessage(let configuration):
+                return configuration.message.id
+            }
+        }
     }
     
     struct TextMessageUIConfiguration: Hashable {

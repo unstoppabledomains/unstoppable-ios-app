@@ -110,7 +110,8 @@ struct PushEntitiesTransformer {
                 sender = .otherUser(userDisplayInfo)
             }
             let metadataModel = PushEnvironment.MessageServiceMetadata(encType: pushMessage.encType,
-                                                                       encryptedSecret: pushMessage.encryptedSecret)
+                                                                       encryptedSecret: pushMessage.encryptedSecret,
+                                                                       link: pushMessage.link)
             let serviceMetadata = metadataModel.jsonData()
             
             let displayInfo = MessagingChatMessageDisplayInfo(id: id,
@@ -119,6 +120,7 @@ struct PushEntitiesTransformer {
                                                               time: time,
                                                               type: .text(textDisplayInfo),
                                                               isRead: false,
+                                                              isFirstInChat: false,
                                                               deliveryState: .delivered)
             let textMessage = MessagingChatMessage(displayInfo: displayInfo,
                                                    serviceMetadata: serviceMetadata)
@@ -160,7 +162,8 @@ struct PushEntitiesTransformer {
                                                                           encryptedText: encryptedText)
             let senderDisplayInfo = MessagingChatUserDisplayInfo(wallet: senderWallet)
             let metadataModel = PushEnvironment.MessageServiceMetadata(encType: pushMessage.encType,
-                                                                       encryptedSecret: pushMessage.encryptedSecret)
+                                                                       encryptedSecret: pushMessage.encryptedSecret,
+                                                                       link: pushMessage.link)
             let serviceMetadata = metadataModel.jsonData()
             let messageEntity = MessagingWebSocketMessageEntity(id: id,
                                                                 senderDisplayInfo: senderDisplayInfo,

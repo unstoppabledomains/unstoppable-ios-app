@@ -57,12 +57,21 @@ extension CoreDataService {
     }
     
     func getEntities<T: NSManagedObject>(predicate: NSPredicate? = nil,
-                                         sortDescriptions: [NSSortDescriptor]? = nil) throws -> [T] {
+                                         sortDescriptions: [NSSortDescriptor]? = nil,
+                                         fetchSize: Int? = nil,
+                                         batchDescription: BatchDescription? = nil) throws -> [T] {
         let request = T.fetchRequest()
         request.includesPropertyValues = true
         request.returnsObjectsAsFaults = false
         request.predicate = predicate
         request.sortDescriptors = sortDescriptions
+        if let batchDescription {
+            request.fetchLimit = batchDescription.size
+            request.fetchOffset = batchDescription.offset
+        } else if let fetchSize {
+            request.fetchLimit = fetchSize
+            request.fetchOffset = 0
+        }
         return try currentContext.fetch(request) as? [T] ?? []
     }
     
@@ -100,6 +109,18 @@ private extension CoreDataService {
             } else {
                 self?.didLoadPersistentContainer()
             }
+        }
+    }
+}
+
+// MARK: - Open methods
+extension CoreDataService {
+    struct BatchDescription {
+        let size: Int
+        let page: Int
+        
+        var offset: Int {
+            (page - 1) * size
         }
     }
 }
