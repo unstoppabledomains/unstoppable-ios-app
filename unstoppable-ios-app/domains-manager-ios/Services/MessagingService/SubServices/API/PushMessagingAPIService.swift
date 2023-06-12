@@ -174,7 +174,9 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
                     limit: Int) async throws -> [MessagingNewsChannelFeed] {
-        []
+        let feed = try await pushRESTService.getChannelFeed(for: channel.channel, page: page, limit: limit)
+        
+        return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0) })
     }
 }
 

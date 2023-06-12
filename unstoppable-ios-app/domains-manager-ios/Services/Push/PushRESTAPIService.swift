@@ -26,7 +26,8 @@ private extension PushRESTAPIService.URLSList {
     static let CHAT_URL = V1_URL.appendingURLPathComponent("chat")
     static let CHAT_USERS_URL = CHAT_URL.appendingURLPathComponent("users")
     static let GET_USER_URL = V1_URL.appendingURLPathComponents("users")
-    static let SEARCH_CHANNELS_URL = V1_URL.appendingURLPathComponents("channels", "search")
+    static let CHANNELS_URL = V1_URL.appendingURLPathComponents("channels")
+    static let SEARCH_CHANNELS_URL = CHANNELS_URL.appendingURLPathComponents("search")
     static let SEARCH_USERS_URL = V2_URL.appendingURLPathComponents("users")
     
     static func GET_CHATS_URL(userEIP: String) -> String {
@@ -45,7 +46,10 @@ private extension PushRESTAPIService.URLSList {
         GET_USER_URL.appendingURLPathComponents(userEIP, "subscriptions")
     }
     static func GET_CHANNEL_DETAILS_URL(channelEIP: String) -> String {
-        V1_URL.appendingURLPathComponents("channels", channelEIP)
+        CHANNELS_URL.appendingURLPathComponents(channelEIP)
+    }
+    static func GET_CHANNEL_FEED_URL(channelEIP: String) -> String {
+        CHANNELS_URL.appendingURLPathComponents(channelEIP, "feeds")
     }
 }
 
@@ -95,8 +99,8 @@ extension PushRESTAPIService {
     }
     
     func getChannelDetails(for channelId: String) async throws -> PushChannel {
-        let userEIP = createEIPFormatFor(address: channelId, chain: 1)
-        let urlString = URLSList.GET_CHANNEL_DETAILS_URL(channelEIP: userEIP)
+        let channelEIP = createEIPFormatFor(address: channelId, chain: 1)
+        let urlString = URLSList.GET_CHANNEL_DETAILS_URL(channelEIP: channelEIP)
         let request = try apiRequestWith(urlString: urlString,
                                          method: .get)
         let response: PushChannel = try await getDecodableObjectWith(request: request)
@@ -104,7 +108,6 @@ extension PushRESTAPIService {
         return response
     }
     
-
     func searchForChannels(page: Int,
                            limit: Int,
                            isSpam: Bool,
@@ -146,6 +149,21 @@ extension PushRESTAPIService {
 
         let response: PushSearchUser = try await getDecodableObjectWith(request: request)
         return [response] // Seems API search for only one person (exist or not)
+    }
+    
+    func getChannelFeed(for channel: String,
+                        page: Int,
+                        limit: Int) async throws -> [PushInboxNotification] {
+        let channelEIP = createEIPFormatFor(address: channel, chain: 1)
+        let queryComponents = ["page" : String(page),
+                               "limit" : String(limit)]
+        let urlString = URLSList.GET_CHANNEL_FEED_URL(channelEIP: channelEIP).appendingURLQueryComponents(queryComponents)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
+        
+        let response: InboxResponse = try await getDecodableObjectWith(request: request)
+        print("LOGO: - Items \(response.feeds.count) for channel: \(channel). url: \(urlString)")
+        return response.feeds
     }
 }
 

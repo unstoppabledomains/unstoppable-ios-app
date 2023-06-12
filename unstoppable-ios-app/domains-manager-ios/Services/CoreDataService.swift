@@ -22,20 +22,14 @@ class CoreDataService {
         loadStore()
     }
     
-    func loadStore() {
-        persistentContainer.loadPersistentStores { [weak self]  description, error in
-            if let error = error {
-                if let url = description.url {
-                    do {
-                        try self?.persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: url, ofType: "sqlite")
-                        self?.loadStore()
-                    } catch { }
-                }
-                Debugger.printFailure("Unable to load persistent stores: \(error)", critical: true)
-            } else {
-                self?.didLoadPersistentContainer()
-            }
-        }
+    func didLoadPersistentContainer() {
+        Debugger.printInfo(topic: .CoreData, "Did load persistent container")
+        let mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        viewContext.automaticallyMergesChangesFromParent = true
+        viewContext.mergePolicy = mergePolicy
+        backgroundContext = persistentContainer.newBackgroundContext()
+        backgroundContext.automaticallyMergesChangesFromParent = true
+        backgroundContext.mergePolicy = mergePolicy
     }
 }
 
@@ -93,14 +87,20 @@ extension CoreDataService {
 
 // MARK: - Private methods
 private extension CoreDataService {
-    func didLoadPersistentContainer() {
-        Debugger.printInfo(topic: .CoreData, "Did load persistent container")
-        let mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy 
-        viewContext.automaticallyMergesChangesFromParent = true
-        viewContext.mergePolicy = mergePolicy
-        backgroundContext = persistentContainer.newBackgroundContext()
-        backgroundContext.automaticallyMergesChangesFromParent = true
-        backgroundContext.mergePolicy = mergePolicy
+    func loadStore() {
+        persistentContainer.loadPersistentStores { [weak self]  description, error in
+            if let error = error {
+                if let url = description.url {
+                    do {
+                        try self?.persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: url, ofType: "sqlite")
+                        self?.loadStore()
+                    } catch { }
+                }
+                Debugger.printFailure("Unable to load persistent stores: \(error)", critical: true)
+            } else {
+                self?.didLoadPersistentContainer()
+            }
+        }
     }
 }
 

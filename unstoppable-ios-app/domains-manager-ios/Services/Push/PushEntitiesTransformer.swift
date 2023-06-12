@@ -9,6 +9,14 @@ import Foundation
 import Push
 
 struct PushEntitiesTransformer {
+    
+    static let PushISODateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions.insert(.withFractionalSeconds)
+        return formatter
+    }()
+    
+    
     static func convertPushUserToChatUser(_ pushUser: PushUser) -> MessagingChatUserDisplayInfo {
         MessagingChatUserDisplayInfo(wallet: pushUser.wallets,
                                      domainName: nil,
@@ -53,10 +61,8 @@ struct PushEntitiesTransformer {
             avatarURL = URL(string: profilePicture)
         }
         
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions.insert(.withFractionalSeconds)
         var lastMessageTime = Date()
-        if let date = formatter.date(from: pushChat.intentTimestamp)  {
+        if let date = PushISODateFormatter.date(from: pushChat.intentTimestamp)  {
             lastMessageTime = date
         }
         
@@ -171,6 +177,7 @@ struct PushEntitiesTransformer {
     
     static func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel) -> MessagingNewsChannel {
         MessagingNewsChannel(id: String(pushChannel.id),
+                             channel: pushChannel.channel,
                              name: pushChannel.name,
                              info: pushChannel.info,
                              url: pushChannel.url,
@@ -186,7 +193,7 @@ struct PushEntitiesTransformer {
                                  title: pushNotification.payload.data.asub,
                                  message: pushNotification.payload.data.amsg,
                                  link: pushNotification.payload.data.url,
-                                 time: pushNotification.epoch,
+                                 time: PushISODateFormatter.date(from: pushNotification.epoch) ?? Date(),
                                  isRead: false)
     }
     

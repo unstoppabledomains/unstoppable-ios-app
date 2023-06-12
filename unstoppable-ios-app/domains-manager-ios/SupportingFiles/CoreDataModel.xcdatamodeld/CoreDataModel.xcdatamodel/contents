@@ -38,6 +38,7 @@
     </entity>
     <entity name="CoreDataMessagingNewsChannel" representedClassName="CoreDataMessagingNewsChannel" syncable="YES" codeGenerationType="class">
         <attribute name="blocked" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="channel" attributeType="String" defaultValueString=""/>
         <attribute name="icon" attributeType="URI" defaultValueString=""/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="info" attributeType="String" defaultValueString=""/>

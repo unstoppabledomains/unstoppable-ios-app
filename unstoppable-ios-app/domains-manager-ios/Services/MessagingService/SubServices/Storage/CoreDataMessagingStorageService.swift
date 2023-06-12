@@ -12,9 +12,10 @@ final class CoreDataMessagingStorageService: CoreDataService {
     
     override var currentContext: NSManagedObjectContext { backgroundContext }
     private var contextHolder: ContextHolder!
-    
-    override init() {
-        super.init()
+  
+    override func didLoadPersistentContainer() {
+        super.didLoadPersistentContainer()
+        
         contextHolder = ContextHolder(context: currentContext)
     }
 }
@@ -308,6 +309,7 @@ private extension CoreDataMessagingStorageService {
         }
         
         let newsChannel = MessagingNewsChannel(id: coreDataChannel.id!,
+                                               channel: coreDataChannel.channel!,
                                                name: coreDataChannel.name!,
                                                info: coreDataChannel.info!,
                                                url: coreDataChannel.url!,
@@ -326,6 +328,7 @@ private extension CoreDataMessagingStorageService {
         let coreDataChannel: CoreDataMessagingNewsChannel = try createEntity()
         
         coreDataChannel.id = channel.id
+        coreDataChannel.channel = channel.channel
         coreDataChannel.wallet = wallet
         coreDataChannel.name = channel.name
         coreDataChannel.info = channel.info

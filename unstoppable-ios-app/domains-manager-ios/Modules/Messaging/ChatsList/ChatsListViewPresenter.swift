@@ -126,7 +126,7 @@ private extension ChatsListViewPresenter {
             snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
         case .inbox:
             snapshot.appendSections([.channels])
-            let requestsList = chatsList.filter({ !$0.isApproved })
+            let requestsList = channels.filter({ $0.verifiedStatus == 0 })
             if !requestsList.isEmpty {
                 snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
                                                                          numberOfRequests: requestsList.count))])
