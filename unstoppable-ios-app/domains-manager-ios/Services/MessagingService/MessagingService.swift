@@ -283,12 +283,7 @@ extension MessagingService: MessagingServiceProtocol {
             do {
                 let wallet = try getDomainEthWalletAddress(domain)
                 let channels = try await apiService.getSubscribedChannelsFor(wallet: wallet)
-                let updatedChats = await refreshChannelsMetadata(channels).sorted(by: {
-                    guard let lhsTime = $0.lastMessage?.time else { return false }
-                    guard let rhsTime = $1.lastMessage?.time else { return true }
-                    
-                    return lhsTime > rhsTime
-                })
+                let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
                 
                 await storageService.saveChannels(updatedChats, for: wallet)
                 notifyListenersChangedDataType(.channels(updatedChats, wallet: domain.ownerWallet!))
@@ -326,7 +321,7 @@ extension MessagingService: MessagingServiceProtocol {
     
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] {
         let wallet = try getDomainEthWalletAddress(domain)
-        let channels = try await storageService.getChannelsFor(wallet: wallet)
+        let channels = try await storageService.getChannelsFor(wallet: wallet).sortedByLastMessage()
         return channels
     }
     

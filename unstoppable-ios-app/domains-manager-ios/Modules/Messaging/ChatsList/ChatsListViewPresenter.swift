@@ -126,10 +126,10 @@ private extension ChatsListViewPresenter {
             snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
         case .inbox:
             snapshot.appendSections([.channels])
-            let requestsList = channels.filter({ $0.verifiedStatus == 0 })
-            if !requestsList.isEmpty {
+            let spamList = channels.filter({ $0.blocked == 1 })
+            if !spamList.isEmpty {
                 snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                         numberOfRequests: requestsList.count))])
+                                                                         numberOfRequests: spamList.count))])
             }
             snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }

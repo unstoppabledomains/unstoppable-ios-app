@@ -23,3 +23,14 @@ struct MessagingNewsChannel: Hashable {
     let unreadMessagesCount: Int
     var lastMessage: MessagingNewsChannelFeed?
 }
+
+extension Array where Element == MessagingNewsChannel {
+    func sortedByLastMessage() -> [Element] {
+        sorted(by: {
+            guard let lhsTime = $0.lastMessage?.time else { return false }
+            guard let rhsTime = $1.lastMessage?.time else { return true }
+            
+            return lhsTime > rhsTime
+        })
+    }
+}
