@@ -12,14 +12,10 @@ protocol MessagingServiceProtocol {
     func refreshChatsForDomain(_ domain: DomainDisplayInfo)
     
     // Chats list
-    func getChatsListForDomain(_ domain: DomainDisplayInfo,
-                              page: Int,
-                              limit: Int) async throws -> [MessagingChatDisplayInfo]
-    func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
-                                  page: Int,
-                                  limit: Int) async throws -> [MessagingChatDisplayInfo]
+    func getChatsListForDomain(_ domain: DomainDisplayInfo) async throws -> [MessagingChatDisplayInfo]
     
     // Messages
+    func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo]
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,

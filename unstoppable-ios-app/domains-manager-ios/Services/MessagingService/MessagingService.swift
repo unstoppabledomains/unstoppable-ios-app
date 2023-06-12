@@ -178,9 +178,7 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // Chats list
-    func getChatsListForDomain(_ domain: DomainDisplayInfo,
-                               page: Int, // Starting from 1
-                               limit: Int) async throws -> [MessagingChatDisplayInfo] {
+    func getChatsListForDomain(_ domain: DomainDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         let wallet = try getDomainEthWalletAddress(domain)
         let chats = try await storageService.getChatsFor(decrypter: decrypterService, wallet: wallet)
         
@@ -188,19 +186,13 @@ extension MessagingService: MessagingServiceProtocol {
         return chatsDisplayInfo
     }
     
-    func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
-                                  page: Int,
-                                  limit: Int) async throws -> [MessagingChatDisplayInfo] {
-        let wallet = try getDomainEthWalletAddress(domain)
-        let chats = try await apiService.getChatRequestsForWallet(wallet, page: page, limit: limit)
-        appendChatsToCache(chats, wallet: wallet)
-        let chatsDisplayInfo = chats.map { $0.displayInfo }
-        notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: wallet))
-        return chatsDisplayInfo
-    }
-
     // Messages
     // Fetch limit is 30 max
+    func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
+        try await storageService.getMessagesFor(chat: chatDisplayInfo,
+                                                decrypter: decrypterService).map({ $0.displayInfo })
+    }
+    
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         let cacheId = chatDisplayInfo.id

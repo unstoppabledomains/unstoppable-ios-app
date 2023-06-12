@@ -9,8 +9,8 @@ import Foundation
 
 protocol MessagingStorageServiceProtocol {
     // Messages
-    func getMessages(decrypter: MessagingContentDecrypterService,
-                     wallet: String) async throws -> [MessagingChatMessage]
+    func getMessagesFor(chat: MessagingChatDisplayInfo,
+                        decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage]
     func saveMessages(_ messages: [MessagingChatMessage]) async
     
     // Chats

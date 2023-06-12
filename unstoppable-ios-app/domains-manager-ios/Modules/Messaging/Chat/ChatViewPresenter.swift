@@ -80,7 +80,7 @@ private extension ChatViewPresenter {
     func loadAndShowData() {
         Task {
             do {
-                messages = try await appContext.messagingService.getMessagesForChat(chat, fetchLimit: 30)
+                messages = try await appContext.messagingService.getCachedMessagesForChat(chat)
                 showData(animated: false, scrollToBottomAnimated: false)
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error

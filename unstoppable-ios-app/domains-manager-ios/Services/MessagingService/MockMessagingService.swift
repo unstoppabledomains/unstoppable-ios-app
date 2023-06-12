@@ -18,9 +18,7 @@ final class MockMessagingService {
 extension MockMessagingService: MessagingServiceProtocol {
     func refreshChatsForDomain(_ domain: DomainDisplayInfo) { }
     
-    func getChatsListForDomain(_ domain: DomainDisplayInfo,
-                               page: Int,
-                               limit: Int) async throws -> [MessagingChatDisplayInfo] {
+    func getChatsListForDomain(_ domain: DomainDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         if let cachedChats = domainsChats[domain.name] {
             return cachedChats
         }
@@ -30,12 +28,10 @@ extension MockMessagingService: MessagingServiceProtocol {
         return chats
     }
     
-    func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
-                                  page: Int,
-                                  limit: Int) async throws -> [MessagingChatDisplayInfo] {
-        []
+    func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
+        try await getMessagesForChat(chatDisplayInfo, fetchLimit: 30)
     }
-     
+    
     func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         if let cachedMessages = chatsMessages[chat] {

@@ -23,13 +23,15 @@ final class CoreDataMessagingStorageService: CoreDataService {
 // MARK: - MessagingStorageServiceProtocol
 extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     // Messages
-    func getMessages(decrypter: MessagingContentDecrypterService,
-                     wallet: String) async throws -> [MessagingChatMessage] {
-        let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities()
-        
+    func getMessagesFor(chat: MessagingChatDisplayInfo,
+                        decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage] {
+        let predicate = NSPredicate(format: "chatId == %@", chat.id)
+        let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
+        let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities(predicate: predicate,
+                                                                               sortDescriptions: [timeSortDescriptor])
         return coreDataMessages.compactMap { convertCoreDataMessageToChatMessage($0,
                                                                                  decrypter: decrypter,
-                                                                                 wallet: wallet) }
+                                                                                 wallet: chat.thisUserDetails.wallet) }
     }
     
     func saveMessages(_ messages: [MessagingChatMessage]) async {
