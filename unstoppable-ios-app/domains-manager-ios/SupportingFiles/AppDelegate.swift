@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Debugger.setAllowedTopicsSet(.all)
 //        CoreDataMessagingStorageService().clear()
         #endif
-        
+         
         setVersionAndBuildNumber()
 
         configureNavBar()
