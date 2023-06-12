@@ -17,9 +17,20 @@ class CoreDataService {
     private(set) var backgroundContext: NSManagedObjectContext!
     
     init() {
-        persistentContainer = NSPersistentContainer(name: "CoreDataModel")
+        let dataModelName = "CoreDataModel"
+        persistentContainer = NSPersistentContainer(name: dataModelName)
+        loadStore()
+    }
+    
+    func loadStore() {
         persistentContainer.loadPersistentStores { [weak self]  description, error in
             if let error = error {
+                if let url = description.url {
+                    do {
+                        try self?.persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: url, ofType: "sqlite")
+                        self?.loadStore()
+                    } catch { }
+                }
                 Debugger.printFailure("Unable to load persistent stores: \(error)", critical: true)
             } else {
                 self?.didLoadPersistentContainer()

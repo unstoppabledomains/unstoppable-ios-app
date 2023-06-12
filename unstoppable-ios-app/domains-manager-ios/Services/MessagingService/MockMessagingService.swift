@@ -16,7 +16,7 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
-    func refreshForDomain(_ domain: DomainDisplayInfo) { }
+    func refreshChatsForDomain(_ domain: DomainDisplayInfo) { }
     
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
                                page: Int,
@@ -54,7 +54,10 @@ extension MockMessagingService: MessagingServiceProtocol {
     
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws { }
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) { }
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) {
+        
+    }
+    func refreshChannelsForDomain(_ domain: DomainDisplayInfo) { }
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
 
     

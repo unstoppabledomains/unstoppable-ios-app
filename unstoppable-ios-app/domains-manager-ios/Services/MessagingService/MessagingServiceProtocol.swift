@@ -9,7 +9,7 @@ import Foundation
 
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
-    func refreshForDomain(_ domain: DomainDisplayInfo)
+    func refreshChatsForDomain(_ domain: DomainDisplayInfo)
     
     // Chats list
     func getChatsListForDomain(_ domain: DomainDisplayInfo,
@@ -29,6 +29,7 @@ protocol MessagingServiceProtocol {
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
     
     // Channels
+    func refreshChannelsForDomain(_ domain: DomainDisplayInfo)
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel]
     
     // Listeners

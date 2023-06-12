@@ -98,7 +98,8 @@ private extension ChatsListViewPresenter {
 
                 showData()
                 
-                appContext.messagingService.refreshForDomain(selectedDomain)
+                appContext.messagingService.refreshChatsForDomain(selectedDomain)
+                appContext.messagingService.refreshChannelsForDomain(selectedDomain)
             
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error

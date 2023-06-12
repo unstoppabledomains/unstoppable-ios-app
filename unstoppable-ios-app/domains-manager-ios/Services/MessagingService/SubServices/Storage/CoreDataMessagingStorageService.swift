@@ -328,9 +328,9 @@ private extension CoreDataMessagingStorageService {
         coreDataChannel.id = channel.id
         coreDataChannel.wallet = wallet
         coreDataChannel.name = channel.name
-        coreDataChannel.name = channel.name
         coreDataChannel.info = channel.info
         coreDataChannel.url = channel.url
+        coreDataChannel.icon = channel.icon
         coreDataChannel.verifiedStatus = Int64(channel.verifiedStatus)
         coreDataChannel.blocked = channel.blocked == 1
         coreDataChannel.subscriberCount = Int64(channel.subscriberCount)

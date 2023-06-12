@@ -18,6 +18,7 @@ final class PushMessagingAPIService {
 
 // MARK: - MessagingAPIServiceProtocol
 extension PushMessagingAPIService: MessagingAPIServiceProtocol {
+    // Chats
     func getUserFor(wallet: HexAddress) async throws -> MessagingChatUserDisplayInfo {
         let pushUser = try await getPushUserFor(wallet: wallet)
         return PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
@@ -67,6 +68,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         return chats
     }
     
+    // Messages
     func getMessagesForChat(_ chat: MessagingChat,
                             fetchLimit: Int) async throws -> [MessagingChatMessage] {
         let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
@@ -139,24 +141,25 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         _ = try await Push.PushChat.approve(approveOptions)
     }
     
+    // Channels
     func getSubscribedChannelsFor(wallet: HexAddress) async throws -> [MessagingNewsChannel] {
         let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: wallet)
         guard !subscribedChannelsIds.isEmpty else { return [] }
         
-        var channels = [PushChannel]()
-        try await withThrowingTaskGroup(of: PushChannel.self, body: { group in
+        var channels = [PushChannel?]()
+        await withTaskGroup(of: PushChannel?.self, body: { group in
             for id in subscribedChannelsIds {
                 group.addTask {
-                    try await self.pushRESTService.getChannelDetails(for: id)
+                    try? await self.pushRESTService.getChannelDetails(for: id)
                 }
             }
             
-            for try await channel in group {
+            for await channel in group {
                 channels.append(channel)
             }
         })
         
-        return channels.map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0) })
+        return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0) })
     }
     
     func getNotificationsInboxFor(wallet: HexAddress,
@@ -166,6 +169,12 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let inbox = try await pushRESTService.getNotificationsInbox(for: wallet, page: page, limit: limit, isSpam: isSpam)
         
         return inbox.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0) })
+    }
+    
+    func getFeedFor(channel: MessagingNewsChannel,
+                    page: Int,
+                    limit: Int) async throws -> [MessagingNewsChannelFeed] {
+        []
     }
 }
 

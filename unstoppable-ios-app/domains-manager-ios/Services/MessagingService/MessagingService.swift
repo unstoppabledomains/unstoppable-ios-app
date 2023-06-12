@@ -33,7 +33,7 @@ final class MessagingService {
 
 // MARK: - Open methods
 extension MessagingService: MessagingServiceProtocol {
-    func refreshForDomain(_ domain: DomainDisplayInfo) {
+    func refreshChatsForDomain(_ domain: DomainDisplayInfo) {
         Task {
             setupSocketConnection(domain: domain)
 
@@ -50,7 +50,7 @@ extension MessagingService: MessagingServiceProtocol {
                 let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
                 let allRemoteChats = remoteChats + remoteRequests
                 
-                let updatedChats = try await refreshChatsMetadata(remoteChats: allRemoteChats, localChats: allLocalChats)
+                let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats, localChats: allLocalChats)
                 await storageService.saveChats(updatedChats)
                 
                 let chatsDisplayInfo = updatedChats.map { $0.displayInfo }.sorted(by: { $0.lastMessageTime > $1.lastMessageTime})
@@ -96,17 +96,17 @@ extension MessagingService: MessagingServiceProtocol {
         return remoteChats
     }
     
-    private func refreshChatsMetadata(remoteChats: [MessagingChat], localChats: [MessagingChat]) async throws -> [MessagingChat] {
+    private func refreshChatsMetadata(remoteChats: [MessagingChat], localChats: [MessagingChat]) async -> [MessagingChat] {
         var updatedChats = [MessagingChat]()
         
-        try await withThrowingTaskGroup(of: MessagingChat.self, body: { group in
+        await withTaskGroup(of: MessagingChat.self, body: { group in
             for remoteChat in remoteChats {
                 group.addTask {
                     if let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
                        localChat.isUpToDateWith(otherChat: remoteChat) {
                         return localChat
                     } else {
-                        if let lastMessage = try await self.apiService.getMessagesForChat(remoteChat, fetchLimit: 1).first {
+                        if let lastMessage = try? await self.apiService.getMessagesForChat(remoteChat, fetchLimit: 1).first {
                             await self.storageService.saveMessages([lastMessage])  
                             var updatedChat = remoteChat
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
@@ -118,7 +118,7 @@ extension MessagingService: MessagingServiceProtocol {
                 }
             }
             
-            for try await chat in group {
+            for await chat in group {
                 updatedChats.append(chat)
             }
         })
@@ -276,14 +276,52 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // Channels
+    func refreshChannelsForDomain(_ domain: DomainDisplayInfo) {
+        Task {
+            setupSocketConnection(domain: domain)
+            
+            do {
+                let wallet = try getDomainEthWalletAddress(domain)
+                let channels = try await apiService.getSubscribedChannelsFor(wallet: wallet)
+                let updatedChats = await refreshChannelsMetadata(channels)
+                
+                await storageService.saveChannels(updatedChats, for: wallet)
+                notifyListenersChangedDataType(.channels(updatedChats, wallet: domain.ownerWallet!))
+            }
+        }
+    }
+    
+    private func refreshChannelsMetadata(_ channels: [MessagingNewsChannel]) async -> [MessagingNewsChannel] {
+        var updatedChannels = [MessagingNewsChannel]()
+
+        await withTaskGroup(of: MessagingNewsChannel.self, body: { group in
+            for channel in channels {
+                group.addTask {
+                    if let lastMessage = try? await self.apiService.getFeedFor(channel: channel,
+                                                                              page: 1,
+                                                                              limit: 1).first {
+                        await self.storageService.saveChannelsFeed([lastMessage],
+                                                                   in: channel)
+                        var updatedChannel = channel
+                        updatedChannel.lastMessage = lastMessage
+                        return updatedChannel
+                    } else {
+                        return channel
+                    }
+                }
+            }
+            
+            for await channel in group {
+                updatedChannels.append(channel)
+            }
+        })
+        
+        return updatedChannels
+    }
+    
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] {
         let wallet = try getDomainEthWalletAddress(domain)
-        if let channels = walletToChannelsCache[wallet] {
-            return channels
-        }
-        
-        let channels = try await apiService.getSubscribedChannelsFor(wallet: wallet)
-        walletToChannelsCache[wallet] = channels
+        let channels = try await storageService.getChannelsFor(wallet: wallet)
         return channels
     }
     
