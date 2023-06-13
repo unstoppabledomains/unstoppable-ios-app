@@ -22,7 +22,7 @@ final class ChatViewPresenter {
     private weak var view: ChatViewProtocol?
     private let chat: MessagingChatDisplayInfo
     private let domain: DomainDisplayInfo
-    private let fetchLimit: Int = 8
+    private let fetchLimit: Int = 30
     private var messages: [MessagingChatMessageDisplayInfo] = []
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMore = false
@@ -55,7 +55,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
             Debugger.printFailure("Failed to find will display message with id \(message.id) in the list", critical: true)
             return }
         
-        if messageIndex >= (messages.count - 4) {
+        if messageIndex >= (messages.count - 7) {
             switch chatState {
             case .hasUnloadedMessagesBefore(let message):
                 loadMoreMessagesBefore(message: message)
@@ -102,7 +102,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     self.messages[i] = newMessage
                     checkIfUpToDate()
-                    showData(animated: true, scrollToBottomAnimated: true)
+                    showData(animated: true)
                 }
             case .messagesRemoved(let messages, let chatId):
                 if chatId == chat.id {
@@ -121,13 +121,10 @@ private extension ChatViewPresenter {
     func loadAndShowData() {
         Task {
             do {
+                isLoadingMore = true
                 showData(animated: false, scrollToBottomAnimated: false)
-                if let lastMessage = chat.lastMessage {
-                    messages = [lastMessage]
-                }
-                
                 let messagesBefore = try await appContext.messagingService.getMessagesForChat(chat,
-                                                                                              before: chat.lastMessage,
+                                                                                              before: nil,
                                                                                               limit: fetchLimit)
                 addMessages(messagesBefore)
                 
@@ -150,6 +147,7 @@ private extension ChatViewPresenter {
                     addMessages(unreadMessages)
                     showData(animated: true)
                 }
+                isLoadingMore = false
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
             }
@@ -167,11 +165,12 @@ private extension ChatViewPresenter {
                                                                                               limit: fetchLimit)
                 addMessages(unreadMessages)
                 checkIfUpToDate()
-                showData(animated: true)
+                isLoadingMore = false
+                showData(animated: false)
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+                isLoadingMore = false
             }
-            isLoadingMore = false
         }
     }
     

@@ -209,6 +209,8 @@ extension MessagingService: MessagingServiceProtocol {
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        var limit = limit
+        var message = message
         if let message,
            message.isFirstInChat {
             return [] // There's no messages before this message
@@ -219,7 +221,12 @@ extension MessagingService: MessagingServiceProtocol {
                                                                      before: message,
                                                                      limit: limit)
         if !cachedMessages.isEmpty {
-            return cachedMessages.map { $0.displayInfo }
+            if cachedMessages.count == limit {
+                return cachedMessages.map { $0.displayInfo }
+            } else {
+                message = cachedMessages.last?.displayInfo
+                limit -= cachedMessages.count
+            }
         }
         
         let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo)
@@ -233,19 +240,20 @@ extension MessagingService: MessagingServiceProtocol {
             options = .default
         }
         
-        return try await getAndStoreMessagesForChat(chat, options: options, limit: limit)
+        let newMessages = try await getAndStoreMessagesForChat(chat, options: options, limit: limit)
+        return cachedMessages.map { $0.displayInfo } + newMessages
     }
  
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             after message: MessagingChatMessageDisplayInfo,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        let cachedMessages = try await storageService.getMessagesFor(chat: chatDisplayInfo,
-                                                                     decrypter: decrypterService,
-                                                                     after: message,
-                                                                     limit: limit)
-        if !cachedMessages.isEmpty {
-            return cachedMessages.map { $0.displayInfo }
-        }
+//        let cachedMessages = try await storageService.getMessagesFor(chat: chatDisplayInfo,
+//                                                                     decrypter: decrypterService,
+//                                                                     after: message,
+//                                                                     limit: limit)
+//        if !cachedMessages.isEmpty {
+//            return cachedMessages.map { $0.displayInfo }
+//        }
         
         let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo)
         guard let chatMessage = await storageService.getMessageWith(id: message.id,

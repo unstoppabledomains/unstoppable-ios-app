@@ -162,7 +162,6 @@ extension PushRESTAPIService {
                                          method: .get)
         
         let response: InboxResponse = try await getDecodableObjectWith(request: request)
-        print("LOGO: - Items \(response.feeds.count) for channel: \(channel). url: \(urlString)")
         return response.feeds
     }
 }
