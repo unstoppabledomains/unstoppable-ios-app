@@ -154,7 +154,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                                                                          sortDescriptions: [timeSortDescriptor],
                                                                          from: backgroundContext)
             return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0,
-                                                                                 decrypter: decrypter) }
+                                                                                 decrypter: decrypter) }.sortedByLastMessage()
         }
     }
     
@@ -201,7 +201,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             let predicate = NSPredicate(format: "wallet == %@", wallet)
             let coreDataChannels: [CoreDataMessagingNewsChannel] = try getEntities(predicate: predicate, from: backgroundContext)
             
-            return coreDataChannels.compactMap { convertCoreDataChannelToMessagingChannel($0) }
+            return coreDataChannels.compactMap { convertCoreDataChannelToMessagingChannel($0) }.sortedByLastMessage()
         }
     }
     

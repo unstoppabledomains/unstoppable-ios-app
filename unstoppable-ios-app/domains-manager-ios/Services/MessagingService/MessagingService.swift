@@ -57,7 +57,7 @@ extension MessagingService: MessagingServiceProtocol {
                 let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats, localChats: allLocalChats)
                 await storageService.saveChats(updatedChats)
                 
-                let chatsDisplayInfo = updatedChats.map { $0.displayInfo }.sorted(by: { $0.lastMessageTime > $1.lastMessageTime})
+                let chatsDisplayInfo = updatedChats.sortedByLastMessage().map({ $0.displayInfo })
                 notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: domain.ownerWallet!))
                 
                 if shouldRefreshUserInfo {
@@ -253,14 +253,6 @@ extension MessagingService: MessagingServiceProtocol {
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             after message: MessagingChatMessageDisplayInfo,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-//        let cachedMessages = try await storageService.getMessagesFor(chat: chatDisplayInfo,
-//                                                                     decrypter: decrypterService,
-//                                                                     after: message,
-//                                                                     limit: limit)
-//        if !cachedMessages.isEmpty {
-//            return cachedMessages.map { $0.displayInfo }
-//        }
-        
         let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo)
         guard let chatMessage = await storageService.getMessageWith(id: message.id,
                                                                     in: chatDisplayInfo,
@@ -308,7 +300,7 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     senderType: .thisUser(chat.thisUserDetails),
                                                                     time: Date(),
                                                                     type: messageType,
-                                                                    isRead: false,
+                                                                    isRead: true,
                                                                     isFirstInChat: false,
                                                                     deliveryState: .sending)
         let message = MessagingChatMessage(displayInfo: newMessageDisplayInfo,
@@ -394,7 +386,7 @@ extension MessagingService: MessagingServiceProtocol {
     
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] {
         let wallet = try getDomainEthWalletAddress(domain)
-        let channels = try await storageService.getChannelsFor(wallet: wallet).sortedByLastMessage()
+        let channels = try await storageService.getChannelsFor(wallet: wallet)
         return channels
     }
     
@@ -529,7 +521,7 @@ private extension MessagingService {
         Task {
             let chats = (try? await storageService.getChatsFor(wallet: wallet,
                                                                decrypter: decrypterService)) ?? []
-            let displayInfo = chats.sortedByLastMessage().map { $0.displayInfo }
+            let displayInfo = chats.map { $0.displayInfo }
             notifyListenersChangedDataType(.chats(displayInfo, wallet: wallet.normalized))
         }
     }

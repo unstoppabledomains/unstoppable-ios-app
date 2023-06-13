@@ -137,7 +137,6 @@ private extension ChatViewPresenter {
                 
                 switch chatState {
                 case .upToDate, .hasUnloadedMessagesBefore:
-                    view?.setLoading(active: false)
                     showData(animated: false, scrollToBottomAnimated: false)
                 case .hasUnreadMessagesAfter(let message):
                     let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
@@ -150,8 +149,10 @@ private extension ChatViewPresenter {
                             self.view?.scrollToItem(item, animated: false)
                         }
                     })
-                    view?.setLoading(active: false)
                     checkIfUpToDate()
+                }
+                DispatchQueue.main.async {
+                    self.view?.setLoading(active: false)
                 }
                 isLoadingMessages = false
             } catch {
