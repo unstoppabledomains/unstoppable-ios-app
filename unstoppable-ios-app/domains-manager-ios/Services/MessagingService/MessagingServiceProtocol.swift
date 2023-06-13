@@ -28,7 +28,8 @@ protocol MessagingServiceProtocol {
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
-                     isRead: Bool) throws
+                     isRead: Bool,
+                     wallet: String) throws
     // Channels
     func refreshChannelsForDomain(_ domain: DomainDisplayInfo)
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel]

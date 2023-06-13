@@ -116,6 +116,7 @@ extension MessagingService: MessagingServiceProtocol {
                             await self.storageService.saveMessages([lastMessage])
                             var updatedChat = remoteChat
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
+                            updatedChat.displayInfo.unreadMessagesCount += 1
                             return updatedChat
                         } else {
                             return remoteChat
@@ -333,8 +334,10 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
-                     isRead: Bool) throws {
+                     isRead: Bool,
+                     wallet: String) throws {
         try storageService.markMessage(message, isRead: isRead)
+        notifyChatsChanged(wallet: wallet)
     }
     
     // Channels
@@ -486,19 +489,21 @@ private extension MessagingService {
             return
         case .chatReceivedMessage(let message):
             Task {
-                guard let chatMessage = try? await convertMessagingWebSocketMessageEntityToMessage(message) else { return }
-                
-                await storageService.saveMessages([chatMessage])
-                let chatId = chatMessage.displayInfo.chatId
-                
-                notifyListenersChangedDataType(.messagesAdded([chatMessage.displayInfo],
-                                                              chatId: chatId))
-                
-                if let chat = try? await getMessagingChatWith(chatId: chatId),
-                   let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: chat.displayInfo.thisUserDetails.wallet),
-                   let domain = await appContext.dataAggregatorService.getDomainsDisplayInfo().first(where: { $0.name == domainName }){
-                    refreshChatsForDomain(domain, shouldRefreshUserInfo: false)
-                }
+                do {
+                    let chatMessage = try await convertMessagingWebSocketMessageEntityToMessage(message)
+                    
+                    await storageService.saveMessages([chatMessage])
+                    let chatId = chatMessage.displayInfo.chatId
+                    
+                    notifyListenersChangedDataType(.messagesAdded([chatMessage.displayInfo],
+                                                                  chatId: chatId))
+                    
+                    let chat = try await getMessagingChatWith(chatId: chatId)
+                    if let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: chat.displayInfo.thisUserDetails.wallet),
+                       let domain = await appContext.dataAggregatorService.getDomainsDisplayInfo().first(where: { $0.name == domainName }){
+                        refreshChatsForDomain(domain, shouldRefreshUserInfo: false)
+                    }
+                } catch { }
             }
         }
     }

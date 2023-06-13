@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             setAppContextType(.mock)
         }
         Debugger.setAllowedTopicsSet(.all)
-        CoreDataMessagingStorageService().clear()
+//        CoreDataMessagingStorageService().clear()
         #endif
          
         setVersionAndBuildNumber()

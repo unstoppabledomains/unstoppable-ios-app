@@ -245,12 +245,19 @@ private extension CoreDataMessagingStorageService {
             lastMessage = message.displayInfo
         }
         
+        let chatIdPredicate = NSPredicate(format: "chatId == %@", coreDataChat.id!)
+        let isNotReadPredicate = NSPredicate(format: "isRead == NO")
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, isNotReadPredicate])
+        let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
+                                                     predicate: predicate,
+                                                     in: backgroundContext)) ?? 0
+        
         let thisUserDetails = getThisUserDetails(from: coreDataChat)
         let displayInfo = MessagingChatDisplayInfo(id: coreDataChat.id!,
                                                    thisUserDetails: thisUserDetails,
                                                    avatarURL: coreDataChat.avatarURL,
                                                    type: chatType,
-                                                   unreadMessagesCount: 0,
+                                                   unreadMessagesCount: unreadMessagesCount,
                                                    isApproved: coreDataChat.isApproved,
                                                    lastMessageTime: coreDataChat.lastMessageTime!,
                                                    lastMessage: lastMessage)

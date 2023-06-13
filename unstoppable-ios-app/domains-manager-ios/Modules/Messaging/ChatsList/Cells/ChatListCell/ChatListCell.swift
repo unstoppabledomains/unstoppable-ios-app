@@ -15,6 +15,12 @@ final class ChatListCell: BaseListCollectionViewCell {
     @IBOutlet private weak var lastMessageLabel: UILabel!
     @IBOutlet private weak var badgeView: UnreadMessagesBadgeView!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+//        badgeView.setCounterLabel(hidden: true)
+    }
+    
 }
 
 // MARK: - Open methods

@@ -72,10 +72,10 @@ extension CoreDataService {
     }
     
     func getEntitiesBlocking<T: NSManagedObject>(predicate: NSPredicate? = nil,
-                                         sortDescriptions: [NSSortDescriptor]? = nil,
-                                         fetchSize: Int? = nil,
-                                         batchDescription: BatchDescription? = nil,
-                                         from context: NSManagedObjectContext) throws -> [T] {
+                                                 sortDescriptions: [NSSortDescriptor]? = nil,
+                                                 fetchSize: Int? = nil,
+                                                 batchDescription: BatchDescription? = nil,
+                                                 from context: NSManagedObjectContext) throws -> [T] {
         var entities: [T]?
         context.performAndWait {
             entities = try? getEntities(predicate: predicate, sortDescriptions: sortDescriptions, fetchSize: fetchSize, batchDescription: batchDescription, from: context)
@@ -83,6 +83,26 @@ extension CoreDataService {
         guard let entities else { throw CoreDataError.failedToFetchObjects }
         
         return entities
+    }
+    
+    func countEntities<T: NSManagedObject>(_ type: T.Type,
+                                           predicate: NSPredicate? = nil,
+                                           in context: NSManagedObjectContext) throws -> Int {
+        let request = T.fetchRequest()
+        request.predicate = predicate
+        return try context.count(for: request)
+    }
+    
+    func countEntitiesBlocking<T: NSManagedObject>(_ type: T.Type,
+                                                   predicate: NSPredicate? = nil,
+                                                   in context: NSManagedObjectContext) throws -> Int {
+        var count: Int?
+        context.performAndWait {
+            count = try? countEntities(type, predicate: predicate, in: context)
+        }
+        guard let count else { throw CoreDataError.failedToFetchObjects }
+        
+        return count
     }
     
     func saveContext(_ context: NSManagedObjectContext,

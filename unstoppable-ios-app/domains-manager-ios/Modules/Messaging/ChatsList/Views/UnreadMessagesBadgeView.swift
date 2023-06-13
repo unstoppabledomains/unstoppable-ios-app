@@ -39,6 +39,10 @@ extension UnreadMessagesBadgeView {
     func setStyle(_ style: Style) {
         backgroundColor = style.backgroundColor
     }
+    
+    func setCounterLabel(hidden: Bool) {
+        counterLabel.isHidden = hidden
+    }
 }
 
 // MARK: - Setup methods

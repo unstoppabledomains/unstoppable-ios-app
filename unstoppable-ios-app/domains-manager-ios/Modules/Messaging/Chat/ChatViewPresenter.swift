@@ -54,6 +54,11 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         guard let messageIndex = messages.firstIndex(where: { $0.id == message.id }) else {
             Debugger.printFailure("Failed to find will display message with id \(message.id) in the list", critical: true)
             return }
+    
+        if !message.isRead {
+            messages[messageIndex].isRead = true
+            try? appContext.messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
+        }
         
         if messageIndex >= (messages.count - 7) {
             switch chatState {
@@ -64,11 +69,6 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
             case .hasUnreadMessagesAfter:
                 return
             }
-        }
-        
-        if !message.isRead {
-            messages[messageIndex].isRead = true
-            try? appContext.messagingService.markMessage(message, isRead: true)
         }
     }
     
