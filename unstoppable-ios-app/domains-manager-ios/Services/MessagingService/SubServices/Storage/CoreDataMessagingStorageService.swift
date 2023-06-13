@@ -132,6 +132,18 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
+    func markSendingMessagesAsFailed() {
+        Task {
+            do {
+                let messages: [CoreDataMessagingChatMessage] = try getEntities(from: backgroundContext)
+                for message in messages where message.deliveryState == MessagingChatMessageDisplayInfo.DeliveryState.sending.rawValue {
+                    message.deliveryState = Int64(MessagingChatMessageDisplayInfo.DeliveryState.failedToSend.rawValue)
+                }
+                saveContext(backgroundContext)
+            } catch { }
+        }
+    }
+    
     // Chats
     func getChatsFor(wallet: String,
                      decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat] {

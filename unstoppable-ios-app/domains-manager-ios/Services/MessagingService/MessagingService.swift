@@ -24,6 +24,8 @@ final class MessagingService {
         self.webSocketsService = webSocketsService
         self.storageService = storageProtocol
         self.decrypterService = decrypterService
+        
+        storageService.markSendingMessagesAsFailed()
     }
     
 }
