@@ -6,6 +6,7 @@
         <attribute name="groupPendingMemberWallets" optional="YES" attributeType="Transformable" customClassName="[String]"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isApproved" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="lastMessageId" optional="YES" attributeType="String"/>
         <attribute name="lastMessageTime" attributeType="Date" defaultDateTimeInterval="707980500" usesScalarValueType="NO"/>
         <attribute name="otherUserWallet" optional="YES" attributeType="String"/>
         <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>

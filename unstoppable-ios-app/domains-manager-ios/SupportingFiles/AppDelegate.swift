@@ -17,7 +17,6 @@ protocol AppDelegateProtocol {
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    
     private(set) lazy var appContext: AppContextProtocol = {
         GeneralAppContext()
     }()

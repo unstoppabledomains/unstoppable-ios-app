@@ -117,6 +117,7 @@ extension MessagingService: MessagingServiceProtocol {
                             var updatedChat = remoteChat
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
                             updatedChat.displayInfo.unreadMessagesCount += 1
+                            try? await self.storageService.replaceChat(remoteChat, with: updatedChat)
                             return updatedChat
                         } else {
                             return remoteChat

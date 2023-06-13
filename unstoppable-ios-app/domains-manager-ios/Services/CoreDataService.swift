@@ -35,8 +35,8 @@ class CoreDataService {
 // MARK: - Open methods
 extension CoreDataService {
     func saveContext(_ context: NSManagedObjectContext) {
-        Debugger.printInfo(topic: .CoreData, "Save context")
         if context.hasChanges {
+            Debugger.printInfo(topic: .CoreData, "Will Save context")
             do {
                 try context.save()
             } catch {
