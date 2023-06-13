@@ -122,7 +122,8 @@ private extension ChatViewPresenter {
         Task {
             do {
                 isLoadingMessages = true
-                showData(animated: false, scrollToBottomAnimated: false)
+//                showData(animated: false, scrollToBottomAnimated: false)
+                view?.setLoading(active: true)
                 let messagesBefore = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                               before: nil,
                                                                                               limit: fetchLimit)
@@ -137,10 +138,9 @@ private extension ChatViewPresenter {
                 
                 switch chatState {
                 case .upToDate, .hasUnloadedMessagesBefore:
+                    view?.setLoading(active: false)
                     showData(animated: false, scrollToBottomAnimated: false)
                 case .hasUnreadMessagesAfter(let message):
-                    messages = messages.filter({ $0.isRead })
-                    showData(animated: false, scrollToBottomAnimated: false)
                     let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                   after: message,
                                                                                                   limit: fetchLimit)
@@ -151,6 +151,7 @@ private extension ChatViewPresenter {
                             self.view?.scrollToItem(item, animated: false)
                         }
                     })
+                    view?.setLoading(active: false)
                     checkIfUpToDate()
                 }
                 isLoadingMessages = false

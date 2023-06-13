@@ -16,6 +16,7 @@ protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
     func setTitleOfType(_ titleType: ChatTitleView.TitleType)
     func scrollToTheBottom(animated: Bool)
     func scrollToItem(_ item: ChatViewController.Item, animated: Bool)
+    func setLoading(active: Bool)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -26,6 +27,7 @@ final class ChatViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet private weak var chatInputView: ChatInputView!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     private var titleView: ChatTitleView!
 
     override var scrollableContentYOffset: CGFloat? { 13 }
@@ -97,6 +99,15 @@ extension ChatViewController: ChatViewProtocol {
         guard let indexPath = dataSource.indexPath(for: item) else { return }
 
         scrollTo(indexPath: indexPath, at: .top, animated: animated)
+    }
+    
+    func setLoading(active: Bool) {
+        if active {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
+        collectionView.isHidden = active
     }
 }
 
