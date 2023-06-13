@@ -10,14 +10,7 @@ import CoreData
 
 final class CoreDataMessagingStorageService: CoreDataService {
     
-    override var currentContext: NSManagedObjectContext { backgroundContext }
-    private var contextHolder: ContextHolder!
-  
-    override func didLoadPersistentContainer() {
-        super.didLoadPersistentContainer()
-        
-        contextHolder = ContextHolder(context: currentContext)
-    }
+
 }
 
 // MARK: - MessagingStorageServiceProtocol
@@ -27,8 +20,9 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                         decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage] {
         let predicate = NSPredicate(format: "chatId == %@", chat.id)
         let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
-        let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities(predicate: predicate,
-                                                                               sortDescriptions: [timeSortDescriptor])
+        let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntitiesBlocking(predicate: predicate,
+                                                                                       sortDescriptions: [timeSortDescriptor],
+                                                                                       from: backgroundContext)
         return coreDataMessages.compactMap { convertCoreDataMessageToChatMessage($0,
                                                                                  decrypter: decrypter,
                                                                                  wallet: chat.thisUserDetails.wallet) }
@@ -77,9 +71,10 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                                           predicate: NSPredicate? = nil,
                                           sortDescriptions: [NSSortDescriptor]? = nil,
                                           limit: Int?) throws -> [MessagingChatMessage]  {
-        let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities(predicate: predicate,
-                                                                               sortDescriptions: sortDescriptions,
-                                                                               fetchSize: limit)
+        let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntitiesBlocking(predicate: predicate,
+                                                                                       sortDescriptions: sortDescriptions,
+                                                                                       fetchSize: limit,
+                                                                                       from: backgroundContext)
         return coreDataMessages.compactMap { convertCoreDataMessageToChatMessage($0,
                                                                                  decrypter: decrypter,
                                                                                  wallet: chat.thisUserDetails.wallet) }
@@ -88,7 +83,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func getMessageWith(id: String,
                         in chat: MessagingChatDisplayInfo,
                         decrypter: MessagingContentDecrypterService) async -> MessagingChatMessage? {
-        if let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: id) {
+        if let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityBlockingWith(id: id) {
             return convertCoreDataMessageToChatMessage(coreDataMessage,
                                                        decrypter: decrypter,
                                                        wallet: chat.thisUserDetails.wallet)
@@ -97,30 +92,37 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     func saveMessages(_ messages: [MessagingChatMessage]) async {
-        let _ = messages.compactMap { (try? convertChatMessageToCoreDataMessage($0)) }
-        contextHolder.save()
+        backgroundContext.performAndWait {
+            let _ = messages.compactMap { (try? convertChatMessageToCoreDataMessage($0)) }
+            saveContext(backgroundContext)
+        }
     }
     
     func replaceMessage(_ messageToReplace: MessagingChatMessage,
                         with newMessage: MessagingChatMessage) async throws {
-        guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: messageToReplace.displayInfo.id) else { throw Error.entityNotFound }
+        guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityBlockingWith(id: messageToReplace.displayInfo.id) else { throw Error.entityNotFound }
         
-        deleteObject(coreDataMessage, shouldSaveContext: false)
-        _ = try convertChatMessageToCoreDataMessage(newMessage)
-        contextHolder.save()
+        backgroundContext.performAndWait {
+            deleteObject(coreDataMessage, from: backgroundContext, shouldSaveContext: false)
+            _ = try? convertChatMessageToCoreDataMessage(newMessage)
+            saveContext(backgroundContext)
+        }
     }
  
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws {
-        guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: message.id) else { throw Error.entityNotFound }
-        deleteObject(coreDataMessage, shouldSaveContext: true)
+        guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityBlockingWith(id: message.id) else { throw Error.entityNotFound }
+        backgroundContext.performAndWait {
+            deleteObject(coreDataMessage, from: backgroundContext, shouldSaveContext: true)
+        }
     }
     
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool) throws {
-        guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: message.id) else { throw Error.entityNotFound }
-        
-        coreDataMessage.isRead = isRead
-        contextHolder.save()
+        guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityBlockingWith(id: message.id) else { throw Error.entityNotFound }
+        backgroundContext.performAndWait {
+            coreDataMessage.isRead = isRead
+            saveContext(backgroundContext)
+        }
     }
     
     // Chats
@@ -128,8 +130,9 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                      decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat] {
         let predicate = NSPredicate(format: "thisUserWallet == %@", wallet)
         let timeSortDescriptor = NSSortDescriptor(key: "lastMessageTime", ascending: false)
-        let coreDataChats: [CoreDataMessagingChat] = try getEntities(predicate: predicate,
-                                                                     sortDescriptions: [timeSortDescriptor])
+        let coreDataChats: [CoreDataMessagingChat] = try getEntitiesBlocking(predicate: predicate,
+                                                                     sortDescriptions: [timeSortDescriptor],
+                                                                             from: backgroundContext)
         
         return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0,
                                                                              decrypter: decrypter) }
@@ -137,7 +140,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     
     func getChatWith(id: String,
                      decrypter: MessagingContentDecrypterService) async -> MessagingChat? {
-        if let coreDataMessage: CoreDataMessagingChat = getCoreDataEntityWith(id: id) {
+        if let coreDataMessage: CoreDataMessagingChat = getCoreDataEntityBlockingWith(id: id) {
             return convertCoreDataChatToMessagingChat(coreDataMessage,
                                                        decrypter: decrypter)
         }
@@ -145,72 +148,83 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     func saveChats(_ chats: [MessagingChat]) async {
-        let _ = chats.compactMap { (try? convertMessagingChatToCoreDataChat($0)) }
-        contextHolder.save()
+        backgroundContext.performAndWait {
+            let _ = chats.compactMap { (try? convertMessagingChatToCoreDataChat($0)) }
+            saveContext(backgroundContext)
+        }
     }
     
     func replaceChat(_ chatToReplace: MessagingChat,
                      with newChat: MessagingChat) async throws {
-        guard let coreDataMessage: CoreDataMessagingChat = getCoreDataEntityWith(id: chatToReplace.displayInfo.id) else { throw Error.entityNotFound }
+        guard let coreDataMessage: CoreDataMessagingChat = getCoreDataEntityBlockingWith(id: chatToReplace.displayInfo.id) else { throw Error.entityNotFound }
         
-        deleteObject(coreDataMessage, shouldSaveContext: false)
-        contextHolder.save()
-        _ = try convertMessagingChatToCoreDataChat(newChat)
-        contextHolder.save()
+        backgroundContext.performAndWait {
+            deleteObject(coreDataMessage, from: backgroundContext, shouldSaveContext: false)
+            _ = try? convertMessagingChatToCoreDataChat(newChat)
+            saveContext(backgroundContext)
+        }
     }
     
     // User info
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async {
-        let _ = try? convertChatUserDisplayInfoToMessagingUserInfo(info)
-        contextHolder.save()
+        backgroundContext.performAndWait {
+            let _ = try? convertChatUserDisplayInfoToMessagingUserInfo(info)
+            saveContext(backgroundContext)
+        }
     }
     
     // Channels
     func getChannelsFor(wallet: String) async throws -> [MessagingNewsChannel] {
         let predicate = NSPredicate(format: "wallet == %@", wallet)
-        let coreDataChannels: [CoreDataMessagingNewsChannel] = try getEntities(predicate: predicate)
+        let coreDataChannels: [CoreDataMessagingNewsChannel] = try getEntitiesBlocking(predicate: predicate, from: backgroundContext)
         
         return coreDataChannels.compactMap { convertCoreDataChannelToMessagingChannel($0) }
     }
     
     func saveChannels(_ channels: [MessagingNewsChannel],
                       for wallet: String) async {
-        let _ = channels.compactMap { (try? convertMessagingChannelToCoreDataChannel($0, for: wallet)) }
-        contextHolder.save()
+        backgroundContext.performAndWait {
+            let _ = channels.compactMap { (try? convertMessagingChannelToCoreDataChannel($0, for: wallet)) }
+            saveContext(backgroundContext)
+        }
     }
     
     // Channels Feed
     func getChannelsFeedFor(channel: MessagingNewsChannel) async throws -> [MessagingNewsChannelFeed] {
         let predicate = NSPredicate(format: "channelId == %@", channel.id)
-        let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(predicate: predicate)
+        let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntitiesBlocking(predicate: predicate, from: backgroundContext)
         
         return coreDataChannelsFeed.compactMap { convertCoreDataChannelFeedToMessagingChannelFeed($0) }
     }
     
     func saveChannelsFeed(_ feed: [MessagingNewsChannelFeed],
                           in channel: MessagingNewsChannel) async {
-        let _ = feed.compactMap { (try? convertMessagingChannelFeedToCoreDataChannelFeed($0, in: channel)) }
-        contextHolder.save()
+        backgroundContext.performAndWait {
+            let _ = feed.compactMap { (try? convertMessagingChannelFeedToCoreDataChannelFeed($0, in: channel)) }
+            saveContext(backgroundContext)
+        }
     }
     
     // Clear
     func clear() {
-        do {
-            let coreDataChats: [CoreDataMessagingChat] = try getEntities()
-            deleteObjects(coreDataChats, shouldSaveContext: false)
-
-            let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities()
-            deleteObjects(coreDataMessages, shouldSaveContext: false)
-            
-            let coreDataNews: [CoreDataMessagingNewsChannel] = try getEntities()
-            deleteObjects(coreDataNews, shouldSaveContext: false)
-            
-            let coreDataNewsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities()
-            deleteObjects(coreDataNewsFeed, shouldSaveContext: false)
-            
-            let coreDataUsersInfo: [CoreDataMessagingUserInfo] = try getEntities()
-            deleteObjects(coreDataUsersInfo, shouldSaveContext: true)
-        } catch { }
+        backgroundContext.performAndWait {
+            do {
+                let coreDataChats: [CoreDataMessagingChat] = try getEntities(from: backgroundContext)
+                deleteObjects(coreDataChats, from: backgroundContext, shouldSaveContext: false)
+                
+                let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities(from: backgroundContext)
+                deleteObjects(coreDataMessages, from: backgroundContext, shouldSaveContext: false)
+                
+                let coreDataNews: [CoreDataMessagingNewsChannel] = try getEntities(from: backgroundContext)
+                deleteObjects(coreDataNews, from: backgroundContext, shouldSaveContext: false)
+                
+                let coreDataNewsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(from: backgroundContext)
+                deleteObjects(coreDataNewsFeed, from: backgroundContext, shouldSaveContext: false)
+                
+                let coreDataUsersInfo: [CoreDataMessagingUserInfo] = try getEntities(from: backgroundContext)
+                deleteObjects(coreDataUsersInfo, from: backgroundContext, shouldSaveContext: true)
+            } catch { }
+        }
     }
 }
 
@@ -246,7 +260,7 @@ private extension CoreDataMessagingStorageService {
     }
     
     func convertMessagingChatToCoreDataChat(_ chat: MessagingChat) throws -> CoreDataMessagingChat {
-        let coreDataChat: CoreDataMessagingChat = try createEntity()
+        let coreDataChat: CoreDataMessagingChat = try createEntity(in: backgroundContext)
         let displayInfo = chat.displayInfo
         
         coreDataChat.serviceMetadata = chat.serviceMetadata
@@ -256,7 +270,7 @@ private extension CoreDataMessagingStorageService {
         coreDataChat.lastMessageTime = displayInfo.lastMessageTime
         
         if let lastMessage = chat.displayInfo.lastMessage,
-           let lastCoreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: lastMessage.id) {
+           let lastCoreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityBlockingWith(id: lastMessage.id) {
             coreDataChat.lastMessage = lastCoreDataMessage
         }
         
@@ -339,7 +353,7 @@ private extension CoreDataMessagingStorageService {
     }
     
     func convertChatMessageToCoreDataMessage(_ chatMessage: MessagingChatMessage) throws -> CoreDataMessagingChatMessage {
-        let coreDataMessage: CoreDataMessagingChatMessage = try createEntity()
+        let coreDataMessage: CoreDataMessagingChatMessage = try createEntity(in: backgroundContext)
         let displayInfo = chatMessage.displayInfo
         coreDataMessage.serviceMetadata = chatMessage.serviceMetadata
         coreDataMessage.id = displayInfo.id
@@ -432,7 +446,7 @@ private extension CoreDataMessagingStorageService {
     
     func convertMessagingChannelToCoreDataChannel(_ channel: MessagingNewsChannel,
                                                   for wallet: String) throws -> CoreDataMessagingNewsChannel {
-        let coreDataChannel: CoreDataMessagingNewsChannel = try createEntity()
+        let coreDataChannel: CoreDataMessagingNewsChannel = try createEntity(in: backgroundContext)
         
         coreDataChannel.id = channel.id
         coreDataChannel.channel = channel.channel
@@ -447,7 +461,7 @@ private extension CoreDataMessagingStorageService {
 //        coreDataChannel.lastMessageTime = channel.lastMessageTime
         
         if let lastMessage = channel.lastMessage,
-           let lastCoreDataMessage: CoreDataMessagingNewsChannelFeed = getCoreDataEntityWith(id: lastMessage.id) {
+           let lastCoreDataMessage: CoreDataMessagingNewsChannelFeed = getCoreDataEntityBlockingWith(id: lastMessage.id) {
             coreDataChannel.lastFeed = lastCoreDataMessage
         }
         
@@ -470,7 +484,7 @@ private extension CoreDataMessagingStorageService {
     
     func convertMessagingChannelFeedToCoreDataChannelFeed(_ channelFeed: MessagingNewsChannelFeed,
                                                           in channel: MessagingNewsChannel) throws -> CoreDataMessagingNewsChannelFeed {
-        let coreDataMessage: CoreDataMessagingNewsChannelFeed = try createEntity()
+        let coreDataMessage: CoreDataMessagingNewsChannelFeed = try createEntity(in: backgroundContext)
         coreDataMessage.id = channelFeed.id
         coreDataMessage.title = channelFeed.title
         coreDataMessage.message = channelFeed.message
@@ -486,7 +500,7 @@ private extension CoreDataMessagingStorageService {
 // MARK: - User Info
 private extension CoreDataMessagingStorageService {
     func convertChatUserDisplayInfoToMessagingUserInfo(_ displayInfo: MessagingChatUserDisplayInfo) throws -> CoreDataMessagingUserInfo {
-        let coreDataUserInfo: CoreDataMessagingUserInfo = try createEntity()
+        let coreDataUserInfo: CoreDataMessagingUserInfo = try createEntity(in: backgroundContext)
         coreDataUserInfo.wallet = displayInfo.wallet
         coreDataUserInfo.name = displayInfo.domainName
         coreDataUserInfo.pfpURL = displayInfo.pfpURL
@@ -496,17 +510,17 @@ private extension CoreDataMessagingStorageService {
     
     func getCoreDataDomainInfoFor(wallet: String) -> CoreDataMessagingUserInfo? {
         let predicate = NSPredicate(format: "wallet == %@", wallet)
-        let infos: [CoreDataMessagingUserInfo]? = try? getEntities(predicate: predicate)
+        let infos: [CoreDataMessagingUserInfo]? = try? getEntities(predicate: predicate, from: backgroundContext)
         return infos?.first
     }
 }
 
 // MARK: - Private methods
 private extension CoreDataMessagingStorageService {
-    func getCoreDataEntityWith<T: NSManagedObject>(id: String) -> T? {
+    func getCoreDataEntityBlockingWith<T: NSManagedObject>(id: String) -> T? {
         do {
             let predicate = NSPredicate(format: "id == %@", id)
-            let messages: [T] = try getEntities(predicate: predicate)
+            let messages: [T] = try getEntitiesBlocking(predicate: predicate, from: backgroundContext)
             return messages.first
         } catch {
             return nil
@@ -514,34 +528,10 @@ private extension CoreDataMessagingStorageService {
     }
 }
 
-// MARK: - ContextHolder
-private extension CoreDataMessagingStorageService {
-    final class ContextHolder {
-        let context: NSManagedObjectContext
-        private let queue = DispatchQueue(label: "com.unstoppabledomains.coredata.context")
-        
-        init(context: NSManagedObjectContext) {
-            self.context = context
-        }
-        
-        func save() {
-            queue.sync {
-                Debugger.printInfo(topic: .CoreData, "Save context")
-                if self.context.hasChanges {
-                    do {
-                        try self.context.save()
-                    } catch {
-                        Debugger.printFailure("An error occurred while saving context, error: \(error)", critical: true)
-                    }
-                }
-            }
-        }
-    }
-}
-
 // MARK: - Open methods
 extension CoreDataMessagingStorageService {
     enum Error: Swift.Error {
+        case failedToFetch
         case entityNotFound
     }
 }

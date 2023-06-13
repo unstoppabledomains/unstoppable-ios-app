@@ -12,7 +12,6 @@ class CoreDataService {
         
     private let persistentContainer: NSPersistentContainer
     
-    var currentContext: NSManagedObjectContext { viewContext }
     var viewContext: NSManagedObjectContext { persistentContainer.viewContext }
     private(set) var backgroundContext: NSManagedObjectContext!
     
@@ -35,23 +34,19 @@ class CoreDataService {
 
 // MARK: - Open methods
 extension CoreDataService {
-    func saveContext() {
+    func saveContext(_ context: NSManagedObjectContext) {
         Debugger.printInfo(topic: .CoreData, "Save context")
-        if self.currentContext.hasChanges {
+        if context.hasChanges {
             do {
-                try self.currentContext.save()
+                try context.save()
             } catch {
                 Debugger.printFailure("An error occurred while saving context, error: \(error)", critical: true)
             }
         }
     }
     
-    func resetContext() {
-        currentContext.reset()
-    }
-    
-    func createEntity<T: NSManagedObject>() throws -> T {
-        guard let object = NSEntityDescription.insertNewObject(forEntityName: T.className, into: currentContext) as? T else { throw CoreDataError.failedToInsertObject }
+    func createEntity<T: NSManagedObject>(in context: NSManagedObjectContext) throws -> T {
+        guard let object = NSEntityDescription.insertNewObject(forEntityName: T.className, into: context) as? T else { throw CoreDataError.failedToInsertObject }
         
         return object
     }
@@ -59,7 +54,8 @@ extension CoreDataService {
     func getEntities<T: NSManagedObject>(predicate: NSPredicate? = nil,
                                          sortDescriptions: [NSSortDescriptor]? = nil,
                                          fetchSize: Int? = nil,
-                                         batchDescription: BatchDescription? = nil) throws -> [T] {
+                                         batchDescription: BatchDescription? = nil,
+                                         from context: NSManagedObjectContext) throws -> [T] {
         let request = T.fetchRequest()
         request.includesPropertyValues = true
         request.returnsObjectsAsFaults = false
@@ -72,25 +68,40 @@ extension CoreDataService {
             request.fetchLimit = fetchSize
             request.fetchOffset = 0
         }
-        return try currentContext.fetch(request) as? [T] ?? []
+        return try context.fetch(request) as? [T] ?? []
     }
     
-    func saveContext(if shouldSaveContext: Bool) {
+    func getEntitiesBlocking<T: NSManagedObject>(predicate: NSPredicate? = nil,
+                                         sortDescriptions: [NSSortDescriptor]? = nil,
+                                         fetchSize: Int? = nil,
+                                         batchDescription: BatchDescription? = nil,
+                                         from context: NSManagedObjectContext) throws -> [T] {
+        var entities: [T]?
+        context.performAndWait {
+            entities = try? getEntities(predicate: predicate, sortDescriptions: sortDescriptions, fetchSize: fetchSize, batchDescription: batchDescription, from: context)
+        }
+        guard let entities else { throw CoreDataError.failedToFetchObjects }
+        
+        return entities
+    }
+    
+    func saveContext(_ context: NSManagedObjectContext,
+                     if shouldSaveContext: Bool) {
         if shouldSaveContext {
-            saveContext()
+            saveContext(context)
         }
     }
     
-    func deleteObject(_ object: NSManagedObject, shouldSaveContext: Bool = true) {
-        currentContext.delete(object)
-        saveContext(if: shouldSaveContext)
+    func deleteObject(_ object: NSManagedObject, from context: NSManagedObjectContext, shouldSaveContext: Bool = true) {
+        context.delete(object)
+        saveContext(context, if: shouldSaveContext)
     }
     
-    func deleteObjects(_ objects: [NSManagedObject], shouldSaveContext: Bool = true) {
+    func deleteObjects(_ objects: [NSManagedObject], from context: NSManagedObjectContext, shouldSaveContext: Bool = true) {
         objects.forEach { object in
-            currentContext.delete(object)
+            context.delete(object)
         }
-        saveContext(if: shouldSaveContext)
+        saveContext(context, if: shouldSaveContext)
     }
 }
 
@@ -126,5 +137,6 @@ extension CoreDataService {
 }
 
 enum CoreDataError: Error {
+    case failedToFetchObjects
     case failedToInsertObject
 }
