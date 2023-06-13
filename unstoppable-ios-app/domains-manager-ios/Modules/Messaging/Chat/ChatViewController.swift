@@ -90,13 +90,13 @@ extension ChatViewController: ChatViewProtocol {
     func scrollToTheBottom(animated: Bool) {
         guard let indexPath = getLastItemIndexPath() else { return }
         
-        scrollTo(indexPath: indexPath, animated: animated)
+        scrollTo(indexPath: indexPath, at: .bottom, animated: animated)
     }
     
     func scrollToItem(_ item: Item, animated: Bool) {
         guard let indexPath = dataSource.indexPath(for: item) else { return }
 
-        scrollTo(indexPath: indexPath, animated: animated)
+        scrollTo(indexPath: indexPath, at: .top, animated: animated)
     }
 }
 
@@ -181,8 +181,8 @@ private extension ChatViewController {
         return indexPath
     }
     
-    func scrollTo(indexPath: IndexPath, animated: Bool) {
-        self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
+    func scrollTo(indexPath: IndexPath, at position: UICollectionView.ScrollPosition, animated: Bool) {
+        self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
         UIView.performWithoutAnimation {
             let yOffset = CNavigationHelper.contentYOffset(of: self.collectionView)
             self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)

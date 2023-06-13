@@ -78,13 +78,13 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             guard let threadHash = chatMetadata.threadHash else {
                 return [] // NULL threadHash means there's no messages in the chat yet
             }
-            return try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit)
+            return try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit, isRead: false)
         case .before(let message):
             let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: message.serviceMetadata)
             guard let threadHash = messageMetadata.link else {
                 return []
             }
-            return try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit)
+            return try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit, isRead: true)
         case .after(let message):
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
             guard var threadHash = chatMetadata.threadHash else {
@@ -94,7 +94,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             var messages = [MessagingChatMessage]()
             
             while true {
-                let chunkMessages = try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit)
+                let chunkMessages = try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit, isRead: false)
                 if let i = chunkMessages.firstIndex(where: { $0.displayInfo.id == message.displayInfo.id }) {
                     let missingMessages = Array(chunkMessages[..<i])
                     messages.append(contentsOf: missingMessages)
@@ -116,7 +116,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     private func getPreviousMessagesForChat(_ chat: MessagingChat,
                                             threadHash: String,
-                                            fetchLimit: Int) async throws -> [MessagingChatMessage] {
+                                            fetchLimit: Int,
+                                            isRead: Bool) async throws -> [MessagingChatMessage] {
         let wallet = chat.displayInfo.thisUserDetails.wallet
         let pgpPrivateKey = try await getPGPPrivateKeyFor(wallet: wallet)
         let env = getCurrentPushEnvironment()
@@ -126,7 +127,10 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                            toDecrypt: false,
                                                            env: env)
         
-        let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0, in: chat, pgpKey: pgpPrivateKey) })
+        let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0,
+                                                                                                         in: chat,
+                                                                                                         pgpKey: pgpPrivateKey,
+                                                                                                         isRead: isRead) })
         return messages
     }
     
@@ -159,7 +163,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             
             guard let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
                                                                                             in: chat,
-                                                                                            pgpKey: pgpPrivateKey) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
+                                                                                            pgpKey: pgpPrivateKey,
+                                                                                            isRead: true) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
             
             return chatMessage
         case .group(let groupDetails):

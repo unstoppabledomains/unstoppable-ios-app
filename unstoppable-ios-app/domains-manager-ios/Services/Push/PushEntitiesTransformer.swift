@@ -84,7 +84,8 @@ struct PushEntitiesTransformer {
     
     static func convertPushMessageToChatMessage(_ pushMessage: Push.Message,
                                                 in chat: MessagingChat,
-                                                pgpKey: String) -> MessagingChatMessage? {
+                                                pgpKey: String,
+                                                isRead: Bool) -> MessagingChatMessage? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
               let messageType = PushMessageType(rawValue: pushMessage.messageType) else { return nil }
         
@@ -119,7 +120,7 @@ struct PushEntitiesTransformer {
                                                               senderType: sender,
                                                               time: time,
                                                               type: .text(textDisplayInfo),
-                                                              isRead: false,
+                                                              isRead: isRead,
                                                               isFirstInChat: false,
                                                               deliveryState: .delivered)
             let textMessage = MessagingChatMessage(displayInfo: displayInfo,
