@@ -116,7 +116,9 @@ extension MessagingService: MessagingServiceProtocol {
                             await self.storageService.saveMessages([lastMessage])
                             var updatedChat = remoteChat
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
-                            updatedChat.displayInfo.unreadMessagesCount += 1
+                            if !lastMessage.displayInfo.senderType.isThisUser {
+                                updatedChat.displayInfo.unreadMessagesCount += 1
+                            }
                             try? await self.storageService.replaceChat(remoteChat, with: updatedChat)
                             return updatedChat
                         } else {
@@ -307,9 +309,12 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     isRead: false,
                                                                     isFirstInChat: false,
                                                                     deliveryState: .sending)
-        try await setLastMessage(newMessageDisplayInfo,
-                                 to: messagingChat)
-        notifyChatsChanged(wallet: chat.thisUserDetails.wallet)
+        let message = MessagingChatMessage(displayInfo: newMessageDisplayInfo,
+                                           serviceMetadata: nil)
+        await storageService.saveMessages([message])
+        
+        try await setLastMessageAndNotify(newMessageDisplayInfo,
+                                          to: messagingChat)
         let newMessage = MessagingChatMessage(displayInfo: newMessageDisplayInfo, serviceMetadata: nil)
         sendMessageToBE(message: newMessage, messageType: messageType, in: messagingChat)
 
@@ -448,6 +453,8 @@ private extension MessagingService {
                 replaceCacheMessageAndNotify(message,
                                              with: sentMessage,
                                              chatId: chatId)
+                try await setLastMessageAndNotify(sentMessage.displayInfo,
+                                         to: chat)
             } catch {
                 var failedMessage = message
                 failedMessage.displayInfo.deliveryState = .failedToSend
@@ -498,14 +505,21 @@ private extension MessagingService {
                     
                     notifyListenersChangedDataType(.messagesAdded([chatMessage.displayInfo],
                                                                   chatId: chatId))
-                    
-                    let chat = try await getMessagingChatWith(chatId: chatId)
-                    if let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: chat.displayInfo.thisUserDetails.wallet),
-                       let domain = await appContext.dataAggregatorService.getDomainsDisplayInfo().first(where: { $0.name == domainName }){
-                        refreshChatsForDomain(domain, shouldRefreshUserInfo: false)
-                    }
+                    refreshChatsInSameDomain(as: chatId)
                 } catch { }
             }
+        }
+    }
+    
+    func refreshChatsInSameDomain(as chatId: String) {
+        Task {
+            do {
+                let chat = try await getMessagingChatWith(chatId: chatId)
+                if let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: chat.displayInfo.thisUserDetails.wallet),
+                   let domain = await appContext.dataAggregatorService.getDomainsDisplayInfo().first(where: { $0.name == domainName }){
+                    refreshChatsForDomain(domain, shouldRefreshUserInfo: false)
+                }
+            } catch { }
         }
     }
     
@@ -513,7 +527,7 @@ private extension MessagingService {
         Task {
             let chats = (try? await storageService.getChatsFor(wallet: wallet,
                                                                decrypter: decrypterService)) ?? []
-            let displayInfo = chats.map { $0.displayInfo }
+            let displayInfo = chats.sortedByLastMessage().map { $0.displayInfo }
             notifyListenersChangedDataType(.chats(displayInfo, wallet: wallet.normalized))
         }
     }
@@ -524,12 +538,13 @@ private extension MessagingService {
         }
     }
     
-    func setLastMessage(_ lastMessage: MessagingChatMessageDisplayInfo,
-                        to chat: MessagingChat) async throws {
+    func setLastMessageAndNotify(_ lastMessage: MessagingChatMessageDisplayInfo,
+                                 to chat: MessagingChat) async throws {
         var updatedChat = chat
         updatedChat.displayInfo.lastMessage = lastMessage
         updatedChat.displayInfo.lastMessageTime = lastMessage.time
         try await storageService.replaceChat(chat, with: updatedChat)
+        notifyChatsChanged(wallet: chat.displayInfo.thisUserDetails.wallet)
     }
     
     func convertMessagingWebSocketMessageEntityToMessage(_ messageEntity: MessagingWebSocketMessageEntity) async throws -> MessagingChatMessage {

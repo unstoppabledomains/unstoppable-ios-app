@@ -361,12 +361,13 @@ private extension CoreDataMessagingStorageService {
     func convertCoreDataMessageToChatMessage(_ coreDataMessage: CoreDataMessagingChatMessage,
                                              decrypter: MessagingContentDecrypterService,
                                              wallet: String) -> MessagingChatMessage? {
+        let deliveryState = MessagingChatMessageDisplayInfo.DeliveryState(rawValue: Int(coreDataMessage.deliveryState))!
         guard let type = getMessageDisplayType(from: coreDataMessage,
                                                decrypter: decrypter,
+                                               deliveryState: deliveryState,
                                                wallet: wallet) else { return nil }
         
         let senderType = getMessagingChatSender(from: coreDataMessage)
-        let deliveryState = MessagingChatMessageDisplayInfo.DeliveryState(rawValue: Int(coreDataMessage.deliveryState))!
         let displayInfo = MessagingChatMessageDisplayInfo(id: coreDataMessage.id!,
                                                           chatId: coreDataMessage.chatId!,
                                                           senderType: senderType,
@@ -399,12 +400,18 @@ private extension CoreDataMessagingStorageService {
     // Message type
     func getMessageDisplayType(from coreDataMessage: CoreDataMessagingChatMessage,
                                decrypter: MessagingContentDecrypterService,
+                               deliveryState: MessagingChatMessageDisplayInfo.DeliveryState,
                                wallet: String) -> MessagingChatMessageDisplayType? {
         if coreDataMessage.messageType == 0,
            let text = coreDataMessage.messageText {
-            guard let decryptedText = try? decrypter.decryptText(text,
-                                                                 with: coreDataMessage.serviceMetadata,
-                                                                 wallet: wallet) else { return nil }
+            var decryptedText = text
+            if deliveryState == .delivered {
+                guard let decryptedContent = try? decrypter.decryptText(text,
+                                                                     with: coreDataMessage.serviceMetadata,
+                                                                     wallet: wallet) else {
+                    return nil }
+                decryptedText = decryptedContent
+            }
             
             let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedText, encryptedText: text)
             return .text(textDisplayInfo)

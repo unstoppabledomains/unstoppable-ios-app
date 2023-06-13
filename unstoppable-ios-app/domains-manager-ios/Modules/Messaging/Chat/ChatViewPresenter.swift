@@ -122,7 +122,6 @@ private extension ChatViewPresenter {
         Task {
             do {
                 isLoadingMessages = true
-//                showData(animated: false, scrollToBottomAnimated: false)
                 view?.setLoading(active: true)
                 let messagesBefore = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                               before: nil,
