@@ -26,8 +26,9 @@ protocol MessagingServiceProtocol {
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
-    
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws
+    func markMessage(_ message: MessagingChatMessageDisplayInfo,
+                     isRead: Bool) throws
     // Channels
     func refreshChannelsForDomain(_ domain: DomainDisplayInfo)
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel]
@@ -60,6 +61,8 @@ final class MessagingListenerHolder: Equatable {
 
 enum MessagingDataType {
     case chats(_ chats: [MessagingChatDisplayInfo], wallet: String)
-    case messages(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case messagesAdded(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case messageUpdated(_ updatedMessage: MessagingChatMessageDisplayInfo, newMessage: MessagingChatMessageDisplayInfo)
+    case messagesRemoved(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
     case channels(_ channels: [MessagingNewsChannel], wallet: String)
 }

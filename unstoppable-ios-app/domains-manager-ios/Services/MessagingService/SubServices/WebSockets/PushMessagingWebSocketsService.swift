@@ -155,10 +155,10 @@ private extension PushMessagingWebSocketsService {
             case .chatReceivedMessage:
                 let pushMessage: Push.Message = try parseEntityFrom(data: data)
                 
-                if let wallet = PushEntitiesTransformer.getWalletAddressFrom(eip155String: pushMessage.fromDID),
-                   let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet) {
-                    let messages = [pushMessage].compactMap { PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity($0, pgpKey: pgpKey) }
-                    return .chatReceivedMessage(messages)
+                if let wallet = PushEntitiesTransformer.getWalletAddressFrom(eip155String: pushMessage.toDID),
+                   let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet),
+                let message = PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity(pushMessage, pgpKey: pgpKey) {
+                    return .chatReceivedMessage(message)
                 }
             case .chatGroups:
                 return .chatGroups

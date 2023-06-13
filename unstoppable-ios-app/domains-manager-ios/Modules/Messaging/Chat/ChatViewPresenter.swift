@@ -50,9 +50,9 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
     }
     
     func willDisplayItem(_ item: ChatViewController.Item) {
-        let messageId = item.messageId
-        guard let messageIndex = messages.firstIndex(where: { $0.id == messageId }) else {
-            Debugger.printFailure("Failed to find will display message with id \(messageId) in the list", critical: true)
+        let message = item.message
+        guard let messageIndex = messages.firstIndex(where: { $0.id == message.id }) else {
+            Debugger.printFailure("Failed to find will display message with id \(message.id) in the list", critical: true)
             return }
         
         if messageIndex >= (messages.count - 4) {
@@ -64,6 +64,11 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
             case .hasUnreadMessagesAfter:
                 return
             }
+        }
+        
+        if !message.isRead {
+            messages[messageIndex].isRead = true
+            try? appContext.messagingService.markMessage(message, isRead: true)
         }
     }
     
@@ -86,11 +91,25 @@ extension ChatViewPresenter: MessagingServiceListener {
             switch messagingDataType {
             case .chats, .channels:
                 return
-            case .messages(let messages, let chatId):
+            case .messagesAdded(let messages, let chatId):
                 if chatId == chat.id {
                     self.addMessages(messages)
                     checkIfUpToDate()
                     showData(animated: true, scrollToBottomAnimated: true)
+                }
+            case .messageUpdated(let updatedMessage, let newMessage):
+                if updatedMessage.chatId == chat.id,
+                   let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
+                    self.messages[i] = newMessage
+                    checkIfUpToDate()
+                    showData(animated: true, scrollToBottomAnimated: true)
+                }
+            case .messagesRemoved(let messages, let chatId):
+                if chatId == chat.id {
+                    let removedIds = messages.map { $0.id }
+                    self.messages = self.messages.filter({ !removedIds.contains($0.id) })
+                    checkIfUpToDate()
+                    showData(animated: true)
                 }
             }
         }
@@ -238,7 +257,15 @@ private extension ChatViewPresenter {
         case .resend:
             Task { try? await appContext.messagingService.resendMessage(message) }
         case .delete:
-            appContext.messagingService.deleteMessage(message)
+            do {
+                try appContext.messagingService.deleteMessage(message)
+                if let i = messages.firstIndex(where: { $0.id == message.id }) {
+                    messages.remove(at: i)
+                    showData(animated: true)
+                }
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
         }
     }
 }
@@ -253,11 +280,14 @@ private extension ChatViewPresenter {
     }
     
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
-        do {
-            Task { let _ = try await appContext.messagingService.sendMessage(type, in: chat) }
-            showData(animated: true, scrollToBottomAnimated: true)
-        } catch {
-            view?.showAlertWith(error: error, handler: nil)
+        Task {
+            do {
+                let newMessage = try await appContext.messagingService.sendMessage(type, in: chat)
+                messages.insert(newMessage, at: 0)
+                showData(animated: true, scrollToBottomAnimated: true)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
         }
     }
 }

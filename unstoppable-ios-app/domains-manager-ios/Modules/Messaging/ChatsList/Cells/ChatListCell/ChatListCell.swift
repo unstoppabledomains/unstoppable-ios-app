@@ -66,7 +66,11 @@ private extension ChatListCell {
         case .private(let otherUserDetails):
             return otherUserDetails.otherUser.displayName
         case .group(let groupDetails):
-            return "" // <GROUP_CHAT>
+            #if DEBUG
+            return "Group chat <Not-supported>" // <GROUP_CHAT>
+            #else
+            return ""
+            #endif
         }
     }
     

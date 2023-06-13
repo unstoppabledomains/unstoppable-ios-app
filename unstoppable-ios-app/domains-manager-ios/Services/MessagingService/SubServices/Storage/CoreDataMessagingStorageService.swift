@@ -109,10 +109,23 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         _ = try convertChatMessageToCoreDataMessage(newMessage)
         contextHolder.save()
     }
+ 
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws {
+        guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: message.id) else { throw Error.entityNotFound }
+        deleteObject(coreDataMessage, shouldSaveContext: true)
+    }
+    
+    func markMessage(_ message: MessagingChatMessageDisplayInfo,
+                     isRead: Bool) throws {
+        guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: message.id) else { throw Error.entityNotFound }
+        
+        coreDataMessage.isRead = isRead
+        contextHolder.save()
+    }
     
     // Chats
-    func getChatsFor(decrypter: MessagingContentDecrypterService,
-                     wallet: String) async throws -> [MessagingChat] {
+    func getChatsFor(wallet: String,
+                     decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat] {
         let predicate = NSPredicate(format: "thisUserWallet == %@", wallet)
         let timeSortDescriptor = NSSortDescriptor(key: "lastMessageTime", ascending: false)
         let coreDataChats: [CoreDataMessagingChat] = try getEntities(predicate: predicate,
@@ -133,6 +146,16 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     
     func saveChats(_ chats: [MessagingChat]) async {
         let _ = chats.compactMap { (try? convertMessagingChatToCoreDataChat($0)) }
+        contextHolder.save()
+    }
+    
+    func replaceChat(_ chatToReplace: MessagingChat,
+                     with newChat: MessagingChat) async throws {
+        guard let coreDataMessage: CoreDataMessagingChat = getCoreDataEntityWith(id: chatToReplace.displayInfo.id) else { throw Error.entityNotFound }
+        
+        deleteObject(coreDataMessage, shouldSaveContext: false)
+        contextHolder.save()
+        _ = try convertMessagingChatToCoreDataChat(newChat)
         contextHolder.save()
     }
     

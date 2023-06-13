@@ -25,13 +25,18 @@ protocol MessagingStorageServiceProtocol {
     func saveMessages(_ messages: [MessagingChatMessage]) async
     func replaceMessage(_ messageToReplace: MessagingChatMessage,
                         with newMessage: MessagingChatMessage) async throws
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws
+    func markMessage(_ message: MessagingChatMessageDisplayInfo,
+                     isRead: Bool) throws
     
     // Chats
-    func getChatsFor(decrypter: MessagingContentDecrypterService,
-                     wallet: String) async throws -> [MessagingChat]
+    func getChatsFor(wallet: String,
+                     decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat]
     func getChatWith(id: String,
                      decrypter: MessagingContentDecrypterService) async -> MessagingChat?
     func saveChats(_ chats: [MessagingChat]) async
+    func replaceChat(_ chatToReplace: MessagingChat,
+                     with newChat: MessagingChat) async throws
     
     // User info
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async

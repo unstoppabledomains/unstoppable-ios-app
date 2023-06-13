@@ -253,10 +253,10 @@ extension ChatViewController {
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
         
-        var messageId: String {
+        var message: MessagingChatMessageDisplayInfo {
             switch self {
             case .textMessage(let configuration):
-                return configuration.message.id
+                return configuration.message
             }
         }
     }

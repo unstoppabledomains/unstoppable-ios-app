@@ -71,7 +71,7 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                    self.channels = channels
                    showData()
                }
-           case .messages:
+           case .messageUpdated, .messagesRemoved, .messagesAdded:
                return
            }
        }
