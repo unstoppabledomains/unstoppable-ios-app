@@ -9,6 +9,7 @@ import Foundation
 
 struct MessagingNewsChannel: Hashable {
     let id: String
+    let userId: String 
     let channel: String
     let name: String
     let info: String

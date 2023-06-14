@@ -26,12 +26,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         }
         
         let userProfile = PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
-        try? await storePGPKeyFromPushUserIfNeeded(pushUser, domain: domain)
+        try await storePGPKeyFromPushUserIfNeeded(pushUser, domain: domain)
         return userProfile
     }
     
     func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile {
-        let wallet = try await domain.getAddress()
         let env = getCurrentPushEnvironment()
         let pushUser = try await PushUser.create(options: .init(env: env,
                                                                 signer: domain,
@@ -54,6 +53,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                            isRequests: false)
         
         let chats = pushChats.compactMap({ PushEntitiesTransformer.convertPushChatToChat($0,
+                                                                                         userId: user.id,
                                                                                          userWallet: wallet,
                                                                                          isApproved: true) })
         return chats
@@ -68,6 +68,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                            limit: limit,
                                                            isRequests: true)
         let chats = pushChats.compactMap({ PushEntitiesTransformer.convertPushChatToChat($0,
+                                                                                         userId: user.id,
                                                                                          userWallet: wallet,
                                                                                          isApproved: false) })
         return chats
@@ -210,8 +211,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     // Channels
-    func getSubscribedChannelsFor(wallet: HexAddress) async throws -> [MessagingNewsChannel] {
-        let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: wallet)
+    func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
+        let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: user.wallet)
         guard !subscribedChannelsIds.isEmpty else { return [] }
         
         var channels = [PushChannel?]()
@@ -227,7 +228,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             }
         })
         
-        return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0) })
+        return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
+                                                                                                              userId: user.id) })
     }
     
     func getNotificationsInboxFor(wallet: HexAddress,

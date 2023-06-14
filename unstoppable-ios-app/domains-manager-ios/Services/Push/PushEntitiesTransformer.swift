@@ -34,6 +34,7 @@ struct PushEntitiesTransformer {
     }
     
     static func convertPushChatToChat(_ pushChat: PushChat,
+                                      userId: String,
                                       userWallet: String,
                                       isApproved: Bool) -> MessagingChat? {
         
@@ -87,7 +88,8 @@ struct PushEntitiesTransformer {
         
         let metadataModel = PushEnvironment.ChatServiceMetadata(threadHash: pushChat.threadhash)
         let serviceMetadata = metadataModel.jsonData()
-        let chat = MessagingChat(displayInfo: displayInfo,
+        let chat = MessagingChat(userId: userId,
+                                 displayInfo: displayInfo,
                                  serviceMetadata: serviceMetadata)
         return chat
     }
@@ -189,8 +191,10 @@ struct PushEntitiesTransformer {
         }
     }
     
-    static func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel) -> MessagingNewsChannel {
+    static func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel,
+                                                     userId: String) -> MessagingNewsChannel {
         MessagingNewsChannel(id: String(pushChannel.id),
+                             userId: userId,
                              channel: pushChannel.channel,
                              name: pushChannel.name,
                              info: pushChannel.info,

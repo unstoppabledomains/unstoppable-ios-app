@@ -43,9 +43,7 @@ extension MessagingService: MessagingServiceProtocol {
     private func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
         Task {
             do {
-                let wallet = profile.wallet
-                
-                let allLocalChats = try await storageService.getChatsFor(wallet: wallet,
+                let allLocalChats = try await storageService.getChatsFor(profile: profile,
                                                                          decrypter: decrypterService)
                 let localChats = allLocalChats.filter { $0.displayInfo.isApproved}
                 let localRequests = allLocalChats.filter { !$0.displayInfo.isApproved}
@@ -61,7 +59,7 @@ extension MessagingService: MessagingServiceProtocol {
                                                               for: profile)
                 await storageService.saveChats(updatedChats)
                 
-                let updatedStoredChats = try await storageService.getChatsFor(wallet: wallet,
+                let updatedStoredChats = try await storageService.getChatsFor(profile: profile,
                                                                               decrypter: decrypterService)
                 let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
                 notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: profile.normalizedWallet))
@@ -155,8 +153,7 @@ extension MessagingService: MessagingServiceProtocol {
     private func refreshUsersInfoFor(profile: MessagingChatUserProfile) {
         Task {
             do {
-                let wallet = profile.wallet
-                let chats = try await storageService.getChatsFor(wallet: wallet,
+                let chats = try await storageService.getChatsFor(profile: profile,
                                                                  decrypter: decrypterService)
                 await withTaskGroup(of: Void.self, body: { group in
                     for chat in chats {
@@ -173,7 +170,7 @@ extension MessagingService: MessagingServiceProtocol {
                     }
                 })
                 
-                let updatedChats = try await storageService.getChatsFor(wallet: wallet,
+                let updatedChats = try await storageService.getChatsFor(profile: profile,
                                                                         decrypter: decrypterService)
                 notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, wallet: profile.normalizedWallet))
             } catch { }
@@ -205,8 +202,8 @@ extension MessagingService: MessagingServiceProtocol {
     
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
-        let wallet = profile.wallet
-        let chats = try await storageService.getChatsFor(wallet: wallet,
+        let profile = try getUserProfileWith(wallet: profile.wallet)
+        let chats = try await storageService.getChatsFor(profile: profile,
                                                          decrypter: decrypterService)
         
         let chatsDisplayInfo = chats.map { $0.displayInfo }
@@ -361,11 +358,10 @@ extension MessagingService: MessagingServiceProtocol {
     private func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
         Task {
             do {
-                let wallet = profile.wallet
-                let channels = try await apiService.getSubscribedChannelsFor(wallet: wallet)
+                let channels = try await apiService.getSubscribedChannelsForUser(profile)
                 let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
                 
-                await storageService.saveChannels(updatedChats, for: wallet)
+                await storageService.saveChannels(updatedChats, for: profile)
                 notifyListenersChangedDataType(.channels(updatedChats, wallet: profile.normalizedWallet))
             }
         }
@@ -400,8 +396,8 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
-        let wallet = profile.wallet
-        let channels = try await storageService.getChannelsFor(wallet: wallet)
+        let profile = try getUserProfileWith(wallet: profile.wallet)
+        let channels = try await storageService.getChannelsFor(profile: profile)
         return channels
     }
     
@@ -538,10 +534,13 @@ private extension MessagingService {
     
     func notifyChatsChanged(wallet: String) {
         Task {
-            let chats = (try? await storageService.getChatsFor(wallet: wallet,
-                                                               decrypter: decrypterService)) ?? []
-            let displayInfo = chats.map { $0.displayInfo }
-            notifyListenersChangedDataType(.chats(displayInfo, wallet: wallet.normalized))
+            do {
+                let profile = try getUserProfileWith(wallet: wallet)
+                let chats = try await storageService.getChatsFor(profile: profile,
+                                                                 decrypter: decrypterService)
+                let displayInfo = chats.map { $0.displayInfo }
+                notifyListenersChangedDataType(.chats(displayInfo, wallet: wallet.normalized))
+            } catch { }
         }
     }
     
@@ -561,7 +560,8 @@ private extension MessagingService {
     }
     
     func convertMessagingWebSocketMessageEntityToMessage(_ messageEntity: MessagingWebSocketMessageEntity) async throws -> MessagingChatMessage {
-        let chats = try await storageService.getChatsFor(wallet: messageEntity.receiverWallet,
+        let profile = try getUserProfileWith(wallet: messageEntity.receiverWallet)
+        let chats = try await storageService.getChatsFor(profile: profile,
                                                          decrypter: decrypterService)
         guard let chat = chats.first(where: { chat in
                   switch chat.displayInfo.type {

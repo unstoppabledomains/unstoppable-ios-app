@@ -162,10 +162,10 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     // Chats
-    func getChatsFor(wallet: String,
+    func getChatsFor(profile: MessagingChatUserProfile,
                      decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat] {
         try queue.sync {
-            let predicate = NSPredicate(format: "thisUserWallet == %@", wallet)
+            let predicate = NSPredicate(format: "userId == %@", profile.id)
             let timeSortDescriptor = NSSortDescriptor(key: "lastMessageTime", ascending: false)
             let coreDataChats: [CoreDataMessagingChat] = try getEntities(predicate: predicate,
                                                                          sortDescriptions: [timeSortDescriptor],
@@ -213,9 +213,9 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     // Channels
-    func getChannelsFor(wallet: String) async throws -> [MessagingNewsChannel] {
+    func getChannelsFor(profile: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
         try queue.sync {
-            let predicate = NSPredicate(format: "wallet == %@", wallet)
+            let predicate = NSPredicate(format: "userId == %@", profile.id)
             let coreDataChannels: [CoreDataMessagingNewsChannel] = try getEntities(predicate: predicate, from: backgroundContext)
             
             return coreDataChannels.compactMap { convertCoreDataChannelToMessagingChannel($0) }.sortedByLastMessage()
@@ -223,9 +223,9 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     func saveChannels(_ channels: [MessagingNewsChannel],
-                      for wallet: String) async {
+                      for profile: MessagingChatUserProfile) async {
         queue.sync {
-            let _ = channels.compactMap { (try? convertMessagingChannelToCoreDataChannel($0, for: wallet)) }
+            let _ = channels.compactMap { (try? convertMessagingChannelToCoreDataChannel($0, for: profile.wallet)) }
             saveContext(backgroundContext)
         }
     }
@@ -337,7 +337,8 @@ private extension CoreDataMessagingStorageService {
                                                    lastMessageTime: coreDataChat.lastMessageTime!,
                                                    lastMessage: lastMessage)
         
-        return MessagingChat(displayInfo: displayInfo,
+        return MessagingChat(userId: coreDataChat.userId!,
+                             displayInfo: displayInfo,
                              serviceMetadata: serviceMetadata)
     }
     
@@ -347,6 +348,7 @@ private extension CoreDataMessagingStorageService {
         
         coreDataChat.serviceMetadata = chat.serviceMetadata
         coreDataChat.id = displayInfo.id
+        coreDataChat.userId = chat.userId
         coreDataChat.avatarURL = displayInfo.avatarURL
         coreDataChat.isApproved = displayInfo.isApproved
         coreDataChat.lastMessageTime = displayInfo.lastMessageTime
@@ -520,6 +522,7 @@ private extension CoreDataMessagingStorageService {
         }
         
         let newsChannel = MessagingNewsChannel(id: coreDataChannel.id!,
+                                               userId: coreDataChannel.userId!,
                                                channel: coreDataChannel.channel!,
                                                name: coreDataChannel.name!,
                                                info: coreDataChannel.info!,
@@ -539,6 +542,7 @@ private extension CoreDataMessagingStorageService {
         let coreDataChannel: CoreDataMessagingNewsChannel = try createEntity(in: backgroundContext)
         
         coreDataChannel.id = channel.id
+        coreDataChannel.userId = channel.userId
         coreDataChannel.channel = channel.channel
         coreDataChannel.wallet = wallet
         coreDataChannel.name = channel.name

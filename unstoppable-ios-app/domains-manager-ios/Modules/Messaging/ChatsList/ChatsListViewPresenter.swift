@@ -85,8 +85,7 @@ private extension ChatsListViewPresenter {
         Task {
             do {
                 await loadDomains()
-                guard let selectedDomain,
-                    let selectedProfile else { return }
+                guard let selectedProfile else { return }
                 
                 async let chatsListTask = appContext.messagingService.getChatsListForProfile(selectedProfile)
                 async let channelsTask = appContext.messagingService.getSubscribedChannelsForProfile(selectedProfile)

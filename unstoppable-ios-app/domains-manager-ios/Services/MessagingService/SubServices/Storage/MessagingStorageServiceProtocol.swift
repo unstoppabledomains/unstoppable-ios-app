@@ -35,7 +35,7 @@ protocol MessagingStorageServiceProtocol {
     func markSendingMessagesAsFailed()
     
     // Chats
-    func getChatsFor(wallet: String,
+    func getChatsFor(profile: MessagingChatUserProfile,
                      decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat]
     func getChatWith(id: String,
                      decrypter: MessagingContentDecrypterService) async -> MessagingChat?
@@ -47,9 +47,9 @@ protocol MessagingStorageServiceProtocol {
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async
     
     // Channels
-    func getChannelsFor(wallet: String) async throws -> [MessagingNewsChannel]
+    func getChannelsFor(profile: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
     func saveChannels(_ channels: [MessagingNewsChannel],
-                      for wallet: String) async
+                      for profile: MessagingChatUserProfile) async
     
     // Channels Feed
     func getChannelsFeedFor(channel: MessagingNewsChannel) async throws -> [MessagingNewsChannelFeed]

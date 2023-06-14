@@ -29,7 +29,7 @@ protocol MessagingAPIServiceProtocol {
                          by user: MessagingChatUserProfile) async throws
     
     // Channels
-    func getSubscribedChannelsFor(wallet: HexAddress) async throws -> [MessagingNewsChannel]
+    func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
     func getNotificationsInboxFor(wallet: HexAddress,
                                   page: Int,
                                   limit: Int,
