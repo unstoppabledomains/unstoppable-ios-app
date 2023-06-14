@@ -23,6 +23,7 @@ final class ChatViewPresenter {
     private let chat: MessagingChatDisplayInfo
     private let domain: DomainDisplayInfo
     private let fetchLimit: Int = 30
+    private let numberOfUnreadMessagesBeforePrefetch: Int = 7
     private var messages: [MessagingChatMessageDisplayInfo] = []
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
@@ -60,7 +61,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
             try? appContext.messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
         }
         
-        if messageIndex >= (messages.count - 7) {
+        if messageIndex >= (messages.count - numberOfUnreadMessagesBeforePrefetch) {
             switch chatState {
             case .hasUnloadedMessagesBefore(let message):
                 loadMoreMessagesBefore(message: message)
