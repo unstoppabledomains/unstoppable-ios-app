@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ChatViewController" customModule="domains_manager_ios" customModuleProvider="target">
             <connections>
+                <outlet property="activityIndicator" destination="TpP-S2-yIY" id="9Gp-Le-S0S"/>
                 <outlet property="chatInputView" destination="oHO-rt-44M" id="NEp-4O-1kK"/>
                 <outlet property="collectionView" destination="V89-nx-s8L" id="Op2-pK-KfR"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -31,11 +32,14 @@
                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                     </collectionViewFlowLayout>
                 </collectionView>
-                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oHO-rt-44M" customClass="ChatInputView" customModule="AIPowerGadget" customModuleProvider="target">
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oHO-rt-44M" customClass="ChatInputView" customModule="domains_manager_ios" customModuleProvider="target">
                     <rect key="frame" x="76" y="691" width="240" height="44"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                 </view>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="TpP-S2-yIY">
+                    <rect key="frame" x="186.66666666666666" y="416" width="20" height="20"/>
+                </activityIndicatorView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -44,6 +48,8 @@
                 <constraint firstItem="V89-nx-s8L" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="FH4-G3-Q7I"/>
                 <constraint firstItem="V89-nx-s8L" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="b0N-h4-b05"/>
                 <constraint firstAttribute="bottom" secondItem="V89-nx-s8L" secondAttribute="bottom" id="ewO-c5-jje"/>
+                <constraint firstItem="TpP-S2-yIY" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="giQ-mT-867"/>
+                <constraint firstItem="TpP-S2-yIY" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="tCI-cM-6Bk"/>
             </constraints>
             <point key="canvasLocation" x="29.770992366412212" y="41.549295774647888"/>
         </view>

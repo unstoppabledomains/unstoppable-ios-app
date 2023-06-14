@@ -9,24 +9,29 @@ import Foundation
 
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
+    func refreshChatsForDomain(_ domain: DomainDisplayInfo)
+    
     // Chats list
-    func getChatsListForDomain(_ domain: DomainDisplayInfo,
-                              page: Int,
-                              limit: Int) async throws -> [MessagingChatDisplayInfo]
-    func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
-                                  page: Int,
-                                  limit: Int) async throws -> [MessagingChatDisplayInfo]
+    func getChatsListForDomain(_ domain: DomainDisplayInfo) async throws -> [MessagingChatDisplayInfo]
     
     // Messages
+    func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo]
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo]
+                            before message: MessagingChatMessageDisplayInfo?,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
+                            after message: MessagingChatMessageDisplayInfo,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
-                     in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo
+                     in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
-    func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
-    
+    func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws
+    func markMessage(_ message: MessagingChatMessageDisplayInfo,
+                     isRead: Bool,
+                     wallet: String) throws
     // Channels
+    func refreshChannelsForDomain(_ domain: DomainDisplayInfo)
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel]
     
     // Listeners
@@ -57,6 +62,8 @@ final class MessagingListenerHolder: Equatable {
 
 enum MessagingDataType {
     case chats(_ chats: [MessagingChatDisplayInfo], wallet: String)
-    case messages(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case messagesAdded(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case messageUpdated(_ updatedMessage: MessagingChatMessageDisplayInfo, newMessage: MessagingChatMessageDisplayInfo)
+    case messagesRemoved(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
     case channels(_ channels: [MessagingNewsChannel], wallet: String)
 }

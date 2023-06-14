@@ -9,4 +9,5 @@ import Foundation
 
 struct MessagingChatMessageTextTypeDisplayInfo: Hashable {
     let text: String
+    let encryptedText: String
 }

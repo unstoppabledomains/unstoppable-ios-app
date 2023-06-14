@@ -15,13 +15,24 @@ final class ChatListCell: BaseListCollectionViewCell {
     @IBOutlet private weak var lastMessageLabel: UILabel!
     @IBOutlet private weak var badgeView: UnreadMessagesBadgeView!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        badgeView.setCounterLabel(hidden: true)
+    }
+    
 }
 
 // MARK: - Open methods
 extension ChatListCell {
     func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
         let chat = configuration.chat
-        setAvatarFrom(url: chat.avatarURL)
+        if case .private(let info) = chat.type,
+           let pfpURL = info.otherUser.pfpURL {
+            setAvatarFrom(url: pfpURL)
+        } else {
+            setAvatarFrom(url: chat.avatarURL)
+        }
         
         let chatName = chatNameFrom(chat: chat)
         setNameText(chatName)
@@ -61,7 +72,11 @@ private extension ChatListCell {
         case .private(let otherUserDetails):
             return otherUserDetails.otherUser.displayName
         case .group(let groupDetails):
-            return "" // <GROUP_CHAT>
+            #if DEBUG
+            return "Group chat <Not-supported>" // <GROUP_CHAT>
+            #else
+            return ""
+            #endif
         }
     }
     

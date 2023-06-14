@@ -12,14 +12,15 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     let chatId: String
     let senderType: MessagingChatSender
     let time: Date
-    let type: MessagingChatMessageDisplayType
-    let isRead: Bool
+    var type: MessagingChatMessageDisplayType
+    var isRead: Bool
+    var isFirstInChat: Bool
     var deliveryState: DeliveryState
 }
 
 // MARK: - Open methods
 extension MessagingChatMessageDisplayInfo {
-    enum DeliveryState {
+    enum DeliveryState: Int {
         case delivered, sending, failedToSend
     }
 }

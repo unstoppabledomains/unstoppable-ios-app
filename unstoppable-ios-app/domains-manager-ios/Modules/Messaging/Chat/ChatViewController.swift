@@ -15,6 +15,8 @@ protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
     func setPlaceholder(_ placeholder: String)
     func setTitleOfType(_ titleType: ChatTitleView.TitleType)
     func scrollToTheBottom(animated: Bool)
+    func scrollToItem(_ item: ChatViewController.Item, animated: Bool)
+    func setLoading(active: Bool)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -25,12 +27,14 @@ final class ChatViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet private weak var chatInputView: ChatInputView!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     private var titleView: ChatTitleView!
 
     override var scrollableContentYOffset: CGFloat? { 13 }
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
+    private var scrollingInfo: ScrollingInfo?
     override var isObservingKeyboard: Bool { true }
 
     override func viewDidLoad() {
@@ -62,7 +66,11 @@ final class ChatViewController: BaseViewController {
 // MARK: - ChatViewProtocol
 extension ChatViewController: ChatViewProtocol {
     func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool, completion: EmptyCallback?) {
-        dataSource.apply(snapshot, animatingDifferences: animated, completion: completion)
+        scrollingInfo = ScrollingInfo(collectionView: collectionView)
+        dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
+            self?.scrollingInfo = nil
+            completion?()
+        })
     }
     
     func startTyping() {
@@ -84,19 +92,30 @@ extension ChatViewController: ChatViewProtocol {
     func scrollToTheBottom(animated: Bool) {
         guard let indexPath = getLastItemIndexPath() else { return }
         
-        self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
-        UIView.performWithoutAnimation {
-            let yOffset = CNavigationHelper.contentYOffset(of: self.collectionView)
-            self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
+        scrollTo(indexPath: indexPath, at: .bottom, animated: animated)
+    }
+    
+    func scrollToItem(_ item: Item, animated: Bool) {
+        guard let indexPath = dataSource.indexPath(for: item) else { return }
+
+        scrollTo(indexPath: indexPath, at: .top, animated: animated)
+    }
+    
+    func setLoading(active: Bool) {
+        if active {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
         }
+        collectionView.isHidden = active
     }
 }
 
 // MARK: - UICollectionViewDelegate
-extension ChatViewController: UICollectionViewDelegate {
+extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
-        
+
         presenter.didSelectItem(item)
     }
     
@@ -109,6 +128,32 @@ extension ChatViewController: UICollectionViewDelegate {
             chatInputView.setTopBorderHidden(!isChatInputViewTopBorderVisible,
                                              animated: true)
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: collectionView.bounds.width, height: 140)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        
+        presenter.willDisplayItem(item)
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        CGSize(width: collectionView.bounds.width, height: ChatSectionHeaderView.Height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
+        if let scrollingInfo {
+            let newContentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
+            let delta = newContentHeight - scrollingInfo.prevContentHeight
+            let adjustedOffset = CGPoint(x: proposedContentOffset.x, y: scrollingInfo.contentOffsetBeforeUpdate.y + delta)
+            self.collectionView.contentOffset = adjustedOffset
+            return adjustedOffset
+        }
+        return proposedContentOffset
     }
 }
 
@@ -146,6 +191,14 @@ private extension ChatViewController {
         let indexPath = IndexPath(item: itemsCount - 1, section: sections.count - 1)
         return indexPath
     }
+    
+    func scrollTo(indexPath: IndexPath, at position: UICollectionView.ScrollPosition, animated: Bool) {
+        self.collectionView.scrollToItem(at: indexPath, at: position, animated: animated)
+        UIView.performWithoutAnimation {
+            let yOffset = CNavigationHelper.contentYOffset(of: self.collectionView)
+            self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
+        }
+    }
 }
 
 // MARK: - Setup functions
@@ -173,6 +226,7 @@ private extension ChatViewController {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
         collectionView.contentInset.top = 50
+        collectionView.showsVerticalScrollIndicator = true
         collectionView.register(ChatSectionHeaderView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: ChatSectionHeaderView.reuseIdentifier)
@@ -246,6 +300,13 @@ extension ChatViewController {
     
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
+        
+        var message: MessagingChatMessageDisplayInfo {
+            switch self {
+            case .textMessage(let configuration):
+                return configuration.message
+            }
+        }
     }
     
     struct TextMessageUIConfiguration: Hashable {
@@ -268,5 +329,17 @@ extension ChatViewController {
     enum ChatMessageAction: Hashable {
         case resend
         case delete
+    }
+}
+
+private extension ChatViewController {
+    struct ScrollingInfo {
+        let prevContentHeight: CGFloat
+        let contentOffsetBeforeUpdate: CGPoint
+        
+        init(collectionView: UICollectionView) {
+            prevContentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
+            contentOffsetBeforeUpdate = collectionView.contentOffset
+        }
     }
 }

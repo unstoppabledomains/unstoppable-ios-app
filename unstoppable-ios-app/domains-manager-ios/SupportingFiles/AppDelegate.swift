@@ -17,7 +17,6 @@ protocol AppDelegateProtocol {
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    
     private(set) lazy var appContext: AppContextProtocol = {
         GeneralAppContext()
     }()
@@ -32,8 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             setAppContextType(.mock)
         }
         Debugger.setAllowedTopicsSet(.all)
+//        CoreDataMessagingStorageService().clear()
         #endif
-        
+         
         setVersionAndBuildNumber()
 
         configureNavBar()

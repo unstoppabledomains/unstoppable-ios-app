@@ -285,7 +285,11 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     
     // Reverse Resolution
     func reverseResolutionDomainName(for wallet: UDWallet) async -> DomainName? {
-        return try? await NetworkService().fetchReverseResolution(for: wallet.address)
+        await reverseResolutionDomainName(for: wallet.address)
+    }
+    
+    func reverseResolutionDomainName(for walletAddress: HexAddress) async -> DomainName? {
+        try? await NetworkService().fetchReverseResolution(for: walletAddress)
     }
     
     enum ReverseResolutionError: Error {

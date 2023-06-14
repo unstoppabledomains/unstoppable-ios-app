@@ -113,9 +113,11 @@ final class GeneralAppContext: AppContextProtocol {
         let messagingAPIService: MessagingAPIServiceProtocol = PushMessagingAPIService()
         let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = PushMessagingWebSocketsService()
         let messagingStorageService: MessagingStorageServiceProtocol = CoreDataMessagingStorageService()
+        let messagingDecrypterService: MessagingContentDecrypterService = PushMessagingContentDecrypterService()
         messagingService = MessagingService(apiService: messagingAPIService,
                                             webSocketsService: messagingWebSocketsService,
-                                            storageProtocol: messagingStorageService)
+                                            storageProtocol: messagingStorageService,
+                                            decrypterService: messagingDecrypterService)
         
         Task {
             persistedProfileSignaturesStorage.removeExpired()

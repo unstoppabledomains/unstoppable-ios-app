@@ -16,9 +16,9 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
-    func getChatsListForDomain(_ domain: DomainDisplayInfo,
-                               page: Int,
-                               limit: Int) async throws -> [MessagingChatDisplayInfo] {
+    func refreshChatsForDomain(_ domain: DomainDisplayInfo) { }
+    
+    func getChatsListForDomain(_ domain: DomainDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         if let cachedChats = domainsChats[domain.name] {
             return cachedChats
         }
@@ -28,13 +28,16 @@ extension MockMessagingService: MessagingServiceProtocol {
         return chats
     }
     
-    func getChatRequestsForDomain(_ domain: DomainDisplayInfo,
-                                  page: Int,
-                                  limit: Int) async throws -> [MessagingChatDisplayInfo] {
-        []
+    func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
+        try await getMessagesForChat(chatDisplayInfo, fetchLimit: 30)
     }
-     
-    func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
+                            before message: MessagingChatMessageDisplayInfo?,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
+                            after message: MessagingChatMessageDisplayInfo,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
+    private func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         if let cachedMessages = chatsMessages[chat] {
             return cachedMessages
@@ -53,6 +56,9 @@ extension MockMessagingService: MessagingServiceProtocol {
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws { }
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) { }
+    func markMessage(_ message: MessagingChatMessageDisplayInfo, isRead: Bool, wallet: String) throws { }
+    
+    func refreshChannelsForDomain(_ domain: DomainDisplayInfo) { }
     func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
 
     
@@ -81,6 +87,7 @@ private extension MockMessagingService {
                                                     type: .private(.init(otherUser: sender.userDisplayInfo)),
                                                     unreadMessagesCount: unreadMessagesCount,
                                                     isApproved: true,
+                                                    lastMessageTime: lastMessage.time,
                                                     lastMessage: lastMessage)
                 
                 chats.append(chat)
@@ -137,8 +144,10 @@ private extension MockMessagingService {
               chatId: chatId,
               senderType: sender,
               time: createMockMessageDate(),
-              type: .text(.init(text: mockLastMessageTexts.randomElement()!)),
+              type: .text(.init(text: mockLastMessageTexts.randomElement()!,
+                                encryptedText: mockLastMessageTexts.randomElement()!)),
               isRead: true,
+              isFirstInChat: false,
               deliveryState: .delivered)
     }
     
@@ -177,8 +186,10 @@ private extension MockMessagingService {
                                                           chatId: chatId,
                                                           senderType: sender,
                                                           time: time,
-                                                          type: .text(.init(text: text)),
+                                                          type: .text(.init(text: text,
+                                                                           encryptedText: text)),
                                                           isRead: true,
+                                                          isFirstInChat: false,
                                                           deliveryState: .delivered)
             messages.append(message)
         }

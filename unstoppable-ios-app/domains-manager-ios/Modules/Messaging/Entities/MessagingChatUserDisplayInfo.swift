@@ -9,9 +9,10 @@ import Foundation
 
 struct MessagingChatUserDisplayInfo: Hashable {
     let wallet: String
-    var domain: DomainDisplayInfo? = nil
+    var domainName: DomainName? = nil
+    var pfpURL: URL?
     
     var displayName: String {
-        domain?.name ?? wallet.walletAddressTruncated
+        domainName ?? wallet.walletAddressTruncated
     }
 }

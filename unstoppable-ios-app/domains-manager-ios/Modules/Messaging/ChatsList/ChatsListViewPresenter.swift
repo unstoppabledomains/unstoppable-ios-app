@@ -71,7 +71,7 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                    self.channels = channels
                    showData()
                }
-           case .messages:
+           case .messageUpdated, .messagesRemoved, .messagesAdded:
                return
            }
        }
@@ -85,21 +85,20 @@ private extension ChatsListViewPresenter {
             do {
                 await loadDomains()
                 guard let selectedDomain else { return }
-
-                async let chatsListTask = appContext.messagingService.getChatsListForDomain(selectedDomain,
-                                                                                            page: 1,
-                                                                                            limit: fetchLimit)
-                async let requestsListTask = appContext.messagingService.getChatRequestsForDomain(selectedDomain,
-                                                                                               page: 1,
-                                                                                               limit: fetchLimit)
+                
+                async let chatsListTask = appContext.messagingService.getChatsListForDomain(selectedDomain)
                 async let channelsTask = appContext.messagingService.getSubscribedChannelsFor(domain: selectedDomain)
-                
-                let (chatsList, requestsList, channels) = try await (chatsListTask, requestsListTask, channelsTask)
-                
-                self.chatsList = chatsList + requestsList
+
+                let (chatsList, channels) = try await (chatsListTask, channelsTask)
+
+                self.chatsList = chatsList
                 self.channels = channels
-                
+
                 showData()
+                
+                appContext.messagingService.refreshChatsForDomain(selectedDomain)
+                appContext.messagingService.refreshChannelsForDomain(selectedDomain)
+            
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
             }
@@ -125,10 +124,10 @@ private extension ChatsListViewPresenter {
             snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
         case .inbox:
             snapshot.appendSections([.channels])
-            let requestsList = chatsList.filter({ !$0.isApproved })
-            if !requestsList.isEmpty {
+            let spamList = channels.filter({ $0.blocked == 1 })
+            if !spamList.isEmpty {
                 snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                         numberOfRequests: requestsList.count))])
+                                                                         numberOfRequests: spamList.count))])
             }
             snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }
