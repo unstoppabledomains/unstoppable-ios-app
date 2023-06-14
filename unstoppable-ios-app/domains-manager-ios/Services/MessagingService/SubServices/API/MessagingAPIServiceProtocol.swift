@@ -8,6 +8,10 @@
 import Foundation
 
 protocol MessagingAPIServiceProtocol {
+    // User profile
+    func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile
+    func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile
+    
     // Chats
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                              page: Int,

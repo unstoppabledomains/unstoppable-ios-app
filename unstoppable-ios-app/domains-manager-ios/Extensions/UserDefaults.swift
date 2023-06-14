@@ -24,6 +24,7 @@ public enum UserDefaultsKey: String {
     case didShowDomainProfileInfoTutorial
     case didShowSwipeDomainCardTutorial
     case isFirstLaunchAfterGIFSupportReleased
+    case currentMessagingOwnerWallet
 }
 
 extension UserDefaults {
@@ -43,6 +44,7 @@ extension UserDefaults {
     @UserDefaultsValue(key: UserDefaultsKey.didShowDomainProfileInfoTutorial, defaultValue: false) static var didShowDomainProfileInfoTutorial: Bool
     @UserDefaultsValue(key: UserDefaultsKey.isFirstLaunchAfterGIFSupportReleased, defaultValue: true) static var isFirstLaunchAfterGIFSupportReleased: Bool
     @UserDefaultsValue(key: UserDefaultsKey.didShowSwipeDomainCardTutorial, defaultValue: false) static var didShowSwipeDomainCardTutorial: Bool
+    @UserDefaultsOptionalValue(key: .currentMessagingOwnerWallet) static var currentMessagingOwnerWallet: String?
 }
 
 // MARK: - Property Wrappers

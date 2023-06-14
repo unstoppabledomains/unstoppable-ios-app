@@ -9,7 +9,7 @@ import Foundation
 
 protocol MessagingStorageServiceProtocol {
     // User Profile
-    func getUserProfileFor(wallet: HexAddress) throws -> MessagingChatUserProfile
+    func getUserProfileFor(domain: DomainItem) throws -> MessagingChatUserProfile
     func saveUserProfile(_ profile: MessagingChatUserProfile) async
     
     // Messages

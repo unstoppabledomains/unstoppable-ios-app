@@ -17,9 +17,10 @@ final class CoreDataMessagingStorageService: CoreDataService {
 // MARK: - MessagingStorageServiceProtocol
 extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     // User Profile
-    func getUserProfileFor(wallet: HexAddress) throws -> MessagingChatUserProfile {
+    func getUserProfileFor(domain: DomainItem) throws -> MessagingChatUserProfile {
         try queue.sync {
-            if let coreDataMessage: CoreDataMessagingUserProfile = getCoreDataEntityWith(key: "wallet", value: wallet) {
+            guard let wallet = domain.ownerWallet else { throw Error.domainWithoutWallet }
+            if let coreDataMessage: CoreDataMessagingUserProfile = getCoreDataEntityWith(key: "normalizedWallet", value: wallet) {
                 return convertCoreDataUserProfileToMessagingUserProfile(coreDataMessage)
             }
             throw Error.entityNotFound
@@ -289,6 +290,7 @@ private extension CoreDataMessagingStorageService {
         
         coreDataUserProfile.id = userProfile.id
         coreDataUserProfile.wallet = userProfile.wallet
+        coreDataUserProfile.normalizedWallet = userProfile.wallet.normalized
         coreDataUserProfile.serviceMetadata = userProfile.serviceMetadata
         coreDataUserProfile.name = userProfile.displayInfo.name
         coreDataUserProfile.about = userProfile.displayInfo.about
@@ -630,6 +632,7 @@ private extension CoreDataMessagingStorageService {
 // MARK: - Open methods
 extension CoreDataMessagingStorageService {
     enum Error: Swift.Error {
+        case domainWithoutWallet
         case failedToFetch
         case entityNotFound
     }

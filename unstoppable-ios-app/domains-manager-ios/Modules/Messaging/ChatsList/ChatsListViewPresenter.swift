@@ -94,6 +94,8 @@ private extension ChatsListViewPresenter {
 
                 self.chatsList = chatsList
                 self.channels = channels
+                
+                UserDefaults.currentMessagingOwnerWallet = selectedProfile.wallet.normalized
 
                 showData()
                 
