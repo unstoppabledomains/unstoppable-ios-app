@@ -57,6 +57,29 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         }
     }
     
+    func didSelectWallet(_ wallet: WalletDisplayInfo) {
+        runLoadingState()
+        Task {
+            if let cachedPair = profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address }) {
+                try await self.selectProfile(cachedPair)
+            } else {
+                var profile: MessagingChatUserProfileDisplayInfo?
+                if let rrDomain = wallet.reverseResolutionDomain {
+                   profile = try? await appContext.messagingService.getUserProfile(for: rrDomain)
+                }
+                
+                try await selectProfile(.init(wallet: wallet,
+                                              profile: profile))
+            }
+        }
+    }
+    
+    func runLoadingState() {
+        chatsList.removeAll()
+        channels.removeAll()
+        view?.setState(.loading)
+    }
+    
     func actionButtonPressed() {
         
     }
@@ -114,8 +137,7 @@ private extension ChatsListViewPresenter {
                    let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
                     /// User already used chat with some profile, select last used.
                     try await selectProfile(.init(wallet: wallet,
-                                                  profile: profile,
-                                                  didLoadProfile: true))
+                                                  profile: profile))
                 } else {
                     let rrDomains = wallets.compactMap { $0.reverseResolutionDomain }
 
@@ -125,13 +147,11 @@ private extension ChatsListViewPresenter {
                         if let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
                             /// User open chats for the first time but there's existing profile, use it as default
                             try await selectProfile(.init(wallet: wallet,
-                                                          profile: profile,
-                                                          didLoadProfile: true))
+                                                          profile: profile))
                             return
                         } else {
                             profileWalletPairsCache.append(.init(wallet: wallet,
-                                                                 profile: nil,
-                                                                 didLoadProfile: false))
+                                                                 profile: nil))
                         }
                     }
               
@@ -139,8 +159,7 @@ private extension ChatsListViewPresenter {
                     /// Select first wallet from sorted list
                     let firstWallet = wallets[0] /// Safe due to .isEmpty verification above
                     try await selectProfile(.init(wallet: firstWallet,
-                                                  profile: nil,
-                                                  didLoadProfile: true))
+                                                  profile: nil))
                 }
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
@@ -179,7 +198,7 @@ private extension ChatsListViewPresenter {
     func showData() {
         var snapshot = ChatsListSnapshot()
         
-        if selectedProfileWalletPair == nil {
+        if selectedProfileWalletPair?.profile == nil {
             snapshot.appendSections([.createProfile])
             snapshot.appendItems([.createProfile])
         } else {
@@ -244,6 +263,5 @@ private extension ChatsListViewPresenter {
     struct ChatProfileWalletPair {
         let wallet: WalletDisplayInfo
         let profile: MessagingChatUserProfileDisplayInfo?
-        var didLoadProfile: Bool
     }
 }
