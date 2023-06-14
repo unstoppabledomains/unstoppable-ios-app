@@ -22,12 +22,12 @@ struct PushEntitiesTransformer {
                                                                        sigType: pushUser.sigType,
                                                                        signature: pushUser.signature)
         let serviceMetadata = metadataModel.jsonData()
-        
-        let displayInfo = MessagingChatUserProfileDisplayInfo(wallet: pushUser.wallets,
+        let wallet = getWalletAddressFrom(eip155String: pushUser.wallets) ?? pushUser.wallets
+        let displayInfo = MessagingChatUserProfileDisplayInfo(wallet: wallet,
                                                               name: pushUser.name,
                                                               about: pushUser.about)
         let userProfile = MessagingChatUserProfile(id: pushUser.did,
-                                                   wallet: pushUser.wallets,
+                                                   wallet: wallet,
                                                    displayInfo: displayInfo,
                                                    serviceMetadata: serviceMetadata)
         return userProfile
@@ -219,6 +219,9 @@ struct PushEntitiesTransformer {
         let components = eip155String.components(separatedBy: ":")
         if components.count == 2 {
             return components[1]
+        } else if components.count == 1,
+                  eip155String.isValidAddress() {
+            return components[0]
         }
         return nil
     }

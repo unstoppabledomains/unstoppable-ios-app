@@ -464,7 +464,7 @@ private extension MessagingService {
 // MARK: - Private methods
 private extension MessagingService {
     func getReverseResolutionDomainItem(for wallet: String) async throws -> DomainItem {
-        guard let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: wallet) else {
+        guard let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: wallet.normalized) else {
             throw MessagingServiceError.noRRDomainForProfile
         }
         return try await appContext.dataAggregatorService.getDomainWith(name: domainName)
