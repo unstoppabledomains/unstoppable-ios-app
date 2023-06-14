@@ -32,172 +32,12 @@ final class MessagingService {
 
 // MARK: - Open methods
 extension MessagingService: MessagingServiceProtocol {
-    func refreshDataForUser(_ userProfile: MessagingChatUserProfileDisplayInfo) {
+    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo) {
         guard let profile = try? storageService.getUserProfileFor(wallet: userProfile.wallet) else { return }
 
         refreshChatsForProfile(profile, shouldRefreshUserInfo: true)
         refreshChannelsForProfile(profile)
         setupSocketConnection(profile: profile)
-    }
-
-    private func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
-        Task {
-            do {
-                let allLocalChats = try await storageService.getChatsFor(profile: profile,
-                                                                         decrypter: decrypterService)
-                let localChats = allLocalChats.filter { $0.displayInfo.isApproved}
-                let localRequests = allLocalChats.filter { !$0.displayInfo.isApproved}
-                
-                async let remoteChatsTask = updatedLocalChats(localChats, forProfile: profile, isRequests: false)
-                async let remoteRequestsTask = updatedLocalChats(localRequests, forProfile: profile, isRequests: true)
-                
-                let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
-                let allRemoteChats = remoteChats + remoteRequests
-                
-                let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats,
-                                                              localChats: allLocalChats,
-                                                              for: profile)
-                await storageService.saveChats(updatedChats)
-                
-                let updatedStoredChats = try await storageService.getChatsFor(profile: profile,
-                                                                              decrypter: decrypterService)
-                let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
-                notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: profile.normalizedWallet))
-                
-                if shouldRefreshUserInfo {
-                    refreshUsersInfoFor(profile: profile)
-                }
-            } catch {
-                // TODO: - Handle error
-            }
-        }
-    }
-    
-    private func updatedLocalChats(_ localChats: [MessagingChat],
-                                   forProfile profile: MessagingChatUserProfile,
-                                   isRequests: Bool) async throws -> [MessagingChat] {
-        var remoteChats = [MessagingChat]()
-        let limit = 30
-        var page = 1
-        while true {
-            let chatsPage: [MessagingChat]
-            if isRequests {
-                chatsPage = try await apiService.getChatRequestsForUser(profile, page: 1, limit: limit)
-            } else {
-                chatsPage = try await apiService.getChatsListForUser(profile, page: 1, limit: limit)
-            }
-            
-            remoteChats.append(contentsOf: chatsPage)
-            if chatsPage.count < limit {
-                /// Loaded all chats
-                break
-            } else if let lastPageChat = chatsPage.last,
-                      let localChat = localChats.first(where: { $0.displayInfo.id == lastPageChat.displayInfo.id }),
-                      lastPageChat.isUpToDateWith(otherChat: localChat) {
-                /// No changes for other chats
-                break
-            } else {
-                page += 1
-            }
-        }
-        
-        await storageService.saveChats(remoteChats)
-        
-        return remoteChats
-    }
-    
-    private func refreshChatsMetadata(remoteChats: [MessagingChat],
-                                      localChats: [MessagingChat],
-                                      for profile: MessagingChatUserProfile) async -> [MessagingChat] {
-        var updatedChats = [MessagingChat]()
-        
-        await withTaskGroup(of: MessagingChat.self, body: { group in
-            for remoteChat in remoteChats {
-                group.addTask {
-                    if let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
-                       localChat.isUpToDateWith(otherChat: remoteChat) {
-                        return localChat
-                    } else {
-                        if var lastMessage = try? await self.apiService.getMessagesForChat(remoteChat,
-                                                                                           options: .default,
-                                                                                           fetchLimit: 1,
-                                                                                           for: profile).first {
-                             
-                            var updatedChat = remoteChat
-                            updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
-                            if let storedMessage = await self.storageService.getMessageWith(id: lastMessage.displayInfo.id,
-                                                                                                 in: remoteChat.displayInfo,
-                                                                                                 decrypter: self.decrypterService) {
-                                lastMessage.displayInfo.isRead = storedMessage.displayInfo.isRead
-                            }
-                            if !lastMessage.displayInfo.senderType.isThisUser && !lastMessage.displayInfo.isRead {
-                                updatedChat.displayInfo.unreadMessagesCount += 1
-                            }
-                            await self.storageService.saveMessages([lastMessage])
-                            return updatedChat
-                        } else {
-                            return remoteChat
-                        }
-                    }
-                }
-            }
-            
-            for await chat in group {
-                updatedChats.append(chat)
-            }
-        })
-
-        return updatedChats
-    }
-    
-    private func refreshUsersInfoFor(profile: MessagingChatUserProfile) {
-        Task {
-            do {
-                let chats = try await storageService.getChatsFor(profile: profile,
-                                                                 decrypter: decrypterService)
-                await withTaskGroup(of: Void.self, body: { group in
-                    for chat in chats {
-                        group.addTask {
-                            if let otherUserInfo = try? await self.loadUserInfoFor(chat: chat) {
-                                await self.storageService.saveMessagingUserInfo(otherUserInfo)
-                            }
-                            return Void()
-                        }
-                    }
-                    
-                    for await _ in group {
-                        Void()
-                    }
-                })
-                
-                let updatedChats = try await storageService.getChatsFor(profile: profile,
-                                                                        decrypter: decrypterService)
-                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, wallet: profile.normalizedWallet))
-            } catch { }
-        }
-    }
-    
-    private func loadUserInfoFor(chat: MessagingChat) async throws -> MessagingChatUserDisplayInfo? {
-        switch chat.displayInfo.type {
-        case .private(let details):
-            let wallet = details.otherUser.wallet
-            if let domain = await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
-               !domain.isEmpty {
-                let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
-                var pfpURL: URL?
-                if let urlString = pfpInfo?.pfpURL,
-                   let url = URL(string: urlString) {
-                    pfpURL = url
-                }
-                return MessagingChatUserDisplayInfo(wallet: wallet,
-                                                    domainName: domain,
-                                                    pfpURL: pfpURL)
-            }
-            
-            return nil
-        case .group(let details):
-            return nil // <GROUP_CHAT> Not supported for now
-        }
     }
     
     // Chats list
@@ -273,39 +113,6 @@ extension MessagingService: MessagingServiceProtocol {
         return try await getAndStoreMessagesForChat(chat, options: .after(message: chatMessage), limit: limit)
     }
     
-    
-    private func getAndStoreMessagesForChat(_ chat: MessagingChat,
-                                            options: MessagingAPIServiceLoadMessagesOptions,
-                                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        let profile = try getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
-        var messages = try await apiService.getMessagesForChat(chat,
-                                                               options: options,
-                                                               fetchLimit: limit,
-                                                               for: profile)
-        
-        // Check for message is first in the chat when load earlier before 
-        if case .before(let message) = options {
-            if !messages.isEmpty,
-               messages.count < limit {
-                messages[messages.count - 1].displayInfo.isFirstInChat = true
-            } else if messages.isEmpty,
-                      let storedMessage = await self.storageService.getMessageWith(id: message.displayInfo.id,
-                                                                                   in: chat.displayInfo,
-                                                                                   decrypter: self.decrypterService) {
-                Task.detached {
-                    var updatedMessage = storedMessage
-                    updatedMessage.displayInfo.isFirstInChat = true
-                    self.replaceCacheMessageAndNotify(storedMessage,
-                                                      with: updatedMessage,
-                                                      chatId: chat.displayInfo.id)
-                }
-            }
-        }
-        
-        await storageService.saveMessages(messages)
-        return messages.map { $0.displayInfo }
-    }
-    
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
         let messagingChat = try await getMessagingChatFor(displayInfo: chat)
@@ -366,35 +173,7 @@ extension MessagingService: MessagingServiceProtocol {
             }
         }
     }
-    
-    private func refreshChannelsMetadata(_ channels: [MessagingNewsChannel]) async -> [MessagingNewsChannel] {
-        var updatedChannels = [MessagingNewsChannel]()
-
-        await withTaskGroup(of: MessagingNewsChannel.self, body: { group in
-            for channel in channels {
-                group.addTask {
-                    if let lastMessage = try? await self.apiService.getFeedFor(channel: channel,
-                                                                               page: 1,
-                                                                               limit: 1).first {
-                        await self.storageService.saveChannelsFeed([lastMessage],
-                                                                   in: channel)
-                        var updatedChannel = channel
-                        updatedChannel.lastMessage = lastMessage
-                        return updatedChannel
-                    } else {
-                        return channel
-                    }
-                }
-            }
-            
-            for await channel in group {
-                updatedChannels.append(channel)
-            }
-        })
         
-        return updatedChannels
-    }
-    
     func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
         let profile = try getUserProfileWith(wallet: profile.wallet)
         let channels = try await storageService.getChannelsFor(profile: profile)
@@ -424,6 +203,235 @@ extension MessagingService: MessagingServiceProtocol {
     
     func removeListener(_ listener: MessagingServiceListener) {
         listenerHolders.removeAll(where: { $0.listener == nil || $0.listener === listener })
+    }
+}
+
+// MARK: - Chats
+private extension MessagingService {
+    func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
+        Task {
+            do {
+                let allLocalChats = try await storageService.getChatsFor(profile: profile,
+                                                                         decrypter: decrypterService)
+                let localChats = allLocalChats.filter { $0.displayInfo.isApproved}
+                let localRequests = allLocalChats.filter { !$0.displayInfo.isApproved}
+                
+                async let remoteChatsTask = updatedLocalChats(localChats, forProfile: profile, isRequests: false)
+                async let remoteRequestsTask = updatedLocalChats(localRequests, forProfile: profile, isRequests: true)
+                
+                let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
+                let allRemoteChats = remoteChats + remoteRequests
+                
+                let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats,
+                                                              localChats: allLocalChats,
+                                                              for: profile)
+                await storageService.saveChats(updatedChats)
+                
+                let updatedStoredChats = try await storageService.getChatsFor(profile: profile,
+                                                                              decrypter: decrypterService)
+                let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
+                notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: profile.normalizedWallet))
+                
+                if shouldRefreshUserInfo {
+                    refreshUsersInfoFor(profile: profile)
+                }
+            } catch {
+                // TODO: - Handle error
+            }
+        }
+    }
+    
+    func updatedLocalChats(_ localChats: [MessagingChat],
+                                   forProfile profile: MessagingChatUserProfile,
+                                   isRequests: Bool) async throws -> [MessagingChat] {
+        var remoteChats = [MessagingChat]()
+        let limit = 30
+        var page = 1
+        while true {
+            let chatsPage: [MessagingChat]
+            if isRequests {
+                chatsPage = try await apiService.getChatRequestsForUser(profile, page: 1, limit: limit)
+            } else {
+                chatsPage = try await apiService.getChatsListForUser(profile, page: 1, limit: limit)
+            }
+            
+            remoteChats.append(contentsOf: chatsPage)
+            if chatsPage.count < limit {
+                /// Loaded all chats
+                break
+            } else if let lastPageChat = chatsPage.last,
+                      let localChat = localChats.first(where: { $0.displayInfo.id == lastPageChat.displayInfo.id }),
+                      lastPageChat.isUpToDateWith(otherChat: localChat) {
+                /// No changes for other chats
+                break
+            } else {
+                page += 1
+            }
+        }
+        
+        await storageService.saveChats(remoteChats)
+        
+        return remoteChats
+    }
+    
+    func refreshChatsMetadata(remoteChats: [MessagingChat],
+                                      localChats: [MessagingChat],
+                                      for profile: MessagingChatUserProfile) async -> [MessagingChat] {
+        var updatedChats = [MessagingChat]()
+        
+        await withTaskGroup(of: MessagingChat.self, body: { group in
+            for remoteChat in remoteChats {
+                group.addTask {
+                    if let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
+                       localChat.isUpToDateWith(otherChat: remoteChat) {
+                        return localChat
+                    } else {
+                        if var lastMessage = try? await self.apiService.getMessagesForChat(remoteChat,
+                                                                                           options: .default,
+                                                                                           fetchLimit: 1,
+                                                                                           for: profile).first {
+                            
+                            var updatedChat = remoteChat
+                            updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
+                            if let storedMessage = await self.storageService.getMessageWith(id: lastMessage.displayInfo.id,
+                                                                                            in: remoteChat.displayInfo,
+                                                                                            decrypter: self.decrypterService) {
+                                lastMessage.displayInfo.isRead = storedMessage.displayInfo.isRead
+                            }
+                            if !lastMessage.displayInfo.senderType.isThisUser && !lastMessage.displayInfo.isRead {
+                                updatedChat.displayInfo.unreadMessagesCount += 1
+                            }
+                            await self.storageService.saveMessages([lastMessage])
+                            return updatedChat
+                        } else {
+                            return remoteChat
+                        }
+                    }
+                }
+            }
+            
+            for await chat in group {
+                updatedChats.append(chat)
+            }
+        })
+        
+        return updatedChats
+    }
+    
+    func refreshUsersInfoFor(profile: MessagingChatUserProfile) {
+        Task {
+            do {
+                let chats = try await storageService.getChatsFor(profile: profile,
+                                                                 decrypter: decrypterService)
+                await withTaskGroup(of: Void.self, body: { group in
+                    for chat in chats {
+                        group.addTask {
+                            if let otherUserInfo = try? await self.loadUserInfoFor(chat: chat) {
+                                await self.storageService.saveMessagingUserInfo(otherUserInfo)
+                            }
+                            return Void()
+                        }
+                    }
+                    
+                    for await _ in group {
+                        Void()
+                    }
+                })
+                
+                let updatedChats = try await storageService.getChatsFor(profile: profile,
+                                                                        decrypter: decrypterService)
+                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, wallet: profile.normalizedWallet))
+            } catch { }
+        }
+    }
+    
+    func loadUserInfoFor(chat: MessagingChat) async throws -> MessagingChatUserDisplayInfo? {
+        switch chat.displayInfo.type {
+        case .private(let details):
+            let wallet = details.otherUser.wallet
+            if let domain = await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
+               !domain.isEmpty {
+                let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
+                var pfpURL: URL?
+                if let urlString = pfpInfo?.pfpURL,
+                   let url = URL(string: urlString) {
+                    pfpURL = url
+                }
+                return MessagingChatUserDisplayInfo(wallet: wallet,
+                                                    domainName: domain,
+                                                    pfpURL: pfpURL)
+            }
+            
+            return nil
+        case .group(let details):
+            return nil // <GROUP_CHAT> Not supported for now
+        }
+    }
+}
+
+// MARK: - Messages
+private extension MessagingService {
+    func getAndStoreMessagesForChat(_ chat: MessagingChat,
+                                    options: MessagingAPIServiceLoadMessagesOptions,
+                                    limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        let profile = try getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
+        var messages = try await apiService.getMessagesForChat(chat,
+                                                               options: options,
+                                                               fetchLimit: limit,
+                                                               for: profile)
+        
+        // Check for message is first in the chat when load earlier before
+        if case .before(let message) = options {
+            if !messages.isEmpty,
+               messages.count < limit {
+                messages[messages.count - 1].displayInfo.isFirstInChat = true
+            } else if messages.isEmpty,
+                      let storedMessage = await self.storageService.getMessageWith(id: message.displayInfo.id,
+                                                                                   in: chat.displayInfo,
+                                                                                   decrypter: self.decrypterService) {
+                Task.detached {
+                    var updatedMessage = storedMessage
+                    updatedMessage.displayInfo.isFirstInChat = true
+                    self.replaceCacheMessageAndNotify(storedMessage,
+                                                      with: updatedMessage,
+                                                      chatId: chat.displayInfo.id)
+                }
+            }
+        }
+        
+        await storageService.saveMessages(messages)
+        return messages.map { $0.displayInfo }
+    }
+}
+
+// MARK: - Channels
+private extension MessagingService {
+    func refreshChannelsMetadata(_ channels: [MessagingNewsChannel]) async -> [MessagingNewsChannel] {
+        var updatedChannels = [MessagingNewsChannel]()
+        
+        await withTaskGroup(of: MessagingNewsChannel.self, body: { group in
+            for channel in channels {
+                group.addTask {
+                    if let lastMessage = try? await self.apiService.getFeedFor(channel: channel,
+                                                                               page: 1,
+                                                                               limit: 1).first {
+                        await self.storageService.saveChannelsFeed([lastMessage],
+                                                                   in: channel)
+                        var updatedChannel = channel
+                        updatedChannel.lastMessage = lastMessage
+                        return updatedChannel
+                    } else {
+                        return channel
+                    }
+                }
+            }
+            
+            for await channel in group {
+                updatedChannels.append(channel)
+            }
+        })
+        
+        return updatedChannels
     }
 }
 

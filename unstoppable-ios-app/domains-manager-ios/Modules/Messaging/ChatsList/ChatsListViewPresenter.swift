@@ -97,7 +97,7 @@ private extension ChatsListViewPresenter {
 
                 showData()
                 
-                appContext.messagingService.refreshDataForUser(selectedProfile)
+                appContext.messagingService.setCurrentUser(selectedProfile)
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
             }

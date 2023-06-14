@@ -9,7 +9,7 @@ import Foundation
 
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
-    func refreshDataForUser(_ userProfile: MessagingChatUserProfileDisplayInfo)
+    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo)
     
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo]

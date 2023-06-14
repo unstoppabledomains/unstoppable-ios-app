@@ -16,7 +16,7 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
-    func refreshDataForUser(_ userProfile: MessagingChatUserProfileDisplayInfo) { }
+    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo) { }
 
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         []
