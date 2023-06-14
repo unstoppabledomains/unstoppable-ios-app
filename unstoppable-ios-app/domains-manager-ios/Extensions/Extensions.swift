@@ -80,6 +80,12 @@ extension HexAddress {
         return codes.map { String(format: "%02hhx", $0) }.joined()
     }
     
+    var unicodeScalarToHex: String? {
+        let codes = self.compactMap({$0.unicodeScalars.first?.value})
+        guard self.count == codes.count else { return nil }
+        return codes.map { String(format: "%02hhx", $0) }.joined()
+    }
+    
     var trimmed: String {
         self.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789.abcdefghijklmnopqrstuvwxyz-").inverted)
     }
