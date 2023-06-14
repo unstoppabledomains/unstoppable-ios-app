@@ -81,10 +81,9 @@ private extension ConnectedAppsListViewPresenter {
         
         for displayInfo in walletsDisplayInfo {
             if let apps = appsGroupedByWallet[displayInfo.address] {
-                let apps = apps.sorted(by: { $0.appName < $1.appName })
                 guard let displayInfo = walletsDisplayInfo.first(where: { $0.address == apps[0].walletAddress }) else { continue }
                 
-                let items: [ConnectedAppsListViewController.Item] = apps.map({ app in
+                var items: [ConnectedAppsListViewController.Item] = apps.map({ app in
                     let domainItem = app.domain
                     let domainDisplayInfo: DomainDisplayInfo
                     if let _domain = domains.first(where: { $0.isSameEntity(domainItem) }) {
@@ -114,6 +113,7 @@ private extension ConnectedAppsListViewPresenter {
                         self?.handleAction(action, for: app)
                     })
                 })
+                items = Set(items).sorted(by: { $0.appName < $1.appName })
                 
                 if items.isEmpty {
                     continue
