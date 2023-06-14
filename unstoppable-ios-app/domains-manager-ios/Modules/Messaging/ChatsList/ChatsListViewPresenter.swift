@@ -50,7 +50,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             showChatRequests()
         case .channel(let configuration):
             openChannel(configuration.channel)
-        case .dataTypeSelection:
+        case .dataTypeSelection, .createProfile:
             return
         }
     }
@@ -85,7 +85,11 @@ private extension ChatsListViewPresenter {
         Task {
             do {
                 await loadDomains()
-                guard let selectedProfile else { return }
+                
+                guard let selectedProfile else {
+                    
+                    showData()
+                    return }
                 
                 async let chatsListTask = appContext.messagingService.getChatsListForProfile(selectedProfile)
                 async let channelsTask = appContext.messagingService.getSubscribedChannelsForProfile(selectedProfile)
@@ -109,28 +113,33 @@ private extension ChatsListViewPresenter {
     func showData() {
         var snapshot = ChatsListSnapshot()
         
-        let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
-        snapshot.appendSections([.dataTypeSelection])
-        snapshot.appendItems([.dataTypeSelection(configuration: dataTypeSelectionUIConfiguration)])
-        
-        switch selectedDataType {
-        case .chats:
-            snapshot.appendSections([.channels])
-            let requestsList = chatsList.filter({ !$0.isApproved })
-            let approvedList = chatsList.filter({ $0.isApproved })
-            if !requestsList.isEmpty {
-                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                         numberOfRequests: requestsList.count))])
+        if selectedProfile == nil {
+            snapshot.appendSections([.createProfile])
+            snapshot.appendItems([.createProfile])
+        } else {
+            let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
+            snapshot.appendSections([.dataTypeSelection])
+            snapshot.appendItems([.dataTypeSelection(configuration: dataTypeSelectionUIConfiguration)])
+            
+            switch selectedDataType {
+            case .chats:
+                snapshot.appendSections([.channels])
+                let requestsList = chatsList.filter({ !$0.isApproved })
+                let approvedList = chatsList.filter({ $0.isApproved })
+                if !requestsList.isEmpty {
+                    snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                             numberOfRequests: requestsList.count))])
+                }
+                snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+            case .inbox:
+                snapshot.appendSections([.channels])
+                let spamList = channels.filter({ $0.blocked == 1 })
+                if !spamList.isEmpty {
+                    snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                             numberOfRequests: spamList.count))])
+                }
+                snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
             }
-            snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
-        case .inbox:
-            snapshot.appendSections([.channels])
-            let spamList = channels.filter({ $0.blocked == 1 })
-            if !spamList.isEmpty {
-                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                         numberOfRequests: spamList.count))])
-            }
-            snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }
         
         view?.applySnapshot(snapshot, animated: true)

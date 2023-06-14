@@ -135,6 +135,7 @@
 "BOTH" = "Both";
 "MANAGE" = "Manage";
 "LINK" = "Link";
+"ENABLE" = "Enable";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -565,6 +566,7 @@
 "SET_REVERSE_RESOLUTION" = "Set reverse resolution";
 "SHOW_N_MORE" = "Show %i more";
 "REVERSE_RESOLUTION_UNAVAILABLE_WHILE_RECORDS_UPDATING" = "Unavailable while records are updating";
+"SELECT_DOMAIN_FOR_REVERSE_RESOLUTION_FOR_MESSAGING_DESCRIPTION" = "Display your domain name instead of your wallet address when connecting to Web3  applications.";
 
 // Deprecated TLD
 "TLD_HAS_BEEN_DEPRECATED" = ".%@ has been deprecated";
@@ -781,3 +783,10 @@
 "SENDING_FAILED" = "Sending failed";
 "TAP_TO_RETRY" = "Tap to retry";
 "SPAM" = "Spam";
+"MESSAGING_INTRODUCTION_TITLE" = "Introducing\nMessaging";
+"MESSAGING_INTRODUCTION_HINT_1_TITLE" = "Stay in the loop with notifications";
+"MESSAGING_INTRODUCTION_HINT_1_SUBTITLE" = "Don't miss out on important messages with our built-in notification feature.";
+"MESSAGING_INTRODUCTION_HINT_2_TITLE" = "Ensuring your privacy and security";
+"MESSAGING_INTRODUCTION_HINT_2_SUBTITLE" = "Rest assured that your messages are signed and encrypted end-to-end.";
+"MESSAGING_INTRODUCTION_HINT_3_TITLE" = "No transaction fees";
+"MESSAGING_INTRODUCTION_HINT_3_SUBTITLE" = "Enjoy the freedom of sending messages without any additional charges.";
