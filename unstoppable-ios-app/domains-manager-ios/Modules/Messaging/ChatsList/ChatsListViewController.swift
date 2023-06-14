@@ -24,6 +24,7 @@ final class ChatsListViewController: BaseViewController {
     
     @IBOutlet private weak var actionButton: MainButton!
     @IBOutlet private weak var actionButtonContainerView: UIView!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatListCell.self,
@@ -33,13 +34,13 @@ final class ChatsListViewController: BaseViewController {
                                                         ChatListCreateProfileCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
-    private var state: State = .createProfile
+    private var state: State = .loading
     
     override var scrollableContentYOffset: CGFloat? { 48 }
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {
         switch state {
         case .chatsList: return cSearchBarConfiguration
-        case .createProfile: return nil
+        case .createProfile, .loading: return nil
         }
     }
     private var searchBar: UDSearchBar = UDSearchBar()
@@ -68,6 +69,13 @@ extension ChatsListViewController: ChatsListViewProtocol {
     
     func setState(_ state: State) {
         self.state = state
+        
+        if case .loading = state {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
+        
         setupCollectionInset()
         setupActionButton()
         setupNavigation()
@@ -91,7 +99,7 @@ extension ChatsListViewController: UICollectionViewDelegate {
 // MARK: - Private functions
 private extension ChatsListViewController {
     @IBAction func actionButtonPressed(_ sender: Any) {
-        
+        presenter.actionButtonPressed()
     }
     
     @objc func newMessageButtonPressed() {
@@ -100,7 +108,7 @@ private extension ChatsListViewController {
     
     func checkIfCollectionScrollingEnabled() {
         switch state {
-        case .chatsList:
+        case .chatsList, .loading:
             collectionView.isScrollEnabled = true
         case .createProfile:
             let collectionViewVisibleHeight = collectionView.bounds.height - collectionView.contentInset.top - actionButtonContainerView.bounds.height
@@ -127,7 +135,7 @@ private extension ChatsListViewController {
                                                    action: #selector(newMessageButtonPressed))
             newMessageButton.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = newMessageButton
-        case .createProfile:
+        case .createProfile, .loading:
             title = ""
             navigationItem.rightBarButtonItem = nil
         }
@@ -142,7 +150,7 @@ private extension ChatsListViewController {
                               image: icon)
         
         switch state {
-        case .chatsList:
+        case .chatsList, .loading:
             actionButtonContainerView.isHidden = true
         case .createProfile:
             actionButtonContainerView.isHidden = false
@@ -151,7 +159,7 @@ private extension ChatsListViewController {
     
     func setupCollectionInset() {
         switch state {
-        case .chatsList:
+        case .chatsList, .loading:
             collectionView.contentInset.top = 110
         case .createProfile:
             collectionView.contentInset.top = 68
@@ -325,5 +333,6 @@ extension ChatsListViewController {
     enum State {
         case createProfile
         case chatsList
+        case loading
     }
 }

@@ -14,6 +14,7 @@
             <connections>
                 <outlet property="actionButton" destination="ZsM-pA-ldq" id="kd2-yG-m05"/>
                 <outlet property="actionButtonContainerView" destination="yQi-Rh-aBS" id="N36-ht-nQa"/>
+                <outlet property="activityIndicator" destination="h9l-YX-iY1" id="eyP-wP-q23"/>
                 <outlet property="collectionView" destination="Ia4-4O-ihP" id="buX-Pd-mYh"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -73,6 +74,9 @@
                         <constraint firstItem="ZsM-pA-ldq" firstAttribute="leading" secondItem="yQi-Rh-aBS" secondAttribute="leading" constant="16" id="qNi-st-VLa"/>
                     </constraints>
                 </view>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="h9l-YX-iY1">
+                    <rect key="frame" x="186.66666666666666" y="416" width="20" height="20"/>
+                </activityIndicatorView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -80,6 +84,8 @@
                 <constraint firstAttribute="trailing" secondItem="yQi-Rh-aBS" secondAttribute="trailing" id="55B-Op-5FT"/>
                 <constraint firstAttribute="bottom" secondItem="yQi-Rh-aBS" secondAttribute="bottom" id="6wS-67-qgP"/>
                 <constraint firstItem="yQi-Rh-aBS" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="8u5-PH-i2J"/>
+                <constraint firstItem="h9l-YX-iY1" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="DmH-cy-ehi"/>
+                <constraint firstItem="h9l-YX-iY1" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="JIb-bF-5RU"/>
                 <constraint firstItem="Ia4-4O-ihP" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="QYT-ko-wqZ"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="ZsM-pA-ldq" secondAttribute="bottom" constant="14" id="QhI-ER-W3c"/>
                 <constraint firstItem="Ia4-4O-ihP" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="fmt-uE-mPT"/>

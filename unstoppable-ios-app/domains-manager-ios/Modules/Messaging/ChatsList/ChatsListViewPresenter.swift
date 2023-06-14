@@ -10,6 +10,7 @@ import Foundation
 @MainActor
 protocol ChatsListViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: ChatsListViewController.Item)
+    func actionButtonPressed()
 }
 
 @MainActor
@@ -54,6 +55,10 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             return
         }
     }
+    
+    func actionButtonPressed() {
+        
+    }
 }
 
 // MARK: - MessagingServiceListener
@@ -86,10 +91,12 @@ private extension ChatsListViewPresenter {
             do {
                 await loadDomains()
                 
+                try? await Task.sleep(seconds: 2)
                 guard let selectedProfile else {
-                    
+                    view?.setState(.createProfile)
                     showData()
-                    return }
+                    return
+                }
                 
                 async let chatsListTask = appContext.messagingService.getChatsListForProfile(selectedProfile)
                 async let channelsTask = appContext.messagingService.getSubscribedChannelsForProfile(selectedProfile)
