@@ -9,20 +9,24 @@ import Foundation
 
 protocol MessagingAPIServiceProtocol {
     // Chats
-    func getChatsListForWallet(_ wallet: HexAddress,
-                               page: Int,
-                               limit: Int) async throws -> [MessagingChat]
-    func getChatRequestsForWallet(_ wallet: HexAddress,
-                                  page: Int,
-                                  limit: Int) async throws -> [MessagingChat]
+    func getChatsListForUser(_ user: MessagingChatUserProfile,
+                             page: Int,
+                             limit: Int) async throws -> [MessagingChat]
+    func getChatRequestsForUser(_ user: MessagingChatUserProfile,
+                                page: Int,
+                                limit: Int) async throws -> [MessagingChat]
     
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
                             options: MessagingAPIServiceLoadMessagesOptions,
-                            fetchLimit: Int) async throws -> [MessagingChatMessage]
+                            fetchLimit: Int,
+                            for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
-                     in chat: MessagingChat) async throws -> MessagingChatMessage
-    func makeChatRequest(_ chat: MessagingChat, approved: Bool) async throws
+                     in chat: MessagingChat,
+                     by user: MessagingChatUserProfile) async throws -> MessagingChatMessage
+    func makeChatRequest(_ chat: MessagingChat,
+                         approved: Bool,
+                         by user: MessagingChatUserProfile) async throws
     
     // Channels
     func getSubscribedChannelsFor(wallet: HexAddress) async throws -> [MessagingNewsChannel]

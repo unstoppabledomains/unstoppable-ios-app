@@ -12,4 +12,8 @@ struct MessagingChatUserProfile: Hashable {
     let wallet: String
     var displayInfo: MessagingChatUserProfileDisplayInfo
     var serviceMetadata: Data?
+    
+    var normalizedWallet: String {
+        wallet.normalized
+    }
 }

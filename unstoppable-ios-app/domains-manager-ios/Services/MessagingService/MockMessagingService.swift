@@ -16,9 +16,11 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
-    func refreshChatsForDomain(_ domain: DomainDisplayInfo) { }
-    
-    func getChatsListForDomain(_ domain: DomainDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
+    func refreshDataForUser(_ userProfile: MessagingChatUserProfileDisplayInfo) { }
+
+    func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
+        []
+        /*
         if let cachedChats = domainsChats[domain.name] {
             return cachedChats
         }
@@ -26,6 +28,7 @@ extension MockMessagingService: MessagingServiceProtocol {
         let chats = createMockChatsFor(domain: domain).sorted(by: { $0.lastMessage?.time ?? Date() > $1.lastMessage?.time ?? Date() })
         domainsChats[domain.name] = chats
         return chats
+         */
     }
     
     func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
@@ -58,8 +61,7 @@ extension MockMessagingService: MessagingServiceProtocol {
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) { }
     func markMessage(_ message: MessagingChatMessageDisplayInfo, isRead: Bool, wallet: String) throws { }
     
-    func refreshChannelsForDomain(_ domain: DomainDisplayInfo) { }
-    func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
+    func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
 
     
     func addListener(_ listener: MessagingServiceListener) {}

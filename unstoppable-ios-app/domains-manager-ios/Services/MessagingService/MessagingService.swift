@@ -32,38 +32,42 @@ final class MessagingService {
 
 // MARK: - Open methods
 extension MessagingService: MessagingServiceProtocol {
-    func refreshChatsForDomain(_ domain: DomainDisplayInfo) {
-        refreshChatsForDomain(domain, shouldRefreshUserInfo: true)
+    func refreshDataForUser(_ userProfile: MessagingChatUserProfileDisplayInfo) {
+        guard let profile = try? storageService.getUserProfileFor(wallet: userProfile.wallet) else { return }
+
+        refreshChatsForProfile(profile, shouldRefreshUserInfo: true)
+        refreshChannelsForProfile(profile)
+        setupSocketConnection(profile: profile)
     }
 
-    private func refreshChatsForDomain(_ domain: DomainDisplayInfo, shouldRefreshUserInfo: Bool) {
+    private func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
         Task {
-            setupSocketConnection(domain: domain)
-            
             do {
-                let wallet = try getDomainEthWalletAddress(domain)
+                let wallet = profile.wallet
                 
                 let allLocalChats = try await storageService.getChatsFor(wallet: wallet,
                                                                          decrypter: decrypterService)
                 let localChats = allLocalChats.filter { $0.displayInfo.isApproved}
                 let localRequests = allLocalChats.filter { !$0.displayInfo.isApproved}
                 
-                async let remoteChatsTask = updatedLocalChats(localChats, forWallet: wallet, isRequests: false)
-                async let remoteRequestsTask = updatedLocalChats(localRequests, forWallet: wallet, isRequests: true)
+                async let remoteChatsTask = updatedLocalChats(localChats, forProfile: profile, isRequests: false)
+                async let remoteRequestsTask = updatedLocalChats(localRequests, forProfile: profile, isRequests: true)
                 
                 let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
                 let allRemoteChats = remoteChats + remoteRequests
                 
-                let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats, localChats: allLocalChats)
+                let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats,
+                                                              localChats: allLocalChats,
+                                                              for: profile)
                 await storageService.saveChats(updatedChats)
                 
                 let updatedStoredChats = try await storageService.getChatsFor(wallet: wallet,
                                                                               decrypter: decrypterService)
                 let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
-                notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: domain.ownerWallet!))
+                notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: profile.normalizedWallet))
                 
                 if shouldRefreshUserInfo {
-                    refreshUsersInfoFor(domain: domain)
+                    refreshUsersInfoFor(profile: profile)
                 }
             } catch {
                 // TODO: - Handle error
@@ -72,7 +76,7 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     private func updatedLocalChats(_ localChats: [MessagingChat],
-                                   forWallet wallet: String,
+                                   forProfile profile: MessagingChatUserProfile,
                                    isRequests: Bool) async throws -> [MessagingChat] {
         var remoteChats = [MessagingChat]()
         let limit = 30
@@ -80,9 +84,9 @@ extension MessagingService: MessagingServiceProtocol {
         while true {
             let chatsPage: [MessagingChat]
             if isRequests {
-                chatsPage = try await apiService.getChatRequestsForWallet(wallet, page: 1, limit: limit)
+                chatsPage = try await apiService.getChatRequestsForUser(profile, page: 1, limit: limit)
             } else {
-                chatsPage = try await apiService.getChatsListForWallet(wallet, page: 1, limit: limit)
+                chatsPage = try await apiService.getChatsListForUser(profile, page: 1, limit: limit)
             }
             
             remoteChats.append(contentsOf: chatsPage)
@@ -104,7 +108,9 @@ extension MessagingService: MessagingServiceProtocol {
         return remoteChats
     }
     
-    private func refreshChatsMetadata(remoteChats: [MessagingChat], localChats: [MessagingChat]) async -> [MessagingChat] {
+    private func refreshChatsMetadata(remoteChats: [MessagingChat],
+                                      localChats: [MessagingChat],
+                                      for profile: MessagingChatUserProfile) async -> [MessagingChat] {
         var updatedChats = [MessagingChat]()
         
         await withTaskGroup(of: MessagingChat.self, body: { group in
@@ -116,7 +122,8 @@ extension MessagingService: MessagingServiceProtocol {
                     } else {
                         if var lastMessage = try? await self.apiService.getMessagesForChat(remoteChat,
                                                                                            options: .default,
-                                                                                           fetchLimit: 1).first {
+                                                                                           fetchLimit: 1,
+                                                                                           for: profile).first {
                              
                             var updatedChat = remoteChat
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
@@ -145,10 +152,10 @@ extension MessagingService: MessagingServiceProtocol {
         return updatedChats
     }
     
-    private func refreshUsersInfoFor(domain: DomainDisplayInfo) {
+    private func refreshUsersInfoFor(profile: MessagingChatUserProfile) {
         Task {
             do {
-                let wallet = try getDomainEthWalletAddress(domain)
+                let wallet = profile.wallet
                 let chats = try await storageService.getChatsFor(wallet: wallet,
                                                                  decrypter: decrypterService)
                 await withTaskGroup(of: Void.self, body: { group in
@@ -168,7 +175,7 @@ extension MessagingService: MessagingServiceProtocol {
                 
                 let updatedChats = try await storageService.getChatsFor(wallet: wallet,
                                                                         decrypter: decrypterService)
-                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, wallet: domain.ownerWallet!))
+                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, wallet: profile.normalizedWallet))
             } catch { }
         }
     }
@@ -197,8 +204,8 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // Chats list
-    func getChatsListForDomain(_ domain: DomainDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
-        let wallet = try getDomainEthWalletAddress(domain)
+    func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
+        let wallet = profile.wallet
         let chats = try await storageService.getChatsFor(wallet: wallet,
                                                          decrypter: decrypterService)
         
@@ -207,8 +214,9 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws {
+        let profile = try getUserProfileWith(wallet: chat.thisUserDetails.wallet)
         let chat = try await getMessagingChatFor(displayInfo: chat)
-        try await apiService.makeChatRequest(chat, approved: approved)
+        try await apiService.makeChatRequest(chat, approved: approved, by: profile)
         // TODO: - Reload chats list?
     }
     
@@ -272,9 +280,11 @@ extension MessagingService: MessagingServiceProtocol {
     private func getAndStoreMessagesForChat(_ chat: MessagingChat,
                                             options: MessagingAPIServiceLoadMessagesOptions,
                                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        let profile = try getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
         var messages = try await apiService.getMessagesForChat(chat,
                                                                options: options,
-                                                               fetchLimit: limit)
+                                                               fetchLimit: limit,
+                                                               for: profile)
         
         // Check for message is first in the chat when load earlier before 
         if case .before(let message) = options {
@@ -348,17 +358,15 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // Channels
-    func refreshChannelsForDomain(_ domain: DomainDisplayInfo) {
+    private func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
         Task {
-            setupSocketConnection(domain: domain)
-            
             do {
-                let wallet = try getDomainEthWalletAddress(domain)
+                let wallet = profile.wallet
                 let channels = try await apiService.getSubscribedChannelsFor(wallet: wallet)
                 let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
                 
                 await storageService.saveChannels(updatedChats, for: wallet)
-                notifyListenersChangedDataType(.channels(updatedChats, wallet: domain.ownerWallet!))
+                notifyListenersChangedDataType(.channels(updatedChats, wallet: profile.normalizedWallet))
             }
         }
     }
@@ -391,8 +399,8 @@ extension MessagingService: MessagingServiceProtocol {
         return updatedChannels
     }
     
-    func getSubscribedChannelsFor(domain: DomainDisplayInfo) async throws -> [MessagingNewsChannel] {
-        let wallet = try getDomainEthWalletAddress(domain)
+    func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
+        let wallet = profile.wallet
         let channels = try await storageService.getChannelsFor(wallet: wallet)
         return channels
     }
@@ -450,7 +458,10 @@ private extension MessagingService {
         Task {
             let chatId = chat.displayInfo.id
             do {
-                let sentMessage = try await apiService.sendMessage(messageType, in: chat)
+                let profile = try getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
+                let sentMessage = try await apiService.sendMessage(messageType,
+                                                                   in: chat,
+                                                                   by: profile)
                 replaceCacheMessageAndNotify(message,
                                              with: sentMessage,
                                              chatId: chatId)
@@ -466,6 +477,10 @@ private extension MessagingService {
         }
     }
     
+    func getUserProfileWith(wallet: String) throws -> MessagingChatUserProfile {
+        try storageService.getUserProfileFor(wallet: wallet)
+    }
+    
     func replaceCacheMessageAndNotify(_ messageToReplace: MessagingChatMessage,
                                       with newMessage: MessagingChatMessage,
                                       chatId: String) {
@@ -476,11 +491,10 @@ private extension MessagingService {
         }
     }
     
-    func setupSocketConnection(domain: DomainDisplayInfo) {
+    func setupSocketConnection(profile: MessagingChatUserProfile) {
         Task {
             do {
-                let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
-                try webSocketsService.subscribeFor(domain: domain,
+                try webSocketsService.subscribeFor(profile: profile,
                                                    eventCallback: { [weak self] event in
                     self?.handleWebSocketEvent(event)
                 })
@@ -516,10 +530,8 @@ private extension MessagingService {
         Task {
             do {
                 let chat = try await getMessagingChatWith(chatId: chatId)
-                if let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: chat.displayInfo.thisUserDetails.wallet),
-                   let domain = await appContext.dataAggregatorService.getDomainsDisplayInfo().first(where: { $0.name == domainName }){
-                    refreshChatsForDomain(domain, shouldRefreshUserInfo: false)
-                }
+                let profile = try getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
+                refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
             } catch { }
         }
     }

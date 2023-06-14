@@ -18,6 +18,7 @@ final class ChatsListViewPresenter {
     private weak var view: ChatsListViewProtocol?
     private var domains: [DomainDisplayInfo] = []
     private var selectedDomain: DomainDisplayInfo?
+    private var selectedProfile: MessagingChatUserProfileDisplayInfo?
     private let fetchLimit: Int = 10
     private var chatsList: [MessagingChatDisplayInfo] = []
     private var channels: [MessagingNewsChannel] = []
@@ -84,10 +85,11 @@ private extension ChatsListViewPresenter {
         Task {
             do {
                 await loadDomains()
-                guard let selectedDomain else { return }
+                guard let selectedDomain,
+                    let selectedProfile else { return }
                 
-                async let chatsListTask = appContext.messagingService.getChatsListForDomain(selectedDomain)
-                async let channelsTask = appContext.messagingService.getSubscribedChannelsFor(domain: selectedDomain)
+                async let chatsListTask = appContext.messagingService.getChatsListForProfile(selectedProfile)
+                async let channelsTask = appContext.messagingService.getSubscribedChannelsForProfile(selectedProfile)
 
                 let (chatsList, channels) = try await (chatsListTask, channelsTask)
 
@@ -96,9 +98,7 @@ private extension ChatsListViewPresenter {
 
                 showData()
                 
-                appContext.messagingService.refreshChatsForDomain(selectedDomain)
-                appContext.messagingService.refreshChannelsForDomain(selectedDomain)
-            
+                appContext.messagingService.refreshDataForUser(selectedProfile)
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
             }

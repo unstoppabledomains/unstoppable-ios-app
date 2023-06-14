@@ -11,39 +11,43 @@ import Push
 final class PushMessagingAPIService {
     
     private let pushRESTService = PushRESTAPIService()
-    
-    private var walletToPushUserCache: [HexAddress : PushUser] = [:]
-    
+        
 }
 
 // MARK: - MessagingAPIServiceProtocol
 extension PushMessagingAPIService: MessagingAPIServiceProtocol {
-    // Chats
-    func getUserFor(wallet: HexAddress) async throws -> MessagingChatUserDisplayInfo {
-        let pushUser = try await getPushUserFor(wallet: wallet)
-        return PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
+    // User profile
+    func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
+        let wallet = try await domain.getAddress()
+        let env = getCurrentPushEnvironment()
+        
+        guard let pushUser = try await PushUser.get(account: wallet, env: env) else {
+            throw PushMessagingAPIServiceError.failedToGetPushUser
+        }
+        
+        let userProfile = PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
+        try? await storePGPKeyFromPushUserIfNeeded(pushUser, domain: domain)
+        return userProfile
     }
     
-    func createUser(for domain: DomainItem) async throws -> MessagingChatUserDisplayInfo {
+    func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile {
         let wallet = try await domain.getAddress()
         let env = getCurrentPushEnvironment()
         let pushUser = try await PushUser.create(options: .init(env: env,
                                                                 signer: domain,
                                                                 version: .PGP_V3,
                                                                 progressHook: nil))
-        walletToPushUserCache[wallet] = pushUser
+        try await storePGPKeyFromPushUserIfNeeded(pushUser, domain: domain)
         let chatUser = PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
-        
-        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: pushUser.encryptedPrivateKey, signer: domain)
-        KeychainPGPKeysStorage.instance.savePGPKey(pgpPrivateKey,
-                                                   forIdentifier: wallet)
         
         return chatUser
     }
     
-    func getChatsListForWallet(_ wallet: HexAddress,
+    // Chats
+    func getChatsListForUser(_ user: MessagingChatUserProfile,
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {
+        let wallet = user.wallet
         let pushChats = try await pushRESTService.getChats(for: wallet,
                                                            page: page,
                                                            limit: limit,
@@ -55,9 +59,10 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         return chats
     }
     
-    func getChatRequestsForWallet(_ wallet: HexAddress,
+    func getChatRequestsForUser(_ user: MessagingChatUserProfile,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChat] {
+        let wallet = user.wallet
         let pushChats = try await pushRESTService.getChats(for: wallet,
                                                            page: page,
                                                            limit: limit,
@@ -71,20 +76,29 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
                             options: MessagingAPIServiceLoadMessagesOptions,
-                            fetchLimit: Int) async throws -> [MessagingChatMessage] {
+                            fetchLimit: Int,
+                            for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
         switch options {
         case .default:
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
             guard let threadHash = chatMetadata.threadHash else {
                 return [] // NULL threadHash means there's no messages in the chat yet
             }
-            return try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit, isRead: false)
+            return try await getPreviousMessagesForChat(chat,
+                                                        threadHash: threadHash,
+                                                        fetchLimit: fetchLimit,
+                                                        isRead: false,
+                                                        for: user)
         case .before(let message):
             let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: message.serviceMetadata)
             guard let threadHash = messageMetadata.link else {
                 return []
             }
-            return try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit, isRead: true)
+            return try await getPreviousMessagesForChat(chat,
+                                                        threadHash: threadHash,
+                                                        fetchLimit: fetchLimit,
+                                                        isRead: true,
+                                                        for: user)
         case .after(let message):
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
             guard var threadHash = chatMetadata.threadHash else {
@@ -94,7 +108,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             var messages = [MessagingChatMessage]()
             
             while true {
-                let chunkMessages = try await getPreviousMessagesForChat(chat, threadHash: threadHash, fetchLimit: fetchLimit, isRead: false)
+                let chunkMessages = try await getPreviousMessagesForChat(chat,
+                                                                         threadHash: threadHash,
+                                                                         fetchLimit: fetchLimit,
+                                                                         isRead: false,
+                                                                         for: user)
                 if let i = chunkMessages.firstIndex(where: { $0.displayInfo.id == message.displayInfo.id }) {
                     let missingMessages = Array(chunkMessages[..<i])
                     messages.append(contentsOf: missingMessages)
@@ -117,9 +135,10 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     private func getPreviousMessagesForChat(_ chat: MessagingChat,
                                             threadHash: String,
                                             fetchLimit: Int,
-                                            isRead: Bool) async throws -> [MessagingChatMessage] {
+                                            isRead: Bool,
+                                            for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
         let wallet = chat.displayInfo.thisUserDetails.wallet
-        let pgpPrivateKey = try await getPGPPrivateKeyFor(wallet: wallet)
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         let env = getCurrentPushEnvironment()
         let pushMessages = try await Push.PushChat.History(threadHash: threadHash,
                                                            limit: fetchLimit,
@@ -135,12 +154,13 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
-                     in chat: MessagingChat) async throws -> MessagingChatMessage {
+                     in chat: MessagingChat,
+                     by user: MessagingChatUserProfile) async throws -> MessagingChatMessage {
         let env = getCurrentPushEnvironment()
         let pushMessageContent = getPushMessageContentFrom(displayType: messageType)
         let pushMessageType = getPushMessageTypeFrom(displayType: messageType)
-        let sender = chat.displayInfo.thisUserDetails
-        let pgpPrivateKey = try await getPGPPrivateKeyFor(wallet: sender.wallet)
+        let sender = user
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
         switch chat.displayInfo.type {
         case .private(let otherUserDetails):
@@ -148,7 +168,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             let sendOptions = Push.PushChat.SendOptions(messageContent: pushMessageContent,
                                                         messageType: pushMessageType.rawValue,
                                                         receiverAddress: receiver.wallet,
-                                                        account: sender.wallet,
+                                                        account: user.wallet,
                                                         pgpPrivateKey: pgpPrivateKey,
                                                         env: env)
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
@@ -172,13 +192,15 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         }
     }
     
-    func makeChatRequest(_ chat: MessagingChat, approved: Bool) async throws {
+    func makeChatRequest(_ chat: MessagingChat,
+                         approved: Bool,
+                         by user: MessagingChatUserProfile) async throws {
         guard approved else { throw PushMessagingAPIServiceError.declineRequestNotSupported }
         guard case .private(let otherUserDetails) = chat.displayInfo.type else { throw PushMessagingAPIServiceError.sendMessageInGroupChatNotSupported }
         
         let env = getCurrentPushEnvironment()
         let sender = chat.displayInfo.thisUserDetails
-        let pgpPrivateKey = try await getPGPPrivateKeyFor(wallet: sender.wallet)
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
         let approveOptions = Push.PushChat.ApproveOptions(fromAddress: sender.wallet ,
                                                           toAddress: otherUserDetails.otherUser.wallet,
@@ -228,35 +250,35 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
 
 // MARK: - Private methods
 private extension PushMessagingAPIService {
-    func getPushUserFor(wallet: HexAddress) async throws -> PushUser {
-        if let pushUser = walletToPushUserCache[wallet] {
-            return pushUser
-        }
-        let env = getCurrentPushEnvironment()
-        guard let pushUser = try await PushUser.get(account: wallet, env: env) else {
-            throw PushMessagingAPIServiceError.failedToGetPushUser
-        }
-        walletToPushUserCache[wallet] = pushUser
-        return pushUser
+    func storePGPKeyFromPushUserIfNeeded(_ pushUser: Push.PushUser, domain: DomainItem) async throws {
+        let wallet = try await domain.getAddress()
+        guard KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet) == nil else { return } // Already saved
+        
+        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: pushUser.encryptedPrivateKey,
+                                                             signer: domain)
+        KeychainPGPKeysStorage.instance.savePGPKey(pgpPrivateKey,
+                                                   forIdentifier: wallet)
     }
     
-    func getPGPPrivateKeyFor(wallet: HexAddress) async throws -> String {
+    func getPGPPrivateKeyFor(user: MessagingChatUserProfile) async throws -> String {
+        let wallet = user.wallet
         if let key = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet) {
             return key
         }
-        let user = try await getPushUserFor(wallet: wallet)
-        let domain = try await getReverseResolutionDomainItem(for: wallet)
-        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: user.encryptedPrivateKey, signer: domain)
+        
+        let chatMetadata: PushEnvironment.UserProfileServiceMetadata = try decodeServiceMetadata(from: user.serviceMetadata)
+        let domain = try await getAnyDomainItem(for: wallet)
+        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: chatMetadata.encryptedPrivateKey, signer: domain)
         KeychainPGPKeysStorage.instance.savePGPKey(pgpPrivateKey, forIdentifier: wallet)
         return pgpPrivateKey
     }
     
-    func getReverseResolutionDomainItem(for wallet: HexAddress) async throws -> DomainItem {
-        guard let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: wallet) else {
-            throw PushMessagingAPIServiceError.noRRDomainForWallet
+    func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
+        guard let domain = await appContext.dataAggregatorService.getDomainItems().first(where: { $0.ownerWallet == wallet }) else {
+            throw PushMessagingAPIServiceError.noDomainForWallet
         }
         
-        return try await appContext.dataAggregatorService.getDomainWith(name: domainName)
+        return domain
     }
     
     func getCurrentPushEnvironment() -> Push.ENV {
@@ -303,7 +325,7 @@ private extension PushMessagingAPIService {
 // MARK: - Open methods
 extension PushMessagingAPIService {
     enum PushMessagingAPIServiceError: Error {
-        case noRRDomainForWallet
+        case noDomainForWallet
         case noOwnerWalletInDomain
         case failedToGetPushUser
         case incorrectDataState
