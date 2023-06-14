@@ -19,13 +19,14 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
             throw NSError()
         }
         
-        if messageMetadata.encType != "pgp" {
+        switch EncryptionType(rawValue: messageMetadata.encType) {
+        case .none:
             return text
+        case .pgp:
+            return try Push.PushChat.decryptMessage(text,
+                                                    encryptedSecret: messageMetadata.encryptedSecret,
+                                                    privateKeyArmored: pgpKey)
         }
-        
-        return try Push.PushChat.decryptMessage(text,
-                                                encryptedSecret: messageMetadata.encryptedSecret,
-                                                privateKeyArmored: pgpKey)
     }
     
     private func getPGPKeyFor(wallet: String) -> String? {
@@ -39,5 +40,9 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
         }
         
         return nil
+    }
+    
+    private enum EncryptionType: String {
+        case pgp
     }
 }
