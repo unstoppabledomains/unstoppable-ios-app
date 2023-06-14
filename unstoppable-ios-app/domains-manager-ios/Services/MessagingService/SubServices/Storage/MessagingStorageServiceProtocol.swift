@@ -8,6 +8,10 @@
 import Foundation
 
 protocol MessagingStorageServiceProtocol {
+    // User Profile
+    func getUserProfileFor(wallet: HexAddress) throws -> MessagingChatUserProfile
+    func saveUserProfile(_ profile: MessagingChatUserProfile) async
+    
     // Messages
     func getMessagesFor(chat: MessagingChatDisplayInfo,
                         decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage]

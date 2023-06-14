@@ -16,6 +16,23 @@ final class CoreDataMessagingStorageService: CoreDataService {
 
 // MARK: - MessagingStorageServiceProtocol
 extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
+    // User Profile
+    func getUserProfileFor(wallet: HexAddress) throws -> MessagingChatUserProfile {
+        try queue.sync {
+            if let coreDataMessage: CoreDataMessagingUserProfile = getCoreDataEntityWith(key: "wallet", value: wallet) {
+                return convertCoreDataUserProfileToMessagingUserProfile(coreDataMessage)
+            }
+            throw Error.entityNotFound
+        }
+    }
+    
+    func saveUserProfile(_ profile: MessagingChatUserProfile) async {
+        queue.sync {
+            let _ = try? convertMessagingUserProfileToCoreDataUserProfile(profile)
+            saveContext(backgroundContext)
+        }
+    }
+    
     // Messages
     func getMessagesFor(chat: MessagingChatDisplayInfo,
                         decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage] {
@@ -251,6 +268,32 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                 deleteObjects(coreDataUsersInfo, from: backgroundContext, shouldSaveContext: true)
             } catch { }
         }
+    }
+}
+
+// MARK: - User Profile parsing
+private extension CoreDataMessagingStorageService {
+    func convertCoreDataUserProfileToMessagingUserProfile(_ coreDataUserProfile: CoreDataMessagingUserProfile) -> MessagingChatUserProfile {
+        let displayInfo = MessagingChatUserProfileDisplayInfo(wallet: coreDataUserProfile.wallet!,
+                                                              name: coreDataUserProfile.name,
+                                                              about: coreDataUserProfile.about)
+        
+        return MessagingChatUserProfile(id: coreDataUserProfile.id!,
+                                        wallet: coreDataUserProfile.wallet!,
+                                        displayInfo: displayInfo,
+                                        serviceMetadata: coreDataUserProfile.serviceMetadata)
+    }
+    
+    func convertMessagingUserProfileToCoreDataUserProfile(_ userProfile: MessagingChatUserProfile) throws -> CoreDataMessagingUserProfile {
+        let coreDataUserProfile: CoreDataMessagingUserProfile = try createEntity(in: backgroundContext)
+        
+        coreDataUserProfile.id = userProfile.id
+        coreDataUserProfile.wallet = userProfile.wallet
+        coreDataUserProfile.serviceMetadata = userProfile.serviceMetadata
+        coreDataUserProfile.name = userProfile.displayInfo.name
+        coreDataUserProfile.about = userProfile.displayInfo.about
+        
+        return coreDataUserProfile
     }
 }
 
@@ -565,8 +608,12 @@ private extension CoreDataMessagingStorageService {
 // MARK: - Private methods
 private extension CoreDataMessagingStorageService {
     func getCoreDataEntityWith<T: NSManagedObject>(id: String) -> T? {
+        getCoreDataEntityWith(key: "id", value: id)
+    }
+    
+    func getCoreDataEntityWith<T: NSManagedObject>(key: String, value: String) -> T? {
         do {
-            let predicate = NSPredicate(format: "id == %@", id)
+            let predicate = NSPredicate(format: "%K == %@", key, value)
             let messages: [T] = try getEntities(predicate: predicate, from: backgroundContext)
             return messages.first
         } catch {
