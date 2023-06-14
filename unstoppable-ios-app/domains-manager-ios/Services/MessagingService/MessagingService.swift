@@ -57,7 +57,9 @@ extension MessagingService: MessagingServiceProtocol {
                 let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats, localChats: allLocalChats)
                 await storageService.saveChats(updatedChats)
                 
-                let chatsDisplayInfo = updatedChats.sortedByLastMessage().map({ $0.displayInfo })
+                let updatedStoredChats = try await storageService.getChatsFor(wallet: wallet,
+                                                                              decrypter: decrypterService)
+                let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
                 notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: domain.ownerWallet!))
                 
                 if shouldRefreshUserInfo {
@@ -112,16 +114,21 @@ extension MessagingService: MessagingServiceProtocol {
                        localChat.isUpToDateWith(otherChat: remoteChat) {
                         return localChat
                     } else {
-                        if let lastMessage = try? await self.apiService.getMessagesForChat(remoteChat,
+                        if var lastMessage = try? await self.apiService.getMessagesForChat(remoteChat,
                                                                                            options: .default,
                                                                                            fetchLimit: 1).first {
-                            await self.storageService.saveMessages([lastMessage])
+                             
                             var updatedChat = remoteChat
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
-                            if !lastMessage.displayInfo.senderType.isThisUser {
+                            if let storedMessage = await self.storageService.getMessageWith(id: lastMessage.displayInfo.id,
+                                                                                                 in: remoteChat.displayInfo,
+                                                                                                 decrypter: self.decrypterService) {
+                                lastMessage.displayInfo.isRead = storedMessage.displayInfo.isRead
+                            }
+                            if !lastMessage.displayInfo.senderType.isThisUser && !lastMessage.displayInfo.isRead {
                                 updatedChat.displayInfo.unreadMessagesCount += 1
                             }
-                            try? await self.storageService.replaceChat(remoteChat, with: updatedChat)
+                            await self.storageService.saveMessages([lastMessage])
                             return updatedChat
                         } else {
                             return remoteChat
