@@ -89,6 +89,8 @@ extension ChatTextCell {
                                               font: .currentFont(withSize: 16, weight: .regular),
                                               textColor: messageColor,
                                               lineHeight: 24)
+        messageTextView.linkTextAttributes = [.foregroundColor: messageColor,
+                                              .underlineStyle: NSUnderlineStyle.single.rawValue]
         
         guard sender != textMessage.senderType else {
             return }
