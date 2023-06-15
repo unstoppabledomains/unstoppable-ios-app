@@ -12,6 +12,7 @@
         <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>
         <attribute name="thisUserWallet" attributeType="String" defaultValueString=""/>
         <attribute name="type" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="userId" attributeType="String" defaultValueString=""/>
         <relationship name="lastMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingChatMessage" inverseName="lastMessageInChat" inverseEntity="CoreDataMessagingChatMessage"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -47,6 +48,7 @@
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="subscriberCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="url" attributeType="URI" defaultValueString=""/>
+        <attribute name="userId" attributeType="String" defaultValueString=""/>
         <attribute name="verifiedStatus" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="wallet" attributeType="String" defaultValueString=""/>
         <relationship name="lastFeed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannelFeed" inverseName="lastInChannel" inverseEntity="CoreDataMessagingNewsChannelFeed"/>
@@ -79,6 +81,19 @@
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="wallet"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CoreDataMessagingUserProfile" representedClassName="CoreDataMessagingUserProfile" syncable="YES" codeGenerationType="class">
+        <attribute name="about" optional="YES" attributeType="String"/>
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="normalizedWallet" attributeType="String" defaultValueString=""/>
+        <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>
+        <attribute name="wallet" attributeType="String" defaultValueString=""/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

@@ -10,18 +10,23 @@ import Foundation
 @MainActor
 protocol ChatsListViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: ChatsListViewController.Item)
+    func actionButtonPressed()
 }
 
 @MainActor
 final class ChatsListViewPresenter {
     
     private weak var view: ChatsListViewProtocol?
-    private var domains: [DomainDisplayInfo] = []
-    private var selectedDomain: DomainDisplayInfo?
     private let fetchLimit: Int = 10
+
+    private var wallets: [WalletDisplayInfo] = []
+    private var profileWalletPairsCache: [ChatProfileWalletPair] = []
+    private var selectedProfileWalletPair: ChatProfileWalletPair?
+    private var selectedDataType: ChatsListDataType = .chats
+    private var didLoadTime = Date()
+    
     private var chatsList: [MessagingChatDisplayInfo] = []
     private var channels: [MessagingNewsChannel] = []
-    private var selectedDataType: ChatsListDataType = .chats
     
     init(view: ChatsListViewProtocol) {
         self.view = view
@@ -41,7 +46,6 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         case .domainSelection(let configuration):
             guard !configuration.isSelected else { return }
             
-            selectedDomain = configuration.domain
             showData()
         case .chat(let configuration):
             openChat(configuration.chat)
@@ -49,8 +53,50 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             showChatRequests()
         case .channel(let configuration):
             openChannel(configuration.channel)
-        case .dataTypeSelection:
+        case .dataTypeSelection, .createProfile:
             return
+        }
+    }
+    
+    func didSelectWallet(_ wallet: WalletDisplayInfo) {
+        runLoadingState()
+        Task {
+            if let cachedPair = profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address }) {
+                try await self.selectProfileWalletPair(cachedPair)
+            } else {
+                var profile: MessagingChatUserProfileDisplayInfo?
+                if let rrDomain = wallet.reverseResolutionDomain {
+                   profile = try? await appContext.messagingService.getUserProfile(for: rrDomain)
+                }
+                
+                try await selectProfileWalletPair(.init(wallet: wallet,
+                                              profile: profile))
+            }
+        }
+    }
+    
+    func runLoadingState() {
+        chatsList.removeAll()
+        channels.removeAll()
+        view?.setState(.loading)
+    }
+    
+    func actionButtonPressed() {
+        Task {
+            guard let selectedProfileWalletPair,
+                  let view else { return }
+            
+            do {
+                try await appContext.authentificationService.verifyWith(uiHandler: view,
+                                                                        purpose: .confirm)
+                let wallet = selectedProfileWalletPair.wallet
+                if let rrDomain = wallet.reverseResolutionDomain {
+                    createProfileFor(domain: rrDomain,
+                                     in: wallet)
+                } else {
+                    askToSetRRDomainAndCreateProfileFor(wallet: selectedProfileWalletPair.wallet)
+                }
+            } catch { }
         }
     }
 }
@@ -61,13 +107,13 @@ extension ChatsListViewPresenter: MessagingServiceListener {
        Task { @MainActor in
            switch messagingDataType {
            case .chats(let chats, let wallet):
-               if wallet == selectedDomain?.ownerWallet,
+               if wallet == selectedProfileWalletPair?.wallet.address,
                   chatsList != chats {
                    chatsList = chats
                    showData()
                }
            case .channels(let channels, let wallet):
-               if wallet == selectedDomain?.ownerWallet {
+               if wallet == selectedProfileWalletPair?.wallet.address {
                    self.channels = channels
                    showData()
                }
@@ -82,54 +128,133 @@ extension ChatsListViewPresenter: MessagingServiceListener {
 private extension ChatsListViewPresenter {
     func loadAndShowData() {
         Task {
+            didLoadTime = Date()
             do {
-                await loadDomains()
-                guard let selectedDomain else { return }
+                wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+                    .compactMap { $0.displayInfo }
+                    .filter { $0.domainsCount > 0 }
+                    .sorted(by: {
+                    if $0.reverseResolutionDomain == nil && $1.reverseResolutionDomain != nil {
+                        return false
+                    } else if $0.reverseResolutionDomain != nil && $1.reverseResolutionDomain == nil {
+                        return true
+                    }
+                    return $0.domainsCount > $1.domainsCount
+                })
                 
-                async let chatsListTask = appContext.messagingService.getChatsListForDomain(selectedDomain)
-                async let channelsTask = appContext.messagingService.getSubscribedChannelsFor(domain: selectedDomain)
-
-                let (chatsList, channels) = try await (chatsListTask, channelsTask)
-
-                self.chatsList = chatsList
-                self.channels = channels
-
-                showData()
+                guard !wallets.isEmpty else {
+                    Debugger.printWarning("User got to chats screen without wallets with domains")
+                    await awaitForUIReady()
+                    view?.cNavigationController?.popViewController(animated: true)
+                    return
+                }
                 
-                appContext.messagingService.refreshChatsForDomain(selectedDomain)
-                appContext.messagingService.refreshChannelsForDomain(selectedDomain)
-            
+                if let lastUsedWallet = UserDefaults.currentMessagingOwnerWallet,
+                   let wallet = wallets.first(where: { $0.address == lastUsedWallet }),
+                   let rrDomain = wallet.reverseResolutionDomain,
+                   let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
+                    /// User already used chat with some profile, select last used.
+                    try await selectProfileWalletPair(.init(wallet: wallet,
+                                                  profile: profile))
+                } else {
+                    for wallet in wallets {
+                        guard let rrDomain = wallet.reverseResolutionDomain else { continue }
+                        
+                        if let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
+                            /// User open chats for the first time but there's existing profile, use it as default
+                            try await selectProfileWalletPair(.init(wallet: wallet,
+                                                          profile: profile))
+                            return
+                        } else {
+                            profileWalletPairsCache.append(.init(wallet: wallet,
+                                                                 profile: nil))
+                        }
+                    }
+              
+                    /// No profile has found for existing RR domains
+                    /// Select first wallet from sorted list
+                    let firstWallet = wallets[0] /// Safe due to .isEmpty verification above
+                    try await selectProfileWalletPair(.init(wallet: firstWallet,
+                                                  profile: nil))
+                }
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
             }
         }
     }
     
+    func awaitForUIReady() async {
+        let timeSinceViewDidLoad = Date().timeIntervalSince(didLoadTime)
+        let uiReadyTime = CNavigationController.animationDuration
+        
+        let dif = uiReadyTime - timeSinceViewDidLoad
+        if dif > 0 {
+            try? await Task.sleep(seconds: dif)
+        }
+    }
+    
+    func selectProfileWalletPair(_ chatProfile: ChatProfileWalletPair) async throws {
+        self.selectedProfileWalletPair = chatProfile
+        
+        if let i = profileWalletPairsCache.firstIndex(where: { $0.wallet.address == chatProfile.wallet.address }) {
+            profileWalletPairsCache[i] = chatProfile // Update cache
+        } else {
+            profileWalletPairsCache.append(chatProfile)
+        }
+        
+        guard let profile = chatProfile.profile else {
+            await awaitForUIReady()
+            view?.setState(.createProfile)
+            showData()
+            return
+        }
+        
+        UserDefaults.currentMessagingOwnerWallet = profile.wallet.normalized
+        
+        async let chatsListTask = appContext.messagingService.getChatsListForProfile(profile)
+        async let channelsTask = appContext.messagingService.getSubscribedChannelsForProfile(profile)
+        
+        let (chatsList, channels) = try await (chatsListTask, channelsTask)
+        
+        self.chatsList = chatsList
+        self.channels = channels
+        
+        await awaitForUIReady()
+        view?.setState(.chatsList)
+        showData()
+        appContext.messagingService.setCurrentUser(profile)
+    }
+    
     func showData() {
         var snapshot = ChatsListSnapshot()
         
-        let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
-        snapshot.appendSections([.dataTypeSelection])
-        snapshot.appendItems([.dataTypeSelection(configuration: dataTypeSelectionUIConfiguration)])
-        
-        switch selectedDataType {
-        case .chats:
-            snapshot.appendSections([.channels])
-            let requestsList = chatsList.filter({ !$0.isApproved })
-            let approvedList = chatsList.filter({ $0.isApproved })
-            if !requestsList.isEmpty {
-                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                         numberOfRequests: requestsList.count))])
+        if selectedProfileWalletPair?.profile == nil {
+            snapshot.appendSections([.createProfile])
+            snapshot.appendItems([.createProfile])
+        } else {
+            let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
+            snapshot.appendSections([.dataTypeSelection])
+            snapshot.appendItems([.dataTypeSelection(configuration: dataTypeSelectionUIConfiguration)])
+            
+            switch selectedDataType {
+            case .chats:
+                snapshot.appendSections([.channels])
+                let requestsList = chatsList.filter({ !$0.isApproved })
+                let approvedList = chatsList.filter({ $0.isApproved })
+                if !requestsList.isEmpty {
+                    snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                             numberOfRequests: requestsList.count))])
+                }
+                snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+            case .inbox:
+                snapshot.appendSections([.channels])
+                let spamList = channels.filter({ $0.blocked == 1 })
+                if !spamList.isEmpty {
+                    snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                             numberOfRequests: spamList.count))])
+                }
+                snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
             }
-            snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
-        case .inbox:
-            snapshot.appendSections([.channels])
-            let spamList = channels.filter({ $0.blocked == 1 })
-            if !spamList.isEmpty {
-                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                         numberOfRequests: spamList.count))])
-            }
-            snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }
         
         view?.applySnapshot(snapshot, animated: true)
@@ -147,19 +272,11 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    func loadDomains() async {
-        if domains.isEmpty {
-            let allDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-            domains = allDomains.filter({ $0.isSetForRR })
-            selectedDomain = domains.last ?? allDomains.first
-        }
-    }
-    
     func openChat(_ chat: MessagingChatDisplayInfo) {
         guard let nav = view?.cNavigationController,
-            let selectedDomain else { return }
+              let rrDomain = selectedProfileWalletPair?.wallet.reverseResolutionDomain else { return }
         
-        UDRouter().showChatScreen(chat: chat, domain: selectedDomain, in: nav)
+        UDRouter().showChatScreen(chat: chat, domain: rrDomain, in: nav)
     }
     
     func showChatRequests() {
@@ -168,5 +285,47 @@ private extension ChatsListViewPresenter {
     
     func openChannel(_ channel: MessagingNewsChannel) {
         
+    }
+    
+    func askToSetRRDomainAndCreateProfileFor(wallet: WalletDisplayInfo) {
+        Task {
+            guard let view,
+                let udWallet = appContext.udWalletsService.getUserWallets().first(where: { $0.address == wallet.address }) else { return }
+            
+            let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
+                                                                        for: udWallet,
+                                                                        walletInfo: wallet,
+                                                                        mode: .chooseFirstForMessaging)
+            
+            switch result {
+            case .cancelled:
+                return
+            case .set(let domain):
+                var wallet = wallet
+                wallet.reverseResolutionDomain = domain
+                createProfileFor(domain: domain, in: wallet)
+            }
+        }
+    }
+    
+    func createProfileFor(domain: DomainDisplayInfo,
+                          in wallet: WalletDisplayInfo) {
+        Task {
+            do {
+                let profile = try await appContext.messagingService.createUserProfile(for: domain)
+                try await selectProfileWalletPair(.init(wallet: wallet,
+                                                        profile: profile))
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension ChatsListViewPresenter {
+    struct ChatProfileWalletPair {
+        let wallet: WalletDisplayInfo
+        let profile: MessagingChatUserProfileDisplayInfo?
     }
 }

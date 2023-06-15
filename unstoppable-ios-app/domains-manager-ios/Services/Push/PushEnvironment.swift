@@ -26,4 +26,10 @@ enum PushEnvironment {
         let encryptedSecret: String
         let link: String?
     }
+    
+    struct UserProfileServiceMetadata: Codable {
+        let encryptedPrivateKey: String
+        let sigType: String
+        let signature: String 
+    }
 }

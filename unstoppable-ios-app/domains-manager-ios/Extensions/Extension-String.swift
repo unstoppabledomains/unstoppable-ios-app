@@ -194,6 +194,7 @@ extension String {
         static let both = "BOTH"
         static let manage = "MANAGE"
         static let link = "LINK"
+        static let enable = "ENABLE"
 
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -657,6 +658,7 @@ extension String {
         static let setReverseResolution = "SET_REVERSE_RESOLUTION"
         static let showNMore = "SHOW_N_MORE"
         static let reverseResolutionUnavailableWhileRecordsUpdating = "REVERSE_RESOLUTION_UNAVAILABLE_WHILE_RECORDS_UPDATING"
+        static let selectDomainForReverseResolutionForMessagingDescription = "SELECT_DOMAIN_FOR_REVERSE_RESOLUTION_FOR_MESSAGING_DESCRIPTION"
         
         // Deprecated TLD
         static let tldHasBeenDeprecated = "TLD_HAS_BEEN_DEPRECATED"
@@ -874,6 +876,13 @@ extension String {
         static let sendingFailed = "SENDING_FAILED"
         static let tapToRetry = "TAP_TO_RETRY"
         static let spam = "SPAM"
+        static let messagingIntroductionTitle = "MESSAGING_INTRODUCTION_TITLE"
+        static let messagingIntroductionHint1Title = "MESSAGING_INTRODUCTION_HINT_1_TITLE"
+        static let messagingIntroductionHint1Subtitle = "MESSAGING_INTRODUCTION_HINT_1_SUBTITLE"
+        static let messagingIntroductionHint2Title = "MESSAGING_INTRODUCTION_HINT_2_TITLE"
+        static let messagingIntroductionHint2Subtitle = "MESSAGING_INTRODUCTION_HINT_2_SUBTITLE"
+        static let messagingIntroductionHint3Title = "MESSAGING_INTRODUCTION_HINT_3_TITLE"
+        static let messagingIntroductionHint3Subtitle = "MESSAGING_INTRODUCTION_HINT_3_SUBTITLE"
     }
 
     

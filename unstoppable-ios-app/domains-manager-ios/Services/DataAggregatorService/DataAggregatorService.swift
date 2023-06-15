@@ -121,7 +121,10 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
 
     func getReverseResolutionDomain(for walletAddress: HexAddress) async -> String? {
-        await dataHolder.reverseResolutionDomainName(for: walletAddress)
+        guard let wallet = await dataHolder.wallets.first(where: { $0.address == walletAddress }) else { return nil }
+        
+        let displayInfo = await getWalletDisplayInfo(for: wallet)
+        return displayInfo?.reverseResolutionDomain?.name
     }
     
     func reverseResolutionDomain(for wallet: UDWallet) async -> DomainDisplayInfo? {
@@ -131,8 +134,11 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
         
         if let setRRTransaction = findFirstPendingRRTransaction(from: transactions),
            let domainName = setRRTransaction.domainName,
-           let domain = domains.first(where: { $0.name == domainName }) {
+           let domain = walletDomains.first(where: { $0.name == domainName }) {
             return domain
+        } else if let removeRRTransaction = findFirstTransaction(from: transactions, withOperation: .removeReverseResolution),
+                  walletDomains.first(where: { $0.name == removeRRTransaction.domainName }) != nil {
+            return nil
         }
         
         guard let domainName = await dataHolder.reverseResolutionDomainName(for: wallet.address) else { return nil }
@@ -151,8 +157,11 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     private func findFirstPendingRRTransaction(from txs: [TransactionItem]) -> TransactionItem? {
-        txs.filterPending(extraCondition: {$0.operation == .setReverseResolution})
-            .first
+        findFirstTransaction(from: txs, withOperation: .setReverseResolution)
+    }
+    
+    private func findFirstTransaction(from txs: [TransactionItem], withOperation operation: TxOperation) -> TransactionItem? {
+        txs.filterPending(extraCondition: {$0.operation == operation}).first
     }
     
     func isReverseResolutionChangeAllowed(for wallet: UDWallet) async -> Bool {
@@ -185,9 +194,8 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     func isReverseResolutionSet(for domainName: DomainName) async -> Bool {
-        let reverseResolutionMap = await dataHolder.reverseResolutionMap
-        
-        return reverseResolutionMap.first(where: { $0.value == domainName }) != nil
+        let wallets = await getWalletsWithInfo()
+        return wallets.first(where: { $0.displayInfo?.reverseResolutionDomain?.name == domainName }) != nil
     }
     
     func aggregateData(shouldRefreshPFP: Bool) async {
@@ -483,7 +491,7 @@ private extension DataAggregatorService {
                     /// Note: This block capturing self.
                     let domainName = await self.walletsService.reverseResolutionDomainName(for: wallet)
                     let walletWithRRDomain = WalletWithRRDomain(walletAddress: wallet.address,
-                                                              domainName: domainName)
+                                                                domainName: domainName)
                     return walletWithRRDomain
                 }
             }
@@ -503,7 +511,7 @@ private extension DataAggregatorService {
         }
         
         ReverseResolutionInfoMapStorage.save(reverseResolutionMap: reverseResolutionMap)
-        
+ 
         return reverseResolutionMap
     }
     

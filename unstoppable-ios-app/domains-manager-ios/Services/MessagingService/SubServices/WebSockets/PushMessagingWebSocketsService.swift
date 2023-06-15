@@ -18,9 +18,9 @@ final class PushMessagingWebSocketsService {
 
 // MARK: - MessagingWebSocketsServiceProtocol
 extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
-    func subscribeFor(domain: DomainItem,
+    func subscribeFor(profile: MessagingChatUserProfile,
                       eventCallback: @escaping MessagingWebSocketEventCallback) throws {
-        if let connection = domainNameToConnectionMap[domain.name] {
+        if let connection = domainNameToConnectionMap[profile.wallet] {
             switch connection.status {
             case .connecting, .connected:
                 return
@@ -30,7 +30,7 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
             return
         }
      
-        let pushConnection = try buildPushConnectionFor(domain: domain)
+        let pushConnection = try buildPushConnectionFor(profile: profile)
         pushConnection.onAny = { [weak self] event in
             guard let pushEvent = Events(rawValue: event.event) else {
                 Debugger.printWarning("Unknowned Push socket event: \(event.event)")
@@ -42,7 +42,7 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
         }
         pushConnection.connect()
 
-        domainNameToConnectionMap[domain.name] = pushConnection
+        domainNameToConnectionMap[profile.wallet] = pushConnection
     }
     
     func unsubscribeFrom(domain: DomainItem) {
@@ -60,18 +60,18 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
 
 // MARK: - Private methods
 private extension PushMessagingWebSocketsService {
-    func buildPushConnectionFor(domain: DomainItem) throws -> PushConnection {
-        let feedsConnection = try buildConnectionFor(domain: domain, connectionType: .feed)
-        let chatsConnection = try buildConnectionFor(domain: domain, connectionType: .chats)
+    func buildPushConnectionFor(profile: MessagingChatUserProfile) throws -> PushConnection {
+        let feedsConnection = try buildConnectionFor(profile: profile, connectionType: .feed)
+        let chatsConnection = try buildConnectionFor(profile: profile, connectionType: .chats)
         
         return PushConnection(feedsConnection: feedsConnection,
                               chatsConnection: chatsConnection)
     }
     
-    func buildConnectionFor(domain: DomainItem,
+    func buildConnectionFor(profile: MessagingChatUserProfile,
                             connectionType: ConnectionType) throws -> Connection {
         let url = PushEnvironment.baseURL
-        let params = try getConnectionParametersFor(domain: domain, connectionType: connectionType)
+        let params = try getConnectionParametersFor(profile: profile, connectionType: connectionType)
         
         var config: SocketIOClientConfiguration = []
 #if DEBUG
@@ -93,33 +93,23 @@ private extension PushMessagingWebSocketsService {
         return Connection(socketManager: manager, type: connectionType)
     }
     
-    func getConnectionParametersFor(domain: DomainItem,
+    func getConnectionParametersFor(profile: MessagingChatUserProfile,
                                     connectionType: ConnectionType) throws -> [String : Any] {
         switch connectionType {
         case .feed:
-            let eipAddress = try buildEIP155AddressFrom(domain: domain, shouldIncludeChain: true)
+            let eipAddress = try buildEIP155AddressFrom(profile: profile, shouldIncludeChain: true)
             
             return ["address" : eipAddress]
         case .chats:
-            let eipAddress = try buildEIP155AddressFrom(domain: domain, shouldIncludeChain: false)
+            let eipAddress = try buildEIP155AddressFrom(profile: profile, shouldIncludeChain: false)
             return ["did" : eipAddress,
                     "mode" : "chat"]
         }
     }
     
-    func buildEIP155AddressFrom(domain: DomainItem, shouldIncludeChain: Bool) throws -> String {
-        guard var walletAddress = domain.ownerWallet else {
-            Debugger.printFailure("Failed to get owner wallet from domain", critical: true)
-            throw PushWebSocketError.failedToCreateEIP155Address
-        }
-        if let wallet = appContext.udWalletsService.find(by: walletAddress),
-           let ethAddress = wallet.ethWallet?.address { // Temporary solution until Push will be come address case agnostic
-            walletAddress = ethAddress
-        }
-        guard let blockchain = domain.blockchain else {
-            Debugger.printFailure("Failed to get blockchain from domain", critical: true)
-            throw PushWebSocketError.failedToCreateEIP155Address
-        }
+    func buildEIP155AddressFrom(profile: MessagingChatUserProfile, shouldIncludeChain: Bool) throws -> String {
+        let walletAddress = profile.wallet
+        let blockchain: BlockchainType = .Matic // TODO: - Check how to select chain for user profile
         
         if shouldIncludeChain {
             let env: UnsConfigManager.BlockchainEnvironment

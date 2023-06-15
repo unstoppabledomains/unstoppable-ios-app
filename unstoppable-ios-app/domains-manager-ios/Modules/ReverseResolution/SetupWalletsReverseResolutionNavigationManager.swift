@@ -63,7 +63,7 @@ extension SetupWalletsReverseResolutionNavigationManager: SetupWalletsReverseRes
     func handle(action: Action) async throws {
         switch action {
         case .continueReverseResolutionSetup:
-            moveToStep(.chooseDomainForReverseResolution(mode: .chooseFirst))
+            moveToStep(.chooseDomainForReverseResolution(mode: .chooseFirstDomain))
         case .didSelectDomainForReverseResolution(let domainDisplayInfo):
             guard let topViewController = self.topViewController as? PaymentConfirmationDelegate else {
                 dismiss(result: .cancelled)
@@ -128,8 +128,8 @@ private extension SetupWalletsReverseResolutionNavigationManager {
             if let initialViewController = createStep(.setupReverseResolutionInfo) {
                 setViewControllers([initialViewController], animated: false)
             }
-        case .changeDomain(let currentDomain):
-            if let initialViewController = createStep(.chooseDomainForReverseResolution(mode: .changeExisting(currentDomain: currentDomain))) {
+        case .changeDomain, .chooseFirstForMessaging:
+            if let initialViewController = createStep(.chooseDomainForReverseResolution(mode: mode)) {
                 setViewControllers([initialViewController], animated: false)
             }
         }
@@ -165,13 +165,21 @@ private extension SetupWalletsReverseResolutionNavigationManager {
             let presenter: ChooseReverseResolutionDomainViewPresenterProtocol
             
             switch mode {
-            case .chooseFirst:
+            case .chooseFirstDomain:
                 presenter = SelectWalletsReverseResolutionDomainViewPresenter(view: vc,
                                                                               wallet: wallet,
                                                                               walletInfo: walletInfo,
+                                                                              useCase: .default,
                                                                               setupWalletsReverseResolutionFlowManager: self,
                                                                               dataAggregatorService: dataAggregatorService)
-            case .changeExisting(let currentDomain):
+            case .chooseFirstForMessaging:
+                presenter = SelectWalletsReverseResolutionDomainViewPresenter(view: vc,
+                                                                              wallet: wallet,
+                                                                              walletInfo: walletInfo,
+                                                                              useCase: .messaging,
+                                                                              setupWalletsReverseResolutionFlowManager: self,
+                                                                              dataAggregatorService: dataAggregatorService)
+            case .changeDomain(let currentDomain):
                 presenter = ChangeWalletsReverseResolutionDomainViewPresenter(view: vc,
                                                                               wallet: wallet,
                                                                               walletInfo: walletInfo,
@@ -189,12 +197,13 @@ private extension SetupWalletsReverseResolutionNavigationManager {
 extension SetupWalletsReverseResolutionNavigationManager {
     enum Mode {
         case chooseFirstDomain
+        case chooseFirstForMessaging
         case changeDomain(currentDomain: DomainDisplayInfo)
     }
     
     enum Step {
         case setupReverseResolutionInfo
-        case chooseDomainForReverseResolution(mode: ChooseDomainForReverseResolutionMode)
+        case chooseDomainForReverseResolution(mode: Mode)
     }
     
     enum Action {

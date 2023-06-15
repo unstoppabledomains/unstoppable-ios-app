@@ -41,7 +41,7 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
         
         return nil
     }
-    
+     
     private enum EncryptionType: String {
         case pgp
     }

@@ -10,6 +10,7 @@ import UIKit
 @MainActor
 protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
+    func setState(_ state: ChatsListViewController.State)
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -20,15 +21,28 @@ typealias ChatsListSnapshot = NSDiffableDataSourceSnapshot<ChatsListViewControll
 final class ChatsListViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
+    
+    @IBOutlet private weak var actionButton: MainButton!
+    @IBOutlet private weak var actionButtonContainerView: UIView!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    
+    
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatListCell.self,
                                                         ChatListDomainSelectionCell.self,
                                                         ChatListDataTypeSelectionCell.self,
-                                                        ChatListRequestsCell.self] }
+                                                        ChatListRequestsCell.self,
+                                                        ChatListCreateProfileCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
+    private var state: State = .loading
     
     override var scrollableContentYOffset: CGFloat? { 48 }
-    override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? { cSearchBarConfiguration }
+    override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {
+        switch state {
+        case .chatsList: return cSearchBarConfiguration
+        case .createProfile, .loading: return nil
+        }
+    }
     private var searchBar: UDSearchBar = UDSearchBar()
     private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
         .init(searchBarPlacement: .inline) { [weak self] in
@@ -43,13 +57,29 @@ final class ChatsListViewController: BaseViewController {
         setup()
         presenter.viewDidLoad()
     }
-    
 }
 
 // MARK: - ChatsListViewProtocol
 extension ChatsListViewController: ChatsListViewProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool) {
-        dataSource.apply(snapshot, animatingDifferences: animated)
+        dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
+            self?.checkIfCollectionScrollingEnabled()
+        })
+    }
+    
+    func setState(_ state: State) {
+        self.state = state
+        
+        if case .loading = state {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
+        
+        setupCollectionInset()
+        setupActionButton()
+        setupNavigation()
+        cNavigationController?.updateNavigationBar()
     }
 }
 
@@ -68,8 +98,22 @@ extension ChatsListViewController: UICollectionViewDelegate {
 
 // MARK: - Private functions
 private extension ChatsListViewController {
+    @IBAction func actionButtonPressed(_ sender: Any) {
+        presenter.actionButtonPressed()
+    }
+    
     @objc func newMessageButtonPressed() {
         UDVibration.buttonTap.vibrate()
+    }
+    
+    func checkIfCollectionScrollingEnabled() {
+        switch state {
+        case .chatsList, .loading:
+            collectionView.isScrollEnabled = true
+        case .createProfile:
+            let collectionViewVisibleHeight = collectionView.bounds.height - collectionView.contentInset.top - actionButtonContainerView.bounds.height
+            collectionView.isScrollEnabled = collectionView.contentSize.height > collectionViewVisibleHeight
+        }
     }
 }
 
@@ -78,22 +122,54 @@ private extension ChatsListViewController {
     func setup() {
         setupNavigation()
         setupCollectionView()
-        title = String.Constants.chats.localized()
+        setupActionButton()
     }
     
     func setupNavigation() {
-        let newMessageButton = UIBarButtonItem(image: .newMessageIcon,
-                                               style: .plain,
-                                               target: self,
-                                               action: #selector(newMessageButtonPressed))
-        newMessageButton.tintColor = .foregroundDefault
-        navigationItem.rightBarButtonItem = newMessageButton
+        switch state {
+        case .chatsList:
+            title = String.Constants.chats.localized()
+            let newMessageButton = UIBarButtonItem(image: .newMessageIcon,
+                                                   style: .plain,
+                                                   target: self,
+                                                   action: #selector(newMessageButtonPressed))
+            newMessageButton.tintColor = .foregroundDefault
+            navigationItem.rightBarButtonItem = newMessageButton
+        case .createProfile, .loading:
+            title = ""
+            navigationItem.rightBarButtonItem = nil
+        }
+    }
+    
+    func setupActionButton() {
+        var icon: UIImage?
+        if User.instance.getSettings().touchIdActivated {
+            icon = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+        }
+        actionButton.setTitle(String.Constants.enable.localized(),
+                              image: icon)
+        
+        switch state {
+        case .chatsList, .loading:
+            actionButtonContainerView.isHidden = true
+        case .createProfile:
+            actionButtonContainerView.isHidden = false
+        }
+    }
+    
+    func setupCollectionInset() {
+        switch state {
+        case .chatsList, .loading:
+            collectionView.contentInset.top = 110
+        case .createProfile:
+            collectionView.contentInset.top = 68
+        }
     }
     
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
-        collectionView.contentInset.top = 110
+        setupCollectionInset()
 
         configureDataSource()
     }
@@ -126,6 +202,10 @@ private extension ChatsListViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .createProfile:
+                let cell = collectionView.dequeueCellOfType(ChatListCreateProfileCell.self, forIndexPath: indexPath)
+
+                return cell
             }
         })
     }
@@ -148,7 +228,7 @@ private extension ChatsListViewController {
          
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
                 layoutSection.decorationItems = [background]
-            case .dataTypeSelection:
+            case .dataTypeSelection, .createProfile:
                 layoutSection = .flexibleListItemSection()
             case .domainsSelection:
                 let leadingItem = NSCollectionLayoutItem(
@@ -184,7 +264,7 @@ private extension ChatsListViewController {
 // MARK: - Collection elements
 extension ChatsListViewController {
     enum Section: Hashable {
-        case domainsSelection, channels, dataTypeSelection
+        case domainsSelection, channels, dataTypeSelection, createProfile
     }
     
     enum Item: Hashable {
@@ -193,6 +273,7 @@ extension ChatsListViewController {
         case dataTypeSelection(configuration: DataTypeSelectionUIConfiguration)
         case chatRequests(configuration: ChatRequestsUIConfiguration)
         case channel(configuration: ChannelUIConfiguration)
+        case createProfile
     }
     
     struct ChatUIConfiguration: Hashable {
@@ -249,4 +330,9 @@ extension ChatsListViewController {
         let channel: MessagingNewsChannel
     }
     
+    enum State {
+        case createProfile
+        case chatsList
+        case loading
+    }
 }

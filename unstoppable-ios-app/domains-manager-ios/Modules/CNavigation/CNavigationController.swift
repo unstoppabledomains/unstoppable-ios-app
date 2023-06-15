@@ -23,7 +23,7 @@ class CNavigationController: UIViewController {
     private(set) var navigationBar: CNavigationBar!
     private var viewControllersContainerView: UIView!
     private(set) var transitionHandler: CNavigationTransitionHandler!
-    private var animationDuration: TimeInterval { CNavigationHelper.DefaultNavAnimationDuration }
+    static let animationDuration: TimeInterval = CNavigationHelper.DefaultNavAnimationDuration
     private(set) var isTransitioning = false
     private let navigationBarScrollingController = CNavigationBarScrollingController()
     weak var delegate: CNavigationControllerDelegate?
@@ -290,7 +290,7 @@ private extension CNavigationController {
             let transition = self.transitionHandler.navigationController(self,
                                                                          animationControllerFor: .push,
                                                                          from: topViewController,
-                                                                         to: viewController) ?? CNavigationControllerDefaultPushAnimation(animationDuration: self.animationDuration)
+                                                                         to: viewController) ?? CNavigationControllerDefaultPushAnimation(animationDuration: CNavigationController.animationDuration)
             let context = NavigationTransitioningContext(containerView: containerView,
                                                          isAnimated: animated,
                                                          fromViewController: topViewController,
@@ -300,7 +300,7 @@ private extension CNavigationController {
             let navTransition = self.transitionHandler.navigationController(self,
                                                                             navBarAnimationControllerFor: .push,
                                                                             from: topViewController,
-                                                                            to: viewController) ?? CNavigationControllerDefaultNavigationBarPushAnimation(animationDuration: self.animationDuration)
+                                                                            to: viewController) ?? CNavigationControllerDefaultNavigationBarPushAnimation(animationDuration: CNavigationController.animationDuration)
             
             if let animator = transition.interruptibleAnimator?(using: context) {
                 context.set(navigationAnimator: navTransition.interruptibleAnimator!(using: context))
@@ -359,7 +359,7 @@ private extension CNavigationController {
         let transition = transitionHandler.navigationController(self,
                                                         animationControllerFor: .pop,
                                                         from: fromViewController,
-                                                        to: toViewController) ?? CNavigationControllerDefaultPopAnimation(animationDuration: animationDuration)
+                                                                to: toViewController) ?? CNavigationControllerDefaultPopAnimation(animationDuration: CNavigationController.animationDuration)
         let context = NavigationTransitioningContext(containerView: containerView,
                                                      isAnimated: animated,
                                                      fromViewController: fromViewController,
@@ -371,7 +371,7 @@ private extension CNavigationController {
         let navTransition = transitionHandler.navigationController(self,
                                                                    navBarAnimationControllerFor: .pop,
                                                                    from: fromViewController,
-                                                                   to: toViewController) ?? CNavigationControllerDefaultNavigationBarPopAnimation(animationDuration: animationDuration)
+                                                                   to: toViewController) ?? CNavigationControllerDefaultNavigationBarPopAnimation(animationDuration: CNavigationController.animationDuration)
         
         context.set(navigationAnimator: navTransition.interruptibleAnimator!(using: context))
         
@@ -461,7 +461,9 @@ private extension CNavigationController {
     }
     
     func addSwipeGestures() {
-        transitionHandler = CNavigationTransitionHandler(view: view, navigationController: self, animationDuration: animationDuration)
+        transitionHandler = CNavigationTransitionHandler(view: view,
+                                                         navigationController: self,
+                                                         animationDuration: CNavigationController.animationDuration)
     }
     
     func updateFrames() {
