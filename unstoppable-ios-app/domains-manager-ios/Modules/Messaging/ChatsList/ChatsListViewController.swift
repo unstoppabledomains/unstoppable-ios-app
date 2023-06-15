@@ -245,7 +245,7 @@ private extension ChatsListViewController {
             
             let layoutSection: NSCollectionLayoutSection
             let section = self?.section(at: IndexPath(item: 0, section: sectionIndex))
-
+            
             switch section {
             case .channels, .none:
                 layoutSection = .flexibleListItemSection()
