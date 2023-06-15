@@ -630,10 +630,14 @@ private extension MessagingService {
 
 // MARK: - Open methods
 extension MessagingService {
-    enum MessagingServiceError: Error {
+    enum MessagingServiceError: String, LocalizedError {
         case domainWithoutWallet
         case chatNotFound
         case messageNotFound
         case noRRDomainForProfile
+        
+        public var errorDescription: String? {
+            return rawValue
+        }
     }
 }

@@ -23,6 +23,7 @@ final class ChatsListViewPresenter {
     private var profileWalletPairsCache: [ChatProfileWalletPair] = []
     private var selectedProfileWalletPair: ChatProfileWalletPair?
     private var selectedDataType: ChatsListDataType = .chats
+    private var didLoadTime = Date()
     
     private var chatsList: [MessagingChatDisplayInfo] = []
     private var channels: [MessagingNewsChannel] = []
@@ -61,14 +62,14 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         runLoadingState()
         Task {
             if let cachedPair = profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address }) {
-                try await self.selectProfile(cachedPair)
+                try await self.selectProfileWalletPair(cachedPair)
             } else {
                 var profile: MessagingChatUserProfileDisplayInfo?
                 if let rrDomain = wallet.reverseResolutionDomain {
                    profile = try? await appContext.messagingService.getUserProfile(for: rrDomain)
                 }
                 
-                try await selectProfile(.init(wallet: wallet,
+                try await selectProfileWalletPair(.init(wallet: wallet,
                                               profile: profile))
             }
         }
@@ -81,7 +82,22 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     }
     
     func actionButtonPressed() {
-        
+        Task {
+            guard let selectedProfileWalletPair,
+                  let view else { return }
+            
+            do {
+                try await appContext.authentificationService.verifyWith(uiHandler: view,
+                                                                        purpose: .confirm)
+                let wallet = selectedProfileWalletPair.wallet
+                if let rrDomain = wallet.reverseResolutionDomain {
+                    createProfileFor(domain: rrDomain,
+                                     in: wallet)
+                } else {
+                    askToSetRRDomainAndCreateProfileFor(wallet: selectedProfileWalletPair.wallet)
+                }
+            } catch { }
+        }
     }
 }
 
@@ -112,6 +128,7 @@ extension ChatsListViewPresenter: MessagingServiceListener {
 private extension ChatsListViewPresenter {
     func loadAndShowData() {
         Task {
+            didLoadTime = Date()
             do {
                 wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
                     .compactMap { $0.displayInfo }
@@ -127,6 +144,7 @@ private extension ChatsListViewPresenter {
                 
                 guard !wallets.isEmpty else {
                     Debugger.printWarning("User got to chats screen without wallets with domains")
+                    await awaitForUIReady()
                     view?.cNavigationController?.popViewController(animated: true)
                     return
                 }
@@ -136,17 +154,15 @@ private extension ChatsListViewPresenter {
                    let rrDomain = wallet.reverseResolutionDomain,
                    let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
                     /// User already used chat with some profile, select last used.
-                    try await selectProfile(.init(wallet: wallet,
+                    try await selectProfileWalletPair(.init(wallet: wallet,
                                                   profile: profile))
                 } else {
-                    let rrDomains = wallets.compactMap { $0.reverseResolutionDomain }
-
                     for wallet in wallets {
                         guard let rrDomain = wallet.reverseResolutionDomain else { continue }
                         
                         if let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
                             /// User open chats for the first time but there's existing profile, use it as default
-                            try await selectProfile(.init(wallet: wallet,
+                            try await selectProfileWalletPair(.init(wallet: wallet,
                                                           profile: profile))
                             return
                         } else {
@@ -158,7 +174,7 @@ private extension ChatsListViewPresenter {
                     /// No profile has found for existing RR domains
                     /// Select first wallet from sorted list
                     let firstWallet = wallets[0] /// Safe due to .isEmpty verification above
-                    try await selectProfile(.init(wallet: firstWallet,
+                    try await selectProfileWalletPair(.init(wallet: firstWallet,
                                                   profile: nil))
                 }
             } catch {
@@ -167,14 +183,27 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    func selectProfile(_ chatProfile: ChatProfileWalletPair) async throws {
+    func awaitForUIReady() async {
+        let timeSinceViewDidLoad = Date().timeIntervalSince(didLoadTime)
+        let uiReadyTime = CNavigationController.animationDuration
+        
+        let dif = uiReadyTime - timeSinceViewDidLoad
+        if dif > 0 {
+            try? await Task.sleep(seconds: dif)
+        }
+    }
+    
+    func selectProfileWalletPair(_ chatProfile: ChatProfileWalletPair) async throws {
         self.selectedProfileWalletPair = chatProfile
         
-        if profileWalletPairsCache.first(where: { $0.wallet.address == chatProfile.wallet.address }) == nil {
+        if let i = profileWalletPairsCache.firstIndex(where: { $0.wallet.address == chatProfile.wallet.address }) {
+            profileWalletPairsCache[i] = chatProfile // Update cache
+        } else {
             profileWalletPairsCache.append(chatProfile)
         }
         
         guard let profile = chatProfile.profile else {
+            await awaitForUIReady()
             view?.setState(.createProfile)
             showData()
             return
@@ -190,6 +219,7 @@ private extension ChatsListViewPresenter {
         self.chatsList = chatsList
         self.channels = channels
         
+        await awaitForUIReady()
         view?.setState(.chatsList)
         showData()
         appContext.messagingService.setCurrentUser(profile)
@@ -255,6 +285,40 @@ private extension ChatsListViewPresenter {
     
     func openChannel(_ channel: MessagingNewsChannel) {
         
+    }
+    
+    func askToSetRRDomainAndCreateProfileFor(wallet: WalletDisplayInfo) {
+        Task {
+            guard let view,
+                let udWallet = appContext.udWalletsService.getUserWallets().first(where: { $0.address == wallet.address }) else { return }
+            
+            let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
+                                                                        for: udWallet,
+                                                                        walletInfo: wallet,
+                                                                        mode: .chooseFirstForMessaging)
+            
+            switch result {
+            case .cancelled:
+                return
+            case .set(let domain):
+                var wallet = wallet
+                wallet.reverseResolutionDomain = domain
+                createProfileFor(domain: domain, in: wallet)
+            }
+        }
+    }
+    
+    func createProfileFor(domain: DomainDisplayInfo,
+                          in wallet: WalletDisplayInfo) {
+        Task {
+            do {
+                let profile = try await appContext.messagingService.createUserProfile(for: domain)
+                try await selectProfileWalletPair(.init(wallet: wallet,
+                                                        profile: profile))
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+        }
     }
 }
 

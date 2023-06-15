@@ -566,7 +566,7 @@
 "SET_REVERSE_RESOLUTION" = "Set reverse resolution";
 "SHOW_N_MORE" = "Show %i more";
 "REVERSE_RESOLUTION_UNAVAILABLE_WHILE_RECORDS_UPDATING" = "Unavailable while records are updating";
-"SELECT_DOMAIN_FOR_REVERSE_RESOLUTION_FOR_MESSAGING_DESCRIPTION" = "Display your domain name instead of your wallet address when connecting to Web3  applications.";
+"SELECT_DOMAIN_FOR_REVERSE_RESOLUTION_FOR_MESSAGING_DESCRIPTION" = "Essential for receiving messages to your vault's associated domain.";
 
 // Deprecated TLD
 "TLD_HAS_BEEN_DEPRECATED" = ".%@ has been deprecated";
