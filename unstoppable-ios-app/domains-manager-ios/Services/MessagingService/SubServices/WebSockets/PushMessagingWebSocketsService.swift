@@ -33,9 +33,11 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
         let pushConnection = try buildPushConnectionFor(profile: profile)
         pushConnection.onAny = { [weak self] event in
             guard let pushEvent = Events(rawValue: event.event) else {
-                Debugger.printWarning("Unknowned Push socket event: \(event.event)")
+                Debugger.printInfo(topic: .WebSockets, "Unknowned Push socket event: \(event.event)")
                 return
             }
+            
+            Debugger.printInfo(topic: .WebSockets, "Did receive Push socket event: \(pushEvent)")
             if let messagingEvent = self?.convertPushEventToMessagingEvent(pushEvent, data: event.items) {
                 eventCallback(messagingEvent)
             }
