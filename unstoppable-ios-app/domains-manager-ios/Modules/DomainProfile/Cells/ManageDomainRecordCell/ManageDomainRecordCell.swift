@@ -220,6 +220,10 @@ private extension ManageDomainRecordCell {
         }
     }
     
+    func shrunkChains(_ chains: [String]) -> [String] {
+        Array(chains.prefix(3))
+    }
+    
     func setupControlsForCurrentMode(error: CryptoRecord.RecordError?, isEnabled: Bool, isWithActions: Bool) {
         deleteButton.isHidden = true
         clearTextButton.isHidden = true
