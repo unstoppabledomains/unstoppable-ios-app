@@ -202,6 +202,9 @@ private extension ChatsListViewPresenter {
             profileWalletPairsCache.append(chatProfile)
         }
         
+        view?.setNavigationWith(selectedWallet: chatProfile.wallet,
+                                wallets: wallets)
+        
         guard let profile = chatProfile.profile else {
             await awaitForUIReady()
             view?.setState(.createProfile)

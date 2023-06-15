@@ -11,6 +11,7 @@ import UIKit
 protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
+    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [WalletDisplayInfo])
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -34,6 +35,7 @@ final class ChatsListViewController: BaseViewController {
                                                         ChatListCreateProfileCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
+    private var navView: ChatsListNavigationView!
     private var state: State = .loading
     
     override var scrollableContentYOffset: CGFloat? { 48 }
@@ -81,6 +83,11 @@ extension ChatsListViewController: ChatsListViewProtocol {
         setupNavigation()
         cNavigationController?.updateNavigationBar()
     }
+    
+    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [WalletDisplayInfo]) {
+        navView?.setWithConfiguration(.init(selectedWallet: selectedWallet,
+                                            wallets: wallets))
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -126,9 +133,14 @@ private extension ChatsListViewController {
     }
     
     func setupNavigation() {
+        if navView == nil {
+            navView = ChatsListNavigationView()
+            navigationItem.titleView = navView
+        }
+        
         switch state {
         case .chatsList:
-            title = String.Constants.chats.localized()
+            navView?.isHidden = false
             let newMessageButton = UIBarButtonItem(image: .newMessageIcon,
                                                    style: .plain,
                                                    target: self,
@@ -136,7 +148,7 @@ private extension ChatsListViewController {
             newMessageButton.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = newMessageButton
         case .createProfile, .loading:
-            title = ""
+            navView?.isHidden = true
             navigationItem.rightBarButtonItem = nil
         }
     }
