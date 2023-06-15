@@ -32,7 +32,8 @@ final class ChatsListViewController: BaseViewController {
                                                         ChatListDomainSelectionCell.self,
                                                         ChatListDataTypeSelectionCell.self,
                                                         ChatListRequestsCell.self,
-                                                        ChatListCreateProfileCell.self] }
+                                                        ChatListCreateProfileCell.self,
+                                                        ChatListEmptyCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
     private var navView: ChatsListNavigationView!
@@ -224,6 +225,11 @@ private extension ChatsListViewController {
                 let cell = collectionView.dequeueCellOfType(ChatListCreateProfileCell.self, forIndexPath: indexPath)
 
                 return cell
+            case .emptyState(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
     }
@@ -259,6 +265,15 @@ private extension ChatsListViewController {
                 layoutSection = NSCollectionLayoutSection(group: containerGroup)
                 layoutSection.interGroupSpacing = 8
                 layoutSection.orthogonalScrollingBehavior = .continuous
+            case .emptyState:
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                                     heightDimension: .fractionalHeight(1.0)))
+                item.contentInsets = .zero
+                let containerGroup = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                       heightDimension: .fractionalHeight(0.6)),
+                    subitems: [item])
+                layoutSection = NSCollectionLayoutSection(group: containerGroup)
             }
             layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
                                                                   leading: spacing + 1,
@@ -282,7 +297,7 @@ private extension ChatsListViewController {
 // MARK: - Collection elements
 extension ChatsListViewController {
     enum Section: Hashable {
-        case domainsSelection, channels, dataTypeSelection, createProfile
+        case domainsSelection, channels, dataTypeSelection, createProfile, emptyState
     }
     
     enum Item: Hashable {
@@ -292,6 +307,7 @@ extension ChatsListViewController {
         case chatRequests(configuration: ChatRequestsUIConfiguration)
         case channel(configuration: ChannelUIConfiguration)
         case createProfile
+        case emptyState(configuration: EmptyStateUIConfiguration)
     }
     
     struct ChatUIConfiguration: Hashable {
@@ -346,6 +362,10 @@ extension ChatsListViewController {
     
     struct ChannelUIConfiguration: Hashable {
         let channel: MessagingNewsChannel
+    }
+    
+    struct EmptyStateUIConfiguration: Hashable {
+        let dataType: DataType
     }
     
     enum State {

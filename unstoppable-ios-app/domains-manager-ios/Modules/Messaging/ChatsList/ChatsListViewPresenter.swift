@@ -54,7 +54,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             showChatRequests()
         case .channel(let configuration):
             openChannel(configuration.channel)
-        case .dataTypeSelection, .createProfile:
+        case .dataTypeSelection, .createProfile, .emptyState:
             return
         }
     }
@@ -244,22 +244,32 @@ private extension ChatsListViewPresenter {
             
             switch selectedDataType {
             case .chats:
-                snapshot.appendSections([.channels])
-                let requestsList = chatsList.filter({ !$0.isApproved })
-                let approvedList = chatsList.filter({ $0.isApproved })
-                if !requestsList.isEmpty {
-                    snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                             numberOfRequests: requestsList.count))])
+                if chatsList.isEmpty {
+                    snapshot.appendSections([.emptyState])
+                    snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+                } else {
+                    snapshot.appendSections([.channels])
+                    let requestsList = chatsList.filter({ !$0.isApproved })
+                    let approvedList = chatsList.filter({ $0.isApproved })
+                    if !requestsList.isEmpty {
+                        snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                                 numberOfRequests: requestsList.count))])
+                    }
+                    snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
                 }
-                snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
             case .inbox:
-                snapshot.appendSections([.channels])
-                let spamList = channels.filter({ $0.blocked == 1 })
-                if !spamList.isEmpty {
-                    snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                             numberOfRequests: spamList.count))])
+                if channels.isEmpty {
+                    snapshot.appendSections([.emptyState])
+                    snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+                } else {
+                    snapshot.appendSections([.channels])
+                    let spamList = channels.filter({ $0.blocked == 1 })
+                    if !spamList.isEmpty {
+                        snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                                 numberOfRequests: spamList.count))])
+                    }
+                    snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
                 }
-                snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
             }
         }
         
