@@ -276,6 +276,7 @@ private extension PushMessagingAPIService {
     }
     
     func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
+        let wallet = wallet.normalized
         guard let domain = await appContext.dataAggregatorService.getDomainItems().first(where: { $0.ownerWallet == wallet }) else {
             throw PushMessagingAPIServiceError.noDomainForWallet
         }
