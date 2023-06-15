@@ -17,7 +17,6 @@
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
-                <constraint value="userId"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

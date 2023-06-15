@@ -149,7 +149,7 @@ private extension PushMessagingWebSocketsService {
                 
                 if let wallet = PushEntitiesTransformer.getWalletAddressFrom(eip155String: pushMessage.toDID),
                    let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet),
-                let message = PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity(pushMessage, pgpKey: pgpKey) {
+                   let message = PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity(pushMessage, pgpKey: pgpKey) {
                     return .chatReceivedMessage(message)
                 }
             case .chatGroups:

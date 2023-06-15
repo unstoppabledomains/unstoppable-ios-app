@@ -613,17 +613,7 @@ private extension MessagingService {
                       return false
                   }
               }) else { throw MessagingServiceError.chatNotFound }
-        let messageDisplayInfo = MessagingChatMessageDisplayInfo(id: messageEntity.id,
-                                                                 chatId: chat.displayInfo.id,
-                                                                 senderType: .otherUser(messageEntity.senderDisplayInfo),
-                                                                 time: messageEntity.time,
-                                                                 type: messageEntity.type,
-                                                                 isRead: false,
-                                                                 isFirstInChat: false,
-                                                                 deliveryState: .delivered)
-        
-        let message = MessagingChatMessage(displayInfo: messageDisplayInfo,
-                                           serviceMetadata: messageEntity.serviceMetadata)
+        let message = messageEntity.transformToMessageBlock(messageEntity, chat)
         return message
     }
 }
