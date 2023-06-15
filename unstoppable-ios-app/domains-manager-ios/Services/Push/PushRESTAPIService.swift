@@ -12,23 +12,23 @@ final class PushRESTAPIService {
     private let networkService = NetworkService()
         
     enum URLSList {
-        static let baseURL: String = {
+        static var baseURL: String {
             PushEnvironment.baseURL
-        }()
-        static let baseAPIURL: String = baseURL.appendingURLPathComponent("apis")
+        }
+        static var baseAPIURL: String { baseURL.appendingURLPathComponent("apis") }
     }
     
 }
 
 private extension PushRESTAPIService.URLSList {
-    static let V1_URL = baseAPIURL.appendingURLPathComponent("v1")
-    static let V2_URL = baseAPIURL.appendingURLPathComponent("v1")
-    static let CHAT_URL = V1_URL.appendingURLPathComponent("chat")
-    static let CHAT_USERS_URL = CHAT_URL.appendingURLPathComponent("users")
-    static let GET_USER_URL = V1_URL.appendingURLPathComponents("users")
-    static let CHANNELS_URL = V1_URL.appendingURLPathComponents("channels")
-    static let SEARCH_CHANNELS_URL = CHANNELS_URL.appendingURLPathComponents("search")
-    static let SEARCH_USERS_URL = V2_URL.appendingURLPathComponents("users")
+    static var V1_URL: String { baseAPIURL.appendingURLPathComponent("v1") }
+    static var V2_URL: String { baseAPIURL.appendingURLPathComponent("v1") }
+    static var CHAT_URL: String { V1_URL.appendingURLPathComponent("chat") }
+    static var CHAT_USERS_URL: String { CHAT_URL.appendingURLPathComponent("users") }
+    static var GET_USER_URL: String { V1_URL.appendingURLPathComponents("users") }
+    static var CHANNELS_URL: String { V1_URL.appendingURLPathComponents("channels") }
+    static var SEARCH_CHANNELS_URL: String { CHANNELS_URL.appendingURLPathComponents("search") }
+    static var SEARCH_USERS_URL: String { V2_URL.appendingURLPathComponents("users") }
     
     static func GET_CHATS_URL(userEIP: String) -> String {
         CHAT_USERS_URL.appendingURLPathComponents(userEIP, "chats")
