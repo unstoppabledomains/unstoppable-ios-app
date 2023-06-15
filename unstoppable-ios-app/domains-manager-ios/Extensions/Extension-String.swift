@@ -883,6 +883,11 @@ extension String {
         static let messagingIntroductionHint2Subtitle = "MESSAGING_INTRODUCTION_HINT_2_SUBTITLE"
         static let messagingIntroductionHint3Title = "MESSAGING_INTRODUCTION_HINT_3_TITLE"
         static let messagingIntroductionHint3Subtitle = "MESSAGING_INTRODUCTION_HINT_3_SUBTITLE"
+        static let messagingChatEmptyTitle = "MESSAGING_CHAT_EMPTY_TITLE"
+        static let messagingChatEmptySubtitle = "MESSAGING_CHAT_EMPTY_SUBTITLE"
+        static let messagingChannelsEmptyTitle = "MESSAGING_CHANNELS_EMPTY_TITLE"
+        static let messagingChannelsEmptySubtitle = "MESSAGING_CHANNELS_EMPTY_SUBTITLE"
+
     }
 
     

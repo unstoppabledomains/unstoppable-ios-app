@@ -20,4 +20,6 @@ struct MessagingWebSocketMessageEntity {
     let time: Date
     let type: MessagingChatMessageDisplayType
     let serviceMetadata: Data?
+    
+    var transformToMessageBlock: ((_ webSocketMessage: MessagingWebSocketMessageEntity, _ chat: MessagingChat)->(MessagingChatMessage))
 }

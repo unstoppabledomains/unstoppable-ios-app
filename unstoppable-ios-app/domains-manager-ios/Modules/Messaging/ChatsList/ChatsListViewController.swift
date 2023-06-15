@@ -11,6 +11,7 @@ import UIKit
 protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
+    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [WalletDisplayInfo])
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -31,9 +32,11 @@ final class ChatsListViewController: BaseViewController {
                                                         ChatListDomainSelectionCell.self,
                                                         ChatListDataTypeSelectionCell.self,
                                                         ChatListRequestsCell.self,
-                                                        ChatListCreateProfileCell.self] }
+                                                        ChatListCreateProfileCell.self,
+                                                        ChatListEmptyCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
+    private var navView: ChatsListNavigationView!
     private var state: State = .loading
     
     override var scrollableContentYOffset: CGFloat? { 48 }
@@ -81,6 +84,11 @@ extension ChatsListViewController: ChatsListViewProtocol {
         setupNavigation()
         cNavigationController?.updateNavigationBar()
     }
+    
+    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [WalletDisplayInfo]) {
+        navView?.setWithConfiguration(.init(selectedWallet: selectedWallet,
+                                            wallets: wallets))
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -126,17 +134,28 @@ private extension ChatsListViewController {
     }
     
     func setupNavigation() {
+        if navView == nil {
+            navView = ChatsListNavigationView()
+            navView.walletSelectedCallback = { [weak self] wallet in
+                self?.presenter.didSelectWallet(wallet)
+            }
+            navigationItem.titleView = navView
+        }
+        
         switch state {
         case .chatsList:
-            title = String.Constants.chats.localized()
+            navView?.isHidden = false
             let newMessageButton = UIBarButtonItem(image: .newMessageIcon,
                                                    style: .plain,
                                                    target: self,
                                                    action: #selector(newMessageButtonPressed))
             newMessageButton.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = newMessageButton
-        case .createProfile, .loading:
-            title = ""
+        case .createProfile:
+            navView?.isHidden = false
+            navigationItem.rightBarButtonItem = nil
+        case .loading:
+            navView?.isHidden = true
             navigationItem.rightBarButtonItem = nil
         }
     }
@@ -206,6 +225,11 @@ private extension ChatsListViewController {
                 let cell = collectionView.dequeueCellOfType(ChatListCreateProfileCell.self, forIndexPath: indexPath)
 
                 return cell
+            case .emptyState(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
     }
@@ -221,7 +245,7 @@ private extension ChatsListViewController {
             
             let layoutSection: NSCollectionLayoutSection
             let section = self?.section(at: IndexPath(item: 0, section: sectionIndex))
-
+            
             switch section {
             case .channels, .none:
                 layoutSection = .flexibleListItemSection()
@@ -241,6 +265,15 @@ private extension ChatsListViewController {
                 layoutSection = NSCollectionLayoutSection(group: containerGroup)
                 layoutSection.interGroupSpacing = 8
                 layoutSection.orthogonalScrollingBehavior = .continuous
+            case .emptyState:
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                                     heightDimension: .fractionalHeight(1.0)))
+                item.contentInsets = .zero
+                let containerGroup = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                       heightDimension: .fractionalHeight(0.6)),
+                    subitems: [item])
+                layoutSection = NSCollectionLayoutSection(group: containerGroup)
             }
             layoutSection.contentInsets = NSDirectionalEdgeInsets(top: 1,
                                                                   leading: spacing + 1,
@@ -264,7 +297,7 @@ private extension ChatsListViewController {
 // MARK: - Collection elements
 extension ChatsListViewController {
     enum Section: Hashable {
-        case domainsSelection, channels, dataTypeSelection, createProfile
+        case domainsSelection, channels, dataTypeSelection, createProfile, emptyState
     }
     
     enum Item: Hashable {
@@ -274,6 +307,7 @@ extension ChatsListViewController {
         case chatRequests(configuration: ChatRequestsUIConfiguration)
         case channel(configuration: ChannelUIConfiguration)
         case createProfile
+        case emptyState(configuration: EmptyStateUIConfiguration)
     }
     
     struct ChatUIConfiguration: Hashable {
@@ -328,6 +362,10 @@ extension ChatsListViewController {
     
     struct ChannelUIConfiguration: Hashable {
         let channel: MessagingNewsChannel
+    }
+    
+    struct EmptyStateUIConfiguration: Hashable {
+        let dataType: DataType
     }
     
     enum State {

@@ -33,9 +33,11 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
         let pushConnection = try buildPushConnectionFor(profile: profile)
         pushConnection.onAny = { [weak self] event in
             guard let pushEvent = Events(rawValue: event.event) else {
-                Debugger.printWarning("Unknowned Push socket event: \(event.event)")
+                Debugger.printInfo(topic: .WebSockets, "Unknowned Push socket event: \(event.event)")
                 return
             }
+            
+            Debugger.printInfo(topic: .WebSockets, "Did receive Push socket event: \(pushEvent)")
             if let messagingEvent = self?.convertPushEventToMessagingEvent(pushEvent, data: event.items) {
                 eventCallback(messagingEvent)
             }
@@ -75,7 +77,7 @@ private extension PushMessagingWebSocketsService {
         
         var config: SocketIOClientConfiguration = []
 #if DEBUG
-        config = [.log(true),
+        config = [.log(Debugger.isWebSocketsLogsEnabled()),
                   .connectParams(params),
                   .reconnectAttempts(-1),
                   .reconnectWait(10),
@@ -147,7 +149,7 @@ private extension PushMessagingWebSocketsService {
                 
                 if let wallet = PushEntitiesTransformer.getWalletAddressFrom(eip155String: pushMessage.toDID),
                    let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet),
-                let message = PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity(pushMessage, pgpKey: pgpKey) {
+                   let message = PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity(pushMessage, pgpKey: pgpKey) {
                     return .chatReceivedMessage(message)
                 }
             case .chatGroups:
