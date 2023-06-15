@@ -30,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
-        Debugger.setAllowedTopicsSet(.all)
+        Debugger.setAllowedTopicsSet(.debugDefault)
 //        CoreDataMessagingStorageService().clear()
         #endif
          

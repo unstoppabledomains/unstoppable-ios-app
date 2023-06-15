@@ -281,35 +281,16 @@ private extension DomainProfileViewController {
                             identifier: .init(UUID().uuidString),
                             handler: { [weak self] _ in  self?.didTapCopyDomainButton() })
         case .viewWallet(let subtitle):
-            if #available(iOS 15.0, *) {
-                return UIAction(title: String.Constants.viewWallet.localized(presenter.walletName.lowercased()),
-                                subtitle: subtitle,
-                                image: .arrowUpRight,
-                                identifier: .init(UUID().uuidString),
-                                handler: { [weak self] _ in  self?.didTapShowWalletDetailsButton() })
-                
-            } else {
-                return UIAction(title: String.Constants.viewWallet.localized(presenter.walletName.lowercased()),
-                                image: .arrowUpRight,
-                                identifier: .init(UUID().uuidString),
-                                handler: { [weak self] _ in  self?.didTapShowWalletDetailsButton() })
-            }
+            return UIAction.createWith(title: String.Constants.viewWallet.localized(presenter.walletName.lowercased()),
+                                       subtitle: subtitle,
+                                       image: .arrowUpRight,
+                                       handler: { [weak self] _ in  self?.didTapShowWalletDetailsButton() })
         case .setReverseResolution(let isEnabled):
-            if #available(iOS 15.0, *) {
-                return UIAction(title: String.Constants.setReverseResolution.localized(),
-                                subtitle: isEnabled ? nil : String.Constants.reverseResolutionUnavailableWhileRecordsUpdating.localized(),
-                                image: .arrowRightArrowLeft,
-                                identifier: .init(UUID().uuidString),
-                                attributes: isEnabled ? [] : [.disabled],
-                                handler: { [weak self] _ in  self?.didTapSetReverseResolutionButton() })
-            } else {
-                return UIAction(title: String.Constants.setReverseResolution.localized(),
-                                image: .arrowRightArrowLeft,
-                                identifier: .init(UUID().uuidString),
-                                attributes: isEnabled ? [] : [.disabled],
-                                handler: { [weak self] _ in  self?.didTapSetReverseResolutionButton() })
-            }
-            
+            return UIAction.createWith(title: String.Constants.setReverseResolution.localized(),
+                                       subtitle: isEnabled ? nil : String.Constants.reverseResolutionUnavailableWhileRecordsUpdating.localized(),
+                                       image: .arrowRightArrowLeft,
+                                       attributes: isEnabled ? [] : [.disabled],
+                                       handler: { [weak self] _ in  self?.didTapSetReverseResolutionButton() })
         case .aboutProfiles:
             return UIAction(title: String.Constants.learnMore.localized(),
                             image: .systemQuestionmarkCircle,

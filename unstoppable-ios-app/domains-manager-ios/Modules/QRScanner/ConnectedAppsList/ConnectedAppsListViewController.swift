@@ -224,16 +224,7 @@ extension ConnectedAppsListViewController {
             get async {
                 switch self {
                 case .domainInfo(let domain):
-                    let avatar = await appContext.imageLoadingService.loadImage(from: .domain(domain),
-                                                                                downsampleDescription: nil)
-                    
-                    if let avatar = avatar {
-                        return await avatar.uiMenuCroppedImage()
-                    } else {
-                        return await appContext.imageLoadingService.loadImage(from: .domainInitials(domain,
-                                                                                                      size: .default),
-                                                                              downsampleDescription: nil) ?? .systemGlobe
-                    }
+                    return await UIMenuDomainAvatarLoader.menuAvatarFor(domain: domain) ?? .systemGlobe
                 case .networksInfo:
                     return .systemGlobe
                 case .disconnect:

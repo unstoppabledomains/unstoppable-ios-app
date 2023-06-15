@@ -10,6 +10,7 @@ import Foundation
 @MainActor
 protocol ChatsListViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: ChatsListViewController.Item)
+    func didSelectWallet(_ wallet: WalletDisplayInfo)
     func actionButtonPressed()
 }
 
@@ -59,6 +60,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     }
     
     func didSelectWallet(_ wallet: WalletDisplayInfo) {
+        guard wallet.address != selectedProfileWalletPair?.wallet.address else { return }
+        
         runLoadingState()
         Task {
             if let cachedPair = profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address }) {
@@ -73,12 +76,6 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                                               profile: profile))
             }
         }
-    }
-    
-    func runLoadingState() {
-        chatsList.removeAll()
-        channels.removeAll()
-        view?.setState(.loading)
     }
     
     func actionButtonPressed() {
@@ -126,6 +123,12 @@ extension ChatsListViewPresenter: MessagingServiceListener {
 
 // MARK: - Private functions
 private extension ChatsListViewPresenter {
+    func runLoadingState() {
+        chatsList.removeAll()
+        channels.removeAll()
+        view?.setState(.loading)
+    }
+    
     func loadAndShowData() {
         Task {
             didLoadTime = Date()

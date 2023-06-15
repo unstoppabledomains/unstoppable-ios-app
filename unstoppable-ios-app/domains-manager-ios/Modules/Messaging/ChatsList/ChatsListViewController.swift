@@ -135,6 +135,9 @@ private extension ChatsListViewController {
     func setupNavigation() {
         if navView == nil {
             navView = ChatsListNavigationView()
+            navView.walletSelectedCallback = { [weak self] wallet in
+                self?.presenter.didSelectWallet(wallet)
+            }
             navigationItem.titleView = navView
         }
         
@@ -147,7 +150,10 @@ private extension ChatsListViewController {
                                                    action: #selector(newMessageButtonPressed))
             newMessageButton.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = newMessageButton
-        case .createProfile, .loading:
+        case .createProfile:
+            navView?.isHidden = false
+            navigationItem.rightBarButtonItem = nil
+        case .loading:
             navView?.isHidden = true
             navigationItem.rightBarButtonItem = nil
         }

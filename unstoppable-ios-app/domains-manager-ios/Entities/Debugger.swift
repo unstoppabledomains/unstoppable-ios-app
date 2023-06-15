@@ -32,6 +32,7 @@ public struct Debugger {
         case Images = "IMG"
         case DataAggregation = "AGGR"
         case CoreData = "CD"
+        case WebSockets = "SOCKETS"
     }
     
     enum DebugTopicsSet {
@@ -45,7 +46,7 @@ public struct Debugger {
             case .all:
                 return DebugTopic.allCases
             case .debugDefault:
-                return topicsExcluding([.Network, .PNs, .Analytics, .Images, .FileSystem, .Navigation])
+                return topicsExcluding([.Network, .PNs, .Analytics, .Images, .FileSystem, .Navigation, .WebSockets])
             case .debugWalletConnect:
                 return [.Wallet, .Domain, .Error, .FileSystem, .WalletConnect, .WalletConnectV2]
             case .debugUI:
@@ -62,6 +63,10 @@ public struct Debugger {
     
     static func setAllowedTopicsSet(_ topicsSet: DebugTopicsSet) {
         self.allowedTopics = topicsSet.allowedTopics
+    }
+    
+    static func isWebSocketsLogsEnabled() -> Bool {
+        allowedTopics.contains(.WebSockets)
     }
     
     static func printInfo(topic: DebugTopic = .None, _ s: String) {

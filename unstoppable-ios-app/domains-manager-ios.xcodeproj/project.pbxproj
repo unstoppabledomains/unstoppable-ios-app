@@ -2953,6 +2953,14 @@
 		C6C1EC562A3ACAB1005EB37D /* ChatsListNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC542A3ACAB1005EB37D /* ChatsListNavigationView.swift */; };
 		C6C1EC572A3ACAB1005EB37D /* ChatsListNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC542A3ACAB1005EB37D /* ChatsListNavigationView.swift */; };
 		C6C1EC582A3ACAB1005EB37D /* ChatsListNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC542A3ACAB1005EB37D /* ChatsListNavigationView.swift */; };
+		C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */; };
+		C6C1EC5B2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */; };
+		C6C1EC5C2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */; };
+		C6C1EC5D2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */; };
+		C6C1EC5F2A3AD483005EB37D /* UIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC5E2A3AD483005EB37D /* UIAction.swift */; };
+		C6C1EC602A3AD483005EB37D /* UIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC5E2A3AD483005EB37D /* UIAction.swift */; };
+		C6C1EC612A3AD483005EB37D /* UIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC5E2A3AD483005EB37D /* UIAction.swift */; };
+		C6C1EC622A3AD483005EB37D /* UIAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC5E2A3AD483005EB37D /* UIAction.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -4602,6 +4610,8 @@
 		C6BEEF4329C30DDE000489B9 /* FirebaseAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthError.swift; sourceTree = "<group>"; };
 		C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
 		C6C1EC542A3ACAB1005EB37D /* ChatsListNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsListNavigationView.swift; sourceTree = "<group>"; };
+		C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMenuDomainAvatarLoader.swift; sourceTree = "<group>"; };
+		C6C1EC5E2A3AD483005EB37D /* UIAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAction.swift; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -5966,6 +5976,7 @@
 				C6E69FE0288AD264000A8346 /* String+Localization.swift */,
 				C6670A0E28D46D6B00415EBB /* String+SHA3.swift */,
 				C6010D1E287FC99400FBD401 /* Task.swift */,
+				C6C1EC5E2A3AD483005EB37D /* UIAction.swift */,
 				C628E36727FDDB230044E408 /* UIButton.swift */,
 				C6456F29280030AB00A517D5 /* UICollectionView.swift */,
 				C6456F242800308200A517D5 /* UICollectionViewCell.swift */,
@@ -7551,6 +7562,7 @@
 				C6109EA128E6B1CC0027D5D8 /* Toast.swift */,
 				307EC19A25383EF600D62BA1 /* TransactionProtocol.swift */,
 				306486CC25273C4400388026 /* User.swift */,
+				C6C1EC592A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift */,
 				301EFCBA25E6CD1500DEB2C1 /* Version.swift */,
 				C6456F2E2800520E00A517D5 /* Vibration.swift */,
 				C672FD74286061E300D27078 /* WalletBackUpPassword.swift */,
@@ -9235,6 +9247,7 @@
 				C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194828D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
 				C63F1D1528AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
+				C6C1EC5A2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C6526DC529D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
 				C65272312A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
@@ -9685,6 +9698,7 @@
 				306486812527253700388026 /* AppDelegate.swift in Sources */,
 				C65955FB287C621100319ACC /* UIImage+Colors.swift in Sources */,
 				C6D5DADF28374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
+				C6C1EC5F2A3AD483005EB37D /* UIAction.swift in Sources */,
 				C66435C1288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
 				C6C99596289D313D00367362 /* CNavigationController.swift in Sources */,
 				C691CFC428C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */,
@@ -10056,6 +10070,7 @@
 				C6526DE029D2DF7800D6F2EB /* LoginWithEmailOnboardingViewPresenter.swift in Sources */,
 				C624D7A1281BCB9B00F55530 /* UDRouter.swift in Sources */,
 				C6D0549027FF07390036B200 /* UDTextField.swift in Sources */,
+				C6C1EC612A3AD483005EB37D /* UIAction.swift in Sources */,
 				C62247A2283B8903002A0CBD /* CollectionReusableRoundedBackgroundWhiteWithAlpha.swift in Sources */,
 				C65272872A166E75001A084C /* ChatTitleView.swift in Sources */,
 				C66804D3280D9EC8007E6390 /* OnboardingPasscodeViewController.swift in Sources */,
@@ -10740,6 +10755,7 @@
 				C6B6B02A296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
 				C666E0FE29CD594F0003DECB /* UserProfileAction.swift in Sources */,
 				C60610DB29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
+				C6C1EC5C2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C6C9958C289D313D00367362 /* CNavigationBarBackButton.swift in Sources */,
 				C691CFCA28C070450077C59F /* SetupReverseResolutionViewController.swift in Sources */,
 				299713D928F693F600743003 /* EIP712TypedData.swift in Sources */,
@@ -10883,6 +10899,7 @@
 				295506F32954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */,
 				C65272832A165A3D001A084C /* MessagingChatSender.swift in Sources */,
 				C6D6E53928193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
+				C6C1EC622A3AD483005EB37D /* UIAction.swift in Sources */,
 				C63F1D0C28AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C638121F29914EDF002590E7 /* UIImage+GIF.swift in Sources */,
 				C6526DCD29D2DC8D00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */,
@@ -11453,6 +11470,7 @@
 				C692C316282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C655D02C284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35727FDB8560044E408 /* DashesProgressView.swift in Sources */,
+				C6C1EC5D2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C673D5B329FB725B001CC77C /* InviteFriendsViewController.swift in Sources */,
 				C6124CD429223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C6A474E729D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
@@ -11543,6 +11561,7 @@
 				C603E8CA285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194928D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
 				C63F1D1628AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
+				C6C1EC5B2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C6526DC629D2DC8500D6F2EB /* LoginInAppViewPresenter.swift in Sources */,
 				C6E1189F28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
 				C65272322A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
@@ -11993,6 +12012,7 @@
 				C6A2D5CE2850EDCD00327C47 /* ConnectServerRequestConfirmationView.swift in Sources */,
 				C65955FC287C63C600319ACC /* UIImage+Colors.swift in Sources */,
 				C6D5DAE028374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
+				C6C1EC602A3AD483005EB37D /* UIAction.swift in Sources */,
 				C66435C2288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
 				C691CFC528C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */,
 				C6AD181028D319BF0008A479 /* CollectionViewShowHideCell.swift in Sources */,

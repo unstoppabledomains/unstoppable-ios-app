@@ -17,6 +17,8 @@ final class ChatsListNavigationView: UIView {
     private var titleButton: UIButton!
     private var chevron: UIImageView!
     
+    var walletSelectedCallback: ((WalletDisplayInfo)->())?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -60,7 +62,9 @@ final class ChatsListNavigationView: UIView {
 extension ChatsListNavigationView {
     func setWithConfiguration(_ configuration: Configuration) {
         setWithWallet(configuration.selectedWallet)
+        setButtonWith(configuration: configuration)
         chevron.isHidden = configuration.wallets.count <= 1
+        titleButton.isUserInteractionEnabled = !chevron.isHidden
         setNeedsLayout()
         layoutIfNeeded()
     }
@@ -69,19 +73,59 @@ extension ChatsListNavigationView {
 // MARK: - Private methods
 private extension ChatsListNavigationView {
     func setWithWallet(_ wallet: WalletDisplayInfo) {
-        let title = wallet.reverseResolutionDomain?.name ?? wallet.displayName
+        let title = getTitleFor(wallet: wallet)
         titleButton.setAttributedTextWith(text: title,
                                           font: titleFont,
                                           textColor: .foregroundDefault)
-        
-        if let rrDomain = wallet.reverseResolutionDomain {
-            Task { imageView.image = await appContext.imageLoadingService.loadImage(from: .domain(rrDomain),
-                                                                                    downsampleDescription: nil) }
-        } else {
-            imageView.image = .domainsProfileIcon
-        }
+        Task { imageView.image = await getAvatarImageFor(wallet: wallet) }
     }
 
+    func getTitleFor(wallet: WalletDisplayInfo) -> String {
+        wallet.reverseResolutionDomain?.name ?? wallet.displayName
+    }
+    
+    func setButtonWith(configuration: Configuration) {
+        Task {
+            var actions: [UIMenuElement] = []
+            
+            for wallet in configuration.wallets {
+                let action = await menuAction(for: wallet)
+                actions.append(action)
+            }
+            
+            let menu = UIMenu(title: "", children: actions)
+            titleButton.menu = menu
+            titleButton.showsMenuAsPrimaryAction = true
+            titleButton.addAction(UIAction(handler: {  _ in
+                UDVibration.buttonTap.vibrate()
+            }), for: .menuActionTriggered)
+        }
+    }
+    
+    func menuAction(for wallet: WalletDisplayInfo) async -> UIMenuElement {
+        let title = getTitleFor(wallet: wallet)
+        let subtitle = wallet.reverseResolutionDomain == nil ? "Set primary domain" : wallet.displayName
+        let avatar = await getAvatarImageFor(wallet: wallet)
+        let action = UIAction.createWith(title: title,
+                                         subtitle: subtitle,
+                                         image: avatar,
+                                         handler: { [weak self] _ in
+            UDVibration.buttonTap.vibrate()
+            self?.walletSelectedCallback?(wallet)
+        })
+        return action
+    }
+    
+    func getAvatarImageFor(wallet: WalletDisplayInfo) async -> UIImage {
+        if let rrDomain = wallet.reverseResolutionDomain,
+           let avatar = await UIMenuDomainAvatarLoader.menuAvatarFor(domain: rrDomain,
+                                                                     size: 24) {
+            return avatar
+        }
+        
+        return .personCircle
+    }
+    
     func calculateTitleButtonWidth() -> CGFloat {
         guard let title = titleButton.attributedString?.string else { return 0 }
         
@@ -89,7 +133,7 @@ private extension ChatsListNavigationView {
     }
     
     @objc func titleButtonPressed() {
-        
+        UDVibration.buttonTap.vibrate()
     }
 }
 
@@ -123,6 +167,7 @@ private extension ChatsListNavigationView {
     func setupTitleButton() {
         titleButton = UIButton(frame: CGRect(origin: .zero,
                                              size: CGSize(width: 0, height: height)))
+        titleButton.addTarget(self, action: #selector(titleButtonPressed), for: .touchUpInside)
         
         addSubview(titleButton)
     }

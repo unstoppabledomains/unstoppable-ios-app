@@ -75,7 +75,7 @@ private extension PushMessagingWebSocketsService {
         
         var config: SocketIOClientConfiguration = []
 #if DEBUG
-        config = [.log(true),
+        config = [.log(Debugger.isWebSocketsLogsEnabled()),
                   .connectParams(params),
                   .reconnectAttempts(-1),
                   .reconnectWait(10),

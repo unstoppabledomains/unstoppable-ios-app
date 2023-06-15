@@ -147,6 +147,7 @@ extension UIImage {
     
     // System SF symbols
     static let personCropCircle = UIImage(systemName: "person.crop.circle")
+    static let personCircle = UIImage(systemName: "person.circle")!
     static let arrowUpRightCircle = UIImage(systemName: "arrowshape.turn.up.right.circle")
     static let arrowUpRight = UIImage(systemName: "arrowshape.turn.up.right")!
     static let safari = UIImage(systemName: "safari")!
@@ -266,11 +267,6 @@ extension UIImage {
             imageView.layer.borderWidth = 1
             imageView.layer.borderColor = UIColor.borderSubtle.cgColor
         }
-    }
-    
-    @MainActor
-    func uiMenuCroppedImage() -> UIImage {
-       circleCroppedImage(size: 20)
     }
 }
 
