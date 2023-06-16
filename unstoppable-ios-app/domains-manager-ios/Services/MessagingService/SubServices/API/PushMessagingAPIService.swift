@@ -286,7 +286,7 @@ private extension PushMessagingAPIService {
     
     func getCurrentPushEnvironment() -> Push.ENV {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
-        return isTestnetUsed ? .DEV : .PROD
+        return isTestnetUsed ? .STAGING : .PROD
     }
     
     func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
@@ -348,6 +348,6 @@ extension DomainItem: Push.Signer {
     func getAddress() async throws -> String {
         guard let ownerWallet else { throw PushMessagingAPIService.PushMessagingAPIServiceError.noOwnerWalletInDomain }
         
-        return ownerWallet
+        return getETHAddress() ?? ownerWallet
     }
 }

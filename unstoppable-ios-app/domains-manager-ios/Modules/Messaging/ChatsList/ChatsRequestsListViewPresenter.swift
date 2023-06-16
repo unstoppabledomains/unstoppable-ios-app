@@ -31,10 +31,8 @@ extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
     }
     
     func viewDidAppear() {
-//        DispatchQueue.main.async {
-            self.view?.setState(.requestsList)
-            self.showData()
-//        }
+        view?.setState(.requestsList)
+        showData()
     }
     
     func didSelectItem(_ item: ChatsListViewController.Item) {

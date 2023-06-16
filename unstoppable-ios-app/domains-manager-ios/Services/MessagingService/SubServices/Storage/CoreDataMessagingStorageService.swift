@@ -265,6 +265,9 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                 let coreDataNewsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(from: backgroundContext)
                 deleteObjects(coreDataNewsFeed, from: backgroundContext, shouldSaveContext: false)
                 
+                let coreDataUserProfiles: [CoreDataMessagingUserProfile] = try getEntities(from: backgroundContext)
+                deleteObjects(coreDataUserProfiles, from: backgroundContext, shouldSaveContext: false)
+                
                 let coreDataUsersInfo: [CoreDataMessagingUserInfo] = try getEntities(from: backgroundContext)
                 deleteObjects(coreDataUsersInfo, from: backgroundContext, shouldSaveContext: true)
             } catch { }

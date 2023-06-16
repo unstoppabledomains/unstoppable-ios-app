@@ -471,10 +471,7 @@ private extension MessagingService {
     }
     
     func getDomainEthWalletAddress(_ domain: DomainDisplayInfo) throws -> String {
-        guard let walletAddress = domain.ownerWallet,
-              let wallet = appContext.udWalletsService.find(by: walletAddress),
-              let ethAddress = wallet.ethWallet?.address else { throw MessagingServiceError.domainWithoutWallet }
-        
+        guard let ethAddress = domain.getETHAddress() else { throw MessagingServiceError.domainWithoutWallet }
         return ethAddress
     }
     
