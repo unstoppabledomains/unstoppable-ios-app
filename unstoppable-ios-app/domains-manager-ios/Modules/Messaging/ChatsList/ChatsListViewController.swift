@@ -72,6 +72,7 @@ final class ChatsListViewController: BaseViewController {
         super.viewDidAppear(animated)
         
         presenter.viewDidAppear()
+        cNavigationBar?.navBarContentView.setTitleView(hidden: false, animated: false)
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
