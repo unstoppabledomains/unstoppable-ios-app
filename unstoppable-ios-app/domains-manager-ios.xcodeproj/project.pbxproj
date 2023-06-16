@@ -2973,6 +2973,10 @@
 		C6C39EE02A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */; };
 		C6C39EE12A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */; };
 		C6C39EE22A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */; };
+		C6C39EE52A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EE42A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift */; };
+		C6C39EE62A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EE42A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift */; };
+		C6C39EE72A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EE42A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift */; };
+		C6C39EE82A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EE42A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -4627,6 +4631,7 @@
 		C6C1EC642A3B09E2005EB37D /* ChatListEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListEmptyCell.swift; sourceTree = "<group>"; };
 		C6C1EC652A3B09E2005EB37D /* ChatListEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatListEmptyCell.xib; sourceTree = "<group>"; };
 		C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsRequestsListViewPresenter.swift; sourceTree = "<group>"; };
+		C6C39EE42A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsListSectionHeaderView.swift; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -6512,6 +6517,7 @@
 				C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */,
 				C65271DF2A148D91001A084C /* ChatsListViewController.swift */,
 				C65271E02A148D91001A084C /* ChatsListViewController.xib */,
+				C6C39EE32A3C2C6300F4AD3B /* CollectionReusableViews */,
 				C652723A2A14C215001A084C /* Views */,
 				C65271ED2A148F92001A084C /* Cells */,
 			);
@@ -7663,6 +7669,14 @@
 				C6C1EC652A3B09E2005EB37D /* ChatListEmptyCell.xib */,
 			);
 			path = ChatListEmptyCell;
+			sourceTree = "<group>";
+		};
+		C6C39EE32A3C2C6300F4AD3B /* CollectionReusableViews */ = {
+			isa = PBXGroup;
+			children = (
+				C6C39EE42A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift */,
+			);
+			path = CollectionReusableViews;
 			sourceTree = "<group>";
 		};
 		C6C4217529371428005B791B /* DomainProfileTutorial */ = {
@@ -9393,6 +9407,7 @@
 				C6011ABD28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */,
 				C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C62247AA283B9548002A0CBD /* CAAnimation.swift in Sources */,
+				C6C39EE52A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift in Sources */,
 				C6D6E53628193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
 				C6E1189428F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
 				C6D6E5AD281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
@@ -10508,6 +10523,7 @@
 				C6D6E52E28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C6D6E4D62817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
 				C6F9FBEA2A25CB5800102F81 /* PushMessageType.swift in Sources */,
+				C6C39EE72A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift in Sources */,
 				C6E041C6295499100080F8E3 /* DomainsCollectionTitleView.swift in Sources */,
 				C6124CC929222CC7005E6537 /* DashesView.swift in Sources */,
 				C624D77C281BAB5100F55530 /* UDDomainsService.swift in Sources */,
@@ -11513,6 +11529,7 @@
 				C63A352E28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C62396842A288A9400363F60 /* MessagingChatMessageDisplayInfo.swift in Sources */,
 				C6B6B046296FF7D600D4E30F /* DomainsSortOrderStorage.swift in Sources */,
+				C6C39EE82A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift in Sources */,
 				C61ECD712A20AB4A00E97D70 /* PushMessage.swift in Sources */,
 				C652629B28110B8500F1D699 /* SecurityWallViewController.swift in Sources */,
 				C608C82F2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift in Sources */,
@@ -11713,6 +11730,7 @@
 				C6011ABE28F4045000342666 /* DomainProfileTopInfoCell.swift in Sources */,
 				C63DD36629C89FEC002D45B2 /* LoginViewController.swift in Sources */,
 				C692C361282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */,
+				C6C39EE62A3C2C7400F4AD3B /* ChatsListSectionHeaderView.swift in Sources */,
 				C62247AB283B9548002A0CBD /* CAAnimation.swift in Sources */,
 				C6E1189528F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
 				C6D6E53728193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,

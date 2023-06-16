@@ -296,10 +296,9 @@ extension UDWalletsService: UDWalletsServiceProtocol {
                                      "0x537e2eb956aec859c99b3e5e28d8e45200c4fa52" : "one.x"]
             if let name = mockRRDomainsDict[walletAddress]  {
                 return name
-            } 
+            }
         }
         #endif
-        
         
         return try? await NetworkService().fetchReverseResolution(for: walletAddress)
     }

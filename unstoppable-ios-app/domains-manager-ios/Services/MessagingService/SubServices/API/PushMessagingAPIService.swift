@@ -160,7 +160,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentPushEnvironment()
         let pushMessageContent = getPushMessageContentFrom(displayType: messageType)
         let pushMessageType = getPushMessageTypeFrom(displayType: messageType)
-        let sender = user
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
         switch chat.displayInfo.type {

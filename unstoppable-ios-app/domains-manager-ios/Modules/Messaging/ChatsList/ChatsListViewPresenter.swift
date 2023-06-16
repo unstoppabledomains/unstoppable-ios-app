@@ -12,6 +12,18 @@ protocol ChatsListViewPresenterProtocol: BasePresenterProtocol {
     func didSelectItem(_ item: ChatsListViewController.Item)
     func didSelectWallet(_ wallet: WalletDisplayInfo)
     func actionButtonPressed()
+    
+    func didStartSearch()
+    func didStopSearch()
+    func didSearchWith(key: String)
+}
+
+extension ChatsListViewPresenterProtocol {
+    func didSelectWallet(_ wallet: WalletDisplayInfo) { }
+    func actionButtonPressed() { }
+    func didStartSearch() { }
+    func didStopSearch() { }
+    func didSearchWith(key: String) { }
 }
 
 @MainActor
@@ -28,6 +40,8 @@ final class ChatsListViewPresenter {
     
     private var chatsList: [MessagingChatDisplayInfo] = []
     private var channels: [MessagingNewsChannel] = []
+    private var searchData = SearchData()
+    
     
     init(view: ChatsListViewProtocol) {
         self.view = view
@@ -95,6 +109,21 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 }
             } catch { }
         }
+    }
+    
+    func didSearchWith(key: String) {
+        self.searchData.searchKey = key.trimmedSpaces
+    }
+    
+    func didStartSearch() {
+        self.searchData.isSearchActive = true
+        showData()
+    }
+    
+    func didStopSearch() {
+        self.searchData.isSearchActive = false
+        didSearchWith(key: "")
+        showData()
     }
 }
 
@@ -235,45 +264,88 @@ private extension ChatsListViewPresenter {
         var snapshot = ChatsListSnapshot()
         
         if selectedProfileWalletPair?.profile == nil {
-            snapshot.appendSections([.createProfile])
-            snapshot.appendItems([.createProfile])
+            fillSnapshotForUserWithoutProfile(&snapshot)
         } else {
-            let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
-            snapshot.appendSections([.dataTypeSelection])
-            snapshot.appendItems([.dataTypeSelection(configuration: dataTypeSelectionUIConfiguration)])
-            
-            switch selectedDataType {
-            case .chats:
-                if chatsList.isEmpty {
-                    snapshot.appendSections([.emptyState])
-                    snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
-                } else {
-                    snapshot.appendSections([.channels])
-                    let requestsList = chatsList.requestsOnly()
-                    let approvedList = chatsList.confirmedOnly()
-                    if !requestsList.isEmpty {
-                        snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                                 numberOfRequests: requestsList.count))])
-                    }
-                    snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
-                }
-            case .channels:
-                if channels.isEmpty {
-                    snapshot.appendSections([.emptyState])
-                    snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
-                } else {
-                    snapshot.appendSections([.channels])
-                    let spamList = channels.filter({ $0.blocked == 1 })
-                    if !spamList.isEmpty {
-                        snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                                 numberOfRequests: spamList.count))])
-                    }
-                    snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
+            if searchData.isSearchActive {
+                fillSnapshotForSearchActiveState(&snapshot,
+                                                 searchKey: searchData.searchKey)
+            } else {
+                let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
+                snapshot.appendSections([.dataTypeSelection])
+                snapshot.appendItems([.dataTypeSelection(configuration: dataTypeSelectionUIConfiguration)])
+                
+                switch selectedDataType {
+                case .chats:
+                    fillSnapshotForUserChatsList(&snapshot)
+                case .channels:
+                    fillSnapshotForUserChannelsList(&snapshot)
                 }
             }
         }
         
         view?.applySnapshot(snapshot, animated: true)
+    }
+    
+    func fillSnapshotForUserWithoutProfile(_ snapshot: inout ChatsListSnapshot) {
+        snapshot.appendSections([.createProfile])
+        snapshot.appendItems([.createProfile])
+    }
+    
+    func fillSnapshotForUserChatsList(_ snapshot: inout ChatsListSnapshot) {
+        if chatsList.isEmpty {
+            snapshot.appendSections([.emptyState])
+            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+        } else {
+            snapshot.appendSections([.listItems(title: nil)])
+            let requestsList = chatsList.requestsOnly()
+            let approvedList = chatsList.confirmedOnly()
+            if !requestsList.isEmpty {
+                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                         numberOfRequests: requestsList.count))])
+            }
+            snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+        }
+    }
+    
+    func fillSnapshotForUserChannelsList(_ snapshot: inout ChatsListSnapshot) {
+        if channels.isEmpty {
+            snapshot.appendSections([.emptyState])
+            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+        } else {
+            snapshot.appendSections([.listItems(title: nil)])
+            let spamList = channels.filter({ $0.blocked == 1 })
+            if !spamList.isEmpty {
+                snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                         numberOfRequests: spamList.count))])
+            }
+            snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
+        }
+    }
+    
+    func fillSnapshotForSearchActiveState(_ snapshot: inout ChatsListSnapshot,
+                                          searchKey: String) {
+        var people = [MessagingChatDisplayInfo]()
+        var channels = [MessagingNewsChannel]()
+        if searchKey.isEmpty {
+            people = chatsList
+            channels = self.channels
+        } else {
+            
+        }
+        
+        if people.isEmpty && channels.isEmpty {
+            snapshot.appendSections([.emptyState])
+            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+        } else {
+            if !people.isEmpty {
+                snapshot.appendSections([.listItems(title: "People")])
+                snapshot.appendItems(people.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+            }
+            if !channels.isEmpty {
+                snapshot.appendSections([.listItems(title: "Apps")])
+                snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
+            }
+        }
     }
     
     func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
@@ -356,5 +428,10 @@ private extension ChatsListViewPresenter {
     struct ChatProfileWalletPair {
         let wallet: WalletDisplayInfo
         let profile: MessagingChatUserProfileDisplayInfo?
+    }
+    
+    struct SearchData {
+        var isSearchActive = false
+        var searchKey: String = ""
     }
 }

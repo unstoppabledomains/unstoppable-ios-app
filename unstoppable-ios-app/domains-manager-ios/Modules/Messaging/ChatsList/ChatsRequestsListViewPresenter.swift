@@ -46,10 +46,6 @@ extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
             return
         }
     }
-    
-    func didSelectWallet(_ wallet: WalletDisplayInfo) { }
-    
-    func actionButtonPressed() { }
 }
 
 // MARK: - MessagingServiceListener
@@ -80,7 +76,7 @@ private extension ChatsRequestsListViewPresenter {
     func showData() {
         var snapshot = ChatsListSnapshot()
         
-        snapshot.appendSections([.channels])
+        snapshot.appendSections([.listItems(title: nil)])
         
         switch dataType {
         case .chatRequests(let requests):
