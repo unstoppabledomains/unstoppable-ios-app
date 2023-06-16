@@ -292,11 +292,11 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         #if DEBUG
         /// Temp solution until BE is fixed to test chats in testnet
         if User.instance.getSettings().isTestnetUsed {
-            if walletAddress == "0x557fc13812460e5414d9881cb3659902e9501041" {
-                return "atest2.blockchain"
-            } else if walletAddress == "0x537e2eb956aec859c99b3e5e28d8e45200c4fa52" {
-                return "one.x"
-            }
+            let mockRRDomainsDict = ["0x557fc13812460e5414d9881cb3659902e9501041" : "atest2.blockchain",
+                                     "0x537e2eb956aec859c99b3e5e28d8e45200c4fa52" : "one.x"]
+            if let name = mockRRDomainsDict[walletAddress]  {
+                return name
+            } 
         }
         #endif
         
