@@ -17,3 +17,15 @@ struct MessagingChatDisplayInfo: Hashable {
     var lastMessageTime: Date
     var lastMessage: MessagingChatMessageDisplayInfo?
 }
+
+extension Array where Element == MessagingChatDisplayInfo {
+    
+    func requestsOnly() -> [Element] {
+        filter { !$0.isApproved }
+    }
+    
+    func confirmedOnly() -> [Element] {
+        filter { $0.isApproved }
+    }
+    
+}

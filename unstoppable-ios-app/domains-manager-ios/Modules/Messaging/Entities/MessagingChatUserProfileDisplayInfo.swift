@@ -8,6 +8,7 @@
 import Foundation
 
 struct MessagingChatUserProfileDisplayInfo: Hashable {
+    let id: String
     let wallet: String
     var name: String?
     var about: String?

@@ -21,7 +21,6 @@ final class ChatViewPresenter {
     
     private weak var view: ChatViewProtocol?
     private let chat: MessagingChatDisplayInfo
-    private let domain: DomainDisplayInfo
     private let fetchLimit: Int = 30
     private let numberOfUnreadMessagesBeforePrefetch: Int = 7
     private var messages: [MessagingChatMessageDisplayInfo] = []
@@ -29,11 +28,9 @@ final class ChatViewPresenter {
     private var isLoadingMessages = false
     
     init(view: ChatViewProtocol,
-         chat: MessagingChatDisplayInfo,
-         domain: DomainDisplayInfo) {
+         chat: MessagingChatDisplayInfo) {
         self.view = view
         self.chat = chat
-        self.domain = domain
     }
 }
 
@@ -255,7 +252,7 @@ private extension ChatViewPresenter {
     }
     
     func setupPlaceholder() {
-        view?.setPlaceholder(String.Constants.chatInputPlaceholderAsDomain.localized(domain.name))
+        view?.setPlaceholder(String.Constants.chatInputPlaceholderAsDomain.localized(chat.thisUserDetails.displayName))
     }
     
     func handleChatMessageAction(_ action: ChatViewController.ChatMessageAction,

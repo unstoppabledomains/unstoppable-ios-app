@@ -23,10 +23,12 @@ struct PushEntitiesTransformer {
                                                                        signature: pushUser.signature)
         let serviceMetadata = metadataModel.jsonData()
         let wallet = getWalletAddressFrom(eip155String: pushUser.wallets) ?? pushUser.wallets
-        let displayInfo = MessagingChatUserProfileDisplayInfo(wallet: wallet,
+        let userId = pushUser.did
+        let displayInfo = MessagingChatUserProfileDisplayInfo(id: userId,
+                                                              wallet: wallet,
                                                               name: pushUser.name,
                                                               about: pushUser.about)
-        let userProfile = MessagingChatUserProfile(id: pushUser.did,
+        let userProfile = MessagingChatUserProfile(id: userId,
                                                    wallet: wallet,
                                                    displayInfo: displayInfo,
                                                    serviceMetadata: serviceMetadata)

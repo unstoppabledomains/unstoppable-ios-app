@@ -195,7 +195,7 @@ extension MessagingService: MessagingServiceProtocol {
                 let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
                 
                 await storageService.saveChannels(updatedChats, for: profile)
-                notifyListenersChangedDataType(.channels(updatedChats, wallet: profile.normalizedWallet))
+                notifyListenersChangedDataType(.channels(updatedChats, profile: profile.displayInfo))
             }
         }
     }
@@ -256,7 +256,7 @@ private extension MessagingService {
                 let updatedStoredChats = try await storageService.getChatsFor(profile: profile,
                                                                               decrypter: decrypterService)
                 let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
-                notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: profile.normalizedWallet))
+                notifyListenersChangedDataType(.chats(chatsDisplayInfo, profile: profile.displayInfo))
                 
                 if shouldRefreshUserInfo {
                     refreshUsersInfoFor(profile: profile)
@@ -366,7 +366,7 @@ private extension MessagingService {
                 
                 let updatedChats = try await storageService.getChatsFor(profile: profile,
                                                                         decrypter: decrypterService)
-                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, wallet: profile.normalizedWallet))
+                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, profile: profile.displayInfo))
             } catch { }
         }
     }
@@ -581,7 +581,7 @@ private extension MessagingService {
                 let chats = try await storageService.getChatsFor(profile: profile,
                                                                  decrypter: decrypterService)
                 let displayInfo = chats.map { $0.displayInfo }
-                notifyListenersChangedDataType(.chats(displayInfo, wallet: wallet.normalized))
+                notifyListenersChangedDataType(.chats(displayInfo, profile: profile.displayInfo))
             } catch { }
         }
     }

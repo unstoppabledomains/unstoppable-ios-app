@@ -275,7 +275,8 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
 // MARK: - User Profile parsing
 private extension CoreDataMessagingStorageService {
     func convertCoreDataUserProfileToMessagingUserProfile(_ coreDataUserProfile: CoreDataMessagingUserProfile) -> MessagingChatUserProfile {
-        let displayInfo = MessagingChatUserProfileDisplayInfo(wallet: coreDataUserProfile.wallet!,
+        let displayInfo = MessagingChatUserProfileDisplayInfo(id: coreDataUserProfile.id!,
+                                                              wallet: coreDataUserProfile.wallet!,
                                                               name: coreDataUserProfile.name,
                                                               about: coreDataUserProfile.about)
         

@@ -45,7 +45,7 @@ private extension ChatListEmptyCell {
         switch dataType {
         case .chats:
             return String.Constants.messagingChatEmptyTitle.localized()
-        case .inbox:
+        case .channels:
             return String.Constants.messagingChannelsEmptyTitle.localized()
         }
     }
@@ -54,7 +54,7 @@ private extension ChatListEmptyCell {
         switch dataType {
         case .chats:
             return String.Constants.messagingChatEmptySubtitle.localized()
-        case .inbox:
+        case .channels:
             return String.Constants.messagingChannelsEmptySubtitle.localized()
         }
     }

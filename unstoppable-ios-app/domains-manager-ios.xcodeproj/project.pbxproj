@@ -2969,6 +2969,10 @@
 		C6C1EC6B2A3B09E2005EB37D /* ChatListEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C1EC652A3B09E2005EB37D /* ChatListEmptyCell.xib */; };
 		C6C1EC6C2A3B09E2005EB37D /* ChatListEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C1EC652A3B09E2005EB37D /* ChatListEmptyCell.xib */; };
 		C6C1EC6D2A3B09E2005EB37D /* ChatListEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C1EC652A3B09E2005EB37D /* ChatListEmptyCell.xib */; };
+		C6C39EDF2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */; };
+		C6C39EE02A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */; };
+		C6C39EE12A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */; };
+		C6C39EE22A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */; };
 		C6C421702934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421712934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
 		C6C421722934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */; };
@@ -4622,6 +4626,7 @@
 		C6C1EC5E2A3AD483005EB37D /* UIAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAction.swift; sourceTree = "<group>"; };
 		C6C1EC642A3B09E2005EB37D /* ChatListEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListEmptyCell.swift; sourceTree = "<group>"; };
 		C6C1EC652A3B09E2005EB37D /* ChatListEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatListEmptyCell.xib; sourceTree = "<group>"; };
+		C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsRequestsListViewPresenter.swift; sourceTree = "<group>"; };
 		C6C4216F2934A839005B791B /* DomainProfileSignatureValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignatureValidator.swift; sourceTree = "<group>"; };
 		C6C4217629371446005B791B /* DomainProfileTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileTutorialViewController.swift; sourceTree = "<group>"; };
 		C6C4217729371446005B791B /* DomainProfileTutorialViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileTutorialViewController.xib; sourceTree = "<group>"; };
@@ -6504,6 +6509,7 @@
 			isa = PBXGroup;
 			children = (
 				C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */,
+				C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */,
 				C65271DF2A148D91001A084C /* ChatsListViewController.swift */,
 				C65271E02A148D91001A084C /* ChatsListViewController.xib */,
 				C652723A2A14C215001A084C /* Views */,
@@ -9521,6 +9527,7 @@
 				C6A2D579284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C62396AE2A28DA2900363F60 /* PushSearchUser.swift in Sources */,
 				C6D6E5BD281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
+				C6C39EDF2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */,
 				C671E39F28FE974900A2B3A0 /* UDCarouselFeature.swift in Sources */,
 				C609826C2824013500546392 /* EnterBackupBasePresenter.swift in Sources */,
 				C6668946281151F6002062B4 /* TertiaryButton.swift in Sources */,
@@ -10408,6 +10415,7 @@
 				C635195828D048D700FC6AF8 /* SetupWalletsReverseResolutionNavigationManager.swift in Sources */,
 				C6F6AF6528A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */,
 				C628E36F27FDE0D50044E408 /* UDTitleLabel.swift in Sources */,
+				C6C39EE12A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */,
 				C61FD05828FD3F540088CFDD /* ShareDomainHandler.swift in Sources */,
 				3018AEC427EB2CC200E8C37D /* HappyEndViewController.swift in Sources */,
 				C65272332A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
@@ -11309,6 +11317,7 @@
 				C628E36127FDDA930044E408 /* String.swift in Sources */,
 				C6C9DEB12834BD9300BAC36F /* CopyWalletAddressPullUpHandler.swift in Sources */,
 				C6109E9628E6AA7A0027D5D8 /* AppContextType.swift in Sources */,
+				C6C39EE22A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */,
 				C6BEEF4C29C30F9B000489B9 /* FirebaseAuthService.swift in Sources */,
 				C6C57C402869C0890093FD8C /* UDDomainSharingWatchCardView.swift in Sources */,
 				C66FCCFB2844870B009B9525 /* UserDataService.swift in Sources */,
@@ -11838,6 +11847,7 @@
 				C6A2D57A284F9EC600327C47 /* ConnectedAppsListViewPresenter.swift in Sources */,
 				C62396AF2A28DA2900363F60 /* PushSearchUser.swift in Sources */,
 				C6D6E5BE281A3CD1008C66BB /* UDSearchBar.swift in Sources */,
+				C6C39EE02A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift in Sources */,
 				C671E3A028FE974900A2B3A0 /* UDCarouselFeature.swift in Sources */,
 				C609826D2824013500546392 /* EnterBackupBasePresenter.swift in Sources */,
 				C6668947281151F6002062B4 /* TertiaryButton.swift in Sources */,
@@ -13121,7 +13131,7 @@
 			repositoryURL = "https://github.com/ethereum-push-notification-service/push-swift-sdk";
 			requirement = {
 				kind = exactVersion;
-				version = 0.5.2;
+				version = 0.5.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

@@ -103,14 +103,14 @@ extension ChatsListViewPresenter: MessagingServiceListener {
    nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
        Task { @MainActor in
            switch messagingDataType {
-           case .chats(let chats, let wallet):
-               if wallet == selectedProfileWalletPair?.wallet.address,
+           case .chats(let chats, let profile):
+               if profile.id == selectedProfileWalletPair?.profile?.id,
                   chatsList != chats {
                    chatsList = chats
                    showData()
                }
-           case .channels(let channels, let wallet):
-               if wallet == selectedProfileWalletPair?.wallet.address {
+           case .channels(let channels, let profile):
+               if profile.id == selectedProfileWalletPair?.profile?.id {
                    self.channels = channels
                    showData()
                }
@@ -215,7 +215,7 @@ private extension ChatsListViewPresenter {
             return
         }
         
-        UserDefaults.currentMessagingOwnerWallet = profile.wallet.normalized
+        UserDefaults.currentMessagingOwnerWallet = profile.id
         
         async let chatsListTask = appContext.messagingService.getChatsListForProfile(profile)
         async let channelsTask = appContext.messagingService.getSubscribedChannelsForProfile(profile)
@@ -249,15 +249,15 @@ private extension ChatsListViewPresenter {
                     snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
                 } else {
                     snapshot.appendSections([.channels])
-                    let requestsList = chatsList.filter({ !$0.isApproved })
-                    let approvedList = chatsList.filter({ $0.isApproved })
+                    let requestsList = chatsList.requestsOnly()
+                    let approvedList = chatsList.confirmedOnly()
                     if !requestsList.isEmpty {
                         snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
                                                                                  numberOfRequests: requestsList.count))])
                     }
                     snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
                 }
-            case .inbox:
+            case .channels:
                 if channels.isEmpty {
                     snapshot.appendSections([.emptyState])
                     snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
@@ -281,7 +281,7 @@ private extension ChatsListViewPresenter {
         let inboxBadge = 0
         
         return .init(dataTypesConfigurations: [.init(dataType: .chats, badge: chatsBadge),
-                                               .init(dataType: .inbox, badge: inboxBadge)],
+                                               .init(dataType: .channels, badge: inboxBadge)],
                      selectedDataType: selectedDataType) { [weak self] newSelectedDataType in
             self?.selectedDataType = newSelectedDataType
             self?.showData()
@@ -289,14 +289,27 @@ private extension ChatsListViewPresenter {
     }
     
     func openChat(_ chat: MessagingChatDisplayInfo) {
-        guard let nav = view?.cNavigationController,
-              let rrDomain = selectedProfileWalletPair?.wallet.reverseResolutionDomain else { return }
+        guard let profile = selectedProfileWalletPair?.profile,
+              let nav = view?.cNavigationController else { return }
         
-        UDRouter().showChatScreen(chat: chat, domain: rrDomain, in: nav)
+        UDRouter().showChatScreen(chat: chat, profile: profile, in: nav)
     }
     
     func showChatRequests() {
+        guard let profile = selectedProfileWalletPair?.profile,
+              let nav = view?.cNavigationController else { return }
         
+        switch selectedDataType {
+        case .chats:
+            let requests = chatsList.requestsOnly()
+            guard !requests.isEmpty else { return }
+            
+            UDRouter().showChatRequestsScreen(dataType: .chatRequests(requests),
+                                              profile: profile,
+                                              in: nav)
+        case .channels:
+            return
+        }
     }
     
     func openChannel(_ channel: MessagingNewsChannel) {

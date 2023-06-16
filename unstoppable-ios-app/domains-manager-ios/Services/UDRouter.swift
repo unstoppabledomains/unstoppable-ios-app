@@ -576,11 +576,20 @@ class UDRouter: DomainProfileSignatureValidator {
         nav.pushViewController(vc, animated: true)
     }
     
+    func showChatRequestsScreen(dataType: ChatsRequestsListViewPresenter.DataType,
+                                profile: MessagingChatUserProfileDisplayInfo,
+                                in nav: CNavigationController) {
+        let vc = buildChatRequestsModuleWith(dataType: dataType,
+                                             profile: profile)
+        
+        nav.pushViewController(vc, animated: true)
+    }
+    
     func showChatScreen(chat: MessagingChatDisplayInfo,
-                        domain: DomainDisplayInfo,
+                        profile: MessagingChatUserProfileDisplayInfo,
                         in nav: CNavigationController) {
         let vc = buildChatModule(chat: chat,
-                                 domain: domain)
+                                 profile: profile)
         
         nav.pushViewController(vc, animated: true)
     }
@@ -991,12 +1000,21 @@ private extension UDRouter {
         return vc
     }
     
+    func buildChatRequestsModuleWith(dataType: ChatsRequestsListViewPresenter.DataType,
+                                     profile: MessagingChatUserProfileDisplayInfo) -> UIViewController {
+        let vc = ChatsListViewController.nibInstance()
+        let presenter = ChatsRequestsListViewPresenter(view: vc,
+                                                       dataType: dataType,
+                                                       profile: profile)
+        vc.presenter = presenter
+        return vc
+    }
+    
     func buildChatModule(chat: MessagingChatDisplayInfo,
-                         domain: DomainDisplayInfo) -> UIViewController {
+                         profile: MessagingChatUserProfileDisplayInfo) -> UIViewController {
         let vc = ChatViewController.nibInstance()
         let presenter = ChatViewPresenter(view: vc,
-                                          chat: chat,
-                                          domain: domain)
+                                          chat: chat)
         vc.presenter = presenter
         return vc
     }

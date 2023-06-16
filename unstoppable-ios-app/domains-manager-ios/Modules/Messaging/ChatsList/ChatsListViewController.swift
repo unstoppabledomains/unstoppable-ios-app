@@ -43,7 +43,7 @@ final class ChatsListViewController: BaseViewController {
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {
         switch state {
         case .chatsList: return cSearchBarConfiguration
-        case .createProfile, .loading: return nil
+        case .createProfile, .loading, .requestsList: return nil
         }
     }
     private var searchBar: UDSearchBar = UDSearchBar()
@@ -59,6 +59,18 @@ final class ChatsListViewController: BaseViewController {
         configureCollectionView()
         setup()
         presenter.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        presenter.viewWillAppear()
+    }
+     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        presenter.viewDidAppear()
     }
 }
 
@@ -116,7 +128,7 @@ private extension ChatsListViewController {
     
     func checkIfCollectionScrollingEnabled() {
         switch state {
-        case .chatsList, .loading:
+        case .chatsList, .loading, .requestsList:
             collectionView.isScrollEnabled = true
         case .createProfile:
             let collectionViewVisibleHeight = collectionView.bounds.height - collectionView.contentInset.top - actionButtonContainerView.bounds.height
@@ -134,16 +146,19 @@ private extension ChatsListViewController {
     }
     
     func setupNavigation() {
-        if navView == nil {
-            navView = ChatsListNavigationView()
-            navView.walletSelectedCallback = { [weak self] wallet in
-                self?.presenter.didSelectWallet(wallet)
+        func addNavViewIfNil() {
+            if navView == nil {
+                navView = ChatsListNavigationView()
+                navView.walletSelectedCallback = { [weak self] wallet in
+                    self?.presenter.didSelectWallet(wallet)
+                }
+                navigationItem.titleView = navView
             }
-            navigationItem.titleView = navView
         }
         
         switch state {
         case .chatsList:
+            addNavViewIfNil()
             navView?.isHidden = false
             let newMessageButton = UIBarButtonItem(image: .newMessageIcon,
                                                    style: .plain,
@@ -152,11 +167,23 @@ private extension ChatsListViewController {
             newMessageButton.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = newMessageButton
         case .createProfile:
+            addNavViewIfNil()
             navView?.isHidden = false
             navigationItem.rightBarButtonItem = nil
         case .loading:
+            addNavViewIfNil()
             navView?.isHidden = true
             navigationItem.rightBarButtonItem = nil
+        case .requestsList:
+            navigationItem.titleView = nil
+            title = "Chat Requests"
+            let rightBarButton = UIBarButtonItem(title: "Delete All",
+                                                   style: .plain,
+                                                   target: self,
+                                                   action: #selector(newMessageButtonPressed))
+            rightBarButton.tintColor = .foregroundAccent
+            navigationItem.rightBarButtonItem = rightBarButton
+            cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }
     }
     
@@ -169,7 +196,7 @@ private extension ChatsListViewController {
                               image: icon)
         
         switch state {
-        case .chatsList, .loading:
+        case .chatsList, .loading, .requestsList:
             actionButtonContainerView.isHidden = true
         case .createProfile:
             actionButtonContainerView.isHidden = false
@@ -180,7 +207,7 @@ private extension ChatsListViewController {
         switch state {
         case .chatsList, .loading:
             collectionView.contentInset.top = 110
-        case .createProfile:
+        case .createProfile, .requestsList:
             collectionView.contentInset.top = 68
         }
     }
@@ -342,13 +369,13 @@ extension ChatsListViewController {
     }
     
     enum DataType: Hashable {
-        case chats, inbox
+        case chats, channels
         
         var title: String {
             switch self {
             case .chats:
                 return String.Constants.chats.localized()
-            case .inbox:
+            case .channels:
                 return String.Constants.appsInbox.localized()
             }
         }
@@ -372,5 +399,6 @@ extension ChatsListViewController {
         case createProfile
         case chatsList
         case loading
+        case requestsList
     }
 }
