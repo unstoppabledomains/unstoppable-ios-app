@@ -195,7 +195,9 @@ extension String {
         static let manage = "MANAGE"
         static let link = "LINK"
         static let enable = "ENABLE"
-
+        static let accept = "ACCEPT"
+        static let delete = "DELETE"
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"

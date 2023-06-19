@@ -136,6 +136,8 @@
 "MANAGE" = "Manage";
 "LINK" = "Link";
 "ENABLE" = "Enable";
+"ACCEPT" = "Accept";
+"DELETE" = "Delete";
 
 /* ONBOARDING */
 // Tutorial screens

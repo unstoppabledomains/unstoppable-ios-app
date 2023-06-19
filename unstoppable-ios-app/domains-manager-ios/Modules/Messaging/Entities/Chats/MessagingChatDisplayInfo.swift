@@ -13,7 +13,7 @@ struct MessagingChatDisplayInfo: Hashable {
     let avatarURL: URL?
     let type: MessagingChatType
     var unreadMessagesCount: Int
-    let isApproved: Bool
+    var isApproved: Bool
     var lastMessageTime: Date
     var lastMessage: MessagingChatMessageDisplayInfo?
 }

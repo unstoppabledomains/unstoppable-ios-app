@@ -257,7 +257,7 @@ private extension ChatsListViewPresenter {
             return
         }
         
-        UserDefaults.currentMessagingOwnerWallet = profile.id
+        UserDefaults.currentMessagingOwnerWallet = profile.wallet.normalized
         
         async let chatsListTask = appContext.messagingService.getChatsListForProfile(profile)
         async let channelsTask = appContext.messagingService.getSubscribedChannelsForProfile(profile)

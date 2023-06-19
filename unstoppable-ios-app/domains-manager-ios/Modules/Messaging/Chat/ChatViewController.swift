@@ -17,6 +17,7 @@ protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
     func scrollToTheBottom(animated: Bool)
     func scrollToItem(_ item: ChatViewController.Item, animated: Bool)
     func setLoading(active: Bool)
+    func setApproveRequired(_ isRequired: Bool)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -28,6 +29,11 @@ final class ChatViewController: BaseViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet private weak var chatInputView: ChatInputView!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet private weak var approveContentView: UIView!
+    @IBOutlet private weak var acceptButton: MainButton!
+    @IBOutlet private weak var blockButton: RaisedTertiaryButton!
+    
+    
     private var titleView: ChatTitleView!
 
     override var scrollableContentYOffset: CGFloat? { 13 }
@@ -109,7 +115,17 @@ extension ChatViewController: ChatViewProtocol {
         } else {
             activityIndicator.stopAnimating()
         }
+        
         collectionView.isHidden = active
+        
+        [acceptButton, blockButton].forEach { button in
+            button?.isUserInteractionEnabled = !active
+        }
+    }
+    
+    func setApproveRequired(_ isRequired: Bool) {
+        approveContentView.isHidden = !isRequired
+        chatInputView.isHidden = isRequired
     }
 }
 
@@ -174,6 +190,17 @@ extension ChatViewController: ChatInputViewDelegate {
     }
 }
 
+// MARK: - Actions
+private extension ChatViewController {
+    @IBAction func approveButtonPressed() {
+        presenter.approveButtonPressed()
+    }
+    
+    @IBAction func rejectButtonPressed() {
+        presenter.rejectButtonPressed()
+    }
+}
+
 // MARK: - Private functions
 private extension ChatViewController {
     func calculateCollectionBottomInset() {
@@ -207,6 +234,7 @@ private extension ChatViewController {
 private extension ChatViewController {
     func setup() {
         setupInputView()
+        setupApproveRequestView()
         setupNavBar()
         setupCollectionView()
         setupHideKeyboardTap()
@@ -217,6 +245,12 @@ private extension ChatViewController {
         chatInputView.frame.origin.y = self.view.bounds.height - ChatInputView.height
         chatInputView.setTopBorderHidden(true, animated: false)
         chatInputView.delegate = self
+    }
+    
+    func setupApproveRequestView() {
+        approveContentView.isHidden = true
+        acceptButton.setTitle(String.Constants.accept.localized(), image: nil)
+        blockButton.setTitle(String.Constants.delete.localized(), image: nil)
     }
     
     func setupNavBar() {

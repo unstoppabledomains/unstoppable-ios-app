@@ -14,6 +14,9 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     
     func didTypeText(_ text: String)
     func didPressSendText(_ text: String)
+    
+    func approveButtonPressed()
+    func rejectButtonPressed()
 }
 
 @MainActor
@@ -44,6 +47,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         setupTitle()
         setupPlaceholder()
         loadAndShowData()
+        updateUIForChatApprovedState()
     }
     
     func didSelectItem(_ item: ChatViewController.Item) {
@@ -84,6 +88,28 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         
         view?.setInputText("")
         sendTextMesssage(text)
+    }
+    
+    func approveButtonPressed() {
+        guard case .existingChat(var chat) = conversationState,
+            !chat.isApproved else { return }
+        Task {
+            view?.setLoading(active: true)
+            do {
+                try await appContext.messagingService.makeChatRequest(chat, approved: true)
+                chat.isApproved = true
+                self.conversationState = .existingChat(chat)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+            updateUIForChatApprovedState()
+            view?.setLoading(active: false)
+        }
+    }
+    
+    func rejectButtonPressed() {
+        // TODO: - Implement flow
+        view?.showSimpleAlert(title: "Not supported for now", body: "Stay tuned!")
     }
 }
 
@@ -310,6 +336,12 @@ private extension ChatViewPresenter {
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
+        }
+    }
+    
+    func updateUIForChatApprovedState() {
+        if case .existingChat(let chat) = conversationState {
+            view?.setApproveRequired(!chat.isApproved)
         }
     }
 }

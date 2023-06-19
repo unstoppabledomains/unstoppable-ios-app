@@ -195,8 +195,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
-                     to userInfo: MessagingChatUserDisplayInfo,
-                     by user: MessagingChatUserProfile) async throws -> (MessagingChat, MessagingChatMessage) {
+                          to userInfo: MessagingChatUserDisplayInfo,
+                          by user: MessagingChatUserProfile) async throws -> (MessagingChat, MessagingChatMessage) {
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         let sendOptions = try await buildPushSendOptions(for: messageType,
                                                          receiver: userInfo.wallet,
