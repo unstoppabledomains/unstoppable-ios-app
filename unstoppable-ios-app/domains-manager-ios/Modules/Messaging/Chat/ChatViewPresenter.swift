@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 18.05.2023.
 //
 
-import Foundation
+import UIKit
 
 @MainActor
 protocol ChatViewPresenterProtocol: BasePresenterProtocol {
@@ -235,7 +235,7 @@ private extension ChatViewPresenter {
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
         case .imageBase64(let imageMessageDisplayInfo):
-            return .imageBase64Message(configuration: .init(message: message, imageMessageDisplayInfo: imageMessageDisplayInfo, actionCallback: { [weak self] action in                
+            return .imageBase64Message(configuration: .init(message: message, imageMessageDisplayInfo: imageMessageDisplayInfo, actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
         }
@@ -285,6 +285,14 @@ private extension ChatViewPresenter {
                                                                       encryptedText: text)
         let messageType = MessagingChatMessageDisplayType.text(textTypeDetails)
         sendMessageOfType(messageType)
+    }
+    
+    func sendImageMessage(_ image: UIImage) {
+        guard let base64 = image.base64String else { return }
+        let preparedBase64 = "data:image/jpeg;base64," + base64 // TODO: - Remove "data:image/jpeg;base64,"
+        let imageTypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64,
+                                                                              encryptedContent: preparedBase64)
+        sendMessageOfType(.imageBase64(imageTypeDetails))
     }
     
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {

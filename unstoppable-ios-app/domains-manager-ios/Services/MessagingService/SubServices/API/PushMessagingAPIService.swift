@@ -158,7 +158,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                      in chat: MessagingChat,
                      by user: MessagingChatUserProfile) async throws -> MessagingChatMessage {
         let env = getCurrentPushEnvironment()
-        let pushMessageContent = getPushMessageContentFrom(displayType: messageType)
+        let pushMessageContent = try getPushMessageContentFrom(displayType: messageType)
         let pushMessageType = getPushMessageTypeFrom(displayType: messageType)
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
@@ -299,12 +299,14 @@ private extension PushMessagingAPIService {
         return serviceMetadata
     }
    
-    func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType) -> String {
+    func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType) throws -> String {
         switch displayType {
         case .text(let details):
             return details.text
         case .imageBase64(let details):
-            return details.base64
+            let entity = PushEnvironment.PushImageContentResponse(content: details.base64)
+            guard let jsonString = entity.jsonString() else { throw PushMessagingAPIServiceError.failedToPrepareMessageContent }
+            return jsonString
         }
     }
     
@@ -340,6 +342,7 @@ extension PushMessagingAPIService {
         case failedToConvertPushMessage
         case sendMessageInGroupChatNotSupported
         case declineRequestNotSupported
+        case failedToPrepareMessageContent
     }
 }
 

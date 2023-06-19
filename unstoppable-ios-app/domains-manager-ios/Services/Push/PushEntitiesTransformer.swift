@@ -115,7 +115,7 @@ struct PushEntitiesTransformer {
                                                                           encryptedText: encryptedContent)
             type = .text(textDisplayInfo)
         case .image:
-            guard let contentInfo = PushImageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
+            guard let contentInfo = PushEnvironment.PushImageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
             let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: contentInfo.content,
                                                                                         encryptedContent: encryptedContent)
             type = .imageBase64(imageBase64DisplayInfo)
@@ -254,9 +254,7 @@ struct PushEntitiesTransformer {
     
   
 }
-struct PushImageContentResponse: Codable {
-    let content: String
-}
+
 protocol PushMessageTransformAdapter {
     var messageContent: String { get }
     var time: Date { get }

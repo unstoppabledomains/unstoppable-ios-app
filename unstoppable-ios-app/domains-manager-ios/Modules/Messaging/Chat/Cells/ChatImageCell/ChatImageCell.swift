@@ -28,7 +28,7 @@ extension ChatImageCell {
     func setWith(configuration: ChatViewController.ImageBase64MessageUIConfiguration) {
         setWith(message: configuration.message)
         Task {
-            let base64 = configuration.imageMessageDisplayInfo.base64.replacingOccurrences(of: "data:image/jpeg;base64,", with: "")
+            let base64 = configuration.imageMessageDisplayInfo.base64.replacingOccurrences(of: "data:image/jpeg;base64,", with: "") // TODO: - Remove "data:image/jpeg;base64,"
 //            let count = base64.count
 //            let base64String = String(base64[base64.index(base64.startIndex, offsetBy: 22)..<base64.endIndex])
             let image = await UIImage.from(base64String: base64)
