@@ -64,13 +64,13 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             
             showData()
         case .chat(let configuration):
-            openChat(configuration.chat)
+            openChatWith(conversationState: .existingChat(configuration.chat))
         case .chatRequests:
             showChatRequests()
         case .channel(let configuration):
             openChannel(configuration.channel)
         case .userInfo(let configuration):
-            return // TODO: - Open new chat with selected user
+            openChatWith(conversationState: .newChat(configuration.userInfo))
         case .dataTypeSelection, .createProfile, .emptyState:
             return
         }
@@ -386,11 +386,13 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    func openChat(_ chat: MessagingChatDisplayInfo) {
+    func openChatWith(conversationState: MessagingChatConversationState) {
         guard let profile = selectedProfileWalletPair?.profile,
               let nav = view?.cNavigationController else { return }
         
-        UDRouter().showChatScreen(chat: chat, profile: profile, in: nav)
+        UDRouter().showChatScreen(profile: profile,
+                                  conversationState: conversationState,
+                                  in: nav)
     }
     
     func showChatRequests() {

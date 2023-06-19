@@ -147,7 +147,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                             fetchLimit: Int,
                                             isRead: Bool,
                                             for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
-        let wallet = chat.displayInfo.thisUserDetails.wallet
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         let env = getCurrentPushEnvironment()
         let pushMessages = try await Push.PushChat.History(threadHash: threadHash,

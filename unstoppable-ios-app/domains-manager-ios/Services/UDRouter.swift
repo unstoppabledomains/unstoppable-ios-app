@@ -585,11 +585,11 @@ class UDRouter: DomainProfileSignatureValidator {
         nav.pushViewController(vc, animated: true)
     }
     
-    func showChatScreen(chat: MessagingChatDisplayInfo,
-                        profile: MessagingChatUserProfileDisplayInfo,
+    func showChatScreen(profile: MessagingChatUserProfileDisplayInfo,
+                        conversationState: MessagingChatConversationState,
                         in nav: CNavigationController) {
-        let vc = buildChatModule(chat: chat,
-                                 profile: profile)
+        let vc = buildChatModule(profile: profile,
+                                 conversationState: conversationState)
         
         nav.pushViewController(vc, animated: true)
     }
@@ -1010,11 +1010,12 @@ private extension UDRouter {
         return vc
     }
     
-    func buildChatModule(chat: MessagingChatDisplayInfo,
-                         profile: MessagingChatUserProfileDisplayInfo) -> UIViewController {
+    func buildChatModule(profile: MessagingChatUserProfileDisplayInfo,
+                         conversationState: MessagingChatConversationState) -> UIViewController {
         let vc = ChatViewController.nibInstance()
         let presenter = ChatViewPresenter(view: vc,
-                                          chat: chat)
+                                          profile: profile,
+                                          conversationState: conversationState)
         vc.presenter = presenter
         return vc
     }

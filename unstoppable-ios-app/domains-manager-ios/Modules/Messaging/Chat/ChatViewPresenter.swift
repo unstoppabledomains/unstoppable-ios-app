@@ -20,7 +20,8 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
 final class ChatViewPresenter {
     
     private weak var view: ChatViewProtocol?
-    private let chat: MessagingChatDisplayInfo
+    private let profile: MessagingChatUserProfileDisplayInfo
+    private var conversationState: MessagingChatConversationState
     private let fetchLimit: Int = 30
     private let numberOfUnreadMessagesBeforePrefetch: Int = 7
     private var messages: [MessagingChatMessageDisplayInfo] = []
@@ -28,9 +29,11 @@ final class ChatViewPresenter {
     private var isLoadingMessages = false
     
     init(view: ChatViewProtocol,
-         chat: MessagingChatDisplayInfo) {
+         profile: MessagingChatUserProfileDisplayInfo,
+         conversationState: MessagingChatConversationState) {
         self.view = view
-        self.chat = chat
+        self.profile = profile
+        self.conversationState = conversationState
     }
 }
 
@@ -48,7 +51,9 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
     }
     
     func willDisplayItem(_ item: ChatViewController.Item) {
-        guard let message = item.message else { return }
+        guard let message = item.message,
+              case .existingChat(let chat) = conversationState else { return }
+        
         guard let messageIndex = messages.firstIndex(where: { $0.id == message.id }) else {
             Debugger.printFailure("Failed to find will display message with id \(message.id) in the list", critical: true)
             return }
@@ -90,20 +95,23 @@ extension ChatViewPresenter: MessagingServiceListener {
             case .chats, .channels:
                 return
             case .messagesAdded(let messages, let chatId):
-                if chatId == chat.id {
+                if case .existingChat(let chat) = conversationState,
+                   chatId == chat.id {
                     self.addMessages(messages)
                     checkIfUpToDate()
                     showData(animated: true, scrollToBottomAnimated: true)
                 }
             case .messageUpdated(let updatedMessage, let newMessage):
-                if updatedMessage.chatId == chat.id,
+                if case .existingChat(let chat) = conversationState,
+                   updatedMessage.chatId == chat.id,
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     self.messages[i] = newMessage
                     checkIfUpToDate()
                     showData(animated: false)
                 }
             case .messagesRemoved(let messages, let chatId):
-                if chatId == chat.id {
+                if case .existingChat(let chat) = conversationState,
+                   chatId == chat.id {
                     let removedIds = messages.map { $0.id }
                     self.messages = self.messages.filter({ !removedIds.contains($0.id) })
                     checkIfUpToDate()
@@ -119,40 +127,46 @@ private extension ChatViewPresenter {
     func loadAndShowData() {
         Task {
             do {
-                isLoadingMessages = true
-                view?.setLoading(active: true)
-                let messagesBefore = try await appContext.messagingService.getMessagesForChat(chat,
-                                                                                              before: nil,
-                                                                                              limit: fetchLimit)
-                addMessages(messagesBefore)
-                
-                if !messages.first!.isRead,
-                   let firstReadMessage = messages.first(where: { $0.isRead }) {
-                    self.chatState = .hasUnreadMessagesAfter(message: firstReadMessage)
-                } else {
-                    checkIfUpToDate()
-                }
-                
-                switch chatState {
-                case .upToDate, .hasUnloadedMessagesBefore:
-                    showData(animated: false, scrollToBottomAnimated: false)
-                case .hasUnreadMessagesAfter(let message):
-                    let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
-                                                                                                  after: message,
+                switch conversationState {
+                case .existingChat(let chat):
+                    isLoadingMessages = true
+                    view?.setLoading(active: true)
+                    let messagesBefore = try await appContext.messagingService.getMessagesForChat(chat,
+                                                                                                  before: nil,
                                                                                                   limit: fetchLimit)
-                    addMessages(unreadMessages)
-                    showData(animated: false, completion: {
-                        if let message = unreadMessages.last {
-                            let item = self.createSnapshotItemFrom(message: message)
-                            self.view?.scrollToItem(item, animated: false)
-                        }
-                    })
-                    checkIfUpToDate()
+                    addMessages(messagesBefore)
+                    
+                    if !messages.first!.isRead,
+                       let firstReadMessage = messages.first(where: { $0.isRead }) {
+                        self.chatState = .hasUnreadMessagesAfter(message: firstReadMessage)
+                    } else {
+                        checkIfUpToDate()
+                    }
+                    
+                    switch chatState {
+                    case .upToDate, .hasUnloadedMessagesBefore:
+                        showData(animated: false, scrollToBottomAnimated: false)
+                    case .hasUnreadMessagesAfter(let message):
+                        let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
+                                                                                                      after: message,
+                                                                                                      limit: fetchLimit)
+                        addMessages(unreadMessages)
+                        showData(animated: false, completion: {
+                            if let message = unreadMessages.last {
+                                let item = self.createSnapshotItemFrom(message: message)
+                                self.view?.scrollToItem(item, animated: false)
+                            }
+                        })
+                        checkIfUpToDate()
+                    }
+                    DispatchQueue.main.async {
+                        self.view?.setLoading(active: false)
+                    }
+                    isLoadingMessages = false
+                case .newChat:
+                    view?.startTyping()
+                    showData(animated: false)
                 }
-                DispatchQueue.main.async {
-                    self.view?.setLoading(active: false)
-                }
-                isLoadingMessages = false
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
             }
@@ -160,7 +174,8 @@ private extension ChatViewPresenter {
     }
     
     func loadMoreMessagesBefore(message: MessagingChatMessageDisplayInfo) {
-        guard !isLoadingMessages else { return }
+        guard !isLoadingMessages,
+              case .existingChat(let chat) = conversationState else { return }
         
         isLoadingMessages = true
         Task {
@@ -216,9 +231,11 @@ private extension ChatViewPresenter {
         var snapshot = ChatSnapshot()
         
         if messages.isEmpty {
+            view?.setScrollEnabled(false)
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptyState])
         } else {
+            view?.setScrollEnabled(true)
             let groupedMessages = [Date : [MessagingChatMessageDisplayInfo]].init(grouping: messages, by: { $0.time.dayStart })
             let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })
             
@@ -247,12 +264,17 @@ private extension ChatViewPresenter {
     }
     
     func setupTitle() {
-        switch chat.type {
-        case .private(let chatDetails):
-            let otherUser = chatDetails.otherUser
-            setupTitleFor(userInfo: otherUser)
-        case .group(let groupDetails):
-            return // <GROUP_CHAT> Not supported for now
+        switch conversationState {
+        case .existingChat(let chat):
+            switch chat.type {
+            case .private(let chatDetails):
+                let otherUser = chatDetails.otherUser
+                setupTitleFor(userInfo: otherUser)
+            case .group(let groupDetails):
+                return // <GROUP_CHAT> Not supported for now
+            }
+        case .newChat(let userInfo):
+            setupTitleFor(userInfo: userInfo)
         }
     }
     
@@ -265,7 +287,12 @@ private extension ChatViewPresenter {
     }
     
     func setupPlaceholder() {
-        view?.setPlaceholder(String.Constants.chatInputPlaceholderAsDomain.localized(chat.thisUserDetails.displayName))
+        Task {
+            let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: profile.wallet)
+            let sender = domainName ?? profile.wallet.walletAddressTruncated
+            let placeholder = String.Constants.chatInputPlaceholderAsDomain.localized(sender)
+            view?.setPlaceholder(placeholder)
+        }
     }
     
     func handleChatMessageAction(_ action: ChatViewController.ChatMessageAction,
@@ -307,7 +334,17 @@ private extension ChatViewPresenter {
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
         Task {
             do {
-                let newMessage = try await appContext.messagingService.sendMessage(type, in: chat)
+                let newMessage: MessagingChatMessageDisplayInfo
+                switch conversationState {
+                case .existingChat(let chat):
+                    newMessage = try await appContext.messagingService.sendMessage(type, in: chat)
+                case .newChat(let userInfo):
+                    let (chat, message) = try await appContext.messagingService.sendFirstMessage(type,
+                                                                                                 to: userInfo,
+                                                                                                 by: profile)
+                    self.conversationState = .existingChat(chat)
+                    newMessage = message
+                }
                 messages.insert(newMessage, at: 0)
                 showData(animated: true, scrollToBottomAnimated: true)
             } catch {

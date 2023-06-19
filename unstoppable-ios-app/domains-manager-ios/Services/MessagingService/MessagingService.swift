@@ -167,7 +167,6 @@ extension MessagingService: MessagingServiceProtocol {
                           to userInfo: MessagingChatUserDisplayInfo,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo) {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
-        
         let (chat, message) = try await apiService.sendFirstMessage(messageType,
                                                                     to: userInfo,
                                                                     by: profile)

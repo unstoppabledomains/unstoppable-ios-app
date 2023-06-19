@@ -91,7 +91,9 @@ private extension ChatsRequestsListViewPresenter {
     func openChat(_ chat: MessagingChatDisplayInfo) {
         guard let nav = view?.cNavigationController  else { return }
         
-        UDRouter().showChatScreen(chat: chat, profile: profile, in: nav)
+        UDRouter().showChatScreen(profile: profile,
+                                  conversationState: .existingChat(chat),
+                                  in: nav)
     }
 }
 
