@@ -35,6 +35,9 @@ protocol MessagingServiceProtocol {
     // Channels
     func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
     
+    // Search
+    func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo]
+    
     // Listeners
     func addListener(_ listener: MessagingServiceListener)
     func removeListener(_ listener: MessagingServiceListener)

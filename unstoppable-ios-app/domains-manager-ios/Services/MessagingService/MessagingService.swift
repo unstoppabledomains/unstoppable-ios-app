@@ -188,18 +188,6 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // Channels
-    private func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
-        Task {
-            do {
-                let channels = try await apiService.getSubscribedChannelsForUser(profile)
-                let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
-                
-                await storageService.saveChannels(updatedChats, for: profile)
-                notifyListenersChangedDataType(.channels(updatedChats, profile: profile.displayInfo))
-            }
-        }
-    }
-        
     func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
         let channels = try await storageService.getChannelsFor(profile: profile)
@@ -218,6 +206,17 @@ extension MessagingService: MessagingServiceProtocol {
         
         
         return feed
+    }
+    
+    // Search
+    func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
+        guard searchKey.isValidAddress() else { return [] }
+        
+        if let userInfo = await loadUserInfoFor(wallet: searchKey) {
+            return [userInfo]
+        }
+        
+        return []
     }
     
     // Listeners
@@ -375,23 +374,27 @@ private extension MessagingService {
         switch chat.displayInfo.type {
         case .private(let details):
             let wallet = details.otherUser.wallet
-            if let domain = await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
-               !domain.isEmpty {
-                let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
-                var pfpURL: URL?
-                if let urlString = pfpInfo?.pfpURL,
-                   let url = URL(string: urlString) {
-                    pfpURL = url
-                }
-                return MessagingChatUserDisplayInfo(wallet: wallet,
-                                                    domainName: domain,
-                                                    pfpURL: pfpURL)
-            }
-            
-            return nil
+            return await loadUserInfoFor(wallet: wallet)
         case .group(let details):
             return nil // <GROUP_CHAT> Not supported for now
         }
+    }
+    
+    func loadUserInfoFor(wallet: String) async -> MessagingChatUserDisplayInfo? {
+        if let domain = await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
+           !domain.isEmpty {
+            let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
+            var pfpURL: URL?
+            if let urlString = pfpInfo?.pfpURL,
+               let url = URL(string: urlString) {
+                pfpURL = url
+            }
+            return MessagingChatUserDisplayInfo(wallet: wallet,
+                                                domainName: domain,
+                                                pfpURL: pfpURL)
+        }
+        
+        return nil
     }
 }
 
@@ -432,6 +435,18 @@ private extension MessagingService {
 
 // MARK: - Channels
 private extension MessagingService {
+    func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
+        Task {
+            do {
+                let channels = try await apiService.getSubscribedChannelsForUser(profile)
+                let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
+                
+                await storageService.saveChannels(updatedChats, for: profile)
+                notifyListenersChangedDataType(.channels(updatedChats, profile: profile.displayInfo))
+            }
+        }
+    }
+    
     func refreshChannelsMetadata(_ channels: [MessagingNewsChannel]) async -> [MessagingNewsChannel] {
         var updatedChannels = [MessagingNewsChannel]()
         

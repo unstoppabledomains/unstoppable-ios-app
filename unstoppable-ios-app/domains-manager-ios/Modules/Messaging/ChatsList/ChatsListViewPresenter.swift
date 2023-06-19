@@ -41,6 +41,7 @@ final class ChatsListViewPresenter {
     private var chatsList: [MessagingChatDisplayInfo] = []
     private var channels: [MessagingNewsChannel] = []
     private var searchData = SearchData()
+    private let searchManager = SearchManager(debounce: 0.3)
     
     
     init(view: ChatsListViewProtocol) {
@@ -113,6 +114,14 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     
     func didSearchWith(key: String) {
         self.searchData.searchKey = key.trimmedSpaces
+        
+        Task {
+            do {
+                let searchUsers = try await searchManager.searchForUsers(with: key)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+        }
     }
     
     func didStartSearch() {
@@ -433,5 +442,35 @@ private extension ChatsListViewPresenter {
     struct SearchData {
         var isSearchActive = false
         var searchKey: String = ""
+    }
+}
+
+final class SearchManager {
+    
+    typealias SearchUsersTask = Task<[MessagingChatUserDisplayInfo], Error>
+    
+    private let debounce: TimeInterval
+    private var currentTask: SearchUsersTask?
+    
+    init(debounce: TimeInterval) {
+        self.debounce = debounce
+    }
+    
+    func searchForUsers(with searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
+        // Cancel previous search task if it exists
+        currentTask?.cancel()
+        
+        let debounce = self.debounce
+        let task: SearchUsersTask = Task.detached {
+            try? await Task.sleep(seconds: debounce)
+            guard !Task.isCancelled else { return [] }
+            let users = try await appContext.messagingService.searchForUsersWith(searchKey: searchKey)
+            guard !Task.isCancelled else { return [] }
+            return users
+        }
+        
+        currentTask = task
+        let users = try await task.value
+        return users
     }
 }
