@@ -44,7 +44,7 @@ private extension ChatListEmptyCell {
     func titleFor(dataType: ChatsListViewController.DataType) -> String {
         switch dataType {
         case .chats:
-            return String.Constants.messagingChatEmptyTitle.localized()
+            return String.Constants.messagingChatsListEmptyTitle.localized()
         case .channels:
             return String.Constants.messagingChannelsEmptyTitle.localized()
         }
@@ -53,7 +53,7 @@ private extension ChatListEmptyCell {
     func subtitleFor(dataType: ChatsListViewController.DataType) -> String {
         switch dataType {
         case .chats:
-            return String.Constants.messagingChatEmptySubtitle.localized()
+            return String.Constants.messagingChatsListEmptySubtitle.localized()
         case .channels:
             return String.Constants.messagingChannelsEmptySubtitle.localized()
         }

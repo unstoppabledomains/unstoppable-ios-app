@@ -48,7 +48,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
     }
     
     func willDisplayItem(_ item: ChatViewController.Item) {
-        let message = item.message
+        guard let message = item.message else { return }
         guard let messageIndex = messages.firstIndex(where: { $0.id == message.id }) else {
             Debugger.printFailure("Failed to find will display message with id \(message.id) in the list", critical: true)
             return }
@@ -215,14 +215,19 @@ private extension ChatViewPresenter {
     func showData(animated: Bool, completion: EmptyCallback? = nil) {
         var snapshot = ChatSnapshot()
         
-        let groupedMessages = [Date : [MessagingChatMessageDisplayInfo]].init(grouping: messages, by: { $0.time.dayStart })
-        let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })
-        
-        for date in sortedDates {
-            let messages = groupedMessages[date] ?? []
-            let title = MessageDateFormatter.formatMessagesSectionDate(date)
-            snapshot.appendSections([.messages(title: title)])
-            snapshot.appendItems(messages.sorted(by: { $0.time < $1.time }).map({ createSnapshotItemFrom(message: $0) }))
+        if messages.isEmpty {
+            snapshot.appendSections([.emptyState])
+            snapshot.appendItems([.emptyState])
+        } else {
+            let groupedMessages = [Date : [MessagingChatMessageDisplayInfo]].init(grouping: messages, by: { $0.time.dayStart })
+            let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })
+            
+            for date in sortedDates {
+                let messages = groupedMessages[date] ?? []
+                let title = MessageDateFormatter.formatMessagesSectionDate(date)
+                snapshot.appendSections([.messages(title: title)])
+                snapshot.appendItems(messages.sorted(by: { $0.time < $1.time }).map({ createSnapshotItemFrom(message: $0) }))
+            }
         }
         
         view?.applySnapshot(snapshot, animated: animated, completion: completion)

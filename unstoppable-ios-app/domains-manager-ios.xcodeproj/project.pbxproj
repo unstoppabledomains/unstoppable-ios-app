@@ -1317,6 +1317,14 @@
 		C629A4712A3FF5CE00A528A1 /* ChatBaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */; };
 		C629A4722A3FF5CE00A528A1 /* ChatBaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */; };
 		C629A4732A3FF5CE00A528A1 /* ChatBaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */; };
+		C629A4772A40126400A528A1 /* ChatEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A4752A40126400A528A1 /* ChatEmptyCell.swift */; };
+		C629A4782A40126400A528A1 /* ChatEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A4752A40126400A528A1 /* ChatEmptyCell.swift */; };
+		C629A4792A40126400A528A1 /* ChatEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A4752A40126400A528A1 /* ChatEmptyCell.swift */; };
+		C629A47A2A40126400A528A1 /* ChatEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A4752A40126400A528A1 /* ChatEmptyCell.swift */; };
+		C629A47B2A40126400A528A1 /* ChatEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C629A4762A40126400A528A1 /* ChatEmptyCell.xib */; };
+		C629A47C2A40126400A528A1 /* ChatEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C629A4762A40126400A528A1 /* ChatEmptyCell.xib */; };
+		C629A47D2A40126400A528A1 /* ChatEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C629A4762A40126400A528A1 /* ChatEmptyCell.xib */; };
+		C629A47E2A40126400A528A1 /* ChatEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C629A4762A40126400A528A1 /* ChatEmptyCell.xib */; };
 		C62C3F8B283F34B90094FC93 /* ResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */; };
 		C62C3F8C283F34B90094FC93 /* ResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */; };
 		C62C3F8D283F34B90094FC93 /* ResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */; };
@@ -4232,6 +4240,8 @@
 		C629A4652A3FF4A600A528A1 /* ChatImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatImageCell.swift; sourceTree = "<group>"; };
 		C629A4662A3FF4A600A528A1 /* ChatImageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatImageCell.xib; sourceTree = "<group>"; };
 		C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBaseCell.swift; sourceTree = "<group>"; };
+		C629A4752A40126400A528A1 /* ChatEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatEmptyCell.swift; sourceTree = "<group>"; };
+		C629A4762A40126400A528A1 /* ChatEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatEmptyCell.xib; sourceTree = "<group>"; };
 		C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResendCodeButton.swift; sourceTree = "<group>"; };
 		C62C3F8F283F35610094FC93 /* CodeVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationView.swift; sourceTree = "<group>"; };
 		C62C3F95283F40D30094FC93 /* CodeVerificationCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationCharacterView.swift; sourceTree = "<group>"; };
@@ -6062,6 +6072,15 @@
 			path = ChatImageCell;
 			sourceTree = "<group>";
 		};
+		C629A4742A40125200A528A1 /* ChatEmptyCell */ = {
+			isa = PBXGroup;
+			children = (
+				C629A4752A40126400A528A1 /* ChatEmptyCell.swift */,
+				C629A4762A40126400A528A1 /* ChatEmptyCell.xib */,
+			);
+			path = ChatEmptyCell;
+			sourceTree = "<group>";
+		};
 		C62C3F94283F35730094FC93 /* CodeVerificationView */ = {
 			isa = PBXGroup;
 			children = (
@@ -6570,6 +6589,7 @@
 		C65272592A15DD5E001A084C /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				C629A4742A40125200A528A1 /* ChatEmptyCell */,
 				C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */,
 				C629A4642A3FF49800A528A1 /* ChatImageCell */,
 				C652726F2A15FB95001A084C /* ChatTextCell */,
@@ -8724,6 +8744,7 @@
 				C6D0F43C283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.xib in Resources */,
 				C6C57C582869DC810093FD8C /* WallpaperDomainImagePreviewView.xib in Resources */,
 				C665B9C528335812005E535C /* ListItemView.xib in Resources */,
+				C629A47B2A40126400A528A1 /* ChatEmptyCell.xib in Resources */,
 				C65272552A15D938001A084C /* ChatViewController.xib in Resources */,
 				C664B6642914FAC100A76154 /* DomainProfileNoSocialsCell.xib in Resources */,
 				C6AD181328D319BF0008A479 /* CollectionViewShowHideCell.xib in Resources */,
@@ -8935,6 +8956,7 @@
 				C6D9E29028533788002CDAC2 /* UDDomainSharingCardView.xib in Resources */,
 				C60982C1282A775000546392 /* EnterBackupViewController.xib in Resources */,
 				C61B3E96283E708500500B6D /* EnterEmailVerificationCodeViewController.xib in Resources */,
+				C629A47D2A40126400A528A1 /* ChatEmptyCell.xib in Resources */,
 				C6CF33922A2F217800851426 /* ChatListDataTypeSelectionCell.xib in Resources */,
 				C6C9DEA62834B56200BAC36F /* ManageDomainLoadingCell.xib in Resources */,
 				C6124CC42922283D005E6537 /* DomainProfileActionCoverViewController.xib in Resources */,
@@ -9071,6 +9093,7 @@
 				C665B9C828335812005E535C /* ListItemView.xib in Resources */,
 				C6AD181628D319BF0008A479 /* CollectionViewShowHideCell.xib in Resources */,
 				306DB21C268B2BFE009D95DE /* uns-config.json in Resources */,
+				C629A47E2A40126400A528A1 /* ChatEmptyCell.xib in Resources */,
 				C65272582A15D938001A084C /* ChatViewController.xib in Resources */,
 				C664B6672914FAC100A76154 /* DomainProfileNoSocialsCell.xib in Resources */,
 				C685A96228409AFE00E54044 /* MintDomainsConfigurationCardCell.xib in Resources */,
@@ -9237,6 +9260,7 @@
 				C6C57C592869DC810093FD8C /* WallpaperDomainImagePreviewView.xib in Resources */,
 				C665B9C628335812005E535C /* ListItemView.xib in Resources */,
 				C6AD181428D319BF0008A479 /* CollectionViewShowHideCell.xib in Resources */,
+				C629A47C2A40126400A528A1 /* ChatEmptyCell.xib in Resources */,
 				C65272562A15D938001A084C /* ChatViewController.xib in Resources */,
 				C664B6652914FAC100A76154 /* DomainProfileNoSocialsCell.xib in Resources */,
 				30AE850A257836E2003A0142 /* LaunchScreen.storyboard in Resources */,
@@ -9930,6 +9954,7 @@
 				C671E38E28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */,
 				C60982672824012200546392 /* EnterBackupCreateLocalWalletPresenter.swift in Sources */,
 				304C66CF2807F1E800E1ACFE /* OnboardingData.swift in Sources */,
+				C629A4772A40126400A528A1 /* ChatEmptyCell.swift in Sources */,
 				C6EA6D6828B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
 				C6E04152295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift in Sources */,
 				C666E0C329CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
@@ -10435,6 +10460,7 @@
 				29BECD1F2979BE8800662FC1 /* SecureHashStorage.swift in Sources */,
 				C685A94B28408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift in Sources */,
 				C66A26E828B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift in Sources */,
+				C629A4792A40126400A528A1 /* ChatEmptyCell.swift in Sources */,
 				C664B6452913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */,
 				C6109E5228E5AC310027D5D8 /* WalletConnectClientService.swift in Sources */,
 				C63F1D1328AF31D5000A5C12 /* AnalyticsService.swift in Sources */,
@@ -11158,6 +11184,7 @@
 				C63902C528E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */,
 				C672FD7D2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */,
 				C671E3A428FEA2D200A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
+				C629A47A2A40126400A528A1 /* ChatEmptyCell.swift in Sources */,
 				C66FCCF62844863E009B9525 /* UDGradientCoverView.swift in Sources */,
 				C61B3E75283E43D000500B6D /* EnterEmailViewPresenter.swift in Sources */,
 				C655D022284630A100E80A65 /* DataAggregatorService.swift in Sources */,
@@ -12262,6 +12289,7 @@
 				C671E38F28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */,
 				304C66D02807F1E800E1ACFE /* OnboardingData.swift in Sources */,
 				C6EA6D6928B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
+				C629A4782A40126400A528A1 /* ChatEmptyCell.swift in Sources */,
 				C66FCD1428450A8F009B9525 /* GIFAnimationImageView.swift in Sources */,
 				C6E04153295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift in Sources */,
 				C666E0C429CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
