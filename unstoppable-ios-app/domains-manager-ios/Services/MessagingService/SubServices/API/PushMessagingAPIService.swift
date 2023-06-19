@@ -46,30 +46,39 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {
-        let wallet = user.wallet
-        let pushChats = try await pushRESTService.getChats(for: wallet,
-                                                           page: page,
-                                                           limit: limit,
-                                                           isRequests: false)
+        let pushChats = try await getPushChatsForUser(user,
+                                                      page: page,
+                                                      limit: limit,
+                                                      isRequests: false)
         
         let chats = pushChats.compactMap({ PushEntitiesTransformer.convertPushChatToChat($0,
                                                                                          userId: user.id,
-                                                                                         userWallet: wallet,
+                                                                                         userWallet: user.wallet,
                                                                                          isApproved: true) })
         return chats
+    }
+    
+    private func getPushChatsForUser(_ user: MessagingChatUserProfile,
+                                     page: Int,
+                                     limit: Int,
+                                     isRequests: Bool) async throws -> [PushChat] {
+        let wallet = user.wallet
+        return try await pushRESTService.getChats(for: wallet,
+                                                  page: page,
+                                                  limit: limit,
+                                                  isRequests: isRequests)
     }
     
     func getChatRequestsForUser(_ user: MessagingChatUserProfile,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChat] {
-        let wallet = user.wallet
-        let pushChats = try await pushRESTService.getChats(for: wallet,
-                                                           page: page,
-                                                           limit: limit,
-                                                           isRequests: true)
+        let pushChats = try await getPushChatsForUser(user,
+                                                      page: page,
+                                                      limit: limit,
+                                                      isRequests: true)
         let chats = pushChats.compactMap({ PushEntitiesTransformer.convertPushChatToChat($0,
                                                                                          userId: user.id,
-                                                                                         userWallet: wallet,
+                                                                                         userWallet: user.wallet,
                                                                                          isApproved: false) })
         return chats
     }
@@ -157,20 +166,14 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat,
                      by user: MessagingChatUserProfile) async throws -> MessagingChatMessage {
-        let env = getCurrentPushEnvironment()
-        let pushMessageContent = try getPushMessageContentFrom(displayType: messageType)
-        let pushMessageType = getPushMessageTypeFrom(displayType: messageType)
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
         switch chat.displayInfo.type {
         case .private(let otherUserDetails):
             let receiver = otherUserDetails.otherUser
-            let sendOptions = Push.PushChat.SendOptions(messageContent: pushMessageContent,
-                                                        messageType: pushMessageType.rawValue,
-                                                        receiverAddress: receiver.wallet,
-                                                        account: user.wallet,
-                                                        pgpPrivateKey: pgpPrivateKey,
-                                                        env: env)
+            let sendOptions = try await buildPushSendOptions(for: messageType,
+                                                        receiver: receiver.wallet,
+                                                        by: user)
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
             let isConversationFirst = chatMetadata.threadHash == nil
             
@@ -190,6 +193,31 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         case .group(let groupDetails):
             throw PushMessagingAPIServiceError.sendMessageInGroupChatNotSupported  // <GROUP_CHAT> Group chats not supported for now
         }
+    }
+    
+    func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
+                     to userInfo: MessagingChatUserDisplayInfo,
+                     by user: MessagingChatUserProfile) async throws -> (MessagingChat, MessagingChatMessage) {
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        let sendOptions = try await buildPushSendOptions(for: messageType,
+                                                         receiver: userInfo.wallet,
+                                                         by: user)
+        let message = try await Push.PushChat.sendIntent(sendOptions)
+        let pushChats = try await getPushChatsForUser(user, page: 1, limit: 4, isRequests: false)
+        
+        guard let pushChat = pushChats.first(where: { $0.threadhash == message.link }),// TODO: - cid instead of link
+              let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
+                                                                       userId: user.id,
+                                                                       userWallet: user.wallet,
+                                                                       isApproved: true),
+              let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
+                                                                                        in: chat,
+                                                                                        pgpKey: pgpPrivateKey,
+                                                                                        isRead: true) else {
+            throw PushMessagingAPIServiceError.failedToConvertPushMessage
+        }
+        
+        return (chat, chatMessage)
     }
     
     func makeChatRequest(_ chat: MessagingChat,
@@ -281,6 +309,23 @@ private extension PushMessagingAPIService {
         }
         
         return domain
+    }
+    
+    func buildPushSendOptions(for messageType: MessagingChatMessageDisplayType,
+                                 receiver: String,
+                                 by user: MessagingChatUserProfile) async throws -> Push.PushChat.SendOptions {
+        let env = getCurrentPushEnvironment()
+        let pushMessageContent = try getPushMessageContentFrom(displayType: messageType)
+        let pushMessageType = getPushMessageTypeFrom(displayType: messageType)
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        
+        let sendOptions = Push.PushChat.SendOptions(messageContent: pushMessageContent,
+                                                    messageType: pushMessageType.rawValue,
+                                                    receiverAddress: receiver,
+                                                    account: user.wallet,
+                                                    pgpPrivateKey: pgpPrivateKey,
+                                                    env: env)
+        return sendOptions
     }
     
     func getCurrentPushEnvironment() -> Push.ENV {

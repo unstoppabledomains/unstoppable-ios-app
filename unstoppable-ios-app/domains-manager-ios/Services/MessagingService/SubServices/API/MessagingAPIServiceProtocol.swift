@@ -28,6 +28,10 @@ protocol MessagingAPIServiceProtocol {
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat,
                      by user: MessagingChatUserProfile) async throws -> MessagingChatMessage
+    func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
+                          to userInfo: MessagingChatUserDisplayInfo,
+                          by user: MessagingChatUserProfile) async throws -> (MessagingChat, MessagingChatMessage)
+    
     func makeChatRequest(_ chat: MessagingChat,
                          approved: Bool,
                          by user: MessagingChatUserProfile) async throws

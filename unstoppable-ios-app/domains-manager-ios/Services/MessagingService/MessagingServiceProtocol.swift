@@ -26,6 +26,9 @@ protocol MessagingServiceProtocol {
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo
+    func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
+                          to userInfo: MessagingChatUserDisplayInfo,
+                          by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo)
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws

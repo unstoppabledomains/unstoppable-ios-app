@@ -1325,6 +1325,10 @@
 		C629A47C2A40126400A528A1 /* ChatEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C629A4762A40126400A528A1 /* ChatEmptyCell.xib */; };
 		C629A47D2A40126400A528A1 /* ChatEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C629A4762A40126400A528A1 /* ChatEmptyCell.xib */; };
 		C629A47E2A40126400A528A1 /* ChatEmptyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C629A4762A40126400A528A1 /* ChatEmptyCell.xib */; };
+		C629A4802A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */; };
+		C629A4812A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */; };
+		C629A4822A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */; };
+		C629A4832A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */; };
 		C62C3F8B283F34B90094FC93 /* ResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */; };
 		C62C3F8C283F34B90094FC93 /* ResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */; };
 		C62C3F8D283F34B90094FC93 /* ResendCodeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */; };
@@ -4242,6 +4246,7 @@
 		C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBaseCell.swift; sourceTree = "<group>"; };
 		C629A4752A40126400A528A1 /* ChatEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatEmptyCell.swift; sourceTree = "<group>"; };
 		C629A4762A40126400A528A1 /* ChatEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatEmptyCell.xib; sourceTree = "<group>"; };
+		C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatConversationState.swift; sourceTree = "<group>"; };
 		C62C3F8A283F34B90094FC93 /* ResendCodeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResendCodeButton.swift; sourceTree = "<group>"; };
 		C62C3F8F283F35610094FC93 /* CodeVerificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationView.swift; sourceTree = "<group>"; };
 		C62C3F95283F40D30094FC93 /* CodeVerificationCharacterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeVerificationCharacterView.swift; sourceTree = "<group>"; };
@@ -6526,6 +6531,7 @@
 				C62396942A288AD100363F60 /* MessagingChatType.swift */,
 				C62396992A288ADB00363F60 /* MessagingChatDisplayInfo.swift */,
 				C623969E2A288AE300363F60 /* MessagingChat.swift */,
+				C629A47F2A403C1C00A528A1 /* MessagingChatConversationState.swift */,
 			);
 			path = Chats;
 			sourceTree = "<group>";
@@ -9503,6 +9509,7 @@
 				C692C31B282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
 				30EFBBDC27F4754E00B8D667 /* MainButton.swift in Sources */,
 				C6F9FBD92A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */,
+				C629A4802A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */,
 				C66FCD0D2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
 				C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */,
 				C6C995B6289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */,
@@ -10784,6 +10791,7 @@
 				C6D6E4E02817BF09008C66BB /* OnboardingProtocols.swift in Sources */,
 				C669C38129124C2600837F21 /* SocialsType.swift in Sources */,
 				C6D6E59B28194AC9008C66BB /* TextTertiaryButton.swift in Sources */,
+				C629A4822A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */,
 				C6FF2DA828F02B1700148007 /* DomainProfileSectionUIChangeType.swift in Sources */,
 				C645130E280808ED00413C51 /* Codable.swift in Sources */,
 				C6EA6D6528B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */,
@@ -11646,6 +11654,7 @@
 				C6FECF49282D0694008DAA49 /* ResizableRoundedImageView.swift in Sources */,
 				C6EECE9A2833A3E400978ED5 /* CoinRecord.swift in Sources */,
 				29DE3B1628913DF500655675 /* Env.swift in Sources */,
+				C629A4832A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */,
 				C6420BFD28AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift in Sources */,
 				C60E9B8E2821193400CD7593 /* WalletsListViewController.swift in Sources */,
 				C617370329D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */,
@@ -11838,6 +11847,7 @@
 				C692C31C282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
 				30EFBBDD27F4754E00B8D667 /* MainButton.swift in Sources */,
 				C6F9FBDA2A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */,
+				C629A4812A403C1C00A528A1 /* MessagingChatConversationState.swift in Sources */,
 				C66FCD0E2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
 				C6F6AF5A28A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */,
 				C6C995B7289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */,
