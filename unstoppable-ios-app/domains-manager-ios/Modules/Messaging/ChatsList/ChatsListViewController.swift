@@ -308,6 +308,11 @@ private extension ChatsListViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .userInfo(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
         
@@ -419,6 +424,7 @@ extension ChatsListViewController {
         case channel(configuration: ChannelUIConfiguration)
         case createProfile
         case emptyState(configuration: EmptyStateUIConfiguration)
+        case userInfo(configuration: UserInfoUIConfiguration)
     }
     
     struct ChatUIConfiguration: Hashable {
@@ -470,13 +476,16 @@ extension ChatsListViewController {
         let numberOfRequests: Int
     }
     
-    
     struct ChannelUIConfiguration: Hashable {
         let channel: MessagingNewsChannel
     }
     
     struct EmptyStateUIConfiguration: Hashable {
         let dataType: DataType
+    }
+    
+    struct UserInfoUIConfiguration: Hashable {
+        let userInfo: MessagingChatUserDisplayInfo
     }
     
     enum State {

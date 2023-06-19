@@ -69,6 +69,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             showChatRequests()
         case .channel(let configuration):
             openChannel(configuration.channel)
+        case .userInfo(let configuration):
+            return // TODO: - Open new chat with selected user
         case .dataTypeSelection, .createProfile, .emptyState:
             return
         }
@@ -118,6 +120,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         Task {
             do {
                 let searchUsers = try await searchManager.searchForUsers(with: key)
+                searchData.searchUsers = searchUsers
+                showData()
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
@@ -130,7 +134,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     }
     
     func didStopSearch() {
-        self.searchData.isSearchActive = false
+        self.searchData = SearchData()
         didSearchWith(key: "")
         showData()
     }
@@ -276,8 +280,7 @@ private extension ChatsListViewPresenter {
             fillSnapshotForUserWithoutProfile(&snapshot)
         } else {
             if searchData.isSearchActive {
-                fillSnapshotForSearchActiveState(&snapshot,
-                                                 searchKey: searchData.searchKey)
+                fillSnapshotForSearchActiveState(&snapshot)
             } else {
                 let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
                 snapshot.appendSections([.dataTypeSelection])
@@ -331,15 +334,29 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    func fillSnapshotForSearchActiveState(_ snapshot: inout ChatsListSnapshot,
-                                          searchKey: String) {
-        var people = [MessagingChatDisplayInfo]()
+    func fillSnapshotForSearchActiveState(_ snapshot: inout ChatsListSnapshot) {
+        enum PeopleSearchResult {
+            case existingChat(MessagingChatDisplayInfo)
+            case newUser(MessagingChatUserDisplayInfo)
+            
+            var item: ChatsListViewController.Item {
+                switch self {
+                case .existingChat(let chat):
+                    return .chat(configuration: .init(chat: chat))
+                case .newUser(let userInfo):
+                    return .userInfo(configuration: .init(userInfo: userInfo))
+                }
+            }
+        }
+        
+        
+        var people = [PeopleSearchResult]()
         var channels = [MessagingNewsChannel]()
-        if searchKey.isEmpty {
-            people = chatsList
+        if searchData.searchKey.isEmpty {
+            people = chatsList.map({ .existingChat($0) })
             channels = self.channels
         } else {
-            
+            people = searchData.searchUsers.map({ .newUser($0) })
         }
         
         if people.isEmpty && channels.isEmpty {
@@ -348,7 +365,7 @@ private extension ChatsListViewPresenter {
         } else {
             if !people.isEmpty {
                 snapshot.appendSections([.listItems(title: "People")])
-                snapshot.appendItems(people.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+                snapshot.appendItems(people.map({ $0.item }))
             }
             if !channels.isEmpty {
                 snapshot.appendSections([.listItems(title: "Apps")])
@@ -442,6 +459,7 @@ private extension ChatsListViewPresenter {
     struct SearchData {
         var isSearchActive = false
         var searchKey: String = ""
+        var searchUsers: [MessagingChatUserDisplayInfo] = []
     }
 }
 
