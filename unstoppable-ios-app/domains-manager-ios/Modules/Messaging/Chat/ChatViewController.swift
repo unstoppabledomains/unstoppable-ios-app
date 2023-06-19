@@ -31,7 +31,8 @@ final class ChatViewController: BaseViewController {
     private var titleView: ChatTitleView!
 
     override var scrollableContentYOffset: CGFloat? { 13 }
-    var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self,
+                                                        ChatImageCell.self] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
     private var scrollingInfo: ScrollingInfo?
@@ -242,6 +243,11 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .imageBase64Message(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatImageCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
         
@@ -300,10 +306,13 @@ extension ChatViewController {
     
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
+        case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
         
         var message: MessagingChatMessageDisplayInfo {
             switch self {
             case .textMessage(let configuration):
+                return configuration.message
+            case .imageBase64Message(let configuration):
                 return configuration.message
             }
         }
@@ -323,6 +332,23 @@ extension ChatViewController {
         func hash(into hasher: inout Hasher) {
             hasher.combine(message)
             hasher.combine(textMessageDisplayInfo)
+        }
+    }
+
+    struct ImageBase64MessageUIConfiguration: Hashable {
+        
+        let message: MessagingChatMessageDisplayInfo
+        let imageMessageDisplayInfo: MessagingChatMessageImageBase64TypeDisplayInfo
+        var actionCallback: (ChatMessageAction)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.message == rhs.message &&
+            lhs.imageMessageDisplayInfo == rhs.imageMessageDisplayInfo
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(message)
+            hasher.combine(imageMessageDisplayInfo)
         }
     }
     

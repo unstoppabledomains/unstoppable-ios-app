@@ -7,19 +7,15 @@
 
 import UIKit
 
-final class ChatTextCell: UICollectionViewCell {
+final class ChatTextCell: ChatBaseCell {
 
     @IBOutlet private weak var bubbleContainerView: UIView!
-    @IBOutlet private weak var containerView: UIView!
     @IBOutlet private weak var messageTextView: UITextView!
     @IBOutlet private weak var timeLabel: UILabel!
     @IBOutlet private weak var timeStackView: UIStackView!
     @IBOutlet private weak var deleteButton: FABRaisedTertiaryButton!
     
-    private var textViewSideConstraints: [NSLayoutConstraint] = []
-    private var sender: MessagingChatSender?
     private var timeLabelTapGesture: UITapGestureRecognizer?
-    private var actionCallback: ((ChatViewController.ChatMessageAction)->())?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -92,28 +88,14 @@ extension ChatTextCell {
         messageTextView.linkTextAttributes = [.foregroundColor: messageColor,
                                               .underlineStyle: NSUnderlineStyle.single.rawValue]
         
-        guard sender != textMessage.senderType else {
-            return }
+        setWith(message: configuration.message)
         
-        self.removeConstraints(textViewSideConstraints)
-        let leadingConstraint: NSLayoutConstraint
-        let trailingConstraint: NSLayoutConstraint
         if textMessage.senderType.isThisUser {
-            leadingConstraint = containerView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 24)
-            trailingConstraint = trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 8)
-            containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
             timeStackView.alignment = .trailing
         } else {
-            leadingConstraint = containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
-            trailingConstraint = trailingAnchor.constraint(greaterThanOrEqualTo: containerView.trailingAnchor, constant: 24)
-            containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
             timeStackView.alignment = .leading
         }
         setBubbleUI(sender: textMessage.senderType)
-        
-        self.sender = textMessage.senderType
-        textViewSideConstraints = [leadingConstraint, trailingConstraint]
-        NSLayoutConstraint.activate(textViewSideConstraints)
     }
 }
 

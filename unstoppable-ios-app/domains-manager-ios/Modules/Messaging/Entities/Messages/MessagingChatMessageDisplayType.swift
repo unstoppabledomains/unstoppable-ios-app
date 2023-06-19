@@ -9,5 +9,6 @@ import Foundation
 
 enum MessagingChatMessageDisplayType: Hashable {
     case text(MessagingChatMessageTextTypeDisplayInfo)
-    // "Image" | "File" | "GIF"
+    case imageBase64(MessagingChatMessageImageBase64TypeDisplayInfo)
+    // "File" | "GIF"
 }

@@ -234,6 +234,10 @@ private extension ChatViewPresenter {
             return .textMessage(configuration: .init(message: message, textMessageDisplayInfo: textMessageDisplayInfo, actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
+        case .imageBase64(let imageMessageDisplayInfo):
+            return .imageBase64Message(configuration: .init(message: message, imageMessageDisplayInfo: imageMessageDisplayInfo, actionCallback: { [weak self] action in                
+                self?.handleChatMessageAction(action, forMessage: message)
+            }))
         }
     }
     

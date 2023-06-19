@@ -276,6 +276,12 @@ extension UIImage {
 }
 
 extension UIImage {
+    static func from(base64String: String) async -> UIImage? {
+        guard let dataDecoded = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters) else { return nil }
+
+        return await createWith(anyData: dataDecoded)
+    }
+    
     static func createWith(anyData data: Data) async -> UIImage? {
         if let gif = await GIFAnimationsService.shared.createGIFImageWithData(data) {
             return gif

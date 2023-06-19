@@ -84,6 +84,8 @@ private extension ChatListCell {
         switch message.type {
         case .text(let description):
             return description.text
+        case .imageBase64:
+            return "Image" // TODO: - Localize 
         }
     }
     

@@ -303,6 +303,8 @@ private extension PushMessagingAPIService {
         switch displayType {
         case .text(let details):
             return details.text
+        case .imageBase64(let details):
+            return details.base64
         }
     }
     
@@ -310,6 +312,8 @@ private extension PushMessagingAPIService {
         switch displayType {
         case .text:
             return .text
+        case .imageBase64:
+            return .image
         }
     }
 }

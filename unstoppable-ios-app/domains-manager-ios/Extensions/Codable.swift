@@ -44,6 +44,24 @@ extension Decodable {
         }
     }
     
+    static func objectFromJSONString(_ jsonString: String,
+                               using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                     dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601,
+                                     encoding: String.Encoding = .utf8) -> Self? {
+        genericObjectFromJSONString(jsonString, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy, encoding: encoding)
+    }
+    
+    static func genericObjectFromJSONString<T: Decodable>(_ jsonString: String,
+                                                    using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                                          dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601,
+                                                          encoding: String.Encoding = .utf8) -> T? {
+        guard let jsonData = jsonString.data(using: encoding) else {
+            Debugger.printInfo("Failed to parse jsonString to entity")
+            return nil
+        }
+        return genericObjectFromData(jsonData, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy)
+    }
+    
     static func genericObjectFromData<T: Decodable>(_ data: Data,
                                                     using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                     dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) -> T? {
