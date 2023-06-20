@@ -294,7 +294,8 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         if User.instance.getSettings().isTestnetUsed {
             let mockRRDomainsDict = ["0x557fc13812460e5414d9881cb3659902e9501041" : "atest2.blockchain",
                                      "0x537e2eb956aec859c99b3e5e28d8e45200c4fa52" : "one.x",
-                                     "0x84585360d34f6c72be438fdde7147d27d2a85f9f" : "olegtest5.x"]
+                                     "0x84585360d34f6c72be438fdde7147d27d2a85f9f" : "olegtest5.x",
+                                     "0xde8de8154acb1ff4b66078576a1f1da6d0b674cb" : "longlonglonglongdomainname.bitcoin"]
             if let name = mockRRDomainsDict[walletAddress]  {
                 return name
             }

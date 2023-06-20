@@ -350,7 +350,7 @@ private extension ChatViewController {
                 item.contentInsets = .zero
                 let containerGroup = NSCollectionLayoutGroup.horizontal(
                     layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                       heightDimension: .fractionalHeight(1)),
+                                                       heightDimension: .fractionalHeight(0.5)),
                     subitems: [item])
                 return NSCollectionLayoutSection(group: containerGroup)
             }

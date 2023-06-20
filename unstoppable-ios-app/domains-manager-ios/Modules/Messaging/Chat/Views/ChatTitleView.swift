@@ -30,7 +30,9 @@ final class ChatTitleView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let titleWidth = calculateTitleLabelWidth()
+        let titleRequiredWidth = calculateTitleLabelWidth()
+        let titleMaxWidth = UIScreen.main.bounds.width * 0.5
+        let titleWidth = min(titleMaxWidth, titleRequiredWidth)
         let titleX = iconImageView.frame.maxX + 8
         titleLabel.frame = CGRect(x: titleX,
                                   y: 0,
@@ -94,7 +96,8 @@ private extension ChatTitleView {
     func setTitle(_ title: String) {
         titleLabel.setAttributedTextWith(text: title,
                                          font: .currentFont(withSize: 16, weight: .semibold),
-                                         textColor: .foregroundDefault)
+                                         textColor: .foregroundDefault,
+                                         lineBreakMode: .byTruncatingTail)
     }
     
     func setIconWithInitialsFor(name: String) {

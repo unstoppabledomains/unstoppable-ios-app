@@ -38,7 +38,9 @@ final class ChatsListNavigationView: UIView {
         imageView.frame.origin = CGPoint(x: 0,
                                          y: imageY)
 
-        let titleWidth = calculateTitleButtonWidth()
+        let titleRequiredWidth = calculateTitleButtonWidth()
+        let titleMaxWidth = UIScreen.main.bounds.width * 0.5
+        let titleWidth = min(titleMaxWidth, titleRequiredWidth)
         titleButton.frame = CGRect(x: imageView.frame.maxX + elementsSpacing,
                                    y: 0,
                                    width: titleWidth,
@@ -76,7 +78,8 @@ private extension ChatsListNavigationView {
         let title = getTitleFor(wallet: wallet)
         titleButton.setAttributedTextWith(text: title,
                                           font: titleFont,
-                                          textColor: .foregroundDefault)
+                                          textColor: .foregroundDefault,
+                                          lineBreakMode: .byTruncatingTail)
         Task { imageView.image = await getAvatarImageFor(wallet: wallet) }
     }
 
