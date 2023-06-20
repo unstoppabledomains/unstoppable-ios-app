@@ -10,6 +10,7 @@ import Foundation
 protocol MessagingStorageServiceProtocol {
     // User Profile
     func getUserProfileFor(domain: DomainItem) throws -> MessagingChatUserProfile
+    func getUserProfileWith(userId: String) throws -> MessagingChatUserProfile
     func saveUserProfile(_ profile: MessagingChatUserProfile) async
     
     // Messages
@@ -50,9 +51,13 @@ protocol MessagingStorageServiceProtocol {
     func getChannelsFor(profile: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
     func saveChannels(_ channels: [MessagingNewsChannel],
                       for profile: MessagingChatUserProfile) async
+    func replaceChannel(_ channelToReplace: MessagingNewsChannel,
+                        with newChat: MessagingNewsChannel) async throws
     
     // Channels Feed
-    func getChannelsFeedFor(channel: MessagingNewsChannel) async throws -> [MessagingNewsChannelFeed]
+    func getChannelsFeedFor(channel: MessagingNewsChannel,
+                            page: Int,
+                            limit: Int) async throws -> [MessagingNewsChannelFeed]
     func saveChannelsFeed(_ feed: [MessagingNewsChannelFeed],
                           in channel: MessagingNewsChannel) async
 }

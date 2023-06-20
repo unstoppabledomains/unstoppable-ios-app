@@ -51,12 +51,11 @@
         <attribute name="url" attributeType="URI" defaultValueString=""/>
         <attribute name="userId" attributeType="String" defaultValueString=""/>
         <attribute name="verifiedStatus" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="wallet" attributeType="String" defaultValueString=""/>
         <relationship name="lastFeed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannelFeed" inverseName="lastInChannel" inverseEntity="CoreDataMessagingNewsChannelFeed"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
-                <constraint value="wallet"/>
+                <constraint value="userId"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

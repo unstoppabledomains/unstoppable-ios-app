@@ -221,13 +221,50 @@ extension MessagingService: MessagingServiceProtocol {
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
                     limit: Int) async throws -> [MessagingNewsChannelFeed] {
-        let storedFeed = try await storageService.getChannelsFeedFor(channel: channel)
-        let feed = try await apiService.getFeedFor(channel: channel,
-                                                   page: page,
-                                                   limit: limit)
-        
-        
-        return feed
+        let storedFeed = try await storageService.getChannelsFeedFor(channel: channel,
+                                                                     page: page,
+                                                                     limit: limit)
+        if channel.isUpToDate {
+            if storedFeed.isEmpty {
+                let loadedFeed = try await apiService.getFeedFor(channel: channel,
+                                                                 page: page,
+                                                                 limit: limit)
+                await storageService.saveChannelsFeed(loadedFeed,
+                                                      in: channel)
+                return loadedFeed
+            } else {
+                return storedFeed
+            }
+        } else if let latestLocalFeed = storedFeed.last {
+            var preLoadPage = 1
+            let preLoadLimit = 30
+            var preloadedFeed = [MessagingNewsChannelFeed]()
+            while true {
+                let feed = try await apiService.getFeedFor(channel: channel,
+                                                           page: preLoadPage,
+                                                           limit: preLoadLimit)
+                if let i = feed.firstIndex(where: { $0.id == latestLocalFeed.id }) {
+                    let missedChunk = feed[0..<i]
+                    preloadedFeed.append(contentsOf: missedChunk)
+                    break
+                } else {
+                    preloadedFeed.append(contentsOf: feed)
+                    preLoadPage += 1
+                }
+            }
+            
+            await storageService.saveChannelsFeed(preloadedFeed,
+                                                  in: channel)
+            
+            var updatedChannel = channel
+            updatedChannel.isUpToDate = true
+            try await storageService.replaceChannel(channel, with: updatedChannel)
+            notifyChannelsChanged(userId: channel.userId)
+            
+            return preloadedFeed
+        } else {
+            return []
+        }
     }
     
     // Search
@@ -607,6 +644,16 @@ private extension MessagingService {
                 let chat = try await getMessagingChatWith(chatId: chatId)
                 let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
                 refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
+            } catch { }
+        }
+    }
+    
+    func notifyChannelsChanged(userId: String) {
+        Task {
+            do {
+                let profile = try storageService.getUserProfileWith(userId: userId)
+                let channels = try await storageService.getChannelsFor(profile: profile)
+                notifyListenersChangedDataType(.channels(channels, profile: profile.displayInfo))
             } catch { }
         }
     }

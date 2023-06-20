@@ -20,8 +20,17 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func getUserProfileFor(domain: DomainItem) throws -> MessagingChatUserProfile {
         try queue.sync {
             guard let wallet = domain.ownerWallet else { throw Error.domainWithoutWallet }
-            if let coreDataMessage: CoreDataMessagingUserProfile = getCoreDataEntityWith(key: "normalizedWallet", value: wallet) {
-                return convertCoreDataUserProfileToMessagingUserProfile(coreDataMessage)
+            if let coreDataUserProfile: CoreDataMessagingUserProfile = getCoreDataEntityWith(key: "normalizedWallet", value: wallet) {
+                return convertCoreDataUserProfileToMessagingUserProfile(coreDataUserProfile)
+            }
+            throw Error.entityNotFound
+        }
+    }
+    
+    func getUserProfileWith(userId: String) throws -> MessagingChatUserProfile {
+        try queue.sync {
+            if let coreDataUserProfile: CoreDataMessagingUserProfile = getCoreDataEntityWith(id: userId) {
+                return convertCoreDataUserProfileToMessagingUserProfile(coreDataUserProfile)
             }
             throw Error.entityNotFound
         }
@@ -226,16 +235,34 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func saveChannels(_ channels: [MessagingNewsChannel],
                       for profile: MessagingChatUserProfile) async {
         queue.sync {
-            let _ = channels.compactMap { (try? convertMessagingChannelToCoreDataChannel($0, for: profile.wallet)) }
+            let _ = channels.compactMap { (try? convertMessagingChannelToCoreDataChannel($0)) }
+            saveContext(backgroundContext)
+        }
+    }
+    
+    func replaceChannel(_ channelToReplace: MessagingNewsChannel,
+                        with newChat: MessagingNewsChannel) async throws {
+        try queue.sync {
+            guard let coreDataChat: CoreDataMessagingNewsChannel = getCoreDataEntityWith(id: channelToReplace.id) else { throw Error.entityNotFound }
+            
+            deleteObject(coreDataChat, from: backgroundContext, shouldSaveContext: false)
+            _ = try? convertMessagingChannelToCoreDataChannel(newChat)
             saveContext(backgroundContext)
         }
     }
     
     // Channels Feed
-    func getChannelsFeedFor(channel: MessagingNewsChannel) async throws -> [MessagingNewsChannelFeed] {
+    func getChannelsFeedFor(channel: MessagingNewsChannel,
+                            page: Int,
+                            limit: Int) async throws -> [MessagingNewsChannelFeed] {
         try queue.sync {
+            let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: true)
             let predicate = NSPredicate(format: "channelId == %@", channel.id)
-            let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(predicate: predicate, from: backgroundContext)
+            let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(predicate: predicate,
+                                                                                           sortDescriptions: [timeSortDescriptor],
+                                                                                           batchDescription: .init(size: limit,
+                                                                                                                   page: page),
+                                                                                           from: backgroundContext)
             
             return coreDataChannelsFeed.compactMap { convertCoreDataChannelFeedToMessagingChannelFeed($0) }
         }
@@ -555,14 +582,12 @@ private extension CoreDataMessagingStorageService {
         return newsChannel
     }
     
-    func convertMessagingChannelToCoreDataChannel(_ channel: MessagingNewsChannel,
-                                                  for wallet: String) throws -> CoreDataMessagingNewsChannel {
+    func convertMessagingChannelToCoreDataChannel(_ channel: MessagingNewsChannel) throws -> CoreDataMessagingNewsChannel {
         let coreDataChannel: CoreDataMessagingNewsChannel = try createEntity(in: backgroundContext)
         
         coreDataChannel.id = channel.id
         coreDataChannel.userId = channel.userId
         coreDataChannel.channel = channel.channel
-        coreDataChannel.wallet = wallet
         coreDataChannel.name = channel.name
         coreDataChannel.info = channel.info
         coreDataChannel.url = channel.url
