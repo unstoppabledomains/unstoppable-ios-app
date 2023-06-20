@@ -549,6 +549,7 @@ private extension CoreDataMessagingStorageService {
                                                blocked: coreDataChannel.blocked ? 1 : 0,
                                                subscriberCount: Int(coreDataChannel.subscriberCount),
                                                unreadMessagesCount: 0,
+                                               isUpToDate: coreDataChannel.isUpToDate,
                                                lastMessage: lastMessage)
         
         return newsChannel
@@ -566,6 +567,7 @@ private extension CoreDataMessagingStorageService {
         coreDataChannel.info = channel.info
         coreDataChannel.url = channel.url
         coreDataChannel.icon = channel.icon
+        coreDataChannel.isUpToDate = channel.isUpToDate
         coreDataChannel.verifiedStatus = Int64(channel.verifiedStatus)
         coreDataChannel.blocked = channel.blocked == 1
         coreDataChannel.subscriberCount = Int64(channel.subscriberCount)
@@ -588,7 +590,8 @@ private extension CoreDataMessagingStorageService {
                                             message: coreDataNewsFeed.message!,
                                             link: coreDataNewsFeed.link!,
                                             time: coreDataNewsFeed.time!,
-                                            isRead: coreDataNewsFeed.isRead)
+                                            isRead: coreDataNewsFeed.isRead,
+                                            isFirstInChannel: coreDataNewsFeed.isFirstInChannel)
         
         return feed
     }
@@ -602,6 +605,7 @@ private extension CoreDataMessagingStorageService {
         coreDataMessage.link = channelFeed.link
         coreDataMessage.time = channelFeed.time
         coreDataMessage.isRead = channelFeed.isRead
+        coreDataMessage.isFirstInChannel = channelFeed.isFirstInChannel
         coreDataMessage.channelId = channel.id
         
         return coreDataMessage

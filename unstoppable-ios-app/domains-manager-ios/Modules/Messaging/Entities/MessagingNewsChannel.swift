@@ -22,6 +22,7 @@ struct MessagingNewsChannel: Hashable {
 //    let isAliasVerified: Int
     let subscriberCount: Int
     let unreadMessagesCount: Int
+    var isUpToDate: Bool
     var lastMessage: MessagingNewsChannelFeed?
 }
 

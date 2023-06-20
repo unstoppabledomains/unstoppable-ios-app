@@ -14,4 +14,5 @@ struct MessagingNewsChannelFeed: Hashable {
     let link: URL
     let time: Date
     var isRead: Bool
+    var isFirstInChannel: Bool
 }

@@ -84,12 +84,6 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // Messages
-    func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
-        try await storageService.getMessagesFor(chat: chatDisplayInfo,
-                                                decrypter: decrypterService).map({ $0.displayInfo })
-    }
-    
-    // Fetch limit is 30 max
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
@@ -219,6 +213,18 @@ extension MessagingService: MessagingServiceProtocol {
                                                                  page: page,
                                                                  limit: limit,
                                                                  isSpam: isSpam)
+        
+        
+        return feed
+    }
+    
+    func getFeedFor(channel: MessagingNewsChannel,
+                    page: Int,
+                    limit: Int) async throws -> [MessagingNewsChannelFeed] {
+        let storedFeed = try await storageService.getChannelsFeedFor(channel: channel)
+        let feed = try await apiService.getFeedFor(channel: channel,
+                                                   page: page,
+                                                   limit: limit)
         
         
         return feed
@@ -475,8 +481,9 @@ private extension MessagingService {
     func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
         Task {
             do {
+                let storedChannels = try await storageService.getChannelsFor(profile: profile)
                 let channels = try await apiService.getSubscribedChannelsForUser(profile)
-                let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
+                let updatedChats = await refreshChannelsMetadata(channels, storedChannels: storedChannels).sortedByLastMessage()
                 
                 await storageService.saveChannels(updatedChats, for: profile)
                 notifyListenersChangedDataType(.channels(updatedChats, profile: profile.displayInfo))
@@ -484,7 +491,8 @@ private extension MessagingService {
         }
     }
     
-    func refreshChannelsMetadata(_ channels: [MessagingNewsChannel]) async -> [MessagingNewsChannel] {
+    func refreshChannelsMetadata(_ channels: [MessagingNewsChannel],
+                                 storedChannels: [MessagingNewsChannel]) async -> [MessagingNewsChannel] {
         var updatedChannels = [MessagingNewsChannel]()
         
         await withTaskGroup(of: MessagingNewsChannel.self, body: { group in
@@ -493,10 +501,16 @@ private extension MessagingService {
                     if let lastMessage = try? await self.apiService.getFeedFor(channel: channel,
                                                                                page: 1,
                                                                                limit: 1).first {
-                        await self.storageService.saveChannelsFeed([lastMessage],
-                                                                   in: channel)
                         var updatedChannel = channel
-                        updatedChannel.lastMessage = lastMessage
+                        if let storedChannel = storedChannels.first(where: { $0.id == channel.id }),
+                           storedChannel.lastMessage?.id == lastMessage.id {
+                            updatedChannel.isUpToDate = true
+                        } else {
+                            updatedChannel.isUpToDate = false
+                            await self.storageService.saveChannelsFeed([lastMessage],
+                                                                       in: channel)
+                            updatedChannel.lastMessage = lastMessage
+                        }
                         return updatedChannel
                     } else {
                         return channel
