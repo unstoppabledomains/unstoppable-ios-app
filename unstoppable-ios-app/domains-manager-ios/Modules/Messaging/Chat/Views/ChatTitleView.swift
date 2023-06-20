@@ -58,6 +58,8 @@ extension ChatTitleView {
             setWithDomainName(domainName)
         case .walletAddress(let walletAddress):
             setWithWalletAddress(walletAddress)
+        case .channel(let channel):
+            setWithChannel(channel)
         }
         setNeedsLayout()
         layoutIfNeeded()
@@ -91,6 +93,18 @@ private extension ChatTitleView {
     func setWithWalletAddress(_ walletAddress: HexAddress) {
         setTitle(walletAddress.walletAddressTruncated)
         iconImageView.image = nil // TODO: - Update when design is ready
+    }
+    
+    func setWithChannel(_ channel: MessagingNewsChannel) {
+        setTitle(channel.name)
+        Task {
+            if let image = await appContext.imageLoadingService.loadImage(from: .url(channel.icon),
+                                                                          downsampleDescription: nil) {
+                iconImageView.image = image
+            } else {
+                setIconWithInitialsFor(name: channel.name)
+            }
+        }
     }
     
     func setTitle(_ title: String) {
@@ -137,7 +151,8 @@ private extension ChatTitleView {
 // MARK: - Open methods
 extension ChatTitleView {
     enum TitleType {
-        case domainName(_ domainName: DomainName)
-        case walletAddress(_ walletAddress: HexAddress)
+        case domainName(DomainName)
+        case walletAddress(HexAddress)
+        case channel(MessagingNewsChannel)
     }
 }

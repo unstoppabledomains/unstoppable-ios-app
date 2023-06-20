@@ -1660,6 +1660,22 @@
 		C64836C3282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */; };
 		C64836C4282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */; };
 		C64836C5282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */; };
+		C6500B3A2A41877100ACAA8C /* ChannelFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B382A41877100ACAA8C /* ChannelFeedCell.swift */; };
+		C6500B3B2A41877100ACAA8C /* ChannelFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B382A41877100ACAA8C /* ChannelFeedCell.swift */; };
+		C6500B3C2A41877100ACAA8C /* ChannelFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B382A41877100ACAA8C /* ChannelFeedCell.swift */; };
+		C6500B3D2A41877100ACAA8C /* ChannelFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B382A41877100ACAA8C /* ChannelFeedCell.swift */; };
+		C6500B3E2A41877100ACAA8C /* ChannelFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6500B392A41877100ACAA8C /* ChannelFeedCell.xib */; };
+		C6500B3F2A41877100ACAA8C /* ChannelFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6500B392A41877100ACAA8C /* ChannelFeedCell.xib */; };
+		C6500B402A41877100ACAA8C /* ChannelFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6500B392A41877100ACAA8C /* ChannelFeedCell.xib */; };
+		C6500B412A41877100ACAA8C /* ChannelFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6500B392A41877100ACAA8C /* ChannelFeedCell.xib */; };
+		C6500B432A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */; };
+		C6500B442A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */; };
+		C6500B452A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */; };
+		C6500B462A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */; };
+		C6500B482A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */; };
+		C6500B492A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */; };
+		C6500B4A2A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */; };
+		C6500B4B2A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */; };
 		C650AC3D298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C650AC3E298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C650AC3F298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
@@ -4331,6 +4347,10 @@
 		C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpViewService.swift; sourceTree = "<group>"; };
 		C64836BC282BCAFB007BD3F1 /* PrimaryDangerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryDangerButton.swift; sourceTree = "<group>"; };
 		C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCopyAddressAction.swift; sourceTree = "<group>"; };
+		C6500B382A41877100ACAA8C /* ChannelFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChannelFeedCell.swift; path = ../../../../../../../../../Xcode/TranscribePro/TranscribePro/ChannelFeedCell.swift; sourceTree = "<group>"; };
+		C6500B392A41877100ACAA8C /* ChannelFeedCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ChannelFeedCell.xib; path = ../../../../../../../../../Xcode/TranscribePro/TranscribePro/ChannelFeedCell.xib; sourceTree = "<group>"; };
+		C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostPrimaryButton.swift; sourceTree = "<group>"; };
+		C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelViewPresenter.swift; sourceTree = "<group>"; };
 		C650AC3C298105C900A398AB /* UDSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDSegmentedControl.swift; sourceTree = "<group>"; };
 		C650AC412983B20D00A398AB /* AppReviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewService.swift; sourceTree = "<group>"; };
 		C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileGeneralData.swift; sourceTree = "<group>"; };
@@ -6410,6 +6430,15 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
+		C6500B372A41875E00ACAA8C /* ChannelFeedCell */ = {
+			isa = PBXGroup;
+			children = (
+				C6500B382A41877100ACAA8C /* ChannelFeedCell.swift */,
+				C6500B392A41877100ACAA8C /* ChannelFeedCell.xib */,
+			);
+			path = ChannelFeedCell;
+			sourceTree = "<group>";
+		};
 		C650BC0728F3F88400AD6733 /* Sections */ = {
 			isa = PBXGroup;
 			children = (
@@ -6583,6 +6612,7 @@
 			isa = PBXGroup;
 			children = (
 				C652724A2A15D938001A084C /* ChatViewPresenter.swift */,
+				C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */,
 				C652724B2A15D938001A084C /* ChatViewController.swift */,
 				C652724C2A15D938001A084C /* ChatViewController.xib */,
 				C6B366B42A173AB000DE512B /* CollectionReusableViews */,
@@ -6596,6 +6626,7 @@
 			isa = PBXGroup;
 			children = (
 				C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */,
+				C6500B372A41875E00ACAA8C /* ChannelFeedCell */,
 				C629A4742A40125200A528A1 /* ChatEmptyCell */,
 				C629A4642A3FF49800A528A1 /* ChatImageCell */,
 				C652726F2A15FB95001A084C /* ChatTextCell */,
@@ -6765,6 +6796,7 @@
 				C6D5DAC728365A3400379C38 /* FABCounterButton.swift */,
 				C60686372A30BCD400927396 /* FABRaisedTertiaryButton.swift */,
 				C6E041CD29554C370080F8E3 /* GhostTertiaryButton.swift */,
+				C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */,
 				C63A77A728F40B6A00F66E72 /* GhostTertiaryWhiteButton.swift */,
 				C666893628114D7A002062B4 /* LinkButton.swift */,
 				30EFBBDB27F4754E00B8D667 /* MainButton.swift */,
@@ -8638,6 +8670,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C666E0A529CB3FEA0003DECB /* ParkedDomainCell.xib in Resources */,
+				C6500B3E2A41877100ACAA8C /* ChannelFeedCell.xib in Resources */,
 				C6C1EC6A2A3B09E2005EB37D /* ChatListEmptyCell.xib in Resources */,
 				C628E31B27FDA3270044E408 /* Inter-ExtraLight.ttf in Resources */,
 				C642A6B9284118E800299C6E /* MintingDomainListCell.xib in Resources */,
@@ -8899,6 +8932,7 @@
 				C60982D6282A7A8E00546392 /* AddWalletViewController.xib in Resources */,
 				C645131D28096CB600413C51 /* Localizable.stringsdict in Resources */,
 				C6C57C492869C0A50093FD8C /* UDDomainSharingWatchCardView.xib in Resources */,
+				C6500B402A41877100ACAA8C /* ChannelFeedCell.xib in Resources */,
 				C628E33927FDA3270044E408 /* Inter-Regular.ttf in Resources */,
 				C6B6B05729713ED000D4E30F /* RearrangeDomainCell.xib in Resources */,
 				C62C3FB3283F67B60094FC93 /* NoDomainsToMintViewController.xib in Resources */,
@@ -8987,6 +9021,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C666E0A829CB3FEA0003DECB /* ParkedDomainCell.xib in Resources */,
+				C6500B412A41877100ACAA8C /* ChannelFeedCell.xib in Resources */,
 				C6C1EC6D2A3B09E2005EB37D /* ChatListEmptyCell.xib in Resources */,
 				C628E31E27FDA3270044E408 /* Inter-ExtraLight.ttf in Resources */,
 				C642A6BC284118E800299C6E /* MintingDomainListCell.xib in Resources */,
@@ -9154,6 +9189,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C666E0A629CB3FEA0003DECB /* ParkedDomainCell.xib in Resources */,
+				C6500B3F2A41877100ACAA8C /* ChannelFeedCell.xib in Resources */,
 				C6C1EC6B2A3B09E2005EB37D /* ChatListEmptyCell.xib in Resources */,
 				C628E31C27FDA3270044E408 /* Inter-ExtraLight.ttf in Resources */,
 				C642A6BA284118E800299C6E /* MintingDomainListCell.xib in Resources */,
@@ -9478,6 +9514,7 @@
 				C6D6E53628193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
 				C6E1189428F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
 				C6D6E5AD281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
+				C6500B3A2A41877100ACAA8C /* ChannelFeedCell.swift in Sources */,
 				C63F1D0928AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C60CA2962832501D00AB1B36 /* QRCodeServiceProvider.swift in Sources */,
 				C66435CF288ECC370098E1B8 /* PushNotificationsInfo.swift in Sources */,
@@ -9833,6 +9870,7 @@
 				C628E35927FDDA850044E408 /* UIColor.swift in Sources */,
 				C60982612824000000546392 /* CreateLocalWalletRecoveryWordsPresenter.swift in Sources */,
 				C60E9BA728218F1B00CD7593 /* ManageBackupsAction.swift in Sources */,
+				C6500B482A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */,
 				C664B6432913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */,
 				C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */,
 				C635A5CE287BD74400CCF533 /* LoadingIndicatorView.swift in Sources */,
@@ -9845,6 +9883,7 @@
 				C66FCCF82844870B009B9525 /* UserDataService.swift in Sources */,
 				C61FD05628FD3F540088CFDD /* ShareDomainHandler.swift in Sources */,
 				C6109E8E28E6AA660027D5D8 /* AppContextProtocol.swift in Sources */,
+				C6500B432A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */,
 				C6010D1A287FBEFC00FBD401 /* DomainsPurchasedDetails.swift in Sources */,
 				C60981F128225B9100546392 /* WalletDetailsListCell.swift in Sources */,
 				C62C3F8B283F34B90094FC93 /* ResendCodeButton.swift in Sources */,
@@ -10271,6 +10310,7 @@
 				C6526DCC29D2DC8D00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */,
 				C6D6E5AF281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
 				C666E09229CB3F430003DECB /* ParkedDomainsFoundViewController.swift in Sources */,
+				C6500B4A2A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */,
 				C66435D1288ECC370098E1B8 /* PushNotificationsInfo.swift in Sources */,
 				C6F9FBD62A25C4ED00102F81 /* MessagingChatUserDisplayInfo.swift in Sources */,
 				C6526DD129D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
@@ -10526,6 +10566,7 @@
 				C6B6B025296D2CDC00D4E30F /* MintingDomain.swift in Sources */,
 				C624D7A8281BCD9900F55530 /* SettingsCollectionViewCell.swift in Sources */,
 				C609822C2823EB1E00546392 /* BaseCreateWalletPresenter.swift in Sources */,
+				C6500B452A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */,
 				C664B672291542E300A76154 /* DomainProfileWeb3WebsiteCell.swift in Sources */,
 				C669C36A2912197C00837F21 /* EnterValueViewPresenter.swift in Sources */,
 				C6B6B05329713ED000D4E30F /* RearrangeDomainCell.swift in Sources */,
@@ -10851,6 +10892,7 @@
 				C6A474E629D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C63A352D28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
 				C6538DD52A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */,
+				C6500B3C2A41877100ACAA8C /* ChannelFeedCell.swift in Sources */,
 				C62396832A288A9400363F60 /* MessagingChatMessageDisplayInfo.swift in Sources */,
 				C6B6B045296FF7D600D4E30F /* DomainsSortOrderStorage.swift in Sources */,
 				C61ECD702A20AB4A00E97D70 /* PushMessage.swift in Sources */,
@@ -11058,6 +11100,7 @@
 				C673D5A029FA588B001CC77C /* DomainTransactionInProgressCell.swift in Sources */,
 				C665B9C328335808005E535C /* ListItemView.swift in Sources */,
 				C692C31E282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
+				C6500B462A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */,
 				C6E1189C28F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6ED320B295D4C4F00BC6919 /* DomainsCollectionTitleMintingProgressView.swift in Sources */,
 				C600AB9029F8085D0089107B /* MockDomainTransferService.swift in Sources */,
@@ -11130,6 +11173,7 @@
 				29EDB62128FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
 				C60686402A30D3D300927396 /* MessagingNewsChannel.swift in Sources */,
 				C6BEEF3829C30D5C000489B9 /* GoogleIDTokenUtilities.swift in Sources */,
+				C6500B3D2A41877100ACAA8C /* ChannelFeedCell.swift in Sources */,
 				C664310428D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */,
 				29150FBE2975DA4D00169A1A /* PushSubscriberInfo.swift in Sources */,
 				C6D6E4F02817CA5C008C66BB /* CreateBackupPasswordOnboardingPresenter.swift in Sources */,
@@ -11308,6 +11352,7 @@
 				C65DEA7E29B5837600FF142B /* MockWalletConnectExternalWalletHandler.swift in Sources */,
 				C6D6E4F52817CC97008C66BB /* OnboardingRecoveryPhrasePresenter.swift in Sources */,
 				C635195428D0441000FC6AF8 /* SetupWalletsReverseResolutionPresenter.swift in Sources */,
+				C6500B4B2A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */,
 				C679B5FE2919327100F543A7 /* DomainProfileSectionDataChangeType.swift in Sources */,
 				C6B6B030296D309C00D4E30F /* CGSize.swift in Sources */,
 				C60982A5282A588E00546392 /* NewExternalWalletConnectedPresenter.swift in Sources */,
@@ -11816,6 +11861,7 @@
 				C62247AB283B9548002A0CBD /* CAAnimation.swift in Sources */,
 				C6E1189528F80CD400C6AD4D /* DomainProfileSectionHeader.swift in Sources */,
 				C6D6E53728193808008C66BB /* BaseTableViewControllerProtocol.swift in Sources */,
+				C6500B3B2A41877100ACAA8C /* ChannelFeedCell.swift in Sources */,
 				C63F1D0A28AF31D5000A5C12 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C6D6E5AE281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */,
 				C66435D0288ECC370098E1B8 /* PushNotificationsInfo.swift in Sources */,
@@ -12171,6 +12217,7 @@
 				C628E35A27FDDA850044E408 /* UIColor.swift in Sources */,
 				C60982622824000000546392 /* CreateLocalWalletRecoveryWordsPresenter.swift in Sources */,
 				C664B6442913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */,
+				C6500B492A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */,
 				C60E9BA828218F1B00CD7593 /* ManageBackupsAction.swift in Sources */,
 				C642A6A62841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */,
 				C635A5CF287BD74400CCF533 /* LoadingIndicatorView.swift in Sources */,
@@ -12183,6 +12230,7 @@
 				C61FD05728FD3F540088CFDD /* ShareDomainHandler.swift in Sources */,
 				C6109E8F28E6AA660027D5D8 /* AppContextProtocol.swift in Sources */,
 				C66FCCF92844870B009B9525 /* UserDataService.swift in Sources */,
+				C6500B442A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */,
 				C6010D1B287FBEFC00FBD401 /* DomainsPurchasedDetails.swift in Sources */,
 				C60981F228225B9100546392 /* WalletDetailsListCell.swift in Sources */,
 				C62C3F8C283F34B90094FC93 /* ResendCodeButton.swift in Sources */,

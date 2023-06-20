@@ -39,7 +39,8 @@ final class ChatViewController: BaseViewController {
     override var scrollableContentYOffset: CGFloat? { 13 }
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self,
                                                         ChatImageCell.self,
-                                                        ChatEmptyCell.self] }
+                                                        ChatEmptyCell.self,
+                                                        ChannelFeedCell.self] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
     private var scrollingInfo: ScrollingInfo?
@@ -133,6 +134,10 @@ extension ChatViewController: ChatViewProtocol {
             collectionView.isHidden = false
         case .requestApprove:
             approveContentView.isHidden = false
+            chatInputView.isHidden = true
+            collectionView.isHidden = false
+        case .viewChannel:
+            approveContentView.isHidden = true
             chatInputView.isHidden = true
             collectionView.isHidden = false
         }
@@ -293,6 +298,11 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .channelFeed(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChannelFeedCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             case .emptyState:
                 let cell = collectionView.dequeueCellOfType(ChatEmptyCell.self, forIndexPath: indexPath)
                 
@@ -371,6 +381,7 @@ extension ChatViewController {
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
+        case channelFeed(configuration: ChannelFeedUIConfiguration)
         case emptyState
         
         var message: MessagingChatMessageDisplayInfo? {
@@ -379,7 +390,7 @@ extension ChatViewController {
                 return configuration.message
             case .imageBase64Message(let configuration):
                 return configuration.message
-            case .emptyState:
+            case .emptyState, .channelFeed:
                 return nil
             }
         }
@@ -419,6 +430,20 @@ extension ChatViewController {
         }
     }
     
+    struct ChannelFeedUIConfiguration: Hashable {
+        
+        let feed: MessagingNewsChannelFeed
+        var actionCallback: (ChatMessageAction)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.feed == rhs.feed
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(feed)
+        }
+    }
+
     enum ChatMessageAction: Hashable {
         case resend
         case delete
@@ -428,6 +453,7 @@ extension ChatViewController {
         case loading
         case chat
         case requestApprove
+        case viewChannel
     }
 }
 

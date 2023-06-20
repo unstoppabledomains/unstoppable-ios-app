@@ -19,6 +19,13 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     func rejectButtonPressed()
 }
 
+extension ChatViewPresenterProtocol {
+    func didTypeText(_ text: String) { }
+    func didPressSendText(_ text: String) { }
+    func approveButtonPressed() { }
+    func rejectButtonPressed() { }
+}
+
 @MainActor
 final class ChatViewPresenter {
     
@@ -26,7 +33,6 @@ final class ChatViewPresenter {
     private let profile: MessagingChatUserProfileDisplayInfo
     private var conversationState: MessagingChatConversationState
     private let fetchLimit: Int = 30
-    private let numberOfUnreadMessagesBeforePrefetch: Int = 7
     private var messages: [MessagingChatMessageDisplayInfo] = []
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
@@ -68,7 +74,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
             try? appContext.messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
         }
         
-        if messageIndex >= (messages.count - numberOfUnreadMessagesBeforePrefetch) {
+        if messageIndex >= (messages.count - Constants.numberOfUnreadMessagesBeforePrefetch) {
             switch chatState {
             case .hasUnloadedMessagesBefore(let message):
                 loadMoreMessagesBefore(message: message)
