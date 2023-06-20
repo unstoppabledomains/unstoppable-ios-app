@@ -44,6 +44,7 @@ final class ChatViewPresenter {
 extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
         appContext.messagingService.addListener(self)
+        view?.setUIState(.loading)
         setupTitle()
         setupPlaceholder()
         loadAndShowData()
@@ -187,9 +188,11 @@ private extension ChatViewPresenter {
                     }
                     DispatchQueue.main.async {
                         self.view?.setLoading(active: false)
+                        self.updateUIForChatApprovedState()
                     }
                     isLoadingMessages = false
                 case .newChat:
+                    updateUIForChatApprovedState()
                     view?.startTyping()
                     showData(animated: false)
                 }
@@ -341,7 +344,9 @@ private extension ChatViewPresenter {
     
     func updateUIForChatApprovedState() {
         if case .existingChat(let chat) = conversationState {
-            view?.setApproveRequired(!chat.isApproved)
+            self.view?.setUIState(chat.isApproved ? .chat : .requestApprove)
+        } else {
+            self.view?.setUIState(.chat)
         }
     }
 }

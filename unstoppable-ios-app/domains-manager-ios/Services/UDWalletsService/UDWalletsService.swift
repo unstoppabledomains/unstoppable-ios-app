@@ -293,7 +293,8 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         /// Temp solution until BE is fixed to test chats in testnet
         if User.instance.getSettings().isTestnetUsed {
             let mockRRDomainsDict = ["0x557fc13812460e5414d9881cb3659902e9501041" : "atest2.blockchain",
-                                     "0x537e2eb956aec859c99b3e5e28d8e45200c4fa52" : "one.x"]
+                                     "0x537e2eb956aec859c99b3e5e28d8e45200c4fa52" : "one.x",
+                                     "0x84585360d34f6c72be438fdde7147d27d2a85f9f" : "olegtest5.x"]
             if let name = mockRRDomainsDict[walletAddress]  {
                 return name
             }

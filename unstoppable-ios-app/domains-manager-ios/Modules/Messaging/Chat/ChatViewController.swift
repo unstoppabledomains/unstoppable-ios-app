@@ -17,7 +17,7 @@ protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
     func scrollToTheBottom(animated: Bool)
     func scrollToItem(_ item: ChatViewController.Item, animated: Bool)
     func setLoading(active: Bool)
-    func setApproveRequired(_ isRequired: Bool)
+    func setUIState(_ state: ChatViewController.State)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -115,17 +115,27 @@ extension ChatViewController: ChatViewProtocol {
         } else {
             activityIndicator.stopAnimating()
         }
-        
-        collectionView.isHidden = active
-        
+                
         [acceptButton, blockButton].forEach { button in
             button?.isUserInteractionEnabled = !active
         }
     }
     
-    func setApproveRequired(_ isRequired: Bool) {
-        approveContentView.isHidden = !isRequired
-        chatInputView.isHidden = isRequired
+    func setUIState(_ state: ChatViewController.State) {
+        switch state {
+        case .loading:
+            approveContentView.isHidden = true
+            chatInputView.isHidden = true
+            collectionView.isHidden = true
+        case .chat:
+            approveContentView.isHidden = true
+            chatInputView.isHidden = false
+            collectionView.isHidden = false
+        case .requestApprove:
+            approveContentView.isHidden = false
+            chatInputView.isHidden = true
+            collectionView.isHidden = false
+        }
     }
 }
 
@@ -412,6 +422,12 @@ extension ChatViewController {
     enum ChatMessageAction: Hashable {
         case resend
         case delete
+    }
+    
+    enum State {
+        case loading
+        case chat
+        case requestApprove
     }
 }
 

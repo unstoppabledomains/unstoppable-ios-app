@@ -198,13 +198,14 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                           to userInfo: MessagingChatUserDisplayInfo,
                           by user: MessagingChatUserProfile) async throws -> (MessagingChat, MessagingChatMessage) {
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        let receiver = userInfo.wallet.ethChecksumAddress()
         let sendOptions = try await buildPushSendOptions(for: messageType,
-                                                         receiver: userInfo.wallet,
+                                                         receiver: receiver,
                                                          by: user)
         let message = try await Push.PushChat.sendIntent(sendOptions)
-        let pushChats = try await getPushChatsForUser(user, page: 1, limit: 4, isRequests: false)
+        let pushChats = try await getPushChatsForUser(user, page: 1, limit: 3, isRequests: false)
         
-        guard let pushChat = pushChats.first(where: { $0.threadhash == message.link }),// TODO: - cid instead of link
+        guard let pushChat = pushChats.first(where: { $0.threadhash == message.cid }),
               let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,

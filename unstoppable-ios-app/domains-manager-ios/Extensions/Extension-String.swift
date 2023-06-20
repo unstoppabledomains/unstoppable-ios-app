@@ -6,25 +6,7 @@
 //
 
 import Foundation
-
-struct Storyboards {
-    enum OnboardingUI: String {
-        case home = "Home"
-        case happyEnd = "HappyEnd"
-        
-        var string: String { rawValue }
-    }
-    
-}
-
-struct NavigationControllers {
-    enum OnboardingUI: String {
-        case home = "HomeNavigationController"
-        
-        var string: String { rawValue }
-    }
-    
-}
+import web3swift
 
 extension String {
     enum Links {
@@ -894,18 +876,6 @@ extension String {
     }
 
     
-    struct Segues {
-        static let homeToDomainDetail = "HomeToDomainDetails"
-        static let walletDetailsToDomainDetail = "WalletDetailsToDomainDetails"
-        static let domainDetailsToTransferDomain = "DomainDetailsToTransferDomain"
-        
-        static let homeToMint = "HomeToMintDomainsSegue"
-        
-        static let walletsListToImportWallet = "WalletsListToImportWallet"
-    
-        static let walletsListToWalletDetails = "WalletsListToWalletDetailsSegue"
-    }
-    
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
         case zilliqa = "smallZilliqa"
@@ -966,6 +936,10 @@ extension String {
     
     var isHexNumber: Bool {
         filter(\.isHexDigit).count == count
+    }
+    
+    func ethChecksumAddress() -> String {
+        EthereumAddress.toChecksumAddress(self) ?? self
     }
     
     var convertedIntoReadableMessage: String {

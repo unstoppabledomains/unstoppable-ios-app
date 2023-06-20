@@ -69,10 +69,8 @@ extension Array where Element: DomainEntity {
 
 extension DomainEntity {
     func getETHAddress() -> String? {
-        guard let walletAddress = ownerWallet,
-              let wallet = appContext.udWalletsService.find(by: walletAddress),
-              let ethAddress = wallet.ethWallet?.address else { return nil }
+        guard let walletAddress = ownerWallet else { return nil }
         
-        return ethAddress
+        return walletAddress.ethChecksumAddress()
     }
 }
