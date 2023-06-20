@@ -75,7 +75,7 @@ extension UDDomainsService: UDDomainsServiceProtocol {
                                  pfpURL: profile.profile.imagePath,
                                  imageType: profile.profile.imageType)
         } else {
-            Debugger.printFailure("Failed to load domains PFP info for domain \(domainName)", critical: false)
+            Debugger.printWarning("Failed to load domains PFP info for domain \(domainName)")
             return nil
         }
     }

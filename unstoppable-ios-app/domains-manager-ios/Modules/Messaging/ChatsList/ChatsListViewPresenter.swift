@@ -58,6 +58,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     
     func didSelectItem(_ item: ChatsListViewController.Item) {
         UDVibration.buttonTap.vibrate()
+        view?.hideKeyboard()
         switch item {
         case .domainSelection(let configuration):
             guard !configuration.isSelected else { return }
@@ -230,7 +231,7 @@ private extension ChatsListViewPresenter {
     
     func awaitForUIReady() async {
         let timeSinceViewDidLoad = Date().timeIntervalSince(didLoadTime)
-        let uiReadyTime = CNavigationController.animationDuration
+        let uiReadyTime = CNavigationController.animationDuration + 0.3
         
         let dif = uiReadyTime - timeSinceViewDidLoad
         if dif > 0 {
