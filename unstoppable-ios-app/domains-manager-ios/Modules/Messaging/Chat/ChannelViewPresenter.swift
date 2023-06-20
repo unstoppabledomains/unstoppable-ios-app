@@ -12,11 +12,11 @@ final class ChannelViewPresenter {
     
     private weak var view: ChatViewProtocol?
     private let profile: MessagingChatUserProfileDisplayInfo
-    private let channel: MessagingNewsChannel
     private let fetchLimit: Int = 30
+    private var channel: MessagingNewsChannel
     private var feed: [MessagingNewsChannelFeed] = []
-    private var chatState: ChatContentState = .upToDate
-    private var isLoadingMessages = false
+    private var isLoadingFeed = false
+    private var currentPage: Int = 1
 
     init(view: ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
@@ -42,30 +42,24 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
     }
     
     func willDisplayItem(_ item: ChatViewController.Item) {
-//        guard case .channelFeed(let configuration) = item else {
-//            return
-//        }
-//        let displayFeed = configuration.feed
-//        
-//        guard let displayFeedIndex = feed.firstIndex(where: { $0.id == displayFeed.id }) else {
-//            Debugger.printFailure("Failed to find will display feed with id \(displayFeed.id) in the list", critical: true)
-//            return }
-//        
-//        if !displayFeed.isRead {
-//            feed[displayFeedIndex].isRead = true
+        guard case .channelFeed(let configuration) = item else {
+            return
+        }
+        let displayFeed = configuration.feed
+
+        guard let displayFeedIndex = feed.firstIndex(where: { $0.id == displayFeed.id }) else {
+            Debugger.printFailure("Failed to find will display feed with id \(displayFeed.id) in the list", critical: true)
+            return }
+
+        if !displayFeed.isRead {
+            feed[displayFeedIndex].isRead = true
 //            try? appContext.messagingService.markMessage(displayFeed, isRead: true, wallet: chat.thisUserDetails.wallet)
-//        }
-//        
-//        if displayFeedIndex >= (feed.count - Constants.numberOfUnreadMessagesBeforePrefetch) {
-//            switch chatState {
-//            case .hasUnloadedMessagesBefore(let message):
-//                loadMoreMessagesBefore(message: message)
-//            case .upToDate:
-//                return
-//            case .hasUnreadMessagesAfter:
-//                return
-//            }
-//        }
+        }
+
+        if displayFeedIndex >= (feed.count - Constants.numberOfUnreadMessagesBeforePrefetch),
+           !feed.last!.isFirstInChannel {
+            loadMoreFeed()
+        }
     }
 }
 
@@ -74,7 +68,12 @@ extension ChannelViewPresenter: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
         Task { @MainActor in
             switch messagingDataType {
-            case .chats, .channels, .messagesAdded, .messageUpdated, .messagesRemoved:
+            case .channels(let channels, let profile):
+                if profile.id == self.profile.id,
+                   let channel = channels.first(where: { $0.id == self.channel.id }){
+                    self.channel = channel
+                }
+            case .chats, .messagesAdded, .messageUpdated, .messagesRemoved:
                 return
             }
         }
@@ -90,80 +89,54 @@ private extension ChannelViewPresenter {
     
     func loadAndShowData() {
         Task {
-//            do {
-//                isLoadingMessages = true
-//                view?.setLoading(active: true)
-//                let messagesBefore = try await appContext.messagingService.getch
-//                addMessages(messagesBefore)
-//
-//                if !messages.first!.isRead,
-//                   let firstReadMessage = messages.first(where: { $0.isRead }) {
-//                    self.chatState = .hasUnreadMessagesAfter(message: firstReadMessage)
-//                } else {
-//                    checkIfUpToDate()
-//                }
-//
-//                switch chatState {
-//                case .upToDate, .hasUnloadedMessagesBefore:
-//                    showData(animated: false, scrollToBottomAnimated: false)
-//                case .hasUnreadMessagesAfter(let message):
-//                    let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
-//                                                                                                  after: message,
-//                                                                                                  limit: fetchLimit)
-//                    addMessages(unreadMessages)
-//                    showData(animated: false, completion: {
-//                        if let message = unreadMessages.last {
-//                            let item = self.createSnapshotItemFrom(message: message)
-//                            self.view?.scrollToItem(item, animated: false)
-//                        }
-//                    })
-//                    checkIfUpToDate()
-//                }
-//                DispatchQueue.main.async {
-//                    self.view?.setLoading(active: false)
-//                    self.updateUIForChatApprovedState()
-//                }
-//                isLoadingMessages = false
-//            } catch {
-//                view?.showAlertWith(error: error, handler: nil)
-//            }
+            do {
+                isLoadingFeed = true
+                view?.setLoading(active: true)
+                let feed = try await appContext.messagingService.getFeedFor(channel: channel,
+                                                                            page: currentPage,
+                                                                            limit: fetchLimit)
+                addFeed(feed)
+
+                if !feed.first!.isRead,
+                   let firstReadFeedItem = feed.first(where: { $0.isRead }) {
+                    showData(animated: false, completion: {
+                        let item = self.createSnapshotItemFrom(feedItem: firstReadFeedItem)
+                        self.view?.scrollToItem(item, animated: false)
+                    })
+                } else {
+                    showData(animated: false, scrollToBottomAnimated: false)
+                }
+
+                self.view?.setLoading(active: false)
+                isLoadingFeed = false
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
         }
     }
 
-    func loadMoreMessagesBefore(message: MessagingNewsChannelFeed) {
-//        guard !isLoadingMessages,
-//              case .existingChat(let chat) = conversationState else { return }
-//
-//        isLoadingMessages = true
-//        Task {
-//            do {
-//                let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
-//                                                                                              before: message,
-//                                                                                              limit: fetchLimit)
-//                addMessages(unreadMessages)
-//                checkIfUpToDate()
-//                isLoadingMessages = false
-//                showData(animated: false)
-//            } catch {
-//                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
-//                isLoadingMessages = false
-//            }
-//        }
+    func loadMoreFeed() {
+        guard !isLoadingFeed else { return }
+
+        isLoadingFeed = true
+        Task {
+            do {
+                let newPage = currentPage + 1
+                let newFeed = try await appContext.messagingService.getFeedFor(channel: channel,
+                                                                               page: newPage,
+                                                                               limit: fetchLimit)
+                currentPage = newPage
+                addFeed(newFeed)
+                isLoadingFeed = false
+                showData(animated: false)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+                isLoadingFeed = false
+            }
+        }
     }
     
-    func checkIfUpToDate() {
-//        guard !feed.isEmpty else {
-//            chatState = .upToDate
-//            return
-//        }
-//        if feed.last!.isFirstInChat {
-//            self.chatState = .upToDate
-//        } else {
-//            self.chatState = .hasUnloadedMessagesBefore(message: feed.last!)
-//        }
-    }
-    
-    func addMessages(_ feed: [MessagingNewsChannelFeed]) {
+    func addFeed(_ feed: [MessagingNewsChannelFeed]) {
         for feedItem in feed {
             if let i = self.feed.firstIndex(where: { $0.id == feedItem.id }) {
                 self.feed[i] = feedItem
@@ -221,13 +194,4 @@ private extension ChannelViewPresenter {
         }
     }
     
-}
-
-// MARK: - Private methods
-private extension ChannelViewPresenter {
-    enum ChatContentState {
-        case upToDate
-        case hasUnloadedMessagesBefore(message: MessagingNewsChannelFeed)
-        case hasUnreadMessagesAfter(message: MessagingNewsChannelFeed)
-    }
 }
