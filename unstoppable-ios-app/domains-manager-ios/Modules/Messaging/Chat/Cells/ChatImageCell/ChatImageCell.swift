@@ -26,7 +26,7 @@ final class ChatImageCell: ChatBaseCell {
 // MARK: - Open methods
 extension ChatImageCell {
     func setWith(configuration: ChatViewController.ImageBase64MessageUIConfiguration) {
-        setWith(message: configuration.message)
+        setWith(sender: configuration.message.senderType)
         Task {
             let base64 = configuration.imageMessageDisplayInfo.base64.replacingOccurrences(of: "data:image/jpeg;base64,", with: "") // TODO: - Remove "data:image/jpeg;base64,"
 //            let count = base64.count

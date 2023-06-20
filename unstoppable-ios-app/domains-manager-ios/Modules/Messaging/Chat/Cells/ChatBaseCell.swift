@@ -19,14 +19,14 @@ class ChatBaseCell: UICollectionViewCell {
 
 // MARK: - Open methods
 extension ChatBaseCell {
-    func setWith(message: MessagingChatMessageDisplayInfo) {
-        guard sender != message.senderType else {
+    func setWith(sender: MessagingChatSender) {
+        guard self.sender != sender else {
             return }
         
         self.removeConstraints(containerViewSideConstraints)
         let leadingConstraint: NSLayoutConstraint
         let trailingConstraint: NSLayoutConstraint
-        if message.senderType.isThisUser {
+        if sender.isThisUser {
             leadingConstraint = containerView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 24)
             trailingConstraint = trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 8)
             containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
@@ -36,7 +36,7 @@ extension ChatBaseCell {
             containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
         }
         
-        self.sender = message.senderType
+        self.sender = sender
         containerViewSideConstraints = [leadingConstraint, trailingConstraint]
         NSLayoutConstraint.activate(containerViewSideConstraints)
     }

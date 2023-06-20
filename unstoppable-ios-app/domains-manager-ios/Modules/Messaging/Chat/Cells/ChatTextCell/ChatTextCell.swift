@@ -88,7 +88,7 @@ extension ChatTextCell {
         messageTextView.linkTextAttributes = [.foregroundColor: messageColor,
                                               .underlineStyle: NSUnderlineStyle.single.rawValue]
         
-        setWith(message: configuration.message)
+        setWith(sender: configuration.message.senderType)
         
         if textMessage.senderType.isThisUser {
             timeStackView.alignment = .trailing

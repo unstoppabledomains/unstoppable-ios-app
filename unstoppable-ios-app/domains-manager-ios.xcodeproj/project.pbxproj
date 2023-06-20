@@ -6595,8 +6595,8 @@
 		C65272592A15DD5E001A084C /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				C629A4742A40125200A528A1 /* ChatEmptyCell */,
 				C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */,
+				C629A4742A40125200A528A1 /* ChatEmptyCell */,
 				C629A4642A3FF49800A528A1 /* ChatImageCell */,
 				C652726F2A15FB95001A084C /* ChatTextCell */,
 			);

@@ -102,7 +102,8 @@ struct PushEntitiesTransformer {
                                                 pgpKey: String,
                                                 isRead: Bool) -> MessagingChatMessage? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
-              let messageType = PushMessageType(rawValue: pushMessage.messageType) else { return nil }
+              let messageType = PushMessageType(rawValue: pushMessage.messageType),
+              let id = pushMessage.cid else { return nil }
         
         let encryptedContent = pushMessage.messageContent
         guard let decryptedContent = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
@@ -124,7 +125,6 @@ struct PushEntitiesTransformer {
         }
         
         var time = Date()
-        let id = getMessageIdFrom(pushMessage, userId: chat.userId)
         if let timestamp = pushMessage.timestamp {
             time = Date(millisecondsSince1970: timestamp)
         }
@@ -158,7 +158,8 @@ struct PushEntitiesTransformer {
                                                            pgpKey: String) -> MessagingWebSocketMessageEntity? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
               let receiverWallet = getWalletAddressFrom(eip155String: pushMessage.toDID),
-              let messageType = PushMessageType(rawValue: pushMessage.messageType) else { return nil }
+              let messageType = PushMessageType(rawValue: pushMessage.messageType),
+              let id = pushMessage.cid else { return nil }
         
         
         switch messageType {
@@ -167,11 +168,8 @@ struct PushEntitiesTransformer {
             guard let text = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
             
             var time = Date()
-            var id = "\(pushMessage.messageContent)"
-            
             if let timestamp = pushMessage.timestamp {
                 time = Date(millisecondsSince1970: timestamp)
-                id += "_\(timestamp)"
             }
             let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: text,
                                                                           encryptedText: encryptedText)
@@ -194,16 +192,9 @@ struct PushEntitiesTransformer {
         }
     }
     
-    private static func getMessageIdFrom(_ pushMessage: PushMessageTransformAdapter,
-                                         userId: String) -> String {
-        "\(userId)_\(pushMessage.messageContent)_\(pushMessage.time.timeIntervalSince1970)"
-    }
-    
     static func convertMessagingWebSocketMessageEntityToChatMessage(_ webSocketMessage: MessagingWebSocketMessageEntity,
                                                                     in chat: MessagingChat) -> MessagingChatMessage {
-        let id = getMessageIdFrom(webSocketMessage, userId: chat.userId)
-        
-        let messageDisplayInfo = MessagingChatMessageDisplayInfo(id: id,
+        let messageDisplayInfo = MessagingChatMessageDisplayInfo(id: webSocketMessage.id,
                                                                  chatId: chat.displayInfo.id,
                                                                  senderType: .otherUser(webSocketMessage.senderDisplayInfo),
                                                                  time: webSocketMessage.time,
@@ -253,28 +244,4 @@ struct PushEntitiesTransformer {
     }
     
   
-}
-
-protocol PushMessageTransformAdapter {
-    var messageContent: String { get }
-    var time: Date { get }
-}
-
-extension Push.Message: PushMessageTransformAdapter {
-    var time: Date {
-        if let timestamp = timestamp {
-            return Date(millisecondsSince1970: timestamp)
-        }
-        return Date()
-    }
-}
-extension MessagingWebSocketMessageEntity: PushMessageTransformAdapter {
-    var messageContent: String {
-        switch type {
-        case .text(let info):
-            return info.encryptedText
-        case .imageBase64(let info):
-            return info.encryptedContent
-        }
-    }
 }
