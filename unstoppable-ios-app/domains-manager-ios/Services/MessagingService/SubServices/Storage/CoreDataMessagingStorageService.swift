@@ -605,7 +605,6 @@ private extension CoreDataMessagingStorageService {
         coreDataChannel.verifiedStatus = Int64(channel.verifiedStatus)
         coreDataChannel.blocked = channel.blocked == 1
         coreDataChannel.subscriberCount = Int64(channel.subscriberCount)
-//        coreDataChannel.lastMessageTime = channel.lastMessageTime
         
         if let lastMessage = channel.lastMessage,
            let lastCoreDataMessage: CoreDataMessagingNewsChannelFeed = getCoreDataEntityWith(id: lastMessage.id) {

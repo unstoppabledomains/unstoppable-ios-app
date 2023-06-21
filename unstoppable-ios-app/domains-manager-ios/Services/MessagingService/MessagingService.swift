@@ -233,6 +233,17 @@ extension MessagingService: MessagingServiceProtocol {
             }
         }
         
+        func updateChannelUpToDate(feed: [MessagingNewsChannelFeed]) async throws {
+            var updatedChannel = channel
+            updatedChannel.isUpToDate = true
+            if page == 1,
+               let latestFeed = feed.first {
+                updatedChannel.lastMessage = latestFeed
+            }
+            try await storageService.replaceChannel(channel, with: updatedChannel)
+            notifyChannelsChanged(userId: channel.userId)
+        }
+        
         if channel.isUpToDate {
             if storedFeed.count < limit {
                 if storedFeed.last?.isFirstInChannel == true {
@@ -269,11 +280,7 @@ extension MessagingService: MessagingServiceProtocol {
             
             await storageService.saveChannelsFeed(preloadedFeed,
                                                   in: channel)
-            
-            var updatedChannel = channel
-            updatedChannel.isUpToDate = true
-            try await storageService.replaceChannel(channel, with: updatedChannel)
-            notifyChannelsChanged(userId: channel.userId)
+            try await updateChannelUpToDate(feed: preloadedFeed)
             
             return preloadedFeed
         } else {
@@ -283,10 +290,7 @@ extension MessagingService: MessagingServiceProtocol {
             checkIfFirstFeedInChannel(&loadedFeed)
             await storageService.saveChannelsFeed(loadedFeed,
                                                   in: channel)
-            
-            var updatedChannel = channel
-            updatedChannel.isUpToDate = true
-            try await storageService.replaceChannel(channel, with: updatedChannel)
+            try await updateChannelUpToDate(feed: loadedFeed)
             
             return loadedFeed
         }
@@ -571,6 +575,7 @@ private extension MessagingService {
                                                                                page: 1,
                                                                                limit: 1).first {
                         var updatedChannel = channel
+                        updatedChannel.lastMessage = lastMessage
                         if let storedChannel = storedChannels.first(where: { $0.id == channel.id }),
                            storedChannel.lastMessage?.id == lastMessage.id {
                             updatedChannel.isUpToDate = true
@@ -578,7 +583,6 @@ private extension MessagingService {
                             updatedChannel.isUpToDate = false
                             await self.storageService.saveChannelsFeed([lastMessage],
                                                                        in: channel)
-                            updatedChannel.lastMessage = lastMessage
                         }
                         return updatedChannel
                     } else {

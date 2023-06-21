@@ -29,6 +29,10 @@ struct MessagingNewsChannel: Hashable {
 extension Array where Element == MessagingNewsChannel {
     func sortedByLastMessage() -> [Element] {
         sorted(by: {
+            if $0.lastMessage?.time == nil,
+               $1.lastMessage?.time == nil {
+                return $0.name < $1.name
+            }
             guard let lhsTime = $0.lastMessage?.time else { return false }
             guard let rhsTime = $1.lastMessage?.time else { return true }
             
