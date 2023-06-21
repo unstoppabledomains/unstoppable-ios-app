@@ -414,7 +414,12 @@ private extension ChatsListViewPresenter {
     }
     
     func openChannel(_ channel: MessagingNewsChannel) {
+        guard let profile = selectedProfileWalletPair?.profile,
+              let nav = view?.cNavigationController else { return }
         
+        UDRouter().showChannelScreen(profile: profile,
+                                     channel: channel,
+                                     in: nav)
     }
     
     func askToSetRRDomainAndCreateProfileFor(wallet: WalletDisplayInfo) {

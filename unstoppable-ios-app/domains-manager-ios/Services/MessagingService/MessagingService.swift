@@ -267,6 +267,13 @@ extension MessagingService: MessagingServiceProtocol {
         }
     }
     
+    func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
+                      isRead: Bool,
+                      in channel: MessagingNewsChannel) throws {
+        try storageService.markFeedItem(feedItem, isRead: isRead)
+        notifyChannelsChanged(userId: channel.userId)
+    }
+    
     // Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
         guard searchKey.isValidAddress() else { return [] }

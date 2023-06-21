@@ -60,4 +60,6 @@ protocol MessagingStorageServiceProtocol {
                             limit: Int) async throws -> [MessagingNewsChannelFeed]
     func saveChannelsFeed(_ feed: [MessagingNewsChannelFeed],
                           in channel: MessagingNewsChannel) async
+    func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
+                      isRead: Bool) throws
 }

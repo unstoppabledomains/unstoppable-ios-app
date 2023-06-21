@@ -276,6 +276,15 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
+    func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
+                     isRead: Bool) throws {
+        try queue.sync {
+            guard let coreDataMessage: CoreDataMessagingNewsChannelFeed = getCoreDataEntityWith(id: feedItem.id) else { throw Error.entityNotFound }
+            coreDataMessage.isRead = isRead
+            saveContext(backgroundContext)
+        }
+    }
+    
     // Clear
     func clear() {
         queue.sync {

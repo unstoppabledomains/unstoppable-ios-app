@@ -39,6 +39,9 @@ protocol MessagingServiceProtocol {
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
                     limit: Int) async throws -> [MessagingNewsChannelFeed]
+    func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
+                      isRead: Bool,
+                      in channel: MessagingNewsChannel) throws
     
     // Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo]

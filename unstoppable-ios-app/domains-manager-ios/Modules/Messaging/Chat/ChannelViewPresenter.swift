@@ -53,7 +53,7 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
 
         if !displayFeed.isRead {
             feed[displayFeedIndex].isRead = true
-//            try? appContext.messagingService.markMessage(displayFeed, isRead: true, wallet: chat.thisUserDetails.wallet)
+            try? appContext.messagingService.markFeedItem(displayFeed, isRead: true, in: channel)
         }
 
         if displayFeedIndex >= (feed.count - Constants.numberOfUnreadMessagesBeforePrefetch),
@@ -97,7 +97,8 @@ private extension ChannelViewPresenter {
                                                                             limit: fetchLimit)
                 addFeed(feed)
 
-                if !feed.first!.isRead,
+                if !feed.isEmpty,
+                   !feed[0].isRead,
                    let firstReadFeedItem = feed.first(where: { $0.isRead }) {
                     showData(animated: false, completion: {
                         let item = self.createSnapshotItemFrom(feedItem: firstReadFeedItem)
