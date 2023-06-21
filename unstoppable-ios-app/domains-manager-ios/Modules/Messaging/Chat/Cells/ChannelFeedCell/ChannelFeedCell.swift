@@ -17,7 +17,11 @@ final class ChannelFeedCell: ChatBaseCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        setWith(sender: .otherUser(.init(wallet: "")))
+        let sender = MessagingChatSender.otherUser(.init(wallet: ""))
+        setWith(sender: sender)
+        setBubbleUI(bubbleContainerView, sender: sender)
+        setupTextView(messageTextView)
+        learnButton.setTitle(String.Constants.learnMore.localized(), image: nil)
     }
 
 }
@@ -25,7 +29,19 @@ final class ChannelFeedCell: ChatBaseCell {
 // MARK: - Open methods
 extension ChannelFeedCell {
     func setWith(configuration: ChatViewController.ChannelFeedUIConfiguration) {
+        let feed = configuration.feed
         
+        let text = feed.title + "\n\n" + feed.message
+        messageTextView.setAttributedTextWith(text: text,
+                                              font: .currentFont(withSize: 16, weight: .regular),
+                                              textColor: .foregroundDefault)
+        messageTextView.updateAttributesOf(text: feed.title,
+                                           withFont: .currentFont(withSize: 16, weight: .medium))
+        
+        let formatterTime = MessageDateFormatter.formatMessageDate(feed.time)
+        timeLabel.setAttributedTextWith(text: formatterTime,
+                                        font: .currentFont(withSize: 11, weight: .regular),
+                                        textColor: .foregroundSecondary)
     }
 }
 

@@ -224,18 +224,32 @@ extension MessagingService: MessagingServiceProtocol {
         let storedFeed = try await storageService.getChannelsFeedFor(channel: channel,
                                                                      page: page,
                                                                      limit: limit)
+        
+        func checkIfFirstFeedInChannel(_ feed: inout [MessagingNewsChannelFeed]) {
+            if feed.count < limit,
+               var lastFeed = feed.last {
+                lastFeed.isFirstInChannel = true
+                feed[feed.count - 1] = lastFeed
+            }
+        }
+        
         if channel.isUpToDate {
-            if storedFeed.isEmpty {
-                let loadedFeed = try await apiService.getFeedFor(channel: channel,
-                                                                 page: page,
-                                                                 limit: limit)
-                await storageService.saveChannelsFeed(loadedFeed,
-                                                      in: channel)
-                return loadedFeed
+            if storedFeed.count < limit {
+                if storedFeed.last?.isFirstInChannel == true {
+                     return storedFeed
+                } else {
+                    var loadedFeed = try await apiService.getFeedFor(channel: channel,
+                                                                     page: page,
+                                                                     limit: limit)
+                    checkIfFirstFeedInChannel(&loadedFeed)
+                    await storageService.saveChannelsFeed(loadedFeed,
+                                                          in: channel)
+                    return loadedFeed
+                }
             } else {
                 return storedFeed
             }
-        } else if let latestLocalFeed = storedFeed.last {
+        } else if let latestLocalFeed = storedFeed.reversed().first(where: { $0.isRead }) {
             var preLoadPage = 1
             let preLoadLimit = 30
             var preloadedFeed = [MessagingNewsChannelFeed]()
@@ -263,7 +277,18 @@ extension MessagingService: MessagingServiceProtocol {
             
             return preloadedFeed
         } else {
-            return []
+            var loadedFeed = try await apiService.getFeedFor(channel: channel,
+                                                             page: page,
+                                                             limit: limit)
+            checkIfFirstFeedInChannel(&loadedFeed)
+            await storageService.saveChannelsFeed(loadedFeed,
+                                                  in: channel)
+            
+            var updatedChannel = channel
+            updatedChannel.isUpToDate = true
+            try await storageService.replaceChannel(channel, with: updatedChannel)
+            
+            return loadedFeed
         }
     }
     

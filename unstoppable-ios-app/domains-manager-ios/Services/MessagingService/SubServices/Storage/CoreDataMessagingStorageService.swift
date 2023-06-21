@@ -256,7 +256,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                             page: Int,
                             limit: Int) async throws -> [MessagingNewsChannelFeed] {
         try queue.sync {
-            let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: true)
+            let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
             let predicate = NSPredicate(format: "channelId == %@", channel.id)
             let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(predicate: predicate,
                                                                                            sortDescriptions: [timeSortDescriptor],

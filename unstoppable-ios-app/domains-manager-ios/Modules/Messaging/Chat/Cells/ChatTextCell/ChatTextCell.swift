@@ -20,14 +20,8 @@ final class ChatTextCell: ChatBaseCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        messageTextView.dataDetectorTypes = [.link]
-        messageTextView.backgroundColor = .clear
-        messageTextView.textContainerInset = .zero
-        messageTextView.textContainerInset.top = -4
-        messageTextView.showsVerticalScrollIndicator = false
-        messageTextView.showsHorizontalScrollIndicator = false
+        setupTextView(messageTextView)
         
-        bubbleContainerView.layer.cornerRadius = 12
         let timeLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapTimeLabel))
         timeLabel.addGestureRecognizer(timeLabelTapGesture)
         self.timeLabelTapGesture = timeLabelTapGesture
@@ -95,20 +89,13 @@ extension ChatTextCell {
         } else {
             timeStackView.alignment = .leading
         }
-        setBubbleUI(sender: textMessage.senderType)
+        
+        setBubbleUI(bubbleContainerView, sender: textMessage.senderType)
     }
 }
 
 // MARK: - Private methods
 private extension ChatTextCell {
-    func setBubbleUI(sender: MessagingChatSender?) {
-        if sender?.isThisUser == true {
-            bubbleContainerView.backgroundColor = .backgroundAccentEmphasis
-        } else {
-            bubbleContainerView.backgroundColor = .backgroundOverlay
-        }
-    }
-    
     @objc func didTapTimeLabel() {
         UDVibration.buttonTap.vibrate()
         actionCallback?(.resend)

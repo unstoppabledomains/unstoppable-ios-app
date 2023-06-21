@@ -19,6 +19,25 @@ class ChatBaseCell: UICollectionViewCell {
 
 // MARK: - Open methods
 extension ChatBaseCell {
+    func setupTextView(_ textView: UITextView) {
+        textView.dataDetectorTypes = [.link]
+        textView.backgroundColor = .clear
+        textView.textContainerInset = .zero
+        textView.textContainerInset.top = -4
+        textView.showsVerticalScrollIndicator = false
+        textView.showsHorizontalScrollIndicator = false
+    }
+    
+    func setBubbleUI(_ bubbleView: UIView,
+                     sender: MessagingChatSender?) {
+        bubbleView.layer.cornerRadius = 12
+        if sender?.isThisUser == true {
+            bubbleView.backgroundColor = .backgroundAccentEmphasis
+        } else {
+            bubbleView.backgroundColor = .backgroundMuted2
+        }
+    }
+    
     func setWith(sender: MessagingChatSender) {
         guard self.sender != sender else {
             return }

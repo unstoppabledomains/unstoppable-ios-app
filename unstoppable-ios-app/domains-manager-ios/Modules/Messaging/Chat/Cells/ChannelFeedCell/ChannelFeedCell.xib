@@ -19,56 +19,61 @@
                 <rect key="frame" x="0.0" y="0.0" width="343" height="184"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="5AF-IE-M3F">
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="5AF-IE-M3F">
                         <rect key="frame" x="0.0" y="0.0" width="343" height="164"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="skV-xM-STF">
-                                <rect key="frame" x="0.0" y="0.0" width="343" height="109"/>
+                                <rect key="frame" x="0.0" y="0.0" width="343" height="164"/>
                                 <subviews>
                                     <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XKW-Be-HXv">
-                                        <rect key="frame" x="0.0" y="29.666666666666671" width="343" height="50"/>
+                                        <rect key="frame" x="0.0" y="29.999999999999993" width="343" height="104.33333333333331"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="hrg-37-CRh">
-                                                <rect key="frame" x="12" y="5.9999999999999964" width="319" height="38"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="hrg-37-CRh">
+                                                <rect key="frame" x="12" y="6" width="319" height="90.333333333333329"/>
                                                 <subviews>
                                                     <textView multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="999" horizontalCompressionResistancePriority="1000" scrollEnabled="NO" editable="NO" text="sdlkfj sdlfj sdlfkj sldkjf " textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="5Do-sN-kaz">
-                                                        <rect key="frame" x="0.0" y="0.0" width="319" height="38"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="319" height="35.333333333333336"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <color key="textColor" systemColor="labelColor"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                     </textView>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IWD-un-nfn">
+                                                        <rect key="frame" x="0.0" y="41.333333333333329" width="319" height="1"/>
+                                                        <color key="backgroundColor" name="borderDefault"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="1" id="fyd-tZ-ASz"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="fBW-pR-SAB">
+                                                        <rect key="frame" x="0.0" y="48.333333333333329" width="319" height="42"/>
+                                                        <subviews>
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lVW-TN-bNe" customClass="GhostPrimaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                                <rect key="frame" x="122" y="0.0" width="75" height="42"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="42" id="lIc-a2-6nr"/>
+                                                                </constraints>
+                                                                <state key="normal" title="Button"/>
+                                                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                                <connections>
+                                                                    <action selector="learnButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="ILX-2t-upE"/>
+                                                                </connections>
+                                                            </button>
+                                                        </subviews>
+                                                    </stackView>
                                                 </subviews>
                                             </stackView>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="hrg-37-CRh" secondAttribute="trailing" constant="12" id="1u5-Zp-CM3"/>
-                                            <constraint firstAttribute="bottom" secondItem="hrg-37-CRh" secondAttribute="bottom" constant="6" id="AeY-du-xx5"/>
+                                            <constraint firstAttribute="bottom" secondItem="hrg-37-CRh" secondAttribute="bottom" constant="8" id="AeY-du-xx5"/>
                                             <constraint firstItem="hrg-37-CRh" firstAttribute="leading" secondItem="XKW-Be-HXv" secondAttribute="leading" constant="12" id="F5l-i4-oXb"/>
                                             <constraint firstItem="hrg-37-CRh" firstAttribute="top" secondItem="XKW-Be-HXv" secondAttribute="top" constant="6" id="Q1q-Yv-afS"/>
                                         </constraints>
                                     </view>
                                 </subviews>
                             </stackView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IWD-un-nfn">
-                                <rect key="frame" x="0.0" y="115" width="343" height="1"/>
-                                <color key="backgroundColor" name="borderDefault"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="fyd-tZ-ASz"/>
-                                </constraints>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lVW-TN-bNe" customClass="GhostPrimaryButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="122" width="343" height="42"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="42" id="lIc-a2-6nr"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                                <connections>
-                                    <action selector="learnButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="ILX-2t-upE"/>
-                                </connections>
-                            </button>
                         </subviews>
                     </stackView>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="jgl-2I-z5q">
