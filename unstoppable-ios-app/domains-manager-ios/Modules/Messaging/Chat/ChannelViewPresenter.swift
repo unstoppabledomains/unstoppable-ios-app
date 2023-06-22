@@ -70,8 +70,14 @@ extension ChannelViewPresenter: MessagingServiceListener {
             switch messagingDataType {
             case .channels(let channels, let profile):
                 if profile.id == self.profile.id,
-                   let channel = channels.first(where: { $0.id == self.channel.id }){
-                    self.channel = channel
+                   let channel = channels.first(where: { $0.id == self.channel.id }) {
+                    if self.channel.lastMessage?.id != channel.lastMessage?.id {
+                        self.channel = channel
+                        try await loadAndAddFeed(for: 1)
+                        loadAndShowData()
+                    } else {
+                        self.channel = channel
+                    }
                 }
             case .chats, .messagesAdded, .messageUpdated, .messagesRemoved:
                 return
@@ -92,10 +98,7 @@ private extension ChannelViewPresenter {
             do {
                 isLoadingFeed = true
                 view?.setLoading(active: true)
-                let feed = try await appContext.messagingService.getFeedFor(channel: channel,
-                                                                            page: currentPage,
-                                                                            limit: fetchLimit)
-                addFeed(feed)
+                let feed = try await loadAndAddFeed(for: currentPage)
 
                 if !feed.isEmpty,
                    !feed[0].isRead,
@@ -115,6 +118,15 @@ private extension ChannelViewPresenter {
             }
         }
     }
+    
+    @discardableResult
+    func loadAndAddFeed(for page: Int) async throws -> [MessagingNewsChannelFeed] {
+        let feed = try await appContext.messagingService.getFeedFor(channel: channel,
+                                                                    page: page,
+                                                                    limit: fetchLimit)
+        addFeed(feed)
+        return feed
+    }
 
     func loadMoreFeed() {
         guard !isLoadingFeed else { return }
@@ -123,11 +135,8 @@ private extension ChannelViewPresenter {
         Task {
             do {
                 let newPage = currentPage + 1
-                let newFeed = try await appContext.messagingService.getFeedFor(channel: channel,
-                                                                               page: newPage,
-                                                                               limit: fetchLimit)
+                let newFeed = try await loadAndAddFeed(for: newPage)
                 currentPage = newPage
-                addFeed(newFeed)
                 isLoadingFeed = false
                 showData(animated: false)
             } catch {

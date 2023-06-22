@@ -45,6 +45,10 @@ protocol MessagingServiceProtocol {
     
     // Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo]
+    func searchForChannelsWith(page: Int,
+                               limit: Int,
+                               searchKey: String,
+                               for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
     
     // Listeners
     func addListener(_ listener: MessagingServiceListener)

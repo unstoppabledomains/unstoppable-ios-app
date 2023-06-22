@@ -73,6 +73,10 @@ extension MockMessagingService: MessagingServiceProtocol {
                       in channel: MessagingNewsChannel) throws { }
     // Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] { [] }
+    func searchForChannelsWith(page: Int,
+                               limit: Int,
+                               searchKey: String,
+                               for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
     
     func addListener(_ listener: MessagingServiceListener) {}
     func removeListener(_ listener: MessagingServiceListener) {}

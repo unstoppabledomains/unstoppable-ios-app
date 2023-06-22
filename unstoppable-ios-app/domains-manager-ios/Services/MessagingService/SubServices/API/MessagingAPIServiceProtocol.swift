@@ -45,6 +45,10 @@ protocol MessagingAPIServiceProtocol {
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
                     limit: Int) async throws -> [MessagingNewsChannelFeed]
+    func searchForChannels(page: Int,
+                           limit: Int,
+                           searchKey: String,
+                           for user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
 }
 
 enum MessagingAPIServiceLoadMessagesOptions {

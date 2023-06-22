@@ -110,7 +110,6 @@ extension PushRESTAPIService {
     
     func searchForChannels(page: Int,
                            limit: Int,
-                           isSpam: Bool,
                            query: String) async throws -> [PushChannel] {
         let queryComponents = ["page" : String(page),
                                "limit" : String(limit),

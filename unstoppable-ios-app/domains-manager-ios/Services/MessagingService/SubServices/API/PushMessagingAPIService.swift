@@ -275,6 +275,16 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0) })
     }
+    
+    func searchForChannels(page: Int,
+                           limit: Int,
+                           searchKey: String,
+                           for user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
+        let channels = try await pushRESTService.searchForChannels(page: page, limit: limit, query: searchKey)
+        
+        return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
+                                                                                                              userId: user.id) })
+    }
 }
 
 // MARK: - Private methods

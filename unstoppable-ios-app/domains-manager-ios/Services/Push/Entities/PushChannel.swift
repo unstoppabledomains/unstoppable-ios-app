@@ -18,12 +18,12 @@ struct PushChannel: Codable {
     let processed: Int
     let attempts: Int
     let verified_status: Int
-    let alias_address: String
+    let alias_address: String?
     let activation_status: Int
     let timestamp: String
     let counter: Int?
     let subgraph_details: String?
-    let alias_blockchain_id: String
+    let alias_blockchain_id: String?
     let alias_verification_event: String?
     let blocked: Int
     let is_alias_verified: Int

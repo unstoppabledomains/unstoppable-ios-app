@@ -247,7 +247,7 @@ extension MessagingService: MessagingServiceProtocol {
         if channel.isUpToDate {
             /// User has opened channel before and there's no unread messages
             if storedFeed.count < limit {
-                if storedFeed.last?.isFirstInChannel == true {
+                if storedFeed.last?.isFirstInChannel == true || (storedFeed.isEmpty && page == 1){
                      return storedFeed
                 } else {
                     var loadedFeed = try await apiService.getFeedFor(channel: channel,
@@ -316,6 +316,16 @@ extension MessagingService: MessagingServiceProtocol {
         }
         
         return []
+    }
+    
+    func searchForChannelsWith(page: Int,
+                               limit: Int,
+                               searchKey: String,
+                               for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
+        let profile = try await getUserProfileWith(wallet: user.wallet)
+        let channels = try await apiService.searchForChannels(page: page, limit: limit, searchKey: searchKey, for: profile)
+        
+        return channels
     }
     
     // Listeners
