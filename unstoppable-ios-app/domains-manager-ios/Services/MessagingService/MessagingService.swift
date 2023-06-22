@@ -234,6 +234,8 @@ extension MessagingService: MessagingServiceProtocol {
         }
         
         func setChannelUpToDate(feed: [MessagingNewsChannelFeed]) async throws {
+            guard channel.isCurrentUserSubscribed else { return }
+            
             var updatedChannel = channel
             updatedChannel.isUpToDate = true
             if page == 1,
@@ -244,10 +246,10 @@ extension MessagingService: MessagingServiceProtocol {
             notifyChannelsChanged(userId: channel.userId)
         }
         
-        if channel.isUpToDate {
+        if channel.isUpToDate && channel.isCurrentUserSubscribed {
             /// User has opened channel before and there's no unread messages
             if storedFeed.count < limit {
-                if storedFeed.last?.isFirstInChannel == true {
+                if storedFeed.last?.isFirstInChannel == true || (storedFeed.isEmpty && page == 1) {
                      return storedFeed
                 } else {
                     var loadedFeed = try await apiService.getFeedFor(channel: channel,

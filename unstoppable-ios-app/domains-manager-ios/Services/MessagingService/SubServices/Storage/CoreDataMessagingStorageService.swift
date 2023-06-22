@@ -270,6 +270,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     
     func saveChannelsFeed(_ feed: [MessagingNewsChannelFeed],
                           in channel: MessagingNewsChannel) async {
+        guard channel.isCurrentUserSubscribed else { return }
         queue.sync {
             let _ = feed.compactMap { (try? convertMessagingChannelFeedToCoreDataChannelFeed($0, in: channel)) }
             saveContext(backgroundContext)
@@ -588,12 +589,15 @@ private extension CoreDataMessagingStorageService {
                                                subscriberCount: Int(coreDataChannel.subscriberCount),
                                                unreadMessagesCount: 0,
                                                isUpToDate: coreDataChannel.isUpToDate,
+                                               isCurrentUserSubscribed: true, /// We store only channels that user is opt-in for
                                                lastMessage: lastMessage)
         
         return newsChannel
     }
     
     func convertMessagingChannelToCoreDataChannel(_ channel: MessagingNewsChannel) throws -> CoreDataMessagingNewsChannel {
+        guard channel.isCurrentUserSubscribed else { throw Error.invalidEntity }
+        
         let coreDataChannel: CoreDataMessagingNewsChannel = try createEntity(in: backgroundContext)
         
         coreDataChannel.id = channel.id
@@ -690,5 +694,6 @@ extension CoreDataMessagingStorageService {
         case domainWithoutWallet
         case failedToFetch
         case entityNotFound
+        case invalidEntity
     }
 }
