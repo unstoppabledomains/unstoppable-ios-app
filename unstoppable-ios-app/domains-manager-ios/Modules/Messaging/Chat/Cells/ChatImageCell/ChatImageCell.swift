@@ -12,6 +12,7 @@ final class ChatImageCell: ChatBaseCell {
     @IBOutlet weak var imageView: UIImageView!
     
     private var imageViewConstraints: [NSLayoutConstraint] = []
+    private let maxSize: CGFloat = 200
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,6 +28,7 @@ final class ChatImageCell: ChatBaseCell {
 extension ChatImageCell {
     func setWith(configuration: ChatViewController.ImageBase64MessageUIConfiguration) {
         setWith(sender: configuration.message.senderType)
+        setImageSize(.square(size: maxSize))
         Task {
             let base64 = configuration.imageMessageDisplayInfo.base64.replacingOccurrences(of: "data:image/jpeg;base64,", with: "") // TODO: - Remove "data:image/jpeg;base64,"
 //            let count = base64.count
@@ -43,7 +45,6 @@ private extension ChatImageCell {
     func setImage(_ image: UIImage) {
         imageView.image = image
         let imageSize = image.size
-        let maxSize: CGFloat = 200
         let imageViewSize: CGSize
         
         if imageSize.width > imageSize.height {
@@ -58,9 +59,13 @@ private extension ChatImageCell {
             imageViewSize = .square(size: maxSize)
         }
         
+        setImageSize(imageViewSize)
+    }
+    
+    func setImageSize(_ size: CGSize) {
         imageView.removeConstraints(imageViewConstraints)
-        let widthConstraint = imageView.widthAnchor.constraint(equalToConstant: imageViewSize.width)
-        let heightConstraint = imageView.heightAnchor.constraint(equalToConstant: imageViewSize.height)
+        let widthConstraint = imageView.widthAnchor.constraint(equalToConstant: size.width)
+        let heightConstraint = imageView.heightAnchor.constraint(equalToConstant: size.height)
         imageViewConstraints = [widthConstraint, heightConstraint]
         NSLayoutConstraint.activate(imageViewConstraints)
     }
