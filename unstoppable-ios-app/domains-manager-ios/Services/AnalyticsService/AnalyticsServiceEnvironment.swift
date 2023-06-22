@@ -305,6 +305,7 @@ extension Analytics {
         case logOutConfirmation, loggedInUserProfile
         case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
         case applePayRequired
+        case messagingChannelInfo
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

@@ -134,6 +134,7 @@ extension UIImage {
     static let newMessageIcon = UIImage(named: "newMessageIcon")!
     static let trashIcon16 = UIImage(named: "trashIcon16")!
     static let alertOctagon24 = UIImage(named: "alertOctagon24")!
+    static let infoEmptyIcon24 = UIImage(named: "infoEmptyIcon24")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

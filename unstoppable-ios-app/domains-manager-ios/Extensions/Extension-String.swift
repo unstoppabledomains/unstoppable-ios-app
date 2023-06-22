@@ -873,6 +873,7 @@ extension String {
         static let messagingChannelsEmptyTitle = "MESSAGING_CHANNELS_EMPTY_TITLE"
         static let messagingChannelsEmptySubtitle = "MESSAGING_CHANNELS_EMPTY_SUBTITLE"
         static let messagingChatEmptyTitle = "MESSAGING_CHAT_EMPTY_TITLE"
+        static let messagingNFollowers = "MESSAGING_N_FOLLOWERS"
 
     }
 

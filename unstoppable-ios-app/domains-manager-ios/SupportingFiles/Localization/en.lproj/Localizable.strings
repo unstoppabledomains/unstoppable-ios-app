@@ -798,3 +798,4 @@
 "MESSAGING_CHANNELS_EMPTY_TITLE" = "No messages from apps yet";
 "MESSAGING_CHANNELS_EMPTY_SUBTITLE" = "Keep an eye out for upcoming messages from the apps you connect with.";
 "MESSAGING_CHAT_EMPTY_TITLE" = "No messages yet";
+"MESSAGING_N_FOLLOWERS" = "%i Followers";

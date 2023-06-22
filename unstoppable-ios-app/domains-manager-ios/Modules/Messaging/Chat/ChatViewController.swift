@@ -222,6 +222,11 @@ private extension ChatViewController {
     @IBAction func rejectButtonPressed() {
         presenter.rejectButtonPressed()
     }
+    
+    @objc func infoButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+        presenter.infoButtonPressed()
+    }
 }
 
 // MARK: - Private functions
@@ -277,7 +282,11 @@ private extension ChatViewController {
     
     func setupNavBar() {
         titleView = ChatTitleView()
-        navigationItem.titleView = titleView 
+        navigationItem.titleView = titleView
+        
+        let infoBarButtonItem = UIBarButtonItem(image: .infoEmptyIcon24, style: .plain, target: self, action: #selector(infoButtonPressed))
+        infoBarButtonItem.tintColor = .foregroundDefault
+        navigationItem.rightBarButtonItem = infoBarButtonItem
     }
     
     func setupCollectionView() {

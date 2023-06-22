@@ -62,6 +62,18 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
         }
     }
     
+    func infoButtonPressed() {
+        Task {
+            guard let view else { return }
+            
+            do {
+                try await appContext.pullUpViewService.showMessagingChannelInfoPullUp(channel: channel, in: view)
+                await view.dismissPullUpMenu()
+                view.openLink(.generic(url: channel.url.absoluteString))
+            } catch { }
+        }
+    }
+    
     func approveButtonPressed() {
         guard !channel.isCurrentUserSubscribed else { return }
         Task {

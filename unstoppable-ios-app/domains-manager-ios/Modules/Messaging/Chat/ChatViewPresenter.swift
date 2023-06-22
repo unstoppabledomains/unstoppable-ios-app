@@ -15,6 +15,7 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     func didTypeText(_ text: String)
     func didPressSendText(_ text: String)
     
+    func infoButtonPressed()
     func approveButtonPressed()
     func rejectButtonPressed()
 }
@@ -95,6 +96,10 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         
         view?.setInputText("")
         sendTextMesssage(text)
+    }
+    
+    func infoButtonPressed() {
+        
     }
     
     func approveButtonPressed() {
