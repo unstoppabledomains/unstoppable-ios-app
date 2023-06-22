@@ -79,7 +79,9 @@ private extension VerifyPasscodeViewController {
             return
         }
         if newCount == Self.wipeThreshold {
-            // wipe
+            // wipe all cache
+            appContext.udWalletsService.removeAllWallets()
+            Storage.instance.cleanAllCache()
             return
         }
         if newCount % Self.waitThreshold == 0 {

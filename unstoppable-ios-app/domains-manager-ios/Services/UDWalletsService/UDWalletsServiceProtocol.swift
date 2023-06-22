@@ -25,6 +25,7 @@ protocol UDWalletsServiceProtocol {
     
     func addExternalWalletWith(address: String, walletRecord: WCWalletsProvider.WalletRecord) throws -> UDWallet
     func remove(wallet: UDWallet)
+    func removeAllWallets()
     
     // Edit
     func rename(wallet: UDWallet, with name: String) -> UDWallet?
