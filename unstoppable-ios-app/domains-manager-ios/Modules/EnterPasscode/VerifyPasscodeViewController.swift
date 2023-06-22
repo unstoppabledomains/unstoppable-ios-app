@@ -38,12 +38,15 @@ final class VerifyPasscodeViewController: EnterPasscodeViewController {
     override func didEnter(passcode: [Character]) {
         resetWarningLabel()
         guard passwordsMatch(passcode, self.passcode) else {
-            handlePasswordMismatch()
+            let shouldLeave = handlePasswordMismatch()
+            if shouldLeave {
+                resetFailedAttempts()
+                leaveThisController()
+            }
             return
         }
         
         resetFailedAttempts()
-        
         leaveThisController()
     }
     
@@ -79,22 +82,23 @@ private extension VerifyPasscodeViewController {
         }
     }
     
-    func handlePasswordMismatch() {
+    func handlePasswordMismatch() -> Bool {
         let newCount = incrementFailedAttempts()
         if newCount == Self.wipeThreshold - 1 {
             showWipingMessage()
-            return
+            return false
         }
         if newCount == Self.wipeThreshold {
             // wipe all cache
             appContext.udWalletsService.removeAllWallets()
             Storage.instance.cleanAllCache()
-            return
+            return true // return true if should leave the Password screen
         }
         if newCount % Self.waitThreshold == 0 {
             // lock for 60 sec
-            return
+            return false
         }
+        return false
     }
     
     func getFailedAttempts() -> Int {
