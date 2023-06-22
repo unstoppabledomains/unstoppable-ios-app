@@ -233,7 +233,7 @@ extension MessagingService: MessagingServiceProtocol {
             }
         }
         
-        func updateChannelUpToDate(feed: [MessagingNewsChannelFeed]) async throws {
+        func setChannelUpToDate(feed: [MessagingNewsChannelFeed]) async throws {
             var updatedChannel = channel
             updatedChannel.isUpToDate = true
             if page == 1,
@@ -245,6 +245,7 @@ extension MessagingService: MessagingServiceProtocol {
         }
         
         if channel.isUpToDate {
+            /// User has opened channel before and there's no unread messages
             if storedFeed.count < limit {
                 if storedFeed.last?.isFirstInChannel == true {
                      return storedFeed
@@ -260,7 +261,8 @@ extension MessagingService: MessagingServiceProtocol {
             } else {
                 return storedFeed
             }
-        } else if let latestLocalFeed = storedFeed.reversed().first(where: { $0.isRead }) {
+        } else if let latestLocalFeed = storedFeed.first(where: { $0.isRead }) {
+            /// User has already opened channel before, but there's some unread messages
             var preLoadPage = 1
             let preLoadLimit = 30
             var preloadedFeed = [MessagingNewsChannelFeed]()
@@ -280,17 +282,19 @@ extension MessagingService: MessagingServiceProtocol {
             
             await storageService.saveChannelsFeed(preloadedFeed,
                                                   in: channel)
-            try await updateChannelUpToDate(feed: preloadedFeed)
+            try await setChannelUpToDate(feed: preloadedFeed)
             
-            return preloadedFeed
+            let result = storedFeed + preloadedFeed
+            return result
         } else {
+            /// User open channel for the first time
             var loadedFeed = try await apiService.getFeedFor(channel: channel,
                                                              page: page,
                                                              limit: limit)
             checkIfFirstFeedInChannel(&loadedFeed)
             await storageService.saveChannelsFeed(loadedFeed,
                                                   in: channel)
-            try await updateChannelUpToDate(feed: loadedFeed)
+            try await setChannelUpToDate(feed: loadedFeed)
             
             return loadedFeed
         }
