@@ -511,10 +511,10 @@ final class SearchManager {
                 
                 try Task.checkCancellation()
                 return (users, channels)
-            } catch NetworkLayerError.requestCancelled {
+            } catch NetworkLayerError.requestCancelled, is CancellationError {
                 return ([], [])
             } catch {
-                throw error                
+                throw error
             }
         }
         
