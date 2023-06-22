@@ -152,6 +152,7 @@ extension ChatsListViewController: UDSearchBarDelegate {
     }
     
     func udSearchBarTextDidEndEditing(_ udSearchBar: UDSearchBar) {
+        searchBar.text = ""
         logAnalytic(event: .didStopSearching)
         setSearchBarActive(false)
         presenter.didStopSearch()
