@@ -36,6 +36,7 @@ final class VerifyPasscodeViewController: EnterPasscodeViewController {
     }
     
     override func didEnter(passcode: [Character]) {
+        resetWarningLabel()
         guard passwordsMatch(passcode, self.passcode) else {
             handlePasswordMismatch()
             return
@@ -75,7 +76,7 @@ private extension VerifyPasscodeViewController {
     func handlePasswordMismatch() {
         let newCount = incrementFailedAttempts()
         if newCount == Self.wipeThreshold - 1 {
-            // show warning message
+            showWipingMessage()
             return
         }
         if newCount == Self.wipeThreshold {
