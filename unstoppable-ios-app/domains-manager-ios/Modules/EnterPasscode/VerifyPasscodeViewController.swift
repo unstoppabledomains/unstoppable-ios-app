@@ -42,6 +42,8 @@ final class VerifyPasscodeViewController: EnterPasscodeViewController {
             return
         }
         
+        resetFailedAttempts()
+        
         if navigationController?.viewControllers.count == 1 {
             self.dismiss(animated: true)
             successCompletion?()
