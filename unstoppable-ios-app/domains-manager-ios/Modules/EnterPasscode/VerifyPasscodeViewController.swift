@@ -9,6 +9,10 @@ import UIKit
 
 final class VerifyPasscodeViewController: EnterPasscodeViewController {
     
+    static let passwordAttemptsKey = "CURRENT_PASSWORD_ATTEMPTS_COUNT"
+    static let waitThreshold = 3
+    static let wipeThreshold = 12
+    
     private var passcode: [Character] = []
     private var purpose: AuthenticationPurpose = .unlock
     private var successCompletion: EmptyCallback?
@@ -32,7 +36,10 @@ final class VerifyPasscodeViewController: EnterPasscodeViewController {
     }
     
     override func didEnter(passcode: [Character]) {
-        guard passwordsMatch(passcode, self.passcode) else { return }
+        guard passwordsMatch(passcode, self.passcode) else {
+            handlePasswordMismatch()
+            return
+        }
         
         if navigationController?.viewControllers.count == 1 {
             self.dismiss(animated: true)
@@ -63,6 +70,36 @@ private extension VerifyPasscodeViewController {
         case .enterOld:
             return String.Constants.enterOldPasscode.localized()
         }
+    }
+    
+    func handlePasswordMismatch() {
+        let newCount = incrementFailedAttempts()
+        if newCount == Self.wipeThreshold - 1 {
+            // show warning message
+            return
+        }
+        if newCount == Self.wipeThreshold {
+            // wipe
+            return
+        }
+        if newCount % Self.waitThreshold == 0 {
+            // lock for 60 sec
+            return
+        }
+    }
+    
+    func getFailedAttempts() -> Int {
+        return (UserDefaults.standard.object(forKey: Self.passwordAttemptsKey) as? Int) ?? 0
+    }
+    
+    func incrementFailedAttempts() -> Int {
+        let newCount = getFailedAttempts() + 1
+        UserDefaults.standard.set(newCount, forKey: Self.passwordAttemptsKey)
+        return newCount
+    }
+    
+    func resetFailedAttempts() {
+        UserDefaults.standard.set(Int.init(integerLiteral: 0), forKey: Self.passwordAttemptsKey)
     }
 }
 
