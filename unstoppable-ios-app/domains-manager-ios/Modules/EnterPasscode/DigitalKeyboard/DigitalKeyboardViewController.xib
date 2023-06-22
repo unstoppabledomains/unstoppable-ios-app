@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="passcodeInputView" destination="d6X-xc-1J7" id="Yms-9v-mww"/>
                 <outlet property="view" destination="44r-05-pvH" id="rIa-cP-gIc"/>
+                <outlet property="warningLabel" destination="5Bo-fx-S8y" id="efv-R3-XuO"/>
                 <outletCollection property="keyboardButtons" destination="4EF-Wd-4Tt" collectionClass="NSMutableArray" id="Yei-Fp-YrV"/>
                 <outletCollection property="keyboardButtons" destination="5Nw-HN-AFY" collectionClass="NSMutableArray" id="9JL-m8-pvo"/>
                 <outletCollection property="keyboardButtons" destination="naC-Xi-4H6" collectionClass="NSMutableArray" id="UhS-HQ-Bmz"/>
@@ -207,12 +208,19 @@
                         <constraint firstAttribute="width" constant="232" id="eR4-Dl-fMG"/>
                     </constraints>
                 </view>
+                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="warning" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Bo-fx-S8y">
+                    <rect key="frame" x="0.0" y="98" width="414" height="20.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
             </subviews>
             <viewLayoutGuide key="safeArea" id="GEF-jp-6mJ"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="lk7-Bb-tfu" firstAttribute="centerX" secondItem="44r-05-pvH" secondAttribute="centerX" id="BOG-9B-9vz"/>
                 <constraint firstItem="d6X-xc-1J7" firstAttribute="centerX" secondItem="44r-05-pvH" secondAttribute="centerX" id="Bgn-Nr-pOr"/>
+                <constraint firstItem="5Bo-fx-S8y" firstAttribute="top" secondItem="d6X-xc-1J7" secondAttribute="bottom" constant="38" id="DJW-V5-9JE"/>
                 <constraint firstItem="lk7-Bb-tfu" firstAttribute="top" secondItem="d6X-xc-1J7" secondAttribute="bottom" constant="137" id="Mkr-VX-wew" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="iPhoneSE2G">
@@ -230,9 +238,11 @@
                     </userDefinedRuntimeAttributes>
                 </constraint>
                 <constraint firstItem="GEF-jp-6mJ" firstAttribute="bottom" secondItem="lk7-Bb-tfu" secondAttribute="bottom" constant="10" id="cD0-u9-ihy"/>
+                <constraint firstItem="5Bo-fx-S8y" firstAttribute="trailing" secondItem="GEF-jp-6mJ" secondAttribute="trailing" id="iuV-Nz-GgC"/>
                 <constraint firstItem="d6X-xc-1J7" firstAttribute="top" secondItem="GEF-jp-6mJ" secondAttribute="top" id="s3i-sv-DS2"/>
+                <constraint firstItem="5Bo-fx-S8y" firstAttribute="leading" secondItem="GEF-jp-6mJ" secondAttribute="leading" id="zdx-lC-pVu"/>
             </constraints>
-            <point key="canvasLocation" x="858" y="135"/>
+            <point key="canvasLocation" x="857.97101449275374" y="134.59821428571428"/>
         </view>
     </objects>
     <resources>

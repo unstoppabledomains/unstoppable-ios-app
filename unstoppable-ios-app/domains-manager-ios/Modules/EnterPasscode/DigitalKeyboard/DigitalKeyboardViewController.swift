@@ -14,6 +14,7 @@ protocol DigitalKeyboardDelegate: AnyObject {
 final class DigitalKeyboardViewController: UIViewController {
     
     @IBOutlet private weak var passcodeInputView: PasscodeInputView!
+    @IBOutlet weak var warningLabel: UILabel!
     @IBOutlet private var keyboardButtons: [PasscodeButton]!
     
     weak var delegate: DigitalKeyboardDelegate?
@@ -34,6 +35,25 @@ final class DigitalKeyboardViewController: UIViewController {
 extension DigitalKeyboardViewController {
     func reset() {
         passcodeInputView.reset()
+        resetWarningLabel()
+    }
+    
+    func resetWarningLabel() {
+        warningLabel.text = ""
+        warningLabel.backgroundColor = .systemBackground
+        warningLabel.isHidden = true
+    }
+    
+    func setWaitingLabel(_ message: String) {
+        warningLabel.text = message
+        warningLabel.backgroundColor = .systemBackground
+        warningLabel.isHidden = false
+    }
+    
+    func setWipingLabel(_ message: String) {
+        warningLabel.text = message
+        warningLabel.backgroundColor = .systemRed
+        warningLabel.isHidden = false
     }
 }
 
