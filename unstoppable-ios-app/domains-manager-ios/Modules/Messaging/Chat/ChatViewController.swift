@@ -136,10 +136,18 @@ extension ChatViewController: ChatViewProtocol {
             approveContentView.isHidden = false
             chatInputView.isHidden = true
             collectionView.isHidden = false
+            blockButton.isHidden = false
+            acceptButton.setTitle(String.Constants.accept.localized(), image: nil)
         case .viewChannel:
             approveContentView.isHidden = true
             chatInputView.isHidden = true
             collectionView.isHidden = false
+        case .joinChannel:
+            approveContentView.isHidden = false
+            chatInputView.isHidden = true
+            collectionView.isHidden = false
+            blockButton.isHidden = true
+            acceptButton.setTitle(String.Constants.join.localized(), image: nil)
         }
     }
 }
@@ -264,7 +272,6 @@ private extension ChatViewController {
     
     func setupApproveRequestView() {
         approveContentView.isHidden = true
-        acceptButton.setTitle(String.Constants.accept.localized(), image: nil)
         blockButton.setTitle(String.Constants.delete.localized(), image: nil)
     }
     
@@ -454,6 +461,7 @@ extension ChatViewController {
         case chat
         case requestApprove
         case viewChannel
+        case joinChannel
     }
 }
 

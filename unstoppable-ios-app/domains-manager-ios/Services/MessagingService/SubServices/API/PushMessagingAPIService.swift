@@ -288,6 +288,25 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                                                               isCurrentUserSubscribed: false,
                                                                                                               userId: user.id) })
     }
+    
+    func setChannel(_ channel: MessagingNewsChannel,
+                    subscribed: Bool,
+                    by user: MessagingChatUserProfile) async throws {
+        
+        let domain = try await getAnyDomainItem(for: user.normalizedWallet)
+        let env = getCurrentPushEnvironment()
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        
+        let subscribeOptions = Push.PushChannel.SubscribeOption(signer: domain,
+                                                              channelAddress: channel.id,
+                                                              env: env)
+        if subscribed {
+            try await Push.PushChannel.subscribe(option: subscribeOptions)
+        } else {
+            try await Push.PushChannel.unsubscribe(option: subscribeOptions)
+        }
+    }
+    
 }
 
 // MARK: - Private methods
@@ -404,9 +423,13 @@ extension PushMessagingAPIService {
     }
 }
 
-extension DomainItem: Push.Signer {
+extension DomainItem: Push.Signer, Push.TypedSinger {
     func getEip191Signature(message: String) async throws -> String {
         try await self.personalSign(message: message)
+    }
+    
+    func getEip712Signature(message: String) async throws -> String {
+        throw NSError() // TODO: - Add support
     }
     
     func getAddress() async throws -> String {

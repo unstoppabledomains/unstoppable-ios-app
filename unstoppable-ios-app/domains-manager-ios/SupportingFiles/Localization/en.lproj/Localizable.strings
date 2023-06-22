@@ -138,6 +138,7 @@
 "ENABLE" = "Enable";
 "ACCEPT" = "Accept";
 "DELETE" = "Delete";
+"JOIN" = "Join";
 
 /* ONBOARDING */
 // Tutorial screens

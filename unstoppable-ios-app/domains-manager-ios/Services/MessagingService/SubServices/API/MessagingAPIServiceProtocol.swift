@@ -49,6 +49,9 @@ protocol MessagingAPIServiceProtocol {
                            limit: Int,
                            searchKey: String,
                            for user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
+    func setChannel(_ channel: MessagingNewsChannel,
+                    subscribed: Bool,
+                    by user: MessagingChatUserProfile) async throws
 }
 
 enum MessagingAPIServiceLoadMessagesOptions {

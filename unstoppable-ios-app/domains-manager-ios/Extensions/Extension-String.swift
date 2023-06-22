@@ -179,6 +179,7 @@ extension String {
         static let enable = "ENABLE"
         static let accept = "ACCEPT"
         static let delete = "DELETE"
+        static let join = "JOIN"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

@@ -61,6 +61,24 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
             loadMoreFeed()
         }
     }
+    
+    func approveButtonPressed() {
+        guard !channel.isCurrentUserSubscribed else { return }
+        Task {
+            view?.setLoading(active: true)
+            do {
+                try await appContext.messagingService.setChannel(channel,
+                                                                 subscribed: true,
+                                                                 by: profile)
+                channel.isCurrentUserSubscribed = true
+                setupUI()
+                try await loadAndAddFeed(for: 1)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+            view?.setLoading(active: false)
+        }
+    }
 }
 
 // MARK: - MessagingServiceListener
@@ -90,7 +108,11 @@ extension ChannelViewPresenter: MessagingServiceListener {
 private extension ChannelViewPresenter {
     func setupUI() {
         view?.setTitleOfType(.channel(channel))
-        view?.setUIState(.viewChannel)
+        if channel.isCurrentUserSubscribed {
+            view?.setUIState(.viewChannel)
+        } else {
+            view?.setUIState(.joinChannel)
+        }
     }
     
     func loadAndShowData() {

@@ -80,7 +80,6 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
         let chat = try await getMessagingChatFor(displayInfo: chat)
         try await apiService.makeChatRequest(chat, approved: approved, by: profile)
-        // TODO: - Reload chats list?
     }
     
     // Messages
@@ -307,6 +306,13 @@ extension MessagingService: MessagingServiceProtocol {
                       in channel: MessagingNewsChannel) throws {
         try storageService.markFeedItem(feedItem, isRead: isRead)
         notifyChannelsChanged(userId: channel.userId)
+    }
+    
+    func setChannel(_ channel: MessagingNewsChannel,
+                    subscribed: Bool,
+                    by user: MessagingChatUserProfileDisplayInfo) async throws {
+        let profile = try await getUserProfileWith(wallet: user.wallet)
+        try await apiService.setChannel(channel, subscribed: subscribed, by: profile)
     }
     
     // Search

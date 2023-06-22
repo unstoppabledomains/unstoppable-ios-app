@@ -71,6 +71,10 @@ extension MockMessagingService: MessagingServiceProtocol {
     func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
                       isRead: Bool,
                       in channel: MessagingNewsChannel) throws { }
+    func setChannel(_ channel: MessagingNewsChannel,
+                    subscribed: Bool,
+                    by user: MessagingChatUserProfileDisplayInfo) async throws { }
+    
     // Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] { [] }
     func searchForChannelsWith(page: Int,
