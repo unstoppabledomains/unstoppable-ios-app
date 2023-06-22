@@ -362,7 +362,8 @@ private extension ChatsListViewPresenter {
             channels = self.channels
         } else {
             people = searchData.searchUsers.map({ .newUser($0) })
-            channels = searchData.searchChannels
+            let subscribedChannelsIds = self.channels.map { $0.id }
+            channels = searchData.searchChannels.filter({ !subscribedChannelsIds.contains($0.id) })
         }
         
         if people.isEmpty && channels.isEmpty {
