@@ -44,6 +44,10 @@ final class VerifyPasscodeViewController: EnterPasscodeViewController {
         
         resetFailedAttempts()
         
+        leaveThisController()
+    }
+    
+    func leaveThisController() {
         if navigationController?.viewControllers.count == 1 {
             self.dismiss(animated: true)
             successCompletion?()

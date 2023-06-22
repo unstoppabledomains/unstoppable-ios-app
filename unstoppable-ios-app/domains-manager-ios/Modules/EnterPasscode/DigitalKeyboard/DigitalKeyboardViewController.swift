@@ -39,6 +39,8 @@ extension DigitalKeyboardViewController {
     }
     
     func resetWarningLabel() {
+        warningLabel.layer.masksToBounds = true
+        warningLabel.layer.cornerRadius = 8
         warningLabel.text = ""
         warningLabel.backgroundColor = .systemBackground
         warningLabel.isHidden = true
