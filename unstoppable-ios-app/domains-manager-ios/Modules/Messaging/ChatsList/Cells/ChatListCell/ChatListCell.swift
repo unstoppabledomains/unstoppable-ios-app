@@ -59,7 +59,11 @@ extension ChatListCell {
         
         if let lastMessage = channel.lastMessage {
             setTimeText(lastMessage.time)
-            setLastMessageText(lastMessage.title)
+            if lastMessage.title.trimmedSpaces.isEmpty {
+                setLastMessageText(lastMessage.message)
+            } else {
+                setLastMessageText(lastMessage.title)
+            }
         } else {
             setTimeText(nil)
             setLastMessageText("")
