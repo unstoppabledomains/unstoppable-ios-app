@@ -569,9 +569,11 @@ private extension CoreDataMessagingStorageService {
     func convertCoreDataChannelToMessagingChannel(_ coreDataChannel: CoreDataMessagingNewsChannel) -> MessagingNewsChannel? {
         // Last message
         var lastMessage: MessagingNewsChannelFeed?
-        if let coreDataLastMessage = coreDataChannel.lastFeed,
-           let message = convertCoreDataChannelFeedToMessagingChannelFeed(coreDataLastMessage) {
-            lastMessage = message
+        if let coreDataLastMessage = coreDataChannel.lastFeed {
+            lastMessage = convertCoreDataChannelFeedToMessagingChannelFeed(coreDataLastMessage)
+        } else if let lastFeedId = coreDataChannel.lastFeedId,
+                  let feed: CoreDataMessagingNewsChannelFeed = getCoreDataEntityWith(id: lastFeedId) {
+            lastMessage = convertCoreDataChannelFeedToMessagingChannelFeed(feed)
         }
         
         let newsChannel = MessagingNewsChannel(id: coreDataChannel.id!,
@@ -605,6 +607,7 @@ private extension CoreDataMessagingStorageService {
         coreDataChannel.verifiedStatus = Int64(channel.verifiedStatus)
         coreDataChannel.blocked = channel.blocked == 1
         coreDataChannel.subscriberCount = Int64(channel.subscriberCount)
+        coreDataChannel.lastFeedId = channel.lastMessage?.id
         
         if let lastMessage = channel.lastMessage,
            let lastCoreDataMessage: CoreDataMessagingNewsChannelFeed = getCoreDataEntityWith(id: lastMessage.id) {
@@ -617,7 +620,7 @@ private extension CoreDataMessagingStorageService {
 
 // MARK: - News Channel Feed
 private extension CoreDataMessagingStorageService {
-    func convertCoreDataChannelFeedToMessagingChannelFeed(_ coreDataNewsFeed: CoreDataMessagingNewsChannelFeed) -> MessagingNewsChannelFeed? {
+    func convertCoreDataChannelFeedToMessagingChannelFeed(_ coreDataNewsFeed: CoreDataMessagingNewsChannelFeed) -> MessagingNewsChannelFeed {
         let feed = MessagingNewsChannelFeed(id: coreDataNewsFeed.id!,
                                             title: coreDataNewsFeed.title!,
                                             message: coreDataNewsFeed.message!,
