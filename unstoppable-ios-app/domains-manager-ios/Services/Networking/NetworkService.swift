@@ -138,8 +138,10 @@ struct NetworkService {
             } catch {
                 let error = error as NSError
                 switch error.code {
-                case NSURLErrorNetworkConnectionLost, NSURLErrorCancelled:
+                case NSURLErrorNetworkConnectionLost:
                     throw NetworkLayerError.connectionLost
+                case NSURLErrorCancelled:
+                    throw NetworkLayerError.requestCancelled
                 case NSURLErrorNotConnectedToInternet:
                     throw NetworkLayerError.notConnectedToInternet
                 default:
@@ -476,6 +478,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable {
     case failedToValidateResolver
     case failedParseProfileData
     case connectionLost
+    case requestCancelled
     case notConnectedToInternet
     case failedFetchBalance
     case backendThrottle
@@ -520,6 +523,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable {
         case .invalidMessageError: return "invalidMessageError"
         case .invalidBlockchainAbbreviation: return "invalidBlockchainAbbreviation"
         case .failedBuildSignRequest: return "failedBuildSignRequest"
+        case .requestCancelled: return "requestCancelled"
         }
     }
     

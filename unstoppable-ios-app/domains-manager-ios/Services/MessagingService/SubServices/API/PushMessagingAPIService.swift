@@ -280,6 +280,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                            limit: Int,
                            searchKey: String,
                            for user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
+        guard !searchKey.trimmedSpaces.isEmpty else { return [] }
         let channels = try await pushRESTService.searchForChannels(page: page, limit: limit, query: searchKey)
         
         return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,

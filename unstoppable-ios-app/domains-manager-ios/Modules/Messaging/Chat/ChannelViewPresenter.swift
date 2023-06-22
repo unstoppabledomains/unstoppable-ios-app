@@ -135,7 +135,7 @@ private extension ChannelViewPresenter {
         Task {
             do {
                 let newPage = currentPage + 1
-                let newFeed = try await loadAndAddFeed(for: newPage)
+                try await loadAndAddFeed(for: newPage)
                 currentPage = newPage
                 isLoadingFeed = false
                 showData(animated: false)

@@ -498,17 +498,23 @@ final class SearchManager {
         
         let debounce = self.debounce
         let task: SearchUsersTask = Task.detached {
-            try? await Task.sleep(seconds: debounce)
-            guard !Task.isCancelled else { return ([], []) }
-            
-            async let searchUsersTasks = appContext.messagingService.searchForUsersWith(searchKey: searchKey)
-            async let searchChannelsTasks = appContext.messagingService.searchForChannelsWith(page: page, limit: limit,
-                                                                                              searchKey: searchKey, for: profile)
-            
-            let (users, channels) = try await (searchUsersTasks, searchChannelsTasks)
-
-            guard !Task.isCancelled else { return ([], []) }
-            return (users, channels)
+            do {
+                try await Task.sleep(seconds: debounce)
+                try Task.checkCancellation()
+                
+                async let searchUsersTasks = appContext.messagingService.searchForUsersWith(searchKey: searchKey)
+                async let searchChannelsTasks = appContext.messagingService.searchForChannelsWith(page: page, limit: limit,
+                                                                                                  searchKey: searchKey, for: profile)
+                
+                let (users, channels) = try await (searchUsersTasks, searchChannelsTasks)
+                
+                try Task.checkCancellation()
+                return (users, channels)
+            } catch NetworkLayerError.requestCancelled {
+                return ([], [])
+            } catch {
+                throw error                
+            }
         }
         
         currentTask = task

@@ -247,7 +247,7 @@ extension MessagingService: MessagingServiceProtocol {
         if channel.isUpToDate {
             /// User has opened channel before and there's no unread messages
             if storedFeed.count < limit {
-                if storedFeed.last?.isFirstInChannel == true || (storedFeed.isEmpty && page == 1){
+                if storedFeed.last?.isFirstInChannel == true {
                      return storedFeed
                 } else {
                     var loadedFeed = try await apiService.getFeedFor(channel: channel,
