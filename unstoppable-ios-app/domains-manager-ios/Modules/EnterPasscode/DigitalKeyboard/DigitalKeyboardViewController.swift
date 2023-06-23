@@ -26,6 +26,9 @@ final class DigitalKeyboardViewController: UIViewController {
     
     weak var delegate: DigitalKeyboardDelegate?
     
+    var enabled = true
+    var timeCountDown = 60
+
     static func instantiate() -> UIViewController {
         nibInstance()
     }
@@ -68,9 +71,27 @@ extension DigitalKeyboardViewController {
     }
     
     func setWaitingLabel(_ message: String) {
-        warningLabel.text = message
+        func stepDown() {
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                warningLabel.text = "App will be unlocked in \(timeCountDown) sec"
+                timeCountDown -= 1
+                if timeCountDown < 1 {
+                    resetWarningLabel()
+                    enabled = true
+                    return
+                }
+                DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                    stepDown()
+                }
+            }
+        }
         warningLabel.backgroundColor = .systemBackground
         warningLabel.isHidden = false
+        
+        enabled = false
+        timeCountDown = 60
+        stepDown()
     }
     
     func setWipingLabel(_ message: String) {
@@ -83,6 +104,7 @@ extension DigitalKeyboardViewController {
 // MARK: - Actions
 private extension DigitalKeyboardViewController {
     @IBAction func didTapDigitalButton(_ sender: UIButton) {
+        guard enabled else { return }
         
         let tag = sender.tag
         let startingValue = Int(("0" as UnicodeScalar).value)
@@ -102,6 +124,7 @@ private extension DigitalKeyboardViewController {
     }
     
     @IBAction func didTapErase(_ sender: UIButton) {
+        guard enabled else { return }
         do {
             try passcodeInputView.removeLast()
             Vibration.rigid.vibrate()
