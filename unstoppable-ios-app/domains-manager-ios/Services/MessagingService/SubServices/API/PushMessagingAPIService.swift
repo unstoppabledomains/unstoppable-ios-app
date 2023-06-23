@@ -309,7 +309,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         let domain = try await getAnyDomainItem(for: user.normalizedWallet)
         let env = getCurrentPushEnvironment()
-        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         
         let subscribeOptions = Push.PushChannel.SubscribeOption(signer: domain,
                                                               channelAddress: channel.id,

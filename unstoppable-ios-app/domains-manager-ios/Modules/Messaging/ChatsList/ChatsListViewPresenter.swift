@@ -72,7 +72,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             openChannel(configuration.channel)
         case .userInfo(let configuration):
             openChatWith(conversationState: .newChat(configuration.userInfo))
-        case .dataTypeSelection, .createProfile, .emptyState:
+        case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
         }
     }
@@ -368,7 +368,7 @@ private extension ChatsListViewPresenter {
         
         if people.isEmpty && channels.isEmpty {
             snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+            snapshot.appendItems([.emptySearch])
         } else {
             if !people.isEmpty {
                 snapshot.appendSections([.listItems(title: "People")])
