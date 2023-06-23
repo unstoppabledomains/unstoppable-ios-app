@@ -19,8 +19,6 @@ class EnterPasscodeViewController: BaseViewController, DigitalKeyboardDelegate, 
     
     var passwordsNotMatchingErrorMessage: String { "" }
     
-    weak var keyboard: DigitalKeyboardViewController?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -35,7 +33,10 @@ class EnterPasscodeViewController: BaseViewController, DigitalKeyboardDelegate, 
     
     // MARK: - DigitalKeyboardDelegate
     func didEnter(passcode: [Character]) { }
-  
+    
+    func getWarningType() -> DigitalKeyboardViewController.WarningType {
+        return .none
+    }
 }
 
 // MARK: - Common methods
@@ -48,7 +49,6 @@ extension EnterPasscodeViewController {
     func passwordsMatch(_ lhs: [Character], _ rhs: [Character]) -> Bool {
         guard lhs == rhs else {
             Vibration.error.vibrate()
-            self.reset()
             showPasscodeNotMatchAlert()
             return false
         }
@@ -72,17 +72,6 @@ extension EnterPasscodeViewController {
         self.present(alert, animated: true)
     }
     
-    func resetWarningLabel() {
-        self.keyboard?.resetWarningLabel()
-    }
-    
-    func showWipingMessage() {
-        self.keyboard?.setWipingLabel("App data ill be wiped after one more wrong attempt")
-    }
-    
-    func showLockingMessage(sec: Int) {
-        self.keyboard?.setWipingLabel("App will be unlocked in \(sec) sec")
-    }
 }
 
 // MARK: - Setup methods
@@ -102,7 +91,6 @@ private extension EnterPasscodeViewController {
         let keyboard = DigitalKeyboardViewController.instantiate()
         addChildViewController(keyboard, andEmbedToView: keyboardContainerView)
         (keyboard as? DigitalKeyboardViewController)?.delegate = self
-        self.keyboard = keyboard as? DigitalKeyboardViewController
     }
 }
 

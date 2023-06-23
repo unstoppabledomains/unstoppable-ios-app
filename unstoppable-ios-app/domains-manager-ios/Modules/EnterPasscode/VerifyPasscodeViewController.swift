@@ -36,18 +36,29 @@ final class VerifyPasscodeViewController: EnterPasscodeViewController {
     }
     
     override func didEnter(passcode: [Character]) {
-        resetWarningLabel()
         guard passwordsMatch(passcode, self.passcode) else {
             let shouldLeave = handlePasswordMismatch()
             if shouldLeave {
                 resetFailedAttempts()
                 leaveThisController()
             }
+            self.reset()
             return
         }
         
         resetFailedAttempts()
         leaveThisController()
+    }
+    
+    override func getWarningType() -> DigitalKeyboardViewController.WarningType {
+        let count = getFailedAttempts()
+        if count >= Self.wipeThreshold - 1 {
+            return .wipe
+        }
+        if count > 0 && count % Self.waitThreshold == 0 {
+            return .lock
+        }
+        return .none
     }
     
     func leaveThisController() {
@@ -84,23 +95,18 @@ private extension VerifyPasscodeViewController {
     
     func handlePasswordMismatch() -> Bool {
         let newCount = incrementFailedAttempts()
-        if newCount == Self.wipeThreshold - 1 {
-            showWipingMessage()
-            return false
-        }
-        if newCount == Self.wipeThreshold {
+        if newCount >= Self.wipeThreshold {
             // wipe all cache
             appContext.udWalletsService.removeAllWallets()
             Storage.instance.cleanAllCache()
             return true // return true if should leave the Password screen
         }
-        if newCount % Self.waitThreshold == 0 {
-            // lock for 60 sec
-            return false
-        }
         return false
     }
-    
+}
+
+// MARK: - Persistant counter methods
+private extension VerifyPasscodeViewController {
     func getFailedAttempts() -> Int {
         return (UserDefaults.standard.object(forKey: Self.passwordAttemptsKey) as? Int) ?? 0
     }

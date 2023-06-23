@@ -9,9 +9,16 @@ import UIKit
 
 protocol DigitalKeyboardDelegate: AnyObject {
     func didEnter(passcode: [Character])
+    func getWarningType() -> DigitalKeyboardViewController.WarningType
 }
 
 final class DigitalKeyboardViewController: UIViewController {
+    
+    enum WarningType {
+        case none
+        case lock
+        case wipe
+    }
     
     @IBOutlet private weak var passcodeInputView: PasscodeInputView!
     @IBOutlet weak var warningLabel: UILabel!
@@ -36,6 +43,20 @@ extension DigitalKeyboardViewController {
     func reset() {
         passcodeInputView.reset()
         resetWarningLabel()
+        
+        setupWarningLabel()
+    }
+    
+    func setupWarningLabel() {
+        guard let warningType = delegate?.getWarningType() else {
+            Debugger.printFailure("No delegate for keyboard found")
+            return
+        }
+        switch warningType {
+        case .none: resetWarningLabel()
+        case .wipe: setWipingLabel("App data will be wiped after one more wrong attempt")
+        case .lock: setWaitingLabel("App will be unlocked in 60 sec")
+        }
     }
     
     func resetWarningLabel() {
