@@ -330,12 +330,13 @@ private extension ChatsListViewPresenter {
             snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
         } else {
             snapshot.appendSections([.listItems(title: nil)])
-            let spamList = channels.filter({ $0.blocked == 1 })
+            let channelsList = channels.filter({ $0.isCurrentUserSubscribed })
+            let spamList = channels.filter({ !$0.isCurrentUserSubscribed })
             if !spamList.isEmpty {
                 snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
                                                                          numberOfRequests: spamList.count))])
             }
-            snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
+            snapshot.appendItems(channelsList.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }
     }
     
@@ -353,7 +354,6 @@ private extension ChatsListViewPresenter {
                 }
             }
         }
-        
         
         var people = [PeopleSearchResult]()
         var channels = [MessagingNewsChannel]()
@@ -415,7 +415,12 @@ private extension ChatsListViewPresenter {
                                               profile: profile,
                                               in: nav)
         case .channels:
-            return
+            let channels = self.channels.filter { $0.isCurrentUserSubscribed }
+            guard !channels.isEmpty else { return }
+
+            UDRouter().showChatRequestsScreen(dataType: .channelsRequests(channels),
+                                              profile: profile,
+                                              in: nav)
         }
     }
     
@@ -478,7 +483,7 @@ private extension ChatsListViewPresenter {
     }
 }
 
-final class SearchManager {
+private final class SearchManager {
     
     typealias SearchResult = ([MessagingChatUserDisplayInfo], [MessagingNewsChannel])
     typealias SearchUsersTask = Task<SearchResult, Error>
