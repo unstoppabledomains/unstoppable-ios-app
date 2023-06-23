@@ -115,7 +115,8 @@ private extension ChatListCell {
     func setNameText(_ text: String) {
         chatNameLabel.setAttributedTextWith(text: text,
                                             font: .currentFont(withSize: 16, weight: .medium),
-                                            textColor: .foregroundDefault)
+                                            textColor: .foregroundDefault,
+                                            lineBreakMode: .byTruncatingTail)
     }
     
     func setLastMessageText(_ text: String) {

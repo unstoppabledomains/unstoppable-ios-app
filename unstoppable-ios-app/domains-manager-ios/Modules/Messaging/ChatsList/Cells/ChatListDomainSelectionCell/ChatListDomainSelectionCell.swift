@@ -46,7 +46,8 @@ extension ChatListDomainSelectionCell {
         let nameLabelColor: UIColor = isDomainSelected ? .foregroundDefault : .foregroundSecondary
         domainNameLabel.setAttributedTextWith(text: domain.name,
                                               font: .currentFont(withSize: 14, weight: .medium),
-                                              textColor: nameLabelColor)
+                                              textColor: nameLabelColor,
+                                              lineBreakMode: .byTruncatingTail)
         
         containerView.backgroundColor = isDomainSelected ? .backgroundOverlay : .clear
     }
