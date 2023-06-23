@@ -376,7 +376,7 @@ private extension ChatViewPresenter {
     
     func sendImageMessage(_ image: UIImage) {
         guard let base64 = image.base64String else { return }
-        let preparedBase64 = "data:image/jpeg;base64," + base64 // TODO: - Remove "data:image/jpeg;base64,"
+        let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
         let imageTypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64,
                                                                               encryptedContent: preparedBase64)
         sendMessageOfType(.imageBase64(imageTypeDetails))

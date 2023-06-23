@@ -30,11 +30,8 @@ extension ChatImageCell {
         setWith(sender: configuration.message.senderType)
         setImageSize(.square(size: maxSize))
         Task {
-            let base64 = configuration.imageMessageDisplayInfo.base64.replacingOccurrences(of: "data:image/jpeg;base64,", with: "") // TODO: - Remove "data:image/jpeg;base64,"
-//            let count = base64.count
-//            let base64String = String(base64[base64.index(base64.startIndex, offsetBy: 22)..<base64.endIndex])
+            let base64 = configuration.imageMessageDisplayInfo.base64Image
             let image = await UIImage.from(base64String: base64)
-            
             setImage(image ?? .domainSharePlaceholder)
         }
     }
