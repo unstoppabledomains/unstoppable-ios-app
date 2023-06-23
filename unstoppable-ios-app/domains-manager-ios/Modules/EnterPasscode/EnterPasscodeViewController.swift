@@ -71,7 +71,6 @@ extension EnterPasscodeViewController {
         alert.addAction(ok)
         self.present(alert, animated: true)
     }
-    
 }
 
 // MARK: - Setup methods

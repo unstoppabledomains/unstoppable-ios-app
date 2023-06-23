@@ -45,8 +45,6 @@ final class DigitalKeyboardViewController: UIViewController {
 extension DigitalKeyboardViewController {
     func reset() {
         passcodeInputView.reset()
-        resetWarningLabel()
-        
         setupWarningLabel()
     }
     
