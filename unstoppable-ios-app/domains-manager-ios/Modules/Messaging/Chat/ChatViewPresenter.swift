@@ -99,7 +99,10 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
     }
     
     func infoButtonPressed() {
-        
+        if let domainName = conversationState.userInfo?.domainName {
+            let link = String.Links.domainProfilePage(domainName: domainName)
+            view?.openLink(link)
+        }
     }
     
     func approveButtonPressed() {
