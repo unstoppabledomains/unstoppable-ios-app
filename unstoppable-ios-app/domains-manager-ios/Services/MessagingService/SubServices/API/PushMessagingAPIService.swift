@@ -240,11 +240,25 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     // Channels
     func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
         let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: user.wallet)
-        guard !subscribedChannelsIds.isEmpty else { return [] }
         
+        return try await getChannelsWithIds(Set(subscribedChannelsIds), isCurrentUserSubscribed: true, user: user)
+    }
+    
+    func getSpamChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
+        let spamMessages = try await pushRESTService.getNotificationsInbox(for: user.wallet, page: 1, limit: 30, isSpam: true)
+        let spamChannelIds = Set(spamMessages.map { $0.sender })
+        
+        return try await getChannelsWithIds(spamChannelIds, isCurrentUserSubscribed: false, user: user)
+    }
+    
+    private func getChannelsWithIds(_ channelIds: Set<String>,
+                                    isCurrentUserSubscribed: Bool,
+                                    user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
+        guard !channelIds.isEmpty else { return [] }
+
         var channels = [PushChannel?]()
         await withTaskGroup(of: PushChannel?.self, body: { group in
-            for id in subscribedChannelsIds {
+            for id in channelIds {
                 group.addTask {
                     try? await self.pushRESTService.getChannelDetails(for: id)
                 }
@@ -256,7 +270,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         })
         
         return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
-                                                                                                              isCurrentUserSubscribed: true,
+                                                                                                              isCurrentUserSubscribed: isCurrentUserSubscribed,
                                                                                                               userId: user.id) })
     }
     

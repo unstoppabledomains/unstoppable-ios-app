@@ -213,7 +213,6 @@ extension MessagingService: MessagingServiceProtocol {
                                                                  limit: limit,
                                                                  isSpam: isSpam)
         
-        
         return feed
     }
     
@@ -577,8 +576,14 @@ private extension MessagingService {
         Task {
             do {
                 let storedChannels = try await storageService.getChannelsFor(profile: profile)
-                let channels = try await apiService.getSubscribedChannelsForUser(profile)
-                let updatedChats = await refreshChannelsMetadata(channels, storedChannels: storedChannels).sortedByLastMessage()
+
+                async let channelsTask = try await apiService.getSubscribedChannelsForUser(profile)
+                async let spamChannelsTask = try await apiService.getSpamChannelsForUser(profile)
+                
+                let (channels, spamChannels) = try await (channelsTask, spamChannelsTask)
+                let allChannels = channels + spamChannels
+                
+                let updatedChats = await refreshChannelsMetadata(allChannels, storedChannels: storedChannels).sortedByLastMessage()
                 
                 await storageService.saveChannels(updatedChats, for: profile)
                 notifyListenersChangedDataType(.channels(updatedChats, profile: profile.displayInfo))

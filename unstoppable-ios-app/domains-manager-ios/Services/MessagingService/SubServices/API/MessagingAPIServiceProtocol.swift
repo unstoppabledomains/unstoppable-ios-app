@@ -38,6 +38,7 @@ protocol MessagingAPIServiceProtocol {
     
     // Channels
     func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
+    func getSpamChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
     func getNotificationsInboxFor(wallet: HexAddress,
                                   page: Int,
                                   limit: Int,
