@@ -41,7 +41,7 @@ extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
         case .chat(let configuration):
             openChat(configuration.chat)
         case .channel(let configuration):
-            return
+            openChannel(configuration.channel)
         default:
             return
         }
@@ -95,6 +95,15 @@ private extension ChatsRequestsListViewPresenter {
                                   conversationState: .existingChat(chat),
                                   in: nav)
     }
+    
+    func openChannel(_ channel: MessagingNewsChannel) {
+        guard let nav = view?.cNavigationController else { return }
+        
+        UDRouter().showChannelScreen(profile: profile,
+                                     channel: channel,
+                                     in: nav)
+    }
+    
 }
 
 // MARK: - Open methods

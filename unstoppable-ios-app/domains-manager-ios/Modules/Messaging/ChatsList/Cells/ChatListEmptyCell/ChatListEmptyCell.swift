@@ -28,11 +28,14 @@ extension ChatListEmptyCell {
         
         let subtitle = subtitleFor(dataType: configuration.dataType)
         setSubtitle(subtitle)
+        
+        iconImageView.image = .messageCircleIcon24
     }
     
     func setSearchStateUI() {
         setTitle(String.Constants.noResults.localized())
         setSubtitle("")
+        iconImageView.image = .searchIcon
     }
 }
 

@@ -415,7 +415,7 @@ private extension ChatsListViewPresenter {
                                               profile: profile,
                                               in: nav)
         case .channels:
-            let channels = self.channels.filter { $0.isCurrentUserSubscribed }
+            let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
             guard !channels.isEmpty else { return }
 
             UDRouter().showChatRequestsScreen(dataType: .channelsRequests(channels),
