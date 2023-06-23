@@ -57,8 +57,8 @@ extension DigitalKeyboardViewController {
         }
         switch warningType {
         case .none: resetWarningLabel()
-        case .wipe: setWipingLabel("App data will be wiped after one more wrong attempt")
-        case .lock: setWaitingLabel("App will be unlocked in 60 sec")
+        case .wipe: setWipingLabel(String.Constants.allDataWillBeWiped)
+        case .lock: setWaitingLabel(String.Constants.appWillBeUnlocked)
         }
     }
     
@@ -70,11 +70,11 @@ extension DigitalKeyboardViewController {
         warningLabel.isHidden = true
     }
     
-    func setWaitingLabel(_ message: String) {
+    func setWaitingLabel(_ nonLocalizedMessage: String) {
         func stepDown() {
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
-                warningLabel.text = "App will be unlocked in \(timeCountDown) sec"
+                warningLabel.text = nonLocalizedMessage.localized(String(timeCountDown - 1))
                 timeCountDown -= 1
                 if timeCountDown < 1 {
                     resetWarningLabel()
@@ -94,8 +94,8 @@ extension DigitalKeyboardViewController {
         stepDown()
     }
     
-    func setWipingLabel(_ message: String) {
-        warningLabel.text = message
+    func setWipingLabel(_ nonLocalizedMessage: String) {
+        warningLabel.text = nonLocalizedMessage.localized()
         warningLabel.backgroundColor = .systemRed
         warningLabel.isHidden = false
     }
