@@ -9,9 +9,16 @@ import UIKit
 
 final class ChatLoadingCell: UICollectionViewCell {
 
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        activityIndicator.startAnimating()
+    }
 }

@@ -28,7 +28,6 @@
                         <constraints>
                             <constraint firstItem="Srb-2C-bLB" firstAttribute="centerX" secondItem="0rb-d6-wCl" secondAttribute="centerX" id="5Oq-ea-xRT"/>
                             <constraint firstItem="Srb-2C-bLB" firstAttribute="centerY" secondItem="0rb-d6-wCl" secondAttribute="centerY" id="cfZ-dX-60R"/>
-                            <constraint firstAttribute="height" priority="999" constant="50" id="jDk-Ct-Cv6"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -41,6 +40,9 @@
                 <constraint firstAttribute="trailing" secondItem="0rb-d6-wCl" secondAttribute="trailing" id="qsr-uH-ybu"/>
             </constraints>
             <size key="customSize" width="281" height="73"/>
+            <connections>
+                <outlet property="activityIndicator" destination="Srb-2C-bLB" id="4qW-Vt-vkW"/>
+            </connections>
             <point key="canvasLocation" x="219.08396946564883" y="33.450704225352112"/>
         </collectionViewCell>
     </objects>

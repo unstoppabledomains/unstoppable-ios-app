@@ -393,7 +393,7 @@ private extension ChatViewController {
                 
                 return layoutSection
             case .loading:
-                return .flexibleListItemSection(height: 60)
+                return .listItemSection(height: 50)
             case .emptyState:
                 let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                                      heightDimension: .fractionalHeight(1.0)))
