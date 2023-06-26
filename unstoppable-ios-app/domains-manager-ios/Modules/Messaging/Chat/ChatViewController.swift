@@ -449,7 +449,7 @@ extension ChatViewController {
     struct ChannelFeedUIConfiguration: Hashable {
         
         let feed: MessagingNewsChannelFeed
-        var actionCallback: (ChatMessageAction)->()
+        var actionCallback: (ChatFeedAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.feed == rhs.feed
@@ -463,6 +463,10 @@ extension ChatViewController {
     enum ChatMessageAction: Hashable {
         case resend
         case delete
+    }
+    
+    enum ChatFeedAction: Hashable {
+        case learnMore
     }
     
     enum State {
