@@ -12,7 +12,7 @@ final class ChatImageCell: ChatBaseCell {
     @IBOutlet weak var imageView: UIImageView!
     
     private var imageViewConstraints: [NSLayoutConstraint] = []
-    private let maxSize: CGFloat = 200
+    private let maxSize: CGFloat = (294/390) * UIScreen.main.bounds.width
 
     override func awakeFromNib() {
         super.awakeFromNib()

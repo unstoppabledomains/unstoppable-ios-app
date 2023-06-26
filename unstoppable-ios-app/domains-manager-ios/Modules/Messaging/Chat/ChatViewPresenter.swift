@@ -18,6 +18,9 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     func infoButtonPressed()
     func approveButtonPressed()
     func rejectButtonPressed()
+    
+    func choosePhotoButtonPressed()
+    func takePhotoButtonPressed()
 }
 
 extension ChatViewPresenterProtocol {
@@ -25,6 +28,8 @@ extension ChatViewPresenterProtocol {
     func didPressSendText(_ text: String) { }
     func approveButtonPressed() { }
     func rejectButtonPressed() { }
+    func choosePhotoButtonPressed() { }
+    func takePhotoButtonPressed() { }
 }
 
 @MainActor

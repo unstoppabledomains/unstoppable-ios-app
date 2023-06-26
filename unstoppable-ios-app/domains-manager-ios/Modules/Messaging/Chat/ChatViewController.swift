@@ -211,6 +211,19 @@ extension ChatViewController: ChatInputViewDelegate {
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
         calculateCollectionBottomInset()
     }
+    
+    func chatInputViewAdditionalActionsButtonPressed(_ chatInputView: ChatInputView) {
+        
+    }
+    
+    func chatInputViewAdditionalActionSelected(_ chatInputView: ChatInputView, action: ChatInputView.AdditionalAction) {
+        switch action {
+        case .choosePhoto:
+            presenter.choosePhotoButtonPressed()
+        case .takePhoto:
+            presenter.takePhotoButtonPressed()
+        }
+    }
 }
 
 // MARK: - Actions

@@ -168,6 +168,7 @@ extension UIImage {
     static let systemGlobe = UIImage(systemName: "globe")!
     static let systemChevronUpDown = UIImage(systemName: "chevron.up.chevron.down")!
     static let systemArrowTurnUpRight = UIImage(systemName: "arrow.turn.up.right")!
+    static let systemCamera = UIImage(systemName: "camera")!
     
 }
 
