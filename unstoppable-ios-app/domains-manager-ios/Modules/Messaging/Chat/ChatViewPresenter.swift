@@ -213,12 +213,14 @@ private extension ChatViewPresenter {
                     
                     switch chatState {
                     case .upToDate, .hasUnloadedMessagesBefore:
+                        isLoadingMessages = false
                         showData(animated: false, scrollToBottomAnimated: false)
                     case .hasUnreadMessagesAfter(let message):
                         let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                       after: message,
                                                                                                       limit: fetchLimit)
                         addMessages(unreadMessages)
+                        isLoadingMessages = false
                         showData(animated: false, completion: {
                             if let message = unreadMessages.last {
                                 let item = self.createSnapshotItemFrom(message: message)
@@ -231,7 +233,6 @@ private extension ChatViewPresenter {
                         self.view?.setLoading(active: false)
                         self.updateUIForChatApprovedState()
                     }
-                    isLoadingMessages = false
                 case .newChat:
                     updateUIForChatApprovedState()
                     view?.startTyping()
@@ -248,6 +249,7 @@ private extension ChatViewPresenter {
               case .existingChat(let chat) = conversationState else { return }
         
         isLoadingMessages = true
+        showData(animated: false)
         Task {
             do {
                 let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
@@ -256,11 +258,11 @@ private extension ChatViewPresenter {
                 addMessages(unreadMessages)
                 checkIfUpToDate()
                 isLoadingMessages = false
-                showData(animated: false)
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
                 isLoadingMessages = false
             }
+            showData(animated: false)
         }
     }
     
@@ -306,6 +308,10 @@ private extension ChatViewPresenter {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptyState])
         } else {
+            if isLoadingMessages {
+                snapshot.appendSections([.loading])
+                snapshot.appendItems([.loading])
+            }
             view?.setScrollEnabled(true)
             let groupedMessages = [Date : [MessagingChatMessageDisplayInfo]].init(grouping: messages, by: { $0.time.dayStart })
             let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })

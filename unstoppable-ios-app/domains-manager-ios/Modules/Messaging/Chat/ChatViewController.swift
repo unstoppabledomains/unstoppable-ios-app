@@ -40,7 +40,8 @@ final class ChatViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self,
                                                         ChatImageCell.self,
                                                         ChatEmptyCell.self,
-                                                        ChannelFeedCell.self] }
+                                                        ChannelFeedCell.self,
+                                                        ChatLoadingCell.self] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
     private var scrollingInfo: ScrollingInfo?
@@ -76,10 +77,14 @@ final class ChatViewController: BaseViewController {
 extension ChatViewController: ChatViewProtocol {
     func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool, completion: EmptyCallback?) {
         scrollingInfo = ScrollingInfo(collectionView: collectionView)
-        dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
-            self?.scrollingInfo = nil
-            completion?()
-        })
+        Task {
+            dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
+                DispatchQueue.main.async { [weak self] in
+                    self?.scrollingInfo = nil
+                    completion?()
+                }
+            })
+        }
     }
     
     func startTyping() {
@@ -336,6 +341,10 @@ private extension ChatViewController {
                 let cell = collectionView.dequeueCellOfType(ChatEmptyCell.self, forIndexPath: indexPath)
                 
                 return cell
+            case .loading:
+                let cell = collectionView.dequeueCellOfType(ChatLoadingCell.self, forIndexPath: indexPath)
+
+                return cell
             }
         })
         
@@ -349,7 +358,7 @@ private extension ChatViewController {
                                                                            for: indexPath) as! ChatSectionHeaderView
                 view.setTitle(title)
                 return view
-            case .none, .emptyState:
+            case .none, .emptyState, .loading:
                 return nil
             }
         }
@@ -383,6 +392,8 @@ private extension ChatViewController {
                 layoutSection.boundarySupplementaryItems = [header]
                 
                 return layoutSection
+            case .loading:
+                return .flexibleListItemSection(height: 60)
             case .emptyState:
                 let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                                      heightDimension: .fractionalHeight(1.0)))
@@ -405,6 +416,7 @@ extension ChatViewController {
     enum Section: Hashable {
         case messages(title: String)
         case emptyState
+        case loading
     }
     
     enum Item: Hashable {
@@ -412,6 +424,7 @@ extension ChatViewController {
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
         case channelFeed(configuration: ChannelFeedUIConfiguration)
         case emptyState
+        case loading
         
         var message: MessagingChatMessageDisplayInfo? {
             switch self {
@@ -419,7 +432,7 @@ extension ChatViewController {
                 return configuration.message
             case .imageBase64Message(let configuration):
                 return configuration.message
-            case .emptyState, .channelFeed:
+            case .emptyState, .channelFeed, .loading:
                 return nil
             }
         }
