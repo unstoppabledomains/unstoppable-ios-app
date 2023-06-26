@@ -131,6 +131,28 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         // TODO: - Implement flow
         view?.showSimpleAlert(title: "Not supported for now", body: "Stay tuned!")
     }
+    
+    func choosePhotoButtonPressed() {
+        view?.hideKeyboard()
+        guard let view else { return  }
+        
+        UnstoppableImagePicker.shared.pickImage(in: view, imagePickerCallback: { [weak self] image in
+            DispatchQueue.main.async {
+                self?.didPickImageToSend(image)
+            }
+        })
+    }
+    
+    func takePhotoButtonPressed() {
+        view?.hideKeyboard()
+        guard let view else { return  }
+        
+        UnstoppableImagePicker.shared.selectFromCamera(in: view, imagePickerCallback: { [weak self] image in
+            DispatchQueue.main.async {
+                self?.didPickImageToSend(image)
+            }
+        })
+    }
 }
 
 // MARK: - MessagingServiceListener
@@ -367,6 +389,14 @@ private extension ChatViewPresenter {
         } else {
             self.view?.setUIState(.chat)
         }
+    }
+}
+
+// MARK: - Images related methods
+private extension ChatViewPresenter {
+    func didPickImageToSend(_ image: UIImage) {
+        let resizedImage = image.resized(to: 1000) ?? image
+        sendImageMessage(resizedImage)
     }
 }
 

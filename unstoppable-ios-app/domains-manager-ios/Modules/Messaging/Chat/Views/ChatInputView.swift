@@ -195,7 +195,7 @@ private extension ChatInputView {
     }
     
     func didSelectAdditionalAction(_ additionalAction: AdditionalAction) {
-        
+        delegate?.chatInputViewAdditionalActionSelected(self, action: additionalAction)
     }
 }
 
@@ -312,7 +312,7 @@ private extension ChatInputView {
         leadingButton.setImage(icon, for: .normal)
         
         var menuChildren: [UIMenuElement] = []
-        for action in AdditionalAction.allCases {
+        for action in AdditionalAction.allCases where action.isAvailable {
             let menuAction = UIAction.createWith(title: action.title,
                                                  image: action.icon,
                                                  handler: { [weak self] _ in
@@ -355,8 +355,8 @@ extension ChatInputView {
     }
     
     enum AdditionalAction: CaseIterable {
-        case choosePhoto
         case takePhoto
+        case choosePhoto
         
         var title: String {
             switch self {
@@ -373,6 +373,15 @@ extension ChatInputView {
                 return .systemPhotoRectangle
             case .takePhoto:
                 return .systemCamera
+            }
+        }
+        
+        var isAvailable: Bool {
+            switch self {
+            case .choosePhoto:
+                return true
+            case .takePhoto:
+                return UnstoppableImagePicker.isCameraAvailable
             }
         }
     }

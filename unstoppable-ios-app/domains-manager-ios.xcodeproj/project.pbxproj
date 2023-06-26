@@ -2351,10 +2351,10 @@
 		C671E3A828FEA2D300A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C635B019283392E50058F14F /* ManageDomainTopInfoCell.swift */; };
 		C671E3A928FEA2D400A2B3A0 /* ManageDomainTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C635B01A283392E50058F14F /* ManageDomainTopInfoCell.xib */; };
 		C671E3AA28FEA2D400A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C635B019283392E50058F14F /* ManageDomainTopInfoCell.swift */; };
-		C671E3AC28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */; };
-		C671E3AD28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */; };
-		C671E3AE28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */; };
-		C671E3AF28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */; };
+		C671E3AC28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */; };
+		C671E3AD28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */; };
+		C671E3AE28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */; };
+		C671E3AF28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */; };
 		C671E3B9290133E000A2B3A0 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B7290133E000A2B3A0 /* CropImageViewController.swift */; };
 		C671E3BA290133E000A2B3A0 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B7290133E000A2B3A0 /* CropImageViewController.swift */; };
 		C671E3BB290133E000A2B3A0 /* CropImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E3B7290133E000A2B3A0 /* CropImageViewController.swift */; };
@@ -4521,7 +4521,7 @@
 		C671E38C28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCollectionViewCell.swift; sourceTree = "<group>"; };
 		C671E38D28FE86EB00A2B3A0 /* CarouselCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CarouselCollectionViewCell.xib; sourceTree = "<group>"; };
 		C671E39E28FE974900A2B3A0 /* UDCarouselFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDCarouselFeature.swift; sourceTree = "<group>"; };
-		C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryImagePicker.swift; sourceTree = "<group>"; };
+		C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnstoppableImagePicker.swift; sourceTree = "<group>"; };
 		C671E3B7290133E000A2B3A0 /* CropImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CropImageViewController.swift; sourceTree = "<group>"; };
 		C671E3B8290133E000A2B3A0 /* CropImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CropImageViewController.xib; sourceTree = "<group>"; };
 		C671E3C129014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RaisedTertiaryWhiteButton.swift; sourceTree = "<group>"; };
@@ -7675,7 +7675,7 @@
 				C60C298B2834E30000626851 /* GroupedCoinRecord.swift */,
 				30BA2B35252914100097817E /* Helpers.swift */,
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
-				C671E3AB28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift */,
+				C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */,
 				C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */,
 				C669C37E29124C2600837F21 /* SocialsType.swift */,
 				C6109EA128E6B1CC0027D5D8 /* Toast.swift */,
@@ -9555,7 +9555,7 @@
 				C66FCD0D2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
 				C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */,
 				C6C995B6289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */,
-				C671E3AC28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */,
+				C671E3AC28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */,
 				C63A77A828F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */,
 				C664B6592914EB0400A76154 /* EnterEmailValuePresenter.swift in Sources */,
 				C663538B294319B400EF1DC7 /* ScrollViewOffsetListener.swift in Sources */,
@@ -10566,7 +10566,7 @@
 				C692C353282EA63100C31393 /* AppearanceSettingsViewPresenter.swift in Sources */,
 				C600AB9F29FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */,
 				C6E1188F28F67DA200C6AD4D /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
-				C671E3AE28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */,
+				C671E3AE28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */,
 				C629A4722A3FF5CE00A528A1 /* ChatBaseCell.swift in Sources */,
 				C60981DC2822565300546392 /* WalletDetailsViewController.swift in Sources */,
 				C62396A62A28D51000363F60 /* PushInboxNotification.swift in Sources */,
@@ -11327,7 +11327,7 @@
 				C692C354282EA63100C31393 /* AppearanceSettingsViewPresenter.swift in Sources */,
 				C600ABA029FA11CB0089107B /* EnterTransferDomainRecipientValuePresenter.swift in Sources */,
 				C6E1189028F67DA200C6AD4D /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
-				C671E3AF28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */,
+				C671E3AF28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */,
 				C60981DD2822565300546392 /* WalletDetailsViewController.swift in Sources */,
 				C62396A72A28D51000363F60 /* PushInboxNotification.swift in Sources */,
 				C6B6B026296D2CDC00D4E30F /* MintingDomain.swift in Sources */,
@@ -11905,7 +11905,7 @@
 				C66FCD0E2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
 				C6F6AF5A28A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */,
 				C6C995B7289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */,
-				C671E3AD28FEE72B00A2B3A0 /* PhotoLibraryImagePicker.swift in Sources */,
+				C671E3AD28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift in Sources */,
 				C63A77A928F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */,
 				C664B65A2914EB0400A76154 /* EnterEmailValuePresenter.swift in Sources */,
 				C663538C294319B400EF1DC7 /* ScrollViewOffsetListener.swift in Sources */,

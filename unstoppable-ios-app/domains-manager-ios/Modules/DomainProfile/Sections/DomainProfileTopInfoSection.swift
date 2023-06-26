@@ -225,7 +225,7 @@ private extension DomainProfileTopInfoSection {
         hideKeyboard()
         guard let viewController = controller?.viewController else { return  }
         
-        PhotoLibraryImagePicker.shared.pickImage(in: viewController, imagePickerCallback: { [weak self] image in
+        UnstoppableImagePicker.shared.pickImage(in: viewController, imagePickerCallback: { [weak self] image in
             DispatchQueue.main.async {
                 self?.didPickImage(image, ofType: type)
             }
@@ -233,27 +233,10 @@ private extension DomainProfileTopInfoSection {
     }
     
     func didPickImage(_ image: UIImage, ofType type: DomainImageType) {
-        let resizedImage = resize(image: image, to: 1000) ?? image
+        let resizedImage = image.resized(to: 1000) ?? image
         crop(image: resizedImage, ofType: type)
     }
 
-    func resize(image: UIImage, to maxResolution: CGFloat) -> UIImage? {
-        let size = image.size
-        let largestSide = max(size.width, size.height)
-        if largestSide <= maxResolution {
-            return image
-        }
-        let scale = maxResolution / largestSide
-        let newWidth = size.width * scale
-        let newHeight = size.height * scale
-        let newSize = CGSize(width: newWidth, height: newHeight)
-        
-        let image = image.gifImageDownsampled(to: newSize,
-                                              scale: 1)
-        
-        return image
-    }
-    
     func crop(image: UIImage, ofType type: DomainImageType) {
         guard let viewController = controller?.viewController else { return  }
         

@@ -270,6 +270,23 @@ extension UIImage {
             imageView.layer.borderColor = UIColor.borderSubtle.cgColor
         }
     }
+    
+    func resized(to maxResolution: CGFloat) -> UIImage? {
+        let size = self.size
+        let largestSide = max(size.width, size.height)
+        if largestSide <= maxResolution {
+            return self
+        }
+        let scale = maxResolution / largestSide
+        let newWidth = size.width * scale
+        let newHeight = size.height * scale
+        let newSize = CGSize(width: newWidth, height: newHeight)
+        
+        let image = self.gifImageDownsampled(to: newSize,
+                                             scale: 1)
+        
+        return image
+    }
 }
 
 extension UIImage {
