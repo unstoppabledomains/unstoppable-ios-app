@@ -290,7 +290,8 @@ private extension ChatViewPresenter {
     
     func showData(animated: Bool, scrollToBottomAnimated: Bool) {
         showData(animated: animated, completion: { [weak self] in
-            DispatchQueue.main.async {
+            self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
             }
         })
