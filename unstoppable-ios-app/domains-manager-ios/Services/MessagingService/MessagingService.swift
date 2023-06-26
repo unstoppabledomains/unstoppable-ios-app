@@ -416,8 +416,8 @@ private extension MessagingService {
     }
     
     func refreshChatsMetadata(remoteChats: [MessagingChat],
-                                      localChats: [MessagingChat],
-                                      for profile: MessagingChatUserProfile) async -> [MessagingChat] {
+                              localChats: [MessagingChat],
+                              for profile: MessagingChatUserProfile) async -> [MessagingChat] {
         var updatedChats = [MessagingChat]()
         
         await withTaskGroup(of: MessagingChat.self, body: { group in

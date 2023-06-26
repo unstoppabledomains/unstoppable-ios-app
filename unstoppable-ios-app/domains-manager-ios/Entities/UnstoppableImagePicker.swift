@@ -45,7 +45,7 @@ final class UnstoppableImagePicker: NSObject {
 
             let vc = UIImagePickerController()
             vc.sourceType = .camera
-            vc.allowsEditing = true
+            vc.allowsEditing = false
             vc.delegate = self
             viewController.present(vc, animated: true)
         }
