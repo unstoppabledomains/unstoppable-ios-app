@@ -14,6 +14,8 @@ final class ChannelFeedCell: ChatBaseCell {
     @IBOutlet private weak var timeLabel: UILabel!
     @IBOutlet private weak var learnButton: GhostPrimaryButton!
 
+    private var feedActionCallback: ((ChatViewController.ChatFeedAction)->())?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -29,6 +31,7 @@ final class ChannelFeedCell: ChatBaseCell {
 // MARK: - Open methods
 extension ChannelFeedCell {
     func setWith(configuration: ChatViewController.ChannelFeedUIConfiguration) {
+        feedActionCallback = configuration.actionCallback
         let feed = configuration.feed
         
         let text = feed.title + "\n\n" + feed.message
@@ -48,7 +51,7 @@ extension ChannelFeedCell {
 // MARK: - Private methods
 private extension ChannelFeedCell {
     @IBAction func learnButtonPressed(_ sender: Any) {
-//        actionCallback?(.delete)
+        feedActionCallback?(.learnMore)
     }
 }
        

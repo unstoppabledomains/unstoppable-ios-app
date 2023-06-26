@@ -230,11 +230,11 @@ private extension ChannelViewPresenter {
         }))
     }
     
-    func handleChatMessageAction(_ action: ChatViewController.ChatMessageAction,
+    func handleChatMessageAction(_ action: ChatViewController.ChatFeedAction,
                                  forFeedItem feedItem: MessagingNewsChannelFeed) {
         switch action {
-        case .resend, .delete:
-            return
+        case .learnMore:
+            view?.openLink(.generic(url: feedItem.link.absoluteString))
         }
     }
     
