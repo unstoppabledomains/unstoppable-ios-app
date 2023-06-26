@@ -70,6 +70,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func disconnect(from wcWallet: HexAddress) async
     
     func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response
+    func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, dataString: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response
     func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress,
                      in wallet: UDWallet) async throws -> WalletConnectSign.Response
     func handle(response: WalletConnectSign.Response) throws -> String
@@ -687,7 +688,30 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     }
     
     func handleSignTypedData(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
-        throw WalletConnectRequestError.methodUnsupported
+        Debugger.printInfo(topic: .WalletConnectV2, "Incoming request with payload: \(String(describing: request.jsonString))")
+        
+        guard let paramsAny = request.params.value as? [String],
+              paramsAny.count >= 2 else {
+            Debugger.printFailure("Invalid parameters", critical: true)
+            throw WalletConnectRequestError.failedBuildParams
+        }
+        let typedDataString = paramsAny[1]
+        let address = try parseAddress(from: paramsAny[0])
+                
+        let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
+                                                                         request: request,
+                                                                         messageString: typedDataString)
+        
+        let sig: AnyCodable
+        do {
+            let sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString)
+            sig = AnyCodable(sigTyped)
+        } catch {
+            Debugger.printFailure("Failed to sign typed data: \(typedDataString) by wallet:\(address), error: \(error)", critical: false)
+            throw WalletConnectRequestError.failedToSignMessage
+        }
+        
+        return .response(sig)
     }
 }
 
@@ -977,6 +1001,10 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, dataString: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+        throw WalletConnectRequestError.failedToSignMessage
+    }
+    
     func proceedSendTxViaWC_2(sessions: [SessionV2Proxy], chainId: Int, txParams: Commons.AnyCodable, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         throw WalletConnectRequestError.noWCSessionFound
     }
@@ -1178,6 +1206,22 @@ extension WalletConnectServiceV2 {
         }
         let params = WalletConnectServiceV2.getParamsPersonalSign(message: sentMessage, address: address)
         return try await sendRequest(method: .personalSign,
+                                     session: sessionSettled,
+                                     chainId: chainId,
+                                     requestParams: params,
+                                     in: wallet)
+    }
+    
+    func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy],
+                          chainId: Int,
+                          dataString: String,
+                          address: HexAddress,
+                          in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+        guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
+            throw WalletConnectRequestError.noWCSessionFound
+        }
+        let params = WalletConnectServiceV2.getParamsEthSign(message: dataString, address: address) // the same params as ethSign
+        return try await sendRequest(method: .ethSignedTypedData,
                                      session: sessionSettled,
                                      chainId: chainId,
                                      requestParams: params,

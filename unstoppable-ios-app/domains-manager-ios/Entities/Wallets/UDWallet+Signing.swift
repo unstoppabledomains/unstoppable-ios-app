@@ -22,7 +22,7 @@ extension UDWallet {
     }
     
     static func createSignaturesByPersonalSign(messages: [String],
-                                domain: DomainItem) async throws -> [String] {
+                                               domain: DomainItem) async throws -> [String] {
         guard let walletAddress = domain.ownerWallet else {
             throw UDWallet.Error.noWalletOwner
         }
@@ -88,7 +88,7 @@ extension UDWallet {
             }
             return walletName.contains("rainbow") || walletName.contains("alpha") || walletName.contains("ledger")
         }
-
+        
         let messageToSend: String
         if willHash() {
             messageToSend = message
@@ -97,6 +97,30 @@ extension UDWallet {
             messageToSend = hash
         }
         return messageToSend
+    }
+    
+    func getSignTypedData(dataString: String) async throws -> String {
+        guard self.walletState == .verified else {
+            return try await signViaWalletConnectTypedData(dataString: dataString)
+        }
+        //TODO: local signing not available atm
+        throw WalletConnectRequestError.methodUnsupported
+    }
+    
+    func signViaWalletConnectTypedData(dataString: String) async throws -> String {
+        let session = try detectWCSessionType()
+        switch session {
+        case .wc1(let wc1Session):
+            let response = try await appContext.walletConnectExternalWalletHandler.signTypedDataViaWalletConnect_V1(session: wc1Session, walletAddress: self.address, message: dataString, in: self)
+            return try handleResponse(response: response)
+        case .wc2(let wc2Sessions):
+            let response = try await appContext.walletConnectServiceV2.sendSignTypedData(sessions: wc2Sessions,
+                                                                                        chainId: 1, // chain here makes no difference
+                                                                                        dataString: dataString,
+                                                                                        address: address,
+                                                                                        in: self)
+            return try appContext.walletConnectServiceV2.handle(response: response)
+        }
     }
     
     func signViaWalletConnectPersonalSign(message: String) async throws -> String {
