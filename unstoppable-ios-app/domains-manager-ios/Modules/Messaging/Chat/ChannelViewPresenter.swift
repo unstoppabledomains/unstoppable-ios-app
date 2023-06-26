@@ -134,6 +134,7 @@ private extension ChannelViewPresenter {
                 view?.setLoading(active: true)
                 let feed = try await loadAndAddFeed(for: currentPage)
 
+                isLoadingFeed = false
                 if !feed.isEmpty,
                    !feed[0].isRead,
                    let firstReadFeedItem = feed.first(where: { $0.isRead }) {
@@ -146,7 +147,6 @@ private extension ChannelViewPresenter {
                 }
 
                 self.view?.setLoading(active: false)
-                isLoadingFeed = false
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
@@ -166,6 +166,7 @@ private extension ChannelViewPresenter {
         guard !isLoadingFeed else { return }
 
         isLoadingFeed = true
+        showData(animated: false)
         Task {
             do {
                 let newPage = currentPage + 1
@@ -194,7 +195,8 @@ private extension ChannelViewPresenter {
     
     func showData(animated: Bool, scrollToBottomAnimated: Bool) {
         showData(animated: animated, completion: { [weak self] in
-            DispatchQueue.main.async {
+            self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
             }
         })
@@ -209,6 +211,10 @@ private extension ChannelViewPresenter {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptyState]) // TODO: - Specify it is empty state for feed
         } else {
+            if isLoadingFeed {
+                snapshot.appendSections([.loading])
+                snapshot.appendItems([.loading])
+            }
             view?.setScrollEnabled(true)
             let groupedFeed = [Date : [MessagingNewsChannelFeed]].init(grouping: feed, by: { $0.time.dayStart })
             let sortedDates = groupedFeed.keys.sorted(by: { $0 < $1 })
