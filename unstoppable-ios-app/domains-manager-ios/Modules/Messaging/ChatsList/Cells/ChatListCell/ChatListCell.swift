@@ -133,7 +133,7 @@ private extension ChatListCell {
         if let time {
             text = MessageDateFormatter.formatChannelDate(time)
         }
-
+        
         timeLabel.setAttributedTextWith(text: text,
                                         font: .currentFont(withSize: 13, weight: .regular),
                                         textColor: .foregroundSecondary)
@@ -141,15 +141,24 @@ private extension ChatListCell {
     
     func setAvatarFrom(url: URL?, name: String) {
         avatarImageView.image = .domainSharePlaceholder
-        if let avatarURL = url {
-            Task {
+        
+        
+        func setAvatarFromName() async {
+            self.avatarImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(name, size: .default, style: .accent),
+                                                                                        downsampleDescription: nil)
+        }
+        
+        Task {
+            if let avatarURL = url {
                 if let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: nil) {
                     self.avatarImageView.image = image
                 } else {
-                    self.avatarImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(name, size: .default, style: .accent),
-                                                                                          downsampleDescription: nil)
+                    await setAvatarFromName()
                 }
+            } else {
+                await setAvatarFromName()
             }
         }
     }
+    
 }
