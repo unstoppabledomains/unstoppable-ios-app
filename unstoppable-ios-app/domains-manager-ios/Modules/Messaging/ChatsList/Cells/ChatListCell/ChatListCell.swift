@@ -109,7 +109,7 @@ private extension ChatListCell {
         case .text(let description):
             return description.text
         case .imageBase64:
-            return "Image" // TODO: - Localize
+            return String.Constants.photo.localized()
         }
     }
     

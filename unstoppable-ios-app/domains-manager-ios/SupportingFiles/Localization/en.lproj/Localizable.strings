@@ -140,7 +140,8 @@
 "DELETE" = "Delete";
 "JOIN" = "Join";
 "CHOOSE_PHOTO" = "Choose Photo";
-"TAKE_HOTO" = "Take Photo";
+"TAKE_PHOTO" = "Take Photo";
+"PHOTO" = "Photo";
 
 /* ONBOARDING */
 // Tutorial screens
