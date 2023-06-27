@@ -9,6 +9,7 @@ import UIKit
 
 @MainActor
 protocol ChatViewPresenterProtocol: BasePresenterProtocol {
+    var isInfoAvailable: Bool { get }
     func didSelectItem(_ item: ChatViewController.Item)
     func willDisplayItem(_ item: ChatViewController.Item)
     
@@ -42,6 +43,7 @@ final class ChatViewPresenter {
     private var messages: [MessagingChatMessageDisplayInfo] = []
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
+    var isInfoAvailable: Bool { conversationState.userInfo?.domainName != nil }
     
     init(view: ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,

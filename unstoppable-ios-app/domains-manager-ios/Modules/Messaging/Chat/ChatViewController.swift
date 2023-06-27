@@ -297,9 +297,11 @@ private extension ChatViewController {
         titleView = ChatTitleView()
         navigationItem.titleView = titleView
         
-        let infoBarButtonItem = UIBarButtonItem(image: .infoEmptyIcon24, style: .plain, target: self, action: #selector(infoButtonPressed))
-        infoBarButtonItem.tintColor = .foregroundDefault
-        navigationItem.rightBarButtonItem = infoBarButtonItem
+        if presenter.isInfoAvailable {
+            let infoBarButtonItem = UIBarButtonItem(image: .infoEmptyIcon24, style: .plain, target: self, action: #selector(infoButtonPressed))
+            infoBarButtonItem.tintColor = .foregroundDefault
+            navigationItem.rightBarButtonItem = infoBarButtonItem
+        }
     }
     
     func setupCollectionView() {
