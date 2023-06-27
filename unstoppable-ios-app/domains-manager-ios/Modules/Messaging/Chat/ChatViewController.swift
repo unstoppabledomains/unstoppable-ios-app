@@ -64,7 +64,6 @@ final class ChatViewController: BaseViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
         hideKeyboard()
     }
     
@@ -77,14 +76,10 @@ final class ChatViewController: BaseViewController {
 extension ChatViewController: ChatViewProtocol {
     func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool, completion: EmptyCallback?) {
         scrollingInfo = ScrollingInfo(collectionView: collectionView)
-        Task {
-            dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
-                DispatchQueue.main.async { [weak self] in
-                    self?.scrollingInfo = nil
-                    completion?()
-                }
-            })
-        }
+        dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
+            self?.scrollingInfo = nil
+            completion?()
+        })
     }
     
     func startTyping() {
@@ -381,7 +376,7 @@ private extension ChatViewController {
 
             switch section {
             case .none, .messages:
-                let layoutSection: NSCollectionLayoutSection = .flexibleListItemSection(height: 60)
+                let layoutSection: NSCollectionLayoutSection = .flexibleListItemSection(height: 200)
                 layoutSection.interGroupSpacing = spacing
                 
                 let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),

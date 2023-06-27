@@ -167,7 +167,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                    chatId == chat.id {
                     self.addMessages(messages)
                     checkIfUpToDate()
-                    showData(animated: true, scrollToBottomAnimated: true)
+                    showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
                 }
             case .messageUpdated(let updatedMessage, let newMessage):
                 if case .existingChat(let chat) = conversationState,
@@ -175,7 +175,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     self.messages[i] = newMessage
                     checkIfUpToDate()
-                    showData(animated: false)
+                    showData(animated: false, isLoading: isLoadingMessages)
                 }
             case .messagesRemoved(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
@@ -183,7 +183,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                     let removedIds = messages.map { $0.id }
                     self.messages = self.messages.filter({ !removedIds.contains($0.id) })
                     checkIfUpToDate()
-                    showData(animated: true)
+                    showData(animated: true, isLoading: isLoadingMessages)
                 }
             }
         }
@@ -213,15 +213,13 @@ private extension ChatViewPresenter {
                     
                     switch chatState {
                     case .upToDate, .hasUnloadedMessagesBefore:
-                        isLoadingMessages = false
-                        showData(animated: false, scrollToBottomAnimated: false)
+                        showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
                     case .hasUnreadMessagesAfter(let message):
                         let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                       after: message,
                                                                                                       limit: fetchLimit)
                         addMessages(unreadMessages)
-                        isLoadingMessages = false
-                        showData(animated: false, completion: {
+                        showData(animated: false, isLoading: false, completion: {
                             if let message = unreadMessages.last {
                                 let item = self.createSnapshotItemFrom(message: message)
                                 self.view?.scrollToItem(item, animated: false)
@@ -233,10 +231,11 @@ private extension ChatViewPresenter {
                         self.view?.setLoading(active: false)
                         self.updateUIForChatApprovedState()
                     }
+                    isLoadingMessages = false
                 case .newChat:
                     updateUIForChatApprovedState()
                     view?.startTyping()
-                    showData(animated: false)
+                    showData(animated: false, isLoading: false)
                 }
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
@@ -249,7 +248,7 @@ private extension ChatViewPresenter {
               case .existingChat(let chat) = conversationState else { return }
         
         isLoadingMessages = true
-        showData(animated: false)
+        showData(animated: false, isLoading: true)
         Task {
             do {
                 let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
@@ -262,7 +261,7 @@ private extension ChatViewPresenter {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
                 isLoadingMessages = false
             }
-            showData(animated: false)
+            showData(animated: false, isLoading: false)
         }
     }
     
@@ -290,8 +289,8 @@ private extension ChatViewPresenter {
         self.messages.sort(by: { $0.time > $1.time })
     }
     
-    func showData(animated: Bool, scrollToBottomAnimated: Bool) {
-        showData(animated: animated, completion: { [weak self] in
+    func showData(animated: Bool, scrollToBottomAnimated: Bool, isLoading: Bool) {
+        showData(animated: animated, isLoading: isLoading, completion: { [weak self] in
             self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
@@ -300,7 +299,7 @@ private extension ChatViewPresenter {
     }
     
     @MainActor
-    func showData(animated: Bool, completion: EmptyCallback? = nil) {
+    func showData(animated: Bool, isLoading: Bool, completion: EmptyCallback? = nil) {
         var snapshot = ChatSnapshot()
         
         if messages.isEmpty {
@@ -308,7 +307,7 @@ private extension ChatViewPresenter {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptyState])
         } else {
-            if isLoadingMessages {
+            if isLoading {
                 snapshot.appendSections([.loading])
                 snapshot.appendItems([.loading])
             }
@@ -382,7 +381,7 @@ private extension ChatViewPresenter {
                 try appContext.messagingService.deleteMessage(message)
                 if let i = messages.firstIndex(where: { $0.id == message.id }) {
                     messages.remove(at: i)
-                    showData(animated: true)
+                    showData(animated: true, isLoading: isLoadingMessages)
                 }
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -439,7 +438,7 @@ private extension ChatViewPresenter {
                     newMessage = message
                 }
                 messages.insert(newMessage, at: 0)
-                showData(animated: true, scrollToBottomAnimated: true)
+                showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
