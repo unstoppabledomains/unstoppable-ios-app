@@ -440,13 +440,13 @@ extension ChatViewController {
         var actionCallback: (ChatMessageAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.message == rhs.message &&
-            lhs.textMessageDisplayInfo == rhs.textMessageDisplayInfo
+            lhs.message.id == rhs.message.id &&
+            lhs.message.deliveryState == rhs.message.deliveryState
         }
         
         func hash(into hasher: inout Hasher) {
-            hasher.combine(message)
-            hasher.combine(textMessageDisplayInfo)
+            hasher.combine(message.id)
+            hasher.combine(message.deliveryState)
         }
     }
 
@@ -457,13 +457,13 @@ extension ChatViewController {
         var actionCallback: (ChatMessageAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.message == rhs.message &&
-            lhs.imageMessageDisplayInfo == rhs.imageMessageDisplayInfo
+            lhs.message.id == rhs.message.id &&
+            lhs.message.deliveryState == rhs.message.deliveryState
         }
         
         func hash(into hasher: inout Hasher) {
-            hasher.combine(message)
-            hasher.combine(imageMessageDisplayInfo)
+            hasher.combine(message.id)
+            hasher.combine(message.deliveryState)
         }
     }
     
