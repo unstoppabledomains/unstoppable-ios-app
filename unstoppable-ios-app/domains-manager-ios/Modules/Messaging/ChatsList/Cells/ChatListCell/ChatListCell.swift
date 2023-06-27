@@ -92,11 +92,7 @@ private extension ChatListCell {
         case .private(let otherUserDetails):
             return chatNameFrom(userInfo: otherUserDetails.otherUser)
         case .group(let groupDetails):
-            #if DEBUG
-            return "Group chat <Not-supported>" // <GROUP_CHAT>
-            #else
-            return ""
-            #endif
+            return groupDetails.allMembers.map { chatNameFrom(userInfo: $0) }.joined(separator: ", ")
         }
     }
     
