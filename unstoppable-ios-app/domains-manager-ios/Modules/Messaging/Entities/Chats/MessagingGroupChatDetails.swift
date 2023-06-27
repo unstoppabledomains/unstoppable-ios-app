@@ -12,4 +12,7 @@ struct MessagingGroupChatDetails: Hashable {
     let pendingMembers: [MessagingChatUserDisplayInfo]
     
     var allMembers: [MessagingChatUserDisplayInfo] { members + pendingMembers }
+    var displayName: String {
+        allMembers.map { $0.displayName }.joined(separator: ", ")
+    }
 }

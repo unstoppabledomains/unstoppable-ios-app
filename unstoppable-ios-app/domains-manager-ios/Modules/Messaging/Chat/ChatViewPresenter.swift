@@ -349,7 +349,7 @@ private extension ChatViewPresenter {
                 let otherUser = chatDetails.otherUser
                 setupTitleFor(userInfo: otherUser)
             case .group(let groupDetails):
-                return // <GROUP_CHAT> Not supported for now
+                view?.setTitleOfType(.group(groupDetails))
             }
         case .newChat(let userInfo):
             setupTitleFor(userInfo: userInfo)
