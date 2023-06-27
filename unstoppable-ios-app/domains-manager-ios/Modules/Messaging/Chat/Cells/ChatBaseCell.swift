@@ -13,8 +13,28 @@ class ChatBaseCell: UICollectionViewCell {
 
     private var containerViewSideConstraints: [NSLayoutConstraint] = []
     private(set) var sender: MessagingChatSender?
-    var actionCallback: ((ChatViewController.ChatMessageAction)->())?
 
+    func setWith(sender: MessagingChatSender) {
+        guard self.sender != sender else {
+            return }
+        
+        self.removeConstraints(containerViewSideConstraints)
+        let leadingConstraint: NSLayoutConstraint
+        let trailingConstraint: NSLayoutConstraint
+        if sender.isThisUser {
+            leadingConstraint = containerView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 24)
+            trailingConstraint = trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 8)
+            containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
+        } else {
+            leadingConstraint = containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
+            trailingConstraint = trailingAnchor.constraint(greaterThanOrEqualTo: containerView.trailingAnchor, constant: 24)
+            containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
+        }
+        
+        self.sender = sender
+        containerViewSideConstraints = [leadingConstraint, trailingConstraint]
+        NSLayoutConstraint.activate(containerViewSideConstraints)
+    }
 }
 
 // MARK: - Open methods
@@ -36,27 +56,5 @@ extension ChatBaseCell {
         } else {
             bubbleView.backgroundColor = .backgroundMuted2
         }
-    }
-    
-    func setWith(sender: MessagingChatSender) {
-        guard self.sender != sender else {
-            return }
-        
-        self.removeConstraints(containerViewSideConstraints)
-        let leadingConstraint: NSLayoutConstraint
-        let trailingConstraint: NSLayoutConstraint
-        if sender.isThisUser {
-            leadingConstraint = containerView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 24)
-            trailingConstraint = trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 8)
-            containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
-        } else {
-            leadingConstraint = containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
-            trailingConstraint = trailingAnchor.constraint(greaterThanOrEqualTo: containerView.trailingAnchor, constant: 24)
-            containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
-        }
-        
-        self.sender = sender
-        containerViewSideConstraints = [leadingConstraint, trailingConstraint]
-        NSLayoutConstraint.activate(containerViewSideConstraints)
     }
 }

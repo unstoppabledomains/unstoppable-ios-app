@@ -18,16 +18,16 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="koO-vm-ZJI">
-                        <rect key="frame" x="0.0" y="0.0" width="409" height="180"/>
+                        <rect key="frame" x="0.0" y="0.0" width="409" height="160"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="rAe-2Z-534">
-                                <rect key="frame" x="0.0" y="0.0" width="409" height="180"/>
+                                <rect key="frame" x="0.0" y="0.0" width="409" height="160"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NO5-67-CgY">
-                                        <rect key="frame" x="0.0" y="26" width="409" height="128"/>
+                                        <rect key="frame" x="0.0" y="16" width="361" height="128"/>
                                     </imageView>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TdI-eA-pLT" customClass="FABRaisedTertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="74" width="32" height="32"/>
+                                        <rect key="frame" x="369" y="64" width="32" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="TdI-eA-pLT" secondAttribute="height" id="ZOL-64-RwU"/>
                                             <constraint firstAttribute="width" constant="32" id="h1U-TF-t29"/>
@@ -35,23 +35,55 @@
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" image="trashIcon"/>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Axw-XE-9Rt" customClass="FABRaisedTertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                        <rect key="frame" x="377" y="64" width="32" height="32"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="32" id="ZZk-F3-aGW"/>
+                                            <constraint firstAttribute="width" secondItem="Axw-XE-9Rt" secondAttribute="height" id="e6z-dO-kkM"/>
+                                        </constraints>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" image="trashIcon"/>
+                                        <connections>
+                                            <action selector="deleteButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="Qd3-KE-L8d"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </stackView>
+                        </subviews>
+                    </stackView>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="B7f-ac-ZGl">
+                        <rect key="frame" x="4" y="164" width="353" height="16"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="erp-wY-SbZ">
+                                <rect key="frame" x="0.0" y="0.0" width="41.333333333333336" height="16"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="16" id="dyp-0m-tjW"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                     </stackView>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
+                <constraint firstAttribute="bottom" secondItem="B7f-ac-ZGl" secondAttribute="bottom" id="0oh-TL-qOI"/>
                 <constraint firstAttribute="trailing" secondItem="koO-vm-ZJI" secondAttribute="trailing" placeholder="YES" id="9yz-Hx-rtq"/>
                 <constraint firstItem="koO-vm-ZJI" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="By9-U6-vKC"/>
-                <constraint firstAttribute="bottom" secondItem="koO-vm-ZJI" secondAttribute="bottom" id="ds5-LS-jnc"/>
+                <constraint firstItem="B7f-ac-ZGl" firstAttribute="leading" secondItem="NO5-67-CgY" secondAttribute="leading" constant="4" id="D8z-SA-hRv"/>
+                <constraint firstItem="B7f-ac-ZGl" firstAttribute="top" secondItem="koO-vm-ZJI" secondAttribute="bottom" constant="4" id="HHo-m7-WMm"/>
+                <constraint firstItem="B7f-ac-ZGl" firstAttribute="trailing" secondItem="NO5-67-CgY" secondAttribute="trailing" constant="-4" id="ORU-tp-WP5"/>
                 <constraint firstItem="koO-vm-ZJI" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" placeholder="YES" id="gQ2-zr-8Vy"/>
             </constraints>
             <size key="customSize" width="409" height="180"/>
             <connections>
                 <outlet property="containerView" destination="koO-vm-ZJI" id="WeW-9A-9Dn"/>
+                <outlet property="deleteButton" destination="Axw-XE-9Rt" id="mJ5-Bl-CFH"/>
                 <outlet property="imageView" destination="NO5-67-CgY" id="hZw-CL-WbP"/>
+                <outlet property="timeLabel" destination="erp-wY-SbZ" id="3bP-k4-lkc"/>
+                <outlet property="timeStackView" destination="B7f-ac-ZGl" id="XQ7-vM-Mwn"/>
             </connections>
             <point key="canvasLocation" x="335.1145038167939" y="-4.2253521126760569"/>
         </collectionViewCell>

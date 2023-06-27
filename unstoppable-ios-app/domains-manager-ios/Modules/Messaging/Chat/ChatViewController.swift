@@ -378,7 +378,7 @@ private extension ChatViewController {
 
             switch section {
             case .none, .messages:
-                let layoutSection: NSCollectionLayoutSection = .flexibleListItemSection(height: 200)
+                let layoutSection: NSCollectionLayoutSection = .flexibleListItemSection(height: 60)
                 layoutSection.interGroupSpacing = spacing
                 
                 let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),

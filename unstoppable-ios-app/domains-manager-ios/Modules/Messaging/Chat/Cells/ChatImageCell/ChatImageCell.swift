@@ -7,12 +7,13 @@
 
 import UIKit
 
-final class ChatImageCell: ChatBaseCell {
+final class ChatImageCell: ChatUserMessageCell {
 
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet private weak var imageView: UIImageView!
     
     private var imageViewConstraints: [NSLayoutConstraint] = []
     private let maxSize: CGFloat = (294/390) * UIScreen.main.bounds.width
+    private var timeLabelTapGesture: UITapGestureRecognizer?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -20,6 +21,7 @@ final class ChatImageCell: ChatBaseCell {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 12
         imageView.contentMode = .scaleAspectFill
+        setImageSize(.square(size: maxSize))
     }
 
 }
@@ -27,8 +29,8 @@ final class ChatImageCell: ChatBaseCell {
 // MARK: - Open methods
 extension ChatImageCell {
     func setWith(configuration: ChatViewController.ImageBase64MessageUIConfiguration) {
-        setWith(sender: configuration.message.senderType)
-        setImageSize(.square(size: maxSize))
+        self.actionCallback = configuration.actionCallback
+        setWith(message: configuration.message)
         Task {
             let base64 = configuration.imageMessageDisplayInfo.base64Image
             let image = await UIImage.from(base64String: base64)
@@ -63,6 +65,7 @@ private extension ChatImageCell {
         imageView.removeConstraints(imageViewConstraints)
         let widthConstraint = imageView.widthAnchor.constraint(equalToConstant: size.width)
         let heightConstraint = imageView.heightAnchor.constraint(equalToConstant: size.height)
+        heightConstraint.priority = .init(999)
         imageViewConstraints = [widthConstraint, heightConstraint]
         NSLayoutConstraint.activate(imageViewConstraints)
     }
