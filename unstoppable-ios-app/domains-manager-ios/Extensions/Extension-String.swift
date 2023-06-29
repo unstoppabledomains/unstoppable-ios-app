@@ -184,7 +184,9 @@ extension String {
         static let takePhoto = "TAKE_PHOTO"
         static let photo = "PHOTO"
         static let deleteAll = "DELETE_ALL"
-
+        static let people = "PEOPLE"
+        static let apps = "APPS"
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"

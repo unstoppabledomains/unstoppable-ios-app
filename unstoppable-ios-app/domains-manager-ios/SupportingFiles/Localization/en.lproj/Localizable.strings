@@ -143,6 +143,8 @@
 "TAKE_PHOTO" = "Take Photo";
 "PHOTO" = "Photo";
 "DELETE_ALL" = "Delete all";
+"PEOPLE" = "People";
+"APPS" = "Apps";
 
 /* ONBOARDING */
 // Tutorial screens

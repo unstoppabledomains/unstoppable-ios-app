@@ -117,6 +117,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     
     func didSearchWith(key: String) {
         self.searchData.searchKey = key.trimmedSpaces
+        searchData.searchUsers = []
+        searchData.searchChannels = []
         guard let profile = selectedProfileWalletPair?.profile else { return }
         Task {
             do {
@@ -354,16 +356,30 @@ private extension ChatsListViewPresenter {
                 }
             }
         }
-        
+        let searchKey = searchData.searchKey.trimmedSpaces.lowercased()
+
         var people = [PeopleSearchResult]()
         var channels = [MessagingNewsChannel]()
-        if searchData.searchKey.isEmpty {
+        if searchKey.isEmpty {
             people = chatsList.map({ .existingChat($0) })
             channels = self.channels
         } else {
-            people = searchData.searchUsers.map({ .newUser($0) })
+            // Chats
+            let localChats = chatsList.filter { isChatMatchingSearchKey($0, searchKey: searchKey) }
+            let localChatsPeopleWallets = Set(localChats.compactMap { chat in
+                if case .private(let details) = chat.type {
+                    return details.otherUser.wallet
+                }
+                return nil
+            })
+            let remotePeople = searchData.searchUsers.filter({ !localChatsPeopleWallets.contains($0.wallet) })
+            people = localChats.map { .existingChat($0) } + remotePeople.map { .newUser($0) }
+            
+            // Channels
+            let localChannels = self.channels.filter { $0.name.lowercased().contains(searchKey) }
             let subscribedChannelsIds = self.channels.map { $0.id }
-            channels = searchData.searchChannels.filter({ !subscribedChannelsIds.contains($0.id) })
+            let remoteChannels = searchData.searchChannels.filter { !subscribedChannelsIds.contains($0.id) }
+            channels = localChannels + remoteChannels
         }
         
         if people.isEmpty && channels.isEmpty {
@@ -371,14 +387,31 @@ private extension ChatsListViewPresenter {
             snapshot.appendItems([.emptySearch])
         } else {
             if !people.isEmpty {
-                snapshot.appendSections([.listItems(title: "People")])
+                snapshot.appendSections([.listItems(title: String.Constants.people.localized())])
                 snapshot.appendItems(people.map({ $0.item }))
             }
             if !channels.isEmpty {
-                snapshot.appendSections([.listItems(title: "Apps")])
+                snapshot.appendSections([.listItems(title: String.Constants.apps.localized())])
                 snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
             }
         }
+    }
+    
+    func isChatMatchingSearchKey(_ chat: MessagingChatDisplayInfo, searchKey: String) -> Bool {
+        switch chat.type {
+        case .private(let details):
+            return isUserMatchSearchKey(details.otherUser, searchKey: searchKey)
+        case .group(let details):
+            let members = details.allMembers
+            return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
+        }
+    }
+    
+    func isUserMatchSearchKey(_ user: MessagingChatUserDisplayInfo, searchKey: String) -> Bool {
+        if user.wallet.lowercased().contains(searchKey) {
+            return true
+        }
+        return user.domainName?.lowercased().contains(searchKey) == true
     }
     
     func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
