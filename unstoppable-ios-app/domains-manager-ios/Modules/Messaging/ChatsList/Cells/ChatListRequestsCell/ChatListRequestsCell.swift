@@ -31,7 +31,7 @@ extension ChatListRequestsCell {
         switch configuration.dataType {
         case .chats:
             title = String.Constants.chatRequests.localized()
-            subtitle = String.Constants.nPeopleYouMayKnow.localized(numberOfRequests)
+            subtitle = String.Constants.pluralNPeopleYouMayKnow.localized(numberOfRequests, numberOfRequests)
             icon = .chatRequestsIcon
         case .channels:
             title = String.Constants.spam.localized()
