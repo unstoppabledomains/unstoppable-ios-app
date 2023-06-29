@@ -112,22 +112,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         }
     }
     
-    func approveButtonPressed() {
-        guard case .existingChat(var chat) = conversationState,
-            !chat.isApproved else { return }
-        Task {
-            view?.setLoading(active: true)
-            do {
-                try await appContext.messagingService.makeChatRequest(chat, approved: true)
-                chat.isApproved = true
-                self.conversationState = .existingChat(chat)
-            } catch {
-                view?.showAlertWith(error: error, handler: nil)
-            }
-            updateUIForChatApprovedState()
-            view?.setLoading(active: false)
-        }
-    }
+    func approveButtonPressed() { }
     
     func rejectButtonPressed() {
         // TODO: - Implement flow
@@ -392,11 +377,11 @@ private extension ChatViewPresenter {
     }
     
     func updateUIForChatApprovedState() {
-        if case .existingChat(let chat) = conversationState {
-            self.view?.setUIState(chat.isApproved ? .chat : .requestApprove)
-        } else {
-            self.view?.setUIState(.chat)
-        }
+//        if case .existingChat(let chat) = conversationState {
+//            self.view?.setUIState(chat.isApproved ? .chat : .requestApprove)
+//        } else {
+//        }
+        self.view?.setUIState(.chat)
     }
 }
 
@@ -431,6 +416,9 @@ private extension ChatViewPresenter {
                 let newMessage: MessagingChatMessageDisplayInfo
                 switch conversationState {
                 case .existingChat(let chat):
+                    if !chat.isApproved {
+                        try await approveChatRequest(chat)
+                    }
                     newMessage = try await appContext.messagingService.sendMessage(type, in: chat)
                 case .newChat(let userInfo):
                     let (chat, message) = try await appContext.messagingService.sendFirstMessage(type,
@@ -444,6 +432,20 @@ private extension ChatViewPresenter {
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
+        }
+    }
+    
+    func approveChatRequest(_ chat: MessagingChatDisplayInfo) async throws {
+        var chat = chat
+        view?.setLoading(active: true)
+        do {
+            try await appContext.messagingService.makeChatRequest(chat, approved: true)
+            chat.isApproved = true
+            self.conversationState = .existingChat(chat)
+            view?.setLoading(active: false)
+        } catch {
+            view?.setLoading(active: false)
+            throw error
         }
     }
 }
