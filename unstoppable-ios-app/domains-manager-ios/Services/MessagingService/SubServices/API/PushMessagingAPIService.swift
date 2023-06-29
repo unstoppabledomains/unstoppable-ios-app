@@ -233,14 +233,20 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                          approved: Bool,
                          by user: MessagingChatUserProfile) async throws {
         guard approved else { throw PushMessagingAPIServiceError.declineRequestNotSupported }
-        guard case .private(let otherUserDetails) = chat.displayInfo.type else { throw PushMessagingAPIServiceError.sendMessageInGroupChatNotSupported }
         
         let env = getCurrentPushEnvironment()
         let sender = chat.displayInfo.thisUserDetails
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        let toAddress: String
+        switch chat.displayInfo.type {
+        case .private(let otherUserDetails):
+            toAddress = otherUserDetails.otherUser.wallet
+        case .group:
+            toAddress = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
+        }
 
-        let approveOptions = Push.PushChat.ApproveOptions(fromAddress: sender.wallet ,
-                                                          toAddress: otherUserDetails.otherUser.wallet,
+        let approveOptions = Push.PushChat.ApproveOptions(fromAddress: sender.wallet,
+                                                          toAddress: toAddress,
                                                           privateKey: pgpPrivateKey,
                                                           env: env)
         _ = try await Push.PushChat.approve(approveOptions)
