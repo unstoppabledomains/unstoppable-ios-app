@@ -1052,29 +1052,31 @@ extension WalletConnectServiceV2 {
         case oldPairing
         case newPairing (WalletConnectURI)
     }
-    var namespaces: [String: ProposalNamespace]  { [
+    
+    // namespaces required from wallets by UD app as Client
+    var requiredNamespaces: [String: ProposalNamespace]  { [
         "eip155": ProposalNamespace(
             chains: [
                 Blockchain("eip155:1")!,
-                Blockchain("eip155:137")!
+//                Blockchain("eip155:137")! // no Polygon as MM rejects
             ],
             methods: [
                 "eth_sendTransaction",
-                "eth_signTransaction",
+//                "eth_signTransaction",    // less methods as not all wallets may support
                 "personal_sign",
-                "eth_sign",
-                "eth_signTypedData"
+//                "eth_sign",
+//                "eth_signTypedData"
             ], events: []
         )] }
     
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
         let activePairings = Pair.instance.getPairings().filter({$0.isAlive(for: wcWallet)})
         if let pairing = activePairings.first {
-            try await Sign.instance.connect(requiredNamespaces: namespaces, topic: pairing.topic)
+            try await Sign.instance.connect(requiredNamespaces: requiredNamespaces, topic: pairing.topic)
             return .oldPairing
         }
         let uri = try await Pair.instance.create()
-        try await Sign.instance.connect(requiredNamespaces: namespaces, topic: uri.topic)
+        try await Sign.instance.connect(requiredNamespaces: requiredNamespaces, topic: uri.topic)
         return .newPairing(uri)
     }
     
