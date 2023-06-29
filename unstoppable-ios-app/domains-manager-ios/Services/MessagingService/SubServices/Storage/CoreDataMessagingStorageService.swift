@@ -518,9 +518,12 @@ private extension CoreDataMessagingStorageService {
                                                                           encryptedText: messageContent)
             return .text(textDisplayInfo)
         } else if coreDataMessage.messageType == 1 {
-            guard let contentInfo = PushEnvironment.PushImageContentResponse.objectFromJSONString(decryptedContent) else { return nil } // TODO: - Remove 
+            var base64: String = decryptedContent
+            if let contentInfo = PushEnvironment.PushImageContentResponse.objectFromJSONString(decryptedContent) {
+                base64 = contentInfo.content
+            }
 
-            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: contentInfo.content,
+            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64,
                                                                                         encryptedContent: messageContent)
             return .imageBase64(imageBase64DisplayInfo)
         }
