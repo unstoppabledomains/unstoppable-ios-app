@@ -44,6 +44,7 @@ final class ChatViewController: BaseViewController {
                                                         ChannelFeedCell.self,
                                                         ChatLoadingCell.self] }
     var presenter: ChatViewPresenterProtocol!
+    private let operationQueue = OperationQueue()
     private var dataSource: ChatDataSource!
     private var scrollingInfo: ScrollingInfo?
     override var isObservingKeyboard: Bool { true }
@@ -51,6 +52,7 @@ final class ChatViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        operationQueue.maxConcurrentOperationCount = 1
         configureCollectionView()
         setup()
         presenter.viewDidLoad()
@@ -83,10 +85,15 @@ final class ChatViewController: BaseViewController {
 extension ChatViewController: ChatViewProtocol {
     func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool, completion: EmptyCallback?) {
         scrollingInfo = ScrollingInfo(collectionView: collectionView)
-        dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
-            self?.scrollingInfo = nil
-            completion?()
-        })
+        let operation = ReloadDataOperation(dataSource: dataSource,
+                                            snapshot: snapshot,
+                                            animated: animated) { [weak self] in
+            DispatchQueue.main.async {
+                self?.scrollingInfo = nil
+                completion?()
+            }
+        }
+        operationQueue.addOperation(operation)
     }
     
     func startTyping() {
@@ -547,6 +554,35 @@ private extension ChatViewController {
         init(collectionView: UICollectionView) {
             prevContentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
             contentOffsetBeforeUpdate = collectionView.contentOffset
+        }
+    }
+    
+    final class ReloadDataOperation: BaseOperation {
+        
+        let dataSource: ChatDataSource
+        let snapshot: ChatSnapshot
+        let animated: Bool
+        let completion: EmptyCallback
+        
+        init(dataSource: ChatDataSource,
+             snapshot: ChatSnapshot,
+             animated: Bool,
+             completion: @escaping EmptyCallback) {
+            self.dataSource = dataSource
+            self.snapshot = snapshot
+            self.animated = animated
+            self.completion = completion
+        }
+        
+        override func start() {
+            guard !checkIfCancelled() else {
+                completion()
+                return
+            }
+            dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
+                self?.completion()
+                self?.finish(true)
+            })
         }
     }
 }
