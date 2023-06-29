@@ -32,8 +32,12 @@ extension ChatListCell {
         
         switch chat.type {
         case .private(let info):
+            avatarImageView.clipsToBounds = true
+            avatarImageView.layer.borderWidth = 1
             setAvatarFrom(url: info.otherUser.pfpURL, name: chatName)
         case .group(let details):
+            avatarImageView.clipsToBounds = false
+            avatarImageView.layer.borderWidth = 0
             Task { avatarImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(details.allMembers,
                                                                                                     iconSize: avatarImageView.bounds.width) }
         }

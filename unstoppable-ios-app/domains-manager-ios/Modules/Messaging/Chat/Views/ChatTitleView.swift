@@ -53,6 +53,8 @@ final class ChatTitleView: UIView {
 // MARK: - Open methods
 extension ChatTitleView {
     func setTitleOfType(_ titleType: TitleType) {
+        iconImageView.layer.borderWidth = 1
+        iconImageView.clipsToBounds = true
         switch titleType {
         case .domainName(let domainName):
             setWithDomainName(domainName)
@@ -101,6 +103,8 @@ private extension ChatTitleView {
     
     func setWithGroupDetails(_ groupDetails: MessagingGroupChatDetails) {
         setTitle(groupDetails.displayName)
+        iconImageView.layer.borderWidth = 0
+        iconImageView.clipsToBounds = false
         Task {
             iconImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(groupDetails.allMembers,
                                                                                            iconSize: iconSize)

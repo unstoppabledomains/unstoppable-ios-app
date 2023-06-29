@@ -9,11 +9,12 @@ import UIKit
 
 @MainActor
 struct MessagingImageLoader {
-    static func buildImageForGroupChatMembers(_ groupChatMembers: [MessagingChatUserDisplayInfo], iconSize: CGFloat) async -> UIImage? {
+    static func buildImageForGroupChatMembers(_ groupChatMembers: [MessagingChatUserDisplayInfo],
+                                              iconSize: CGFloat) async -> UIImage? {
         guard !groupChatMembers.isEmpty else { return nil }
         
         let containerView = UIView(frame: CGRect(origin: .zero, size: .square(size: iconSize)))
-        containerView.backgroundColor = .backgroundDefault
+        containerView.backgroundColor = .clear
         
         let proportion: CGFloat = 12 / 20
         let imageSize = iconSize * proportion
@@ -25,7 +26,7 @@ struct MessagingImageLoader {
             imageView.clipsToBounds = true
             imageView.layer.cornerRadius = imageSize / 2
             imageView.layer.borderWidth = 1 * proportion
-            imageView.borderColor = .backgroundDefault
+            imageView.borderColor = .white
             
             return imageView
         }
@@ -53,7 +54,7 @@ struct MessagingImageLoader {
             imageView3.frame.origin = CGPoint(x: iconSize / 10, y: iconSize / 2.5)
         }
         
-        return containerView.toImage()
+        return containerView.renderedImage()
     }
     
     static func getIconForUserInfo(_ userInfo: MessagingChatUserDisplayInfo) async -> UIImage? {
