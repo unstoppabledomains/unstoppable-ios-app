@@ -20,14 +20,14 @@
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="koO-vm-ZJI">
                         <rect key="frame" x="0.0" y="0.0" width="409" height="160"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="rAe-2Z-534">
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="bottom" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="rAe-2Z-534">
                                 <rect key="frame" x="0.0" y="0.0" width="409" height="160"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NO5-67-CgY">
-                                        <rect key="frame" x="0.0" y="16" width="361" height="128"/>
+                                        <rect key="frame" x="0.0" y="32" width="361" height="128"/>
                                     </imageView>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TdI-eA-pLT" customClass="FABRaisedTertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                        <rect key="frame" x="369" y="64" width="32" height="32"/>
+                                        <rect key="frame" x="369" y="128" width="32" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="TdI-eA-pLT" secondAttribute="height" id="ZOL-64-RwU"/>
                                             <constraint firstAttribute="width" constant="32" id="h1U-TF-t29"/>
@@ -36,7 +36,7 @@
                                         <buttonConfiguration key="configuration" style="plain" image="trashIcon"/>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Axw-XE-9Rt" customClass="FABRaisedTertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                        <rect key="frame" x="377" y="64" width="32" height="32"/>
+                                        <rect key="frame" x="377" y="128" width="32" height="32"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="32" id="ZZk-F3-aGW"/>
                                             <constraint firstAttribute="width" secondItem="Axw-XE-9Rt" secondAttribute="height" id="e6z-dO-kkM"/>
