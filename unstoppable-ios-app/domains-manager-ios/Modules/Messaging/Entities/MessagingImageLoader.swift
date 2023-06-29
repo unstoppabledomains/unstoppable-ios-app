@@ -58,7 +58,9 @@ struct MessagingImageLoader {
     }
     
     static func getIconForUserInfo(_ userInfo: MessagingChatUserDisplayInfo) async -> UIImage? {
-        if let domainName = userInfo.domainName {
+        if let pfpURL = userInfo.pfpURL {
+            return await appContext.imageLoadingService.loadImage(from: .url(pfpURL), downsampleDescription: nil)
+        } else if let domainName = userInfo.domainName {
             return await getIconImageFor(domainName: domainName)
         }
         return await getIconForWalletAddress(userInfo.wallet)

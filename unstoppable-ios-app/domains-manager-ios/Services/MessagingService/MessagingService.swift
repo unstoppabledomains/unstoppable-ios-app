@@ -469,7 +469,9 @@ private extension MessagingService {
                     for chat in chats {
                         group.addTask {
                             if let otherUserInfo = try? await self.loadUserInfoFor(chat: chat) {
-                                await self.storageService.saveMessagingUserInfo(otherUserInfo)
+                                for info in otherUserInfo {
+                                    await self.storageService.saveMessagingUserInfo(info)
+                                }
                             }
                             return Void()
                         }
@@ -487,13 +489,23 @@ private extension MessagingService {
         }
     }
     
-    func loadUserInfoFor(chat: MessagingChat) async throws -> MessagingChatUserDisplayInfo? {
+    func loadUserInfoFor(chat: MessagingChat) async throws -> [MessagingChatUserDisplayInfo] {
         switch chat.displayInfo.type {
         case .private(let details):
             let wallet = details.otherUser.wallet
-            return await loadUserInfoFor(wallet: wallet)
+            if let userInfo = await loadUserInfoFor(wallet: wallet) {
+                return [userInfo]
+            }
+            return []
         case .group(let details):
-            return nil // <GROUP_CHAT> Not supported for now
+            var infos: [MessagingChatUserDisplayInfo] = []
+            let members = details.allMembers.prefix(3) // Only first 3 members will be displayed on the UI 
+            for member in members {
+                if let userInfo = await loadUserInfoFor(wallet: member.wallet) {
+                    infos.append(userInfo)
+                }
+            }
+            return infos
         }
     }
     

@@ -432,8 +432,24 @@ private extension CoreDataMessagingStorageService {
         } else if coreDataChat.type == 1,
                   let memberWallets = coreDataChat.groupMemberWallets,
                   let pendingMembersWallets = coreDataChat.groupPendingMemberWallets {
-            let members = memberWallets.map { MessagingChatUserDisplayInfo(wallet: $0) }
-            let pendingMembers = pendingMembersWallets.map { MessagingChatUserDisplayInfo(wallet: $0) }
+            let allMembersWallets = memberWallets + pendingMembersWallets
+            let cachedUserInfos = getCoreDataDomainInfosFor(wallets: allMembersWallets)
+            let walletToInfoMap = cachedUserInfos.reduce([String : CoreDataMessagingUserInfo]()) { (dict, userInfo) in
+                var dict = dict
+                dict[userInfo.wallet!] = userInfo
+                return dict
+            }
+            
+            func createUserDisplayInfoFor(wallet: String) -> MessagingChatUserDisplayInfo {
+                let cachedInfo = walletToInfoMap[wallet]
+                return MessagingChatUserDisplayInfo(wallet: wallet,
+                                                    domainName: cachedInfo?.name,
+                                                    pfpURL: cachedInfo?.pfpURL)
+            }
+            
+            
+            let members = memberWallets.map { createUserDisplayInfoFor(wallet: $0) }
+            let pendingMembers = pendingMembersWallets.map { createUserDisplayInfoFor(wallet: $0) }
             
             let groupChatDetails = MessagingGroupChatDetails(members: members,
                                                              pendingMembers: pendingMembers)
@@ -670,6 +686,12 @@ private extension CoreDataMessagingStorageService {
         let predicate = NSPredicate(format: "wallet == %@", wallet)
         let infos: [CoreDataMessagingUserInfo]? = try? getEntities(predicate: predicate, from: backgroundContext)
         return infos?.first
+    }
+    
+    func getCoreDataDomainInfosFor(wallets: [String]) -> [CoreDataMessagingUserInfo] {
+        let predicate = NSPredicate(format: "ANY wallet IN %@", wallets)
+        let infos: [CoreDataMessagingUserInfo]? = try? getEntities(predicate: predicate, from: backgroundContext)
+        return infos ?? []
     }
 }
 
