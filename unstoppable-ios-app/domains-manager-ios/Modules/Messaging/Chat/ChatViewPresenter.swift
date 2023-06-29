@@ -114,10 +114,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
     
     func approveButtonPressed() { }
     
-    func rejectButtonPressed() {
-        // TODO: - Implement flow
-        view?.showSimpleAlert(title: "Not supported for now", body: "Stay tuned!")
-    }
+    func rejectButtonPressed() { }
     
     func choosePhotoButtonPressed() {
         view?.hideKeyboard()
@@ -377,10 +374,6 @@ private extension ChatViewPresenter {
     }
     
     func updateUIForChatApprovedState() {
-//        if case .existingChat(let chat) = conversationState {
-//            self.view?.setUIState(chat.isApproved ? .chat : .requestApprove)
-//        } else {
-//        }
         self.view?.setUIState(.chat)
     }
 }
