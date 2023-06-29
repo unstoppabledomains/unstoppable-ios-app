@@ -32,7 +32,8 @@ final class ChatViewController: BaseViewController {
     @IBOutlet private weak var approveContentView: UIView!
     @IBOutlet private weak var acceptButton: MainButton!
     @IBOutlet private weak var blockButton: RaisedTertiaryButton!
-    
+    @IBOutlet private weak var moveToTopButton: FABButton!
+
     
     private var titleView: ChatTitleView!
 
@@ -69,6 +70,12 @@ final class ChatViewController: BaseViewController {
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
         scrollToTheBottom(animated: true)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        setupMoveToTopButtonFrame()
     }
 }
 
@@ -168,6 +175,9 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
             let isChatInputViewTopBorderVisible = cellFrameInView.maxY >= chatInputView.frame.minY
             chatInputView.setTopBorderHidden(!isChatInputViewTopBorderVisible,
                                              animated: true)
+            setMoveToTopButton(hidden: true, animated: true)
+        } else if scrollView.contentSize.height > collectionView.bounds.height { // Check empty state
+            setMoveToTopButton(hidden: false, animated: true)
         }
     }
     
@@ -210,6 +220,7 @@ extension ChatViewController: ChatInputViewDelegate {
     
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
         calculateCollectionBottomInset()
+        setupMoveToTopButtonFrame()
     }
     
     func chatInputViewAdditionalActionsButtonPressed(_ chatInputView: ChatInputView) {
@@ -240,6 +251,11 @@ private extension ChatViewController {
         UDVibration.buttonTap.vibrate()
         presenter.infoButtonPressed()
     }
+    
+    @IBAction func moveToTopButtonPressed(_ sender: Any) {
+        logButtonPressedAnalyticEvents(button: .moveToTop)
+        scrollToTheBottom(animated: true)
+    }
 }
 
 // MARK: - Private functions
@@ -269,6 +285,20 @@ private extension ChatViewController {
             self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
         }
     }
+    
+    func setMoveToTopButton(hidden: Bool, animated: Bool) {
+        UIView.animate(withDuration: animated ? 0.25 : 0.0) {
+            self.moveToTopButton.alpha = hidden ? 0 : 1
+        }
+    }
+    
+    func setupMoveToTopButtonFrame() {
+        let moveToTopButtonSize: CGFloat = 48
+        let edgeSpacing: CGFloat = 16
+        moveToTopButton.frame = CGRect(origin: CGPoint(x: view.bounds.width - moveToTopButtonSize - edgeSpacing,
+                                                       y: chatInputView.frame.minY - moveToTopButtonSize - edgeSpacing),
+                                       size: .square(size: moveToTopButtonSize))
+    }
 }
 
 // MARK: - Setup functions
@@ -279,6 +309,7 @@ private extension ChatViewController {
         setupNavBar()
         setupCollectionView()
         setupHideKeyboardTap()
+        setupMoveToTopButton()
     }
     
     func setupInputView() {
@@ -302,6 +333,13 @@ private extension ChatViewController {
             infoBarButtonItem.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = infoBarButtonItem
         }
+    }
+    
+    func setupMoveToTopButton() {
+        moveToTopButton.customImageEdgePadding = 0
+        moveToTopButton.customTitleEdgePadding = 0
+        moveToTopButton.setTitle(nil, image: .chevronDown)
+        setMoveToTopButton(hidden: true, animated: false)
     }
     
     func setupCollectionView() {
