@@ -97,6 +97,11 @@ struct PushEntitiesTransformer {
         return chat
     }
     
+    static func getPushChatIdFrom(chat: MessagingChat) -> String {
+        let id = chat.displayInfo.id
+        return id.components(separatedBy: "_").first ?? id
+    }
+    
     static func convertPushMessageToChatMessage(_ pushMessage: Push.Message,
                                                 in chat: MessagingChat,
                                                 pgpKey: String,

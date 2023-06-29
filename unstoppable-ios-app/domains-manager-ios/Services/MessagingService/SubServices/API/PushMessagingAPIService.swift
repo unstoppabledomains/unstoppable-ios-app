@@ -167,12 +167,21 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                      by user: MessagingChatUserProfile) async throws -> MessagingChatMessage {
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
+        func convertPushMessageToChatMessage(_ message: Push.Message) throws -> MessagingChatMessage {
+            guard let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
+                                                                                            in: chat,
+                                                                                            pgpKey: pgpPrivateKey,
+                                                                                            isRead: true) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
+            
+            return chatMessage
+        }
+        
         switch chat.displayInfo.type {
         case .private(let otherUserDetails):
             let receiver = otherUserDetails.otherUser
             let sendOptions = try await buildPushSendOptions(for: messageType,
-                                                        receiver: receiver.wallet,
-                                                        by: user)
+                                                             receiver: receiver.wallet,
+                                                             by: user)
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
             let isConversationFirst = chatMetadata.threadHash == nil
             
@@ -183,14 +192,14 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                 message = try await Push.PushChat.sendMessage(sendOptions)
             }
             
-            guard let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
-                                                                                            in: chat,
-                                                                                            pgpKey: pgpPrivateKey,
-                                                                                            isRead: true) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
-            
-            return chatMessage
-        case .group(let groupDetails):
-            throw PushMessagingAPIServiceError.sendMessageInGroupChatNotSupported  // <GROUP_CHAT> Group chats not supported for now
+            return try convertPushMessageToChatMessage(message)
+        case .group:
+            let receiver = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
+            let sendOptions = try await buildPushSendOptions(for: messageType,
+                                                             receiver: receiver,
+                                                             by: user)
+            let message = try await Push.PushChat.sendMessage(sendOptions)
+            return try convertPushMessageToChatMessage(message)
         }
     }
     
