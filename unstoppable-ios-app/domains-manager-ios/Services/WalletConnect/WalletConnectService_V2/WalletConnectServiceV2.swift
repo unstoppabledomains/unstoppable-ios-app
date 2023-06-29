@@ -87,7 +87,6 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
 protocol WalletConnectV2RequestHandlingServiceProtocol {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
     var willHandleRequestCallback: EmptyCallback? { get set }
-    var publishersProvider: WalletConnectV2PublishersProvider { get }
 
     func pairClient(uri: WalletConnectURI) async throws
     func handleConnectionProposal( _ proposal: WC2ConnectionProposal, completion: @escaping WCConnectionResultCompletion)
@@ -108,8 +107,6 @@ protocol WalletConnectV2PublishersProvider {
     var sessionProposalPublisher: AnyPublisher<WalletConnectSign.Session.Proposal, Never> { get }
     var sessionRequestPublisher: AnyPublisher<WalletConnectSign.Request, Never> { get }
 }
-extension WalletConnectSign.SignClient: WalletConnectV2PublishersProvider { }
-
 
 typealias SessionV2 = WalletConnectSign.Session
 typealias ResponseV2 = WalletConnectSign.Response
@@ -125,7 +122,6 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     let walletStorageV2 = WCClientConnectionsV2()
     var appsStorageV2: WCConnectedAppsStorageV2 { WCConnectedAppsStorageV2.shared }
-    var publishersProvider: WalletConnectV2PublishersProvider { Sign.instance }
     
     private var publishers = [AnyCancellable]()
     
@@ -1056,7 +1052,9 @@ extension WalletConnectServiceV2 {
         case oldPairing
         case newPairing (WalletConnectURI)
     }
-    var namespaces: [String: ProposalNamespace]  { [
+    
+    // namespaces required from wallets by UD app as Client
+    var requiredNamespaces: [String: ProposalNamespace]  { [
         "eip155": ProposalNamespace(
             chains: [
                 Blockchain("eip155:1")!,
@@ -1064,21 +1062,21 @@ extension WalletConnectServiceV2 {
             ],
             methods: [
                 "eth_sendTransaction",
-                "eth_signTransaction",
+//                "eth_signTransaction",    // less methods as not all wallets may support
                 "personal_sign",
-                "eth_sign",
-                "eth_signTypedData"
+//                "eth_sign",
+//                "eth_signTypedData"
             ], events: []
         )] }
     
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
         let activePairings = Pair.instance.getPairings().filter({$0.isAlive(for: wcWallet)})
         if let pairing = activePairings.first {
-            try await Sign.instance.connect(requiredNamespaces: namespaces, topic: pairing.topic)
+            try await Sign.instance.connect(requiredNamespaces: requiredNamespaces, topic: pairing.topic)
             return .oldPairing
         }
         let uri = try await Pair.instance.create()
-        try await Sign.instance.connect(requiredNamespaces: namespaces, topic: uri.topic)
+        try await Sign.instance.connect(requiredNamespaces: requiredNamespaces, topic: uri.topic)
         return .newPairing(uri)
     }
     
