@@ -142,6 +142,7 @@
 "CHOOSE_PHOTO" = "Choose Photo";
 "TAKE_PHOTO" = "Take Photo";
 "PHOTO" = "Photo";
+"DELETE_ALL" = "Delete all";
 
 /* ONBOARDING */
 // Tutorial screens

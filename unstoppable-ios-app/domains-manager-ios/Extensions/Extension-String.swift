@@ -183,6 +183,7 @@ extension String {
         static let choosePhoto = "CHOOSE_PHOTO"
         static let takePhoto = "TAKE_PHOTO"
         static let photo = "PHOTO"
+        static let deleteAll = "DELETE_ALL"
 
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

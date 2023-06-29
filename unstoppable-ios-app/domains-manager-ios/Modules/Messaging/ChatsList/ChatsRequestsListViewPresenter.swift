@@ -31,7 +31,12 @@ extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
     }
     
     func viewDidAppear() {
-        view?.setState(.requestsList)
+        switch dataType {
+        case .chatRequests:
+            view?.setState(.requestsList(.chats))
+        case .channelsRequests:
+            view?.setState(.requestsList(.channels))
+        }
         showData()
     }
     
