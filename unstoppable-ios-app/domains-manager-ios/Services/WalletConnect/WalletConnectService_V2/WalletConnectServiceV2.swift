@@ -1058,7 +1058,7 @@ extension WalletConnectServiceV2 {
         "eip155": ProposalNamespace(
             chains: [
                 Blockchain("eip155:1")!,
-//                Blockchain("eip155:137")! // no Polygon as MM rejects
+                Blockchain("eip155:137")!
             ],
             methods: [
                 "eth_sendTransaction",
