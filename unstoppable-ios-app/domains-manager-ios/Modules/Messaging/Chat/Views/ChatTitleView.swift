@@ -81,48 +81,29 @@ private extension ChatTitleView {
     func setWithDomainName(_ domainName: DomainName) {
         setTitle(domainName)
         Task {
-            iconImageView.image = await getIconImageFor(domainName: domainName)
-        }
-    }
-    
-    func getIconImageFor(domainName: String) async -> UIImage? {
-        let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName)
-        if let pfpInfo,
-           let image = await appContext.imageLoadingService.loadImage(from: .domainPFPSource(pfpInfo.source),
-                                                                      downsampleDescription: nil) {
-            return image
-        } else {
-            return await getIconWithInitialsFor(name: domainName)
+            iconImageView.image = await MessagingImageLoader.getIconImageFor(domainName: domainName)
         }
     }
     
     func setWithWalletAddress(_ walletAddress: HexAddress) {
         setTitle(walletAddress.walletAddressTruncated)
         Task {
-            iconImageView.image = await getIconForWalletAddress(walletAddress)
+            iconImageView.image = await MessagingImageLoader.getIconForWalletAddress(walletAddress)
         }
     }
-    
-    func getIconForWalletAddress(_ walletAddress: HexAddress) async -> UIImage? {
-        await getIconWithInitialsFor(name: walletAddress.droppedHexPrefix)
-    }
-    
+   
     func setWithChannel(_ channel: MessagingNewsChannel) {
         setTitle(channel.name)
         Task {
-            if let image = await appContext.imageLoadingService.loadImage(from: .url(channel.icon),
-                                                                          downsampleDescription: nil) {
-                iconImageView.image = image
-            } else {
-                iconImageView.image = await getIconWithInitialsFor(name: channel.name)
-            }
+            iconImageView.image = await MessagingImageLoader.getIconForChannel(channel)
         }
     }
     
     func setWithGroupDetails(_ groupDetails: MessagingGroupChatDetails) {
         setTitle(groupDetails.displayName)
         Task {
-            iconImageView.image = await buildImageForGroupChatMembers(groupDetails.allMembers)
+            iconImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(groupDetails.allMembers,
+                                                                                           iconSize: iconSize)
         }
     }
     
@@ -132,66 +113,6 @@ private extension ChatTitleView {
                                          textColor: .foregroundDefault,
                                          lineBreakMode: .byTruncatingTail)
     }
-    
-    func getIconWithInitialsFor(name: String) async -> UIImage? {
-        await appContext.imageLoadingService.loadImage(from: .initials(name,
-                                                                       size: .default,
-                                                                       style: .accent),
-                                                       downsampleDescription: nil)
-    }
-    
-    func buildImageForGroupChatMembers(_ groupChatMembers: [MessagingChatUserDisplayInfo]) async -> UIImage? {
-        guard !groupChatMembers.isEmpty else { return nil }
-        
-        var containerView = UIView(frame: CGRect(origin: .zero, size: .square(size: iconSize)))
-        containerView.backgroundColor = .backgroundDefault
-        
-        func buildImageViewWith(image: UIImage?, imageSize: CGFloat = 12) -> UIImageView {
-            let imageView = UIImageView(frame: CGRect(origin: .zero,
-                                                      size: .square(size: imageSize)))
-            imageView.image = image
-            imageView.contentMode = .scaleAspectFill
-            imageView.clipsToBounds = true
-            imageView.layer.cornerRadius = imageSize / 2
-            imageView.layer.borderWidth = 1
-            imageView.borderColor = .backgroundDefault
-            
-            return imageView
-        }
-        
-        if groupChatMembers.count == 1 {
-            return await getIconForUserInfo(groupChatMembers[0])
-        }
-        let image1 = await getIconForUserInfo(groupChatMembers[0])
-        let image2 = await getIconForUserInfo(groupChatMembers[1])
-        let imageView1 = buildImageViewWith(image: image1)
-        let imageView2 = buildImageViewWith(image: image2)
-        containerView.addSubview(imageView1)
-        containerView.addSubview(imageView2)
-        
-        if groupChatMembers.count == 2 {
-            imageView1.frame.origin = CGPoint(x: 0, y: 4)
-            imageView2.frame.origin = CGPoint(x: 8, y: 4)
-        } else {
-            let image3 = await getIconForUserInfo(groupChatMembers[2])
-            let imageView3 = buildImageViewWith(image: image3)
-            containerView.addSubview(imageView3)
-            
-            imageView1.frame.origin = CGPoint(x: 0, y: 0)
-            imageView2.frame.origin = CGPoint(x: 8, y: 4)
-            imageView3.frame.origin = CGPoint(x: 2, y: 8)
-        }
-        
-        return containerView.toImage()
-    }
-    
-    func getIconForUserInfo(_ userInfo: MessagingChatUserDisplayInfo) async -> UIImage? {
-        if let domainName = userInfo.domainName {
-            return await getIconImageFor(domainName: domainName)
-        }
-        return await getIconForWalletAddress(userInfo.wallet)
-    }
-    
 }
 
 // MARK: - Setup methods

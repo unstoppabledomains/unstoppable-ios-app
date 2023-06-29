@@ -29,11 +29,13 @@ extension ChatListCell {
     func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
         let chat = configuration.chat
         let chatName = chatNameFrom(chat: chat)
-        if case .private(let info) = chat.type,
-           let pfpURL = info.otherUser.pfpURL {
-            setAvatarFrom(url: pfpURL, name: chatName)
-        } else {
-            setAvatarFrom(url: chat.avatarURL, name: chatName)
+        
+        switch chat.type {
+        case .private(let info):
+            setAvatarFrom(url: info.otherUser.pfpURL, name: chatName)
+        case .group(let details):
+            Task { avatarImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(details.allMembers,
+                                                                                                    iconSize: avatarImageView.bounds.width) }
         }
         
         setNameText(chatName)
