@@ -11540,7 +11540,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.2;
+				MARKETING_VERSION = 4.6.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -11565,7 +11565,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.2;
+				MARKETING_VERSION = 4.6.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -11674,7 +11674,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.2;
+				MARKETING_VERSION = 4.6.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -11700,7 +11700,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.2;
+				MARKETING_VERSION = 4.6.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -11717,7 +11717,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios  TESTFLIGHT DEV.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "Dev-Env-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -11725,7 +11725,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.2;
+				MARKETING_VERSION = 4.6.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -11742,7 +11742,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios Dev EnvRelease.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "Dev-Env-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -11750,7 +11750,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.2;
+				MARKETING_VERSION = 4.6.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -11775,7 +11775,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.2;
+				MARKETING_VERSION = 4.6.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -11798,7 +11798,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.2;
+				MARKETING_VERSION = 4.6.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
