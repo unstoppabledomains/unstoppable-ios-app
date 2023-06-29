@@ -80,6 +80,7 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
         let chat = try await getMessagingChatFor(displayInfo: chat)
         try await apiService.makeChatRequest(chat, approved: approved, by: profile)
+        refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
     }
     
     // Messages
@@ -499,7 +500,7 @@ private extension MessagingService {
             return []
         case .group(let details):
             var infos: [MessagingChatUserDisplayInfo] = []
-            let members = details.allMembers.prefix(3) // Only first 3 members will be displayed on the UI 
+            let members = details.allMembers.prefix(3) // Only first 3 members will be displayed on the UI
             for member in members {
                 if let userInfo = await loadUserInfoFor(wallet: member.wallet) {
                     infos.append(userInfo)
