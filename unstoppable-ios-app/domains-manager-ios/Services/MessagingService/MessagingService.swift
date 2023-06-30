@@ -362,7 +362,7 @@ private extension MessagingService {
                 async let remoteChatsTask = updatedLocalChats(localChats, forProfile: profile, isRequests: false)
                 async let remoteRequestsTask = updatedLocalChats(localRequests, forProfile: profile, isRequests: true)
                 
-                let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
+                let (remoteChats, remoteRequests) = await (remoteChatsTask, remoteRequestsTask)
                 let allRemoteChats = remoteChats + remoteRequests
                 
                 let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats,
@@ -386,29 +386,33 @@ private extension MessagingService {
     
     func updatedLocalChats(_ localChats: [MessagingChat],
                                    forProfile profile: MessagingChatUserProfile,
-                                   isRequests: Bool) async throws -> [MessagingChat] {
+                                   isRequests: Bool) async -> [MessagingChat] {
         var remoteChats = [MessagingChat]()
         let limit = 30
         var page = 1
         while true {
-            let chatsPage: [MessagingChat]
-            if isRequests {
-                chatsPage = try await apiService.getChatRequestsForUser(profile, page: 1, limit: limit)
-            } else {
-                chatsPage = try await apiService.getChatsListForUser(profile, page: 1, limit: limit)
-            }
-            
-            remoteChats.append(contentsOf: chatsPage)
-            if chatsPage.count < limit {
-                /// Loaded all chats
+            do {
+                let chatsPage: [MessagingChat]
+                if isRequests {
+                    chatsPage = try await apiService.getChatRequestsForUser(profile, page: 1, limit: limit)
+                } else {
+                    chatsPage = try await apiService.getChatsListForUser(profile, page: 1, limit: limit)
+                }
+                
+                remoteChats.append(contentsOf: chatsPage)
+                if chatsPage.count < limit {
+                    /// Loaded all chats
+                    break
+                } else if let lastPageChat = chatsPage.last,
+                          let localChat = localChats.first(where: { $0.displayInfo.id == lastPageChat.displayInfo.id }),
+                          lastPageChat.isUpToDateWith(otherChat: localChat) {
+                    /// No changes for other chats
+                    break
+                } else {
+                    page += 1
+                }
+            } catch {
                 break
-            } else if let lastPageChat = chatsPage.last,
-                      let localChat = localChats.first(where: { $0.displayInfo.id == lastPageChat.displayInfo.id }),
-                      lastPageChat.isUpToDateWith(otherChat: localChat) {
-                /// No changes for other chats
-                break
-            } else {
-                page += 1
             }
         }
         
@@ -591,16 +595,22 @@ private extension MessagingService {
             do {
                 let storedChannels = try await storageService.getChannelsFor(profile: profile)
 
-                async let channelsTask = try await apiService.getSubscribedChannelsForUser(profile)
-                async let spamChannelsTask = try await apiService.getSpamChannelsForUser(profile)
+                async let channelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
+                    try await apiService.getSubscribedChannelsForUser(profile)
+                }, defaultValue: [])
+                async let spamChannelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
+                    try await apiService.getSpamChannelsForUser(profile)
+                }, defaultValue: [])
                 
-                let (channels, spamChannels) = try await (channelsTask, spamChannelsTask)
+                let (channels, spamChannels) = await (channelsTask, spamChannelsTask)
                 let allChannels = channels + spamChannels
                 
                 let updatedChats = await refreshChannelsMetadata(allChannels, storedChannels: storedChannels).sortedByLastMessage()
                 
                 await storageService.saveChannels(updatedChats, for: profile)
-                notifyListenersChangedDataType(.channels(updatedChats, profile: profile.displayInfo))
+                
+                let updatedStoredChannels = try await storageService.getChannelsFor(profile: profile)
+                notifyListenersChangedDataType(.channels(updatedStoredChannels, profile: profile.displayInfo))
             }
         }
     }
