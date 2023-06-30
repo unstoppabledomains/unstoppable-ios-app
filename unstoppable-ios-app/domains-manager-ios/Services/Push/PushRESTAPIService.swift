@@ -223,15 +223,18 @@ private extension PushRESTAPIService {
     }
     
     struct ChatsResponse: Codable {
-        let chats: [PushChat]
+        @IgnoreFailedInArray
+        var chats: [PushChat]
     }
     
     struct ChatsRequestsResponse: Codable {
-        let requests: [PushChat]
+        @IgnoreFailedInArray
+        var requests: [PushChat]
     }
     
     struct ChannelSubscriptionsResponse: Codable {
-        let subscriptions: [ChannelSubscriptionHolder]
+        @IgnoreFailedInArray
+        var subscriptions: [ChannelSubscriptionHolder]
     }
     
     struct ChannelSubscriptionHolder: Codable {
@@ -239,14 +242,16 @@ private extension PushRESTAPIService {
     }
     
     struct ChannelsSearchResponse: Codable {
-        let channels: [PushChannel]
+        @IgnoreFailedInArray
+        var channels: [PushChannel]
     }
 }
 
 // MARK: - Open methods
 extension PushRESTAPIService {
     struct InboxResponse: Codable {
-        let feeds: [PushInboxNotification]
+        @IgnoreFailedInArray
+        var feeds: [PushInboxNotification]
     }
 }
 
