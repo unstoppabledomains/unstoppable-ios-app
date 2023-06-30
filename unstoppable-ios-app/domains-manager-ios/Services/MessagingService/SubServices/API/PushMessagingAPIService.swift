@@ -136,10 +136,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                     threadHash = hash
                 }
             }
-            
             return messages
         }
-        
     }
     
     private func getPreviousMessagesForChat(_ chat: MessagingChat,
@@ -147,14 +145,14 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                             fetchLimit: Int,
                                             isRead: Bool,
                                             for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
-        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         let env = getCurrentPushEnvironment()
         let pushMessages = try await Push.PushChat.History(threadHash: threadHash,
                                                            limit: fetchLimit,
-                                                           pgpPrivateKey: "",
+                                                           pgpPrivateKey: "", // Get encrypted messages
                                                            toDecrypt: false,
                                                            env: env)
         
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0,
                                                                                                          in: chat,
                                                                                                          pgpKey: pgpPrivateKey,
@@ -329,9 +327,9 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                               channelAddress: channel.id,
                                                               env: env)
         if subscribed {
-            try await Push.PushChannel.subscribe(option: subscribeOptions)
+            _ = try await Push.PushChannel.subscribe(option: subscribeOptions)
         } else {
-            try await Push.PushChannel.unsubscribe(option: subscribeOptions)
+            _ = try await Push.PushChannel.unsubscribe(option: subscribeOptions)
         }
     }
     
