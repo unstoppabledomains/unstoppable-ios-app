@@ -131,7 +131,7 @@ extension JSONDecoder.DateDecodingStrategy {
 }
 
 @propertyWrapper
-struct IgnoreFailedInArray<Value: Codable>: Codable {
+struct DecodeIgnoringFailed<Value: Codable>: Codable {
     var wrappedValue: [Value] = []
     
     private struct _None: Decodable {}
