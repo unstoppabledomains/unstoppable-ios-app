@@ -72,6 +72,14 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             openChannel(configuration.channel)
         case .userInfo(let configuration):
             openChatWith(conversationState: .newChat(configuration.userInfo))
+        case .domainName(let domainName):
+            Task {
+                guard let ownerWallet = try? await NetworkService().fetchDomainOwner(for: domainName) else {
+                    return
+                }
+                
+                openChatWith(conversationState: .newChat(.init(wallet: ownerWallet, domainName: domainName)))
+            }
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch, .domainName:
             return
         }
