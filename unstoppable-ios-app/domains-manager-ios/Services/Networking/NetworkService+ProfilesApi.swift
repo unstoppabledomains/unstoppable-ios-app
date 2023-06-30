@@ -412,6 +412,18 @@ extension NetworkService {
         return info
     }
     
+    public func searchForRRDomainsWith(name: String) async throws -> [String] {
+        guard let url = Endpoint.searchDomains(with: name, shouldHaveProfile: false, shouldBeSetAsRR: true).url else {
+            throw NetworkLayerError.creatingURLFailed
+        }
+        let data = try await fetchData(for: url, method: .get)
+        guard let names = [String].objectFromData(data,
+                                                  dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
+            throw NetworkLayerError.failedParseProfileData
+        }
+        return names
+    }
+    
     public func fetchUserDomainProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedUserDomainProfile {
         let signature: String
         let expires: UInt64

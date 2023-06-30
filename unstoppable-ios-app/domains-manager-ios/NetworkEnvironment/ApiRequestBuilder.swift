@@ -637,6 +637,21 @@ extension Endpoint {
         )
     }
     
+    static func searchDomains(with name: String,
+                              shouldHaveProfile: Bool = true,
+                              shouldBeSetAsRR: Bool = false) -> Endpoint {
+        let queryItems: [URLQueryItem] = [.init(name: "name", value: name),
+                                          .init(name: "profile-required", value: String(shouldHaveProfile)),
+                                          .init(name: "reverse-resolution-required", value: String(shouldBeSetAsRR))]
+        
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/api/search",
+            queryItems: queryItems,
+            body: ""
+        )
+    }
+    
     static let yearInSecs: TimeInterval = 60 * 60 * 24 * 356
     static func getGeneratedMessageToRetrieve(for domain: DomainItem) -> Endpoint {
         // https://profile.ud-staging.com/api/user/aaron.x/signature?expiry=1765522015090
