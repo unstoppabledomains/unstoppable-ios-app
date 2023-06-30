@@ -276,7 +276,7 @@ private extension ChatsListViewPresenter {
         UserDefaults.currentMessagingOwnerWallet = profile.wallet.normalized
         
         async let chatsListTask = appContext.messagingService.getChatsListForProfile(profile)
-        async let channelsTask = appContext.messagingService.getSubscribedChannelsForProfile(profile)
+        async let channelsTask = appContext.messagingService.getChannelsForProfile(profile)
         
         let (chatsList, channels) = try await (chatsListTask, channelsTask)
         
@@ -558,13 +558,20 @@ private final class SearchManager {
                 try await Task.sleep(seconds: debounce)
                 try Task.checkCancellation()
                 
-                async let searchUsersTask = appContext.messagingService.searchForUsersWith(searchKey: searchKey)
-                async let searchChannelsTask = appContext.messagingService.searchForChannelsWith(page: page, limit: limit,
-                                                                                                  searchKey: searchKey, for: profile)
-                async let domainNamesTask = NetworkService().searchForRRDomainsWith(name: searchKey)
-
+                let messagingService = appContext.messagingService
+                async let searchUsersTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
+                    try await messagingService.searchForUsersWith(searchKey: searchKey)
+                }, defaultValue: [])
+                async let searchChannelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
+                    try await messagingService.searchForChannelsWith(page: page, limit: limit,
+                                                                     searchKey: searchKey, for: profile)
+                }, defaultValue: [])
+                async let domainNamesTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
+                    try await NetworkService().searchForRRDomainsWith(name: searchKey)
+                }, defaultValue: [])
                 
-                let (users, channels, domainNames) = try await (searchUsersTask, searchChannelsTask, domainNamesTask)
+                
+                let (users, channels, domainNames) = await (searchUsersTask, searchChannelsTask, domainNamesTask)
                 
                 try Task.checkCancellation()
                 return (users, channels, domainNames)

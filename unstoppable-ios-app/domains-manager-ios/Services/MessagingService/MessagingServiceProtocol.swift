@@ -35,7 +35,7 @@ protocol MessagingServiceProtocol {
                      isRead: Bool,
                      wallet: String) throws
     // Channels
-    func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
+    func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
                     limit: Int) async throws -> [MessagingNewsChannelFeed]

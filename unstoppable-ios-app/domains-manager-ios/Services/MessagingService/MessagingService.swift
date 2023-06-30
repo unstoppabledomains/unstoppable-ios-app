@@ -198,7 +198,7 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // Channels
-    func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
+    func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
         let channels = try await storageService.getChannelsFor(profile: profile)
         return channels
