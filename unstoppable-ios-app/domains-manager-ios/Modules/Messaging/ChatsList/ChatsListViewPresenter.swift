@@ -72,7 +72,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             openChannel(configuration.channel)
         case .userInfo(let configuration):
             openChatWith(conversationState: .newChat(configuration.userInfo))
-        case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
+        case .dataTypeSelection, .createProfile, .emptyState, .emptySearch, .domainName:
             return
         }
     }
@@ -122,12 +122,13 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         guard let profile = selectedProfileWalletPair?.profile else { return }
         Task {
             do {
-                let (searchUsers, searchChannels) = try await searchManager.search(with: key,
+                let (searchUsers, searchChannels, domainNames) = try await searchManager.search(with: key,
                                                                                    page: 1,
                                                                                    limit: fetchLimit,
                                                                                    for: profile)
                 searchData.searchUsers = searchUsers
                 searchData.searchChannels = searchChannels
+                searchData.domainNames = domainNames
                 showData()
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -346,6 +347,7 @@ private extension ChatsListViewPresenter {
         enum PeopleSearchResult {
             case existingChat(MessagingChatDisplayInfo)
             case newUser(MessagingChatUserDisplayInfo)
+            case domainName(DomainName)
             
             var item: ChatsListViewController.Item {
                 switch self {
@@ -353,6 +355,8 @@ private extension ChatsListViewPresenter {
                     return .chat(configuration: .init(chat: chat))
                 case .newUser(let userInfo):
                     return .userInfo(configuration: .init(userInfo: userInfo))
+                case .domainName(let domainName):
+                    return .domainName(domainName)
                 }
             }
         }
@@ -366,14 +370,18 @@ private extension ChatsListViewPresenter {
         } else {
             // Chats
             let localChats = chatsList.filter { isChatMatchingSearchKey($0, searchKey: searchKey) }
-            let localChatsPeopleWallets = Set(localChats.compactMap { chat in
+            var localChatsPeopleWallets = Set(localChats.compactMap { chat in
                 if case .private(let details) = chat.type {
-                    return details.otherUser.wallet
+                    return details.otherUser.wallet.lowercased()
                 }
                 return nil
             })
-            let remotePeople = searchData.searchUsers.filter({ !localChatsPeopleWallets.contains($0.wallet) })
+            localChatsPeopleWallets.insert(selectedProfileWalletPair?.wallet.address.lowercased() ?? "")
+            let remotePeople = searchData.searchUsers.filter({ !localChatsPeopleWallets.contains($0.wallet.lowercased()) })
             people = localChats.map { .existingChat($0) } + remotePeople.map { .newUser($0) }
+            
+            let domainNames = searchData.domainNames.filter({ $0 != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name })
+            people += domainNames.map { .domainName($0) }
             
             // Channels
             let localChannels = self.channels.filter { $0.name.lowercased().contains(searchKey) }
@@ -513,12 +521,13 @@ private extension ChatsListViewPresenter {
         var searchKey: String = ""
         var searchUsers: [MessagingChatUserDisplayInfo] = []
         var searchChannels: [MessagingNewsChannel] = []
+        var domainNames: [String] = []
     }
 }
 
 private final class SearchManager {
     
-    typealias SearchResult = ([MessagingChatUserDisplayInfo], [MessagingNewsChannel])
+    typealias SearchResult = ([MessagingChatUserDisplayInfo], [MessagingNewsChannel], [String])
     typealias SearchUsersTask = Task<SearchResult, Error>
     
     private let debounce: TimeInterval
@@ -541,16 +550,18 @@ private final class SearchManager {
                 try await Task.sleep(seconds: debounce)
                 try Task.checkCancellation()
                 
-                async let searchUsersTasks = appContext.messagingService.searchForUsersWith(searchKey: searchKey)
-                async let searchChannelsTasks = appContext.messagingService.searchForChannelsWith(page: page, limit: limit,
+                async let searchUsersTask = appContext.messagingService.searchForUsersWith(searchKey: searchKey)
+                async let searchChannelsTask = appContext.messagingService.searchForChannelsWith(page: page, limit: limit,
                                                                                                   searchKey: searchKey, for: profile)
+                async let domainNamesTask = NetworkService().searchForRRDomainsWith(name: searchKey)
+
                 
-                let (users, channels) = try await (searchUsersTasks, searchChannelsTasks)
+                let (users, channels, domainNames) = try await (searchUsersTask, searchChannelsTask, domainNamesTask)
                 
                 try Task.checkCancellation()
-                return (users, channels)
+                return (users, channels, domainNames)
             } catch NetworkLayerError.requestCancelled, is CancellationError {
-                return ([], [])
+                return ([], [], [])
             } catch {
                 throw error
             }
