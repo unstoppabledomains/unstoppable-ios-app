@@ -124,7 +124,7 @@ extension NotificationsService: UDWalletsServiceListener {
         switch notification {
         case .walletsUpdated:
             updateTokenSubscriptions()
-        case .reverseResolutionDomainChanged:
+        case .reverseResolutionDomainChanged, .walletRemoved:
             return
         }
     }

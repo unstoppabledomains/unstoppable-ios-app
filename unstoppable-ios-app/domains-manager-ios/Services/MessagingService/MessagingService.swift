@@ -19,11 +19,13 @@ final class MessagingService {
     init(apiService: MessagingAPIServiceProtocol,
          webSocketsService: MessagingWebSocketsServiceProtocol,
          storageProtocol: MessagingStorageServiceProtocol,
-         decrypterService: MessagingContentDecrypterService) {
+         decrypterService: MessagingContentDecrypterService,
+         udWalletsService: UDWalletsServiceProtocol) {
         self.apiService = apiService
         self.webSocketsService = webSocketsService
         self.storageService = storageProtocol
         self.decrypterService = decrypterService
+        udWalletsService.addListener(self)
         
         storageService.markSendingMessagesAsFailed()
     }
@@ -346,6 +348,26 @@ extension MessagingService: MessagingServiceProtocol {
     
     func removeListener(_ listener: MessagingServiceListener) {
         listenerHolders.removeAll(where: { $0.listener == nil || $0.listener === listener })
+    }
+}
+
+// MARK: - Open methods
+extension MessagingService: UDWalletsServiceListener {
+    func walletsDataUpdated(notification: UDWalletsServiceNotification) {
+        Task {
+            switch notification {
+            case .walletsUpdated, .reverseResolutionDomainChanged:
+                return
+            case .walletRemoved(let wallet):
+                if let rrDomainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: wallet.address),
+                   let rrDomain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomainName),
+                   let profile = try? storageService.getUserProfileFor(domain: rrDomain) {
+                    await storageService.clearAllDataOf(profile: profile)
+                } else {
+                    print("Ops")
+                }
+            }
+        }
     }
 }
 

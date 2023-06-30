@@ -139,6 +139,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     
     func remove(wallet: UDWallet) {
         removeFromCacheWithoutNotification(wallet: wallet)
+        notifyListeners(.walletRemoved(wallet))
         notifyListeners(.walletsUpdated(getUserWallets()))
     }
     

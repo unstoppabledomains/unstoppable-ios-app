@@ -117,7 +117,8 @@ final class GeneralAppContext: AppContextProtocol {
         messagingService = MessagingService(apiService: messagingAPIService,
                                             webSocketsService: messagingWebSocketsService,
                                             storageProtocol: messagingStorageService,
-                                            decrypterService: messagingDecrypterService)
+                                            decrypterService: messagingDecrypterService,
+                                            udWalletsService: udWalletsService)
         
         Task {
             persistedProfileSignaturesStorage.removeExpired()

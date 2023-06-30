@@ -287,6 +287,40 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     // Clear
+    func clearAllDataOf(profile: MessagingChatUserProfile) async {
+        queue.sync {
+            let chatsPredicate = NSPredicate(format: "userId == %@", profile.id)
+            let coreDataChats: [CoreDataMessagingChat] = (try? getEntities(predicate: chatsPredicate,
+                                                                           from: backgroundContext)) ?? []
+            
+            for chat in coreDataChats {
+                let messagesPredicate = NSPredicate(format: "chatId == %@", chat.id!)
+                let coreDataMessages: [CoreDataMessagingChatMessage] = (try? getEntities(predicate: messagesPredicate,
+                                                                                         from: backgroundContext)) ?? []
+                deleteObjects(coreDataMessages, from: backgroundContext, shouldSaveContext: false)
+            }
+            
+            deleteObjects(coreDataChats, from: backgroundContext, shouldSaveContext: false)
+            
+            let channelsPredicate = NSPredicate(format: "userId == %@", profile.id)
+            let coreDataChannels: [CoreDataMessagingNewsChannel] = (try? getEntities(predicate: channelsPredicate, from: backgroundContext)) ?? []
+            
+            for channel in coreDataChannels {
+                let feedPredicate = NSPredicate(format: "channelId == %@", channel.id!)
+                let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = (try? getEntities(predicate: feedPredicate,
+                                                                                                 from: backgroundContext)) ?? []
+                deleteObjects(coreDataChannelsFeed, from: backgroundContext, shouldSaveContext: false)
+            }
+            deleteObjects(coreDataChannels, from: backgroundContext, shouldSaveContext: false)
+            
+            if let profile: CoreDataMessagingUserProfile = getCoreDataEntityWith(id: profile.id) {
+                deleteObject(profile, from: backgroundContext, shouldSaveContext: false)
+            }
+            
+            saveContext(backgroundContext)
+        }
+    }
+    
     func clear() {
         queue.sync {
             do {
