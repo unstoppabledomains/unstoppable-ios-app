@@ -186,7 +186,10 @@ extension ChatViewController: ChatViewProtocol {
                 let uiAction = UIAction.createWith(title: actionType.title,
                                                    image: actionType.icon,
                                                    attributes: actionType.isDestructive ? [.destructive] : [],
-                                                   handler: { _ in action.callback() })
+                                                   handler: { _ in
+                    UDVibration.buttonTap.vibrate()
+                    action.callback()
+                })
                 if actionType.isDestructive {
                     let menu = UIMenu(title: "", options: .displayInline, children: [uiAction])
                     children.append(menu)
