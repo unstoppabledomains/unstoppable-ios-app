@@ -42,6 +42,7 @@ final class ChatViewPresenter {
     private var messages: [MessagingChatMessageDisplayInfo] = []
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
+    private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     
     init(view: ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
@@ -350,25 +351,65 @@ private extension ChatViewPresenter {
     }
     
     func setupBarButtons() {
+        var actions: [ChatViewController.NavButtonConfiguration.Action] = []
+        
+        switch conversationState {
+        case .newChat(let userInfo):
+            if let domainName = userInfo.domainName {
+                actions.append(.init(type: .viewProfile, callback: { [weak self] in self?.didPressViewDomainProfileButton(domainName: domainName) }))
+            } else {
+                return // No actions
+            }
+        case .existingChat(let chat):
+            switch chat.type {
+            case .private(let details):
+                if let domainName = details.otherUser.domainName {
+                    actions.append(.init(type: .viewProfile, callback: { [weak self] in self?.didPressViewDomainProfileButton(domainName: domainName) }))
+                }
+                
+                switch blockStatus {
+                case .unblocked, .currentUserIsBlocked:
+                    actions.append(.init(type: .block, callback: { [weak self] in self?.didPressBlockButton() }))
+                case .bothBlocked, .otherUserIsBlocked:
+                    actions.append(.init(type: .unblock, callback: { [weak self] in self?.didPressUnblockButton() }))
+                }
+            case .group:
+                return
+            }
+        }
+        
         view?.setupRightBarButton(with: .init(isHidden: false,
                                               style: .dots,
-                                              actions: [.init(type: .viewProfile, callback: { [weak self] in self?.didPressViewDomainProfileButton() }),
-                                                        .init(type: .block, callback: { [weak self] in self?.didPressBlockButton() })]))
+                                              actions: actions))
     }
     
-    func didPressViewDomainProfileButton() {
-        if let domainName = conversationState.userInfo?.domainName {
-            let link = String.Links.domainProfilePage(domainName: domainName)
-            view?.openLink(link)
-        }
+    func didPressViewDomainProfileButton(domainName: String) {
+        let link = String.Links.domainProfilePage(domainName: domainName)
+        view?.openLink(link)
     }
     
     func didPressBlockButton() {
-        
+        setOtherUser(blocked: true)
     }
     
     func didPressUnblockButton() {
-        
+        setOtherUser(blocked: false)
+    }
+    
+    func setOtherUser(blocked: Bool) {
+        guard case .existingChat(let chat) = conversationState else { return }
+
+        Task {
+            view?.setLoading(active: true)
+            do {
+                try await appContext.messagingService.setUser(in: chat, blocked: blocked)
+                await refreshBlockStatus()
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+            
+            view?.setLoading(active: false)
+        }
     }
     
     func handleChatMessageAction(_ action: ChatViewController.ChatMessageAction,
@@ -390,8 +431,31 @@ private extension ChatViewPresenter {
     }
     
     func updateUIForChatApprovedState() {
-//        self.view?.setUIState(.chat)
-        self.view?.setUIState(.userIsBlocked)
+        self.view?.setUIState(.chat)
+        Task {
+            await refreshBlockStatus()
+        }
+    }
+    
+    func refreshBlockStatus() async {
+        guard case .existingChat(let chat) = conversationState else { return }
+
+        if case .group = chat.type {
+            return
+        }
+        
+        if let blockStatus = try? await appContext.messagingService.getBlockingStatusForChat(chat) {
+            self.blockStatus = blockStatus
+            switch blockStatus {
+            case .unblocked:
+                return
+            case .currentUserIsBlocked:
+                self.view?.setUIState(.userIsBlocked)
+            case .otherUserIsBlocked, .bothBlocked:
+                self.view?.setUIState(.otherUserIsBlocked)
+            }
+            setupBarButtons()
+        }
     }
 }
 

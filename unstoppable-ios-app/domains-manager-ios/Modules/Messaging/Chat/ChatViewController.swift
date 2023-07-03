@@ -156,7 +156,7 @@ extension ChatViewController: ChatViewProtocol {
             approveContentView.isHidden = false
             acceptButton.isHidden = false
             acceptButton.setTitle(String.Constants.join.localized(), image: nil)
-        case .opponentIsBlocked:
+        case .otherUserIsBlocked:
             approveContentView.isHidden = false
             secondaryButton.isHidden = false
             secondaryButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration)
@@ -579,7 +579,7 @@ extension ChatViewController {
         case chat
         case viewChannel
         case joinChannel
-        case opponentIsBlocked
+        case otherUserIsBlocked
         case userIsBlocked
     }
     

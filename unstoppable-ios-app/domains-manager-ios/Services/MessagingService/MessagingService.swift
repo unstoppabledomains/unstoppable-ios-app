@@ -85,22 +85,17 @@ extension MessagingService: MessagingServiceProtocol {
         refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
     }
     
-    func blockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus {
+    func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus {
         let chat = try await getMessagingChatFor(displayInfo: chat)
         
         return try await apiService.getBlockingStatusForChat(chat)
     }
     
-    func blockUserInChat(_ chat: MessagingChatDisplayInfo) async throws {
+    func setUser(in chat: MessagingChatDisplayInfo,
+                 blocked: Bool) async throws {
         let chat = try await getMessagingChatFor(displayInfo: chat)
         
-        try await apiService.setUser(in: chat, blocked: true)
-    }
-    
-    func unblockUserInChat(_ chat: MessagingChatDisplayInfo) async throws {
-        let chat = try await getMessagingChatFor(displayInfo: chat)
-
-        try await apiService.setUser(in: chat, blocked: false)
+        try await apiService.setUser(in: chat, blocked: blocked)
     }
     
     // Messages

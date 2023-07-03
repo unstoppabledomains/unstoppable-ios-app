@@ -32,9 +32,9 @@ extension MockMessagingService: MessagingServiceProtocol {
          return chats
          */
     }
-    func blockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus { .unblocked }
-    func blockUserInChat(_ chat: MessagingChatDisplayInfo) async throws { }
-    func unblockUserInChat(_ chat: MessagingChatDisplayInfo) async throws { }
+    func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus { .unblocked }
+    func setUser(in chat: MessagingChatDisplayInfo,
+                 blocked: Bool) async throws { }
     
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
