@@ -1228,7 +1228,7 @@ extension WalletConnectServiceV2 {
             throw WalletConnectRequestError.noWCSessionFound
         }
         let params = WalletConnectServiceV2.getParamsEthSign(message: dataString, address: address) // the same params as ethSign
-        return try await sendRequest(method: .ethSignedTypedData,
+        return try await sendRequest(method: .ethSignTypedData,
                                      session: sessionSettled,
                                      chainId: chainId,
                                      requestParams: params,

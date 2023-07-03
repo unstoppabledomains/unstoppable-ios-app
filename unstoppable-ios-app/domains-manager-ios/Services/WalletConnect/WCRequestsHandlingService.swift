@@ -251,8 +251,10 @@ private extension WCRequestsHandlingService {
                 response = try await wcSigner.handleSendTx(request: request)
             case .ethSendRawTransaction:
                 response = try await wcSigner.handleSendRawTx(request: request)
-            case .ethSignedTypedData:
+            case .ethSignTypedData:
                 response = try await wcSigner.handleSignTypedData(request: request)
+            case .ethSignTypedData_v4:
+                throw WalletConnectRequestError.methodUnsupported
             }
             wcSigner.sendResponse(response)
             notifyDidHandleExternalWCRequestWith(result: .success(()))
@@ -285,8 +287,11 @@ private extension WCRequestsHandlingService {
                 responses = [response]
             case .ethSendRawTransaction:
                 responses = [try await wcSigner.handleSendRawTx(request: request)]
-            case .ethSignedTypedData:
+            case .ethSignTypedData:
                 responses = [try await wcSigner.handleSignTypedData(request: request)]
+            case .ethSignTypedData_v4:
+                // TODO:
+                throw WalletConnectRequestError.methodUnsupported
             case .none:
                 /// Unsupported method
                 throw WalletConnectRequestError.methodUnsupported
