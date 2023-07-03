@@ -17,7 +17,6 @@ final class ChannelViewPresenter {
     private var feed: [MessagingNewsChannelFeed] = []
     private var isLoadingFeed = false
     private var currentPage: Int = 1
-    var isInfoAvailable: Bool { true }
 
     init(view: ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
@@ -63,7 +62,7 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
         }
     }
     
-    func infoButtonPressed() {
+    func rightBarButtonPressed() {
         Task {
             guard let view else { return }
             
@@ -126,6 +125,7 @@ private extension ChannelViewPresenter {
         } else {
             view?.setUIState(.joinChannel)
         }
+        view?.setupRightBarButton(with: .init(isHidden: false, style: .info))
     }
     
     func loadAndShowData() {

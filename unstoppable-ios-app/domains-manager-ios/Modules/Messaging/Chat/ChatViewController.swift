@@ -18,6 +18,7 @@ protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
     func scrollToItem(_ item: ChatViewController.Item, animated: Bool)
     func setLoading(active: Bool)
     func setUIState(_ state: ChatViewController.State)
+    func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -164,6 +165,44 @@ extension ChatViewController: ChatViewProtocol {
             acceptButton.setTitle(String.Constants.join.localized(), image: nil)
         }
     }
+    
+    func setupRightBarButton(with configuration: NavButtonConfiguration) {
+        let barButton = UIButton()
+        barButton.tintColor = .foregroundDefault
+        barButton.setImage(configuration.style.icon, for: .normal)
+        
+        let actions = configuration.actions
+        if actions.isEmpty {
+            barButton.addTarget(self, action: #selector(rightBarButtonPressed), for: .touchUpInside)
+        } else {
+            var children: [UIMenuElement] = []
+            for action in actions {
+                let actionType = action.type
+                
+                let uiAction = UIAction.createWith(title: actionType.title,
+                                                   image: actionType.icon,
+                                                   attributes: actionType.isDestructive ? [.destructive] : [],
+                                                   handler: { _ in action.callback() })
+                if actionType.isDestructive {
+                    let menu = UIMenu(title: "", options: .displayInline, children: [uiAction])
+                    children.append(menu)
+                } else {
+                    children.append(uiAction)
+                }
+            }
+            
+            let menu = UIMenu(title: "", children: children)
+            barButton.showsMenuAsPrimaryAction = true
+            barButton.menu = menu
+            barButton.addAction(UIAction(handler: { [weak self] _ in
+                self?.logButtonPressedAnalyticEvents(button: .dots)
+                UDVibration.buttonTap.vibrate()
+            }), for: .menuActionTriggered)
+        }
+        
+        let barButtonItem = UIBarButtonItem(customView: barButton)
+        navigationItem.rightBarButtonItem = barButtonItem
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -254,9 +293,9 @@ private extension ChatViewController {
         presenter.rejectButtonPressed()
     }
     
-    @objc func infoButtonPressed() {
+    @objc func rightBarButtonPressed() {
         UDVibration.buttonTap.vibrate()
-        presenter.infoButtonPressed()
+        presenter.rightBarButtonPressed()
     }
     
     @IBAction func moveToTopButtonPressed(_ sender: Any) {
@@ -334,12 +373,6 @@ private extension ChatViewController {
     func setupNavBar() {
         titleView = ChatTitleView()
         navigationItem.titleView = titleView
-        
-        if presenter.isInfoAvailable {
-            let infoBarButtonItem = UIBarButtonItem(image: .infoEmptyIcon24, style: .plain, target: self, action: #selector(infoButtonPressed))
-            infoBarButtonItem.tintColor = .foregroundDefault
-            navigationItem.rightBarButtonItem = infoBarButtonItem
-        }
     }
     
     func setupMoveToTopButton() {
@@ -543,6 +576,63 @@ extension ChatViewController {
         case requestApprove
         case viewChannel
         case joinChannel
+    }
+    
+    struct NavButtonConfiguration {
+        let isHidden: Bool
+        let style: Style
+        var actions: [Action] = []
+        
+        enum Style {
+            case info, dots
+            
+            var icon: UIImage {
+                switch self {
+                case .info:
+                    return .infoEmptyIcon24
+                case .dots:
+                    return .dotsCircleIcon
+                }
+            }
+        }
+        
+        struct Action {
+            let type: ActionType
+            let callback: EmptyCallback
+        }
+        
+        enum ActionType {
+            case viewProfile, block, unblock
+            
+            var title: String {
+                switch self {
+                case .viewProfile:
+                    return String.Constants.viewProfile.localized()
+                case .block:
+                    return String.Constants.block.localized()
+                case .unblock:
+                    return String.Constants.unblock.localized()
+                }
+            }
+            
+            var icon: UIImage {
+                switch self {
+                case .viewProfile:
+                    return .arrowUpRight
+                case .block, .unblock:
+                    return .systemMultiplyCircle
+                }
+            }
+            
+            var isDestructive: Bool {
+                switch self {
+                case .viewProfile:
+                    return false
+                case .block, .unblock:
+                    return true
+                }
+            }
+        }
     }
 }
 

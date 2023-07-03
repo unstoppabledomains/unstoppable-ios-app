@@ -9,14 +9,13 @@ import UIKit
 
 @MainActor
 protocol ChatViewPresenterProtocol: BasePresenterProtocol {
-    var isInfoAvailable: Bool { get }
     func didSelectItem(_ item: ChatViewController.Item)
     func willDisplayItem(_ item: ChatViewController.Item)
     
     func didTypeText(_ text: String)
     func didPressSendText(_ text: String)
     
-    func infoButtonPressed()
+    func rightBarButtonPressed()
     func approveButtonPressed()
     func rejectButtonPressed()
     
@@ -43,7 +42,6 @@ final class ChatViewPresenter {
     private var messages: [MessagingChatMessageDisplayInfo] = []
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
-    var isInfoAvailable: Bool { conversationState.userInfo?.domainName != nil }
     
     init(view: ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
@@ -61,6 +59,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         view?.setUIState(.loading)
         setupTitle()
         setupPlaceholder()
+        setupBarButtons()
         loadAndShowData()
         updateUIForChatApprovedState()
     }
@@ -105,13 +104,8 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         sendTextMesssage(text)
     }
     
-    func infoButtonPressed() {
-        if let domainName = conversationState.userInfo?.domainName {
-            let link = String.Links.domainProfilePage(domainName: domainName)
-            view?.openLink(link)
-        }
-    }
-    
+    func rightBarButtonPressed() { }
+ 
     func approveButtonPressed() { }
     
     func rejectButtonPressed() { }
@@ -353,6 +347,28 @@ private extension ChatViewPresenter {
             let placeholder = String.Constants.chatInputPlaceholderAsDomain.localized(sender)
             view?.setPlaceholder(placeholder)
         }
+    }
+    
+    func setupBarButtons() {
+        view?.setupRightBarButton(with: .init(isHidden: false,
+                                              style: .dots,
+                                              actions: [.init(type: .viewProfile, callback: { [weak self] in self?.didPressViewDomainProfileButton() }),
+                                                        .init(type: .block, callback: { [weak self] in self?.didPressBlockButton() })]))
+    }
+    
+    func didPressViewDomainProfileButton() {
+        if let domainName = conversationState.userInfo?.domainName {
+            let link = String.Links.domainProfilePage(domainName: domainName)
+            view?.openLink(link)
+        }
+    }
+    
+    func didPressBlockButton() {
+        
+    }
+    
+    func didPressUnblockButton() {
+        
     }
     
     func handleChatMessageAction(_ action: ChatViewController.ChatMessageAction,

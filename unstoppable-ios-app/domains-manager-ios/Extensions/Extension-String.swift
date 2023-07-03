@@ -186,6 +186,9 @@ extension String {
         static let deleteAll = "DELETE_ALL"
         static let people = "PEOPLE"
         static let apps = "APPS"
+        static let viewProfile = "VIEW_PROFILE"
+        static let block = "BLOCK"
+        static let unblock = "UNBLOCK"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -880,6 +883,8 @@ extension String {
         static let messagingChannelsEmptySubtitle = "MESSAGING_CHANNELS_EMPTY_SUBTITLE"
         static let messagingChatEmptyTitle = "MESSAGING_CHAT_EMPTY_TITLE"
         static let messagingNFollowers = "MESSAGING_N_FOLLOWERS"
+        static let messagingBlockUserConfirmationTitle = "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE"
+        static let messagingYouAreBlocked = "MESSAGING_YOU_ARE_BLOCKED"
 
     }
 
