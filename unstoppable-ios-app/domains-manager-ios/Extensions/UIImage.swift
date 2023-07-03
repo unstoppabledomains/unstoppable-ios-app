@@ -169,6 +169,7 @@ extension UIImage {
     static let systemChevronUpDown = UIImage(systemName: "chevron.up.chevron.down")!
     static let systemArrowTurnUpRight = UIImage(systemName: "arrow.turn.up.right")!
     static let systemCamera = UIImage(systemName: "camera")!
+    static let systemRectangleArrowRight = UIImage(systemName: "rectangle.portrait.and.arrow.right")!
     
 }
 

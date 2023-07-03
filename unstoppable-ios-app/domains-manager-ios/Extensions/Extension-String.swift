@@ -189,6 +189,8 @@ extension String {
         static let viewProfile = "VIEW_PROFILE"
         static let block = "BLOCK"
         static let unblock = "UNBLOCK"
+        static let viewInfo = "VIEW_INFO"
+        static let leave = "LEAVE"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

@@ -148,6 +148,8 @@
 "VIEW_PROFILE" = "View profile";
 "BLOCK" = "Block";
 "UNBLOCK" = "Unblock";
+"VIEW_INFO" = "View info";
+"LEAVE" = "Leave";
 
 /* ONBOARDING */
 // Tutorial screens

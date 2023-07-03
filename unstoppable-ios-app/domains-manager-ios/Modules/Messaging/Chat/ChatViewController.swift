@@ -171,14 +171,14 @@ extension ChatViewController: ChatViewProtocol {
     }
     
     func setupRightBarButton(with configuration: NavButtonConfiguration) {
-        let barButton = UIButton()
-        barButton.tintColor = .foregroundDefault
-        barButton.setImage(configuration.style.icon, for: .normal)
-        
         let actions = configuration.actions
+        
         if actions.isEmpty {
-            barButton.addTarget(self, action: #selector(rightBarButtonPressed), for: .touchUpInside)
+            navigationItem.rightBarButtonItem = nil
         } else {
+            let barButton = UIButton()
+            barButton.tintColor = .foregroundDefault
+            barButton.setImage(.dotsCircleIcon, for: .normal)
             var children: [UIMenuElement] = []
             for action in actions {
                 let actionType = action.type
@@ -202,10 +202,9 @@ extension ChatViewController: ChatViewProtocol {
                 self?.logButtonPressedAnalyticEvents(button: .dots)
                 UDVibration.buttonTap.vibrate()
             }), for: .menuActionTriggered)
+            let barButtonItem = UIBarButtonItem(customView: barButton)
+            navigationItem.rightBarButtonItem = barButtonItem
         }
-        
-        let barButtonItem = UIBarButtonItem(customView: barButton)
-        navigationItem.rightBarButtonItem = barButtonItem
     }
 }
 
@@ -295,11 +294,6 @@ private extension ChatViewController {
     
     @IBAction func secondaryButtonPressed() {
         presenter.secondaryButtonPressed()
-    }
-    
-    @objc func rightBarButtonPressed() {
-        UDVibration.buttonTap.vibrate()
-        presenter.rightBarButtonPressed()
     }
     
     @IBAction func moveToTopButtonPressed(_ sender: Any) {
@@ -584,30 +578,15 @@ extension ChatViewController {
     }
     
     struct NavButtonConfiguration {
-        let isHidden: Bool
-        let style: Style
-        var actions: [Action] = []
-        
-        enum Style {
-            case info, dots
-            
-            var icon: UIImage {
-                switch self {
-                case .info:
-                    return .infoEmptyIcon24
-                case .dots:
-                    return .dotsCircleIcon
-                }
-            }
-        }
-        
+        let actions: [Action]
+    
         struct Action {
             let type: ActionType
             let callback: EmptyCallback
         }
         
         enum ActionType {
-            case viewProfile, block, unblock
+            case viewProfile, block, unblock, viewInfo, leave
             
             var title: String {
                 switch self {
@@ -617,23 +596,29 @@ extension ChatViewController {
                     return String.Constants.block.localized()
                 case .unblock:
                     return String.Constants.unblock.localized()
+                case .viewInfo:
+                    return String.Constants.viewInfo.localized()
+                case .leave:
+                    return String.Constants.leave.localized()
                 }
             }
             
             var icon: UIImage {
                 switch self {
-                case .viewProfile:
+                case .viewProfile, .viewInfo:
                     return .arrowUpRight
                 case .block, .unblock:
                     return .systemMultiplyCircle
+                case .leave:
+                    return .systemRectangleArrowRight
                 }
             }
             
             var isDestructive: Bool {
                 switch self {
-                case .viewProfile:
+                case .viewProfile, .viewInfo:
                     return false
-                case .block, .unblock:
+                case .block, .unblock, .leave:
                     return true
                 }
             }

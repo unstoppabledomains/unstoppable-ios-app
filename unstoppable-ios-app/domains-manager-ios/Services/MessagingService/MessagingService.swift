@@ -201,8 +201,8 @@ extension MessagingService: MessagingServiceProtocol {
         sendMessageToBEAsync(message: newMessage, messageType: updatedMessage.type, in: messagingChat, by: profile)
     }
     
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws {
-        try storageService.deleteMessage(message)
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) {
+        storageService.deleteMessage(message)
     }
     
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
@@ -328,6 +328,9 @@ extension MessagingService: MessagingServiceProtocol {
                     by user: MessagingChatUserProfileDisplayInfo) async throws {
         let profile = try await getUserProfileWith(wallet: user.wallet)
         try await apiService.setChannel(channel, subscribed: subscribed, by: profile)
+        if !subscribed {
+            storageService.deleteChannel(channel)
+        }
     }
     
     // Search

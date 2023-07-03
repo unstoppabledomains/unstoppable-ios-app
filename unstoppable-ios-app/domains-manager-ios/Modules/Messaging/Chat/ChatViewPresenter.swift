@@ -15,7 +15,6 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     func didTypeText(_ text: String)
     func didPressSendText(_ text: String)
     
-    func rightBarButtonPressed()
     func approveButtonPressed()
     func secondaryButtonPressed()
     
@@ -104,9 +103,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         view?.setInputText("")
         sendTextMesssage(text)
     }
-    
-    func rightBarButtonPressed() { }
- 
+     
     func approveButtonPressed() { }
     
     func secondaryButtonPressed() { }
@@ -378,9 +375,7 @@ private extension ChatViewPresenter {
             }
         }
         
-        view?.setupRightBarButton(with: .init(isHidden: false,
-                                              style: .dots,
-                                              actions: actions))
+        view?.setupRightBarButton(with: .init(actions: actions))
     }
     
     func didPressViewDomainProfileButton(domainName: String) {
@@ -427,14 +422,10 @@ private extension ChatViewPresenter {
         case .resend:
             Task { try? await appContext.messagingService.resendMessage(message) }
         case .delete:
-            do {
-                try appContext.messagingService.deleteMessage(message)
-                if let i = messages.firstIndex(where: { $0.id == message.id }) {
-                    messages.remove(at: i)
-                    showData(animated: true, isLoading: isLoadingMessages)
-                }
-            } catch {
-                view?.showAlertWith(error: error, handler: nil)
+            appContext.messagingService.deleteMessage(message)
+            if let i = messages.firstIndex(where: { $0.id == message.id }) {
+                messages.remove(at: i)
+                showData(animated: true, isLoading: isLoadingMessages)
             }
         }
     }

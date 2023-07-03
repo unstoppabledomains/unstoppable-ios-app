@@ -33,7 +33,7 @@ protocol MessagingServiceProtocol {
                           to userInfo: MessagingChatUserDisplayInfo,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo)
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool,
                      wallet: String) throws
