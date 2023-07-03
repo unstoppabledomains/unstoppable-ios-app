@@ -17,7 +17,7 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     
     func rightBarButtonPressed()
     func approveButtonPressed()
-    func rejectButtonPressed()
+    func secondaryButtonPressed()
     
     func choosePhotoButtonPressed()
     func takePhotoButtonPressed()
@@ -27,7 +27,7 @@ extension ChatViewPresenterProtocol {
     func didTypeText(_ text: String) { }
     func didPressSendText(_ text: String) { }
     func approveButtonPressed() { }
-    func rejectButtonPressed() { }
+    func secondaryButtonPressed() { }
     func choosePhotoButtonPressed() { }
     func takePhotoButtonPressed() { }
 }
@@ -108,7 +108,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
  
     func approveButtonPressed() { }
     
-    func rejectButtonPressed() { }
+    func secondaryButtonPressed() { }
     
     func choosePhotoButtonPressed() {
         view?.hideKeyboard()
@@ -390,7 +390,8 @@ private extension ChatViewPresenter {
     }
     
     func updateUIForChatApprovedState() {
-        self.view?.setUIState(.chat)
+//        self.view?.setUIState(.chat)
+        self.view?.setUIState(.userIsBlocked)
     }
 }
 

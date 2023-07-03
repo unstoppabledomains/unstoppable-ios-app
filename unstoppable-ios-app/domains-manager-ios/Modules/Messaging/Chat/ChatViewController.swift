@@ -32,7 +32,7 @@ final class ChatViewController: BaseViewController {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var approveContentView: UIView!
     @IBOutlet private weak var acceptButton: MainButton!
-    @IBOutlet private weak var blockButton: RaisedTertiaryButton!
+    @IBOutlet private weak var secondaryButton: UDButton!
     @IBOutlet private weak var moveToTopButton: FABButton!
 
     
@@ -132,37 +132,41 @@ extension ChatViewController: ChatViewProtocol {
             activityIndicator.stopAnimating()
         }
                 
-        [acceptButton, blockButton].forEach { button in
+        [acceptButton, secondaryButton].forEach { button in
             button?.isUserInteractionEnabled = !active
         }
     }
     
     func setUIState(_ state: ChatViewController.State) {
+        secondaryButton.isUserInteractionEnabled = true
+        secondaryButton.isHidden = true
+        acceptButton.isHidden = true
+        chatInputView.isHidden = true
+        collectionView.isHidden = false
+        approveContentView.isHidden = true
+        
         switch state {
         case .loading:
-            approveContentView.isHidden = true
-            chatInputView.isHidden = true
             collectionView.isHidden = true
         case .chat:
-            approveContentView.isHidden = true
             chatInputView.isHidden = false
-            collectionView.isHidden = false
-        case .requestApprove:
-            approveContentView.isHidden = false
-            chatInputView.isHidden = true
-            collectionView.isHidden = false
-            blockButton.isHidden = false
-            acceptButton.setTitle(String.Constants.accept.localized(), image: nil)
         case .viewChannel:
-            approveContentView.isHidden = true
-            chatInputView.isHidden = true
-            collectionView.isHidden = false
+            return
         case .joinChannel:
             approveContentView.isHidden = false
-            chatInputView.isHidden = true
-            collectionView.isHidden = false
-            blockButton.isHidden = true
+            acceptButton.isHidden = false
             acceptButton.setTitle(String.Constants.join.localized(), image: nil)
+        case .opponentIsBlocked:
+            approveContentView.isHidden = false
+            secondaryButton.isHidden = false
+            secondaryButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration)
+            secondaryButton.setTitle(String.Constants.unblock.localized(), image: nil)
+        case .userIsBlocked:
+            approveContentView.isHidden = false
+            secondaryButton.isHidden = false
+            secondaryButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
+            secondaryButton.isUserInteractionEnabled = false
+            secondaryButton.setTitle(String.Constants.messagingYouAreBlocked.localized(), image: nil)
         }
     }
     
@@ -289,8 +293,8 @@ private extension ChatViewController {
         presenter.approveButtonPressed()
     }
     
-    @IBAction func rejectButtonPressed() {
-        presenter.rejectButtonPressed()
+    @IBAction func secondaryButtonPressed() {
+        presenter.secondaryButtonPressed()
     }
     
     @objc func rightBarButtonPressed() {
@@ -367,7 +371,7 @@ private extension ChatViewController {
     
     func setupApproveRequestView() {
         approveContentView.isHidden = true
-        blockButton.setTitle(String.Constants.delete.localized(), image: nil)
+        secondaryButton.isHidden = true
     }
     
     func setupNavBar() {
@@ -573,9 +577,10 @@ extension ChatViewController {
     enum State {
         case loading
         case chat
-        case requestApprove
         case viewChannel
         case joinChannel
+        case opponentIsBlocked
+        case userIsBlocked
     }
     
     struct NavButtonConfiguration {

@@ -15,10 +15,10 @@
                 <outlet property="acceptButton" destination="SPH-Qe-OEy" id="inZ-y9-fYY"/>
                 <outlet property="activityIndicator" destination="TpP-S2-yIY" id="9Gp-Le-S0S"/>
                 <outlet property="approveContentView" destination="3Th-qT-ili" id="js9-lg-yij"/>
-                <outlet property="blockButton" destination="MP2-oN-DJe" id="hAl-th-Y9c"/>
                 <outlet property="chatInputView" destination="oHO-rt-44M" id="NEp-4O-1kK"/>
                 <outlet property="collectionView" destination="V89-nx-s8L" id="Op2-pK-KfR"/>
                 <outlet property="moveToTopButton" destination="w5B-KY-DQu" id="EZu-ec-3CG"/>
+                <outlet property="secondaryButton" destination="fD2-Hy-Jfw" id="9dF-ym-N3w"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -54,17 +54,16 @@
                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Lc2-Or-Tml">
                                     <rect key="frame" x="0.0" y="0.0" width="361" height="48"/>
                                     <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MP2-oN-DJe" customClass="RaisedTertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fD2-Hy-Jfw" customClass="UDButton" customModule="domains_manager_ios" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="172.66666666666666" height="48"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="48" id="4EI-Cy-vzJ"/>
+                                                <constraint firstAttribute="height" constant="48" id="aOG-bJ-JWK"/>
                                             </constraints>
-                                            <state key="normal" title="Button"/>
-                                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
                                             <connections>
-                                                <action selector="rejectButtonPressed" destination="-1" eventType="touchUpInside" id="OAZ-Xc-zWO"/>
+                                                <action selector="secondaryButtonPressed" destination="-1" eventType="touchUpInside" id="ygi-D0-klA"/>
                                             </connections>
-                                        </button>
+                                        </view>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SPH-Qe-OEy" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
                                             <rect key="frame" x="188.66666666666663" y="0.0" width="172.33333333333337" height="48"/>
                                             <constraints>

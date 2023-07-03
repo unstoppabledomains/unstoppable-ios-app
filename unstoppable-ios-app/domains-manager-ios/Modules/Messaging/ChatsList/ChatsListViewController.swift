@@ -87,6 +87,7 @@ final class ChatsListViewController: BaseViewController {
 // MARK: - ChatsListViewProtocol
 extension ChatsListViewController: ChatsListViewProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool) {
+        // TODO: - wrap in operation queue
         dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
             self?.checkIfCollectionScrollingEnabled()
         })
