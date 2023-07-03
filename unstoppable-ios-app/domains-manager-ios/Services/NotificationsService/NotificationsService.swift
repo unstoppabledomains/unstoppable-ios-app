@@ -172,9 +172,9 @@ fileprivate extension NotificationsService {
             return false
         }
         #if DEBUG
-        Echo.configure(clientId: clientId, environment: .sandbox)
+        Echo.configure(environment: .sandbox)
         #else
-        Echo.configure(clientId: clientId, environment: .production)
+        Echo.configure(environment: .production)
         #endif
         
         return true
