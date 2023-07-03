@@ -261,6 +261,9 @@ extension Analytics {
         
         // Referral
         case inviteFriendInfo, copyLink
+        
+        // Messaging
+        case block
     }
 }
 

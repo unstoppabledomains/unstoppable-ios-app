@@ -389,7 +389,16 @@ private extension ChatViewPresenter {
     }
     
     func didPressBlockButton() {
-        setOtherUser(blocked: true)
+        Task {
+            do {
+                guard let view else { return }
+                
+                try await appContext.pullUpViewService.showMessagingBlockConfirmationPullUp(blockUserName: conversationState.userInfo?.displayName ?? "",
+                                                                                            in: view)
+                await view.dismissPullUpMenu()
+                setOtherUser(blocked: true)
+            } catch { }
+        }
     }
     
     func didPressUnblockButton() {
@@ -400,8 +409,8 @@ private extension ChatViewPresenter {
         guard case .existingChat(let chat) = conversationState else { return }
 
         Task {
-            view?.setLoading(active: true)
             do {
+                view?.setLoading(active: true)
                 try await appContext.messagingService.setUser(in: chat, blocked: blocked)
                 await refreshBlockStatus()
             } catch {
