@@ -83,6 +83,83 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         return chats
     }
     
+    func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
+        func isPushUser(_ pushUser: Push.PushUser?, blockedBy otherPushUser: Push.PushUser?) -> Bool {
+            if let blockedUsersList = otherPushUser?.blockedUsersList,
+               let pushUser {
+                return blockedUsersList.contains(pushUser.wallets)
+            }
+            return false
+        }
+        
+        switch chat.displayInfo.type {
+        case .private(let details):
+            let env = getCurrentPushEnvironment()
+
+            async let thisUserProfileTask = PushUser.get(account: chat.displayInfo.thisUserDetails.wallet, env: env)
+            async let otherUserProfileTask = PushUser.get(account: details.otherUser.wallet, env: env)
+            
+            let (thisUserProfile, otherUserProfile) = try await (thisUserProfileTask, otherUserProfileTask)
+            
+            let isThisUserBlockOtherUser = isPushUser(otherUserProfile, blockedBy: thisUserProfile)
+            let isOtherUserBlockThisUser = isPushUser(thisUserProfile, blockedBy: otherUserProfile)
+            if !isThisUserBlockOtherUser,
+               !isOtherUserBlockThisUser {
+                return .unblocked
+            } else if isThisUserBlockOtherUser,
+                      isOtherUserBlockThisUser {
+                return .bothBlocked
+            } else if isThisUserBlockOtherUser {
+                return .currentUserIsBlocked
+            } else {
+                return .otherUserIsBlocked
+            }
+        case .group:
+            return .unblocked
+        }
+    }
+    
+    func setUser(in chat: MessagingChat,
+                 blocked: Bool) async throws {
+        let env = getCurrentPushEnvironment()
+        
+        switch chat.displayInfo.type {
+        case .private(let details):
+            async let thisUserProfileTask = PushUser.get(account: chat.displayInfo.thisUserDetails.wallet, env: env)
+            async let otherUserProfileTask = PushUser.get(account: details.otherUser.wallet, env: env)
+            
+            let (thisUserProfile, otherUserProfile) = try await (thisUserProfileTask, otherUserProfileTask)
+            
+            guard let thisUserProfile, let otherUserProfile else {
+                throw PushMessagingAPIServiceError.failedToGetPushUser
+            }
+            let messagingUser = PushEntitiesTransformer.convertPushUserToChatUser(thisUserProfile)
+            let pgpPrivateKey = try await getPGPPrivateKeyFor(user: messagingUser)
+
+            let otherUserAccount = otherUserProfile.did
+            var blockedUsersList = thisUserProfile.blockedUsersList ?? []
+            if blocked {
+                if blockedUsersList.contains(otherUserAccount) {
+                    return // User already blocked
+                }
+                blockedUsersList.append(otherUserAccount)
+            } else {
+                if let i = blockedUsersList.firstIndex(where: { $0 == otherUserAccount }) {
+                    blockedUsersList.remove(at: i)
+                } else {
+                    return // User not blocked
+                }
+            }
+            
+            _ = try await PushUser.blockUsers(addressesToBlock: blockedUsersList,
+                                              account: thisUserProfile.did,
+                                              pgpPrivateKey: pgpPrivateKey,
+                                              env: env)
+        case .group:
+            throw PushMessagingAPIServiceError.blockUserInGroupChatsNotSupported
+        }
+    }
+    
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
                             options: MessagingAPIServiceLoadMessagesOptions,
@@ -440,10 +517,10 @@ extension PushMessagingAPIService {
         case noOwnerWalletInDomain
         case failedToGetPushUser
         case incorrectDataState
+        case blockUserInGroupChatsNotSupported
         
         case failedToDecodeServiceData
         case failedToConvertPushMessage
-        case sendMessageInGroupChatNotSupported
         case declineRequestNotSupported
         case failedToPrepareMessageContent
     }
