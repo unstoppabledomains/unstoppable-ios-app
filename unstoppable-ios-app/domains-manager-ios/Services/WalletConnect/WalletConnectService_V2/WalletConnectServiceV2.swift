@@ -465,10 +465,19 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             let caip2Namespace = $0.key
             let proposalNamespace = $0.value
             guard let chains = proposalNamespace.chains else { return }
+            
+            // get methods
+            var methods = proposalNamespace.methods
+            if let optionalNamespaces = proposal.optionalNamespaces,
+               let optional = optionalNamespaces[caip2Namespace],
+               optional.chains == chains {
+                methods = methods.union(optional.methods)
+            }
+            
             let accounts = Set(chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
-
+            
             let sessionNamespace = SessionNamespace(accounts: accounts,
-                                                    methods: proposalNamespace.methods,
+                                                    methods: methods,
                                                     events: proposalNamespace.events)
             sessionNamespaces[caip2Namespace] = sessionNamespace
         }
