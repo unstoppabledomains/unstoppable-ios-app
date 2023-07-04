@@ -85,7 +85,7 @@ extension MockMessagingService: MessagingServiceProtocol {
     func addListener(_ listener: MessagingServiceListener) {}
     func removeListener(_ listener: MessagingServiceListener) {}
 }
-
+ 
 // MARK: - Private methods
 private extension MockMessagingService {
     func createMockChatsFor(domain: DomainDisplayInfo) -> [MessagingChatDisplayInfo] {
