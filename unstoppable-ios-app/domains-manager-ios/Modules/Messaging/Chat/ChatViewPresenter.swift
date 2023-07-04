@@ -378,7 +378,7 @@ private extension ChatViewPresenter {
                     Void()
                 }
             case .group:
-                return
+                actions.append(.init(type: .leave, callback: { [weak self] in self?.didPressLeaveButton() }))
             }
         }
         
@@ -405,6 +405,10 @@ private extension ChatViewPresenter {
     
     func didPressUnblockButton() {
         setOtherUser(blocked: false)
+    }
+    
+    func didPressLeaveButton() {
+        // TODO: - Implement when SDK is ready
     }
     
     func setOtherUser(blocked: Bool) {
