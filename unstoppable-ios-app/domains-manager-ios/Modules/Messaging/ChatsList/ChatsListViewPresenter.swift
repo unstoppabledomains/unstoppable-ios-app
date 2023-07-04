@@ -431,8 +431,8 @@ private extension ChatsListViewPresenter {
     }
     
     func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
-        let chatsBadge = chatsList.lazy.filter({ $0.lastMessage?.isRead == false }).count
-        let inboxBadge = channels.lazy.filter({ $0.lastMessage?.isRead == false }).count
+        let chatsBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
+        let inboxBadge = channels.reduce(0, { $0 + $1.unreadMessagesCount })
         
         return .init(dataTypesConfigurations: [.init(dataType: .chats, badge: chatsBadge),
                                                .init(dataType: .channels, badge: inboxBadge)],
