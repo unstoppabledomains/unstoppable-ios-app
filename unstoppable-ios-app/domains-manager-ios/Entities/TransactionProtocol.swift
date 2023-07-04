@@ -55,6 +55,9 @@ enum TxOperation: String, Codable {
     case mintOnWithdrawal = "MintOnWithdrawal"
     case trackPolygonCheckpoint = "TrackPolygonCheckpoint"
     case withdrawToEthereum = "WithdrawToEthereum"
+    // ENS transactions
+    case ensCommit = "EnsCommit"
+    case ensRegister = "EnsRegister"
     
     public init(from decoder: Decoder) throws {
         let operationRaw = try decoder.singleValueContainer().decode(RawValue.self)
