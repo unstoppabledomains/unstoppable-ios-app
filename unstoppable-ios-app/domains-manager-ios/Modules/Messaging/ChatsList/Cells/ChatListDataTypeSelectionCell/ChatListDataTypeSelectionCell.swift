@@ -60,6 +60,7 @@ private extension ChatListDataTypeSelectionCell {
             } else {
                 let badgeView = UnreadMessagesBadgeView()
                 badgeView.setUnreadMessagesCount(badge)
+                badgeView.setCounterLabel(hidden: true)
                 addSubview(badgeView)
                 badgeView.centerYAnchor.constraint(equalTo: segmentedControl.centerYAnchor).isActive = true
                 let leadingConstraint = badgeView.leadingAnchor.constraint(equalTo: leadingAnchor)
