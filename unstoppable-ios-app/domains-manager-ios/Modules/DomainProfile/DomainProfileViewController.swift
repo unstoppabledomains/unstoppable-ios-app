@@ -9,8 +9,7 @@ import UIKit
 import SwiftUI
 
 @MainActor
-protocol DomainProfileViewProtocol: BaseCollectionViewControllerProtocol & DomainProfileSectionViewProtocol {
-    func applySnapshot(_ snapshot: DomainProfileSnapshot, animated: Bool)
+protocol DomainProfileViewProtocol: BaseDiffableCollectionViewControllerProtocol & DomainProfileSectionViewProtocol where Section == DomainProfileViewController.Section, Item == DomainProfileViewController.Item {
     func setConfirmButtonHidden(_ isHidden: Bool, counter: Int)
     func set(title: String?)
     func setAvailableActionsGroups(_ actionGroups: [DomainProfileActionsGroup])
@@ -19,7 +18,7 @@ protocol DomainProfileViewProtocol: BaseCollectionViewControllerProtocol & Domai
 
 @MainActor
 protocol DomainProfileSectionViewProtocol: BaseViewController & WalletConnectController {
-    func scroll(to item: DomainProfileViewController.Item)
+    func scrollToItem(_ item: DomainProfileViewController.Item, atPosition position: UICollectionView.ScrollPosition, animated: Bool)
     func hideKeyboard()
 }
 
@@ -63,7 +62,8 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     }
     override var navBarTitleAttributes: [NSAttributedString.Key : Any]? { [.foregroundColor : UIColor.foregroundOnEmphasis,
                                                                   .font: UIFont.currentFont(withSize: 16, weight: .semibold)] }
-    private var dataSource: DomainProfileDataSource!
+    let operationQueue = OperationQueue()
+    private(set) var dataSource: DataSource!
     private var defaultBottomOffset: CGFloat { Constants.scrollableContentBottomOffset }
     private let minScrollYOffset: CGFloat = -40
 
@@ -113,10 +113,6 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
 
 // MARK: - DomainProfileViewProtocol
 extension DomainProfileViewController: DomainProfileViewProtocol, DomainProfileSectionViewProtocol {
-    func applySnapshot(_ snapshot: DomainProfileSnapshot, animated: Bool) {
-        dataSource.apply(snapshot, animatingDifferences: animated)
-    }
-    
     func setConfirmButtonHidden(_ isHidden: Bool, counter: Int) {
         confirmUpdateButton.isHidden = isHidden
         confirmButtonGradientView.isHidden = isHidden
@@ -128,9 +124,7 @@ extension DomainProfileViewController: DomainProfileViewProtocol, DomainProfileS
         navigationItem.title = title
         cNavigationController?.navigationBar.set(title: title)
     }
-    
-    func scroll(to item: DomainProfileViewController.Item) { }
-    
+        
     func setAvailableActionsGroups(_ actionGroups: [DomainProfileActionsGroup]) {
         setupNavigation(actionGroups: actionGroups)
         cNavigationController?.updateNavigationBar()

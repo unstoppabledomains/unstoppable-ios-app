@@ -19,6 +19,7 @@ protocol BaseDiffableCollectionViewControllerProtocol: BaseCollectionViewControl
     var operationQueue: OperationQueue { get }
     
     func applySnapshot(_ snapshot: Snapshot, animated: Bool, completion: EmptyCallback?)
+    func scrollToItem(_ item: Item, atPosition position: UICollectionView.ScrollPosition, animated: Bool)
 }
 
 // MARK: - Open methods
@@ -30,6 +31,12 @@ extension BaseDiffableCollectionViewControllerProtocol {
                                                               animated: animated,
                                                               completion: completion)
         operationQueue.addOperation(operation)
+    }
+    
+    func scrollToItem(_ item: Item, atPosition position: UICollectionView.ScrollPosition, animated: Bool) {
+        guard let indexPath = dataSource.indexPath(for: item) else { return }
+        
+        scrollToItemAt(indexPath: indexPath, atPosition: position, animated: animated)
     }
 }
 

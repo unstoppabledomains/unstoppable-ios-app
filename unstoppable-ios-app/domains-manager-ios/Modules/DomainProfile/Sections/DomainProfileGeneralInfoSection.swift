@@ -220,7 +220,7 @@ private extension DomainProfileGeneralInfoSection {
         controller?.sectionDidUpdate(animated: false)
         let displayInfo = displayInfo(for: type)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-            self?.controller?.viewController?.scroll(to: .generalInfo(displayInfo: displayInfo))
+            self?.controller?.viewController?.scrollToItem(.generalInfo(displayInfo: displayInfo), atPosition: .centeredVertically, animated: true)
         }
     }
     
