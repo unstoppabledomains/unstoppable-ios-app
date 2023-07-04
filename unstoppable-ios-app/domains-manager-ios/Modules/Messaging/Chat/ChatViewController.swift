@@ -589,7 +589,7 @@ extension ChatViewController {
         }
         
         enum ActionType {
-            case viewProfile, block, unblock, viewInfo, leave
+            case viewProfile, block, viewInfo, leave
             
             var title: String {
                 switch self {
@@ -597,8 +597,6 @@ extension ChatViewController {
                     return String.Constants.viewProfile.localized()
                 case .block:
                     return String.Constants.block.localized()
-                case .unblock:
-                    return String.Constants.unblock.localized()
                 case .viewInfo:
                     return String.Constants.viewInfo.localized()
                 case .leave:
@@ -610,7 +608,7 @@ extension ChatViewController {
                 switch self {
                 case .viewProfile, .viewInfo:
                     return .arrowUpRight
-                case .block, .unblock:
+                case .block:
                     return .systemMultiplyCircle
                 case .leave:
                     return .systemRectangleArrowRight
@@ -621,7 +619,7 @@ extension ChatViewController {
                 switch self {
                 case .viewProfile, .viewInfo:
                     return false
-                case .block, .unblock, .leave:
+                case .block, .leave:
                     return true
                 }
             }

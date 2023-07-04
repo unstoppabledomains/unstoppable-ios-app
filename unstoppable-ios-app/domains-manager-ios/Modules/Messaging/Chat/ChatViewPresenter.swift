@@ -106,7 +106,14 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
      
     func approveButtonPressed() { }
     
-    func secondaryButtonPressed() { }
+    func secondaryButtonPressed() {
+        switch blockStatus {
+        case .unblocked, .currentUserIsBlocked:
+            return
+        case .otherUserIsBlocked, .bothBlocked:
+            didPressUnblockButton()
+        }
+    }
     
     func choosePhotoButtonPressed() {
         view?.hideKeyboard()
@@ -368,7 +375,7 @@ private extension ChatViewPresenter {
                 case .unblocked, .currentUserIsBlocked:
                     actions.append(.init(type: .block, callback: { [weak self] in self?.didPressBlockButton() }))
                 case .bothBlocked, .otherUserIsBlocked:
-                    actions.append(.init(type: .unblock, callback: { [weak self] in self?.didPressUnblockButton() }))
+                    Void()
                 }
             case .group:
                 return
