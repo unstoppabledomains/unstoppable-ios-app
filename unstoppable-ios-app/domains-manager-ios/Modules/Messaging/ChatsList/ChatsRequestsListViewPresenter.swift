@@ -13,7 +13,7 @@ final class ChatsRequestsListViewPresenter {
     private weak var view: ChatsListViewProtocol?
     
     private let profile: MessagingChatUserProfileDisplayInfo
-    private let dataType: DataType
+    private var dataType: DataType
     
     init(view: ChatsListViewProtocol,
          dataType: DataType,
@@ -59,14 +59,17 @@ extension ChatsRequestsListViewPresenter: MessagingServiceListener {
         Task { @MainActor in
             switch messagingDataType {
             case .chats(let chats, let profile):
-                if profile.id == self.profile.id {
-//                   chatsList != chats {
-//                    chatsList = chats
+                if profile.id == self.profile.id,
+                   case .chatRequests = dataType {
+                    let requests = chats.requestsOnly()
+                    self.dataType = .chatRequests(requests)
                     showData()
                 }
             case .channels(let channels, let profile):
-            if profile.id == self.profile.id {
-//                    self.channels = channels
+                if profile.id == self.profile.id,
+                   case .channelsRequests = dataType {
+                    let requests = channels.filter { !$0.isCurrentUserSubscribed }
+                    self.dataType = .channelsRequests(requests)
                     showData()
                 }
             case .messageUpdated, .messagesRemoved, .messagesAdded:
