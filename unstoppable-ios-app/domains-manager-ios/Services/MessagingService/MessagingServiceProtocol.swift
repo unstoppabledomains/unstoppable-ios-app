@@ -26,6 +26,9 @@ protocol MessagingServiceProtocol {
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo
+    func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
+                          to userInfo: MessagingChatUserDisplayInfo,
+                          by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo)
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws
@@ -34,6 +37,9 @@ protocol MessagingServiceProtocol {
                      wallet: String) throws
     // Channels
     func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
+    
+    // Search
+    func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo]
     
     // Listeners
     func addListener(_ listener: MessagingServiceListener)
@@ -62,9 +68,9 @@ final class MessagingListenerHolder: Equatable {
 }
 
 enum MessagingDataType {
-    case chats(_ chats: [MessagingChatDisplayInfo], wallet: String)
+    case chats(_ chats: [MessagingChatDisplayInfo], profile: MessagingChatUserProfileDisplayInfo)
+    case channels(_ channels: [MessagingNewsChannel], profile: MessagingChatUserProfileDisplayInfo)
     case messagesAdded(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
     case messageUpdated(_ updatedMessage: MessagingChatMessageDisplayInfo, newMessage: MessagingChatMessageDisplayInfo)
     case messagesRemoved(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
-    case channels(_ channels: [MessagingNewsChannel], wallet: String)
 }

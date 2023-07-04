@@ -34,7 +34,7 @@ extension ChatListRequestsCell {
             title = String.Constants.chatRequests.localized()
             subtitle = String.Constants.nPeopleYouMayKnow.localized(numberOfRequests)
             icon = .chatRequestsIcon
-        case .inbox:
+        case .channels:
             title = String.Constants.spam.localized()
             subtitle = String.Constants.pluralNMessages.localized(numberOfRequests, numberOfRequests)
             icon = .alertOctagon24

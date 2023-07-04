@@ -14,6 +14,7 @@ final class ChatListCell: BaseListCollectionViewCell {
     @IBOutlet private weak var timeLabel: UILabel!
     @IBOutlet private weak var lastMessageLabel: UILabel!
     @IBOutlet private weak var badgeView: UnreadMessagesBadgeView!
+    @IBOutlet private weak var chevron: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -47,6 +48,7 @@ extension ChatListCell {
             setTimeText(nil)
             setLastMessageText("")
         }
+        chevron.isHidden = true
     }
     
     func setWith(configuration: ChatsListViewController.ChannelUIConfiguration) {
@@ -62,6 +64,19 @@ extension ChatListCell {
             setTimeText(nil)
             setLastMessageText("")
         }
+        chevron.isHidden = true
+    }
+    
+    func setWith(configuration: ChatsListViewController.UserInfoUIConfiguration) {
+        let userInfo = configuration.userInfo
+        let chatName = chatNameFrom(userInfo: userInfo)
+        setNameText(chatName)
+        setAvatarFrom(url: userInfo.pfpURL)
+        badgeView.setUnreadMessagesCount(0)
+
+        setTimeText(nil)
+        setLastMessageText("")
+        chevron.isHidden = false
     }
 }
 
@@ -70,7 +85,7 @@ private extension ChatListCell {
     func chatNameFrom(chat: MessagingChatDisplayInfo) -> String {
         switch chat.type {
         case .private(let otherUserDetails):
-            return otherUserDetails.otherUser.displayName
+            return chatNameFrom(userInfo: otherUserDetails.otherUser)
         case .group(let groupDetails):
             #if DEBUG
             return "Group chat <Not-supported>" // <GROUP_CHAT>
@@ -80,10 +95,16 @@ private extension ChatListCell {
         }
     }
     
+    func chatNameFrom(userInfo: MessagingChatUserDisplayInfo) -> String {
+        userInfo.displayName
+    }
+    
     func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo) -> String  {
         switch message.type {
         case .text(let description):
             return description.text
+        case .imageBase64:
+            return "Image" // TODO: - Localize
         }
     }
     

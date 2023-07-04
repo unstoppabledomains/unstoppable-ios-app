@@ -3,6 +3,16 @@
     {
       "filename" : "createMessagingProfileIllustration.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "createMessagingProfileIllustrationDark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -11,7 +11,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ChatViewController" customModule="domains_manager_ios" customModuleProvider="target">
             <connections>
+                <outlet property="acceptButton" destination="SPH-Qe-OEy" id="inZ-y9-fYY"/>
                 <outlet property="activityIndicator" destination="TpP-S2-yIY" id="9Gp-Le-S0S"/>
+                <outlet property="approveContentView" destination="3Th-qT-ili" id="js9-lg-yij"/>
+                <outlet property="blockButton" destination="MP2-oN-DJe" id="hAl-th-Y9c"/>
                 <outlet property="chatInputView" destination="oHO-rt-44M" id="NEp-4O-1kK"/>
                 <outlet property="collectionView" destination="V89-nx-s8L" id="Op2-pK-KfR"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -40,13 +43,55 @@
                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="TpP-S2-yIY">
                     <rect key="frame" x="186.66666666666666" y="416" width="20" height="20"/>
                 </activityIndicatorView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Th-qT-ili">
+                    <rect key="frame" x="16" y="756" width="361" height="48"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Lc2-Or-Tml">
+                            <rect key="frame" x="0.0" y="0.0" width="361" height="48"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MP2-oN-DJe" customClass="RaisedTertiaryButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="172.66666666666666" height="48"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="48" id="4EI-Cy-vzJ"/>
+                                    </constraints>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                    <connections>
+                                        <action selector="rejectButtonPressed" destination="-1" eventType="touchUpInside" id="OAZ-Xc-zWO"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SPH-Qe-OEy" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                    <rect key="frame" x="188.66666666666663" y="0.0" width="172.33333333333337" height="48"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="48" id="46I-N0-6Yd"/>
+                                    </constraints>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                    <connections>
+                                        <action selector="approveButtonPressed" destination="-1" eventType="touchUpInside" id="KGP-6M-3ir"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="Lc2-Or-Tml" firstAttribute="leading" secondItem="3Th-qT-ili" secondAttribute="leading" id="I1R-pq-uLu"/>
+                        <constraint firstAttribute="bottom" secondItem="Lc2-Or-Tml" secondAttribute="bottom" id="UG6-mI-Vap"/>
+                        <constraint firstItem="Lc2-Or-Tml" firstAttribute="top" secondItem="3Th-qT-ili" secondAttribute="top" id="bYg-TL-aGH"/>
+                        <constraint firstAttribute="trailing" secondItem="Lc2-Or-Tml" secondAttribute="trailing" id="sXx-Uz-yn5"/>
+                    </constraints>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="3Th-qT-ili" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="8op-Eo-Vsw"/>
                 <constraint firstItem="V89-nx-s8L" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="CKQ-mu-vL8"/>
                 <constraint firstItem="V89-nx-s8L" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="FH4-G3-Q7I"/>
+                <constraint firstItem="3Th-qT-ili" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="JQH-BC-YEg"/>
                 <constraint firstItem="V89-nx-s8L" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="b0N-h4-b05"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="3Th-qT-ili" secondAttribute="bottom" constant="14" id="doH-7u-MaO"/>
                 <constraint firstAttribute="bottom" secondItem="V89-nx-s8L" secondAttribute="bottom" id="ewO-c5-jje"/>
                 <constraint firstItem="TpP-S2-yIY" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="giQ-mT-867"/>
                 <constraint firstItem="TpP-S2-yIY" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="tCI-cM-6Bk"/>

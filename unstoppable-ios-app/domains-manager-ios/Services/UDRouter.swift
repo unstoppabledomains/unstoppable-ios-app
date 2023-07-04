@@ -576,11 +576,20 @@ class UDRouter: DomainProfileSignatureValidator {
         nav.pushViewController(vc, animated: true)
     }
     
-    func showChatScreen(chat: MessagingChatDisplayInfo,
-                        domain: DomainDisplayInfo,
+    func showChatRequestsScreen(dataType: ChatsRequestsListViewPresenter.DataType,
+                                profile: MessagingChatUserProfileDisplayInfo,
+                                in nav: CNavigationController) {
+        let vc = buildChatRequestsModuleWith(dataType: dataType,
+                                             profile: profile)
+        
+        nav.pushViewController(vc, animated: true)
+    }
+    
+    func showChatScreen(profile: MessagingChatUserProfileDisplayInfo,
+                        conversationState: MessagingChatConversationState,
                         in nav: CNavigationController) {
-        let vc = buildChatModule(chat: chat,
-                                 domain: domain)
+        let vc = buildChatModule(profile: profile,
+                                 conversationState: conversationState)
         
         nav.pushViewController(vc, animated: true)
     }
@@ -991,12 +1000,22 @@ private extension UDRouter {
         return vc
     }
     
-    func buildChatModule(chat: MessagingChatDisplayInfo,
-                         domain: DomainDisplayInfo) -> UIViewController {
+    func buildChatRequestsModuleWith(dataType: ChatsRequestsListViewPresenter.DataType,
+                                     profile: MessagingChatUserProfileDisplayInfo) -> UIViewController {
+        let vc = ChatsListViewController.nibInstance()
+        let presenter = ChatsRequestsListViewPresenter(view: vc,
+                                                       dataType: dataType,
+                                                       profile: profile)
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func buildChatModule(profile: MessagingChatUserProfileDisplayInfo,
+                         conversationState: MessagingChatConversationState) -> UIViewController {
         let vc = ChatViewController.nibInstance()
         let presenter = ChatViewPresenter(view: vc,
-                                          chat: chat,
-                                          domain: domain)
+                                          profile: profile,
+                                          conversationState: conversationState)
         vc.presenter = presenter
         return vc
     }

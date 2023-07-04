@@ -17,6 +17,7 @@ protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
     func scrollToTheBottom(animated: Bool)
     func scrollToItem(_ item: ChatViewController.Item, animated: Bool)
     func setLoading(active: Bool)
+    func setUIState(_ state: ChatViewController.State)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -28,10 +29,17 @@ final class ChatViewController: BaseViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet private weak var chatInputView: ChatInputView!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet private weak var approveContentView: UIView!
+    @IBOutlet private weak var acceptButton: MainButton!
+    @IBOutlet private weak var blockButton: RaisedTertiaryButton!
+    
+    
     private var titleView: ChatTitleView!
 
     override var scrollableContentYOffset: CGFloat? { 13 }
-    var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self] }
+    var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self,
+                                                        ChatImageCell.self,
+                                                        ChatEmptyCell.self] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
     private var scrollingInfo: ScrollingInfo?
@@ -107,7 +115,27 @@ extension ChatViewController: ChatViewProtocol {
         } else {
             activityIndicator.stopAnimating()
         }
-        collectionView.isHidden = active
+                
+        [acceptButton, blockButton].forEach { button in
+            button?.isUserInteractionEnabled = !active
+        }
+    }
+    
+    func setUIState(_ state: ChatViewController.State) {
+        switch state {
+        case .loading:
+            approveContentView.isHidden = true
+            chatInputView.isHidden = true
+            collectionView.isHidden = true
+        case .chat:
+            approveContentView.isHidden = true
+            chatInputView.isHidden = false
+            collectionView.isHidden = false
+        case .requestApprove:
+            approveContentView.isHidden = false
+            chatInputView.isHidden = true
+            collectionView.isHidden = false
+        }
     }
 }
 
@@ -172,6 +200,17 @@ extension ChatViewController: ChatInputViewDelegate {
     }
 }
 
+// MARK: - Actions
+private extension ChatViewController {
+    @IBAction func approveButtonPressed() {
+        presenter.approveButtonPressed()
+    }
+    
+    @IBAction func rejectButtonPressed() {
+        presenter.rejectButtonPressed()
+    }
+}
+
 // MARK: - Private functions
 private extension ChatViewController {
     func calculateCollectionBottomInset() {
@@ -205,6 +244,7 @@ private extension ChatViewController {
 private extension ChatViewController {
     func setup() {
         setupInputView()
+        setupApproveRequestView()
         setupNavBar()
         setupCollectionView()
         setupHideKeyboardTap()
@@ -215,6 +255,12 @@ private extension ChatViewController {
         chatInputView.frame.origin.y = self.view.bounds.height - ChatInputView.height
         chatInputView.setTopBorderHidden(true, animated: false)
         chatInputView.delegate = self
+    }
+    
+    func setupApproveRequestView() {
+        approveContentView.isHidden = true
+        acceptButton.setTitle(String.Constants.accept.localized(), image: nil)
+        blockButton.setTitle(String.Constants.delete.localized(), image: nil)
     }
     
     func setupNavBar() {
@@ -242,6 +288,15 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .imageBase64Message(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatImageCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
+            case .emptyState:
+                let cell = collectionView.dequeueCellOfType(ChatEmptyCell.self, forIndexPath: indexPath)
+                
+                return cell
             }
         })
         
@@ -255,7 +310,7 @@ private extension ChatViewController {
                                                                            for: indexPath) as! ChatSectionHeaderView
                 view.setTitle(title)
                 return view
-            case .none:
+            case .none, .emptyState:
                 return nil
             }
         }
@@ -271,20 +326,34 @@ private extension ChatViewController {
         let config = UICollectionViewCompositionalLayoutConfiguration()
         config.interSectionSpacing = spacing
         
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: {
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self]
             (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             
-            let layoutSection: NSCollectionLayoutSection = .flexibleListItemSection(height: 60)
-            layoutSection.interGroupSpacing = spacing
-            
-            let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                    heightDimension: .absolute(ChatSectionHeaderView.Height))
-            let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
-                                                                     elementKind: UICollectionView.elementKindSectionHeader,
-                                                                     alignment: .top)
-            layoutSection.boundarySupplementaryItems = [header]
-            
-            return layoutSection
+            let section = self?.section(at: IndexPath(item: 0, section: sectionIndex))
+
+            switch section {
+            case .none, .messages:
+                let layoutSection: NSCollectionLayoutSection = .flexibleListItemSection(height: 60)
+                layoutSection.interGroupSpacing = spacing
+                
+                let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                        heightDimension: .absolute(ChatSectionHeaderView.Height))
+                let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                         elementKind: UICollectionView.elementKindSectionHeader,
+                                                                         alignment: .top)
+                layoutSection.boundarySupplementaryItems = [header]
+                
+                return layoutSection
+            case .emptyState:
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                                     heightDimension: .fractionalHeight(1.0)))
+                item.contentInsets = .zero
+                let containerGroup = NSCollectionLayoutGroup.horizontal(
+                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                       heightDimension: .fractionalHeight(0.5)),
+                    subitems: [item])
+                return NSCollectionLayoutSection(group: containerGroup)
+            }
         }, configuration: config)
         layout.register(CollectionReusableRoundedBackground.self, forDecorationViewOfKind: CollectionReusableRoundedBackground.reuseIdentifier)
         
@@ -296,15 +365,22 @@ private extension ChatViewController {
 extension ChatViewController {
     enum Section: Hashable {
         case messages(title: String)
+        case emptyState
     }
     
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
+        case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
+        case emptyState
         
-        var message: MessagingChatMessageDisplayInfo {
+        var message: MessagingChatMessageDisplayInfo? {
             switch self {
             case .textMessage(let configuration):
                 return configuration.message
+            case .imageBase64Message(let configuration):
+                return configuration.message
+            case .emptyState:
+                return nil
             }
         }
     }
@@ -325,10 +401,33 @@ extension ChatViewController {
             hasher.combine(textMessageDisplayInfo)
         }
     }
+
+    struct ImageBase64MessageUIConfiguration: Hashable {
+        
+        let message: MessagingChatMessageDisplayInfo
+        let imageMessageDisplayInfo: MessagingChatMessageImageBase64TypeDisplayInfo
+        var actionCallback: (ChatMessageAction)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.message == rhs.message &&
+            lhs.imageMessageDisplayInfo == rhs.imageMessageDisplayInfo
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(message)
+            hasher.combine(imageMessageDisplayInfo)
+        }
+    }
     
     enum ChatMessageAction: Hashable {
         case resend
         case delete
+    }
+    
+    enum State {
+        case loading
+        case chat
+        case requestApprove
     }
 }
 

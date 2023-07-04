@@ -26,7 +26,7 @@
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isFirstInChat" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="messageText" optional="YES" attributeType="String"/>
+        <attribute name="messageContent" optional="YES" attributeType="String"/>
         <attribute name="messageType" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="senderType" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="senderWallet" attributeType="String" defaultValueString=""/>

@@ -13,7 +13,19 @@ struct MessagingChatDisplayInfo: Hashable {
     let avatarURL: URL?
     let type: MessagingChatType
     var unreadMessagesCount: Int
-    let isApproved: Bool
+    var isApproved: Bool
     var lastMessageTime: Date
     var lastMessage: MessagingChatMessageDisplayInfo?
+}
+
+extension Array where Element == MessagingChatDisplayInfo {
+    
+    func requestsOnly() -> [Element] {
+        filter { !$0.isApproved }
+    }
+    
+    func confirmedOnly() -> [Element] {
+        filter { $0.isApproved }
+    }
+    
 }

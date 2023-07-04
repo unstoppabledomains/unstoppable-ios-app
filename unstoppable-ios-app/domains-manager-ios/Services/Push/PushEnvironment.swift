@@ -32,4 +32,8 @@ enum PushEnvironment {
         let sigType: String
         let signature: String 
     }
+    
+    struct PushImageContentResponse: Codable {
+        let content: String
+    }
 }

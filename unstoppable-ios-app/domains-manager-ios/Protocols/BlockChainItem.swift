@@ -66,3 +66,11 @@ extension Array where Element: DomainEntity {
         self.remove(at: indeces)
     }
 }
+
+extension DomainEntity {
+    func getETHAddress() -> String? {
+        guard let walletAddress = ownerWallet else { return nil }
+        
+        return walletAddress.ethChecksumAddress()
+    }
+}

@@ -57,7 +57,11 @@ extension MockMessagingService: MessagingServiceProtocol {
                      in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo {
         throw NSError()
     }
-    
+    func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
+                          to userInfo: MessagingChatUserDisplayInfo,
+                          by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo) {
+        throw NSError()
+    }
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws { }
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) { }
@@ -65,6 +69,9 @@ extension MockMessagingService: MessagingServiceProtocol {
     
     func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
 
+    
+    // Search
+    func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] { [] }
     
     func addListener(_ listener: MessagingServiceListener) {}
     func removeListener(_ listener: MessagingServiceListener) {}

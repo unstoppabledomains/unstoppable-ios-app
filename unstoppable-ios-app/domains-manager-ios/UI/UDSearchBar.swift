@@ -44,6 +44,7 @@ final class UDSearchBar: UIView {
     
     private var state: State = .idle { didSet { setUIForCurrentState() } }
     private var isEnabled: Bool = true
+    var isActive: Bool { state == .focused }
     var shouldAnimateStateUpdate = true
     weak var delegate: UDSearchBarDelegate?
     var responderChangedCallback: ((Bool)->())?

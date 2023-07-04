@@ -322,7 +322,7 @@ private extension CNavigationBarContentView {
         if barButtonItem.title == nil && barButtonItem.image != nil {
             button.frame.size.width = 44
         }
-        button.frame.size.height = bounds.height
+        button.frame.size.height = CNavigationBar.Constants.navigationBarHeight
         
         addSubview(button)
         button.setNeedsLayout()

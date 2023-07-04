@@ -6,25 +6,7 @@
 //
 
 import Foundation
-
-struct Storyboards {
-    enum OnboardingUI: String {
-        case home = "Home"
-        case happyEnd = "HappyEnd"
-        
-        var string: String { rawValue }
-    }
-    
-}
-
-struct NavigationControllers {
-    enum OnboardingUI: String {
-        case home = "HomeNavigationController"
-        
-        var string: String { rawValue }
-    }
-    
-}
+import web3swift
 
 extension String {
     enum Links {
@@ -195,7 +177,9 @@ extension String {
         static let manage = "MANAGE"
         static let link = "LINK"
         static let enable = "ENABLE"
-
+        static let accept = "ACCEPT"
+        static let delete = "DELETE"
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
@@ -883,25 +867,14 @@ extension String {
         static let messagingIntroductionHint2Subtitle = "MESSAGING_INTRODUCTION_HINT_2_SUBTITLE"
         static let messagingIntroductionHint3Title = "MESSAGING_INTRODUCTION_HINT_3_TITLE"
         static let messagingIntroductionHint3Subtitle = "MESSAGING_INTRODUCTION_HINT_3_SUBTITLE"
-        static let messagingChatEmptyTitle = "MESSAGING_CHAT_EMPTY_TITLE"
-        static let messagingChatEmptySubtitle = "MESSAGING_CHAT_EMPTY_SUBTITLE"
+        static let messagingChatsListEmptyTitle = "MESSAGING_CHATS_LIST_EMPTY_TITLE"
+        static let messagingChatsListEmptySubtitle = "MESSAGING_CHATS_LIST_EMPTY_SUBTITLE"
         static let messagingChannelsEmptyTitle = "MESSAGING_CHANNELS_EMPTY_TITLE"
         static let messagingChannelsEmptySubtitle = "MESSAGING_CHANNELS_EMPTY_SUBTITLE"
+        static let messagingChatEmptyTitle = "MESSAGING_CHAT_EMPTY_TITLE"
 
     }
 
-    
-    struct Segues {
-        static let homeToDomainDetail = "HomeToDomainDetails"
-        static let walletDetailsToDomainDetail = "WalletDetailsToDomainDetails"
-        static let domainDetailsToTransferDomain = "DomainDetailsToTransferDomain"
-        
-        static let homeToMint = "HomeToMintDomainsSegue"
-        
-        static let walletsListToImportWallet = "WalletsListToImportWallet"
-    
-        static let walletsListToWalletDetails = "WalletsListToWalletDetailsSegue"
-    }
     
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
@@ -963,6 +936,10 @@ extension String {
     
     var isHexNumber: Bool {
         filter(\.isHexDigit).count == count
+    }
+    
+    func ethChecksumAddress() -> String {
+        EthereumAddress.toChecksumAddress(self) ?? self
     }
     
     var convertedIntoReadableMessage: String {

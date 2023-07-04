@@ -138,10 +138,11 @@ extension MessagingService: MessagingServiceProtocol {
         
         return try await getAndStoreMessagesForChat(chat, options: .after(message: chatMessage), limit: limit)
     }
-    
+
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
         let messagingChat = try await getMessagingChatFor(displayInfo: chat)
+        let profile = try await getUserProfileWith(wallet: messagingChat.displayInfo.thisUserDetails.wallet)
         let newMessageDisplayInfo = MessagingChatMessageDisplayInfo(id: UUID().uuidString,
                                                                     chatId: chat.id,
                                                                     senderType: .thisUser(chat.thisUserDetails),
@@ -157,23 +158,38 @@ extension MessagingService: MessagingServiceProtocol {
         try await setLastMessageAndNotify(newMessageDisplayInfo,
                                           to: messagingChat)
         let newMessage = MessagingChatMessage(displayInfo: newMessageDisplayInfo, serviceMetadata: nil)
-        sendMessageToBE(message: newMessage, messageType: messageType, in: messagingChat)
+        sendMessageToBEAsync(message: newMessage, messageType: messageType, in: messagingChat, by: profile)
 
         return newMessageDisplayInfo
+    }
+    
+    func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
+                          to userInfo: MessagingChatUserDisplayInfo,
+                          by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo) {
+        let profile = try await getUserProfileWith(wallet: profile.wallet)
+        let (chat, message) = try await apiService.sendFirstMessage(messageType,
+                                                                    to: userInfo,
+                                                                    by: profile)
+        
+        await storageService.saveChats([chat])
+        await storageService.saveMessages([message])
+        try? await setLastMessageAndNotify(message.displayInfo, to: chat)
+        
+        return (chat.displayInfo, message.displayInfo)
     }
 
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws {
         let chatId = message.chatId
         let messagingChat = try await getMessagingChatWith(chatId: chatId)
+        let profile = try await getUserProfileWith(wallet: messagingChat.displayInfo.thisUserDetails.wallet)
         var updatedMessage = message
         updatedMessage.deliveryState = .sending
         let newMessage = MessagingChatMessage(displayInfo: updatedMessage, serviceMetadata: nil)
-        
+
         replaceCacheMessageAndNotify(.init(displayInfo: message,
                                            serviceMetadata: nil),
-                                     with: newMessage,
-                                     chatId: chatId)
-        sendMessageToBE(message: newMessage, messageType: updatedMessage.type, in: messagingChat)
+                                     with: newMessage)
+        sendMessageToBEAsync(message: newMessage, messageType: updatedMessage.type, in: messagingChat, by: profile)
     }
     
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws {
@@ -188,18 +204,6 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // Channels
-    private func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
-        Task {
-            do {
-                let channels = try await apiService.getSubscribedChannelsForUser(profile)
-                let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
-                
-                await storageService.saveChannels(updatedChats, for: profile)
-                notifyListenersChangedDataType(.channels(updatedChats, wallet: profile.normalizedWallet))
-            }
-        }
-    }
-        
     func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
         let channels = try await storageService.getChannelsFor(profile: profile)
@@ -218,6 +222,17 @@ extension MessagingService: MessagingServiceProtocol {
         
         
         return feed
+    }
+    
+    // Search
+    func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
+        guard searchKey.isValidAddress() else { return [] }
+        
+        if let userInfo = await loadUserInfoFor(wallet: searchKey) {
+            return [userInfo]
+        }
+        
+        return []
     }
     
     // Listeners
@@ -256,7 +271,7 @@ private extension MessagingService {
                 let updatedStoredChats = try await storageService.getChatsFor(profile: profile,
                                                                               decrypter: decrypterService)
                 let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
-                notifyListenersChangedDataType(.chats(chatsDisplayInfo, wallet: profile.normalizedWallet))
+                notifyListenersChangedDataType(.chats(chatsDisplayInfo, profile: profile.displayInfo))
                 
                 if shouldRefreshUserInfo {
                     refreshUsersInfoFor(profile: profile)
@@ -366,7 +381,7 @@ private extension MessagingService {
                 
                 let updatedChats = try await storageService.getChatsFor(profile: profile,
                                                                         decrypter: decrypterService)
-                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, wallet: profile.normalizedWallet))
+                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, profile: profile.displayInfo))
             } catch { }
         }
     }
@@ -375,23 +390,27 @@ private extension MessagingService {
         switch chat.displayInfo.type {
         case .private(let details):
             let wallet = details.otherUser.wallet
-            if let domain = await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
-               !domain.isEmpty {
-                let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
-                var pfpURL: URL?
-                if let urlString = pfpInfo?.pfpURL,
-                   let url = URL(string: urlString) {
-                    pfpURL = url
-                }
-                return MessagingChatUserDisplayInfo(wallet: wallet,
-                                                    domainName: domain,
-                                                    pfpURL: pfpURL)
-            }
-            
-            return nil
+            return await loadUserInfoFor(wallet: wallet)
         case .group(let details):
             return nil // <GROUP_CHAT> Not supported for now
         }
+    }
+    
+    func loadUserInfoFor(wallet: String) async -> MessagingChatUserDisplayInfo? {
+        if let domain = await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
+           !domain.isEmpty {
+            let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
+            var pfpURL: URL?
+            if let urlString = pfpInfo?.pfpURL,
+               let url = URL(string: urlString) {
+                pfpURL = url
+            }
+            return MessagingChatUserDisplayInfo(wallet: wallet,
+                                                domainName: domain,
+                                                pfpURL: pfpURL)
+        }
+        
+        return nil
     }
 }
 
@@ -419,8 +438,7 @@ private extension MessagingService {
                     var updatedMessage = storedMessage
                     updatedMessage.displayInfo.isFirstInChat = true
                     self.replaceCacheMessageAndNotify(storedMessage,
-                                                      with: updatedMessage,
-                                                      chatId: chat.displayInfo.id)
+                                                      with: updatedMessage)
                 }
             }
         }
@@ -428,10 +446,44 @@ private extension MessagingService {
         await storageService.saveMessages(messages)
         return messages.map { $0.displayInfo }
     }
+    
+    func sendMessageToBEAsync(message: MessagingChatMessage,
+                              messageType: MessagingChatMessageDisplayType,
+                              in chat: MessagingChat,
+                              by user: MessagingChatUserProfile) {
+        Task {
+            do {
+                let sentMessage = try await apiService.sendMessage(messageType,
+                                                                   in: chat,
+                                                                   by: user)
+                replaceCacheMessageAndNotify(message,
+                                             with: sentMessage)
+                try await setLastMessageAndNotify(sentMessage.displayInfo,
+                                                  to: chat)
+            } catch {
+                var failedMessage = message
+                failedMessage.displayInfo.deliveryState = .failedToSend
+                replaceCacheMessageAndNotify(message,
+                                             with: failedMessage)
+            }
+        }
+    }
 }
 
 // MARK: - Channels
 private extension MessagingService {
+    func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
+        Task {
+            do {
+                let channels = try await apiService.getSubscribedChannelsForUser(profile)
+                let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
+                
+                await storageService.saveChannels(updatedChats, for: profile)
+                notifyListenersChangedDataType(.channels(updatedChats, profile: profile.displayInfo))
+            }
+        }
+    }
+    
     func refreshChannelsMetadata(_ channels: [MessagingNewsChannel]) async -> [MessagingNewsChannel] {
         var updatedChannels = [MessagingNewsChannel]()
         
@@ -471,10 +523,7 @@ private extension MessagingService {
     }
     
     func getDomainEthWalletAddress(_ domain: DomainDisplayInfo) throws -> String {
-        guard let walletAddress = domain.ownerWallet,
-              let wallet = appContext.udWalletsService.find(by: walletAddress),
-              let ethAddress = wallet.ethWallet?.address else { throw MessagingServiceError.domainWithoutWallet }
-        
+        guard let ethAddress = domain.getETHAddress() else { throw MessagingServiceError.domainWithoutWallet }
         return ethAddress
     }
     
@@ -488,40 +537,14 @@ private extension MessagingService {
         
         return chat
     }
-    
-    func sendMessageToBE(message: MessagingChatMessage,
-                         messageType: MessagingChatMessageDisplayType,
-                         in chat: MessagingChat) {
-        Task {
-            let chatId = chat.displayInfo.id
-            do {
-                let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
-                let sentMessage = try await apiService.sendMessage(messageType,
-                                                                   in: chat,
-                                                                   by: profile)
-                replaceCacheMessageAndNotify(message,
-                                             with: sentMessage,
-                                             chatId: chatId)
-                try await setLastMessageAndNotify(sentMessage.displayInfo,
-                                         to: chat)
-            } catch {
-                var failedMessage = message
-                failedMessage.displayInfo.deliveryState = .failedToSend
-                replaceCacheMessageAndNotify(message,
-                                             with: failedMessage,
-                                             chatId: chatId)
-            }
-        }
-    }
-    
+  
     func getUserProfileWith(wallet: String) async throws -> MessagingChatUserProfile {
         let rrDomain = try await getReverseResolutionDomainItem(for: wallet)
         return try storageService.getUserProfileFor(domain: rrDomain)
     }
     
     func replaceCacheMessageAndNotify(_ messageToReplace: MessagingChatMessage,
-                                      with newMessage: MessagingChatMessage,
-                                      chatId: String) {
+                                      with newMessage: MessagingChatMessage) {
         
         Task {
             try? await storageService.replaceMessage(messageToReplace, with: newMessage)
@@ -581,7 +604,7 @@ private extension MessagingService {
                 let chats = try await storageService.getChatsFor(profile: profile,
                                                                  decrypter: decrypterService)
                 let displayInfo = chats.map { $0.displayInfo }
-                notifyListenersChangedDataType(.chats(displayInfo, wallet: wallet.normalized))
+                notifyListenersChangedDataType(.chats(displayInfo, profile: profile.displayInfo))
             } catch { }
         }
     }

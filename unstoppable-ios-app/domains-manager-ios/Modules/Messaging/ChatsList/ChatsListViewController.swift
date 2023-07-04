@@ -39,11 +39,12 @@ final class ChatsListViewController: BaseViewController {
     private var navView: ChatsListNavigationView!
     private var state: State = .loading
     
+    override var isObservingKeyboard: Bool { true }
     override var scrollableContentYOffset: CGFloat? { 48 }
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {
         switch state {
         case .chatsList: return cSearchBarConfiguration
-        case .createProfile, .loading: return nil
+        case .createProfile, .loading, .requestsList: return nil
         }
     }
     private var searchBar: UDSearchBar = UDSearchBar()
@@ -59,6 +60,27 @@ final class ChatsListViewController: BaseViewController {
         configureCollectionView()
         setup()
         presenter.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        presenter.viewWillAppear()
+    }
+     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        presenter.viewDidAppear()
+        cNavigationBar?.navBarContentView.setTitleView(hidden: false, animated: false)
+    }
+    
+    override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
+        collectionView.contentInset.bottom = keyboardHeight + Constants.scrollableContentBottomOffset
+    }
+    
+    override func keyboardWillHideAction(duration: Double, curve: Int) {
+        collectionView.contentInset.bottom = Constants.scrollableContentBottomOffset
     }
 }
 
@@ -104,6 +126,38 @@ extension ChatsListViewController: UICollectionViewDelegate {
     }
 }
 
+// MARK: - UISearchBarDelegate
+extension ChatsListViewController: UDSearchBarDelegate {
+    func udSearchBarTextDidBeginEditing(_ udSearchBar: UDSearchBar) {
+        logAnalytic(event: .didStartSearching)
+        setupCollectionInset(isSearchActive: true)
+        presenter.didStartSearch()
+    }
+    
+    func udSearchBar(_ udSearchBar: UDSearchBar, textDidChange searchText: String) {
+        logAnalytic(event: .didSearch, parameters: [.domainName : searchText])
+        presenter.didSearchWith(key: searchText)
+    }
+    
+    func udSearchBarSearchButtonClicked(_ udSearchBar: UDSearchBar) {
+        cNavigationBar?.setSearchActive(false, animated: true)
+        searchBar.text = ""
+    }
+    
+    func udSearchBarCancelButtonClicked(_ udSearchBar: UDSearchBar) {
+        logAnalytic(event: .didStopSearching)
+        UDVibration.buttonTap.vibrate()
+        setSearchBarActive(false)
+        presenter.didStopSearch()
+    }
+    
+    func udSearchBarTextDidEndEditing(_ udSearchBar: UDSearchBar) {
+        logAnalytic(event: .didStopSearching)
+        setSearchBarActive(false)
+        presenter.didStopSearch()
+    }
+}
+
 // MARK: - Private functions
 private extension ChatsListViewController {
     @IBAction func actionButtonPressed(_ sender: Any) {
@@ -116,12 +170,17 @@ private extension ChatsListViewController {
     
     func checkIfCollectionScrollingEnabled() {
         switch state {
-        case .chatsList, .loading:
+        case .chatsList, .loading, .requestsList:
             collectionView.isScrollEnabled = true
         case .createProfile:
             let collectionViewVisibleHeight = collectionView.bounds.height - collectionView.contentInset.top - actionButtonContainerView.bounds.height
             collectionView.isScrollEnabled = collectionView.contentSize.height > collectionViewVisibleHeight
         }
+    }
+    
+    func setSearchBarActive(_ isActive: Bool) {
+        setupCollectionInset(isSearchActive: isActive)
+        cNavigationBar?.setSearchActive(isActive, animated: true)
     }
 }
 
@@ -131,19 +190,23 @@ private extension ChatsListViewController {
         setupNavigation()
         setupCollectionView()
         setupActionButton()
+        searchBar.delegate = self
     }
     
     func setupNavigation() {
-        if navView == nil {
-            navView = ChatsListNavigationView()
-            navView.walletSelectedCallback = { [weak self] wallet in
-                self?.presenter.didSelectWallet(wallet)
+        func addNavViewIfNil() {
+            if navView == nil {
+                navView = ChatsListNavigationView()
+                navView.walletSelectedCallback = { [weak self] wallet in
+                    self?.presenter.didSelectWallet(wallet)
+                }
+                navigationItem.titleView = navView
             }
-            navigationItem.titleView = navView
         }
         
         switch state {
         case .chatsList:
+            addNavViewIfNil()
             navView?.isHidden = false
             let newMessageButton = UIBarButtonItem(image: .newMessageIcon,
                                                    style: .plain,
@@ -152,11 +215,23 @@ private extension ChatsListViewController {
             newMessageButton.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = newMessageButton
         case .createProfile:
+            addNavViewIfNil()
             navView?.isHidden = false
             navigationItem.rightBarButtonItem = nil
         case .loading:
+            addNavViewIfNil()
             navView?.isHidden = true
             navigationItem.rightBarButtonItem = nil
+        case .requestsList:
+            navigationItem.titleView = nil
+            title = "Chat Requests"
+            let rightBarButton = UIBarButtonItem(title: "Delete All",
+                                                   style: .plain,
+                                                   target: self,
+                                                   action: #selector(newMessageButtonPressed))
+            rightBarButton.tintColor = .foregroundAccent
+            navigationItem.rightBarButtonItem = rightBarButton
+            cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }
     }
     
@@ -169,18 +244,18 @@ private extension ChatsListViewController {
                               image: icon)
         
         switch state {
-        case .chatsList, .loading:
+        case .chatsList, .loading, .requestsList:
             actionButtonContainerView.isHidden = true
         case .createProfile:
             actionButtonContainerView.isHidden = false
         }
     }
     
-    func setupCollectionInset() {
+    func setupCollectionInset(isSearchActive: Bool = false) {
         switch state {
         case .chatsList, .loading:
-            collectionView.contentInset.top = 110
-        case .createProfile:
+            collectionView.contentInset.top = isSearchActive ? 58 : 110
+        case .createProfile, .requestsList:
             collectionView.contentInset.top = 68
         }
     }
@@ -188,8 +263,11 @@ private extension ChatsListViewController {
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
+        collectionView.register(ChatsListSectionHeaderView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: ChatsListSectionHeaderView.reuseIdentifier)
         setupCollectionInset()
-
+        
         configureDataSource()
     }
     
@@ -230,8 +308,26 @@ private extension ChatsListViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .userInfo(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
+        
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
+            let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                       withReuseIdentifier: ChatsListSectionHeaderView.reuseIdentifier,
+                                                                       for: indexPath) as! ChatsListSectionHeaderView
+            
+            if let section = self?.section(at: indexPath),
+               let header = section.header {
+                view.setHeader(header)
+            }
+            
+            return view
+        }
     }
     
     func buildLayout() -> UICollectionViewLayout {
@@ -247,10 +343,21 @@ private extension ChatsListViewController {
             let section = self?.section(at: IndexPath(item: 0, section: sectionIndex))
             
             switch section {
-            case .channels, .none:
+            case .listItems(let title):
                 layoutSection = .flexibleListItemSection()
          
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
+                
+                if title != nil {
+                    let sectionHeaderHeight = ChatsListSectionHeaderView.Height
+                    let headerSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                            heightDimension: .absolute(sectionHeaderHeight))
+                    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: headerSize,
+                                                                             elementKind: UICollectionView.elementKindSectionHeader,
+                                                                             alignment: .top)
+                    layoutSection.boundarySupplementaryItems = [header]
+                    background.contentInsets.top = sectionHeaderHeight
+                }
                 layoutSection.decorationItems = [background]
             case .dataTypeSelection, .createProfile:
                 layoutSection = .flexibleListItemSection()
@@ -265,7 +372,7 @@ private extension ChatsListViewController {
                 layoutSection = NSCollectionLayoutSection(group: containerGroup)
                 layoutSection.interGroupSpacing = 8
                 layoutSection.orthogonalScrollingBehavior = .continuous
-            case .emptyState:
+            case .emptyState, .none:
                 let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                                      heightDimension: .fractionalHeight(1.0)))
                 item.contentInsets = .zero
@@ -297,7 +404,16 @@ private extension ChatsListViewController {
 // MARK: - Collection elements
 extension ChatsListViewController {
     enum Section: Hashable {
-        case domainsSelection, channels, dataTypeSelection, createProfile, emptyState
+        case domainsSelection, listItems(title: String?), dataTypeSelection, createProfile, emptyState
+        
+        var header: String? {
+            switch self {
+            case .listItems(let title):
+                return title
+            default:
+                return nil
+            }
+        }
     }
     
     enum Item: Hashable {
@@ -308,6 +424,7 @@ extension ChatsListViewController {
         case channel(configuration: ChannelUIConfiguration)
         case createProfile
         case emptyState(configuration: EmptyStateUIConfiguration)
+        case userInfo(configuration: UserInfoUIConfiguration)
     }
     
     struct ChatUIConfiguration: Hashable {
@@ -342,13 +459,13 @@ extension ChatsListViewController {
     }
     
     enum DataType: Hashable {
-        case chats, inbox
+        case chats, channels
         
         var title: String {
             switch self {
             case .chats:
                 return String.Constants.chats.localized()
-            case .inbox:
+            case .channels:
                 return String.Constants.appsInbox.localized()
             }
         }
@@ -359,7 +476,6 @@ extension ChatsListViewController {
         let numberOfRequests: Int
     }
     
-    
     struct ChannelUIConfiguration: Hashable {
         let channel: MessagingNewsChannel
     }
@@ -368,9 +484,14 @@ extension ChatsListViewController {
         let dataType: DataType
     }
     
+    struct UserInfoUIConfiguration: Hashable {
+        let userInfo: MessagingChatUserDisplayInfo
+    }
+    
     enum State {
         case createProfile
         case chatsList
         case loading
+        case requestsList
     }
 }

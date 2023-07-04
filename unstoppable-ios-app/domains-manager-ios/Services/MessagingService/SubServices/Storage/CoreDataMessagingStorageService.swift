@@ -265,6 +265,9 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                 let coreDataNewsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(from: backgroundContext)
                 deleteObjects(coreDataNewsFeed, from: backgroundContext, shouldSaveContext: false)
                 
+                let coreDataUserProfiles: [CoreDataMessagingUserProfile] = try getEntities(from: backgroundContext)
+                deleteObjects(coreDataUserProfiles, from: backgroundContext, shouldSaveContext: false)
+                
                 let coreDataUsersInfo: [CoreDataMessagingUserInfo] = try getEntities(from: backgroundContext)
                 deleteObjects(coreDataUsersInfo, from: backgroundContext, shouldSaveContext: true)
             } catch { }
@@ -275,7 +278,8 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
 // MARK: - User Profile parsing
 private extension CoreDataMessagingStorageService {
     func convertCoreDataUserProfileToMessagingUserProfile(_ coreDataUserProfile: CoreDataMessagingUserProfile) -> MessagingChatUserProfile {
-        let displayInfo = MessagingChatUserProfileDisplayInfo(wallet: coreDataUserProfile.wallet!,
+        let displayInfo = MessagingChatUserProfileDisplayInfo(id: coreDataUserProfile.id!,
+                                                              wallet: coreDataUserProfile.wallet!,
                                                               name: coreDataUserProfile.name,
                                                               about: coreDataUserProfile.about)
         
@@ -461,19 +465,27 @@ private extension CoreDataMessagingStorageService {
                                decrypter: MessagingContentDecrypterService,
                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState,
                                wallet: String) -> MessagingChatMessageDisplayType? {
-        if coreDataMessage.messageType == 0,
-           let text = coreDataMessage.messageText {
-            var decryptedText = text
-            if deliveryState == .delivered {
-                guard let decryptedContent = try? decrypter.decryptText(text,
-                                                                     with: coreDataMessage.serviceMetadata,
-                                                                     wallet: wallet) else {
-                    return nil }
-                decryptedText = decryptedContent
-            }
-            
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedText, encryptedText: text)
+        guard let messageContent = coreDataMessage.messageContent else { return nil }
+        
+        var decryptedContent = messageContent
+        if deliveryState == .delivered {
+            guard let decrypted = try? decrypter.decryptText(messageContent,
+                                                                    with: coreDataMessage.serviceMetadata,
+                                                                    wallet: wallet) else {
+                return nil }
+            decryptedContent = decrypted
+        }
+        
+        if coreDataMessage.messageType == 0 {
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
+                                                                          encryptedText: messageContent)
             return .text(textDisplayInfo)
+        } else if coreDataMessage.messageType == 1 {
+            guard let contentInfo = PushEnvironment.PushImageContentResponse.objectFromJSONString(decryptedContent) else { return nil } // TODO: - Remove 
+
+            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: contentInfo.content,
+                                                                                        encryptedContent: messageContent)
+            return .imageBase64(imageBase64DisplayInfo)
         }
         
         return nil
@@ -483,7 +495,10 @@ private extension CoreDataMessagingStorageService {
         switch messageType {
         case .text(let info):
             coreDataMessage.messageType = 0
-            coreDataMessage.messageText = info.encryptedText
+            coreDataMessage.messageContent = info.encryptedText
+        case .imageBase64(let info):
+            coreDataMessage.messageType = 1
+            coreDataMessage.messageContent = info.encryptedContent
         }
     }
     
