@@ -38,7 +38,8 @@ final class ChatsListViewController: BaseViewController {
     private var dataSource: ChatsListDataSource!
     private var navView: ChatsListNavigationView!
     private var state: State = .loading
-    
+    private let operationQueue = OperationQueue()
+
     override var isObservingKeyboard: Bool { true }
     override var scrollableContentYOffset: CGFloat? { searchBarConfiguration == nil ? 24 : 48 }
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {
@@ -57,6 +58,7 @@ final class ChatsListViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        operationQueue.maxConcurrentOperationCount = 1
         configureCollectionView()
         setup()
         presenter.viewDidLoad()
@@ -87,10 +89,10 @@ final class ChatsListViewController: BaseViewController {
 // MARK: - ChatsListViewProtocol
 extension ChatsListViewController: ChatsListViewProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool) {
-        // TODO: - wrap in operation queue
-        dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
-            self?.checkIfCollectionScrollingEnabled()
-        })
+        let operation = CollectionReloadDiffableDataOperation(dataSource: dataSource,
+                                                              snapshot: snapshot,
+                                                              animated: animated)
+        operationQueue.addOperation(operation)
     }
     
     func setState(_ state: State) {

@@ -10,7 +10,7 @@ import Foundation
 @MainActor
 final class ChannelViewPresenter {
     
-    private weak var view: ChatViewProtocol?
+    private weak var view: (any ChatViewProtocol)?
     private let profile: MessagingChatUserProfileDisplayInfo
     private let fetchLimit: Int = 30
     private var channel: MessagingNewsChannel
@@ -18,7 +18,7 @@ final class ChannelViewPresenter {
     private var isLoadingFeed = false
     private var currentPage: Int = 1
 
-    init(view: ChatViewProtocol,
+    init(view: any ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
          channel: MessagingNewsChannel) {
         self.view = view

@@ -34,7 +34,7 @@ extension ChatViewPresenterProtocol {
 @MainActor
 final class ChatViewPresenter {
     
-    private weak var view: ChatViewProtocol?
+    private weak var view: (any ChatViewProtocol)?
     private let profile: MessagingChatUserProfileDisplayInfo
     private var conversationState: MessagingChatConversationState
     private let fetchLimit: Int = 30
@@ -43,7 +43,7 @@ final class ChatViewPresenter {
     private var isLoadingMessages = false
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     
-    init(view: ChatViewProtocol,
+    init(view: any ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState) {
         self.view = view
