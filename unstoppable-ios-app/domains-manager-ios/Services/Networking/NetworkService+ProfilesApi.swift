@@ -413,10 +413,12 @@ extension NetworkService {
     }
     
     public func searchForRRDomainsWith(name: String) async throws -> [String] {
+        let startTime = Date()
         guard let url = Endpoint.searchDomains(with: name, shouldHaveProfile: false, shouldBeSetAsRR: true).url else {
             throw NetworkLayerError.creatingURLFailed
         }
         let data = try await fetchData(for: url, method: .get)
+        Debugger.printTimeSensitiveInfo(topic: .Network, "to search for RR domains", startDate: startTime, timeout: 2)
         guard let names = [String].objectFromData(data,
                                                   dateDecodingStrategy: .defaultDateDecodingStrategy()) else {
             throw NetworkLayerError.failedParseProfileData
