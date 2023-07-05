@@ -66,10 +66,8 @@ final class CollectionReloadDiffableDataOperation<Section, Item>: BaseOperation 
             return
         }
         dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
-            DispatchQueue.main.async {
-                self?.completion?()
-                self?.finish(true)
-            }
+            self?.completion?()
+            self?.finish(true)
         })
     }
 }

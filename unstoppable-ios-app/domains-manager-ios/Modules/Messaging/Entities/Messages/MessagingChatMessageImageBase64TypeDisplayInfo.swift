@@ -5,13 +5,14 @@
 //  Created by Oleg Kuplin on 19.06.2023.
 //
 
-import Foundation
+import UIKit
 
 struct MessagingChatMessageImageBase64TypeDisplayInfo: Hashable {
   
     let base64: String
     let encryptedContent: String
     let base64Image: String // Make constant due to performance issues
+    var image: UIImage?
     
     init(base64: String, encryptedContent: String) {
         self.base64 = base64

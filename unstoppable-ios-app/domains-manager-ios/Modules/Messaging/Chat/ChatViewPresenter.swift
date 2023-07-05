@@ -148,7 +148,7 @@ extension ChatViewPresenter: MessagingServiceListener {
             case .messagesAdded(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
                    chatId == chat.id {
-                    self.addMessages(messages)
+                    await self.addMessages(messages)
                     checkIfUpToDate()
                     showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
                 }
@@ -185,7 +185,7 @@ private extension ChatViewPresenter {
                     let messagesBefore = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                   before: nil,
                                                                                                   limit: fetchLimit)
-                    addMessages(messagesBefore)
+                    await addMessages(messagesBefore)
                     
                     if !(messages.first?.isRead == true),
                        let firstReadMessage = messages.first(where: { $0.isRead }) {
@@ -201,7 +201,7 @@ private extension ChatViewPresenter {
                         let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                       after: message,
                                                                                                       limit: fetchLimit)
-                        addMessages(unreadMessages)
+                        await addMessages(unreadMessages)
                         showData(animated: false, isLoading: false, completion: {
                             if let message = unreadMessages.last {
                                 let item = self.createSnapshotItemFrom(message: message)
@@ -210,11 +210,11 @@ private extension ChatViewPresenter {
                         })
                         checkIfUpToDate()
                     }
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self.view?.setLoading(active: false)
                         self.updateUIForChatApprovedState()
+                        self.isLoadingMessages = false
                     }
-                    isLoadingMessages = false
                 case .newChat:
                     updateUIForChatApprovedState()
                     view?.startTyping()
@@ -237,7 +237,7 @@ private extension ChatViewPresenter {
                 let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                               before: message,
                                                                                               limit: fetchLimit)
-                addMessages(unreadMessages)
+                await addMessages(unreadMessages)
                 checkIfUpToDate()
                 isLoadingMessages = false
             } catch {
@@ -260,8 +260,10 @@ private extension ChatViewPresenter {
         }
     }
     
-    func addMessages(_ messages: [MessagingChatMessageDisplayInfo]) {
+    func addMessages(_ messages: [MessagingChatMessageDisplayInfo]) async {
         for message in messages {
+            var message = message
+            await message.prepareToDisplay()
             if let i = self.messages.firstIndex(where: { $0.id == message.id }) {
                 self.messages[i] = message
             } else {
@@ -275,9 +277,6 @@ private extension ChatViewPresenter {
     func showData(animated: Bool, scrollToBottomAnimated: Bool, isLoading: Bool) {
         showData(animated: animated, isLoading: isLoading, completion: { [weak self] in
             self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
-            }
         })
     }
     
@@ -312,11 +311,15 @@ private extension ChatViewPresenter {
     func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item {
         switch message.type {
         case .text(let textMessageDisplayInfo):
-            return .textMessage(configuration: .init(message: message, textMessageDisplayInfo: textMessageDisplayInfo, actionCallback: { [weak self] action in
+            return .textMessage(configuration: .init(message: message,
+                                                     textMessageDisplayInfo: textMessageDisplayInfo,
+                                                     actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
         case .imageBase64(let imageMessageDisplayInfo):
-            return .imageBase64Message(configuration: .init(message: message, imageMessageDisplayInfo: imageMessageDisplayInfo, actionCallback: { [weak self] action in
+            return .imageBase64Message(configuration: .init(message: message,
+                                                            imageMessageDisplayInfo: imageMessageDisplayInfo,
+                                                            actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
         }

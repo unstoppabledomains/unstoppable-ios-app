@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 01.06.2023.
 //
 
-import Foundation
+import UIKit
 
 struct MessagingChatMessageDisplayInfo: Hashable {
     let id: String
@@ -16,6 +16,18 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     var isRead: Bool
     var isFirstInChat: Bool
     var deliveryState: DeliveryState
+    
+    mutating func prepareToDisplay() async {
+        switch type {
+        case .text:
+            return
+        case .imageBase64(var info):
+            if info.image == nil {
+                info.image = await UIImage.from(base64String: info.base64Image)
+                self.type = .imageBase64(info)
+            }
+        }
+    }
 }
 
 // MARK: - Open methods
