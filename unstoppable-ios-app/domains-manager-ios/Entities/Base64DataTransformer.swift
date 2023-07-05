@@ -22,9 +22,10 @@ struct Base64DataTransformer {
            let index = string.firstIndex(of: ",") {
             let nextIndex = string.index(after: index)
             
-            guard nextIndex != string.endIndex else { return "" }
+            let endIndex = string.endIndex
+            guard nextIndex != endIndex else { return "" }
             
-            return String(string[nextIndex..<string.endIndex])
+            return String(string[nextIndex..<endIndex])
         }
         
         return string
