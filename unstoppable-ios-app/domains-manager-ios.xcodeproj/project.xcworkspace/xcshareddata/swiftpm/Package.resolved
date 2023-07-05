@@ -70,6 +70,15 @@
       "state" : {
         "revision" : "27281f5c56a3344bcbfec6ba6504c9189bb9e843",
         "version" : "0.5.4"
+        }
+      },
+      {  
+      "identity" : "qrcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/WalletConnect/QRCode",
+      "state" : {
+        "revision" : "263f280d2c8144adfb0b6676109846cfc8dd552b",
+        "version" : "14.3.1"
       }
     },
     {
@@ -136,6 +145,24 @@
       }
     },
     {
+      "identity" : "swift-qrcode-generator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/swift-qrcode-generator",
+      "state" : {
+        "revision" : "5ca09b6a2ad190f94aa3d6ddef45b187f8c0343b",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "swiftimagereadwrite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/SwiftImageReadWrite",
+      "state" : {
+        "revision" : "5596407d1cf61b953b8e658fa8636a471df3c509",
+        "version" : "1.1.6"
+      }
+    },
+    {
       "identity" : "valet-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/unstoppabledomains/Valet-ios.git",
@@ -158,8 +185,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2.git",
       "state" : {
-        "revision" : "75944463e6a0d3598b867c81742dd7991ed17bb5",
-        "version" : "1.5.1"
+        "revision" : "9b831af49900f07f887ed8d08acb73d5777b9d03",
+        "version" : "1.6.10"
       }
     },
     {
