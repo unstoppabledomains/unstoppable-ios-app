@@ -166,10 +166,12 @@ extension ChatsListViewController: UDSearchBarDelegate {
 // MARK: - Private functions
 private extension ChatsListViewController {
     @IBAction func actionButtonPressed(_ sender: Any) {
+        logButtonPressedAnalyticEvents(button: .createMessagingProfile)
         presenter.actionButtonPressed()
     }
     
     @objc func newMessageButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .newMessage)
         UDVibration.buttonTap.vibrate()
         searchBar.becomeFirstResponder()
     }
@@ -205,6 +207,9 @@ private extension ChatsListViewController {
                 navView = ChatsListNavigationView()
                 navView.walletSelectedCallback = { [weak self] wallet in
                     self?.presenter.didSelectWallet(wallet)
+                }
+                navView.pressedCallback = { [weak self] in
+                    self?.logButtonPressedAnalyticEvents(button: .messagingProfileSelection)
                 }
                 navigationItem.titleView = navView
             }
@@ -481,7 +486,7 @@ extension ChatsListViewController {
         let badge: Int
     }
     
-    enum DataType: Hashable {
+    enum DataType: String, Hashable {
         case chats, channels
         
         var title: String {

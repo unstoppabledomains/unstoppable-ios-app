@@ -91,6 +91,7 @@ extension Analytics {
         case section
         case fieldName
         case websiteLoginOption
+        case value
     }
 }
 
@@ -265,6 +266,11 @@ extension Analytics {
         case inviteFriendInfo, copyLink
         
         // Messaging
+        case chatInList, groupChatInList, chatRequests, channelInList, channelsSpam, userToChatInList, domainToChatInList
+        case messagingProfileSelection, messagingProfileInList
+        case messagingDataType
+        case newMessage
+        case createMessagingProfile
         case block
     }
 }

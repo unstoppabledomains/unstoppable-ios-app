@@ -17,6 +17,7 @@ final class ChatsListNavigationView: UIView {
     private var titleButton: UIButton!
     private var chevron: UIImageView!
     
+    var pressedCallback: EmptyCallback?
     var walletSelectedCallback: ((WalletDisplayInfo)->())?
     
     override init(frame: CGRect) {
@@ -99,8 +100,9 @@ private extension ChatsListNavigationView {
             let menu = UIMenu(title: "", children: actions)
             titleButton.menu = menu
             titleButton.showsMenuAsPrimaryAction = true
-            titleButton.addAction(UIAction(handler: {  _ in
+            titleButton.addAction(UIAction(handler: { [weak self]  _ in
                 UDVibration.buttonTap.vibrate()
+                self?.pressedCallback?()
             }), for: .menuActionTriggered)
         }
     }
