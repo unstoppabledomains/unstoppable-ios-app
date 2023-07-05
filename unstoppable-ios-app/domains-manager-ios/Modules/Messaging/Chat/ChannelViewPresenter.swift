@@ -127,8 +127,10 @@ private extension ChannelViewPresenter {
                     showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
                 }
 
-                isLoadingFeed = false
-                self.view?.setLoading(active: false)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.isLoadingFeed = false
+                    self.view?.setLoading(active: false)
+                }
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
@@ -178,7 +180,7 @@ private extension ChannelViewPresenter {
     func showData(animated: Bool, scrollToBottomAnimated: Bool, isLoading: Bool) {
         showData(animated: animated, isLoading: isLoading, completion: { [weak self] in
             self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
             }
         })
@@ -202,10 +204,10 @@ private extension ChannelViewPresenter {
             let sortedDates = groupedFeed.keys.sorted(by: { $0 < $1 })
             
             for date in sortedDates {
-                let feed = groupedFeed[date] ?? []
+                let feed = (groupedFeed[date] ?? []).sorted(by: { $0.time < $1.time })
                 let title = MessageDateFormatter.formatMessagesSectionDate(date)
                 snapshot.appendSections([.messages(title: title)])
-                snapshot.appendItems(feed.sorted(by: { $0.time < $1.time }).map({ createSnapshotItemFrom(feedItem: $0) }))
+                snapshot.appendItems(feed.map({ createSnapshotItemFrom(feedItem: $0) }))
             }
         }
         
