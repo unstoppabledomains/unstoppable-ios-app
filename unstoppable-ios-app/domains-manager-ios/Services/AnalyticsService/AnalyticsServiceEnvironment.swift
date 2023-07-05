@@ -56,6 +56,9 @@ extension Analytics {
         
         // Permissions
         case permissionsRequested, permissionsGranted, permissionsDeclined
+        
+        // Messaging
+        case willShowMessagingProfile
     }
 }
 
@@ -92,6 +95,7 @@ extension Analytics {
         case fieldName
         case websiteLoginOption
         case value
+        case state
     }
 }
 

@@ -284,12 +284,18 @@ private extension ChatsListViewPresenter {
                                 wallets: wallets)
         
         guard let profile = chatProfile.profile else {
+            let state: MessagingProfileStateAnalytics = chatProfile.wallet.reverseResolutionDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet
+            logAnalytic(event: .willShowMessagingProfile,
+                        parameters: [.state : state.rawValue,
+                                     .wallet: chatProfile.wallet.address])
             await awaitForUIReady()
             view?.setState(.createProfile)
             showData()
             return
         }
         
+        logAnalytic(event: .willShowMessagingProfile, parameters: [.state : MessagingProfileStateAnalytics.created.rawValue,
+                                                                   .wallet: profile.wallet])
         UserDefaults.currentMessagingOwnerWallet = profile.wallet.normalized
         
         async let chatsListTask = appContext.messagingService.getChatsListForProfile(profile)
@@ -548,6 +554,12 @@ private extension ChatsListViewPresenter {
         var searchUsers: [MessagingChatUserDisplayInfo] = []
         var searchChannels: [MessagingNewsChannel] = []
         var domainNames: [String] = []
+    }
+    
+    enum MessagingProfileStateAnalytics: String {
+        case created
+        case notCreatedRRSet
+        case notCreatedRRNotSet
     }
 }
 
