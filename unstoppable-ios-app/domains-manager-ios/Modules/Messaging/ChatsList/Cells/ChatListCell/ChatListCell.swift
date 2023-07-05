@@ -32,7 +32,6 @@ extension ChatListCell {
         
         switch chat.type {
         case .private(let info):
-            avatarImageView.clipsToBounds = true
             avatarImageView.layer.borderWidth = 1
             setAvatarFrom(url: info.otherUser.pfpURL, name: chatName)
         case .group(let details):
@@ -159,8 +158,8 @@ private extension ChatListCell {
     }
     
     func setAvatarFrom(url: URL?, name: String) {
+        avatarImageView.clipsToBounds = true
         avatarImageView.image = .domainSharePlaceholder
-        
         
         func setAvatarFromName() async {
             self.avatarImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(name, size: .default, style: .accent),
