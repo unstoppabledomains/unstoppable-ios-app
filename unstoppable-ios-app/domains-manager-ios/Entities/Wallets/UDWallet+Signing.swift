@@ -101,10 +101,19 @@ extension UDWallet {
     
     func getSignTypedData(dataString: String) async throws -> String {
         guard self.walletState == .verified else {
-            return try await signViaWalletConnectTypedData(dataString: dataString)
+            let signature = try await signViaWalletConnectTypedData(dataString: dataString)
+            return signature
+        }        
+        let data = dataString.data(using: .utf8)!
+        let typedData = try! JSONDecoder().decode(EIP712TypedData.self, from: data)
+        let signHash = typedData.signHash
+        
+        let privKey = self.getPrivateKey()! // safe
+        guard let sig = try UDWallet.signMessageHash(messageHash: signHash, with: privKey) else {
+            throw UDWallet.Error.failedToSignMessage
         }
-        //TODO: local signing not available atm
-        throw WalletConnectRequestError.methodUnsupported
+
+        return "0x" + sig.dataToHexString()
     }
     
     func signViaWalletConnectTypedData(dataString: String) async throws -> String {
