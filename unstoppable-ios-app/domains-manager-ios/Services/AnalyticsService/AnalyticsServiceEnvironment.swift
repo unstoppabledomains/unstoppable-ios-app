@@ -155,6 +155,8 @@ extension Analytics {
         case parkedDomainsList, noParkedDomainsFound, loadingParkedDomains
         case transferEnterRecipient, transferReviewAndConfirm
         case inviteFriends
+        case chatsHome, chatRequestsList, chatChannelsSpamList
+        case chatDialog, channelFeed
     }
 }
 

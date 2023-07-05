@@ -17,6 +17,7 @@ final class ChannelViewPresenter {
     private var feed: [MessagingNewsChannelFeed] = []
     private var isLoadingFeed = false
     private var currentPage: Int = 1
+    var analyticsName: Analytics.ViewName { .channelFeed }
 
     init(view: any ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,

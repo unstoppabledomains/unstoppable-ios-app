@@ -40,6 +40,7 @@ final class ChatsListViewController: BaseViewController {
     private var state: State = .loading
     private let operationQueue = OperationQueue()
 
+    override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     override var isObservingKeyboard: Bool { true }
     override var scrollableContentYOffset: CGFloat? { searchBarConfiguration == nil ? 24 : 48 }
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {

@@ -48,7 +48,8 @@ final class ChatViewController: BaseViewController {
     private(set) var dataSource: DataSource!
     private var scrollingInfo: ScrollingInfo?
     override var isObservingKeyboard: Bool { true }
-    
+    override var analyticsName: Analytics.ViewName { presenter.analyticsName }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         

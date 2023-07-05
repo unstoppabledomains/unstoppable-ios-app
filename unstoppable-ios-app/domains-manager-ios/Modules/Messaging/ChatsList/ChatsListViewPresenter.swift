@@ -9,6 +9,8 @@ import Foundation
 
 @MainActor
 protocol ChatsListViewPresenterProtocol: BasePresenterProtocol {
+    var analyticsName: Analytics.ViewName { get }
+    
     func didSelectItem(_ item: ChatsListViewController.Item)
     func didSelectWallet(_ wallet: WalletDisplayInfo)
     func actionButtonPressed()
@@ -43,6 +45,7 @@ final class ChatsListViewPresenter {
     private var searchData = SearchData()
     private let searchManager = SearchManager(debounce: 0.3)
     
+    var analyticsName: Analytics.ViewName { .chatsHome }
     
     init(view: ChatsListViewProtocol) {
         self.view = view
@@ -467,7 +470,7 @@ private extension ChatsListViewPresenter {
             let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
             guard !channels.isEmpty else { return }
 
-            UDRouter().showChatRequestsScreen(dataType: .channelsRequests(channels),
+            UDRouter().showChatRequestsScreen(dataType: .channelsSpam(channels),
                                               profile: profile,
                                               in: nav)
         }
