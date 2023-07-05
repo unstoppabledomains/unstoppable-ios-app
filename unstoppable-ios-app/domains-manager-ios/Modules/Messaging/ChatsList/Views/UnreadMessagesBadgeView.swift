@@ -65,7 +65,8 @@ private extension UnreadMessagesBadgeView {
         
         NSLayoutConstraint.activate([counterLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
                                      counterLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-                                     counterLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4)])
+                                     counterLabel.heightAnchor.constraint(equalToConstant: size),
+                                     counterLabel.widthAnchor.constraint(equalToConstant: size)])
     }
 }
 
