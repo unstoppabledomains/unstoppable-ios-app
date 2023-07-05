@@ -9,6 +9,10 @@ import UIKit
 
 final class VerifyPasscodeViewController: EnterPasscodeViewController {
     
+    static let passwordAttemptsKey = "CURRENT_PASSWORD_ATTEMPTS_COUNT"
+    static let waitThreshold = 3
+    static let wipeThreshold = 12
+    
     private var passcode: [Character] = []
     private var purpose: AuthenticationPurpose = .unlock
     private var successCompletion: EmptyCallback?
@@ -32,8 +36,32 @@ final class VerifyPasscodeViewController: EnterPasscodeViewController {
     }
     
     override func didEnter(passcode: [Character]) {
-        guard passwordsMatch(passcode, self.passcode) else { return }
+        guard passwordsMatch(passcode, self.passcode) else {
+            let shouldLeave = handlePasswordMismatch()
+            if shouldLeave {
+                resetFailedAttempts()
+                leaveThisController()
+            }
+            self.reset()
+            return
+        }
         
+        resetFailedAttempts()
+        leaveThisController()
+    }
+    
+    override func getWarningType() -> DigitalKeyboardViewController.WarningType {
+        let count = getFailedAttempts()
+        if count >= Self.wipeThreshold - 1 {
+            return .wipe
+        }
+        if count > 0 && count % Self.waitThreshold == 0 {
+            return .lock
+        }
+        return .none
+    }
+    
+    func leaveThisController() {
         if navigationController?.viewControllers.count == 1 {
             self.dismiss(animated: true)
             successCompletion?()
@@ -63,6 +91,34 @@ private extension VerifyPasscodeViewController {
         case .enterOld:
             return String.Constants.enterOldPasscode.localized()
         }
+    }
+    
+    func handlePasswordMismatch() -> Bool {
+        let newCount = incrementFailedAttempts()
+        if newCount >= Self.wipeThreshold {
+            // wipe all cache
+            appContext.udWalletsService.removeAllWallets()
+            Storage.instance.cleanAllCache()
+            return true // return true if should leave the Password screen
+        }
+        return false
+    }
+}
+
+// MARK: - Persistant counter methods
+private extension VerifyPasscodeViewController {
+    func getFailedAttempts() -> Int {
+        return (UserDefaults.standard.object(forKey: Self.passwordAttemptsKey) as? Int) ?? 0
+    }
+    
+    func incrementFailedAttempts() -> Int {
+        let newCount = getFailedAttempts() + 1
+        UserDefaults.standard.set(newCount, forKey: Self.passwordAttemptsKey)
+        return newCount
+    }
+    
+    func resetFailedAttempts() {
+        UserDefaults.standard.set(Int.init(integerLiteral: 0), forKey: Self.passwordAttemptsKey)
     }
 }
 
