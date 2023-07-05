@@ -1101,7 +1101,8 @@ extension WalletConnectServiceV2 {
 //                "eth_signTransaction",    // less methods as not all wallets may support
                 "personal_sign",
 //                "eth_sign",
-//                "eth_signTypedData"
+                "eth_signTypedData",
+                "eth_signTypedData_v4"
             ], events: []
         )] }
     
