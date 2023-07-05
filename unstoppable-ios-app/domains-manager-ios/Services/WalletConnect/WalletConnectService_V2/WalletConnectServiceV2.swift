@@ -478,7 +478,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 
     @MainActor
     private func approve(proposalId: String, namespaces: [String: SessionNamespace]) {
-        Debugger.printInfo(topic: .WalletConnectV2, "[WALLET] Approve Session: \(proposalId)")
+        Debugger.printInfo(topic: .WalletConnectV2, "Approve Session: \(proposalId)")
         Task {
             do {
                 try await Sign.instance.approve(proposalId: proposalId, namespaces: namespaces)
@@ -501,7 +501,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol {
     @MainActor
     internal func pairClient(uri: WalletConnectURI) async throws {
-        Debugger.printInfo(topic: .WalletConnectV2, "[WALLET] Pairing to: \(uri)")
+        Debugger.printInfo(topic: .WalletConnectV2, "Pairing to: \(uri)")
         try await Pair.instance.pair(uri: uri)
     }
     
@@ -1058,7 +1058,6 @@ extension WalletConnectServiceV2 {
         "eip155": ProposalNamespace(
             chains: [
                 Blockchain("eip155:1")!,
-                Blockchain("eip155:137")!
             ],
             methods: [
                 "eth_sendTransaction",
@@ -1069,10 +1068,28 @@ extension WalletConnectServiceV2 {
             ], events: []
         )] }
     
+    var optionalNamespaces: [String: ProposalNamespace]  { [
+        "eip155": ProposalNamespace(
+            chains: [
+                Blockchain("eip155:1")!,
+                Blockchain("eip155:137")!
+            ],
+            methods: [
+                "eth_sendTransaction",
+                "eth_signTransaction",
+                "personal_sign",
+                "eth_sign",
+                "eth_signTypedData"
+            ], events: []
+        )
+    ] }
+    
     func connect(to wcWallet: WCWalletsProvider.WalletRecord) async throws -> Wc2ConnectionType {
         let activePairings = Pair.instance.getPairings().filter({$0.isAlive(for: wcWallet)})
         if let pairing = activePairings.first {
-            try await Sign.instance.connect(requiredNamespaces: requiredNamespaces, topic: pairing.topic)
+            try await Sign.instance.connect(requiredNamespaces: requiredNamespaces,
+                                            optionalNamespaces: optionalNamespaces,
+                                            topic: pairing.topic)
             return .oldPairing
         }
         let uri = try await Pair.instance.create()
