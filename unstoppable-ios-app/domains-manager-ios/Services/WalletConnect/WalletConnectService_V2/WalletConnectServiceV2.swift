@@ -100,6 +100,7 @@ protocol WalletConnectV2RequestHandlingServiceProtocol {
     func handleGetTransactionCount(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleSendRawTx(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleSignTypedData(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
+    func handleSignTypedData_v4(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     
     func sendResponse(_ response: WalletConnectSign.RPCResult, toRequest request: WalletConnectSign.Request) async throws
 }
@@ -693,6 +694,33 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     }
     
     func handleSignTypedData(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
+        Debugger.printInfo(topic: .WalletConnectV2, "Incoming request with payload: \(String(describing: request.jsonString))")
+        
+        guard let paramsAny = request.params.value as? [String],
+              paramsAny.count >= 2 else {
+            Debugger.printFailure("Invalid parameters", critical: true)
+            throw WalletConnectRequestError.failedBuildParams
+        }
+        let typedDataString = paramsAny[1]
+        let address = try parseAddress(from: paramsAny[0])
+                
+        let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
+                                                                         request: request,
+                                                                         messageString: typedDataString)
+        
+        let sig: AnyCodable
+        do {
+            let sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString)
+            sig = AnyCodable(sigTyped)
+        } catch {
+            Debugger.printFailure("Failed to sign typed data: \(typedDataString) by wallet:\(address), error: \(error)", critical: false)
+            throw WalletConnectRequestError.failedToSignMessage
+        }
+        
+        return .response(sig)
+    }
+    
+    func handleSignTypedData_v4(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
         Debugger.printInfo(topic: .WalletConnectV2, "Incoming request with payload: \(String(describing: request.jsonString))")
         
         guard let paramsAny = request.params.value as? [String],

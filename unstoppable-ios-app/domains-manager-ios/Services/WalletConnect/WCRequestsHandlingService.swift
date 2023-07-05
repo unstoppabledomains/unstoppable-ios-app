@@ -290,8 +290,7 @@ private extension WCRequestsHandlingService {
             case .ethSignTypedData:
                 responses = [try await wcSigner.handleSignTypedData(request: request)]
             case .ethSignTypedData_v4:
-                // TODO:
-                throw WalletConnectRequestError.methodUnsupported
+                responses = [try await wcSigner.handleSignTypedData_v4(request: request)]
             case .none:
                 /// Unsupported method
                 throw WalletConnectRequestError.methodUnsupported
