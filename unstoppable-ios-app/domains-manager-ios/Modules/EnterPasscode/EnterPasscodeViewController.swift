@@ -33,7 +33,10 @@ class EnterPasscodeViewController: BaseViewController, DigitalKeyboardDelegate, 
     
     // MARK: - DigitalKeyboardDelegate
     func didEnter(passcode: [Character]) { }
-  
+    
+    func getWarningType() -> DigitalKeyboardViewController.WarningType {
+        return .none
+    }
 }
 
 // MARK: - Common methods
@@ -46,7 +49,6 @@ extension EnterPasscodeViewController {
     func passwordsMatch(_ lhs: [Character], _ rhs: [Character]) -> Bool {
         guard lhs == rhs else {
             Vibration.error.vibrate()
-            self.reset()
             showPasscodeNotMatchAlert()
             return false
         }

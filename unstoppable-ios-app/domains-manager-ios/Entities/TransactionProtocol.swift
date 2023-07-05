@@ -52,9 +52,20 @@ enum TxOperation: String, Codable {
     case mintDomain = "MintDomain"
     case setReverseResolution = "SetReverseResolution"
     case removeReverseResolution = "RemoveReverseResolution"
+    case reverseResolutionBackfill = "ReverseResolutionBackfill"
     case mintOnWithdrawal = "MintOnWithdrawal"
     case trackPolygonCheckpoint = "TrackPolygonCheckpoint"
     case withdrawToEthereum = "WithdrawToEthereum"
+    
+    case bulkIssue = "BulkIssue"
+    case approvalForAll = "ApprovalForAll"
+    case dotCoinReturn = "DotCoinReturn"
+    case unknown = "Unknown"
+    case legacy = "Legacy"
+    
+    // ENS transactions
+    case ensCommit = "EnsCommit"
+    case ensRegister = "EnsRegister"
     
     public init(from decoder: Decoder) throws {
         let operationRaw = try decoder.singleValueContainer().decode(RawValue.self)
