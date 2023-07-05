@@ -58,7 +58,7 @@ extension Analytics {
         case permissionsRequested, permissionsGranted, permissionsDeclined
         
         // Messaging
-        case willShowMessagingProfile
+        case willShowMessagingProfile, willSendMessage
     }
 }
 
@@ -96,6 +96,9 @@ extension Analytics {
         case websiteLoginOption
         case value
         case state
+        case channelName
+        case messageType
+        case feedName
     }
 }
 
@@ -275,7 +278,11 @@ extension Analytics {
         case messagingDataType
         case newMessage
         case createMessagingProfile
-        case block
+        case messageInputSend, messageInputPlus, messageInputPlusAction
+        case viewMessagingProfile
+        case viewChannelInfo, leaveChannel, learnMoreChannelFeed
+        case block, unblock, leaveGroup
+        case resendMessage, deleteMessage
     }
 }
 

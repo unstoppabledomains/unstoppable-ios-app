@@ -265,6 +265,7 @@ extension ChatViewController: ChatInputViewDelegate {
     }
     
     func chatInputView(_ chatInputView: ChatInputView, didSentText text: String) {
+        logButtonPressedAnalyticEvents(button: .messageInputSend)
         presenter.didPressSendText(text)
     }
     
@@ -274,10 +275,11 @@ extension ChatViewController: ChatInputViewDelegate {
     }
     
     func chatInputViewAdditionalActionsButtonPressed(_ chatInputView: ChatInputView) {
-        
+        logButtonPressedAnalyticEvents(button: .messageInputPlus)
     }
     
     func chatInputViewAdditionalActionSelected(_ chatInputView: ChatInputView, action: ChatInputView.AdditionalAction) {
+        logButtonPressedAnalyticEvents(button: .messageInputPlusAction, parameters: [.value: action.rawValue])
         switch action {
         case .choosePhoto:
             presenter.choosePhotoButtonPressed()

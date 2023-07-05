@@ -8,7 +8,7 @@
 import UIKit
 
 @MainActor
-protocol ChatViewPresenterProtocol: BasePresenterProtocol {
+protocol ChatViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { get }
 
     func didSelectItem(_ item: ChatViewController.Item)
@@ -114,6 +114,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         case .unblocked, .currentUserIsBlocked:
             return
         case .otherUserIsBlocked, .bothBlocked:
+            logButtonPressedAnalyticEvents(button: .unblock)
             didPressUnblockButton()
         }
     }
@@ -367,7 +368,10 @@ private extension ChatViewPresenter {
         switch conversationState {
         case .newChat(let userInfo):
             if let domainName = userInfo.domainName {
-                actions.append(.init(type: .viewProfile, callback: { [weak self] in self?.didPressViewDomainProfileButton(domainName: domainName) }))
+                actions.append(.init(type: .viewProfile, callback: { [weak self] in
+                    self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
+                    self?.didPressViewDomainProfileButton(domainName: domainName)
+                }))
             } else {
                 return // No actions
             }
@@ -375,17 +379,26 @@ private extension ChatViewPresenter {
             switch chat.type {
             case .private(let details):
                 if let domainName = details.otherUser.domainName {
-                    actions.append(.init(type: .viewProfile, callback: { [weak self] in self?.didPressViewDomainProfileButton(domainName: domainName) }))
+                    actions.append(.init(type: .viewProfile, callback: { [weak self] in
+                        self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
+                        self?.didPressViewDomainProfileButton(domainName: domainName)
+                    }))
                 }
                 
                 switch blockStatus {
                 case .unblocked, .currentUserIsBlocked:
-                    actions.append(.init(type: .block, callback: { [weak self] in self?.didPressBlockButton() }))
+                    actions.append(.init(type: .block, callback: { [weak self] in
+                        self?.logButtonPressedAnalyticEvents(button: .block)
+                        self?.didPressBlockButton()
+                    }))
                 case .bothBlocked, .otherUserIsBlocked:
                     Void()
                 }
             case .group:
-                actions.append(.init(type: .leave, callback: { [weak self] in self?.didPressLeaveButton() }))
+                actions.append(.init(type: .leave, callback: { [weak self] in
+                    self?.logButtonPressedAnalyticEvents(button: .leaveGroup)
+                    self?.didPressLeaveButton()
+                }))
             }
         }
         
@@ -438,8 +451,10 @@ private extension ChatViewPresenter {
                                  forMessage message: MessagingChatMessageDisplayInfo) {
         switch action {
         case .resend:
+            logButtonPressedAnalyticEvents(button: .resendMessage)
             Task { try? await appContext.messagingService.resendMessage(message) }
         case .delete:
+            logButtonPressedAnalyticEvents(button: .deleteMessage)
             appContext.messagingService.deleteMessage(message)
             if let i = messages.firstIndex(where: { $0.id == message.id }) {
                 messages.remove(at: i)
@@ -503,6 +518,8 @@ private extension ChatViewPresenter {
     }
     
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
+        logAnalytic(event: .willSendMessage,
+                    parameters: [.messageType: type.analyticName])
         Task {
             do {
                 let newMessage: MessagingChatMessageDisplayInfo
