@@ -637,6 +637,13 @@ private extension CoreDataMessagingStorageService {
             lastMessage = convertCoreDataChannelFeedToMessagingChannelFeed(feed)
         }
         
+        let chatIdPredicate = NSPredicate(format: "channelId == %@", coreDataChannel.id!)
+        let isNotReadPredicate = NSPredicate(format: "isRead == NO")
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, isNotReadPredicate])
+        let unreadMessagesCount = (try? countEntities(CoreDataMessagingNewsChannelFeed.self,
+                                                      predicate: predicate,
+                                                      in: backgroundContext)) ?? 0
+        
         let newsChannel = MessagingNewsChannel(id: coreDataChannel.id!,
                                                userId: coreDataChannel.userId!,
                                                channel: coreDataChannel.channel!,
@@ -647,7 +654,7 @@ private extension CoreDataMessagingStorageService {
                                                verifiedStatus: Int(coreDataChannel.verifiedStatus),
                                                blocked: coreDataChannel.blocked ? 1 : 0,
                                                subscriberCount: Int(coreDataChannel.subscriberCount),
-                                               unreadMessagesCount: 0,
+                                               unreadMessagesCount: unreadMessagesCount,
                                                isUpToDate: coreDataChannel.isUpToDate,
                                                isCurrentUserSubscribed: true, /// We store only channels that user is opt-in for
                                                lastMessage: lastMessage)
