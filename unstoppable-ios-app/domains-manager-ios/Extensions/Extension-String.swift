@@ -635,6 +635,9 @@ extension String {
         // Security wall
         static let securityWallMessage = "SECURITY_WALL_MESSAGE"
         static let goToSettings = "GO_TO_SETTINGS"
+        static let allDataWillBeWiped  = "ALL_DATA_WILL_BE_WIPED"
+        static let appWillBeUnlocked  = "APP_WILL_BE_UNLOCKED"
+        
         
         // Reverse resolution
         static let setupReverseResolution = "SETUP_REVERSE_RESOLUTION"

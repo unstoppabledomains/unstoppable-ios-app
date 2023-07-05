@@ -12921,7 +12921,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios TESTFLIGHT RELEASE.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -12929,7 +12929,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.0;
+				MARKETING_VERSION = 4.6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -12947,7 +12947,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -12955,7 +12955,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.0;
+				MARKETING_VERSION = 4.6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -12980,7 +12980,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.1;
+				MARKETING_VERSION = 4.6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -13005,7 +13005,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.1;
+				MARKETING_VERSION = 4.6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -13030,7 +13030,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.1;
+				MARKETING_VERSION = 4.6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -13053,7 +13053,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.5.1;
+				MARKETING_VERSION = 4.6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -13201,7 +13201,7 @@
 			repositoryURL = "https://github.com/WalletConnect/WalletConnectSwiftV2";
 			requirement = {
 				kind = exactVersion;
-				version = 1.5.1;
+				version = 1.6.10;
 			};
 		};
 		29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */ = {
