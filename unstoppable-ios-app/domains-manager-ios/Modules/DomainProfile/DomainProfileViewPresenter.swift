@@ -436,7 +436,6 @@ private extension DomainProfileViewPresenter {
                 try await appContext.pullUpViewService.showDomainProfileChangesConfirmationPullUp(in: view,
                                                                                        changes: uiChangesToShow)
                 await view.dismissPullUpMenu()
-                saveChangesToAppGroup(changes, domain: dataHolder.domain)
                 let requestsWithChanges = buildRequestsWithChangesFrom(changes: changes)
                 await perform(requestsWithChanges: requestsWithChanges)
             } catch PullUpViewService.PullUpError.cancelled {
@@ -528,6 +527,9 @@ private extension DomainProfileViewPresenter {
                 }
                 UserDefaults.didEverUpdateDomainProfile = true
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
+                
+                let changes = requestsWithChanges.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.changes })
+                saveChangesToAppGroup(changes, domain: await dataHolder.domain)
             } else if updateErrors.count == requestsWithChanges.count {
                 // All requests are failed
                 await dataHolder.didFailToUpdateProfile()

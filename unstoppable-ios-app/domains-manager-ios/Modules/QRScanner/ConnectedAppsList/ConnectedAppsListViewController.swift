@@ -166,6 +166,13 @@ extension ConnectedAppsListViewController {
                 hasher.combine(displayInfo)
             }
         }
+        
+        var appName: String {
+            switch self {
+            case .app(let displayInfo, _):
+                return displayInfo.app.appName
+            }
+        }
     }
     
     struct AppItemDisplayInfo: Hashable {

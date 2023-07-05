@@ -361,7 +361,13 @@ private extension WalletsListViewPresenter {
                walletsWithInfo.first(where: { $0.displayInfo == displayInfo }) == nil {
                 walletsWithInfo.append(walletWithInfo)
             } else {
-                Debugger.printFailure("Wallet duplicate detected \(walletWithInfo)", critical: true)
+                let isCritical: Bool
+                #if DEBUG
+                isCritical = true
+                #else
+                isCritical = false
+                #endif
+                Debugger.printFailure("Wallet duplicate detected \(walletWithInfo)", critical: isCritical)
             }
         }
         self.walletsWithInfo = walletsWithInfo

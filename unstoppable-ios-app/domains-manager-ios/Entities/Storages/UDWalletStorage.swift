@@ -144,6 +144,12 @@ final class UDWalletsStorage {
             set(newWallets: allWallets, ownedBy: User.defaultId)
         }
     }
+    
+    func removeAllWallets() {
+        udWalletsWorkerQueue.sync {
+            set(newWallets: [], ownedBy: User.defaultId)
+        }
+    }
 
     func rename(_ wallet: UDWallet, with newWalletName: String) -> UDWallet? {
         var newWallet = wallet

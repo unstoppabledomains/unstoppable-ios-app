@@ -55,6 +55,15 @@
       }
     },
     {
+      "identity" : "qrcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/WalletConnect/QRCode",
+      "state" : {
+        "revision" : "263f280d2c8144adfb0b6676109846cfc8dd552b",
+        "version" : "14.3.1"
+      }
+    },
+    {
       "identity" : "rxswift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ReactiveX/RxSwift.git",
@@ -109,6 +118,24 @@
       }
     },
     {
+      "identity" : "swift-qrcode-generator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/swift-qrcode-generator",
+      "state" : {
+        "revision" : "5ca09b6a2ad190f94aa3d6ddef45b187f8c0343b",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "swiftimagereadwrite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/SwiftImageReadWrite",
+      "state" : {
+        "revision" : "5596407d1cf61b953b8e658fa8636a471df3c509",
+        "version" : "1.1.6"
+      }
+    },
+    {
       "identity" : "valet-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/unstoppabledomains/Valet-ios.git",
@@ -120,10 +147,10 @@
     {
       "identity" : "walletconnectswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/WalletConnect/WalletConnectSwift.git",
+      "location" : "https://github.com/unstoppabledomains/WalletConnectSwift.git",
       "state" : {
-        "revision" : "e0bbfd16d5c54a7aa7e316956d765399c6332fa2",
-        "version" : "1.7.0"
+        "branch" : "master",
+        "revision" : "4d96634ab476252dece5aa1c0f8459ce35d4bdac"
       }
     },
     {
@@ -131,8 +158,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2",
       "state" : {
-        "revision" : "75944463e6a0d3598b867c81742dd7991ed17bb5",
-        "version" : "1.5.1"
+        "revision" : "9b831af49900f07f887ed8d08acb73d5777b9d03",
+        "version" : "1.6.10"
       }
     },
     {
