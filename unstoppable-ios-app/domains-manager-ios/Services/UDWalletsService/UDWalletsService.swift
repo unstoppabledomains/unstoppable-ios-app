@@ -142,6 +142,10 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         notifyListeners(.walletsUpdated(getUserWallets()))
     }
     
+    func removeAllWallets() {
+        removeAllWallets(shouldNotify: true)
+    }
+    
     private func removeFromCacheWithoutNotification(wallet: UDWallet) {
         UDWalletsStorage.instance.remove(wallet: wallet)
         KeychainPrivateKeyStorage.instance.clear(for: wallet.address)
@@ -384,6 +388,13 @@ private extension UDWalletsService {
     
     func store(wallets: [UDWallet], shouldNotify: Bool = true) {
         UDWalletsStorage.instance.add(newWallets: wallets)
+        if shouldNotify {
+            notifyListeners(.walletsUpdated(getUserWallets()))
+        }
+    }
+        
+    func removeAllWallets(shouldNotify: Bool = true) {
+        UDWalletsStorage.instance.removeAllWallets()
         if shouldNotify {
             notifyListeners(.walletsUpdated(getUserWallets()))
         }
