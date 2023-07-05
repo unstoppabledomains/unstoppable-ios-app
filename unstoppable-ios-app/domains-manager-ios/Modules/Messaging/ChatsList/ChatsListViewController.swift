@@ -170,6 +170,7 @@ private extension ChatsListViewController {
     
     @objc func newMessageButtonPressed() {
         UDVibration.buttonTap.vibrate()
+        searchBar.becomeFirstResponder()
     }
     
     func checkIfCollectionScrollingEnabled() {
