@@ -394,26 +394,26 @@ private extension WCRequestsHandlingService {
     }
     
     func registerV2ProposalHandler() {
-        walletConnectServiceV2.publishersProvider.sessionProposalPublisher
+        Sign.instance.sessionProposalPublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] sessionProposal in
+            .sink { [weak self] proposalResponse in
                 Task { [weak self] in
                     Debugger.printInfo(topic: .WalletConnectV2, "Did receive session proposal")
-                    self?.addNewRequest(.connectionProposal(sessionProposal))
+                    self?.addNewRequest(.connectionProposal(proposalResponse.proposal))
                 }
             }.store(in: &publishers)
     }
     
     func registerV2RequestHandlers() {
-        walletConnectServiceV2.publishersProvider.sessionRequestPublisher
+        Sign.instance.sessionRequestPublisher
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] sessionRequest in
-                let methodString = sessionRequest.method
+            .sink { [weak self] requestResponse in
+                let methodString = requestResponse.request.method
                 Debugger.printInfo(topic: .WalletConnectV2, "Did receive session request, method: \(methodString)")
                 let requestType = WalletConnectRequestType(rawValue: methodString)
                 
                 self?.stopConnectionTimeout()
-                self?.addNewRequest(.rpcRequestV2(sessionRequest, type: requestType))
+                self?.addNewRequest(.rpcRequestV2(requestResponse.request, type: requestType))
             }.store(in: &publishers)
     }
     

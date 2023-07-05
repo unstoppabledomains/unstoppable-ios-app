@@ -104,6 +104,10 @@ extension MockUDWalletsService: UDWalletsServiceProtocol {
         notifyListeners()
     }
     
+    func removeAllWallets() {
+        wallets = []
+    }
+    
     func rename(wallet: UDWallet, with name: String) -> UDWallet? {
         if let i = self.wallets.firstIndex(of: wallet) {
             wallets[i].aliasName = name
