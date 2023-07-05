@@ -9,15 +9,26 @@ import UIKit
 
 protocol DigitalKeyboardDelegate: AnyObject {
     func didEnter(passcode: [Character])
+    func getWarningType() -> DigitalKeyboardViewController.WarningType
 }
 
 final class DigitalKeyboardViewController: UIViewController {
     
+    enum WarningType {
+        case none
+        case lock
+        case wipe
+    }
+    
     @IBOutlet private weak var passcodeInputView: PasscodeInputView!
+    @IBOutlet weak var warningLabel: UILabel!
     @IBOutlet private var keyboardButtons: [PasscodeButton]!
     
     weak var delegate: DigitalKeyboardDelegate?
     
+    var enabled = true
+    var timeCountDown = 60
+
     static func instantiate() -> UIViewController {
         nibInstance()
     }
@@ -34,12 +45,64 @@ final class DigitalKeyboardViewController: UIViewController {
 extension DigitalKeyboardViewController {
     func reset() {
         passcodeInputView.reset()
+        setupWarningLabel()
+    }
+    
+    func setupWarningLabel() {
+        guard let warningType = delegate?.getWarningType() else {
+            Debugger.printFailure("No delegate for keyboard found")
+            return
+        }
+        switch warningType {
+        case .none: resetWarningLabel()
+        case .wipe: setWipingLabel(String.Constants.allDataWillBeWiped)
+        case .lock: setWaitingLabel(String.Constants.appWillBeUnlocked)
+        }
+    }
+    
+    func resetWarningLabel() {
+        warningLabel.layer.masksToBounds = true
+        warningLabel.layer.cornerRadius = 8
+        warningLabel.text = ""
+        warningLabel.backgroundColor = .systemBackground
+        warningLabel.isHidden = true
+    }
+    
+    func setWaitingLabel(_ nonLocalizedMessage: String) {
+        func stepDown() {
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                warningLabel.text = nonLocalizedMessage.localized(String(timeCountDown - 1))
+                timeCountDown -= 1
+                if timeCountDown < 1 {
+                    resetWarningLabel()
+                    enabled = true
+                    return
+                }
+                DispatchQueue.global().asyncAfter(deadline: .now() + 1) {
+                    stepDown()
+                }
+            }
+        }
+        warningLabel.backgroundColor = .systemBackground
+        warningLabel.isHidden = false
+        
+        enabled = false
+        timeCountDown = 60
+        stepDown()
+    }
+    
+    func setWipingLabel(_ nonLocalizedMessage: String) {
+        warningLabel.text = nonLocalizedMessage.localized()
+        warningLabel.backgroundColor = .systemRed
+        warningLabel.isHidden = false
     }
 }
 
 // MARK: - Actions
 private extension DigitalKeyboardViewController {
     @IBAction func didTapDigitalButton(_ sender: UIButton) {
+        guard enabled else { return }
         
         let tag = sender.tag
         let startingValue = Int(("0" as UnicodeScalar).value)
@@ -59,6 +122,7 @@ private extension DigitalKeyboardViewController {
     }
     
     @IBAction func didTapErase(_ sender: UIButton) {
+        guard enabled else { return }
         do {
             try passcodeInputView.removeLast()
             Vibration.rigid.vibrate()
