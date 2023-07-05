@@ -187,7 +187,8 @@ private extension ChatViewPresenter {
                                                                                                   limit: fetchLimit)
                     await addMessages(messagesBefore)
                     
-                    if !(messages.first?.isRead == true),
+                    if !messages.isEmpty,
+                       !messages[0].isRead,
                        let firstReadMessage = messages.first(where: { $0.isRead }) {
                         self.chatState = .hasUnreadMessagesAfter(message: firstReadMessage)
                     } else {
