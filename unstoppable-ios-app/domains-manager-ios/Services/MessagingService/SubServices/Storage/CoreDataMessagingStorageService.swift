@@ -555,6 +555,10 @@ private extension CoreDataMessagingStorageService {
     }
     
     // Message type
+    func getUnknownMessageSeparator() -> String {
+        "---------"
+    }
+    
     func getMessageDisplayType(from coreDataMessage: CoreDataMessagingChatMessage,
                                decrypter: MessagingContentDecrypterService,
                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState,
@@ -583,6 +587,16 @@ private extension CoreDataMessagingStorageService {
             let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64,
                                                                                         encryptedContent: messageContent)
             return .imageBase64(imageBase64DisplayInfo)
+        } else if coreDataMessage.messageType == 999 {
+            let separator = getUnknownMessageSeparator()
+            let components = coreDataMessage.messageContent!.components(separatedBy: separator)
+            guard components.count > 2 else { return nil }
+            
+            let type = components[0]
+            let encryptedContent = components[1..<components.count].joined()
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: encryptedContent,
+                                                                                type: type)
+            return .unknown(unknownDisplayInfo)
         }
         
         return nil
@@ -596,6 +610,10 @@ private extension CoreDataMessagingStorageService {
         case .imageBase64(let info):
             coreDataMessage.messageType = 1
             coreDataMessage.messageContent = info.encryptedContent
+        case .unknown(let info):
+            coreDataMessage.messageType = 999
+            let separator = getUnknownMessageSeparator()
+            coreDataMessage.messageContent = info.type + separator + info.encryptedContent
         }
     }
     

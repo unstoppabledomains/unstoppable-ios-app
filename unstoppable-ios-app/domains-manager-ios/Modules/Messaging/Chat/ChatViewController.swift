@@ -40,6 +40,7 @@ final class ChatViewController: BaseViewController {
     override var scrollableContentYOffset: CGFloat? { 13 }
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self,
                                                         ChatImageCell.self,
+                                                        ChatUnsupportedMessageCell.self,
                                                         ChatEmptyCell.self,
                                                         ChannelFeedCell.self,
                                                         ChatLoadingCell.self] }
@@ -405,6 +406,11 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .unsupportedMessage(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatUnsupportedMessageCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             case .channelFeed(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChannelFeedCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
@@ -495,6 +501,7 @@ extension ChatViewController {
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
+        case unsupportedMessage(configuration: UnsupportedMessageUIConfiguration)
         case channelFeed(configuration: ChannelFeedUIConfiguration)
         case emptyState
         case loading
@@ -504,6 +511,8 @@ extension ChatViewController {
             case .textMessage(let configuration):
                 return configuration.message
             case .imageBase64Message(let configuration):
+                return configuration.message
+            case .unsupportedMessage(let configuration):
                 return configuration.message
             case .emptyState, .channelFeed, .loading:
                 return nil
@@ -543,6 +552,11 @@ extension ChatViewController {
             hasher.combine(message.id)
             hasher.combine(message.deliveryState)
         }
+    }
+    
+    struct UnsupportedMessageUIConfiguration: Hashable {
+        let message: MessagingChatMessageDisplayInfo
+        let type: String
     }
     
     struct ChannelFeedUIConfiguration: Hashable {
