@@ -7,11 +7,15 @@
 
 import UIKit
 
-final class ChatUnsupportedMessageCell: UICollectionViewCell {
+final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
 
+    @IBOutlet private weak var messageTextView: UITextView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
+        setupTextView(messageTextView)
+        messageTextView.text = String.Constants.notSupported.localized()
     }
 
 }
@@ -19,7 +23,7 @@ final class ChatUnsupportedMessageCell: UICollectionViewCell {
 // MARK: - Open methods
 extension ChatUnsupportedMessageCell {
     func setWith(configuration: ChatViewController.UnsupportedMessageUIConfiguration) {
-
         
+        setWith(message: configuration.message)
     }
 }

@@ -35,5 +35,9 @@ enum PushEnvironment {
     
     struct PushImageContentResponse: Codable {
         let content: String
+        
+        var name: String?
+        var type: String?
+        var size: Int?
     }
 }

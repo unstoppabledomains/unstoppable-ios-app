@@ -555,10 +555,6 @@ private extension CoreDataMessagingStorageService {
     }
     
     // Message type
-    func getUnknownMessageSeparator() -> String {
-        "---------"
-    }
-    
     func getMessageDisplayType(from coreDataMessage: CoreDataMessagingChatMessage,
                                decrypter: MessagingContentDecrypterService,
                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState,
@@ -588,14 +584,9 @@ private extension CoreDataMessagingStorageService {
                                                                                         encryptedContent: messageContent)
             return .imageBase64(imageBase64DisplayInfo)
         } else if coreDataMessage.messageType == 999 {
-            let separator = getUnknownMessageSeparator()
-            let components = coreDataMessage.messageContent!.components(separatedBy: separator)
-            guard components.count > 2 else { return nil }
-            
-            let type = components[0]
-            let encryptedContent = components[1..<components.count].joined()
-            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: encryptedContent,
-                                                                                type: type)
+         
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: messageContent,
+                                                                                type: "type")
             return .unknown(unknownDisplayInfo)
         }
         
@@ -612,8 +603,7 @@ private extension CoreDataMessagingStorageService {
             coreDataMessage.messageContent = info.encryptedContent
         case .unknown(let info):
             coreDataMessage.messageType = 999
-            let separator = getUnknownMessageSeparator()
-            coreDataMessage.messageContent = info.type + separator + info.encryptedContent
+            coreDataMessage.messageContent = info.encryptedContent
         }
     }
     
