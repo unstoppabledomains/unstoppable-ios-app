@@ -542,7 +542,7 @@ extension DomainItem: Push.Signer, Push.TypedSinger {
     }
     
     func getEip712Signature(message: String) async throws -> String {
-        throw NSError(domain: "com.domains", code: -1) // TODO: - Add support
+        try await self.typedDataSign(message: message)
     }
     
     func getAddress() async throws -> String {
