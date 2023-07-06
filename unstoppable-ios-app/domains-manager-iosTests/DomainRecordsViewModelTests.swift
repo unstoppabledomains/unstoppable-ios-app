@@ -12,12 +12,12 @@ import Web3
 class SignatureTests: XCTestCase {
     static let timeout: TimeInterval = 3000
 
-    var typedData: EIP712TypedData!
+    var simpleTypedData: EIP712TypedData!
     var typedDataOpenSea: EIP712TypedData!
 
     override func setUp() {
         super.setUp()
-        let string = """
+        let stringSimple = """
 {
     "types": {
         "EIP712Domain": [
@@ -56,9 +56,9 @@ class SignatureTests: XCTestCase {
     }
 }
 """
-        let data = string.data(using: .utf8)!
-        typedData = try? JSONDecoder().decode(EIP712TypedData.self, from: data)
-        XCTAssertNotNil(typedData)
+        let data = stringSimple.data(using: .utf8)!
+        simpleTypedData = try? JSONDecoder().decode(EIP712TypedData.self, from: data)
+        XCTAssertNotNil(simpleTypedData)
         
         let stringOpenSea = """
 {
@@ -242,29 +242,29 @@ class SignatureTests: XCTestCase {
 
     func testEncodeType() {
         let result = "Mail(Person from,Person to,string contents)Person(string name,address wallet)"
-        XCTAssertEqual(typedData.encodeType(primaryType: "Mail"), result.data(using: .utf8)!)
+        XCTAssertEqual(simpleTypedData.encodeType(primaryType: "Mail"), result.data(using: .utf8)!)
     }
 
     func testEncodedTypeHash() {
         let result = "a0cedeb2dc280ba39b857546d74f5549c3a1d7bdc2dd96bf881f76108e23dac2"
-        XCTAssertEqual(typedData.typeHash.hexString, result)
+        XCTAssertEqual(simpleTypedData.typeHash.hexString, result)
     }
 
     func testEncodeData() {
         // swiftlint:disable:next line_length
         let result = "a0cedeb2dc280ba39b857546d74f5549c3a1d7bdc2dd96bf881f76108e23dac2fc71e5fa27ff56c350aa531bc129ebdf613b772b6604664f5d8dbe21b85eb0c8cd54f074a4af31b4411ff6a60c9719dbd559c221c8ac3492d9d872b041d703d1b5aadf3154a261abdd9086fc627b61efca26ae5702701d05cd2305f7c52a2fc8"
-        let data = typedData.encodeData(data: typedData.message, type: typedData.primaryType)
+        let data = simpleTypedData.encodeData(data: simpleTypedData.message, type: simpleTypedData.primaryType)
         XCTAssertEqual(data.hexString, result)
     }
 
     func testStructHash() {
         let result = "c52c0ee5d84264471806290a3f2c4cecfc5490626bf912d01f240d7a274b371e"
-        let data = typedData.encodeData(data: typedData.message, type: typedData.primaryType)
+        let data = simpleTypedData.encodeData(data: simpleTypedData.message, type: simpleTypedData.primaryType)
         XCTAssertEqual(Crypto.hash(data).hexString, result)
 
         let result2 = "f2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090f"
 //        let json = try! JSONDecoder().decode(JSON.self, from: try! JSONEncoder().encode(typedData.domain))
-        let data2 = typedData.encodeData(data: typedData.domain, type: "EIP712Domain")
+        let data2 = simpleTypedData.encodeData(data: simpleTypedData.domain, type: "EIP712Domain")
         XCTAssertEqual(Crypto.hash(data2).hexString, result2)
     }
         
@@ -272,7 +272,7 @@ class SignatureTests: XCTestCase {
         let cow = "cow".data(using: .utf8)!
         let privateKeyData = Crypto.hash(cow)
 
-        let dataSignHash = typedData.signHash
+        let dataSignHash = simpleTypedData.signHash
         let signed = try! UDWallet.signMessageHash(messageHash: dataSignHash, with: privateKeyData)
         let result = "be609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2"
         XCTAssertEqual(dataSignHash.hexString, result)
@@ -287,6 +287,11 @@ class SignatureTests: XCTestCase {
         
         XCTAssertEqual(m.count, 32)
         XCTAssertEqual(message.lowercased(), "0x" + m.unicodeScalarToHex!.lowercased())
+    }
+    
+    func testGetCorrectEndResult() async {
+        let wallet = appContext.udWalletsService.find(by: "0x94b420da794c1a8f45b70581ae015e6bd1957233")!
+//        try! await wallet.getPersonalSignature(messageString: <#T##String#>)
     }
     
 //    func testSignHashOpenSea() {
