@@ -14,7 +14,8 @@ enum WalletConnectRequestType: String, CaseIterable, Hashable {
     case ethGetTransactionCount = "eth_getTransactionCount"
     case ethSendTransaction = "eth_sendTransaction"
     case ethSendRawTransaction = "eth_sendRawTransaction"
-    case ethSignedTypedData = "eth_signTypedData"
+    case ethSignTypedData = "eth_signTypedData"
+    case ethSignTypedData_v4 = "eth_signTypedData_v4"
     
     var string: String { self.rawValue }
     
