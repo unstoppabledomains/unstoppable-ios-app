@@ -107,8 +107,8 @@ struct PushEntitiesTransformer {
                                                 pgpKey: String,
                                                 isRead: Bool) -> MessagingChatMessage? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
-              let messageType = PushMessageType(rawValue: pushMessage.messageType),
               let id = pushMessage.cid else { return nil }
+        let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
         
         let encryptedContent = pushMessage.messageContent
         guard let decryptedContent = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
@@ -126,7 +126,9 @@ struct PushEntitiesTransformer {
                                                                                         encryptedContent: encryptedContent)
             type = .imageBase64(imageBase64DisplayInfo)
         default:
-            return nil
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: encryptedContent,
+                                                                                type: pushMessage.messageType)
+            type = .unknown(unknownDisplayInfo)
         }
         
         var time = Date()
@@ -163,9 +165,9 @@ struct PushEntitiesTransformer {
                                                            pgpKey: String) -> MessagingWebSocketMessageEntity? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
               let receiverWallet = getWalletAddressFrom(eip155String: pushMessage.toDID),
-              let messageType = PushMessageType(rawValue: pushMessage.messageType),
               let id = pushMessage.cid else { return nil }
-        
+        let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
+
         
         switch messageType {
         case .text:

@@ -327,6 +327,8 @@ private extension ChatViewPresenter {
                                                             actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
+        case .unknown(let info):
+            return .unsupportedMessage(configuration: .init(message: message, type: info.type))
         }
     }
     

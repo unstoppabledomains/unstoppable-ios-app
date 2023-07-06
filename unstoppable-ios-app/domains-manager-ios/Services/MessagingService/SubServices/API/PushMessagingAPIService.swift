@@ -451,7 +451,7 @@ private extension PushMessagingAPIService {
                                  by user: MessagingChatUserProfile) async throws -> Push.PushChat.SendOptions {
         let env = getCurrentPushEnvironment()
         let pushMessageContent = try getPushMessageContentFrom(displayType: messageType)
-        let pushMessageType = getPushMessageTypeFrom(displayType: messageType)
+        let pushMessageType = try getPushMessageTypeFrom(displayType: messageType)
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         
         let sendOptions = Push.PushChat.SendOptions(messageContent: pushMessageContent,
@@ -487,15 +487,19 @@ private extension PushMessagingAPIService {
             let entity = PushEnvironment.PushImageContentResponse(content: details.base64)
             guard let jsonString = entity.jsonString() else { throw PushMessagingAPIServiceError.failedToPrepareMessageContent }
             return jsonString
+        case .unknown:
+            throw PushMessagingAPIServiceError.unsupportedType
         }
     }
     
-    func getPushMessageTypeFrom(displayType: MessagingChatMessageDisplayType) -> PushMessageType {
+    func getPushMessageTypeFrom(displayType: MessagingChatMessageDisplayType) throws -> PushMessageType {
         switch displayType {
         case .text:
             return .text
         case .imageBase64:
             return .image
+        case .unknown:
+            throw PushMessagingAPIServiceError.unsupportedType
         }
     }
 }
@@ -505,8 +509,13 @@ private extension PushMessagingAPIService {
     enum PushMessageType: String {
         case text = "Text"
         case image = "Image"
+        case video = "Video"
+        case audio = "Audio"
         case file = "File"
-        case gif = "GIF"
+        case gif = "GIF" // Deprecated, use mediaEmbed
+        case mediaEmbed = "MediaEmbed"
+        case meta = "Meta"
+        case reply = "Reply"
     }
 }
 
@@ -518,6 +527,7 @@ extension PushMessagingAPIService {
         case failedToGetPushUser
         case incorrectDataState
         case blockUserInGroupChatsNotSupported
+        case unsupportedType
         
         case failedToDecodeServiceData
         case failedToConvertPushMessage

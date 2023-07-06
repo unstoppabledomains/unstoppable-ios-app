@@ -10,6 +10,12 @@ import Foundation
 enum PushMessageType: String, Codable {
     case text = "Text"
     case image = "Image"
+    case video = "Video"
+    case audio = "Audio"
     case file = "File"
-    case gif = "GIF"
+    case gif = "GIF" // Deprecated, use mediaEmbed
+    case mediaEmbed = "MediaEmbed"
+    case meta = "Meta"
+    case reply = "Reply"
+    case unknown
 }

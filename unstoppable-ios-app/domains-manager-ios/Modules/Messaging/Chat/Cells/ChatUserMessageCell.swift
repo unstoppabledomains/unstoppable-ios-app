@@ -11,7 +11,7 @@ class ChatUserMessageCell: ChatBaseCell {
     
     @IBOutlet private weak var timeLabel: UILabel!
     @IBOutlet private weak var timeStackView: UIStackView!
-    @IBOutlet private weak var deleteButton: FABRaisedTertiaryButton!
+    @IBOutlet private weak var deleteButton: FABRaisedTertiaryButton?
     
     private var timeLabelTapGesture: UITapGestureRecognizer?
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
@@ -22,8 +22,8 @@ class ChatUserMessageCell: ChatBaseCell {
         let timeLabelTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapTimeLabel))
         timeLabel.addGestureRecognizer(timeLabelTapGesture)
         self.timeLabelTapGesture = timeLabelTapGesture
-        deleteButton.setTitle(nil, image: .trashIcon16)
-        deleteButton.tintColor = .foregroundDefault
+        deleteButton?.setTitle(nil, image: .trashIcon16)
+        deleteButton?.tintColor = .foregroundDefault
     }
     
     override func setWith(sender: MessagingChatSender) {
@@ -40,20 +40,20 @@ class ChatUserMessageCell: ChatBaseCell {
         switch message.deliveryState {
         case .delivered:
             timeLabelTapGesture?.isEnabled = false
-            deleteButton.isHidden = true
+            deleteButton?.isHidden = true
             let formatterTime = MessageDateFormatter.formatMessageDate(message.time)
             timeLabel.setAttributedTextWith(text: formatterTime,
                                             font: .currentFont(withSize: 11, weight: .regular),
                                             textColor: .foregroundSecondary)
         case .sending:
             timeLabelTapGesture?.isEnabled = false
-            deleteButton.isHidden = true
+            deleteButton?.isHidden = true
             timeLabel.setAttributedTextWith(text: String.Constants.sending.localized() + "...",
                                             font: .currentFont(withSize: 11, weight: .regular),
                                             textColor: .foregroundSecondary)
         case .failedToSend:
             timeLabelTapGesture?.isEnabled = true
-            deleteButton.isHidden = false
+            deleteButton?.isHidden = false
             let fullText = String.Constants.sendingFailed.localized() + ". " + String.Constants.tapToRetry.localized()
             timeLabel.setAttributedTextWith(text: fullText,
                                             font: .currentFont(withSize: 11, weight: .semibold),

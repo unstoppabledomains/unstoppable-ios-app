@@ -583,6 +583,11 @@ private extension CoreDataMessagingStorageService {
             let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64,
                                                                                         encryptedContent: messageContent)
             return .imageBase64(imageBase64DisplayInfo)
+        } else if coreDataMessage.messageType == 999 {
+         
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: messageContent,
+                                                                                type: "type")
+            return .unknown(unknownDisplayInfo)
         }
         
         return nil
@@ -595,6 +600,9 @@ private extension CoreDataMessagingStorageService {
             coreDataMessage.messageContent = info.encryptedText
         case .imageBase64(let info):
             coreDataMessage.messageType = 1
+            coreDataMessage.messageContent = info.encryptedContent
+        case .unknown(let info):
+            coreDataMessage.messageType = 999
             coreDataMessage.messageContent = info.encryptedContent
         }
     }

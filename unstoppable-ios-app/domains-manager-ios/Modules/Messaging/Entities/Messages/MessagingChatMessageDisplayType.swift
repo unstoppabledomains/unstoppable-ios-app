@@ -10,14 +10,16 @@ import Foundation
 enum MessagingChatMessageDisplayType: Hashable {
     case text(MessagingChatMessageTextTypeDisplayInfo)
     case imageBase64(MessagingChatMessageImageBase64TypeDisplayInfo)
-    // "File" | "GIF"
-    
+    case unknown(MessagingChatMessageUnknownTypeDisplayInfo)
+ 
     var analyticName: String {
         switch self {
         case .text:
-            return "text"
+            return "Text"
         case .imageBase64:
-            return "image"
+            return "Image"
+        case .unknown(let info):
+            return info.type
         }
     }
 }

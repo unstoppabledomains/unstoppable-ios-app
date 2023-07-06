@@ -150,6 +150,7 @@
 "UNBLOCK" = "Unblock";
 "VIEW_INFO" = "View info";
 "LEAVE" = "Leave";
+"NOT_SUPPORTED" = "Not supported";
 
 /* ONBOARDING */
 // Tutorial screens

@@ -191,6 +191,7 @@ extension String {
         static let unblock = "UNBLOCK"
         static let viewInfo = "VIEW_INFO"
         static let leave = "LEAVE"
+        static let notSupported = "NOT_SUPPORTED"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
