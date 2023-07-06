@@ -89,13 +89,6 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         case .userInfo(let configuration):
             logButtonPressedAnalyticEvents(button: .userToChatInList)
             openChatWith(conversationState: .newChat(configuration.userInfo))
-        case .domainName(let domainName):
-            logButtonPressedAnalyticEvents(button: .domainToChatInList)
-            Task {
-                guard let ownerWallet = try? await NetworkService().fetchDomainOwner(for: domainName) else { return }
-                
-                openChatWith(conversationState: .newChat(.init(wallet: ownerWallet, domainName: domainName)))
-            }
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
         }
@@ -153,7 +146,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                                                                                    for: profile)
                 searchData.searchUsers = searchUsers
                 searchData.searchChannels = searchChannels
-                searchData.domainNames = domainNames
+                searchData.domainProfiles = domainNames
                 showData()
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -378,7 +371,6 @@ private extension ChatsListViewPresenter {
         enum PeopleSearchResult {
             case existingChat(MessagingChatDisplayInfo)
             case newUser(MessagingChatUserDisplayInfo)
-            case domainName(DomainName)
             
             var item: ChatsListViewController.Item {
                 switch self {
@@ -386,8 +378,6 @@ private extension ChatsListViewPresenter {
                     return .chat(configuration: .init(chat: chat))
                 case .newUser(let userInfo):
                     return .userInfo(configuration: .init(userInfo: userInfo))
-                case .domainName(let domainName):
-                    return .domainName(domainName)
                 }
             }
         }
@@ -411,8 +401,8 @@ private extension ChatsListViewPresenter {
             let remotePeople = searchData.searchUsers.filter({ !localChatsPeopleWallets.contains($0.wallet.lowercased()) })
             people = localChats.map { .existingChat($0) } + remotePeople.map { .newUser($0) }
             
-            let domainNames = searchData.domainNames.filter({ $0 != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name })
-            people += domainNames.map { .domainName($0) }
+            let domainProfiles = searchData.domainProfiles.filter({ $0.name != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name })
+            people += domainProfiles.map { .newUser(.init(wallet: $0.ownerAddress, domainName: $0.name, pfpURL: URL(string: $0.imageUrl ?? ""))) }
             
             // Channels
             let localChannels = self.channels.filter { $0.name.lowercased().contains(searchKey) }
@@ -553,7 +543,7 @@ private extension ChatsListViewPresenter {
         var searchKey: String = ""
         var searchUsers: [MessagingChatUserDisplayInfo] = []
         var searchChannels: [MessagingNewsChannel] = []
-        var domainNames: [String] = []
+        var domainProfiles: [SearchDomainProfile] = []
     }
     
     enum MessagingProfileStateAnalytics: String {
@@ -565,7 +555,7 @@ private extension ChatsListViewPresenter {
 
 private final class SearchManager {
     
-    typealias SearchResult = ([MessagingChatUserDisplayInfo], [MessagingNewsChannel], [String])
+    typealias SearchResult = ([MessagingChatUserDisplayInfo], [MessagingNewsChannel], [SearchDomainProfile])
     typealias SearchUsersTask = Task<SearchResult, Error>
     
     private let debounce: TimeInterval

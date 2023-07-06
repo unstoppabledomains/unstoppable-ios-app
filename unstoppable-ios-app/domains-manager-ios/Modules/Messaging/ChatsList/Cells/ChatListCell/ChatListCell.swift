@@ -88,23 +88,6 @@ extension ChatListCell {
         setLastMessageText("")
         chevron.isHidden = false
     }
-    
-    func setWith(domainName: DomainName) {
-        setNameText(domainName)
-        setAvatarFrom(url: nil, name: domainName)
-        Task {
-            let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName)
-            if let urlString = pfpInfo?.pfpURL,
-               let url = URL(string: urlString) {
-                setAvatarFrom(url: url, name: domainName)
-            }
-        }
-        badgeView.setUnreadMessagesCount(0)
-        
-        setTimeText(nil)
-        setLastMessageText("")
-        chevron.isHidden = false
-    }
 }
 
 // MARK: - Private methods
