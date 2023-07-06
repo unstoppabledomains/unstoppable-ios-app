@@ -682,6 +682,10 @@ private final class MockWCServiceV2: WalletConnectV2RequestHandlingServiceProtoc
         try await getResponse()
     }
     
+    func handleSignTypedData_v4(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
+        try await getResponse()
+    }
+    
     func getResponse() async throws -> JSONRPC.RPCResult {
         if let errorToFail {
             throw errorToFail
