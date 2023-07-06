@@ -328,11 +328,6 @@ private extension ChatsListViewController {
                 cell.setSearchStateUI()
                 
                 return cell
-            case .domainName(let domainName):
-                let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
-                cell.setWith(domainName: domainName)
-                
-                return cell
             }
         })
         
@@ -445,7 +440,6 @@ extension ChatsListViewController {
         case createProfile
         case emptyState(configuration: EmptyStateUIConfiguration)
         case userInfo(configuration: UserInfoUIConfiguration)
-        case domainName(DomainName)
         case emptySearch
     }
     

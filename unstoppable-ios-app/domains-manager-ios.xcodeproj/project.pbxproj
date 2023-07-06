@@ -6529,7 +6529,6 @@
 		C65271DD2A148D74001A084C /* Messaging */ = {
 			isa = PBXGroup;
 			children = (
-				C68BEC0D2A3974D900A0B809 /* CreateMessagingProfile */,
 				C65272492A15D928001A084C /* Chat */,
 				C65272482A15D8EA001A084C /* ChatsList */,
 				C65271F92A148FC4001A084C /* Entities */,
@@ -7336,13 +7335,6 @@
 				C68953992834D08F0046CBA3 /* AddCurrencyCell.xib */,
 			);
 			path = AddCurrencyCell;
-			sourceTree = "<group>";
-		};
-		C68BEC0D2A3974D900A0B809 /* CreateMessagingProfile */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = CreateMessagingProfile;
 			sourceTree = "<group>";
 		};
 		C68BEC232A39ABCF00A0B809 /* ChatListCreateProfileCell */ = {
