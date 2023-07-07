@@ -564,8 +564,8 @@ private extension CoreDataMessagingStorageService {
         var decryptedContent = messageContent
         if deliveryState == .delivered {
             guard let decrypted = try? decrypter.decryptText(messageContent,
-                                                                    with: coreDataMessage.serviceMetadata,
-                                                                    wallet: wallet) else {
+                                                             with: coreDataMessage.serviceMetadata,
+                                                             wallet: wallet) else {
                 return nil }
             decryptedContent = decrypted
         }
@@ -575,16 +575,10 @@ private extension CoreDataMessagingStorageService {
                                                                           encryptedText: messageContent)
             return .text(textDisplayInfo)
         } else if coreDataMessage.messageType == 1 {
-            var base64: String = decryptedContent
-            if let contentInfo = PushEnvironment.PushImageContentResponse.objectFromJSONString(decryptedContent) {
-                base64 = contentInfo.content
-            }
-
-            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64,
+            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent,
                                                                                         encryptedContent: messageContent)
             return .imageBase64(imageBase64DisplayInfo)
         } else if coreDataMessage.messageType == 999 {
-         
             let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: messageContent,
                                                                                 type: "type")
             return .unknown(unknownDisplayInfo)
