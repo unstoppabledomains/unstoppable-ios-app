@@ -34,11 +34,15 @@ enum PushEnvironment {
         let signature: String 
     }
     
-    struct PushImageContentResponse: Codable {
+    struct PushMessageContentResponse: Codable {
         let content: String
-        
         var name: String?
         var type: String?
         var size: Int?
+    }
+    
+    struct ChatPublicKeysHolder: Codable {
+        let chatId: String
+        let publicKeys: [String]
     }
 }

@@ -2725,6 +2725,10 @@
 		C692C36B282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C369282EADA400C31393 /* SelectAppearanceThemePullUpView.swift */; };
 		C692C36C282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C369282EADA400C31393 /* SelectAppearanceThemePullUpView.swift */; };
 		C692C36D282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C369282EADA400C31393 /* SelectAppearanceThemePullUpView.swift */; };
+		C695C2682A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */; };
+		C695C2692A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */; };
+		C695C26A2A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */; };
+		C695C26B2A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */; };
 		C6A223C32869FE1E005C3267 /* SocialsDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */; };
 		C6A223C42869FE1E005C3267 /* SocialsDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */; };
 		C6A223C52869FE1E005C3267 /* SocialsDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */; };
@@ -4657,6 +4661,7 @@
 		C692C35E282EA71C00C31393 /* AppearanceSettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceSettingsCell.swift; sourceTree = "<group>"; };
 		C692C35F282EA71C00C31393 /* AppearanceSettingsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppearanceSettingsCell.xib; sourceTree = "<group>"; };
 		C692C369282EADA400C31393 /* SelectAppearanceThemePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAppearanceThemePullUpView.swift; sourceTree = "<group>"; };
+		C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushPublicKeysStorage.swift; sourceTree = "<group>"; };
 		C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocialsDomainImagePreviewView.xib; sourceTree = "<group>"; };
 		C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewPresenter.swift; sourceTree = "<group>"; };
@@ -6007,6 +6012,7 @@
 			children = (
 				C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */,
 				C62396B22A28DE3B00363F60 /* PushEnvironment.swift */,
+				C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */,
 				C66107982A31A4BC0076782F /* PushEntitiesTransformer.swift */,
 				C61ECD722A20E85E00E97D70 /* Entities */,
 			);
@@ -9925,6 +9931,7 @@
 				C6526DCF29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
 				C6C75C692848E82000DD8E3F /* Sequence.swift in Sources */,
 				C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */,
+				C695C2682A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */,
 				C6C57C4D2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift in Sources */,
 				C6C9DE992834B28F00BAC36F /* SubheadTertiaryButton.swift in Sources */,
 				C6BEEF2B29C30BB6000489B9 /* UDGoogleSigner.swift in Sources */,
@@ -11042,6 +11049,7 @@
 				C6420BFC28AA656E0069DFED /* DashesProgressNavBarPopAnimation.swift in Sources */,
 				C60E9B8D2821193400CD7593 /* WalletsListViewController.swift in Sources */,
 				2930E1A728AFA31E0002D280 /* Debug-Tools-Dev.swift in Sources */,
+				C695C26A2A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */,
 				C617370229D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */,
 				C61B3E86283E626400500B6D /* UserDataValidator.swift in Sources */,
 				C6E69FFD288AEAAF000A8346 /* ExternalEvent.swift in Sources */,
@@ -11570,6 +11578,7 @@
 				C669C37829121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift in Sources */,
 				C669C3A1291280C900837F21 /* DomainProfileBadgesSection.swift in Sources */,
 				C6010D1D287FBEFC00FBD401 /* DomainsPurchasedDetails.swift in Sources */,
+				C695C26B2A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */,
 				C60981F428225B9100546392 /* WalletDetailsListCell.swift in Sources */,
 				C62C3F8E283F34B90094FC93 /* ResendCodeButton.swift in Sources */,
 				C671E3A228FE974900A2B3A0 /* UDCarouselFeature.swift in Sources */,
@@ -12299,6 +12308,7 @@
 				C6526DD029D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
 				C624D77B281BAB5000F55530 /* UDDomainsService.swift in Sources */,
 				C6C75C6A2848E82000DD8E3F /* Sequence.swift in Sources */,
+				C695C2692A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */,
 				C6098323282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */,
 				C6C57C4E2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift in Sources */,
 				C6BEEF2C29C30BB6000489B9 /* UDGoogleSigner.swift in Sources */,
