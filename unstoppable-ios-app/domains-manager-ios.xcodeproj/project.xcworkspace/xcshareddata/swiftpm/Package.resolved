@@ -68,11 +68,11 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ethereum-push-notification-service/push-swift-sdk",
       "state" : {
-        "revision" : "27281f5c56a3344bcbfec6ba6504c9189bb9e843",
-        "version" : "0.5.4"
-        }
-      },
-      {  
+        "revision" : "c82d6e17d5f9dc65aadd384ab73dd214b3083ac4",
+        "version" : "0.5.5"
+      }
+    },
+    {
       "identity" : "qrcode",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/WalletConnect/QRCode",
@@ -183,7 +183,7 @@
     {
       "identity" : "walletconnectswiftv2",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2.git",
+      "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2",
       "state" : {
         "revision" : "9b831af49900f07f887ed8d08acb73d5777b9d03",
         "version" : "1.6.10"
