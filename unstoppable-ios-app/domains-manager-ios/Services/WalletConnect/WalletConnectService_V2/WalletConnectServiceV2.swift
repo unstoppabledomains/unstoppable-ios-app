@@ -550,7 +550,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         let incomingMessageString = paramsAny[0]
         let address = try parseAddress(from: paramsAny[1])
         
-        let messageString = incomingMessageString.convertedIntoReadableMessage
+        let messageString = incomingMessageString
         
         let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
