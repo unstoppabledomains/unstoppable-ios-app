@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F66" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F82" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CoreDataMessagingChat" representedClassName="CoreDataMessagingChat" syncable="YES" codeGenerationType="class">
         <attribute name="avatarURL" optional="YES" attributeType="URI"/>
         <attribute name="groupMemberWallets" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
@@ -32,6 +32,7 @@
         <attribute name="senderWallet" attributeType="String" defaultValueString=""/>
         <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>
         <attribute name="time" attributeType="Date" defaultDateTimeInterval="707930820" usesScalarValueType="NO"/>
+        <attribute name="unknownMessageDetails" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String : Any]"/>
         <relationship name="lastMessageInChat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingChat" inverseName="lastMessage" inverseEntity="CoreDataMessagingChat"/>
         <uniquenessConstraints>
             <uniquenessConstraint>

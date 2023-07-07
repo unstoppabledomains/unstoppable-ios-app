@@ -51,11 +51,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                       limit: limit,
                                                       isRequests: false)
         
-        let chats = pushChats.compactMap({ PushEntitiesTransformer.convertPushChatToChat($0,
-                                                                                         userId: user.id,
-                                                                                         userWallet: user.wallet,
-                                                                                         isApproved: true) })
-        return chats
+        return try await transformPushChatsToChats(pushChats,
+                                                   for: user)
     }
     
     private func getPushChatsForUser(_ user: MessagingChatUserProfile,
@@ -69,6 +66,34 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                   isRequests: isRequests)
     }
     
+    private func getPublicKeysFor(pushChat: PushChat) async throws -> [String] {
+        if let cachedKeys = PushPublicKeysStorage.instance.getCachedKeys(for: pushChat.chatId),
+           !cachedKeys.publicKeys.isEmpty {
+            return cachedKeys.publicKeys
+        }
+        
+        var keys = [String]()
+        if let groupInfo = pushChat.groupInformation {
+            keys = groupInfo.members.compactMap { $0.publicKey }
+        } else {
+            let chatDids = pushChat.combinedDID.components(separatedBy: "_")
+            guard chatDids.count == 2 else {
+                return  []
+            }
+          
+            let env = getCurrentPushEnvironment()
+            if let anotherUser = try await PushUser.get(account: chatDids[0] , env: env),
+               let senderUser = try await PushUser.get(account: chatDids[1], env: env) {
+                keys = [senderUser.getPGPPublickey(), anotherUser.getPGPPublickey()]
+            }
+        }
+        
+        if !keys.isEmpty {
+            PushPublicKeysStorage.instance.saveKeysHoldersInfo([.init(chatId: pushChat.chatId, publicKeys: keys)])
+        }
+        return keys
+    }
+    
     func getChatRequestsForUser(_ user: MessagingChatUserProfile,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChat] {
@@ -76,10 +101,33 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                       page: page,
                                                       limit: limit,
                                                       isRequests: true)
-        let chats = pushChats.compactMap({ PushEntitiesTransformer.convertPushChatToChat($0,
-                                                                                         userId: user.id,
-                                                                                         userWallet: user.wallet,
-                                                                                         isApproved: false) })
+        
+        return try await transformPushChatsToChats(pushChats,
+                                                   for: user)
+    }
+    
+    private func transformPushChatsToChats(_ pushChats: [PushChat],
+                                           for user: MessagingChatUserProfile) async throws -> [MessagingChat] {
+        var chats = [MessagingChat]()
+        
+        try await withThrowingTaskGroup(of: MessagingChat.self, body: { group in
+            for pushChat in pushChats {
+                let publicKeys = try await getPublicKeysFor(pushChat: pushChat)
+                if let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
+                                                                            userId: user.id,
+                                                                            userWallet: user.wallet,
+                                                                            isApproved: true,
+                                                                            publicKeys: publicKeys) {
+                    chats.append(chat)
+                }
+            }
+            
+            /// 2. Take values from group
+            for try await chat in group {
+                chats.append(chat)
+            }
+        })
+        
         return chats
     }
     
@@ -289,11 +337,14 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let message = try await Push.PushChat.sendIntent(sendOptions)
         let pushChats = try await getPushChatsForUser(user, page: 1, limit: 3, isRequests: false)
         
-        guard let pushChat = pushChats.first(where: { $0.threadhash == message.cid }),
-              let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
+        guard let pushChat = pushChats.first(where: { $0.threadhash == message.cid }) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
+        let publicKeys = try await getPublicKeysFor(pushChat: pushChat)
+             
+        guard let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,
-                                                                       isApproved: true),
+                                                                       isApproved: true,
+                                                                       publicKeys: publicKeys),
               let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
                                                                                         in: chat,
                                                                                         pgpKey: pgpPrivateKey,
@@ -447,8 +498,8 @@ private extension PushMessagingAPIService {
     }
     
     func buildPushSendOptions(for messageType: MessagingChatMessageDisplayType,
-                                 receiver: String,
-                                 by user: MessagingChatUserProfile) async throws -> Push.PushChat.SendOptions {
+                              receiver: String,
+                              by user: MessagingChatUserProfile) async throws -> Push.PushChat.SendOptions {
         let env = getCurrentPushEnvironment()
         let pushMessageContent = try getPushMessageContentFrom(displayType: messageType)
         let pushMessageType = try getPushMessageTypeFrom(displayType: messageType)
@@ -484,7 +535,7 @@ private extension PushMessagingAPIService {
         case .text(let details):
             return details.text
         case .imageBase64(let details):
-            let entity = PushEnvironment.PushImageContentResponse(content: details.base64)
+            let entity = PushEnvironment.PushMessageContentResponse(content: details.base64)
             guard let jsonString = entity.jsonString() else { throw PushMessagingAPIServiceError.failedToPrepareMessageContent }
             return jsonString
         case .unknown:
@@ -542,7 +593,7 @@ extension DomainItem: Push.Signer, Push.TypedSinger {
     }
     
     func getEip712Signature(message: String) async throws -> String {
-        throw NSError(domain: "com.domains", code: -1) // TODO: - Add support
+        try await self.typedDataSign(message: message)
     }
     
     func getAddress() async throws -> String {

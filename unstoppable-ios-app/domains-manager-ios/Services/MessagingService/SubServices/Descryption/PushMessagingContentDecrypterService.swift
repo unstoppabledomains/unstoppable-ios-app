@@ -16,7 +16,7 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
         guard let serviceMetadata,
               let pgpKey = getPGPKeyFor(wallet: wallet),
               let messageMetadata = (try? JSONDecoder().decode(PushEnvironment.MessageServiceMetadata.self, from: serviceMetadata)) else {
-            throw NSError()
+            throw EncryptionError.failedToGatherRequiredData
         }
         
         switch EncryptionType(rawValue: messageMetadata.encType) {
@@ -44,5 +44,12 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
      
     private enum EncryptionType: String {
         case pgp
+    }
+}
+
+// MARK: - Open methods
+extension PushMessagingContentDecrypterService {
+    enum EncryptionError: Error {
+        case failedToGatherRequiredData
     }
 }

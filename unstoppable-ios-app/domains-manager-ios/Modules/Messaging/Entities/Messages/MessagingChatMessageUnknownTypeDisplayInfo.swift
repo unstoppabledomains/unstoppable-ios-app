@@ -11,5 +11,7 @@ struct MessagingChatMessageUnknownTypeDisplayInfo: Hashable {
     
     var encryptedContent: String
     var type: String
+    var name: String?
+    var size: Int?
     
 }
