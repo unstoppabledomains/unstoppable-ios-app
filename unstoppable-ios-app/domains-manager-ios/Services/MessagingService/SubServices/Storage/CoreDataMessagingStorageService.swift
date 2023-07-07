@@ -579,8 +579,13 @@ private extension CoreDataMessagingStorageService {
                                                                                         encryptedContent: messageContent)
             return .imageBase64(imageBase64DisplayInfo)
         } else if coreDataMessage.messageType == 999 {
+            guard let json = coreDataMessage.unknownMessageDetails,
+                  let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
+            
             let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: messageContent,
-                                                                                type: "type")
+                                                                                type: details.type,
+                                                                                name: details.name,
+                                                                                size: details.size)
             return .unknown(unknownDisplayInfo)
         }
         
@@ -598,6 +603,9 @@ private extension CoreDataMessagingStorageService {
         case .unknown(let info):
             coreDataMessage.messageType = 999
             coreDataMessage.messageContent = info.encryptedContent
+            coreDataMessage.unknownMessageDetails = CoreDataUnknownMessageDetails(type: info.type,
+                                                                                  name: info.name,
+                                                                                  size: info.size).jsonRepresentation()
         }
     }
     
@@ -761,6 +769,13 @@ private extension CoreDataMessagingStorageService {
             return nil
         }
     }
+    
+    struct CoreDataUnknownMessageDetails: Codable {
+        var type: String
+        var name: String?
+        var size: Int?
+    }
+
 }
 
 // MARK: - Open methods

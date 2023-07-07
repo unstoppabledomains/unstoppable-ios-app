@@ -127,7 +127,7 @@ struct PushEntitiesTransformer {
                                                                           encryptedText: encryptedContent)
             type = .text(textDisplayInfo)
         case .image:
-            guard let contentInfo = PushEnvironment.PushImageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
+            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
             let base64Image = contentInfo.content
             var encryptedImage = base64Image
             
@@ -143,8 +143,21 @@ struct PushEntitiesTransformer {
                                                                                         encryptedContent: encryptedImage)
             type = .imageBase64(imageBase64DisplayInfo)
         default:
-            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: encryptedContent,
-                                                                                type: pushMessage.messageType)
+            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
+            
+            var messageContent = contentInfo.content
+            if isMessageEncrypted {
+                guard !chatMetadata.publicKeys.isEmpty,
+                      let (encryptedPureContent, newEncryptedSecret) = try? encryptText(messageContent, publicKeys: chatMetadata.publicKeys) else { return nil }
+                
+                messageContent = encryptedPureContent
+                encryptedSecret = newEncryptedSecret
+            }
+            
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: messageContent,
+                                                                                type: pushMessage.messageType,
+                                                                                name: contentInfo.name,
+                                                                                size: contentInfo.size)
             type = .unknown(unknownDisplayInfo)
         }
         
