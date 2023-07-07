@@ -12,11 +12,28 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
     
     private var pgpKeysCache = [String : String]()
     
+    func encryptText(_ text: String, with serviceMetadata: Data?, wallet: String) throws -> String {
+        guard let serviceMetadata,
+              let pgpKey = getPGPKeyFor(wallet: wallet),
+              let messageMetadata = (try? JSONDecoder().decode(PushEnvironment.MessageServiceMetadata.self, from: serviceMetadata)) else {
+            throw EncryptionError.failedToGatherRequiredData
+        }
+        
+        //        let aesKey = getRandomHexString(length: 15)
+        //        let cipherText = AESCBCHelper.encrypt(messageText: text, secretKey: aesKey)
+        //        let encryptedAES = try Pgp.pgpEncryptV2(message: aesKey, pgpPublicKeys: publicKeys)
+        //        messageMetadata.encryptedSecret = encryptedAES
+        
+        //        return cipherText
+    
+        return ""
+    }
+    
     func decryptText(_ text: String, with serviceMetadata: Data?, wallet: String) throws -> String {
         guard let serviceMetadata,
               let pgpKey = getPGPKeyFor(wallet: wallet),
               let messageMetadata = (try? JSONDecoder().decode(PushEnvironment.MessageServiceMetadata.self, from: serviceMetadata)) else {
-            throw NSError()
+            throw EncryptionError.failedToGatherRequiredData
         }
         
         switch EncryptionType(rawValue: messageMetadata.encType) {
@@ -44,5 +61,12 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
      
     private enum EncryptionType: String {
         case pgp
+    }
+}
+
+// MARK: - Open methods
+extension PushMessagingContentDecrypterService {
+    enum EncryptionError: Error {
+        case failedToGatherRequiredData
     }
 }
