@@ -111,11 +111,6 @@ private extension ChatTitleView {
         }
     }
     
-    func setWithGroupDetails(_ groupDetails: MessagingGroupChatDetails) {
-        setTitle(groupDetails.displayName)
-        iconImageView.image = nil // TODO: - Update when design is ready
-    }
-    
     func setTitle(_ title: String) {
         titleLabel.setAttributedTextWith(text: title,
                                          font: .currentFont(withSize: 16, weight: .semibold),

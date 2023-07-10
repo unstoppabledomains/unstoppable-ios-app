@@ -140,28 +140,6 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
             }
         })
     }
-    
-    func choosePhotoButtonPressed() {
-        view?.hideKeyboard()
-        guard let view else { return  }
-        
-        UnstoppableImagePicker.shared.pickImage(in: view, imagePickerCallback: { [weak self] image in
-            DispatchQueue.main.async {
-                self?.didPickImageToSend(image)
-            }
-        })
-    }
-    
-    func takePhotoButtonPressed() {
-        view?.hideKeyboard()
-        guard let view else { return  }
-        
-        UnstoppableImagePicker.shared.selectFromCamera(in: view, imagePickerCallback: { [weak self] image in
-            DispatchQueue.main.async {
-                self?.didPickImageToSend(image)
-            }
-        })
-    }
 }
 
 // MARK: - MessagingServiceListener
@@ -534,14 +512,6 @@ private extension ChatViewPresenter {
 private extension ChatViewPresenter {
     func didPickImageToSend(_ image: UIImage) {
         let resizedImage = image.resized(to: Constants.maxImageResolution) ?? image
-        sendImageMessage(resizedImage)
-    }
-}
-
-// MARK: - Images related methods
-private extension ChatViewPresenter {
-    func didPickImageToSend(_ image: UIImage) {
-        let resizedImage = image.resized(to: 1000) ?? image
         sendImageMessage(resizedImage)
     }
 }
