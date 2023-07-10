@@ -68,7 +68,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
     }
     
     func didSelectItem(_ item: ChatViewController.Item) {
-        
+         
     }
     
     func willDisplayItem(_ item: ChatViewController.Item) {
