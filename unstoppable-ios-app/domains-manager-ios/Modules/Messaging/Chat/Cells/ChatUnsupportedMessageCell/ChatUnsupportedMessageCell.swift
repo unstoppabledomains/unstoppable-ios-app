@@ -24,7 +24,7 @@ extension ChatUnsupportedMessageCell {
     func setWith(configuration: ChatViewController.UnsupportedMessageUIConfiguration) {
         let textMessage = configuration.message
         var messageColor: UIColor = textMessage.senderType.isThisUser ? .white : .foregroundDefault
-        messageTextView.setAttributedTextWith(text: String.Constants.notSupported.localized(),
+        messageTextView.setAttributedTextWith(text: String.Constants.messageNotSupported.localized(),
                                               font: .currentFont(withSize: 16, weight: .regular),
                                               textColor: messageColor,
                                               lineHeight: 24)

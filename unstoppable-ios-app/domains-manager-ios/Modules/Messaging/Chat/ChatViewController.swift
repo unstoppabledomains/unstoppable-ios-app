@@ -18,6 +18,7 @@ protocol ChatViewProtocol: BaseDiffableCollectionViewControllerProtocol where Se
     func setLoading(active: Bool)
     func setUIState(_ state: ChatViewController.State)
     func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
+    func setEmptyState(active: Bool)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -33,7 +34,7 @@ final class ChatViewController: BaseViewController {
     @IBOutlet private weak var acceptButton: MainButton!
     @IBOutlet private weak var secondaryButton: UDButton!
     @IBOutlet private weak var moveToTopButton: FABButton!
-
+    @IBOutlet private weak var chatEmptyView: ChatEmptyView!
     
     private var titleView: ChatTitleView!
 
@@ -41,7 +42,6 @@ final class ChatViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self,
                                                         ChatImageCell.self,
                                                         ChatUnsupportedMessageCell.self,
-                                                        ChatEmptyCell.self,
                                                         ChannelFeedCell.self,
                                                         ChatLoadingCell.self] }
     var presenter: ChatViewPresenterProtocol!
@@ -79,6 +79,7 @@ final class ChatViewController: BaseViewController {
         super.viewDidLayoutSubviews()
         
         setupMoveToTopButtonFrame()
+        setupEmptyViewFrame()
     }
 }
 
@@ -206,6 +207,10 @@ extension ChatViewController: ChatViewProtocol {
             let barButtonItem = UIBarButtonItem(customView: barButton)
             navigationItem.rightBarButtonItem = barButtonItem
         }
+    }
+    
+    func setEmptyState(active: Bool) {
+        chatEmptyView.isHidden = !active
     }
 }
 
@@ -344,6 +349,15 @@ private extension ChatViewController {
                                                        y: chatInputView.frame.minY - moveToTopButtonSize - edgeSpacing),
                                        size: .square(size: moveToTopButtonSize))
     }
+    
+    func setupEmptyViewFrame() {
+        let y = cNavigationBar?.frame.height ?? 0
+        let height = view.bounds.height - y - (view.bounds.height - chatInputView.frame.minY)
+        chatEmptyView.frame = CGRect(x: 0,
+                                     y: y,
+                                     width: view.bounds.width,
+                                     height: height)
+    }
 }
 
 // MARK: - Setup functions
@@ -355,6 +369,7 @@ private extension ChatViewController {
         setupCollectionView()
         setupHideKeyboardTap()
         setupMoveToTopButton()
+        setEmptyState(active: false)
     }
     
     func setupInputView() {
@@ -416,10 +431,6 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
-            case .emptyState:
-                let cell = collectionView.dequeueCellOfType(ChatEmptyCell.self, forIndexPath: indexPath)
-                
-                return cell
             case .loading:
                 let cell = collectionView.dequeueCellOfType(ChatLoadingCell.self, forIndexPath: indexPath)
 
@@ -437,7 +448,7 @@ private extension ChatViewController {
                                                                            for: indexPath) as! ChatSectionHeaderView
                 view.setTitle(title)
                 return view
-            case .none, .emptyState, .loading:
+            case .none, .loading:
                 return nil
             }
         }
@@ -473,15 +484,6 @@ private extension ChatViewController {
                 return layoutSection
             case .loading:
                 return .listItemSection(height: 50)
-            case .emptyState:
-                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                                                     heightDimension: .fractionalHeight(1.0)))
-                item.contentInsets = .zero
-                let containerGroup = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                       heightDimension: .fractionalHeight(0.5)),
-                    subitems: [item])
-                return NSCollectionLayoutSection(group: containerGroup)
             }
         }, configuration: config)
         layout.register(CollectionReusableRoundedBackground.self, forDecorationViewOfKind: CollectionReusableRoundedBackground.reuseIdentifier)
@@ -494,7 +496,6 @@ private extension ChatViewController {
 extension ChatViewController {
     enum Section: Hashable {
         case messages(title: String)
-        case emptyState
         case loading
     }
     
@@ -503,7 +504,6 @@ extension ChatViewController {
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
         case unsupportedMessage(configuration: UnsupportedMessageUIConfiguration)
         case channelFeed(configuration: ChannelFeedUIConfiguration)
-        case emptyState
         case loading
         
         var message: MessagingChatMessageDisplayInfo? {
@@ -514,7 +514,7 @@ extension ChatViewController {
                 return configuration.message
             case .unsupportedMessage(let configuration):
                 return configuration.message
-            case .emptyState, .channelFeed, .loading:
+            case .channelFeed, .loading:
                 return nil
             }
         }
