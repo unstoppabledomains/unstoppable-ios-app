@@ -15,7 +15,6 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
         super.awakeFromNib()
         
         setupTextView(messageTextView)
-        messageTextView.text = String.Constants.notSupported.localized()
     }
 
 }
@@ -23,7 +22,12 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
 // MARK: - Open methods
 extension ChatUnsupportedMessageCell {
     func setWith(configuration: ChatViewController.UnsupportedMessageUIConfiguration) {
-        
-        setWith(message: configuration.message)
+        let textMessage = configuration.message
+        var messageColor: UIColor = textMessage.senderType.isThisUser ? .white : .foregroundDefault
+        messageTextView.setAttributedTextWith(text: String.Constants.messageNotSupported.localized(),
+                                              font: .currentFont(withSize: 16, weight: .regular),
+                                              textColor: messageColor,
+                                              lineHeight: 24)
+        setWith(message: textMessage)
     }
 }

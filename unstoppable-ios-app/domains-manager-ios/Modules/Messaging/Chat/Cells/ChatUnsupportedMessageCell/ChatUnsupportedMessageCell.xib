@@ -53,7 +53,7 @@
                         </subviews>
                     </stackView>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="BDV-Xl-MCS">
-                        <rect key="frame" x="4" y="195" width="41.333333333333336" height="16"/>
+                        <rect key="frame" x="4" y="195" width="433" height="16"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="999" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5tR-Rx-iQg">
                                 <rect key="frame" x="0.0" y="0.0" width="41.333333333333336" height="16"/>
@@ -70,11 +70,12 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstAttribute="trailing" secondItem="3zL-iG-Xlk" secondAttribute="trailing" id="8kD-V3-1e2"/>
+                <constraint firstAttribute="trailing" secondItem="3zL-iG-Xlk" secondAttribute="trailing" placeholder="YES" id="8kD-V3-1e2"/>
                 <constraint firstItem="BDV-Xl-MCS" firstAttribute="leading" secondItem="3zL-iG-Xlk" secondAttribute="leading" constant="4" id="DXK-Yn-tfn"/>
                 <constraint firstItem="BDV-Xl-MCS" firstAttribute="top" secondItem="3zL-iG-Xlk" secondAttribute="bottom" constant="4" id="Mat-TX-rh7"/>
-                <constraint firstItem="3zL-iG-Xlk" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="S4g-ti-W4B"/>
+                <constraint firstItem="3zL-iG-Xlk" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" placeholder="YES" id="S4g-ti-W4B"/>
                 <constraint firstAttribute="bottom" secondItem="BDV-Xl-MCS" secondAttribute="bottom" id="Zst-bY-JgA"/>
+                <constraint firstItem="BDV-Xl-MCS" firstAttribute="trailing" secondItem="3zL-iG-Xlk" secondAttribute="trailing" constant="-4" id="sdy-6y-Gg1"/>
                 <constraint firstItem="3zL-iG-Xlk" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="uKa-w0-iGE"/>
             </constraints>
             <size key="customSize" width="441" height="211"/>

@@ -191,7 +191,6 @@ extension String {
         static let unblock = "UNBLOCK"
         static let viewInfo = "VIEW_INFO"
         static let leave = "LEAVE"
-        static let notSupported = "NOT_SUPPORTED"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
@@ -892,6 +891,7 @@ extension String {
         static let messagingNFollowers = "MESSAGING_N_FOLLOWERS"
         static let messagingBlockUserConfirmationTitle = "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE"
         static let messagingYouAreBlocked = "MESSAGING_YOU_ARE_BLOCKED"
+        static let messageNotSupported = "MESSAGE_NOT_SUPPORTED"
 
     }
 

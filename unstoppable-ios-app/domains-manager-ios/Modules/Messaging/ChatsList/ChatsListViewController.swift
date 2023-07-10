@@ -321,7 +321,10 @@ private extension ChatsListViewController {
                 return cell
             case .emptyState(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
-                cell.setWith(configuration: configuration)
+                cell.setWith(configuration: configuration,
+                             actionButtonCallback: { [weak self] in
+                    self?.setSearchBarActive(true)
+                })
                 
                 return cell
             case .userInfo(let configuration):

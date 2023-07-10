@@ -167,7 +167,7 @@ private extension ChannelViewPresenter {
                 currentPage = newPage
                 isLoadingFeed = false
             } catch {
-                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+                view?.showAlertWith(error: error, handler: nil) 
                 isLoadingFeed = false
             }
             showData(animated: false, isLoading: false)
@@ -200,10 +200,11 @@ private extension ChannelViewPresenter {
         var snapshot = ChatSnapshot()
         
         if feed.isEmpty {
+            view?.setEmptyState(active: !isLoading)
             view?.setScrollEnabled(false)
-            snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState]) // TODO: - Specify it is empty state for feed
+            snapshot.appendSections([])
         } else {
+            view?.setEmptyState(active: false)
             if isLoading {
                 snapshot.appendSections([.loading])
                 snapshot.appendItems([.loading])

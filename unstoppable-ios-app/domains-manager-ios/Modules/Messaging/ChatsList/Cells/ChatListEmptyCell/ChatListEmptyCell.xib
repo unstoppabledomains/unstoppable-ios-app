@@ -6,6 +6,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -19,7 +20,7 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="tES-yJ-RR1">
-                        <rect key="frame" x="16" y="204.33333333333334" width="378" height="96.666666666666657"/>
+                        <rect key="frame" x="16" y="176.33333333333337" width="378" height="152.66666666666663"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="messageCircleIcon24" translatesAutoresizingMaskIntoConstraints="NO" id="ZwC-eQ-OBp">
                                 <rect key="frame" x="173" y="0.0" width="32" height="32"/>
@@ -39,13 +40,23 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fow-xm-g6X">
-                                        <rect key="frame" x="0.0" y="28.333333333333343" width="41.333333333333336" height="20.333333333333329"/>
+                                        <rect key="frame" x="0.0" y="28.333333333333314" width="41.333333333333336" height="20.333333333333329"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                             </stackView>
+                            <view contentMode="scaleToFill" placeholderIntrinsicWidth="240" placeholderIntrinsicHeight="40" translatesAutoresizingMaskIntoConstraints="NO" id="jad-pH-Wq9" customClass="UDButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                <rect key="frame" x="69" y="112.66666666666666" width="240" height="40"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="atf-xw-9SS"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="actionButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="hRq-3P-Eea"/>
+                                </connections>
+                            </view>
                         </subviews>
                     </stackView>
                 </subviews>
@@ -58,6 +69,7 @@
             </constraints>
             <size key="customSize" width="410" height="505"/>
             <connections>
+                <outlet property="actionButton" destination="jad-pH-Wq9" id="ZxU-fC-EAb"/>
                 <outlet property="iconImageView" destination="ZwC-eQ-OBp" id="ErF-Ek-1qo"/>
                 <outlet property="subtitleLabel" destination="fow-xm-g6X" id="JhK-Mt-5U7"/>
                 <outlet property="titleLabel" destination="vtI-Pf-a9v" id="htu-We-30E"/>
@@ -70,5 +82,8 @@
         <namedColor name="foregroundSecondary">
             <color red="0.47843137254901963" green="0.47843137254901963" blue="0.52156862745098043" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

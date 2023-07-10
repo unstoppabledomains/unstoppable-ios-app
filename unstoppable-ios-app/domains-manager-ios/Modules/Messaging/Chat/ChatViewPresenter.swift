@@ -226,7 +226,7 @@ private extension ChatViewPresenter {
                     showData(animated: false, isLoading: false)
                 }
             } catch {
-                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+                view?.showAlertWith(error: error, handler: nil) 
             }
         }
     }
@@ -246,7 +246,7 @@ private extension ChatViewPresenter {
                 checkIfUpToDate()
                 isLoadingMessages = false
             } catch {
-                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+                view?.showAlertWith(error: error, handler: nil)
                 isLoadingMessages = false
             }
             showData(animated: false, isLoading: false)
@@ -290,10 +290,11 @@ private extension ChatViewPresenter {
         var snapshot = ChatSnapshot()
         
         if messages.isEmpty {
+            view?.setEmptyState(active: !isLoading)
             view?.setScrollEnabled(false)
-            snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState])
+            snapshot.appendSections([])
         } else {
+            view?.setEmptyState(active: false)
             if isLoading {
                 snapshot.appendSections([.loading])
                 snapshot.appendItems([.loading])
@@ -357,7 +358,7 @@ private extension ChatViewPresenter {
     
     func setupPlaceholder() {
         Task {
-            let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: profile.wallet)
+            let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: profile.wallet.normalized)
             let sender = domainName ?? profile.wallet.walletAddressTruncated
             let placeholder = String.Constants.chatInputPlaceholderAsDomain.localized(sender)
             view?.setPlaceholder(placeholder)
