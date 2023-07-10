@@ -350,7 +350,7 @@ struct SignatureComponentHeaders: Decodable {
 struct SearchDomainProfile: Codable {
     let name: String
     let ownerAddress: String
-    let imageUrl: String?
+    let imagePath: String?
 }
 
 struct UserDomainProfileHumanityCheckAttribute: Codable {
