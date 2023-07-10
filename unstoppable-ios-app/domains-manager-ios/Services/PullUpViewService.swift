@@ -1601,7 +1601,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let pendingMemberItems = groupChatDetails.pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isPending: true) })
         let items = memberItems + pendingMemberItems
         
-        let requiredSelectionViewHeight = 168 + items.reduce(0.0, { $0 + $1.height })
+        let requiredSelectionViewHeight = 216 + items.reduce(0.0, { $0 + $1.height })
         let maxHeight = UIScreen.main.bounds.height - 40
         let shouldScroll = requiredSelectionViewHeight > maxHeight
         let selectionViewHeight = min(requiredSelectionViewHeight, maxHeight)
