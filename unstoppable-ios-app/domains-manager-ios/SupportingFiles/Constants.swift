@@ -54,7 +54,7 @@ struct Constants {
     #endif
 
 }
-
+ 
 let currencyNumberFormatter: NumberFormatter = {
     let formatter = NumberFormatter()
     formatter.minimumFractionDigits = 0
