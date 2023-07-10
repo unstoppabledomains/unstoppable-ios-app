@@ -332,6 +332,7 @@ extension String {
         static let pluralExpire = "SDICT:EXPIRE"
         static let pluralNMessages = "SDICT:N_MESSAGES"
         static let pluralNPeopleYouMayKnow = "SDICT:N_PEOPLE_YOU_MAY_KNOW"
+        static let pluralNMembers = "SDICT:N_MEMBERS"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"

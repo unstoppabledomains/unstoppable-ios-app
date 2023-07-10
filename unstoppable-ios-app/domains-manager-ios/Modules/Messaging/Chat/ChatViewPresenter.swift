@@ -383,7 +383,8 @@ private extension ChatViewPresenter {
                 case .bothBlocked, .otherUserIsBlocked:
                     Void()
                 }
-            case .group:
+            case .group(let groupDetails):
+                actions.append(.init(type: .viewInfo, callback: { [weak self] in self?.didPressViewGroupInfoButton(groupDetails: groupDetails) }))
                 actions.append(.init(type: .leave, callback: { [weak self] in self?.didPressLeaveButton() }))
             }
         }
@@ -394,6 +395,14 @@ private extension ChatViewPresenter {
     func didPressViewDomainProfileButton(domainName: String) {
         let link = String.Links.domainProfilePage(domainName: domainName)
         view?.openLink(link)
+    }
+    
+    func didPressViewGroupInfoButton(groupDetails: MessagingGroupChatDetails) {
+        Task {
+            guard let view else { return }
+            
+            await appContext.pullUpViewService.showGroupChatInfoPullUp(groupChatDetails: groupDetails, in: view)
+        }
     }
     
     func didPressBlockButton() {
