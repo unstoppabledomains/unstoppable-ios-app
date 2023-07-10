@@ -410,5 +410,29 @@
 			<string>people</string>
 		</dict>
 	</dict>
+	<key>SDICT:N_MEMBERS</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@member@</string>
+		<key>member</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>members</string>
+			<key>one</key>
+			<string>member</string>
+			<key>two</key>
+			<string>members</string>
+			<key>few</key>
+			<string>members</string>
+			<key>many</key>
+			<string>members</string>
+			<key>other</key>
+			<string>members</string>
+		</dict>
+	</dict>
 </dict>
 </plist>

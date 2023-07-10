@@ -1912,6 +1912,10 @@
 		C65955FC287C63C600319ACC /* UIImage+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65955FA287C621100319ACC /* UIImage+Colors.swift */; };
 		C65955FD287C63C700319ACC /* UIImage+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65955FA287C621100319ACC /* UIImage+Colors.swift */; };
 		C65955FE287C63C700319ACC /* UIImage+Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65955FA287C621100319ACC /* UIImage+Colors.swift */; };
+		C65A869C2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */; };
+		C65A869D2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */; };
+		C65A869E2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */; };
+		C65A869F2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */; };
 		C65DEA3E29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DEA3D29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift */; };
 		C65DEA3F29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DEA3D29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift */; };
 		C65DEA4029B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DEA3D29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift */; };
@@ -4458,6 +4462,7 @@
 		C655D023284630A700E80A65 /* DataAggregatorServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataAggregatorServiceProtocol.swift; sourceTree = "<group>"; };
 		C655D028284630AC00E80A65 /* MockDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataAggregatorService.swift; sourceTree = "<group>"; };
 		C65955FA287C621100319ACC /* UIImage+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Colors.swift"; sourceTree = "<group>"; };
+		C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserPullUpSelectionItem.swift; sourceTree = "<group>"; };
 		C65DEA3D29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectExternalWalletConnectionWaiter.swift; sourceTree = "<group>"; };
 		C65DEA7029B5837600FF142B /* WalletConnectExternalWalletHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletConnectExternalWalletHandler.swift; sourceTree = "<group>"; };
 		C65DEA7129B5837600FF142B /* WalletConnectExternalWalletHandlerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletConnectExternalWalletHandlerProtocol.swift; sourceTree = "<group>"; };
@@ -6628,6 +6633,7 @@
 			children = (
 				C623968A2A288AB300363F60 /* MessagingPrivateChatDetails.swift */,
 				C623968F2A288AC400363F60 /* MessagingGroupChatDetails.swift */,
+				C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */,
 				C62396942A288AD100363F60 /* MessagingChatType.swift */,
 				C62396992A288ADB00363F60 /* MessagingChatDisplayInfo.swift */,
 				C623969E2A288AE300363F60 /* MessagingChat.swift */,
@@ -9861,6 +9867,7 @@
 				C692C309282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
 				C6124CEB29252E8F005E6537 /* DomainProfileSignExternalWalletViewPresenter.swift in Sources */,
 				C692C351282EA63100C31393 /* AppearanceSettingsViewPresenter.swift in Sources */,
+				C65A869C2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */,
 				C60981DA2822565300546392 /* WalletDetailsViewController.swift in Sources */,
 				C6670A0F28D46D6B00415EBB /* String+SHA3.swift in Sources */,
 				C624D7A6281BCD9900F55530 /* SettingsCollectionViewCell.swift in Sources */,
@@ -10637,6 +10644,7 @@
 				307F83E9267A339F0070A9A6 /* TransactionProtocol.swift in Sources */,
 				30B3DC9428758E9B006FAA64 /* CurrencyExchangeRates.swift in Sources */,
 				C671E3C429014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift in Sources */,
+				C65A869E2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */,
 				C6F9FBBA2A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift in Sources */,
 				C671E38928FE85C800A2B3A0 /* CarouselView.swift in Sources */,
 				C666E09B29CB3F960003DECB /* FirebaseDomain.swift in Sources */,
@@ -11709,6 +11717,7 @@
 				C669C38229124C2600837F21 /* SocialsType.swift in Sources */,
 				C6D6E4E12817BF09008C66BB /* OnboardingProtocols.swift in Sources */,
 				C6FF2DA928F02B1700148007 /* DomainProfileSectionUIChangeType.swift in Sources */,
+				C65A869F2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */,
 				C6D6E59C28194AC9008C66BB /* TextTertiaryButton.swift in Sources */,
 				C645130F280808ED00413C51 /* Codable.swift in Sources */,
 				C6EA6D6628B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */,
@@ -12238,6 +12247,7 @@
 				C692C30A282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
 				C6124CEC29252E8F005E6537 /* DomainProfileSignExternalWalletViewPresenter.swift in Sources */,
 				C692C352282EA63100C31393 /* AppearanceSettingsViewPresenter.swift in Sources */,
+				C65A869D2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */,
 				C60981DB2822565300546392 /* WalletDetailsViewController.swift in Sources */,
 				C6670A1028D46D6B00415EBB /* String+SHA3.swift in Sources */,
 				C624D7A7281BCD9900F55530 /* SettingsCollectionViewCell.swift in Sources */,

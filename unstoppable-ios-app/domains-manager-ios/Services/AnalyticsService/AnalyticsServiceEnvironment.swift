@@ -279,7 +279,7 @@ extension Analytics {
         case newMessage
         case createMessagingProfile
         case messageInputSend, messageInputPlus, messageInputPlusAction
-        case viewMessagingProfile
+        case viewMessagingProfile, viewGroupChatInfo
         case viewChannelInfo, leaveChannel, learnMoreChannelFeed
         case block, unblock, leaveGroup
         case resendMessage, deleteMessage

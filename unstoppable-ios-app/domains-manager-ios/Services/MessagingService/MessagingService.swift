@@ -834,7 +834,7 @@ private extension MessagingService {
                       return false
                   }
               }) else { throw MessagingServiceError.chatNotFound }
-        let message = messageEntity.transformToMessageBlock(messageEntity, chat)
+        guard let message = messageEntity.transformToMessageBlock(messageEntity, chat) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
         return message
     }
 }
@@ -846,6 +846,7 @@ extension MessagingService {
         case chatNotFound
         case messageNotFound
         case noRRDomainForProfile
+        case failedToConvertWebsocketMessage
         
         public var errorDescription: String? {
             return rawValue

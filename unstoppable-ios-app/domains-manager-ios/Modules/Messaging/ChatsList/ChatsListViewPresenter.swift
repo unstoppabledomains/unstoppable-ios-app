@@ -402,7 +402,7 @@ private extension ChatsListViewPresenter {
             people = localChats.map { .existingChat($0) } + remotePeople.map { .newUser($0) }
             
             let domainProfiles = searchData.domainProfiles.filter({ $0.name != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name })
-            people += domainProfiles.map { .newUser(.init(wallet: $0.ownerAddress, domainName: $0.name, pfpURL: URL(string: $0.imageUrl ?? ""))) }
+            people += domainProfiles.map { .newUser(.init(wallet: $0.ownerAddress, domainName: $0.name, pfpURL: URL(string: $0.imagePath ?? ""))) }
             
             // Channels
             let localChannels = self.channels.filter { $0.name.lowercased().contains(searchKey) }

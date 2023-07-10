@@ -111,6 +111,8 @@ protocol PullUpViewServiceProtocol {
                                         in viewController: UIViewController) async throws
     func showMessagingBlockConfirmationPullUp(blockUserName: String,
                                               in viewController: UIViewController) async throws
+    func showGroupChatInfoPullUp(groupChatDetails: MessagingGroupChatDetails,
+                                 in viewController: UIViewController) async
 }
 
 @MainActor
@@ -1588,6 +1590,37 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         }
     }
     
+    func showGroupChatInfoPullUp(groupChatDetails: MessagingGroupChatDetails,
+                                 in viewController: UIViewController) async {
+        let groupMembers = groupChatDetails.allMembers
+        let title = String.Constants.pluralNMembers.localized(groupMembers.count, groupMembers.count)
+        let avatarImage = await MessagingImageLoader.buildImageForGroupChatMembers(groupMembers,
+                                                                                   iconSize: 56) ?? .domainSharePlaceholder
+        
+        let memberItems = groupChatDetails.members.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isPending: false) })
+        let pendingMemberItems = groupChatDetails.pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isPending: true) })
+        let items = memberItems + pendingMemberItems
+        
+        let requiredSelectionViewHeight = 168 + items.reduce(0.0, { $0 + $1.height })
+        let maxHeight = UIScreen.main.bounds.height - 40
+        let shouldScroll = requiredSelectionViewHeight > maxHeight
+        let selectionViewHeight = min(requiredSelectionViewHeight, maxHeight)
+        
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: avatarImage,
+                                                                                 size: .large),
+                                                                     isScrollingEnabled: shouldScroll),
+                                                items: items)
+      
+        let pullUpVC = presentPullUpView(in: viewController, pullUp: .messagingChannelInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+        
+        selectionView.itemSelectedCallback = { [weak pullUpVC] item in
+            guard let domainName = item.userInfo.domainName else { return }
+            
+            pullUpVC?.openLink(.domainProfilePage(domainName: domainName))
+        }
+    }
 }
 
 // MARK: - Private methods

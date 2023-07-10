@@ -111,55 +111,8 @@ struct PushEntitiesTransformer {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
               let id = pushMessage.cid,
               let chatServiceMetadata = chat.serviceMetadata,
-              let chatMetadata = (try? JSONDecoder().decode(PushEnvironment.ChatServiceMetadata.self, from: chatServiceMetadata)) else { return nil }
-        let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
-        let isMessageEncrypted = pushMessage.encType == "pgp"
-        
-        let encryptedContent = pushMessage.messageContent
-        guard let decryptedContent = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
-        
-        let type: MessagingChatMessageDisplayType
-        var encryptedSecret = pushMessage.encryptedSecret
-        
-        switch messageType {
-        case .text:
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
-                                                                          encryptedText: encryptedContent)
-            type = .text(textDisplayInfo)
-        case .image:
-            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
-            let base64Image = contentInfo.content
-            var encryptedImage = base64Image
-            
-            if isMessageEncrypted {
-                guard !chatMetadata.publicKeys.isEmpty,
-                      let (encryptedPureImage, newEncryptedSecret) = try? encryptText(base64Image, publicKeys: chatMetadata.publicKeys) else { return nil }
-                
-                encryptedImage = encryptedPureImage
-                encryptedSecret = newEncryptedSecret
-              
-            }
-            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64Image,
-                                                                                        encryptedContent: encryptedImage)
-            type = .imageBase64(imageBase64DisplayInfo)
-        default:
-            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
-            
-            var messageContent = contentInfo.content
-            if isMessageEncrypted {
-                guard !chatMetadata.publicKeys.isEmpty,
-                      let (encryptedPureContent, newEncryptedSecret) = try? encryptText(messageContent, publicKeys: chatMetadata.publicKeys) else { return nil }
-                
-                messageContent = encryptedPureContent
-                encryptedSecret = newEncryptedSecret
-            }
-            
-            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: messageContent,
-                                                                                type: pushMessage.messageType,
-                                                                                name: contentInfo.name,
-                                                                                size: contentInfo.size)
-            type = .unknown(unknownDisplayInfo)
-        }
+              let chatMetadata = (try? JSONDecoder().decode(PushEnvironment.ChatServiceMetadata.self, from: chatServiceMetadata)),
+              let (type, encryptedSecret) = extractPushMessageType(from: pushMessage, pgpKey: pgpKey, chatPublicKeys: chatMetadata.publicKeys) else { return nil }
         
         var time = Date()
         if let timestamp = pushMessage.timestamp {
@@ -191,58 +144,77 @@ struct PushEntitiesTransformer {
         return chatMessage
     }
     
+    private static func extractPushMessageType(from pushMessage: Push.Message,
+                                               pgpKey: String,
+                                               chatPublicKeys: [String]) -> (MessagingChatMessageDisplayType, String)? {
+        let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
+        let isMessageEncrypted = pushMessage.encType == "pgp"
+        let encryptedContent = pushMessage.messageContent
+        guard let decryptedContent = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
+        
+        let type: MessagingChatMessageDisplayType
+        var encryptedSecret = pushMessage.encryptedSecret
+        
+        func encryptMessageContentIfNeeded(_ messageContent: String) -> String? {
+            if isMessageEncrypted {
+                guard !chatPublicKeys.isEmpty,
+                      let (encryptedPureContent, newEncryptedSecret) = try? encryptText(messageContent, publicKeys: chatPublicKeys) else { return nil }
+                
+                encryptedSecret = newEncryptedSecret
+                return encryptedPureContent
+            }
+            return messageContent
+        }
+
+        switch messageType {
+        case .text:
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
+                                                                          encryptedText: encryptedContent)
+            type = .text(textDisplayInfo)
+        case .image:
+            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
+            let base64Image = contentInfo.content
+            guard let encryptedImage = encryptMessageContentIfNeeded(base64Image) else { return nil }
+            
+            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64Image,
+                                                                                        encryptedContent: encryptedImage)
+            type = .imageBase64(imageBase64DisplayInfo)
+        default:
+            guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
+            guard let messageContent = encryptMessageContentIfNeeded(contentInfo.content) else { return nil }
+            
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: messageContent,
+                                                                                type: pushMessage.messageType,
+                                                                                name: contentInfo.name,
+                                                                                size: contentInfo.size)
+            type = .unknown(unknownDisplayInfo)
+        }
+        
+        return (type, encryptedSecret)
+    }
+    
     static func convertPushMessageToWebSocketMessageEntity(_ pushMessage: Push.Message,
                                                            pgpKey: String) -> MessagingWebSocketMessageEntity? {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
               let receiverWallet = getWalletAddressFrom(eip155String: pushMessage.toDID),
               let id = pushMessage.cid else { return nil }
-        let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
-
         
-        switch messageType {
-        case .text:
-            let encryptedText = pushMessage.messageContent
-            guard let text = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
-            
-            var time = Date()
-            if let timestamp = pushMessage.timestamp {
-                time = Date(millisecondsSince1970: timestamp)
-            }
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: text,
-                                                                          encryptedText: encryptedText)
-            let senderDisplayInfo = MessagingChatUserDisplayInfo(wallet: senderWallet)
-            let metadataModel = PushEnvironment.MessageServiceMetadata(encType: pushMessage.encType,
-                                                                       encryptedSecret: pushMessage.encryptedSecret,
-                                                                       link: pushMessage.link)
-            let serviceMetadata = metadataModel.jsonData()
-            let messageEntity = MessagingWebSocketMessageEntity(id: id,
-                                                                senderDisplayInfo: senderDisplayInfo,
-                                                                senderWallet: senderWallet,
-                                                                receiverWallet: receiverWallet,
-                                                                time: time,
-                                                                type: .text(textDisplayInfo),
-                                                                serviceMetadata: serviceMetadata,
-                                                                transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
-            return messageEntity
-        default:
-            return nil // Not supported for now
-        }
+        let serviceContent = PushEnvironment.PushSocketMessageServiceContent(pushMessage: pushMessage, pgpKey: pgpKey)
+        return MessagingWebSocketMessageEntity(id: id,
+                                               senderWallet: senderWallet,
+                                               receiverWallet: receiverWallet,
+                                               serviceContent: serviceContent,
+                                               transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
     }
     
     static func convertMessagingWebSocketMessageEntityToChatMessage(_ webSocketMessage: MessagingWebSocketMessageEntity,
-                                                                    in chat: MessagingChat) -> MessagingChatMessage {
-        let messageDisplayInfo = MessagingChatMessageDisplayInfo(id: webSocketMessage.id,
-                                                                 chatId: chat.displayInfo.id,
-                                                                 senderType: .otherUser(webSocketMessage.senderDisplayInfo),
-                                                                 time: webSocketMessage.time,
-                                                                 type: webSocketMessage.type,
-                                                                 isRead: false,
-                                                                 isFirstInChat: false,
-                                                                 deliveryState: .delivered)
+                                                                    in chat: MessagingChat) -> MessagingChatMessage? {
+        guard let serviceContent = webSocketMessage.serviceContent as? PushEnvironment.PushSocketMessageServiceContent else { return nil }
         
-        let message = MessagingChatMessage(displayInfo: messageDisplayInfo,
-                                           serviceMetadata: webSocketMessage.serviceMetadata)
-        return message
+        let pushMessage = serviceContent.pushMessage
+        let pgpKey = serviceContent.pgpKey
+        
+        return convertPushMessageToChatMessage(pushMessage, in: chat, pgpKey: pgpKey, isRead: false)
     }
     
     static func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel,

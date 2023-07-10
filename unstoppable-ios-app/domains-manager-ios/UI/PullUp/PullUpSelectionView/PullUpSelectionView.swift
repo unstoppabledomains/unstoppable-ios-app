@@ -29,7 +29,9 @@ final class PullUpSelectionView<Item: PullUpCollectionViewCellItem>: UIView, UIC
     var items = [Item]()
     var itemSelectedCallback: ItemCallback?
     
-    init(configuration: PullUpSelectionViewConfiguration, items: [Item], itemSelectedCallback: ItemCallback? = nil) {
+    init(configuration: PullUpSelectionViewConfiguration,
+         items: [Item],
+         itemSelectedCallback: ItemCallback? = nil) {
         super.init(frame: .zero)
         
         self.configuration = configuration
@@ -255,14 +257,19 @@ private extension PullUpSelectionView {
         collectionView.delegate = self
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
-        collectionView.isScrollEnabled = false
+        collectionView.isScrollEnabled = configuration.isScrollingEnabled
         collectionView.contentInsetAdjustmentBehavior = .never
         collectionView.registerCellNibOfType(PullUpCollectionViewCell.self)
         
         collectionView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         collectionView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        let height = items.reduce(0, { $0 + $1.height })
-        collectionView.heightAnchor.constraint(equalToConstant: height).isActive = true
+        
+        if !configuration.isScrollingEnabled {
+            let height = items.reduce(0, { $0 + $1.height })
+            collectionView.heightAnchor.constraint(equalToConstant: height).isActive = true
+        } else {
+            bottomAnchor.constraint(equalTo: collectionView.bottomAnchor, constant: 60).isActive = true
+        }
         
         if let currentMinYAnchor = currentMinYAnchor {
             collectionView.topAnchor.constraint(equalTo: currentMinYAnchor, constant: 24).isActive = true
@@ -470,6 +477,7 @@ struct PullUpSelectionViewConfiguration {
     var extraViews: [UIView]? = nil
     var actionButton: ButtonType? = nil
     var cancelButton: ButtonType? = nil
+    var isScrollingEnabled: Bool = false
 
     // Title
     enum LabelType {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Push
 
 enum PushEnvironment {
     static var baseURL: String {
@@ -44,5 +45,10 @@ enum PushEnvironment {
     struct ChatPublicKeysHolder: Codable {
         let chatId: String
         let publicKeys: [String]
+    }
+    
+    struct PushSocketMessageServiceContent {
+        let pushMessage: Push.Message
+        let pgpKey: String
     }
 }
