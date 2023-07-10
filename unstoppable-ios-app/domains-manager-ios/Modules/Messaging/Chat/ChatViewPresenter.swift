@@ -511,7 +511,7 @@ private extension ChatViewPresenter {
 // MARK: - Images related methods
 private extension ChatViewPresenter {
     func didPickImageToSend(_ image: UIImage) {
-        let resizedImage = image.resized(to: 1000) ?? image
+        let resizedImage = image.resized(to: Constants.maxImageResolution) ?? image
         sendImageMessage(resizedImage)
     }
 }

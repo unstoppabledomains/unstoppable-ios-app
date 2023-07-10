@@ -44,6 +44,7 @@ struct Constants {
     static let refreshDomainBadgesInterval: TimeInterval = 60 * 3 // 3 min
     static let parkingBetaLaunchDate = Date(timeIntervalSince1970: 1678401000)
     static let numberOfUnreadMessagesBeforePrefetch: Int = 7
+    static let maxImageResolution: CGFloat = 1000
     
     #if DEBUG
     static let isTestingMinting: Bool = false
