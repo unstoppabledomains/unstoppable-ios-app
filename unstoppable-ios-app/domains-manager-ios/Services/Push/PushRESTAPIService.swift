@@ -99,7 +99,8 @@ extension PushRESTAPIService {
     }
     
     func getChannelDetails(for channelId: String) async throws -> PushChannel {
-        let channelEIP = createEIPFormatFor(address: channelId, chain: 1)
+        let chainId = getCurrentChainId()
+        let channelEIP = createEIPFormatFor(address: channelId, chain: chainId)
         let urlString = URLSList.GET_CHANNEL_DETAILS_URL(channelEIP: channelEIP)
         let request = try apiRequestWith(urlString: urlString,
                                          method: .get)
@@ -110,7 +111,6 @@ extension PushRESTAPIService {
     
     func searchForChannels(page: Int,
                            limit: Int,
-                           isSpam: Bool,
                            query: String) async throws -> [PushChannel] {
         let queryComponents = ["page" : String(page),
                                "limit" : String(limit),
@@ -154,7 +154,8 @@ extension PushRESTAPIService {
     func getChannelFeed(for channel: String,
                         page: Int,
                         limit: Int) async throws -> [PushInboxNotification] {
-        let channelEIP = createEIPFormatFor(address: channel, chain: 1)
+        let chainId = getCurrentChainId()
+        let channelEIP = createEIPFormatFor(address: channel, chain: chainId)
         let queryComponents = ["page" : String(page),
                                "limit" : String(limit)]
         let urlString = URLSList.GET_CHANNEL_FEED_URL(channelEIP: channelEIP).appendingURLQueryComponents(queryComponents)
@@ -200,6 +201,11 @@ private extension PushRESTAPIService {
             return "eip155:\(chain):\(address)"
         }
         return "eip155:\(address)"
+    }
+    
+    func getCurrentChainId() -> Int {
+        let network: BlockchainNetwork = User.instance.getSettings().isTestnetUsed ? .ethGoerli : .ethMainnet
+        return network.rawValue
     }
 }
 

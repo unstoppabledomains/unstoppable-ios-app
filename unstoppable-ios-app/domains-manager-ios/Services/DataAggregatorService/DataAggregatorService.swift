@@ -411,7 +411,7 @@ private extension DataAggregatorService {
                                                 startDate: startTime,
                                                 timeout: 5)                
             }
-        } catch NetworkLayerError.connectionLost {
+        } catch NetworkLayerError.connectionLost, NetworkLayerError.requestCancelled {
             await reloadAndAggregateData(shouldRefreshPFP: shouldRefreshPFP)
             return // May occur when user navigate between apps and underlaying requests were cancelled
         } catch {

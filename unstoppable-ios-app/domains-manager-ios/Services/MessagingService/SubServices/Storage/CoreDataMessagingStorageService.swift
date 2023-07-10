@@ -20,8 +20,17 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func getUserProfileFor(domain: DomainItem) throws -> MessagingChatUserProfile {
         try queue.sync {
             guard let wallet = domain.ownerWallet else { throw Error.domainWithoutWallet }
-            if let coreDataMessage: CoreDataMessagingUserProfile = getCoreDataEntityWith(key: "normalizedWallet", value: wallet) {
-                return convertCoreDataUserProfileToMessagingUserProfile(coreDataMessage)
+            if let coreDataUserProfile: CoreDataMessagingUserProfile = getCoreDataEntityWith(key: "normalizedWallet", value: wallet) {
+                return convertCoreDataUserProfileToMessagingUserProfile(coreDataUserProfile)
+            }
+            throw Error.entityNotFound
+        }
+    }
+    
+    func getUserProfileWith(userId: String) throws -> MessagingChatUserProfile {
+        try queue.sync {
+            if let coreDataUserProfile: CoreDataMessagingUserProfile = getCoreDataEntityWith(id: userId) {
+                return convertCoreDataUserProfileToMessagingUserProfile(coreDataUserProfile)
             }
             throw Error.entityNotFound
         }
@@ -226,16 +235,34 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func saveChannels(_ channels: [MessagingNewsChannel],
                       for profile: MessagingChatUserProfile) async {
         queue.sync {
-            let _ = channels.compactMap { (try? convertMessagingChannelToCoreDataChannel($0, for: profile.wallet)) }
+            let _ = channels.compactMap { (try? convertMessagingChannelToCoreDataChannel($0)) }
+            saveContext(backgroundContext)
+        }
+    }
+    
+    func replaceChannel(_ channelToReplace: MessagingNewsChannel,
+                        with newChat: MessagingNewsChannel) async throws {
+        try queue.sync {
+            guard let coreDataChat: CoreDataMessagingNewsChannel = getCoreDataEntityWith(id: channelToReplace.id) else { throw Error.entityNotFound }
+            
+            deleteObject(coreDataChat, from: backgroundContext, shouldSaveContext: false)
+            _ = try? convertMessagingChannelToCoreDataChannel(newChat)
             saveContext(backgroundContext)
         }
     }
     
     // Channels Feed
-    func getChannelsFeedFor(channel: MessagingNewsChannel) async throws -> [MessagingNewsChannelFeed] {
+    func getChannelsFeedFor(channel: MessagingNewsChannel,
+                            page: Int,
+                            limit: Int) async throws -> [MessagingNewsChannelFeed] {
         try queue.sync {
+            let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
             let predicate = NSPredicate(format: "channelId == %@", channel.id)
-            let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(predicate: predicate, from: backgroundContext)
+            let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(predicate: predicate,
+                                                                                           sortDescriptions: [timeSortDescriptor],
+                                                                                           batchDescription: .init(size: limit,
+                                                                                                                   page: page),
+                                                                                           from: backgroundContext)
             
             return coreDataChannelsFeed.compactMap { convertCoreDataChannelFeedToMessagingChannelFeed($0) }
         }
@@ -243,8 +270,18 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     
     func saveChannelsFeed(_ feed: [MessagingNewsChannelFeed],
                           in channel: MessagingNewsChannel) async {
+        guard channel.isCurrentUserSubscribed else { return }
         queue.sync {
             let _ = feed.compactMap { (try? convertMessagingChannelFeedToCoreDataChannelFeed($0, in: channel)) }
+            saveContext(backgroundContext)
+        }
+    }
+    
+    func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
+                     isRead: Bool) throws {
+        try queue.sync {
+            guard let coreDataMessage: CoreDataMessagingNewsChannelFeed = getCoreDataEntityWith(id: feedItem.id) else { throw Error.entityNotFound }
+            coreDataMessage.isRead = isRead
             saveContext(backgroundContext)
         }
     }
@@ -533,9 +570,11 @@ private extension CoreDataMessagingStorageService {
     func convertCoreDataChannelToMessagingChannel(_ coreDataChannel: CoreDataMessagingNewsChannel) -> MessagingNewsChannel? {
         // Last message
         var lastMessage: MessagingNewsChannelFeed?
-        if let coreDataLastMessage = coreDataChannel.lastFeed,
-           let message = convertCoreDataChannelFeedToMessagingChannelFeed(coreDataLastMessage) {
-            lastMessage = message
+        if let coreDataLastMessage = coreDataChannel.lastFeed {
+            lastMessage = convertCoreDataChannelFeedToMessagingChannelFeed(coreDataLastMessage)
+        } else if let lastFeedId = coreDataChannel.lastFeedId,
+                  let feed: CoreDataMessagingNewsChannelFeed = getCoreDataEntityWith(id: lastFeedId) {
+            lastMessage = convertCoreDataChannelFeedToMessagingChannelFeed(feed)
         }
         
         let newsChannel = MessagingNewsChannel(id: coreDataChannel.id!,
@@ -549,27 +588,30 @@ private extension CoreDataMessagingStorageService {
                                                blocked: coreDataChannel.blocked ? 1 : 0,
                                                subscriberCount: Int(coreDataChannel.subscriberCount),
                                                unreadMessagesCount: 0,
+                                               isUpToDate: coreDataChannel.isUpToDate,
+                                               isCurrentUserSubscribed: true, /// We store only channels that user is opt-in for
                                                lastMessage: lastMessage)
         
         return newsChannel
     }
     
-    func convertMessagingChannelToCoreDataChannel(_ channel: MessagingNewsChannel,
-                                                  for wallet: String) throws -> CoreDataMessagingNewsChannel {
+    func convertMessagingChannelToCoreDataChannel(_ channel: MessagingNewsChannel) throws -> CoreDataMessagingNewsChannel {
+        guard channel.isCurrentUserSubscribed else { throw Error.invalidEntity }
+        
         let coreDataChannel: CoreDataMessagingNewsChannel = try createEntity(in: backgroundContext)
         
         coreDataChannel.id = channel.id
         coreDataChannel.userId = channel.userId
         coreDataChannel.channel = channel.channel
-        coreDataChannel.wallet = wallet
         coreDataChannel.name = channel.name
         coreDataChannel.info = channel.info
         coreDataChannel.url = channel.url
         coreDataChannel.icon = channel.icon
+        coreDataChannel.isUpToDate = channel.isUpToDate
         coreDataChannel.verifiedStatus = Int64(channel.verifiedStatus)
         coreDataChannel.blocked = channel.blocked == 1
         coreDataChannel.subscriberCount = Int64(channel.subscriberCount)
-//        coreDataChannel.lastMessageTime = channel.lastMessageTime
+        coreDataChannel.lastFeedId = channel.lastMessage?.id
         
         if let lastMessage = channel.lastMessage,
            let lastCoreDataMessage: CoreDataMessagingNewsChannelFeed = getCoreDataEntityWith(id: lastMessage.id) {
@@ -582,13 +624,14 @@ private extension CoreDataMessagingStorageService {
 
 // MARK: - News Channel Feed
 private extension CoreDataMessagingStorageService {
-    func convertCoreDataChannelFeedToMessagingChannelFeed(_ coreDataNewsFeed: CoreDataMessagingNewsChannelFeed) -> MessagingNewsChannelFeed? {
+    func convertCoreDataChannelFeedToMessagingChannelFeed(_ coreDataNewsFeed: CoreDataMessagingNewsChannelFeed) -> MessagingNewsChannelFeed {
         let feed = MessagingNewsChannelFeed(id: coreDataNewsFeed.id!,
                                             title: coreDataNewsFeed.title!,
                                             message: coreDataNewsFeed.message!,
                                             link: coreDataNewsFeed.link!,
                                             time: coreDataNewsFeed.time!,
-                                            isRead: coreDataNewsFeed.isRead)
+                                            isRead: coreDataNewsFeed.isRead,
+                                            isFirstInChannel: coreDataNewsFeed.isFirstInChannel)
         
         return feed
     }
@@ -602,6 +645,7 @@ private extension CoreDataMessagingStorageService {
         coreDataMessage.link = channelFeed.link
         coreDataMessage.time = channelFeed.time
         coreDataMessage.isRead = channelFeed.isRead
+        coreDataMessage.isFirstInChannel = channelFeed.isFirstInChannel
         coreDataMessage.channelId = channel.id
         
         return coreDataMessage
@@ -650,5 +694,6 @@ extension CoreDataMessagingStorageService {
         case domainWithoutWallet
         case failedToFetch
         case entityNotFound
+        case invalidEntity
     }
 }

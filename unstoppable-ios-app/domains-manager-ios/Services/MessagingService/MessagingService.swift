@@ -80,16 +80,9 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
         let chat = try await getMessagingChatFor(displayInfo: chat)
         try await apiService.makeChatRequest(chat, approved: approved, by: profile)
-        // TODO: - Reload chats list?
     }
     
     // Messages
-    func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
-        try await storageService.getMessagesFor(chat: chatDisplayInfo,
-                                                decrypter: decrypterService).map({ $0.displayInfo })
-    }
-    
-    // Fetch limit is 30 max
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
@@ -220,8 +213,105 @@ extension MessagingService: MessagingServiceProtocol {
                                                                  limit: limit,
                                                                  isSpam: isSpam)
         
-        
         return feed
+    }
+    
+    func getFeedFor(channel: MessagingNewsChannel,
+                    page: Int,
+                    limit: Int) async throws -> [MessagingNewsChannelFeed] {
+        let storedFeed = try await storageService.getChannelsFeedFor(channel: channel,
+                                                                     page: page,
+                                                                     limit: limit)
+        
+        func checkIfFirstFeedInChannel(_ feed: inout [MessagingNewsChannelFeed]) {
+            if feed.count < limit,
+               var lastFeed = feed.last {
+                lastFeed.isFirstInChannel = true
+                feed[feed.count - 1] = lastFeed
+            }
+        }
+        
+        func setChannelUpToDate(feed: [MessagingNewsChannelFeed]) async throws {
+            guard channel.isCurrentUserSubscribed else { return }
+            
+            var updatedChannel = channel
+            updatedChannel.isUpToDate = true
+            if page == 1,
+               let latestFeed = feed.first {
+                updatedChannel.lastMessage = latestFeed
+            }
+            try await storageService.replaceChannel(channel, with: updatedChannel)
+            notifyChannelsChanged(userId: channel.userId)
+        }
+        
+        if channel.isUpToDate && channel.isCurrentUserSubscribed {
+            /// User has opened channel before and there's no unread messages
+            if storedFeed.count < limit {
+                if storedFeed.last?.isFirstInChannel == true || (storedFeed.isEmpty && page == 1) {
+                     return storedFeed
+                } else {
+                    var loadedFeed = try await apiService.getFeedFor(channel: channel,
+                                                                     page: page,
+                                                                     limit: limit)
+                    checkIfFirstFeedInChannel(&loadedFeed)
+                    await storageService.saveChannelsFeed(loadedFeed,
+                                                          in: channel)
+                    return loadedFeed
+                }
+            } else {
+                return storedFeed
+            }
+        } else if let latestLocalFeed = storedFeed.first(where: { $0.isRead }) {
+            /// User has already opened channel before, but there's some unread messages
+            var preLoadPage = 1
+            let preLoadLimit = 30
+            var preloadedFeed = [MessagingNewsChannelFeed]()
+            while true {
+                let feed = try await apiService.getFeedFor(channel: channel,
+                                                           page: preLoadPage,
+                                                           limit: preLoadLimit)
+                if let i = feed.firstIndex(where: { $0.id == latestLocalFeed.id }) {
+                    let missedChunk = feed[0..<i]
+                    preloadedFeed.append(contentsOf: missedChunk)
+                    break
+                } else {
+                    preloadedFeed.append(contentsOf: feed)
+                    preLoadPage += 1
+                }
+            }
+            
+            await storageService.saveChannelsFeed(preloadedFeed,
+                                                  in: channel)
+            try await setChannelUpToDate(feed: preloadedFeed)
+            
+            let result = storedFeed + preloadedFeed
+            return result
+        } else {
+            /// User open channel for the first time
+            var loadedFeed = try await apiService.getFeedFor(channel: channel,
+                                                             page: page,
+                                                             limit: limit)
+            checkIfFirstFeedInChannel(&loadedFeed)
+            await storageService.saveChannelsFeed(loadedFeed,
+                                                  in: channel)
+            try await setChannelUpToDate(feed: loadedFeed)
+            
+            return loadedFeed
+        }
+    }
+    
+    func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
+                      isRead: Bool,
+                      in channel: MessagingNewsChannel) throws {
+        try storageService.markFeedItem(feedItem, isRead: isRead)
+        notifyChannelsChanged(userId: channel.userId)
+    }
+    
+    func setChannel(_ channel: MessagingNewsChannel,
+                    subscribed: Bool,
+                    by user: MessagingChatUserProfileDisplayInfo) async throws {
+        let profile = try await getUserProfileWith(wallet: user.wallet)
+        try await apiService.setChannel(channel, subscribed: subscribed, by: profile)
     }
     
     // Search
@@ -233,6 +323,16 @@ extension MessagingService: MessagingServiceProtocol {
         }
         
         return []
+    }
+    
+    func searchForChannelsWith(page: Int,
+                               limit: Int,
+                               searchKey: String,
+                               for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
+        let profile = try await getUserProfileWith(wallet: user.wallet)
+        let channels = try await apiService.searchForChannels(page: page, limit: limit, searchKey: searchKey, for: profile)
+        
+        return channels
     }
     
     // Listeners
@@ -475,8 +575,15 @@ private extension MessagingService {
     func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
         Task {
             do {
-                let channels = try await apiService.getSubscribedChannelsForUser(profile)
-                let updatedChats = await refreshChannelsMetadata(channels).sortedByLastMessage()
+                let storedChannels = try await storageService.getChannelsFor(profile: profile)
+
+                async let channelsTask = try await apiService.getSubscribedChannelsForUser(profile)
+                async let spamChannelsTask = try await apiService.getSpamChannelsForUser(profile)
+                
+                let (channels, spamChannels) = try await (channelsTask, spamChannelsTask)
+                let allChannels = channels + spamChannels
+                
+                let updatedChats = await refreshChannelsMetadata(allChannels, storedChannels: storedChannels).sortedByLastMessage()
                 
                 await storageService.saveChannels(updatedChats, for: profile)
                 notifyListenersChangedDataType(.channels(updatedChats, profile: profile.displayInfo))
@@ -484,7 +591,8 @@ private extension MessagingService {
         }
     }
     
-    func refreshChannelsMetadata(_ channels: [MessagingNewsChannel]) async -> [MessagingNewsChannel] {
+    func refreshChannelsMetadata(_ channels: [MessagingNewsChannel],
+                                 storedChannels: [MessagingNewsChannel]) async -> [MessagingNewsChannel] {
         var updatedChannels = [MessagingNewsChannel]()
         
         await withTaskGroup(of: MessagingNewsChannel.self, body: { group in
@@ -493,10 +601,16 @@ private extension MessagingService {
                     if let lastMessage = try? await self.apiService.getFeedFor(channel: channel,
                                                                                page: 1,
                                                                                limit: 1).first {
-                        await self.storageService.saveChannelsFeed([lastMessage],
-                                                                   in: channel)
                         var updatedChannel = channel
                         updatedChannel.lastMessage = lastMessage
+                        if let storedChannel = storedChannels.first(where: { $0.id == channel.id }),
+                           storedChannel.lastMessage?.id == lastMessage.id {
+                            updatedChannel.isUpToDate = true
+                        } else {
+                            updatedChannel.isUpToDate = false
+                            await self.storageService.saveChannelsFeed([lastMessage],
+                                                                       in: channel)
+                        }
                         return updatedChannel
                     } else {
                         return channel
@@ -593,6 +707,16 @@ private extension MessagingService {
                 let chat = try await getMessagingChatWith(chatId: chatId)
                 let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
                 refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
+            } catch { }
+        }
+    }
+    
+    func notifyChannelsChanged(userId: String) {
+        Task {
+            do {
+                let profile = try storageService.getUserProfileWith(userId: userId)
+                let channels = try await storageService.getChannelsFor(profile: profile)
+                notifyListenersChangedDataType(.channels(channels, profile: profile.displayInfo))
             } catch { }
         }
     }

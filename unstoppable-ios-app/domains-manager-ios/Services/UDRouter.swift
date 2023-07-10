@@ -593,6 +593,15 @@ class UDRouter: DomainProfileSignatureValidator {
         
         nav.pushViewController(vc, animated: true)
     }
+    
+    func showChannelScreen(profile: MessagingChatUserProfileDisplayInfo,
+                           channel: MessagingNewsChannel,
+                           in nav: CNavigationController) {
+        let vc = buildChannelModule(profile: profile,
+                                    channel: channel)
+        
+        nav.pushViewController(vc, animated: true)
+    }
 }
 
 // MARK: - Private methods
@@ -1016,6 +1025,16 @@ private extension UDRouter {
         let presenter = ChatViewPresenter(view: vc,
                                           profile: profile,
                                           conversationState: conversationState)
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func buildChannelModule(profile: MessagingChatUserProfileDisplayInfo,
+                            channel: MessagingNewsChannel) -> UIViewController {
+        let vc = ChatViewController.nibInstance()
+        let presenter = ChannelViewPresenter(view: vc,
+                                             profile: profile,
+                                             channel: channel)
         vc.presenter = presenter
         return vc
     }

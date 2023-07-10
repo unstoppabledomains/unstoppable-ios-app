@@ -107,6 +107,8 @@ protocol PullUpViewServiceProtocol {
                                            expiresDate: Date)
     func showParkedDomainExpiredPullUp(in viewController: UIViewController)
     func showApplePayRequiredPullUp(in viewController: UIViewController)
+    func showMessagingChannelInfoPullUp(channel: MessagingNewsChannel,
+                                        in viewController: UIViewController) async throws
 }
 
 @MainActor
@@ -1480,6 +1482,84 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                 items: PullUpSelectionViewEmptyItem.allCases)
         
         presentPullUpView(in: viewController, pullUp: .applePayRequired, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
+    
+    func showMessagingChannelInfoPullUp(channel: MessagingNewsChannel,
+                                        in viewController: UIViewController) async throws {
+        var selectionViewHeight: CGFloat = 304
+        
+        let labelWidth = UIScreen.main.bounds.width - 32 // 16 * 2 side offsets
+        
+        let title = channel.name
+        let titleHeight = title.height(withConstrainedWidth: labelWidth,
+                                          font: .currentFont(withSize: 22, weight: .bold))
+        selectionViewHeight += titleHeight
+        
+        let subtitle = channel.info
+        let subtitleHeight = subtitle.height(withConstrainedWidth: labelWidth,
+                                             font: .currentFont(withSize: 16, weight: .regular))
+        selectionViewHeight += subtitleHeight
+        
+        
+        let subscribersLabel = UILabel(frame: .zero)
+        subscribersLabel.translatesAutoresizingMaskIntoConstraints = false
+        subscribersLabel.setAttributedTextWith(text: String.Constants.messagingNFollowers.localized(channel.subscriberCount),
+                                               font: .currentFont(withSize: 16, weight: .medium),
+                                               textColor: .foregroundSecondary)
+        let subscribersIcon = UIImageView(image: .reputationIcon20)
+        subscribersIcon.translatesAutoresizingMaskIntoConstraints = false
+        subscribersIcon.tintColor = .foregroundSecondary
+        
+        let subscribersStack = UIStackView(arrangedSubviews: [subscribersIcon, subscribersLabel])
+        subscribersStack.translatesAutoresizingMaskIntoConstraints = false
+        subscribersStack.axis = .horizontal
+        subscribersStack.alignment = .center
+        subscribersStack.spacing = 8
+        
+        let subscribersView = UIView()
+        subscribersView.translatesAutoresizingMaskIntoConstraints = false
+        subscribersView.addSubview(subscribersStack)
+        subscribersView.layer.cornerRadius = 16
+        subscribersView.backgroundColor = .backgroundSubtle
+        
+        
+        let subscribersContainer = UIView()
+        subscribersContainer.translatesAutoresizingMaskIntoConstraints = false
+        subscribersContainer.backgroundColor = .clear
+        subscribersContainer.addSubview(subscribersView)
+
+        NSLayoutConstraint.activate([subscribersContainer.heightAnchor.constraint(equalToConstant: 32),
+                                     subscribersView.centerXAnchor.constraint(equalTo: subscribersContainer.centerXAnchor),
+                                     subscribersView.centerYAnchor.constraint(equalTo: subscribersContainer.centerYAnchor),
+                                     subscribersView.topAnchor.constraint(equalTo: subscribersContainer.topAnchor),
+                                     subscribersView.bottomAnchor.constraint(equalTo: subscribersContainer.bottomAnchor),
+                                     subscribersStack.leadingAnchor.constraint(equalTo: subscribersView.leadingAnchor, constant: 12),
+                                     subscribersView.trailingAnchor.constraint(equalTo: subscribersStack.trailingAnchor, constant: 12),
+                                     subscribersStack.topAnchor.constraint(equalTo: subscribersView.topAnchor),
+                                     subscribersStack.bottomAnchor.constraint(equalTo: subscribersView.bottomAnchor),
+                                     subscribersIcon.widthAnchor.constraint(equalToConstant: 20),
+                                     subscribersIcon.heightAnchor.constraint(equalToConstant: 20)
+                                    ])
+        
+        var avatarImage = await appContext.imageLoadingService.loadImage(from: .url(channel.icon),
+                                                                         downsampleDescription: nil) ?? .init()
+        avatarImage = avatarImage.circleCroppedImage(size: 56)
+        let buttonTitle = String.Constants.profileOpenWebsite.localized()
+        try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: avatarImage,
+                                                                                     size: .large),
+                                                                         subtitle: .label(.text(subtitle)),
+                                                                         extraViews: [subscribersContainer],
+                                                                         actionButton: .main(content: .init(title: buttonTitle,
+                                                                                                            icon: nil,
+                                                                                                            analyticsName: .logOut,
+                                                                                                            action: { completion(.success(Void())) }))),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            presentPullUpView(in: viewController, pullUp: .messagingChannelInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
+        }
     }
 }
 

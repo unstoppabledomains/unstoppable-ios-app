@@ -59,7 +59,11 @@ extension ChatListCell {
         
         if let lastMessage = channel.lastMessage {
             setTimeText(lastMessage.time)
-            setLastMessageText(lastMessage.title)
+            if lastMessage.title.trimmedSpaces.isEmpty {
+                setLastMessageText(lastMessage.message)
+            } else {
+                setLastMessageText(lastMessage.title)
+            }
         } else {
             setTimeText(nil)
             setLastMessageText("")
@@ -111,7 +115,8 @@ private extension ChatListCell {
     func setNameText(_ text: String) {
         chatNameLabel.setAttributedTextWith(text: text,
                                             font: .currentFont(withSize: 16, weight: .medium),
-                                            textColor: .foregroundDefault)
+                                            textColor: .foregroundDefault,
+                                            lineBreakMode: .byTruncatingTail)
     }
     
     func setLastMessageText(_ text: String) {

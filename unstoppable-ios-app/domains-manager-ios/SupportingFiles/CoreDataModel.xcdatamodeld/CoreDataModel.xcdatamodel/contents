@@ -45,23 +45,25 @@
         <attribute name="icon" attributeType="URI" defaultValueString=""/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="info" attributeType="String" defaultValueString=""/>
+        <attribute name="isUpToDate" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="lastFeedId" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
         <attribute name="subscriberCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="url" attributeType="URI" defaultValueString=""/>
         <attribute name="userId" attributeType="String" defaultValueString=""/>
         <attribute name="verifiedStatus" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="wallet" attributeType="String" defaultValueString=""/>
         <relationship name="lastFeed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannelFeed" inverseName="lastInChannel" inverseEntity="CoreDataMessagingNewsChannelFeed"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
-                <constraint value="wallet"/>
+                <constraint value="userId"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
     <entity name="CoreDataMessagingNewsChannelFeed" representedClassName="CoreDataMessagingNewsChannelFeed" syncable="YES" codeGenerationType="class">
         <attribute name="channelId" attributeType="String" defaultValueString=""/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="isFirstInChannel" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="link" attributeType="URI" defaultValueString=""/>
         <attribute name="message" attributeType="String" defaultValueString=""/>

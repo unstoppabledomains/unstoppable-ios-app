@@ -72,7 +72,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             openChannel(configuration.channel)
         case .userInfo(let configuration):
             openChatWith(conversationState: .newChat(configuration.userInfo))
-        case .dataTypeSelection, .createProfile, .emptyState:
+        case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
         }
     }
@@ -117,11 +117,15 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     
     func didSearchWith(key: String) {
         self.searchData.searchKey = key.trimmedSpaces
-        
+        guard let profile = selectedProfileWalletPair?.profile else { return }
         Task {
             do {
-                let searchUsers = try await searchManager.searchForUsers(with: key)
+                let (searchUsers, searchChannels) = try await searchManager.search(with: key,
+                                                                                   page: 1,
+                                                                                   limit: fetchLimit,
+                                                                                   for: profile)
                 searchData.searchUsers = searchUsers
+                searchData.searchChannels = searchChannels
                 showData()
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -326,12 +330,13 @@ private extension ChatsListViewPresenter {
             snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
         } else {
             snapshot.appendSections([.listItems(title: nil)])
-            let spamList = channels.filter({ $0.blocked == 1 })
+            let channelsList = channels.filter({ $0.isCurrentUserSubscribed })
+            let spamList = channels.filter({ !$0.isCurrentUserSubscribed })
             if !spamList.isEmpty {
                 snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
                                                                          numberOfRequests: spamList.count))])
             }
-            snapshot.appendItems(channels.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
+            snapshot.appendItems(channelsList.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }
     }
     
@@ -350,7 +355,6 @@ private extension ChatsListViewPresenter {
             }
         }
         
-        
         var people = [PeopleSearchResult]()
         var channels = [MessagingNewsChannel]()
         if searchData.searchKey.isEmpty {
@@ -358,11 +362,13 @@ private extension ChatsListViewPresenter {
             channels = self.channels
         } else {
             people = searchData.searchUsers.map({ .newUser($0) })
+            let subscribedChannelsIds = self.channels.map { $0.id }
+            channels = searchData.searchChannels.filter({ !subscribedChannelsIds.contains($0.id) })
         }
         
         if people.isEmpty && channels.isEmpty {
             snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+            snapshot.appendItems([.emptySearch])
         } else {
             if !people.isEmpty {
                 snapshot.appendSections([.listItems(title: "People")])
@@ -409,12 +415,22 @@ private extension ChatsListViewPresenter {
                                               profile: profile,
                                               in: nav)
         case .channels:
-            return
+            let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
+            guard !channels.isEmpty else { return }
+
+            UDRouter().showChatRequestsScreen(dataType: .channelsRequests(channels),
+                                              profile: profile,
+                                              in: nav)
         }
     }
     
     func openChannel(_ channel: MessagingNewsChannel) {
+        guard let profile = selectedProfileWalletPair?.profile,
+              let nav = view?.cNavigationController else { return }
         
+        UDRouter().showChannelScreen(profile: profile,
+                                     channel: channel,
+                                     in: nav)
     }
     
     func askToSetRRDomainAndCreateProfileFor(wallet: WalletDisplayInfo) {
@@ -463,12 +479,14 @@ private extension ChatsListViewPresenter {
         var isSearchActive = false
         var searchKey: String = ""
         var searchUsers: [MessagingChatUserDisplayInfo] = []
+        var searchChannels: [MessagingNewsChannel] = []
     }
 }
 
-final class SearchManager {
+private final class SearchManager {
     
-    typealias SearchUsersTask = Task<[MessagingChatUserDisplayInfo], Error>
+    typealias SearchResult = ([MessagingChatUserDisplayInfo], [MessagingNewsChannel])
+    typealias SearchUsersTask = Task<SearchResult, Error>
     
     private let debounce: TimeInterval
     private var currentTask: SearchUsersTask?
@@ -477,17 +495,32 @@ final class SearchManager {
         self.debounce = debounce
     }
     
-    func searchForUsers(with searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
+    func search(with searchKey: String,
+                page: Int,
+                limit: Int,
+                for profile: MessagingChatUserProfileDisplayInfo) async throws -> SearchResult {
         // Cancel previous search task if it exists
         currentTask?.cancel()
         
         let debounce = self.debounce
         let task: SearchUsersTask = Task.detached {
-            try? await Task.sleep(seconds: debounce)
-            guard !Task.isCancelled else { return [] }
-            let users = try await appContext.messagingService.searchForUsersWith(searchKey: searchKey)
-            guard !Task.isCancelled else { return [] }
-            return users
+            do {
+                try await Task.sleep(seconds: debounce)
+                try Task.checkCancellation()
+                
+                async let searchUsersTasks = appContext.messagingService.searchForUsersWith(searchKey: searchKey)
+                async let searchChannelsTasks = appContext.messagingService.searchForChannelsWith(page: page, limit: limit,
+                                                                                                  searchKey: searchKey, for: profile)
+                
+                let (users, channels) = try await (searchUsersTasks, searchChannelsTasks)
+                
+                try Task.checkCancellation()
+                return (users, channels)
+            } catch NetworkLayerError.requestCancelled, is CancellationError {
+                return ([], [])
+            } catch {
+                throw error
+            }
         }
         
         currentTask = task

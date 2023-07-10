@@ -42,7 +42,8 @@ extension ChatListRequestsCell {
         
         titleLabel.setAttributedTextWith(text: title,
                                          font: .currentFont(withSize: 16, weight: .medium),
-                                         textColor: .foregroundDefault)
+                                         textColor: .foregroundDefault,
+                                         lineBreakMode: .byTruncatingTail)
         subtitleLabel.setAttributedTextWith(text: subtitle,
                                             font: .currentFont(withSize: 14, weight: .regular),
                                             textColor: .foregroundSecondary,

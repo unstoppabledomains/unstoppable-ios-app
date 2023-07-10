@@ -152,6 +152,7 @@ extension ChatsListViewController: UDSearchBarDelegate {
     }
     
     func udSearchBarTextDidEndEditing(_ udSearchBar: UDSearchBar) {
+        searchBar.text = ""
         logAnalytic(event: .didStopSearching)
         setSearchBarActive(false)
         presenter.didStopSearch()
@@ -313,6 +314,11 @@ private extension ChatsListViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .emptySearch:
+                let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
+                cell.setSearchStateUI()
+                
+                return cell
             }
         })
         
@@ -425,6 +431,7 @@ extension ChatsListViewController {
         case createProfile
         case emptyState(configuration: EmptyStateUIConfiguration)
         case userInfo(configuration: UserInfoUIConfiguration)
+        case emptySearch
     }
     
     struct ChatUIConfiguration: Hashable {

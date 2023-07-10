@@ -39,7 +39,8 @@ final class ChatViewController: BaseViewController {
     override var scrollableContentYOffset: CGFloat? { 13 }
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self,
                                                         ChatImageCell.self,
-                                                        ChatEmptyCell.self] }
+                                                        ChatEmptyCell.self,
+                                                        ChannelFeedCell.self] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
     private var scrollingInfo: ScrollingInfo?
@@ -135,6 +136,18 @@ extension ChatViewController: ChatViewProtocol {
             approveContentView.isHidden = false
             chatInputView.isHidden = true
             collectionView.isHidden = false
+            blockButton.isHidden = false
+            acceptButton.setTitle(String.Constants.accept.localized(), image: nil)
+        case .viewChannel:
+            approveContentView.isHidden = true
+            chatInputView.isHidden = true
+            collectionView.isHidden = false
+        case .joinChannel:
+            approveContentView.isHidden = false
+            chatInputView.isHidden = true
+            collectionView.isHidden = false
+            blockButton.isHidden = true
+            acceptButton.setTitle(String.Constants.join.localized(), image: nil)
         }
     }
 }
@@ -209,6 +222,11 @@ private extension ChatViewController {
     @IBAction func rejectButtonPressed() {
         presenter.rejectButtonPressed()
     }
+    
+    @objc func infoButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+        presenter.infoButtonPressed()
+    }
 }
 
 // MARK: - Private functions
@@ -259,13 +277,16 @@ private extension ChatViewController {
     
     func setupApproveRequestView() {
         approveContentView.isHidden = true
-        acceptButton.setTitle(String.Constants.accept.localized(), image: nil)
         blockButton.setTitle(String.Constants.delete.localized(), image: nil)
     }
     
     func setupNavBar() {
         titleView = ChatTitleView()
-        navigationItem.titleView = titleView 
+        navigationItem.titleView = titleView
+        
+        let infoBarButtonItem = UIBarButtonItem(image: .infoEmptyIcon24, style: .plain, target: self, action: #selector(infoButtonPressed))
+        infoBarButtonItem.tintColor = .foregroundDefault
+        navigationItem.rightBarButtonItem = infoBarButtonItem
     }
     
     func setupCollectionView() {
@@ -290,6 +311,11 @@ private extension ChatViewController {
                 return cell
             case .imageBase64Message(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatImageCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
+            case .channelFeed(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChannelFeedCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
                 
                 return cell
@@ -371,6 +397,7 @@ extension ChatViewController {
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
+        case channelFeed(configuration: ChannelFeedUIConfiguration)
         case emptyState
         
         var message: MessagingChatMessageDisplayInfo? {
@@ -379,7 +406,7 @@ extension ChatViewController {
                 return configuration.message
             case .imageBase64Message(let configuration):
                 return configuration.message
-            case .emptyState:
+            case .emptyState, .channelFeed:
                 return nil
             }
         }
@@ -419,15 +446,35 @@ extension ChatViewController {
         }
     }
     
+    struct ChannelFeedUIConfiguration: Hashable {
+        
+        let feed: MessagingNewsChannelFeed
+        var actionCallback: (ChatFeedAction)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.feed == rhs.feed
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(feed)
+        }
+    }
+
     enum ChatMessageAction: Hashable {
         case resend
         case delete
+    }
+    
+    enum ChatFeedAction: Hashable {
+        case learnMore
     }
     
     enum State {
         case loading
         case chat
         case requestApprove
+        case viewChannel
+        case joinChannel
     }
 }
 

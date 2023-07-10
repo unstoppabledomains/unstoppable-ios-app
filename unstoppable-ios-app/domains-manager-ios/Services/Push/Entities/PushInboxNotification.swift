@@ -30,13 +30,13 @@ struct PushInboxNotification: Codable {
 extension PushInboxNotification {
     struct Payload: Codable {
         let data: Data
-        let recipients: String
+//        let recipients: String
         let notification: Notification
         let verificationProof: String
         
         enum CodingKeys: String, CodingKey {
             case data
-            case recipients
+//            case recipients
             case notification
             case verificationProof = "verificationProof"
         }
@@ -51,7 +51,7 @@ extension PushInboxNotification {
         let amsg: String
         let asub: String
         let icon: String
-        let type: Int
+//        let type: Int?
         let epoch: String
         let etime: String?
         let hidden: String
@@ -67,7 +67,7 @@ extension PushInboxNotification {
             case amsg
             case asub
             case icon
-            case type
+//            case type
             case epoch
             case etime
             case hidden

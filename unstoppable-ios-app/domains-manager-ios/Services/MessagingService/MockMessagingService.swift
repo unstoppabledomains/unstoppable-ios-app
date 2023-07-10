@@ -33,9 +33,6 @@ extension MockMessagingService: MessagingServiceProtocol {
          */
     }
     
-    func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo] {
-        try await getMessagesForChat(chatDisplayInfo, fetchLimit: 30)
-    }
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
@@ -68,15 +65,27 @@ extension MockMessagingService: MessagingServiceProtocol {
     func markMessage(_ message: MessagingChatMessageDisplayInfo, isRead: Bool, wallet: String) throws { }
     
     func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
-
+    func getFeedFor(channel: MessagingNewsChannel,
+                    page: Int,
+                    limit: Int) async throws -> [MessagingNewsChannelFeed] { [] }
+    func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
+                      isRead: Bool,
+                      in channel: MessagingNewsChannel) throws { }
+    func setChannel(_ channel: MessagingNewsChannel,
+                    subscribed: Bool,
+                    by user: MessagingChatUserProfileDisplayInfo) async throws { }
     
     // Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] { [] }
+    func searchForChannelsWith(page: Int,
+                               limit: Int,
+                               searchKey: String,
+                               for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
     
     func addListener(_ listener: MessagingServiceListener) {}
     func removeListener(_ listener: MessagingServiceListener) {}
 }
-
+ 
 // MARK: - Private methods
 private extension MockMessagingService {
     func createMockChatsFor(domain: DomainDisplayInfo) -> [MessagingChatDisplayInfo] {

@@ -209,6 +209,7 @@ struct PushEntitiesTransformer {
     }
     
     static func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel,
+                                                     isCurrentUserSubscribed: Bool,
                                                      userId: String) -> MessagingNewsChannel {
         MessagingNewsChannel(id: String(pushChannel.id),
                              userId: userId,
@@ -220,7 +221,9 @@ struct PushEntitiesTransformer {
                              verifiedStatus: pushChannel.verified_status,
                              blocked: pushChannel.blocked,
                              subscriberCount: pushChannel.subscriber_count,
-                             unreadMessagesCount: 0)
+                             unreadMessagesCount: 0,
+                             isUpToDate: true,
+                             isCurrentUserSubscribed: isCurrentUserSubscribed)
     }
     
     static func convertPushInboxToChannelFeed(_ pushNotification: PushInboxNotification) -> MessagingNewsChannelFeed {
@@ -229,7 +232,8 @@ struct PushEntitiesTransformer {
                                  message: pushNotification.payload.data.amsg,
                                  link: pushNotification.payload.data.url,
                                  time: PushISODateFormatter.date(from: pushNotification.epoch) ?? Date(),
-                                 isRead: false)
+                                 isRead: false,
+                                 isFirstInChannel: false)
     }
     
     static func getWalletAddressFrom(eip155String: String) -> String? {

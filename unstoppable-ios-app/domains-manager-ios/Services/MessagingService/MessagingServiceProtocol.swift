@@ -17,7 +17,6 @@ protocol MessagingServiceProtocol {
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo]
     
     // Messages
-    func getCachedMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo) async throws -> [MessagingChatMessageDisplayInfo]
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
@@ -37,9 +36,22 @@ protocol MessagingServiceProtocol {
                      wallet: String) throws
     // Channels
     func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
+    func getFeedFor(channel: MessagingNewsChannel,
+                    page: Int,
+                    limit: Int) async throws -> [MessagingNewsChannelFeed]
+    func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
+                      isRead: Bool,
+                      in channel: MessagingNewsChannel) throws
+    func setChannel(_ channel: MessagingNewsChannel,
+                    subscribed: Bool,
+                    by user: MessagingChatUserProfileDisplayInfo) async throws
     
     // Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo]
+    func searchForChannelsWith(page: Int,
+                               limit: Int,
+                               searchKey: String,
+                               for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
     
     // Listeners
     func addListener(_ listener: MessagingServiceListener)

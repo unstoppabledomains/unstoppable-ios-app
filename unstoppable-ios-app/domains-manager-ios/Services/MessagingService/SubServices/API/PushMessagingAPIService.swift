@@ -240,11 +240,25 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     // Channels
     func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
         let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: user.wallet)
-        guard !subscribedChannelsIds.isEmpty else { return [] }
         
+        return try await getChannelsWithIds(Set(subscribedChannelsIds), isCurrentUserSubscribed: true, user: user)
+    }
+    
+    func getSpamChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
+        let spamMessages = try await pushRESTService.getNotificationsInbox(for: user.wallet, page: 1, limit: 30, isSpam: true)
+        let spamChannelIds = Set(spamMessages.map { $0.sender })
+        
+        return try await getChannelsWithIds(spamChannelIds, isCurrentUserSubscribed: false, user: user)
+    }
+    
+    private func getChannelsWithIds(_ channelIds: Set<String>,
+                                    isCurrentUserSubscribed: Bool,
+                                    user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
+        guard !channelIds.isEmpty else { return [] }
+
         var channels = [PushChannel?]()
         await withTaskGroup(of: PushChannel?.self, body: { group in
-            for id in subscribedChannelsIds {
+            for id in channelIds {
                 group.addTask {
                     try? await self.pushRESTService.getChannelDetails(for: id)
                 }
@@ -256,6 +270,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         })
         
         return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
+                                                                                                              isCurrentUserSubscribed: isCurrentUserSubscribed,
                                                                                                               userId: user.id) })
     }
     
@@ -275,6 +290,36 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0) })
     }
+    
+    func searchForChannels(page: Int,
+                           limit: Int,
+                           searchKey: String,
+                           for user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
+        guard !searchKey.trimmedSpaces.isEmpty else { return [] }
+        let channels = try await pushRESTService.searchForChannels(page: page, limit: limit, query: searchKey)
+        
+        return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
+                                                                                                              isCurrentUserSubscribed: false,
+                                                                                                              userId: user.id) })
+    }
+    
+    func setChannel(_ channel: MessagingNewsChannel,
+                    subscribed: Bool,
+                    by user: MessagingChatUserProfile) async throws {
+        
+        let domain = try await getAnyDomainItem(for: user.normalizedWallet)
+        let env = getCurrentPushEnvironment()
+        
+        let subscribeOptions = Push.PushChannel.SubscribeOption(signer: domain,
+                                                              channelAddress: channel.id,
+                                                              env: env)
+        if subscribed {
+            try await Push.PushChannel.subscribe(option: subscribeOptions)
+        } else {
+            try await Push.PushChannel.unsubscribe(option: subscribeOptions)
+        }
+    }
+    
 }
 
 // MARK: - Private methods
@@ -391,9 +436,13 @@ extension PushMessagingAPIService {
     }
 }
 
-extension DomainItem: Push.Signer {
+extension DomainItem: Push.Signer, Push.TypedSinger {
     func getEip191Signature(message: String) async throws -> String {
         try await self.personalSign(message: message)
+    }
+    
+    func getEip712Signature(message: String) async throws -> String {
+        throw NSError() // TODO: - Add support
     }
     
     func getAddress() async throws -> String {
