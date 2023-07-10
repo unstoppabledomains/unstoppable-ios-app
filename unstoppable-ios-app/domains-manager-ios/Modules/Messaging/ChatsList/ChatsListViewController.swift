@@ -323,6 +323,8 @@ private extension ChatsListViewController {
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration,
                              actionButtonCallback: { [weak self] in
+                    self?.logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
+                                                         parameters: [.value: configuration.dataType.rawValue])
                     self?.setSearchBarActive(true)
                 })
                 
