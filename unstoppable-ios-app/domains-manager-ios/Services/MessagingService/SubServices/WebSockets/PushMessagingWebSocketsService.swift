@@ -111,7 +111,7 @@ private extension PushMessagingWebSocketsService {
     
     func buildEIP155AddressFrom(profile: MessagingChatUserProfile, shouldIncludeChain: Bool) throws -> String {
         let walletAddress = profile.wallet
-        let blockchain: BlockchainType = .Matic // TODO: - Check how to select chain for user profile
+        let blockchain: BlockchainType = .Matic 
         
         if shouldIncludeChain {
             let env: UnsConfigManager.BlockchainEnvironment

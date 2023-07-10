@@ -231,7 +231,7 @@ private extension ChatsListViewPresenter {
                                                   profile: nil))
                 }
             } catch {
-                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+                view?.showAlertWith(error: error, handler: nil) 
             }
         }
     }

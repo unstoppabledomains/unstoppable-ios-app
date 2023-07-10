@@ -158,7 +158,7 @@ private extension ChannelViewPresenter {
                 currentPage = newPage
                 isLoadingFeed = false
             } catch {
-                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+                view?.showAlertWith(error: error, handler: nil) 
                 isLoadingFeed = false
             }
             showData(animated: false, isLoading: false)

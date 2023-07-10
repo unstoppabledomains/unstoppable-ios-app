@@ -222,7 +222,7 @@ private extension ChatViewPresenter {
                     showData(animated: false, isLoading: false)
                 }
             } catch {
-                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+                view?.showAlertWith(error: error, handler: nil) 
             }
         }
     }
@@ -242,7 +242,7 @@ private extension ChatViewPresenter {
                 checkIfUpToDate()
                 isLoadingMessages = false
             } catch {
-                view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
+                view?.showAlertWith(error: error, handler: nil)
                 isLoadingMessages = false
             }
             showData(animated: false, isLoading: false)
