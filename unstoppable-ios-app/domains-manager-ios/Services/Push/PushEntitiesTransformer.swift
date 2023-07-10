@@ -198,52 +198,23 @@ struct PushEntitiesTransformer {
         guard let senderWallet = getWalletAddressFrom(eip155String: pushMessage.fromDID),
               let receiverWallet = getWalletAddressFrom(eip155String: pushMessage.toDID),
               let id = pushMessage.cid else { return nil }
-        let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
-
-        switch messageType {
-        case .text:
-            let encryptedText = pushMessage.messageContent
-            guard let text = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
-            
-            var time = Date()
-            if let timestamp = pushMessage.timestamp {
-                time = Date(millisecondsSince1970: timestamp)
-            }
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: text,
-                                                                          encryptedText: encryptedText)
-            let senderDisplayInfo = MessagingChatUserDisplayInfo(wallet: senderWallet)
-            let metadataModel = PushEnvironment.MessageServiceMetadata(encType: pushMessage.encType,
-                                                                       encryptedSecret: pushMessage.encryptedSecret,
-                                                                       link: pushMessage.link)
-            let serviceMetadata = metadataModel.jsonData()
-            let messageEntity = MessagingWebSocketMessageEntity(id: id,
-                                                                senderDisplayInfo: senderDisplayInfo,
-                                                                senderWallet: senderWallet,
-                                                                receiverWallet: receiverWallet,
-                                                                time: time,
-                                                                type: .text(textDisplayInfo),
-                                                                serviceMetadata: serviceMetadata,
-                                                                transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
-            return messageEntity
-        default:
-            return nil // Not supported for now
-        }
+        
+        let serviceContent = PushEnvironment.PushSocketMessageServiceContent(pushMessage: pushMessage, pgpKey: pgpKey)
+        return MessagingWebSocketMessageEntity(id: id,
+                                               senderWallet: senderWallet,
+                                               receiverWallet: receiverWallet,
+                                               serviceContent: serviceContent,
+                                               transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
     }
     
     static func convertMessagingWebSocketMessageEntityToChatMessage(_ webSocketMessage: MessagingWebSocketMessageEntity,
-                                                                    in chat: MessagingChat) -> MessagingChatMessage {
-        let messageDisplayInfo = MessagingChatMessageDisplayInfo(id: webSocketMessage.id,
-                                                                 chatId: chat.displayInfo.id,
-                                                                 senderType: .otherUser(webSocketMessage.senderDisplayInfo),
-                                                                 time: webSocketMessage.time,
-                                                                 type: webSocketMessage.type,
-                                                                 isRead: false,
-                                                                 isFirstInChat: false,
-                                                                 deliveryState: .delivered)
+                                                                    in chat: MessagingChat) -> MessagingChatMessage? {
+        guard let serviceContent = webSocketMessage.serviceContent as? PushEnvironment.PushSocketMessageServiceContent else { return nil }
         
-        let message = MessagingChatMessage(displayInfo: messageDisplayInfo,
-                                           serviceMetadata: webSocketMessage.serviceMetadata)
-        return message
+        let pushMessage = serviceContent.pushMessage
+        let pgpKey = serviceContent.pgpKey
+        
+        return convertPushMessageToChatMessage(pushMessage, in: chat, pgpKey: pgpKey, isRead: false)
     }
     
     static func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel,

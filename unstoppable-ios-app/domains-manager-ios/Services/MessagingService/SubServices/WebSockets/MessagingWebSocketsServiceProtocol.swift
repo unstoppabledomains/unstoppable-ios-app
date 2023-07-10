@@ -14,12 +14,9 @@ protocol MessagingWebSocketsServiceProtocol {
 
 struct MessagingWebSocketMessageEntity {
     let id: String
-    let senderDisplayInfo: MessagingChatUserDisplayInfo
     let senderWallet: String
     let receiverWallet: String
-    let time: Date
-    let type: MessagingChatMessageDisplayType
-    let serviceMetadata: Data?
+    let serviceContent: Any
     
-    var transformToMessageBlock: ((_ webSocketMessage: MessagingWebSocketMessageEntity, _ chat: MessagingChat)->(MessagingChatMessage))
+    var transformToMessageBlock: ((_ webSocketMessage: MessagingWebSocketMessageEntity, _ chat: MessagingChat)->(MessagingChatMessage?))
 }
