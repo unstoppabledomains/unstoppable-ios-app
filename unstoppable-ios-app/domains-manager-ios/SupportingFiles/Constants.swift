@@ -126,3 +126,13 @@ enum BlockchainNetwork: Int, CaseIterable {
         }
     }
 }
+
+struct Utilities {
+    static func catchingFailureAsyncTask<T>(asyncCatching block: () async throws -> T, defaultValue: T) async -> T {
+        do {
+            return try await block()
+        } catch {
+            return defaultValue
+        }
+    }
+}

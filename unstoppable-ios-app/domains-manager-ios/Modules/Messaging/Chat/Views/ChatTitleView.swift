@@ -53,6 +53,8 @@ final class ChatTitleView: UIView {
 // MARK: - Open methods
 extension ChatTitleView {
     func setTitleOfType(_ titleType: TitleType) {
+        iconImageView.layer.borderWidth = 1
+        iconImageView.clipsToBounds = true
         switch titleType {
         case .domainName(let domainName):
             setWithDomainName(domainName)
@@ -81,37 +83,32 @@ private extension ChatTitleView {
     func setWithDomainName(_ domainName: DomainName) {
         setTitle(domainName)
         Task {
-            let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName)
-            if let pfpInfo,
-               let image = await appContext.imageLoadingService.loadImage(from: .domainPFPSource(pfpInfo.source),
-                                                                          downsampleDescription: nil) {
-                iconImageView.image = image
-            } else {
-                setIconWithInitialsFor(name: domainName)
-            }
+            iconImageView.image = await MessagingImageLoader.getIconImageFor(domainName: domainName)
         }
     }
     
     func setWithWalletAddress(_ walletAddress: HexAddress) {
         setTitle(walletAddress.walletAddressTruncated)
-        iconImageView.image = nil // TODO: - Update when design is ready
+        Task {
+            iconImageView.image = await MessagingImageLoader.getIconForWalletAddress(walletAddress)
+        }
     }
-    
+   
     func setWithChannel(_ channel: MessagingNewsChannel) {
         setTitle(channel.name)
         Task {
-            if let image = await appContext.imageLoadingService.loadImage(from: .url(channel.icon),
-                                                                          downsampleDescription: nil) {
-                iconImageView.image = image
-            } else {
-                setIconWithInitialsFor(name: channel.name)
-            }
+            iconImageView.image = await MessagingImageLoader.getIconForChannel(channel)
         }
     }
     
     func setWithGroupDetails(_ groupDetails: MessagingGroupChatDetails) {
         setTitle(groupDetails.displayName)
-        iconImageView.image = nil // TODO: - Update when design is ready
+        iconImageView.layer.borderWidth = 0
+        iconImageView.clipsToBounds = false
+        Task {
+            iconImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(groupDetails.allMembers,
+                                                                                           iconSize: iconSize)
+        }
     }
     
     func setTitle(_ title: String) {
@@ -119,15 +116,6 @@ private extension ChatTitleView {
                                          font: .currentFont(withSize: 16, weight: .semibold),
                                          textColor: .foregroundDefault,
                                          lineBreakMode: .byTruncatingTail)
-    }
-    
-    func setIconWithInitialsFor(name: String) {
-        Task {
-            iconImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(name,
-                                                                                                 size: .default,
-                                                                                                 style: .accent),
-                                                                                 downsampleDescription: nil)
-        }
     }
 }
 

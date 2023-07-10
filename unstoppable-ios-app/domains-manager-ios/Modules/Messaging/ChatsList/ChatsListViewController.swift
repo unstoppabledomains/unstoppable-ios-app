@@ -40,7 +40,7 @@ final class ChatsListViewController: BaseViewController {
     private var state: State = .loading
     
     override var isObservingKeyboard: Bool { true }
-    override var scrollableContentYOffset: CGFloat? { 48 }
+    override var scrollableContentYOffset: CGFloat? { searchBarConfiguration == nil ? 24 : 48 }
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {
         switch state {
         case .chatsList: return cSearchBarConfiguration
@@ -223,15 +223,20 @@ private extension ChatsListViewController {
             addNavViewIfNil()
             navView?.isHidden = true
             navigationItem.rightBarButtonItem = nil
-        case .requestsList:
+        case .requestsList(let dataType):
             navigationItem.titleView = nil
-            title = "Chat Requests"
-            let rightBarButton = UIBarButtonItem(title: "Delete All",
-                                                   style: .plain,
-                                                   target: self,
-                                                   action: #selector(newMessageButtonPressed))
-            rightBarButton.tintColor = .foregroundAccent
-            navigationItem.rightBarButtonItem = rightBarButton
+            switch dataType {
+            case .chats:
+                title = String.Constants.chatRequests.localized()
+            case .channels:
+                title = String.Constants.spam.localized()
+                let rightBarButton = UIBarButtonItem(title: String.Constants.deleteAll.localized(),
+                                                     style: .plain,
+                                                     target: self,
+                                                     action: #selector(newMessageButtonPressed))
+                rightBarButton.tintColor = .foregroundAccent
+                navigationItem.rightBarButtonItem = rightBarButton
+            }
             cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }
     }
@@ -317,6 +322,11 @@ private extension ChatsListViewController {
             case .emptySearch:
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
                 cell.setSearchStateUI()
+                
+                return cell
+            case .domainName(let domainName):
+                let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
+                cell.setWith(domainName: domainName)
                 
                 return cell
             }
@@ -431,6 +441,7 @@ extension ChatsListViewController {
         case createProfile
         case emptyState(configuration: EmptyStateUIConfiguration)
         case userInfo(configuration: UserInfoUIConfiguration)
+        case domainName(DomainName)
         case emptySearch
     }
     
@@ -499,6 +510,6 @@ extension ChatsListViewController {
         case createProfile
         case chatsList
         case loading
-        case requestsList
+        case requestsList(DataType)
     }
 }

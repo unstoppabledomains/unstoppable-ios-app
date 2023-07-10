@@ -142,6 +142,9 @@
 "CHOOSE_PHOTO" = "Choose Photo";
 "TAKE_PHOTO" = "Take Photo";
 "PHOTO" = "Photo";
+"DELETE_ALL" = "Delete all";
+"PEOPLE" = "People";
+"APPS" = "Apps";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -786,7 +789,6 @@
 "CHAT_INPUT_PLACEHOLDER_AS_DOMAIN" = "Message as %@...";
 "APPS_INBOX" = "Apps Inbox";
 "CHAT_REQUESTS" = "Chat Requests";
-"N_PEOPLE_YOU_MAY_KNOW" = "%i people you may know";
 "SENDING" = "Sending";
 "SENDING_FAILED" = "Sending failed";
 "TAP_TO_RETRY" = "Tap to retry";

@@ -237,9 +237,7 @@ private extension ChatInputView {
         movedKeyboardFrame = newFrame
         setNeedsLayout()
         layoutIfNeeded()
-        DispatchQueue.main.async {
-            self.delegate?.chatInputViewDidAdjustContentHeight(self)            
-        }
+        self.delegate?.chatInputViewDidAdjustContentHeight(self)
     }
     
     func setPlaceholder() {

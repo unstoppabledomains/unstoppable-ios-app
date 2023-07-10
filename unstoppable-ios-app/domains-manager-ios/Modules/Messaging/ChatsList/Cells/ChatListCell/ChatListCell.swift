@@ -29,11 +29,17 @@ extension ChatListCell {
     func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
         let chat = configuration.chat
         let chatName = chatNameFrom(chat: chat)
-        if case .private(let info) = chat.type,
-           let pfpURL = info.otherUser.pfpURL {
-            setAvatarFrom(url: pfpURL, name: chatName)
-        } else {
-            setAvatarFrom(url: chat.avatarURL, name: chatName)
+        
+        switch chat.type {
+        case .private(let info):
+            avatarImageView.clipsToBounds = true
+            avatarImageView.layer.borderWidth = 1
+            setAvatarFrom(url: info.otherUser.pfpURL, name: chatName)
+        case .group(let details):
+            avatarImageView.clipsToBounds = false
+            avatarImageView.layer.borderWidth = 0
+            Task { avatarImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(details.allMembers,
+                                                                                                    iconSize: avatarImageView.bounds.width) }
         }
         
         setNameText(chatName)
@@ -79,6 +85,23 @@ extension ChatListCell {
         setAvatarFrom(url: userInfo.pfpURL, name: chatName)
         badgeView.setUnreadMessagesCount(0)
 
+        setTimeText(nil)
+        setLastMessageText("")
+        chevron.isHidden = false
+    }
+    
+    func setWith(domainName: DomainName) {
+        setNameText(domainName)
+        setAvatarFrom(url: nil, name: domainName)
+        Task {
+            let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName)
+            if let urlString = pfpInfo?.pfpURL,
+               let url = URL(string: urlString) {
+                setAvatarFrom(url: url, name: domainName)
+            }
+        }
+        badgeView.setUnreadMessagesCount(0)
+        
         setTimeText(nil)
         setLastMessageText("")
         chevron.isHidden = false

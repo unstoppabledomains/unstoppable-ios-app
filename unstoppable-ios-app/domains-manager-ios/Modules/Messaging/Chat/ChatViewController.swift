@@ -32,7 +32,8 @@ final class ChatViewController: BaseViewController {
     @IBOutlet private weak var approveContentView: UIView!
     @IBOutlet private weak var acceptButton: MainButton!
     @IBOutlet private weak var blockButton: RaisedTertiaryButton!
-    
+    @IBOutlet private weak var moveToTopButton: FABButton!
+
     
     private var titleView: ChatTitleView!
 
@@ -43,6 +44,7 @@ final class ChatViewController: BaseViewController {
                                                         ChannelFeedCell.self,
                                                         ChatLoadingCell.self] }
     var presenter: ChatViewPresenterProtocol!
+    private let operationQueue = OperationQueue()
     private var dataSource: ChatDataSource!
     private var scrollingInfo: ScrollingInfo?
     override var isObservingKeyboard: Bool { true }
@@ -50,6 +52,7 @@ final class ChatViewController: BaseViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        operationQueue.maxConcurrentOperationCount = 1
         configureCollectionView()
         setup()
         presenter.viewDidLoad()
@@ -70,16 +73,27 @@ final class ChatViewController: BaseViewController {
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
         scrollToTheBottom(animated: true)
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        setupMoveToTopButtonFrame()
+    }
 }
 
 // MARK: - ChatViewProtocol
 extension ChatViewController: ChatViewProtocol {
     func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool, completion: EmptyCallback?) {
         scrollingInfo = ScrollingInfo(collectionView: collectionView)
-        dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
-            self?.scrollingInfo = nil
-            completion?()
-        })
+        let operation = ReloadDataOperation(dataSource: dataSource,
+                                            snapshot: snapshot,
+                                            animated: animated) { [weak self] in
+            DispatchQueue.main.async {
+                self?.scrollingInfo = nil
+                completion?()
+            }
+        }
+        operationQueue.addOperation(operation)
     }
     
     func startTyping() {
@@ -168,6 +182,9 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
             let isChatInputViewTopBorderVisible = cellFrameInView.maxY >= chatInputView.frame.minY
             chatInputView.setTopBorderHidden(!isChatInputViewTopBorderVisible,
                                              animated: true)
+            setMoveToTopButton(hidden: true, animated: true)
+        } else if scrollView.contentSize.height > collectionView.bounds.height { // Check empty state
+            setMoveToTopButton(hidden: false, animated: true)
         }
     }
     
@@ -210,6 +227,7 @@ extension ChatViewController: ChatInputViewDelegate {
     
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
         calculateCollectionBottomInset()
+        setupMoveToTopButtonFrame()
     }
     
     func chatInputViewAdditionalActionsButtonPressed(_ chatInputView: ChatInputView) {
@@ -240,6 +258,11 @@ private extension ChatViewController {
         UDVibration.buttonTap.vibrate()
         presenter.infoButtonPressed()
     }
+    
+    @IBAction func moveToTopButtonPressed(_ sender: Any) {
+        logButtonPressedAnalyticEvents(button: .moveToTop)
+        scrollToTheBottom(animated: true)
+    }
 }
 
 // MARK: - Private functions
@@ -269,6 +292,20 @@ private extension ChatViewController {
             self.cNavigationBar?.setBlur(hidden: yOffset < self.scrollableContentYOffset!)
         }
     }
+    
+    func setMoveToTopButton(hidden: Bool, animated: Bool) {
+        UIView.animate(withDuration: animated ? 0.25 : 0.0) {
+            self.moveToTopButton.alpha = hidden ? 0 : 1
+        }
+    }
+    
+    func setupMoveToTopButtonFrame() {
+        let moveToTopButtonSize: CGFloat = 48
+        let edgeSpacing: CGFloat = 16
+        moveToTopButton.frame = CGRect(origin: CGPoint(x: view.bounds.width - moveToTopButtonSize - edgeSpacing,
+                                                       y: chatInputView.frame.minY - moveToTopButtonSize - edgeSpacing),
+                                       size: .square(size: moveToTopButtonSize))
+    }
 }
 
 // MARK: - Setup functions
@@ -279,6 +316,7 @@ private extension ChatViewController {
         setupNavBar()
         setupCollectionView()
         setupHideKeyboardTap()
+        setupMoveToTopButton()
     }
     
     func setupInputView() {
@@ -302,6 +340,13 @@ private extension ChatViewController {
             infoBarButtonItem.tintColor = .foregroundDefault
             navigationItem.rightBarButtonItem = infoBarButtonItem
         }
+    }
+    
+    func setupMoveToTopButton() {
+        moveToTopButton.customImageEdgePadding = 0
+        moveToTopButton.customTitleEdgePadding = 0
+        moveToTopButton.setTitle(nil, image: .chevronDown)
+        setMoveToTopButton(hidden: true, animated: false)
     }
     
     func setupCollectionView() {
@@ -509,6 +554,35 @@ private extension ChatViewController {
         init(collectionView: UICollectionView) {
             prevContentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
             contentOffsetBeforeUpdate = collectionView.contentOffset
+        }
+    }
+    
+    final class ReloadDataOperation: BaseOperation {
+        
+        let dataSource: ChatDataSource
+        let snapshot: ChatSnapshot
+        let animated: Bool
+        let completion: EmptyCallback
+        
+        init(dataSource: ChatDataSource,
+             snapshot: ChatSnapshot,
+             animated: Bool,
+             completion: @escaping EmptyCallback) {
+            self.dataSource = dataSource
+            self.snapshot = snapshot
+            self.animated = animated
+            self.completion = completion
+        }
+        
+        override func start() {
+            guard !checkIfCancelled() else {
+                completion()
+                return
+            }
+            dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
+                self?.completion()
+                self?.finish(true)
+            })
         }
     }
 }

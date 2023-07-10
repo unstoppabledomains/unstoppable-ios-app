@@ -183,7 +183,10 @@ extension String {
         static let choosePhoto = "CHOOSE_PHOTO"
         static let takePhoto = "TAKE_PHOTO"
         static let photo = "PHOTO"
-
+        static let deleteAll = "DELETE_ALL"
+        static let people = "PEOPLE"
+        static let apps = "APPS"
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
@@ -322,6 +325,7 @@ extension String {
         static let pluralNParkedDomainsImported = "SDICT:N_PARKED_DOMAINS_IMPORTED"
         static let pluralExpire = "SDICT:EXPIRE"
         static let pluralNMessages = "SDICT:N_MESSAGES"
+        static let pluralNPeopleYouMayKnow = "SDICT:N_PEOPLE_YOU_MAY_KNOW"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -862,7 +866,6 @@ extension String {
         static let chatInputPlaceholderAsDomain = "CHAT_INPUT_PLACEHOLDER_AS_DOMAIN"
         static let appsInbox = "APPS_INBOX"
         static let chatRequests = "CHAT_REQUESTS"
-        static let nPeopleYouMayKnow = "N_PEOPLE_YOU_MAY_KNOW"
         static let sending = "SENDING"
         static let sendingFailed = "SENDING_FAILED"
         static let tapToRetry = "TAP_TO_RETRY"

@@ -62,4 +62,7 @@ protocol MessagingStorageServiceProtocol {
                           in channel: MessagingNewsChannel) async
     func markFeedItem(_ feedItem: MessagingNewsChannelFeed,
                       isRead: Bool) throws
+    
+    // Clear
+    func clearAllDataOf(profile: MessagingChatUserProfile) async
 }

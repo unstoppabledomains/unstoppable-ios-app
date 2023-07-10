@@ -175,6 +175,7 @@ extension MockDataAggregatorService: UDWalletsServiceListener {
                 
                 let domains = await getDomainsDisplayInfo()
                 notifyListenersWith(result: .success(.domainsUpdated(domains)))
+            case .walletRemoved: return 
             }
         }
     }

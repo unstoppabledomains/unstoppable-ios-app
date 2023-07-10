@@ -285,6 +285,7 @@ extension DataAggregatorService: UDWalletsServiceListener {
                 let domains = await getDomainsDisplayInfo()
                 notifyListenersWith(result: .success(.domainsUpdated(domains)))
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didSetRR)
+            case .walletRemoved: return
             }
         }
     }

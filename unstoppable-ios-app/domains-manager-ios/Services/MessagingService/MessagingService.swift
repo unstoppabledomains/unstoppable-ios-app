@@ -19,11 +19,13 @@ final class MessagingService {
     init(apiService: MessagingAPIServiceProtocol,
          webSocketsService: MessagingWebSocketsServiceProtocol,
          storageProtocol: MessagingStorageServiceProtocol,
-         decrypterService: MessagingContentDecrypterService) {
+         decrypterService: MessagingContentDecrypterService,
+         udWalletsService: UDWalletsServiceProtocol) {
         self.apiService = apiService
         self.webSocketsService = webSocketsService
         self.storageService = storageProtocol
         self.decrypterService = decrypterService
+        udWalletsService.addListener(self)
         
         storageService.markSendingMessagesAsFailed()
     }
@@ -80,6 +82,7 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
         let chat = try await getMessagingChatFor(displayInfo: chat)
         try await apiService.makeChatRequest(chat, approved: approved, by: profile)
+        refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
     }
     
     // Messages
@@ -197,7 +200,7 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // Channels
-    func getSubscribedChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
+    func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
         let channels = try await storageService.getChannelsFor(profile: profile)
         return channels
@@ -348,6 +351,26 @@ extension MessagingService: MessagingServiceProtocol {
     }
 }
 
+// MARK: - Open methods
+extension MessagingService: UDWalletsServiceListener {
+    func walletsDataUpdated(notification: UDWalletsServiceNotification) {
+        Task {
+            switch notification {
+            case .walletsUpdated, .reverseResolutionDomainChanged:
+                return
+            case .walletRemoved(let wallet):
+                if let rrDomainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: wallet.address),
+                   let rrDomain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomainName),
+                   let profile = try? storageService.getUserProfileFor(domain: rrDomain) {
+                    await storageService.clearAllDataOf(profile: profile)
+                } else {
+                    print("Ops")
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Chats
 private extension MessagingService {
     func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
@@ -361,7 +384,7 @@ private extension MessagingService {
                 async let remoteChatsTask = updatedLocalChats(localChats, forProfile: profile, isRequests: false)
                 async let remoteRequestsTask = updatedLocalChats(localRequests, forProfile: profile, isRequests: true)
                 
-                let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
+                let (remoteChats, remoteRequests) = await (remoteChatsTask, remoteRequestsTask)
                 let allRemoteChats = remoteChats + remoteRequests
                 
                 let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats,
@@ -385,29 +408,33 @@ private extension MessagingService {
     
     func updatedLocalChats(_ localChats: [MessagingChat],
                                    forProfile profile: MessagingChatUserProfile,
-                                   isRequests: Bool) async throws -> [MessagingChat] {
+                                   isRequests: Bool) async -> [MessagingChat] {
         var remoteChats = [MessagingChat]()
         let limit = 30
         var page = 1
         while true {
-            let chatsPage: [MessagingChat]
-            if isRequests {
-                chatsPage = try await apiService.getChatRequestsForUser(profile, page: 1, limit: limit)
-            } else {
-                chatsPage = try await apiService.getChatsListForUser(profile, page: 1, limit: limit)
-            }
-            
-            remoteChats.append(contentsOf: chatsPage)
-            if chatsPage.count < limit {
-                /// Loaded all chats
+            do {
+                let chatsPage: [MessagingChat]
+                if isRequests {
+                    chatsPage = try await apiService.getChatRequestsForUser(profile, page: 1, limit: limit)
+                } else {
+                    chatsPage = try await apiService.getChatsListForUser(profile, page: 1, limit: limit)
+                }
+                
+                remoteChats.append(contentsOf: chatsPage)
+                if chatsPage.count < limit {
+                    /// Loaded all chats
+                    break
+                } else if let lastPageChat = chatsPage.last,
+                          let localChat = localChats.first(where: { $0.displayInfo.id == lastPageChat.displayInfo.id }),
+                          lastPageChat.isUpToDateWith(otherChat: localChat) {
+                    /// No changes for other chats
+                    break
+                } else {
+                    page += 1
+                }
+            } catch {
                 break
-            } else if let lastPageChat = chatsPage.last,
-                      let localChat = localChats.first(where: { $0.displayInfo.id == lastPageChat.displayInfo.id }),
-                      lastPageChat.isUpToDateWith(otherChat: localChat) {
-                /// No changes for other chats
-                break
-            } else {
-                page += 1
             }
         }
         
@@ -469,7 +496,9 @@ private extension MessagingService {
                     for chat in chats {
                         group.addTask {
                             if let otherUserInfo = try? await self.loadUserInfoFor(chat: chat) {
-                                await self.storageService.saveMessagingUserInfo(otherUserInfo)
+                                for info in otherUserInfo {
+                                    await self.storageService.saveMessagingUserInfo(info)
+                                }
                             }
                             return Void()
                         }
@@ -487,13 +516,23 @@ private extension MessagingService {
         }
     }
     
-    func loadUserInfoFor(chat: MessagingChat) async throws -> MessagingChatUserDisplayInfo? {
+    func loadUserInfoFor(chat: MessagingChat) async throws -> [MessagingChatUserDisplayInfo] {
         switch chat.displayInfo.type {
         case .private(let details):
             let wallet = details.otherUser.wallet
-            return await loadUserInfoFor(wallet: wallet)
+            if let userInfo = await loadUserInfoFor(wallet: wallet) {
+                return [userInfo]
+            }
+            return []
         case .group(let details):
-            return nil // <GROUP_CHAT> Not supported for now
+            var infos: [MessagingChatUserDisplayInfo] = []
+            let members = details.allMembers.prefix(3) // Only first 3 members will be displayed on the UI
+            for member in members {
+                if let userInfo = await loadUserInfoFor(wallet: member.wallet) {
+                    infos.append(userInfo)
+                }
+            }
+            return infos
         }
     }
     
@@ -578,16 +617,22 @@ private extension MessagingService {
             do {
                 let storedChannels = try await storageService.getChannelsFor(profile: profile)
 
-                async let channelsTask = try await apiService.getSubscribedChannelsForUser(profile)
-                async let spamChannelsTask = try await apiService.getSpamChannelsForUser(profile)
+                async let channelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
+                    try await apiService.getSubscribedChannelsForUser(profile)
+                }, defaultValue: [])
+                async let spamChannelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
+                    try await apiService.getSpamChannelsForUser(profile)
+                }, defaultValue: [])
                 
-                let (channels, spamChannels) = try await (channelsTask, spamChannelsTask)
+                let (channels, spamChannels) = await (channelsTask, spamChannelsTask)
                 let allChannels = channels + spamChannels
                 
                 let updatedChats = await refreshChannelsMetadata(allChannels, storedChannels: storedChannels).sortedByLastMessage()
                 
                 await storageService.saveChannels(updatedChats, for: profile)
-                notifyListenersChangedDataType(.channels(updatedChats, profile: profile.displayInfo))
+                
+                let updatedStoredChannels = try await storageService.getChannelsFor(profile: profile)
+                notifyListenersChangedDataType(.channels(updatedStoredChannels, profile: profile.displayInfo))
             }
         }
     }
