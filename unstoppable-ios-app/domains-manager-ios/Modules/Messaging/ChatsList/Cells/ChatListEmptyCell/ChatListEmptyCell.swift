@@ -36,12 +36,14 @@ extension ChatListEmptyCell {
         
         iconImageView.image = .messageCircleIcon24
         setActionButtonWith(dataType: configuration.dataType)
+        actionButton.isHidden = false
     }
     
     func setSearchStateUI() {
         setTitle(String.Constants.noResults.localized())
         setSubtitle("")
         iconImageView.image = .searchIcon
+        actionButton.isHidden = true
     }
 }
 
