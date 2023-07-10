@@ -158,7 +158,7 @@ extension ChatViewController: ChatViewProtocol {
         case .otherUserIsBlocked:
             approveContentView.isHidden = false
             secondaryButton.isHidden = false
-            secondaryButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration)
+            secondaryButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration())
             secondaryButton.setTitle(String.Constants.unblock.localized(), image: nil)
         case .userIsBlocked:
             approveContentView.isHidden = false

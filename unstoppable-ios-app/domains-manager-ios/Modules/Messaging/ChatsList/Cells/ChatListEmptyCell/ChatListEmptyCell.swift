@@ -12,6 +12,7 @@ final class ChatListEmptyCell: UICollectionViewCell {
     @IBOutlet private weak var iconImageView: UIImageView!
     @IBOutlet private weak var titleLabel: UILabel!
     @IBOutlet private weak var subtitleLabel: UILabel!
+    @IBOutlet private weak var actionButton: UDButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -30,6 +31,7 @@ extension ChatListEmptyCell {
         setSubtitle(subtitle)
         
         iconImageView.image = .messageCircleIcon24
+        setActionButtonWith(dataType: configuration.dataType)
     }
     
     func setSearchStateUI() {
@@ -73,5 +75,19 @@ private extension ChatListEmptyCell {
         case .channels:
             return String.Constants.messagingChannelsEmptySubtitle.localized()
         }
+    }
+    
+    func setActionButtonWith(dataType: ChatsListViewController.DataType) {
+        switch dataType {
+        case .chats:
+            actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
+            actionButton.setTitle("New message", image: .newMessageIcon)
+        case .channels:
+            actionButton.setConfiguration(.mediumRaisedTertiaryWhiteButtonConfiguration)
+            actionButton.setTitle("Search apps", image: .searchIcon)            
+        }
+    }
+    
+    @IBAction func actionButtonPressed(_ sender: Any) {
     }
 }
