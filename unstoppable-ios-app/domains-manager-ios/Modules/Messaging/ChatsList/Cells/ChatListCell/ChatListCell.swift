@@ -28,14 +28,14 @@ final class ChatListCell: BaseListCollectionViewCell {
 extension ChatListCell {
     func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
         let chat = configuration.chat
+        let chatName = chatNameFrom(chat: chat)
         if case .private(let info) = chat.type,
            let pfpURL = info.otherUser.pfpURL {
-            setAvatarFrom(url: pfpURL)
+            setAvatarFrom(url: pfpURL, name: chatName)
         } else {
-            setAvatarFrom(url: chat.avatarURL)
+            setAvatarFrom(url: chat.avatarURL, name: chatName)
         }
         
-        let chatName = chatNameFrom(chat: chat)
         setNameText(chatName)
         badgeView.setUnreadMessagesCount(chat.unreadMessagesCount)
 
@@ -53,8 +53,9 @@ extension ChatListCell {
     
     func setWith(configuration: ChatsListViewController.ChannelUIConfiguration) {
         let channel = configuration.channel
-        setAvatarFrom(url: channel.icon)
-        setNameText(channel.name)
+        let chatName = channel.name
+        setNameText(chatName)
+        setAvatarFrom(url: channel.icon, name: chatName)
         badgeView.setUnreadMessagesCount(channel.unreadMessagesCount)
         
         if let lastMessage = channel.lastMessage {
@@ -75,7 +76,7 @@ extension ChatListCell {
         let userInfo = configuration.userInfo
         let chatName = chatNameFrom(userInfo: userInfo)
         setNameText(chatName)
-        setAvatarFrom(url: userInfo.pfpURL)
+        setAvatarFrom(url: userInfo.pfpURL, name: chatName)
         badgeView.setUnreadMessagesCount(0)
 
         setTimeText(nil)
@@ -91,11 +92,7 @@ private extension ChatListCell {
         case .private(let otherUserDetails):
             return chatNameFrom(userInfo: otherUserDetails.otherUser)
         case .group(let groupDetails):
-            #if DEBUG
-            return "Group chat <Not-supported>" // <GROUP_CHAT>
-            #else
-            return ""
-            #endif
+            return groupDetails.displayName
         }
     }
     
@@ -108,7 +105,7 @@ private extension ChatListCell {
         case .text(let description):
             return description.text
         case .imageBase64:
-            return "Image" // TODO: - Localize
+            return String.Constants.photo.localized()
         }
     }
     
@@ -132,19 +129,32 @@ private extension ChatListCell {
         if let time {
             text = MessageDateFormatter.formatChannelDate(time)
         }
-
+        
         timeLabel.setAttributedTextWith(text: text,
                                         font: .currentFont(withSize: 13, weight: .regular),
                                         textColor: .foregroundSecondary)
     }
     
-    func setAvatarFrom(url: URL?) {
+    func setAvatarFrom(url: URL?, name: String) {
         avatarImageView.image = .domainSharePlaceholder
-        if let avatarURL = url {
-            Task {
-                let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: nil)
-                self.avatarImageView.image = image
+        
+        
+        func setAvatarFromName() async {
+            self.avatarImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(name, size: .default, style: .accent),
+                                                                                        downsampleDescription: nil)
+        }
+        
+        Task {
+            if let avatarURL = url {
+                if let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: nil) {
+                    self.avatarImageView.image = image
+                } else {
+                    await setAvatarFromName()
+                }
+            } else {
+                await setAvatarFromName()
             }
         }
     }
+    
 }

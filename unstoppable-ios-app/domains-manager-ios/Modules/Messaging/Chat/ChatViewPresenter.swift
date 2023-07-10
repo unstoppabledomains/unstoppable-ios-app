@@ -9,6 +9,7 @@ import UIKit
 
 @MainActor
 protocol ChatViewPresenterProtocol: BasePresenterProtocol {
+    var isInfoAvailable: Bool { get }
     func didSelectItem(_ item: ChatViewController.Item)
     func willDisplayItem(_ item: ChatViewController.Item)
     
@@ -18,6 +19,9 @@ protocol ChatViewPresenterProtocol: BasePresenterProtocol {
     func infoButtonPressed()
     func approveButtonPressed()
     func rejectButtonPressed()
+    
+    func choosePhotoButtonPressed()
+    func takePhotoButtonPressed()
 }
 
 extension ChatViewPresenterProtocol {
@@ -25,6 +29,8 @@ extension ChatViewPresenterProtocol {
     func didPressSendText(_ text: String) { }
     func approveButtonPressed() { }
     func rejectButtonPressed() { }
+    func choosePhotoButtonPressed() { }
+    func takePhotoButtonPressed() { }
 }
 
 @MainActor
@@ -37,7 +43,8 @@ final class ChatViewPresenter {
     private var messages: [MessagingChatMessageDisplayInfo] = []
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
-    
+    var isInfoAvailable: Bool { conversationState.userInfo?.domainName != nil }
+     
     init(view: ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState) {
@@ -126,6 +133,28 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         // TODO: - Implement flow
         view?.showSimpleAlert(title: "Not supported for now", body: "Stay tuned!")
     }
+    
+    func choosePhotoButtonPressed() {
+        view?.hideKeyboard()
+        guard let view else { return  }
+        
+        UnstoppableImagePicker.shared.pickImage(in: view, imagePickerCallback: { [weak self] image in
+            DispatchQueue.main.async {
+                self?.didPickImageToSend(image)
+            }
+        })
+    }
+    
+    func takePhotoButtonPressed() {
+        view?.hideKeyboard()
+        guard let view else { return  }
+        
+        UnstoppableImagePicker.shared.selectFromCamera(in: view, imagePickerCallback: { [weak self] image in
+            DispatchQueue.main.async {
+                self?.didPickImageToSend(image)
+            }
+        })
+    }
 }
 
 // MARK: - MessagingServiceListener
@@ -140,7 +169,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                    chatId == chat.id {
                     self.addMessages(messages)
                     checkIfUpToDate()
-                    showData(animated: true, scrollToBottomAnimated: true)
+                    showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
                 }
             case .messageUpdated(let updatedMessage, let newMessage):
                 if case .existingChat(let chat) = conversationState,
@@ -148,7 +177,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     self.messages[i] = newMessage
                     checkIfUpToDate()
-                    showData(animated: false)
+                    showData(animated: false, isLoading: isLoadingMessages)
                 }
             case .messagesRemoved(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
@@ -156,7 +185,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                     let removedIds = messages.map { $0.id }
                     self.messages = self.messages.filter({ !removedIds.contains($0.id) })
                     checkIfUpToDate()
-                    showData(animated: true)
+                    showData(animated: true, isLoading: isLoadingMessages)
                 }
             }
         }
@@ -186,13 +215,13 @@ private extension ChatViewPresenter {
                     
                     switch chatState {
                     case .upToDate, .hasUnloadedMessagesBefore:
-                        showData(animated: false, scrollToBottomAnimated: false)
+                        showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
                     case .hasUnreadMessagesAfter(let message):
                         let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                       after: message,
                                                                                                       limit: fetchLimit)
                         addMessages(unreadMessages)
-                        showData(animated: false, completion: {
+                        showData(animated: false, isLoading: false, completion: {
                             if let message = unreadMessages.last {
                                 let item = self.createSnapshotItemFrom(message: message)
                                 self.view?.scrollToItem(item, animated: false)
@@ -208,7 +237,7 @@ private extension ChatViewPresenter {
                 case .newChat:
                     updateUIForChatApprovedState()
                     view?.startTyping()
-                    showData(animated: false)
+                    showData(animated: false, isLoading: false)
                 }
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
@@ -221,6 +250,7 @@ private extension ChatViewPresenter {
               case .existingChat(let chat) = conversationState else { return }
         
         isLoadingMessages = true
+        showData(animated: false, isLoading: true)
         Task {
             do {
                 let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
@@ -229,11 +259,11 @@ private extension ChatViewPresenter {
                 addMessages(unreadMessages)
                 checkIfUpToDate()
                 isLoadingMessages = false
-                showData(animated: false)
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
                 isLoadingMessages = false
             }
+            showData(animated: false, isLoading: false)
         }
     }
     
@@ -261,16 +291,17 @@ private extension ChatViewPresenter {
         self.messages.sort(by: { $0.time > $1.time })
     }
     
-    func showData(animated: Bool, scrollToBottomAnimated: Bool) {
-        showData(animated: animated, completion: { [weak self] in
-            DispatchQueue.main.async {
+    func showData(animated: Bool, scrollToBottomAnimated: Bool, isLoading: Bool) {
+        showData(animated: animated, isLoading: isLoading, completion: { [weak self] in
+            self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
             }
         })
     }
     
     @MainActor
-    func showData(animated: Bool, completion: EmptyCallback? = nil) {
+    func showData(animated: Bool, isLoading: Bool, completion: EmptyCallback? = nil) {
         var snapshot = ChatSnapshot()
         
         if messages.isEmpty {
@@ -278,6 +309,10 @@ private extension ChatViewPresenter {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptyState])
         } else {
+            if isLoading {
+                snapshot.appendSections([.loading])
+                snapshot.appendItems([.loading])
+            }
             view?.setScrollEnabled(true)
             let groupedMessages = [Date : [MessagingChatMessageDisplayInfo]].init(grouping: messages, by: { $0.time.dayStart })
             let sortedDates = groupedMessages.keys.sorted(by: { $0 < $1 })
@@ -314,7 +349,7 @@ private extension ChatViewPresenter {
                 let otherUser = chatDetails.otherUser
                 setupTitleFor(userInfo: otherUser)
             case .group(let groupDetails):
-                return // <GROUP_CHAT> Not supported for now
+                view?.setTitleOfType(.group(groupDetails))
             }
         case .newChat(let userInfo):
             setupTitleFor(userInfo: userInfo)
@@ -348,7 +383,7 @@ private extension ChatViewPresenter {
                 try appContext.messagingService.deleteMessage(message)
                 if let i = messages.firstIndex(where: { $0.id == message.id }) {
                     messages.remove(at: i)
-                    showData(animated: true)
+                    showData(animated: true, isLoading: isLoadingMessages)
                 }
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -365,6 +400,14 @@ private extension ChatViewPresenter {
     }
 }
 
+// MARK: - Images related methods
+private extension ChatViewPresenter {
+    func didPickImageToSend(_ image: UIImage) {
+        let resizedImage = image.resized(to: 1000) ?? image
+        sendImageMessage(resizedImage)
+    }
+}
+
 // MARK: - Send message
 private extension ChatViewPresenter {
     func sendTextMesssage(_ text: String) {
@@ -376,7 +419,7 @@ private extension ChatViewPresenter {
     
     func sendImageMessage(_ image: UIImage) {
         guard let base64 = image.base64String else { return }
-        let preparedBase64 = "data:image/jpeg;base64," + base64 // TODO: - Remove "data:image/jpeg;base64,"
+        let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
         let imageTypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64,
                                                                               encryptedContent: preparedBase64)
         sendMessageOfType(.imageBase64(imageTypeDetails))
@@ -397,7 +440,7 @@ private extension ChatViewPresenter {
                     newMessage = message
                 }
                 messages.insert(newMessage, at: 0)
-                showData(animated: true, scrollToBottomAnimated: true)
+                showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }

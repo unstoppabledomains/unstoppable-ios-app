@@ -40,7 +40,8 @@ final class ChatViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self,
                                                         ChatImageCell.self,
                                                         ChatEmptyCell.self,
-                                                        ChannelFeedCell.self] }
+                                                        ChannelFeedCell.self,
+                                                        ChatLoadingCell.self] }
     var presenter: ChatViewPresenterProtocol!
     private var dataSource: ChatDataSource!
     private var scrollingInfo: ScrollingInfo?
@@ -63,7 +64,6 @@ final class ChatViewController: BaseViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
         hideKeyboard()
     }
     
@@ -211,6 +211,19 @@ extension ChatViewController: ChatInputViewDelegate {
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
         calculateCollectionBottomInset()
     }
+    
+    func chatInputViewAdditionalActionsButtonPressed(_ chatInputView: ChatInputView) {
+        
+    }
+    
+    func chatInputViewAdditionalActionSelected(_ chatInputView: ChatInputView, action: ChatInputView.AdditionalAction) {
+        switch action {
+        case .choosePhoto:
+            presenter.choosePhotoButtonPressed()
+        case .takePhoto:
+            presenter.takePhotoButtonPressed()
+        }
+    }
 }
 
 // MARK: - Actions
@@ -284,9 +297,11 @@ private extension ChatViewController {
         titleView = ChatTitleView()
         navigationItem.titleView = titleView
         
-        let infoBarButtonItem = UIBarButtonItem(image: .infoEmptyIcon24, style: .plain, target: self, action: #selector(infoButtonPressed))
-        infoBarButtonItem.tintColor = .foregroundDefault
-        navigationItem.rightBarButtonItem = infoBarButtonItem
+        if presenter.isInfoAvailable {
+            let infoBarButtonItem = UIBarButtonItem(image: .infoEmptyIcon24, style: .plain, target: self, action: #selector(infoButtonPressed))
+            infoBarButtonItem.tintColor = .foregroundDefault
+            navigationItem.rightBarButtonItem = infoBarButtonItem
+        }
     }
     
     func setupCollectionView() {
@@ -323,6 +338,10 @@ private extension ChatViewController {
                 let cell = collectionView.dequeueCellOfType(ChatEmptyCell.self, forIndexPath: indexPath)
                 
                 return cell
+            case .loading:
+                let cell = collectionView.dequeueCellOfType(ChatLoadingCell.self, forIndexPath: indexPath)
+
+                return cell
             }
         })
         
@@ -336,7 +355,7 @@ private extension ChatViewController {
                                                                            for: indexPath) as! ChatSectionHeaderView
                 view.setTitle(title)
                 return view
-            case .none, .emptyState:
+            case .none, .emptyState, .loading:
                 return nil
             }
         }
@@ -370,6 +389,8 @@ private extension ChatViewController {
                 layoutSection.boundarySupplementaryItems = [header]
                 
                 return layoutSection
+            case .loading:
+                return .listItemSection(height: 50)
             case .emptyState:
                 let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                                      heightDimension: .fractionalHeight(1.0)))
@@ -392,6 +413,7 @@ extension ChatViewController {
     enum Section: Hashable {
         case messages(title: String)
         case emptyState
+        case loading
     }
     
     enum Item: Hashable {
@@ -399,6 +421,7 @@ extension ChatViewController {
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
         case channelFeed(configuration: ChannelFeedUIConfiguration)
         case emptyState
+        case loading
         
         var message: MessagingChatMessageDisplayInfo? {
             switch self {
@@ -406,7 +429,7 @@ extension ChatViewController {
                 return configuration.message
             case .imageBase64Message(let configuration):
                 return configuration.message
-            case .emptyState, .channelFeed:
+            case .emptyState, .channelFeed, .loading:
                 return nil
             }
         }
@@ -419,13 +442,13 @@ extension ChatViewController {
         var actionCallback: (ChatMessageAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.message == rhs.message &&
-            lhs.textMessageDisplayInfo == rhs.textMessageDisplayInfo
+            lhs.message.id == rhs.message.id &&
+            lhs.message.deliveryState == rhs.message.deliveryState
         }
         
         func hash(into hasher: inout Hasher) {
-            hasher.combine(message)
-            hasher.combine(textMessageDisplayInfo)
+            hasher.combine(message.id)
+            hasher.combine(message.deliveryState)
         }
     }
 
@@ -436,13 +459,13 @@ extension ChatViewController {
         var actionCallback: (ChatMessageAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.message == rhs.message &&
-            lhs.imageMessageDisplayInfo == rhs.imageMessageDisplayInfo
+            lhs.message.id == rhs.message.id &&
+            lhs.message.deliveryState == rhs.message.deliveryState
         }
         
         func hash(into hasher: inout Hasher) {
-            hasher.combine(message)
-            hasher.combine(imageMessageDisplayInfo)
+            hasher.combine(message.id)
+            hasher.combine(message.deliveryState)
         }
     }
     

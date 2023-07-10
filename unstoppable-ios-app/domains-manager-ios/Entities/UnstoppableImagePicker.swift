@@ -11,26 +11,19 @@ import PhotosUI
 
 typealias PhotoLibraryImagePickerCallback = (UIImage)->()
 
-final class PhotoLibraryImagePicker: NSObject {
+final class UnstoppableImagePicker: NSObject {
     
-    static let shared = PhotoLibraryImagePicker()
+    static let shared = UnstoppableImagePicker()
     private var imagePickerCallback: PhotoLibraryImagePickerCallback?
     
-    private override init() {
-        super.init()
-    }
+    static var isCameraAvailable: Bool { UIImagePickerController.isSourceTypeAvailable(.camera) }
     
     func pickImage(in viewController: UIViewController, imagePickerCallback: @escaping PhotoLibraryImagePickerCallback) {
         Task { @MainActor in
             let requiredFunctionality = PermissionsService.Functionality.photoLibrary(options: .addOnly)
-            let isPermissionsGranted = await appContext.permissionsService.checkPermissionsFor(functionality: requiredFunctionality)
-            
-            if !isPermissionsGranted {
-                guard await appContext.permissionsService.askPermissionsFor(functionality: requiredFunctionality,
-                                                                            in: viewController,
-                                                                            shouldShowAlertIfNotGranted: true) else { return }
-            }
-            
+            guard try await checkPermissionsFor(functionality: requiredFunctionality,
+                                                in: viewController) else { return }
+       
             self.imagePickerCallback = imagePickerCallback
             
             var config = PHPickerConfiguration(photoLibrary: .shared())
@@ -43,10 +36,24 @@ final class PhotoLibraryImagePicker: NSObject {
             viewController.present(imagePicker, animated: true)
         }
     }
+    
+    func selectFromCamera(in viewController: UIViewController, imagePickerCallback: @escaping PhotoLibraryImagePickerCallback) {
+        Task { @MainActor in
+            guard try await checkPermissionsFor(functionality: .camera,
+                                                in: viewController) else { return }
+            self.imagePickerCallback = imagePickerCallback
+
+            let vc = UIImagePickerController()
+            vc.sourceType = .camera
+            vc.allowsEditing = false
+            vc.delegate = self
+            viewController.present(vc, animated: true)
+        }
+    }
 }
 
 // MARK: - PHPickerViewControllerDelegate
-extension PhotoLibraryImagePicker: PHPickerViewControllerDelegate {
+extension UnstoppableImagePicker: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         guard let result = results.first else {
             picker.dismiss(animated: true) // User cancelled selection
@@ -59,8 +66,36 @@ extension PhotoLibraryImagePicker: PHPickerViewControllerDelegate {
     }
 }
 
+// MARK: - Open methods
+extension UnstoppableImagePicker: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[.editedImage] as? UIImage {
+            didPick(image: image, from: picker)
+        } else if let image = info[.originalImage] as? UIImage {
+            didPick(image: image, from: picker)
+        } else {
+            Debugger.printFailure("Failed to get image from UIImagePicker", critical: false)
+            didFailToPickImage(from: picker)
+        }
+    }
+}
+
 // MARK: - Private methods
-private extension PhotoLibraryImagePicker {
+private extension UnstoppableImagePicker {
+    func checkPermissionsFor(functionality: PermissionsService.Functionality,
+                             in viewController: UIViewController) async throws -> Bool {
+        let isPermissionsGranted = await appContext.permissionsService.checkPermissionsFor(functionality: functionality)
+        
+        if !isPermissionsGranted {
+            guard await appContext.permissionsService.askPermissionsFor(functionality: functionality,
+                                                                        in: viewController,
+                                                                        shouldShowAlertIfNotGranted: true) else { return false }
+        }
+        
+        return true
+    }
+    
     func didLoadImageData(_ data: Data?, error: Error?, from picker: UIViewController) {
         Task {
             if let data {

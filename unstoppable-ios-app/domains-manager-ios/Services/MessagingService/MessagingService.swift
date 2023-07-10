@@ -318,11 +318,12 @@ extension MessagingService: MessagingServiceProtocol {
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
         guard searchKey.isValidAddress() else { return [] }
         
-        if let userInfo = await loadUserInfoFor(wallet: searchKey) {
+        let wallet = searchKey
+        if let userInfo = await loadUserInfoFor(wallet: wallet) {
             return [userInfo]
         }
         
-        return []
+        return [.init(wallet: wallet)]
     }
     
     func searchForChannelsWith(page: Int,
@@ -416,8 +417,8 @@ private extension MessagingService {
     }
     
     func refreshChatsMetadata(remoteChats: [MessagingChat],
-                                      localChats: [MessagingChat],
-                                      for profile: MessagingChatUserProfile) async -> [MessagingChat] {
+                              localChats: [MessagingChat],
+                              for profile: MessagingChatUserProfile) async -> [MessagingChat] {
         var updatedChats = [MessagingChat]()
         
         await withTaskGroup(of: MessagingChat.self, body: { group in

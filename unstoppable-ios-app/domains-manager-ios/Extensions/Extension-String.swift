@@ -180,7 +180,10 @@ extension String {
         static let accept = "ACCEPT"
         static let delete = "DELETE"
         static let join = "JOIN"
-        
+        static let choosePhoto = "CHOOSE_PHOTO"
+        static let takePhoto = "TAKE_PHOTO"
+        static let photo = "PHOTO"
+
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"

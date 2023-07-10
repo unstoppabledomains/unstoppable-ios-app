@@ -139,6 +139,9 @@
 "ACCEPT" = "Accept";
 "DELETE" = "Delete";
 "JOIN" = "Join";
+"CHOOSE_PHOTO" = "Choose Photo";
+"TAKE_PHOTO" = "Take Photo";
+"PHOTO" = "Photo";
 
 /* ONBOARDING */
 // Tutorial screens

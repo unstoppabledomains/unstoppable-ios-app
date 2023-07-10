@@ -12,6 +12,8 @@ protocol ChatInputViewDelegate: AnyObject {
     func chatInputView(_ chatInputView: ChatInputView, didTypeText text: String)
     func chatInputView(_ chatInputView: ChatInputView, didSentText text: String)
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView)
+    func chatInputViewAdditionalActionsButtonPressed(_ chatInputView: ChatInputView)
+    func chatInputViewAdditionalActionSelected(_ chatInputView: ChatInputView, action: ChatInputView.AdditionalAction)
 }
 
 final class ChatInputView: UIView {
@@ -191,6 +193,10 @@ private extension ChatInputView {
     @objc func leadingButtonPressed() {
         UDVibration.buttonTap.vibrate()
     }
+    
+    func didSelectAdditionalAction(_ additionalAction: AdditionalAction) {
+        delegate?.chatInputViewAdditionalActionSelected(self, action: additionalAction)
+    }
 }
 
 // MARK: - Private methods
@@ -231,6 +237,9 @@ private extension ChatInputView {
         movedKeyboardFrame = newFrame
         setNeedsLayout()
         layoutIfNeeded()
+        DispatchQueue.main.async {
+            self.delegate?.chatInputViewDidAdjustContentHeight(self)            
+        }
     }
     
     func setPlaceholder() {
@@ -304,6 +313,26 @@ private extension ChatInputView {
         leadingButton.addTarget(self, action: #selector(leadingButtonPressed), for: .touchUpInside)
         leadingButton.tintColor = .foregroundSecondary
         leadingButton.setImage(icon, for: .normal)
+        
+        var menuChildren: [UIMenuElement] = []
+        for action in AdditionalAction.allCases where action.isAvailable {
+            let menuAction = UIAction.createWith(title: action.title,
+                                                 image: action.icon,
+                                                 handler: { [weak self] _ in
+                UDVibration.buttonTap.vibrate()
+                self?.didSelectAdditionalAction(action)
+            })
+            menuChildren.append(menuAction)
+        }
+        let menu = UIMenu(title: "", children: menuChildren)
+        leadingButton.menu = menu
+        leadingButton.showsMenuAsPrimaryAction = true
+        leadingButton.addAction(UIAction(handler: { [weak self] _ in
+            guard let self else { return }
+            self.delegate?.chatInputViewAdditionalActionsButtonPressed(self)
+            UDVibration.buttonTap.vibrate()
+        }), for: .menuActionTriggered)
+        
         addSubview(leadingButton)
     }
     
@@ -326,5 +355,37 @@ private extension ChatInputView {
 extension ChatInputView {
     enum State {
         case `default`
+    }
+    
+    enum AdditionalAction: CaseIterable {
+        case takePhoto
+        case choosePhoto
+        
+        var title: String {
+            switch self {
+            case .choosePhoto:
+                return String.Constants.choosePhoto.localized()
+            case .takePhoto:
+                return String.Constants.takePhoto.localized()
+            }
+        }
+        
+        var icon: UIImage {
+            switch self {
+            case .choosePhoto:
+                return .systemPhotoRectangle
+            case .takePhoto:
+                return .systemCamera
+            }
+        }
+        
+        var isAvailable: Bool {
+            switch self {
+            case .choosePhoto:
+                return true
+            case .takePhoto:
+                return UnstoppableImagePicker.isCameraAvailable
+            }
+        }
     }
 }

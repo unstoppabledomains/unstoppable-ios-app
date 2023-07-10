@@ -16,7 +16,6 @@ final class ChatListRequestsCell: BaseListCollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        
     }
 
 }

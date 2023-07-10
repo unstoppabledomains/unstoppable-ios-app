@@ -10,4 +10,9 @@ import Foundation
 struct MessagingGroupChatDetails: Hashable {
     let members: [MessagingChatUserDisplayInfo]
     let pendingMembers: [MessagingChatUserDisplayInfo]
+    
+    var allMembers: [MessagingChatUserDisplayInfo] { members + pendingMembers }
+    var displayName: String {
+        allMembers.map { $0.displayName }.joined(separator: ", ")
+    }
 }

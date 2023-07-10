@@ -60,6 +60,8 @@ extension ChatTitleView {
             setWithWalletAddress(walletAddress)
         case .channel(let channel):
             setWithChannel(channel)
+        case .group(let groupDetails):
+            setWithGroupDetails(groupDetails)
         }
         setNeedsLayout()
         layoutIfNeeded()
@@ -105,6 +107,11 @@ private extension ChatTitleView {
                 setIconWithInitialsFor(name: channel.name)
             }
         }
+    }
+    
+    func setWithGroupDetails(_ groupDetails: MessagingGroupChatDetails) {
+        setTitle(groupDetails.displayName)
+        iconImageView.image = nil // TODO: - Update when design is ready
     }
     
     func setTitle(_ title: String) {
@@ -154,5 +161,6 @@ extension ChatTitleView {
         case domainName(DomainName)
         case walletAddress(HexAddress)
         case channel(MessagingNewsChannel)
+        case group(MessagingGroupChatDetails)
     }
 }

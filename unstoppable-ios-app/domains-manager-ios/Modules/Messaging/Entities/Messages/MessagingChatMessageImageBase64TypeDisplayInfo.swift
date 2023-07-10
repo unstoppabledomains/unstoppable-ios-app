@@ -10,4 +10,8 @@ import Foundation
 struct MessagingChatMessageImageBase64TypeDisplayInfo: Hashable {
     let base64: String
     let encryptedContent: String
+    
+    var base64Image: String {
+        Base64DataTransformer.removeDataFrom(string: base64)
+    }
 }

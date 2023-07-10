@@ -17,6 +17,7 @@ final class ChannelViewPresenter {
     private var feed: [MessagingNewsChannelFeed] = []
     private var isLoadingFeed = false
     private var currentPage: Int = 1
+    var isInfoAvailable: Bool { true }
 
     init(view: ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
@@ -137,16 +138,16 @@ private extension ChannelViewPresenter {
                 if !feed.isEmpty,
                    !feed[0].isRead,
                    let firstReadFeedItem = feed.first(where: { $0.isRead }) {
-                    showData(animated: false, completion: {
+                    showData(animated: false, isLoading: false, completion: {
                         let item = self.createSnapshotItemFrom(feedItem: firstReadFeedItem)
                         self.view?.scrollToItem(item, animated: false)
                     })
                 } else {
-                    showData(animated: false, scrollToBottomAnimated: false)
+                    showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
                 }
 
-                self.view?.setLoading(active: false)
                 isLoadingFeed = false
+                self.view?.setLoading(active: false)
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
@@ -166,17 +167,18 @@ private extension ChannelViewPresenter {
         guard !isLoadingFeed else { return }
 
         isLoadingFeed = true
+        showData(animated: false, isLoading: true)
         Task {
             do {
                 let newPage = currentPage + 1
                 try await loadAndAddFeed(for: newPage)
                 currentPage = newPage
                 isLoadingFeed = false
-                showData(animated: false)
             } catch {
                 view?.showAlertWith(error: error, handler: nil) // TODO: - Handle error
                 isLoadingFeed = false
             }
+            showData(animated: false, isLoading: false)
         }
     }
     
@@ -192,16 +194,17 @@ private extension ChannelViewPresenter {
         self.feed.sort(by: { $0.time > $1.time })
     }
     
-    func showData(animated: Bool, scrollToBottomAnimated: Bool) {
-        showData(animated: animated, completion: { [weak self] in
-            DispatchQueue.main.async {
+    func showData(animated: Bool, scrollToBottomAnimated: Bool, isLoading: Bool) {
+        showData(animated: animated, isLoading: isLoading, completion: { [weak self] in
+            self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
             }
         })
     }
     
     @MainActor
-    func showData(animated: Bool, completion: EmptyCallback? = nil) {
+    func showData(animated: Bool, isLoading: Bool, completion: EmptyCallback? = nil) {
         var snapshot = ChatSnapshot()
         
         if feed.isEmpty {
@@ -209,6 +212,10 @@ private extension ChannelViewPresenter {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptyState]) // TODO: - Specify it is empty state for feed
         } else {
+            if isLoading {
+                snapshot.appendSections([.loading])
+                snapshot.appendItems([.loading])
+            }
             view?.setScrollEnabled(true)
             let groupedFeed = [Date : [MessagingNewsChannelFeed]].init(grouping: feed, by: { $0.time.dayStart })
             let sortedDates = groupedFeed.keys.sorted(by: { $0 < $1 })
