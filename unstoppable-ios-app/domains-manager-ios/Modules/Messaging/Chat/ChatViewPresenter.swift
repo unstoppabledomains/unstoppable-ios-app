@@ -44,7 +44,7 @@ final class ChatViewPresenter {
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
     var isInfoAvailable: Bool { conversationState.userInfo?.domainName != nil }
-    
+     
     init(view: ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState) {
