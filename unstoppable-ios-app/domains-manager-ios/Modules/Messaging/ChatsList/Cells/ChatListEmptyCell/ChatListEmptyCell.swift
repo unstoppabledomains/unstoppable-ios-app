@@ -87,7 +87,7 @@ private extension ChatListEmptyCell {
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
             actionButton.setTitle("New message", image: .newMessageIcon)
         case .channels:
-            actionButton.setConfiguration(.mediumRaisedTertiaryWhiteButtonConfiguration)
+            actionButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
             actionButton.setTitle("Search apps", image: .searchIcon)
         }
     }

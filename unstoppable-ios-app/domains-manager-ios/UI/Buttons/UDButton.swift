@@ -349,7 +349,7 @@ struct UDButtonConfiguration {
                                                                                      fontWeight: .medium,
                                                                                      contentInset: UDButtonConfiguration.MediumButtonContentInset)
     
-    static let mediumRaisedTertiaryWhiteButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .brandWhite,
+    static let mediumRaisedWhiteButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .brandWhite,
                                                                                            backgroundHighlightedColor: .brandWhite.withAlphaComponent(0.64),
                                                                                            backgroundDisabledColor: .brandWhite.withAlphaComponent(0.16),
                                                                                            textColor: .brandBlack,
@@ -364,7 +364,8 @@ struct UDButtonConfiguration {
                                                                                       textColor: .foregroundDefault,
                                                                                       textHighlightedColor: .foregroundDefault,
                                                                                       textDisabledColor: .foregroundMuted,
-                                                                                      fontWeight: .medium)
+                                                                                      fontWeight: .medium,
+                                                                                      contentInset: UDButtonConfiguration.MediumButtonContentInset)
     
     // Very small
     static let verySmallGhostTertiaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,
