@@ -452,7 +452,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentPushEnvironment()
         
         let subscribeOptions = Push.PushChannel.SubscribeOption(signer: domain,
-                                                              channelAddress: channel.id,
+                                                              channelAddress: channel.channel,
                                                               env: env)
         if subscribed {
             _ = try await Push.PushChannel.subscribe(option: subscribeOptions)
