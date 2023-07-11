@@ -139,8 +139,8 @@ private extension PushMessagingWebSocketsService {
             case .connect, .disconnect:
                 return nil
             case .userFeeds:
-                let userFeed: PushRESTAPIService.InboxResponse = try parseEntityFrom(data: data)
-                return .userFeeds(userFeed.feeds)
+                let feed: PushInboxNotification = try parseEntityFrom(data: data)
+                return .userFeeds(feed)
             case .userSpamFeeds:
                 let userFeed: PushRESTAPIService.InboxResponse = try parseEntityFrom(data: data)
                 return .userSpamFeeds(userFeed.feeds)
@@ -179,7 +179,7 @@ private extension PushMessagingWebSocketsService {
     enum Events: String {
         case connect
         case disconnect
-        case userFeeds = "feed"
+        case userFeeds
         case userSpamFeeds = "spam"
         case chatReceivedMessage = "CHATS"
         case chatGroups = "CHAT_GROUPS"
