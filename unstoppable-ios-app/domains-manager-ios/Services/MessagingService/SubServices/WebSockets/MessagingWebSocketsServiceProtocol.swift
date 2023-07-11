@@ -10,6 +10,7 @@ import Foundation
 protocol MessagingWebSocketsServiceProtocol {
     func subscribeFor(profile: MessagingChatUserProfile,
                       eventCallback: @escaping MessagingWebSocketEventCallback) throws
+    func disconnectAll()
 }
 
 struct MessagingWebSocketMessageEntity {

@@ -15,6 +15,7 @@ final class MessagingService {
     private let decrypterService: MessagingContentDecrypterService
         
     private var listenerHolders: [MessagingListenerHolder] = []
+    private var currentUser: MessagingChatUserProfileDisplayInfo?
 
     init(apiService: MessagingAPIServiceProtocol,
          webSocketsService: MessagingWebSocketsServiceProtocol,
@@ -28,6 +29,7 @@ final class MessagingService {
         udWalletsService.addListener(self)
         
         storageService.markSendingMessagesAsFailed()
+        setSceneActivationListener()
     }
     
 }
@@ -58,6 +60,7 @@ extension MessagingService: MessagingServiceProtocol {
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo) {
         Task {
             do {
+                self.currentUser = userProfile
                 let rrDomain = try await getReverseResolutionDomainItem(for: userProfile.wallet)
                 let profile = try storageService.getUserProfileFor(domain: rrDomain)
                 
@@ -387,10 +390,26 @@ extension MessagingService: UDWalletsServiceListener {
                    let rrDomain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomainName),
                    let profile = try? storageService.getUserProfileFor(domain: rrDomain) {
                     await storageService.clearAllDataOf(profile: profile)
-                } else {
-                    print("Ops")
                 }
             }
+        }
+    }
+}
+
+// MARK: - SceneActivationListener
+extension MessagingService: SceneActivationListener {
+    func didChangeSceneActivationState(to state: SceneActivationState) {
+        switch state {
+        case .foregroundActive:
+            guard let currentUser else { return }
+            
+            setCurrentUser(currentUser)
+        case .background:
+            webSocketsService.disconnectAll()
+        case .foregroundInactive, .unattached:
+            return
+        @unknown default:
+            return
         }
     }
 }
@@ -751,6 +770,7 @@ private extension MessagingService {
     func setupSocketConnection(profile: MessagingChatUserProfile) {
         Task {
             do {
+                webSocketsService.disconnectAll()
                 try webSocketsService.subscribeFor(profile: profile,
                                                    eventCallback: { [weak self] event in
                     self?.handleWebSocketEvent(event)
@@ -852,6 +872,12 @@ private extension MessagingService {
               }) else { throw MessagingServiceError.chatNotFound }
         guard let message = messageEntity.transformToMessageBlock(messageEntity, chat) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
         return message
+    }
+    
+    func setSceneActivationListener() {
+        Task { @MainActor in
+            SceneDelegate.shared?.addListener(self)
+        }
     }
 }
 
