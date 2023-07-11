@@ -763,7 +763,7 @@ private extension MessagingService {
         Task {
             do {
                 switch event {
-                case .channelNewFeed(let feed, let channelAddress):
+                case .channelNewFeed(let feed, let channelAddress), .channelSpamFeed(let feed, let channelAddress):
                     let channels = try await storageService.getChannelsWith(address: channelAddress)
                     
                     for var channel in channels {
@@ -775,8 +775,6 @@ private extension MessagingService {
                         notifyListenersChangedDataType(.channelFeedAdded(feed, channelId: channel.id))
                         notifyChannelsChanged(userId: profile.id)
                     }
-                case .userSpamFeeds(let feeds):
-                    return
                 case .chatGroups:
                     return
                 case .chatReceivedMessage(let message):

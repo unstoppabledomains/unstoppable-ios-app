@@ -143,8 +143,9 @@ private extension PushMessagingWebSocketsService {
                 let feed = PushEntitiesTransformer.convertPushInboxToChannelFeed(inboxNotification)
                 return .channelNewFeed(feed, channelAddress: inboxNotification.sender)
             case .userSpamFeeds:
-                let userFeed: PushRESTAPIService.InboxResponse = try parseEntityFrom(data: data)
-                return .userSpamFeeds(userFeed.feeds)
+                let inboxNotification: PushInboxNotification = try parseEntityFrom(data: data)
+                let feed = PushEntitiesTransformer.convertPushInboxToChannelFeed(inboxNotification)
+                return .channelSpamFeed(feed, channelAddress: inboxNotification.sender)
             case .chatReceivedMessage:
                 let pushMessage: Push.Message = try parseEntityFrom(data: data)
                 
@@ -181,7 +182,7 @@ private extension PushMessagingWebSocketsService {
         case connect
         case disconnect
         case userFeeds
-        case userSpamFeeds = "spam"
+        case userSpamFeeds
         case chatReceivedMessage = "CHATS"
         case chatGroups = "CHAT_GROUPS"
     }
