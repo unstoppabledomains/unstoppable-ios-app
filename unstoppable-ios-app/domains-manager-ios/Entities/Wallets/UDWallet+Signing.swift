@@ -18,7 +18,7 @@ extension UDWallet {
         guard let walletName = self.getExternalWalletName()?.lowercased() else {
             return false
         }
-        return walletName.contains("rainbow") || walletName.contains("metamask")
+        return walletName.contains("alpha")
     }
     
     static func createSignaturesByPersonalSign(messages: [String],
@@ -42,7 +42,7 @@ extension UDWallet {
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
-        guard let signature = self.signPersonal(messageString: messageString) else {
+        guard let signature = self.signPersonal(messageString: messageString.convertedIntoReadableMessage) else {
             throw UDWallet.Error.failedToSignMessage
         }
         return signature
@@ -230,7 +230,7 @@ extension UDWallet {
 extension UDWallet {
     
     func signPersonal(messageString: String) -> String? {
-        if messageString.droppedHexPrefix.isHexNumber {
+        if messageString.hasHexPrefix {
             return signPersonalAsHexString(messageString: messageString)
         }
         
