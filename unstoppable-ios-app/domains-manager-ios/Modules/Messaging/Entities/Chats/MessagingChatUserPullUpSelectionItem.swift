@@ -16,12 +16,18 @@ struct MessagingChatUserPullUpSelectionItem: PullUpCollectionViewCellItem {
     var imageStyle: ResizableRoundedImageView.Style { .largeImage }
     var icon: UIImage {
         get async {
-            let placeholder = UIImage.domainSharePlaceholder
-            if let pfpURL = userInfo.pfpURL {
-                return await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
-                                                                      downsampleDescription: nil) ?? placeholder
+            if let pfpURL = userInfo.pfpURL,
+               let avatar = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
+                                                                           downsampleDescription: nil) {
+                return avatar
+            } else if let initialsImage = await appContext.imageLoadingService.loadImage(from: .initials(userInfo.domainName ?? userInfo.wallet.droppedHexPrefix,
+                                                                                                         size: .default,
+                                                                                                         style: .accent),
+                                                                                         downsampleDescription: nil) {
+                return initialsImage
             }
-            return placeholder
+            
+            return UIImage.domainSharePlaceholder
         }
     }
     
