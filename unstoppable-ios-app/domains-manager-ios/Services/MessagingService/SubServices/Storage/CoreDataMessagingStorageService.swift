@@ -232,6 +232,14 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
+    func getChannelsWith(address: String) async throws -> [MessagingNewsChannel] {
+        try queue.sync {
+            let predicate = NSPredicate(format: "channel == %@", address)
+            let coreDataChannels: [CoreDataMessagingNewsChannel] = try getEntities(predicate: predicate, from: backgroundContext)
+            return coreDataChannels.compactMap { convertCoreDataChannelToMessagingChannel($0) }.sortedByLastMessage()
+        }
+    }
+    
     func saveChannels(_ channels: [MessagingNewsChannel],
                       for profile: MessagingChatUserProfile) async {
         queue.sync {

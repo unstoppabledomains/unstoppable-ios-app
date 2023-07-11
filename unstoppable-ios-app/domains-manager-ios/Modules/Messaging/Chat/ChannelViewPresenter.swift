@@ -86,6 +86,11 @@ extension ChannelViewPresenter: MessagingServiceListener {
                         self.channel = channel
                     }
                 }
+            case .channelFeedAdded(let feed, let channelId):
+                if channelId == channel.id {
+                    addFeed([feed])
+                    showData(animated: true, isLoading: false)
+                }
             case .chats, .messagesAdded, .messageUpdated, .messagesRemoved:
                 return
             }

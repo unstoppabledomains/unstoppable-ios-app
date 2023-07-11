@@ -139,8 +139,9 @@ private extension PushMessagingWebSocketsService {
             case .connect, .disconnect:
                 return nil
             case .userFeeds:
-                let feed: PushInboxNotification = try parseEntityFrom(data: data)
-                return .userFeeds(feed)
+                let inboxNotification: PushInboxNotification = try parseEntityFrom(data: data)
+                let feed = PushEntitiesTransformer.convertPushInboxToChannelFeed(inboxNotification)
+                return .channelNewFeed(feed, channelAddress: inboxNotification.sender)
             case .userSpamFeeds:
                 let userFeed: PushRESTAPIService.InboxResponse = try parseEntityFrom(data: data)
                 return .userSpamFeeds(userFeed.feeds)

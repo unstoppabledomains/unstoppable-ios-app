@@ -147,7 +147,7 @@ extension ChatViewPresenter: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
         Task { @MainActor in
             switch messagingDataType {
-            case .chats, .channels:
+            case .chats, .channels, .channelFeedAdded:
                 return
             case .messagesAdded(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,

@@ -49,6 +49,7 @@ protocol MessagingStorageServiceProtocol {
     
     // Channels
     func getChannelsFor(profile: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
+    func getChannelsWith(address: String) async throws -> [MessagingNewsChannel]
     func saveChannels(_ channels: [MessagingNewsChannel],
                       for profile: MessagingChatUserProfile) async
     func replaceChannel(_ channelToReplace: MessagingNewsChannel,

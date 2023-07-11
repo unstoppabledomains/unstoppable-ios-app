@@ -760,16 +760,26 @@ private extension MessagingService {
     }
     
     func handleWebSocketEvent(_ event: MessagingWebSocketEvent) {
-        switch event {
-        case .userFeeds(let feeds):
-            return
-        case .userSpamFeeds(let feeds):
-            return
-        case .chatGroups:
-            return
-        case .chatReceivedMessage(let message):
-            Task {
-                do {
+        Task {
+            do {
+                switch event {
+                case .channelNewFeed(let feed, let channelAddress):
+                    let channels = try await storageService.getChannelsWith(address: channelAddress)
+                    
+                    for var channel in channels {
+                        let profile = try storageService.getUserProfileWith(userId: channel.userId)
+                        await storageService.saveChannelsFeed([feed], in: channel)
+                        channel.lastMessage = feed
+                        channel.isUpToDate = false
+                        await storageService.saveChannels([channel], for: profile)
+                        notifyListenersChangedDataType(.channelFeedAdded(feed, channelId: channel.id))
+                        notifyChannelsChanged(userId: profile.id)
+                    }
+                case .userSpamFeeds(let feeds):
+                    return
+                case .chatGroups:
+                    return
+                case .chatReceivedMessage(let message):
                     let chatMessage = try await convertMessagingWebSocketMessageEntityToMessage(message)
                     
                     await storageService.saveMessages([chatMessage])
@@ -778,8 +788,8 @@ private extension MessagingService {
                     notifyListenersChangedDataType(.messagesAdded([chatMessage.displayInfo],
                                                                   chatId: chatId))
                     refreshChatsInSameDomain(as: chatId)
-                } catch { }
-            }
+                }
+            } catch { }
         }
     }
     
