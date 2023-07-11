@@ -351,6 +351,7 @@ struct SearchDomainProfile: Codable {
     let name: String
     let ownerAddress: String
     let imagePath: String?
+    let imageType: DomainProfileImageType?
 }
 
 struct UserDomainProfileHumanityCheckAttribute: Codable {
