@@ -554,7 +554,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
-                                                                         messageString: messageString)
+                                                                         messageString: messageString.convertedIntoReadableMessage)
         
         let sig: AnyCodable
         do {
