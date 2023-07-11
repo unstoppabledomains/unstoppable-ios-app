@@ -254,6 +254,8 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func deleteChannel(_ channel: MessagingNewsChannel) {
         queue.sync {
             guard let coreDataChannel: CoreDataMessagingNewsChannel = getCoreDataEntityWith(id: channel.id) else { return }
+            
+            deleteFeedWithChannelId(channel.id)
             deleteObject(coreDataChannel, from: backgroundContext)
         }
     }
@@ -313,10 +315,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             let coreDataChannels: [CoreDataMessagingNewsChannel] = (try? getEntities(predicate: channelsPredicate, from: backgroundContext)) ?? []
             
             for channel in coreDataChannels {
-                let feedPredicate = NSPredicate(format: "channelId == %@", channel.id!)
-                let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = (try? getEntities(predicate: feedPredicate,
-                                                                                                 from: backgroundContext)) ?? []
-                deleteObjects(coreDataChannelsFeed, from: backgroundContext, shouldSaveContext: false)
+                deleteFeedWithChannelId(channel.id!)
             }
             deleteObjects(coreDataChannels, from: backgroundContext, shouldSaveContext: false)
             
@@ -326,6 +325,13 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             
             saveContext(backgroundContext)
         }
+    }
+    
+    private func deleteFeedWithChannelId(_ channelId: String) {
+        let feedPredicate = NSPredicate(format: "channelId == %@", channelId)
+        let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = (try? getEntities(predicate: feedPredicate,
+                                                                                         from: backgroundContext)) ?? []
+        deleteObjects(coreDataChannelsFeed, from: backgroundContext, shouldSaveContext: false)
     }
     
     func clear() {
@@ -705,7 +711,7 @@ private extension CoreDataMessagingStorageService {
         let feed = MessagingNewsChannelFeed(id: coreDataNewsFeed.id!,
                                             title: coreDataNewsFeed.title!,
                                             message: coreDataNewsFeed.message!,
-                                            link: coreDataNewsFeed.link!,
+                                            link: coreDataNewsFeed.link,
                                             time: coreDataNewsFeed.time!,
                                             isRead: coreDataNewsFeed.isRead,
                                             isFirstInChannel: coreDataNewsFeed.isFirstInChannel)

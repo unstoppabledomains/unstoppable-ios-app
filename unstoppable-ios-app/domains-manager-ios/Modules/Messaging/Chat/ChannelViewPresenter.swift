@@ -236,11 +236,11 @@ private extension ChannelViewPresenter {
     func handleChatMessageAction(_ action: ChatViewController.ChatFeedAction,
                                  forFeedItem feedItem: MessagingNewsChannelFeed) {
         switch action {
-        case .learnMore:
+        case .learnMore(let link):
             logButtonPressedAnalyticEvents(button: .learnMoreChannelFeed,
                                            parameters: [.channelName: channel.name,
                                                         .feedName: feedItem.title])
-            view?.openLink(.generic(url: feedItem.link.absoluteString))
+            view?.openLink(.generic(url: link.absoluteString))
         }
     }
     

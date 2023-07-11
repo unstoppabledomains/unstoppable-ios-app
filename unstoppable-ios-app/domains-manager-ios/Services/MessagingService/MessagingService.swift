@@ -329,9 +329,16 @@ extension MessagingService: MessagingServiceProtocol {
                     by user: MessagingChatUserProfileDisplayInfo) async throws {
         let profile = try await getUserProfileWith(wallet: user.wallet)
         try await apiService.setChannel(channel, subscribed: subscribed, by: profile)
-        if !subscribed {
+        var channel = channel
+        channel.isCurrentUserSubscribed = subscribed
+        if subscribed {
+            let updatedChannel = await refreshChannelsMetadata([channel], storedChannels: [])
+            await storageService.saveChannels(updatedChannel, for: profile)
+        } else {
             storageService.deleteChannel(channel)
         }
+        
+        notifyChannelsChanged(userId: user.id)
     }
     
     // Search

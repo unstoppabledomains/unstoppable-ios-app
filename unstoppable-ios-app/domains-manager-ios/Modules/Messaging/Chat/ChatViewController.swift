@@ -208,6 +208,7 @@ extension ChatViewController: ChatViewProtocol {
             let barButtonItem = UIBarButtonItem(customView: barButton)
             navigationItem.rightBarButtonItem = barButtonItem
         }
+        cNavigationController?.updateNavigationBar()
     }
     
     func setEmptyState(active: Bool) {
@@ -582,7 +583,7 @@ extension ChatViewController {
     }
     
     enum ChatFeedAction: Hashable {
-        case learnMore
+        case learnMore(URL)
     }
     
     enum State {

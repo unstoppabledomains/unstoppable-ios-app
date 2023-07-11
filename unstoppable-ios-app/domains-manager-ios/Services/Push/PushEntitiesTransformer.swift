@@ -236,13 +236,20 @@ struct PushEntitiesTransformer {
     }
     
     static func convertPushInboxToChannelFeed(_ pushNotification: PushInboxNotification) -> MessagingNewsChannelFeed {
-        MessagingNewsChannelFeed(id: String(pushNotification.payloadId),
-                                 title: pushNotification.payload.data.asub,
-                                 message: pushNotification.payload.data.amsg,
-                                 link: pushNotification.payload.data.url,
-                                 time: PushISODateFormatter.date(from: pushNotification.epoch) ?? Date(),
-                                 isRead: false,
-                                 isFirstInChannel: false)
+        let data = pushNotification.payload.data
+        var link: URL?
+        if let url = URL(string: data.url ?? "") {
+            link = url
+        } else if let acta = URL(string: data.acta ?? "") {
+            link = acta
+        }
+        return MessagingNewsChannelFeed(id: String(pushNotification.payloadId),
+                                        title: data.asub,
+                                        message: data.amsg,
+                                        link: link,
+                                        time: PushISODateFormatter.date(from: pushNotification.epoch) ?? Date(),
+                                        isRead: false,
+                                        isFirstInChannel: false)
     }
     
     static func getWalletAddressFrom(eip155String: String) -> String? {

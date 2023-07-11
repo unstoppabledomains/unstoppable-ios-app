@@ -45,8 +45,8 @@ extension PushInboxNotification {
     struct Data: Codable {
         let app: String
         let sid: String
-        let url: URL
-        let acta: String
+        let url: String?
+        let acta: String?
         let aimg: String
         let amsg: String
         let asub: String

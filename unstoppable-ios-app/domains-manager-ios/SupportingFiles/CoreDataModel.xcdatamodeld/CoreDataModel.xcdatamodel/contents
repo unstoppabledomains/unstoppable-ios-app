@@ -66,7 +66,7 @@
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isFirstInChannel" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="link" attributeType="URI" defaultValueString=""/>
+        <attribute name="link" optional="YES" attributeType="URI" defaultValueString=""/>
         <attribute name="message" attributeType="String" defaultValueString=""/>
         <attribute name="time" attributeType="Date" defaultDateTimeInterval="707931660" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String" defaultValueString=""/>
