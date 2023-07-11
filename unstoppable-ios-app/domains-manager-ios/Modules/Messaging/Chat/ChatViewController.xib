@@ -46,6 +46,11 @@
                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="TpP-S2-yIY">
                     <rect key="frame" x="186.66666666666666" y="416" width="20" height="20"/>
                 </activityIndicatorView>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LUm-J6-Zo3" customClass="ChatEmptyView" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="7" y="59" width="386" height="681"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Th-qT-ili">
                     <rect key="frame" x="0.0" y="748" width="393" height="104"/>
                     <subviews>
@@ -104,11 +109,6 @@
                         <action selector="moveToTopButtonPressed:" destination="-1" eventType="touchUpInside" id="ghO-sa-mlx"/>
                     </connections>
                 </button>
-                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LUm-J6-Zo3" customClass="ChatEmptyView" customModule="domains_manager_ios" customModuleProvider="target">
-                    <rect key="frame" x="7" y="59" width="386" height="681"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
