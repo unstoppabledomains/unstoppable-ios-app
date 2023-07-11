@@ -892,6 +892,8 @@ extension String {
         static let messagingBlockUserConfirmationTitle = "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE"
         static let messagingYouAreBlocked = "MESSAGING_YOU_ARE_BLOCKED"
         static let messageNotSupported = "MESSAGE_NOT_SUPPORTED"
+        static let newMessage = "NEW_MESSAGE"
+        static let searchApps = "SEARCH_APPS"
 
     }
 

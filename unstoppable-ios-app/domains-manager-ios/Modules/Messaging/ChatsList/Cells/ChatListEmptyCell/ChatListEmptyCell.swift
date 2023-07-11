@@ -87,10 +87,10 @@ private extension ChatListEmptyCell {
         switch dataType {
         case .chats:
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
-            actionButton.setTitle("New message", image: .newMessageIcon)
+            actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
         case .channels:
             actionButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
-            actionButton.setTitle("Search apps", image: .searchIcon)
+            actionButton.setTitle(String.Constants.searchApps.localized(), image: .searchIcon)
         }
     }
     
