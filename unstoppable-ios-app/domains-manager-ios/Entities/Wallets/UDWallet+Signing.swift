@@ -42,7 +42,7 @@ extension UDWallet {
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
-        guard let signature = self.signPersonal(messageString: messageString) else {
+        guard let signature = self.signPersonal(messageString: messageString.convertedIntoReadableMessage) else {
             throw UDWallet.Error.failedToSignMessage
         }
         return signature
