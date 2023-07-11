@@ -97,7 +97,10 @@ extension ChannelViewPresenter: MessagingServiceListener {
 private extension ChannelViewPresenter {
     func setupUI() {
         view?.setTitleOfType(.channel(channel))
-        
+        setupChannelActions()
+    }
+    
+    func setupChannelActions() {
         var actions: [ChatViewController.NavButtonConfiguration.Action] = []
         actions.append(.init(type: .viewInfo, callback: { [weak self] in
             self?.logButtonPressedAnalyticEvents(button: .viewChannelInfo,
