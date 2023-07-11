@@ -230,7 +230,7 @@ extension UDWallet {
 extension UDWallet {
     
     func signPersonal(messageString: String) -> String? {
-        if messageString.droppedHexPrefix.isHexNumber {
+        if messageString.hasHexPrefix {
             return signPersonalAsHexString(messageString: messageString)
         }
         
