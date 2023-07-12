@@ -36,6 +36,10 @@ final class DomainsListPresenter: DomainsListViewPresenter {
             return
         case .domainListItem(let domain, _):
             logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
+            guard domain.isInteractable else {
+                UDVibration.buttonTap.vibrate()
+                return
+            }
             showProfile(of: domain)
         case .domainsMintingInProgress:
             logAnalytic(event: .mintingDomainsPressed)
