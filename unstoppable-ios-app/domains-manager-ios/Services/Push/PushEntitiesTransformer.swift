@@ -142,11 +142,13 @@ struct PushEntitiesTransformer {
         return chatMessage
     }
     
+    private static let pgpEncryptionType = "pgp"
+    
     private static func extractPushMessageType(from pushMessage: Push.Message,
                                                pgpKey: String,
                                                chatPublicKeys: [String]) -> (MessagingChatMessageDisplayType, String)? {
         let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
-        let isMessageEncrypted = pushMessage.encType == "pgp"
+        let isMessageEncrypted = pushMessage.encType == pgpEncryptionType
         let encryptedContent = pushMessage.messageContent
         guard let decryptedContent = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
         
