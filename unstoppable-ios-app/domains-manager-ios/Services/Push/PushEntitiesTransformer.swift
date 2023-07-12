@@ -53,12 +53,15 @@ struct PushEntitiesTransformer {
         let chatType: MessagingChatType
         if let groupInfo = pushChat.groupInformation {
             let members = convertChatMembersToUserDisplayInfo(groupInfo.members)
-            let admin = groupInfo.members.first(where: { $0.isAdmin })
+            var adminWallet: String?
+            if let admin = groupInfo.members.first(where: { $0.isAdmin }) {
+                adminWallet = getWalletAddressFrom(eip155String: admin.wallet)
+            }
             let pendingMembers = convertChatMembersToUserDisplayInfo(groupInfo.pendingMembers)
             let groupChatDetails = MessagingGroupChatDetails(members: members,
                                                              pendingMembers: pendingMembers,
                                                              name: groupInfo.groupName,
-                                                             adminWallet: admin?.wallet)
+                                                             adminWallet: adminWallet)
             chatType = .group(groupChatDetails)
         } else {
             let fromUserEip = pushChat.intentSentBy
