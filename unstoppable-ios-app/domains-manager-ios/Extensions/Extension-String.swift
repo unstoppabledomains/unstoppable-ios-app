@@ -483,6 +483,7 @@ extension String {
         static let changesConfirmed = "CHANGES_CONFIRMED";
         static let pleaseAddNAddress = "PLEASE_ADD_N_ADDRESS";
         static let thisTokenWasDeprecated = "THIS_TOKEN_WAS_DEPRECATED";
+        static let ensSoon = "ENS_MANAGEMENT_SOON";
         
         static let gasFeePullUpTitle = "GASE_FEE_PULLUP_TITLE";
         static let gasFeePullUpSubtitle = "GASE_FEE_PULLUP_SUBTITLE";

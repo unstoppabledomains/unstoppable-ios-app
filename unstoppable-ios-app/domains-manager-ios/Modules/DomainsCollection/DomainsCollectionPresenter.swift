@@ -644,6 +644,7 @@ private extension DomainsCollectionPresenter {
             switch domain.usageType {
             case .newNonInteractable:
                 Debugger.printInfo("No profile for a non-interactible domain")
+                await self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
             case .zil:
                 do {
                     try await appContext.pullUpViewService.showZilDomainsNotSupportedPullUp(in: topView)
