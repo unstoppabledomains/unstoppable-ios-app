@@ -120,7 +120,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             showRecentActivitiesLearMorePullUp()
         case .parkedDomainLearnMore:
             logButtonPressedAnalyticEvents(button: .parkedDomainLearnMore, parameters: [.domainName: getCurrentDomainName()])
-            view?.openLink(.udParkedDomainsTutorial)
+            view?.openLink(.unstoppableVaultTutorial)
         case .domainSelected(let domain):
             logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
             UDVibration.buttonTap.vibrate()
