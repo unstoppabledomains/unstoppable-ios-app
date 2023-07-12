@@ -10,6 +10,8 @@ import Foundation
 struct MessagingGroupChatDetails: Hashable {
     let members: [MessagingChatUserDisplayInfo]
     let pendingMembers: [MessagingChatUserDisplayInfo]
+    let name: String
+    let adminWallet: String?
     
     var allMembers: [MessagingChatUserDisplayInfo] { members + pendingMembers }
     var displayName: String {

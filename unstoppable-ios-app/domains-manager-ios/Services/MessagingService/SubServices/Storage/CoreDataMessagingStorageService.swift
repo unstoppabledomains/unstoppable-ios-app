@@ -499,6 +499,7 @@ private extension CoreDataMessagingStorageService {
             
             return .private(privateChatDetails)
         } else if coreDataChat.type == 1,
+                  let groupName = coreDataChat.groupName,
                   let memberWallets = coreDataChat.groupMemberWallets,
                   let pendingMembersWallets = coreDataChat.groupPendingMemberWallets {
             let allMembersWallets = memberWallets + pendingMembersWallets
@@ -521,7 +522,9 @@ private extension CoreDataMessagingStorageService {
             let pendingMembers = pendingMembersWallets.map { createUserDisplayInfoFor(wallet: $0) }
             
             let groupChatDetails = MessagingGroupChatDetails(members: members,
-                                                             pendingMembers: pendingMembers)
+                                                             pendingMembers: pendingMembers,
+                                                             name: groupName,
+                                                             adminWallet: coreDataChat.groupAdminWallet)
             return .group(groupChatDetails)
         }
         
@@ -537,6 +540,8 @@ private extension CoreDataMessagingStorageService {
             coreDataChat.type = 1
             coreDataChat.groupMemberWallets = details.members.map { $0.wallet }
             coreDataChat.groupPendingMemberWallets = details.pendingMembers.map { $0.wallet }
+            coreDataChat.groupName = details.name
+            coreDataChat.groupAdminWallet = details.adminWallet
         }
     }
 }
