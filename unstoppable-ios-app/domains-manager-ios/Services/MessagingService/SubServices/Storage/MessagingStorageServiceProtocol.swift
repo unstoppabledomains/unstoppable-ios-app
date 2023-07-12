@@ -43,6 +43,7 @@ protocol MessagingStorageServiceProtocol {
     func saveChats(_ chats: [MessagingChat]) async
     func replaceChat(_ chatToReplace: MessagingChat,
                      with newChat: MessagingChat) async throws
+    func deleteChat(_ chat: MessagingChat)
     
     // User info
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async

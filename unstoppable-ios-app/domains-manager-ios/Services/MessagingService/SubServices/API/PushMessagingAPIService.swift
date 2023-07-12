@@ -367,6 +367,17 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         _ = try await Push.PushChat.approve(approveOptions)
     }
     
+    func leaveGroupChat(_ chat: MessagingChat,
+                        by user: MessagingChatUserProfile) async throws {
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        let chatId = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
+        let env = getCurrentPushEnvironment()
+        
+        try await Push.PushChat.leaveGroup(chatId: chatId, userAddress: user.wallet,
+                                           userPgpPrivateKey: pgpPrivateKey,
+                                           env: env)
+    }
+    
     // Channels
     func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
         let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: user.wallet)

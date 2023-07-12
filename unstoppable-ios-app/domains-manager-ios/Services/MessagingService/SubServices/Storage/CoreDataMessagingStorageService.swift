@@ -214,6 +214,16 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
+    func deleteChat(_ chat: MessagingChat) {
+        queue.sync {
+            let chatId = chat.displayInfo.id
+            guard let coreDataChat: CoreDataMessagingChat = getCoreDataEntityWith(id: chatId) else { return }
+            
+            deleteMessagesWithChatId(chatId)
+            deleteObject(coreDataChat, from: backgroundContext)
+        }
+    }
+    
     // User info
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async {
         queue.sync {
@@ -311,10 +321,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                                                                            from: backgroundContext)) ?? []
             
             for chat in coreDataChats {
-                let messagesPredicate = NSPredicate(format: "chatId == %@", chat.id!)
-                let coreDataMessages: [CoreDataMessagingChatMessage] = (try? getEntities(predicate: messagesPredicate,
-                                                                                         from: backgroundContext)) ?? []
-                deleteObjects(coreDataMessages, from: backgroundContext, shouldSaveContext: false)
+                deleteMessagesWithChatId(chat.id!)
             }
             
             deleteObjects(coreDataChats, from: backgroundContext, shouldSaveContext: false)
@@ -333,6 +340,13 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             
             saveContext(backgroundContext)
         }
+    }
+    
+    private func deleteMessagesWithChatId(_ chatId: String) {
+        let messagesPredicate = NSPredicate(format: "chatId == %@", chatId)
+        let coreDataMessages: [CoreDataMessagingChatMessage] = (try? getEntities(predicate: messagesPredicate,
+                                                                                 from: backgroundContext)) ?? []
+        deleteObjects(coreDataMessages, from: backgroundContext, shouldSaveContext: false)
     }
     
     private func deleteFeedWithChannelId(_ channelId: String) {

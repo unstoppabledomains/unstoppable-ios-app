@@ -39,6 +39,8 @@ protocol MessagingAPIServiceProtocol {
     func makeChatRequest(_ chat: MessagingChat,
                          approved: Bool,
                          by user: MessagingChatUserProfile) async throws
+    func leaveGroupChat(_ chat: MessagingChat,
+                        by user: MessagingChatUserProfile) async throws
     
     // Channels
     func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]

@@ -88,6 +88,17 @@ extension MessagingService: MessagingServiceProtocol {
         refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
     }
     
+    func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws {
+        guard case .group = chat.type else { throw MessagingServiceError.attemptToLeaveNotGroupChat }
+        
+        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
+        let chat = try await getMessagingChatFor(displayInfo: chat)
+
+        try await apiService.leaveGroupChat(chat, by: profile)
+        storageService.deleteChat(chat)
+        notifyChatsChanged(wallet: profile.wallet)
+    }
+    
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus {
         let chat = try await getMessagingChatFor(displayInfo: chat)
         
@@ -890,6 +901,7 @@ extension MessagingService {
         case messageNotFound
         case noRRDomainForProfile
         case failedToConvertWebsocketMessage
+        case attemptToLeaveNotGroupChat
         
         public var errorDescription: String? {
             return rawValue

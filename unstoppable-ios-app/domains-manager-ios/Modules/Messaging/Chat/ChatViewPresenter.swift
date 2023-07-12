@@ -444,7 +444,18 @@ private extension ChatViewPresenter {
     }
     
     func didPressLeaveButton() {
-        // TODO: - Implement when SDK is ready
+        guard case .existingChat(let chat) = conversationState else { return }
+
+        Task {
+            do {
+                view?.setLoading(active: true)
+                try await appContext.messagingService.leaveGroupChat(chat)
+                view?.cNavigationController?.popViewController(animated: true)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+            view?.setLoading(active: false)
+        }
     }
     
     func setOtherUser(blocked: Bool) {

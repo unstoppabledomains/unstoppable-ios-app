@@ -66,7 +66,9 @@ extension MockMessagingService: MessagingServiceProtocol {
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws { }
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) { }
     func markMessage(_ message: MessagingChatMessageDisplayInfo, isRead: Bool, wallet: String) throws { }
+    func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws { }
     
+    // Channels
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
