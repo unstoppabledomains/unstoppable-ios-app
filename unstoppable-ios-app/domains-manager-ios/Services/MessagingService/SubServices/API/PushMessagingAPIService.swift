@@ -211,7 +211,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             return try await getPreviousMessagesForChat(chat,
                                                         threadHash: threadHash,
                                                         fetchLimit: fetchLimit,
-                                                        isRead: false,
+                                                        isRead: true,
                                                         for: user)
         case .before(let message):
             let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: message.serviceMetadata)
@@ -415,21 +415,13 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                                                               userId: user.id) })
     }
     
-    func getNotificationsInboxFor(wallet: HexAddress,
-                                  page: Int,
-                                  limit: Int,
-                                  isSpam: Bool) async throws -> [MessagingNewsChannelFeed] {
-        let inbox = try await pushRESTService.getNotificationsInbox(for: wallet, page: page, limit: limit, isSpam: isSpam)
-        
-        return inbox.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0) })
-    }
-    
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
-                    limit: Int) async throws -> [MessagingNewsChannelFeed] {
+                    limit: Int,
+                    isRead: Bool) async throws -> [MessagingNewsChannelFeed] {
         let feed = try await pushRESTService.getChannelFeed(for: channel.channel, page: page, limit: limit)
         
-        return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0) })
+        return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0,isRead: isRead) })
     }
     
     func searchForChannels(page: Int,

@@ -241,7 +241,8 @@ struct PushEntitiesTransformer {
                              isCurrentUserSubscribed: isCurrentUserSubscribed)
     }
     
-    static func convertPushInboxToChannelFeed(_ pushNotification: PushInboxNotification) -> MessagingNewsChannelFeed {
+    static func convertPushInboxToChannelFeed(_ pushNotification: PushInboxNotification,
+                                              isRead: Bool) -> MessagingNewsChannelFeed {
         let data = pushNotification.payload.data
         var link: URL?
         if let url = URL(string: data.url ?? "") {
@@ -254,7 +255,7 @@ struct PushEntitiesTransformer {
                                         message: data.amsg,
                                         link: link,
                                         time: PushISODateFormatter.date(from: pushNotification.epoch) ?? Date(),
-                                        isRead: false,
+                                        isRead: isRead,
                                         isFirstInChannel: false)
     }
     

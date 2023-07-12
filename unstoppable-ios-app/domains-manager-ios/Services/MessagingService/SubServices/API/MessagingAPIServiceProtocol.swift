@@ -45,13 +45,10 @@ protocol MessagingAPIServiceProtocol {
     // Channels
     func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
     func getSpamChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
-    func getNotificationsInboxFor(wallet: HexAddress,
-                                  page: Int,
-                                  limit: Int,
-                                  isSpam: Bool) async throws -> [MessagingNewsChannelFeed]
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
-                    limit: Int) async throws -> [MessagingNewsChannelFeed]
+                    limit: Int,
+                    isRead: Bool) async throws -> [MessagingNewsChannelFeed]
     func searchForChannels(page: Int,
                            limit: Int,
                            searchKey: String,

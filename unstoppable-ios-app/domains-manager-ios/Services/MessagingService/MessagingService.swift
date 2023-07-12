@@ -235,18 +235,6 @@ extension MessagingService: MessagingServiceProtocol {
         return channels
     }
     
-    func getNotificationsInboxFor(domain: DomainDisplayInfo,
-                                  page: Int,
-                                  limit: Int,
-                                  isSpam: Bool) async throws -> [MessagingNewsChannelFeed] {
-        let wallet = try getDomainEthWalletAddress(domain)
-        let feed = try await apiService.getNotificationsInboxFor(wallet: wallet,
-                                                                 page: page,
-                                                                 limit: limit,
-                                                                 isSpam: isSpam)
-        
-        return feed
-    }
     // TODO: - Break down
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
@@ -284,7 +272,8 @@ extension MessagingService: MessagingServiceProtocol {
                 } else {
                     var loadedFeed = try await apiService.getFeedFor(channel: channel,
                                                                      page: page,
-                                                                     limit: limit)
+                                                                     limit: limit,
+                                                                     isRead: true)
                     checkIfFirstFeedInChannel(&loadedFeed)
                     await storageService.saveChannelsFeed(loadedFeed,
                                                           in: channel)
@@ -301,7 +290,8 @@ extension MessagingService: MessagingServiceProtocol {
             while true {
                 let feed = try await apiService.getFeedFor(channel: channel,
                                                            page: preLoadPage,
-                                                           limit: preLoadLimit)
+                                                           limit: preLoadLimit,
+                                                           isRead: false)
                 if let i = feed.firstIndex(where: { $0.id == latestLocalFeed.id }) {
                     let missedChunk = feed[0..<i]
                     preloadedFeed.append(contentsOf: missedChunk)
@@ -322,7 +312,8 @@ extension MessagingService: MessagingServiceProtocol {
             /// User open channel for the first time
             var loadedFeed = try await apiService.getFeedFor(channel: channel,
                                                              page: page,
-                                                             limit: limit)
+                                                             limit: limit,
+                                                             isRead: true)
             checkIfFirstFeedInChannel(&loadedFeed)
             await storageService.saveChannelsFeed(loadedFeed,
                                                   in: channel)
@@ -711,19 +702,23 @@ private extension MessagingService {
         await withTaskGroup(of: MessagingNewsChannel.self, body: { group in
             for channel in channels {
                 group.addTask {
-                    if let lastMessage = try? await self.apiService.getFeedFor(channel: channel,
+                    if var lastMessage = try? await self.apiService.getFeedFor(channel: channel,
                                                                                page: 1,
-                                                                               limit: 1).first {
+                                                                               limit: 1,
+                                                                               isRead: false).first {
                         var updatedChannel = channel
-                        updatedChannel.lastMessage = lastMessage
                         if let storedChannel = storedChannels.first(where: { $0.id == channel.id }),
-                           storedChannel.lastMessage?.id == lastMessage.id {
+                           let storedLastMessage = storedChannel.lastMessage,
+                           storedLastMessage.id == lastMessage.id {
                             updatedChannel.isUpToDate = true
+                            lastMessage.isRead = storedLastMessage.isRead
                         } else {
                             updatedChannel.isUpToDate = false
+                            lastMessage.isRead = true
                             await self.storageService.saveChannelsFeed([lastMessage],
                                                                        in: channel)
                         }
+                        updatedChannel.lastMessage = lastMessage
                         return updatedChannel
                     } else {
                         return channel
