@@ -96,9 +96,10 @@ extension MessagingService: MessagingServiceProtocol {
     
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws {
+        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
         let chat = try await getMessagingChatFor(displayInfo: chat)
-        
-        try await apiService.setUser(in: chat, blocked: blocked)
+
+        try await apiService.setUser(in: chat, blocked: blocked, by: profile)
     }
     
     // Messages

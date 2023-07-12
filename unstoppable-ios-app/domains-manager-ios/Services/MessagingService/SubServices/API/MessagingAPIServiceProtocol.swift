@@ -21,7 +21,8 @@ protocol MessagingAPIServiceProtocol {
                                 limit: Int) async throws -> [MessagingChat]
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus
     func setUser(in chat: MessagingChat,
-                 blocked: Bool) async throws
+                 blocked: Bool,
+                 by user: MessagingChatUserProfile) async throws
     
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,

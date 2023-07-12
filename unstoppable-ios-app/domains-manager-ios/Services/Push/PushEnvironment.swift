@@ -31,8 +31,6 @@ enum PushEnvironment {
     
     struct UserProfileServiceMetadata: Codable {
         let encryptedPrivateKey: String
-        let sigType: String
-        let signature: String 
     }
     
     struct PushMessageContentResponse: Codable {

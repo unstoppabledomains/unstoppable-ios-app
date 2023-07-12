@@ -133,7 +133,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
         func isPushUser(_ pushUser: Push.PushUser?, blockedBy otherPushUser: Push.PushUser?) -> Bool {
-            if let blockedUsersList = otherPushUser?.blockedUsersList,
+            if let blockedUsersList = otherPushUser?.profile.blockedUsersList,
                let pushUser {
                 return blockedUsersList.contains(pushUser.wallets)
             }
@@ -168,41 +168,27 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func setUser(in chat: MessagingChat,
-                 blocked: Bool) async throws {
+                 blocked: Bool,
+                 by user: MessagingChatUserProfile) async throws {
         let env = getCurrentPushEnvironment()
         
         switch chat.displayInfo.type {
         case .private(let details):
-            async let thisUserProfileTask = PushUser.get(account: chat.displayInfo.thisUserDetails.wallet, env: env)
-            async let otherUserProfileTask = PushUser.get(account: details.otherUser.wallet, env: env)
+            let account = chat.displayInfo.thisUserDetails.wallet
+            let otherUserAddress = details.otherUser.wallet
+            let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
             
-            let (thisUserProfile, otherUserProfile) = try await (thisUserProfileTask, otherUserProfileTask)
-            
-            guard let thisUserProfile, let otherUserProfile else {
-                throw PushMessagingAPIServiceError.failedToGetPushUser
-            }
-            let messagingUser = PushEntitiesTransformer.convertPushUserToChatUser(thisUserProfile)
-            let pgpPrivateKey = try await getPGPPrivateKeyFor(user: messagingUser)
-
-            let otherUserAccount = otherUserProfile.did
-            var blockedUsersList = thisUserProfile.blockedUsersList ?? []
             if blocked {
-                if blockedUsersList.contains(otherUserAccount) {
-                    return // User already blocked
-                }
-                blockedUsersList.append(otherUserAccount)
-            } else {
-                if let i = blockedUsersList.firstIndex(where: { $0 == otherUserAccount }) {
-                    blockedUsersList.remove(at: i)
-                } else {
-                    return // User not blocked
-                }
-            }
-            
-            _ = try await PushUser.blockUsers(addressesToBlock: blockedUsersList,
-                                              account: thisUserProfile.did,
+                try await PushUser.blockUsers(addressesToBlock: [otherUserAddress],
+                                              account: account,
                                               pgpPrivateKey: pgpPrivateKey,
                                               env: env)
+            } else {
+                try await PushUser.unblockUsers(addressesToUnblock: [otherUserAddress],
+                                                account: account,
+                                                pgpPrivateKey: pgpPrivateKey,
+                                                env: env)
+            }
         case .group:
             throw PushMessagingAPIServiceError.blockUserInGroupChatsNotSupported
         }

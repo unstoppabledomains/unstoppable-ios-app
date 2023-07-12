@@ -18,16 +18,14 @@ struct PushEntitiesTransformer {
     
     
     static func convertPushUserToChatUser(_ pushUser: PushUser) -> MessagingChatUserProfile {
-        let metadataModel = PushEnvironment.UserProfileServiceMetadata(encryptedPrivateKey: pushUser.encryptedPrivateKey,
-                                                                       sigType: pushUser.sigType,
-                                                                       signature: pushUser.signature)
+        let metadataModel = PushEnvironment.UserProfileServiceMetadata(encryptedPrivateKey: pushUser.encryptedPrivateKey)
         let serviceMetadata = metadataModel.jsonData()
         let wallet = getWalletAddressFrom(eip155String: pushUser.wallets) ?? pushUser.wallets
         let userId = pushUser.did
         let displayInfo = MessagingChatUserProfileDisplayInfo(id: userId,
                                                               wallet: wallet,
-                                                              name: pushUser.name,
-                                                              about: pushUser.about)
+                                                              name: pushUser.profile.name,
+                                                              about: pushUser.profile.desc)
         let userProfile = MessagingChatUserProfile(id: userId,
                                                    wallet: wallet,
                                                    displayInfo: displayInfo,
