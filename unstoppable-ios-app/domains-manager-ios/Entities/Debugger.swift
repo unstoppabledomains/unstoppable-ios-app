@@ -33,6 +33,7 @@ public struct Debugger {
         case DataAggregation = "AGGR"
         case CoreData = "CD"
         case WebSockets = "SOCKETS"
+        case Messaging = "MS"
     }
     
     enum DebugTopicsSet {

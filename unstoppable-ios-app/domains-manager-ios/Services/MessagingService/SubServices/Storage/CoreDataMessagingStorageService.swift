@@ -143,9 +143,9 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws {
-        try queue.sync {
-            guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: message.id) else { throw Error.entityNotFound }
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) {
+        queue.sync {
+            guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: message.id) else { return }
             deleteObject(coreDataMessage, from: backgroundContext, shouldSaveContext: true)
         }
     }
@@ -243,11 +243,18 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func replaceChannel(_ channelToReplace: MessagingNewsChannel,
                         with newChat: MessagingNewsChannel) async throws {
         try queue.sync {
-            guard let coreDataChat: CoreDataMessagingNewsChannel = getCoreDataEntityWith(id: channelToReplace.id) else { throw Error.entityNotFound }
+            guard let coreDataChannel: CoreDataMessagingNewsChannel = getCoreDataEntityWith(id: channelToReplace.id) else { throw Error.entityNotFound }
             
-            deleteObject(coreDataChat, from: backgroundContext, shouldSaveContext: false)
+            deleteObject(coreDataChannel, from: backgroundContext, shouldSaveContext: false)
             _ = try? convertMessagingChannelToCoreDataChannel(newChat)
             saveContext(backgroundContext)
+        }
+    }
+    
+    func deleteChannel(_ channel: MessagingNewsChannel) {
+        queue.sync {
+            guard let coreDataChannel: CoreDataMessagingNewsChannel = getCoreDataEntityWith(id: channel.id) else { return }
+            deleteObject(coreDataChannel, from: backgroundContext)
         }
     }
     

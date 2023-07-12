@@ -19,6 +19,9 @@ protocol MessagingAPIServiceProtocol {
     func getChatRequestsForUser(_ user: MessagingChatUserProfile,
                                 page: Int,
                                 limit: Int) async throws -> [MessagingChat]
+    func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus
+    func setUser(in chat: MessagingChat,
+                 blocked: Bool) async throws
     
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,

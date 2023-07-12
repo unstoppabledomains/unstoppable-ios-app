@@ -145,6 +145,11 @@
 "DELETE_ALL" = "Delete all";
 "PEOPLE" = "People";
 "APPS" = "Apps";
+"VIEW_PROFILE" = "View profile";
+"BLOCK" = "Block";
+"UNBLOCK" = "Unblock";
+"VIEW_INFO" = "View info";
+"LEAVE" = "Leave";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -806,3 +811,5 @@
 "MESSAGING_CHANNELS_EMPTY_SUBTITLE" = "Keep an eye out for upcoming messages from the apps you connect with.";
 "MESSAGING_CHAT_EMPTY_TITLE" = "No messages yet";
 "MESSAGING_N_FOLLOWERS" = "%i Followers";
+"MESSAGING_BLOCK_USER_CONFIRMATION_TITLE" = "Are you sure you want to block %@?";
+"MESSAGING_YOU_ARE_BLOCKED" = "You are blocked";

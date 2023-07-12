@@ -109,6 +109,8 @@ protocol PullUpViewServiceProtocol {
     func showApplePayRequiredPullUp(in viewController: UIViewController)
     func showMessagingChannelInfoPullUp(channel: MessagingNewsChannel,
                                         in viewController: UIViewController) async throws
+    func showMessagingBlockConfirmationPullUp(blockUserName: String,
+                                              in viewController: UIViewController) async throws
 }
 
 @MainActor
@@ -1561,6 +1563,31 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             presentPullUpView(in: viewController, pullUp: .messagingChannelInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
+    
+    func showMessagingBlockConfirmationPullUp(blockUserName: String,
+                                              in viewController: UIViewController) async throws {
+        let selectionViewHeight: CGFloat = 276
+        let title: String = String.Constants.messagingBlockUserConfirmationTitle.localized(blockUserName)
+        let buttonTitle: String = String.Constants.block.localized()
+        
+        try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
+            let selectionView = PullUpSelectionView(configuration: .init(title: .highlightedText(.init(text: title,
+                                                                                                       highlightedText: [.init(highlightedText: blockUserName,
+                                                                                                                               highlightedColor: .foregroundSecondary)],
+                                                                                                       analyticsActionName: nil,
+                                                                                                       action: nil)),
+                                                                         contentAlignment: .center,
+                                                                         actionButton: .primaryDanger(content: .init(title: buttonTitle,
+                                                                                                                     icon: nil,
+                                                                                                                     analyticsName: .block,
+                                                                                                                     action: { completion(.success(Void())) })),
+                                                                         cancelButton: .cancelButton),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .logOutConfirmation, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
+        }
+    }
+    
 }
 
 // MARK: - Private methods

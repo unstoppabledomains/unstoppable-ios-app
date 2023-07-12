@@ -10,16 +10,15 @@ import Foundation
 @MainActor
 final class ChannelViewPresenter {
     
-    private weak var view: ChatViewProtocol?
+    private weak var view: (any ChatViewProtocol)?
     private let profile: MessagingChatUserProfileDisplayInfo
     private let fetchLimit: Int = 30
     private var channel: MessagingNewsChannel
     private var feed: [MessagingNewsChannelFeed] = []
     private var isLoadingFeed = false
     private var currentPage: Int = 1
-    var isInfoAvailable: Bool { true }
 
-    init(view: ChatViewProtocol,
+    init(view: any ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
          channel: MessagingNewsChannel) {
         self.view = view
@@ -62,35 +61,11 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
             loadMoreFeed()
         }
     }
-    
-    func infoButtonPressed() {
-        Task {
-            guard let view else { return }
-            
-            do {
-                try await appContext.pullUpViewService.showMessagingChannelInfoPullUp(channel: channel, in: view)
-                await view.dismissPullUpMenu()
-                view.openLink(.generic(url: channel.url.absoluteString))
-            } catch { }
-        }
-    }
-    
+ 
     func approveButtonPressed() {
         guard !channel.isCurrentUserSubscribed else { return }
-        Task {
-            view?.setLoading(active: true)
-            do {
-                try await appContext.messagingService.setChannel(channel,
-                                                                 subscribed: true,
-                                                                 by: profile)
-                channel.isCurrentUserSubscribed = true
-                setupUI()
-                try await loadAndAddFeed(for: 1)
-            } catch {
-                view?.showAlertWith(error: error, handler: nil)
-            }
-            view?.setLoading(active: false)
-        }
+        
+        setChannel(subscribed: true)
     }
 }
 
@@ -104,7 +79,7 @@ extension ChannelViewPresenter: MessagingServiceListener {
                    let channel = channels.first(where: { $0.id == self.channel.id }) {
                     if self.channel.lastMessage?.id != channel.lastMessage?.id {
                         self.channel = channel
-                        try await loadAndAddFeed(for: 1)
+                        try await loadAndAddFeed(forPage: 1)
                         loadAndShowData()
                     } else {
                         self.channel = channel
@@ -121,11 +96,17 @@ extension ChannelViewPresenter: MessagingServiceListener {
 private extension ChannelViewPresenter {
     func setupUI() {
         view?.setTitleOfType(.channel(channel))
+        
+        var actions: [ChatViewController.NavButtonConfiguration.Action] = []
+        actions.append(.init(type: .viewInfo, callback: { [weak self] in self?.showChannelInfo() }))
+        
         if channel.isCurrentUserSubscribed {
+            actions.append(.init(type: .leave, callback: { [weak self] in self?.leaveChannel() }))
             view?.setUIState(.viewChannel)
         } else {
             view?.setUIState(.joinChannel)
         }
+        view?.setupRightBarButton(with: .init(actions: actions))
     }
     
     func loadAndShowData() {
@@ -133,7 +114,7 @@ private extension ChannelViewPresenter {
             do {
                 isLoadingFeed = true
                 view?.setLoading(active: true)
-                let feed = try await loadAndAddFeed(for: currentPage)
+                let feed = try await loadAndAddFeed(forPage: currentPage)
 
                 if !feed.isEmpty,
                    !feed[0].isRead,
@@ -155,7 +136,7 @@ private extension ChannelViewPresenter {
     }
     
     @discardableResult
-    func loadAndAddFeed(for page: Int) async throws -> [MessagingNewsChannelFeed] {
+    func loadAndAddFeed(forPage page: Int) async throws -> [MessagingNewsChannelFeed] {
         let feed = try await appContext.messagingService.getFeedFor(channel: channel,
                                                                     page: page,
                                                                     limit: fetchLimit)
@@ -171,7 +152,7 @@ private extension ChannelViewPresenter {
         Task {
             do {
                 let newPage = currentPage + 1
-                try await loadAndAddFeed(for: newPage)
+                try await loadAndAddFeed(forPage: newPage)
                 currentPage = newPage
                 isLoadingFeed = false
             } catch {
@@ -245,4 +226,36 @@ private extension ChannelViewPresenter {
         }
     }
     
+    func setChannel(subscribed: Bool) {
+        Task {
+            view?.setLoading(active: true)
+            do {
+                try await appContext.messagingService.setChannel(channel,
+                                                                 subscribed: subscribed,
+                                                                 by: profile)
+                channel.isCurrentUserSubscribed = subscribed
+                setupUI()
+                try await loadAndAddFeed(forPage: 1)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+            view?.setLoading(active: false)
+        }
+    }
+    
+    func showChannelInfo() {
+        Task {
+            guard let view else { return }
+            
+            do {
+                try await appContext.pullUpViewService.showMessagingChannelInfoPullUp(channel: channel, in: view)
+                await view.dismissPullUpMenu()
+                view.openLink(.generic(url: channel.url.absoluteString))
+            } catch { }
+        }
+    }
+    
+    func leaveChannel() {
+        setChannel(subscribed: false)
+    }
 }

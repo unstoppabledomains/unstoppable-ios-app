@@ -15,6 +15,10 @@ protocol MessagingServiceProtocol {
     
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo]
+    func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
+    func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus
+    func setUser(in chat: MessagingChatDisplayInfo,
+                 blocked: Bool) async throws
     
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
@@ -28,9 +32,8 @@ protocol MessagingServiceProtocol {
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
                           to userInfo: MessagingChatUserDisplayInfo,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo)
-    func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool,
                      wallet: String) throws

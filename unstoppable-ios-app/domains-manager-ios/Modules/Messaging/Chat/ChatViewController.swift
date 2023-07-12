@@ -8,8 +8,7 @@
 import UIKit
 
 @MainActor
-protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
-    func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool, completion: EmptyCallback?)
+protocol ChatViewProtocol: BaseDiffableCollectionViewControllerProtocol where Section == ChatViewController.Section, Item == ChatViewController.Item {
     func startTyping()
     func setInputText(_ text: String)
     func setPlaceholder(_ placeholder: String)
@@ -18,6 +17,7 @@ protocol ChatViewProtocol: BaseCollectionViewControllerProtocol {
     func scrollToItem(_ item: ChatViewController.Item, animated: Bool)
     func setLoading(active: Bool)
     func setUIState(_ state: ChatViewController.State)
+    func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -31,7 +31,7 @@ final class ChatViewController: BaseViewController {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet private weak var approveContentView: UIView!
     @IBOutlet private weak var acceptButton: MainButton!
-    @IBOutlet private weak var blockButton: RaisedTertiaryButton!
+    @IBOutlet private weak var secondaryButton: UDButton!
     @IBOutlet private weak var moveToTopButton: FABButton!
 
     
@@ -44,11 +44,11 @@ final class ChatViewController: BaseViewController {
                                                         ChannelFeedCell.self,
                                                         ChatLoadingCell.self] }
     var presenter: ChatViewPresenterProtocol!
-    private let operationQueue = OperationQueue()
-    private var dataSource: ChatDataSource!
+    let operationQueue = OperationQueue()
+    private(set) var dataSource: DataSource!
     private var scrollingInfo: ScrollingInfo?
     override var isObservingKeyboard: Bool { true }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -83,15 +83,13 @@ final class ChatViewController: BaseViewController {
 
 // MARK: - ChatViewProtocol
 extension ChatViewController: ChatViewProtocol {
-    func applySnapshot(_ snapshot: ChatSnapshot, animated: Bool, completion: EmptyCallback?) {
+    func applySnapshot(_ snapshot: Snapshot, animated: Bool, completion: EmptyCallback?) {
         scrollingInfo = ScrollingInfo(collectionView: collectionView)
-        let operation = ReloadDataOperation(dataSource: dataSource,
-                                            snapshot: snapshot,
-                                            animated: animated) { [weak self] in
-            DispatchQueue.main.async {
-                self?.scrollingInfo = nil
-                completion?()
-            }
+        let operation = CollectionReloadDiffableDataOperation(dataSource: dataSource,
+                                                              snapshot: snapshot,
+                                                              animated: animated) { [weak self] in
+            self?.scrollingInfo = nil
+            completion?()
         }
         operationQueue.addOperation(operation)
     }
@@ -131,37 +129,81 @@ extension ChatViewController: ChatViewProtocol {
             activityIndicator.stopAnimating()
         }
                 
-        [acceptButton, blockButton].forEach { button in
+        [acceptButton, secondaryButton].forEach { button in
             button?.isUserInteractionEnabled = !active
         }
     }
     
     func setUIState(_ state: ChatViewController.State) {
+        secondaryButton.isUserInteractionEnabled = true
+        secondaryButton.isHidden = true
+        acceptButton.isHidden = true
+        chatInputView.isHidden = true
+        collectionView.isHidden = false
+        approveContentView.isHidden = true
+        
         switch state {
         case .loading:
-            approveContentView.isHidden = true
-            chatInputView.isHidden = true
             collectionView.isHidden = true
         case .chat:
-            approveContentView.isHidden = true
             chatInputView.isHidden = false
-            collectionView.isHidden = false
-        case .requestApprove:
-            approveContentView.isHidden = false
-            chatInputView.isHidden = true
-            collectionView.isHidden = false
-            blockButton.isHidden = false
-            acceptButton.setTitle(String.Constants.accept.localized(), image: nil)
         case .viewChannel:
-            approveContentView.isHidden = true
-            chatInputView.isHidden = true
-            collectionView.isHidden = false
+            return
         case .joinChannel:
             approveContentView.isHidden = false
-            chatInputView.isHidden = true
-            collectionView.isHidden = false
-            blockButton.isHidden = true
+            acceptButton.isHidden = false
             acceptButton.setTitle(String.Constants.join.localized(), image: nil)
+        case .otherUserIsBlocked:
+            approveContentView.isHidden = false
+            secondaryButton.isHidden = false
+            secondaryButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration)
+            secondaryButton.setTitle(String.Constants.unblock.localized(), image: nil)
+        case .userIsBlocked:
+            approveContentView.isHidden = false
+            secondaryButton.isHidden = false
+            secondaryButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
+            secondaryButton.isUserInteractionEnabled = false
+            secondaryButton.setTitle(String.Constants.messagingYouAreBlocked.localized(), image: nil)
+        }
+    }
+    
+    func setupRightBarButton(with configuration: NavButtonConfiguration) {
+        let actions = configuration.actions
+        
+        if actions.isEmpty {
+            navigationItem.rightBarButtonItem = nil
+        } else {
+            let barButton = UIButton()
+            barButton.tintColor = .foregroundDefault
+            barButton.setImage(.dotsCircleIcon, for: .normal)
+            var children: [UIMenuElement] = []
+            for action in actions {
+                let actionType = action.type
+                
+                let uiAction = UIAction.createWith(title: actionType.title,
+                                                   image: actionType.icon,
+                                                   attributes: actionType.isDestructive ? [.destructive] : [],
+                                                   handler: { _ in
+                    UDVibration.buttonTap.vibrate()
+                    action.callback()
+                })
+                if actionType.isDestructive {
+                    let menu = UIMenu(title: "", options: .displayInline, children: [uiAction])
+                    children.append(menu)
+                } else {
+                    children.append(uiAction)
+                }
+            }
+            
+            let menu = UIMenu(title: "", children: children)
+            barButton.showsMenuAsPrimaryAction = true
+            barButton.menu = menu
+            barButton.addAction(UIAction(handler: { [weak self] _ in
+                self?.logButtonPressedAnalyticEvents(button: .dots)
+                UDVibration.buttonTap.vibrate()
+            }), for: .menuActionTriggered)
+            let barButtonItem = UIBarButtonItem(customView: barButton)
+            navigationItem.rightBarButtonItem = barButtonItem
         }
     }
 }
@@ -250,13 +292,8 @@ private extension ChatViewController {
         presenter.approveButtonPressed()
     }
     
-    @IBAction func rejectButtonPressed() {
-        presenter.rejectButtonPressed()
-    }
-    
-    @objc func infoButtonPressed() {
-        UDVibration.buttonTap.vibrate()
-        presenter.infoButtonPressed()
+    @IBAction func secondaryButtonPressed() {
+        presenter.secondaryButtonPressed()
     }
     
     @IBAction func moveToTopButtonPressed(_ sender: Any) {
@@ -328,18 +365,12 @@ private extension ChatViewController {
     
     func setupApproveRequestView() {
         approveContentView.isHidden = true
-        blockButton.setTitle(String.Constants.delete.localized(), image: nil)
+        secondaryButton.isHidden = true
     }
     
     func setupNavBar() {
         titleView = ChatTitleView()
         navigationItem.titleView = titleView
-        
-        if presenter.isInfoAvailable {
-            let infoBarButtonItem = UIBarButtonItem(image: .infoEmptyIcon24, style: .plain, target: self, action: #selector(infoButtonPressed))
-            infoBarButtonItem.tintColor = .foregroundDefault
-            navigationItem.rightBarButtonItem = infoBarButtonItem
-        }
     }
     
     func setupMoveToTopButton() {
@@ -540,9 +571,56 @@ extension ChatViewController {
     enum State {
         case loading
         case chat
-        case requestApprove
         case viewChannel
         case joinChannel
+        case otherUserIsBlocked
+        case userIsBlocked
+    }
+    
+    struct NavButtonConfiguration {
+        let actions: [Action]
+    
+        struct Action {
+            let type: ActionType
+            let callback: EmptyCallback
+        }
+        
+        enum ActionType {
+            case viewProfile, block, viewInfo, leave
+            
+            var title: String {
+                switch self {
+                case .viewProfile:
+                    return String.Constants.viewProfile.localized()
+                case .block:
+                    return String.Constants.block.localized()
+                case .viewInfo:
+                    return String.Constants.viewInfo.localized()
+                case .leave:
+                    return String.Constants.leave.localized()
+                }
+            }
+            
+            var icon: UIImage {
+                switch self {
+                case .viewProfile, .viewInfo:
+                    return .arrowUpRight
+                case .block:
+                    return .systemMultiplyCircle
+                case .leave:
+                    return .systemRectangleArrowRight
+                }
+            }
+            
+            var isDestructive: Bool {
+                switch self {
+                case .viewProfile, .viewInfo:
+                    return false
+                case .block, .leave:
+                    return true
+                }
+            }
+        }
     }
 }
 
@@ -554,35 +632,6 @@ private extension ChatViewController {
         init(collectionView: UICollectionView) {
             prevContentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
             contentOffsetBeforeUpdate = collectionView.contentOffset
-        }
-    }
-    
-    final class ReloadDataOperation: BaseOperation {
-        
-        let dataSource: ChatDataSource
-        let snapshot: ChatSnapshot
-        let animated: Bool
-        let completion: EmptyCallback
-        
-        init(dataSource: ChatDataSource,
-             snapshot: ChatSnapshot,
-             animated: Bool,
-             completion: @escaping EmptyCallback) {
-            self.dataSource = dataSource
-            self.snapshot = snapshot
-            self.animated = animated
-            self.completion = completion
-        }
-        
-        override func start() {
-            guard !checkIfCancelled() else {
-                completion()
-                return
-            }
-            dataSource.apply(snapshot, animatingDifferences: animated, completion: { [weak self] in
-                self?.completion()
-                self?.finish(true)
-            })
         }
     }
 }

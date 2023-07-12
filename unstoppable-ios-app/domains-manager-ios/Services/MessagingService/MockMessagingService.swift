@@ -19,19 +19,22 @@ extension MockMessagingService: MessagingServiceProtocol {
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo) { }
-
+    
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         []
         /*
-        if let cachedChats = domainsChats[domain.name] {
-            return cachedChats
-        }
-        
-        let chats = createMockChatsFor(domain: domain).sorted(by: { $0.lastMessage?.time ?? Date() > $1.lastMessage?.time ?? Date() })
-        domainsChats[domain.name] = chats
-        return chats
+         if let cachedChats = domainsChats[domain.name] {
+         return cachedChats
+         }
+         
+         let chats = createMockChatsFor(domain: domain).sorted(by: { $0.lastMessage?.time ?? Date() > $1.lastMessage?.time ?? Date() })
+         domainsChats[domain.name] = chats
+         return chats
          */
     }
+    func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus { .unblocked }
+    func setUser(in chat: MessagingChatDisplayInfo,
+                 blocked: Bool) async throws { }
     
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,

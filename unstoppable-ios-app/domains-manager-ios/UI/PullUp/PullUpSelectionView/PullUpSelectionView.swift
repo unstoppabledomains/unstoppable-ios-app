@@ -195,7 +195,6 @@ private extension PullUpSelectionView {
         if let textDescription = highlightedTextDescription {
             textDescription.highlightedText.forEach { textDescription in
                 titleLabel.updateAttributesOf(text: textDescription.highlightedText,
-                                              withFont: .currentFont(withSize: titleLabel.font.pointSize, weight: .medium),
                                               textColor: textDescription.highlightedColor)
             }
         }

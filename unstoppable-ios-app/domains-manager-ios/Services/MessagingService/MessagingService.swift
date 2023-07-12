@@ -85,6 +85,19 @@ extension MessagingService: MessagingServiceProtocol {
         refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
     }
     
+    func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus {
+        let chat = try await getMessagingChatFor(displayInfo: chat)
+        
+        return try await apiService.getBlockingStatusForChat(chat)
+    }
+    
+    func setUser(in chat: MessagingChatDisplayInfo,
+                 blocked: Bool) async throws {
+        let chat = try await getMessagingChatFor(displayInfo: chat)
+        
+        try await apiService.setUser(in: chat, blocked: blocked)
+    }
+    
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
@@ -188,8 +201,8 @@ extension MessagingService: MessagingServiceProtocol {
         sendMessageToBEAsync(message: newMessage, messageType: updatedMessage.type, in: messagingChat, by: profile)
     }
     
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws {
-        try storageService.deleteMessage(message)
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) {
+        storageService.deleteMessage(message)
     }
     
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
@@ -315,6 +328,9 @@ extension MessagingService: MessagingServiceProtocol {
                     by user: MessagingChatUserProfileDisplayInfo) async throws {
         let profile = try await getUserProfileWith(wallet: user.wallet)
         try await apiService.setChannel(channel, subscribed: subscribed, by: profile)
+        if !subscribed {
+            storageService.deleteChannel(channel)
+        }
     }
     
     // Search
@@ -375,6 +391,7 @@ extension MessagingService: UDWalletsServiceListener {
 private extension MessagingService {
     func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
         Task {
+            let startTime = Date()
             do {
                 let allLocalChats = try await storageService.getChatsFor(profile: profile,
                                                                          decrypter: decrypterService)
@@ -400,9 +417,11 @@ private extension MessagingService {
                 if shouldRefreshUserInfo {
                     refreshUsersInfoFor(profile: profile)
                 }
-            } catch {
-                // TODO: - Handle error
-            }
+            } catch { }
+            Debugger.printTimeSensitiveInfo(topic: .Messaging,
+                                            "to refresh chats list for \(profile.wallet)",
+                                            startDate: startTime,
+                                            timeout: 3)
         }
     }
     
@@ -559,6 +578,7 @@ private extension MessagingService {
     func getAndStoreMessagesForChat(_ chat: MessagingChat,
                                     options: MessagingAPIServiceLoadMessagesOptions,
                                     limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        let startTime = Date()
         let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
         var messages = try await apiService.getMessagesForChat(chat,
                                                                options: options,
@@ -582,7 +602,10 @@ private extension MessagingService {
                 }
             }
         }
-        
+        Debugger.printTimeSensitiveInfo(topic: .Messaging,
+                                        "to fetch \(messages.count) messages",
+                                        startDate: startTime,
+                                        timeout: 3)
         await storageService.saveMessages(messages)
         return messages.map { $0.displayInfo }
     }
@@ -614,6 +637,7 @@ private extension MessagingService {
 private extension MessagingService {
     func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
         Task {
+            let startTime = Date()
             do {
                 let storedChannels = try await storageService.getChannelsFor(profile: profile)
 
@@ -633,7 +657,11 @@ private extension MessagingService {
                 
                 let updatedStoredChannels = try await storageService.getChannelsFor(profile: profile)
                 notifyListenersChangedDataType(.channels(updatedStoredChannels, profile: profile.displayInfo))
-            }
+            } catch { }
+            Debugger.printTimeSensitiveInfo(topic: .Messaging,
+                                            "to refresh channels list for \(profile.wallet)",
+                                            startDate: startTime,
+                                            timeout: 3)
         }
     }
     

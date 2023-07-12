@@ -30,7 +30,7 @@ protocol MessagingStorageServiceProtocol {
     func saveMessages(_ messages: [MessagingChatMessage]) async
     func replaceMessage(_ messageToReplace: MessagingChatMessage,
                         with newMessage: MessagingChatMessage) async throws
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) throws
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool) throws
     func markSendingMessagesAsFailed()
@@ -53,6 +53,7 @@ protocol MessagingStorageServiceProtocol {
                       for profile: MessagingChatUserProfile) async
     func replaceChannel(_ channelToReplace: MessagingNewsChannel,
                         with newChat: MessagingNewsChannel) async throws
+    func deleteChannel(_ channel: MessagingNewsChannel)
     
     // Channels Feed
     func getChannelsFeedFor(channel: MessagingNewsChannel,
