@@ -387,6 +387,8 @@
 "CHANGES_CONFIRMED" = "Changes confirmed";
 "PLEASE_ADD_N_ADDRESS" = "Please add %@ address";
 "THIS_TOKEN_WAS_DEPRECATED" = "Legacy token";
+"ENS_MANAGEMENT_SOON" = "ENS domain management coming soon";
+
 "GASE_FEE_PULLUP_TITLE" = "Complete transaction";
 "GASE_FEE_PULLUP_SUBTITLE" = "Complete this payment to process your domain updates. Unstoppable Domains makes no money from this transaction. What are gas fees?";
 "GASE_FEE_PULLUP_SUBTITLE_HIGHLIGHTED" = "What are gas fees?";
