@@ -642,6 +642,8 @@ private extension DomainsCollectionPresenter {
         let topView = view.presentedViewController ?? view
         Task {
             switch domain.usageType {
+            case .newNonInteractable:
+                Debugger.printInfo("No profile for a non-interactible domain")
             case .zil:
                 do {
                     try await appContext.pullUpViewService.showZilDomainsNotSupportedPullUp(in: topView)
