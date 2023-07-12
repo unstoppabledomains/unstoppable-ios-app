@@ -52,6 +52,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                       isRequests: false)
         
         return try await transformPushChatsToChats(pushChats,
+                                                   isApproved: true,
                                                    for: user)
     }
     
@@ -103,10 +104,12 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                       isRequests: true)
         
         return try await transformPushChatsToChats(pushChats,
+                                                   isApproved: false,
                                                    for: user)
     }
     
     private func transformPushChatsToChats(_ pushChats: [PushChat],
+                                           isApproved: Bool,
                                            for user: MessagingChatUserProfile) async throws -> [MessagingChat] {
         var chats = [MessagingChat]()
         
@@ -116,7 +119,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                 if let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                             userId: user.id,
                                                                             userWallet: user.wallet,
-                                                                            isApproved: true,
+                                                                            isApproved: isApproved,
                                                                             publicKeys: publicKeys) {
                     chats.append(chat)
                 }
