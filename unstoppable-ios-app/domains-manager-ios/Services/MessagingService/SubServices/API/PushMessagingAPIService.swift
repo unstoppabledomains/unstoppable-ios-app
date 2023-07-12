@@ -161,9 +161,9 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                       isOtherUserBlockThisUser {
                 return .bothBlocked
             } else if isThisUserBlockOtherUser {
-                return .currentUserIsBlocked
-            } else {
                 return .otherUserIsBlocked
+            } else {
+                return .currentUserIsBlocked
             }
         case .group:
             return .unblocked
