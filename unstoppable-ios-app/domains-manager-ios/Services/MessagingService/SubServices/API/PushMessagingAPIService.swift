@@ -352,16 +352,16 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentPushEnvironment()
         let sender = chat.displayInfo.thisUserDetails
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
-        let toAddress: String
+        let fromAddress: String
         switch chat.displayInfo.type {
         case .private(let otherUserDetails):
-            toAddress = otherUserDetails.otherUser.wallet
+            fromAddress = otherUserDetails.otherUser.wallet
         case .group:
-            toAddress = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
+            fromAddress = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
         }
 
-        let approveOptions = Push.PushChat.ApproveOptions(fromAddress: sender.wallet,
-                                                          toAddress: toAddress,
+        let approveOptions = Push.PushChat.ApproveOptions(fromAddress: fromAddress,
+                                                          toAddress: sender.wallet ,
                                                           privateKey: pgpPrivateKey,
                                                           env: env)
         _ = try await Push.PushChat.approve(approveOptions)
