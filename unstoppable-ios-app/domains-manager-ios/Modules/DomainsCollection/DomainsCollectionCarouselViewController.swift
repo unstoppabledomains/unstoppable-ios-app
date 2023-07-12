@@ -15,7 +15,7 @@ protocol DomainsCollectionCarouselViewControllerDelegate: AnyObject {
 }
 
 protocol DomainsCollectionCarouselViewControllerActionsDelegate: AnyObject {
-    func didOccursUIAction(_ action: DomainsCollectionCarouselItemViewController.Action)
+    func didOccurUIAction(_ action: DomainsCollectionCarouselItemViewController.Action)
 }
 
 protocol DomainsCollectionCarouselViewController: UIViewController {
