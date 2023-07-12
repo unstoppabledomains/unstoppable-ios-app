@@ -355,7 +355,7 @@ extension ChatInputView {
         case `default`
     }
     
-    enum AdditionalAction: CaseIterable {
+    enum AdditionalAction: String, CaseIterable {
         case takePhoto
         case choosePhoto
         

@@ -26,6 +26,15 @@ final class ChatsRequestsListViewPresenter {
 
 // MARK: - ChatsListViewPresenterProtocol
 extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
+    var analyticsName: Analytics.ViewName {
+        switch dataType {
+        case .chatRequests:
+            return .chatRequestsList
+        case .channelsSpam:
+            return .chatChannelsSpamList
+        }
+    }
+    
     func viewDidLoad() {
         appContext.messagingService.addListener(self)
     }
@@ -34,7 +43,7 @@ extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
         switch dataType {
         case .chatRequests:
             view?.setState(.requestsList(.chats))
-        case .channelsRequests:
+        case .channelsSpam:
             view?.setState(.requestsList(.channels))
         }
         showData()
@@ -67,9 +76,9 @@ extension ChatsRequestsListViewPresenter: MessagingServiceListener {
                 }
             case .channels(let channels, let profile):
                 if profile.id == self.profile.id,
-                   case .channelsRequests = dataType {
+                   case .channelsSpam = dataType {
                     let requests = channels.filter { !$0.isCurrentUserSubscribed }
-                    self.dataType = .channelsRequests(requests)
+                    self.dataType = .channelsSpam(requests)
                     showData()
                 }
             case .messageUpdated, .messagesRemoved, .messagesAdded:
@@ -89,7 +98,7 @@ private extension ChatsRequestsListViewPresenter {
         switch dataType {
         case .chatRequests(let requests):
             snapshot.appendItems(requests.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
-        case .channelsRequests(let requests):
+        case .channelsSpam(let requests):
             snapshot.appendItems(requests.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }
         
@@ -118,6 +127,6 @@ private extension ChatsRequestsListViewPresenter {
 extension ChatsRequestsListViewPresenter {
     enum DataType {
         case chatRequests([MessagingChatDisplayInfo])
-        case channelsRequests([MessagingNewsChannel])
+        case channelsSpam([MessagingNewsChannel])
     }
 }

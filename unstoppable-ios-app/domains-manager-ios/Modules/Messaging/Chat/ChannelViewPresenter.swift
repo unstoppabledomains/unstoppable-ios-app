@@ -17,6 +17,7 @@ final class ChannelViewPresenter {
     private var feed: [MessagingNewsChannelFeed] = []
     private var isLoadingFeed = false
     private var currentPage: Int = 1
+    var analyticsName: Analytics.ViewName { .channelFeed }
 
     init(view: any ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
@@ -98,10 +99,18 @@ private extension ChannelViewPresenter {
         view?.setTitleOfType(.channel(channel))
         
         var actions: [ChatViewController.NavButtonConfiguration.Action] = []
-        actions.append(.init(type: .viewInfo, callback: { [weak self] in self?.showChannelInfo() }))
+        actions.append(.init(type: .viewInfo, callback: { [weak self] in
+            self?.logButtonPressedAnalyticEvents(button: .viewChannelInfo,
+                                                 parameters: [.channelName: self?.channel.name ?? ""])
+            self?.showChannelInfo()
+        }))
         
         if channel.isCurrentUserSubscribed {
-            actions.append(.init(type: .leave, callback: { [weak self] in self?.leaveChannel() }))
+            actions.append(.init(type: .leave, callback: { [weak self] in
+                self?.logButtonPressedAnalyticEvents(button: .leaveChannel,
+                                                     parameters: [.channelName: self?.channel.name ?? ""])
+                self?.leaveChannel()
+            }))
             view?.setUIState(.viewChannel)
         } else {
             view?.setUIState(.joinChannel)
@@ -225,6 +234,9 @@ private extension ChannelViewPresenter {
                                  forFeedItem feedItem: MessagingNewsChannelFeed) {
         switch action {
         case .learnMore:
+            logButtonPressedAnalyticEvents(button: .learnMoreChannelFeed,
+                                           parameters: [.channelName: channel.name,
+                                                        .feedName: feedItem.title])
             view?.openLink(.generic(url: feedItem.link.absoluteString))
         }
     }

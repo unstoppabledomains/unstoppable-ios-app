@@ -11,4 +11,15 @@ enum MessagingChatMessageDisplayType: Hashable {
     case text(MessagingChatMessageTextTypeDisplayInfo)
     case imageBase64(MessagingChatMessageImageBase64TypeDisplayInfo)
     case unknown(MessagingChatMessageUnknownTypeDisplayInfo)
+ 
+    var analyticName: String {
+        switch self {
+        case .text:
+            return "Text"
+        case .imageBase64:
+            return "Image"
+        case .unknown(let info):
+            return info.type
+        }
+    }
 }

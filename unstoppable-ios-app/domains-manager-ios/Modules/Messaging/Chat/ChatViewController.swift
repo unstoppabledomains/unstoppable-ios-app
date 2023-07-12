@@ -49,7 +49,8 @@ final class ChatViewController: BaseViewController {
     private(set) var dataSource: DataSource!
     private var scrollingInfo: ScrollingInfo?
     override var isObservingKeyboard: Bool { true }
-    
+    override var analyticsName: Analytics.ViewName { presenter.analyticsName }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -270,6 +271,7 @@ extension ChatViewController: ChatInputViewDelegate {
     }
     
     func chatInputView(_ chatInputView: ChatInputView, didSentText text: String) {
+        logButtonPressedAnalyticEvents(button: .messageInputSend)
         presenter.didPressSendText(text)
     }
     
@@ -279,10 +281,11 @@ extension ChatViewController: ChatInputViewDelegate {
     }
     
     func chatInputViewAdditionalActionsButtonPressed(_ chatInputView: ChatInputView) {
-        
+        logButtonPressedAnalyticEvents(button: .messageInputPlus)
     }
     
     func chatInputViewAdditionalActionSelected(_ chatInputView: ChatInputView, action: ChatInputView.AdditionalAction) {
+        logButtonPressedAnalyticEvents(button: .messageInputPlusAction, parameters: [.value: action.rawValue])
         switch action {
         case .choosePhoto:
             presenter.choosePhotoButtonPressed()

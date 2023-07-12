@@ -8,7 +8,9 @@
 import Foundation
 
 @MainActor
-protocol ChatsListViewPresenterProtocol: BasePresenterProtocol {
+protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
+    var analyticsName: Analytics.ViewName { get }
+    
     func didSelectItem(_ item: ChatsListViewController.Item)
     func didSelectWallet(_ wallet: WalletDisplayInfo)
     func actionButtonPressed()
@@ -43,6 +45,7 @@ final class ChatsListViewPresenter {
     private var searchData = SearchData()
     private let searchManager = SearchManager(debounce: 0.3)
     
+    var analyticsName: Analytics.ViewName { .chatsHome }
     
     init(view: ChatsListViewProtocol) {
         self.view = view
@@ -65,12 +68,26 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             
             showData()
         case .chat(let configuration):
+            switch configuration.chat.type {
+            case .private:
+                logButtonPressedAnalyticEvents(button: .chatInList)
+            case .group:
+                logButtonPressedAnalyticEvents(button: .groupChatInList)
+            }
             openChatWith(conversationState: .existingChat(configuration.chat))
-        case .chatRequests:
-            showChatRequests()
+        case .chatRequests(let configuration):
+            switch configuration.dataType {
+            case .chats:
+                logButtonPressedAnalyticEvents(button: .chatRequests)
+            case .channels:
+                logButtonPressedAnalyticEvents(button: .channelsSpam)
+            }
+            showCurrentDataTypeRequests()
         case .channel(let configuration):
+            logButtonPressedAnalyticEvents(button: .channelInList)
             openChannel(configuration.channel)
         case .userInfo(let configuration):
+            logButtonPressedAnalyticEvents(button: .userToChatInList)
             openChatWith(conversationState: .newChat(configuration.userInfo))
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
@@ -80,6 +97,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     func didSelectWallet(_ wallet: WalletDisplayInfo) {
         guard wallet.address != selectedProfileWalletPair?.wallet.address else { return }
         
+        logButtonPressedAnalyticEvents(button: .messagingProfileInList, parameters: [.wallet: wallet.address])
         runLoadingState()
         Task {
             if let cachedPair = profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address }) {
@@ -259,12 +277,18 @@ private extension ChatsListViewPresenter {
                                 wallets: wallets)
         
         guard let profile = chatProfile.profile else {
+            let state: MessagingProfileStateAnalytics = chatProfile.wallet.reverseResolutionDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet
+            logAnalytic(event: .willShowMessagingProfile,
+                        parameters: [.state : state.rawValue,
+                                     .wallet: chatProfile.wallet.address])
             await awaitForUIReady()
             view?.setState(.createProfile)
             showData()
             return
         }
         
+        logAnalytic(event: .willShowMessagingProfile, parameters: [.state : MessagingProfileStateAnalytics.created.rawValue,
+                                                                   .wallet: profile.wallet])
         UserDefaults.currentMessagingOwnerWallet = profile.wallet.normalized
         
         async let chatsListTask = appContext.messagingService.getChatsListForProfile(profile)
@@ -426,6 +450,7 @@ private extension ChatsListViewPresenter {
         return .init(dataTypesConfigurations: [.init(dataType: .chats, badge: chatsBadge),
                                                .init(dataType: .channels, badge: inboxBadge)],
                      selectedDataType: selectedDataType) { [weak self] newSelectedDataType in
+            self?.logButtonPressedAnalyticEvents(button: .messagingDataType, parameters: [.value: newSelectedDataType.rawValue])
             self?.selectedDataType = newSelectedDataType
             self?.showData()
         }
@@ -440,7 +465,7 @@ private extension ChatsListViewPresenter {
                                   in: nav)
     }
     
-    func showChatRequests() {
+    func showCurrentDataTypeRequests() {
         guard let profile = selectedProfileWalletPair?.profile,
               let nav = view?.cNavigationController else { return }
         
@@ -456,7 +481,7 @@ private extension ChatsListViewPresenter {
             let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
             guard !channels.isEmpty else { return }
 
-            UDRouter().showChatRequestsScreen(dataType: .channelsRequests(channels),
+            UDRouter().showChatRequestsScreen(dataType: .channelsSpam(channels),
                                               profile: profile,
                                               in: nav)
         }
@@ -519,6 +544,12 @@ private extension ChatsListViewPresenter {
         var searchUsers: [MessagingChatUserDisplayInfo] = []
         var searchChannels: [MessagingNewsChannel] = []
         var domainProfiles: [SearchDomainProfile] = []
+    }
+    
+    enum MessagingProfileStateAnalytics: String {
+        case created
+        case notCreatedRRSet
+        case notCreatedRRNotSet
     }
 }
 

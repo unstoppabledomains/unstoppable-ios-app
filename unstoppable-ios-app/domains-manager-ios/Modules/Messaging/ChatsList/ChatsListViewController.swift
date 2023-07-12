@@ -40,6 +40,7 @@ final class ChatsListViewController: BaseViewController {
     private var state: State = .loading
     private let operationQueue = OperationQueue()
 
+    override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     override var isObservingKeyboard: Bool { true }
     override var scrollableContentYOffset: CGFloat? { searchBarConfiguration == nil ? 24 : 48 }
     override var searchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration? {
@@ -165,10 +166,12 @@ extension ChatsListViewController: UDSearchBarDelegate {
 // MARK: - Private functions
 private extension ChatsListViewController {
     @IBAction func actionButtonPressed(_ sender: Any) {
+        logButtonPressedAnalyticEvents(button: .createMessagingProfile)
         presenter.actionButtonPressed()
     }
     
     @objc func newMessageButtonPressed() {
+        logButtonPressedAnalyticEvents(button: .newMessage)
         UDVibration.buttonTap.vibrate()
         searchBar.becomeFirstResponder()
     }
@@ -204,6 +207,9 @@ private extension ChatsListViewController {
                 navView = ChatsListNavigationView()
                 navView.walletSelectedCallback = { [weak self] wallet in
                     self?.presenter.didSelectWallet(wallet)
+                }
+                navView.pressedCallback = { [weak self] in
+                    self?.logButtonPressedAnalyticEvents(button: .messagingProfileSelection)
                 }
                 navigationItem.titleView = navView
             }
@@ -317,6 +323,8 @@ private extension ChatsListViewController {
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration,
                              actionButtonCallback: { [weak self] in
+                    self?.logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
+                                                         parameters: [.value: configuration.dataType.rawValue])
                     self?.setSearchBarActive(true)
                 })
                 
@@ -477,7 +485,7 @@ extension ChatsListViewController {
         let badge: Int
     }
     
-    enum DataType: Hashable {
+    enum DataType: String, Hashable {
         case chats, channels
         
         var title: String {

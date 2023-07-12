@@ -233,7 +233,7 @@ private extension DomainProfileTopInfoSection {
     }
     
     func didPickImage(_ image: UIImage, ofType type: DomainImageType) {
-        let resizedImage = image.resized(to: 1000) ?? image
+        let resizedImage = image.resized(to: Constants.maxImageResolution) ?? image
         crop(image: resizedImage, ofType: type)
     }
 
