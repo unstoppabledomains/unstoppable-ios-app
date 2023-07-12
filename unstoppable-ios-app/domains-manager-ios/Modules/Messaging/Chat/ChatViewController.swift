@@ -18,6 +18,7 @@ protocol ChatViewProtocol: BaseDiffableCollectionViewControllerProtocol where Se
     func setLoading(active: Bool)
     func setUIState(_ state: ChatViewController.State)
     func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
+    func setEmptyState(active: Bool)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -33,14 +34,14 @@ final class ChatViewController: BaseViewController {
     @IBOutlet private weak var acceptButton: MainButton!
     @IBOutlet private weak var secondaryButton: UDButton!
     @IBOutlet private weak var moveToTopButton: FABButton!
-
+    @IBOutlet private weak var chatEmptyView: ChatEmptyView!
     
     private var titleView: ChatTitleView!
 
     override var scrollableContentYOffset: CGFloat? { 13 }
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChatTextCell.self,
                                                         ChatImageCell.self,
-                                                        ChatEmptyCell.self,
+                                                        ChatUnsupportedMessageCell.self,
                                                         ChannelFeedCell.self,
                                                         ChatLoadingCell.self] }
     var presenter: ChatViewPresenterProtocol!
@@ -78,6 +79,7 @@ final class ChatViewController: BaseViewController {
         super.viewDidLayoutSubviews()
         
         setupMoveToTopButtonFrame()
+        setupEmptyViewFrame()
     }
 }
 
@@ -156,7 +158,7 @@ extension ChatViewController: ChatViewProtocol {
         case .otherUserIsBlocked:
             approveContentView.isHidden = false
             secondaryButton.isHidden = false
-            secondaryButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration)
+            secondaryButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration())
             secondaryButton.setTitle(String.Constants.unblock.localized(), image: nil)
         case .userIsBlocked:
             approveContentView.isHidden = false
@@ -205,6 +207,10 @@ extension ChatViewController: ChatViewProtocol {
             let barButtonItem = UIBarButtonItem(customView: barButton)
             navigationItem.rightBarButtonItem = barButtonItem
         }
+    }
+    
+    func setEmptyState(active: Bool) {
+        chatEmptyView.isHidden = !active
     }
 }
 
@@ -343,6 +349,15 @@ private extension ChatViewController {
                                                        y: chatInputView.frame.minY - moveToTopButtonSize - edgeSpacing),
                                        size: .square(size: moveToTopButtonSize))
     }
+    
+    func setupEmptyViewFrame() {
+        let y = cNavigationBar?.frame.height ?? 0
+        let height = view.bounds.height - y - (view.bounds.height - chatInputView.frame.minY)
+        chatEmptyView.frame = CGRect(x: 0,
+                                     y: y,
+                                     width: view.bounds.width,
+                                     height: height)
+    }
 }
 
 // MARK: - Setup functions
@@ -354,6 +369,7 @@ private extension ChatViewController {
         setupCollectionView()
         setupHideKeyboardTap()
         setupMoveToTopButton()
+        setEmptyState(active: false)
     }
     
     func setupInputView() {
@@ -405,13 +421,14 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
-            case .channelFeed(let configuration):
-                let cell = collectionView.dequeueCellOfType(ChannelFeedCell.self, forIndexPath: indexPath)
+            case .unsupportedMessage(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatUnsupportedMessageCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
                 
                 return cell
-            case .emptyState:
-                let cell = collectionView.dequeueCellOfType(ChatEmptyCell.self, forIndexPath: indexPath)
+            case .channelFeed(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChannelFeedCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
                 
                 return cell
             case .loading:
@@ -431,7 +448,7 @@ private extension ChatViewController {
                                                                            for: indexPath) as! ChatSectionHeaderView
                 view.setTitle(title)
                 return view
-            case .none, .emptyState, .loading:
+            case .none, .loading:
                 return nil
             }
         }
@@ -467,15 +484,6 @@ private extension ChatViewController {
                 return layoutSection
             case .loading:
                 return .listItemSection(height: 50)
-            case .emptyState:
-                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                                                     heightDimension: .fractionalHeight(1.0)))
-                item.contentInsets = .zero
-                let containerGroup = NSCollectionLayoutGroup.horizontal(
-                    layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                       heightDimension: .fractionalHeight(0.5)),
-                    subitems: [item])
-                return NSCollectionLayoutSection(group: containerGroup)
             }
         }, configuration: config)
         layout.register(CollectionReusableRoundedBackground.self, forDecorationViewOfKind: CollectionReusableRoundedBackground.reuseIdentifier)
@@ -488,15 +496,14 @@ private extension ChatViewController {
 extension ChatViewController {
     enum Section: Hashable {
         case messages(title: String)
-        case emptyState
         case loading
     }
     
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
+        case unsupportedMessage(configuration: UnsupportedMessageUIConfiguration)
         case channelFeed(configuration: ChannelFeedUIConfiguration)
-        case emptyState
         case loading
         
         var message: MessagingChatMessageDisplayInfo? {
@@ -505,7 +512,9 @@ extension ChatViewController {
                 return configuration.message
             case .imageBase64Message(let configuration):
                 return configuration.message
-            case .emptyState, .channelFeed, .loading:
+            case .unsupportedMessage(let configuration):
+                return configuration.message
+            case .channelFeed, .loading:
                 return nil
             }
         }
@@ -543,6 +552,11 @@ extension ChatViewController {
             hasher.combine(message.id)
             hasher.combine(message.deliveryState)
         }
+    }
+    
+    struct UnsupportedMessageUIConfiguration: Hashable {
+        let message: MessagingChatMessageDisplayInfo
+        let type: String
     }
     
     struct ChannelFeedUIConfiguration: Hashable {

@@ -15,6 +15,7 @@
                 <outlet property="acceptButton" destination="SPH-Qe-OEy" id="inZ-y9-fYY"/>
                 <outlet property="activityIndicator" destination="TpP-S2-yIY" id="9Gp-Le-S0S"/>
                 <outlet property="approveContentView" destination="3Th-qT-ili" id="js9-lg-yij"/>
+                <outlet property="chatEmptyView" destination="LUm-J6-Zo3" id="5HG-Vx-wHh"/>
                 <outlet property="chatInputView" destination="oHO-rt-44M" id="NEp-4O-1kK"/>
                 <outlet property="collectionView" destination="V89-nx-s8L" id="Op2-pK-KfR"/>
                 <outlet property="moveToTopButton" destination="w5B-KY-DQu" id="EZu-ec-3CG"/>
@@ -103,6 +104,11 @@
                         <action selector="moveToTopButtonPressed:" destination="-1" eventType="touchUpInside" id="ghO-sa-mlx"/>
                     </connections>
                 </button>
+                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LUm-J6-Zo3" customClass="ChatEmptyView" customModule="domains_manager_ios" customModuleProvider="target">
+                    <rect key="frame" x="7" y="59" width="386" height="681"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>

@@ -813,3 +813,4 @@
 "MESSAGING_N_FOLLOWERS" = "%i Followers";
 "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE" = "Are you sure you want to block %@?";
 "MESSAGING_YOU_ARE_BLOCKED" = "You are blocked";
+"MESSAGE_NOT_SUPPORTED" = "Message currently not supported";

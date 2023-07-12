@@ -149,8 +149,7 @@ private extension DomainsListViewController {
         if presenter.isSearchable {
             let rearrangeButton = UDButton()
             rearrangeButton.setTitle(String.Constants.rearrange.localized(), image: nil)
-            rearrangeButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration)
-            rearrangeButton.contentInset.right = 10
+            rearrangeButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration(contentInset: .init(top: 0, left: 0, bottom: 0, right: 10)))
             rearrangeButton.addTarget(self, action: #selector(rearrangeButtonPressed), for: .touchUpInside)
             let rightBarButton = UIBarButtonItem(customView: rearrangeButton)
             

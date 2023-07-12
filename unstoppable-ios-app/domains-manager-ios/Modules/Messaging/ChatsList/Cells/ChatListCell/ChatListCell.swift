@@ -32,7 +32,6 @@ extension ChatListCell {
         
         switch chat.type {
         case .private(let info):
-            avatarImageView.clipsToBounds = true
             avatarImageView.layer.borderWidth = 1
             setAvatarFrom(url: info.otherUser.pfpURL, name: chatName)
         case .group(let details):
@@ -89,23 +88,6 @@ extension ChatListCell {
         setLastMessageText("")
         chevron.isHidden = false
     }
-    
-    func setWith(domainName: DomainName) {
-        setNameText(domainName)
-        setAvatarFrom(url: nil, name: domainName)
-        Task {
-            let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName)
-            if let urlString = pfpInfo?.pfpURL,
-               let url = URL(string: urlString) {
-                setAvatarFrom(url: url, name: domainName)
-            }
-        }
-        badgeView.setUnreadMessagesCount(0)
-        
-        setTimeText(nil)
-        setLastMessageText("")
-        chevron.isHidden = false
-    }
 }
 
 // MARK: - Private methods
@@ -129,6 +111,8 @@ private extension ChatListCell {
             return description.text
         case .imageBase64:
             return String.Constants.photo.localized()
+        case .unknown:
+            return String.Constants.messageNotSupported.localized()
         }
     }
     
@@ -159,8 +143,8 @@ private extension ChatListCell {
     }
     
     func setAvatarFrom(url: URL?, name: String) {
+        avatarImageView.clipsToBounds = true
         avatarImageView.image = .domainSharePlaceholder
-        
         
         func setAvatarFromName() async {
             self.avatarImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(name, size: .default, style: .accent),

@@ -114,7 +114,8 @@ extension MessagingService: MessagingServiceProtocol {
                                                                      before: message,
                                                                      limit: limit)
         if !cachedMessages.isEmpty {
-            if cachedMessages.count == limit {
+            if cachedMessages.count == limit ||
+                cachedMessages.last?.displayInfo.isFirstInChat == true {
                 return cachedMessages.map { $0.displayInfo }
             } else {
                 message = cachedMessages.last?.displayInfo
@@ -231,7 +232,7 @@ extension MessagingService: MessagingServiceProtocol {
         
         return feed
     }
-    
+    // TODO: - Break down
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
                     limit: Int) async throws -> [MessagingNewsChannelFeed] {
@@ -834,7 +835,7 @@ private extension MessagingService {
                       return false
                   }
               }) else { throw MessagingServiceError.chatNotFound }
-        let message = messageEntity.transformToMessageBlock(messageEntity, chat)
+        guard let message = messageEntity.transformToMessageBlock(messageEntity, chat) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
         return message
     }
 }
@@ -846,6 +847,7 @@ extension MessagingService {
         case chatNotFound
         case messageNotFound
         case noRRDomainForProfile
+        case failedToConvertWebsocketMessage
         
         public var errorDescription: String? {
             return rawValue

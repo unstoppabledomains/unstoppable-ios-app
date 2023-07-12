@@ -31,11 +31,7 @@ extension ChatImageCell {
     func setWith(configuration: ChatViewController.ImageBase64MessageUIConfiguration) {
         self.actionCallback = configuration.actionCallback
         setWith(message: configuration.message)
-        Task {
-            let base64 = configuration.imageMessageDisplayInfo.base64Image
-            let image = await UIImage.from(base64String: base64)
-            setImage(image ?? .domainSharePlaceholder)
-        }
+        setImage(configuration.imageMessageDisplayInfo.image ?? .domainSharePlaceholder)
     }
 }
 

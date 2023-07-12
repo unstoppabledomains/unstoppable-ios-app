@@ -92,7 +92,6 @@ private extension SignTransactionDomainSelectionHeaderView {
     func buildSubheadButton() -> UDButton {
         let button = UDButton()
         button.setConfiguration(.verySmallGhostTertiaryButtonConfiguration)
-        button.contentInset = .zero
         button.addTarget(self, action: #selector(subheadButtonPressed), for: .touchUpInside)
         addSubview(button)
         

@@ -331,6 +331,7 @@ extension String {
         static let pluralExpire = "SDICT:EXPIRE"
         static let pluralNMessages = "SDICT:N_MESSAGES"
         static let pluralNPeopleYouMayKnow = "SDICT:N_PEOPLE_YOU_MAY_KNOW"
+        static let pluralNMembers = "SDICT:N_MEMBERS"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -890,6 +891,7 @@ extension String {
         static let messagingNFollowers = "MESSAGING_N_FOLLOWERS"
         static let messagingBlockUserConfirmationTitle = "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE"
         static let messagingYouAreBlocked = "MESSAGING_YOU_ARE_BLOCKED"
+        static let messageNotSupported = "MESSAGE_NOT_SUPPORTED"
 
     }
 

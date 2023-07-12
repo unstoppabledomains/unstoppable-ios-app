@@ -7,9 +7,8 @@
 
 import UIKit
 
-final class ChatTextCell: ChatUserMessageCell {
+final class ChatTextCell: ChatUserBubbledMessageCell {
 
-    @IBOutlet private weak var bubbleContainerView: UIView!
     @IBOutlet private weak var messageTextView: UITextView!
     
     override func awakeFromNib() {
@@ -18,16 +17,7 @@ final class ChatTextCell: ChatUserMessageCell {
         setupTextView(messageTextView)
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        switch sender {
-        case .thisUser, .none:
-            bubbleContainerView.layer.shadowPath = nil
-        case .otherUser:
-            bubbleContainerView.applyFigmaShadow(style: .xSmall)
-        }
-    }
+
 }
 
 // MARK: - Open methods
@@ -49,6 +39,5 @@ extension ChatTextCell {
                                               .underlineStyle: NSUnderlineStyle.single.rawValue]
         
         setWith(message: textMessage)
-        setBubbleUI(bubbleContainerView, sender: textMessage.senderType)
     }
 }
