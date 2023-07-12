@@ -403,10 +403,12 @@ private extension ChatViewPresenter {
                     self?.didPressViewGroupInfoButton(groupDetails: groupDetails)
                 }))
                 
-                actions.append(.init(type: .leave, callback: { [weak self] in
-                    self?.logButtonPressedAnalyticEvents(button: .leaveGroup)
-                    self?.didPressLeaveButton()
-                }))
+                if groupDetails.adminWallet?.lowercased() != profile.wallet.lowercased() {
+                    actions.append(.init(type: .leave, callback: { [weak self] in
+                        self?.logButtonPressedAnalyticEvents(button: .leaveGroup)
+                        self?.didPressLeaveButton()
+                    }))
+                }
             }
         }
         
