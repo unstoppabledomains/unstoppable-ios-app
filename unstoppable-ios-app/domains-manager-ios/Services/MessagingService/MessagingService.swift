@@ -13,6 +13,7 @@ final class MessagingService {
     private let webSocketsService: MessagingWebSocketsServiceProtocol
     private let storageService: MessagingStorageServiceProtocol
     private let decrypterService: MessagingContentDecrypterService
+    private let filesService: MessagingFilesServiceProtocol
         
     private var listenerHolders: [MessagingListenerHolder] = []
     private var currentUser: MessagingChatUserProfileDisplayInfo?
@@ -21,11 +22,13 @@ final class MessagingService {
          webSocketsService: MessagingWebSocketsServiceProtocol,
          storageProtocol: MessagingStorageServiceProtocol,
          decrypterService: MessagingContentDecrypterService,
+         filesService: MessagingFilesServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol) {
         self.apiService = apiService
         self.webSocketsService = webSocketsService
         self.storageService = storageProtocol
         self.decrypterService = decrypterService
+        self.filesService = filesService
         udWalletsService.addListener(self)
         
         storageService.markSendingMessagesAsFailed()

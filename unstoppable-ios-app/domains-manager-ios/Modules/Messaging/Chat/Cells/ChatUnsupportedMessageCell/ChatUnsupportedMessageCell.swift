@@ -24,6 +24,7 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
         iconContainerView.layer.cornerRadius = 8
         iconContainerView.layer.borderWidth = 1
         iconContainerView.layer.borderColor = UIColor.borderMuted.cgColor
+        downloadButton.isUserInteractionEnabled = false
         downloadButton.setConfiguration(.smallGhostPrimaryButtonConfiguration)
         let downloadTitle = String.Constants.download.localized()
         downloadButton.setTitle(downloadTitle, image: nil)
@@ -54,7 +55,7 @@ extension ChatUnsupportedMessageCell {
         if let size = details.size {
             secondaryLabel.isHidden = false
             downloadButton.isHidden = false
-            let formattedSize = bytesFormatter().string(fromByteCount: Int64(size))
+            let formattedSize = bytesFormatter.string(fromByteCount: Int64(size))
             let secondaryText = "(\(formattedSize))"
             secondaryLabel.setAttributedTextWith(text: secondaryText,
                                                  font: .currentFont(withSize: 14, weight: .regular),
@@ -81,12 +82,6 @@ extension ChatUnsupportedMessageCell {
         
         setWith(message: textMessage)
         print(downloadButton.frame)
-    }
-    
-    func bytesFormatter() -> ByteCountFormatter {
-        let formatter = ByteCountFormatter()
-        
-        return formatter
     }
 }
 

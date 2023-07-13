@@ -114,10 +114,12 @@ final class GeneralAppContext: AppContextProtocol {
         let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = PushMessagingWebSocketsService()
         let messagingStorageService: MessagingStorageServiceProtocol = CoreDataMessagingStorageService()
         let messagingDecrypterService: MessagingContentDecrypterService = PushMessagingContentDecrypterService()
+        let messagingFilesService: MessagingFilesServiceProtocol = MessagingFilesService()
         messagingService = MessagingService(apiService: messagingAPIService,
                                             webSocketsService: messagingWebSocketsService,
                                             storageProtocol: messagingStorageService,
                                             decrypterService: messagingDecrypterService,
+                                            filesService: messagingFilesService,
                                             udWalletsService: udWalletsService)
         
         Task {
