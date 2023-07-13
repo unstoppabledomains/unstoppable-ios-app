@@ -378,6 +378,15 @@ struct UDButtonConfiguration {
                                                                                    fontWeight: .medium,
                                                                                    fontSize: 14,
                                                                                    iconSize: 16)
+    static let smallGhostPrimaryWhiteButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,
+                                                                                        backgroundHighlightedColor: .clear,
+                                                                                        backgroundDisabledColor: .clear,
+                                                                                        textColor: .brandWhite,
+                                                                                        textHighlightedColor: .brandWhite.withAlphaComponent(0.32),
+                                                                                        textDisabledColor: .brandWhite.withAlphaComponent(0.24),
+                                                                                        fontWeight: .medium,
+                                                                                        fontSize: 14,
+                                                                                        iconSize: 16)
     
     // Very small
     static let verySmallGhostTertiaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,

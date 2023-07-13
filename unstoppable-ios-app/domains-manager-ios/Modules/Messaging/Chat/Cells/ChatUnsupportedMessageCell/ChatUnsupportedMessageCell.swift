@@ -44,6 +44,7 @@ extension ChatUnsupportedMessageCell {
         
         pressedCallback = configuration.pressedCallback
         let messageColor: UIColor
+        let secondaryLabelColor: UIColor
         let primaryLabelText: String
         let icon: UIImage
         
@@ -54,6 +55,26 @@ extension ChatUnsupportedMessageCell {
             primaryLabelText = String.Constants.messageNotSupported.localized()
             icon = .helpIcon24
         }
+  
+        switch textMessage.senderType {
+        case .thisUser:
+            messageColor = .white
+            secondaryLabelColor = .foregroundOnEmphasisOpacity
+            iconContainerView.backgroundColor = .backgroundMuted2
+            downloadButton.setConfiguration(.smallGhostPrimaryWhiteButtonConfiguration)
+        case .otherUser:
+            messageColor = .foregroundDefault
+            secondaryLabelColor = .foregroundSecondary
+            iconContainerView.backgroundColor = .backgroundMuted2
+            downloadButton.setConfiguration(.smallGhostPrimaryButtonConfiguration)
+        }
+        iconImageView.tintColor = messageColor
+        primaryLabel.setAttributedTextWith(text: primaryLabelText,
+                                           font: .currentFont(withSize: 16, weight: .regular),
+                                           textColor: messageColor,
+                                           lineBreakMode: .byTruncatingMiddle)
+        iconImageView.image = icon
+        
         
         if let size = details.size {
             secondaryLabel.isHidden = false
@@ -62,26 +83,12 @@ extension ChatUnsupportedMessageCell {
             let secondaryText = "(\(formattedSize))"
             secondaryLabel.setAttributedTextWith(text: secondaryText,
                                                  font: .currentFont(withSize: 14, weight: .regular),
-                                                 textColor: .foregroundSecondary)
+                                                 textColor: secondaryLabelColor)
         } else {
             secondaryLabel.isHidden = true
             downloadButton.isHidden = true
         }
         
-        switch textMessage.senderType {
-        case .thisUser:
-            messageColor = .white
-            iconContainerView.backgroundColor = .backgroundMuted2
-        case .otherUser:
-            messageColor = .foregroundDefault
-            iconContainerView.backgroundColor = .backgroundMuted2
-            iconImageView.tintColor = .black
-        }
-        primaryLabel.setAttributedTextWith(text: primaryLabelText,
-                                           font: .currentFont(withSize: 16, weight: .regular),
-                                           textColor: messageColor,
-                                           lineBreakMode: .byTruncatingMiddle)
-        iconImageView.image = icon
         
         setWith(message: textMessage)
         print(downloadButton.frame)
@@ -102,14 +109,14 @@ struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
             let user = MessagingChatUserDisplayInfo(wallet: "24")
             let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: "",
                                                                                 type: "file",
-                                                                                name: "Filenaskjdskjdfhsdkfjhskdfjhsdkfjhhfsde.pdf",
+                                                                                name: nil,
                                                                                 size: 99900)
             let message = MessagingChatMessageDisplayInfo(id: "1",
                                                           chatId: "2",
-                                                          senderType: .otherUser(user),
+                                                          senderType: .thisUser(user),
                                                           time: Date(),
                                                           type: .unknown(unknownMessageInfo),
-                                                          isRead: true,
+                                                          isRead: false,
                                                           isFirstInChat: true,
                                                           deliveryState: .delivered)
             cell.setWith(configuration: .init(message: message, pressedCallback: { }))
