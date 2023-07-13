@@ -361,7 +361,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         }
 
         let approveOptions = Push.PushChat.ApproveOptions(fromAddress: fromAddress,
-                                                          toAddress: sender.wallet ,
+                                                          toAddress: sender.wallet,
                                                           privateKey: pgpPrivateKey,
                                                           env: env)
         _ = try await Push.PushChat.approve(approveOptions)
