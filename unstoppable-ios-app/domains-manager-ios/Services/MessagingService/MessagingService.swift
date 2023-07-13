@@ -788,6 +788,19 @@ private extension MessagingService {
     
     func handleWebSocketEvent(_ event: MessagingWebSocketEvent) {
         Task {
+            func addNewChatMessages(_ chatMessages: [MessagingChatMessage]) async {
+                guard !chatMessages.isEmpty else { return }
+                
+                await storageService.saveMessages(chatMessages)
+                for chatMessage in chatMessages {
+                    let chatId = chatMessage.displayInfo.chatId
+                    
+                    notifyListenersChangedDataType(.messagesAdded([chatMessage.displayInfo],
+                                                                  chatId: chatId))
+                    refreshChatsInSameDomain(as: chatId)
+                }
+            }
+            
             do {
                 switch event {
                 case .channelNewFeed(let feed, let channelAddress), .channelSpamFeed(let feed, let channelAddress):
@@ -802,17 +815,12 @@ private extension MessagingService {
                         notifyListenersChangedDataType(.channelFeedAdded(feed, channelId: channel.id))
                         notifyChannelsChanged(userId: profile.id)
                     }
-                case .chatGroups:
-                    return
+                case .groupChatReceivedMessage(let message):
+                    let chatMessages = try await convertMessagingWebSocketGroupMessageEntityToMessage(message)
+                    await addNewChatMessages(chatMessages)
                 case .chatReceivedMessage(let message):
                     let chatMessage = try await convertMessagingWebSocketMessageEntityToMessage(message)
-                    
-                    await storageService.saveMessages([chatMessage])
-                    let chatId = chatMessage.displayInfo.chatId
-                    
-                    notifyListenersChangedDataType(.messagesAdded([chatMessage.displayInfo],
-                                                                  chatId: chatId))
-                    refreshChatsInSameDomain(as: chatId)
+                    await addNewChatMessages([chatMessage])
                 }
             } catch { }
         }
@@ -879,6 +887,12 @@ private extension MessagingService {
               }) else { throw MessagingServiceError.chatNotFound }
         guard let message = messageEntity.transformToMessageBlock(messageEntity, chat) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
         return message
+    }
+    
+    func convertMessagingWebSocketGroupMessageEntityToMessage(_ messageEntity: MessagingWebSocketGroupMessageEntity) async throws -> [MessagingChatMessage] {
+        let chats = await storageService.getChatsWithIdContaining(messageEntity.chatId,
+                                                                  decrypter: decrypterService)
+        return chats.compactMap({ messageEntity.transformToMessageBlock(messageEntity, $0) })
     }
     
     func setSceneActivationListener() {

@@ -213,12 +213,30 @@ struct PushEntitiesTransformer {
                                                transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
     }
     
+    static func convertGroupPushMessageToWebSocketGroupMessageEntity(_ pushMessage: Push.Message) -> MessagingWebSocketGroupMessageEntity? {
+        let serviceContent = PushEnvironment.PushSocketGroupMessageServiceContent(pushMessage: pushMessage)
+        return MessagingWebSocketGroupMessageEntity(chatId: pushMessage.toDID,
+                                                    serviceContent: serviceContent,
+                                                    transformToMessageBlock: convertMessagingWebSocketGroupMessageEntityToChatMessage)
+    }
+    
     static func convertMessagingWebSocketMessageEntityToChatMessage(_ webSocketMessage: MessagingWebSocketMessageEntity,
                                                                     in chat: MessagingChat) -> MessagingChatMessage? {
         guard let serviceContent = webSocketMessage.serviceContent as? PushEnvironment.PushSocketMessageServiceContent else { return nil }
         
         let pushMessage = serviceContent.pushMessage
         let pgpKey = serviceContent.pgpKey
+        
+        return convertPushMessageToChatMessage(pushMessage, in: chat, pgpKey: pgpKey, isRead: false)
+    }
+    
+    static func convertMessagingWebSocketGroupMessageEntityToChatMessage(_ webSocketMessage: MessagingWebSocketGroupMessageEntity,
+                                                                         in chat: MessagingChat) -> MessagingChatMessage? {
+        let thisUserWallet = chat.displayInfo.thisUserDetails.wallet
+        guard let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: thisUserWallet),
+              let serviceContent = webSocketMessage.serviceContent as? PushEnvironment.PushSocketGroupMessageServiceContent else { return nil }
+        
+        let pushMessage = serviceContent.pushMessage
         
         return convertPushMessageToChatMessage(pushMessage, in: chat, pgpKey: pgpKey, isRead: false)
     }

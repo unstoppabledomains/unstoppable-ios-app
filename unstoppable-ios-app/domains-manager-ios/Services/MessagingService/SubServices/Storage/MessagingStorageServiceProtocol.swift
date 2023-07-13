@@ -40,6 +40,8 @@ protocol MessagingStorageServiceProtocol {
                      decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat]
     func getChatWith(id: String,
                      decrypter: MessagingContentDecrypterService) async -> MessagingChat?
+    func getChatsWithIdContaining(_ value: String,
+                                  decrypter: MessagingContentDecrypterService) async -> [MessagingChat]
     func saveChats(_ chats: [MessagingChat]) async
     func replaceChat(_ chatToReplace: MessagingChat,
                      with newChat: MessagingChat) async throws

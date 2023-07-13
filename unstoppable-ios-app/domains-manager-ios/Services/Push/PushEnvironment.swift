@@ -49,4 +49,8 @@ enum PushEnvironment {
         let pushMessage: Push.Message
         let pgpKey: String
     }
+    
+    struct PushSocketGroupMessageServiceContent {
+        let pushMessage: Push.Message
+    }
 }

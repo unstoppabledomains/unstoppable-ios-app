@@ -13,5 +13,5 @@ enum MessagingWebSocketEvent {
     case channelNewFeed(MessagingNewsChannelFeed, channelAddress: String)
     case channelSpamFeed(MessagingNewsChannelFeed, channelAddress: String)
     case chatReceivedMessage(MessagingWebSocketMessageEntity)
-    case chatGroups
+    case groupChatReceivedMessage(MessagingWebSocketGroupMessageEntity)
 }

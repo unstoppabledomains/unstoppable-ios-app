@@ -188,11 +188,21 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func getChatWith(id: String,
                      decrypter: MessagingContentDecrypterService) async -> MessagingChat? {
         queue.sync {
-            if let coreDataMessage: CoreDataMessagingChat = getCoreDataEntityWith(id: id) {
-                return convertCoreDataChatToMessagingChat(coreDataMessage,
+            if let coreDataChat: CoreDataMessagingChat = getCoreDataEntityWith(id: id) {
+                return convertCoreDataChatToMessagingChat(coreDataChat,
                                                           decrypter: decrypter)
             }
             return nil
+        }
+    }
+    
+    // TODO: - Think of better solution
+    func getChatsWithIdContaining(_ value: String,
+                                  decrypter: MessagingContentDecrypterService) async -> [MessagingChat] {
+        queue.sync {
+            let coreDataChats: [CoreDataMessagingChat] = getCoreDataEntitiesWith(key: "id", containing: value)
+            return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0,
+                                                                                 decrypter: decrypter) }
         }
     }
     
@@ -793,13 +803,21 @@ private extension CoreDataMessagingStorageService {
     }
     
     func getCoreDataEntityWith<T: NSManagedObject>(key: String, value: String) -> T? {
+        let predicate = NSPredicate(format: "%K == %@", key, value)
+        return getEntityWithPredicate(predicate: predicate).first
+    }
+    
+    func getCoreDataEntitiesWith<T: NSManagedObject>(key: String, containing value: String) -> [T] {
+        let predicate = NSPredicate(format: "%K CONTAINS %@", key, value)
+        return getEntityWithPredicate(predicate: predicate)
+    }
+    
+    func getEntityWithPredicate<T: NSManagedObject>(predicate: NSPredicate) -> [T] {
         do {
-            let predicate = NSPredicate(format: "%K == %@", key, value)
             let messages: [T] = try getEntities(predicate: predicate, from: backgroundContext)
-            return messages.first
+            return messages
         } catch {
-            
-            return nil
+            return []
         }
     }
     
