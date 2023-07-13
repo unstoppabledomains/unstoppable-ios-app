@@ -6,15 +6,29 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
 
-    @IBOutlet private weak var messageTextView: UITextView!
+    @IBOutlet private weak var iconContainerView: UIView!
+    @IBOutlet private weak var iconImageView: UIImageView!
+    @IBOutlet private weak var primaryLabel: UILabel!
+    @IBOutlet private weak var secondaryLabel: UILabel!
+    @IBOutlet private weak var downloadButton: UDButton!
+    
+    override var isFlexibleWidth: Bool { false }
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        setupTextView(messageTextView)
+        iconContainerView.layer.cornerRadius = 8
+        iconContainerView.layer.borderWidth = 1
+        iconContainerView.layer.borderColor = UIColor.borderMuted.cgColor
+        downloadButton.setConfiguration(.smallGhostPrimaryButtonConfiguration)
+        let downloadTitle = String.Constants.download.localized()
+        downloadButton.setTitle(downloadTitle, image: nil)
+        downloadButton.widthAnchor.constraint(equalToConstant: downloadTitle.width(withConstrainedHeight: .greatestFiniteMagnitude,
+                                                                                   font: downloadButton.font)).isActive = true
     }
 
 }
@@ -23,11 +37,82 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
 extension ChatUnsupportedMessageCell {
     func setWith(configuration: ChatViewController.UnsupportedMessageUIConfiguration) {
         let textMessage = configuration.message
-        var messageColor: UIColor = textMessage.senderType.isThisUser ? .white : .foregroundDefault
-        messageTextView.setAttributedTextWith(text: String.Constants.messageNotSupported.localized(),
-                                              font: .currentFont(withSize: 16, weight: .regular),
-                                              textColor: messageColor,
-                                              lineHeight: 24)
+        guard case .unknown(let details) = textMessage.type else { return }
+        
+        let messageColor: UIColor
+        let primaryLabelText: String
+        let icon: UIImage
+        
+        if let name = details.name {
+            primaryLabelText = name
+            icon = .docsIcon24
+        } else {
+            primaryLabelText = String.Constants.messageNotSupported.localized()
+            icon = .helpIcon24
+        }
+        
+        if let size = details.size {
+            secondaryLabel.isHidden = false
+            downloadButton.isHidden = false
+            let formattedSize = bytesFormatter().string(fromByteCount: Int64(size))
+            let secondaryText = "(\(formattedSize))"
+            secondaryLabel.setAttributedTextWith(text: secondaryText,
+                                                 font: .currentFont(withSize: 14, weight: .regular),
+                                                 textColor: .foregroundSecondary)
+        } else {
+            secondaryLabel.isHidden = true
+            downloadButton.isHidden = true
+        }
+        
+        switch textMessage.senderType {
+        case .thisUser:
+            messageColor = .white
+            iconContainerView.backgroundColor = .backgroundMuted2
+        case .otherUser:
+            messageColor = .foregroundDefault
+            iconContainerView.backgroundColor = .backgroundMuted2
+            iconImageView.tintColor = .black
+        }
+        primaryLabel.setAttributedTextWith(text: primaryLabelText,
+                                           font: .currentFont(withSize: 16, weight: .regular),
+                                           textColor: messageColor,
+                                           lineBreakMode: .byTruncatingMiddle)
+        iconImageView.image = icon
+        
         setWith(message: textMessage)
+        print(downloadButton.frame)
     }
+    
+    func bytesFormatter() -> ByteCountFormatter {
+        let formatter = ByteCountFormatter()
+        
+        return formatter
+    }
+}
+
+struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        let height: CGFloat = 76
+        
+        return UICollectionViewCellPreview(cellType: ChatUnsupportedMessageCell.self, height: height) { cell in
+            let user = MessagingChatUserDisplayInfo(wallet: "24")
+            let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: "",
+                                                                                type: "file",
+                                                                                name: "Filenaskjdskjdfhsdkfjhskdfjhsdkfjhhfsde.pdf",
+                                                                                size: 99900)
+            let message = MessagingChatMessageDisplayInfo(id: "1",
+                                                          chatId: "2",
+                                                          senderType: .otherUser(user),
+                                                          time: Date(),
+                                                          type: .unknown(unknownMessageInfo),
+                                                          isRead: true,
+                                                          isFirstInChat: true,
+                                                          deliveryState: .delivered)
+            cell.setWith(configuration: .init(message: message, type: "png"))
+//            cell.backgroundColor = .blue
+        }
+        .frame(width: 390, height: height)
+    }
+    
 }

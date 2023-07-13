@@ -191,7 +191,8 @@ extension String {
         static let unblock = "UNBLOCK"
         static let viewInfo = "VIEW_INFO"
         static let leave = "LEAVE"
-        
+        static let download = "DOWNLOAD"
+
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
