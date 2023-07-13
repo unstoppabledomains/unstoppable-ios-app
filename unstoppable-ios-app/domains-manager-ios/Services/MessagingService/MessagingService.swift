@@ -98,7 +98,7 @@ extension MessagingService: MessagingServiceProtocol {
         let chat = try await getMessagingChatFor(displayInfo: chat)
 
         try await apiService.leaveGroupChat(chat, by: profile)
-        storageService.deleteChat(chat)
+        storageService.deleteChat(chat, filesService: filesService)
         notifyChatsChanged(wallet: profile.wallet)
     }
     
@@ -232,8 +232,7 @@ extension MessagingService: MessagingServiceProtocol {
         notifyChatsChanged(wallet: wallet)
     }
     
-    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo,
-                                in chat: MessagingChatDisplayInfo) async -> URL? {
+    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? {
         let fileName: String
         
         switch message.type {
@@ -247,16 +246,18 @@ extension MessagingService: MessagingServiceProtocol {
             return url
         }
         
-        guard let chatMessage = await storageService.getMessageWith(id: message.id,
-                                                                    in: chat,
+        guard let chat = await storageService.getChatWith(id: message.chatId, decrypter: decrypterService),
+              let chatMessage = await storageService.getMessageWith(id: message.id,
+                                                                    in: chat.displayInfo,
                                                                     decrypter: decrypterService) else { return nil }
+        let wallet = chat.displayInfo.thisUserDetails.wallet
         guard let encryptedDataURL = filesService.getEncryptedDataURLFor(fileName: fileName),
               let encryptedData = try? Data(contentsOf: encryptedDataURL),
               let encryptedContent = String(data: encryptedData, encoding: .utf8),
               let decryptedContent = try? decrypterService.decryptText(encryptedContent,
                                                                        with: chatMessage.serviceMetadata,
-                                                                       wallet: chat.thisUserDetails.wallet),
-              let decryptedData = decryptedContent.data(using: .utf8) else { return nil }
+                                                                       wallet: wallet),
+              let decryptedData = Base64DataTransformer.dataFrom(base64String: decryptedContent) else { return nil }
         
         return try? filesService.saveDecryptedData(decryptedData, fileName: fileName)
     }
@@ -425,7 +426,7 @@ extension MessagingService: UDWalletsServiceListener {
                 if let rrDomainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: wallet.address),
                    let rrDomain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomainName),
                    let profile = try? storageService.getUserProfileFor(domain: rrDomain) {
-                    await storageService.clearAllDataOf(profile: profile)
+                    await storageService.clearAllDataOf(profile: profile, filesService: filesService)
                 }
             }
         }

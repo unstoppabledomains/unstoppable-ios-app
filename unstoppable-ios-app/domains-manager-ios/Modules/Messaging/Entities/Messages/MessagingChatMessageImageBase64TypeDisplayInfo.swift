@@ -17,7 +17,7 @@ struct MessagingChatMessageImageBase64TypeDisplayInfo: Hashable {
     init(base64: String, encryptedContent: String) {
         self.base64 = base64
         self.encryptedContent = encryptedContent
-        self.base64Image = Base64DataTransformer.removeDataFrom(string: base64)
+        self.base64Image = Base64DataTransformer.removeDataHeaderFrom(string: base64)
     }
     
 }

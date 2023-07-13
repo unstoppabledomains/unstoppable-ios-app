@@ -283,6 +283,7 @@ extension Analytics {
         case viewChannelInfo, leaveChannel, learnMoreChannelFeed
         case block, unblock, leaveGroup
         case resendMessage, deleteMessage
+        case downloadUnsupportedMessage
     }
 }
 

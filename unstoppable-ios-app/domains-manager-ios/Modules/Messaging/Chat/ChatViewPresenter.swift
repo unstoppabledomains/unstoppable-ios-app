@@ -328,8 +328,11 @@ private extension ChatViewPresenter {
                                                             actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
-        case .unknown(let info):
-            return .unsupportedMessage(configuration: .init(message: message, type: info.type))
+        case .unknown:
+            return .unsupportedMessage(configuration: .init(message: message, pressedCallback: { [weak self] in
+                self?.logButtonPressedAnalyticEvents(button: .downloadUnsupportedMessage)
+                self?.shareContentOfMessage(message)
+            }))
         }
     }
     
@@ -517,6 +520,21 @@ private extension ChatViewPresenter {
                 self.view?.setUIState(.otherUserIsBlocked)
             }
             setupBarButtons()
+        }
+    }
+    
+    
+    func shareContentOfMessage(_ message: MessagingChatMessageDisplayInfo) {
+        Task {
+            guard let contentURL = await appContext.messagingService.decryptedContentURLFor(message: message) else { return } // TODO: - Handle error
+            
+            let activityViewController = UIActivityViewController(activityItems: [contentURL], applicationActivities: nil)
+            activityViewController.completionWithItemsHandler = { _, completed, _, _ in
+                if completed {
+                    AppReviewService.shared.appReviewEventDidOccurs(event: .didShareProfile)
+                }
+            }
+            view?.present(activityViewController, animated: true)
         }
     }
 }

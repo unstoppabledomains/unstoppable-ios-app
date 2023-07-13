@@ -38,8 +38,7 @@ protocol MessagingServiceProtocol {
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool,
                      wallet: String) throws
-    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo,
-                                in chat: MessagingChatDisplayInfo) async -> URL?
+    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL?
     
     // Channels
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]

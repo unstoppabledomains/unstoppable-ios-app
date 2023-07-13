@@ -17,6 +17,7 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
     @IBOutlet private weak var downloadButton: UDButton!
     
     override var isFlexibleWidth: Bool { false }
+    private var pressedCallback: EmptyCallback?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -30,8 +31,9 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
         downloadButton.setTitle(downloadTitle, image: nil)
         downloadButton.widthAnchor.constraint(equalToConstant: downloadTitle.width(withConstrainedHeight: .greatestFiniteMagnitude,
                                                                                    font: downloadButton.font)).isActive = true
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTap)))
     }
-
+    
 }
 
 // MARK: - Open methods
@@ -40,6 +42,7 @@ extension ChatUnsupportedMessageCell {
         let textMessage = configuration.message
         guard case .unknown(let details) = textMessage.type else { return }
         
+        pressedCallback = configuration.pressedCallback
         let messageColor: UIColor
         let primaryLabelText: String
         let icon: UIImage
@@ -83,6 +86,11 @@ extension ChatUnsupportedMessageCell {
         setWith(message: textMessage)
         print(downloadButton.frame)
     }
+    
+    @objc func didTap() {
+        UDVibration.buttonTap.vibrate()
+        pressedCallback?()
+    }
 }
 
 struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
@@ -104,8 +112,7 @@ struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
                                                           isRead: true,
                                                           isFirstInChat: true,
                                                           deliveryState: .delivered)
-            cell.setWith(configuration: .init(message: message, type: "png"))
-//            cell.backgroundColor = .blue
+            cell.setWith(configuration: .init(message: message, pressedCallback: { }))
         }
         .frame(width: 390, height: height)
     }

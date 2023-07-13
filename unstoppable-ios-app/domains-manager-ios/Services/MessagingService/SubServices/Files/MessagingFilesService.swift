@@ -17,7 +17,7 @@ final class MessagingFilesService {
     
 }
 
-// MARK: - Open methods
+// MARK: - MessagingFilesServiceProtocol
 extension MessagingFilesService: MessagingFilesServiceProtocol {
     /// Encrypted
     func getEncryptedDataURLFor(fileName: String) -> URL? {
@@ -42,6 +42,22 @@ extension MessagingFilesService: MessagingFilesServiceProtocol {
     @discardableResult
     func saveDecryptedData(_ data: Data, fileName: String) throws -> URL {
         try saveData(data, fileName: fileName, dataType: .decrypted)
+    }
+}
+
+// MARK: - Open methods
+extension MessagingFilesService {
+    func clear() {
+        func clearAllFor(dataType: MessagingDataType) {
+            let folderURL = folderURLFor(dataType: dataType)
+            let fileURLs = (try? fileManager.contentsOfDirectory(at: folderURL, includingPropertiesForKeys: nil)) ?? []
+            for fileURL in fileURLs {
+                try? fileManager.removeItem(at: fileURL)
+            }
+        }
+        
+        clearAllFor(dataType: .encrypted)
+        clearAllFor(dataType: .decrypted)
     }
 }
 

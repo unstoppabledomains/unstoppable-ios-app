@@ -560,7 +560,15 @@ extension ChatViewController {
     
     struct UnsupportedMessageUIConfiguration: Hashable {
         let message: MessagingChatMessageDisplayInfo
-        let type: String
+        let pressedCallback: EmptyCallback
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.message.id == rhs.message.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(message.id)
+        }
     }
     
     struct ChannelFeedUIConfiguration: Hashable {

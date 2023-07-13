@@ -224,12 +224,14 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
-    func deleteChat(_ chat: MessagingChat) {
+    func deleteChat(_ chat: MessagingChat,
+                    filesService: MessagingFilesServiceProtocol) {
         queue.sync {
             let chatId = chat.displayInfo.id
             guard let coreDataChat: CoreDataMessagingChat = getCoreDataEntityWith(id: chatId) else { return }
             
-            deleteMessagesWithChatId(chatId)
+            deleteMessagesWithChatId(chatId,
+                                     filesService: filesService)
             deleteObject(coreDataChat, from: backgroundContext)
         }
     }
@@ -324,14 +326,15 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     // Clear
-    func clearAllDataOf(profile: MessagingChatUserProfile) async {
+    func clearAllDataOf(profile: MessagingChatUserProfile,
+                        filesService: MessagingFilesServiceProtocol) async {
         queue.sync {
             let chatsPredicate = NSPredicate(format: "userId == %@", profile.id)
             let coreDataChats: [CoreDataMessagingChat] = (try? getEntities(predicate: chatsPredicate,
                                                                            from: backgroundContext)) ?? []
             
             for chat in coreDataChats {
-                deleteMessagesWithChatId(chat.id!)
+                deleteMessagesWithChatId(chat.id!, filesService: filesService)
             }
             
             deleteObjects(coreDataChats, from: backgroundContext, shouldSaveContext: false)
@@ -352,11 +355,24 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
-    private func deleteMessagesWithChatId(_ chatId: String) {
+    private func deleteMessagesWithChatId(_ chatId: String,
+                                          filesService: MessagingFilesServiceProtocol) {
         let messagesPredicate = NSPredicate(format: "chatId == %@", chatId)
         let coreDataMessages: [CoreDataMessagingChatMessage] = (try? getEntities(predicate: messagesPredicate,
                                                                                  from: backgroundContext)) ?? []
+        for message in coreDataMessages {
+            clearFileDataOf(message: message,
+                            filesService: filesService)
+        }
         deleteObjects(coreDataMessages, from: backgroundContext, shouldSaveContext: false)
+    }
+    
+    private func clearFileDataOf(message: CoreDataMessagingChatMessage,
+                                 filesService: MessagingFilesServiceProtocol) {
+        guard let json = message.genericMessageDetails,
+           let details = FileDetails.objectFromJSON(json) else { return }
+        
+        filesService.deleteEncryptedDataWith(fileName: details.fileName)
     }
     
     private func deleteFeedWithChannelId(_ channelId: String) {
@@ -626,7 +642,7 @@ private extension CoreDataMessagingStorageService {
             }
         } else {
             if coreDataMessage.messageType == 999 {
-                guard let json = coreDataMessage.unknownMessageDetails,
+                guard let json = coreDataMessage.genericMessageDetails,
                       let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
                 
                 let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: details.fileName,
@@ -650,7 +666,7 @@ private extension CoreDataMessagingStorageService {
             coreDataMessage.messageContent = info.encryptedContent
         case .unknown(let info):
             coreDataMessage.messageType = 999
-            coreDataMessage.unknownMessageDetails = CoreDataUnknownMessageDetails(type: info.type,
+            coreDataMessage.genericMessageDetails = CoreDataUnknownMessageDetails(type: info.type,
                                                                                   fileName: info.fileName,
                                                                                   name: info.name,
                                                                                   size: info.size).jsonRepresentation()
@@ -831,6 +847,10 @@ private extension CoreDataMessagingStorageService {
         var fileName: String
         var name: String?
         var size: Int?
+    }
+    
+    struct FileDetails: Codable {
+        var fileName: String
     }
 
 }

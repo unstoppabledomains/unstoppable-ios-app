@@ -45,7 +45,8 @@ protocol MessagingStorageServiceProtocol {
     func saveChats(_ chats: [MessagingChat]) async
     func replaceChat(_ chatToReplace: MessagingChat,
                      with newChat: MessagingChat) async throws
-    func deleteChat(_ chat: MessagingChat)
+    func deleteChat(_ chat: MessagingChat,
+                    filesService: MessagingFilesServiceProtocol)
     
     // User info
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async
@@ -69,5 +70,6 @@ protocol MessagingStorageServiceProtocol {
                       isRead: Bool) throws
     
     // Clear
-    func clearAllDataOf(profile: MessagingChatUserProfile) async
+    func clearAllDataOf(profile: MessagingChatUserProfile,
+                        filesService: MessagingFilesServiceProtocol) async
 }

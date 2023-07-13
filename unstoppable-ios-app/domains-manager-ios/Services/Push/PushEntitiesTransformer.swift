@@ -197,7 +197,7 @@ struct PushEntitiesTransformer {
             guard let messageContent = encryptMessageContentIfNeeded(contentInfo.content),
                   let data = messageContent.data(using: .utf8) else { return nil }
             
-            let fileName = messageId
+            let fileName = messageId + (contentInfo.name ?? "")
             try filesService.saveEncryptedData(data, fileName: fileName)
             let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
                                                                                 type: pushMessage.messageType,
