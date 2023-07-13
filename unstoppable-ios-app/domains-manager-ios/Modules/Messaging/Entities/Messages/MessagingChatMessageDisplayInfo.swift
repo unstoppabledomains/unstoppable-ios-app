@@ -16,6 +16,7 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     var isRead: Bool
     var isFirstInChat: Bool
     var deliveryState: DeliveryState
+    var isEncrypted: Bool
     
     mutating func prepareToDisplay() async {
         switch type {

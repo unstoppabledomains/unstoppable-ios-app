@@ -118,7 +118,8 @@ struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
                                                           type: .unknown(unknownMessageInfo),
                                                           isRead: false,
                                                           isFirstInChat: true,
-                                                          deliveryState: .delivered)
+                                                          deliveryState: .delivered,
+                                                          isEncrypted: true)
             cell.setWith(configuration: .init(message: message, pressedCallback: { }))
         }
         .frame(width: 390, height: height)

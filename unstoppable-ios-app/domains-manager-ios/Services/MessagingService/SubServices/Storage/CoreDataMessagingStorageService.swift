@@ -584,6 +584,7 @@ private extension CoreDataMessagingStorageService {
                                                wallet: wallet) else { return nil }
         
         let senderType = getMessagingChatSender(from: coreDataMessage)
+        let isEncrypted = decrypter.isMessageEncrypted(serviceMetadata: coreDataMessage.serviceMetadata)
         let displayInfo = MessagingChatMessageDisplayInfo(id: coreDataMessage.id!,
                                                           chatId: coreDataMessage.chatId!,
                                                           senderType: senderType,
@@ -591,7 +592,8 @@ private extension CoreDataMessagingStorageService {
                                                           type: type,
                                                           isRead: coreDataMessage.isRead,
                                                           isFirstInChat: coreDataMessage.isFirstInChat,
-                                                          deliveryState: deliveryState)
+                                                          deliveryState: deliveryState,
+                                                          isEncrypted: isEncrypted)
         
         return MessagingChatMessage(displayInfo: displayInfo,
                                     serviceMetadata: coreDataMessage.serviceMetadata)

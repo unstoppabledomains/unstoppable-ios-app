@@ -178,7 +178,8 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     type: messageType,
                                                                     isRead: true,
                                                                     isFirstInChat: false,
-                                                                    deliveryState: .sending)
+                                                                    deliveryState: .sending,
+                                                                    isEncrypted: true) // TODO: - Check encryption status
         let message = MessagingChatMessage(displayInfo: newMessageDisplayInfo,
                                            serviceMetadata: nil)
         await storageService.saveMessages([message])

@@ -139,7 +139,8 @@ struct PushEntitiesTransformer {
                                                                    encryptedSecret: encryptedSecret,
                                                                    link: pushMessage.link)
         let serviceMetadata = metadataModel.jsonData()
-        
+        let isMessageEncrypted = pushMessage.encType == pgpEncryptionType
+
         let displayInfo = MessagingChatMessageDisplayInfo(id: id,
                                                           chatId: chat.displayInfo.id,
                                                           senderType: sender,
@@ -147,7 +148,8 @@ struct PushEntitiesTransformer {
                                                           type: type,
                                                           isRead: isRead,
                                                           isFirstInChat: false,
-                                                          deliveryState: .delivered)
+                                                          deliveryState: .delivered,
+                                                          isEncrypted: isMessageEncrypted)
         let chatMessage = MessagingChatMessage(displayInfo: displayInfo,
                                                serviceMetadata: serviceMetadata)
         return chatMessage

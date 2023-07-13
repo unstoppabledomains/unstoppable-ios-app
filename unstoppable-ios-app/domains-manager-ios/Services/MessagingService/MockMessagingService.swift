@@ -174,7 +174,8 @@ private extension MockMessagingService {
                                 encryptedText: mockLastMessageTexts.randomElement()!)),
               isRead: true,
               isFirstInChat: false,
-              deliveryState: .delivered)
+              deliveryState: .delivered,
+              isEncrypted: true)
     }
     
     struct MockDomainChatInfo: Hashable {
@@ -216,7 +217,8 @@ private extension MockMessagingService {
                                                                            encryptedText: text)),
                                                           isRead: true,
                                                           isFirstInChat: false,
-                                                          deliveryState: .delivered)
+                                                          deliveryState: .delivered,
+                                                          isEncrypted: true)
             messages.append(message)
         }
         

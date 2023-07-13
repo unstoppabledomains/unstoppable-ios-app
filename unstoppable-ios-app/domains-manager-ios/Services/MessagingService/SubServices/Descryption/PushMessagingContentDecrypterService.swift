@@ -12,6 +12,13 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
     
     private var pgpKeysCache = [String : String]()
     
+    func isMessageEncrypted(serviceMetadata: Data?) -> Bool {
+        guard let serviceMetadata,
+              let messageMetadata = (try? JSONDecoder().decode(PushEnvironment.MessageServiceMetadata.self, from: serviceMetadata)) else { return false }
+        
+        return isMessageDataEncrypted(messageMetadata: messageMetadata)
+    }
+    
     func decryptText(_ text: String, with serviceMetadata: Data?, wallet: String) throws -> String {
         guard let serviceMetadata,
               let pgpKey = getPGPKeyFor(wallet: wallet),
@@ -19,13 +26,20 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
             throw EncryptionError.failedToGatherRequiredData
         }
         
-        switch EncryptionType(rawValue: messageMetadata.encType) {
-        case .none:
-            return text
-        case .pgp:
+        if isMessageDataEncrypted(messageMetadata: messageMetadata) {
             return try Push.PushChat.decryptMessage(text,
                                                     encryptedSecret: messageMetadata.encryptedSecret,
                                                     privateKeyArmored: pgpKey)
+        }
+        return text
+    }
+    
+    private func isMessageDataEncrypted(messageMetadata: PushEnvironment.MessageServiceMetadata) -> Bool {
+        switch EncryptionType(rawValue: messageMetadata.encType) {
+        case .none:
+            return false
+        case .pgp:
+            return true
         }
     }
     
