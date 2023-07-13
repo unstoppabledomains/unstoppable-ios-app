@@ -192,6 +192,7 @@ extension String {
         static let viewInfo = "VIEW_INFO"
         static let leave = "LEAVE"
         static let download = "DOWNLOAD"
+        static let unencrypted = "UNENCRYPTED"
 
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

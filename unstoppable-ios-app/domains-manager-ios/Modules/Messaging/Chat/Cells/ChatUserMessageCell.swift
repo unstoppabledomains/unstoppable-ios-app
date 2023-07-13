@@ -42,9 +42,26 @@ class ChatUserMessageCell: ChatBaseCell {
             timeLabelTapGesture?.isEnabled = false
             deleteButton?.isHidden = true
             let formatterTime = MessageDateFormatter.formatMessageDate(message.time)
-            timeLabel.setAttributedTextWith(text: formatterTime,
-                                            font: .currentFont(withSize: 11, weight: .regular),
-                                            textColor: .foregroundSecondary)
+            if message.isEncrypted {
+                timeLabel.setAttributedTextWith(text: formatterTime,
+                                                font: .currentFont(withSize: 11, weight: .regular),
+                                                textColor: .foregroundSecondary)
+            } else {
+                let unencryptedWord = String.Constants.unencrypted.localized()
+                let text: String
+                switch message.senderType {
+                case .thisUser:
+                    text = "\(unencryptedWord) · \(formatterTime)"
+                case .otherUser:
+                    text = "\(formatterTime) · \(unencryptedWord)"
+                }
+                timeLabel.setAttributedTextWith(text: text,
+                                                font: .currentFont(withSize: 11, weight: .regular),
+                                                textColor: .foregroundSecondary)
+                timeLabel.updateAttributesOf(text: unencryptedWord,
+                                             textColor: .foregroundAccent)
+                timeLabelTapGesture?.isEnabled = true
+            }
         case .sending:
             timeLabelTapGesture?.isEnabled = false
             deleteButton?.isHidden = true
