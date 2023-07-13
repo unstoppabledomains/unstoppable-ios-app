@@ -515,6 +515,8 @@ private extension MessagingService {
                                                                                             in: remoteChat.displayInfo,
                                                                                             decrypter: self.decrypterService) {
                                 lastMessage.displayInfo.isRead = storedMessage.displayInfo.isRead
+                            } else {
+                                lastMessage.displayInfo.isRead = false
                             }
                             if !lastMessage.displayInfo.senderType.isThisUser && !lastMessage.displayInfo.isRead {
                                 updatedChat.displayInfo.unreadMessagesCount += 1
