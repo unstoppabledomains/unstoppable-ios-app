@@ -19,6 +19,7 @@ protocol MessagingServiceProtocol {
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws
+    func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws
     
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
@@ -37,7 +38,8 @@ protocol MessagingServiceProtocol {
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool,
                      wallet: String) throws
-    func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws
+    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo,
+                                in chat: MessagingChatDisplayInfo) async -> URL?
     
     // Channels
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]

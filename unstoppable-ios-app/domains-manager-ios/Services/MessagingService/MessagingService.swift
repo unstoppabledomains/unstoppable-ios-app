@@ -232,6 +232,35 @@ extension MessagingService: MessagingServiceProtocol {
         notifyChatsChanged(wallet: wallet)
     }
     
+    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo,
+                                in chat: MessagingChatDisplayInfo) async -> URL? {
+        let fileName: String
+        
+        switch message.type {
+        case .text, .imageBase64:
+            return nil
+        case .unknown(let info):
+            fileName = info.fileName
+        }
+        
+        if let url = filesService.getDecryptedDataURLFor(fileName: fileName) {
+            return url
+        }
+        
+        guard let chatMessage = await storageService.getMessageWith(id: message.id,
+                                                                    in: chat,
+                                                                    decrypter: decrypterService) else { return nil }
+        guard let encryptedDataURL = filesService.getEncryptedDataURLFor(fileName: fileName),
+              let encryptedData = try? Data(contentsOf: encryptedDataURL),
+              let encryptedContent = String(data: encryptedData, encoding: .utf8),
+              let decryptedContent = try? decrypterService.decryptText(encryptedContent,
+                                                                       with: chatMessage.serviceMetadata,
+                                                                       wallet: chat.thisUserDetails.wallet),
+              let decryptedData = decryptedContent.data(using: .utf8) else { return nil }
+        
+        return try? filesService.saveDecryptedData(decryptedData, fileName: fileName)
+    }
+    
     // Channels
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
@@ -776,7 +805,6 @@ private extension MessagingService {
     
     func replaceCacheMessageAndNotify(_ messageToReplace: MessagingChatMessage,
                                       with newMessage: MessagingChatMessage) {
-        
         Task {
             try? await storageService.replaceMessage(messageToReplace, with: newMessage)
             notifyListenersChangedDataType(.messageUpdated(messageToReplace.displayInfo, newMessage: newMessage.displayInfo))
