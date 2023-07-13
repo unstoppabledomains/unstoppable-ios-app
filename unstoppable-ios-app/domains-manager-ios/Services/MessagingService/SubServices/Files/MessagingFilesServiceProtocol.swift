@@ -9,13 +9,13 @@ import Foundation
 
 protocol MessagingFilesServiceProtocol {
     /// Encrypted
-    func getEncryptedDataURLFor(id: String) -> URL?
+    func getEncryptedDataURLFor(fileName: String) -> URL?
     @discardableResult
-    func saveEncryptedData(_ data: Data, id: String) throws -> URL
-    func deleteEncryptedDataWith(id: String)
+    func saveEncryptedData(_ data: Data, fileName: String) throws -> URL
+    func deleteEncryptedDataWith(fileName: String)
     
     /// Decrypted
-    func getDecryptedDataURLFor(id: String) -> URL?
+    func getDecryptedDataURLFor(fileName: String) -> URL?
     @discardableResult
-    func saveDecryptedData(_ data: Data, id: String) throws -> URL
+    func saveDecryptedData(_ data: Data, fileName: String) throws -> URL
 }

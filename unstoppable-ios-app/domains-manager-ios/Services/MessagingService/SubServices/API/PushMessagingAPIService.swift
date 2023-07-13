@@ -201,7 +201,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getMessagesForChat(_ chat: MessagingChat,
                             options: MessagingAPIServiceLoadMessagesOptions,
                             fetchLimit: Int,
-                            for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
+                            for user: MessagingChatUserProfile,
+                            filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
         switch options {
         case .default:
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
@@ -212,7 +213,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                         threadHash: threadHash,
                                                         fetchLimit: fetchLimit,
                                                         isRead: true,
-                                                        for: user)
+                                                        for: user, filesService: filesService)
         case .before(let message):
             let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: message.serviceMetadata)
             guard let threadHash = messageMetadata.link else {
@@ -222,7 +223,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                         threadHash: threadHash,
                                                         fetchLimit: fetchLimit,
                                                         isRead: true,
-                                                        for: user)
+                                                        for: user, filesService: filesService)
         case .after(let message):
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
             guard var threadHash = chatMetadata.threadHash else {
@@ -236,7 +237,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                          threadHash: threadHash,
                                                                          fetchLimit: fetchLimit,
                                                                          isRead: false,
-                                                                         for: user)
+                                                                         for: user, filesService: filesService)
                 if let i = chunkMessages.firstIndex(where: { $0.displayInfo.id == message.displayInfo.id }) {
                     let missingMessages = Array(chunkMessages[..<i])
                     messages.append(contentsOf: missingMessages)
@@ -258,7 +259,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                             threadHash: String,
                                             fetchLimit: Int,
                                             isRead: Bool,
-                                            for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
+                                            for user: MessagingChatUserProfile,
+                                            filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
         let env = getCurrentPushEnvironment()
         let pushMessages = try await Push.PushChat.History(threadHash: threadHash,
                                                            limit: fetchLimit,
@@ -270,20 +272,23 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0,
                                                                                                          in: chat,
                                                                                                          pgpKey: pgpPrivateKey,
-                                                                                                         isRead: isRead) })
+                                                                                                         isRead: isRead,
+                                                                                                         filesService: filesService) })
         return messages
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat,
-                     by user: MessagingChatUserProfile) async throws -> MessagingChatMessage {
+                     by user: MessagingChatUserProfile,
+                     filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
         func convertPushMessageToChatMessage(_ message: Push.Message) throws -> MessagingChatMessage {
             guard let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
                                                                                             in: chat,
                                                                                             pgpKey: pgpPrivateKey,
-                                                                                            isRead: true) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
+                                                                                            isRead: true,
+                                                                                            filesService: filesService) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
             
             return chatMessage
         }
@@ -317,7 +322,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
                           to userInfo: MessagingChatUserDisplayInfo,
-                          by user: MessagingChatUserProfile) async throws -> (MessagingChat, MessagingChatMessage) {
+                          by user: MessagingChatUserProfile,
+                          filesService: MessagingFilesServiceProtocol) async throws -> (MessagingChat, MessagingChatMessage) {
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         let receiver = userInfo.wallet.ethChecksumAddress()
         let sendOptions = try await buildPushSendOptions(for: messageType,
@@ -337,7 +343,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
               let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
                                                                                         in: chat,
                                                                                         pgpKey: pgpPrivateKey,
-                                                                                        isRead: true) else {
+                                                                                        isRead: true,
+                                                                                        filesService: filesService) else {
             throw PushMessagingAPIServiceError.failedToConvertPushMessage
         }
         

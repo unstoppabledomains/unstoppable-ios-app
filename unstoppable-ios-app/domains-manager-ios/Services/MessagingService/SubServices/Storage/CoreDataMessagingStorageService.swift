@@ -602,34 +602,39 @@ private extension CoreDataMessagingStorageService {
                                decrypter: MessagingContentDecrypterService,
                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState,
                                wallet: String) -> MessagingChatMessageDisplayType? {
-        guard let messageContent = coreDataMessage.messageContent else { return nil }
-        
-        var decryptedContent = messageContent
-        if deliveryState == .delivered {
-            guard let decrypted = try? decrypter.decryptText(messageContent,
-                                                             with: coreDataMessage.serviceMetadata,
-                                                             wallet: wallet) else {
-                return nil }
-            decryptedContent = decrypted
-        }
-        
-        if coreDataMessage.messageType == 0 {
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
-                                                                          encryptedText: messageContent)
-            return .text(textDisplayInfo)
-        } else if coreDataMessage.messageType == 1 {
-            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent,
-                                                                                        encryptedContent: messageContent)
-            return .imageBase64(imageBase64DisplayInfo)
-        } else if coreDataMessage.messageType == 999 {
-            guard let json = coreDataMessage.unknownMessageDetails,
-                  let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
+        let typesWithContentInCoreData: Set<Int64> = [0, 1]
+        if typesWithContentInCoreData.contains(coreDataMessage.messageType) {
+            guard let messageContent = coreDataMessage.messageContent else { return nil }
             
-            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: messageContent,
-                                                                                type: details.type,
-                                                                                name: details.name,
-                                                                                size: details.size)
-            return .unknown(unknownDisplayInfo)
+            var decryptedContent = messageContent
+            if deliveryState == .delivered {
+                guard let decrypted = try? decrypter.decryptText(messageContent,
+                                                                 with: coreDataMessage.serviceMetadata,
+                                                                 wallet: wallet) else {
+                    return nil }
+                decryptedContent = decrypted
+            }
+            
+            if coreDataMessage.messageType == 0 {
+                let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
+                                                                              encryptedText: messageContent)
+                return .text(textDisplayInfo)
+            } else if coreDataMessage.messageType == 1 {
+                let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent,
+                                                                                            encryptedContent: messageContent)
+                return .imageBase64(imageBase64DisplayInfo)
+            }
+        } else {
+            if coreDataMessage.messageType == 999 {
+                guard let json = coreDataMessage.unknownMessageDetails,
+                      let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
+                
+                let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: details.fileName,
+                                                                                    type: details.type,
+                                                                                    name: details.name,
+                                                                                    size: details.size)
+                return .unknown(unknownDisplayInfo)
+            }
         }
         
         return nil
@@ -645,8 +650,8 @@ private extension CoreDataMessagingStorageService {
             coreDataMessage.messageContent = info.encryptedContent
         case .unknown(let info):
             coreDataMessage.messageType = 999
-            coreDataMessage.messageContent = info.encryptedContent
             coreDataMessage.unknownMessageDetails = CoreDataUnknownMessageDetails(type: info.type,
+                                                                                  fileName: info.fileName,
                                                                                   name: info.name,
                                                                                   size: info.size).jsonRepresentation()
         }
@@ -823,6 +828,7 @@ private extension CoreDataMessagingStorageService {
     
     struct CoreDataUnknownMessageDetails: Codable {
         var type: String
+        var fileName: String
         var name: String?
         var size: Int?
     }

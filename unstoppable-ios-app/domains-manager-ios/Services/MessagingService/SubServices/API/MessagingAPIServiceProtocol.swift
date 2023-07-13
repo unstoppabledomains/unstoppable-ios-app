@@ -28,13 +28,16 @@ protocol MessagingAPIServiceProtocol {
     func getMessagesForChat(_ chat: MessagingChat,
                             options: MessagingAPIServiceLoadMessagesOptions,
                             fetchLimit: Int,
-                            for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage]
+                            for user: MessagingChatUserProfile,
+                            filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat,
-                     by user: MessagingChatUserProfile) async throws -> MessagingChatMessage
+                     by user: MessagingChatUserProfile,
+                     filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
                           to userInfo: MessagingChatUserDisplayInfo,
-                          by user: MessagingChatUserProfile) async throws -> (MessagingChat, MessagingChatMessage)
+                          by user: MessagingChatUserProfile,
+                          filesService: MessagingFilesServiceProtocol) async throws -> (MessagingChat, MessagingChatMessage)
     
     func makeChatRequest(_ chat: MessagingChat,
                          approved: Bool,

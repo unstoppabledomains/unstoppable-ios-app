@@ -20,45 +20,45 @@ final class MessagingFilesService {
 // MARK: - Open methods
 extension MessagingFilesService: MessagingFilesServiceProtocol {
     /// Encrypted
-    func getEncryptedDataURLFor(id: String) -> URL? {
-        getURLIfFileExistFor(id: id, dataType: .encrypted)
+    func getEncryptedDataURLFor(fileName: String) -> URL? {
+        getURLIfFileExistFor(fileName: fileName, dataType: .encrypted)
     }
     
     @discardableResult
-    func saveEncryptedData(_ data: Data, id: String) throws -> URL {
-        try saveData(data, id: id, dataType: .encrypted)
+    func saveEncryptedData(_ data: Data, fileName: String) throws -> URL {
+        try saveData(data, fileName: fileName, dataType: .encrypted)
     }
     
-    func deleteEncryptedDataWith(id: String) {
-        let url = urlToFileWith(id: id, dataType: .encrypted)
+    func deleteEncryptedDataWith(fileName: String) {
+        let url = urlToFileWith(fileName: fileName, dataType: .encrypted)
         try? fileManager.removeItem(at: url)
     }
     
     /// Decrypted
-    func getDecryptedDataURLFor(id: String) -> URL? {
-        getURLIfFileExistFor(id: id, dataType: .decrypted)
+    func getDecryptedDataURLFor(fileName: String) -> URL? {
+        getURLIfFileExistFor(fileName: fileName, dataType: .decrypted)
     }
     
     @discardableResult
-    func saveDecryptedData(_ data: Data, id: String) throws -> URL {
-        try saveData(data, id: id, dataType: .decrypted)
+    func saveDecryptedData(_ data: Data, fileName: String) throws -> URL {
+        try saveData(data, fileName: fileName, dataType: .decrypted)
     }
 }
 
 // MARK: - Private methods
 private extension MessagingFilesService {
-    func getURLIfFileExistFor(id: String, dataType: MessagingDataType) -> URL? {
-        let url = urlToFileWith(id: id, dataType: dataType)
+    func getURLIfFileExistFor(fileName: String, dataType: MessagingDataType) -> URL? {
+        let url = urlToFileWith(fileName: fileName, dataType: dataType)
         if fileManager.fileExists(atPath: url.path) {
             return url
         }
         return nil
     }
     
-    func saveData(_ data: Data, id: String, dataType: MessagingDataType) throws -> URL {
-        let url = urlToFileWith(id: id, dataType: dataType)
+    func saveData(_ data: Data, fileName: String, dataType: MessagingDataType) throws -> URL {
+        let url = urlToFileWith(fileName: fileName, dataType: dataType)
         
-        // Check if file already saved 
+        // Check if file already saved
         if let existingData = try? Data(contentsOf: url) {
             if existingData == data {
                 return url
@@ -71,9 +71,9 @@ private extension MessagingFilesService {
         return url
     }
     
-    func urlToFileWith(id: String, dataType: MessagingDataType) -> URL {
+    func urlToFileWith(fileName: String, dataType: MessagingDataType) -> URL {
         let folderURL = folderURLFor(dataType: dataType)
-        return folderURL.appendingPathComponent(id)
+        return folderURL.appendingPathComponent(fileName)
     }
     
     func folderURLFor(dataType: MessagingDataType) -> URL {

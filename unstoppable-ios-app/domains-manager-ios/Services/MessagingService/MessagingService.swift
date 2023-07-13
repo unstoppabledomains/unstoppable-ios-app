@@ -197,7 +197,8 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
         let (chat, message) = try await apiService.sendFirstMessage(messageType,
                                                                     to: userInfo,
-                                                                    by: profile)
+                                                                    by: profile,
+                                                                    filesService: filesService)
         
         await storageService.saveChats([chat])
         await storageService.saveMessages([message])
@@ -510,7 +511,8 @@ private extension MessagingService {
                         if var lastMessage = try? await self.apiService.getMessagesForChat(remoteChat,
                                                                                            options: .default,
                                                                                            fetchLimit: 1,
-                                                                                           for: profile).first {
+                                                                                           for: profile,
+                                                                                           filesService: self.filesService).first {
                             
                             var updatedChat = remoteChat
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
@@ -618,7 +620,8 @@ private extension MessagingService {
         var messages = try await apiService.getMessagesForChat(chat,
                                                                options: options,
                                                                fetchLimit: limit,
-                                                               for: profile)
+                                                               for: profile,
+                                                               filesService: filesService)
         
         // Check for message is first in the chat when load earlier before
         if case .before(let message) = options {
@@ -653,7 +656,8 @@ private extension MessagingService {
             do {
                 let sentMessage = try await apiService.sendMessage(messageType,
                                                                    in: chat,
-                                                                   by: user)
+                                                                   by: user,
+                                                                   filesService: filesService)
                 replaceCacheMessageAndNotify(message,
                                              with: sentMessage)
                 try await setLastMessageAndNotify(sentMessage.displayInfo,
@@ -890,14 +894,14 @@ private extension MessagingService {
                       return false
                   }
               }) else { throw MessagingServiceError.chatNotFound }
-        guard let message = messageEntity.transformToMessageBlock(messageEntity, chat) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
+        guard let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
         return message
     }
     
     func convertMessagingWebSocketGroupMessageEntityToMessage(_ messageEntity: MessagingWebSocketGroupMessageEntity) async throws -> [MessagingChatMessage] {
         let chats = await storageService.getChatsWithIdContaining(messageEntity.chatId,
                                                                   decrypter: decrypterService)
-        return chats.compactMap({ messageEntity.transformToMessageBlock(messageEntity, $0) })
+        return chats.compactMap({ messageEntity.transformToMessageBlock(messageEntity, $0, filesService) })
     }
     
     func setSceneActivationListener() {

@@ -92,7 +92,7 @@ struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
         
         return UICollectionViewCellPreview(cellType: ChatUnsupportedMessageCell.self, height: height) { cell in
             let user = MessagingChatUserDisplayInfo(wallet: "24")
-            let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: "",
+            let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: "",
                                                                                 type: "file",
                                                                                 name: "Filenaskjdskjdfhsdkfjhskdfjhsdkfjhhfsde.pdf",
                                                                                 size: 99900)
