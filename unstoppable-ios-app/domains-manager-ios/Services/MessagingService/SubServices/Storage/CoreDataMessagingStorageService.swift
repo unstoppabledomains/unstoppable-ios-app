@@ -525,9 +525,10 @@ private extension CoreDataMessagingStorageService {
             
             return .private(privateChatDetails)
         } else if coreDataChat.type == 1,
-                  let groupName = coreDataChat.groupName,
-                  let memberWallets = coreDataChat.groupMemberWallets,
-                  let pendingMembersWallets = coreDataChat.groupPendingMemberWallets {
+                  let json = coreDataChat.groupDetails,
+                  let details = CoreDataChatGroupDetails.objectFromJSON(json) {
+            let memberWallets = details.memberWallets
+            let pendingMembersWallets = details.pendingMembersWallets
             let allMembersWallets = memberWallets + pendingMembersWallets
             let cachedUserInfos = getCoreDataDomainInfosFor(wallets: allMembersWallets)
             let walletToInfoMap = cachedUserInfos.reduce([String : CoreDataMessagingUserInfo]()) { (dict, userInfo) in
@@ -543,14 +544,14 @@ private extension CoreDataMessagingStorageService {
                                                     pfpURL: cachedInfo?.pfpURL)
             }
             
-            
             let members = memberWallets.map { createUserDisplayInfoFor(wallet: $0) }
             let pendingMembers = pendingMembersWallets.map { createUserDisplayInfoFor(wallet: $0) }
             
             let groupChatDetails = MessagingGroupChatDetails(members: members,
                                                              pendingMembers: pendingMembers,
-                                                             name: groupName,
-                                                             adminWallet: coreDataChat.groupAdminWallet)
+                                                             name: details.name,
+                                                             adminWallet: details.adminWallet,
+                                                             isPublic: details.isPublic)
             return .group(groupChatDetails)
         }
         
@@ -564,10 +565,13 @@ private extension CoreDataMessagingStorageService {
             coreDataChat.otherUserWallet = details.otherUser.wallet
         case .group(let details):
             coreDataChat.type = 1
-            coreDataChat.groupMemberWallets = details.members.map { $0.wallet }
-            coreDataChat.groupPendingMemberWallets = details.pendingMembers.map { $0.wallet }
-            coreDataChat.groupName = details.name
-            coreDataChat.groupAdminWallet = details.adminWallet
+            let memberWallets = details.members.map { $0.wallet }
+            let pendingMembersWallets = details.pendingMembers.map { $0.wallet }
+            coreDataChat.groupDetails = CoreDataChatGroupDetails(name: details.name,
+                                                                 adminWallet: details.adminWallet,
+                                                                 isPublic: details.isPublic,
+                                                                 memberWallets: memberWallets,
+                                                                 pendingMembersWallets: pendingMembersWallets).jsonRepresentation()
         }
     }
 }
@@ -842,6 +846,14 @@ private extension CoreDataMessagingStorageService {
         } catch {
             return []
         }
+    }
+    
+    struct CoreDataChatGroupDetails: Codable {
+        let name: String
+        let adminWallet: String?
+        let isPublic: Bool
+        let memberWallets: [String]
+        let pendingMembersWallets: [String]
     }
     
     struct CoreDataUnknownMessageDetails: Codable {

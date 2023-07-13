@@ -12,6 +12,7 @@ struct MessagingGroupChatDetails: Hashable {
     let pendingMembers: [MessagingChatUserDisplayInfo]
     let name: String
     let adminWallet: String?
+    let isPublic: Bool
     
     var allMembers: [MessagingChatUserDisplayInfo] { members + pendingMembers }
     var displayName: String {
