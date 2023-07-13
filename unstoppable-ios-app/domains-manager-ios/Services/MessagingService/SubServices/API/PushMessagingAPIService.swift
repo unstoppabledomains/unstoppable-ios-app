@@ -350,18 +350,18 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         guard approved else { throw PushMessagingAPIServiceError.declineRequestNotSupported }
         
         let env = getCurrentPushEnvironment()
-        let sender = chat.displayInfo.thisUserDetails
+        let approverAddress = chat.displayInfo.thisUserDetails.wallet
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
-        let fromAddress: String
+        let requesterAddress: String
         switch chat.displayInfo.type {
         case .private(let otherUserDetails):
-            fromAddress = otherUserDetails.otherUser.wallet
+            requesterAddress = otherUserDetails.otherUser.wallet
         case .group:
-            fromAddress = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
+            requesterAddress = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
         }
 
-        let approveOptions = Push.PushChat.ApproveOptions(fromAddress: fromAddress,
-                                                          toAddress: sender.wallet,
+        let approveOptions = Push.PushChat.ApproveOptions(requesterAddress: requesterAddress,
+                                                          approverAddress: approverAddress,
                                                           privateKey: pgpPrivateKey,
                                                           env: env)
         _ = try await Push.PushChat.approve(approveOptions)
