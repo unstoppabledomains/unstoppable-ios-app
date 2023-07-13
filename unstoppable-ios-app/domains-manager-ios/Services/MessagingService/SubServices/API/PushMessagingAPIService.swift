@@ -277,6 +277,22 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         return messages
     }
     
+    func isMessagesEncryptedIn(chat: MessagingChat) async -> Bool {
+        switch chat.displayInfo.type {
+        case .private(let details):
+            if chat.displayInfo.isApproved {
+                return true
+            }
+            let env = getCurrentPushEnvironment()
+            
+            /// Message will be encrypted in chat where both users has Push profile created
+            return (try? await PushUser.get(account: details.otherUser.wallet, env: env)) != nil
+        case .group(let details):
+            /// Messages not encrypted in public group 
+            return !details.isPublic
+        }
+    }
+    
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat,
                      by user: MessagingChatUserProfile,
