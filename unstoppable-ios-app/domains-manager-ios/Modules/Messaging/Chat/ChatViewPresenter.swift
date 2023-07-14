@@ -44,6 +44,7 @@ final class ChatViewPresenter {
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
+    private var isChannelEncrypted: Bool = true
     var analyticsName: Analytics.ViewName { .chatDialog }
 
     init(view: any ChatViewProtocol,
@@ -147,7 +148,7 @@ extension ChatViewPresenter: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
         Task { @MainActor in
             switch messagingDataType {
-            case .chats, .channels:
+            case .chats, .channels, .channelFeedAdded:
                 return
             case .messagesAdded(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
@@ -181,6 +182,7 @@ extension ChatViewPresenter: MessagingServiceListener {
 private extension ChatViewPresenter {
     func loadAndShowData() {
         Task {
+            isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
             do {
                 switch conversationState {
                 case .existingChat(let chat):
@@ -290,11 +292,15 @@ private extension ChatViewPresenter {
         var snapshot = ChatSnapshot()
         
         if messages.isEmpty {
-            view?.setEmptyState(active: !isLoading)
+            if isLoading {
+                view?.setEmptyState(nil)
+            } else {
+                view?.setEmptyState(isChannelEncrypted ? .chatEncrypted : .chatUnEncrypted)
+            }
             view?.setScrollEnabled(false)
             snapshot.appendSections([])
         } else {
-            view?.setEmptyState(active: false)
+            view?.setEmptyState(nil)
             if isLoading {
                 snapshot.appendSections([.loading])
                 snapshot.appendItems([.loading])
@@ -328,8 +334,11 @@ private extension ChatViewPresenter {
                                                             actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
-        case .unknown(let info):
-            return .unsupportedMessage(configuration: .init(message: message, type: info.type))
+        case .unknown:
+            return .unsupportedMessage(configuration: .init(message: message, pressedCallback: { [weak self] in
+                self?.logButtonPressedAnalyticEvents(button: .downloadUnsupportedMessage)
+                self?.shareContentOfMessage(message)
+            }))
         }
     }
     
@@ -403,10 +412,12 @@ private extension ChatViewPresenter {
                     self?.didPressViewGroupInfoButton(groupDetails: groupDetails)
                 }))
                 
-                actions.append(.init(type: .leave, callback: { [weak self] in
-                    self?.logButtonPressedAnalyticEvents(button: .leaveGroup)
-                    self?.didPressLeaveButton()
-                }))
+                if groupDetails.adminWallet?.lowercased() != profile.wallet.lowercased() {
+                    actions.append(.init(type: .leave, callback: { [weak self] in
+                        self?.logButtonPressedAnalyticEvents(button: .leaveGroup)
+                        self?.didPressLeaveButton()
+                    }))
+                }
             }
         }
         
@@ -444,7 +455,18 @@ private extension ChatViewPresenter {
     }
     
     func didPressLeaveButton() {
-        // TODO: - Implement when SDK is ready
+        guard case .existingChat(let chat) = conversationState else { return }
+
+        Task {
+            do {
+                view?.setLoading(active: true)
+                try await appContext.messagingService.leaveGroupChat(chat)
+                view?.cNavigationController?.popViewController(animated: true)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+            view?.setLoading(active: false)
+        }
     }
     
     func setOtherUser(blocked: Bool) {
@@ -476,6 +498,10 @@ private extension ChatViewPresenter {
                 messages.remove(at: i)
                 showData(animated: true, isLoading: isLoadingMessages)
             }
+        case .unencrypted:
+            guard let view else { return }
+            
+            appContext.pullUpViewService.showUnencryptedMessageInfoPullUp(in: view)
         }
     }
     
@@ -504,6 +530,21 @@ private extension ChatViewPresenter {
                 self.view?.setUIState(.otherUserIsBlocked)
             }
             setupBarButtons()
+        }
+    }
+    
+    
+    func shareContentOfMessage(_ message: MessagingChatMessageDisplayInfo) {
+        Task {
+            guard let contentURL = await appContext.messagingService.decryptedContentURLFor(message: message) else { return } // TODO: - Handle error
+            
+            let activityViewController = UIActivityViewController(activityItems: [contentURL], applicationActivities: nil)
+            activityViewController.completionWithItemsHandler = { _, completed, _, _ in
+                if completed {
+                    AppReviewService.shared.appReviewEventDidOccurs(event: .didShareProfile)
+                }
+            }
+            view?.present(activityViewController, animated: true)
         }
     }
 }

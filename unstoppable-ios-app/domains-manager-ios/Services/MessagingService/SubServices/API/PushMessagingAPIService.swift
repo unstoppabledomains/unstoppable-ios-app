@@ -52,6 +52,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                       isRequests: false)
         
         return try await transformPushChatsToChats(pushChats,
+                                                   isApproved: true,
                                                    for: user)
     }
     
@@ -103,10 +104,12 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                       isRequests: true)
         
         return try await transformPushChatsToChats(pushChats,
+                                                   isApproved: false,
                                                    for: user)
     }
     
     private func transformPushChatsToChats(_ pushChats: [PushChat],
+                                           isApproved: Bool,
                                            for user: MessagingChatUserProfile) async throws -> [MessagingChat] {
         var chats = [MessagingChat]()
         
@@ -116,7 +119,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                 if let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
                                                                             userId: user.id,
                                                                             userWallet: user.wallet,
-                                                                            isApproved: true,
+                                                                            isApproved: isApproved,
                                                                             publicKeys: publicKeys) {
                     chats.append(chat)
                 }
@@ -133,7 +136,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
         func isPushUser(_ pushUser: Push.PushUser?, blockedBy otherPushUser: Push.PushUser?) -> Bool {
-            if let blockedUsersList = otherPushUser?.blockedUsersList,
+            if let blockedUsersList = otherPushUser?.profile.blockedUsersList,
                let pushUser {
                 return blockedUsersList.contains(pushUser.wallets)
             }
@@ -158,9 +161,9 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                       isOtherUserBlockThisUser {
                 return .bothBlocked
             } else if isThisUserBlockOtherUser {
-                return .currentUserIsBlocked
-            } else {
                 return .otherUserIsBlocked
+            } else {
+                return .currentUserIsBlocked
             }
         case .group:
             return .unblocked
@@ -168,41 +171,27 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func setUser(in chat: MessagingChat,
-                 blocked: Bool) async throws {
+                 blocked: Bool,
+                 by user: MessagingChatUserProfile) async throws {
         let env = getCurrentPushEnvironment()
         
         switch chat.displayInfo.type {
         case .private(let details):
-            async let thisUserProfileTask = PushUser.get(account: chat.displayInfo.thisUserDetails.wallet, env: env)
-            async let otherUserProfileTask = PushUser.get(account: details.otherUser.wallet, env: env)
+            let account = chat.displayInfo.thisUserDetails.wallet
+            let otherUserAddress = details.otherUser.wallet
+            let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
             
-            let (thisUserProfile, otherUserProfile) = try await (thisUserProfileTask, otherUserProfileTask)
-            
-            guard let thisUserProfile, let otherUserProfile else {
-                throw PushMessagingAPIServiceError.failedToGetPushUser
-            }
-            let messagingUser = PushEntitiesTransformer.convertPushUserToChatUser(thisUserProfile)
-            let pgpPrivateKey = try await getPGPPrivateKeyFor(user: messagingUser)
-
-            let otherUserAccount = otherUserProfile.did
-            var blockedUsersList = thisUserProfile.blockedUsersList ?? []
             if blocked {
-                if blockedUsersList.contains(otherUserAccount) {
-                    return // User already blocked
-                }
-                blockedUsersList.append(otherUserAccount)
-            } else {
-                if let i = blockedUsersList.firstIndex(where: { $0 == otherUserAccount }) {
-                    blockedUsersList.remove(at: i)
-                } else {
-                    return // User not blocked
-                }
-            }
-            
-            _ = try await PushUser.blockUsers(addressesToBlock: blockedUsersList,
-                                              account: thisUserProfile.did,
+                try await PushUser.blockUsers(addressesToBlock: [otherUserAddress],
+                                              account: account,
                                               pgpPrivateKey: pgpPrivateKey,
                                               env: env)
+            } else {
+                try await PushUser.unblockUsers(addressesToUnblock: [otherUserAddress],
+                                                account: account,
+                                                pgpPrivateKey: pgpPrivateKey,
+                                                env: env)
+            }
         case .group:
             throw PushMessagingAPIServiceError.blockUserInGroupChatsNotSupported
         }
@@ -212,7 +201,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getMessagesForChat(_ chat: MessagingChat,
                             options: MessagingAPIServiceLoadMessagesOptions,
                             fetchLimit: Int,
-                            for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
+                            for user: MessagingChatUserProfile,
+                            filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
         switch options {
         case .default:
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
@@ -222,8 +212,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             return try await getPreviousMessagesForChat(chat,
                                                         threadHash: threadHash,
                                                         fetchLimit: fetchLimit,
-                                                        isRead: false,
-                                                        for: user)
+                                                        isRead: true,
+                                                        for: user, filesService: filesService)
         case .before(let message):
             let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: message.serviceMetadata)
             guard let threadHash = messageMetadata.link else {
@@ -233,7 +223,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                         threadHash: threadHash,
                                                         fetchLimit: fetchLimit,
                                                         isRead: true,
-                                                        for: user)
+                                                        for: user, filesService: filesService)
         case .after(let message):
             let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
             guard var threadHash = chatMetadata.threadHash else {
@@ -247,7 +237,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                          threadHash: threadHash,
                                                                          fetchLimit: fetchLimit,
                                                                          isRead: false,
-                                                                         for: user)
+                                                                         for: user, filesService: filesService)
                 if let i = chunkMessages.firstIndex(where: { $0.displayInfo.id == message.displayInfo.id }) {
                     let missingMessages = Array(chunkMessages[..<i])
                     messages.append(contentsOf: missingMessages)
@@ -269,7 +259,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                             threadHash: String,
                                             fetchLimit: Int,
                                             isRead: Bool,
-                                            for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
+                                            for user: MessagingChatUserProfile,
+                                            filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
         let env = getCurrentPushEnvironment()
         let pushMessages = try await Push.PushChat.History(threadHash: threadHash,
                                                            limit: fetchLimit,
@@ -281,20 +272,36 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0,
                                                                                                          in: chat,
                                                                                                          pgpKey: pgpPrivateKey,
-                                                                                                         isRead: isRead) })
+                                                                                                         isRead: isRead,
+                                                                                                         filesService: filesService) })
         return messages
+    }
+    
+    func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool {
+        switch chatType {
+        case .private(let details):
+            let env = getCurrentPushEnvironment()
+            
+            /// Message will be encrypted in chat where both users has Push profile created
+            return (try? await PushUser.get(account: details.otherUser.wallet, env: env)) != nil
+        case .group(let details):
+            /// Messages not encrypted in public group
+            return !details.isPublic
+        }
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat,
-                     by user: MessagingChatUserProfile) async throws -> MessagingChatMessage {
+                     by user: MessagingChatUserProfile,
+                     filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
         func convertPushMessageToChatMessage(_ message: Push.Message) throws -> MessagingChatMessage {
             guard let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
                                                                                             in: chat,
                                                                                             pgpKey: pgpPrivateKey,
-                                                                                            isRead: true) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
+                                                                                            isRead: true,
+                                                                                            filesService: filesService) else { throw PushMessagingAPIServiceError.failedToConvertPushMessage }
             
             return chatMessage
         }
@@ -328,7 +335,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
                           to userInfo: MessagingChatUserDisplayInfo,
-                          by user: MessagingChatUserProfile) async throws -> (MessagingChat, MessagingChatMessage) {
+                          by user: MessagingChatUserProfile,
+                          filesService: MessagingFilesServiceProtocol) async throws -> (MessagingChat, MessagingChatMessage) {
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
         let receiver = userInfo.wallet.ethChecksumAddress()
         let sendOptions = try await buildPushSendOptions(for: messageType,
@@ -348,7 +356,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
               let chatMessage = PushEntitiesTransformer.convertPushMessageToChatMessage(message,
                                                                                         in: chat,
                                                                                         pgpKey: pgpPrivateKey,
-                                                                                        isRead: true) else {
+                                                                                        isRead: true,
+                                                                                        filesService: filesService) else {
             throw PushMessagingAPIServiceError.failedToConvertPushMessage
         }
         
@@ -361,21 +370,32 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         guard approved else { throw PushMessagingAPIServiceError.declineRequestNotSupported }
         
         let env = getCurrentPushEnvironment()
-        let sender = chat.displayInfo.thisUserDetails
+        let approverAddress = chat.displayInfo.thisUserDetails.wallet
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
-        let toAddress: String
+        let requesterAddress: String
         switch chat.displayInfo.type {
         case .private(let otherUserDetails):
-            toAddress = otherUserDetails.otherUser.wallet
+            requesterAddress = otherUserDetails.otherUser.wallet
         case .group:
-            toAddress = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
+            requesterAddress = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
         }
 
-        let approveOptions = Push.PushChat.ApproveOptions(fromAddress: sender.wallet,
-                                                          toAddress: toAddress,
+        let approveOptions = Push.PushChat.ApproveOptions(requesterAddress: requesterAddress,
+                                                          approverAddress: approverAddress,
                                                           privateKey: pgpPrivateKey,
                                                           env: env)
         _ = try await Push.PushChat.approve(approveOptions)
+    }
+    
+    func leaveGroupChat(_ chat: MessagingChat,
+                        by user: MessagingChatUserProfile) async throws {
+        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
+        let chatId = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
+        let env = getCurrentPushEnvironment()
+        
+        try await Push.PushChat.leaveGroup(chatId: chatId, userAddress: user.wallet,
+                                           userPgpPrivateKey: pgpPrivateKey,
+                                           env: env)
     }
     
     // Channels
@@ -415,21 +435,13 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                                                               userId: user.id) })
     }
     
-    func getNotificationsInboxFor(wallet: HexAddress,
-                                  page: Int,
-                                  limit: Int,
-                                  isSpam: Bool) async throws -> [MessagingNewsChannelFeed] {
-        let inbox = try await pushRESTService.getNotificationsInbox(for: wallet, page: page, limit: limit, isSpam: isSpam)
-        
-        return inbox.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0) })
-    }
-    
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
-                    limit: Int) async throws -> [MessagingNewsChannelFeed] {
+                    limit: Int,
+                    isRead: Bool) async throws -> [MessagingNewsChannelFeed] {
         let feed = try await pushRESTService.getChannelFeed(for: channel.channel, page: page, limit: limit)
         
-        return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0) })
+        return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0,isRead: isRead) })
     }
     
     func searchForChannels(page: Int,
@@ -452,7 +464,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentPushEnvironment()
         
         let subscribeOptions = Push.PushChannel.SubscribeOption(signer: domain,
-                                                              channelAddress: channel.id,
+                                                              channelAddress: channel.channel,
                                                               env: env)
         if subscribed {
             _ = try await Push.PushChannel.subscribe(option: subscribeOptions)

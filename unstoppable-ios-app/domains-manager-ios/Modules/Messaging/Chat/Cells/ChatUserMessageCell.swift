@@ -14,6 +14,7 @@ class ChatUserMessageCell: ChatBaseCell {
     @IBOutlet private weak var deleteButton: FABRaisedTertiaryButton?
     
     private var timeLabelTapGesture: UITapGestureRecognizer?
+    private var timeLabelAction: ChatViewController.ChatMessageAction = .resend
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
 
     override func awakeFromNib() {
@@ -42,9 +43,27 @@ class ChatUserMessageCell: ChatBaseCell {
             timeLabelTapGesture?.isEnabled = false
             deleteButton?.isHidden = true
             let formatterTime = MessageDateFormatter.formatMessageDate(message.time)
-            timeLabel.setAttributedTextWith(text: formatterTime,
-                                            font: .currentFont(withSize: 11, weight: .regular),
-                                            textColor: .foregroundSecondary)
+            if message.isEncrypted {
+                timeLabel.setAttributedTextWith(text: formatterTime,
+                                                font: .currentFont(withSize: 11, weight: .regular),
+                                                textColor: .foregroundSecondary)
+            } else {
+                let unencryptedWord = String.Constants.unencrypted.localized()
+                let text: String
+                switch message.senderType {
+                case .thisUser:
+                    text = "\(unencryptedWord) · \(formatterTime)"
+                case .otherUser:
+                    text = "\(formatterTime) · \(unencryptedWord)"
+                }
+                timeLabel.setAttributedTextWith(text: text,
+                                                font: .currentFont(withSize: 11, weight: .regular),
+                                                textColor: .foregroundSecondary)
+                timeLabel.updateAttributesOf(text: unencryptedWord,
+                                             textColor: .foregroundAccent)
+                timeLabelTapGesture?.isEnabled = true
+                timeLabelAction = .unencrypted
+            }
         case .sending:
             timeLabelTapGesture?.isEnabled = false
             deleteButton?.isHidden = true
@@ -53,6 +72,7 @@ class ChatUserMessageCell: ChatBaseCell {
                                             textColor: .foregroundSecondary)
         case .failedToSend:
             timeLabelTapGesture?.isEnabled = true
+            timeLabelAction = .resend
             deleteButton?.isHidden = false
             let fullText = String.Constants.sendingFailed.localized() + ". " + String.Constants.tapToRetry.localized()
             timeLabel.setAttributedTextWith(text: fullText,
@@ -71,7 +91,7 @@ class ChatUserMessageCell: ChatBaseCell {
 private extension ChatUserMessageCell {
     @objc func didTapTimeLabel() {
         UDVibration.buttonTap.vibrate()
-        actionCallback?(.resend)
+        actionCallback?(timeLabelAction)
     }
     
     @IBAction func deleteButtonPressed(_ sender: Any) {

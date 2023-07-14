@@ -9,7 +9,7 @@ import Foundation
 
 struct MessagingChatMessageUnknownTypeDisplayInfo: Hashable {
     
-    var encryptedContent: String
+    var fileName: String
     var type: String
     var name: String?
     var size: Int?

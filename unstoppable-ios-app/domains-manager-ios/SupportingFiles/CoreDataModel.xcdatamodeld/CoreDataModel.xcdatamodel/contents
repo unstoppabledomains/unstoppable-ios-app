@@ -2,8 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22F82" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CoreDataMessagingChat" representedClassName="CoreDataMessagingChat" syncable="YES" codeGenerationType="class">
         <attribute name="avatarURL" optional="YES" attributeType="URI"/>
-        <attribute name="groupMemberWallets" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
-        <attribute name="groupPendingMemberWallets" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
+        <attribute name="groupDetails" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String : Any]"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isApproved" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="lastMessageId" optional="YES" attributeType="String"/>
@@ -23,6 +22,7 @@
     <entity name="CoreDataMessagingChatMessage" representedClassName="CoreDataMessagingChatMessage" syncable="YES" codeGenerationType="class">
         <attribute name="chatId" attributeType="String" defaultValueString=""/>
         <attribute name="deliveryState" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="genericMessageDetails" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String : Any]"/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isFirstInChat" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
@@ -32,7 +32,6 @@
         <attribute name="senderWallet" attributeType="String" defaultValueString=""/>
         <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>
         <attribute name="time" attributeType="Date" defaultDateTimeInterval="707930820" usesScalarValueType="NO"/>
-        <attribute name="unknownMessageDetails" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String : Any]"/>
         <relationship name="lastMessageInChat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingChat" inverseName="lastMessage" inverseEntity="CoreDataMessagingChat"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
@@ -66,7 +65,7 @@
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="isFirstInChannel" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="link" attributeType="URI" defaultValueString=""/>
+        <attribute name="link" optional="YES" attributeType="URI" defaultValueString=""/>
         <attribute name="message" attributeType="String" defaultValueString=""/>
         <attribute name="time" attributeType="Date" defaultDateTimeInterval="707931660" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String" defaultValueString=""/>

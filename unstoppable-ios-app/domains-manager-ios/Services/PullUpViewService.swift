@@ -113,6 +113,7 @@ protocol PullUpViewServiceProtocol {
                                               in viewController: UIViewController) async throws
     func showGroupChatInfoPullUp(groupChatDetails: MessagingGroupChatDetails,
                                  in viewController: UIViewController) async
+    func showUnencryptedMessageInfoPullUp(in viewController: UIViewController)
 }
 
 @MainActor
@@ -1601,8 +1602,10 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let pendingMemberItems = groupChatDetails.pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isPending: true) })
         let items = memberItems + pendingMemberItems
         
-        let requiredSelectionViewHeight = 216 + items.reduce(0.0, { $0 + $1.height })
-        let maxHeight = UIScreen.main.bounds.height - 40
+        let baseContentHeight: CGFloat = 216
+        let requiredSelectionViewHeight = baseContentHeight + items.reduce(0.0, { $0 + $1.height })
+        let topScreenOffset: CGFloat = 40
+        let maxHeight = UIScreen.main.bounds.height - topScreenOffset
         let shouldScroll = requiredSelectionViewHeight > maxHeight
         let selectionViewHeight = min(requiredSelectionViewHeight, maxHeight)
         
@@ -1619,6 +1622,15 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             guard let domainName = item.userInfo.domainName else { return }
             
             pullUpVC?.openLink(.domainProfilePage(domainName: domainName))
+        }
+    }
+    
+    func showUnencryptedMessageInfoPullUp(in viewController: UIViewController) {
+        let selectionViewHeight: CGFloat = 288
+        let shareDomainPullUpView = UnencryptedMessageInfoPullUpView()
+        let pullUp = showOrUpdate(in: viewController, pullUp: .unencryptedMessageInfo, contentView: shareDomainPullUpView, height: selectionViewHeight)
+        shareDomainPullUpView.dismissCallback = { [weak viewController] in
+            viewController?.dismissPullUpMenu()
         }
     }
 }

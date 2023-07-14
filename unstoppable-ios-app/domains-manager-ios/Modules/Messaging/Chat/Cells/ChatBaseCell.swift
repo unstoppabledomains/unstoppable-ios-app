@@ -11,6 +11,8 @@ class ChatBaseCell: UICollectionViewCell {
     
     @IBOutlet private(set) weak var containerView: UIView!
 
+    var isFlexibleWidth: Bool { true }
+    
     private var containerViewSideConstraints: [NSLayoutConstraint] = []
     private(set) var sender: MessagingChatSender?
 
@@ -22,12 +24,20 @@ class ChatBaseCell: UICollectionViewCell {
         let leadingConstraint: NSLayoutConstraint
         let trailingConstraint: NSLayoutConstraint
         if sender.isThisUser {
-            leadingConstraint = containerView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 24)
+            if isFlexibleWidth {
+                leadingConstraint = containerView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 24)
+            } else {
+                leadingConstraint = containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24)
+            }
             trailingConstraint = trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 8)
             containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
         } else {
             leadingConstraint = containerView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8)
-            trailingConstraint = trailingAnchor.constraint(greaterThanOrEqualTo: containerView.trailingAnchor, constant: 24)
+            if isFlexibleWidth {
+                trailingConstraint = trailingAnchor.constraint(greaterThanOrEqualTo: containerView.trailingAnchor, constant: 24)
+            } else {
+                trailingConstraint = trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 24)
+            }
             containerView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
         }
         

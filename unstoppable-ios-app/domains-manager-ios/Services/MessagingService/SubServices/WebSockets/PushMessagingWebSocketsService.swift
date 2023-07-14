@@ -139,21 +139,32 @@ private extension PushMessagingWebSocketsService {
             case .connect, .disconnect:
                 return nil
             case .userFeeds:
-                let userFeed: PushRESTAPIService.InboxResponse = try parseEntityFrom(data: data)
-                return .userFeeds(userFeed.feeds)
+                let inboxNotification: PushInboxNotification = try parseEntityFrom(data: data)
+                let feed = PushEntitiesTransformer.convertPushInboxToChannelFeed(inboxNotification,
+                                                                                 isRead: false)
+                return .channelNewFeed(feed, channelAddress: inboxNotification.sender)
             case .userSpamFeeds:
-                let userFeed: PushRESTAPIService.InboxResponse = try parseEntityFrom(data: data)
-                return .userSpamFeeds(userFeed.feeds)
+                let inboxNotification: PushInboxNotification = try parseEntityFrom(data: data)
+                let feed = PushEntitiesTransformer.convertPushInboxToChannelFeed(inboxNotification,
+                                                                                 isRead: false)
+                return .channelSpamFeed(feed, channelAddress: inboxNotification.sender)
             case .chatReceivedMessage:
                 let pushMessage: Push.Message = try parseEntityFrom(data: data)
                 
-                if let wallet = PushEntitiesTransformer.getWalletAddressFrom(eip155String: pushMessage.toDID),
-                   let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet),
-                   let message = PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity(pushMessage, pgpKey: pgpKey) {
-                    return .chatReceivedMessage(message)
+                if let wallet = PushEntitiesTransformer.getWalletAddressFrom(eip155String: pushMessage.toDID) {
+                    /// Private chat
+                   if let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet),
+                      let message = PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity(pushMessage, pgpKey: pgpKey) {
+                       return .chatReceivedMessage(message)
+                   }
+                } else {
+                    /// Group chat
+                    if let message = PushEntitiesTransformer.convertGroupPushMessageToWebSocketGroupMessageEntity(pushMessage) {
+                        return .groupChatReceivedMessage(message)
+                    }
                 }
             case .chatGroups:
-                return .chatGroups
+                return nil
             }
             return nil
         } catch {
@@ -179,8 +190,8 @@ private extension PushMessagingWebSocketsService {
     enum Events: String {
         case connect
         case disconnect
-        case userFeeds = "feed"
-        case userSpamFeeds = "spam"
+        case userFeeds
+        case userSpamFeeds
         case chatReceivedMessage = "CHATS"
         case chatGroups = "CHAT_GROUPS"
     }

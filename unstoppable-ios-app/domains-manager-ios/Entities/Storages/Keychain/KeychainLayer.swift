@@ -8,7 +8,6 @@
 import Foundation
 import Valet
 import CryptoSwift
-import CryptoKit
 
 enum ValetError: String, LocalizedError {
     case failedToRead

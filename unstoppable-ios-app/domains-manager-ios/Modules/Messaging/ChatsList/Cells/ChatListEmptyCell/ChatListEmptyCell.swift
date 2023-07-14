@@ -36,12 +36,14 @@ extension ChatListEmptyCell {
         
         iconImageView.image = .messageCircleIcon24
         setActionButtonWith(dataType: configuration.dataType)
+        actionButton.isHidden = false
     }
     
     func setSearchStateUI() {
         setTitle(String.Constants.noResults.localized())
         setSubtitle("")
         iconImageView.image = .searchIcon
+        actionButton.isHidden = true
     }
 }
 
@@ -85,10 +87,10 @@ private extension ChatListEmptyCell {
         switch dataType {
         case .chats:
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
-            actionButton.setTitle("New message", image: .newMessageIcon)
+            actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
         case .channels:
             actionButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
-            actionButton.setTitle("Search apps", image: .searchIcon)
+            actionButton.setTitle(String.Constants.searchApps.localized(), image: .searchIcon)
         }
     }
     

@@ -70,6 +70,11 @@ let largeNumberFormatter: NumberFormatter = {
     return formatter
 }()
 
+let bytesFormatter: ByteCountFormatter = {
+    let formatter = ByteCountFormatter()
+    return formatter
+}()
+
 struct Env {
     static let IOS = "ios"
     

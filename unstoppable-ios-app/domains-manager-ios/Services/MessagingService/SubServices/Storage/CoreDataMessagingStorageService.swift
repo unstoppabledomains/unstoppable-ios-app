@@ -188,11 +188,21 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func getChatWith(id: String,
                      decrypter: MessagingContentDecrypterService) async -> MessagingChat? {
         queue.sync {
-            if let coreDataMessage: CoreDataMessagingChat = getCoreDataEntityWith(id: id) {
-                return convertCoreDataChatToMessagingChat(coreDataMessage,
+            if let coreDataChat: CoreDataMessagingChat = getCoreDataEntityWith(id: id) {
+                return convertCoreDataChatToMessagingChat(coreDataChat,
                                                           decrypter: decrypter)
             }
             return nil
+        }
+    }
+    
+    // TODO: - Think of better solution
+    func getChatsWithIdContaining(_ value: String,
+                                  decrypter: MessagingContentDecrypterService) async -> [MessagingChat] {
+        queue.sync {
+            let coreDataChats: [CoreDataMessagingChat] = getCoreDataEntitiesWith(key: "id", containing: value)
+            return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0,
+                                                                                 decrypter: decrypter) }
         }
     }
     
@@ -214,6 +224,18 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
+    func deleteChat(_ chat: MessagingChat,
+                    filesService: MessagingFilesServiceProtocol) {
+        queue.sync {
+            let chatId = chat.displayInfo.id
+            guard let coreDataChat: CoreDataMessagingChat = getCoreDataEntityWith(id: chatId) else { return }
+            
+            deleteMessagesWithChatId(chatId,
+                                     filesService: filesService)
+            deleteObject(coreDataChat, from: backgroundContext)
+        }
+    }
+    
     // User info
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async {
         queue.sync {
@@ -228,6 +250,14 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             let predicate = NSPredicate(format: "userId == %@", profile.id)
             let coreDataChannels: [CoreDataMessagingNewsChannel] = try getEntities(predicate: predicate, from: backgroundContext)
             
+            return coreDataChannels.compactMap { convertCoreDataChannelToMessagingChannel($0) }.sortedByLastMessage()
+        }
+    }
+    
+    func getChannelsWith(address: String) async throws -> [MessagingNewsChannel] {
+        try queue.sync {
+            let predicate = NSPredicate(format: "channel == %@", address)
+            let coreDataChannels: [CoreDataMessagingNewsChannel] = try getEntities(predicate: predicate, from: backgroundContext)
             return coreDataChannels.compactMap { convertCoreDataChannelToMessagingChannel($0) }.sortedByLastMessage()
         }
     }
@@ -254,6 +284,8 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func deleteChannel(_ channel: MessagingNewsChannel) {
         queue.sync {
             guard let coreDataChannel: CoreDataMessagingNewsChannel = getCoreDataEntityWith(id: channel.id) else { return }
+            
+            deleteFeedWithChannelId(channel.id)
             deleteObject(coreDataChannel, from: backgroundContext)
         }
     }
@@ -294,17 +326,15 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     // Clear
-    func clearAllDataOf(profile: MessagingChatUserProfile) async {
+    func clearAllDataOf(profile: MessagingChatUserProfile,
+                        filesService: MessagingFilesServiceProtocol) async {
         queue.sync {
             let chatsPredicate = NSPredicate(format: "userId == %@", profile.id)
             let coreDataChats: [CoreDataMessagingChat] = (try? getEntities(predicate: chatsPredicate,
                                                                            from: backgroundContext)) ?? []
             
             for chat in coreDataChats {
-                let messagesPredicate = NSPredicate(format: "chatId == %@", chat.id!)
-                let coreDataMessages: [CoreDataMessagingChatMessage] = (try? getEntities(predicate: messagesPredicate,
-                                                                                         from: backgroundContext)) ?? []
-                deleteObjects(coreDataMessages, from: backgroundContext, shouldSaveContext: false)
+                deleteMessagesWithChatId(chat.id!, filesService: filesService)
             }
             
             deleteObjects(coreDataChats, from: backgroundContext, shouldSaveContext: false)
@@ -313,10 +343,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             let coreDataChannels: [CoreDataMessagingNewsChannel] = (try? getEntities(predicate: channelsPredicate, from: backgroundContext)) ?? []
             
             for channel in coreDataChannels {
-                let feedPredicate = NSPredicate(format: "channelId == %@", channel.id!)
-                let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = (try? getEntities(predicate: feedPredicate,
-                                                                                                 from: backgroundContext)) ?? []
-                deleteObjects(coreDataChannelsFeed, from: backgroundContext, shouldSaveContext: false)
+                deleteFeedWithChannelId(channel.id!)
             }
             deleteObjects(coreDataChannels, from: backgroundContext, shouldSaveContext: false)
             
@@ -326,6 +353,33 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             
             saveContext(backgroundContext)
         }
+    }
+    
+    private func deleteMessagesWithChatId(_ chatId: String,
+                                          filesService: MessagingFilesServiceProtocol) {
+        let messagesPredicate = NSPredicate(format: "chatId == %@", chatId)
+        let coreDataMessages: [CoreDataMessagingChatMessage] = (try? getEntities(predicate: messagesPredicate,
+                                                                                 from: backgroundContext)) ?? []
+        for message in coreDataMessages {
+            clearFileDataOf(message: message,
+                            filesService: filesService)
+        }
+        deleteObjects(coreDataMessages, from: backgroundContext, shouldSaveContext: false)
+    }
+    
+    private func clearFileDataOf(message: CoreDataMessagingChatMessage,
+                                 filesService: MessagingFilesServiceProtocol) {
+        guard let json = message.genericMessageDetails,
+           let details = FileDetails.objectFromJSON(json) else { return }
+        
+        filesService.deleteEncryptedDataWith(fileName: details.fileName)
+    }
+    
+    private func deleteFeedWithChannelId(_ channelId: String) {
+        let feedPredicate = NSPredicate(format: "channelId == %@", channelId)
+        let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = (try? getEntities(predicate: feedPredicate,
+                                                                                         from: backgroundContext)) ?? []
+        deleteObjects(coreDataChannelsFeed, from: backgroundContext, shouldSaveContext: false)
     }
     
     func clear() {
@@ -471,8 +525,10 @@ private extension CoreDataMessagingStorageService {
             
             return .private(privateChatDetails)
         } else if coreDataChat.type == 1,
-                  let memberWallets = coreDataChat.groupMemberWallets,
-                  let pendingMembersWallets = coreDataChat.groupPendingMemberWallets {
+                  let json = coreDataChat.groupDetails,
+                  let details = CoreDataChatGroupDetails.objectFromJSON(json) {
+            let memberWallets = details.memberWallets
+            let pendingMembersWallets = details.pendingMembersWallets
             let allMembersWallets = memberWallets + pendingMembersWallets
             let cachedUserInfos = getCoreDataDomainInfosFor(wallets: allMembersWallets)
             let walletToInfoMap = cachedUserInfos.reduce([String : CoreDataMessagingUserInfo]()) { (dict, userInfo) in
@@ -488,12 +544,14 @@ private extension CoreDataMessagingStorageService {
                                                     pfpURL: cachedInfo?.pfpURL)
             }
             
-            
             let members = memberWallets.map { createUserDisplayInfoFor(wallet: $0) }
             let pendingMembers = pendingMembersWallets.map { createUserDisplayInfoFor(wallet: $0) }
             
             let groupChatDetails = MessagingGroupChatDetails(members: members,
-                                                             pendingMembers: pendingMembers)
+                                                             pendingMembers: pendingMembers,
+                                                             name: details.name,
+                                                             adminWallet: details.adminWallet,
+                                                             isPublic: details.isPublic)
             return .group(groupChatDetails)
         }
         
@@ -507,8 +565,13 @@ private extension CoreDataMessagingStorageService {
             coreDataChat.otherUserWallet = details.otherUser.wallet
         case .group(let details):
             coreDataChat.type = 1
-            coreDataChat.groupMemberWallets = details.members.map { $0.wallet }
-            coreDataChat.groupPendingMemberWallets = details.pendingMembers.map { $0.wallet }
+            let memberWallets = details.members.map { $0.wallet }
+            let pendingMembersWallets = details.pendingMembers.map { $0.wallet }
+            coreDataChat.groupDetails = CoreDataChatGroupDetails(name: details.name,
+                                                                 adminWallet: details.adminWallet,
+                                                                 isPublic: details.isPublic,
+                                                                 memberWallets: memberWallets,
+                                                                 pendingMembersWallets: pendingMembersWallets).jsonRepresentation()
         }
     }
 }
@@ -525,6 +588,7 @@ private extension CoreDataMessagingStorageService {
                                                wallet: wallet) else { return nil }
         
         let senderType = getMessagingChatSender(from: coreDataMessage)
+        let isEncrypted = decrypter.isMessageEncrypted(serviceMetadata: coreDataMessage.serviceMetadata)
         let displayInfo = MessagingChatMessageDisplayInfo(id: coreDataMessage.id!,
                                                           chatId: coreDataMessage.chatId!,
                                                           senderType: senderType,
@@ -532,7 +596,8 @@ private extension CoreDataMessagingStorageService {
                                                           type: type,
                                                           isRead: coreDataMessage.isRead,
                                                           isFirstInChat: coreDataMessage.isFirstInChat,
-                                                          deliveryState: deliveryState)
+                                                          deliveryState: deliveryState,
+                                                          isEncrypted: isEncrypted)
         
         return MessagingChatMessage(displayInfo: displayInfo,
                                     serviceMetadata: coreDataMessage.serviceMetadata)
@@ -559,34 +624,39 @@ private extension CoreDataMessagingStorageService {
                                decrypter: MessagingContentDecrypterService,
                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState,
                                wallet: String) -> MessagingChatMessageDisplayType? {
-        guard let messageContent = coreDataMessage.messageContent else { return nil }
-        
-        var decryptedContent = messageContent
-        if deliveryState == .delivered {
-            guard let decrypted = try? decrypter.decryptText(messageContent,
-                                                             with: coreDataMessage.serviceMetadata,
-                                                             wallet: wallet) else {
-                return nil }
-            decryptedContent = decrypted
-        }
-        
-        if coreDataMessage.messageType == 0 {
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
-                                                                          encryptedText: messageContent)
-            return .text(textDisplayInfo)
-        } else if coreDataMessage.messageType == 1 {
-            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent,
-                                                                                        encryptedContent: messageContent)
-            return .imageBase64(imageBase64DisplayInfo)
-        } else if coreDataMessage.messageType == 999 {
-            guard let json = coreDataMessage.unknownMessageDetails,
-                  let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
+        let typesWithContentInCoreData: Set<Int64> = [0, 1]
+        if typesWithContentInCoreData.contains(coreDataMessage.messageType) {
+            guard let messageContent = coreDataMessage.messageContent else { return nil }
             
-            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(encryptedContent: messageContent,
-                                                                                type: details.type,
-                                                                                name: details.name,
-                                                                                size: details.size)
-            return .unknown(unknownDisplayInfo)
+            var decryptedContent = messageContent
+            if deliveryState == .delivered {
+                guard let decrypted = try? decrypter.decryptText(messageContent,
+                                                                 with: coreDataMessage.serviceMetadata,
+                                                                 wallet: wallet) else {
+                    return nil }
+                decryptedContent = decrypted
+            }
+            
+            if coreDataMessage.messageType == 0 {
+                let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
+                                                                              encryptedText: messageContent)
+                return .text(textDisplayInfo)
+            } else if coreDataMessage.messageType == 1 {
+                let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent,
+                                                                                            encryptedContent: messageContent)
+                return .imageBase64(imageBase64DisplayInfo)
+            }
+        } else {
+            if coreDataMessage.messageType == 999 {
+                guard let json = coreDataMessage.genericMessageDetails,
+                      let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
+                
+                let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: details.fileName,
+                                                                                    type: details.type,
+                                                                                    name: details.name,
+                                                                                    size: details.size)
+                return .unknown(unknownDisplayInfo)
+            }
         }
         
         return nil
@@ -602,8 +672,8 @@ private extension CoreDataMessagingStorageService {
             coreDataMessage.messageContent = info.encryptedContent
         case .unknown(let info):
             coreDataMessage.messageType = 999
-            coreDataMessage.messageContent = info.encryptedContent
-            coreDataMessage.unknownMessageDetails = CoreDataUnknownMessageDetails(type: info.type,
+            coreDataMessage.genericMessageDetails = CoreDataUnknownMessageDetails(type: info.type,
+                                                                                  fileName: info.fileName,
                                                                                   name: info.name,
                                                                                   size: info.size).jsonRepresentation()
         }
@@ -705,7 +775,7 @@ private extension CoreDataMessagingStorageService {
         let feed = MessagingNewsChannelFeed(id: coreDataNewsFeed.id!,
                                             title: coreDataNewsFeed.title!,
                                             message: coreDataNewsFeed.message!,
-                                            link: coreDataNewsFeed.link!,
+                                            link: coreDataNewsFeed.link,
                                             time: coreDataNewsFeed.time!,
                                             isRead: coreDataNewsFeed.isRead,
                                             isFirstInChannel: coreDataNewsFeed.isFirstInChannel)
@@ -760,20 +830,41 @@ private extension CoreDataMessagingStorageService {
     }
     
     func getCoreDataEntityWith<T: NSManagedObject>(key: String, value: String) -> T? {
+        let predicate = NSPredicate(format: "%K == %@", key, value)
+        return getEntityWithPredicate(predicate: predicate).first
+    }
+    
+    func getCoreDataEntitiesWith<T: NSManagedObject>(key: String, containing value: String) -> [T] {
+        let predicate = NSPredicate(format: "%K CONTAINS %@", key, value)
+        return getEntityWithPredicate(predicate: predicate)
+    }
+    
+    func getEntityWithPredicate<T: NSManagedObject>(predicate: NSPredicate) -> [T] {
         do {
-            let predicate = NSPredicate(format: "%K == %@", key, value)
             let messages: [T] = try getEntities(predicate: predicate, from: backgroundContext)
-            return messages.first
+            return messages
         } catch {
-            
-            return nil
+            return []
         }
+    }
+    
+    struct CoreDataChatGroupDetails: Codable {
+        let name: String
+        let adminWallet: String?
+        let isPublic: Bool
+        let memberWallets: [String]
+        let pendingMembersWallets: [String]
     }
     
     struct CoreDataUnknownMessageDetails: Codable {
         var type: String
+        var fileName: String
         var name: String?
         var size: Int?
+    }
+    
+    struct FileDetails: Codable {
+        var fileName: String
     }
 
 }

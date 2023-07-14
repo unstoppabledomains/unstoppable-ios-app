@@ -191,7 +191,9 @@ extension String {
         static let unblock = "UNBLOCK"
         static let viewInfo = "VIEW_INFO"
         static let leave = "LEAVE"
-        
+        static let download = "DOWNLOAD"
+        static let unencrypted = "UNENCRYPTED"
+
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
@@ -892,7 +894,11 @@ extension String {
         static let messagingBlockUserConfirmationTitle = "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE"
         static let messagingYouAreBlocked = "MESSAGING_YOU_ARE_BLOCKED"
         static let messageNotSupported = "MESSAGE_NOT_SUPPORTED"
-
+        static let newMessage = "NEW_MESSAGE"
+        static let searchApps = "SEARCH_APPS"
+        static let messageUnencryptedPullUpTitle = "MESSAGE_UNENCRYPTED_PULL_UP_TITLE"
+        static let messageUnencryptedPullUpReason1 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_1"
+        static let messageUnencryptedPullUpReason2 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_2"
     }
 
     

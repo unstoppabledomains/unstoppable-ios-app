@@ -14,7 +14,11 @@ struct Base64DataTransformer {
         case imageJpeg = "image/jpeg"
     }
     
-    static func removeDataFrom(string: String) -> String {
+    static func dataFrom(base64String: String) -> Data? {
+        Data(base64Encoded: removeDataHeaderFrom(string: base64String))
+    }
+    
+    static func removeDataHeaderFrom(string: String) -> String {
         guard string.count > 4 else { return string }
         
         let dataPrefix = "data"

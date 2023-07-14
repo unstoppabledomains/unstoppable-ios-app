@@ -19,6 +19,7 @@ protocol MessagingServiceProtocol {
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws
+    func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws
     
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
@@ -29,6 +30,7 @@ protocol MessagingServiceProtocol {
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo
+    func isMessagesEncryptedIn(conversation: MessagingChatConversationState) async -> Bool
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
                           to userInfo: MessagingChatUserDisplayInfo,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo)
@@ -37,6 +39,8 @@ protocol MessagingServiceProtocol {
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool,
                      wallet: String) throws
+    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL?
+    
     // Channels
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
     func getFeedFor(channel: MessagingNewsChannel,
@@ -88,4 +92,5 @@ enum MessagingDataType {
     case messagesAdded(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
     case messageUpdated(_ updatedMessage: MessagingChatMessageDisplayInfo, newMessage: MessagingChatMessageDisplayInfo)
     case messagesRemoved(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case channelFeedAdded(_ feed: MessagingNewsChannelFeed, channelId: String)
 }

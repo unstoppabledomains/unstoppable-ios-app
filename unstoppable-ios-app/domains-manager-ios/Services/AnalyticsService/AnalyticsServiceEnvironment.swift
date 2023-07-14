@@ -283,6 +283,7 @@ extension Analytics {
         case viewChannelInfo, leaveChannel, learnMoreChannelFeed
         case block, unblock, leaveGroup
         case resendMessage, deleteMessage
+        case downloadUnsupportedMessage
     }
 }
 
@@ -328,6 +329,7 @@ extension Analytics {
         case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
         case applePayRequired
         case messagingChannelInfo
+        case unencryptedMessageInfo
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

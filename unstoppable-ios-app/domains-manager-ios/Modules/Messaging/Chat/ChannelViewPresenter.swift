@@ -86,6 +86,11 @@ extension ChannelViewPresenter: MessagingServiceListener {
                         self.channel = channel
                     }
                 }
+            case .channelFeedAdded(let feed, let channelId):
+                if channelId == channel.id {
+                    addFeed([feed])
+                    showData(animated: true, isLoading: false)
+                }
             case .chats, .messagesAdded, .messageUpdated, .messagesRemoved:
                 return
             }
@@ -97,7 +102,10 @@ extension ChannelViewPresenter: MessagingServiceListener {
 private extension ChannelViewPresenter {
     func setupUI() {
         view?.setTitleOfType(.channel(channel))
-        
+        setupChannelActions()
+    }
+    
+    func setupChannelActions() {
         var actions: [ChatViewController.NavButtonConfiguration.Action] = []
         actions.append(.init(type: .viewInfo, callback: { [weak self] in
             self?.logButtonPressedAnalyticEvents(button: .viewChannelInfo,
@@ -200,11 +208,11 @@ private extension ChannelViewPresenter {
         var snapshot = ChatSnapshot()
         
         if feed.isEmpty {
-            view?.setEmptyState(active: !isLoading)
+            view?.setEmptyState(isLoading ? nil : .channel)
             view?.setScrollEnabled(false)
             snapshot.appendSections([])
         } else {
-            view?.setEmptyState(active: false)
+            view?.setEmptyState(nil)
             if isLoading {
                 snapshot.appendSections([.loading])
                 snapshot.appendItems([.loading])
@@ -233,11 +241,11 @@ private extension ChannelViewPresenter {
     func handleChatMessageAction(_ action: ChatViewController.ChatFeedAction,
                                  forFeedItem feedItem: MessagingNewsChannelFeed) {
         switch action {
-        case .learnMore:
+        case .learnMore(let link):
             logButtonPressedAnalyticEvents(button: .learnMoreChannelFeed,
                                            parameters: [.channelName: channel.name,
                                                         .feedName: feedItem.title])
-            view?.openLink(.generic(url: feedItem.link.absoluteString))
+            view?.openLink(.generic(url: link.absoluteString))
         }
     }
     

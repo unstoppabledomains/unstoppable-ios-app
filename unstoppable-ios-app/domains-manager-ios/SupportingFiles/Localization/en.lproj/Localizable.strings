@@ -150,6 +150,8 @@
 "UNBLOCK" = "Unblock";
 "VIEW_INFO" = "View info";
 "LEAVE" = "Leave";
+"DOWNLOAD" = "Download";
+"UNENCRYPTED" = "Unencrypted";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -813,4 +815,9 @@
 "MESSAGING_N_FOLLOWERS" = "%i Followers";
 "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE" = "Are you sure you want to block %@?";
 "MESSAGING_YOU_ARE_BLOCKED" = "You are blocked";
-"MESSAGE_NOT_SUPPORTED" = "Message currently not supported";
+"MESSAGE_NOT_SUPPORTED" = "Unsupported message";
+"NEW_MESSAGE" = "New message";
+"SEARCH_APPS" = "Search apps";
+"MESSAGE_UNENCRYPTED_PULL_UP_TITLE" = "Message may be unencrypted:";
+"MESSAGE_UNENCRYPTED_PULL_UP_REASON_1" = "If recipient uses a different messaging client that doesn't support encryption.";
+"MESSAGE_UNENCRYPTED_PULL_UP_REASON_2" = "Until the recipient joins the chat messages remain unencrypted.";

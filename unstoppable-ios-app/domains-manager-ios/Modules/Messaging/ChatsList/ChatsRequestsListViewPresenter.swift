@@ -81,7 +81,7 @@ extension ChatsRequestsListViewPresenter: MessagingServiceListener {
                     self.dataType = .channelsSpam(requests)
                     showData()
                 }
-            case .messageUpdated, .messagesRemoved, .messagesAdded:
+            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded:
                 return
             }
         }

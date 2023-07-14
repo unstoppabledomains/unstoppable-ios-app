@@ -10,6 +10,7 @@ import Foundation
 protocol MessagingWebSocketsServiceProtocol {
     func subscribeFor(profile: MessagingChatUserProfile,
                       eventCallback: @escaping MessagingWebSocketEventCallback) throws
+    func disconnectAll()
 }
 
 struct MessagingWebSocketMessageEntity {
@@ -18,5 +19,15 @@ struct MessagingWebSocketMessageEntity {
     let receiverWallet: String
     let serviceContent: Any
     
-    var transformToMessageBlock: ((_ webSocketMessage: MessagingWebSocketMessageEntity, _ chat: MessagingChat)->(MessagingChatMessage?))
+    var transformToMessageBlock: ((_ webSocketMessage: MessagingWebSocketMessageEntity,
+                                   _ chat: MessagingChat,
+                                   _ filesService: MessagingFilesServiceProtocol)->(MessagingChatMessage?))
+}
+
+struct MessagingWebSocketGroupMessageEntity {
+    let chatId: String 
+    let serviceContent: Any
+    var transformToMessageBlock: ((_ webSocketMessage: MessagingWebSocketGroupMessageEntity,
+                                   _ chat: MessagingChat,
+                                   _ filesService: MessagingFilesServiceProtocol)->(MessagingChatMessage?))
 }

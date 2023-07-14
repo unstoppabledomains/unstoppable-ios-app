@@ -14,6 +14,7 @@ final class ChannelFeedCell: ChatBaseCell {
     @IBOutlet private weak var timeLabel: UILabel!
     @IBOutlet private weak var learnButton: GhostPrimaryButton!
 
+    private var learnMoreLink: URL?
     private var feedActionCallback: ((ChatViewController.ChatFeedAction)->())?
     
     override func awakeFromNib() {
@@ -45,13 +46,18 @@ extension ChannelFeedCell {
         timeLabel.setAttributedTextWith(text: formatterTime,
                                         font: .currentFont(withSize: 11, weight: .regular),
                                         textColor: .foregroundSecondary)
+        
+        learnMoreLink = feed.link
+        learnButton.isHidden = feed.link == nil
     }
 }
 
 // MARK: - Private methods
 private extension ChannelFeedCell {
     @IBAction func learnButtonPressed(_ sender: Any) {
-        feedActionCallback?(.learnMore)
+        guard let learnMoreLink else { return }
+        
+        feedActionCallback?(.learnMore(learnMoreLink))
     }
 }
        

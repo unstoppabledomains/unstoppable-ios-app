@@ -40,15 +40,20 @@ protocol MessagingStorageServiceProtocol {
                      decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat]
     func getChatWith(id: String,
                      decrypter: MessagingContentDecrypterService) async -> MessagingChat?
+    func getChatsWithIdContaining(_ value: String,
+                                  decrypter: MessagingContentDecrypterService) async -> [MessagingChat]
     func saveChats(_ chats: [MessagingChat]) async
     func replaceChat(_ chatToReplace: MessagingChat,
                      with newChat: MessagingChat) async throws
+    func deleteChat(_ chat: MessagingChat,
+                    filesService: MessagingFilesServiceProtocol)
     
     // User info
     func saveMessagingUserInfo(_ info: MessagingChatUserDisplayInfo) async
     
     // Channels
     func getChannelsFor(profile: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
+    func getChannelsWith(address: String) async throws -> [MessagingNewsChannel]
     func saveChannels(_ channels: [MessagingNewsChannel],
                       for profile: MessagingChatUserProfile) async
     func replaceChannel(_ channelToReplace: MessagingNewsChannel,
@@ -65,5 +70,6 @@ protocol MessagingStorageServiceProtocol {
                       isRead: Bool) throws
     
     // Clear
-    func clearAllDataOf(profile: MessagingChatUserProfile) async
+    func clearAllDataOf(profile: MessagingChatUserProfile,
+                        filesService: MessagingFilesServiceProtocol) async
 }

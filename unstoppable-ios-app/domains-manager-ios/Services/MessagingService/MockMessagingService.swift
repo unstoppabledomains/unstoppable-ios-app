@@ -57,6 +57,7 @@ extension MockMessagingService: MessagingServiceProtocol {
                      in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo {
         throw NSError()
     }
+    func isMessagesEncryptedIn(conversation: MessagingChatConversationState) async -> Bool { true }
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
                           to userInfo: MessagingChatUserDisplayInfo,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo) {
@@ -66,7 +67,10 @@ extension MockMessagingService: MessagingServiceProtocol {
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws { }
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) { }
     func markMessage(_ message: MessagingChatMessageDisplayInfo, isRead: Bool, wallet: String) throws { }
+    func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws { }
+    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? { nil }
     
+    // Channels
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
@@ -171,7 +175,8 @@ private extension MockMessagingService {
                                 encryptedText: mockLastMessageTexts.randomElement()!)),
               isRead: true,
               isFirstInChat: false,
-              deliveryState: .delivered)
+              deliveryState: .delivered,
+              isEncrypted: true)
     }
     
     struct MockDomainChatInfo: Hashable {
@@ -213,7 +218,8 @@ private extension MockMessagingService {
                                                                            encryptedText: text)),
                                                           isRead: true,
                                                           isFirstInChat: false,
-                                                          deliveryState: .delivered)
+                                                          deliveryState: .delivered,
+                                                          isEncrypted: true)
             messages.append(message)
         }
         
