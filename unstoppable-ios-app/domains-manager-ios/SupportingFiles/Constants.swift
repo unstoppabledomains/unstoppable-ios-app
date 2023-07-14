@@ -33,6 +33,7 @@ struct Constants {
     static let setupRRPromptRepeatInterval = 7
     static var wcConnectionTimeout: TimeInterval = 5
     static let wcNoResponseFromExternalWalletTimeout: TimeInterval = 0.5
+    static var newNonInteractableTLDs: Set<String> = []
     static var deprecatedTLDs: Set<String> = []
     static let imageProfileMaxSize: Int = 4_000_000 // 4 MB
     static let standardWebHosts = ["https://", "http://"]

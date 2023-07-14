@@ -20,7 +20,7 @@ extension String {
         case openSeaPolygonAsset(value: String)
         case writeAppStoreReview(appId: String)
         case udExternalWalletTutorial
-        case udParkedDomainsTutorial
+        case unstoppableVaultTutorial
         case showcaseDomainBadge(domainName: String, badgeCode: String)
         case badgesLeaderboard
         case generic(url: String)
@@ -70,8 +70,8 @@ extension String {
                 return "https://apps.apple.com/app/id\(appId)?action=write-review"
             case .udExternalWalletTutorial:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001232090-using-external-wallets-in-the-unstoppable-domains-mobile-app"
-            case .udParkedDomainsTutorial:
-                return "https://support.unstoppabledomains.com/support/solutions/articles/48001235057-ud-parking"
+            case .unstoppableVaultTutorial:
+                return "https://support.unstoppabledomains.com/support/solutions/articles/48001235057-what-is-the-unstoppable-vault-"
             case .showcaseDomainBadge(let domainName, let badgeCode):
                 let profileURL = Links.domainProfilePage(domainName: domainName).urlString
                 return profileURL + "?openBadgeCode=\(badgeCode)"
@@ -485,6 +485,7 @@ extension String {
         static let changesConfirmed = "CHANGES_CONFIRMED";
         static let pleaseAddNAddress = "PLEASE_ADD_N_ADDRESS";
         static let thisTokenWasDeprecated = "THIS_TOKEN_WAS_DEPRECATED";
+        static let ensSoon = "ENS_MANAGEMENT_SOON";
         
         static let gasFeePullUpTitle = "GASE_FEE_PULLUP_TITLE";
         static let gasFeePullUpSubtitle = "GASE_FEE_PULLUP_SUBTITLE";
