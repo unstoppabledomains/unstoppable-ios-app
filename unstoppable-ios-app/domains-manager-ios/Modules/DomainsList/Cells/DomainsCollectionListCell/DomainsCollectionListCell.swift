@@ -57,6 +57,8 @@ extension DomainsCollectionListCell {
         case .deprecated(let tld):
             statusMessage.setComponent(.deprecated(tld: tld))
             statusMessage.isHidden = false
+        case .newNonInteractable:
+            statusMessage.isHidden = true
         case .normal:
             statusMessage.setComponent(.updatingRecords)
             statusMessage.isHidden = !domainItem.isUpdatingRecords

@@ -112,12 +112,18 @@ extension DomainDisplayInfo {
 // MARK: - UsageType
 extension DomainDisplayInfo {
     enum UsageType: Equatable {
-        case normal, zil, deprecated(tld: String), parked(status: DomainParkingStatus)
+        case normal,
+             newNonInteractable(tld: String),
+             zil,
+             deprecated(tld: String),
+             parked(status: DomainParkingStatus)
     }
     
     var usageType: UsageType {
         if isZilliqaBased {
             return .zil
+        } else if let tld = name.getTldName(), Constants.newNonInteractableTLDs.contains(tld) {
+            return .newNonInteractable(tld: tld)
         } else if let tld = name.getTldName(),
                   Constants.deprecatedTLDs.contains(tld) {
             return .deprecated(tld: tld)

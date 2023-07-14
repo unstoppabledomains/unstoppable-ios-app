@@ -120,7 +120,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             showRecentActivitiesLearMorePullUp()
         case .parkedDomainLearnMore:
             logButtonPressedAnalyticEvents(button: .parkedDomainLearnMore, parameters: [.domainName: getCurrentDomainName()])
-            view?.openLink(.udParkedDomainsTutorial)
+            view?.openLink(.unstoppableVaultTutorial)
         case .domainSelected(let domain):
             logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
             UDVibration.buttonTap.vibrate()
@@ -642,6 +642,9 @@ private extension DomainsCollectionPresenter {
         let topView = view.presentedViewController ?? view
         Task {
             switch domain.usageType {
+            case .newNonInteractable:
+                Debugger.printInfo("No profile for a non-interactible domain")
+                await self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
             case .zil:
                 do {
                     try await appContext.pullUpViewService.showZilDomainsNotSupportedPullUp(in: topView)
