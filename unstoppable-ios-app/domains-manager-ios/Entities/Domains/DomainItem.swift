@@ -187,7 +187,7 @@ extension DomainName {
             Debugger.printFailure("Couldn't get domain TLD name", critical: false)
             return nil
         }
-        return tldName
+        return tldName.lowercased()
     }
     
     func getBelowTld() -> String? {

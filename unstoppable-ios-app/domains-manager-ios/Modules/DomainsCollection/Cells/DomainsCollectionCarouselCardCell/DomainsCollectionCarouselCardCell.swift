@@ -210,6 +210,9 @@ private extension DomainsCollectionCarouselCardCell {
             case .normal:
                 setIndicatorStyle(nil)
                 setStatusMessageComponent(nil)
+            case .newNonInteractable:
+                setIndicatorStyle(nil)
+                setStatusMessageComponent(nil)
             case .deprecated(let tld):
                 setIndicatorStyle(.deprecated(tld: tld))
                 setStatusMessageComponent(.orangeDeprecated(tld: tld))

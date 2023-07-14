@@ -125,7 +125,7 @@
 	<key>SDICT:N_PARKED_DOMAINS</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>%d parked %#@domain@</string>
+		<string>%d %#@domain@ in Unstoppable Vault</string>
 		<key>domain</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>
@@ -365,7 +365,7 @@
 	<key>SDICT:N_PARKED_DOMAINS_IMPORTED</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
-		<string>%d parked %#@domain@ imported</string>
+		<string>%d %#@domain@ from Unstoppable Vault imported</string>
 		<key>domain</key>
 		<dict>
 			<key>NSStringFormatSpecTypeKey</key>

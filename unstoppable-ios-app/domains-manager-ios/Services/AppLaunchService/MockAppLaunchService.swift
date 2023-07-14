@@ -29,6 +29,7 @@ extension MockAppLaunchService: AppLaunchServiceProtocol {
                    completion: @escaping EmptyCallback) {
         #if DEBUG
         Constants.deprecatedTLDs = ["coin"]
+        Constants.newNonInteractableTLDs = ["eth"]
         DispatchQueue.main.async {
             switch TestsEnvironment.launchStateToUse {
             case .home:
