@@ -202,7 +202,7 @@ fileprivate extension NotificationsService {
             externalEventsService.receiveEvent(event,
                                                receivedState: receiveState)
             switch event {
-            case .domainProfileUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .wcDeepLink, .recordsUpdated, .parkingStatusLocal, .badgeAdded:
+            case .domainProfileUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .wcDeepLink, .recordsUpdated, .parkingStatusLocal, .badgeAdded, .chatMessage, .chatChannelMessage:
                 return [.list, .banner, .sound]
             case .walletConnectRequest:
                 return []

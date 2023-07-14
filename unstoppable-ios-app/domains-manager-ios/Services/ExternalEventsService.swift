@@ -154,6 +154,10 @@ private extension ExternalEventsService {
                 return
             case .badgeAdded:
                 return
+            case .chatMessage:
+                return // TODO: - Handle
+            case .chatChannelMessage:
+                return // TODO: - Handle
             }
         }
     }
@@ -223,6 +227,12 @@ private extension ExternalEventsService {
             walletConnectRequestsHandlingService.expectConnection()
             return .showPullUpLoading
         case .parkingStatusLocal:
+            throw EventsHandlingError.ignoreEvent
+        case .chatMessage:
+                // TODO: - Handle
+            throw EventsHandlingError.ignoreEvent
+        case .chatChannelMessage:
+            // TODO: - Handle
             throw EventsHandlingError.ignoreEvent
         }
     }

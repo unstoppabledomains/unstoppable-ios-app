@@ -18,6 +18,8 @@ enum ExternalEvent: Codable, Hashable {
     case domainProfileUpdated(domainName: String)
     case parkingStatusLocal
     case badgeAdded(domainName: String, count: Int)
+    case chatMessage(toDomainName: String, fromAddress: String, fromDomain: String?)
+    case chatChannelMessage(toDomainName: String, channelName: String, channelIcon: String)
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
         guard let eventTypeRaw = json["type"] as? String,
@@ -104,12 +106,39 @@ enum ExternalEvent: Codable, Hashable {
             }
             
             self = .badgeAdded(domainName: domainName, count: count)
+        case .chatMessage:
+            guard let domainName = json["domainName"] as? String else {
+                Debugger.printFailure("No domain name in chat message notification", critical: true)
+                return nil
+            }
+            guard let fromAddress = json["fromAddress"] as? String else {
+                Debugger.printFailure("No fromAddress in chat message notification", critical: true)
+                return nil
+            }
+            let fromDomain = json["fromDomain"] as? String
+            
+            self = .chatMessage(toDomainName: domainName, fromAddress: fromAddress, fromDomain: fromDomain)
+        case .chatChannelMessage:
+            guard let domainName = json["domainName"] as? String else {
+                Debugger.printFailure("No domain name in chat channel message notification", critical: true)
+                return nil
+            }
+            guard let channelName = json["channelName"] as? String else {
+                Debugger.printFailure("No channel name in chat channel message notification", critical: true)
+                return nil
+            }
+            guard let channelIcon = json["channelIcon"] as? String else {
+                Debugger.printFailure("No channel icon in chat channel message notification", critical: true)
+                return nil
+            }
+            
+            self = .chatChannelMessage(toDomainName: domainName, channelName: channelName, channelIcon: channelIcon)
         }
     }
     
     var analyticsEvent: Analytics.Event {
         switch self {
-        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded:
+        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage:
             return .didReceivePushNotification
         case .wcDeepLink:
             return .didOpenDeepLink
@@ -151,6 +180,12 @@ enum ExternalEvent: Codable, Hashable {
             return [.pushNotification: "badgeAdded",
                     .count: "\(count)",
                     .domainName: domainName]
+        case .chatMessage(let toDomainName, _, _):
+            return [.pushNotification: "chatMessage",
+                    .domainName: toDomainName]
+        case .chatChannelMessage(let toDomainName, _, _):
+            return [.pushNotification: "chatChannelMessage",
+                    .domainName: toDomainName]
         }
     }
 }
@@ -165,7 +200,8 @@ extension ExternalEvent {
 // MARK: - Private methods
 extension ExternalEvent {
     enum PushNotificationType: String {
-        // Remote
+        /// Remote
+        // UD
         case recordsUpdated = "RecordsUpdated"
         case mintingFinished = "MintingFinished"
         case domainTransferred = "DomainTransferred"
@@ -173,10 +209,14 @@ extension ExternalEvent {
         case reverseResolutionRemoved = "ReverseResolutionRemoved"
         case walletConnectRequest = "WalletConnectNotification"
         case domainProfileUpdated = "DomainProfileUpdated"
+        // Messaging
+        case chatMessage = "DomainPushProtocolChat"
+        case chatChannelMessage = "DomainPushProtocolNotification"
         
-        // Local
+        /// Local
         case parkingStatusLocal = "ParkingStatusLocal"
         case badgeAdded = "DomainBadgesAddedMessage"
+        
     }
 }
 

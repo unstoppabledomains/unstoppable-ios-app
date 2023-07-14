@@ -29,6 +29,8 @@ extension String {
 
         case domainProfileUpdated = "NOTIFICATION_DOMAIN_PROFILE_UPDATED"
         
+        case newChatMessage = "NOTIFICATION_NEW_CHAT_MESSAGE"
+        
         case badgeAdded = "NOTIFICATION_BADGE_ADDED"
         case badgesAdded = "NOTIFICATION_BADGES_ADDED"
 

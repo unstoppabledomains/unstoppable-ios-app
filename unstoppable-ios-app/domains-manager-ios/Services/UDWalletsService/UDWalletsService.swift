@@ -302,7 +302,8 @@ extension UDWalletsService: UDWalletsServiceProtocol {
                                      "0x84585360d34f6c72be438fdde7147d27d2a85f9f" : "olegtest5.x",
                                      "0xde8de8154acb1ff4b66078576a1f1da6d0b674cb" : "longlonglonglongdomainname.bitcoin",
                                      "0xcebf5440fe9c85e037a80ffb4df0f6a9bacb3d01" : "aadomain.888",
-                                     "0xca429897570aa7083a7d296cd0009fa286731ed2" : "olegtest4.bitcoin"]
+                                     "0xca429897570aa7083a7d296cd0009fa286731ed2" : "olegtest4.bitcoin",
+                                     "0x3d76fc25271e53e9b4add854f27f99d3465d02ab" : "homescreen.nft"]
             if let name = mockRRDomainsDict[walletAddress]  {
                 return name
             }

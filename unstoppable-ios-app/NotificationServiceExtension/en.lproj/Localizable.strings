@@ -28,3 +28,5 @@
 "NOTIFICATION_BADGES_ADDED" = "You just got %d new badges";
 
 "NOTIFICATION_DOMAIN_PROFILE_UPDATED" = "📝 Your profile has been updated";
+
+"NOTIFICATION_NEW_CHAT_MESSAGE" = "You have a new message";
