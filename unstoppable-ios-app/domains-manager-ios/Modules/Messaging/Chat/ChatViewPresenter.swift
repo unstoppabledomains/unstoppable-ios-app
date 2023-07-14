@@ -44,6 +44,7 @@ final class ChatViewPresenter {
     private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
+    private var isChannelEncrypted: Bool = true
     var analyticsName: Analytics.ViewName { .chatDialog }
 
     init(view: any ChatViewProtocol,
@@ -181,6 +182,7 @@ extension ChatViewPresenter: MessagingServiceListener {
 private extension ChatViewPresenter {
     func loadAndShowData() {
         Task {
+            isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
             do {
                 switch conversationState {
                 case .existingChat(let chat):
@@ -290,11 +292,15 @@ private extension ChatViewPresenter {
         var snapshot = ChatSnapshot()
         
         if messages.isEmpty {
-            view?.setEmptyState(active: !isLoading)
+            if isLoading {
+                view?.setEmptyState(nil)
+            } else {
+                view?.setEmptyState(isChannelEncrypted ? .chatEncrypted : .chatUnEncrypted)
+            }
             view?.setScrollEnabled(false)
             snapshot.appendSections([])
         } else {
-            view?.setEmptyState(active: false)
+            view?.setEmptyState(nil)
             if isLoading {
                 snapshot.appendSections([.loading])
                 snapshot.appendItems([.loading])

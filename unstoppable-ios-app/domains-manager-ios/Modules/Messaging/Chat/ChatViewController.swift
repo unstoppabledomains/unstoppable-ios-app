@@ -18,7 +18,7 @@ protocol ChatViewProtocol: BaseDiffableCollectionViewControllerProtocol where Se
     func setLoading(active: Bool)
     func setUIState(_ state: ChatViewController.State)
     func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
-    func setEmptyState(active: Bool)
+    func setEmptyState(_ state: ChatEmptyView.State?)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -211,8 +211,13 @@ extension ChatViewController: ChatViewProtocol {
         cNavigationController?.updateNavigationBar()
     }
     
-    func setEmptyState(active: Bool) {
-        chatEmptyView.isHidden = !active
+    func setEmptyState(_ state: ChatEmptyView.State?) {
+        if let state {
+            chatEmptyView.setState(state)
+            chatEmptyView.isHidden = false
+        } else {
+            chatEmptyView.isHidden = true
+        }
     }
 }
 
@@ -373,7 +378,7 @@ private extension ChatViewController {
         setupCollectionView()
         setupHideKeyboardTap()
         setupMoveToTopButton()
-        setEmptyState(active: false)
+        setEmptyState(nil)
     }
     
     func setupInputView() {

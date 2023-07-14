@@ -171,7 +171,7 @@ extension MessagingService: MessagingServiceProtocol {
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
         let messagingChat = try await getMessagingChatFor(displayInfo: chat)
         let profile = try await getUserProfileWith(wallet: messagingChat.displayInfo.thisUserDetails.wallet)
-        let isMessageEncrypted = await apiService.isMessagesEncryptedIn(chat: messagingChat)
+        let isMessageEncrypted = await apiService.isMessagesEncryptedIn(chatType: chat.type)
         let newMessageDisplayInfo = MessagingChatMessageDisplayInfo(id: UUID().uuidString,
                                                                     chatId: chat.id,
                                                                     senderType: .thisUser(chat.thisUserDetails),
@@ -180,7 +180,7 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     isRead: true,
                                                                     isFirstInChat: false,
                                                                     deliveryState: .sending,
-                                                                    isEncrypted: isMessageEncrypted) 
+                                                                    isEncrypted: isMessageEncrypted)
         let message = MessagingChatMessage(displayInfo: newMessageDisplayInfo,
                                            serviceMetadata: nil)
         await storageService.saveMessages([message])
@@ -191,6 +191,15 @@ extension MessagingService: MessagingServiceProtocol {
         sendMessageToBEAsync(message: newMessage, messageType: messageType, in: messagingChat, by: profile)
 
         return newMessageDisplayInfo
+    }
+    
+    func isMessagesEncryptedIn(conversation: MessagingChatConversationState) async -> Bool {
+        switch conversation {
+        case .existingChat(let chat):
+            return await apiService.isMessagesEncryptedIn(chatType: chat.type)
+        case .newChat(let info):
+            return await apiService.isMessagesEncryptedIn(chatType: .private(.init(otherUser: info)))
+        }
     }
     
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,

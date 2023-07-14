@@ -208,11 +208,11 @@ private extension ChannelViewPresenter {
         var snapshot = ChatSnapshot()
         
         if feed.isEmpty {
-            view?.setEmptyState(active: !isLoading)
+            view?.setEmptyState(isLoading ? nil : .channel)
             view?.setScrollEnabled(false)
             snapshot.appendSections([])
         } else {
-            view?.setEmptyState(active: false)
+            view?.setEmptyState(nil)
             if isLoading {
                 snapshot.appendSections([.loading])
                 snapshot.appendItems([.loading])
