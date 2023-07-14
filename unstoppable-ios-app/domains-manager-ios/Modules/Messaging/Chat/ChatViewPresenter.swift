@@ -155,8 +155,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                    let lastMessage = updatedChat.lastMessage,
                    messages.first(where: { $0.id == lastMessage.id }) == nil {
                     self.conversationState = .existingChat(updatedChat)
-                    checkIfUpToDate()
-                    showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
+                    loadAndShowData()
                 }
             case .channels, .channelFeedAdded:
                 return

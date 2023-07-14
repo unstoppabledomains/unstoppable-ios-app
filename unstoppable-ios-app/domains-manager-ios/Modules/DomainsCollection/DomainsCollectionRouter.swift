@@ -257,7 +257,7 @@ private extension DomainsCollectionRouter {
     }
     
     func awaitUIUpdated() async {
-        let interval: TimeInterval = 0.3
+        let interval: TimeInterval = 0.5
         let duration = UInt64(interval * 1_000_000_000)
         try? await Task.sleep(nanoseconds: duration)
     }
