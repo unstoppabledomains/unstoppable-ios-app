@@ -59,6 +59,8 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
     }
     
     override func layoutSubviews() {
+        super.layoutSubviews()
+        
         setFrame()
     }
     
