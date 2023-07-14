@@ -588,6 +588,7 @@ extension ChatViewController {
     enum ChatMessageAction: Hashable {
         case resend
         case delete
+        case unencrypted
     }
     
     enum ChatFeedAction: Hashable {

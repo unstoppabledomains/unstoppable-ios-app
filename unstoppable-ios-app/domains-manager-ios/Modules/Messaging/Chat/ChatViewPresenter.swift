@@ -492,6 +492,10 @@ private extension ChatViewPresenter {
                 messages.remove(at: i)
                 showData(animated: true, isLoading: isLoadingMessages)
             }
+        case .unencrypted:
+            guard let view else { return }
+            
+            appContext.pullUpViewService.showUnencryptedMessageInfoPullUp(in: view)
         }
     }
     

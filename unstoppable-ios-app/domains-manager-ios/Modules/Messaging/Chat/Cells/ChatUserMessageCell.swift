@@ -14,6 +14,7 @@ class ChatUserMessageCell: ChatBaseCell {
     @IBOutlet private weak var deleteButton: FABRaisedTertiaryButton?
     
     private var timeLabelTapGesture: UITapGestureRecognizer?
+    private var timeLabelAction: ChatViewController.ChatMessageAction = .resend
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
 
     override func awakeFromNib() {
@@ -61,6 +62,7 @@ class ChatUserMessageCell: ChatBaseCell {
                 timeLabel.updateAttributesOf(text: unencryptedWord,
                                              textColor: .foregroundAccent)
                 timeLabelTapGesture?.isEnabled = true
+                timeLabelAction = .unencrypted
             }
         case .sending:
             timeLabelTapGesture?.isEnabled = false
@@ -70,6 +72,7 @@ class ChatUserMessageCell: ChatBaseCell {
                                             textColor: .foregroundSecondary)
         case .failedToSend:
             timeLabelTapGesture?.isEnabled = true
+            timeLabelAction = .resend
             deleteButton?.isHidden = false
             let fullText = String.Constants.sendingFailed.localized() + ". " + String.Constants.tapToRetry.localized()
             timeLabel.setAttributedTextWith(text: fullText,
@@ -88,7 +91,7 @@ class ChatUserMessageCell: ChatBaseCell {
 private extension ChatUserMessageCell {
     @objc func didTapTimeLabel() {
         UDVibration.buttonTap.vibrate()
-        actionCallback?(.resend)
+        actionCallback?(timeLabelAction)
     }
     
     @IBAction func deleteButtonPressed(_ sender: Any) {

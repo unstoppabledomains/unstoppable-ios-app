@@ -113,6 +113,7 @@ protocol PullUpViewServiceProtocol {
                                               in viewController: UIViewController) async throws
     func showGroupChatInfoPullUp(groupChatDetails: MessagingGroupChatDetails,
                                  in viewController: UIViewController) async
+    func showUnencryptedMessageInfoPullUp(in viewController: UIViewController)
 }
 
 @MainActor
@@ -1621,6 +1622,15 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             guard let domainName = item.userInfo.domainName else { return }
             
             pullUpVC?.openLink(.domainProfilePage(domainName: domainName))
+        }
+    }
+    
+    func showUnencryptedMessageInfoPullUp(in viewController: UIViewController) {
+        let selectionViewHeight: CGFloat = 288
+        let shareDomainPullUpView = UnencryptedMessageInfoPullUpView()
+        let pullUp = showOrUpdate(in: viewController, pullUp: .unencryptedMessageInfo, contentView: shareDomainPullUpView, height: selectionViewHeight)
+        shareDomainPullUpView.dismissCallback = { [weak viewController] in
+            viewController?.dismissPullUpMenu()
         }
     }
 }

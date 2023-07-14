@@ -896,7 +896,9 @@ extension String {
         static let messageNotSupported = "MESSAGE_NOT_SUPPORTED"
         static let newMessage = "NEW_MESSAGE"
         static let searchApps = "SEARCH_APPS"
-
+        static let messageUnencryptedPullUpTitle = "MESSAGE_UNENCRYPTED_PULL_UP_TITLE"
+        static let messageUnencryptedPullUpReason1 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_1"
+        static let messageUnencryptedPullUpReason2 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_2"
     }
 
     

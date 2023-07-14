@@ -2589,6 +2589,10 @@
 		C686BF1E2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */; };
 		C686BF1F2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */; };
 		C686BF202A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */; };
+		C686BF222A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
+		C686BF232A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
+		C686BF242A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
+		C686BF252A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
 		C6873E1B2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */; };
 		C6873E1C2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */; };
 		C6873E1D2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */; };
@@ -4635,6 +4639,7 @@
 		C6861B732A5BE9AA00A1632B /* ChatEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatEmptyView.swift; sourceTree = "<group>"; };
 		C686BF162A5FE8870036C7C1 /* MessagingFilesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesService.swift; sourceTree = "<group>"; };
 		C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesServiceProtocol.swift; sourceTree = "<group>"; };
+		C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnencryptedMessageInfoPullUpView.swift; sourceTree = "<group>"; };
 		C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionMessagingBarButton.swift; sourceTree = "<group>"; };
 		C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewPresenter.swift; sourceTree = "<group>"; };
 		C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewController.swift; sourceTree = "<group>"; };
@@ -6719,6 +6724,7 @@
 				C652726A2A15E483001A084C /* ChatTextView.swift */,
 				C65272842A166E75001A084C /* ChatTitleView.swift */,
 				C6861B732A5BE9AA00A1632B /* ChatEmptyView.swift */,
+				C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -9581,6 +9587,7 @@
 				307B1CEA2602775D007B14C3 /* UDWallet.swift in Sources */,
 				C6B6B028296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
 				C60982562823FDE100546392 /* CreateLocalWalletRecoveryPhrasePresenter.swift in Sources */,
+				C686BF222A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */,
 				C62C3FAD283F67B60094FC93 /* NoDomainsToMintViewController.swift in Sources */,
 				C6538DD32A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */,
 				C6E0D66D2A4AC2AE009431AF /* ChatUserMessageCell.swift in Sources */,
@@ -10454,6 +10461,7 @@
 				C6E1189B28F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6ED320A295D4C4F00BC6919 /* DomainsCollectionTitleMintingProgressView.swift in Sources */,
 				C600AB8F29F8085D0089107B /* MockDomainTransferService.swift in Sources */,
+				C686BF242A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */,
 				30EFBBDE27F4754E00B8D667 /* MainButton.swift in Sources */,
 				C6109E9A28E6AA860027D5D8 /* GeneralAppContext.swift in Sources */,
 				C66FCD0F2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
@@ -11724,6 +11732,7 @@
 				C6D6E4E12817BF09008C66BB /* OnboardingProtocols.swift in Sources */,
 				C6FF2DA928F02B1700148007 /* DomainProfileSectionUIChangeType.swift in Sources */,
 				C65A869F2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift in Sources */,
+				C686BF252A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */,
 				C6D6E59C28194AC9008C66BB /* TextTertiaryButton.swift in Sources */,
 				C645130F280808ED00413C51 /* Codable.swift in Sources */,
 				C6EA6D6628B36E7C00B2785F /* ViewAnalyticsLogger.swift in Sources */,
@@ -11967,6 +11976,7 @@
 				C6D6E528281932FF008C66BB /* BaseViewControllerProtocol.swift in Sources */,
 				C6B6B029296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
 				307B1CEB2602775D007B14C3 /* UDWallet.swift in Sources */,
+				C686BF232A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */,
 				C60982572823FDE100546392 /* CreateLocalWalletRecoveryPhrasePresenter.swift in Sources */,
 				C6538DD42A330F7900B63E84 /* MessagingContentDecrypterService.swift in Sources */,
 				C6E0D66E2A4AC2AE009431AF /* ChatUserMessageCell.swift in Sources */,

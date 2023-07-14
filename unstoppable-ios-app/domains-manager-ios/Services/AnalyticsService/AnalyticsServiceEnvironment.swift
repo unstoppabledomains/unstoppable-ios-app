@@ -329,6 +329,7 @@ extension Analytics {
         case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
         case applePayRequired
         case messagingChannelInfo
+        case unencryptedMessageInfo
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
