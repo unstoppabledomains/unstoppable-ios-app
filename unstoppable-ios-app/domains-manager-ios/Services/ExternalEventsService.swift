@@ -174,14 +174,10 @@ private extension ExternalEventsService {
                 let uiFlow = try await uiFlowFor(event: event)
                 try await coreAppCoordinator.handle(uiFlow: uiFlow)
                 receiveEventCompletion?()
-            } catch EventsHandlingError.cantFindDomain, CoreAppCoordinator.CoordinatorError.incorrectArguments, EventsHandlingError.invalidWCURL, EventsHandlingError.cantFindWallet, EventsHandlingError.walletWithoutDisplayInfo {
-                processingEvent = nil
-                receiveEventCompletion = nil
-                eventsStorage.deleteEvent(event)
             } catch {
                 processingEvent = nil
                 receiveEventCompletion = nil
-                eventsStorage.moveEventToTheEnd(event)
+                eventsStorage.deleteEvent(event)
             }
         }
     }
