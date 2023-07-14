@@ -93,6 +93,12 @@ extension MockMessagingService: MessagingServiceProtocol {
     func removeListener(_ listener: MessagingServiceListener) {}
 }
  
+extension MockMessagingService: ExternalEventsMessagingHandler  {
+    func getChatWithProfileBy(domainName: String, with otherUserWallet: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo) {
+        throw NSError()
+    }
+}
+
 // MARK: - Private methods
 private extension MockMessagingService {
     func createMockChatsFor(domain: DomainDisplayInfo) -> [MessagingChatDisplayInfo] {

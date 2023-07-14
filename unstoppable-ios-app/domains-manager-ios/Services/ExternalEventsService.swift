@@ -48,11 +48,16 @@ protocol ExternalEventsUIHandler {
     func handle(uiFlow: ExternalEventUIFlow) async throws
 }
 
+protocol ExternalEventsMessagingHandler {
+    func getChatWithProfileBy(domainName: String, with otherUserWallet: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo)
+}
+
 enum ExternalEventUIFlow {
     case showDomainProfile(domain: DomainDisplayInfo, walletWithInfo: WalletWithInfo)
     case primaryDomainMinted(domain: DomainDisplayInfo)
     case showHomeScreenList
     case showPullUpLoading
+    case showChat(chat: MessagingChatDisplayInfo, profile: MessagingChatUserProfileDisplayInfo)
 }
 
 final class ExternalEventsService {
@@ -62,6 +67,7 @@ final class ExternalEventsService {
     private let udWalletsService: UDWalletsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol
+    private let externalEventsMessagingHandler: ExternalEventsMessagingHandler
     private var receiveEventCompletion: EmptyCallback?
     private var processingEvent: ExternalEvent?
     private let eventsStorage = ExternalEventsStorage.shared
@@ -71,12 +77,14 @@ final class ExternalEventsService {
          dataAggregatorService: DataAggregatorServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
-         walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol) {
+         walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol,
+         externalEventsMessagingHandler: ExternalEventsMessagingHandler) {
         self.coreAppCoordinator = coreAppCoordinator
         self.dataAggregatorService = dataAggregatorService
         self.udWalletsService = udWalletsService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletConnectRequestsHandlingService = walletConnectRequestsHandlingService
+        self.externalEventsMessagingHandler = externalEventsMessagingHandler
     }
 }
 
@@ -154,10 +162,8 @@ private extension ExternalEventsService {
                 return
             case .badgeAdded:
                 return
-            case .chatMessage:
-                return // TODO: - Handle
-            case .chatChannelMessage:
-                return // TODO: - Handle
+            case .chatMessage, .chatChannelMessage:
+                return
             }
         }
     }
@@ -172,7 +178,7 @@ private extension ExternalEventsService {
                 processingEvent = nil
                 receiveEventCompletion = nil
                 eventsStorage.deleteEvent(event)
-            } catch  {
+            } catch {
                 processingEvent = nil
                 receiveEventCompletion = nil
                 eventsStorage.moveEventToTheEnd(event)
@@ -228,9 +234,10 @@ private extension ExternalEventsService {
             return .showPullUpLoading
         case .parkingStatusLocal:
             throw EventsHandlingError.ignoreEvent
-        case .chatMessage:
-                // TODO: - Handle
-            throw EventsHandlingError.ignoreEvent
+        case .chatMessage(let domainName, let fromAddress, _):
+            let (chat, profile) = try await externalEventsMessagingHandler.getChatWithProfileBy(domainName: domainName, with: fromAddress)
+                
+            return .showChat(chat: chat, profile: profile)
         case .chatChannelMessage:
             // TODO: - Handle
             throw EventsHandlingError.ignoreEvent

@@ -462,6 +462,29 @@ extension MessagingService: SceneActivationListener {
     }
 }
 
+// MARK: - ExternalEventsMessagingHandler
+extension MessagingService: ExternalEventsMessagingHandler {
+    func getChatWithProfileBy(domainName: String, with otherUserWallet: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo) {
+        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
+        let profile = try storageService.getUserProfileFor(domain: domain)
+        let chats = try await storageService.getChatsFor(profile: profile, decrypter: decrypterService)
+        let otherUserWallet = otherUserWallet.lowercased()
+        
+        for chat in chats {
+            switch chat.displayInfo.type {
+            case .private(let details):
+                if details.otherUser.wallet.lowercased() == otherUserWallet {
+                    return (chat.displayInfo, profile.displayInfo)
+                }
+            case .group:
+                continue
+            }
+        }
+        
+        throw MessagingServiceError.chatNotFound
+    }
+}
+
 // MARK: - Chats
 private extension MessagingService {
     func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {

@@ -2593,6 +2593,10 @@
 		C686BF232A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
 		C686BF242A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
 		C686BF252A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */; };
+		C686BF2C2A6135570036C7C1 /* ChatsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF2B2A6135570036C7C1 /* ChatsList.swift */; };
+		C686BF2D2A6135570036C7C1 /* ChatsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF2B2A6135570036C7C1 /* ChatsList.swift */; };
+		C686BF2E2A6135570036C7C1 /* ChatsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF2B2A6135570036C7C1 /* ChatsList.swift */; };
+		C686BF2F2A6135570036C7C1 /* ChatsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF2B2A6135570036C7C1 /* ChatsList.swift */; };
 		C6873E1B2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */; };
 		C6873E1C2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */; };
 		C6873E1D2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */; };
@@ -4640,6 +4644,7 @@
 		C686BF162A5FE8870036C7C1 /* MessagingFilesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesService.swift; sourceTree = "<group>"; };
 		C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesServiceProtocol.swift; sourceTree = "<group>"; };
 		C686BF212A60F6390036C7C1 /* UnencryptedMessageInfoPullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnencryptedMessageInfoPullUpView.swift; sourceTree = "<group>"; };
+		C686BF2B2A6135570036C7C1 /* ChatsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsList.swift; sourceTree = "<group>"; };
 		C6873E1A2A148009003CC7F5 /* DomainsCollectionMessagingBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionMessagingBarButton.swift; sourceTree = "<group>"; };
 		C68953772834CB730046CBA3 /* AddCurrencyViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewPresenter.swift; sourceTree = "<group>"; };
 		C68953782834CB730046CBA3 /* AddCurrencyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyViewController.swift; sourceTree = "<group>"; };
@@ -6676,6 +6681,7 @@
 		C65272482A15D8EA001A084C /* ChatsList */ = {
 			isa = PBXGroup;
 			children = (
+				C686BF2B2A6135570036C7C1 /* ChatsList.swift */,
 				C65271DE2A148D91001A084C /* ChatsListViewPresenter.swift */,
 				C6C39EDE2A3C109B00F4AD3B /* ChatsRequestsListViewPresenter.swift */,
 				C65271DF2A148D91001A084C /* ChatsListViewController.swift */,
@@ -10056,6 +10062,7 @@
 				C6D5DAD028374B4600379C38 /* ManageMultiChainDomainAddressesViewPresenter.swift in Sources */,
 				306486D225273DD400388026 /* Storage.swift in Sources */,
 				C666E08C29CB3F430003DECB /* ParkedDomainsFoundViewPresenter.swift in Sources */,
+				C686BF2C2A6135570036C7C1 /* ChatsList.swift in Sources */,
 				C6BEEF4429C30DDE000489B9 /* FirebaseAuthError.swift in Sources */,
 				C666E0AA29CB41350003DECB /* FirebaseDomainDisplayInfo.swift in Sources */,
 				C6C9DEA92834B84A00BAC36F /* BlinkingView.swift in Sources */,
@@ -10379,6 +10386,7 @@
 				C62247B7283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
 				C61B3E81283E441200500B6D /* EnterEmailToMintDomainsPresenter.swift in Sources */,
 				C6D2F13228729585005F4F2E /* DomainDisplayInfo.swift in Sources */,
+				C686BF2E2A6135570036C7C1 /* ChatsList.swift in Sources */,
 				C671E3E62902817000A2B3A0 /* DomainProfileGeneralInfoCell.swift in Sources */,
 				C68BEC162A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */,
 				C6A2D5A128504EB300327C47 /* ConnectedAppCell.swift in Sources */,
@@ -11215,6 +11223,7 @@
 				C692C36D282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */,
 				C645131428095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */,
 				C6D6E4FA2817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
+				C686BF2F2A6135570036C7C1 /* ChatsList.swift in Sources */,
 				C66435E3288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift in Sources */,
 				C685A9722840A59B00E54044 /* TextBlackButton.swift in Sources */,
 				C652725F2A15DD7E001A084C /* ObserveKeyboardAccessoryView.swift in Sources */,
@@ -12445,6 +12454,7 @@
 				C6D5DAD128374B4600379C38 /* ManageMultiChainDomainAddressesViewPresenter.swift in Sources */,
 				C6C9DEAA2834B84A00BAC36F /* BlinkingView.swift in Sources */,
 				C666E08D29CB3F430003DECB /* ParkedDomainsFoundViewPresenter.swift in Sources */,
+				C686BF2D2A6135570036C7C1 /* ChatsList.swift in Sources */,
 				C6BEEF4529C30DDE000489B9 /* FirebaseAuthError.swift in Sources */,
 				C666E0AB29CB41350003DECB /* FirebaseDomainDisplayInfo.swift in Sources */,
 				C6EECEB22833BBE300978ED5 /* DomainRecordsData.swift in Sources */,

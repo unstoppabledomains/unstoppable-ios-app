@@ -33,6 +33,7 @@ final class ChatsListViewPresenter {
     
     private weak var view: ChatsListViewProtocol?
     private let fetchLimit: Int = 10
+    private var presentOptions: ChatsList.PresentOptions
 
     private var wallets: [WalletDisplayInfo] = []
     private var profileWalletPairsCache: [ChatProfileWalletPair] = []
@@ -47,8 +48,10 @@ final class ChatsListViewPresenter {
     
     var analyticsName: Analytics.ViewName { .chatsHome }
     
-    init(view: ChatsListViewProtocol) {
+    init(view: ChatsListViewProtocol,
+         presentOptions: ChatsList.PresentOptions) {
         self.view = view
+        self.presentOptions = presentOptions
     }
 }
 
@@ -201,57 +204,88 @@ private extension ChatsListViewPresenter {
         Task {
             didLoadTime = Date()
             do {
-                wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-                    .compactMap { $0.displayInfo }
-                    .filter { $0.domainsCount > 0 }
-                    .sorted(by: {
-                    if $0.reverseResolutionDomain == nil && $1.reverseResolutionDomain != nil {
-                        return false
-                    } else if $0.reverseResolutionDomain != nil && $1.reverseResolutionDomain == nil {
-                        return true
-                    }
-                    return $0.domainsCount > $1.domainsCount
-                })
+                wallets = try await loadReadyForChattingWalletsOrClose()
                 
-                guard !wallets.isEmpty else {
-                    Debugger.printWarning("User got to chats screen without wallets with domains")
-                    await awaitForUIReady()
-                    view?.cNavigationController?.popViewController(animated: true)
-                    return
+                switch presentOptions {
+                case .default:
+                    try await resolveInitialProfileWith(wallets: wallets)
+                case .showChat(let chat, let profile):
+                    try await autoOpenChat(chat, profile: profile, usingWallets: wallets)
                 }
-                
-                if let lastUsedWallet = UserDefaults.currentMessagingOwnerWallet,
-                   let wallet = wallets.first(where: { $0.address == lastUsedWallet }),
-                   let rrDomain = wallet.reverseResolutionDomain,
-                   let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
-                    /// User already used chat with some profile, select last used.
-                    try await selectProfileWalletPair(.init(wallet: wallet,
-                                                  profile: profile))
-                } else {
-                    for wallet in wallets {
-                        guard let rrDomain = wallet.reverseResolutionDomain else { continue }
-                        
-                        if let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
-                            /// User open chats for the first time but there's existing profile, use it as default
-                            try await selectProfileWalletPair(.init(wallet: wallet,
-                                                          profile: profile))
-                            return
-                        } else {
-                            profileWalletPairsCache.append(.init(wallet: wallet,
-                                                                 profile: nil))
-                        }
-                    }
-              
-                    /// No profile has found for existing RR domains
-                    /// Select first wallet from sorted list
-                    let firstWallet = wallets[0] /// Safe due to .isEmpty verification above
-                    try await selectProfileWalletPair(.init(wallet: firstWallet,
-                                                  profile: nil))
-                }
+            } catch ChatsListError.noWalletsForChatting {
+                return
             } catch {
-                view?.showAlertWith(error: error, handler: nil) 
+                view?.showAlertWith(error: error, handler: nil)
             }
+            presentOptions = .default
         }
+    }
+    
+    func loadReadyForChattingWalletsOrClose() async throws -> [WalletDisplayInfo] {
+        wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+            .compactMap { $0.displayInfo }
+            .filter { $0.domainsCount > 0 }
+            .sorted(by: {
+                if $0.reverseResolutionDomain == nil && $1.reverseResolutionDomain != nil {
+                    return false
+                } else if $0.reverseResolutionDomain != nil && $1.reverseResolutionDomain == nil {
+                    return true
+                }
+                return $0.domainsCount > $1.domainsCount
+            })
+        
+        guard !wallets.isEmpty else {
+            Debugger.printWarning("User got to chats screen without wallets with domains")
+            await awaitForUIReady()
+            view?.cNavigationController?.popViewController(animated: true)
+            throw ChatsListError.noWalletsForChatting
+        }
+        
+        return wallets
+    }
+    
+    func resolveInitialProfileWith(wallets: [WalletDisplayInfo]) async throws {
+        if let lastUsedWallet = UserDefaults.currentMessagingOwnerWallet,
+           let wallet = wallets.first(where: { $0.address == lastUsedWallet }),
+           let rrDomain = wallet.reverseResolutionDomain,
+           let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
+            /// User already used chat with some profile, select last used.
+            try await selectProfileWalletPair(.init(wallet: wallet,
+                                                    profile: profile))
+        } else {
+            for wallet in wallets {
+                guard let rrDomain = wallet.reverseResolutionDomain else { continue }
+                
+                if let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
+                    /// User open chats for the first time but there's existing profile, use it as default
+                    try await selectProfileWalletPair(.init(wallet: wallet,
+                                                            profile: profile))
+                    return
+                } else {
+                    profileWalletPairsCache.append(.init(wallet: wallet,
+                                                         profile: nil))
+                }
+            }
+            
+            /// No profile has found for existing RR domains
+            /// Select first wallet from sorted list
+            let firstWallet = wallets[0] /// Safe due to .isEmpty verification above
+            try await selectProfileWalletPair(.init(wallet: firstWallet,
+                                                    profile: nil))
+        }
+    }
+    
+    func autoOpenChat(_ chat: MessagingChatDisplayInfo, profile: MessagingChatUserProfileDisplayInfo, usingWallets wallets: [WalletDisplayInfo]) async throws {
+        guard let wallet = wallets.first(where: { $0.address == profile.wallet.lowercased() }) else {
+            try await resolveInitialProfileWith(wallets: wallets)
+            return
+        }
+        
+        try await selectProfileWalletPair(.init(wallet: wallet, profile: profile))
+        
+        guard let chat = chatsList.first(where: { $0.id == chat.id }) else { return }
+        
+        openChatWith(conversationState: .existingChat(chat))
     }
     
     func awaitForUIReady() async {
@@ -554,6 +588,10 @@ private extension ChatsListViewPresenter {
         case created
         case notCreatedRRSet
         case notCreatedRRNotSet
+    }
+    
+    enum ChatsListError: Error {
+        case noWalletsForChatting
     }
 }
 
