@@ -306,7 +306,7 @@ private extension DomainsCollectionCarouselItemViewController {
                                                                     bottom: 0, trailing: orthogonalSectionInset)
                 
                 let containerGroup = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                                                                           heightDimension: .fractionalHeight(DomainsCollectionUICache.shared.cardFractionalHeight())),
+                                                                                                           heightDimension: .absolute(DomainsCollectionUICache.shared.cardFullHeight())),
                                                                         subitems: [leadingItem])
                 section = NSCollectionLayoutSection(group: containerGroup)
                 let bottomInset: CGFloat = self.cardState == .expanded ? 8 : 0
