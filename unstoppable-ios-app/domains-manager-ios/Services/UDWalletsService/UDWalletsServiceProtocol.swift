@@ -41,8 +41,8 @@ protocol UDWalletsServiceProtocol {
     func getBalanceFor(walletAddress: HexAddress, blockchainType: BlockchainType, forceRefresh: Bool) async throws -> WalletBalance
     
     // Reverse Resolution
-    func reverseResolutionDomainName(for wallet: UDWallet) async -> DomainName?
-    func reverseResolutionDomainName(for walletAddress: HexAddress) async -> DomainName?
+    func reverseResolutionDomainName(for wallet: UDWallet) async throws -> DomainName?
+    func reverseResolutionDomainName(for walletAddress: HexAddress) async throws -> DomainName?
     func setReverseResolution(to domain: DomainItem,
                                    paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws
     

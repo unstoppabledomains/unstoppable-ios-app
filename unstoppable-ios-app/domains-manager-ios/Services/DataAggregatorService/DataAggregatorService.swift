@@ -136,7 +136,7 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
            let domainName = setRRTransaction.domainName,
            let domain = walletDomains.first(where: { $0.name == domainName }) {
             return domain
-        } else if let removeRRTransaction = findFirstTransaction(from: transactions, withOperation: .removeReverseResolution),
+        } else if let removeRRTransaction = findFirstPendingTransaction(from: transactions, withOperation: .removeReverseResolution),
                   walletDomains.first(where: { $0.name == removeRRTransaction.domainName }) != nil {
             return nil
         }
@@ -157,10 +157,10 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     private func findFirstPendingRRTransaction(from txs: [TransactionItem]) -> TransactionItem? {
-        findFirstTransaction(from: txs, withOperation: .setReverseResolution)
+        findFirstPendingTransaction(from: txs, withOperation: .setReverseResolution)
     }
     
-    private func findFirstTransaction(from txs: [TransactionItem], withOperation operation: TxOperation) -> TransactionItem? {
+    private func findFirstPendingTransaction(from txs: [TransactionItem], withOperation operation: TxOperation) -> TransactionItem? {
         txs.filterPending(extraCondition: {$0.operation == operation}).first
     }
     
@@ -371,7 +371,7 @@ private extension DataAggregatorService {
             let (domains, reverseResolutionMap, parkedDomains) = try await (domainsTask, reverseResolutionTask, parkedDomainsTask)
             let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomains().map({ $0.name })
 
-            guard !domains.isEmpty || !mintingDomainsNames.isEmpty  || !parkedDomains.isEmpty else {
+            guard !domains.isEmpty || !mintingDomainsNames.isEmpty || !parkedDomains.isEmpty else {
                 await dataHolder.setDataWith(domainsWithDisplayInfo: [],
                                              reverseResolutionMap: reverseResolutionMap)
                 notifyListenersWith(result: .success(.domainsUpdated([])))
@@ -484,20 +484,26 @@ private extension DataAggregatorService {
         
         let wallets = await dataHolder.wallets
         var walletsWithRRDomains = [WalletWithRRDomain]()
+        let cached = ReverseResolutionInfoMapStorage.retrieveReverseResolutionMap()
         
         await withTaskGroup(of: WalletWithRRDomain.self, body: { group in
-            /// 1. Fill group with tasks
             for wallet in wallets {
                 group.addTask {
-                    /// Note: This block capturing self.
-                    let domainName = await self.walletsService.reverseResolutionDomainName(for: wallet)
+                    var domainName: String?
+                    do {
+                        domainName = try await self.walletsService.reverseResolutionDomainName(for: wallet)
+                    } catch {
+                        // If request failed to get current RR domain, use cached value
+                        if let cachedName = cached[wallet.address] {
+                            domainName = cachedName
+                        }
+                    }
                     let walletWithRRDomain = WalletWithRRDomain(walletAddress: wallet.address,
                                                                 domainName: domainName)
                     return walletWithRRDomain
                 }
             }
             
-            /// 2. Take values from group
             for await walletWithRRDomain in group {
                 walletsWithRRDomains.append(walletWithRRDomain)
             }

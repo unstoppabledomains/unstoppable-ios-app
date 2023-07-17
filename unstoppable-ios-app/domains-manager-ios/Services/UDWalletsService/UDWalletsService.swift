@@ -289,29 +289,12 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     }
     
     // Reverse Resolution
-    func reverseResolutionDomainName(for wallet: UDWallet) async -> DomainName? {
-        await reverseResolutionDomainName(for: wallet.address)
+    func reverseResolutionDomainName(for wallet: UDWallet) async throws -> DomainName? {
+        try await reverseResolutionDomainName(for: wallet.address)
     }
     
-    func reverseResolutionDomainName(for walletAddress: HexAddress) async -> DomainName? {
-        #if DEBUG
-        /// Temp solution until BE is fixed to test chats in testnet
-        if User.instance.getSettings().isTestnetUsed {
-            let mockRRDomainsDict = ["0x557fc13812460e5414d9881cb3659902e9501041" : "atest2.blockchain",
-                                     "0x537e2eb956aec859c99b3e5e28d8e45200c4fa52" : "one.x",
-                                     "0x84585360d34f6c72be438fdde7147d27d2a85f9f" : "olegtest5.x",
-                                     "0xde8de8154acb1ff4b66078576a1f1da6d0b674cb" : "longlonglonglongdomainname.bitcoin",
-                                     "0xcebf5440fe9c85e037a80ffb4df0f6a9bacb3d01" : "aadomain.888",
-                                     "0xca429897570aa7083a7d296cd0009fa286731ed2" : "olegtest4.bitcoin",
-                                     "0x3d76fc25271e53e9b4add854f27f99d3465d02ab" : "homescreen.nft",
-                                     "0xc4a748796805dfa42cafe0901ec182936584cc6e" : "olegtest8.nft"]
-            if let name = mockRRDomainsDict[walletAddress]  {
-                return name
-            }
-        }
-        #endif
-        
-        return try? await NetworkService().fetchReverseResolution(for: walletAddress)
+    func reverseResolutionDomainName(for walletAddress: HexAddress) async throws -> DomainName? {
+        try await NetworkService().fetchReverseResolution(for: walletAddress)
     }
     
     enum ReverseResolutionError: Error {
