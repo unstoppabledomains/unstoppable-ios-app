@@ -30,6 +30,7 @@
 		29344C1D2963779D0091B40B /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = 29344C1C2963779D0091B40B /* WalletConnect */; };
 		29344C1F2963779D0091B40B /* WalletConnectPairing in Frameworks */ = {isa = PBXBuildFile; productRef = 29344C1E2963779D0091B40B /* WalletConnectPairing */; };
 		29344C212963779D0091B40B /* WalletConnectPush in Frameworks */ = {isa = PBXBuildFile; productRef = 29344C202963779D0091B40B /* WalletConnectPush */; };
+		29512B082A65A4CF0094D2A1 /* WalletConnectSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 29512B072A65A4CF0094D2A1 /* WalletConnectSwift */; };
 		295506F02954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
 		295506F12954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
 		295506F22954D14400EDA42D /* WCConnectedAppsStorageV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */; };
@@ -5013,6 +5014,7 @@
 			files = (
 				307F8418267A339F0070A9A6 /* Web3ContractABI in Frameworks */,
 				307F8419267A339F0070A9A6 /* BigInt in Frameworks */,
+				29512B082A65A4CF0094D2A1 /* WalletConnectSwift in Frameworks */,
 				307BEEFB26AEEFA7009EC445 /* Bugsnag in Frameworks */,
 				307F841A267A339F0070A9A6 /* Valet in Frameworks */,
 				C62396702A273D4B00363F60 /* Push in Frameworks */,
@@ -8606,6 +8608,7 @@
 				29344C202963779D0091B40B /* WalletConnectPush */,
 				C61ECD892A25BB2B00E97D70 /* SocketIO */,
 				C623966F2A273D4B00363F60 /* Push */,
+				29512B072A65A4CF0094D2A1 /* WalletConnectSwift */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 307F8458267A339F0070A9A6 /* domains-manager-ios TESTFLIGHT RELEASE.app */;
@@ -13019,7 +13022,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios TESTFLIGHT RELEASE.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -13027,7 +13030,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.6;
+				MARKETING_VERSION = 4.6.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -13045,7 +13048,7 @@
 				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
 				INFOPLIST_FILE = "domains-manager-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -13053,7 +13056,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.6;
+				MARKETING_VERSION = 4.6.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -13506,6 +13509,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */;
 			productName = WalletConnectPush;
+		};
+		29512B072A65A4CF0094D2A1 /* WalletConnectSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */;
+			productName = WalletConnectSwift;
 		};
 		29C3C89E2A370E2A008781A9 /* WalletConnectSwift */ = {
 			isa = XCSwiftPackageProductDependency;
