@@ -111,7 +111,7 @@ extension NotificationsService: UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let applicationState = UIApplication.shared.applicationState
-        Debugger.printInfo(topic: .PNs, "Did receive PN in background: \(notification.request.content.userInfo)")
+        Debugger.printInfo(topic: .PNs, "Did receive PN in background: \(response.notification.request.content.userInfo)")
 
         if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
             checkNotificationPayload(response.notification.request.content.userInfo, receiveState: applicationState != .active ? .background : .foregroundAction)
