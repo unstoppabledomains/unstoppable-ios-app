@@ -18,7 +18,7 @@ enum ExternalEvent: Codable, Hashable {
     case domainProfileUpdated(domainName: String)
     case parkingStatusLocal
     case badgeAdded(domainName: String, count: Int)
-    case chatMessage(toDomainName: String, fromAddress: String, fromDomain: String?)
+    case chatMessage(ChatMessageEventData)
     case chatChannelMessage(toDomainName: String, channelName: String, channelIcon: String)
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
@@ -107,6 +107,10 @@ enum ExternalEvent: Codable, Hashable {
             
             self = .badgeAdded(domainName: domainName, count: count)
         case .chatMessage:
+            guard let chatId = json["chatId"] as? String else {
+                Debugger.printFailure("No chat id in chat channel message notification", critical: true)
+                return nil
+            }
             guard let domainName = json["domainName"] as? String else {
                 Debugger.printFailure("No domain name in chat message notification", critical: true)
                 return nil
@@ -116,8 +120,9 @@ enum ExternalEvent: Codable, Hashable {
                 return nil
             }
             let fromDomain = json["fromDomain"] as? String
+            let data = ChatMessageEventData(chatId: chatId, toDomainName: domainName, fromAddress: fromAddress, fromDomain: fromDomain)
             
-            self = .chatMessage(toDomainName: domainName, fromAddress: fromAddress, fromDomain: fromDomain)
+            self = .chatMessage(data)
         case .chatChannelMessage:
             guard let domainName = json["domainName"] as? String else {
                 Debugger.printFailure("No domain name in chat channel message notification", critical: true)
@@ -180,9 +185,9 @@ enum ExternalEvent: Codable, Hashable {
             return [.pushNotification: "badgeAdded",
                     .count: "\(count)",
                     .domainName: domainName]
-        case .chatMessage(let toDomainName, _, _):
+        case .chatMessage(let data):
             return [.pushNotification: "chatMessage",
-                    .domainName: toDomainName]
+                    .domainName: data.toDomainName]
         case .chatChannelMessage(let toDomainName, _, _):
             return [.pushNotification: "chatChannelMessage",
                     .domainName: toDomainName]
@@ -194,6 +199,13 @@ enum ExternalEvent: Codable, Hashable {
 extension ExternalEvent {
     struct Constants {
         static let DomainNamesNotificationKey = "counter"
+    }
+    
+    struct ChatMessageEventData: Codable, Hashable {
+        let chatId: String
+        let toDomainName: String
+        let fromAddress: String
+        let fromDomain: String?
     }
 }
 

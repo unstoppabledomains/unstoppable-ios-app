@@ -464,24 +464,14 @@ extension MessagingService: SceneActivationListener {
 
 // MARK: - ExternalEventsMessagingHandler
 extension MessagingService: ExternalEventsMessagingHandler {
-    func getChatWithProfileBy(domainName: String, with otherUserWallet: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo) {
+    func getChatWithProfileBy(domainName: String, chatId: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo) {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
         let profile = try storageService.getUserProfileFor(domain: domain)
-        let chats = try await storageService.getChatsFor(profile: profile, decrypter: decrypterService)
-        let otherUserWallet = otherUserWallet.lowercased()
+        let chats = await storageService.getChatsWithIdContaining(chatId, decrypter: decrypterService)
+            
+        guard let chat = chats.first(where: { $0.userId == profile.id }) else { throw MessagingServiceError.chatNotFound }
         
-        for chat in chats {
-            switch chat.displayInfo.type {
-            case .private(let details):
-                if details.otherUser.wallet.lowercased() == otherUserWallet {
-                    return (chat.displayInfo, profile.displayInfo)
-                }
-            case .group:
-                continue
-            }
-        }
-        
-        throw MessagingServiceError.chatNotFound
+        return (chat.displayInfo, profile.displayInfo)
     }
 }
 

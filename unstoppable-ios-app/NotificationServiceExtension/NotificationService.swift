@@ -73,8 +73,8 @@ private extension NotificationService {
             setDomainProfileUpdatedContent(in: notificationContent, domainName: domainName, completion: completion)
         case .badgeAdded(let domainName, let count):
             setBadgeAddedContent(in: notificationContent, domainName: domainName, count: count, completion: completion)
-        case .chatMessage(let toDomainName, let fromAddress, let fromDomain):
-            setChatMessageContent(in: notificationContent, toDomainName: toDomainName, fromAddress: fromAddress, fromDomain: fromDomain, completion: completion)
+        case .chatMessage(let data):
+            setChatMessageContent(in: notificationContent, data: data, completion: completion)
         case .chatChannelMessage(let toDomainName, let channelName, let channelIcon):
             setChatChannelMessageContent(in: notificationContent, toDomainName: toDomainName, channelName: channelName, channelIcon: channelIcon, completion: completion)
         }
@@ -192,14 +192,12 @@ private extension NotificationService {
     }
     
     func setChatMessageContent(in notificationContent: UNMutableNotificationContent,
-                               toDomainName: String,
-                               fromAddress: String,
-                               fromDomain: String?,
+                               data: ExternalEvent.ChatMessageEventData,
                                completion: @escaping NotificationContentCallback) {
-        notificationContent.title = fromDomain ?? fromAddress.walletAddressTruncated
+        notificationContent.title = data.fromDomain ?? data.fromAddress.walletAddressTruncated
         notificationContent.body = String.Constants.newChatMessage.localized()
         
-        if let domainName = fromDomain {
+        if let domainName = data.fromDomain {
             loadDomainAvatarFor(domainName: domainName,
                                 in: notificationContent,
                                 completion: completion)

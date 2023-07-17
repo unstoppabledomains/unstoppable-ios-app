@@ -49,7 +49,7 @@ protocol ExternalEventsUIHandler {
 }
 
 protocol ExternalEventsMessagingHandler {
-    func getChatWithProfileBy(domainName: String, with otherUserWallet: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo)
+    func getChatWithProfileBy(domainName: String, chatId: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo)
 }
 
 enum ExternalEventUIFlow {
@@ -230,8 +230,8 @@ private extension ExternalEventsService {
             return .showPullUpLoading
         case .parkingStatusLocal:
             throw EventsHandlingError.ignoreEvent
-        case .chatMessage(let domainName, let fromAddress, _):
-            let (chat, profile) = try await externalEventsMessagingHandler.getChatWithProfileBy(domainName: domainName, with: fromAddress)
+        case .chatMessage(let data):
+            let (chat, profile) = try await externalEventsMessagingHandler.getChatWithProfileBy(domainName: data.toDomainName, chatId: data.chatId)
                 
             return .showChat(chat: chat, profile: profile)
         case .chatChannelMessage:

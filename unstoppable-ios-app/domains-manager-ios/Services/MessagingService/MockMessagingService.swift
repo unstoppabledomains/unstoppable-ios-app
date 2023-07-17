@@ -94,7 +94,7 @@ extension MockMessagingService: MessagingServiceProtocol {
 }
  
 extension MockMessagingService: ExternalEventsMessagingHandler  {
-    func getChatWithProfileBy(domainName: String, with otherUserWallet: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo) {
+    func getChatWithProfileBy(domainName: String, chatId: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo) {
         throw NSError()
     }
 }
