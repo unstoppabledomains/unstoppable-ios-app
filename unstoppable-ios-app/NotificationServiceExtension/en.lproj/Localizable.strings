@@ -30,3 +30,4 @@
 "NOTIFICATION_DOMAIN_PROFILE_UPDATED" = "📝 Your profile has been updated";
 
 "NOTIFICATION_NEW_CHAT_MESSAGE" = "You have a new message";
+"NOTIFICATION_NEW_CHAT_REQUEST" = "You have a new contact request";

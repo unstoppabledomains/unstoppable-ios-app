@@ -120,7 +120,13 @@ enum ExternalEvent: Codable, Hashable {
                 return nil
             }
             let fromDomain = json["fromDomain"] as? String
-            let data = ChatMessageEventData(chatId: chatId, toDomainName: domainName, fromAddress: fromAddress, fromDomain: fromDomain)
+            let requestTypeRaw = json["notificationType"] as? String ?? ""
+            let requestType = ChatMessageEventData.RequestType(rawValue: requestTypeRaw) ?? .message
+            let data = ChatMessageEventData(chatId: chatId,
+                                            toDomainName: domainName,
+                                            fromAddress: fromAddress,
+                                            fromDomain: fromDomain,
+                                            requestType: requestType)
             
             self = .chatMessage(data)
         case .chatChannelMessage:
@@ -206,6 +212,12 @@ extension ExternalEvent {
         let toDomainName: String
         let fromAddress: String
         let fromDomain: String?
+        let requestType: RequestType
+        
+        enum RequestType: String, Codable, Hashable {
+            case message = "chat"
+            case request = "request_new"
+        }
     }
 }
 

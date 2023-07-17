@@ -463,6 +463,7 @@ extension MessagingService: SceneActivationListener {
 }
 
 // MARK: - ExternalEventsMessagingHandler
+// TODO: - Remove?
 extension MessagingService: ExternalEventsMessagingHandler {
     func getChatWithProfileBy(domainName: String, chatId: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo) {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)

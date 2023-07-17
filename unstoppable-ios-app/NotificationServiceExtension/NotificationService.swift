@@ -195,7 +195,12 @@ private extension NotificationService {
                                data: ExternalEvent.ChatMessageEventData,
                                completion: @escaping NotificationContentCallback) {
         notificationContent.title = data.fromDomain ?? data.fromAddress.walletAddressTruncated
-        notificationContent.body = String.Constants.newChatMessage.localized()
+        switch data.requestType {
+        case .message:
+            notificationContent.body = String.Constants.newChatMessage.localized()
+        case .request:
+            notificationContent.body = String.Constants.newChatRequest.localized()            
+        }
         
         if let domainName = data.fromDomain {
             loadDomainAvatarFor(domainName: domainName,
