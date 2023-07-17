@@ -484,7 +484,7 @@ private extension DataAggregatorService {
         
         let wallets = await dataHolder.wallets
         var walletsWithRRDomains = [WalletWithRRDomain]()
-        let cached = ReverseResolutionInfoMapStorage.retrieveReverseResolutionMap()
+        let cachedRRDomainsMap = ReverseResolutionInfoMapStorage.retrieveReverseResolutionMap()
         
         await withTaskGroup(of: WalletWithRRDomain.self, body: { group in
             for wallet in wallets {
@@ -493,8 +493,8 @@ private extension DataAggregatorService {
                     do {
                         domainName = try await self.walletsService.reverseResolutionDomainName(for: wallet)
                     } catch {
-                        // If request failed to get current RR domain, use cached value
-                        if let cachedName = cached[wallet.address] {
+                        /// If request failed to get current RR domain, use cached value
+                        if let cachedName = cachedRRDomainsMap[wallet.address] {
                             domainName = cachedName
                         }
                     }
