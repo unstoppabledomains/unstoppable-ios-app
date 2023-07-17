@@ -173,10 +173,10 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
         showChatsListWith(options: .default)
     }
     
-    func showChat(_ chat: MessagingChatDisplayInfo, profile: MessagingChatUserProfileDisplayInfo) async {
+    func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
         await resetNavigationToRoot()
         
-        showChatsListWith(options: .showChat(chat: chat, profile: profile))
+        showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
     }
 }
 

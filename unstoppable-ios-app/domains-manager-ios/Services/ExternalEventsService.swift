@@ -57,7 +57,7 @@ enum ExternalEventUIFlow {
     case primaryDomainMinted(domain: DomainDisplayInfo)
     case showHomeScreenList
     case showPullUpLoading
-    case showChat(chat: MessagingChatDisplayInfo, profile: MessagingChatUserProfileDisplayInfo)
+    case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
 }
 
 final class ExternalEventsService {
@@ -231,9 +231,11 @@ private extension ExternalEventsService {
         case .parkingStatusLocal:
             throw EventsHandlingError.ignoreEvent
         case .chatMessage(let data):
-            let (chat, profile) = try await externalEventsMessagingHandler.getChatWithProfileBy(domainName: data.toDomainName, chatId: data.chatId)
+            let domain = try await appContext.dataAggregatorService.getDomainWith(name: data.toDomainName)
+            let domainDisplayInfo = DomainDisplayInfo(domainItem: domain, isSetForRR: true)
+            let profile = try await appContext.messagingService.getUserProfile(for: domainDisplayInfo)
                 
-            return .showChat(chat: chat, profile: profile)
+            return .showChat(chatId: data.chatId, profile: profile)
         case .chatChannelMessage:
             // TODO: - Handle
             throw EventsHandlingError.ignoreEvent

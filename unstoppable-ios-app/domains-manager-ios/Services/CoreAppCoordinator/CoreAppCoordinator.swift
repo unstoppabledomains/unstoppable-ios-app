@@ -94,8 +94,8 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
                 guard let topVC = router.topViewController() else { throw CoordinatorError.noRootVC }
                 
                 pullUpViewService.showLoadingIndicator(in: topVC)
-            case .showChat(let chat, let profile):
-                await router.showChat(chat, profile: profile)
+            case .showChat(let chatId, let profile):
+                await router.showChat(chatId, profile: profile)
             }
         default:
             throw CoordinatorError.notSuitableRoot

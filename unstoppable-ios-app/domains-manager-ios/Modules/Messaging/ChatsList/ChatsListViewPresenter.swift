@@ -209,8 +209,8 @@ private extension ChatsListViewPresenter {
                 switch presentOptions {
                 case .default:
                     try await resolveInitialProfileWith(wallets: wallets)
-                case .showChat(let chat, let profile):
-                    try await autoOpenChat(chat, profile: profile, usingWallets: wallets)
+                case .showChat(let chatId, let profile):
+                    try await autoOpenChat(chatId, profile: profile, usingWallets: wallets)
                 }
             } catch ChatsListError.noWalletsForChatting {
                 return
@@ -275,7 +275,7 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    func autoOpenChat(_ chat: MessagingChatDisplayInfo, profile: MessagingChatUserProfileDisplayInfo, usingWallets wallets: [WalletDisplayInfo]) async throws {
+    func autoOpenChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo, usingWallets wallets: [WalletDisplayInfo]) async throws {
         guard let wallet = wallets.first(where: { $0.address == profile.wallet.lowercased() }) else {
             try await resolveInitialProfileWith(wallets: wallets)
             return
@@ -283,7 +283,7 @@ private extension ChatsListViewPresenter {
         
         try await selectProfileWalletPair(.init(wallet: wallet, profile: profile))
         
-        guard let chat = chatsList.first(where: { $0.id == chat.id }) else { return }
+        guard let chat = chatsList.first(where: { $0.id.contains(chatId) }) else { return }
         
         openChatWith(conversationState: .existingChat(chat))
     }

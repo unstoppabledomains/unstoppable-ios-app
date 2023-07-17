@@ -13,6 +13,6 @@ enum ChatsList { }
 extension ChatsList {
     enum PresentOptions {
         case `default`
-        case showChat(chat: MessagingChatDisplayInfo, profile: MessagingChatUserProfileDisplayInfo)
+        case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
     }
 }
