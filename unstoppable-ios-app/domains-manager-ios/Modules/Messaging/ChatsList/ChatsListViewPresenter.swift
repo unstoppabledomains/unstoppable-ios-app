@@ -175,8 +175,11 @@ extension ChatsListViewPresenter: MessagingServiceListener {
        Task { @MainActor in
            switch messagingDataType {
            case .chats(let chats, let profile):
-               if profile.id == selectedProfileWalletPair?.profile?.id,
-                  chatsList != chats {
+               if case .showChat(_, let showProfile) = presentOptions,
+                  showProfile.id == profile.id {
+                   loadAndShowData()
+               } else if profile.id == selectedProfileWalletPair?.profile?.id,
+                         chatsList != chats {
                    chatsList = chats
                    showData()
                }
@@ -217,7 +220,6 @@ private extension ChatsListViewPresenter {
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
-            presentOptions = .default
         }
     }
     
@@ -284,8 +286,8 @@ private extension ChatsListViewPresenter {
         try await selectProfileWalletPair(.init(wallet: wallet, profile: profile))
         
         guard let chat = chatsList.first(where: { $0.id.contains(chatId) }) else { return }
-        
         openChatWith(conversationState: .existingChat(chat))
+        presentOptions = .default
     }
     
     func awaitForUIReady() async {
