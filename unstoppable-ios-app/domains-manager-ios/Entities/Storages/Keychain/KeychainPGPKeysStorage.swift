@@ -11,6 +11,7 @@ import Valet
 protocol KeychainPGPKeysStorageProtocol {
     func savePGPKey(_ pgpKey: String, forIdentifier identifier: String)
     func getPGPKeyFor(identifier: String) -> String?
+    func clearPGPKeyFor(identifier: String)
 }
 
 struct KeychainPGPKeysStorage: PrivateKeyStorage, KeychainPGPKeysStorageProtocol {
@@ -39,4 +40,11 @@ struct KeychainPGPKeysStorage: PrivateKeyStorage, KeychainPGPKeysStorageProtocol
     private func getKeyFor(identifier: String) -> String {
         pgpPrefix + identifier
     }
+    
+    
+    func clearPGPKeyFor(identifier: String)  {
+        let key = getKeyFor(identifier: identifier)
+        clear(forKey: key)
+    }
+    
 }
