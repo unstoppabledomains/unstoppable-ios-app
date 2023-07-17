@@ -68,7 +68,10 @@ extension CoreDataService {
             request.fetchLimit = fetchSize
             request.fetchOffset = 0
         }
-        return try context.fetch(request) as? [T] ?? []
+        if let entities = try? context.fetch(request) {
+            return entities as? [T] ?? []
+        }
+        return []
     }
     
     func getEntitiesBlocking<T: NSManagedObject>(predicate: NSPredicate? = nil,
