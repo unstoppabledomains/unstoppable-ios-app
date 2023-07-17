@@ -86,8 +86,11 @@ extension MessagingService: MessagingServiceProtocol {
     
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
-        let chat = try await getMessagingChatFor(displayInfo: chat)
+        var chat = try await getMessagingChatFor(displayInfo: chat)
         try await apiService.makeChatRequest(chat, approved: approved, by: profile)
+        chat.displayInfo.isApproved = approved
+        await storageService.saveChats([chat])
+        notifyChatsChanged(wallet: profile.wallet)
         refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
     }
     
