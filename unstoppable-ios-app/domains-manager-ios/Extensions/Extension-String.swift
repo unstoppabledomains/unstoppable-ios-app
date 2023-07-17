@@ -891,6 +891,8 @@ extension String {
         static let messagingChannelsEmptyTitle = "MESSAGING_CHANNELS_EMPTY_TITLE"
         static let messagingChannelsEmptySubtitle = "MESSAGING_CHANNELS_EMPTY_SUBTITLE"
         static let messagingChatEmptyTitle = "MESSAGING_CHAT_EMPTY_TITLE"
+        static let messagingChatEmptyEncryptedMessage = "MESSAGING_CHAT_EMPTY_ENCRYPTED_MESSAGE"
+        static let messagingChatEmptyUnencryptedMessage = "MESSAGING_CHAT_EMPTY_UNENCRYPTED_MESSAGE"
         static let messagingNFollowers = "MESSAGING_N_FOLLOWERS"
         static let messagingBlockUserConfirmationTitle = "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE"
         static let messagingYouAreBlocked = "MESSAGING_YOU_ARE_BLOCKED"
