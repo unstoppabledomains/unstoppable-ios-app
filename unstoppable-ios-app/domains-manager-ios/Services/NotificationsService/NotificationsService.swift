@@ -104,13 +104,15 @@ extension NotificationsService: NotificationsServiceProtocol {
 extension NotificationsService: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         // NOTE: this function will only be called when the app is in foreground.
+        Debugger.printInfo(topic: .PNs, "Did receive PN in foreground: \(notification.request.content.userInfo)")
         let presentationOptions = checkNotificationPayload(notification.request.content.userInfo, receiveState: .foreground)
         completionHandler(presentationOptions)
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let applicationState = UIApplication.shared.applicationState
-        
+        Debugger.printInfo(topic: .PNs, "Did receive PN in background: \(notification.request.content.userInfo)")
+
         if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
             checkNotificationPayload(response.notification.request.content.userInfo, receiveState: applicationState != .active ? .background : .foregroundAction)
         }
