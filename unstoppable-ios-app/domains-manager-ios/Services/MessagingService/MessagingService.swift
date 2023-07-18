@@ -61,19 +61,10 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo) {
-        Task {
-            do {
-                self.currentUser = userProfile
-                let rrDomain = try await getReverseResolutionDomainItem(for: userProfile.wallet)
-                let profile = try storageService.getUserProfileFor(domain: rrDomain)
-                
-                refreshChatsForProfile(profile, shouldRefreshUserInfo: true)
-                refreshChannelsForProfile(profile)
-                setupSocketConnection(profile: profile)
-            } catch { }
-        }
+        self.currentUser = userProfile
+        refreshMessagingInfoFor(userProfile: userProfile, shouldRefreshUserInfo: true)
     }
-    
+
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
@@ -455,13 +446,30 @@ extension MessagingService: SceneActivationListener {
         case .foregroundActive:
             guard let currentUser else { return }
             
-            setCurrentUser(currentUser)
+            refreshMessagingInfoFor(userProfile: currentUser, shouldRefreshUserInfo: false)
         case .background:
             webSocketsService.disconnectAll()
         case .foregroundInactive, .unattached:
             return
         @unknown default:
             return
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension MessagingService {
+    func refreshMessagingInfoFor(userProfile: MessagingChatUserProfileDisplayInfo,
+                                 shouldRefreshUserInfo: Bool) {
+        Task {
+            do {
+                let rrDomain = try await getReverseResolutionDomainItem(for: userProfile.wallet)
+                let profile = try storageService.getUserProfileFor(domain: rrDomain)
+                
+                refreshChatsForProfile(profile, shouldRefreshUserInfo: shouldRefreshUserInfo)
+                refreshChannelsForProfile(profile)
+                setupSocketConnection(profile: profile)
+            } catch { }
         }
     }
 }
