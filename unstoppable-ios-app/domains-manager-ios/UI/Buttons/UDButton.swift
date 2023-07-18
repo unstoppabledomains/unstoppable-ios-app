@@ -162,24 +162,25 @@ private extension UDButton {
         if imageView.image == nil,
            !title.isEmpty {
             // Title only
-            bounds.size = CGSize(width: titleWidth + contentInset.left + contentInset.right,
-                                 height: titleHeight + contentInset.top + contentInset.bottom)
+            setSizeIfPossible(CGSize(width: titleWidth + contentInset.left + contentInset.right,
+                                     height: titleHeight + contentInset.top + contentInset.bottom))
             
             titleLabel.frame.origin = CGPoint(x: contentInset.left,
                                               y: contentInset.top)
         } else if title.isEmpty,
                   imageView.image != nil {
             // Image only
-            bounds.size = CGSize(width: iconSize + contentInset.left + contentInset.right,
-                                 height: iconSize + contentInset.top + contentInset.bottom)
+            setSizeIfPossible(CGSize(width: iconSize + contentInset.left + contentInset.right,
+                                     height: iconSize + contentInset.top + contentInset.bottom))
             
             imageView.frame.origin = CGPoint(x: contentInset.left,
                                              y: contentInset.top)
         } else {
             // Title and image
             let maxContentHeight = max(titleHeight, iconSize)
-            bounds.size = CGSize(width: titleWidth + iconSize + titleImagePadding + contentInset.left + contentInset.right,
-                                 height: maxContentHeight + contentInset.top + contentInset.bottom)
+            setSizeIfPossible(CGSize(width: titleWidth + iconSize + titleImagePadding + contentInset.left + contentInset.right,
+                                     height: maxContentHeight + contentInset.top + contentInset.bottom))
+            
             let center = self.localCenter
             titleLabel.center = center
             imageView.center = center
@@ -192,6 +193,12 @@ private extension UDButton {
                 titleLabel.frame.origin.x = contentInset.left
                 imageView.frame.origin.x = titleLabel.frame.maxX + titleImagePadding
             }
+        }
+    }
+    
+    func setSizeIfPossible(_ size: CGSize) {
+        if translatesAutoresizingMaskIntoConstraints {
+            bounds.size = size 
         }
     }
     
