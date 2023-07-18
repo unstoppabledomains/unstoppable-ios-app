@@ -64,7 +64,7 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
     }
  
     func approveButtonPressed() {
-        guard !channel.isCurrentUserSubscribed else { return }
+        guard channel.isSpam else { return }
         
         setChannel(subscribed: true)
     }
@@ -113,7 +113,7 @@ private extension ChannelViewPresenter {
             self?.showChannelInfo()
         }))
         
-        if channel.isCurrentUserSubscribed {
+        if !channel.isSpam {
             actions.append(.init(type: .leave, callback: { [weak self] in
                 self?.logButtonPressedAnalyticEvents(button: .leaveChannel,
                                                      parameters: [.channelName: self?.channel.name ?? ""])
@@ -256,7 +256,7 @@ private extension ChannelViewPresenter {
                 try await appContext.messagingService.setChannel(channel,
                                                                  subscribed: subscribed,
                                                                  by: profile)
-                channel.isCurrentUserSubscribed = subscribed
+                channel.isSpam = !subscribed
                 setupUI()
                 try await loadAndAddFeed(forPage: 1)
             } catch {

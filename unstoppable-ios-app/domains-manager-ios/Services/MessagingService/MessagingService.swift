@@ -385,6 +385,7 @@ extension MessagingService: MessagingServiceProtocol {
         try await apiService.setChannel(channel, subscribed: subscribed, by: profile)
         var channel = channel
         channel.isCurrentUserSubscribed = subscribed
+        channel.isSpam = !subscribed
         if subscribed {
             let updatedChannel = await refreshChannelsMetadata([channel], storedChannels: [])
             await storageService.saveChannels(updatedChannel, for: profile)
