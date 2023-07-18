@@ -465,20 +465,6 @@ extension MessagingService: SceneActivationListener {
     }
 }
 
-// MARK: - ExternalEventsMessagingHandler
-// TODO: - Remove?
-extension MessagingService: ExternalEventsMessagingHandler {
-    func getChatWithProfileBy(domainName: String, chatId: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo) {
-        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
-        let profile = try storageService.getUserProfileFor(domain: domain)
-        let chats = await storageService.getChatsWithIdContaining(chatId, decrypter: decrypterService)
-            
-        guard let chat = chats.first(where: { $0.userId == profile.id }) else { throw MessagingServiceError.chatNotFound }
-        
-        return (chat.displayInfo, profile.displayInfo)
-    }
-}
-
 // MARK: - Chats
 private extension MessagingService {
     func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
