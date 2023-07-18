@@ -65,6 +65,9 @@ final class ChatViewController: BaseViewController {
         
         cNavigationBar?.navBarContentView.setTitleView(hidden: false, animated: true)
         presenter.viewWillAppear()
+        DispatchQueue.main.async {
+            self.calculateCollectionBottomInset()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -73,7 +76,16 @@ final class ChatViewController: BaseViewController {
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
+        calculateCollectionBottomInset()
         scrollToTheBottom(animated: true)
+    }
+    
+    override func keyboardWillHideAction(duration: Double, curve: Int) {
+        calculateCollectionBottomInset()
+    }
+    
+    override func keyboardDidAdjustFrame(keyboardHeight: CGFloat) {
+        calculateCollectionBottomInset(shouldAdjustContentOffset: true)
     }
     
     override func viewDidLayoutSubviews() {
@@ -243,6 +255,12 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
         }
     }
     
+    var isReachedEnd: Bool {
+        let maxContent = collectionView.contentSize.height - collectionView.bounds.height + collectionView.contentInset.bottom
+        let isReachedEnd = collectionView.contentOffset.y >= maxContent
+        return isReachedEnd
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: collectionView.bounds.width, height: 140)
     }
@@ -252,7 +270,6 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
         
         presenter.willDisplayItem(item)
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         CGSize(width: collectionView.bounds.width, height: ChatSectionHeaderView.Height)
@@ -282,7 +299,6 @@ extension ChatViewController: ChatInputViewDelegate {
     }
     
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
-        calculateCollectionBottomInset()
         setupMoveToTopButtonFrame()
     }
     
@@ -319,9 +335,18 @@ private extension ChatViewController {
 
 // MARK: - Private functions
 private extension ChatViewController {
-    func calculateCollectionBottomInset() {
+    func calculateCollectionBottomInset(shouldAdjustContentOffset: Bool = false) {
         let keyboardHeight = isKeyboardOpened ? keyboardFrame.height : 0
+        let currentInset = collectionView.contentInset.bottom
         collectionView.contentInset.bottom = chatInputView.bounds.height + keyboardHeight + 12
+        if shouldAdjustContentOffset {
+            let insetDif = currentInset - collectionView.contentInset.bottom
+            if isReachedEnd,
+               insetDif > 0 { /// Content will be adjusted automatically
+                return
+            }
+            self.collectionView.contentOffset.y -= insetDif
+        }
     }
     
     func getLastItemIndexPath() -> IndexPath? {
