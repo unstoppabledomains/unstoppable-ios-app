@@ -310,7 +310,7 @@ extension DomainProfileViewPresenter: ExternalEventsServiceListener {
                 if domainNames.contains(dataHolder.domain.name) {
                     refreshData()
                 }
-            case .wcDeepLink, .walletConnectRequest, .parkingStatusLocal:
+            case .wcDeepLink, .walletConnectRequest, .parkingStatusLocal, .chatMessage, .chatChannelMessage:
                 return
             }
         }

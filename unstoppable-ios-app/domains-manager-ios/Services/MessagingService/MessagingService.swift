@@ -86,8 +86,11 @@ extension MessagingService: MessagingServiceProtocol {
     
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
-        let chat = try await getMessagingChatFor(displayInfo: chat)
+        var chat = try await getMessagingChatFor(displayInfo: chat)
         try await apiService.makeChatRequest(chat, approved: approved, by: profile)
+        chat.displayInfo.isApproved = approved
+        await storageService.saveChats([chat])
+        notifyChatsChanged(wallet: profile.wallet)
         refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
     }
     
@@ -634,7 +637,7 @@ private extension MessagingService {
     }
     
     func loadUserInfoFor(wallet: String) async -> MessagingChatUserDisplayInfo? {
-        if let domain = await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
+        if let domain = try? await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
            !domain.isEmpty {
             let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
             var pfpURL: URL?

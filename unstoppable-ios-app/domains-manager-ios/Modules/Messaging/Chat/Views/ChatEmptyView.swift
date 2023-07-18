@@ -125,9 +125,9 @@ extension ChatEmptyView {
         var message: String? {
             switch self {
             case .chatEncrypted:
-                return "Send a message to request to join the chat.\nUntil the recipient joins the chat, your messages will be unencrypted"
+                return String.Constants.messagingChatEmptyEncryptedMessage.localized()
             case .chatUnEncrypted:
-                return "Send a message to request to join the chat.\nChat is encrypted."
+                return String.Constants.messagingChatEmptyUnencryptedMessage.localized()
             case .channel: return nil
             }
         }

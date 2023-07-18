@@ -104,7 +104,7 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
             dismissCallback?()
         })
     }
-    
+
     func isMintingAvailable(in viewController: UIViewController) async -> Bool {
         guard networkReachabilityService?.isReachable == true else {
             await appContext.pullUpViewService.showYouAreOfflinePullUp(in: viewController,
@@ -170,9 +170,19 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     }
     
     func showChatsListScreen() {
-        guard let navigationController = self.navigationController else { return }
+        showChatsListWith(options: .default)
+    }
+    
+    func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await resetNavigationToRoot()
         
-        showChatsListScreen(in: navigationController)
+        showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
+    }
+    
+    func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await resetNavigationToRoot()
+        
+        showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
     }
 }
 
@@ -253,8 +263,14 @@ private extension DomainsCollectionRouter {
     }
     
     func awaitUIUpdated() async {
-        let interval: TimeInterval = 0.3
+        let interval: TimeInterval = 0.5
         let duration = UInt64(interval * 1_000_000_000)
         try? await Task.sleep(nanoseconds: duration)
+    }
+    
+    func showChatsListWith(options: ChatsList.PresentOptions) {
+        guard let navigationController = self.navigationController else { return }
+        
+        showChatsListScreen(in: navigationController, presentOptions: options)
     }
 }

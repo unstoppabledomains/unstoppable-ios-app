@@ -73,6 +73,10 @@ private extension NotificationService {
             setDomainProfileUpdatedContent(in: notificationContent, domainName: domainName, completion: completion)
         case .badgeAdded(let domainName, let count):
             setBadgeAddedContent(in: notificationContent, domainName: domainName, count: count, completion: completion)
+        case .chatMessage(let data):
+            setChatMessageContent(in: notificationContent, data: data, completion: completion)
+        case .chatChannelMessage(let data):
+            setChatChannelMessageContent(in: notificationContent, data: data, completion: completion)
         }
     }
     
@@ -186,6 +190,41 @@ private extension NotificationService {
                             in: notificationContent,
                             completion: completion)
     }
+    
+    func setChatMessageContent(in notificationContent: UNMutableNotificationContent,
+                               data: ExternalEvent.ChatMessageEventData,
+                               completion: @escaping NotificationContentCallback) {
+        notificationContent.title = data.fromDomain ?? data.fromAddress.walletAddressTruncated
+        switch data.requestType {
+        case .message:
+            notificationContent.body = String.Constants.newChatMessage.localized()
+        case .request:
+            notificationContent.body = String.Constants.newChatRequest.localized()            
+        }
+        
+        if let domainName = data.fromDomain {
+            loadDomainAvatarFor(domainName: domainName,
+                                in: notificationContent,
+                                completion: completion)
+        } else {
+            completion(nil)
+        }
+    }
+    
+    func setChatChannelMessageContent(in notificationContent: UNMutableNotificationContent,
+                                      data: ExternalEvent.ChannelMessageEventData,
+                                      completion: @escaping NotificationContentCallback) {
+        notificationContent.title = data.channelName
+        
+        if let url = URL(string: data.channelIcon) {
+            loadAvatarFor(source: .url(url),
+                          name: data.channelName,
+                          in: notificationContent,
+                          completion: completion)
+        } else {
+            completion(nil)
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -225,12 +264,19 @@ private extension NotificationService {
     func loadDomainAvatarFor(domainName: String,
                              in notificationContent: UNMutableNotificationContent,
                              completion: @escaping NotificationContentCallback) {
+        loadAvatarFor(source: .domain(domainName), name: domainName, in: notificationContent, completion: completion)
+    }
+    
+    func loadAvatarFor(source: NotificationImageLoadingService.ImageSource,
+                       name: String,
+                       in notificationContent: UNMutableNotificationContent,
+                       completion: @escaping NotificationContentCallback) {
         if #available(iOSApplicationExtension 15.0, *) {
-            NotificationImageLoadingService.shared.imageFor(source: .domain(domainName)) { image in
+            NotificationImageLoadingService.shared.imageFor(source: source) { image in
                 if let image,
                    let imageData = image.jpegData(compressionQuality: 1) {
                     
-                    let intent = self.intentFor(domainName: domainName,
+                    let intent = self.intentFor(domainName: name,
                                                 imageData: imageData)
                     
                     if let updatedContent = try? notificationContent.updating(from: intent) {

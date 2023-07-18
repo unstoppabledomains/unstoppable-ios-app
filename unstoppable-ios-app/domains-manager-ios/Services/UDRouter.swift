@@ -570,8 +570,9 @@ class UDRouter: DomainProfileSignatureValidator {
         nav.pushViewController(vc, animated: true)
     }
     
-    func showChatsListScreen(in nav: CNavigationController) {
-        let vc = buildChatsListModule()
+    func showChatsListScreen(in nav: CNavigationController,
+                             presentOptions: ChatsList.PresentOptions) {
+        let vc = buildChatsListModule(presentOptions: presentOptions)
         
         nav.pushViewController(vc, animated: true)
     }
@@ -1002,9 +1003,10 @@ private extension UDRouter {
         return vc
     }
     
-    func buildChatsListModule() -> UIViewController {
+    func buildChatsListModule(presentOptions: ChatsList.PresentOptions) -> UIViewController {
         let vc = ChatsListViewController.nibInstance()
-        let presenter = ChatsListViewPresenter(view: vc)
+        let presenter = ChatsListViewPresenter(view: vc,
+                                               presentOptions: presentOptions)
         vc.presenter = presenter
         return vc
     }
