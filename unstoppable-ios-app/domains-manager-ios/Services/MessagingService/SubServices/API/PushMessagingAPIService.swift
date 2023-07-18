@@ -431,6 +431,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
                                                                                                               isCurrentUserSubscribed: isCurrentUserSubscribed,
+                                                                                                              isSearchResult: false,
                                                                                                               userId: user.id) })
     }
     
@@ -452,6 +453,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
                                                                                                               isCurrentUserSubscribed: false,
+                                                                                                              isSearchResult: true,
                                                                                                               userId: user.id) })
     }
     

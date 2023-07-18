@@ -736,14 +736,15 @@ private extension CoreDataMessagingStorageService {
                                                subscriberCount: Int(coreDataChannel.subscriberCount),
                                                unreadMessagesCount: unreadMessagesCount,
                                                isUpToDate: coreDataChannel.isUpToDate,
-                                               isCurrentUserSubscribed: true, /// We store only channels that user is opt-in for
+                                               isCurrentUserSubscribed: coreDataChannel.isCurrentUserSubscribed,
+                                               isSearchResult: false, /// We store only channels that user is opt-in for
                                                lastMessage: lastMessage)
         
         return newsChannel
     }
     
     func convertMessagingChannelToCoreDataChannel(_ channel: MessagingNewsChannel) throws -> CoreDataMessagingNewsChannel {
-        guard channel.isCurrentUserSubscribed else { throw Error.invalidEntity }
+        guard !channel.isSearchResult else { throw Error.invalidEntity }
         
         let coreDataChannel: CoreDataMessagingNewsChannel = try createEntity(in: backgroundContext)
         
@@ -755,6 +756,7 @@ private extension CoreDataMessagingStorageService {
         coreDataChannel.url = channel.url
         coreDataChannel.icon = channel.icon
         coreDataChannel.isUpToDate = channel.isUpToDate
+        coreDataChannel.isCurrentUserSubscribed = channel.isCurrentUserSubscribed
         coreDataChannel.verifiedStatus = Int64(channel.verifiedStatus)
         coreDataChannel.blocked = channel.blocked == 1
         coreDataChannel.subscriberCount = Int64(channel.subscriberCount)

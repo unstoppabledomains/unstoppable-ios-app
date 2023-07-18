@@ -45,6 +45,7 @@
         <attribute name="icon" attributeType="URI" defaultValueString=""/>
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="info" attributeType="String" defaultValueString=""/>
+        <attribute name="isCurrentUserSubscribed" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="isUpToDate" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="lastFeedId" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
