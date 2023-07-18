@@ -597,7 +597,9 @@ private extension ChatViewPresenter {
                     if !chat.isApproved {
                         try await approveChatRequest(chat)
                     }
-                    newMessage = try await appContext.messagingService.sendMessage(type, in: chat)
+                    newMessage = try await appContext.messagingService.sendMessage(type,
+                                                                                   isEncrypted: isChannelEncrypted,
+                                                                                   in: chat)
                 case .newChat(let userInfo):
                     let (chat, message) = try await appContext.messagingService.sendFirstMessage(type,
                                                                                                  to: userInfo,

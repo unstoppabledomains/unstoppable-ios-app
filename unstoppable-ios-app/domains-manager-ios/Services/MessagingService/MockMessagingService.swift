@@ -54,6 +54,7 @@ extension MockMessagingService: MessagingServiceProtocol {
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
+                     isEncrypted: Bool,
                      in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo {
         throw NSError()
     }

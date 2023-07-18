@@ -162,10 +162,10 @@ extension MessagingService: MessagingServiceProtocol {
     }
 
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
+                     isEncrypted: Bool,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
         let messagingChat = try await getMessagingChatFor(displayInfo: chat)
         let profile = try await getUserProfileWith(wallet: messagingChat.displayInfo.thisUserDetails.wallet)
-        let isMessageEncrypted = await apiService.isMessagesEncryptedIn(chatType: chat.type)
         let newMessageDisplayInfo = MessagingChatMessageDisplayInfo(id: UUID().uuidString,
                                                                     chatId: chat.id,
                                                                     senderType: .thisUser(chat.thisUserDetails),
@@ -174,7 +174,7 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     isRead: true,
                                                                     isFirstInChat: false,
                                                                     deliveryState: .sending,
-                                                                    isEncrypted: isMessageEncrypted)
+                                                                    isEncrypted: isEncrypted)
         let message = MessagingChatMessage(displayInfo: newMessageDisplayInfo,
                                            serviceMetadata: nil)
         await storageService.saveMessages([message])
