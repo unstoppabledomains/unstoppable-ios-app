@@ -736,7 +736,6 @@ private extension CoreDataMessagingStorageService {
                                                subscriberCount: Int(coreDataChannel.subscriberCount),
                                                unreadMessagesCount: unreadMessagesCount,
                                                isUpToDate: coreDataChannel.isUpToDate,
-                                               isSpam: coreDataChannel.isSpam,
                                                isCurrentUserSubscribed: true, /// We store only channels that user is opt-in for
                                                lastMessage: lastMessage)
         
@@ -756,7 +755,6 @@ private extension CoreDataMessagingStorageService {
         coreDataChannel.url = channel.url
         coreDataChannel.icon = channel.icon
         coreDataChannel.isUpToDate = channel.isUpToDate
-        coreDataChannel.isSpam = channel.isSpam
         coreDataChannel.verifiedStatus = Int64(channel.verifiedStatus)
         coreDataChannel.blocked = channel.blocked == 1
         coreDataChannel.subscriberCount = Int64(channel.subscriberCount)

@@ -211,9 +211,6 @@ private extension PushRESTAPIService {
     }
     
     func createEIPFormatFor(address: HexAddress, chain: Int? = nil) -> String {
-        if address.contains("eip155") {
-            return address
-        }
         if let chain {
             return "eip155:\(chain):\(address)"
         }

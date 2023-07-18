@@ -402,18 +402,17 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
         let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: user.wallet)
         
-        return try await getChannelsWithIds(Set(subscribedChannelsIds), isCurrentUserSubscribed: true, isSpam: false, user: user)
+        return try await getChannelsWithIds(Set(subscribedChannelsIds), isCurrentUserSubscribed: true, user: user)
     }
     
     func getSpamChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
         let spamChannelIds = try await pushRESTService.getSpamChannelsIds(for: user.wallet)
         
-        return try await getChannelsWithIds(Set(spamChannelIds), isCurrentUserSubscribed: true, isSpam: true, user: user)
+        return try await getChannelsWithIds(Set(spamChannelIds), isCurrentUserSubscribed: false, user: user)
     }
     
     private func getChannelsWithIds(_ channelIds: Set<String>,
                                     isCurrentUserSubscribed: Bool,
-                                    isSpam: Bool,
                                     user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
         guard !channelIds.isEmpty else { return [] }
 
@@ -432,7 +431,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
                                                                                                               isCurrentUserSubscribed: isCurrentUserSubscribed,
-                                                                                                              isSpam: isSpam,
                                                                                                               userId: user.id) })
     }
     
@@ -454,7 +452,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         
         return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
                                                                                                               isCurrentUserSubscribed: false,
-                                                                                                              isSpam: true,
                                                                                                               userId: user.id) })
     }
     

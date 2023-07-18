@@ -77,8 +77,8 @@ extension ChatsRequestsListViewPresenter: MessagingServiceListener {
             case .channels(let channels, let profile):
                 if profile.id == self.profile.id,
                    case .channelsSpam = dataType {
-                    let spam = channels.filter { $0.isSpam }
-                    self.dataType = .channelsSpam(spam)
+                    let requests = channels.filter { !$0.isCurrentUserSubscribed }
+                    self.dataType = .channelsSpam(requests)
                     showData()
                 }
             case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded:

@@ -408,8 +408,8 @@ private extension ChatsListViewPresenter {
             snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
         } else {
             snapshot.appendSections([.listItems(title: nil)])
-            let channelsList = channels.filter({ !$0.isSpam })
-            let spamList = channels.filter({ $0.isSpam })
+            let channelsList = channels.filter({ $0.isCurrentUserSubscribed })
+            let spamList = channels.filter({ !$0.isCurrentUserSubscribed })
             if !spamList.isEmpty {
                 snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
                                                                          numberOfRequests: spamList.count))])
@@ -533,10 +533,10 @@ private extension ChatsListViewPresenter {
                                               profile: profile,
                                               in: nav)
         case .channels:
-            let spam = self.channels.filter { $0.isSpam }
-            guard !spam.isEmpty else { return }
+            let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
+            guard !channels.isEmpty else { return }
 
-            UDRouter().showChatRequestsScreen(dataType: .channelsSpam(spam),
+            UDRouter().showChatRequestsScreen(dataType: .channelsSpam(channels),
                                               profile: profile,
                                               in: nav)
         }
