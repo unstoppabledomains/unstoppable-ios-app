@@ -45,6 +45,9 @@ private extension PushRESTAPIService.URLSList {
     static func GET_CHANNELS_URL(userEIP: String) -> String {
         GET_USER_URL.appendingURLPathComponents(userEIP, "subscriptions")
     }
+    static func GET_SPAM_CHANNELS_URL(userEIP: String) -> String {
+        GET_USER_URL.appendingURLPathComponents(userEIP, "spam", "channels")
+    }
     static func GET_CHANNEL_DETAILS_URL(channelEIP: String) -> String {
         CHANNELS_URL.appendingURLPathComponents(channelEIP)
     }
@@ -96,6 +99,17 @@ extension PushRESTAPIService {
        
         
         return response.subscriptions.map({ $0.channel })
+    }
+    
+    func getSpamChannelsIds(for wallet: String) async throws -> [String] {
+        let userEIP = createEIPFormatFor(address: wallet)
+        let urlString = URLSList.GET_SPAM_CHANNELS_URL(userEIP: userEIP)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
+        let response: [ChannelSubscriptionHolder] = try await getDecodableObjectWith(request: request)
+        
+        
+        return response.map({ $0.channel })
     }
     
     func getChannelDetails(for channelId: String) async throws -> PushChannel {
@@ -236,7 +250,7 @@ private extension PushRESTAPIService {
         @DecodeIgnoringFailed
         var subscriptions: [ChannelSubscriptionHolder]
     }
-    
+
     struct ChannelSubscriptionHolder: Codable {
         let channel: String
     }

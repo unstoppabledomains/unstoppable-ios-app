@@ -406,10 +406,9 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func getSpamChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
-        let spamMessages = try await pushRESTService.getNotificationsInbox(for: user.wallet, page: 1, limit: 30, isSpam: true)
-        let spamChannelIds = Set(spamMessages.map { $0.sender })
+        let spamChannelIds = try await pushRESTService.getSpamChannelsIds(for: user.wallet)
         
-        return try await getChannelsWithIds(spamChannelIds, isCurrentUserSubscribed: false, user: user)
+        return try await getChannelsWithIds(Set(spamChannelIds), isCurrentUserSubscribed: false, user: user)
     }
     
     private func getChannelsWithIds(_ channelIds: Set<String>,
