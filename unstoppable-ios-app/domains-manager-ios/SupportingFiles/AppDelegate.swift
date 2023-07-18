@@ -30,6 +30,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Debugger.setAllowedTopicsSet(.debugDefault)
 //        CoreDataMessagingStorageService().clear()
 //        MessagingFilesService().clear()
+//        Task {
+//            await appContext.imageLoadingService.clearStoredImages()
+//        }
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
