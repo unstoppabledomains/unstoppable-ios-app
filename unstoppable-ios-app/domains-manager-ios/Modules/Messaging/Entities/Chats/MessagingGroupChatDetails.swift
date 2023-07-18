@@ -15,9 +15,6 @@ struct MessagingGroupChatDetails: Hashable {
     let isPublic: Bool
     
     var allMembers: [MessagingChatUserDisplayInfo] { members + pendingMembers }
-    var displayName: String {
-        allMembers.map { $0.displayName }.joined(separator: ", ")
-    }
 }
 
 // MARK: - Open methods
