@@ -166,10 +166,11 @@ extension ChatViewPresenter: MessagingServiceListener {
                     checkIfUpToDate()
                     showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
                 }
-            case .messageUpdated(let updatedMessage, let newMessage):
+            case .messageUpdated(let updatedMessage, var newMessage):
                 if case .existingChat(let chat) = conversationState,
                    updatedMessage.chatId == chat.id,
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
+                    await newMessage.prepareToDisplay()
                     self.messages[i] = newMessage
                     checkIfUpToDate()
                     showData(animated: false, isLoading: isLoadingMessages)
@@ -588,7 +589,7 @@ private extension ChatViewPresenter {
                     parameters: [.messageType: type.analyticName])
         Task {
             do {
-                let newMessage: MessagingChatMessageDisplayInfo
+                var newMessage: MessagingChatMessageDisplayInfo
                 switch conversationState {
                 case .existingChat(let chat):
                     if !chat.isApproved {
@@ -602,6 +603,7 @@ private extension ChatViewPresenter {
                     self.conversationState = .existingChat(chat)
                     newMessage = message
                 }
+                await newMessage.prepareToDisplay()
                 messages.insert(newMessage, at: 0)
                 showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
             } catch {
