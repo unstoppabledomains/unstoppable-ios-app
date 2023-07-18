@@ -12,7 +12,7 @@ final class ChannelViewPresenter {
     
     private weak var view: (any ChatViewProtocol)?
     private let profile: MessagingChatUserProfileDisplayInfo
-    private let fetchLimit: Int = 30
+    private let fetchLimit: Int = 20
     private var channel: MessagingNewsChannel
     private var feed: [MessagingNewsChannelFeed] = []
     private var isLoadingFeed = false
