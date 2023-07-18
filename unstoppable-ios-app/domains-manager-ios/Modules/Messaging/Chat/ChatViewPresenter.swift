@@ -192,12 +192,12 @@ extension ChatViewPresenter: MessagingServiceListener {
 private extension ChatViewPresenter {
     func loadAndShowData() {
         Task {
+            view?.setLoading(active: true)
             isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
             do {
                 switch conversationState {
                 case .existingChat(let chat):
                     isLoadingMessages = true
-                    view?.setLoading(active: true)
                     let messagesBefore = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                   before: nil,
                                                                                                   limit: fetchLimit)
@@ -236,9 +236,11 @@ private extension ChatViewPresenter {
                     updateUIForChatApprovedState()
                     view?.startTyping()
                     showData(animated: false, isLoading: false)
+                    view?.setLoading(active: false)
                 }
             } catch {
-                view?.showAlertWith(error: error, handler: nil) 
+                view?.showAlertWith(error: error, handler: nil)
+                view?.setLoading(active: false)
             }
         }
     }
