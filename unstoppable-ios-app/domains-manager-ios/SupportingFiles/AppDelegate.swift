@@ -28,8 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         #if DEBUG
         Debugger.setAllowedTopicsSet(.debugDefault)
-        CoreDataMessagingStorageService().clear()
-        MessagingFilesService().clear()
+//        CoreDataMessagingStorageService().clear()
+//        MessagingFilesService().clear()
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
