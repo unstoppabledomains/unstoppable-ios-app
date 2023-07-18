@@ -102,7 +102,7 @@ private extension ChatTitleView {
     }
     
     func setWithGroupDetails(_ groupDetails: MessagingGroupChatDetails) {
-        setTitle(groupDetails.displayName)
+        setTitle(groupDetails.name)
         iconImageView.layer.borderWidth = 0
         iconImageView.clipsToBounds = false
         Task {
