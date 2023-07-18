@@ -100,8 +100,7 @@ final class GeneralAppContext: AppContextProtocol {
                                                       dataAggregatorService: dataAggregatorService,
                                                       udWalletsService: udWalletsService,
                                                       walletConnectServiceV2: walletConnectServiceV2,
-                                                      walletConnectRequestsHandlingService: wcRequestsHandlingService,
-                                                      externalEventsMessagingHandler: messagingService)
+                                                      walletConnectRequestsHandlingService: wcRequestsHandlingService)
         
         // Deep links
         let deepLinksService = DeepLinksService(externalEventsService: externalEventsService,

@@ -48,10 +48,6 @@ protocol ExternalEventsUIHandler {
     func handle(uiFlow: ExternalEventUIFlow) async throws
 }
 
-protocol ExternalEventsMessagingHandler {
-    func getChatWithProfileBy(domainName: String, chatId: String) async throws -> (MessagingChatDisplayInfo, MessagingChatUserProfileDisplayInfo)
-}
-
 enum ExternalEventUIFlow {
     case showDomainProfile(domain: DomainDisplayInfo, walletWithInfo: WalletWithInfo)
     case primaryDomainMinted(domain: DomainDisplayInfo)
@@ -68,7 +64,6 @@ final class ExternalEventsService {
     private let udWalletsService: UDWalletsServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol
-    private let externalEventsMessagingHandler: ExternalEventsMessagingHandler
     private var receiveEventCompletion: EmptyCallback?
     private var processingEvent: ExternalEvent?
     private let eventsStorage = ExternalEventsStorage.shared
@@ -78,14 +73,12 @@ final class ExternalEventsService {
          dataAggregatorService: DataAggregatorServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
-         walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol,
-         externalEventsMessagingHandler: ExternalEventsMessagingHandler) {
+         walletConnectRequestsHandlingService: WCRequestsHandlingServiceProtocol) {
         self.coreAppCoordinator = coreAppCoordinator
         self.dataAggregatorService = dataAggregatorService
         self.udWalletsService = udWalletsService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletConnectRequestsHandlingService = walletConnectRequestsHandlingService
-        self.externalEventsMessagingHandler = externalEventsMessagingHandler
     }
 }
 
