@@ -306,7 +306,7 @@ extension UIImage {
 }
 
 extension UIImage {
-    var dataToUpload: Data? { try? self.gifDataRepresentation() }
+    var dataToUpload: Data? { try? self.gifDataRepresentation(quality: 0.7) }
     var base64String: String? { dataToUpload?.base64EncodedString() }
 }
 
