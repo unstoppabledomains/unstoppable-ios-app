@@ -14,5 +14,6 @@ extension ChatsList {
     enum PresentOptions {
         case `default`
         case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
+        case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)
     }
 }

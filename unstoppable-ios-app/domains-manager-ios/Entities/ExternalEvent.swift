@@ -19,7 +19,7 @@ enum ExternalEvent: Codable, Hashable {
     case parkingStatusLocal
     case badgeAdded(domainName: String, count: Int)
     case chatMessage(ChatMessageEventData)
-    case chatChannelMessage(toDomainName: String, channelName: String, channelIcon: String)
+    case chatChannelMessage(ChannelMessageEventData)
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
         guard let eventTypeRaw = json["type"] as? String,
@@ -89,7 +89,11 @@ enum ExternalEvent: Codable, Hashable {
                 let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
                 let channelName: String = try Self.getValueFrom(json: json, forKey: "channelName", notificationType: eventTypeRaw)
                 let channelIcon: String = try Self.getValueFrom(json: json, forKey: "channelIcon", notificationType: eventTypeRaw)
-                self = .chatChannelMessage(toDomainName: domainName, channelName: channelName, channelIcon: channelIcon)
+                let data = ChannelMessageEventData(toDomainName: domainName,
+                                                   channelId: channelId,
+                                                   channelName: channelName,
+                                                   channelIcon: channelIcon)
+                self = .chatChannelMessage(data)
             }
         } catch {
             return nil
@@ -143,9 +147,10 @@ enum ExternalEvent: Codable, Hashable {
         case .chatMessage(let data):
             return [.pushNotification: "chatMessage",
                     .domainName: data.toDomainName]
-        case .chatChannelMessage(let toDomainName, _, _):
+        case .chatChannelMessage(let data):
             return [.pushNotification: "chatChannelMessage",
-                    .domainName: toDomainName]
+                    .domainName: data.toDomainName,
+                    .channelName: data.channelName]
         }
     }
 }

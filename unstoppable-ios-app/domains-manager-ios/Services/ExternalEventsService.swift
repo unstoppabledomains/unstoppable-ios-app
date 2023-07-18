@@ -58,6 +58,7 @@ enum ExternalEventUIFlow {
     case showHomeScreenList
     case showPullUpLoading
     case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
+    case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)
 }
 
 final class ExternalEventsService {
@@ -231,15 +232,21 @@ private extension ExternalEventsService {
         case .parkingStatusLocal:
             throw EventsHandlingError.ignoreEvent
         case .chatMessage(let data):
-            let domain = try await appContext.dataAggregatorService.getDomainWith(name: data.toDomainName)
-            let domainDisplayInfo = DomainDisplayInfo(domainItem: domain, isSetForRR: true)
-            let profile = try await appContext.messagingService.getUserProfile(for: domainDisplayInfo)
+            let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
                 
             return .showChat(chatId: data.chatId, profile: profile)
-        case .chatChannelMessage:
-            // TODO: - Handle
-            throw EventsHandlingError.ignoreEvent
+        case .chatChannelMessage(let data):
+            let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
+            
+            return .showChannel(channelId: data.channelId, profile: profile)
         }
+    }
+    
+    private func getMessagingProfileFor(domainName: String) async throws -> MessagingChatUserProfileDisplayInfo {
+        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
+        let domainDisplayInfo = DomainDisplayInfo(domainItem: domain, isSetForRR: true)
+        let profile = try await appContext.messagingService.getUserProfile(for: domainDisplayInfo)
+        return profile
     }
     
     private func resolveRequest(from url: URL) throws -> WalletConnectService.ConnectWalletRequest {

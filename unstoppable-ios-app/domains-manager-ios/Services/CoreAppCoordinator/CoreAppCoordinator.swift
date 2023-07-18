@@ -96,6 +96,8 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
                 pullUpViewService.showLoadingIndicator(in: topVC)
             case .showChat(let chatId, let profile):
                 await router.showChat(chatId, profile: profile)
+            case .showChannel(let channelId, let profile):
+                await router.showChannel(channelId, profile: profile)
             }
         default:
             throw CoordinatorError.notSuitableRoot

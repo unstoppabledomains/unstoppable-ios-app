@@ -178,6 +178,12 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
         
         showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
     }
+    
+    func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await resetNavigationToRoot()
+        
+        showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
+    }
 }
 
 // MARK: - Open methods

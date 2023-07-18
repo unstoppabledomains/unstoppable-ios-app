@@ -75,8 +75,8 @@ private extension NotificationService {
             setBadgeAddedContent(in: notificationContent, domainName: domainName, count: count, completion: completion)
         case .chatMessage(let data):
             setChatMessageContent(in: notificationContent, data: data, completion: completion)
-        case .chatChannelMessage(let toDomainName, let channelName, let channelIcon):
-            setChatChannelMessageContent(in: notificationContent, toDomainName: toDomainName, channelName: channelName, channelIcon: channelIcon, completion: completion)
+        case .chatChannelMessage(let data):
+            setChatChannelMessageContent(in: notificationContent, data: data, completion: completion)
         }
     }
     
@@ -212,15 +212,13 @@ private extension NotificationService {
     }
     
     func setChatChannelMessageContent(in notificationContent: UNMutableNotificationContent,
-                                      toDomainName: String,
-                                      channelName: String,
-                                      channelIcon: String,
+                                      data: ExternalEvent.ChannelMessageEventData,
                                       completion: @escaping NotificationContentCallback) {
-        notificationContent.title = channelName
+        notificationContent.title = data.channelName
         
-        if let url = URL(string: channelIcon) {
+        if let url = URL(string: data.channelIcon) {
             loadAvatarFor(source: .url(url),
-                          name: channelName,
+                          name: data.channelName,
                           in: notificationContent,
                           completion: completion)
         } else {
