@@ -11,11 +11,20 @@ struct MessagingGroupChatDetails: Hashable {
     let members: [MessagingChatUserDisplayInfo]
     let pendingMembers: [MessagingChatUserDisplayInfo]
     let name: String
-    let adminWallet: String?
+    let adminWallets: [String]
     let isPublic: Bool
     
     var allMembers: [MessagingChatUserDisplayInfo] { members + pendingMembers }
     var displayName: String {
         allMembers.map { $0.displayName }.joined(separator: ", ")
+    }
+}
+
+// MARK: - Open methods
+extension MessagingGroupChatDetails {
+    func isUserAdminWith(wallet: String) -> Bool {
+        let wallet = wallet.lowercased()
+        
+        return adminWallets.first(where: { $0.lowercased() == wallet }) != nil
     }
 }

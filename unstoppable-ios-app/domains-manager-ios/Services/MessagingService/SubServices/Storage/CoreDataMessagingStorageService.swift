@@ -550,7 +550,7 @@ private extension CoreDataMessagingStorageService {
             let groupChatDetails = MessagingGroupChatDetails(members: members,
                                                              pendingMembers: pendingMembers,
                                                              name: details.name,
-                                                             adminWallet: details.adminWallet,
+                                                             adminWallets: details.adminWallets ?? [],
                                                              isPublic: details.isPublic)
             return .group(groupChatDetails)
         }
@@ -568,7 +568,7 @@ private extension CoreDataMessagingStorageService {
             let memberWallets = details.members.map { $0.wallet }
             let pendingMembersWallets = details.pendingMembers.map { $0.wallet }
             coreDataChat.groupDetails = CoreDataChatGroupDetails(name: details.name,
-                                                                 adminWallet: details.adminWallet,
+                                                                 adminWallets: details.adminWallets,
                                                                  isPublic: details.isPublic,
                                                                  memberWallets: memberWallets,
                                                                  pendingMembersWallets: pendingMembersWallets).jsonRepresentation()
@@ -852,7 +852,7 @@ private extension CoreDataMessagingStorageService {
     
     struct CoreDataChatGroupDetails: Codable {
         let name: String
-        let adminWallet: String?
+        let adminWallets: [String]?
         let isPublic: Bool
         let memberWallets: [String]
         let pendingMembersWallets: [String]

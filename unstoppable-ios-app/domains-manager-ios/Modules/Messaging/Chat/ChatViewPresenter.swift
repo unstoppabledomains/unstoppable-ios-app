@@ -422,7 +422,7 @@ private extension ChatViewPresenter {
                     self?.didPressViewGroupInfoButton(groupDetails: groupDetails)
                 }))
                 
-                if groupDetails.adminWallet?.lowercased() != profile.wallet.lowercased() {
+                if !groupDetails.isUserAdminWith(wallet: profile.wallet) {
                     actions.append(.init(type: .leave, callback: { [weak self] in
                         self?.logButtonPressedAnalyticEvents(button: .leaveGroup)
                         self?.didPressLeaveButton()

@@ -579,7 +579,7 @@ private extension MessagingService {
                                                                                             in: remoteChat.displayInfo,
                                                                                             decrypter: self.decrypterService) {
                                 lastMessage.displayInfo.isRead = storedMessage.displayInfo.isRead
-                            } else if !localChats.isEmpty { // If loading channels for the first time - messages is read by default. 
+                            } else if !localChats.isEmpty { // If loading channels for the first time - messages is read by default.
                                 lastMessage.displayInfo.isRead = false
                             }
                             if !lastMessage.displayInfo.senderType.isThisUser && !lastMessage.displayInfo.isRead {
