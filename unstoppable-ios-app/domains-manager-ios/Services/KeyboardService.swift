@@ -11,6 +11,7 @@ import GameController
 @MainActor
 protocol KeyboardServiceListener: AnyObject {
     func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat)
+    func keyboardDidAdjustFrame(keyboardHeight: CGFloat)
     func keyboardDidShowAction()
     func keyboardWillHideAction(duration: Double, curve: Int)
 }
@@ -101,6 +102,12 @@ private extension KeyboardService {
             holder.listener?.keyboardWillHideAction(duration: duration, curve: curve)
         }
     }
+    
+    func keyboardDidAdjustFrameAction(keyboardHeight: CGFloat) {
+        listeners.forEach { holder in
+            holder.listener?.keyboardDidAdjustFrame(keyboardHeight: keyboardHeight)
+        }
+    }
 }
 
 // MARK: - Setup methods
@@ -123,6 +130,10 @@ private extension KeyboardService {
                     guard keyboardFrame.cgRectValue != self.keyboardFrame else { return }
                     
                     self.keyboardFrame = keyboardFrame.cgRectValue
+                    self.keyboardDidAdjustFrameAction(keyboardHeight: self.keyboardFrame.height)
+                    if isKeyboardOpened {
+                        return
+                    }
                 }
                 var animationDuration: Double = 0
                 if let keyboardAnimationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval {
