@@ -13453,8 +13453,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ethereum-push-notification-service/push-swift-sdk";
 			requirement = {
-				branch = deploy/0.6.0;
-				kind = branch;
+				kind = exactVersion;
+				version = 0.6.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

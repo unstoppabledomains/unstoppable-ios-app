@@ -68,8 +68,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ethereum-push-notification-service/push-swift-sdk",
       "state" : {
-        "branch" : "deploy/0.6.0",
-        "revision" : "7aee81879704104cacb36d00dbea217a7570b3ea"
+        "revision" : "c2b23f566666769ea13454c69c10d7494982ea76",
+        "version" : "0.6.1"
       }
     },
     {
