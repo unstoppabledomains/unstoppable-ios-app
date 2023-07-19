@@ -191,6 +191,8 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                    self.channels = channels
                    showData()
                }
+           case .refreshOfUserProfile(let profile, let isInProgress):
+               return
            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded:
                return
            }

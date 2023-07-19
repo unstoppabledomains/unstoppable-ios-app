@@ -157,8 +157,6 @@ extension ChatViewPresenter: MessagingServiceListener {
                     self.conversationState = .existingChat(updatedChat)
                     loadAndShowData()
                 }
-            case .channels, .channelFeedAdded:
-                return
             case .messagesAdded(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
                    chatId == chat.id {
@@ -183,6 +181,8 @@ extension ChatViewPresenter: MessagingServiceListener {
                     checkIfUpToDate()
                     showData(animated: true, isLoading: isLoadingMessages)
                 }
+            case .channels, .channelFeedAdded, .refreshOfUserProfile:
+                return
             }
         }
     }

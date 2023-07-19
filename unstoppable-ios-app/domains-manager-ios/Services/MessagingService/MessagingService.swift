@@ -14,7 +14,8 @@ final class MessagingService {
     private let storageService: MessagingStorageServiceProtocol
     private let decrypterService: MessagingContentDecrypterService
     private let filesService: MessagingFilesServiceProtocol
-        
+    
+    private let dataRefreshManager = MessagingServiceDataRefreshManager()
     private var listenerHolders: [MessagingListenerHolder] = []
     private var currentUser: MessagingChatUserProfileDisplayInfo?
 
@@ -33,11 +34,12 @@ final class MessagingService {
         
         storageService.markSendingMessagesAsFailed()
         setSceneActivationListener()
+        dataRefreshManager.delegate = self
     }
     
 }
 
-// MARK: - Open methods
+// MARK: - MessagingServiceProtocol
 extension MessagingService: MessagingServiceProtocol {
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
@@ -63,6 +65,10 @@ extension MessagingService: MessagingServiceProtocol {
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo) {
         self.currentUser = userProfile
         refreshMessagingInfoFor(userProfile: userProfile, shouldRefreshUserInfo: true)
+    }
+    
+    func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool {
+        dataRefreshManager.isUpdatingUserData(userProfile)
     }
 
     // Chats list
@@ -421,7 +427,22 @@ extension MessagingService: MessagingServiceProtocol {
     }
 }
 
-// MARK: - Open methods
+// MARK: - MessagingServiceDataRefreshManagerDelegate
+extension MessagingService: MessagingServiceDataRefreshManagerDelegate {
+    func didStartUpdatingProfile(_ userProfile: MessagingChatUserProfileDisplayInfo) {
+        notifyListenersUsersUpdateOf(userProfile: userProfile, isInProgress: true)
+    }
+    
+    func didFinishUpdatingProfile(_ userProfile: MessagingChatUserProfileDisplayInfo) {
+        notifyListenersUsersUpdateOf(userProfile: userProfile, isInProgress: false)
+    }
+    
+    private func notifyListenersUsersUpdateOf(userProfile: MessagingChatUserProfileDisplayInfo, isInProgress: Bool) {
+        notifyListenersChangedDataType(.refreshOfUserProfile(userProfile, isInProgress: isInProgress))
+    }
+}
+
+// MARK: - UDWalletsServiceListener
 extension MessagingService: UDWalletsServiceListener {
     func walletsDataUpdated(notification: UDWalletsServiceNotification) {
         Task {
@@ -478,7 +499,7 @@ private extension MessagingService {
 private extension MessagingService {
     func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
         Task {
-            let startTime = Date()
+            var startTime = Date()
             do {
                 let allLocalChats = try await storageService.getChatsFor(profile: profile,
                                                                          decrypter: decrypterService)
@@ -500,15 +521,22 @@ private extension MessagingService {
                                                                               decrypter: decrypterService)
                 let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
                 notifyListenersChangedDataType(.chats(chatsDisplayInfo, profile: profile.displayInfo))
+                Debugger.printTimeSensitiveInfo(topic: .Messaging,
+                                                "to refresh chats list for \(profile.wallet)",
+                                                startDate: startTime,
+                                                timeout: 3)
                 
                 if shouldRefreshUserInfo {
-                    refreshUsersInfoFor(profile: profile)
+                    startTime = Date()
+                    await refreshUsersInfoFor(profile: profile)
+                    Debugger.printTimeSensitiveInfo(topic: .Messaging,
+                                                    "to refresh users info for chats list for \(profile.wallet)",
+                                                    startDate: startTime,
+                                                    timeout: 3)
                 }
-            } catch { }
-            Debugger.printTimeSensitiveInfo(topic: .Messaging,
-                                            "to refresh chats list for \(profile.wallet)",
-                                            startDate: startTime,
-                                            timeout: 3)
+            } catch {
+                Debugger.printFailure("Failed to refresh chats list for \(profile.wallet) with error: \(error.localizedDescription)")
+            }
         }
     }
     
@@ -596,33 +624,31 @@ private extension MessagingService {
         return updatedChats
     }
     
-    func refreshUsersInfoFor(profile: MessagingChatUserProfile) {
-        Task {
-            do {
-                let chats = try await storageService.getChatsFor(profile: profile,
-                                                                 decrypter: decrypterService)
-                await withTaskGroup(of: Void.self, body: { group in
-                    for chat in chats {
-                        group.addTask {
-                            if let otherUserInfo = try? await self.loadUserInfoFor(chat: chat) {
-                                for info in otherUserInfo {
-                                    await self.storageService.saveMessagingUserInfo(info)
-                                }
+    func refreshUsersInfoFor(profile: MessagingChatUserProfile) async{
+        do {
+            let chats = try await storageService.getChatsFor(profile: profile,
+                                                             decrypter: decrypterService)
+            await withTaskGroup(of: Void.self, body: { group in
+                for chat in chats {
+                    group.addTask {
+                        if let otherUserInfo = try? await self.loadUserInfoFor(chat: chat) {
+                            for info in otherUserInfo {
+                                await self.storageService.saveMessagingUserInfo(info)
                             }
-                            return Void()
                         }
+                        return Void()
                     }
-                    
-                    for await _ in group {
-                        Void()
-                    }
-                })
+                }
                 
-                let updatedChats = try await storageService.getChatsFor(profile: profile,
-                                                                        decrypter: decrypterService)
-                notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, profile: profile.displayInfo))
-            } catch { }
-        }
+                for await _ in group {
+                    Void()
+                }
+            })
+            
+            let updatedChats = try await storageService.getChatsFor(profile: profile,
+                                                                    decrypter: decrypterService)
+            notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, profile: profile.displayInfo))
+        } catch { }
     }
     
     func loadUserInfoFor(chat: MessagingChat) async throws -> [MessagingChatUserDisplayInfo] {
