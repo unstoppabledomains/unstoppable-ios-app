@@ -191,8 +191,10 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                    self.channels = channels
                    showData()
                }
-           case .refreshOfUserProfile(let profile, let isInProgress):
-               return
+           case .refreshOfUserProfile(let profile, _):
+               if profile.id == selectedProfileWalletPair?.profile?.id {
+                   updateNavigationUI()
+               }
            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded:
                return
            }
@@ -316,7 +318,7 @@ private extension ChatsListViewPresenter {
             try? await Task.sleep(seconds: dif)
         }
     }
-    
+  
     func selectProfileWalletPair(_ chatProfile: ChatProfileWalletPair) async throws {
         self.selectedProfileWalletPair = chatProfile
         
@@ -326,8 +328,7 @@ private extension ChatsListViewPresenter {
             profileWalletPairsCache.append(chatProfile)
         }
         
-        view?.setNavigationWith(selectedWallet: chatProfile.wallet,
-                                wallets: wallets)
+        updateNavigationUI()
         
         guard let profile = chatProfile.profile else {
             let state: MessagingProfileStateAnalytics = chatProfile.wallet.reverseResolutionDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet
@@ -356,6 +357,18 @@ private extension ChatsListViewPresenter {
         view?.setState(.chatsList)
         showData()
         appContext.messagingService.setCurrentUser(profile)
+    }
+    
+    func updateNavigationUI() {
+        guard let chatProfile = selectedProfileWalletPair else { return }
+        
+        var isLoading = false
+        if let profile = chatProfile.profile {
+            isLoading = appContext.messagingService.isUpdatingUserData(profile)
+        }
+        view?.setNavigationWith(selectedWallet: chatProfile.wallet,
+                                wallets: wallets,
+                                isLoading: isLoading)
     }
     
     func showData() {

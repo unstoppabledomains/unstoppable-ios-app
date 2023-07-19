@@ -11,7 +11,7 @@ import UIKit
 protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
-    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [WalletDisplayInfo])
+    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [WalletDisplayInfo], isLoading: Bool)
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -111,9 +111,12 @@ extension ChatsListViewController: ChatsListViewProtocol {
         cNavigationController?.updateNavigationBar()
     }
     
-    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [WalletDisplayInfo]) {
+    func setNavigationWith(selectedWallet: WalletDisplayInfo,
+                           wallets: [WalletDisplayInfo],
+                           isLoading: Bool) {
         navView?.setWithConfiguration(.init(selectedWallet: selectedWallet,
-                                            wallets: wallets))
+                                            wallets: wallets,
+                                            isLoading: isLoading))
     }
 }
 
