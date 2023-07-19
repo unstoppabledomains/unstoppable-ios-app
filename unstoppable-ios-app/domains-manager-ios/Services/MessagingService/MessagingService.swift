@@ -499,6 +499,7 @@ private extension MessagingService {
 private extension MessagingService {
     func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
         Task {
+            dataRefreshManager.startUpdatingChats(for: profile.displayInfo)
             var startTime = Date()
             do {
                 let allLocalChats = try await storageService.getChatsFor(profile: profile,
@@ -534,6 +535,7 @@ private extension MessagingService {
                                                     startDate: startTime,
                                                     timeout: 3)
                 }
+                dataRefreshManager.stopUpdatingChats(for: profile.displayInfo)
             } catch {
                 Debugger.printFailure("Failed to refresh chats list for \(profile.wallet) with error: \(error.localizedDescription)")
             }
@@ -755,6 +757,7 @@ private extension MessagingService {
 private extension MessagingService {
     func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
         Task {
+            dataRefreshManager.startUpdatingChannels(for: profile.displayInfo)
             let startTime = Date()
             do {
                 let storedChannels = try await storageService.getChannelsFor(profile: profile)
@@ -775,11 +778,14 @@ private extension MessagingService {
                 
                 let updatedStoredChannels = try await storageService.getChannelsFor(profile: profile)
                 notifyListenersChangedDataType(.channels(updatedStoredChannels, profile: profile.displayInfo))
-            } catch { }
-            Debugger.printTimeSensitiveInfo(topic: .Messaging,
-                                            "to refresh channels list for \(profile.wallet)",
-                                            startDate: startTime,
-                                            timeout: 3)
+                Debugger.printTimeSensitiveInfo(topic: .Messaging,
+                                                "to refresh channels list for \(profile.wallet)",
+                                                startDate: startTime,
+                                                timeout: 3)
+            } catch {
+                Debugger.printFailure("Did fail to refresh channels list for \(profile.wallet)")
+            }
+            dataRefreshManager.stopUpdatingChannels(for: profile.displayInfo)
         }
     }
     

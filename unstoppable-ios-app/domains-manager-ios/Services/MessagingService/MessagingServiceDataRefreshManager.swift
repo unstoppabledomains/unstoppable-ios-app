@@ -67,10 +67,12 @@ final class MessagingServiceDataRefreshManager {
     }
     
     private func didStartUpdatingProfile(_ userProfile: MessagingChatUserProfileDisplayInfo) {
+        Debugger.printInfo(topic: .Messaging, "Did start updating profile: \(userProfile.id)")
         delegate?.didStartUpdatingProfile(userProfile)
     }
     
     private func didFinishUpdatingProfile(_ userProfile: MessagingChatUserProfileDisplayInfo) {
+        Debugger.printInfo(topic: .Messaging, "Did finish updating profile: \(userProfile.id)")
         delegate?.didFinishUpdatingProfile(userProfile)
     }
 }
