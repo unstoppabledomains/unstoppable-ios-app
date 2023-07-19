@@ -144,22 +144,21 @@ private extension ChatListCell {
     
     func setAvatarFrom(url: URL?, name: String) {
         avatarImageView.clipsToBounds = true
-        avatarImageView.image = .domainSharePlaceholder
+        avatarImageView.image = nil
         
         func setAvatarFromName() async {
-            self.avatarImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(name, size: .default, style: .accent),
+            self.avatarImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(name,
+                                                                                                        size: .default,
+                                                                                                        style: .accent),
                                                                                         downsampleDescription: nil)
         }
         
         Task {
+            await setAvatarFromName()
             if let avatarURL = url {
                 if let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: nil) {
                     self.avatarImageView.image = image
-                } else {
-                    await setAvatarFromName()
                 }
-            } else {
-                await setAvatarFromName()
             }
         }
     }

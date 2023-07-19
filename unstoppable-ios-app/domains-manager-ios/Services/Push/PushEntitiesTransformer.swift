@@ -258,6 +258,7 @@ struct PushEntitiesTransformer {
     
     static func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel,
                                                      isCurrentUserSubscribed: Bool,
+                                                     isSearchResult: Bool,
                                                      userId: String) -> MessagingNewsChannel {
         MessagingNewsChannel(id: String(pushChannel.id),
                              userId: userId,
@@ -271,7 +272,8 @@ struct PushEntitiesTransformer {
                              subscriberCount: pushChannel.subscriber_count,
                              unreadMessagesCount: 0,
                              isUpToDate: true,
-                             isCurrentUserSubscribed: isCurrentUserSubscribed)
+                             isCurrentUserSubscribed: isCurrentUserSubscribed,
+                             isSearchResult: isSearchResult)
     }
     
     static func convertPushInboxToChannelFeed(_ pushNotification: PushInboxNotification,
