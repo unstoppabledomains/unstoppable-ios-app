@@ -43,10 +43,12 @@ struct PushEntitiesTransformer {
             members.compactMap({
                 if $0.wallet == userWallet {
                     return nil // Exclude current user from other members list
-                } else {
-                    return getWalletAddressFrom(eip155String: $0.wallet)
+                } else if let address = getWalletAddressFrom(eip155String: $0.wallet) {
+                    return MessagingChatUserDisplayInfo(wallet: address,
+                                                        pfpURL: URL(string: $0.image))
                 }
-            }).map({ MessagingChatUserDisplayInfo(wallet: $0) })
+                return nil
+            })
         }
         
         let thisUserInfo = MessagingChatUserDisplayInfo(wallet: userWallet)

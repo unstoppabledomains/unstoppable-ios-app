@@ -333,21 +333,27 @@ private extension ChatViewPresenter {
     }
     
     func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item {
+        let isGroupChatMessage = conversationState.isGroupConversation
+        
         switch message.type {
         case .text(let textMessageDisplayInfo):
             return .textMessage(configuration: .init(message: message,
                                                      textMessageDisplayInfo: textMessageDisplayInfo,
+                                                     isGroupChatMessage: isGroupChatMessage,
                                                      actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
         case .imageBase64(let imageMessageDisplayInfo):
             return .imageBase64Message(configuration: .init(message: message,
                                                             imageMessageDisplayInfo: imageMessageDisplayInfo,
+                                                            isGroupChatMessage: isGroupChatMessage,
                                                             actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
         case .unknown:
-            return .unsupportedMessage(configuration: .init(message: message, pressedCallback: { [weak self] in
+            return .unsupportedMessage(configuration: .init(message: message,
+                                                            isGroupChatMessage: isGroupChatMessage,
+                                                            pressedCallback: { [weak self] in
                 self?.logButtonPressedAnalyticEvents(button: .downloadUnsupportedMessage)
                 self?.shareContentOfMessage(message)
             }))

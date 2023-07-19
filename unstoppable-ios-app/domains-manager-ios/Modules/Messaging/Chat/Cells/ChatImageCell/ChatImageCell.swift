@@ -97,7 +97,10 @@ struct ChatImageCell_Previews: PreviewProvider {
                                                           isFirstInChat: true,
                                                           deliveryState: .delivered,
                                                           isEncrypted: false)
-            cell.setWith(configuration: .init(message: message, imageMessageDisplayInfo: imageDetails, actionCallback: { _ in }))
+            cell.setWith(configuration: .init(message: message,
+                                              imageMessageDisplayInfo: imageDetails,
+                                              isGroupChatMessage: true,
+                                              actionCallback: { _ in }))
         }
         .frame(width: 390, height: 390)
     }

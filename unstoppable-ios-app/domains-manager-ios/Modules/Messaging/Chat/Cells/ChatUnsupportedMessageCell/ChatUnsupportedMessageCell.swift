@@ -14,7 +14,10 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
     @IBOutlet private weak var iconImageView: UIImageView!
     @IBOutlet private weak var primaryLabel: UILabel!
     @IBOutlet private weak var secondaryLabel: UILabel!
+    @IBOutlet private weak var contentStackView: UIStackView!
     @IBOutlet private weak var downloadButton: UDButton!
+    
+    private var otherUserAvatarView: UIImageView?
     
     override var isFlexibleWidth: Bool { false }
     private var pressedCallback: EmptyCallback?
@@ -56,6 +59,7 @@ extension ChatUnsupportedMessageCell {
             icon = .helpIcon24
         }
   
+        setupOtherUserAvatarViewIf(isGroupChatMessage: configuration.isGroupChatMessage, senderType: textMessage.senderType)
         switch textMessage.senderType {
         case .thisUser:
             messageColor = .white
@@ -98,6 +102,55 @@ extension ChatUnsupportedMessageCell {
         UDVibration.buttonTap.vibrate()
         pressedCallback?()
     }
+    
+    func setupOtherUserAvatarViewIf(isGroupChatMessage: Bool, senderType: MessagingChatSender) {
+        switch senderType {
+        case .thisUser:
+            setupOtherUserAvatarView(nil)
+        case .otherUser(let userInfo):
+            if isGroupChatMessage {
+                setupOtherUserAvatarView(userInfo)
+            } else {
+                setupOtherUserAvatarView(nil)
+            }
+        }
+    }
+    
+    func setupOtherUserAvatarView(_ userInfo: MessagingChatUserDisplayInfo?) {
+        if let userInfo {
+            if otherUserAvatarView == nil {
+                let otherUserAvatarView = UIImageView()
+                self.otherUserAvatarView = otherUserAvatarView
+                otherUserAvatarView.translatesAutoresizingMaskIntoConstraints = false
+                contentStackView.spacing = 8
+                contentStackView.alignment = .center
+                let size: CGFloat = 36
+                otherUserAvatarView.heightAnchor.constraint(equalToConstant: size).isActive = true
+                otherUserAvatarView.widthAnchor.constraint(equalTo: otherUserAvatarView.heightAnchor, multiplier: 1).isActive = true
+                otherUserAvatarView.clipsToBounds = true
+                otherUserAvatarView.layer.cornerRadius = size / 2
+            }
+            contentStackView.insertArrangedSubview(otherUserAvatarView!, at: 0)
+            loadAvatarForOtherUserInfo(userInfo)
+        } else {
+            otherUserAvatarView?.removeFromSuperview()
+        }
+    }
+    
+    func loadAvatarForOtherUserInfo(_ userInfo: MessagingChatUserDisplayInfo) {
+        Task {
+            let name = userInfo.domainName ?? userInfo.wallet.droppedHexPrefix
+            otherUserAvatarView?.image = await appContext.imageLoadingService.loadImage(from: .initials(name,
+                                                                                                        size: .default,
+                                                                                                        style: .accent),
+                                                                                        downsampleDescription: nil)
+            if let pfpURL = userInfo.pfpURL,
+               let pfp = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
+                                                                          downsampleDescription: nil) {
+                otherUserAvatarView?.image = pfp
+            }
+        }
+    }
 }
 
 struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
@@ -106,10 +159,10 @@ struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
         let height: CGFloat = 76
         
         return UICollectionViewCellPreview(cellType: ChatUnsupportedMessageCell.self, height: height) { cell in
-            let user = MessagingChatUserDisplayInfo(wallet: "24")
+            let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
             let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: "",
                                                                                 type: "file",
-                                                                                name: nil,
+                                                                                name: "sjlhfksdjfhskdjhfskdhjfksdjfhsdfsdf",
                                                                                 size: 99900)
             let message = MessagingChatMessageDisplayInfo(id: "1",
                                                           chatId: "2",
@@ -120,7 +173,9 @@ struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
                                                           isFirstInChat: true,
                                                           deliveryState: .delivered,
                                                           isEncrypted: false)
-            cell.setWith(configuration: .init(message: message, pressedCallback: { }))
+            cell.setWith(configuration: .init(message: message,
+                                              isGroupChatMessage: false,
+                                              pressedCallback: { }))
         }
         .frame(width: 390, height: height)
     }

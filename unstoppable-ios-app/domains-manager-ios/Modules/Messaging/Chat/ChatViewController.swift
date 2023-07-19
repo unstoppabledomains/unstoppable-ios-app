@@ -574,6 +574,7 @@ extension ChatViewController {
         
         let message: MessagingChatMessageDisplayInfo
         let textMessageDisplayInfo: MessagingChatMessageTextTypeDisplayInfo
+        let isGroupChatMessage: Bool
         var actionCallback: (ChatMessageAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
@@ -591,6 +592,7 @@ extension ChatViewController {
         
         let message: MessagingChatMessageDisplayInfo
         let imageMessageDisplayInfo: MessagingChatMessageImageBase64TypeDisplayInfo
+        let isGroupChatMessage: Bool
         var actionCallback: (ChatMessageAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
@@ -606,6 +608,7 @@ extension ChatViewController {
     
     struct UnsupportedMessageUIConfiguration: Hashable {
         let message: MessagingChatMessageDisplayInfo
+        let isGroupChatMessage: Bool
         let pressedCallback: EmptyCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {

@@ -24,4 +24,13 @@ enum MessagingChatConversationState {
             }
         }
     }
+    
+    var isGroupConversation: Bool {
+        switch self {
+        case .existingChat(let chat):
+            return chat.isGroupChat
+        case .newChat:
+            return false
+        }
+    }
 }
