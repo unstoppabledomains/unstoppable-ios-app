@@ -70,6 +70,25 @@ extension MessagingService: MessagingServiceProtocol {
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool {
         dataRefreshManager.isUpdatingUserData(userProfile)
     }
+    
+    func isNewMessagesAvailable() async throws -> Bool {
+        let totalNumberOfUnreadMessages = storageService.getTotalNumberOfUnreadMessages()
+        if totalNumberOfUnreadMessages > 0 {
+            return true
+        }
+        
+        let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+        
+        for wallet in wallets {
+            guard let rrDomain = wallet.displayInfo?.reverseResolutionDomain,
+                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomain.name),
+                  let cachedProfiles = try? storageService.getUserProfileFor(domain: domain) else { continue }
+            
+            
+        }
+        
+        return false
+    }
 
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
