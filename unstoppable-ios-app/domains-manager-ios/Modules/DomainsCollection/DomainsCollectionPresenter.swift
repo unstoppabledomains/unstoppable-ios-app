@@ -66,6 +66,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     @MainActor
     func viewDidLoad() {
         dataAggregatorService.addListener(self)
+        appContext.externalEventsService.addListener(self)
         view?.setSettingsButtonHidden(false)
         updateGoToSettingsTutorialVisibility()
         updateUIControlsVisibility()
@@ -228,6 +229,18 @@ extension DomainsCollectionPresenter: AppLaunchServiceListener {
         Task {
             let domains = await stateController.domains
             await resolvePrimaryDomain(domains: domains)
+        }
+    }
+}
+
+// MARK: - ExternalEventsServiceListener
+extension DomainsCollectionPresenter: ExternalEventsServiceListener {
+    func didReceive(event: ExternalEvent) {
+        switch event {
+        case .chatMessage, .chatChannelMessage:
+            updateUnreadMessagesCounter()
+        default:
+            return
         }
     }
 }
