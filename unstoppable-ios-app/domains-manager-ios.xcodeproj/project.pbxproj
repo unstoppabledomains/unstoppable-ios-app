@@ -3789,6 +3789,10 @@
 		C6F6AF6F28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6D28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift */; };
 		C6F6AF7028A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6D28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift */; };
 		C6F6AF7128A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6D28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift */; };
+		C6F946DB2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */; };
+		C6F946DC2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */; };
+		C6F946DD2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */; };
+		C6F946DE2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */; };
 		C6F9FBB82A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBB72A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift */; };
 		C6F9FBB92A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBB72A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift */; };
 		C6F9FBBA2A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBB72A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift */; };
@@ -4946,6 +4950,7 @@
 		C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationBarScrollingController.swift; sourceTree = "<group>"; };
 		C6F6AF6828A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift; sourceTree = "<group>"; };
 		C6F6AF6D28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift; sourceTree = "<group>"; };
+		C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockEntitiesFabric.swift; sourceTree = "<group>"; };
 		C6F9FBB72A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingWebSocketsServiceProtocol.swift; sourceTree = "<group>"; };
 		C6F9FBBD2A25C32700102F81 /* MessagingWebSocketEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingWebSocketEvent.swift; sourceTree = "<group>"; };
 		C6F9FBC42A25C38900102F81 /* MessagingAPIServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingAPIServiceProtocol.swift; sourceTree = "<group>"; };
@@ -7764,6 +7769,7 @@
 				C6E69FFA288AEAAF000A8346 /* ExternalEvent.swift */,
 				C60C298B2834E30000626851 /* GroupedCoinRecord.swift */,
 				30BA2B35252914100097817E /* Helpers.swift */,
+				C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */,
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
 				C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */,
 				C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */,
@@ -10185,6 +10191,7 @@
 				C60DCEE2282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift in Sources */,
 				C6124CE12924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C6ECBF6B28D07FE000E94309 /* ChangeWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
+				C6F946DB2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */,
 				C6D6E4D92817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */,
 				C652721B2A149E41001A084C /* MessageDateFormatter.swift in Sources */,
 				C63902C228E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */,
@@ -11102,6 +11109,7 @@
 				C6A2D5B7285074DF00327C47 /* SignMessageRequestConfirmationView.swift in Sources */,
 				C6E041D5295553B40080F8E3 /* UDButton.swift in Sources */,
 				C62C3FBB283F6E410094FC93 /* MintDomainsConfigurationViewPresenter.swift in Sources */,
+				C6F946DD2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */,
 				29BECD24297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift in Sources */,
 				C623968D2A288AB300363F60 /* MessagingPrivateChatDetails.swift in Sources */,
 				C669C39B291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift in Sources */,
@@ -11555,6 +11563,7 @@
 				C6E0418F29515BD10080F8E3 /* DomainsCollectionEmptyStateView.swift in Sources */,
 				3018AEBB27EA12A700E8C37D /* AddWalletViewController.swift in Sources */,
 				C650BC0628F3C97900AD6733 /* DomainProfileGeneralData.swift in Sources */,
+				C6F946DE2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */,
 				C671E3CB29014D7700A2B3A0 /* RaisedWhiteButton.swift in Sources */,
 				C6A474D329D150A40073415F /* NoParkedDomainsFoundViewPresenter.swift in Sources */,
 				C60982432823F73600546392 /* BackupCreatedLocalWalletPresenter.swift in Sources */,
@@ -12577,6 +12586,7 @@
 				C60DCEE3282D0C4000F71C13 /* ResizableRoundedWalletImageView.swift in Sources */,
 				C6124CE22924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C6ECBF6C28D07FE000E94309 /* ChangeWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
+				C6F946DC2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */,
 				C6D6E4DA2817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */,
 				C652721C2A149E41001A084C /* MessageDateFormatter.swift in Sources */,
 				C63902C328E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */,
