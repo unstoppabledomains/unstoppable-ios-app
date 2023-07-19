@@ -80,6 +80,7 @@
             <size key="customSize" width="409" height="180"/>
             <connections>
                 <outlet property="containerView" destination="koO-vm-ZJI" id="WeW-9A-9Dn"/>
+                <outlet property="contentHStackView" destination="rAe-2Z-534" id="eeL-x2-GJO"/>
                 <outlet property="deleteButton" destination="Axw-XE-9Rt" id="mJ5-Bl-CFH"/>
                 <outlet property="imageView" destination="NO5-67-CgY" id="hZw-CL-WbP"/>
                 <outlet property="timeLabel" destination="erp-wY-SbZ" id="3bP-k4-lkc"/>

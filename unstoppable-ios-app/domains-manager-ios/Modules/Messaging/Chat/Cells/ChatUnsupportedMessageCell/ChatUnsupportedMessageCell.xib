@@ -127,7 +127,7 @@
             <connections>
                 <outlet property="bubbleContainerView" destination="hl3-ed-zSa" id="smy-Uw-KwG"/>
                 <outlet property="containerView" destination="3zL-iG-Xlk" id="HvP-fi-NSf"/>
-                <outlet property="contentStackView" destination="Hc7-gx-ibY" id="v2w-4z-JDL"/>
+                <outlet property="contentHStackView" destination="Hc7-gx-ibY" id="v2w-4z-JDL"/>
                 <outlet property="downloadButton" destination="GaL-yl-6hd" id="6gl-jN-ZI4"/>
                 <outlet property="iconContainerView" destination="Pj0-t7-wVi" id="pF1-13-UvZ"/>
                 <outlet property="iconImageView" destination="KNM-O0-GQ6" id="NOv-k4-E1e"/>

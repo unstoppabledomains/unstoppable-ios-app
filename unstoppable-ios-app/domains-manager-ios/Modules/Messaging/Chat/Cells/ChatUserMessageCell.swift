@@ -12,7 +12,9 @@ class ChatUserMessageCell: ChatBaseCell {
     @IBOutlet private weak var timeLabel: UILabel!
     @IBOutlet private weak var timeStackView: UIStackView!
     @IBOutlet private weak var deleteButton: FABRaisedTertiaryButton?
-    
+    @IBOutlet private weak var contentHStackView: UIStackView!
+
+    private var otherUserAvatarView: UIImageView?
     private var timeLabelTapGesture: UITapGestureRecognizer?
     private var timeLabelAction: ChatViewController.ChatMessageAction = .resend
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
@@ -37,7 +39,8 @@ class ChatUserMessageCell: ChatBaseCell {
         }
     }
  
-    func setWith(message: MessagingChatMessageDisplayInfo) {
+    func setWith(message: MessagingChatMessageDisplayInfo,
+                 isGroupChatMessage: Bool) {
         switch message.deliveryState {
         case .delivered:
             timeLabelTapGesture?.isEnabled = false
@@ -83,8 +86,63 @@ class ChatUserMessageCell: ChatBaseCell {
         }
         timeLabel.isUserInteractionEnabled = timeLabelTapGesture?.isEnabled == true
         setWith(sender: message.senderType)
+        setupOtherUserAvatarViewIf(isGroupChatMessage: isGroupChatMessage,
+                                   senderType: message.senderType)
     }
     
+ 
+}
+
+// MARK: - Other user avatar
+extension ChatUserMessageCell {
+    func setupOtherUserAvatarViewIf(isGroupChatMessage: Bool, senderType: MessagingChatSender) {
+        switch senderType {
+        case .thisUser:
+            setupOtherUserAvatarView(nil)
+        case .otherUser(let userInfo):
+            if isGroupChatMessage {
+                setupOtherUserAvatarView(userInfo)
+            } else {
+                setupOtherUserAvatarView(nil)
+            }
+        }
+    }
+    
+    func setupOtherUserAvatarView(_ userInfo: MessagingChatUserDisplayInfo?) {
+        if let userInfo {
+            if otherUserAvatarView == nil {
+                let otherUserAvatarView = UIImageView()
+                self.otherUserAvatarView = otherUserAvatarView
+                otherUserAvatarView.translatesAutoresizingMaskIntoConstraints = false
+                contentHStackView.spacing = 8
+                contentHStackView.alignment = .center
+                let size: CGFloat = 36
+                otherUserAvatarView.heightAnchor.constraint(equalToConstant: size).isActive = true
+                otherUserAvatarView.widthAnchor.constraint(equalTo: otherUserAvatarView.heightAnchor, multiplier: 1).isActive = true
+                otherUserAvatarView.clipsToBounds = true
+                otherUserAvatarView.layer.cornerRadius = size / 2
+            }
+            contentHStackView.insertArrangedSubview(otherUserAvatarView!, at: 0)
+            loadAvatarForOtherUserInfo(userInfo)
+        } else {
+            otherUserAvatarView?.removeFromSuperview()
+        }
+    }
+    
+    func loadAvatarForOtherUserInfo(_ userInfo: MessagingChatUserDisplayInfo) {
+        Task {
+            let name = userInfo.domainName ?? userInfo.wallet.droppedHexPrefix
+            otherUserAvatarView?.image = await appContext.imageLoadingService.loadImage(from: .initials(name,
+                                                                                                        size: .default,
+                                                                                                        style: .accent),
+                                                                                        downsampleDescription: nil)
+            if let pfpURL = userInfo.pfpURL,
+               let pfp = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
+                                                                        downsampleDescription: nil) {
+                otherUserAvatarView?.image = pfp
+            }
+        }
+    }
 }
 
 // MARK: - Private methods

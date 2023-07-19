@@ -31,7 +31,7 @@ final class ChatImageCell: ChatUserMessageCell {
 extension ChatImageCell {
     func setWith(configuration: ChatViewController.ImageBase64MessageUIConfiguration) {
         self.actionCallback = configuration.actionCallback
-        setWith(message: configuration.message)
+        setWith(message: configuration.message, isGroupChatMessage: configuration.isGroupChatMessage)
         setImage(configuration.imageMessageDisplayInfo.image)
     }
 }
@@ -85,7 +85,7 @@ struct ChatImageCell_Previews: PreviewProvider {
         let height: CGFloat = 76
         
         return UICollectionViewCellPreview(cellType: ChatImageCell.self, height: height) { cell in
-            let user = MessagingChatUserDisplayInfo(wallet: "24")
+            let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
             var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "", encryptedContent: "")
 //            imageDetails.image = .appleIcon
             let message = MessagingChatMessageDisplayInfo(id: "1",

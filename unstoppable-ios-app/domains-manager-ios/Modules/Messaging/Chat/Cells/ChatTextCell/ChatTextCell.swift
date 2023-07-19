@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class ChatTextCell: ChatUserBubbledMessageCell {
 
@@ -38,6 +39,34 @@ extension ChatTextCell {
         messageTextView.linkTextAttributes = [.foregroundColor: messageColor,
                                               .underlineStyle: NSUnderlineStyle.single.rawValue]
         
-        setWith(message: textMessage)
+        setWith(message: textMessage, isGroupChatMessage: configuration.isGroupChatMessage)
     }
+}
+
+struct ChatTextCell_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        let height: CGFloat = 76
+        
+        return UICollectionViewCellPreview(cellType: ChatTextCell.self, height: height) { cell in
+            let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
+            let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text message", encryptedText: "")
+            
+            let message = MessagingChatMessageDisplayInfo(id: "1",
+                                                          chatId: "2",
+                                                          senderType: .thisUser(user),
+                                                          time: Date(),
+                                                          type: .text(textDetails),
+                                                          isRead: false,
+                                                          isFirstInChat: true,
+                                                          deliveryState: .delivered,
+                                                          isEncrypted: false)
+            cell.setWith(configuration: .init(message: message,
+                                              textMessageDisplayInfo: textDetails,
+                                              isGroupChatMessage: true,
+                                              actionCallback: { _ in }))
+        }
+        .frame(width: 390, height: height)
+    }
+    
 }
