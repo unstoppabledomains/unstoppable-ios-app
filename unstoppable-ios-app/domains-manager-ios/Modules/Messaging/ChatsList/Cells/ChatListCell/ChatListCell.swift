@@ -19,6 +19,7 @@ final class ChatListCell: BaseListCollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        badgeView.setConstraints()
         badgeView.setCounterLabel(hidden: true)
     }
     

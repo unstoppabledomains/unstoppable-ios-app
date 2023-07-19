@@ -19,6 +19,7 @@ final class ChatListDomainSelectionCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        badgeView.setConstraints()
         clipsToBounds = false
     }
 
