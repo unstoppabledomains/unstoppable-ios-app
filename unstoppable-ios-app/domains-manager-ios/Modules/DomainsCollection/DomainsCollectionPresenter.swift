@@ -520,6 +520,7 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
             case .failure:
                 return
             }
+            updateUnreadMessagesCounter()
         }
     }
 }
@@ -820,6 +821,17 @@ private extension DomainsCollectionPresenter {
         getCurrentDomain()?.name ?? "N/A"
     }
     
+    func updateUnreadMessagesCounter() {
+        Task {
+            let isNewMessagesAvailable: Bool
+            do {
+                isNewMessagesAvailable = try await appContext.messagingService.isNewMessagesAvailable()
+            } catch {
+                isNewMessagesAvailable = false
+            }
+            await view?.setUnreadMessagesCount(isNewMessagesAvailable ? 1 : 0)
+        }
+    }
 }
 
 // MARK: - State

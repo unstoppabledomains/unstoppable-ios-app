@@ -21,6 +21,7 @@ protocol DomainsCollectionViewProtocol: BaseViewControllerProtocol {
     func showToast(_ toast: Toast)
     func showMintingDomains(_ mintingDomains: [DomainDisplayInfo])
     func setAddButtonHidden(_ isHidden: Bool)
+    func setUnreadMessagesCount(_ unreadMessagesCount: Int)
 }
 
 @MainActor
@@ -51,6 +52,7 @@ final class DomainsCollectionViewController: BaseViewController, TitleVisibility
         
     private var defaultBottomOffset: CGFloat { Constants.scrollableContentBottomOffset }
     private var pageViewController: DomainsCollectionPageViewController!
+    private var messagingButton: DomainsCollectionMessagingBarButton?
     private var currentOffset: CGPoint = CGPoint(x: 0,
                                                  y: -DomainsCollectionCarouselItemViewController.scrollViewTopInset)
     private var cardState: CarouselCardState = .expanded
@@ -220,6 +222,10 @@ extension DomainsCollectionViewController: DomainsCollectionViewProtocol {
                 cNavigationController?.updateNavigationBar()
             }
         }
+    }
+    
+    func setUnreadMessagesCount(_ unreadMessagesCount: Int) {
+        messagingButton?.setUnreadMessagesCount(unreadMessagesCount)
     }
 }
 
@@ -694,6 +700,7 @@ private extension DomainsCollectionViewController {
         
         let messagingButton = DomainsCollectionMessagingBarButton()
         messagingButton.pressedCallback = { [weak self] in self?.didTapMessagingButton() }
+        self.messagingButton = messagingButton
         let messagingBarButton = UIBarButtonItem(customView: messagingButton)
         
         navigationItem.rightBarButtonItems = [addBarButton, messagingBarButton]

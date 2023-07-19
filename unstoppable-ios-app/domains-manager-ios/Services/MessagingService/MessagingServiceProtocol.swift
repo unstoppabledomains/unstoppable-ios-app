@@ -13,6 +13,7 @@ protocol MessagingServiceProtocol {
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo)
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool
+    func isNewMessagesAvailable() async throws -> Bool
     
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo]

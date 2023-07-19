@@ -82,9 +82,12 @@ extension MessagingService: MessagingServiceProtocol {
         for wallet in wallets {
             guard let rrDomain = wallet.displayInfo?.reverseResolutionDomain,
                   let domain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomain.name),
-                  let cachedProfiles = try? storageService.getUserProfileFor(domain: domain) else { continue }
+                  let cachedProfile = try? storageService.getUserProfileFor(domain: domain) else { continue }
             
-            
+            let isNewMessagesForProfileAvailable = try? await isNewMessagesAvailable(for: cachedProfile)
+            if isNewMessagesForProfileAvailable == true {
+                return true
+            }
         }
         
         return false
@@ -562,8 +565,8 @@ private extension MessagingService {
     }
     
     func updatedLocalChats(_ localChats: [MessagingChat],
-                                   forProfile profile: MessagingChatUserProfile,
-                                   isRequests: Bool) async -> [MessagingChat] {
+                           forProfile profile: MessagingChatUserProfile,
+                           isRequests: Bool) async -> [MessagingChat] {
         var remoteChats = [MessagingChat]()
         let limit = 30
         var page = 1
@@ -707,6 +710,33 @@ private extension MessagingService {
         }
         
         return nil
+    }
+    
+    func isNewMessagesAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
+        if try await isNewMessagesFromAcceptedChatsAvailable(for: profile) {
+            return true
+        }
+        
+        return try await isNewMessagesFromRequestChatsAvailable(for: profile)
+    }
+    
+    func isNewMessagesFromAcceptedChatsAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
+        let chats = try await apiService.getChatsListForUser(profile, page: 1, limit: 1)
+        
+        return try await isNewMessagesFromChatsAvailable(chats, for: profile)
+    }
+    
+    func isNewMessagesFromRequestChatsAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
+        let chats = try await apiService.getChatRequestsForUser(profile, page: 1, limit: 1)
+        
+        return try await isNewMessagesFromChatsAvailable(chats, for: profile)
+    }
+    
+    func isNewMessagesFromChatsAvailable(_ chats: [MessagingChat], for profile: MessagingChatUserProfile) async throws -> Bool {
+        guard let latestChat = chats.first else { return false } /// No messages if no chats
+        guard let localChat = await storageService.getChatWith(id: latestChat.displayInfo.id, decrypter: decrypterService) else { return true } /// New chat => new message
+        
+        return !localChat.isUpToDateWith(otherChat: latestChat)
     }
 }
 
