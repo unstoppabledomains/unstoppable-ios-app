@@ -52,6 +52,16 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         return unreadMessagesCount
     }
     
+    func getNumberOfUnreadMessagesIn(chatId: String) -> Int {
+        let chatIdPredicate = NSPredicate(format: "chatId == %@", chatId)
+        let isNotReadPredicate = NSPredicate(format: "isRead == NO")
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, isNotReadPredicate])
+        let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
+                                                      predicate: predicate,
+                                                      in: backgroundContext)) ?? 0
+        return unreadMessagesCount
+    }
+    
     func getMessagesFor(chat: MessagingChatDisplayInfo,
                         decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage] {
         try queue.sync {
@@ -466,12 +476,7 @@ private extension CoreDataMessagingStorageService {
             lastMessage = message.displayInfo
         }
         
-        let chatIdPredicate = NSPredicate(format: "chatId == %@", coreDataChat.id!)
-        let isNotReadPredicate = NSPredicate(format: "isRead == NO")
-        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, isNotReadPredicate])
-        let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
-                                                     predicate: predicate,
-                                                     in: backgroundContext)) ?? 0
+        let unreadMessagesCount = getNumberOfUnreadMessagesIn(chatId: coreDataChat.id!)
         
         let thisUserDetails = getThisUserDetails(from: coreDataChat)
         let displayInfo = MessagingChatDisplayInfo(id: coreDataChat.id!,

@@ -195,6 +195,16 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                if profile.id == selectedProfileWalletPair?.profile?.id {
                    updateNavigationUI()
                }
+           case .messageReadStatusUpdated(let message, let numberOfUnreadMessagesInSameChat):
+               Debugger.printInfo("LOGO: - Message read status updated. numberOfUnreadMessagesInSameChat: \(numberOfUnreadMessagesInSameChat)")
+               if let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
+                   Debugger.printInfo("LOGO: - Found chat in list")
+                   chatsList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
+                   if numberOfUnreadMessagesInSameChat == 0 {
+                       Debugger.printInfo("LOGO: - Will refresh data")
+                       showData()
+                   }
+               }
            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded:
                return
            }

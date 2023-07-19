@@ -95,6 +95,7 @@ enum MessagingDataType {
     case messagesAdded(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
     case messageUpdated(_ updatedMessage: MessagingChatMessageDisplayInfo, newMessage: MessagingChatMessageDisplayInfo)
     case messagesRemoved(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case messageReadStatusUpdated(_ message: MessagingChatMessageDisplayInfo, numberOfUnreadMessagesInSameChat: Int)
     case channelFeedAdded(_ feed: MessagingNewsChannelFeed, channelId: String)
     case refreshOfUserProfile(_ userProfile: MessagingChatUserProfileDisplayInfo, isInProgress: Bool)
 }

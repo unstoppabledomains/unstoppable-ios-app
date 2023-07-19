@@ -91,7 +91,7 @@ extension ChannelViewPresenter: MessagingServiceListener {
                     addFeed([feed])
                     showData(animated: true, isLoading: false)
                 }
-            case .chats, .messagesAdded, .messageUpdated, .messagesRemoved, .refreshOfUserProfile:
+            case .chats, .messagesAdded, .messageUpdated, .messagesRemoved, .refreshOfUserProfile, .messageReadStatusUpdated:
                 return
             }
         }

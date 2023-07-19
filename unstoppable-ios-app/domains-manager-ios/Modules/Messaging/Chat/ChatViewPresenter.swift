@@ -181,7 +181,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                     checkIfUpToDate()
                     showData(animated: true, isLoading: isLoadingMessages)
                 }
-            case .channels, .channelFeedAdded, .refreshOfUserProfile:
+            case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated:
                 return
             }
         }

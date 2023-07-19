@@ -262,7 +262,8 @@ extension MessagingService: MessagingServiceProtocol {
                      isRead: Bool,
                      wallet: String) throws {
         try storageService.markMessage(message, isRead: isRead)
-        notifyChatsChanged(wallet: wallet)
+        let number = storageService.getNumberOfUnreadMessagesIn(chatId: message.chatId)
+        notifyListenersChangedDataType(.messageReadStatusUpdated(message, numberOfUnreadMessagesInSameChat: number))
     }
     
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? {
