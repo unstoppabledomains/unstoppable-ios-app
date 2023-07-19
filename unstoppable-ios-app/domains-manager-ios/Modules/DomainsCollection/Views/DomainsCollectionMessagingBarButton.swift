@@ -28,16 +28,6 @@ final class DomainsCollectionMessagingBarButton: UIView {
         setup()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        frame.size = .square(size: size)
-        messageButton.center = localCenter
-        badgeView.center = localCenter
-        badgeView.frame.origin.x += ((messageButton.bounds.width / 2) - 2)
-        badgeView.frame.origin.y -= ((messageButton.bounds.height / 2) - 2)
-    }
-    
 }
 
 // MARK: - Open methods
@@ -50,6 +40,8 @@ extension DomainsCollectionMessagingBarButton {
 // MARK: - Setup methods
 private extension DomainsCollectionMessagingBarButton {
     func setup() {
+        frame.size = .square(size: size)
+
         setupMessageButton()
         setupBadgeView()
     }
@@ -59,7 +51,8 @@ private extension DomainsCollectionMessagingBarButton {
         messageButton.tintColor = .foregroundDefault
         messageButton.setImage(.messageCircleIcon24, for: .normal)
         messageButton.addTarget(self, action: #selector(messageButtonPressed), for: .touchUpInside)
-        
+        messageButton.center = localCenter
+
         addSubview(messageButton)
     }
     
@@ -69,8 +62,9 @@ private extension DomainsCollectionMessagingBarButton {
     
     func setupBadgeView() {
         badgeView = UnreadMessagesBadgeView(frame: CGRect(origin: .zero, size: .square(size: 16)))
-        badgeView.translatesAutoresizingMaskIntoConstraints = true
         badgeView.setCounterLabel(hidden: true)
+        badgeView.setUnreadMessagesCount(0)
+        badgeView.frame.origin = CGPoint(x: 24, y: 4)
         addSubview(badgeView)
     }
 }

@@ -43,30 +43,31 @@ extension UnreadMessagesBadgeView {
     func setCounterLabel(hidden: Bool) {
         counterLabel.isHidden = hidden
     }
+    
+    func setConstraints() {
+        translatesAutoresizingMaskIntoConstraints = false
+        widthAnchor.constraint(greaterThanOrEqualToConstant: size).isActive = true
+        heightAnchor.constraint(equalToConstant: size).isActive = true
+        
+        counterLabel.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([counterLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+                                     counterLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+                                     counterLabel.heightAnchor.constraint(equalToConstant: size),
+                                     counterLabel.widthAnchor.constraint(equalToConstant: size)])
+    }
 }
 
 // MARK: - Setup methods
 private extension UnreadMessagesBadgeView {
     func setup() {
-        translatesAutoresizingMaskIntoConstraints = false
-        widthAnchor.constraint(greaterThanOrEqualToConstant: size).isActive = true
-        heightAnchor.constraint(equalToConstant: size).isActive = true
         layer.cornerRadius = size / 2
         backgroundColor = Style.blue.backgroundColor
-        
         setupCounterLabel()
     }
     
     func setupCounterLabel() {
         counterLabel = UILabel()
-        counterLabel.translatesAutoresizingMaskIntoConstraints = false
-        
         addSubview(counterLabel)
-        
-        NSLayoutConstraint.activate([counterLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-                                     counterLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-                                     counterLabel.heightAnchor.constraint(equalToConstant: size),
-                                     counterLabel.widthAnchor.constraint(equalToConstant: size)])
     }
 }
 
