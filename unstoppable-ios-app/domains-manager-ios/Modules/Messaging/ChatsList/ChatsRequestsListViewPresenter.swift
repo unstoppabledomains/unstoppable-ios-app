@@ -82,15 +82,12 @@ extension ChatsRequestsListViewPresenter: MessagingServiceListener {
                     showData()
                 }
             case .messageReadStatusUpdated(let message, let numberOfUnreadMessagesInSameChat):
-                Debugger.printInfo("LOGO: - Message read status updated. numberOfUnreadMessagesInSameChat: \(numberOfUnreadMessagesInSameChat)")
                 switch dataType {
                 case .chatRequests(var chatsList):
                     if let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
-                        Debugger.printInfo("LOGO: - Found chat in list")
                         chatsList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
                         self.dataType = .chatRequests(chatsList)
                         if numberOfUnreadMessagesInSameChat == 0 {
-                            Debugger.printInfo("LOGO: - Will refresh data")
                             showData()
                         }
                     }

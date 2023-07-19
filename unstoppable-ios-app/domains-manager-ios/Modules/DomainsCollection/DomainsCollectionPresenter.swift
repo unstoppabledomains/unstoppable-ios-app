@@ -67,6 +67,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     func viewDidLoad() {
         dataAggregatorService.addListener(self)
         appContext.externalEventsService.addListener(self)
+        appContext.messagingService.addListener(self)
         view?.setSettingsButtonHidden(false)
         updateGoToSettingsTutorialVisibility()
         updateUIControlsVisibility()
@@ -241,6 +242,20 @@ extension DomainsCollectionPresenter: ExternalEventsServiceListener {
             updateUnreadMessagesCounter()
         default:
             return
+        }
+    }
+}
+
+// MARK: - MessagingServiceListener
+extension DomainsCollectionPresenter: MessagingServiceListener {
+    func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
+        switch messagingDataType {
+        case .messageReadStatusUpdated(_, let numberOfUnreadMessagesInSameChat):
+            if numberOfUnreadMessagesInSameChat == 0 {
+                updateUnreadMessagesCounter()
+            }
+        default:
+            return 
         }
     }
 }
