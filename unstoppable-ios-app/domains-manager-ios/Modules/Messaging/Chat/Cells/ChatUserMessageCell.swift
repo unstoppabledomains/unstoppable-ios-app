@@ -15,6 +15,7 @@ class ChatUserMessageCell: ChatBaseCell {
     @IBOutlet private weak var contentHStackView: UIStackView!
 
     private var otherUserAvatarView: UIImageView?
+    private var otherUserInfo: MessagingChatUserDisplayInfo?
     private var timeLabelTapGesture: UITapGestureRecognizer?
     private var timeLabelAction: ChatViewController.ChatMessageAction = .resend
     var actionCallback: ((ChatViewController.ChatMessageAction)->())?
@@ -130,16 +131,19 @@ extension ChatUserMessageCell {
     }
     
     func loadAvatarForOtherUserInfo(_ userInfo: MessagingChatUserDisplayInfo) {
+        otherUserInfo = userInfo
         Task {
             let name = userInfo.domainName ?? userInfo.wallet.droppedHexPrefix
             otherUserAvatarView?.image = await appContext.imageLoadingService.loadImage(from: .initials(name,
                                                                                                         size: .default,
                                                                                                         style: .accent),
                                                                                         downsampleDescription: nil)
-            if let pfpURL = userInfo.pfpURL,
-               let pfp = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
-                                                                        downsampleDescription: nil) {
-                otherUserAvatarView?.image = pfp
+            
+            let image = await appContext.imageLoadingService.loadImage(from: .messagingUserPFPOrInitials(userInfo,
+                                                                                                         size: .default),
+                                                                       downsampleDescription: nil)
+            if userInfo.wallet == self.otherUserInfo?.wallet {
+                otherUserAvatarView?.image = image
             }
         }
     }

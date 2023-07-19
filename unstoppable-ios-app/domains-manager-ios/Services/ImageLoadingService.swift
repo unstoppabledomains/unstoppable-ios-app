@@ -33,6 +33,7 @@ enum ImageSource {
     case wcApp(_ appInfo: WalletConnectService.WCServiceAppInfo, size: InitialsView.InitialsSize)
     case connectedApp(_ connectedApp: any UnifiedConnectAppInfoProtocol, size: InitialsView.InitialsSize)
     case qrCode(url: URL, options: [QRCodeService.Options])
+    case messagingUserPFPOrInitials(_ userInfo: MessagingChatUserDisplayInfo, size: InitialsView.InitialsSize)
 
     var key: String {
         switch self {
@@ -65,6 +66,8 @@ enum ImageSource {
             let urlKey = ImageSource.url(url).key
             let optionsKey = options.sorted(by: { $0.rawValue < $1.rawValue }).map({ "\($0.rawValue)" }).joined(separator: "_")
             return urlKey + "_" + optionsKey
+        case .messagingUserPFPOrInitials(let userInfo, _):
+            return "messaging_" + userInfo.wallet.normalized
         }
     }
 }
@@ -90,19 +93,23 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
     func loadImage(from source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
         let key = source.key
         if let cachedImage = cachedImage(for: key) {
+            Debugger.printInfo(topic: .Images, "Will return cached image for key: \(key)")
             return cachedImage
         }
         
         if let imageTask = currentAsyncProcess[key] {
+            Debugger.printInfo(topic: .Images, "Will return active image loading task for key: \(key)")
             return await imageTask.value
         }
         
         let task: Task<UIImage?, Never> = Task.detached(priority: .medium) {
             if let storedImage = await self.getStoredImage(for: key) {
+                Debugger.printInfo(topic: .Images, "Will return stored image for key: \(key)")
                 return storedImage
             }
             
             if let image = await self.fetchImageFor(source: source, downsampleDescription: downsampleDescription) {
+                Debugger.printInfo(topic: .Images, "Will return loaded image for key: \(key)")
                 return image
             } else {
                 return nil
@@ -250,6 +257,20 @@ fileprivate extension ImageLoadingService {
                 return scaledImage
             }
             return nil
+        case .messagingUserPFPOrInitials(let userInfo, let size):
+            let domainName = try? await appContext.udWalletsService.reverseResolutionDomainName(for: userInfo.wallet.normalized)
+            if let domainName,
+               !domainName.isEmpty,
+               let urlString = await appContext.udDomainsService.loadPFP(for: domainName)?.pfpURL,
+               let url = URL(string: urlString),
+               let image = await fetchImageFor(source: .url(url), downsampleDescription: downsampleDescription) {
+                cache(image: image, forKey: source.key)
+                return image
+            }
+            return await fetchImageFor(source: .initials(domainName ?? userInfo.wallet.droppedHexPrefix,
+                                                         size: size,
+                                                         style: .accent),
+                                       downsampleDescription: downsampleDescription)
         }
     }
     
