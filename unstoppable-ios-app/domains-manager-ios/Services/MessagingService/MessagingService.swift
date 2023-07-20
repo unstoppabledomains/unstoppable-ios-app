@@ -56,8 +56,11 @@ extension MessagingService: MessagingServiceProtocol {
         if let existingUser = try? await getUserProfile(for: domain) {
             return existingUser
         }
-        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
-        let newUser = try await apiService.createUser(for: domain)
+        let domainItem = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
+        let newUser = try await apiService.createUser(for: domainItem)
+        Task.detached {
+            try? await self.apiService.updateUserProfile(newUser, name: domain.name, avatar: domain.pfpSource.value)
+        }
         await storageService.saveUserProfile(newUser)
         return newUser.displayInfo
     }

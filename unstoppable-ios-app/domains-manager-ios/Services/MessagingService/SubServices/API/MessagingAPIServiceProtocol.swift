@@ -11,6 +11,9 @@ protocol MessagingAPIServiceProtocol {
     // User profile
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile
     func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile
+    func updateUserProfile(_ user: MessagingChatUserProfile,
+                           name: String,
+                           avatar: String) async throws
     
     // Chats
     func getChatsListForUser(_ user: MessagingChatUserProfile,

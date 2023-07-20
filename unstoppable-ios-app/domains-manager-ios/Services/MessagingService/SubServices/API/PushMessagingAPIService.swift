@@ -42,6 +42,24 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         return chatUser
     }
     
+    func updateUserProfile(_ user: MessagingChatUserProfile,
+                           name: String,
+                           avatar: String) async throws {
+        let env = getCurrentPushEnvironment()
+        let account = user.wallet
+        guard let pushUser = try await PushUser.get(account: account, env: env) else {
+            throw PushMessagingAPIServiceError.failedToGetPushUser
+        }
+        
+        let pgpKey = try await self.getPGPPrivateKeyFor(user: user)
+        var updatedProfile = pushUser.profile
+        updatedProfile.name = name
+        updatedProfile.picture = avatar
+        updatedProfile.blockedUsersList = updatedProfile.blockedUsersList ?? []
+        
+        try await PushUser.updateUserProfile(account: account, pgpPrivateKey: pgpKey, newProfile: updatedProfile, env: env)
+    }
+    
     // Chats
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                                page: Int,
