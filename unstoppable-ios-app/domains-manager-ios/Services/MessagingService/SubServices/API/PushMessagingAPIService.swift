@@ -280,114 +280,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         return messagesToKeep + remoteMessages
     }
     
-    private func messageToLoadDescriptionFrom(in cachedMessages: [MessagingChatMessage], starting startId: String) throws -> MessageToLoadFromResult {
-        guard !cachedMessages.isEmpty else { return .noCachedMessages }
-        guard cachedMessages.first?.displayInfo.id == startId else {
-            return .messageToLoad(MessageToLoad(threadHash: startId, offset: 0, messagesToKeep: []))
-        }
-        
-        var currentMessage = cachedMessages.first!
-        var offset = 1
-        var messagesToKeep: [MessagingChatMessage] = [currentMessage]
-        
-        for i in 1..<cachedMessages.count {
-            let previousMessage = cachedMessages[i]
-            guard let currentMessageLink = getLinkFrom(message: currentMessage) else { return .reachedFirstMessageInChat }
-            if currentMessageLink != previousMessage.displayInfo.id {
-                return .messageToLoad(MessageToLoad(threadHash: currentMessageLink, offset: offset, messagesToKeep: messagesToKeep))
-            }
-            offset += 1
-            currentMessage = previousMessage
-            messagesToKeep.append(previousMessage)
-        }
-        
-        guard let currentMessageLink = getLinkFrom(message: currentMessage) else { return .reachedFirstMessageInChat }
-        
-        return .messageToLoad(MessageToLoad(threadHash: currentMessageLink, offset: offset, messagesToKeep: messagesToKeep))
-    }
-    private enum MessageToLoadFromResult {
-        case noCachedMessages
-        case reachedFirstMessageInChat
-        case messageToLoad(MessageToLoad)
-    }
-    
-    private struct MessageToLoad {
-        let threadHash: String
-        let offset: Int
-        let messagesToKeep: [MessagingChatMessage]
-    }
-    
-    private func getLinkFrom(message: MessagingChatMessage) -> String? {
-        let messageMetadata: PushEnvironment.MessageServiceMetadata = try! decodeServiceMetadata(from: message.serviceMetadata)
-        return messageMetadata.link
-    }
-    ////////////////////
-    func getMessagesForChat(_ chat: MessagingChat,
-                            options: MessagingAPIServiceLoadMessagesOptions,
-                            fetchLimit: Int,
-                            for user: MessagingChatUserProfile,
-                            filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
-        let env = getCurrentPushEnvironment()
-        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
-        
-        switch options {
-        case .default:
-            let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
-            guard let threadHash = chatMetadata.threadHash else {
-                return [] // NULL threadHash means there's no messages in the chat yet
-            }
-            return try await dataProvider.getPreviousMessagesForChat(chat,
-                                                                     threadHash: threadHash,
-                                                                     fetchLimit: fetchLimit,
-                                                                     isRead: true,
-                                                                     filesService: filesService,
-                                                                     env: env,
-                                                                     pgpPrivateKey: pgpPrivateKey)
-        case .before(let message):
-            let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: message.serviceMetadata)
-            guard let threadHash = messageMetadata.link else {
-                return []
-            }
-            return try await dataProvider.getPreviousMessagesForChat(chat,
-                                                                     threadHash: threadHash,
-                                                                     fetchLimit: fetchLimit,
-                                                                     isRead: true,
-                                                                     filesService: filesService,
-                                                                     env: env,
-                                                                     pgpPrivateKey: pgpPrivateKey)
-        case .after(let message):
-            let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
-            guard var threadHash = chatMetadata.threadHash else {
-                return []
-            }
-            
-            var messages = [MessagingChatMessage]()
-            
-            while true {
-                let chunkMessages = try await dataProvider.getPreviousMessagesForChat(chat,
-                                                                                      threadHash: threadHash,
-                                                                                      fetchLimit: fetchLimit,
-                                                                                      isRead: false,
-                                                                                      filesService: filesService,
-                                                                                      env: env,
-                                                                                      pgpPrivateKey: pgpPrivateKey)
-                if let i = chunkMessages.firstIndex(where: { $0.displayInfo.id == message.displayInfo.id }) {
-                    let missingMessages = Array(chunkMessages[..<i])
-                    messages.append(contentsOf: missingMessages)
-                    break
-                } else {
-                    messages.append(contentsOf: chunkMessages)
-                    guard !chunkMessages.isEmpty else { break }
-                    
-                    let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: chunkMessages.last!.serviceMetadata)
-                    guard let hash = messageMetadata.link else { break }
-                    threadHash = hash
-                }
-            }
-            return messages
-        }
-    }
- 
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool {
         switch chatType {
         case .private(let details):
@@ -585,6 +477,52 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         }
     }
     
+}
+
+// MARK: - Get message related
+private extension PushMessagingAPIService {
+    func messageToLoadDescriptionFrom(in cachedMessages: [MessagingChatMessage], starting startId: String) throws -> MessageToLoadFromResult {
+        guard !cachedMessages.isEmpty else { return .noCachedMessages }
+        guard cachedMessages.first?.displayInfo.id == startId else {
+            return .messageToLoad(MessageToLoad(threadHash: startId, offset: 0, messagesToKeep: []))
+        }
+        
+        var currentMessage = cachedMessages.first!
+        var offset = 1
+        var messagesToKeep: [MessagingChatMessage] = [currentMessage]
+        
+        for i in 1..<cachedMessages.count {
+            let previousMessage = cachedMessages[i]
+            guard let currentMessageLink = getLinkFrom(message: currentMessage) else { return .reachedFirstMessageInChat }
+            if currentMessageLink != previousMessage.displayInfo.id {
+                return .messageToLoad(MessageToLoad(threadHash: currentMessageLink, offset: offset, messagesToKeep: messagesToKeep))
+            }
+            offset += 1
+            currentMessage = previousMessage
+            messagesToKeep.append(previousMessage)
+        }
+        
+        guard let currentMessageLink = getLinkFrom(message: currentMessage) else { return .reachedFirstMessageInChat }
+        
+        return .messageToLoad(MessageToLoad(threadHash: currentMessageLink, offset: offset, messagesToKeep: messagesToKeep))
+    }
+    
+    enum MessageToLoadFromResult {
+        case noCachedMessages
+        case reachedFirstMessageInChat
+        case messageToLoad(MessageToLoad)
+    }
+    
+    struct MessageToLoad {
+        let threadHash: String
+        let offset: Int
+        let messagesToKeep: [MessagingChatMessage]
+    }
+    
+    func getLinkFrom(message: MessagingChatMessage) -> String? {
+        let messageMetadata: PushEnvironment.MessageServiceMetadata = try! decodeServiceMetadata(from: message.serviceMetadata)
+        return messageMetadata.link
+    }
 }
 
 // MARK: - Private methods

@@ -28,12 +28,6 @@ protocol MessagingServiceProtocol {
                             before message: MessagingChatMessageDisplayInfo?,
                             cachedOnly: Bool,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
-    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            before message: MessagingChatMessageDisplayInfo?,
-                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
-    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            after message: MessagingChatMessageDisplayInfo,
-                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      isEncrypted: Bool,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo

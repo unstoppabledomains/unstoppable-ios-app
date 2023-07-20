@@ -42,12 +42,8 @@ extension MockMessagingService: MessagingServiceProtocol {
                             before message: MessagingChatMessageDisplayInfo?,
                             cachedOnly: Bool,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
-    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            before message: MessagingChatMessageDisplayInfo?,
-                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
-    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            after message: MessagingChatMessageDisplayInfo,
-                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
+  
+    
     private func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         if let cachedMessages = chatsMessages[chat] {

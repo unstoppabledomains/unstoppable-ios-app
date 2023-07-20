@@ -177,56 +177,6 @@ extension MessagingService: MessagingServiceProtocol {
         await storageService.saveMessages(messages)
         return messages.map { $0.displayInfo }
     }
-    
-    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            before message: MessagingChatMessageDisplayInfo?,
-                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        var limit = limit
-        var message = message
-        if let message,
-           message.isFirstInChat {
-            return [] // There's no messages before this message
-        }
-        
-        let cachedMessages = try await storageService.getMessagesFor(chat: chatDisplayInfo,
-                                                                     decrypter: decrypterService,
-                                                                     before: message,
-                                                                     limit: limit)
-        if !cachedMessages.isEmpty {
-            if cachedMessages.count == limit ||
-                cachedMessages.last?.displayInfo.isFirstInChat == true {
-                return cachedMessages.map { $0.displayInfo }
-            } else {
-                message = cachedMessages.last?.displayInfo
-                limit -= cachedMessages.count
-            }
-        }
-        
-        let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo)
-        let options: MessagingAPIServiceLoadMessagesOptions
-        if let message,
-           let chatMessage = await storageService.getMessageWith(id: message.id,
-                                                                 in: chatDisplayInfo,
-                                                                 decrypter: decrypterService) {
-            options = .before(message: chatMessage)
-        } else {
-            options = .default
-        }
-        
-        let newMessages = try await getAndStoreMessagesForChat(chat, options: options, limit: limit)
-        return cachedMessages.map { $0.displayInfo } + newMessages
-    }
- 
-    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            after message: MessagingChatMessageDisplayInfo,
-                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo)
-        guard let chatMessage = await storageService.getMessageWith(id: message.id,
-                                                                    in: chatDisplayInfo,
-                                                                    decrypter: decrypterService) else { throw MessagingServiceError.messageNotFound }
-        
-        return try await getAndStoreMessagesForChat(chat, options: .after(message: chatMessage), limit: limit)
-    }
 
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      isEncrypted: Bool,
@@ -654,7 +604,8 @@ private extension MessagingService {
                         return localChat
                     } else {
                         if var lastMessage = try? await self.apiService.getMessagesForChat(remoteChat,
-                                                                                           options: .default,
+                                                                                           before: nil,
+                                                                                           cachedMessages: [],
                                                                                            fetchLimit: 1,
                                                                                            for: profile,
                                                                                            filesService: self.filesService).first {
@@ -782,25 +733,6 @@ private extension MessagingService {
 
 // MARK: - Messages
 private extension MessagingService {
-    func getAndStoreMessagesForChat(_ chat: MessagingChat,
-                                    options: MessagingAPIServiceLoadMessagesOptions,
-                                    limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
-        let startTime = Date()
-        let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
-        let messages = try await apiService.getMessagesForChat(chat,
-                                                               options: options,
-                                                               fetchLimit: limit,
-                                                               for: profile,
-                                                               filesService: filesService)
-   
-        Debugger.printTimeSensitiveInfo(topic: .Messaging,
-                                        "to fetch \(messages.count) messages",
-                                        startDate: startTime,
-                                        timeout: 3)
-        await storageService.saveMessages(messages)
-        return messages.map { $0.displayInfo }
-    }
-    
     func sendMessageToBEAsync(message: MessagingChatMessage,
                               messageType: MessagingChatMessageDisplayType,
                               in chat: MessagingChat,
