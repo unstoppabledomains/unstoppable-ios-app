@@ -173,6 +173,7 @@ extension MessagingService: MessagingServiceProtocol {
                                                                before: chatMessage,
                                                                cachedMessages: cachedMessages,
                                                                fetchLimit: limit,
+                                                               isRead: true,
                                                                for: profile,
                                                                filesService: filesService)
         Debugger.printTimeSensitiveInfo(topic: .Messaging,
@@ -613,6 +614,7 @@ private extension MessagingService {
                                                                                            before: nil,
                                                                                            cachedMessages: [],
                                                                                            fetchLimit: 1,
+                                                                                           isRead: localChats.isEmpty, // If loading channels for the first time - messages is read by default.
                                                                                            for: profile,
                                                                                            filesService: self.filesService).first {
                             
@@ -622,9 +624,8 @@ private extension MessagingService {
                                                                                             in: remoteChat.displayInfo,
                                                                                             decrypter: self.decrypterService) {
                                 lastMessage.displayInfo.isRead = storedMessage.displayInfo.isRead
-                            } else if !localChats.isEmpty { // If loading channels for the first time - messages is read by default.
-                                lastMessage.displayInfo.isRead = false
                             }
+                            
                             if !lastMessage.displayInfo.senderType.isThisUser && !lastMessage.displayInfo.isRead {
                                 updatedChat.displayInfo.unreadMessagesCount += 1
                             }

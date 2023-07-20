@@ -32,6 +32,7 @@ protocol MessagingAPIServiceProtocol {
                             before message: MessagingChatMessage?,
                             cachedMessages: [MessagingChatMessage],
                             fetchLimit: Int,
+                            isRead: Bool,
                             for user: MessagingChatUserProfile,
                             filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage]
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool

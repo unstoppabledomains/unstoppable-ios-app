@@ -234,6 +234,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                             before message: MessagingChatMessage?,
                             cachedMessages: [MessagingChatMessage],
                             fetchLimit: Int,
+                            isRead: Bool,
                             for user: MessagingChatUserProfile,
                             filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
         let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
@@ -272,7 +273,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let remoteMessages = try await dataProvider.getPreviousMessagesForChat(chat,
                                                                                threadHash: threadHash,
                                                                                fetchLimit: fetchLimitToUse,
-                                                                               isRead: true,
+                                                                               isRead: isRead,
                                                                                filesService: filesService,
                                                                                env: env,
                                                                                pgpPrivateKey: pgpPrivateKey)
