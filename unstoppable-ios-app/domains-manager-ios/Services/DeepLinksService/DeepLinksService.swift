@@ -125,7 +125,8 @@ private extension DeepLinksService {
     
     func isWCDeepLinkUrl(from components: NSURLComponents) -> Bool {
         (components.path == deepLinkPath) ||
-        (components.path == (deepLinkPath + "/" + wcScheme))
+        (components.path == (deepLinkPath + "/" + wcScheme)) ||
+        (components.scheme == wcScheme)
     }
     
     func parseWalletConnectURL(from components: NSURLComponents, in url: URL) -> URL? {
