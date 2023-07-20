@@ -11,7 +11,6 @@ import Push
 
 final class PushMessagingWebSocketsService {
     
-    private var socketServices = [WebSocketNetworkService]()
     private var domainNameToConnectionMap: [DomainName : PushConnection] = [:]
     
 }
