@@ -29,6 +29,12 @@ protocol MessagingAPIServiceProtocol {
     
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
+                            before message: MessagingChatMessage?,
+                            cachedMessages: [MessagingChatMessage],
+                            fetchLimit: Int,
+                            for user: MessagingChatUserProfile,
+                            filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage]
+    func getMessagesForChat(_ chat: MessagingChat,
                             options: MessagingAPIServiceLoadMessagesOptions,
                             fetchLimit: Int,
                             for user: MessagingChatUserProfile,

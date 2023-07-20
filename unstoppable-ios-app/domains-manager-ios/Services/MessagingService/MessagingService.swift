@@ -144,6 +144,42 @@ extension MessagingService: MessagingServiceProtocol {
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
+                            cachedOnly: Bool,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        if let message,
+           message.isFirstInChat {
+            return [] // There's no messages before this message
+        }
+        
+        let cachedMessages = try await storageService.getMessagesFor(chat: chatDisplayInfo,
+                                                                     decrypter: decrypterService,
+                                                                     before: message,
+                                                                     limit: limit)
+        if cachedOnly {
+            return cachedMessages.map { $0.displayInfo }
+        }
+        let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo)
+        let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
+
+        var chatMessage: MessagingChatMessage?
+        if let message {
+            chatMessage = await storageService.getMessageWith(id: message.id,
+                                                              in: chatDisplayInfo,
+                                                              decrypter: decrypterService)
+        }
+        
+        let messages = try await apiService.getMessagesForChat(chat,
+                                                               before: chatMessage,
+                                                               cachedMessages: cachedMessages,
+                                                               fetchLimit: limit,
+                                                               for: profile,
+                                                               filesService: filesService)
+        await storageService.saveMessages(messages)
+        return messages.map { $0.displayInfo }
+    }
+    
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
+                            before message: MessagingChatMessageDisplayInfo?,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         var limit = limit
         var message = message

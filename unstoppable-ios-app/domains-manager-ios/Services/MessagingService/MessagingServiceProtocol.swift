@@ -26,6 +26,10 @@ protocol MessagingServiceProtocol {
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
+                            cachedOnly: Bool,
+                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
+    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
+                            before message: MessagingChatMessageDisplayInfo?,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             after message: MessagingChatMessageDisplayInfo,

@@ -41,7 +41,6 @@ final class ChatViewPresenter {
     private var conversationState: MessagingChatConversationState
     private let fetchLimit: Int = 30
     private var messages: [MessagingChatMessageDisplayInfo] = []
-    private var chatState: ChatContentState = .upToDate
     private var isLoadingMessages = false
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     private var isChannelEncrypted: Bool = true
@@ -85,15 +84,10 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
             try? appContext.messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
         }
         
-        if messageIndex >= (messages.count - Constants.numberOfUnreadMessagesBeforePrefetch) {
-            switch chatState {
-            case .hasUnloadedMessagesBefore(let message):
-                loadMoreMessagesBefore(message: message)
-            case .upToDate:
-                return
-            case .hasUnreadMessagesAfter:
-                return
-            }
+        if messageIndex >= (messages.count - Constants.numberOfUnreadMessagesBeforePrefetch),
+           let last = messages.last,
+           !last.isFirstInChat {
+            loadMoreMessagesBefore(message: last)
         }
     }
     
@@ -159,10 +153,11 @@ extension ChatViewPresenter: MessagingServiceListener {
                 }
             case .messagesAdded(let messages, let chatId):
                 if case .existingChat(let chat) = conversationState,
-                   chatId == chat.id {
+                   chatId == chat.id,
+                   !messages.isEmpty {
                     await self.addMessages(messages)
-                    checkIfUpToDate()
                     showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
+                    loadMoreMessagesBefore(message: messages.last!)
                 }
             case .messageUpdated(let updatedMessage, var newMessage):
                 if case .existingChat(let chat) = conversationState,
@@ -170,7 +165,6 @@ extension ChatViewPresenter: MessagingServiceListener {
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     await newMessage.prepareToDisplay()
                     self.messages[i] = newMessage
-                    checkIfUpToDate()
                     showData(animated: false, isLoading: isLoadingMessages)
                 }
             case .messagesRemoved(let messages, let chatId):
@@ -178,7 +172,6 @@ extension ChatViewPresenter: MessagingServiceListener {
                    chatId == chat.id {
                     let removedIds = messages.map { $0.id }
                     self.messages = self.messages.filter({ !removedIds.contains($0.id) })
-                    checkIfUpToDate()
                     showData(animated: true, isLoading: isLoadingMessages)
                 }
             case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated:
@@ -192,51 +185,35 @@ extension ChatViewPresenter: MessagingServiceListener {
 private extension ChatViewPresenter {
     func loadAndShowData() {
         Task {
-            view?.setLoading(active: true)
             isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
             do {
                 switch conversationState {
                 case .existingChat(let chat):
+                    view?.setLoading(active: true)
                     isLoadingMessages = true
-                    let messagesBefore = try await appContext.messagingService.getMessagesForChat(chat,
+                    let cachedMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                   before: nil,
+                                                                                                  cachedOnly: true,
                                                                                                   limit: fetchLimit)
-                    await addMessages(messagesBefore)
+                    await addMessages(cachedMessages)
+                    showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
                     
-                    if !messages.isEmpty,
-                       !messages[0].isRead,
-                       let firstReadMessage = messages.first(where: { $0.isRead }) {
-                        self.chatState = .hasUnreadMessagesAfter(message: firstReadMessage)
-                    } else {
-                        checkIfUpToDate()
-                    }
-                    
-                    switch chatState {
-                    case .upToDate, .hasUnloadedMessagesBefore:
-                        showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
-                    case .hasUnreadMessagesAfter(let message):
-                        let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
-                                                                                                      after: message,
-                                                                                                      limit: fetchLimit)
-                        await addMessages(unreadMessages)
-                        showData(animated: false, isLoading: false, completion: {
-                            if let message = unreadMessages.last {
-                                let item = self.createSnapshotItemFrom(message: message)
-                                self.view?.scrollToItem(item, animated: false)
-                            }
-                        })
-                        checkIfUpToDate()
-                    }
+                    updateUIForChatApprovedState()
+                    let updateMessages = try await appContext.messagingService.getMessagesForChat(chat,
+                                                                                                  before: nil,
+                                                                                                  cachedOnly: false,
+                                                                                                  limit: fetchLimit)
+                    await addMessages(updateMessages)
+                    showData(animated: true, isLoading: false)
+
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                         self.view?.setLoading(active: false)
-                        self.updateUIForChatApprovedState()
                         self.isLoadingMessages = false
                     }
                 case .newChat:
                     updateUIForChatApprovedState()
                     view?.startTyping()
                     showData(animated: false, isLoading: false)
-                    view?.setLoading(active: false)
                 }
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -255,27 +232,15 @@ private extension ChatViewPresenter {
             do {
                 let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                               before: message,
+                                                                                              cachedOnly: false,
                                                                                               limit: fetchLimit)
                 await addMessages(unreadMessages)
-                checkIfUpToDate()
                 isLoadingMessages = false
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
                 isLoadingMessages = false
             }
             showData(animated: false, isLoading: false)
-        }
-    }
-    
-    func checkIfUpToDate() {
-        guard !messages.isEmpty else {
-            chatState = .upToDate
-            return
-        }
-         if messages.last!.isFirstInChat {
-            self.chatState = .upToDate
-        } else {
-            self.chatState = .hasUnloadedMessagesBefore(message: messages.last!)
         }
     }
     
@@ -634,14 +599,5 @@ private extension ChatViewPresenter {
             view?.setLoading(active: false)
             throw error
         }
-    }
-}
-
-// MARK: - Private methods
-private extension ChatViewPresenter {
-    enum ChatContentState {
-        case upToDate
-        case hasUnloadedMessagesBefore(message: MessagingChatMessageDisplayInfo)
-        case hasUnreadMessagesAfter(message: MessagingChatMessageDisplayInfo)
     }
 }

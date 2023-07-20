@@ -14,7 +14,7 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     let time: Date
     var type: MessagingChatMessageDisplayType
     var isRead: Bool
-    var isFirstInChat: Bool
+    let isFirstInChat: Bool
     var deliveryState: DeliveryState
     var isEncrypted: Bool
     
