@@ -146,6 +146,7 @@ extension MessagingService: MessagingServiceProtocol {
                             before message: MessagingChatMessageDisplayInfo?,
                             cachedOnly: Bool,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
+        let startTime = Date()
         if let message,
            message.isFirstInChat {
             return [] // There's no messages before this message
@@ -174,6 +175,11 @@ extension MessagingService: MessagingServiceProtocol {
                                                                fetchLimit: limit,
                                                                for: profile,
                                                                filesService: filesService)
+        Debugger.printTimeSensitiveInfo(topic: .Messaging,
+                                        "to fetch \(messages.count) messages",
+                                        startDate: startTime,
+                                        timeout: 3)
+
         await storageService.saveMessages(messages)
         return messages.map { $0.displayInfo }
     }
