@@ -45,23 +45,21 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     
     // Messages
     func getTotalNumberOfUnreadMessages() -> Int {
-        let predicate = NSPredicate(format: "isRead == NO")
-        let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
-                                                      predicate: predicate,
-                                                      in: backgroundContext)) ?? 0
-        return unreadMessagesCount
+        queue.sync {
+            let predicate = NSPredicate(format: "isRead == NO")
+            let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
+                                                          predicate: predicate,
+                                                          in: backgroundContext)) ?? 0
+            return unreadMessagesCount
+        }
     }
     
     func getNumberOfUnreadMessagesIn(chatId: String) -> Int {
-        let chatIdPredicate = NSPredicate(format: "chatId == %@", chatId)
-        let isNotReadPredicate = NSPredicate(format: "isRead == NO")
-        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, isNotReadPredicate])
-        let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
-                                                      predicate: predicate,
-                                                      in: backgroundContext)) ?? 0
-        return unreadMessagesCount
+        queue.sync {
+            fetchNumberOfUnreadMessagesIn(chatId: chatId)
+        }
     }
-    
+
     func getMessagesFor(chat: MessagingChatDisplayInfo,
                         decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage] {
         try queue.sync {
@@ -178,14 +176,12 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     func markSendingMessagesAsFailed() {
-        Task {
-            do {
-                let messages: [CoreDataMessagingChatMessage] = try getEntities(from: backgroundContext)
-                for message in messages where message.deliveryState == MessagingChatMessageDisplayInfo.DeliveryState.sending.rawValue {
-                    message.deliveryState = Int64(MessagingChatMessageDisplayInfo.DeliveryState.failedToSend.rawValue)
-                }
-                saveContext(backgroundContext)
-            } catch { }
+        try? queue.sync {
+            let messages: [CoreDataMessagingChatMessage] = try getEntities(from: backgroundContext)
+            for message in messages where message.deliveryState == MessagingChatMessageDisplayInfo.DeliveryState.sending.rawValue {
+                message.deliveryState = Int64(MessagingChatMessageDisplayInfo.DeliveryState.failedToSend.rawValue)
+            }
+            saveContext(backgroundContext)
         }
     }
     
@@ -476,7 +472,7 @@ private extension CoreDataMessagingStorageService {
             lastMessage = message.displayInfo
         }
         
-        let unreadMessagesCount = getNumberOfUnreadMessagesIn(chatId: coreDataChat.id!)
+        let unreadMessagesCount = fetchNumberOfUnreadMessagesIn(chatId: coreDataChat.id!)
         
         let thisUserDetails = getThisUserDetails(from: coreDataChat)
         let displayInfo = MessagingChatDisplayInfo(id: coreDataChat.id!,
@@ -840,6 +836,16 @@ private extension CoreDataMessagingStorageService {
 
 // MARK: - Private methods
 private extension CoreDataMessagingStorageService {
+    func fetchNumberOfUnreadMessagesIn(chatId: String) -> Int {
+        let chatIdPredicate = NSPredicate(format: "chatId == %@", chatId)
+        let isNotReadPredicate = NSPredicate(format: "isRead == NO")
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, isNotReadPredicate])
+        let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
+                                                      predicate: predicate,
+                                                      in: backgroundContext)) ?? 0
+        return unreadMessagesCount
+    }
+    
     func getCoreDataEntityWith<T: NSManagedObject>(id: String) -> T? {
         getCoreDataEntityWith(key: "id", value: id)
     }
