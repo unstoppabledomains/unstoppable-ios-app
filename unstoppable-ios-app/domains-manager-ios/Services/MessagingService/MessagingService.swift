@@ -751,29 +751,12 @@ private extension MessagingService {
                                     limit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         let startTime = Date()
         let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
-        var messages = try await apiService.getMessagesForChat(chat,
+        let messages = try await apiService.getMessagesForChat(chat,
                                                                options: options,
                                                                fetchLimit: limit,
                                                                for: profile,
                                                                filesService: filesService)
-        
-        // Check for message is first in the chat when load earlier before
-        if case .before(let message) = options {
-            if !messages.isEmpty,
-               messages.count < limit {
-                messages[messages.count - 1].displayInfo.isFirstInChat = true
-            } else if messages.isEmpty,
-                      let storedMessage = await self.storageService.getMessageWith(id: message.displayInfo.id,
-                                                                                   in: chat.displayInfo,
-                                                                                   decrypter: self.decrypterService) {
-                Task.detached {
-                    var updatedMessage = storedMessage
-                    updatedMessage.displayInfo.isFirstInChat = true
-                    self.replaceCacheMessageAndNotify(storedMessage,
-                                                      with: updatedMessage)
-                }
-            }
-        }
+   
         Debugger.printTimeSensitiveInfo(topic: .Messaging,
                                         "to fetch \(messages.count) messages",
                                         startDate: startTime,

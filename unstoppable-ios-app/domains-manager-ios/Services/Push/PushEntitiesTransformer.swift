@@ -149,7 +149,7 @@ struct PushEntitiesTransformer {
                                                           time: time,
                                                           type: type,
                                                           isRead: isRead,
-                                                          isFirstInChat: false,
+                                                          isFirstInChat: pushMessage.link == nil,
                                                           deliveryState: .delivered,
                                                           isEncrypted: isMessageEncrypted)
         let chatMessage = MessagingChatMessage(displayInfo: displayInfo,
