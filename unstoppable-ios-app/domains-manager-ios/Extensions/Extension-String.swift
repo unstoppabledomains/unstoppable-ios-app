@@ -902,6 +902,7 @@ extension String {
         static let messageUnencryptedPullUpTitle = "MESSAGE_UNENCRYPTED_PULL_UP_TITLE"
         static let messageUnencryptedPullUpReason1 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_1"
         static let messageUnencryptedPullUpReason2 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_2"
+        static let messagingAdmin = "MESSAGING_ADMIN"
     }
 
     

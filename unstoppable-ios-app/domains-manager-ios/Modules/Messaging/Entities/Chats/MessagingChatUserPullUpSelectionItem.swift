@@ -9,10 +9,15 @@ import UIKit
 
 struct MessagingChatUserPullUpSelectionItem: PullUpCollectionViewCellItem {
     let userInfo: MessagingChatUserDisplayInfo
+    let isAdmin: Bool
     let isPending: Bool
     
     var title: String { userInfo.displayName }
-    var subtitle: String? { isPending ? String.Constants.pending.localized() : nil }
+    var subtitle: String? {
+        if isPending { return String.Constants.pending.localized() }
+        if isAdmin { return String.Constants.messagingAdmin.localized() }
+        return nil
+    }
     var imageStyle: ResizableRoundedImageView.Style { .largeImage }
     var icon: UIImage {
         get async {

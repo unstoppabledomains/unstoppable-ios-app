@@ -1597,9 +1597,9 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let title = String.Constants.pluralNMembers.localized(groupMembers.count, groupMembers.count)
         let avatarImage = await MessagingImageLoader.buildImageForGroupChatMembers(groupMembers,
                                                                                    iconSize: 56) ?? .domainSharePlaceholder
-        
-        let memberItems = groupChatDetails.members.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isPending: false) })
-        let pendingMemberItems = groupChatDetails.pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isPending: true) })
+        let admins = Set(groupChatDetails.adminWallets)
+        let memberItems = groupChatDetails.members.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: false) })
+        let pendingMemberItems = groupChatDetails.pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: true) })
         let items = memberItems + pendingMemberItems
         
         let baseContentHeight: CGFloat = 216
@@ -1628,7 +1628,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     func showUnencryptedMessageInfoPullUp(in viewController: UIViewController) {
         let selectionViewHeight: CGFloat = 288
         let shareDomainPullUpView = UnencryptedMessageInfoPullUpView()
-        let pullUp = showOrUpdate(in: viewController, pullUp: .unencryptedMessageInfo, contentView: shareDomainPullUpView, height: selectionViewHeight)
+        showOrUpdate(in: viewController, pullUp: .unencryptedMessageInfo, contentView: shareDomainPullUpView, height: selectionViewHeight)
         shareDomainPullUpView.dismissCallback = { [weak viewController] in
             viewController?.dismissPullUpMenu()
         }
