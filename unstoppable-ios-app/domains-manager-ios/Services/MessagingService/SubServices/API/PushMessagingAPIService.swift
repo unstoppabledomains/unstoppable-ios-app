@@ -637,7 +637,7 @@ private extension PushMessagingAPIService {
 
 // MARK: - Open methods
 extension PushMessagingAPIService {
-    enum PushMessagingAPIServiceError: Error {
+    enum PushMessagingAPIServiceError: String, LocalizedError {
         case noDomainForWallet
         case noOwnerWalletInDomain
         case failedToGetPushUser
@@ -649,6 +649,9 @@ extension PushMessagingAPIService {
         case failedToConvertPushMessage
         case declineRequestNotSupported
         case failedToPrepareMessageContent
+        
+        public var errorDescription: String? { rawValue }
+
     }
 }
 

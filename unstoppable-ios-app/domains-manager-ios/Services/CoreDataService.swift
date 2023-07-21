@@ -165,7 +165,10 @@ extension CoreDataService {
     }
 }
 
-enum CoreDataError: Error {
+enum CoreDataError: String, LocalizedError {
     case failedToFetchObjects
     case failedToInsertObject
+    
+    public var errorDescription: String? { rawValue }
+
 }

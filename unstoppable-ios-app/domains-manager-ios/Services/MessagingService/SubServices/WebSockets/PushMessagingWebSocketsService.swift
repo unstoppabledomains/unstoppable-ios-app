@@ -258,9 +258,11 @@ private extension PushMessagingWebSocketsService {
 
 // MARK: - Open methods
 extension PushMessagingWebSocketsService {
-    enum PushWebSocketError: Error {
+    enum PushWebSocketError: String, LocalizedError {
         case failedToCreateEIP155Address
         case failedToGetPayloadData
         case failedToParsePayloadData
+        
+        public var errorDescription: String? { rawValue }
     }
 }

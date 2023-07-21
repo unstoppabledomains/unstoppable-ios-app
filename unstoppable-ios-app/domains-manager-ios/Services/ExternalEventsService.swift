@@ -287,12 +287,15 @@ private extension ExternalEventsService {
 }
 
 extension ExternalEventsService {
-    enum EventsHandlingError: Error {
+    enum EventsHandlingError: String, LocalizedError {
         case cantFindDomain
         case invalidWCURL
         case cantFindWallet, walletWithoutDisplayInfo
         case cantFindConnectedApp
         
         case ignoreEvent
+        
+        public var errorDescription: String? { rawValue }
+
     }
 }

@@ -301,8 +301,10 @@ private extension CoreAppCoordinator {
 
 // MARK: - CoordinatorError
 extension CoreAppCoordinator {
-    enum CoordinatorError: Error {
+    enum CoordinatorError: String, LocalizedError {
         case notSuitableRoot, noRootVC, incorrectArguments
+        
+        public var errorDescription: String? { rawValue }
     }
 }
 
