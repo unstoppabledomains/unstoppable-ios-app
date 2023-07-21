@@ -25,7 +25,8 @@ struct PushEntitiesTransformer {
         let displayInfo = MessagingChatUserProfileDisplayInfo(id: userId,
                                                               wallet: wallet,
                                                               name: pushUser.profile.name,
-                                                              about: pushUser.profile.desc)
+                                                              about: pushUser.profile.desc,
+                                                              unreadMessagesCount: nil)
         let userProfile = MessagingChatUserProfile(id: userId,
                                                    wallet: wallet,
                                                    displayInfo: displayInfo,

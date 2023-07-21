@@ -433,8 +433,12 @@ private extension ChatsListViewPresenter {
             isLoading = appContext.messagingService.isUpdatingUserData(profile)
         }
         view?.setNavigationWith(selectedWallet: chatProfile.wallet,
-                                wallets: wallets,
+                                wallets: wallets.map({ .init(wallet: $0, numberOfUnreadMessages: unreadMessagesCountFor(wallet: $0)) }),
                                 isLoading: isLoading)
+    }
+    
+    func unreadMessagesCountFor(wallet: WalletDisplayInfo) -> Int? {
+        profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address })?.profile?.unreadMessagesCount
     }
     
     func showData() {

@@ -12,4 +12,5 @@ struct MessagingChatUserProfileDisplayInfo: Hashable {
     let wallet: String
     var name: String?
     var about: String?
+    var unreadMessagesCount: Int?
 }

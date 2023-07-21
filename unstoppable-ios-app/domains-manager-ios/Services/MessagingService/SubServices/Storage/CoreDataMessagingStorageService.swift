@@ -811,6 +811,16 @@ private extension CoreDataMessagingStorageService {
         return unreadMessagesCount
     }
     
+    func fetchNumberOfUnreadMessagesForUser(_ userId: String) -> Int {
+        let userIdPredicate = NSPredicate(format: "userId == %@", userId)
+        let isNotReadPredicate = NSPredicate(format: "isRead == NO")
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [userIdPredicate, isNotReadPredicate])
+        let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
+                                                      predicate: predicate,
+                                                      in: backgroundContext)) ?? 0
+        return unreadMessagesCount
+    }
+    
     func getCoreDataEntityWith<T: NSManagedObject>(id: String) -> T? {
         getCoreDataEntityWith(key: "id", value: id)
     }

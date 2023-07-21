@@ -123,9 +123,20 @@ private extension ChatsListNavigationView {
         }
     }
     
-    func menuAction(for wallet: WalletDisplayInfo) async -> UIMenuElement {
+    func menuAction(for walletTitleInfo: WalletTitleInfo) async -> UIMenuElement {
+        let wallet = walletTitleInfo.wallet
         let title = getTitleFor(wallet: wallet)
-        let subtitle = wallet.reverseResolutionDomain == nil ? "Set primary domain" : wallet.displayName
+        var subtitle: String
+        if wallet.reverseResolutionDomain == nil {
+            subtitle = String.Constants.messagingSetPrimaryDomain.localized()
+        } else {
+            subtitle = wallet.displayName
+            if let number = walletTitleInfo.numberOfUnreadMessages,
+               number > 0 {
+                subtitle = String.Constants.newMessage.localized() + " · " + subtitle
+            }
+        }
+        
         let avatar = await getAvatarImageFor(wallet: wallet)
         let action = UIAction.createWith(title: title,
                                          subtitle: subtitle,
@@ -205,8 +216,14 @@ private extension ChatsListNavigationView {
 extension ChatsListNavigationView {
     struct Configuration {
         let selectedWallet: WalletDisplayInfo
-        let wallets: [WalletDisplayInfo]
+        let wallets: [WalletTitleInfo]
         let isLoading: Bool
+        
+    }
+
+    struct WalletTitleInfo {
+        let wallet: WalletDisplayInfo
+        let numberOfUnreadMessages: Int?
     }
 }
 
@@ -223,9 +240,16 @@ struct ChatsListNavigationView_Previews: PreviewProvider {
                                            source: .imported,
                                            isBackedUp: false,
                                            reverseResolutionDomain: .init(name: "name.x", ownerWallet: "asdasd", isSetForRR: true))
+            let wallet2 = WalletDisplayInfo(name: "0x12412312312312",
+                                           address: "asdads",
+                                           domainsCount: 1,
+                                           source: .imported,
+                                           isBackedUp: false,
+                                           reverseResolutionDomain: .init(name: "nameasdasdasdasd2.x", ownerWallet: "asdasd", isSetForRR: true))
             view.setWithConfiguration(.init(selectedWallet: wallet,
-                                            wallets: [wallet],
-                                            isLoading: true))
+                                            wallets: [.init(wallet: wallet, numberOfUnreadMessages: nil),
+                                                      .init(wallet: wallet2, numberOfUnreadMessages: 0)],
+                                            isLoading: false))
             return view
         }
         .frame(width: 390, height: height)
