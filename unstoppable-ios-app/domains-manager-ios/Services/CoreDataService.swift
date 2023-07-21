@@ -36,13 +36,11 @@ class CoreDataService {
 extension CoreDataService {
     func saveContext(_ context: NSManagedObjectContext) {
         context.performAndWait {
-            if context.hasChanges {
-                Debugger.printInfo(topic: .CoreData, "Will Save context")
-                do {
-                    try context.save()
-                } catch {
-                    Debugger.printFailure("An error occurred while saving context, error: \(error)", critical: true)
-                }
+            Debugger.printInfo(topic: .CoreData, "Will Save context")
+            do {
+                try context.save()
+            } catch {
+                Debugger.printFailure("An error occurred while saving context, error: \(error)", critical: true)
             }
         }
     }
