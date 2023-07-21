@@ -67,6 +67,10 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         loadAndShowData()
     }
     
+    func viewWillDismiss() {
+        appContext.messagingService.setCurrentUser(nil)
+    }
+    
     func didSelectItem(_ item: ChatsListViewController.Item) {
         UDVibration.buttonTap.vibrate()
         view?.hideKeyboard()

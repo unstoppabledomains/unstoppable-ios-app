@@ -11,7 +11,7 @@ import Foundation
 protocol MessagingServiceProtocol {
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
-    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo)
+    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool
     func isNewMessagesAvailable() async throws -> Bool
     

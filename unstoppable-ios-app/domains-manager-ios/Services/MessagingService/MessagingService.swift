@@ -65,7 +65,7 @@ extension MessagingService: MessagingServiceProtocol {
         return newUser.displayInfo
     }
     
-    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo) {
+    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) {
         self.currentUser = userProfile
         refreshMessagingInfoFor(userProfile: userProfile, shouldRefreshUserInfo: true)
     }
@@ -500,16 +500,20 @@ extension MessagingService: SceneActivationListener {
 
 // MARK: - Private methods
 private extension MessagingService {
-    func refreshMessagingInfoFor(userProfile: MessagingChatUserProfileDisplayInfo,
+    func refreshMessagingInfoFor(userProfile: MessagingChatUserProfileDisplayInfo?,
                                  shouldRefreshUserInfo: Bool) {
         Task {
             do {
-                let rrDomain = try await getReverseResolutionDomainItem(for: userProfile.wallet)
-                let profile = try storageService.getUserProfileFor(domain: rrDomain)
-                
-                refreshChatsForProfile(profile, shouldRefreshUserInfo: shouldRefreshUserInfo)
-                refreshChannelsForProfile(profile)
-                setupSocketConnection(profile: profile)
+                if let userProfile {
+                    let rrDomain = try await getReverseResolutionDomainItem(for: userProfile.wallet)
+                    let profile = try storageService.getUserProfileFor(domain: rrDomain)
+                    
+                    refreshChatsForProfile(profile, shouldRefreshUserInfo: shouldRefreshUserInfo)
+                    refreshChannelsForProfile(profile)
+                    setupSocketConnection(profile: profile)
+                } else {
+                    webSocketsService.disconnectAll()
+                }
             } catch { }
         }
     }

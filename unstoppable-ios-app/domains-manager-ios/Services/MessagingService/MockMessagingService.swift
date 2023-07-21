@@ -18,7 +18,7 @@ final class MockMessagingService {
 extension MockMessagingService: MessagingServiceProtocol {
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
-    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo) { }
+    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) { }
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool { false }
     func isNewMessagesAvailable() async throws -> Bool { false }
     

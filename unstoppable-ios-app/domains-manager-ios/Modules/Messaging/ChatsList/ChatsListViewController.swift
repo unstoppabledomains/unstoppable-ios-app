@@ -85,6 +85,11 @@ final class ChatsListViewController: BaseViewController {
     override func keyboardWillHideAction(duration: Double, curve: Int) {
         collectionView.contentInset.bottom = Constants.scrollableContentBottomOffset
     }
+    
+    override func shouldPopOnBackButton() -> Bool {
+        presenter.viewWillDismiss()
+        return true
+    }
 }
 
 // MARK: - ChatsListViewProtocol
