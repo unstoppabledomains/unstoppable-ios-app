@@ -68,7 +68,9 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let pgpKey = try await self.getPGPPrivateKeyFor(user: user)
         var updatedProfile = pushUser.profile
         updatedProfile.name = name
-        updatedProfile.picture = avatar
+        if !avatar.trimmed.isEmpty {
+            updatedProfile.picture = avatar
+        }
         updatedProfile.blockedUsersList = updatedProfile.blockedUsersList ?? []
         
         try await PushUser.updateUserProfile(account: account, pgpPrivateKey: pgpKey, newProfile: updatedProfile, env: env)
