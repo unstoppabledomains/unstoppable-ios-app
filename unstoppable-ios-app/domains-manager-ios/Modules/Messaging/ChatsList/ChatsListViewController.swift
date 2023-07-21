@@ -243,12 +243,6 @@ private extension ChatsListViewController {
                 title = String.Constants.chatRequests.localized()
             case .channels:
                 title = String.Constants.spam.localized()
-                let rightBarButton = UIBarButtonItem(title: String.Constants.deleteAll.localized(),
-                                                     style: .plain,
-                                                     target: self,
-                                                     action: #selector(newMessageButtonPressed))
-                rightBarButton.tintColor = .foregroundAccent
-                navigationItem.rightBarButtonItem = rightBarButton
             }
             cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }
