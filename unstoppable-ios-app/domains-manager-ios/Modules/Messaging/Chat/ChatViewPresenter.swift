@@ -555,7 +555,12 @@ private extension ChatViewPresenter {
     
     func shareContentOfMessage(_ message: MessagingChatMessageDisplayInfo) {
         Task {
-            guard let contentURL = await appContext.messagingService.decryptedContentURLFor(message: message) else { return } // TODO: - Handle error
+            guard let contentURL = await appContext.messagingService.decryptedContentURLFor(message: message) else {
+                view?.showSimpleAlert(title: String.Constants.error.localized(),
+                                      body: String.Constants.messagingShareDecryptionErrorMessage.localized())
+                Debugger.printFailure("Failed to decrypt message content of \(message.id) - \(message.time) in \(message.chatId)")
+                return
+            }
             
             let activityViewController = UIActivityViewController(activityItems: [contentURL], applicationActivities: nil)
             activityViewController.completionWithItemsHandler = { _, completed, _, _ in

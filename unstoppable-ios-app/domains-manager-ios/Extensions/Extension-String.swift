@@ -903,6 +903,7 @@ extension String {
         static let messageUnencryptedPullUpReason1 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_1"
         static let messageUnencryptedPullUpReason2 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_2"
         static let messagingAdmin = "MESSAGING_ADMIN"
+        static let messagingShareDecryptionErrorMessage = "MESSAGING_SHARE_DECRYPTION_ERROR_MESSAGE"
     }
 
     
