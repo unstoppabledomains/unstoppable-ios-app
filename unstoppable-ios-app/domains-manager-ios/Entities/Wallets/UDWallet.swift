@@ -169,20 +169,15 @@ struct UDWallet: Codable {
             throw ValetError.failedToDecrypt
         }
         
-        return try await withCheckedThrowingContinuation { completion in
-            if backedupWallet.type == .privateKeyEntered  {
-                UDWalletWithPrivateSeed.create(aliasName: backedupWallet.name,
-                                               type: backedupWallet.type,
-                                               privateKeyEthereum: privateKeyOrSeed)
-                .done { completion.resume(returning: $0) }
-                .catch { error in completion.resume(throwing: error) }
-            }
-            else {   UDWalletWithPrivateSeed.create(aliasName: backedupWallet.name,
-                                                    type: backedupWallet.type,
-                                                    mnemonicsEthereum: privateKeyOrSeed)
-            .done { completion.resume(returning: $0) }
-            .catch { error in completion.resume(throwing: error) }
-            }
+        if backedupWallet.type == .privateKeyEntered  {
+            return try await UDWalletWithPrivateSeed.create(aliasName: backedupWallet.name,
+                                                            type: backedupWallet.type,
+                                                            privateKeyEthereum: privateKeyOrSeed)
+        }
+        else {
+            return try await UDWalletWithPrivateSeed.create(aliasName: backedupWallet.name,
+                                                            type: backedupWallet.type,
+                                                            mnemonicsEthereum: privateKeyOrSeed)
         }
     }
     

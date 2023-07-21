@@ -143,21 +143,17 @@ class SignatureTests: XCTestCase {
         typedDataOpenSea = try? JSONDecoder().decode(EIP712TypedData.self, from: dataOpenSea)
         XCTAssertNotNil(typedDataOpenSea)
     }
-
-    func testSigningMessage() throws {
+    
+    func testSigningMessage() async throws {
         let privateKey = "0x397ab335485c15be06deb7a64fd87ec93da836ee3ab189441f71d51e93bf7ce0"
         
-        let exp = expectation(description: "wait for signed data")
         let message = "0x943ba9c825ad7552853ef52927dec257048efbcd9e6819fc5df9a2aac84e486f"
-        UDWalletWithPrivateSeed.create(aliasName: "", type: .generatedLocally, privateKeyEthereum: privateKey)
-            .done { (wallet: UDWalletWithPrivateSeed) -> Void in
-                let personalMessage = Data(message.droppedHexPrefix.hexToBytes())
-                let sig = try! UDWallet.signPersonalMessage(personalMessage, with: privateKey)
-                let sigString = sig!.toHexString()
-                XCTAssertEqual(HexAddress.hexPrefix + sigString, "0x69d4da1dd5eef16e05ef54526e55e14bcff1c183daffe96007982624072592da4f0e958cca733cc77f7c81eec5cb95b538e9403175bae294844dd1a664a060b61b")
-                exp.fulfill()
-            }.cauterize()
-        waitForExpectations(timeout: Self.timeout)
+        let _ = try! await UDWalletWithPrivateSeed.create(aliasName: "", type: .generatedLocally, privateKeyEthereum: privateKey)
+        
+        let personalMessage = Data(message.droppedHexPrefix.hexToBytes())
+        let sig = try! UDWallet.signPersonalMessage(personalMessage, with: privateKey)
+        let sigString = sig!.toHexString()
+        XCTAssertEqual(HexAddress.hexPrefix + sigString, "0x69d4da1dd5eef16e05ef54526e55e14bcff1c183daffe96007982624072592da4f0e958cca733cc77f7c81eec5cb95b538e9403175bae294844dd1a664a060b61b")
     }
     
     func testDecodeJSONModel() throws {
@@ -290,7 +286,7 @@ class SignatureTests: XCTestCase {
     }
     
     func testGetCorrectEndResult() async {
-        let wallet = appContext.udWalletsService.find(by: "0x94b420da794c1a8f45b70581ae015e6bd1957233")!
+//        let wallet = appContext.udWalletsService.find(by: "0x94b420da794c1a8f45b70581ae015e6bd1957233")!
 //        try! await wallet.getPersonalSignature(messageString: <#T##String#>)
     }
     
