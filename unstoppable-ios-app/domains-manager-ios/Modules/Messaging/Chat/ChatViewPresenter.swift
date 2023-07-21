@@ -34,6 +34,12 @@ extension ChatViewPresenterProtocol {
 }
 
 @MainActor
+protocol ChatPresenterContentIdentifiable {
+    var chatId: String? { get }
+    var channelId: String? { get }
+}
+
+@MainActor
 final class ChatViewPresenter {
     
     private weak var view: (any ChatViewProtocol)?
@@ -45,6 +51,7 @@ final class ChatViewPresenter {
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     private var isChannelEncrypted: Bool = true
     private var didLoadTime = Date()
+    
     var analyticsName: Analytics.ViewName { .chatDialog }
 
     init(view: any ChatViewProtocol,
@@ -135,6 +142,19 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
             }
         })
     }
+}
+
+// MARK: - ChatPresenterContentIdentifiable
+extension ChatViewPresenter: ChatPresenterContentIdentifiable {
+    var chatId: String? {
+        switch conversationState {
+        case .existingChat(let chat):
+            return chat.id
+        case .newChat:
+            return nil
+        }
+    }
+    var channelId: String? { nil }
 }
 
 // MARK: - MessagingServiceListener

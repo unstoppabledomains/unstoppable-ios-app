@@ -29,6 +29,11 @@ extension ChatsListViewPresenterProtocol {
 }
 
 @MainActor
+protocol ChatsListCoordinator {
+    func update(presentOptions: ChatsList.PresentOptions)
+}
+
+@MainActor
 final class ChatsListViewPresenter {
     
     private weak var view: ChatsListViewProtocol?
@@ -166,6 +171,44 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         self.searchData = SearchData()
         didSearchWith(key: "")
         showData()
+    }
+}
+
+// MARK: - ChatsListCoordinator
+extension ChatsListViewPresenter: ChatsListCoordinator {
+    func update(presentOptions: ChatsList.PresentOptions) {
+        Task {
+            do {
+                switch presentOptions {
+                case .default:
+                    self.presentOptions = presentOptions
+                    return
+                case .showChat(let chatId, let profile):
+                    if selectedProfileWalletPair?.profile?.id != profile.id ||
+                        topOpenedChatIdentifiable?.chatId != chatId {
+                        try await preselectProfile(profile, usingWallets: wallets)
+                        tryAutoOpenChat(chatId, profile: profile)
+                    }
+                case .showChannel(let channelId, let profile):
+                    if selectedProfileWalletPair?.profile?.id != profile.id ||
+                        topOpenedChatIdentifiable?.channelId != channelId {
+                        try await preselectProfile(profile, usingWallets: wallets)
+                        tryAutoOpenChannel(channelId, profile: profile)
+                    }
+                }
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+        }
+    }
+    
+    private var topChatViewController: ChatViewController? { view?.cNavigationController?.viewControllers.last as? ChatViewController }
+    private var topOpenedChatIdentifiable: ChatPresenterContentIdentifiable? { (topChatViewController?.presenter as? ChatPresenterContentIdentifiable) }
+    private func popToChatsList() async {
+        guard let view else { return }
+        
+        view.cNavigationController?.popToViewController(view, animated: true)
+        try? await Task.sleep(seconds: CNavigationController.animationDuration)
     }
 }
 

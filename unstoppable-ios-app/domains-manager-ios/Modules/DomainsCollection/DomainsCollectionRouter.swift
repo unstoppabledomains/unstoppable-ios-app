@@ -271,6 +271,13 @@ private extension DomainsCollectionRouter {
     func showChatsListWith(options: ChatsList.PresentOptions) {
         guard let navigationController = self.navigationController else { return }
         
-        showChatsListScreen(in: navigationController, presentOptions: options)
+        if let presentedChatsList = navigationController.viewControllers.first(where: { $0 is ChatsListViewController } ) as? ChatsListViewController,
+           let chatsListCoordinator = presentedChatsList.presenter as? ChatsListCoordinator {
+            print("LOGO: - Will update present options for opened chats list")
+            chatsListCoordinator.update(presentOptions: options)
+        } else  {
+            print("LOGO: - Will show new chats list")
+            showChatsListScreen(in: navigationController, presentOptions: options)
+        }
     }
 }

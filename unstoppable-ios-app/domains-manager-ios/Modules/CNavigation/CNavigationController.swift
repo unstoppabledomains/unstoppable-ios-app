@@ -136,9 +136,13 @@ extension CNavigationController {
     
     @discardableResult
     public func popToViewController(_ viewController: UIViewController, animated: Bool, completion: (()->())? = nil) -> [UIViewController]? {
-        guard !isTransitioning else { return nil }
+        guard !isTransitioning else {
+            completion?()
+            return nil
+        }
         guard let fromViewController = self.topViewController,
               fromViewController != viewController else {
+            completion?()
             return nil
         }
         

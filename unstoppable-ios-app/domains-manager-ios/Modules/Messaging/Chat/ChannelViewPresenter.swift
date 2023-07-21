@@ -70,6 +70,12 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
     }
 }
 
+// MARK: - ChatPresenterContentIdentifiable
+extension ChannelViewPresenter: ChatPresenterContentIdentifiable {
+    var chatId: String? { nil }
+    var channelId: String? { channel.id }
+}
+
 // MARK: - MessagingServiceListener
 extension ChannelViewPresenter: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
