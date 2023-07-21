@@ -11,7 +11,7 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     let id: String
     let chatId: String
     let senderType: MessagingChatSender
-    let time: Date
+    var time: Date
     var type: MessagingChatMessageDisplayType
     var isRead: Bool
     let isFirstInChat: Bool

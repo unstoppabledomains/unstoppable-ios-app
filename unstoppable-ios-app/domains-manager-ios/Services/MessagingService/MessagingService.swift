@@ -242,6 +242,7 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try await getUserProfileWith(wallet: messagingChat.displayInfo.thisUserDetails.wallet)
         var updatedMessage = message
         updatedMessage.deliveryState = .sending
+        updatedMessage.time = Date()
         let newMessage = MessagingChatMessage(displayInfo: updatedMessage, serviceMetadata: nil)
 
         replaceCacheMessageAndNotify(.init(displayInfo: message,
