@@ -38,6 +38,8 @@ final class UDButton: UIControl {
     private var iconSize: CGFloat { udConfiguration.iconSize }
     private var loadingIndicator: UIActivityIndicatorView?
     
+    private var _intrinsicContentSize: CGSize  = .zero
+    override var intrinsicContentSize: CGSize { _intrinsicContentSize }
     override var showsMenuAsPrimaryAction: Bool {
         get { underlyingButton.showsMenuAsPrimaryAction }
         set { underlyingButton.showsMenuAsPrimaryAction = newValue }
@@ -164,17 +166,13 @@ private extension UDButton {
             // Title only
             setSizeIfPossible(CGSize(width: titleWidth + contentInset.left + contentInset.right,
                                      height: titleHeight + contentInset.top + contentInset.bottom))
-            
-            titleLabel.frame.origin = CGPoint(x: contentInset.left,
-                                              y: contentInset.top)
+            titleLabel.center = localCenter
         } else if title.isEmpty,
                   imageView.image != nil {
             // Image only
             setSizeIfPossible(CGSize(width: iconSize + contentInset.left + contentInset.right,
                                      height: iconSize + contentInset.top + contentInset.bottom))
-            
-            imageView.frame.origin = CGPoint(x: contentInset.left,
-                                             y: contentInset.top)
+            imageView.center = localCenter
         } else {
             // Title and image
             let maxContentHeight = max(titleHeight, iconSize)
@@ -197,10 +195,10 @@ private extension UDButton {
     }
     
     func setSizeIfPossible(_ size: CGSize) {
-        if translatesAutoresizingMaskIntoConstraints ||
-            superview is UIStackView {
-            bounds.size = size 
+        if translatesAutoresizingMaskIntoConstraints || bounds.size != _intrinsicContentSize {
+            bounds.size = size
         }
+        _intrinsicContentSize = size
     }
     
     func widthForTitle() -> CGFloat {

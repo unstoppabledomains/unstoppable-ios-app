@@ -145,10 +145,6 @@ extension ChatViewController: ChatViewProtocol {
         } else {
             activityIndicator.stopAnimating()
         }
-                
-        [acceptButton, secondaryButton].forEach { button in
-            button?.isUserInteractionEnabled = !active
-        }
     }
     
     func setUIState(_ state: ChatViewController.State) {
@@ -178,7 +174,9 @@ extension ChatViewController: ChatViewProtocol {
         case .userIsBlocked:
             approveContentView.isHidden = false
             secondaryButton.isHidden = false
-            secondaryButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
+            var configuration = UDButtonConfiguration.mediumRaisedTertiaryButtonConfiguration
+            configuration.backgroundIdleColor = .clear
+            secondaryButton.setConfiguration(configuration)
             secondaryButton.isUserInteractionEnabled = false
             secondaryButton.setTitle(String.Constants.messagingYouAreBlocked.localized(), image: nil)
         }

@@ -44,6 +44,7 @@ final class ChatViewPresenter {
     private var isLoadingMessages = false
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     private var isChannelEncrypted: Bool = true
+    private var didLoadTime = Date()
     var analyticsName: Analytics.ViewName { .chatDialog }
 
     init(view: any ChatViewProtocol,
@@ -64,7 +65,6 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         setupPlaceholder()
         setupBarButtons()
         loadAndShowData()
-        updateUIForChatApprovedState()
     }
     
     func didSelectItem(_ item: ChatViewController.Item) {
@@ -165,6 +165,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     await newMessage.prepareToDisplay()
                     self.messages[i] = newMessage
+                    await addMessages([])
                     showData(animated: false, isLoading: isLoadingMessages)
                 }
             case .messagesRemoved(let messages, let chatId):
@@ -185,11 +186,10 @@ extension ChatViewPresenter: MessagingServiceListener {
 private extension ChatViewPresenter {
     func loadAndShowData() {
         Task {
-            isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
+            view?.setLoading(active: true)
             do {
                 switch conversationState {
                 case .existingChat(let chat):
-                    view?.setLoading(active: true)
                     isLoadingMessages = true
                     let cachedMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                   before: nil,
@@ -198,7 +198,8 @@ private extension ChatViewPresenter {
                     await addMessages(cachedMessages)
                     showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
                     
-                    updateUIForChatApprovedState()
+                    updateUIForChatApprovedStateAsync()
+                    isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     let updateMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                   before: nil,
                                                                                                   cachedOnly: false,
@@ -211,7 +212,9 @@ private extension ChatViewPresenter {
                         self.isLoadingMessages = false
                     }
                 case .newChat:
-                    updateUIForChatApprovedState()
+                    isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
+                    await updateUIForChatApprovedState()
+                    view?.setLoading(active: false)
                     view?.startTyping()
                     showData(animated: false, isLoading: false)
                 }
@@ -256,6 +259,16 @@ private extension ChatViewPresenter {
         }
         
         self.messages.sort(by: { $0.time > $1.time })
+    }
+    
+    func awaitForUIReady() async {
+        let timeSinceViewDidLoad = Date().timeIntervalSince(didLoadTime)
+        let uiReadyTime = CNavigationController.animationDuration + 0.3
+        
+        let dif = uiReadyTime - timeSinceViewDidLoad
+        if dif > 0 {
+            try? await Task.sleep(seconds: dif)
+        }
     }
     
     func showData(animated: Bool, scrollToBottomAnimated: Bool, isLoading: Bool) {
@@ -459,7 +472,7 @@ private extension ChatViewPresenter {
             do {
                 view?.setLoading(active: true)
                 try await appContext.messagingService.setUser(in: chat, blocked: blocked)
-                await refreshBlockStatus()
+                await updateUIForChatApprovedState()
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
@@ -488,17 +501,20 @@ private extension ChatViewPresenter {
         }
     }
     
-    func updateUIForChatApprovedState() {
-        self.view?.setUIState(.chat)
+    func updateUIForChatApprovedStateAsync() {
         Task {
-            await refreshBlockStatus()
+            await updateUIForChatApprovedState()
         }
     }
     
-    func refreshBlockStatus() async {
-        guard case .existingChat(let chat) = conversationState else { return }
-
+    func updateUIForChatApprovedState() async {
+        guard case .existingChat(let chat) = conversationState else {
+            self.view?.setUIState(.chat)
+            return
+        }
+        
         if case .group = chat.type {
+            self.view?.setUIState(.chat)
             return
         }
         
@@ -506,16 +522,16 @@ private extension ChatViewPresenter {
             self.blockStatus = blockStatus
             switch blockStatus {
             case .unblocked:
-                return
+                self.view?.setUIState(.chat)
             case .currentUserIsBlocked:
                 self.view?.setUIState(.userIsBlocked)
             case .otherUserIsBlocked, .bothBlocked:
                 self.view?.setUIState(.otherUserIsBlocked)
             }
+            await awaitForUIReady()
             setupBarButtons()
         }
     }
-    
     
     func shareContentOfMessage(_ message: MessagingChatMessageDisplayInfo) {
         Task {
