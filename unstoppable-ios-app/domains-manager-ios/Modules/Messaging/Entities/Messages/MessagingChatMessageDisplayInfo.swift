@@ -10,6 +10,7 @@ import UIKit
 struct MessagingChatMessageDisplayInfo: Hashable {
     let id: String
     let chatId: String
+    let userId: String
     let senderType: MessagingChatSender
     var time: Date
     var type: MessagingChatMessageDisplayType

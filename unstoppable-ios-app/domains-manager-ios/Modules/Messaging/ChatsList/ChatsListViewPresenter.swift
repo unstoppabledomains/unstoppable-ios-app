@@ -252,7 +252,8 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                    updateNavigationUI()
                }
            case .messageReadStatusUpdated(let message, let numberOfUnreadMessagesInSameChat):
-               if let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
+               if message.userId == selectedProfileWalletPair?.profile?.id,
+                  let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
                    chatsList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
                    if numberOfUnreadMessagesInSameChat == 0 {
                        showData()

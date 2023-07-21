@@ -36,6 +36,14 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
+    func getAllUserProfiles() throws -> [MessagingChatUserProfile] {
+        try queue.sync {
+            let coreDataProfiles: [CoreDataMessagingUserProfile] = try getEntities(predicate: nil,
+                                                                                   from: backgroundContext)
+            return coreDataProfiles.map({ convertCoreDataUserProfileToMessagingUserProfile($0) })
+        }
+    }
+    
     func saveUserProfile(_ profile: MessagingChatUserProfile) async {
         queue.sync {
             let _ = try? convertMessagingUserProfileToCoreDataUserProfile(profile)
@@ -54,88 +62,46 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
-    func getNumberOfUnreadMessagesIn(chatId: String) -> Int {
+    func getNumberOfUnreadMessagesIn(chatId: String, userId: String) -> Int {
         queue.sync {
-            fetchNumberOfUnreadMessagesIn(chatId: chatId)
-        }
-    }
-
-    func getMessagesFor(chat: MessagingChatDisplayInfo,
-                        decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage] {
-        try queue.sync {
-            let predicate = NSPredicate(format: "chatId == %@", chat.id)
-            let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
-            let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities(predicate: predicate,
-                                                                                   sortDescriptions: [timeSortDescriptor],
-                                                                                   from: backgroundContext)
-            return coreDataMessages.compactMap { convertCoreDataMessageToChatMessage($0,
-                                                                                     decrypter: decrypter,
-                                                                                     wallet: chat.thisUserDetails.wallet) }
+            fetchNumberOfUnreadMessagesIn(chatId: chatId, userId: userId)
         }
     }
     
-    func getMessagesFor(chat: MessagingChatDisplayInfo,
+    func getMessagesFor(chat: MessagingChat,
                         decrypter: MessagingContentDecrypterService,
                         before message: MessagingChatMessageDisplayInfo?,
                         limit: Int) async throws -> [MessagingChatMessage] {
-        let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
-        let predicate: NSPredicate
-        let chatIdPredicate = NSPredicate(format: "chatId == %@", chat.id)
-        
-        if let message {
-            let timePredicate = NSPredicate(format: "time < %@", message.time as NSDate)
-            predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, timePredicate])
-        } else {
-            predicate = chatIdPredicate
-        }
-        
-        return try fetchAndParseMessagesFor(chat: chat,
-                                            decrypter: decrypter,
-                                            predicate: predicate,
-                                            sortDescriptions: [timeSortDescriptor],
-                                            limit: limit)
-    }
-    
-    func getMessagesFor(chat: MessagingChatDisplayInfo,
-                        decrypter: MessagingContentDecrypterService,
-                        after message: MessagingChatMessageDisplayInfo,
-                        limit: Int) async throws -> [MessagingChatMessage] {
-        let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: true)
-        let chatIdPredicate = NSPredicate(format: "chatId == %@", chat.id)
-        let timePredicate = NSPredicate(format: "time > %@", message.time as NSDate)
-        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, timePredicate])
-        
-        return try fetchAndParseMessagesFor(chat: chat,
-                                            decrypter: decrypter,
-                                            predicate: predicate,
-                                            sortDescriptions: [timeSortDescriptor],
-                                            limit: limit)
-    }
-    
-    private func fetchAndParseMessagesFor(chat: MessagingChatDisplayInfo,
-                                          decrypter: MessagingContentDecrypterService,
-                                          predicate: NSPredicate? = nil,
-                                          sortDescriptions: [NSSortDescriptor]? = nil,
-                                          limit: Int?) throws -> [MessagingChatMessage]  {
         try queue.sync {
+            
+            let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
+            let chatIdPredicate = NSPredicate(format: "chatId == %@", chat.displayInfo.id)
+            let userIdPredicate = NSPredicate(format: "userId == %@", chat.userId)
+            var subpredicates = [chatIdPredicate, userIdPredicate]
+            if let message {
+                let timePredicate = NSPredicate(format: "time < %@", message.time as NSDate)
+                subpredicates.append(timePredicate)
+            }
+            
+            let predicate = NSCompoundPredicate(type: .and, subpredicates: subpredicates)
+            
             let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities(predicate: predicate,
-                                                                                   sortDescriptions: sortDescriptions,
                                                                                    fetchSize: limit,
                                                                                    from: backgroundContext)
             return coreDataMessages.compactMap { convertCoreDataMessageToChatMessage($0,
                                                                                      decrypter: decrypter,
-                                                                                     wallet: chat.thisUserDetails.wallet) }
+                                                                                     wallet: chat.displayInfo.thisUserDetails.wallet) }
         }
     }
     
     func getMessageWith(id: String,
-                        in chat: MessagingChatDisplayInfo,
+                        in chat: MessagingChat,
                         decrypter: MessagingContentDecrypterService) async -> MessagingChatMessage? {
         queue.sync {
-            if let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: id) {
+            if let coreDataMessage = getCoreDataChatMessageWith(id: id, userId: chat.userId) {
                 return convertCoreDataMessageToChatMessage(coreDataMessage,
                                                            decrypter: decrypter,
-                                                           wallet: chat.thisUserDetails.wallet)
+                                                           wallet: chat.displayInfo.thisUserDetails.wallet)
             }
             return nil
         }
@@ -151,7 +117,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func replaceMessage(_ messageToReplace: MessagingChatMessage,
                         with newMessage: MessagingChatMessage) async throws {
         try queue.sync {
-            guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: messageToReplace.displayInfo.id) else { throw Error.entityNotFound }
+            guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataChatMessageWith(id: messageToReplace.displayInfo.id, userId: messageToReplace.displayInfo.userId) else { throw Error.entityNotFound }
             
             deleteObject(coreDataMessage, from: backgroundContext, shouldSaveContext: false)
             _ = try? convertChatMessageToCoreDataMessage(newMessage)
@@ -161,7 +127,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo) {
         queue.sync {
-            guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: message.id) else { return }
+            guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataChatMessageWith(id: message.id, userId: message.userId) else { return }
             deleteObject(coreDataMessage, from: backgroundContext, shouldSaveContext: true)
         }
     }
@@ -169,7 +135,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool) throws {
         try queue.sync {
-            guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: message.id) else { throw Error.entityNotFound }
+            guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataChatMessageWith(id: message.id, userId: message.userId) else { throw Error.entityNotFound }
             coreDataMessage.isRead = isRead
             saveContext(backgroundContext)
         }
@@ -200,23 +166,14 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     func getChatWith(id: String,
+                     of userId: String,
                      decrypter: MessagingContentDecrypterService) async -> MessagingChat? {
         queue.sync {
-            if let coreDataChat: CoreDataMessagingChat = getCoreDataEntityWith(id: id) {
+            if let coreDataChat = getCoreDataChatWith(id: id, userId: userId) {
                 return convertCoreDataChatToMessagingChat(coreDataChat,
                                                           decrypter: decrypter)
             }
             return nil
-        }
-    }
-    
-    // TODO: - Think of better solution
-    func getChatsWithIdContaining(_ value: String,
-                                  decrypter: MessagingContentDecrypterService) async -> [MessagingChat] {
-        queue.sync {
-            let coreDataChats: [CoreDataMessagingChat] = getCoreDataEntitiesWith(key: "id", containing: value)
-            return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0,
-                                                                                 decrypter: decrypter) }
         }
     }
     
@@ -230,7 +187,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     func replaceChat(_ chatToReplace: MessagingChat,
                      with newChat: MessagingChat) async throws {
         try queue.sync {
-            guard let coreDataChat: CoreDataMessagingChat = getCoreDataEntityWith(id: chatToReplace.displayInfo.id) else { throw Error.entityNotFound }
+            guard let coreDataChat: CoreDataMessagingChat = getCoreDataChatWith(id: chatToReplace.displayInfo.id, userId: chatToReplace.userId) else { throw Error.entityNotFound }
             
             deleteObject(coreDataChat, from: backgroundContext, shouldSaveContext: false)
             _ = try? convertMessagingChatToCoreDataChat(newChat)
@@ -242,9 +199,11 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                     filesService: MessagingFilesServiceProtocol) {
         queue.sync {
             let chatId = chat.displayInfo.id
-            guard let coreDataChat: CoreDataMessagingChat = getCoreDataEntityWith(id: chatId) else { return }
+            let userId = chat.userId
+            guard let coreDataChat: CoreDataMessagingChat = getCoreDataChatWith(id: chatId, userId: userId) else { return }
             
             deleteMessagesWithChatId(chatId,
+                                     userId: userId,
                                      filesService: filesService)
             deleteObject(coreDataChat, from: backgroundContext)
         }
@@ -348,7 +307,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                                                                            from: backgroundContext)) ?? []
             
             for chat in coreDataChats {
-                deleteMessagesWithChatId(chat.id!, filesService: filesService)
+                deleteMessagesWithChatId(chat.id!, userId: chat.userId!, filesService: filesService)
             }
             
             deleteObjects(coreDataChats, from: backgroundContext, shouldSaveContext: false)
@@ -370,6 +329,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     private func deleteMessagesWithChatId(_ chatId: String,
+                                          userId: String,
                                           filesService: MessagingFilesServiceProtocol) {
         let messagesPredicate = NSPredicate(format: "chatId == %@", chatId)
         let coreDataMessages: [CoreDataMessagingChatMessage] = (try? getEntities(predicate: messagesPredicate,
@@ -465,14 +425,15 @@ private extension CoreDataMessagingStorageService {
                                                              wallet: coreDataChat.thisUserWallet!) {
             lastMessage = message.displayInfo
         } else if let lastMessageId = coreDataChat.lastMessageId,
-                  let coreDataLastMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: lastMessageId),
+                  let coreDataLastMessage = getCoreDataChatMessageWith(id: lastMessageId, userId: coreDataChat.userId!),
                   let message = convertCoreDataMessageToChatMessage(coreDataLastMessage,
                                                                     decrypter: decrypter,
                                                                     wallet: coreDataChat.thisUserWallet!) {
             lastMessage = message.displayInfo
         }
         
-        let unreadMessagesCount = fetchNumberOfUnreadMessagesIn(chatId: coreDataChat.id!)
+        let unreadMessagesCount = fetchNumberOfUnreadMessagesIn(chatId: coreDataChat.id!,
+                                                                userId: coreDataChat.userId!)
         
         let thisUserDetails = getThisUserDetails(from: coreDataChat)
         let displayInfo = MessagingChatDisplayInfo(id: coreDataChat.id!,
@@ -499,9 +460,9 @@ private extension CoreDataMessagingStorageService {
         coreDataChat.avatarURL = displayInfo.avatarURL
         coreDataChat.isApproved = displayInfo.isApproved
         coreDataChat.lastMessageTime = displayInfo.lastMessageTime
-        
+        print("LOGO: - Will save chat with id: \(displayInfo.id). thisUserWallet: \(displayInfo.thisUserDetails.wallet)")
         if let lastMessage = chat.displayInfo.lastMessage,
-           let lastCoreDataMessage: CoreDataMessagingChatMessage = getCoreDataEntityWith(id: lastMessage.id) {
+           let lastCoreDataMessage = getCoreDataChatMessageWith(id: lastMessage.id, userId: chat.userId) {
             coreDataChat.lastMessage = lastCoreDataMessage
         }
         coreDataChat.lastMessageId = chat.displayInfo.lastMessage?.id
@@ -600,6 +561,7 @@ private extension CoreDataMessagingStorageService {
         let isEncrypted = decrypter.isMessageEncrypted(serviceMetadata: coreDataMessage.serviceMetadata)
         let displayInfo = MessagingChatMessageDisplayInfo(id: coreDataMessage.id!,
                                                           chatId: coreDataMessage.chatId!,
+                                                          userId: coreDataMessage.userId!,
                                                           senderType: senderType,
                                                           time: coreDataMessage.time!,
                                                           type: type,
@@ -608,7 +570,8 @@ private extension CoreDataMessagingStorageService {
                                                           deliveryState: deliveryState,
                                                           isEncrypted: isEncrypted)
         
-        return MessagingChatMessage(displayInfo: displayInfo,
+        return MessagingChatMessage(userId: coreDataMessage.userId!,
+                                    displayInfo: displayInfo,
                                     serviceMetadata: coreDataMessage.serviceMetadata)
     }
     
@@ -622,9 +585,10 @@ private extension CoreDataMessagingStorageService {
         coreDataMessage.isRead = displayInfo.isRead
         coreDataMessage.isFirstInChat = displayInfo.isFirstInChat
         coreDataMessage.deliveryState = Int64(displayInfo.deliveryState.rawValue)
+        coreDataMessage.userId = chatMessage.userId
         saveMessageDisplayType(displayInfo.type, to: coreDataMessage)
         saveMessagingChatSender(displayInfo.senderType, to: coreDataMessage)
-        
+        print("LOGO: - Will save message \(chatMessage.displayInfo.id). User: \(chatMessage.userId). isRead: \(chatMessage.displayInfo.isRead)")
         return coreDataMessage
     }
     
@@ -836,10 +800,11 @@ private extension CoreDataMessagingStorageService {
 
 // MARK: - Private methods
 private extension CoreDataMessagingStorageService {
-    func fetchNumberOfUnreadMessagesIn(chatId: String) -> Int {
+    func fetchNumberOfUnreadMessagesIn(chatId: String, userId: String) -> Int {
         let chatIdPredicate = NSPredicate(format: "chatId == %@", chatId)
+        let userIdPredicate = NSPredicate(format: "userId == %@", userId)
         let isNotReadPredicate = NSPredicate(format: "isRead == NO")
-        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, isNotReadPredicate])
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, userIdPredicate, isNotReadPredicate])
         let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
                                                       predicate: predicate,
                                                       in: backgroundContext)) ?? 0
@@ -852,15 +817,39 @@ private extension CoreDataMessagingStorageService {
     
     func getCoreDataEntityWith<T: NSManagedObject>(key: String, value: String) -> T? {
         let predicate = NSPredicate(format: "%K == %@", key, value)
-        return getEntityWithPredicate(predicate: predicate).first
+        return getCoreDataEntityWith(predicate: predicate)
+    }
+    
+    func getCoreDataChatWith(id: String, userId: String) -> CoreDataMessagingChat? {
+        let chatIdPredicate = NSPredicate(format: "id == %@", id)
+        let userIdPredicate = NSPredicate(format: "userId == %@", userId)
+        return getCoreDataEntityWith(andPredicates: [chatIdPredicate, userIdPredicate])
+    }
+    
+    func getCoreDataChatMessageWith(id: String, userId: String) -> CoreDataMessagingChatMessage? {
+        let messageIdPredicate = NSPredicate(format: "id == %@", id)
+        let userIdPredicate = NSPredicate(format: "userId == %@", userId)
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [messageIdPredicate, userIdPredicate])
+        
+        return getCoreDataEntityWith(andPredicates: [messageIdPredicate, userIdPredicate])
+    }
+    
+    func getCoreDataEntityWith<T: NSManagedObject>(andPredicates predicates: [NSPredicate]) -> T? {
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+
+        return getCoreDataEntityWith(predicate: predicate)
+    }
+    
+    func getCoreDataEntityWith<T: NSManagedObject>(predicate: NSPredicate) -> T? {
+        return getEntitiesWithPredicate(predicate: predicate).first
     }
     
     func getCoreDataEntitiesWith<T: NSManagedObject>(key: String, containing value: String) -> [T] {
         let predicate = NSPredicate(format: "%K CONTAINS %@", key, value)
-        return getEntityWithPredicate(predicate: predicate)
+        return getEntitiesWithPredicate(predicate: predicate)
     }
     
-    func getEntityWithPredicate<T: NSManagedObject>(predicate: NSPredicate) -> [T] {
+    func getEntitiesWithPredicate<T: NSManagedObject>(predicate: NSPredicate) -> [T] {
         do {
             let messages: [T] = try getEntities(predicate: predicate, from: backgroundContext)
             return messages

@@ -113,6 +113,7 @@ struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
                                                                                 size: 99900)
             let message = MessagingChatMessageDisplayInfo(id: "1",
                                                           chatId: "2",
+                                                          userId: "1",
                                                           senderType: .otherUser(user),
                                                           time: Date(),
                                                           type: .unknown(unknownMessageInfo),

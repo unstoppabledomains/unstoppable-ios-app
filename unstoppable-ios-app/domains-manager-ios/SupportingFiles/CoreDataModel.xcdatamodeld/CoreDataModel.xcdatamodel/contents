@@ -16,6 +16,7 @@
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
+                <constraint value="userId"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
@@ -32,10 +33,12 @@
         <attribute name="senderWallet" attributeType="String" defaultValueString=""/>
         <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>
         <attribute name="time" attributeType="Date" defaultDateTimeInterval="707930820" usesScalarValueType="NO"/>
+        <attribute name="userId" attributeType="String" defaultValueString=""/>
         <relationship name="lastMessageInChat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingChat" inverseName="lastMessage" inverseEntity="CoreDataMessagingChat"/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
+                <constraint value="userId"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

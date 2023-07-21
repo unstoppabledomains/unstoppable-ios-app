@@ -86,7 +86,7 @@ struct PushEntitiesTransformer {
             lastMessageTime = date
         }
         
-        let chatId = pushChat.chatId + "_" + userId // unique for users
+        let chatId = pushChat.chatId
         let displayInfo = MessagingChatDisplayInfo(id: chatId,
                                                    thisUserDetails: thisUserInfo,
                                                    avatarURL: avatarURL,
@@ -121,6 +121,7 @@ struct PushEntitiesTransformer {
               let chatMetadata = (try? JSONDecoder().decode(PushEnvironment.ChatServiceMetadata.self, from: chatServiceMetadata)),
               let (type, encryptedSecret) = try? extractPushMessageType(from: pushMessage,
                                                                         messageId: id,
+                                                                        userId: chat.userId,
                                                                         pgpKey: pgpKey,
                                                                         chatPublicKeys: chatMetadata.publicKeys,
                                                                         filesService: filesService) else { return nil }
@@ -145,6 +146,7 @@ struct PushEntitiesTransformer {
 
         let displayInfo = MessagingChatMessageDisplayInfo(id: id,
                                                           chatId: chat.displayInfo.id,
+                                                          userId: chat.userId,
                                                           senderType: sender,
                                                           time: time,
                                                           type: type,
@@ -152,7 +154,8 @@ struct PushEntitiesTransformer {
                                                           isFirstInChat: pushMessage.link == nil,
                                                           deliveryState: .delivered,
                                                           isEncrypted: isMessageEncrypted)
-        let chatMessage = MessagingChatMessage(displayInfo: displayInfo,
+        let chatMessage = MessagingChatMessage(userId: chat.userId,
+                                               displayInfo: displayInfo,
                                                serviceMetadata: serviceMetadata)
         return chatMessage
     }
@@ -161,6 +164,7 @@ struct PushEntitiesTransformer {
     
     private static func extractPushMessageType(from pushMessage: Push.Message,
                                                messageId: String,
+                                               userId: String,
                                                pgpKey: String,
                                                chatPublicKeys: [String],
                                                filesService: MessagingFilesServiceProtocol) throws -> (MessagingChatMessageDisplayType, String)? {
@@ -201,7 +205,7 @@ struct PushEntitiesTransformer {
             guard let messageContent = encryptMessageContentIfNeeded(contentInfo.content),
                   let data = messageContent.data(using: .utf8) else { return nil }
             
-            let fileName = messageId + (contentInfo.name ?? "")
+            let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + (contentInfo.name ?? "")
             try filesService.saveEncryptedData(data, fileName: fileName)
             let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
                                                                                 type: pushMessage.messageType,

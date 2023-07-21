@@ -90,6 +90,7 @@ struct ChatImageCell_Previews: PreviewProvider {
 //            imageDetails.image = .appleIcon
             let message = MessagingChatMessageDisplayInfo(id: "1",
                                                           chatId: "2",
+                                                          userId: "1",
                                                           senderType: .otherUser(user),
                                                           time: Date(),
                                                           type: .imageBase64(imageDetails),

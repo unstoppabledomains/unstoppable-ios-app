@@ -149,10 +149,19 @@ private extension PushMessagingWebSocketsService {
                 return .channelSpamFeed(feed, channelAddress: inboxNotification.sender)
             case .chatReceivedMessage:
                 let pushMessage: Push.Message = try parseEntityFrom(data: data)
-                
+
                 if let wallet = PushEntitiesTransformer.getWalletAddressFrom(eip155String: pushMessage.toDID) {
                     /// Private chat
-                   if let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet),
+                    /// Check for message from other user or from current user
+                    var pgpKey: String?
+                    if let toPGPKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet) {
+                        pgpKey = toPGPKey
+                    } else if let senderWallet = PushEntitiesTransformer.getWalletAddressFrom(eip155String: pushMessage.fromDID),
+                              let fromPGPKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: senderWallet) {
+                        pgpKey = fromPGPKey
+                    }
+                    
+                   if let pgpKey,
                       let message = PushEntitiesTransformer.convertPushMessageToWebSocketMessageEntity(pushMessage, pgpKey: pgpKey) {
                        return .chatReceivedMessage(message)
                    }

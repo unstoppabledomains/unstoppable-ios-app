@@ -54,6 +54,7 @@ struct ChatTextCell_Previews: PreviewProvider {
             
             let message = MessagingChatMessageDisplayInfo(id: "1",
                                                           chatId: "2",
+                                                          userId: "1",
                                                           senderType: .thisUser(user),
                                                           time: Date(),
                                                           type: .text(textDetails),

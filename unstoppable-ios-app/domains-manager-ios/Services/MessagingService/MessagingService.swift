@@ -108,7 +108,7 @@ extension MessagingService: MessagingServiceProtocol {
     
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
-        var chat = try await getMessagingChatFor(displayInfo: chat)
+        var chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
         try await apiService.makeChatRequest(chat, approved: approved, by: profile)
         chat.displayInfo.isApproved = approved
         await storageService.saveChats([chat])
@@ -120,7 +120,7 @@ extension MessagingService: MessagingServiceProtocol {
         guard case .group = chat.type else { throw MessagingServiceError.attemptToLeaveNotGroupChat }
         
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
-        let chat = try await getMessagingChatFor(displayInfo: chat)
+        let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
 
         try await apiService.leaveGroupChat(chat, by: profile)
         storageService.deleteChat(chat, filesService: filesService)
@@ -128,7 +128,8 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus {
-        let chat = try await getMessagingChatFor(displayInfo: chat)
+        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
+        let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
         
         return try await apiService.getBlockingStatusForChat(chat)
     }
@@ -136,7 +137,7 @@ extension MessagingService: MessagingServiceProtocol {
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
-        let chat = try await getMessagingChatFor(displayInfo: chat)
+        let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
 
         try await apiService.setUser(in: chat, blocked: blocked, by: profile)
     }
@@ -152,20 +153,20 @@ extension MessagingService: MessagingServiceProtocol {
             return [] // There's no messages before this message
         }
         
-        let cachedMessages = try await storageService.getMessagesFor(chat: chatDisplayInfo,
+        let profile = try await getUserProfileWith(wallet: chatDisplayInfo.thisUserDetails.wallet)
+        let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo, userId: profile.id)
+        let cachedMessages = try await storageService.getMessagesFor(chat: chat,
                                                                      decrypter: decrypterService,
                                                                      before: message,
                                                                      limit: limit)
         if cachedOnly {
             return cachedMessages.map { $0.displayInfo }
         }
-        let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo)
-        let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
 
         var chatMessage: MessagingChatMessage?
         if let message {
             chatMessage = await storageService.getMessageWith(id: message.id,
-                                                              in: chatDisplayInfo,
+                                                              in: chat,
                                                               decrypter: decrypterService)
         }
         
@@ -188,10 +189,11 @@ extension MessagingService: MessagingServiceProtocol {
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      isEncrypted: Bool,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
-        let messagingChat = try await getMessagingChatFor(displayInfo: chat)
-        let profile = try await getUserProfileWith(wallet: messagingChat.displayInfo.thisUserDetails.wallet)
+        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
+        let messagingChat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
         let newMessageDisplayInfo = MessagingChatMessageDisplayInfo(id: UUID().uuidString,
                                                                     chatId: chat.id,
+                                                                    userId: profile.id,
                                                                     senderType: .thisUser(chat.thisUserDetails),
                                                                     time: Date(),
                                                                     type: messageType,
@@ -199,13 +201,16 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     isFirstInChat: false,
                                                                     deliveryState: .sending,
                                                                     isEncrypted: isEncrypted)
-        let message = MessagingChatMessage(displayInfo: newMessageDisplayInfo,
+        let message = MessagingChatMessage(userId: profile.id,
+                                           displayInfo: newMessageDisplayInfo,
                                            serviceMetadata: nil)
         await storageService.saveMessages([message])
         
         try await setLastMessageAndNotify(newMessageDisplayInfo,
                                           to: messagingChat)
-        let newMessage = MessagingChatMessage(displayInfo: newMessageDisplayInfo, serviceMetadata: nil)
+        let newMessage = MessagingChatMessage(userId: profile.id,
+                                              displayInfo: newMessageDisplayInfo,
+                                              serviceMetadata: nil)
         sendMessageToBEAsync(message: newMessage, messageType: messageType, in: messagingChat, by: profile)
 
         return newMessageDisplayInfo
@@ -238,14 +243,17 @@ extension MessagingService: MessagingServiceProtocol {
 
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws {
         let chatId = message.chatId
-        let messagingChat = try await getMessagingChatWith(chatId: chatId)
+        let messagingChat = try await getMessagingChatWith(chatId: chatId, userId: message.userId)
         let profile = try await getUserProfileWith(wallet: messagingChat.displayInfo.thisUserDetails.wallet)
         var updatedMessage = message
         updatedMessage.deliveryState = .sending
         updatedMessage.time = Date()
-        let newMessage = MessagingChatMessage(displayInfo: updatedMessage, serviceMetadata: nil)
+        let newMessage = MessagingChatMessage(userId: profile.id,
+                                              displayInfo: updatedMessage,
+                                              serviceMetadata: nil)
 
-        replaceCacheMessageAndNotify(.init(displayInfo: message,
+        replaceCacheMessageAndNotify(.init(userId: profile.id,
+                                           displayInfo: message,
                                            serviceMetadata: nil),
                                      with: newMessage)
         sendMessageToBEAsync(message: newMessage, messageType: updatedMessage.type, in: messagingChat, by: profile)
@@ -259,10 +267,9 @@ extension MessagingService: MessagingServiceProtocol {
                      isRead: Bool,
                      wallet: String) throws {
         try storageService.markMessage(message, isRead: isRead)
-        let number = storageService.getNumberOfUnreadMessagesIn(chatId: message.chatId)
-        notifyListenersChangedDataType(.messageReadStatusUpdated(message, numberOfUnreadMessagesInSameChat: number))
+        notifyReadStatusUpdatedFor(message: message)
     }
-    
+   
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? {
         let fileName: String
         
@@ -277,9 +284,9 @@ extension MessagingService: MessagingServiceProtocol {
             return url
         }
         
-        guard let chat = await storageService.getChatWith(id: message.chatId, decrypter: decrypterService),
+        guard let chat = await storageService.getChatWith(id: message.chatId, of: message.userId, decrypter: decrypterService),
               let chatMessage = await storageService.getMessageWith(id: message.id,
-                                                                    in: chat.displayInfo,
+                                                                    in: chat,
                                                                     decrypter: decrypterService) else { return nil }
         let wallet = chat.displayInfo.thisUserDetails.wallet
         guard let encryptedDataURL = filesService.getEncryptedDataURLFor(fileName: fileName),
@@ -619,21 +626,28 @@ private extension MessagingService {
                                                                                            before: nil,
                                                                                            cachedMessages: [],
                                                                                            fetchLimit: 1,
-                                                                                           isRead: localChats.isEmpty, // If loading channels for the first time - messages is read by default.
+                                                                                           isRead: false,
                                                                                            for: profile,
                                                                                            filesService: self.filesService).first {
                             
                             var updatedChat = remoteChat
-                            updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
                             if let storedMessage = await self.storageService.getMessageWith(id: lastMessage.displayInfo.id,
-                                                                                            in: remoteChat.displayInfo,
+                                                                                            in: remoteChat,
                                                                                             decrypter: self.decrypterService) {
                                 lastMessage.displayInfo.isRead = storedMessage.displayInfo.isRead
+                            } else {
+                                switch lastMessage.displayInfo.senderType {
+                                case .thisUser:
+                                    lastMessage.displayInfo.isRead = true
+                                case .otherUser:
+                                    lastMessage.displayInfo.isRead = localChats.isEmpty // If loading channels for the first time - messages is read by default.
+                                }
                             }
                             
                             if !lastMessage.displayInfo.senderType.isThisUser && !lastMessage.displayInfo.isRead {
                                 updatedChat.displayInfo.unreadMessagesCount += 1
                             }
+                            updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
                             await self.storageService.saveMessages([lastMessage])
                             return updatedChat
                         } else {
@@ -737,7 +751,9 @@ private extension MessagingService {
     
     func isNewMessagesFromChatsAvailable(_ chats: [MessagingChat], for profile: MessagingChatUserProfile) async throws -> Bool {
         guard let latestChat = chats.first else { return false } /// No messages if no chats
-        guard let localChat = await storageService.getChatWith(id: latestChat.displayInfo.id, decrypter: decrypterService) else { return true } /// New chat => new message
+        guard let localChat = await storageService.getChatWith(id: latestChat.displayInfo.id,
+                                                               of: latestChat.userId,
+                                                               decrypter: decrypterService) else { return true } /// New chat => new message
         
         return !localChat.isUpToDateWith(otherChat: latestChat)
     }
@@ -766,6 +782,11 @@ private extension MessagingService {
                                              with: failedMessage)
             }
         }
+    }
+    
+    func notifyReadStatusUpdatedFor(message: MessagingChatMessageDisplayInfo) {
+        let number = storageService.getNumberOfUnreadMessagesIn(chatId: message.chatId, userId: message.userId)
+        notifyListenersChangedDataType(.messageReadStatusUpdated(message, numberOfUnreadMessagesInSameChat: number))
     }
 }
 
@@ -859,12 +880,15 @@ private extension MessagingService {
         return ethAddress
     }
     
-    func getMessagingChatFor(displayInfo: MessagingChatDisplayInfo) async throws -> MessagingChat {
-        try await getMessagingChatWith(chatId: displayInfo.id)
+    func getMessagingChatFor(displayInfo: MessagingChatDisplayInfo,
+                             userId: String) async throws -> MessagingChat {
+        try await getMessagingChatWith(chatId: displayInfo.id, userId: userId)
     }
     
-    func getMessagingChatWith(chatId: String) async throws -> MessagingChat {
+    func getMessagingChatWith(chatId: String,
+                              userId: String) async throws -> MessagingChat {
         guard let chat = await storageService.getChatWith(id: chatId,
+                                                          of: userId,
                                                           decrypter: decrypterService) else { throw MessagingServiceError.chatNotFound }
         
         return chat
@@ -897,16 +921,18 @@ private extension MessagingService {
     
     func handleWebSocketEvent(_ event: MessagingWebSocketEvent) {
         Task {
-            func addNewChatMessages(_ chatMessages: [MessagingChatMessage]) async {
+            func addNewChatMessages(_ chatMessages: [GroupChatMessageWithProfile]) async {
                 guard !chatMessages.isEmpty else { return }
                 
-                await storageService.saveMessages(chatMessages)
-                for chatMessage in chatMessages {
-                    let chatId = chatMessage.displayInfo.chatId
+                await storageService.saveMessages(chatMessages.map({ $0.message }))
+                for messageWithProfile in chatMessages {
+                    let message = messageWithProfile.message
+                    let profile = messageWithProfile.profile
+                    let chatId = message.displayInfo.chatId
                     
-                    notifyListenersChangedDataType(.messagesAdded([chatMessage.displayInfo],
+                    notifyListenersChangedDataType(.messagesAdded([message.displayInfo],
                                                                   chatId: chatId))
-                    refreshChatsInSameDomain(as: chatId)
+                    try? await setLastMessageAndNotify(lastMessage: message.displayInfo)
                 }
             }
             
@@ -928,17 +954,17 @@ private extension MessagingService {
                     let chatMessages = try await convertMessagingWebSocketGroupMessageEntityToMessage(message)
                     await addNewChatMessages(chatMessages)
                 case .chatReceivedMessage(let message):
-                    let chatMessage = try await convertMessagingWebSocketMessageEntityToMessage(message)
-                    await addNewChatMessages([chatMessage])
+                    let chatMessages = try await convertMessagingWebSocketMessageEntityToMessage(message)
+                    await addNewChatMessages(chatMessages)
                 }
             } catch { }
         }
     }
     
-    func refreshChatsInSameDomain(as chatId: String) {
+    func refreshChatsInSameDomain(as chatId: String, userId: String) {
         Task {
             do {
-                let chat = try await getMessagingChatWith(chatId: chatId)
+                let chat = try await getMessagingChatWith(chatId: chatId, userId: userId)
                 let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
                 refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
             } catch { }
@@ -973,6 +999,11 @@ private extension MessagingService {
         }
     }
     
+    func setLastMessageAndNotify(lastMessage: MessagingChatMessageDisplayInfo) async throws {
+        guard let chat = await storageService.getChatWith(id: lastMessage.chatId, of: lastMessage.userId, decrypter: decrypterService) else { return }
+        try await setLastMessageAndNotify(lastMessage, to: chat)
+    }
+    
     func setLastMessageAndNotify(_ lastMessage: MessagingChatMessageDisplayInfo,
                                  to chat: MessagingChat) async throws {
         var updatedChat = chat
@@ -980,34 +1011,66 @@ private extension MessagingService {
         updatedChat.displayInfo.lastMessageTime = lastMessage.time
         try await storageService.replaceChat(chat, with: updatedChat)
         notifyChatsChanged(wallet: chat.displayInfo.thisUserDetails.wallet)
+        notifyReadStatusUpdatedFor(message: lastMessage)
     }
     
-    func convertMessagingWebSocketMessageEntityToMessage(_ messageEntity: MessagingWebSocketMessageEntity) async throws -> MessagingChatMessage {
-        let profile = try await getUserProfileWith(wallet: messageEntity.receiverWallet)
-        let chats = try await storageService.getChatsFor(profile: profile,
-                                                         decrypter: decrypterService)
-        guard let chat = chats.first(where: { chat in
-                  switch chat.displayInfo.type {
-                  case .private(let details):
-                      return details.otherUser.wallet == messageEntity.senderWallet
-                  case .group:
-                      return false
-                  }
-              }) else { throw MessagingServiceError.chatNotFound }
-        guard let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
-        return message
+    func convertMessagingWebSocketMessageEntityToMessage(_ messageEntity: MessagingWebSocketMessageEntity) async throws -> [GroupChatMessageWithProfile] {
+        var messages: [GroupChatMessageWithProfile] = []
+        
+        func getMessageFor(wallet: String, otherUserWallet: String) async throws -> GroupChatMessageWithProfile {
+            let profile = try await getUserProfileWith(wallet: wallet)
+            let chats = try await storageService.getChatsFor(profile: profile,
+                                                             decrypter: decrypterService)
+            guard let chat = chats.first(where: { chat in
+                switch chat.displayInfo.type {
+                case .private(let details):
+                    return details.otherUser.wallet == otherUserWallet
+                case .group:
+                    return false
+                }
+            }) else { throw MessagingServiceError.chatNotFound }
+            guard let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
+            return GroupChatMessageWithProfile(message: message, profile: profile)
+        }
+        
+        if let message = try? await getMessageFor(wallet: messageEntity.receiverWallet,
+                                       otherUserWallet: messageEntity.senderWallet) {
+            messages.append(message)
+        }
+        
+        if let message = try? await getMessageFor(wallet: messageEntity.senderWallet,
+                                                  otherUserWallet: messageEntity.receiverWallet) {
+            messages.append(message)
+        }
+    
+        return messages
     }
     
-    func convertMessagingWebSocketGroupMessageEntityToMessage(_ messageEntity: MessagingWebSocketGroupMessageEntity) async throws -> [MessagingChatMessage] {
-        let chats = await storageService.getChatsWithIdContaining(messageEntity.chatId,
-                                                                  decrypter: decrypterService)
-        return chats.compactMap({ messageEntity.transformToMessageBlock(messageEntity, $0, filesService) })
+    func convertMessagingWebSocketGroupMessageEntityToMessage(_ messageEntity: MessagingWebSocketGroupMessageEntity) async throws -> [GroupChatMessageWithProfile] {
+        var messages: [GroupChatMessageWithProfile] = []
+        
+        let profiles = try storageService.getAllUserProfiles()
+        for profile in profiles {
+            if let chat = await storageService.getChatWith(id: messageEntity.chatId,
+                                                           of: profile.id,
+                                                           decrypter: decrypterService),
+            let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) {
+                messages.append(.init(message: message, profile: profile))
+            }
+        }
+        
+        return messages
     }
     
     func setSceneActivationListener() {
         Task { @MainActor in
             SceneDelegate.shared?.addListener(self)
         }
+    }
+    
+    struct GroupChatMessageWithProfile {
+        let message: MessagingChatMessage
+        let profile: MessagingChatUserProfile
     }
 }
 

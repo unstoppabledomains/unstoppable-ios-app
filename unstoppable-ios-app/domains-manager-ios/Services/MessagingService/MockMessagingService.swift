@@ -172,6 +172,7 @@ private extension MockMessagingService {
                                                    chatId: String) -> MessagingChatMessageDisplayInfo {
         .init(id: UUID().uuidString,
               chatId: chatId,
+              userId: "1",
               senderType: sender,
               time: createMockMessageDate(),
               type: .text(.init(text: mockLastMessageTexts.randomElement()!,
@@ -215,6 +216,7 @@ private extension MockMessagingService {
             let text = mockLastMessageTexts.randomElement()!
             let message = MessagingChatMessageDisplayInfo(id: UUID().uuidString,
                                                           chatId: chatId,
+                                                          userId: "a",
                                                           senderType: sender,
                                                           time: time,
                                                           type: .text(.init(text: text,

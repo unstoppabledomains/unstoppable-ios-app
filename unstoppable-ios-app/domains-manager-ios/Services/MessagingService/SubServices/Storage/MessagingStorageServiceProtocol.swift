@@ -11,23 +11,19 @@ protocol MessagingStorageServiceProtocol {
     // User Profile
     func getUserProfileFor(domain: DomainItem) throws -> MessagingChatUserProfile
     func getUserProfileWith(userId: String) throws -> MessagingChatUserProfile
+    func getAllUserProfiles() throws -> [MessagingChatUserProfile]
     func saveUserProfile(_ profile: MessagingChatUserProfile) async
     
     // Messages
     func getTotalNumberOfUnreadMessages() -> Int
-    func getNumberOfUnreadMessagesIn(chatId: String) -> Int
-    func getMessagesFor(chat: MessagingChatDisplayInfo,
-                        decrypter: MessagingContentDecrypterService) async throws -> [MessagingChatMessage]
-    func getMessagesFor(chat: MessagingChatDisplayInfo,
+    func getNumberOfUnreadMessagesIn(chatId: String,
+                                     userId: String) -> Int
+    func getMessagesFor(chat: MessagingChat,
                         decrypter: MessagingContentDecrypterService,
                         before message: MessagingChatMessageDisplayInfo?,
                         limit: Int) async throws -> [MessagingChatMessage]
-    func getMessagesFor(chat: MessagingChatDisplayInfo,
-                        decrypter: MessagingContentDecrypterService,
-                        after message: MessagingChatMessageDisplayInfo,
-                        limit: Int) async throws -> [MessagingChatMessage]
     func getMessageWith(id: String,
-                        in chat: MessagingChatDisplayInfo,
+                        in chat: MessagingChat,
                         decrypter: MessagingContentDecrypterService) async -> MessagingChatMessage?
     func saveMessages(_ messages: [MessagingChatMessage]) async
     func replaceMessage(_ messageToReplace: MessagingChatMessage,
@@ -41,9 +37,8 @@ protocol MessagingStorageServiceProtocol {
     func getChatsFor(profile: MessagingChatUserProfile,
                      decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat]
     func getChatWith(id: String,
+                     of userId: String,
                      decrypter: MessagingContentDecrypterService) async -> MessagingChat?
-    func getChatsWithIdContaining(_ value: String,
-                                  decrypter: MessagingContentDecrypterService) async -> [MessagingChat]
     func saveChats(_ chats: [MessagingChat]) async
     func replaceChat(_ chatToReplace: MessagingChat,
                      with newChat: MessagingChat) async throws
