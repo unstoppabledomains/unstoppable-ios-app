@@ -241,8 +241,13 @@ struct PushEntitiesTransformer {
         
         let pushMessage = serviceContent.pushMessage
         let pgpKey = serviceContent.pgpKey
-        
-        return convertPushMessageToChatMessage(pushMessage, in: chat, pgpKey: pgpKey, isRead: false, filesService: filesService)
+        let thisUserWallet = chat.displayInfo.thisUserDetails.wallet
+
+        return convertPushMessageToChatMessage(pushMessage,
+                                               in: chat,
+                                               pgpKey: pgpKey,
+                                               isRead: thisUserWallet == webSocketMessage.senderWallet,
+                                               filesService: filesService)
     }
     
     static func convertMessagingWebSocketGroupMessageEntityToChatMessage(_ webSocketMessage: MessagingWebSocketGroupMessageEntity,
@@ -250,11 +255,16 @@ struct PushEntitiesTransformer {
                                                                          filesService: MessagingFilesServiceProtocol) -> MessagingChatMessage? {
         let thisUserWallet = chat.displayInfo.thisUserDetails.wallet
         guard let pgpKey = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: thisUserWallet),
-              let serviceContent = webSocketMessage.serviceContent as? PushEnvironment.PushSocketGroupMessageServiceContent else { return nil }
+              let serviceContent = webSocketMessage.serviceContent as? PushEnvironment.PushSocketGroupMessageServiceContent,
+              let fromWallet = getWalletAddressFrom(eip155String: serviceContent.pushMessage.fromDID) else { return nil }
         
         let pushMessage = serviceContent.pushMessage
         
-        return convertPushMessageToChatMessage(pushMessage, in: chat, pgpKey: pgpKey, isRead: false, filesService: filesService)
+        return convertPushMessageToChatMessage(pushMessage,
+                                               in: chat,
+                                               pgpKey: pgpKey,
+                                               isRead: fromWallet == thisUserWallet,
+                                               filesService: filesService)
     }
     
     static func convertPushChannelToMessagingChannel(_ pushChannel: PushChannel,
