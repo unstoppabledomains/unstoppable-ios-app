@@ -197,7 +197,8 @@ private extension UDButton {
     }
     
     func setSizeIfPossible(_ size: CGSize) {
-        if translatesAutoresizingMaskIntoConstraints {
+        if translatesAutoresizingMaskIntoConstraints ||
+            superview is UIStackView {
             bounds.size = size 
         }
     }
