@@ -236,7 +236,7 @@ private extension NFCService {
 }
 
 // MARK: - NFCServiceError
-enum NFCServiceError: String, LocalizedError {
+enum NFCServiceError: Error {
     case busy
     case failedToCreatePayload
     
@@ -247,7 +247,4 @@ enum NFCServiceError: String, LocalizedError {
     case unableToQueryNDEFStatusOfTag
     case failedToReadNDEFFromTag
     case tagIsReadOnly
-    
-    public var errorDescription: String? { rawValue }
-    
 }

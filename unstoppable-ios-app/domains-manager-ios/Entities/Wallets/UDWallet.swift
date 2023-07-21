@@ -520,7 +520,7 @@ extension UDWallet {
     }
 }
 
-enum WalletError: String, LocalizedError {
+enum WalletError: Error {
     case NameTooShort
     case WalletNameNotUnique
     case EthWalletFailedInit
@@ -537,10 +537,7 @@ enum WalletError: String, LocalizedError {
     case unsupportedBlockchainType
     
     case failedToBackUp
-    case incorrectBackupPassword
-    
-    public var errorDescription: String? { rawValue }
-
+    case incorrectBackupPassword 
 }
 
 extension Array where Element == UDWallet {
