@@ -187,22 +187,22 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
             try await preselectProfile(profile, usingWallets: wallets)
         }
         
-        
         Task {
             do {
+                let appCoordinator = appContext.coreAppCoordinator
                 switch presentOptions {
                 case .default:
                     self.presentOptions = presentOptions
                     return
                 case .showChat(let chatId, let profile):
                     if selectedProfileWalletPair?.profile?.id != profile.id ||
-                        !isChatOpenedWith(chatId: chatId) {
+                        !appCoordinator.isActiveState(.chatOpened(chatId: chatId)) {
                         try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
                         tryAutoOpenChat(chatId, profile: profile)
                     }
                 case .showChannel(let channelId, let profile):
                     if selectedProfileWalletPair?.profile?.id != profile.id ||
-                        !isChannelOpenedWith(channelId: channelId) {
+                        !appCoordinator.isActiveState(.channelOpened(channelId: channelId)) {
                         try await prepareToAutoOpenWith(profile: profile, dataType: .channels)
                         tryAutoOpenChannel(channelId, profile: profile)
                     }
@@ -213,23 +213,11 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
         }
     }
     
-    private var topChatViewController: ChatViewController? { view?.cNavigationController?.viewControllers.last as? ChatViewController }
-    private var topOpenedChatIdentifiable: ChatPresenterContentIdentifiable? { (topChatViewController?.presenter as? ChatPresenterContentIdentifiable) }
     private func popToChatsList() async {
         guard let view else { return }
         
         view.cNavigationController?.popToViewController(view, animated: true)
         try? await Task.sleep(seconds: CNavigationController.animationDuration)
-    }
-    private func isChatOpenedWith(chatId: String) -> Bool {
-        guard let openedChatId = topOpenedChatIdentifiable?.chatId else { return false }
-        
-        return openedChatId.contains(chatId)
-    }
-    private func isChannelOpenedWith(channelId: String) -> Bool {
-        guard let openedChannelId = topOpenedChatIdentifiable?.channelId else { return false }
-        
-        return openedChannelId.contains(channelId)
     }
 }
 

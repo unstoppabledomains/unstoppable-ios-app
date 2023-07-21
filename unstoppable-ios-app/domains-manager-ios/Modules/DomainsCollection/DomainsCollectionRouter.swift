@@ -172,14 +172,6 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     func showChatsListScreen() {
         Task { await showChatsListWith(options: .default) }
     }
-    
-    func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
-        await showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
-    }
-    
-    func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
-        await showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
-    }
 }
 
 // MARK: - Open methods
@@ -201,6 +193,27 @@ extension DomainsCollectionRouter {
             Debugger.printWarning("Primary domain minted: Already on minting screen")
             return
         }
+    }
+    
+    func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
+    }
+    
+    func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
+    }
+    
+    private var topChatViewController: ChatViewController? { navigationController?.viewControllers.last as? ChatViewController }
+    private var topOpenedChatIdentifiable: ChatPresenterContentIdentifiable? { (topChatViewController?.presenter as? ChatPresenterContentIdentifiable) }
+    func isChatOpenedWith(chatId: String) -> Bool {
+        guard let openedChatId = topOpenedChatIdentifiable?.chatId else { return false }
+        
+        return openedChatId.contains(chatId)
+    }
+    func isChannelOpenedWith(channelId: String) -> Bool {
+        guard let openedChannelId = topOpenedChatIdentifiable?.channelId else { return false }
+        
+        return openedChannelId.contains(channelId)
     }
 }
 

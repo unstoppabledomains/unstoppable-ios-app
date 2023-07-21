@@ -62,6 +62,20 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
     func goBackToPreviousApp() -> Bool {
         goBackToPreviousAppIfCan()
     }
+    
+    func isActiveState(_ state: AppCoordinationState) -> Bool {
+        switch currentRoot {
+        case .domainsCollection(let router):
+            switch state {
+            case .chatOpened(let chatId):
+                return router.isChatOpenedWith(chatId: chatId)
+            case .channelOpened(let channelId):
+                return router.isChannelOpenedWith(channelId: channelId)
+            }
+        default:
+            return false
+        }
+    }
 }
 
 // MARK: - DeepLinkServiceListener
