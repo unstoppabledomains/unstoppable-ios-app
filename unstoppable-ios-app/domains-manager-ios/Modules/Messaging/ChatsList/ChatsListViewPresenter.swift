@@ -177,6 +177,17 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
 // MARK: - ChatsListCoordinator
 extension ChatsListViewPresenter: ChatsListCoordinator {
     func update(presentOptions: ChatsList.PresentOptions) {
+        func prepareToAutoOpenWith(profile: MessagingChatUserProfileDisplayInfo,
+                                   dataType: ChatsListDataType) async throws {
+            await popToChatsList()
+            if selectedDataType != dataType {
+                selectedDataType = dataType
+                showData()
+            }
+            try await preselectProfile(profile, usingWallets: wallets)
+        }
+        
+        
         Task {
             do {
                 switch presentOptions {
@@ -185,14 +196,14 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                     return
                 case .showChat(let chatId, let profile):
                     if selectedProfileWalletPair?.profile?.id != profile.id ||
-                        topOpenedChatIdentifiable?.chatId != chatId {
-                        try await preselectProfile(profile, usingWallets: wallets)
+                        !isChatOpenedWith(chatId: chatId) {
+                        try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
                         tryAutoOpenChat(chatId, profile: profile)
                     }
                 case .showChannel(let channelId, let profile):
                     if selectedProfileWalletPair?.profile?.id != profile.id ||
-                        topOpenedChatIdentifiable?.channelId != channelId {
-                        try await preselectProfile(profile, usingWallets: wallets)
+                        !isChannelOpenedWith(channelId: channelId) {
+                        try await prepareToAutoOpenWith(profile: profile, dataType: .channels)
                         tryAutoOpenChannel(channelId, profile: profile)
                     }
                 }
@@ -209,6 +220,16 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
         
         view.cNavigationController?.popToViewController(view, animated: true)
         try? await Task.sleep(seconds: CNavigationController.animationDuration)
+    }
+    private func isChatOpenedWith(chatId: String) -> Bool {
+        guard let openedChatId = topOpenedChatIdentifiable?.chatId else { return false }
+        
+        return openedChatId.contains(chatId)
+    }
+    private func isChannelOpenedWith(channelId: String) -> Bool {
+        guard let openedChannelId = topOpenedChatIdentifiable?.channelId else { return false }
+        
+        return openedChannelId.contains(channelId)
     }
 }
 
@@ -273,7 +294,9 @@ private extension ChatsListViewPresenter {
                     try await preselectProfile(profile, usingWallets: wallets)
                     tryAutoOpenChat(chatId, profile: profile)
                 case .showChannel(let channelId, let profile):
+                    selectedDataType = .channels
                     try await preselectProfile(profile, usingWallets: wallets)
+                    showData()
                     tryAutoOpenChannel(channelId, profile: profile)
                 }
             } catch ChatsListError.noWalletsForChatting {

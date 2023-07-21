@@ -73,7 +73,7 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
 // MARK: - ChatPresenterContentIdentifiable
 extension ChannelViewPresenter: ChatPresenterContentIdentifiable {
     var chatId: String? { nil }
-    var channelId: String? { channel.id }
+    var channelId: String? { channel.channel }
 }
 
 // MARK: - MessagingServiceListener

@@ -170,19 +170,15 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     }
     
     func showChatsListScreen() {
-        showChatsListWith(options: .default)
+        Task { await showChatsListWith(options: .default) }
     }
     
     func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
-        await resetNavigationToRoot()
-        
-        showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
+        await showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
     }
     
     func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
-        await resetNavigationToRoot()
-        
-        showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
+        await showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
     }
 }
 
@@ -268,15 +264,14 @@ private extension DomainsCollectionRouter {
         try? await Task.sleep(nanoseconds: duration)
     }
     
-    func showChatsListWith(options: ChatsList.PresentOptions) {
+    func showChatsListWith(options: ChatsList.PresentOptions) async {
         guard let navigationController = self.navigationController else { return }
         
         if let presentedChatsList = navigationController.viewControllers.first(where: { $0 is ChatsListViewController } ) as? ChatsListViewController,
            let chatsListCoordinator = presentedChatsList.presenter as? ChatsListCoordinator {
-            print("LOGO: - Will update present options for opened chats list")
             chatsListCoordinator.update(presentOptions: options)
         } else  {
-            print("LOGO: - Will show new chats list")
+            await resetNavigationToRoot()
             showChatsListScreen(in: navigationController, presentOptions: options)
         }
     }
