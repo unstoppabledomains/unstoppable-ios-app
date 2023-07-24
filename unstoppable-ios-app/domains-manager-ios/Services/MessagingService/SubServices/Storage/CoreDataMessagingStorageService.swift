@@ -86,6 +86,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             let predicate = NSCompoundPredicate(type: .and, subpredicates: subpredicates)
             
             let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities(predicate: predicate,
+                                                                                   sortDescriptions: [timeSortDescriptor],
                                                                                    fetchSize: limit,
                                                                                    from: backgroundContext)
             return coreDataMessages.compactMap { convertCoreDataMessageToChatMessage($0,
