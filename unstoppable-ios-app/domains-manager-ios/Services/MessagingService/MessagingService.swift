@@ -259,8 +259,19 @@ extension MessagingService: MessagingServiceProtocol {
         sendMessageToBEAsync(message: newMessage, messageType: updatedMessage.type, in: messagingChat, by: profile)
     }
     
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) {
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) async throws {
+        let chatId = message.chatId
+        let messagingChat = try await getMessagingChatWith(chatId: chatId, userId: message.userId)
+        let isLastMessageInChat = messagingChat.displayInfo.lastMessage?.id == message.id
         storageService.deleteMessage(message)
+        if isLastMessageInChat {
+            guard let newLastMessage = (try await storageService.getMessagesFor(chat: messagingChat,
+                                                                                decrypter: decrypterService,
+                                                                                before: nil,
+                                                                                limit: 1)).first else { return }
+            
+            try await setLastMessageAndNotify(newLastMessage.displayInfo, to: messagingChat)
+        }
     }
     
     func markMessage(_ message: MessagingChatMessageDisplayInfo,

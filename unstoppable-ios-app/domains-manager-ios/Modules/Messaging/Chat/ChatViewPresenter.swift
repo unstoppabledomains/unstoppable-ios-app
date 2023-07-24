@@ -509,7 +509,7 @@ private extension ChatViewPresenter {
             Task { try? await appContext.messagingService.resendMessage(message) }
         case .delete:
             logButtonPressedAnalyticEvents(button: .deleteMessage)
-            appContext.messagingService.deleteMessage(message)
+            Task { try? await appContext.messagingService.deleteMessage(message) }
             if let i = messages.firstIndex(where: { $0.id == message.id }) {
                 messages.remove(at: i)
                 showData(animated: true, isLoading: isLoadingMessages)
