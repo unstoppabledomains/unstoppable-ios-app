@@ -11,7 +11,8 @@ import Push
 final class PushMessagingChannelsAPIService {
     
     private let pushRESTService = PushRESTAPIService()
-    private let helper = PushServiceHelper()
+    private let pushHelper = PushServiceHelper()
+    private let messagingHelper = MessagingAPIServiceHelper()
     
 }
 
@@ -79,8 +80,8 @@ extension PushMessagingChannelsAPIService: MessagingChannelsAPIServiceProtocol {
                     subscribed: Bool,
                     by user: MessagingChatUserProfile) async throws {
         
-        let domain = try await helper.getAnyDomainItem(for: user.normalizedWallet)
-        let env = helper.getCurrentPushEnvironment()
+        let domain = try await messagingHelper.getAnyDomainItem(for: user.normalizedWallet)
+        let env = pushHelper.getCurrentPushEnvironment()
         
         let subscribeOptions = Push.PushChannel.SubscribeOption(signer: domain,
                                                                 channelAddress: channel.channel,

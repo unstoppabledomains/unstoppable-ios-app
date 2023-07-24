@@ -21,9 +21,10 @@ protocol PushMessagingAPIServiceDataProvider {
 final class PushMessagingAPIService {
     
     private let pushRESTService = PushRESTAPIService()
-    private let helper = PushServiceHelper()
+    private let pushHelper = PushServiceHelper()
+    private let messagingHelper = MessagingAPIServiceHelper()
     private let dataProvider: PushMessagingAPIServiceDataProvider
-    
+
     init(dataProvider: PushMessagingAPIServiceDataProvider = DefaultPushMessagingAPIServiceDataProvider()) {
         self.dataProvider = dataProvider
     }
@@ -470,15 +471,15 @@ private extension PushMessagingAPIService {
             return key
         }
         
-        let chatMetadata: PushEnvironment.UserProfileServiceMetadata = try decodeServiceMetadata(from: user.serviceMetadata)
+        let userMetadata: PushEnvironment.UserProfileServiceMetadata = try decodeServiceMetadata(from: user.serviceMetadata)
         let domain = try await getAnyDomainItem(for: wallet)
-        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: chatMetadata.encryptedPrivateKey, signer: domain)
+        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: userMetadata.encryptedPrivateKey, signer: domain)
         KeychainPGPKeysStorage.instance.savePGPKey(pgpPrivateKey, forIdentifier: wallet)
         return pgpPrivateKey
     }
     
     func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
-        try await helper.getAnyDomainItem(for: wallet)
+        try await messagingHelper.getAnyDomainItem(for: wallet)
     }
     
     func buildPushSendOptions(for messageType: MessagingChatMessageDisplayType,
@@ -499,7 +500,7 @@ private extension PushMessagingAPIService {
     }
     
     func getCurrentPushEnvironment() -> Push.ENV {
-        helper.getCurrentPushEnvironment()
+        pushHelper.getCurrentPushEnvironment()
     }
     
     func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
@@ -583,9 +584,7 @@ extension DomainItem: Push.Signer, Push.TypedSinger {
     }
     
     func getAddress() async throws -> String {
-        guard let ownerWallet else { throw PushMessagingAPIService.PushMessagingAPIServiceError.noOwnerWalletInDomain }
-        
-        return getETHAddress() ?? ownerWallet
+        try getETHAddressThrowing()
     }
 }
 
