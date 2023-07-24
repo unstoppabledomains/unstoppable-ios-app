@@ -8764,6 +8764,7 @@
 				C6BC7AB92A2722C5008E3CAA /* XCRemoteSwiftPackageReference "push-swift-sdk" */,
 				29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */,
 				29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */,
+				29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -13325,6 +13326,14 @@
 			requirement = {
 				kind = exactVersion;
 				version = 0.5.3;
+			};
+		};
+		29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/xmtp/xmtp-ios.git";
+			requirement = {
+				kind = revision;
+				revision = 5d6444b64c81e2b7a3b42827f8369500e242b993;
 			};
 		};
 		29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */ = {
