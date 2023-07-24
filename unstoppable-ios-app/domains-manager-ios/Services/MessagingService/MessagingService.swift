@@ -10,6 +10,7 @@ import Foundation
 final class MessagingService {
 
     private let apiService: MessagingAPIServiceProtocol
+    private let channelsApiService: MessagingChannelsAPIServiceProtocol
     private let webSocketsService: MessagingWebSocketsServiceProtocol
     private let storageService: MessagingStorageServiceProtocol
     private let decrypterService: MessagingContentDecrypterService
@@ -20,12 +21,14 @@ final class MessagingService {
     private var currentUser: MessagingChatUserProfileDisplayInfo?
 
     init(apiService: MessagingAPIServiceProtocol,
+         channelsApiService: MessagingChannelsAPIServiceProtocol,
          webSocketsService: MessagingWebSocketsServiceProtocol,
          storageProtocol: MessagingStorageServiceProtocol,
          decrypterService: MessagingContentDecrypterService,
          filesService: MessagingFilesServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol) {
         self.apiService = apiService
+        self.channelsApiService = channelsApiService
         self.webSocketsService = webSocketsService
         self.storageService = storageProtocol
         self.decrypterService = decrypterService
@@ -351,12 +354,12 @@ extension MessagingService: MessagingServiceProtocol {
             /// User has opened channel before and there's no unread messages
             if storedFeed.count < limit {
                 if storedFeed.last?.isFirstInChannel == true || (storedFeed.isEmpty && page == 1) {
-                     return storedFeed
+                    return storedFeed
                 } else {
-                    var loadedFeed = try await apiService.getFeedFor(channel: channel,
-                                                                     page: page,
-                                                                     limit: limit,
-                                                                     isRead: true)
+                    var loadedFeed = try await channelsApiService.getFeedFor(channel: channel,
+                                                                             page: page,
+                                                                             limit: limit,
+                                                                             isRead: true)
                     checkIfFirstFeedInChannel(&loadedFeed)
                     await storageService.saveChannelsFeed(loadedFeed,
                                                           in: channel)
@@ -371,10 +374,10 @@ extension MessagingService: MessagingServiceProtocol {
             let preLoadLimit = 30
             var preloadedFeed = [MessagingNewsChannelFeed]()
             while true {
-                let feed = try await apiService.getFeedFor(channel: channel,
-                                                           page: preLoadPage,
-                                                           limit: preLoadLimit,
-                                                           isRead: false)
+                let feed = try await channelsApiService.getFeedFor(channel: channel,
+                                                                   page: preLoadPage,
+                                                                   limit: preLoadLimit,
+                                                                   isRead: false)
                 if let i = feed.firstIndex(where: { $0.id == latestLocalFeed.id }) {
                     let missedChunk = feed[0..<i]
                     preloadedFeed.append(contentsOf: missedChunk)
@@ -393,10 +396,10 @@ extension MessagingService: MessagingServiceProtocol {
             return result
         } else {
             /// User open channel for the first time
-            var loadedFeed = try await apiService.getFeedFor(channel: channel,
-                                                             page: page,
-                                                             limit: limit,
-                                                             isRead: true)
+            var loadedFeed = try await channelsApiService.getFeedFor(channel: channel,
+                                                                     page: page,
+                                                                     limit: limit,
+                                                                     isRead: true)
             checkIfFirstFeedInChannel(&loadedFeed)
             await storageService.saveChannelsFeed(loadedFeed,
                                                   in: channel)
@@ -417,7 +420,7 @@ extension MessagingService: MessagingServiceProtocol {
                     subscribed: Bool,
                     by user: MessagingChatUserProfileDisplayInfo) async throws {
         let profile = try await getUserProfileWith(wallet: user.wallet)
-        try await apiService.setChannel(channel, subscribed: subscribed, by: profile)
+        try await channelsApiService.setChannel(channel, subscribed: subscribed, by: profile)
         var channel = channel
         channel.isCurrentUserSubscribed = subscribed
         if subscribed {
@@ -448,7 +451,7 @@ extension MessagingService: MessagingServiceProtocol {
                                searchKey: String,
                                for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
         let profile = try await getUserProfileWith(wallet: user.wallet)
-        let channels = try await apiService.searchForChannels(page: page, limit: limit, searchKey: searchKey, for: profile)
+        let channels = try await channelsApiService.searchForChannels(page: page, limit: limit, searchKey: searchKey, for: profile)
         
         return channels
     }
@@ -809,12 +812,12 @@ private extension MessagingService {
             let startTime = Date()
             do {
                 let storedChannels = try await storageService.getChannelsFor(profile: profile)
-
+                
                 async let channelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
-                    try await apiService.getSubscribedChannelsForUser(profile)
+                    try await channelsApiService.getSubscribedChannelsForUser(profile)
                 }, defaultValue: [])
                 async let spamChannelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
-                    try await apiService.getSpamChannelsForUser(profile)
+                    try await channelsApiService.getSpamChannelsForUser(profile)
                 }, defaultValue: [])
                 
                 let (channels, spamChannels) = await (channelsTask, spamChannelsTask)
@@ -844,10 +847,10 @@ private extension MessagingService {
         await withTaskGroup(of: MessagingNewsChannel.self, body: { group in
             for channel in channels {
                 group.addTask {
-                    if var lastMessage = try? await self.apiService.getFeedFor(channel: channel,
-                                                                               page: 1,
-                                                                               limit: 1,
-                                                                               isRead: false).first {
+                    if var lastMessage = try? await self.channelsApiService.getFeedFor(channel: channel,
+                                                                                       page: 1,
+                                                                                       limit: 1,
+                                                                                       isRead: false).first {
                         var updatedChannel = channel
                         if let storedChannel = storedChannels.first(where: { $0.id == channel.id }),
                            let storedLastMessage = storedChannel.lastMessage,
