@@ -931,7 +931,8 @@ private extension MessagingService {
                     let chatId = message.displayInfo.chatId
                     
                     notifyListenersChangedDataType(.messagesAdded([message.displayInfo],
-                                                                  chatId: chatId))
+                                                                  chatId: chatId,
+                                                                  userId: profile.id))
                     try? await setLastMessageAndNotify(lastMessage: message.displayInfo)
                 }
             }

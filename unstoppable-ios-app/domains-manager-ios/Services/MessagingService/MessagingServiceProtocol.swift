@@ -90,7 +90,7 @@ final class MessagingListenerHolder: Equatable {
 enum MessagingDataType {
     case chats(_ chats: [MessagingChatDisplayInfo], profile: MessagingChatUserProfileDisplayInfo)
     case channels(_ channels: [MessagingNewsChannel], profile: MessagingChatUserProfileDisplayInfo)
-    case messagesAdded(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case messagesAdded(_ messages: [MessagingChatMessageDisplayInfo], chatId: String, userId: String)
     case messageUpdated(_ updatedMessage: MessagingChatMessageDisplayInfo, newMessage: MessagingChatMessageDisplayInfo)
     case messagesRemoved(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
     case messageReadStatusUpdated(_ message: MessagingChatMessageDisplayInfo, numberOfUnreadMessagesInSameChat: Int)

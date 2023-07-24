@@ -171,8 +171,9 @@ extension ChatViewPresenter: MessagingServiceListener {
                     self.conversationState = .existingChat(updatedChat)
                     loadAndShowData()
                 }
-            case .messagesAdded(let messages, let chatId):
-                if case .existingChat(let chat) = conversationState,
+            case .messagesAdded(let messages, let chatId, let userId):
+                if userId == self.profile.id,
+                   case .existingChat(let chat) = conversationState,
                    chatId == chat.id,
                    !messages.isEmpty {
                     await self.addMessages(messages)
