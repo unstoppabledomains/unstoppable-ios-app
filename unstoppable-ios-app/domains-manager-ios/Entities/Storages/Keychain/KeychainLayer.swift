@@ -30,6 +30,9 @@ enum KeychainKey: String {
 }
 
 protocol ValetProtocol {
+    func setObject(_ object: Data, forKey key: String) throws
+    func object(forKey key: String) throws -> Data
+    
     func setString(_ privateKey: String, forKey: String) throws
     func string(forKey pubKeyHex: String) throws -> String
     func removeObject(forKey: String) throws
@@ -115,6 +118,27 @@ extension PrivateKeyStorage {
     func clear(for pubKeyHex: String) {
         try? valet.removeObject(forKey: pubKeyHex)
         try? valet.removeObject(forKey: pubKeyHex.normalized)
+    }
+}
+extension PrivateKeyStorage {
+    func store(data: Data, for key: String) {
+        do {
+            try valet.setObject(data, forKey: key)
+            Debugger.printInfo("Stored data to keychain: \(key)")
+        } catch {
+            Debugger.printFailure("Failed to store data keychain: \(key) with error \(error.localizedDescription)", critical: true)
+        }
+    }
+    
+    func retrieveData(for key: String, isCritical: Bool = true) -> Data? {
+        do {
+            let value = try valet.object(forKey: key)
+            Debugger.printInfo("Retrieved keychain data for key: \(key)")
+            return value
+        } catch {
+            Debugger.printFailure("Failed to get keychain data for the key: \(key) with error \(error.localizedDescription)", critical: isCritical)
+            return nil
+        }
     }
 }
 

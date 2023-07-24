@@ -3299,6 +3299,10 @@
 		C6D3B9C52A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */; };
 		C6D3B9C62A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */; };
 		C6D3B9C72A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */; };
+		C6D3B9CA2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C92A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift */; };
+		C6D3B9CB2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C92A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift */; };
+		C6D3B9CC2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C92A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift */; };
+		C6D3B9CD2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C92A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift */; };
 		C6D5DAB32835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */; };
 		C6D5DAB42835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */; };
 		C6D5DAB52835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */; };
@@ -4844,6 +4848,7 @@
 		C6D3B9B92A6EB8F80091B279 /* PushMessagingChannelsAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingChannelsAPIService.swift; sourceTree = "<group>"; };
 		C6D3B9BE2A6EBC2B0091B279 /* PushServiceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushServiceHelper.swift; sourceTree = "<group>"; };
 		C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIService.swift; sourceTree = "<group>"; };
+		C6D3B9C92A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainXMTPKeysStorage.swift; sourceTree = "<group>"; };
 		C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyEmptyCell.swift; sourceTree = "<group>"; };
 		C6D5DAB22835505200379C38 /* AddCurrencyEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyEmptyCell.xib; sourceTree = "<group>"; };
 		C6D5DABB2836021300379C38 /* CryptoRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoRecord.swift; sourceTree = "<group>"; };
@@ -6059,6 +6064,7 @@
 		C61ECD582A207BC500E97D70 /* Push */ = {
 			isa = PBXGroup;
 			children = (
+				C6538DBB2A32168500B63E84 /* KeychainPGPKeysStorage.swift */,
 				C6B366D62A1C715000DE512B /* PushRESTAPIService.swift */,
 				C62396B22A28DE3B00363F60 /* PushEnvironment.swift */,
 				C6D3B9BE2A6EBC2B0091B279 /* PushServiceHelper.swift */,
@@ -6687,6 +6693,8 @@
 				C6AF123F2A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift */,
 				C652722A2A14B395001A084C /* MockMessagingService.swift */,
 				C6F9FBB62A25C2F900102F81 /* SubServices */,
+				C6D3B9C82A6EC1090091B279 /* XMTP */,
+				C61ECD582A207BC500E97D70 /* Push */,
 			);
 			path = MessagingService;
 			sourceTree = "<group>";
@@ -6781,7 +6789,6 @@
 				3070B1D725AF8AF300DEC81C /* KeychainLayer.swift */,
 				C6538DB62A32164F00B63E84 /* iCloudPrivateKeyStorage.swift */,
 				C6538DB12A32164300B63E84 /* KeychainPrivateKeyStorage.swift */,
-				C6538DBB2A32168500B63E84 /* KeychainPGPKeysStorage.swift */,
 			);
 			path = Keychain;
 			sourceTree = "<group>";
@@ -7302,7 +7309,6 @@
 				C652721F2A14B31E001A084C /* MessagingService */,
 				C6B366DB2A1C715D00DE512B /* Networking */,
 				C665FC1D29B0687D009699D2 /* NotificationsService */,
-				C61ECD582A207BC500E97D70 /* Push */,
 				C624D783281BB67F00F55530 /* UDDomainsService */,
 				C609820E2823B69A00546392 /* UDWalletsService */,
 				C66FCCFC28448710009B9525 /* UserDataService */,
@@ -8077,6 +8083,14 @@
 				C6D3B9B92A6EB8F80091B279 /* PushMessagingChannelsAPIService.swift */,
 			);
 			path = ChannelsAPI;
+			sourceTree = "<group>";
+		};
+		C6D3B9C82A6EC1090091B279 /* XMTP */ = {
+			isa = PBXGroup;
+			children = (
+				C6D3B9C92A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift */,
+			);
+			path = XMTP;
 			sourceTree = "<group>";
 		};
 		C6D5DAAF2835503000379C38 /* Cells */ = {
@@ -9570,6 +9584,7 @@
 				C6E1188D28F67DA200C6AD4D /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6526DCA29D2DC8C00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */,
 				C66804D1280D9EC8007E6390 /* OnboardingPasscodeViewController.swift in Sources */,
+				C6D3B9CA2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */,
 				C6ED31E3295BF8DF00BC6919 /* Equatable.swift in Sources */,
 				C60982252823E4CC00546392 /* WalletDetailsAddWalletAction.swift in Sources */,
 				C6E1188828F570A200C6AD4D /* WalletConnectPushNotificationsUnsubscribeInfo.swift in Sources */,
@@ -10906,6 +10921,7 @@
 				C6AD181128D319BF0008A479 /* CollectionViewShowHideCell.swift in Sources */,
 				307F83F6267A339F0070A9A6 /* NetworkConfig.swift in Sources */,
 				C62C3FA3283F60720094FC93 /* DeepLinksServiceProtocol.swift in Sources */,
+				C6D3B9CC2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */,
 				306665E32778AE74005F6F55 /* UnsConfigManager.swift in Sources */,
 				307F83F7267A339F0070A9A6 /* Debugger.swift in Sources */,
 				C6D5DAC3283629D800379C38 /* MockDomainRecordsService.swift in Sources */,
@@ -11637,6 +11653,7 @@
 				C6FE49DE285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */,
 				C664311828D95E5F00A9C734 /* OnboardingConnectExternalWalletPresenter.swift in Sources */,
 				C66A9DCB28BCCE6600F8BA3F /* CNavigationControllerChildNavigationHandler.swift in Sources */,
+				C6D3B9CD2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */,
 				C666895828117C66002062B4 /* BaseViewController.swift in Sources */,
 				C6D6E4E62817C0F4008C66BB /* OnboardingProtectWalletViewPresenter.swift in Sources */,
 				C6E041AC2951F3DE0080F8E3 /* EmptyCollectionSectionFooter.swift in Sources */,
@@ -11978,6 +11995,7 @@
 				C6E1188E28F67DA200C6AD4D /* PassthroughAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6526DCB29D2DC8D00D6F2EB /* LoginOnboardingViewPresenter.swift in Sources */,
 				C66804D2280D9EC8007E6390 /* OnboardingPasscodeViewController.swift in Sources */,
+				C6D3B9CB2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */,
 				C6ED31E4295BF8E200BC6919 /* Equatable.swift in Sources */,
 				C60982262823E4CC00546392 /* WalletDetailsAddWalletAction.swift in Sources */,
 				C6E1188928F570A200C6AD4D /* WalletConnectPushNotificationsUnsubscribeInfo.swift in Sources */,

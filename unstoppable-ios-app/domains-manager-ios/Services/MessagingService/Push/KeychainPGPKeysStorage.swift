@@ -37,6 +37,11 @@ struct KeychainPGPKeysStorage: PrivateKeyStorage, KeychainPGPKeysStorageProtocol
         return retrieveValue(for: key, isCritical: false)
     }
     
+    func clearPGPKeyFor(identifier: String)  {
+        let key = getKeyFor(identifier: identifier)
+        clear(forKey: key)
+    }
+    
     private func getKeyFor(identifier: String) -> String {
         pgpPrefix + identifier + "_" + environmentIdentifier()
     }
@@ -44,11 +49,5 @@ struct KeychainPGPKeysStorage: PrivateKeyStorage, KeychainPGPKeysStorageProtocol
     private func environmentIdentifier() -> String {
         User.instance.getSettings().isTestnetUsed ? "testnet" : "mainnet"
     }
-    
-    
-    func clearPGPKeyFor(identifier: String)  {
-        let key = getKeyFor(identifier: identifier)
-        clear(forKey: key)
-    }
-    
 }
+
