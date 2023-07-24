@@ -15,7 +15,7 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
     @IBOutlet private weak var primaryLabel: UILabel!
     @IBOutlet private weak var secondaryLabel: UILabel!
     @IBOutlet private weak var downloadButton: UDButton!
-    
+        
     override var isFlexibleWidth: Bool { false }
     private var pressedCallback: EmptyCallback?
     
@@ -39,8 +39,8 @@ final class ChatUnsupportedMessageCell: ChatUserBubbledMessageCell {
 // MARK: - Open methods
 extension ChatUnsupportedMessageCell {
     func setWith(configuration: ChatViewController.UnsupportedMessageUIConfiguration) {
-        let textMessage = configuration.message
-        guard case .unknown(let details) = textMessage.type else { return }
+        let message = configuration.message
+        guard case .unknown(let details) = message.type else { return }
         
         pressedCallback = configuration.pressedCallback
         let messageColor: UIColor
@@ -56,7 +56,7 @@ extension ChatUnsupportedMessageCell {
             icon = .helpIcon24
         }
   
-        switch textMessage.senderType {
+        switch message.senderType {
         case .thisUser:
             messageColor = .white
             secondaryLabelColor = .foregroundOnEmphasisOpacity
@@ -90,7 +90,7 @@ extension ChatUnsupportedMessageCell {
         }
         
         
-        setWith(message: textMessage)
+        setWith(message: message, isGroupChatMessage: configuration.isGroupChatMessage)
         print(downloadButton.frame)
     }
     
@@ -106,13 +106,14 @@ struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
         let height: CGFloat = 76
         
         return UICollectionViewCellPreview(cellType: ChatUnsupportedMessageCell.self, height: height) { cell in
-            let user = MessagingChatUserDisplayInfo(wallet: "24")
+            let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
             let unknownMessageInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: "",
                                                                                 type: "file",
-                                                                                name: nil,
+                                                                                name: "sjlhfksdjfhskdjhfskdhjfksdjfhsdfsdf",
                                                                                 size: 99900)
             let message = MessagingChatMessageDisplayInfo(id: "1",
                                                           chatId: "2",
+                                                          userId: "1",
                                                           senderType: .otherUser(user),
                                                           time: Date(),
                                                           type: .unknown(unknownMessageInfo),
@@ -120,7 +121,9 @@ struct ChatUnsupportedMessageCell_Previews: PreviewProvider {
                                                           isFirstInChat: true,
                                                           deliveryState: .delivered,
                                                           isEncrypted: false)
-            cell.setWith(configuration: .init(message: message, pressedCallback: { }))
+            cell.setWith(configuration: .init(message: message,
+                                              isGroupChatMessage: false,
+                                              pressedCallback: { }))
         }
         .frame(width: 390, height: height)
     }

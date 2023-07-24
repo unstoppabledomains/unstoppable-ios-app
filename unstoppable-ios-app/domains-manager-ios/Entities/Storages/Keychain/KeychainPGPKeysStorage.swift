@@ -38,7 +38,11 @@ struct KeychainPGPKeysStorage: PrivateKeyStorage, KeychainPGPKeysStorageProtocol
     }
     
     private func getKeyFor(identifier: String) -> String {
-        pgpPrefix + identifier
+        pgpPrefix + identifier + "_" + environmentIdentifier()
+    }
+    
+    private func environmentIdentifier() -> String {
+        User.instance.getSettings().isTestnetUsed ? "testnet" : "mainnet"
     }
     
     

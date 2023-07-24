@@ -42,6 +42,7 @@ public struct Debugger {
         case debugWalletConnect
         case debugUI
         case debugNetwork
+        case custom([DebugTopic])
         
         var allowedTopics: [DebugTopic] {
             switch self {
@@ -55,6 +56,8 @@ public struct Debugger {
                 return [.Error, .Navigation, .UI, .Images]
             case .debugNetwork:
                 return [.Network, .WebSockets, .Error]
+            case .custom(let topics):
+                return topics
             }
         }
         

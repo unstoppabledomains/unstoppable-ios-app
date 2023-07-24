@@ -228,7 +228,7 @@ private extension PushRESTAPIService {
 
 // MARK: - Entities
 private extension PushRESTAPIService {
-    enum PushServiceError: Error {
+    enum PushServiceError: String, LocalizedError {
         case noOwnerWalletInDomain
         case cantFindHolderDomain
         case failedToConvertStringToData
@@ -237,6 +237,9 @@ private extension PushRESTAPIService {
         case failedToRestorePGPKey
         case failedToSignMessageWithPGPKey
         case failedToCreateRandomData
+        
+        public var errorDescription: String? { rawValue }
+
     }
     
     struct ChatsResponse: Codable {

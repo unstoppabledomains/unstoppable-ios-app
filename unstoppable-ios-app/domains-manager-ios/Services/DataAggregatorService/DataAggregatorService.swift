@@ -725,7 +725,9 @@ private extension DataAggregatorService {
 }
 
 extension DataAggregatorService {
-    enum DataAggregationError: Error {
+    enum DataAggregationError: String, LocalizedError {
         case failedToFindDomain
+        
+        public var errorDescription: String? { rawValue }
     }
 }

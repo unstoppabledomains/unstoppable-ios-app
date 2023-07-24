@@ -170,19 +170,7 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     }
     
     func showChatsListScreen() {
-        showChatsListWith(options: .default)
-    }
-    
-    func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
-        await resetNavigationToRoot()
-        
-        showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
-    }
-    
-    func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
-        await resetNavigationToRoot()
-        
-        showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
+        Task { await showChatsListWith(options: .default) }
     }
 }
 
@@ -205,6 +193,27 @@ extension DomainsCollectionRouter {
             Debugger.printWarning("Primary domain minted: Already on minting screen")
             return
         }
+    }
+    
+    func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
+    }
+    
+    func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
+    }
+    
+    private var topChatViewController: ChatViewController? { navigationController?.viewControllers.last as? ChatViewController }
+    private var topOpenedChatIdentifiable: ChatPresenterContentIdentifiable? { (topChatViewController?.presenter as? ChatPresenterContentIdentifiable) }
+    func isChatOpenedWith(chatId: String) -> Bool {
+        guard let openedChatId = topOpenedChatIdentifiable?.chatId else { return false }
+        
+        return openedChatId.contains(chatId)
+    }
+    func isChannelOpenedWith(channelId: String) -> Bool {
+        guard let openedChannelId = topOpenedChatIdentifiable?.channelId else { return false }
+        
+        return openedChannelId.contains(channelId)
     }
 }
 
@@ -268,9 +277,15 @@ private extension DomainsCollectionRouter {
         try? await Task.sleep(nanoseconds: duration)
     }
     
-    func showChatsListWith(options: ChatsList.PresentOptions) {
+    func showChatsListWith(options: ChatsList.PresentOptions) async {
         guard let navigationController = self.navigationController else { return }
         
-        showChatsListScreen(in: navigationController, presentOptions: options)
+        if let presentedChatsList = navigationController.viewControllers.first(where: { $0 is ChatsListViewController } ) as? ChatsListViewController,
+           let chatsListCoordinator = presentedChatsList.presenter as? ChatsListCoordinator {
+            chatsListCoordinator.update(presentOptions: options)
+        } else  {
+            await resetNavigationToRoot()
+            showChatsListScreen(in: navigationController, presentOptions: options)
+        }
     }
 }

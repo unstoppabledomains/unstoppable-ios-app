@@ -11,7 +11,9 @@ import Foundation
 protocol MessagingServiceProtocol {
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
-    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo)
+    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)
+    func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool
+    func isNewMessagesAvailable() async throws -> Bool
     
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo]
@@ -24,18 +26,17 @@ protocol MessagingServiceProtocol {
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
-                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
-    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            after message: MessagingChatMessageDisplayInfo,
+                            cachedOnly: Bool,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo]
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
+                     isEncrypted: Bool,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo
     func isMessagesEncryptedIn(conversation: MessagingChatConversationState) async -> Bool
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
                           to userInfo: MessagingChatUserDisplayInfo,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo)
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) async throws 
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool,
                      wallet: String) throws
@@ -89,8 +90,10 @@ final class MessagingListenerHolder: Equatable {
 enum MessagingDataType {
     case chats(_ chats: [MessagingChatDisplayInfo], profile: MessagingChatUserProfileDisplayInfo)
     case channels(_ channels: [MessagingNewsChannel], profile: MessagingChatUserProfileDisplayInfo)
-    case messagesAdded(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case messagesAdded(_ messages: [MessagingChatMessageDisplayInfo], chatId: String, userId: String)
     case messageUpdated(_ updatedMessage: MessagingChatMessageDisplayInfo, newMessage: MessagingChatMessageDisplayInfo)
     case messagesRemoved(_ messages: [MessagingChatMessageDisplayInfo], chatId: String)
+    case messageReadStatusUpdated(_ message: MessagingChatMessageDisplayInfo, numberOfUnreadMessagesInSameChat: Int)
     case channelFeedAdded(_ feed: MessagingNewsChannelFeed, channelId: String)
+    case refreshOfUserProfile(_ userProfile: MessagingChatUserProfileDisplayInfo, isInProgress: Bool)
 }

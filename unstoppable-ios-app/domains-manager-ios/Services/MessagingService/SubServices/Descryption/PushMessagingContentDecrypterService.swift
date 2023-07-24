@@ -63,7 +63,10 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
 
 // MARK: - Open methods
 extension PushMessagingContentDecrypterService {
-    enum EncryptionError: Error {
+    enum EncryptionError: String, LocalizedError {
         case failedToGatherRequiredData
+        
+        public var errorDescription: String? { rawValue }
+
     }
 }

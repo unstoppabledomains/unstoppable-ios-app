@@ -9,7 +9,7 @@ import UIKit
 import MobileCoreServices
 
 extension UIImage {
-    func gifDataRepresentation(gifDuration: TimeInterval = 0.0, loopCount: Int = 0) throws -> Data {
+    func gifDataRepresentation(gifDuration: TimeInterval = 0.0, loopCount: Int = 0, quality: Double? = nil) throws -> Data {
         let images = self.images ?? [self]
         let frameCount = images.count
         let durationToUse = gifDuration <= 0.0 ? self.duration : gifDuration
@@ -32,7 +32,14 @@ extension UIImage {
         ] as CFDictionary
         CGImageDestinationSetProperties(destination, imageProperties)
         for image in images {
-            if let cgimage = image.cgImage {
+            if var cgimage = image.cgImage {
+                if let quality {
+                    let width = Int(Double(cgimage.width) * quality)
+                    let height = Int(Double(cgimage.height) * quality)
+                    if let resized = resizeCGImage(image: cgimage, width: width, height: height) {
+                        cgimage = resized
+                    }
+                }
                 CGImageDestinationAddImage(destination, cgimage, frameProperties as CFDictionary)
             }
         }
@@ -70,12 +77,7 @@ private extension UIImage {
         let images = self.images ?? [self]
         let frameCount = images.count
         let frameDuration: TimeInterval = duration / Double(frameCount)
-        let frameProperties = [
-            kCGImagePropertyGIFDictionary: [
-                kCGImagePropertyGIFDelayTime: NSNumber(value: frameDuration)
-            ]
-        ]
-        
+    
         var uiImages = [UIImage]()
         for image in images {
             if let transformedImage = transformBlock(image) {
@@ -85,5 +87,20 @@ private extension UIImage {
         
         return UIImage.animatedImage(with: uiImages,
                                      duration: Double(duration))
+    }
+    
+    func resizeCGImage(image: CGImage, width: Int, height: Int) -> CGImage? {
+        guard let colorSpace = image.colorSpace,
+              let context = CGContext(data: nil,
+                                      width: width,
+                                      height: height,
+                                      bitsPerComponent: image.bitsPerComponent,
+                                      bytesPerRow: image.bytesPerRow,
+                                      space: colorSpace,
+                                      bitmapInfo: image.alphaInfo.rawValue) else { return nil }
+        
+        context.draw(image, in: CGRect(origin: .zero, size: .init(width: width, height: height)))
+        
+        return context.makeImage()
     }
 }

@@ -38,6 +38,8 @@ final class UDButton: UIControl {
     private var iconSize: CGFloat { udConfiguration.iconSize }
     private var loadingIndicator: UIActivityIndicatorView?
     
+    private var _intrinsicContentSize: CGSize  = .zero
+    override var intrinsicContentSize: CGSize { _intrinsicContentSize }
     override var showsMenuAsPrimaryAction: Bool {
         get { underlyingButton.showsMenuAsPrimaryAction }
         set { underlyingButton.showsMenuAsPrimaryAction = newValue }
@@ -162,24 +164,21 @@ private extension UDButton {
         if imageView.image == nil,
            !title.isEmpty {
             // Title only
-            bounds.size = CGSize(width: titleWidth + contentInset.left + contentInset.right,
-                                 height: titleHeight + contentInset.top + contentInset.bottom)
-            
-            titleLabel.frame.origin = CGPoint(x: contentInset.left,
-                                              y: contentInset.top)
+            setSizeIfPossible(CGSize(width: titleWidth + contentInset.left + contentInset.right,
+                                     height: titleHeight + contentInset.top + contentInset.bottom))
+            titleLabel.center = localCenter
         } else if title.isEmpty,
                   imageView.image != nil {
             // Image only
-            bounds.size = CGSize(width: iconSize + contentInset.left + contentInset.right,
-                                 height: iconSize + contentInset.top + contentInset.bottom)
-            
-            imageView.frame.origin = CGPoint(x: contentInset.left,
-                                             y: contentInset.top)
+            setSizeIfPossible(CGSize(width: iconSize + contentInset.left + contentInset.right,
+                                     height: iconSize + contentInset.top + contentInset.bottom))
+            imageView.center = localCenter
         } else {
             // Title and image
             let maxContentHeight = max(titleHeight, iconSize)
-            bounds.size = CGSize(width: titleWidth + iconSize + titleImagePadding + contentInset.left + contentInset.right,
-                                 height: maxContentHeight + contentInset.top + contentInset.bottom)
+            setSizeIfPossible(CGSize(width: titleWidth + iconSize + titleImagePadding + contentInset.left + contentInset.right,
+                                     height: maxContentHeight + contentInset.top + contentInset.bottom))
+            
             let center = self.localCenter
             titleLabel.center = center
             imageView.center = center
@@ -193,6 +192,13 @@ private extension UDButton {
                 imageView.frame.origin.x = titleLabel.frame.maxX + titleImagePadding
             }
         }
+    }
+    
+    func setSizeIfPossible(_ size: CGSize) {
+        if translatesAutoresizingMaskIntoConstraints || bounds.size != _intrinsicContentSize {
+            bounds.size = size
+        }
+        _intrinsicContentSize = size
     }
     
     func widthForTitle() -> CGFloat {

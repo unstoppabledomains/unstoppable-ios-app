@@ -82,11 +82,11 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstItem="uby-Qi-MR5" firstAttribute="leading" secondItem="Atv-jX-9YH" secondAttribute="leading" constant="4" id="B6n-Uy-AQJ"/>
                 <constraint firstItem="Atv-jX-9YH" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="Bqr-Dl-XFt"/>
                 <constraint firstItem="uby-Qi-MR5" firstAttribute="trailing" secondItem="0of-wM-QUa" secondAttribute="trailing" constant="-4" id="M3C-17-Eqw"/>
                 <constraint firstItem="uby-Qi-MR5" firstAttribute="top" secondItem="Atv-jX-9YH" secondAttribute="bottom" constant="4" id="Msr-Pf-LVg"/>
                 <constraint firstAttribute="trailing" secondItem="Atv-jX-9YH" secondAttribute="trailing" placeholder="YES" id="W6W-sC-TRt"/>
+                <constraint firstItem="uby-Qi-MR5" firstAttribute="leading" secondItem="0of-wM-QUa" secondAttribute="leading" constant="4" id="fcP-us-esW"/>
                 <constraint firstAttribute="bottom" secondItem="uby-Qi-MR5" secondAttribute="bottom" id="ud7-hc-2Wv"/>
                 <constraint firstItem="Atv-jX-9YH" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" placeholder="YES" id="zxd-QM-jzJ"/>
             </constraints>
@@ -94,6 +94,7 @@
             <connections>
                 <outlet property="bubbleContainerView" destination="0of-wM-QUa" id="OXm-zY-LJx"/>
                 <outlet property="containerView" destination="Atv-jX-9YH" id="30d-cl-Qb4"/>
+                <outlet property="contentHStackView" destination="hvG-hs-MLu" id="x3N-D3-Wgk"/>
                 <outlet property="deleteButton" destination="Pmx-cq-e97" id="oR7-7R-4Uh"/>
                 <outlet property="messageTextView" destination="hCe-Sg-oz6" id="I0j-fD-v2S"/>
                 <outlet property="timeLabel" destination="Amg-ML-pRG" id="DOg-pw-b0A"/>

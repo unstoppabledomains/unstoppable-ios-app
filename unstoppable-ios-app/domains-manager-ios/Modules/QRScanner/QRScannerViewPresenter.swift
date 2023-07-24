@@ -310,8 +310,11 @@ private extension QRScannerViewPresenter {
 }
 
 extension QRScannerViewPresenter {
-    enum ScanningError: Error {
+    enum ScanningError: String, LocalizedError {
         case notSupportedQRCode
         case notSupportedQRCodeV2
+        
+        public var errorDescription: String? { rawValue }
+
     }
 }

@@ -162,6 +162,7 @@ extension ChatInputView: KeyboardServiceListener {
     }
     
     func keyboardDidShowAction() { }
+    func keyboardDidAdjustFrame(keyboardHeight: CGFloat) { }
 }
 
 // MARK: - Open methods

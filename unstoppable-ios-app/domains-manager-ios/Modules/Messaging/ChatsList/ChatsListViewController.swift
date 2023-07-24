@@ -11,7 +11,7 @@ import UIKit
 protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
-    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [WalletDisplayInfo])
+    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -85,6 +85,11 @@ final class ChatsListViewController: BaseViewController {
     override func keyboardWillHideAction(duration: Double, curve: Int) {
         collectionView.contentInset.bottom = Constants.scrollableContentBottomOffset
     }
+    
+    override func shouldPopOnBackButton() -> Bool {
+        presenter.viewWillDismiss()
+        return true
+    }
 }
 
 // MARK: - ChatsListViewProtocol
@@ -111,9 +116,12 @@ extension ChatsListViewController: ChatsListViewProtocol {
         cNavigationController?.updateNavigationBar()
     }
     
-    func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [WalletDisplayInfo]) {
+    func setNavigationWith(selectedWallet: WalletDisplayInfo,
+                           wallets: [ChatsListNavigationView.WalletTitleInfo],
+                           isLoading: Bool) {
         navView?.setWithConfiguration(.init(selectedWallet: selectedWallet,
-                                            wallets: wallets))
+                                            wallets: wallets,
+                                            isLoading: isLoading))
     }
 }
 
@@ -240,12 +248,6 @@ private extension ChatsListViewController {
                 title = String.Constants.chatRequests.localized()
             case .channels:
                 title = String.Constants.spam.localized()
-                let rightBarButton = UIBarButtonItem(title: String.Constants.deleteAll.localized(),
-                                                     style: .plain,
-                                                     target: self,
-                                                     action: #selector(newMessageButtonPressed))
-                rightBarButton.tintColor = .foregroundAccent
-                navigationItem.rightBarButtonItem = rightBarButton
             }
             cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }

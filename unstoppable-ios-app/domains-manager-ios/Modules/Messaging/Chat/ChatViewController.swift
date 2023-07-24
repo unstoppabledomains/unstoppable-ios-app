@@ -48,6 +48,8 @@ final class ChatViewController: BaseViewController {
     let operationQueue = OperationQueue()
     private(set) var dataSource: DataSource!
     private var scrollingInfo: ScrollingInfo?
+    private var moveToTopButtonVisibilityWorkItem: DispatchWorkItem?
+    private var isMoveToTopButtonHidden = false
     override var isObservingKeyboard: Bool { true }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
 
@@ -65,6 +67,9 @@ final class ChatViewController: BaseViewController {
         
         cNavigationBar?.navBarContentView.setTitleView(hidden: false, animated: true)
         presenter.viewWillAppear()
+        DispatchQueue.main.async {
+            self.calculateCollectionBottomInset()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -73,7 +78,16 @@ final class ChatViewController: BaseViewController {
     }
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
+        calculateCollectionBottomInset()
         scrollToTheBottom(animated: true)
+    }
+    
+    override func keyboardWillHideAction(duration: Double, curve: Int) {
+        calculateCollectionBottomInset()
+    }
+    
+    override func keyboardDidAdjustFrame(keyboardHeight: CGFloat) {
+        calculateCollectionBottomInset(shouldAdjustContentOffset: true)
     }
     
     override func viewDidLayoutSubviews() {
@@ -131,10 +145,6 @@ extension ChatViewController: ChatViewProtocol {
         } else {
             activityIndicator.stopAnimating()
         }
-                
-        [acceptButton, secondaryButton].forEach { button in
-            button?.isUserInteractionEnabled = !active
-        }
     }
     
     func setUIState(_ state: ChatViewController.State) {
@@ -164,7 +174,9 @@ extension ChatViewController: ChatViewProtocol {
         case .userIsBlocked:
             approveContentView.isHidden = false
             secondaryButton.isHidden = false
-            secondaryButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
+            var configuration = UDButtonConfiguration.mediumRaisedTertiaryButtonConfiguration
+            configuration.backgroundIdleColor = .clear
+            secondaryButton.setConfiguration(configuration)
             secondaryButton.isUserInteractionEnabled = false
             secondaryButton.setTitle(String.Constants.messagingYouAreBlocked.localized(), image: nil)
         }
@@ -237,10 +249,22 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
             let isChatInputViewTopBorderVisible = cellFrameInView.maxY >= chatInputView.frame.minY
             chatInputView.setTopBorderHidden(!isChatInputViewTopBorderVisible,
                                              animated: true)
-            setMoveToTopButton(hidden: true, animated: true)
-        } else if scrollView.contentSize.height > collectionView.bounds.height { // Check empty state
-            setMoveToTopButton(hidden: false, animated: true)
         }
+        
+        if scrollView.contentSize.height > collectionView.bounds.height, // Check empty state
+           scrollDistanceToEnd < -100 {
+            setMoveToTopButton(hidden: false, animated: true)
+        } else {
+            setMoveToTopButton(hidden: true, animated: true)
+        }
+    }
+    
+    var scrollDistanceToEnd: CGFloat {
+        collectionView.contentOffset.y - (collectionView.contentSize.height - collectionView.bounds.height + collectionView.contentInset.bottom)
+    }
+    
+    var isReachedEnd: Bool {
+        scrollDistanceToEnd >= 0
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -252,7 +276,6 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
         
         presenter.willDisplayItem(item)
     }
-    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         CGSize(width: collectionView.bounds.width, height: ChatSectionHeaderView.Height)
@@ -282,7 +305,6 @@ extension ChatViewController: ChatInputViewDelegate {
     }
     
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
-        calculateCollectionBottomInset()
         setupMoveToTopButtonFrame()
     }
     
@@ -319,9 +341,18 @@ private extension ChatViewController {
 
 // MARK: - Private functions
 private extension ChatViewController {
-    func calculateCollectionBottomInset() {
+    func calculateCollectionBottomInset(shouldAdjustContentOffset: Bool = false) {
         let keyboardHeight = isKeyboardOpened ? keyboardFrame.height : 0
+        let currentInset = collectionView.contentInset.bottom
         collectionView.contentInset.bottom = chatInputView.bounds.height + keyboardHeight + 12
+        if shouldAdjustContentOffset {
+            let insetDif = currentInset - collectionView.contentInset.bottom
+            if isReachedEnd,
+               insetDif > 0 { /// Content will be adjusted automatically
+                return
+            }
+            self.collectionView.contentOffset.y -= insetDif
+        }
     }
     
     func getLastItemIndexPath() -> IndexPath? {
@@ -346,9 +377,17 @@ private extension ChatViewController {
     }
     
     func setMoveToTopButton(hidden: Bool, animated: Bool) {
-        UIView.animate(withDuration: animated ? 0.25 : 0.0) {
-            self.moveToTopButton.alpha = hidden ? 0 : 1
-        }
+        guard isMoveToTopButtonHidden != hidden else { return }
+        
+        isMoveToTopButtonHidden = hidden
+        moveToTopButtonVisibilityWorkItem?.cancel()
+        let moveToTopButtonVisibilityWorkItem = DispatchWorkItem(block: { [weak self] in
+            UIView.animate(withDuration: animated ? 0.25 : 0.0) {
+                self?.moveToTopButton.alpha = hidden ? 0 : 1
+            }
+        })
+        self.moveToTopButtonVisibilityWorkItem = moveToTopButtonVisibilityWorkItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + (animated ? 0.2 : 0.0), execute: moveToTopButtonVisibilityWorkItem)
     }
     
     func setupMoveToTopButtonFrame() {
@@ -375,9 +414,9 @@ private extension ChatViewController {
         setupInputView()
         setupApproveRequestView()
         setupNavBar()
+        setupMoveToTopButton()
         setupCollectionView()
         setupHideKeyboardTap()
-        setupMoveToTopButton()
         setEmptyState(nil)
     }
     
@@ -533,6 +572,7 @@ extension ChatViewController {
         
         let message: MessagingChatMessageDisplayInfo
         let textMessageDisplayInfo: MessagingChatMessageTextTypeDisplayInfo
+        let isGroupChatMessage: Bool
         var actionCallback: (ChatMessageAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
@@ -550,6 +590,7 @@ extension ChatViewController {
         
         let message: MessagingChatMessageDisplayInfo
         let imageMessageDisplayInfo: MessagingChatMessageImageBase64TypeDisplayInfo
+        let isGroupChatMessage: Bool
         var actionCallback: (ChatMessageAction)->()
         
         static func == (lhs: Self, rhs: Self) -> Bool {
@@ -565,6 +606,7 @@ extension ChatViewController {
     
     struct UnsupportedMessageUIConfiguration: Hashable {
         let message: MessagingChatMessageDisplayInfo
+        let isGroupChatMessage: Bool
         let pressedCallback: EmptyCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {

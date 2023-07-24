@@ -88,7 +88,8 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
     func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) { }
     func keyboardDidShowAction() { }
     func keyboardWillHideAction(duration: Double, curve: Int) { }
-    
+    func keyboardDidAdjustFrame(keyboardHeight: CGFloat) { }
+
     // MARK: - CNavigationControllerChild
     var navBarTitleAttributes: [NSAttributedString.Key : Any]? { [.foregroundColor : UIColor.foregroundDefault,
                                                                   .font: UIFont.currentFont(withSize: 16, weight: .semibold)] }

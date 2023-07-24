@@ -70,6 +70,12 @@ extension ChannelViewPresenter: ChatViewPresenterProtocol {
     }
 }
 
+// MARK: - ChatPresenterContentIdentifiable
+extension ChannelViewPresenter: ChatPresenterContentIdentifiable {
+    var chatId: String? { nil }
+    var channelId: String? { channel.channel }
+}
+
 // MARK: - MessagingServiceListener
 extension ChannelViewPresenter: MessagingServiceListener {
     nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
@@ -91,7 +97,7 @@ extension ChannelViewPresenter: MessagingServiceListener {
                     addFeed([feed])
                     showData(animated: true, isLoading: false)
                 }
-            case .chats, .messagesAdded, .messageUpdated, .messagesRemoved:
+            case .chats, .messagesAdded, .messageUpdated, .messagesRemoved, .refreshOfUserProfile, .messageReadStatusUpdated:
                 return
             }
         }

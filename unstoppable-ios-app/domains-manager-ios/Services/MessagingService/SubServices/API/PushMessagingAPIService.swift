@@ -8,10 +8,24 @@
 import Foundation
 import Push
 
+protocol PushMessagingAPIServiceDataProvider {
+    func getPreviousMessagesForChat(_ chat: MessagingChat,
+                                    threadHash: String,
+                                    fetchLimit: Int,
+                                    isRead: Bool,
+                                    filesService: MessagingFilesServiceProtocol,
+                                    env: Push.ENV,
+                                    pgpPrivateKey: String) async throws -> [MessagingChatMessage]
+}
+
 final class PushMessagingAPIService {
     
     private let pushRESTService = PushRESTAPIService()
-        
+    private let dataProvider: PushMessagingAPIServiceDataProvider
+    
+    init(dataProvider: PushMessagingAPIServiceDataProvider = DefaultPushMessagingAPIServiceDataProvider()) {
+        self.dataProvider = dataProvider
+    }
 }
 
 // MARK: - MessagingAPIServiceProtocol
@@ -40,6 +54,26 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         let chatUser = PushEntitiesTransformer.convertPushUserToChatUser(pushUser)
         
         return chatUser
+    }
+    
+    func updateUserProfile(_ user: MessagingChatUserProfile,
+                           name: String,
+                           avatar: String) async throws {
+        let env = getCurrentPushEnvironment()
+        let account = user.wallet
+        guard let pushUser = try await PushUser.get(account: account, env: env) else {
+            throw PushMessagingAPIServiceError.failedToGetPushUser
+        }
+        
+        let pgpKey = try await self.getPGPPrivateKeyFor(user: user)
+        var updatedProfile = pushUser.profile
+        updatedProfile.name = name
+        if !avatar.trimmed.isEmpty {
+            updatedProfile.picture = avatar
+        }
+        updatedProfile.blockedUsersList = updatedProfile.blockedUsersList ?? []
+        
+        try await PushUser.updateUserProfile(account: account, pgpPrivateKey: pgpKey, newProfile: updatedProfile, env: env)
     }
     
     // Chats
@@ -199,82 +233,54 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
-                            options: MessagingAPIServiceLoadMessagesOptions,
+                            before message: MessagingChatMessage?,
+                            cachedMessages: [MessagingChatMessage],
                             fetchLimit: Int,
+                            isRead: Bool,
                             for user: MessagingChatUserProfile,
                             filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
-        switch options {
-        case .default:
-            let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
-            guard let threadHash = chatMetadata.threadHash else {
-                return [] // NULL threadHash means there's no messages in the chat yet
-            }
-            return try await getPreviousMessagesForChat(chat,
-                                                        threadHash: threadHash,
-                                                        fetchLimit: fetchLimit,
-                                                        isRead: true,
-                                                        for: user, filesService: filesService)
-        case .before(let message):
-            let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: message.serviceMetadata)
-            guard let threadHash = messageMetadata.link else {
-                return []
-            }
-            return try await getPreviousMessagesForChat(chat,
-                                                        threadHash: threadHash,
-                                                        fetchLimit: fetchLimit,
-                                                        isRead: true,
-                                                        for: user, filesService: filesService)
-        case .after(let message):
-            let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
-            guard var threadHash = chatMetadata.threadHash else {
-                return []
-            }
-            
-            var messages = [MessagingChatMessage]()
-            
-            while true {
-                let chunkMessages = try await getPreviousMessagesForChat(chat,
-                                                                         threadHash: threadHash,
-                                                                         fetchLimit: fetchLimit,
-                                                                         isRead: false,
-                                                                         for: user, filesService: filesService)
-                if let i = chunkMessages.firstIndex(where: { $0.displayInfo.id == message.displayInfo.id }) {
-                    let missingMessages = Array(chunkMessages[..<i])
-                    messages.append(contentsOf: missingMessages)
-                    break
-                } else {
-                    messages.append(contentsOf: chunkMessages)
-                    guard !chunkMessages.isEmpty else { break }
-                    
-                    let messageMetadata: PushEnvironment.MessageServiceMetadata = try decodeServiceMetadata(from: chunkMessages.last!.serviceMetadata)
-                    guard let hash = messageMetadata.link else { break }
-                    threadHash = hash
-                }
-            }
-            return messages
-        }
-    }
-    
-    private func getPreviousMessagesForChat(_ chat: MessagingChat,
-                                            threadHash: String,
-                                            fetchLimit: Int,
-                                            isRead: Bool,
-                                            for user: MessagingChatUserProfile,
-                                            filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
-        let env = getCurrentPushEnvironment()
-        let pushMessages = try await Push.PushChat.History(threadHash: threadHash,
-                                                           limit: fetchLimit,
-                                                           pgpPrivateKey: "", // Get encrypted messages
-                                                           toDecrypt: false,
-                                                           env: env)
+        let chatMetadata: PushEnvironment.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
+        guard let chatThreadHash = chatMetadata.threadHash else { return [] } // No messages in chat yet
         
+        var fetchLimitToUse = fetchLimit
+        var threadHash = chatThreadHash
+        var messagesToKeep = [MessagingChatMessage]()
+        let env = getCurrentPushEnvironment()
         let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
-        let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0,
-                                                                                                         in: chat,
-                                                                                                         pgpKey: pgpPrivateKey,
-                                                                                                         isRead: isRead,
-                                                                                                         filesService: filesService) })
-        return messages
+
+        if let message {
+            guard let currentMessageLink = getLinkFrom(message: message) else { return [] } // Request messages before first in chat
+            threadHash = currentMessageLink
+        }
+        let result = try messageToLoadDescriptionFrom(in: cachedMessages, starting: threadHash)
+        switch result {
+        case .noCachedMessages:
+            Void()
+        case .reachedFirstMessageInChat:
+            messagesToKeep = cachedMessages
+        case .messageToLoad(let missingMessageThreadHash):
+            threadHash = missingMessageThreadHash.threadHash
+            fetchLimitToUse -= missingMessageThreadHash.offset
+            messagesToKeep = missingMessageThreadHash.messagesToKeep
+        }
+        
+        
+        if messagesToKeep.count >= fetchLimit {
+            return messagesToKeep
+        }
+        if messagesToKeep.last?.displayInfo.isFirstInChat == true {
+            return messagesToKeep
+        }
+        
+        let remoteMessages = try await dataProvider.getPreviousMessagesForChat(chat,
+                                                                               threadHash: threadHash,
+                                                                               fetchLimit: fetchLimitToUse,
+                                                                               isRead: isRead,
+                                                                               filesService: filesService,
+                                                                               env: env,
+                                                                               pgpPrivateKey: pgpPrivateKey)
+        
+        return messagesToKeep + remoteMessages
     }
     
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool {
@@ -476,6 +482,52 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
 }
 
+// MARK: - Get message related
+private extension PushMessagingAPIService {
+    func messageToLoadDescriptionFrom(in cachedMessages: [MessagingChatMessage], starting startId: String) throws -> MessageToLoadFromResult {
+        guard !cachedMessages.isEmpty else { return .noCachedMessages }
+        guard cachedMessages.first?.displayInfo.id == startId else {
+            return .messageToLoad(MessageToLoad(threadHash: startId, offset: 0, messagesToKeep: []))
+        }
+        
+        var currentMessage = cachedMessages.first!
+        var offset = 1
+        var messagesToKeep: [MessagingChatMessage] = [currentMessage]
+        
+        for i in 1..<cachedMessages.count {
+            let previousMessage = cachedMessages[i]
+            guard let currentMessageLink = getLinkFrom(message: currentMessage) else { return .reachedFirstMessageInChat }
+            if currentMessageLink != previousMessage.displayInfo.id {
+                return .messageToLoad(MessageToLoad(threadHash: currentMessageLink, offset: offset, messagesToKeep: messagesToKeep))
+            }
+            offset += 1
+            currentMessage = previousMessage
+            messagesToKeep.append(previousMessage)
+        }
+        
+        guard let currentMessageLink = getLinkFrom(message: currentMessage) else { return .reachedFirstMessageInChat }
+        
+        return .messageToLoad(MessageToLoad(threadHash: currentMessageLink, offset: offset, messagesToKeep: messagesToKeep))
+    }
+    
+    enum MessageToLoadFromResult {
+        case noCachedMessages
+        case reachedFirstMessageInChat
+        case messageToLoad(MessageToLoad)
+    }
+    
+    struct MessageToLoad {
+        let threadHash: String
+        let offset: Int
+        let messagesToKeep: [MessagingChatMessage]
+    }
+    
+    func getLinkFrom(message: MessagingChatMessage) -> String? {
+        let messageMetadata: PushEnvironment.MessageServiceMetadata = try! decodeServiceMetadata(from: message.serviceMetadata)
+        return messageMetadata.link
+    }
+}
+
 // MARK: - Private methods
 private extension PushMessagingAPIService {
     func storePGPKeyFromPushUserIfNeeded(_ pushUser: Push.PushUser, domain: DomainItem) async throws {
@@ -585,7 +637,7 @@ private extension PushMessagingAPIService {
 
 // MARK: - Open methods
 extension PushMessagingAPIService {
-    enum PushMessagingAPIServiceError: Error {
+    enum PushMessagingAPIServiceError: String, LocalizedError {
         case noDomainForWallet
         case noOwnerWalletInDomain
         case failedToGetPushUser
@@ -597,6 +649,9 @@ extension PushMessagingAPIService {
         case failedToConvertPushMessage
         case declineRequestNotSupported
         case failedToPrepareMessageContent
+        
+        public var errorDescription: String? { rawValue }
+
     }
 }
 
@@ -613,5 +668,29 @@ extension DomainItem: Push.Signer, Push.TypedSinger {
         guard let ownerWallet else { throw PushMessagingAPIService.PushMessagingAPIServiceError.noOwnerWalletInDomain }
         
         return getETHAddress() ?? ownerWallet
+    }
+}
+
+final class DefaultPushMessagingAPIServiceDataProvider: PushMessagingAPIServiceDataProvider {
+    func getPreviousMessagesForChat(_ chat: MessagingChat,
+                                    threadHash: String,
+                                    fetchLimit: Int,
+                                    isRead: Bool,
+                                    filesService: MessagingFilesServiceProtocol,
+                                    env: Push.ENV,
+                                    pgpPrivateKey: String) async throws -> [MessagingChatMessage] {
+        
+        let pushMessages = try await Push.PushChat.History(threadHash: threadHash,
+                                                           limit: fetchLimit,
+                                                           pgpPrivateKey: "", // Get encrypted messages
+                                                           toDecrypt: false,
+                                                           env: env)
+        
+        let messages = pushMessages.compactMap({ PushEntitiesTransformer.convertPushMessageToChatMessage($0,
+                                                                                                         in: chat,
+                                                                                                         pgpKey: pgpPrivateKey,
+                                                                                                         isRead: isRead,
+                                                                                                         filesService: filesService) })
+        return messages
     }
 }

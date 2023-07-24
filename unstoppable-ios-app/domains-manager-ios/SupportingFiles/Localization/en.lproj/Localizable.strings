@@ -825,3 +825,6 @@
 "MESSAGE_UNENCRYPTED_PULL_UP_TITLE" = "Message may be unencrypted:";
 "MESSAGE_UNENCRYPTED_PULL_UP_REASON_1" = "If recipient uses a different messaging client that doesn't support encryption.";
 "MESSAGE_UNENCRYPTED_PULL_UP_REASON_2" = "Until the recipient joins the chat messages remain unencrypted.";
+"MESSAGING_ADMIN" = "Admin";
+"MESSAGING_SHARE_DECRYPTION_ERROR_MESSAGE" = "Failed to decrypt message content.";
+"MESSAGING_SET_PRIMARY_DOMAIN" = "Set primary domain";

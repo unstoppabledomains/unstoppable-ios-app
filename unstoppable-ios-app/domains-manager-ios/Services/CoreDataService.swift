@@ -35,7 +35,7 @@ class CoreDataService {
 // MARK: - Open methods
 extension CoreDataService {
     func saveContext(_ context: NSManagedObjectContext) {
-        if context.hasChanges {
+        context.performAndWait {
             Debugger.printInfo(topic: .CoreData, "Will Save context")
             do {
                 try context.save()
@@ -56,22 +56,28 @@ extension CoreDataService {
                                          fetchSize: Int? = nil,
                                          batchDescription: BatchDescription? = nil,
                                          from context: NSManagedObjectContext) throws -> [T] {
-        let request = T.fetchRequest()
-        request.includesPropertyValues = true
-        request.returnsObjectsAsFaults = false
-        request.predicate = predicate
-        request.sortDescriptors = sortDescriptions
-        if let batchDescription {
-            request.fetchLimit = batchDescription.size
-            request.fetchOffset = batchDescription.offset
-        } else if let fetchSize {
-            request.fetchLimit = fetchSize
-            request.fetchOffset = 0
+        var entities: [T]?
+
+        context.performAndWait {
+            let request = T.fetchRequest()
+            request.includesPropertyValues = true
+            request.returnsObjectsAsFaults = false
+            request.predicate = predicate
+            request.sortDescriptors = sortDescriptions
+            if let batchDescription {
+                request.fetchLimit = batchDescription.size
+                request.fetchOffset = batchDescription.offset
+            } else if let fetchSize {
+                request.fetchLimit = fetchSize
+                request.fetchOffset = 0
+            }
+            if let result = try? context.fetch(request) as? [T] {
+                entities = result
+            }
         }
-        if let entities = try? context.fetch(request) {
-            return entities as? [T] ?? []
-        }
-        return []
+        guard let entities else { throw CoreDataError.failedToFetchObjects }
+        
+        return entities
     }
     
     func getEntitiesBlocking<T: NSManagedObject>(predicate: NSPredicate? = nil,
@@ -159,7 +165,10 @@ extension CoreDataService {
     }
 }
 
-enum CoreDataError: Error {
+enum CoreDataError: String, LocalizedError {
     case failedToFetchObjects
     case failedToInsertObject
+    
+    public var errorDescription: String? { rawValue }
+
 }

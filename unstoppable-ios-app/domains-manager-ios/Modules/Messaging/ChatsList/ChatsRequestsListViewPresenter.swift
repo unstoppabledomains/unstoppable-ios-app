@@ -81,7 +81,20 @@ extension ChatsRequestsListViewPresenter: MessagingServiceListener {
                     self.dataType = .channelsSpam(requests)
                     showData()
                 }
-            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded:
+            case .messageReadStatusUpdated(let message, let numberOfUnreadMessagesInSameChat):
+                switch dataType {
+                case .chatRequests(var chatsList):
+                    if let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
+                        chatsList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
+                        self.dataType = .chatRequests(chatsList)
+                        if numberOfUnreadMessagesInSameChat == 0 {
+                            showData()
+                        }
+                    }
+                case .channelsSpam:
+                    return
+                }
+            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .refreshOfUserProfile:
                 return
             }
         }

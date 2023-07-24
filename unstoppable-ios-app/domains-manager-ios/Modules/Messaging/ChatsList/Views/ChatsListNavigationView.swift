@@ -6,16 +6,20 @@
 //
 
 import UIKit
+import SwiftUI
 
 final class ChatsListNavigationView: UIView {
     
     private let height: CGFloat = 24
     private let elementsSpacing: CGFloat = 8
     private let titleFont: UIFont = .currentFont(withSize: 16, weight: .semibold)
+    private let activityScale: CGFloat = 0.7
     
     private var imageView: UIImageView!
     private var titleButton: UIButton!
     private var chevron: UIImageView!
+    private var activityIndicator: UIActivityIndicatorView!
+    private var isLoading = false
     
     var pressedCallback: EmptyCallback?
     var walletSelectedCallback: ((WalletDisplayInfo)->())?
@@ -35,8 +39,17 @@ final class ChatsListNavigationView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        var imageOrigin: CGFloat = 0
+        
+        if isLoading {
+            let indicatorY = (height - activityIndicator.bounds.height * activityScale) / 2
+            activityIndicator.frame.origin = CGPoint(x: 0,
+                                                     y: indicatorY)
+            imageOrigin = activityIndicator.frame.maxX + elementsSpacing
+        }
+        
         let imageY = (height - imageView.bounds.height) / 2
-        imageView.frame.origin = CGPoint(x: 0,
+        imageView.frame.origin = CGPoint(x: imageOrigin,
                                          y: imageY)
 
         let titleRequiredWidth = calculateTitleButtonWidth()
@@ -68,6 +81,9 @@ extension ChatsListNavigationView {
         setButtonWith(configuration: configuration)
         chevron.isHidden = configuration.wallets.count <= 1
         titleButton.isUserInteractionEnabled = !chevron.isHidden
+        self.isLoading = configuration.isLoading
+        activityIndicator.startAnimating()
+        activityIndicator.isHidden = !isLoading
         setNeedsLayout()
         layoutIfNeeded()
     }
@@ -107,9 +123,20 @@ private extension ChatsListNavigationView {
         }
     }
     
-    func menuAction(for wallet: WalletDisplayInfo) async -> UIMenuElement {
+    func menuAction(for walletTitleInfo: WalletTitleInfo) async -> UIMenuElement {
+        let wallet = walletTitleInfo.wallet
         let title = getTitleFor(wallet: wallet)
-        let subtitle = wallet.reverseResolutionDomain == nil ? "Set primary domain" : wallet.displayName
+        var subtitle: String
+        if wallet.reverseResolutionDomain == nil {
+            subtitle = String.Constants.messagingSetPrimaryDomain.localized()
+        } else {
+            subtitle = wallet.displayName
+            if let number = walletTitleInfo.numberOfUnreadMessages,
+               number > 0 {
+                subtitle = String.Constants.newMessage.localized() + " · " + subtitle
+            }
+        }
+        
         let avatar = await getAvatarImageFor(wallet: wallet)
         let action = UIAction.createWith(title: title,
                                          subtitle: subtitle,
@@ -148,6 +175,7 @@ private extension ChatsListNavigationView {
         setupImageView()
         setupChevron()
         setupTitleButton()
+        setupActivityIndicator()
     }
     
     func setupImageView() {
@@ -176,12 +204,55 @@ private extension ChatsListNavigationView {
         
         addSubview(titleButton)
     }
+    
+    func setupActivityIndicator() {
+        activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.transform = .identity.scaledBy(x: activityScale, y: activityScale)
+        addSubview(activityIndicator)
+    }
 }
 
 // MARK: - Open methods
 extension ChatsListNavigationView {
     struct Configuration {
         let selectedWallet: WalletDisplayInfo
-        let wallets: [WalletDisplayInfo]
+        let wallets: [WalletTitleInfo]
+        let isLoading: Bool
+        
     }
+
+    struct WalletTitleInfo {
+        let wallet: WalletDisplayInfo
+        let numberOfUnreadMessages: Int?
+    }
+}
+
+struct ChatsListNavigationView_Previews: PreviewProvider {
+    
+    static var previews: some View {
+        let height: CGFloat = 40
+        
+        return UIViewPreview {
+            let view =  ChatsListNavigationView()
+            let wallet = WalletDisplayInfo(name: "name.x",
+                                           address: "asdads",
+                                           domainsCount: 1,
+                                           source: .imported,
+                                           isBackedUp: false,
+                                           reverseResolutionDomain: .init(name: "name.x", ownerWallet: "asdasd", isSetForRR: true))
+            let wallet2 = WalletDisplayInfo(name: "0x12412312312312",
+                                           address: "asdads",
+                                           domainsCount: 1,
+                                           source: .imported,
+                                           isBackedUp: false,
+                                           reverseResolutionDomain: .init(name: "nameasdasdasdasd2.x", ownerWallet: "asdasd", isSetForRR: true))
+            view.setWithConfiguration(.init(selectedWallet: wallet,
+                                            wallets: [.init(wallet: wallet, numberOfUnreadMessages: nil),
+                                                      .init(wallet: wallet2, numberOfUnreadMessages: 0)],
+                                            isLoading: false))
+            return view
+        }
+        .frame(width: 390, height: height)
+    }
+    
 }

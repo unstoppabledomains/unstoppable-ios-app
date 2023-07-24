@@ -11,6 +11,9 @@ protocol MessagingAPIServiceProtocol {
     // User profile
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile
     func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile
+    func updateUserProfile(_ user: MessagingChatUserProfile,
+                           name: String,
+                           avatar: String) async throws
     
     // Chats
     func getChatsListForUser(_ user: MessagingChatUserProfile,
@@ -26,8 +29,10 @@ protocol MessagingAPIServiceProtocol {
     
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
-                            options: MessagingAPIServiceLoadMessagesOptions,
+                            before message: MessagingChatMessage?,
+                            cachedMessages: [MessagingChatMessage],
                             fetchLimit: Int,
+                            isRead: Bool,
                             for user: MessagingChatUserProfile,
                             filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage]
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool

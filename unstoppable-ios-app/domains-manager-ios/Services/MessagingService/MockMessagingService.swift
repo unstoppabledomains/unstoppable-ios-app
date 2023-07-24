@@ -18,7 +18,9 @@ final class MockMessagingService {
 extension MockMessagingService: MessagingServiceProtocol {
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
-    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo) { }
+    func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) { }
+    func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool { false }
+    func isNewMessagesAvailable() async throws -> Bool { false }
     
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         []
@@ -38,10 +40,10 @@ extension MockMessagingService: MessagingServiceProtocol {
     
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
+                            cachedOnly: Bool,
                             limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
-    func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
-                            after message: MessagingChatMessageDisplayInfo,
-                            limit: Int) async throws -> [MessagingChatMessageDisplayInfo] { [] }
+  
+    
     private func getMessagesForChat(_ chat: MessagingChatDisplayInfo,
                             fetchLimit: Int) async throws -> [MessagingChatMessageDisplayInfo] {
         if let cachedMessages = chatsMessages[chat] {
@@ -54,6 +56,7 @@ extension MockMessagingService: MessagingServiceProtocol {
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
+                     isEncrypted: Bool,
                      in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo {
         throw NSError()
     }
@@ -65,7 +68,7 @@ extension MockMessagingService: MessagingServiceProtocol {
     }
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
     func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws { }
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) { }
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) async throws { }
     func markMessage(_ message: MessagingChatMessageDisplayInfo, isRead: Bool, wallet: String) throws { }
     func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws { }
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? { nil }
@@ -169,6 +172,7 @@ private extension MockMessagingService {
                                                    chatId: String) -> MessagingChatMessageDisplayInfo {
         .init(id: UUID().uuidString,
               chatId: chatId,
+              userId: "1",
               senderType: sender,
               time: createMockMessageDate(),
               type: .text(.init(text: mockLastMessageTexts.randomElement()!,
@@ -212,6 +216,7 @@ private extension MockMessagingService {
             let text = mockLastMessageTexts.randomElement()!
             let message = MessagingChatMessageDisplayInfo(id: UUID().uuidString,
                                                           chatId: chatId,
+                                                          userId: "a",
                                                           senderType: sender,
                                                           time: time,
                                                           type: .text(.init(text: text,

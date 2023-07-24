@@ -18,6 +18,18 @@ struct MessagingChatDisplayInfo: Hashable {
     var lastMessage: MessagingChatMessageDisplayInfo?
 }
 
+// MARK: - Open methods
+extension MessagingChatDisplayInfo {
+    var isGroupChat: Bool {
+        switch type {
+        case .private:
+            return false
+        case .group:
+            return true
+        }
+    }
+}
+
 extension Array where Element == MessagingChatDisplayInfo {
     
     func requestsOnly() -> [Element] {

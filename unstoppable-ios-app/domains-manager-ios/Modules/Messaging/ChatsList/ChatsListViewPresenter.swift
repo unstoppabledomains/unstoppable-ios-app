@@ -29,6 +29,11 @@ extension ChatsListViewPresenterProtocol {
 }
 
 @MainActor
+protocol ChatsListCoordinator {
+    func update(presentOptions: ChatsList.PresentOptions)
+}
+
+@MainActor
 final class ChatsListViewPresenter {
     
     private weak var view: ChatsListViewProtocol?
@@ -60,6 +65,10 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     func viewDidLoad() {
         appContext.messagingService.addListener(self)
         loadAndShowData()
+    }
+    
+    func viewWillDismiss() {
+        appContext.messagingService.setCurrentUser(nil)
     }
     
     func didSelectItem(_ item: ChatsListViewController.Item) {
@@ -169,6 +178,53 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     }
 }
 
+// MARK: - ChatsListCoordinator
+extension ChatsListViewPresenter: ChatsListCoordinator {
+    func update(presentOptions: ChatsList.PresentOptions) {
+        func prepareToAutoOpenWith(profile: MessagingChatUserProfileDisplayInfo,
+                                   dataType: ChatsListDataType) async throws {
+            await popToChatsList()
+            if selectedDataType != dataType {
+                selectedDataType = dataType
+                showData()
+            }
+            try await preselectProfile(profile, usingWallets: wallets)
+        }
+        
+        Task {
+            do {
+                let appCoordinator = appContext.coreAppCoordinator
+                switch presentOptions {
+                case .default:
+                    self.presentOptions = presentOptions
+                    return
+                case .showChat(let chatId, let profile):
+                    if selectedProfileWalletPair?.profile?.id != profile.id ||
+                        !appCoordinator.isActiveState(.chatOpened(chatId: chatId)) {
+                        try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
+                        tryAutoOpenChat(chatId, profile: profile)
+                    }
+                case .showChannel(let channelId, let profile):
+                    if selectedProfileWalletPair?.profile?.id != profile.id ||
+                        !appCoordinator.isActiveState(.channelOpened(channelId: channelId)) {
+                        try await prepareToAutoOpenWith(profile: profile, dataType: .channels)
+                        tryAutoOpenChannel(channelId, profile: profile)
+                    }
+                }
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+        }
+    }
+    
+    private func popToChatsList() async {
+        guard let view else { return }
+        
+        view.cNavigationController?.popToViewController(view, animated: true)
+        try? await Task.sleep(seconds: CNavigationController.animationDuration)
+    }
+}
+
 // MARK: - MessagingServiceListener
 extension ChatsListViewPresenter: MessagingServiceListener {
    nonisolated func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
@@ -190,6 +246,18 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                } else if profile.id == selectedProfileWalletPair?.profile?.id {
                    self.channels = channels
                    showData()
+               }
+           case .refreshOfUserProfile(let profile, _):
+               if profile.id == selectedProfileWalletPair?.profile?.id {
+                   updateNavigationUI()
+               }
+           case .messageReadStatusUpdated(let message, let numberOfUnreadMessagesInSameChat):
+               if message.userId == selectedProfileWalletPair?.profile?.id,
+                  let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
+                   chatsList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
+                   if numberOfUnreadMessagesInSameChat == 0 {
+                       showData()
+                   }
                }
            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded:
                return
@@ -219,7 +287,9 @@ private extension ChatsListViewPresenter {
                     try await preselectProfile(profile, usingWallets: wallets)
                     tryAutoOpenChat(chatId, profile: profile)
                 case .showChannel(let channelId, let profile):
+                    selectedDataType = .channels
                     try await preselectProfile(profile, usingWallets: wallets)
+                    showData()
                     tryAutoOpenChannel(channelId, profile: profile)
                 }
             } catch ChatsListError.noWalletsForChatting {
@@ -314,7 +384,7 @@ private extension ChatsListViewPresenter {
             try? await Task.sleep(seconds: dif)
         }
     }
-    
+  
     func selectProfileWalletPair(_ chatProfile: ChatProfileWalletPair) async throws {
         self.selectedProfileWalletPair = chatProfile
         
@@ -324,8 +394,7 @@ private extension ChatsListViewPresenter {
             profileWalletPairsCache.append(chatProfile)
         }
         
-        view?.setNavigationWith(selectedWallet: chatProfile.wallet,
-                                wallets: wallets)
+        updateNavigationUI()
         
         guard let profile = chatProfile.profile else {
             let state: MessagingProfileStateAnalytics = chatProfile.wallet.reverseResolutionDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet
@@ -354,6 +423,22 @@ private extension ChatsListViewPresenter {
         view?.setState(.chatsList)
         showData()
         appContext.messagingService.setCurrentUser(profile)
+    }
+    
+    func updateNavigationUI() {
+        guard let chatProfile = selectedProfileWalletPair else { return }
+        
+        var isLoading = false
+        if let profile = chatProfile.profile {
+            isLoading = appContext.messagingService.isUpdatingUserData(profile)
+        }
+        view?.setNavigationWith(selectedWallet: chatProfile.wallet,
+                                wallets: wallets.map({ .init(wallet: $0, numberOfUnreadMessages: unreadMessagesCountFor(wallet: $0)) }),
+                                isLoading: isLoading)
+    }
+    
+    func unreadMessagesCountFor(wallet: WalletDisplayInfo) -> Int? {
+        profileWalletPairsCache.first(where: { $0.wallet.address == wallet.address })?.profile?.unreadMessagesCount
     }
     
     func showData() {

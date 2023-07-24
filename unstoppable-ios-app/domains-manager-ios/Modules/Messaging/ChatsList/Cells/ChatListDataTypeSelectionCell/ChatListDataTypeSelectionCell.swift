@@ -59,6 +59,7 @@ private extension ChatListDataTypeSelectionCell {
                 badgeViewDetails.badgeView.setUnreadMessagesCount(badge)
             } else {
                 let badgeView = UnreadMessagesBadgeView()
+                badgeView.setConstraints()
                 badgeView.setUnreadMessagesCount(badge)
                 badgeView.setCounterLabel(hidden: true)
                 addSubview(badgeView)
