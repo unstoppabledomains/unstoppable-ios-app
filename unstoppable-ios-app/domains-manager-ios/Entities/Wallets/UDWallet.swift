@@ -8,7 +8,7 @@
 import Foundation
 import web3swift
 import CryptoSwift
-import Web3
+import Boilertalk_Web3
 import PromiseKit
 import UIKit
 

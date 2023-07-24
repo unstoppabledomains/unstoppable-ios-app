@@ -102,6 +102,9 @@
 		29BF9FE12A6ED48A00EDA0DF /* Web3 in Frameworks */ = {isa = PBXBuildFile; productRef = 29BF9FE02A6ED48A00EDA0DF /* Web3 */; };
 		29BF9FE32A6ED48A00EDA0DF /* Web3ContractABI in Frameworks */ = {isa = PBXBuildFile; productRef = 29BF9FE22A6ED48A00EDA0DF /* Web3ContractABI */; };
 		29BF9FE52A6ED48A00EDA0DF /* Web3PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 29BF9FE42A6ED48A00EDA0DF /* Web3PromiseKit */; };
+		29BF9FEE2A6F1CEC00EDA0DF /* Boilertalk-Web3 in Frameworks */ = {isa = PBXBuildFile; productRef = 29BF9FED2A6F1CEC00EDA0DF /* Boilertalk-Web3 */; };
+		29BF9FF02A6F1DEA00EDA0DF /* Web3ContractABI in Frameworks */ = {isa = PBXBuildFile; productRef = 29BF9FEF2A6F1DEA00EDA0DF /* Web3ContractABI */; };
+		29BF9FF22A6F1DEA00EDA0DF /* Web3PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 29BF9FF12A6F1DEA00EDA0DF /* Web3PromiseKit */; };
 		29C3C89F2A370E2A008781A9 /* WalletConnectSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 29C3C89E2A370E2A008781A9 /* WalletConnectSwift */; };
 		29C3C8A12A370E48008781A9 /* WalletConnectSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 29C3C8A02A370E48008781A9 /* WalletConnectSwift */; };
 		29D249852950B51B00193970 /* WalletConnect in Frameworks */ = {isa = PBXBuildFile; productRef = 29D249842950B51B00193970 /* WalletConnect */; };
@@ -307,11 +310,8 @@
 		307F85C4267B60300070A9A6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30BA2B2F2529020E0097817E /* Extensions.swift */; };
 		307F85C5267B60300070A9A6 /* NetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30AE8520257837B5003A0142 /* NetworkConfig.swift */; };
 		307F85CB267B60300070A9A6 /* PullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309748A125990ADF00846137 /* PullUpView.swift */; };
-		307F85D1267B60300070A9A6 /* Web3ContractABI in Frameworks */ = {isa = PBXBuildFile; productRef = 307F8573267B60300070A9A6 /* Web3ContractABI */; };
 		307F85D2267B60300070A9A6 /* Valet in Frameworks */ = {isa = PBXBuildFile; productRef = 307F8575267B60300070A9A6 /* Valet */; };
-		307F85D3267B60300070A9A6 /* Web3 in Frameworks */ = {isa = PBXBuildFile; productRef = 307F8574267B60300070A9A6 /* Web3 */; };
 		307F85D4267B60300070A9A6 /* Zesame in Frameworks */ = {isa = PBXBuildFile; productRef = 307F8577267B60300070A9A6 /* Zesame */; };
-		307F85D5267B60300070A9A6 /* Web3PromiseKit in Frameworks */ = {isa = PBXBuildFile; productRef = 307F8571267B60300070A9A6 /* Web3PromiseKit */; };
 		307F85DE267B60300070A9A6 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3046D392255C63A10099B482 /* Localizable.strings */; };
 		307F85E2267B60300070A9A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306486892527253C00388026 /* Assets.xcassets */; };
 		307F85ED267B60300070A9A6 /* apple-app-site-association in Resources */ = {isa = PBXBuildFile; fileRef = 304C928D25752625007A9F01 /* apple-app-site-association */; };
@@ -5042,22 +5042,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29BF9FF22A6F1DEA00EDA0DF /* Web3PromiseKit in Frameworks */,
+				29BF9FEE2A6F1CEC00EDA0DF /* Boilertalk-Web3 in Frameworks */,
 				29C3C8A12A370E48008781A9 /* WalletConnectSwift in Frameworks */,
-				307F85D1267B60300070A9A6 /* Web3ContractABI in Frameworks */,
 				C61ECD882A25BB0000E97D70 /* SocketIO in Frameworks */,
 				307F85D2267B60300070A9A6 /* Valet in Frameworks */,
 				29D249892950B51B00193970 /* WalletConnectNetworking in Frameworks */,
 				C623966A2A27242500363F60 /* Push in Frameworks */,
+				29BF9FF02A6F1DEA00EDA0DF /* Web3ContractABI in Frameworks */,
 				30D89F5D26A9EB6500251C2D /* Bugsnag in Frameworks */,
 				29D2498D2950B51B00193970 /* WalletConnectPush in Frameworks */,
 				29D2498B2950B51B00193970 /* WalletConnectPairing in Frameworks */,
 				30D89F5426A9E99100251C2D /* BigInt in Frameworks */,
-				307F85D3267B60300070A9A6 /* Web3 in Frameworks */,
 				C634028E2886549800AB5D38 /* SVGKit in Frameworks */,
 				307F85D4267B60300070A9A6 /* Zesame in Frameworks */,
 				30B6583B26A9E785004F707F /* Stripe in Frameworks */,
 				29D249852950B51B00193970 /* WalletConnect in Frameworks */,
-				307F85D5267B60300070A9A6 /* Web3PromiseKit in Frameworks */,
 				29D2498F2950B51B00193970 /* WalletConnectRouter in Frameworks */,
 				30CE604E26A9DF3200E0D29B /* web3swift in Frameworks */,
 				29D249912950B51B00193970 /* WalletConnectVerify in Frameworks */,
@@ -8639,9 +8639,6 @@
 			);
 			name = "domains-manager-ios  TESTFLIGHT DEV";
 			packageProductDependencies = (
-				307F8571267B60300070A9A6 /* Web3PromiseKit */,
-				307F8573267B60300070A9A6 /* Web3ContractABI */,
-				307F8574267B60300070A9A6 /* Web3 */,
 				307F8575267B60300070A9A6 /* Valet */,
 				307F8577267B60300070A9A6 /* Zesame */,
 				30CE604D26A9DF3200E0D29B /* web3swift */,
@@ -8659,6 +8656,9 @@
 				C61ECD872A25BB0000E97D70 /* SocketIO */,
 				C62396692A27242500363F60 /* Push */,
 				29C3C8A02A370E48008781A9 /* WalletConnectSwift */,
+				29BF9FED2A6F1CEC00EDA0DF /* Boilertalk-Web3 */,
+				29BF9FEF2A6F1DEA00EDA0DF /* Web3ContractABI */,
+				29BF9FF12A6F1DEA00EDA0DF /* Web3PromiseKit */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 307F8610267B60300070A9A6 /* domains-manager-ios  TESTFLIGHT DEV.app */;
@@ -13324,8 +13324,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/unstoppabledomains/Boilertalk-Web3.swift.git";
 			requirement = {
-				kind = exactVersion;
-				version = 0.5.3;
+				branch = "0-5-3-Version";
+				kind = branch;
 			};
 		};
 		29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */ = {
@@ -13382,14 +13382,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.2.1;
-			};
-		};
-		307F8572267B60300070A9A6 /* XCRemoteSwiftPackageReference "Web3.swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Boilertalk/Web3.swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.0;
 			};
 		};
 		307F8576267B60300070A9A6 /* XCRemoteSwiftPackageReference "Valet" */ = {
@@ -13553,6 +13545,21 @@
 			package = 29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */;
 			productName = Web3PromiseKit;
 		};
+		29BF9FED2A6F1CEC00EDA0DF /* Boilertalk-Web3 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */;
+			productName = "Boilertalk-Web3";
+		};
+		29BF9FEF2A6F1DEA00EDA0DF /* Web3ContractABI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */;
+			productName = Web3ContractABI;
+		};
+		29BF9FF12A6F1DEA00EDA0DF /* Web3PromiseKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */;
+			productName = Web3PromiseKit;
+		};
 		29C3C89E2A370E2A008781A9 /* WalletConnectSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */;
@@ -13672,21 +13679,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 307F83BF267A339F0070A9A6 /* XCRemoteSwiftPackageReference "BigInt" */;
 			productName = BigInt;
-		};
-		307F8571267B60300070A9A6 /* Web3PromiseKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 307F8572267B60300070A9A6 /* XCRemoteSwiftPackageReference "Web3.swift" */;
-			productName = Web3PromiseKit;
-		};
-		307F8573267B60300070A9A6 /* Web3ContractABI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 307F8572267B60300070A9A6 /* XCRemoteSwiftPackageReference "Web3.swift" */;
-			productName = Web3ContractABI;
-		};
-		307F8574267B60300070A9A6 /* Web3 */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 307F8572267B60300070A9A6 /* XCRemoteSwiftPackageReference "Web3.swift" */;
-			productName = Web3;
 		};
 		307F8575267B60300070A9A6 /* Valet */ = {
 			isa = XCSwiftPackageProductDependency;

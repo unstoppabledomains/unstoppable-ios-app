@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/unstoppabledomains/Boilertalk-Web3.swift.git",
       "state" : {
-        "revision" : "1a6830ecc093f0f19054fed4c135dfee7bebe2b2",
-        "version" : "0.5.3"
+        "branch" : "0-5-3-Version",
+        "revision" : "a8994a08bc598187ed06cd97b20df9745d263df3"
       }
     },
     {
