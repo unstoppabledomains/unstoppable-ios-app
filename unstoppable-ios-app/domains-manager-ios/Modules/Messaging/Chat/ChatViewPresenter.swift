@@ -178,7 +178,6 @@ extension ChatViewPresenter: MessagingServiceListener {
                    !messages.isEmpty {
                     await self.addMessages(messages)
                     showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
-                    loadMoreMessagesBefore(message: messages.last!)
                 }
             case .messageUpdated(let updatedMessage, var newMessage):
                 if case .existingChat(let chat) = conversationState,
