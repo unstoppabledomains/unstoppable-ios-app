@@ -461,7 +461,6 @@ private extension CoreDataMessagingStorageService {
         coreDataChat.avatarURL = displayInfo.avatarURL
         coreDataChat.isApproved = displayInfo.isApproved
         coreDataChat.lastMessageTime = displayInfo.lastMessageTime
-        print("LOGO: - Will save chat with id: \(displayInfo.id). thisUserWallet: \(displayInfo.thisUserDetails.wallet)")
         if let lastMessage = chat.displayInfo.lastMessage,
            let lastCoreDataMessage = getCoreDataChatMessageWith(id: lastMessage.id, userId: chat.userId) {
             coreDataChat.lastMessage = lastCoreDataMessage
@@ -589,7 +588,6 @@ private extension CoreDataMessagingStorageService {
         coreDataMessage.userId = chatMessage.userId
         saveMessageDisplayType(displayInfo.type, to: coreDataMessage)
         saveMessagingChatSender(displayInfo.senderType, to: coreDataMessage)
-        print("LOGO: - Will save message \(chatMessage.displayInfo.id). User: \(chatMessage.userId). isRead: \(chatMessage.displayInfo.isRead)")
         return coreDataMessage
     }
     
