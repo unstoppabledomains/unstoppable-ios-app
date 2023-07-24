@@ -410,8 +410,8 @@ extension MessagingService: MessagingServiceProtocol {
         var channel = channel
         channel.isCurrentUserSubscribed = subscribed
         if subscribed {
+            channel.isSearchResult = false
             let updatedChannel = await refreshChannelsMetadata([channel], storedChannels: [])
-            channel.isSearchResult = false 
             await storageService.saveChannels(updatedChannel, for: profile)
         } else {
             storageService.deleteChannel(channel)
