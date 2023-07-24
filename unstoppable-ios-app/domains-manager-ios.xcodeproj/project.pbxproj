@@ -3295,6 +3295,10 @@
 		C6D3B9C02A6EBC2B0091B279 /* PushServiceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9BE2A6EBC2B0091B279 /* PushServiceHelper.swift */; };
 		C6D3B9C12A6EBC2B0091B279 /* PushServiceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9BE2A6EBC2B0091B279 /* PushServiceHelper.swift */; };
 		C6D3B9C22A6EBC2B0091B279 /* PushServiceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9BE2A6EBC2B0091B279 /* PushServiceHelper.swift */; };
+		C6D3B9C42A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */; };
+		C6D3B9C52A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */; };
+		C6D3B9C62A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */; };
+		C6D3B9C72A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */; };
 		C6D5DAB32835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */; };
 		C6D5DAB42835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */; };
 		C6D5DAB52835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */; };
@@ -4839,6 +4843,7 @@
 		C6D3B9B42A6EB8DA0091B279 /* MessagingChannelsAPIServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChannelsAPIServiceProtocol.swift; sourceTree = "<group>"; };
 		C6D3B9B92A6EB8F80091B279 /* PushMessagingChannelsAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingChannelsAPIService.swift; sourceTree = "<group>"; };
 		C6D3B9BE2A6EBC2B0091B279 /* PushServiceHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushServiceHelper.swift; sourceTree = "<group>"; };
+		C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIService.swift; sourceTree = "<group>"; };
 		C6D5DAB12835505200379C38 /* AddCurrencyEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyEmptyCell.swift; sourceTree = "<group>"; };
 		C6D5DAB22835505200379C38 /* AddCurrencyEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyEmptyCell.xib; sourceTree = "<group>"; };
 		C6D5DABB2836021300379C38 /* CryptoRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoRecord.swift; sourceTree = "<group>"; };
@@ -8509,6 +8514,7 @@
 			children = (
 				C6F9FBC42A25C38900102F81 /* MessagingAPIServiceProtocol.swift */,
 				C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */,
+				C6D3B9C32A6EBF370091B279 /* XMTPMessagingAPIService.swift */,
 			);
 			path = MessagingAPI;
 			sourceTree = "<group>";
@@ -9673,6 +9679,7 @@
 				C6D6E4F72817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
 				C6526DD429D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
 				C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
+				C6D3B9C42A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */,
 				C685A96F2840A59B00E54044 /* TextBlackButton.swift in Sources */,
 				C66435E0288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift in Sources */,
 				C692C31F282E485C00C31393 /* SecuritySettingsViewController.swift in Sources */,
@@ -10813,6 +10820,7 @@
 				C6538DC42A32244400B63E84 /* CoreDataModel.xcdatamodeld in Sources */,
 				C62C3FC8283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824D2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
+				C6D3B9C62A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */,
 				C6D6E52E28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C6D6E4D62817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
 				C6F9FBEA2A25CB5800102F81 /* PushMessageType.swift in Sources */,
@@ -11848,6 +11856,7 @@
 				C628E35727FDB8560044E408 /* DashesProgressView.swift in Sources */,
 				C6C1EC5D2A3AD2F3005EB37D /* UIMenuDomainAvatarLoader.swift in Sources */,
 				C673D5B329FB725B001CC77C /* InviteFriendsViewController.swift in Sources */,
+				C6D3B9C72A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */,
 				C6124CD429223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
 				C6A474E729D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C63A352E28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */,
@@ -12078,6 +12087,7 @@
 				C645131228095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */,
 				C6526DD529D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
 				C6B366D32A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
+				C6D3B9C52A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */,
 				C6D6E4F82817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
 				C66435E1288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift in Sources */,
 				C685A9702840A59B00E54044 /* TextBlackButton.swift in Sources */,
