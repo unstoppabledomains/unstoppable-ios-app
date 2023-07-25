@@ -35,22 +35,22 @@ struct XMTPEntitiesTransformer {
         let thisUserInfo = MessagingChatUserDisplayInfo(wallet: userWallet)
         let chatType: MessagingChatType
         
-        // MARK: - Group chats not supported at the moment 
-//        if xmtpChat.isGroup {
-//            let groupChatDetails = MessagingGroupChatDetails(members: [],
-//                                                             pendingMembers: [],
-//                                                             name: "",
-//                                                             adminWallets: [userWallet],
-//                                                             isPublic: false)
-//            chatType = .group(groupChatDetails)
-//        } else {
-            let otherUserWallet = xmtpChat.peerAddress
-            let otherUserInfo = MessagingChatUserDisplayInfo(wallet: otherUserWallet)
-            let privateChatDetails = MessagingPrivateChatDetails(otherUser: otherUserInfo)
-            chatType = .private(privateChatDetails)
-//        }
+        // MARK: - Group chats not supported at the moment
+        //        if xmtpChat.isGroup {
+        //            let groupChatDetails = MessagingGroupChatDetails(members: [],
+        //                                                             pendingMembers: [],
+        //                                                             name: "",
+        //                                                             adminWallets: [userWallet],
+        //                                                             isPublic: false)
+        //            chatType = .group(groupChatDetails)
+        //        } else {
+        let otherUserWallet = xmtpChat.peerAddress
+        let otherUserInfo = MessagingChatUserDisplayInfo(wallet: otherUserWallet)
+        let privateChatDetails = MessagingPrivateChatDetails(otherUser: otherUserInfo)
+        chatType = .private(privateChatDetails)
+        //        }
         
-        let avatarURL: URL? = nil 
+        let avatarURL: URL? = nil
         let lastMessageTime = Date() // TODO: - Make optional?
         let chatId = xmtpChat.topic
         let displayInfo = MessagingChatDisplayInfo(id: chatId,
@@ -153,4 +153,30 @@ struct XMTPEntitiesTransformer {
         }
     }
     
+    static func convertXMTPMessageToWebSocketMessageEntity(_ xmtpMessage: XMTP.DecodedMessage,
+                                                           peerAddress: String,
+                                                           userAddress: String) -> MessagingWebSocketMessageEntity {
+        let id = xmtpMessage.id
+        let senderWallet = xmtpMessage.senderAddress
+        let receiverWallet = senderWallet == peerAddress ? userAddress : peerAddress
+        let serviceContent = XMTPEnvironmentNamespace.XMTPSocketMessageServiceContent(xmtpMessage: xmtpMessage)
+        return MessagingWebSocketMessageEntity(id: id,
+                                               senderWallet: senderWallet,
+                                               receiverWallet: receiverWallet,
+                                               serviceContent: serviceContent,
+                                               transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
+    }
+    
+    private static func convertMessagingWebSocketMessageEntityToChatMessage(_ webSocketMessage: MessagingWebSocketMessageEntity,
+                                                                    in chat: MessagingChat,
+                                                                    filesService: MessagingFilesServiceProtocol) -> MessagingChatMessage? {
+        guard let serviceContent = webSocketMessage.serviceContent as? XMTPEnvironmentNamespace.XMTPSocketMessageServiceContent else { return nil }
+        
+        let thisUserWallet = chat.displayInfo.thisUserDetails.wallet
+        
+        return convertXMTPMessageToChatMessage(serviceContent.xmtpMessage,
+                                               in: chat,
+                                               isRead: thisUserWallet == webSocketMessage.senderWallet,
+                                               filesService: filesService)
+    }
 }

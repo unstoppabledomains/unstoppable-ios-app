@@ -62,6 +62,10 @@ enum XMTPEnvironmentNamespace {
         }
     }
     
+    struct XMTPSocketMessageServiceContent {
+        let xmtpMessage: DecodedMessage
+    }
+    
 }
 
 extension Xmtp_MessageContents_Compression: Codable { }

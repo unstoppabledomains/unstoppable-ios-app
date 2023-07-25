@@ -26,11 +26,11 @@ extension XMTPMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
                 let env = xmtpHelper.getCurrentXMTPEnvironment()
                 let client = try await xmtpHelper.getClientFor(user: profile, env: env)
                 
-                listenForConversations(in: client, for: profileId)
+                listenForConversations(in: client, for: profileId, eventCallback: eventCallback)
 
                 let conversations = try await client.conversations.list()
                 for conversation in conversations {
-                    listenForMessages(in: conversation, for: profileId)
+                    listenForMessages(in: conversation, for: profileId, eventCallback: eventCallback)
                 }
                 
             } catch XMTPServiceHelper.XMTPHelperError.noClientKeys {
@@ -48,7 +48,7 @@ extension XMTPMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
 
 // MARK: - Private methods
 private extension XMTPMessagingWebSocketsService {
-    func listenForConversations(in client: Client, for profileId: String) {
+    func listenForConversations(in client: Client, for profileId: String, eventCallback: @escaping MessagingWebSocketEventCallback) {
         guard profileId == listeningProfileId else { return }
         Task {
             do {
@@ -58,22 +58,26 @@ private extension XMTPMessagingWebSocketsService {
                 }
             } catch {
                 try? await Task.sleep(seconds: 3)
-                listenForConversations(in: client, for: profileId)
+                listenForConversations(in: client, for: profileId, eventCallback: eventCallback)
             }
         }
     }
     
-    func listenForMessages(in conversation: Conversation, for profileId: String) {
+    func listenForMessages(in conversation: Conversation, for profileId: String, eventCallback: @escaping MessagingWebSocketEventCallback) {
         guard profileId == listeningProfileId else { return }
         Task {
             do {
                 for try await message in conversation.streamMessages() {
                     guard profileId == listeningProfileId else { break } /// There's no other way to stop listening at the moment
 
+                    let websocketMessage = XMTPEntitiesTransformer.convertXMTPMessageToWebSocketMessageEntity(message,
+                                                                                                              peerAddress: conversation.peerAddress,
+                                                                                                              userAddress: profileId)
+                    eventCallback(.chatReceivedMessage(websocketMessage))
                 }
             } catch {
                 try? await Task.sleep(seconds: 3)
-                listenForMessages(in: conversation, for: profileId)
+                listenForMessages(in: conversation, for: profileId, eventCallback: eventCallback)
             }
         }
     }
