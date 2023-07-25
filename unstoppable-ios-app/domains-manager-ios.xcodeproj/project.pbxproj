@@ -1672,6 +1672,10 @@
 		C64836C3282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */; };
 		C64836C4282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */; };
 		C64836C5282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */; };
+		C64BCB6C2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64BCB6B2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift */; };
+		C64BCB6D2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64BCB6B2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift */; };
+		C64BCB6E2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64BCB6B2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift */; };
+		C64BCB6F2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64BCB6B2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift */; };
 		C6500B432A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */; };
 		C6500B442A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */; };
 		C6500B452A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */; };
@@ -4454,6 +4458,7 @@
 		C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpViewService.swift; sourceTree = "<group>"; };
 		C64836BC282BCAFB007BD3F1 /* PrimaryDangerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryDangerButton.swift; sourceTree = "<group>"; };
 		C64836C1282CC435007BD3F1 /* WalletCopyAddressAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCopyAddressAction.swift; sourceTree = "<group>"; };
+		C64BCB6B2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingContentDecrypterService.swift; sourceTree = "<group>"; };
 		C6500B422A4189C800ACAA8C /* GhostPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostPrimaryButton.swift; sourceTree = "<group>"; };
 		C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelViewPresenter.swift; sourceTree = "<group>"; };
 		C6500B4D2A41924700ACAA8C /* ChannelFeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelFeedCell.swift; sourceTree = "<group>"; };
@@ -6819,6 +6824,7 @@
 			children = (
 				C6538DD22A330F7900B63E84 /* MessagingContentDecrypterService.swift */,
 				C6538DD72A3313A900B63E84 /* PushMessagingContentDecrypterService.swift */,
+				C64BCB6B2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift */,
 			);
 			path = Descryption;
 			sourceTree = "<group>";
@@ -9638,6 +9644,7 @@
 				C6C995C6289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */,
 				C6456F0627FF291D00A517D5 /* GradientView.swift in Sources */,
 				29BECD0E2979BD7B00662FC1 /* CloudStorage.swift in Sources */,
+				C64BCB6C2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift in Sources */,
 				C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
 				3004E32726D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */,
 				307B1D392603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */,
@@ -10573,6 +10580,7 @@
 				C66FCD0F2844FDB2009B9525 /* ConfettiImageView.swift in Sources */,
 				C6F6AF5B28A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */,
 				C691CFC628C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */,
+				C64BCB6E2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift in Sources */,
 				C6A474C929D149560073415F /* LoginFlowNavigationController.swift in Sources */,
 				C6C995B8289D313D00367362 /* CNavigationControllerDefaultNavigationBarPushAnimation.swift in Sources */,
 				C628E36527FDDAA00044E408 /* UILabel.swift in Sources */,
@@ -11743,6 +11751,7 @@
 				C6109E4828E5ABFE0027D5D8 /* TestsEnum.swift in Sources */,
 				307F85B0267B60300070A9A6 /* Debugger.swift in Sources */,
 				C608C8342877F9D300EDEC6E /* Double.swift in Sources */,
+				C64BCB6F2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift in Sources */,
 				C6ED3201295D433D00BC6919 /* DomainsCollectionTitleDomainInfoView.swift in Sources */,
 				C685A99E284101DA00E54044 /* DomainSelectionCell.swift in Sources */,
 				C671E3DC29027BB500A2B3A0 /* DomainProfileGeneralInfoSection.swift in Sources */,
@@ -12058,6 +12067,7 @@
 				C6C995C7289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */,
 				30AE84D1257836E2003A0142 /* User.swift in Sources */,
 				29BECD0F2979BD7B00662FC1 /* CloudStorage.swift in Sources */,
+				C64BCB6D2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift in Sources */,
 				C6456F0727FF291D00A517D5 /* GradientView.swift in Sources */,
 				C6D0F439283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
 				3004E32826D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */,
