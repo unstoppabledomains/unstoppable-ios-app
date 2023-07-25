@@ -10,10 +10,10 @@ import Foundation
 final class MessagingFilesService {
     
     private let fileManager = FileManager.default
-    private let decrypter: MessagingContentDecrypterService
+    private let decrypterService: MessagingContentDecrypterService
 
-    init(decrypter: MessagingContentDecrypterService) {
-        self.decrypter = decrypter
+    init(decrypterService: MessagingContentDecrypterService) {
+        self.decrypterService = decrypterService
         checkDirectoriesExists()
     }
     
@@ -25,7 +25,7 @@ extension MessagingFilesService: MessagingFilesServiceProtocol {
     @discardableResult
     func saveData(_ data: Data, fileName: String) throws -> URL {
         let base64 = data.base64EncodedString()
-        let encryptedBase64 = try decrypter.encryptText(base64)
+        let encryptedBase64 = try decrypterService.encryptText(base64)
         let encryptedData = try stringToBase64Data(encryptedBase64)
         return try saveEncryptedData(encryptedData, fileName: fileName)
     }
@@ -54,7 +54,7 @@ extension MessagingFilesService: MessagingFilesServiceProtocol {
         
         guard let encryptedDataURL = getEncryptedDataURLFor(fileName: fileName),
               let encryptedData = try? Data(contentsOf: encryptedDataURL),
-              let decryptedContent = try? decrypter.decryptText(encryptedData.base64EncodedString()),
+              let decryptedContent = try? decrypterService.decryptText(encryptedData.base64EncodedString()),
               let decryptedData = Base64DataTransformer.dataFrom(base64String: decryptedContent) else { return nil }
         
         return try? saveDecryptedData(decryptedData, fileName: fileName)

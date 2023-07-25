@@ -11,6 +11,11 @@ import CoreData
 final class CoreDataMessagingStorageService: CoreDataService {
     
     private let queue = DispatchQueue(label: "com.coredata")
+    private let decrypterService: MessagingContentDecrypterService
+    
+    init(decrypterService: MessagingContentDecrypterService) {
+        self.decrypterService = decrypterService
+    }
     
 }
 
@@ -69,7 +74,6 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     func getMessagesFor(chat: MessagingChat,
-                        decrypter: MessagingContentDecrypterService,
                         before message: MessagingChatMessageDisplayInfo?,
                         limit: Int) async throws -> [MessagingChatMessage] {
         try queue.sync {
@@ -90,40 +94,35 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                                                                                    fetchSize: limit,
                                                                                    from: backgroundContext)
             return coreDataMessages.compactMap { convertCoreDataMessageToChatMessage($0,
-                                                                                     decrypter: decrypter,
                                                                                      wallet: chat.displayInfo.thisUserDetails.wallet) }
         }
     }
     
     func getMessageWith(id: String,
-                        in chat: MessagingChat,
-                        decrypter: MessagingContentDecrypterService) async -> MessagingChatMessage? {
+                        in chat: MessagingChat) async -> MessagingChatMessage? {
         queue.sync {
             if let coreDataMessage = getCoreDataChatMessageWith(id: id, userId: chat.userId) {
                 return convertCoreDataMessageToChatMessage(coreDataMessage,
-                                                           decrypter: decrypter,
                                                            wallet: chat.displayInfo.thisUserDetails.wallet)
             }
             return nil
         }
     }
     
-    func saveMessages(_ messages: [MessagingChatMessage],
-                      decrypter: MessagingContentDecrypterService) async {
+    func saveMessages(_ messages: [MessagingChatMessage]) async {
         queue.sync {
-            let _ = messages.compactMap { (try? convertChatMessageToCoreDataMessage($0, decrypter: decrypter)) }
+            let _ = messages.compactMap { (try? convertChatMessageToCoreDataMessage($0)) }
             saveContext(backgroundContext)
         }
     }
     
     func replaceMessage(_ messageToReplace: MessagingChatMessage,
-                        with newMessage: MessagingChatMessage,
-                        decrypter: MessagingContentDecrypterService) async throws {
+                        with newMessage: MessagingChatMessage) async throws {
         try queue.sync {
             guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataChatMessageWith(id: messageToReplace.displayInfo.id, userId: messageToReplace.displayInfo.userId) else { throw Error.entityNotFound }
             
             deleteObject(coreDataMessage, from: backgroundContext, shouldSaveContext: false)
-            _ = try? convertChatMessageToCoreDataMessage(newMessage, decrypter: decrypter)
+            _ = try? convertChatMessageToCoreDataMessage(newMessage)
             saveContext(backgroundContext)
         }
     }
@@ -155,26 +154,22 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     // Chats
-    func getChatsFor(profile: MessagingChatUserProfile,
-                     decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat] {
+    func getChatsFor(profile: MessagingChatUserProfile) async throws -> [MessagingChat] {
         try queue.sync {
             let predicate = NSPredicate(format: "userId == %@", profile.id)
             let timeSortDescriptor = NSSortDescriptor(key: "lastMessageTime", ascending: false)
             let coreDataChats: [CoreDataMessagingChat] = try getEntities(predicate: predicate,
                                                                          sortDescriptions: [timeSortDescriptor],
                                                                          from: backgroundContext)
-            return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0,
-                                                                                 decrypter: decrypter) }.sortedByLastMessage()
+            return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0) }.sortedByLastMessage()
         }
     }
     
     func getChatWith(id: String,
-                     of userId: String,
-                     decrypter: MessagingContentDecrypterService) async -> MessagingChat? {
+                     of userId: String) async -> MessagingChat? {
         queue.sync {
             if let coreDataChat = getCoreDataChatWith(id: id, userId: userId) {
-                return convertCoreDataChatToMessagingChat(coreDataChat,
-                                                          decrypter: decrypter)
+                return convertCoreDataChatToMessagingChat(coreDataChat)
             }
             return nil
         }
@@ -414,8 +409,7 @@ private extension CoreDataMessagingStorageService {
 
 // MARK: - Chats parsing
 private extension CoreDataMessagingStorageService {
-    func convertCoreDataChatToMessagingChat(_ coreDataChat: CoreDataMessagingChat,
-                                            decrypter: MessagingContentDecrypterService) -> MessagingChat? {
+    func convertCoreDataChatToMessagingChat(_ coreDataChat: CoreDataMessagingChat) -> MessagingChat? {
         guard let chatType = getChatType(from: coreDataChat) else { return nil }
         
         let serviceMetadata = coreDataChat.serviceMetadata
@@ -424,13 +418,11 @@ private extension CoreDataMessagingStorageService {
         var lastMessage: MessagingChatMessageDisplayInfo?
         if let coreDataLastMessage = coreDataChat.lastMessage,
            let message = convertCoreDataMessageToChatMessage(coreDataLastMessage,
-                                                             decrypter: decrypter,
                                                              wallet: coreDataChat.thisUserWallet!) {
             lastMessage = message.displayInfo
         } else if let lastMessageId = coreDataChat.lastMessageId,
                   let coreDataLastMessage = getCoreDataChatMessageWith(id: lastMessageId, userId: coreDataChat.userId!),
                   let message = convertCoreDataMessageToChatMessage(coreDataLastMessage,
-                                                                    decrypter: decrypter,
                                                                     wallet: coreDataChat.thisUserWallet!) {
             lastMessage = message.displayInfo
         }
@@ -551,11 +543,9 @@ private extension CoreDataMessagingStorageService {
 // MARK: - Message parsing
 private extension CoreDataMessagingStorageService {
     func convertCoreDataMessageToChatMessage(_ coreDataMessage: CoreDataMessagingChatMessage,
-                                             decrypter: MessagingContentDecrypterService,
                                              wallet: String) -> MessagingChatMessage? {
         let deliveryState = MessagingChatMessageDisplayInfo.DeliveryState(rawValue: Int(coreDataMessage.deliveryState))!
         guard let type = getMessageDisplayType(from: coreDataMessage,
-                                               decrypter: decrypter,
                                                deliveryState: deliveryState) else { return nil }
         
         let senderType = getMessagingChatSender(from: coreDataMessage)
@@ -575,8 +565,7 @@ private extension CoreDataMessagingStorageService {
                                     serviceMetadata: coreDataMessage.serviceMetadata)
     }
     
-    func convertChatMessageToCoreDataMessage(_ chatMessage: MessagingChatMessage,
-                                             decrypter: MessagingContentDecrypterService) throws -> CoreDataMessagingChatMessage {
+    func convertChatMessageToCoreDataMessage(_ chatMessage: MessagingChatMessage) throws -> CoreDataMessagingChatMessage {
         let coreDataMessage: CoreDataMessagingChatMessage = try createEntity(in: backgroundContext)
         let displayInfo = chatMessage.displayInfo
         coreDataMessage.serviceMetadata = chatMessage.serviceMetadata
@@ -588,14 +577,13 @@ private extension CoreDataMessagingStorageService {
         coreDataMessage.deliveryState = Int64(displayInfo.deliveryState.rawValue)
         coreDataMessage.userId = chatMessage.userId
         coreDataMessage.isEncrypted = displayInfo.isEncrypted
-        try saveMessageDisplayType(displayInfo.type, to: coreDataMessage, decrypter: decrypter)
+        try saveMessageDisplayType(displayInfo.type, to: coreDataMessage)
         saveMessagingChatSender(displayInfo.senderType, to: coreDataMessage)
         return coreDataMessage
     }
     
     // Message type
     func getMessageDisplayType(from coreDataMessage: CoreDataMessagingChatMessage,
-                               decrypter: MessagingContentDecrypterService,
                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState) -> MessagingChatMessageDisplayType? {
         let typesWithContentInCoreData: Set<Int64> = [0, 1, 2]
         if typesWithContentInCoreData.contains(coreDataMessage.messageType) {
@@ -603,7 +591,7 @@ private extension CoreDataMessagingStorageService {
             
             var decryptedContent = messageContent
             if deliveryState == .delivered {
-                guard let decrypted = try? decrypter.decryptText(messageContent) else {
+                guard let decrypted = try? decrypterService.decryptText(messageContent) else {
                     return nil }
                 decryptedContent = decrypted
             }
@@ -636,21 +624,20 @@ private extension CoreDataMessagingStorageService {
     }
     
     func saveMessageDisplayType(_ messageType: MessagingChatMessageDisplayType,
-                                to coreDataMessage: CoreDataMessagingChatMessage,
-                                decrypter: MessagingContentDecrypterService) throws {
+                                to coreDataMessage: CoreDataMessagingChatMessage) throws {
         switch messageType {
         case .text(let info):
             coreDataMessage.messageType = 0
-            let encryptedContent = try decrypter.encryptText(info.text)
+            let encryptedContent = try decrypterService.encryptText(info.text)
             coreDataMessage.messageContent = encryptedContent
         case .imageBase64(let info):
             coreDataMessage.messageType = 1
-            let encryptedContent = try decrypter.encryptText(info.base64)
+            let encryptedContent = try decrypterService.encryptText(info.base64)
             coreDataMessage.messageContent = encryptedContent
         case .imageData(let info):
             coreDataMessage.messageType = 2
             let content = info.data.base64EncodedString()
-            let encryptedContent = try decrypter.encryptText(content)
+            let encryptedContent = try decrypterService.encryptText(content)
             coreDataMessage.messageContent = encryptedContent
         case .unknown(let info):
             coreDataMessage.messageType = 999
