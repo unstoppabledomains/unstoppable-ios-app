@@ -208,8 +208,10 @@ extension XMTPMessagingAPIService {
         public var errorDescription: String? { rawValue }
     }
 }
+
 extension DomainItem: SigningKey {
     var address: String { ownerWallet ?? "" }
+    
     func sign(_ data: Data) async throws -> XMTP.Signature {
         .init()
     }
