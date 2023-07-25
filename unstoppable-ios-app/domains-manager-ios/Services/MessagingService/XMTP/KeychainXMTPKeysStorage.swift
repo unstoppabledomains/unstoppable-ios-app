@@ -7,6 +7,7 @@
 
 import Foundation
 import Valet
+import XMTP
 
 protocol KeychainXMTPKeysStorageProtocol {
     func saveKeysData(_ keysData: Data,

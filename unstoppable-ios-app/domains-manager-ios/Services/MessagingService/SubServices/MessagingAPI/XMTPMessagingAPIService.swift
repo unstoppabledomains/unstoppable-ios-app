@@ -6,13 +6,13 @@
 //
 
 import Foundation
+import XMTP
 
 final class XMTPMessagingAPIService {
     
     private let messagingHelper = MessagingAPIServiceHelper()
 
 }
-
 
 // MARK: - MessagingAPIServiceProtocol
 extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
@@ -123,8 +123,7 @@ private extension XMTPMessagingAPIService {
     
     func createClientUsing(keysData: Data,
                            env: XMTPEnvironment) async throws -> XMTP.Client {
-        let keys = try PrivateKeyBundle(serializedData: keysData,
-                                        env: env)
+        let keys = try PrivateKeyBundle(serializedData: keysData)
         let client = try await XMTP.Client.from(bundle: keys,
                                                 options: .init(api: .init(env: env)))
         return client
@@ -140,18 +139,7 @@ private extension XMTPMessagingAPIService {
     }
 }
 
-enum XMTP {
-    struct Client {
-        var privateKeyBundle: PrivateKeyBundle = .mock
-        var address: String = ""
-        static func create(account: SigningKey, options: ClientOptions? = nil) async throws -> Client {
-            .init()
-        }
-        static func from(bundle: PrivateKeyBundle, options: ClientOptions? = nil) async throws -> Client {
-            .init()
-        }
-    }
-}
+
 // MARK: - Open methods
 extension XMTPMessagingAPIService {
     enum XMTPServiceError: String, Error {
@@ -164,49 +152,11 @@ extension XMTPMessagingAPIService {
 }
 extension DomainItem: SigningKey {
     var address: String { ownerWallet ?? "" }
-    func sign(_ data: Data) async throws -> String { "" }
-    func sign(message: String) async throws -> String { "" }
-}
-
-///////////////////////////////////////////////////////////////////////
-
-
-protocol SigningKey {
-    var address: String { get }
-    func sign(_ data: Data) async throws -> String
-    func sign(message: String) async throws -> String
-}
-/// Specify configuration options for creating a ``Client``.
-struct ClientOptions {
-    // Specify network options
-    struct Api {
-        var env: XMTPEnvironment = .dev
-        var isSecure: Bool = true
-        init(env: XMTPEnvironment = .dev, isSecure: Bool = true) {
-            self.env = env
-            self.isSecure = isSecure
-        }
+    func sign(_ data: Data) async throws -> XMTP.Signature {
+        .init()
     }
     
-    var api = Api()
-    var codecs: [String] = []
-    
-    init(api: Api = Api(), codecs: [String] = []) {
-        self.api = api
-        self.codecs = codecs
+    func sign(message: String) async throws -> XMTP.Signature {
+        .init()
     }
-}
-enum PrivateKeyBundle {
-    case mock
-    func serializedData() throws -> Data { Data() }
-    
-    init(serializedData: Data,
-         env: XMTPEnvironment) throws {
-        self = .mock
-    }
-}
-enum XMTPEnvironment: String {
-    case dev = "dev.xmtp.network",
-         production = "production.xmtp.network",
-         local = "localhost"
 }
