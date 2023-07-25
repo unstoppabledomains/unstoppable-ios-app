@@ -9,9 +9,13 @@ import Foundation
 import Valet
 
 protocol KeychainXMTPKeysStorageProtocol {
-    func saveKeysData(_ keysData: Data, forIdentifier identifier: String)
-    func getKeysDataFor(identifier: String) -> Data?
-    func clearKeysDataFor(identifier: String)
+    func saveKeysData(_ keysData: Data,
+                      forIdentifier identifier: String,
+                      env: XMTPEnvironment)
+    func getKeysDataFor(identifier: String,
+                        env: XMTPEnvironment) -> Data?
+    func clearKeysDataFor(identifier: String,
+                          env: XMTPEnvironment)
 }
 
 struct KeychainXMTPKeysStorage: PrivateKeyStorage, KeychainXMTPKeysStorageProtocol {
@@ -27,27 +31,34 @@ struct KeychainXMTPKeysStorage: PrivateKeyStorage, KeychainXMTPKeysStorageProtoc
     
     static var instance: KeychainXMTPKeysStorageProtocol = KeychainXMTPKeysStorage()
     
-    func saveKeysData(_ keysData: Data, forIdentifier identifier: String) {
-        let key = getKeyFor(identifier: identifier)
+    func saveKeysData(_ keysData: Data, forIdentifier identifier: String,
+                      env: XMTPEnvironment) {
+        let key = getKeyFor(identifier: identifier,
+                            env: env)
         store(data: keysData, for: key)
     }
     
-    func getKeysDataFor(identifier: String) -> Data? {
-        let key = getKeyFor(identifier: identifier)
+    func getKeysDataFor(identifier: String,
+                        env: XMTPEnvironment) -> Data? {
+        let key = getKeyFor(identifier: identifier,
+                            env: env)
         return retrieveData(for: key, isCritical: false)
     }
  
-    func clearKeysDataFor(identifier: String)  {
-        let key = getKeyFor(identifier: identifier)
+    func clearKeysDataFor(identifier: String,
+                          env: XMTPEnvironment)  {
+        let key = getKeyFor(identifier: identifier,
+                            env: env)
         clear(forKey: key)
     }
     
-    private func getKeyFor(identifier: String) -> String {
-        xmtpPrefix + identifier + "_" + environmentIdentifier()
+    private func getKeyFor(identifier: String,
+                           env: XMTPEnvironment) -> String {
+        xmtpPrefix + identifier + "_" + environmentIdentifier(env: env)
     }
     
-    private func environmentIdentifier() -> String {
-        User.instance.getSettings().isTestnetUsed ? "testnet" : "mainnet"
+    private func environmentIdentifier(env: XMTPEnvironment) -> String {
+        env == .dev ? "testnet" : "mainnet"
     }
     
 }

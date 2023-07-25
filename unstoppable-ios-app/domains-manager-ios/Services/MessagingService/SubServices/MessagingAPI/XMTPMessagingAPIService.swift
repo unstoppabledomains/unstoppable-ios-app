@@ -18,13 +18,20 @@ final class XMTPMessagingAPIService {
 extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
         let env = getCurrentXMTPEnvironment()
-        let client = try await XMTP.Client.create(account: domain, options: .init(api: .init(env: env, isSecure: true)))
-        try storeKeysDataFromClientIfNeeded(client, domain: domain)
+        let client = try await XMTP.Client.create(account: domain,
+                                                  options: .init(api: .init(env: env,
+                                                                            isSecure: true)))
+        try storeKeysDataFromClientIfNeeded(client, domain: domain, env: env)
         let userProfile = XMTPEntitiesTransformer.convertXMTPClientToChatUser(client)
         return userProfile
     }
     
     func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile {
+        let env = getCurrentXMTPEnvironment()
+        let client = try await XMTP.Client.create(account: domain,
+                                                  options: .init(api: .init(env: env,
+                                                                            isSecure: true)))
+
         throw XMTPServiceError.noDomainForWallet
         
     }
@@ -83,32 +90,44 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
 
 // MARK: - Private methods
 private extension XMTPMessagingAPIService {
-    func storeKeysDataFromClientIfNeeded(_ client: XMTP.Client, domain: DomainItem) throws {
+    func storeKeysDataFromClientIfNeeded(_ client: XMTP.Client,
+                                         domain: DomainItem,
+                                         env: XMTPEnvironment) throws {
         let wallet = try domain.getETHAddressThrowing()
-        guard KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet) == nil else { return } // Already saved
+        guard KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) == nil else { return } // Already saved
         
-        try storeKeysDataFrom(client: client, domain: domain)
-    }
-    
-    @discardableResult
-    func storeKeysDataFrom(client: XMTP.Client, domain: DomainItem) throws -> Data {
-        let wallet = try domain.getETHAddressThrowing()
         let keysData = try client.privateKeyBundle.serializedData()
         KeychainXMTPKeysStorage.instance.saveKeysData(keysData,
-                                                      forIdentifier: wallet)
-        return keysData
+                                                      forIdentifier: wallet, env: env)
     }
     
-    func getClientKeysDataFor(user: MessagingChatUserProfile,
-                              env: XMTPEnvironment) async throws -> Data {
+    func getClientFor(user: MessagingChatUserProfile,
+                      env: XMTPEnvironment) async throws -> XMTP.Client {
         let wallet = user.wallet
-        if let key = KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet) {
-            return key
+        return try await getClientFor(wallet: wallet, env: env)
+    }
+    
+    func getClientFor(domain: DomainItem,
+                      env: XMTPEnvironment) async throws -> XMTP.Client {
+        let wallet = try domain.getETHAddressThrowing()
+        return try await getClientFor(wallet: wallet, env: env)
+    }
+    
+    func getClientFor(wallet: String,
+                      env: XMTPEnvironment) async throws -> XMTP.Client {
+        if let keysData = KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) {
+            return try await createClientUsing(keysData: keysData, env: env)
         }
-        
-        let domain = try await getAnyDomainItem(for: wallet)
-        let client = try await XMTP.Client.create(account: domain, options: .init(api: .init(env: env, isSecure: true)))
-        return try storeKeysDataFrom(client: client, domain: domain)
+        throw XMTPServiceError.noClientKeys
+    }
+    
+    func createClientUsing(keysData: Data,
+                           env: XMTPEnvironment) async throws -> XMTP.Client {
+        let keys = try PrivateKeyBundle(serializedData: keysData,
+                                        env: env)
+        let client = try await XMTP.Client.from(bundle: keys,
+                                                options: .init(api: .init(env: env)))
+        return client
     }
     
     func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
@@ -128,12 +147,16 @@ enum XMTP {
         static func create(account: SigningKey, options: ClientOptions? = nil) async throws -> Client {
             .init()
         }
+        static func from(bundle: PrivateKeyBundle, options: ClientOptions? = nil) async throws -> Client {
+            .init()
+        }
     }
 }
 // MARK: - Open methods
 extension XMTPMessagingAPIService {
     enum XMTPServiceError: String, Error {
         case unsupportedAction
+        case noClientKeys
         case noDomainForWallet
 
         public var errorDescription: String? { rawValue }
@@ -176,6 +199,11 @@ struct ClientOptions {
 enum PrivateKeyBundle {
     case mock
     func serializedData() throws -> Data { Data() }
+    
+    init(serializedData: Data,
+         env: XMTPEnvironment) throws {
+        self = .mock
+    }
 }
 enum XMTPEnvironment: String {
     case dev = "dev.xmtp.network",
