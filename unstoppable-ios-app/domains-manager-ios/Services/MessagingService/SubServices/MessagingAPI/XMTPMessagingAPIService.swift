@@ -213,10 +213,19 @@ extension DomainItem: SigningKey {
     var address: String { ownerWallet ?? "" }
     
     func sign(_ data: Data) async throws -> XMTP.Signature {
-        .init()
+        try await sign(message: HexAddress.hexPrefix + data.dataToHexString())
     }
     
     func sign(message: String) async throws -> XMTP.Signature {
-        .init()
+        guard let udWalletAddress = ownerWallet,
+              let udWallet = appContext.udWalletsService.find(by: udWalletAddress) else {
+            throw UDWallet.Error.failedToFindWallet }
+        let sign = try await udWallet.getPersonalSignature(messageString: message)
+        let bytes = sign.hexToBytes()
+        if bytes.count == 65 {
+            return .init(bytes: Data(bytes[0...63]), recovery: Int(bytes[64]))
+        } else {
+            return .init(bytes: Data(bytes[0...63]), recovery: 27)
+        }
     }
 }
