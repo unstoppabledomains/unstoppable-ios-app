@@ -17,8 +17,20 @@ struct MessagingAPIServiceHelper {
         return domain
     }
     
+    func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
+        guard let data else {
+            throw MessagingHelperError.failedToDecodeServiceData
+        }
+        guard let serviceMetadata = T.objectFromData(data) else {
+            throw MessagingHelperError.failedToDecodeServiceData
+        }
+        
+        return serviceMetadata
+    }
+    
     enum MessagingHelperError: String, LocalizedError {
         case noDomainForWallet
+        case failedToDecodeServiceData
         
         public var errorDescription: String? { rawValue }
     }

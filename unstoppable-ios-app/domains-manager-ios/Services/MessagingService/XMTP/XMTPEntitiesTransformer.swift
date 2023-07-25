@@ -50,8 +50,8 @@ struct XMTPEntitiesTransformer {
             chatType = .private(privateChatDetails)
 //        }
         
-        var avatarURL: URL?
-        var lastMessageTime = Date() // TODO: - Make optional?
+        let avatarURL: URL? = nil 
+        let lastMessageTime = Date() // TODO: - Make optional?
         let chatId = xmtpChat.topic
         let displayInfo = MessagingChatDisplayInfo(id: chatId,
                                                    thisUserDetails: thisUserInfo,
@@ -70,5 +70,87 @@ struct XMTPEntitiesTransformer {
         return chat
     }
     
+    static func convertXMTPMessageToChatMessage(_ xmtpMessage: XMTP.DecodedMessage,
+                                                in chat: MessagingChat,
+                                                isRead: Bool,
+                                                filesService: MessagingFilesServiceProtocol) -> MessagingChatMessage? {
+        let id = xmtpMessage.id
+        let userId = chat.userId
+        let metadataModel = XMTPEnvironmentNamespace.MessageServiceMetadata(encodedContent: xmtpMessage.encodedContent)
+        guard let serviceMetadata = metadataModel.jsonData(),
+              let type = try? extractMessageType(from: xmtpMessage,
+                                                 messageId: id,
+                                                 userId: userId,
+                                                 encryptedData: serviceMetadata,
+                                                 filesService: filesService) else { return nil }
+        
+        let senderWallet = xmtpMessage.senderAddress
+        let userDisplayInfo = MessagingChatUserDisplayInfo(wallet: senderWallet)
+        let sender: MessagingChatSender
+        if chat.displayInfo.thisUserDetails.wallet == senderWallet {
+            sender = .thisUser(userDisplayInfo)
+        } else {
+            sender = .otherUser(userDisplayInfo)
+        }
+        let time = xmtpMessage.sent
+        let isMessageEncrypted = true
+        
+        
+        
+        let displayInfo = MessagingChatMessageDisplayInfo(id: id,
+                                                          chatId: chat.displayInfo.id,
+                                                          userId: userId,
+                                                          senderType: sender,
+                                                          time: time,
+                                                          type: type,
+                                                          isRead: isRead,
+                                                          isFirstInChat: false, // TODO: - Set this property
+                                                          deliveryState: .delivered,
+                                                          isEncrypted: isMessageEncrypted)
+        let chatMessage = MessagingChatMessage(userId: userId,
+                                               displayInfo: displayInfo,
+                                               serviceMetadata: serviceMetadata)
+        return chatMessage
+    }
+    
+    
+    private static func extractMessageType(from xmtpMessage: XMTP.DecodedMessage,
+                                           messageId: String,
+                                           userId: String,
+                                           encryptedData: Data,
+                                           filesService: MessagingFilesServiceProtocol) throws -> MessagingChatMessageDisplayType {
+        let typeId = xmtpMessage.encodedContent.type.typeID
+        if let knownType = XMTPEnvironmentNamespace.KnownType(rawValue: typeId) {
+            switch knownType {
+            case .text:
+                let decryptedContent: String = try xmtpMessage.content()
+                let encryptedContent = ""
+                let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
+                                                                              encryptedText: encryptedContent)
+                return .text(textDisplayInfo)
+            case .attachment:
+                let attachment: XMTP.Attachment = try xmtpMessage.content()
+                let name = attachment.filename
+                let data = attachment.data
+                
+                
+                let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + name
+                try filesService.saveEncryptedData(encryptedData, fileName: fileName)
+                let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
+                                                                                    type: typeId,
+                                                                                    name: name,
+                                                                                    size: data.count)
+                return .unknown(unknownDisplayInfo)
+            }
+        } else {
+            let fileName = messageId + "_" + String(userId.suffix(4))
+            try filesService.saveEncryptedData(encryptedData, fileName: fileName)
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
+                                                                                type: typeId,
+                                                                                name: nil,
+                                                                                size: nil)
+            return .unknown(unknownDisplayInfo)
+        }
+    }
     
 }

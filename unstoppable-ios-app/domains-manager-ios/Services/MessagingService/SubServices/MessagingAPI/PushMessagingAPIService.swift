@@ -504,14 +504,7 @@ private extension PushMessagingAPIService {
     }
     
     func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
-        guard let data else {
-            throw PushMessagingAPIServiceError.failedToDecodeServiceData
-        }
-        guard let serviceMetadata = T.objectFromData(data) else {
-            throw PushMessagingAPIServiceError.failedToDecodeServiceData
-        }
-        
-        return serviceMetadata
+        try messagingHelper.decodeServiceMetadata(from: data)
     }
    
     func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType) throws -> String {

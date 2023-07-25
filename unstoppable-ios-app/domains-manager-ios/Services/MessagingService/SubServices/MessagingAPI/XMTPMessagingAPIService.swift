@@ -68,12 +68,24 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     
     func setUser(in chat: MessagingChat, blocked: Bool, by user: MessagingChatUserProfile) async throws {
         throw XMTPServiceError.unsupportedAction
-        
     }
     
-    func getMessagesForChat(_ chat: MessagingChat, before message: MessagingChatMessage?, cachedMessages: [MessagingChatMessage], fetchLimit: Int, isRead: Bool, for user: MessagingChatUserProfile, filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
+    func getMessagesForChat(_ chat: MessagingChat,
+                            before message: MessagingChatMessage?,
+                            cachedMessages: [MessagingChatMessage],
+                            fetchLimit: Int,
+                            isRead: Bool,
+                            for user: MessagingChatUserProfile,
+                            filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
+        let env = getCurrentXMTPEnvironment()
+        let client = try await getClientFor(user: user, env: env)
+        let conversation = try getXMTPConversationFromChat(chat, client: client )
+        let messages = try await conversation.messages(limit: fetchLimit, before: message?.displayInfo.time)
         
-        throw XMTPServiceError.unsupportedAction
+        return messages.compactMap({ XMTPEntitiesTransformer.convertXMTPMessageToChatMessage($0,
+                                                                                             in: chat,
+                                                                                             isRead: isRead,
+                                                                                             filesService: filesService) })
     }
     
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool {
@@ -86,7 +98,6 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType, to userInfo: MessagingChatUserDisplayInfo, by user: MessagingChatUserProfile, filesService: MessagingFilesServiceProtocol) async throws -> (MessagingChat, MessagingChatMessage) {
         throw XMTPServiceError.unsupportedAction
-        
     }
     
     func makeChatRequest(_ chat: MessagingChat, approved: Bool, by user: MessagingChatUserProfile) async throws {
@@ -95,6 +106,15 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     
     func leaveGroupChat(_ chat: MessagingChat, by user: MessagingChatUserProfile) async throws {
         throw XMTPServiceError.unsupportedAction
+    }
+}
+
+// MARK: - Private methods
+private extension XMTPMessagingAPIService {
+    func getXMTPConversationFromChat(_ chat: MessagingChat,
+                                     client: XMTP.Client) throws -> XMTP.Conversation {
+        let metadata: XMTPEnvironmentNamespace.ChatServiceMetadata = try messagingHelper.decodeServiceMetadata(from: chat.serviceMetadata)
+        return metadata.encodedContainer.decode(with: client)
     }
 }
 
