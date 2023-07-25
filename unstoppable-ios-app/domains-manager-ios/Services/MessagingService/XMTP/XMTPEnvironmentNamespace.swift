@@ -62,6 +62,10 @@ enum XMTPEnvironmentNamespace {
         }
     }
     
+    struct XMTPSocketChatServiceContent {
+        let conversation: Conversation
+    }
+    
     struct XMTPSocketMessageServiceContent {
         let xmtpMessage: DecodedMessage
     }

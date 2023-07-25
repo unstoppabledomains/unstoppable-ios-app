@@ -179,4 +179,22 @@ struct XMTPEntitiesTransformer {
                                                isRead: thisUserWallet == webSocketMessage.senderWallet,
                                                filesService: filesService)
     }
+    
+    static func convertXMTPConversationToWebSocketChatEntity(_ conversation: Conversation,
+                                                             userId: String) -> MessagingWebSocketChatEntity {
+        let serviceContent = XMTPEnvironmentNamespace.XMTPSocketChatServiceContent(conversation: conversation)
+        return MessagingWebSocketChatEntity(userId: userId,
+                                            serviceContent: serviceContent,
+                                            transformToChatBlock: convertMessagingWebSocketChatEntityToChat)
+    }
+    
+    private static func convertMessagingWebSocketChatEntityToChat(_ webSocketChat: MessagingWebSocketChatEntity,
+                                                                  profile: MessagingChatUserProfile) -> MessagingChat? {
+        guard let serviceContent = webSocketChat.serviceContent as? XMTPEnvironmentNamespace.XMTPSocketChatServiceContent else { return nil }
+        
+        return convertXMTPChatToChat(serviceContent.conversation,
+                                     userId: profile.id,
+                                     userWallet: profile.wallet,
+                                     isApproved: true)
+    }
 }

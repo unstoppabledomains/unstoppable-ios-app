@@ -971,6 +971,13 @@ private extension MessagingService {
                 case .chatReceivedMessage(let message):
                     let chatMessages = try await convertMessagingWebSocketMessageEntityToMessage(message)
                     await addNewChatMessages(chatMessages)
+                case .newChat(let webSocketsChat):
+                    let profile = try storageService.getUserProfileWith(userId: webSocketsChat.userId)
+                    guard let chat = webSocketsChat.transformToChatBlock(webSocketsChat, profile) else { return }
+                    
+                    let updatedChats = await refreshChatsMetadata(remoteChats: [chat], localChats: [], for: profile)
+                    await storageService.saveChats(updatedChats)
+                    notifyChatsChanged(wallet: profile.wallet)
                 }
             } catch { }
         }

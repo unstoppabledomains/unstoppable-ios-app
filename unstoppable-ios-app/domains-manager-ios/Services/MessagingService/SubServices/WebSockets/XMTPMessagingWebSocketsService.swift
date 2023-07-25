@@ -55,6 +55,9 @@ private extension XMTPMessagingWebSocketsService {
                 for try await conversation in client.conversations.stream() {
                     guard profileId == listeningProfileId else { break } /// There's no other way to stop listening at the moment
                     
+                    let webSocketChat = XMTPEntitiesTransformer.convertXMTPConversationToWebSocketChatEntity(conversation,
+                                                                                                             userId: profileId)
+                    eventCallback(.newChat(webSocketChat))
                 }
             } catch {
                 try? await Task.sleep(seconds: 3)

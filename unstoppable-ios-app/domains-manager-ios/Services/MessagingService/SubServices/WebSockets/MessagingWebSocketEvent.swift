@@ -12,6 +12,7 @@ typealias MessagingWebSocketEventCallback = (MessagingWebSocketEvent)->()
 enum MessagingWebSocketEvent {
     case channelNewFeed(MessagingNewsChannelFeed, channelAddress: String)
     case channelSpamFeed(MessagingNewsChannelFeed, channelAddress: String)
+    case newChat(MessagingWebSocketChatEntity)
     case chatReceivedMessage(MessagingWebSocketMessageEntity)
     case groupChatReceivedMessage(MessagingWebSocketGroupMessageEntity)
 }
