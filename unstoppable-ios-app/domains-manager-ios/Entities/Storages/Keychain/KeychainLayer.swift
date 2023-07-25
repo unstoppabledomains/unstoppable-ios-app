@@ -18,9 +18,7 @@ enum ValetError: String, LocalizedError {
     case failedToDecrypt
     case noFreeSlots
     
-    public var errorDescription: String? {
-        return rawValue
-    }
+    public var errorDescription: String? { rawValue }
 }
 
 enum KeychainKey: String {
