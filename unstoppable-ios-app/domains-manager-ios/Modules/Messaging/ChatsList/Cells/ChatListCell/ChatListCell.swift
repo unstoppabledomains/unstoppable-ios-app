@@ -110,7 +110,7 @@ private extension ChatListCell {
         switch message.type {
         case .text(let description):
             return description.text
-        case .imageBase64:
+        case .imageBase64, .imageData:
             return String.Constants.photo.localized()
         case .unknown:
             return String.Constants.messageNotSupported.localized()

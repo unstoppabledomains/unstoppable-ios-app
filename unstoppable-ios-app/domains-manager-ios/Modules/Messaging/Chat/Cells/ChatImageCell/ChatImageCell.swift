@@ -34,6 +34,12 @@ extension ChatImageCell {
         setWith(message: configuration.message, isGroupChatMessage: configuration.isGroupChatMessage)
         setImage(configuration.imageMessageDisplayInfo.image)
     }
+    
+    func setWith(configuration: ChatViewController.ImageDataMessageUIConfiguration) {
+        self.actionCallback = configuration.actionCallback
+        setWith(message: configuration.message, isGroupChatMessage: configuration.isGroupChatMessage)
+        setImage(configuration.imageMessageDisplayInfo.image)
+    }
 }
 
 // MARK: - Private methods

@@ -288,7 +288,7 @@ extension MessagingService: MessagingServiceProtocol {
         let fileName: String
         
         switch message.type {
-        case .text, .imageBase64:
+        case .text, .imageBase64, .imageData:
             return nil
         case .unknown(let info):
             fileName = info.fileName

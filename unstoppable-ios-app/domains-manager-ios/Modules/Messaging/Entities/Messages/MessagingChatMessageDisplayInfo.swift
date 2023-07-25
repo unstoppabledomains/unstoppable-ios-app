@@ -21,7 +21,7 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     
     mutating func prepareToDisplay() async {
         switch type {
-        case .text, .unknown:
+        case .text, .unknown, .imageData:
             return
         case .imageBase64(var info):
             if info.image == nil {

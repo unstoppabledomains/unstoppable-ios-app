@@ -469,6 +469,12 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .imageDataMessage(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatImageCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
+                
             case .unsupportedMessage(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatUnsupportedMessageCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
@@ -550,6 +556,7 @@ extension ChatViewController {
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
+        case imageDataMessage(configuration: ImageDataMessageUIConfiguration)
         case unsupportedMessage(configuration: UnsupportedMessageUIConfiguration)
         case channelFeed(configuration: ChannelFeedUIConfiguration)
         case loading
@@ -559,6 +566,8 @@ extension ChatViewController {
             case .textMessage(let configuration):
                 return configuration.message
             case .imageBase64Message(let configuration):
+                return configuration.message
+            case .imageDataMessage(let configuration):
                 return configuration.message
             case .unsupportedMessage(let configuration):
                 return configuration.message
@@ -590,6 +599,24 @@ extension ChatViewController {
         
         let message: MessagingChatMessageDisplayInfo
         let imageMessageDisplayInfo: MessagingChatMessageImageBase64TypeDisplayInfo
+        let isGroupChatMessage: Bool
+        var actionCallback: (ChatMessageAction)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.message.id == rhs.message.id &&
+            lhs.message.deliveryState == rhs.message.deliveryState
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(message.id)
+            hasher.combine(message.deliveryState)
+        }
+    }
+    
+    struct ImageDataMessageUIConfiguration: Hashable {
+        
+        let message: MessagingChatMessageDisplayInfo
+        let imageMessageDisplayInfo: MessagingChatMessageImageDataTypeDisplayInfo
         let isGroupChatMessage: Bool
         var actionCallback: (ChatMessageAction)->()
         

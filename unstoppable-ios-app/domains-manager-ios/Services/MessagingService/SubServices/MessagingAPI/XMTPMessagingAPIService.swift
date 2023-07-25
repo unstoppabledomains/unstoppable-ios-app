@@ -54,7 +54,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
             try? await XMTPPush.shared.subscribe(topics: conversations.map(\.topic))
         }
         
-        return conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0, userId: user.id,
+        return conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0,
+                                                                                        userId: user.id,
                                                                                         userWallet: user.wallet,
                                                                                         isApproved: true) })
     }
@@ -148,15 +149,11 @@ private extension XMTPMessagingAPIService {
             messageID = try await conversation.send(text: messagingChatMessageTextTypeDisplayInfo.text)
         case .imageBase64(let messagingChatMessageImageBase64TypeDisplayInfo):
             guard let data = messagingChatMessageImageBase64TypeDisplayInfo.image?.dataToUpload else { throw XMTPServiceError.failedToPrepareImageToSend }
-            let attachment = Attachment(filename: "\(UUID().uuidString).png",
-                                        mimeType: "image/png",
-                                        data: data)
-            //            let encryptedEncodedContent = try RemoteAttachment.encodeEncrypted(content: attachment,
-            //                                                                               codec: AttachmentCodec())
-            //            let remoteAttachment = try RemoteAttachment(url: "https://google.com",
-            //                                                        encryptedEncodedContent: encryptedEncodedContent)
-            messageID = try await conversation.send(content: attachment,
-                                                    options: .init(contentType: ContentTypeAttachment))
+            messageID = try await sendImageAttachment(data: data,
+                                                      in: conversation)
+        case .imageData(let displayInfo):
+            messageID = try await sendImageAttachment(data: displayInfo.data,
+                                                      in: conversation)
         case .unknown:
             throw XMTPServiceError.unsupportedAction
         }
@@ -191,6 +188,25 @@ private extension XMTPMessagingAPIService {
     
     func getCurrentXMTPEnvironment() -> XMTPEnvironment {
         xmtpHelper.getCurrentXMTPEnvironment()
+    }
+    
+    func sendImageAttachment(data: Data,
+                             in conversation: Conversation) async throws -> String {
+        try await sendAttachment(data: data,
+                                 filename: "\(UUID().uuidString).png",
+                                 mimeType: "image/png",
+                                 in: conversation)
+    }
+    
+    func sendAttachment(data: Data,
+                        filename: String,
+                        mimeType: String,
+                        in conversation: Conversation) async throws -> String {
+        let attachment = Attachment(filename: filename,
+                                    mimeType: mimeType,
+                                    data: data)
+        return try await conversation.send(content: attachment,
+                                           options: .init(contentType: ContentTypeAttachment))
     }
 }
 
