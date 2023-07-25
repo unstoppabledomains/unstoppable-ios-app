@@ -7,7 +7,7 @@
 
 import Foundation
 import CryptoSwift
-import Web3
+import Boilertalk_Web3
 import web3swift
 import WalletConnectSwift
 

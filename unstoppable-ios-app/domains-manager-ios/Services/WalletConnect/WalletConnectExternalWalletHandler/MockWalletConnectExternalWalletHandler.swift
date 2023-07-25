@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Web3
+import Boilertalk_Web3
 
 // V1
 import WalletConnectSwift
