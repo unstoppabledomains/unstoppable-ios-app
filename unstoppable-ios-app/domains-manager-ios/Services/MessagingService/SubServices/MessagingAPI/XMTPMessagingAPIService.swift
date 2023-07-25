@@ -18,6 +18,13 @@ final class XMTPMessagingAPIService {
 extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
         let env = getCurrentXMTPEnvironment()
+        
+        //TODO: - Check for .canMessage
+        let wallet = try domain.getETHAddressThrowing()
+        guard KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) != nil else {
+            throw XMTPServiceError.userNotCreatedYet
+        }
+        
         let client = try await XMTP.Client.create(account: domain,
                                                   options: .init(api: .init(env: env,
                                                                             isSecure: true)))
@@ -32,38 +39,37 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                                   options: .init(api: .init(env: env,
                                                                             isSecure: true)))
 
-        throw XMTPServiceError.noDomainForWallet
-        
+        try storeKeysDataFromClientIfNeeded(client, domain: domain, env: env)
+        let userProfile = XMTPEntitiesTransformer.convertXMTPClientToChatUser(client)
+        return userProfile
     }
     
     func updateUserProfile(_ user: MessagingChatUserProfile, name: String, avatar: String) async throws {
-        throw XMTPServiceError.noDomainForWallet
-        
+        throw XMTPServiceError.unsupportedAction
     }
     
     func getChatsListForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
-        throw XMTPServiceError.noDomainForWallet
-        
+        throw XMTPServiceError.unsupportedAction
     }
     
     func getChatRequestsForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
-        throw XMTPServiceError.noDomainForWallet
+        throw XMTPServiceError.unsupportedAction
         
     }
     
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
-        throw XMTPServiceError.noDomainForWallet
+        throw XMTPServiceError.unsupportedAction
         
     }
     
     func setUser(in chat: MessagingChat, blocked: Bool, by user: MessagingChatUserProfile) async throws {
-        throw XMTPServiceError.noDomainForWallet
+        throw XMTPServiceError.unsupportedAction
         
     }
     
     func getMessagesForChat(_ chat: MessagingChat, before message: MessagingChatMessage?, cachedMessages: [MessagingChatMessage], fetchLimit: Int, isRead: Bool, for user: MessagingChatUserProfile, filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
         
-        throw XMTPServiceError.noDomainForWallet
+        throw XMTPServiceError.unsupportedAction
     }
     
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool {
@@ -71,11 +77,11 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func sendMessage(_ messageType: MessagingChatMessageDisplayType, in chat: MessagingChat, by user: MessagingChatUserProfile, filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
-        throw XMTPServiceError.noDomainForWallet
+        throw XMTPServiceError.unsupportedAction
     }
     
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType, to userInfo: MessagingChatUserDisplayInfo, by user: MessagingChatUserProfile, filesService: MessagingFilesServiceProtocol) async throws -> (MessagingChat, MessagingChatMessage) {
-        throw XMTPServiceError.noDomainForWallet
+        throw XMTPServiceError.unsupportedAction
         
     }
     
@@ -145,7 +151,7 @@ extension XMTPMessagingAPIService {
     enum XMTPServiceError: String, Error {
         case unsupportedAction
         case noClientKeys
-        case noDomainForWallet
+        case userNotCreatedYet
 
         public var errorDescription: String? { rawValue }
     }
