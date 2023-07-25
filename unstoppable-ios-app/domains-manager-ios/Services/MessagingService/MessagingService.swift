@@ -603,7 +603,7 @@ private extension MessagingService {
                 }
                 
                 remoteChats.append(contentsOf: chatsPage)
-                if chatsPage.count < limit {
+                if !apiService.isSupportChatsListPagination || chatsPage.count < limit {
                     /// Loaded all chats
                     break
                 } else if let lastPageChat = chatsPage.last,

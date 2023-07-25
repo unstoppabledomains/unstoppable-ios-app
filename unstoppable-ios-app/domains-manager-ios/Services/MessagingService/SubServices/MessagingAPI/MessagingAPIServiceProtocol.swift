@@ -16,6 +16,7 @@ protocol MessagingAPIServiceProtocol {
                            avatar: String) async throws
     
     // Chats
+    var isSupportChatsListPagination: Bool { get }
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                              page: Int,
                              limit: Int) async throws -> [MessagingChat]

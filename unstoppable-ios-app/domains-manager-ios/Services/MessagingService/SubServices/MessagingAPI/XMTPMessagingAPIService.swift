@@ -43,6 +43,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         throw XMTPServiceError.unsupportedAction
     }
     
+    var isSupportChatsListPagination: Bool { false }
+    
     func getChatsListForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
         let env = getCurrentXMTPEnvironment()
         let client = try await getClientFor(user: user, env: env)

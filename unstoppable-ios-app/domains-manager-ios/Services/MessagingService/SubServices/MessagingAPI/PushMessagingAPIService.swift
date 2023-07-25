@@ -79,6 +79,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     // Chats
+    var isSupportChatsListPagination: Bool { true }
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {
