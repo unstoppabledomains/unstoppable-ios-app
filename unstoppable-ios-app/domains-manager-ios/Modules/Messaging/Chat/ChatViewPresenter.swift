@@ -348,6 +348,13 @@ private extension ChatViewPresenter {
                                                             actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
+        case .imageData(let imageMessageDisplayInfo):
+            return .imageDataMessage(configuration: .init(message: message,
+                                                            imageMessageDisplayInfo: imageMessageDisplayInfo,
+                                                            isGroupChatMessage: isGroupChatMessage,
+                                                            actionCallback: { [weak self] action in
+                self?.handleChatMessageAction(action, forMessage: message)
+            }))
         case .unknown:
             return .unsupportedMessage(configuration: .init(message: message,
                                                             isGroupChatMessage: isGroupChatMessage,
@@ -591,12 +598,9 @@ private extension ChatViewPresenter {
     }
     
     func sendImageMessage(_ image: UIImage) {
-        guard let base64 = image.base64String else { return }
-        let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
-        let imageTypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64,
-                                                                              encryptedContent: preparedBase64,
-                                                                              image: image)
-        sendMessageOfType(.imageBase64(imageTypeDetails))
+        guard let data = image.dataToUpload else { return }
+        let imageTypeDetails = MessagingChatMessageImageDataTypeDisplayInfo(encryptedData: data, data: data, image: image)
+        sendMessageOfType(.imageData(imageTypeDetails))
     }
     
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {

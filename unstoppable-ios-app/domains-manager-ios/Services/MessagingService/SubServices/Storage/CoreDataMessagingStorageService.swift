@@ -596,7 +596,7 @@ private extension CoreDataMessagingStorageService {
                                decrypter: MessagingContentDecrypterService,
                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState,
                                wallet: String) -> MessagingChatMessageDisplayType? {
-        let typesWithContentInCoreData: Set<Int64> = [0, 1]
+        let typesWithContentInCoreData: Set<Int64> = [0, 1, 2]
         if typesWithContentInCoreData.contains(coreDataMessage.messageType) {
             guard let messageContent = coreDataMessage.messageContent else { return nil }
             
@@ -617,6 +617,12 @@ private extension CoreDataMessagingStorageService {
                 let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent,
                                                                                             encryptedContent: messageContent)
                 return .imageBase64(imageBase64DisplayInfo)
+            } else if coreDataMessage.messageType == 2 {
+                guard let decryptedData = Data(base64Encoded: decryptedContent),
+                        let encryptedData = Data(base64Encoded: messageContent),
+                      let imageDataDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(encryptedData: encryptedData,
+                                                                                              data: decryptedData) else { return nil }
+                return .imageData(imageDataDisplayInfo)
             }
         } else {
             if coreDataMessage.messageType == 999 {
@@ -642,6 +648,9 @@ private extension CoreDataMessagingStorageService {
         case .imageBase64(let info):
             coreDataMessage.messageType = 1
             coreDataMessage.messageContent = info.encryptedContent
+        case .imageData(let info):
+            coreDataMessage.messageType = 2
+            coreDataMessage.messageContent = info.encryptedData.base64EncodedString()
         case .unknown(let info):
             coreDataMessage.messageType = 999
             coreDataMessage.genericMessageDetails = CoreDataUnknownMessageDetails(type: info.type,

@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 24.07.2023.
 //
 
-import Foundation
+import UIKit
 import XMTP
 
 struct XMTPEntitiesTransformer {
@@ -124,23 +124,30 @@ struct XMTPEntitiesTransformer {
             switch knownType {
             case .text:
                 let decryptedContent: String = try xmtpMessage.content()
-                let encryptedContent = ""
+                let encryptedContent = "" // TODO: - Encrypt content
                 let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
                                                                               encryptedText: encryptedContent)
                 return .text(textDisplayInfo)
             case .attachment:
                 let attachment: XMTP.Attachment = try xmtpMessage.content()
-                let name = attachment.filename
-                let data = attachment.data
-                
-                
-                let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + name
-                try filesService.saveEncryptedData(encryptedData, fileName: fileName)
-                let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
-                                                                                    type: typeId,
-                                                                                    name: name,
-                                                                                    size: data.count)
-                return .unknown(unknownDisplayInfo)
+                if let image = UIImage(data: attachment.data) {
+                    let imageDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(encryptedData: attachment.data, // TODO: - Encrypt content
+                                                                            data: attachment.data,
+                                                                            image: image)
+                    return .imageData(imageDisplayInfo)
+                } else {
+                    let name = attachment.filename
+                    let data = attachment.data
+                    
+                    
+                    let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + name
+                    try filesService.saveEncryptedData(encryptedData, fileName: fileName)// TODO: - Encrypt content
+                    let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
+                                                                                        type: typeId,
+                                                                                        name: name,
+                                                                                        size: data.count)
+                    return .unknown(unknownDisplayInfo)
+                }
             }
         } else {
             let fileName = messageId + "_" + String(userId.suffix(4))
