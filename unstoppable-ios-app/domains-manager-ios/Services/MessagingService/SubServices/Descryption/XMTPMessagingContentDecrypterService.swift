@@ -17,11 +17,11 @@ final class XMTPMessagingContentDecrypterService: MessagingContentDecrypterServi
     }
     
     func decryptText(_ text: String, with serviceMetadata: Data?, wallet: String) throws -> String {
-        guard let serviceMetadata,
-              let keysData = getXMTPKeysDataFor(wallet: wallet),
-              let messageMetadata = (try? JSONDecoder().decode(PushEnvironment.MessageServiceMetadata.self, from: serviceMetadata)) else {
-            throw EncryptionError.failedToGatherRequiredData
-        }
+//        guard let serviceMetadata,
+//              let keysData = getXMTPKeysDataFor(wallet: wallet),
+//              let messageMetadata = (try? JSONDecoder().decode(PushEnvironment.MessageServiceMetadata.self, from: serviceMetadata)) else {
+//            throw EncryptionError.failedToGatherRequiredData
+//        }
         
         
         
