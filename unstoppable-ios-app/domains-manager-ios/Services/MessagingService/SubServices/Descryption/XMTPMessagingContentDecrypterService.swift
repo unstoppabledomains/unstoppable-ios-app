@@ -16,6 +16,8 @@ final class XMTPMessagingContentDecrypterService: MessagingContentDecrypterServi
         true
     }
     
+    func encryptText(_ text: String) throws -> String { text }
+
     func decryptText(_ text: String, with serviceMetadata: Data?, wallet: String) throws -> String {
 //        guard let serviceMetadata,
 //              let keysData = getXMTPKeysDataFor(wallet: wallet),

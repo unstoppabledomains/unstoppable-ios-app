@@ -1161,6 +1161,10 @@
 		C62396B42A28DE3B00363F60 /* PushEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396B22A28DE3B00363F60 /* PushEnvironment.swift */; };
 		C62396B52A28DE3B00363F60 /* PushEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396B22A28DE3B00363F60 /* PushEnvironment.swift */; };
 		C62396B62A28DE3B00363F60 /* PushEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62396B22A28DE3B00363F60 /* PushEnvironment.swift */; };
+		C623E2052A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C623E2042A70061600595662 /* AESMessagingContentDecrypterService.swift */; };
+		C623E2062A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C623E2042A70061600595662 /* AESMessagingContentDecrypterService.swift */; };
+		C623E2072A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C623E2042A70061600595662 /* AESMessagingContentDecrypterService.swift */; };
+		C623E2082A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C623E2042A70061600595662 /* AESMessagingContentDecrypterService.swift */; };
 		C624D766281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C624D765281A8BF500F55530 /* UICollectionViewLayout.swift */; };
 		C624D767281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C624D765281A8BF500F55530 /* UICollectionViewLayout.swift */; };
 		C624D768281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = C624D765281A8BF500F55530 /* UICollectionViewLayout.swift */; };
@@ -4341,6 +4345,7 @@
 		C62396A82A28D7D200363F60 /* PushChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushChannel.swift; sourceTree = "<group>"; };
 		C62396AD2A28DA2900363F60 /* PushSearchUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushSearchUser.swift; sourceTree = "<group>"; };
 		C62396B22A28DE3B00363F60 /* PushEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushEnvironment.swift; sourceTree = "<group>"; };
+		C623E2042A70061600595662 /* AESMessagingContentDecrypterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESMessagingContentDecrypterService.swift; sourceTree = "<group>"; };
 		C624D765281A8BF500F55530 /* UICollectionViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UICollectionViewLayout.swift; sourceTree = "<group>"; };
 		C624D76A281AD2B900F55530 /* FABButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FABButton.swift; sourceTree = "<group>"; };
 		C624D76F281B884600F55530 /* ImageLoadingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoadingService.swift; sourceTree = "<group>"; };
@@ -6839,6 +6844,7 @@
 			isa = PBXGroup;
 			children = (
 				C6538DD22A330F7900B63E84 /* MessagingContentDecrypterService.swift */,
+				C623E2042A70061600595662 /* AESMessagingContentDecrypterService.swift */,
 				C6538DD72A3313A900B63E84 /* PushMessagingContentDecrypterService.swift */,
 				C64BCB6B2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift */,
 			);
@@ -9617,6 +9623,7 @@
 				C6E1189E28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
 				C65272312A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
 				C6C995AA289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
+				C623E2052A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */,
 				C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */,
 				C66804D5280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
 				C6ECBF8128D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
@@ -11005,6 +11012,7 @@
 				C685A99D284101DA00E54044 /* DomainSelectionCell.swift in Sources */,
 				C671E3DB29027BB500A2B3A0 /* DomainProfileGeneralInfoSection.swift in Sources */,
 				C6FF2D9928F0238100148007 /* DomainProfileSectionChangeUIDescription.swift in Sources */,
+				C623E2072A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */,
 				C681092828042AF0002D780E /* OnboardingNavigationController.swift in Sources */,
 				C624D777281B89A800F55530 /* InitialsView.swift in Sources */,
 				C666E0CA29CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
@@ -11674,6 +11682,7 @@
 				C6109E3E28E5AB310027D5D8 /* MockAppLaunchService.swift in Sources */,
 				C65DEA7629B5837600FF142B /* WalletConnectExternalWalletHandler.swift in Sources */,
 				C6BEEF4229C30D9D000489B9 /* UDFirebaseSigner.swift in Sources */,
+				C623E2082A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */,
 				C6D6E54328193851008C66BB /* UITableViewCell.swift in Sources */,
 				C6ECBF9928D2E06800E94309 /* GenericBadgeView.swift in Sources */,
 				C63538EE2949C4F100ECABA6 /* DomainPFPInfo.swift in Sources */,
@@ -12049,6 +12058,7 @@
 				C6E1189F28F85BC600C6AD4D /* PrimaryWhiteButton.swift in Sources */,
 				C65272322A14BD69001A084C /* ChatListDomainSelectionCell.swift in Sources */,
 				C6C995AB289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
+				C623E2062A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */,
 				C6637A7228100D3A0000AE56 /* LaunchViewController.swift in Sources */,
 				C66804D6280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
 				C6ECBF8228D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,

@@ -21,6 +21,10 @@ struct Encrypting {
         return cipherText
     }
     
+    static func decrypt(encryptedMessage: String, password: String) throws -> String {
+        try decrypt(encryptedMessage: encryptedMessage.hexToBytes(), password: password)
+    }
+    
     static func decrypt(encryptedMessage: [UInt8], password: String) throws -> String {
         guard let hashedPassword = password.hashSha3Value else { throw ValetError.failedHashPassword }
         let key = UInt(bitPattern: hashedPassword).asHexString16
