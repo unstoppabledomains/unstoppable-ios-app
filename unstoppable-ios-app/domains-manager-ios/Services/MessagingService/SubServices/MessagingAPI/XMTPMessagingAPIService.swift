@@ -25,12 +25,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
             throw XMTPServiceError.userNotCreatedYet
         }
         
-        let client = try await XMTP.Client.create(account: domain,
-                                                  options: .init(api: .init(env: env,
-                                                                            isSecure: true)))
-        try storeKeysDataFromClientIfNeeded(client, domain: domain, env: env)
-        let userProfile = XMTPEntitiesTransformer.convertXMTPClientToChatUser(client)
-        return userProfile
+        return try await createUser(for: domain) /// In XMTP same function responsible for either get or create profile
     }
     
     func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile {
