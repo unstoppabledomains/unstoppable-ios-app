@@ -14,7 +14,7 @@ struct MessagingChatMessageImageBase64TypeDisplayInfo: Hashable {
     let base64Image: String // Make constant due to performance issues
     var image: UIImage?
     
-    init(base64: String, encryptedContent: String) {
+    init(base64: String, encryptedContent: String, image: UIImage? = nil) {
         self.base64 = base64
         self.encryptedContent = encryptedContent
         self.base64Image = Base64DataTransformer.removeDataHeaderFrom(string: base64)

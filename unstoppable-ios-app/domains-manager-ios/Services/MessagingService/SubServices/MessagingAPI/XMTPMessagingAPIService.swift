@@ -92,12 +92,32 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         true
     }
     
-    func sendMessage(_ messageType: MessagingChatMessageDisplayType, in chat: MessagingChat, by user: MessagingChatUserProfile, filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
-        throw XMTPServiceError.unsupportedAction
+    func sendMessage(_ messageType: MessagingChatMessageDisplayType,
+                     in chat: MessagingChat,
+                     by user: MessagingChatUserProfile,
+                     filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
+        let env = getCurrentXMTPEnvironment()
+        let client = try await getClientFor(user: user, env: env)
+        let conversation = try getXMTPConversationFromChat(chat, client: client )
+        return try await sendMessage(messageType,
+                                     in: conversation,
+                                     chat: chat,
+                                     filesService: filesService)
     }
     
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType, to userInfo: MessagingChatUserDisplayInfo, by user: MessagingChatUserProfile, filesService: MessagingFilesServiceProtocol) async throws -> (MessagingChat, MessagingChatMessage) {
-        throw XMTPServiceError.unsupportedAction
+        let env = getCurrentXMTPEnvironment()
+        let client = try await getClientFor(user: user, env: env)
+        let conversation = try await client.conversations.newConversation(with: userInfo.wallet)
+        guard let chat = XMTPEntitiesTransformer.convertXMTPChatToChat(conversation,
+                                                                       userId: user.id,
+                                                                       userWallet: user.wallet,
+                                                                       isApproved: true) else { throw XMTPServiceError.failedToParseChat }
+        let message = try await sendMessage(messageType,
+                                            in: conversation,
+                                            chat: chat,
+                                            filesService: filesService)
+        return (chat, message)
     }
     
     func makeChatRequest(_ chat: MessagingChat, approved: Bool, by user: MessagingChatUserProfile) async throws {
@@ -115,6 +135,39 @@ private extension XMTPMessagingAPIService {
                                      client: XMTP.Client) throws -> XMTP.Conversation {
         let metadata: XMTPEnvironmentNamespace.ChatServiceMetadata = try messagingHelper.decodeServiceMetadata(from: chat.serviceMetadata)
         return metadata.encodedContainer.decode(with: client)
+    }
+    
+    func sendMessage(_ messageType: MessagingChatMessageDisplayType,
+                     in conversation: XMTP.Conversation,
+                     chat: MessagingChat,
+                     filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
+        let messageID: String
+        switch messageType {
+        case .text(let messagingChatMessageTextTypeDisplayInfo):
+            messageID = try await conversation.send(text: messagingChatMessageTextTypeDisplayInfo.text)
+        case .imageBase64(let messagingChatMessageImageBase64TypeDisplayInfo):
+            guard let data = messagingChatMessageImageBase64TypeDisplayInfo.image?.dataToUpload else { throw XMTPServiceError.failedToPrepareImageToSend }
+            let attachment = Attachment(filename: "\(UUID().uuidString).png",
+                                        mimeType: "image/png",
+                                        data: data)
+            //            let encryptedEncodedContent = try RemoteAttachment.encodeEncrypted(content: attachment,
+            //                                                                               codec: AttachmentCodec())
+            //            let remoteAttachment = try RemoteAttachment(url: "https://google.com",
+            //                                                        encryptedEncodedContent: encryptedEncodedContent)
+            messageID = try await conversation.send(content: attachment,
+                                                    options: .init(contentType: ContentTypeAttachment))
+        case .unknown:
+            throw XMTPServiceError.unsupportedAction
+        }
+        
+        let newestMessages = try await conversation.messages(limit: 3, before: Date().addingTimeInterval(100)) // Get latest message
+        guard let xmtpMessage = newestMessages.first(where: { $0.id == messageID }),
+              let message = XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                                    in: chat,
+                                                                                    isRead: true,
+                                                                                    filesService: filesService) else { throw XMTPServiceError.failedToFindSentMessage }
+        
+        return message
     }
 }
 
@@ -176,6 +229,10 @@ extension XMTPMessagingAPIService {
         case unsupportedAction
         case noClientKeys
         case userNotCreatedYet
+        
+        case failedToParseChat
+        case failedToPrepareImageToSend
+        case failedToFindSentMessage
 
         public var errorDescription: String? { rawValue }
     }
