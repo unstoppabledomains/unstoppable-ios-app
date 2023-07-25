@@ -868,7 +868,7 @@ private extension CoreDataMessagingStorageService {
     }
     
     struct CoreDataChatGroupDetails: Codable {
-        let name: String
+        let name: String?
         let adminWallets: [String]?
         let isPublic: Bool
         let memberWallets: [String]

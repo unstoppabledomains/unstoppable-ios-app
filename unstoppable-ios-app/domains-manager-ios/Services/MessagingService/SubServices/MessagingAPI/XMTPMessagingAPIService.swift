@@ -49,17 +49,21 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func getChatsListForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
-        throw XMTPServiceError.unsupportedAction
+        let env = getCurrentXMTPEnvironment()
+        let client = try await getClientFor(user: user, env: env)
+        let conversations = try await client.conversations.list()
+        
+        return conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0, userId: user.id,
+                                                                                        userWallet: user.wallet,
+                                                                                        isApproved: true) })
     }
     
     func getChatRequestsForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
-        throw XMTPServiceError.unsupportedAction
-        
+        []
     }
     
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
-        throw XMTPServiceError.unsupportedAction
-        
+        .unblocked
     }
     
     func setUser(in chat: MessagingChat, blocked: Bool, by user: MessagingChatUserProfile) async throws {
