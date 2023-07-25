@@ -8,14 +8,10 @@
 import Foundation
 
 protocol MessagingFilesServiceProtocol {
-    /// Encrypted
-    func getEncryptedDataURLFor(fileName: String) -> URL?
     @discardableResult
-    func saveEncryptedData(_ data: Data, fileName: String) throws -> URL
-    func deleteEncryptedDataWith(fileName: String)
+    func saveData(_ data: Data, fileName: String) throws -> URL
+    func deleteDataWith(fileName: String)
+    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL?
     
-    /// Decrypted
-    func getDecryptedDataURLFor(fileName: String) -> URL?
-    @discardableResult
-    func saveDecryptedData(_ data: Data, fileName: String) throws -> URL
+    init(decrypter: MessagingContentDecrypterService)
 }

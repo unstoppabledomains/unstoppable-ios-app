@@ -591,15 +591,14 @@ private extension ChatViewPresenter {
 // MARK: - Send message
 private extension ChatViewPresenter {
     func sendTextMesssage(_ text: String) {
-        let textTypeDetails = MessagingChatMessageTextTypeDisplayInfo(text: text,
-                                                                      encryptedText: text)
+        let textTypeDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
         let messageType = MessagingChatMessageDisplayType.text(textTypeDetails)
         sendMessageOfType(messageType)
     }
     
     func sendImageMessage(_ image: UIImage) {
         guard let data = image.dataToUpload else { return }
-        let imageTypeDetails = MessagingChatMessageImageDataTypeDisplayInfo(encryptedData: data, data: data, image: image)
+        let imageTypeDetails = MessagingChatMessageImageDataTypeDisplayInfo(data: data, image: image)
         sendMessageOfType(.imageData(imageTypeDetails))
     }
     

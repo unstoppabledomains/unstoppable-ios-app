@@ -185,7 +185,7 @@ extension MessagingService: MessagingServiceProtocol {
                                         startDate: startTime,
                                         timeout: 3)
 
-        await storageService.saveMessages(messages)
+        await storageService.saveMessages(messages, decrypter: decrypterService)
         return messages.map { $0.displayInfo }
     }
 
@@ -207,7 +207,7 @@ extension MessagingService: MessagingServiceProtocol {
         let message = MessagingChatMessage(userId: profile.id,
                                            displayInfo: newMessageDisplayInfo,
                                            serviceMetadata: nil)
-        await storageService.saveMessages([message])
+        await storageService.saveMessages([message], decrypter: decrypterService)
         
         try await setLastMessageAndNotify(newMessageDisplayInfo,
                                           to: messagingChat)
@@ -238,7 +238,7 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     filesService: filesService)
         
         await storageService.saveChats([chat])
-        await storageService.saveMessages([message])
+        await storageService.saveMessages([message], decrypter: decrypterService)
         try? await setLastMessageAndNotify(message.displayInfo, to: chat)
         
         return (chat.displayInfo, message.displayInfo)
@@ -285,33 +285,7 @@ extension MessagingService: MessagingServiceProtocol {
     }
    
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? {
-        let fileName: String
-        
-        switch message.type {
-        case .text, .imageBase64, .imageData:
-            return nil
-        case .unknown(let info):
-            fileName = info.fileName
-        }
-        
-        if let url = filesService.getDecryptedDataURLFor(fileName: fileName) {
-            return url
-        }
-        
-        guard let chat = await storageService.getChatWith(id: message.chatId, of: message.userId, decrypter: decrypterService),
-              let chatMessage = await storageService.getMessageWith(id: message.id,
-                                                                    in: chat,
-                                                                    decrypter: decrypterService) else { return nil }
-        let wallet = chat.displayInfo.thisUserDetails.wallet
-        guard let encryptedDataURL = filesService.getEncryptedDataURLFor(fileName: fileName),
-              let encryptedData = try? Data(contentsOf: encryptedDataURL),
-              let encryptedContent = String(data: encryptedData, encoding: .utf8),
-              let decryptedContent = try? decrypterService.decryptText(encryptedContent,
-                                                                       with: chatMessage.serviceMetadata,
-                                                                       wallet: wallet),
-              let decryptedData = Base64DataTransformer.dataFrom(base64String: decryptedContent) else { return nil }
-        
-        return try? filesService.saveDecryptedData(decryptedData, fileName: fileName)
+        await filesService.decryptedContentURLFor(message: message)
     }
     
     // Channels
@@ -662,7 +636,7 @@ private extension MessagingService {
                                 updatedChat.displayInfo.unreadMessagesCount += 1
                             }
                             updatedChat.displayInfo.lastMessage = lastMessage.displayInfo
-                            await self.storageService.saveMessages([lastMessage])
+                            await self.storageService.saveMessages([lastMessage], decrypter: self.decrypterService)
                             return updatedChat
                         } else {
                             return remoteChat
@@ -916,7 +890,7 @@ private extension MessagingService {
     func replaceCacheMessageAndNotify(_ messageToReplace: MessagingChatMessage,
                                       with newMessage: MessagingChatMessage) {
         Task {
-            try? await storageService.replaceMessage(messageToReplace, with: newMessage)
+            try? await storageService.replaceMessage(messageToReplace, with: newMessage, decrypter: decrypterService)
             notifyListenersChangedDataType(.messageUpdated(messageToReplace.displayInfo, newMessage: newMessage.displayInfo))
         }
     }
@@ -938,7 +912,7 @@ private extension MessagingService {
             func addNewChatMessages(_ chatMessages: [GroupChatMessageWithProfile]) async {
                 guard !chatMessages.isEmpty else { return }
                 
-                await storageService.saveMessages(chatMessages.map({ $0.message }))
+                await storageService.saveMessages(chatMessages.map({ $0.message }), decrypter: decrypterService)
                 for messageWithProfile in chatMessages {
                     let message = messageWithProfile.message
                     let profile = messageWithProfile.profile

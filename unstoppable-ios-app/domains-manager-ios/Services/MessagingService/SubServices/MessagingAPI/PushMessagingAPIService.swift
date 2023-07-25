@@ -519,8 +519,7 @@ private extension PushMessagingAPIService {
         case .imageData(let details):
             guard let base64 = details.image.base64String else { throw PushMessagingAPIServiceError.unsupportedType }
             let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
-            let imageBase64TypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64,
-                                                                                  encryptedContent: preparedBase64)
+            let imageBase64TypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64)
             return try getPushMessageContentFrom(displayType: .imageBase64(imageBase64TypeDetails))
         case .unknown:
             throw PushMessagingAPIServiceError.unsupportedType

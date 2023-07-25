@@ -92,7 +92,7 @@ struct ChatImageCell_Previews: PreviewProvider {
         
         return UICollectionViewCellPreview(cellType: ChatImageCell.self, height: height) { cell in
             let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-            var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "", encryptedContent: "")
+            var imageDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: "")
 //            imageDetails.image = .appleIcon
             let message = MessagingChatMessageDisplayInfo(id: "1",
                                                           chatId: "2",

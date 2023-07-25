@@ -13,16 +13,12 @@ final class AESMessagingContentDecrypterService: MessagingContentDecrypterServic
     private var cachedPassword: String?
     private let storage = KeychainAESPasswordStorage.instance
     
-    func isMessageEncrypted(serviceMetadata: Data?) -> Bool {
-        true
-    }
-    
     func encryptText(_ text: String) throws -> String {
         let aesPassword = try getOrCreateAESPassword()
         return try Encrypting.encrypt(message: text, with: aesPassword)
     }
 
-    func decryptText(_ text: String, with serviceMetadata: Data?, wallet: String) throws -> String {
+    func decryptText(_ text: String) throws -> String {
         let aesPassword = try getOrCreateAESPassword()
         return try Encrypting.decrypt(encryptedMessage: text, password: aesPassword)
     }

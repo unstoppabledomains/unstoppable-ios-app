@@ -81,7 +81,6 @@ struct XMTPEntitiesTransformer {
               let type = try? extractMessageType(from: xmtpMessage,
                                                  messageId: id,
                                                  userId: userId,
-                                                 encryptedData: serviceMetadata,
                                                  filesService: filesService) else { return nil }
         
         let senderWallet = xmtpMessage.senderAddress
@@ -117,23 +116,19 @@ struct XMTPEntitiesTransformer {
     private static func extractMessageType(from xmtpMessage: XMTP.DecodedMessage,
                                            messageId: String,
                                            userId: String,
-                                           encryptedData: Data,
-                                           filesService: MessagingFilesServiceProtocol) throws -> MessagingChatMessageDisplayType {
+                                           filesService: MessagingFilesServiceProtocol) throws -> MessagingChatMessageDisplayType? {
         let typeId = xmtpMessage.encodedContent.type.typeID
         if let knownType = XMTPEnvironmentNamespace.KnownType(rawValue: typeId) {
             switch knownType {
             case .text:
                 let decryptedContent: String = try xmtpMessage.content()
-                let encryptedContent = "" // TODO: - Encrypt content
-                let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
-                                                                              encryptedText: encryptedContent)
+                let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
                 return .text(textDisplayInfo)
             case .attachment:
                 let attachment: XMTP.Attachment = try xmtpMessage.content()
                 if let image = UIImage(data: attachment.data) {
-                    let imageDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(encryptedData: attachment.data, // TODO: - Encrypt content
-                                                                            data: attachment.data,
-                                                                            image: image)
+                    let imageDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: attachment.data,
+                                                                                        image: image)
                     return .imageData(imageDisplayInfo)
                 } else {
                     let name = attachment.filename
@@ -141,7 +136,7 @@ struct XMTPEntitiesTransformer {
                     
                     
                     let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + name
-                    try filesService.saveEncryptedData(encryptedData, fileName: fileName)// TODO: - Encrypt content
+                    try filesService.saveData(data, fileName: fileName)// TODO: - Encrypt content
                     let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
                                                                                         type: typeId,
                                                                                         name: name,
@@ -150,8 +145,11 @@ struct XMTPEntitiesTransformer {
                 }
             }
         } else {
+            guard let decryptedContent: String = try? xmtpMessage.content(),
+                  let contentData = decryptedContent.data(using: .utf8) else { return nil }
+
             let fileName = messageId + "_" + String(userId.suffix(4))
-            try filesService.saveEncryptedData(encryptedData, fileName: fileName)
+            try filesService.saveData(contentData, fileName: fileName)
             let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
                                                                                 type: typeId,
                                                                                 name: nil,

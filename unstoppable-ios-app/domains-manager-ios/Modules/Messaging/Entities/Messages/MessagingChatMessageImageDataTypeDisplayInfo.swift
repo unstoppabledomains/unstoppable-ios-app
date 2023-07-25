@@ -9,7 +9,6 @@ import UIKit
 
 struct MessagingChatMessageImageDataTypeDisplayInfo: Hashable {
     
-    let encryptedData: Data
     let data: Data
     let image: UIImage
     
@@ -17,9 +16,8 @@ struct MessagingChatMessageImageDataTypeDisplayInfo: Hashable {
 
 // MARK: - Open methods
 extension MessagingChatMessageImageDataTypeDisplayInfo {
-    init?(encryptedData: Data, data: Data) {
+    init?(data: Data) {
         guard let image = UIImage(data: data) else { return nil }
-        self.encryptedData = encryptedData
         self.data = data
         self.image = image
     }

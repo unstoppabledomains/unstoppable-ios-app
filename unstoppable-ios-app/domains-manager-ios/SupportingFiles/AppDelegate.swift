@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #if DEBUG
         Debugger.setAllowedTopicsSet(.all)
         CoreDataMessagingStorageService().clear()
-        MessagingFilesService().clear()
+        MessagingFilesService(decrypter: AESMessagingContentDecrypterService()).clear()
 //        Task {
 //            await appContext.imageLoadingService.clearStoredImages()
 //        }
