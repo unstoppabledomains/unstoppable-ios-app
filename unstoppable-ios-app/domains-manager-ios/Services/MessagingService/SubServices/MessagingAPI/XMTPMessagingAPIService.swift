@@ -47,6 +47,9 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentXMTPEnvironment()
         let client = try await getClientFor(user: user, env: env)
         let conversations = try await client.conversations.list()
+        Task.detached {
+            try? await XMTPPush.shared.subscribe(topics: conversations.map(\.topic))
+        }
         
         return conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0, userId: user.id,
                                                                                         userWallet: user.wallet,
