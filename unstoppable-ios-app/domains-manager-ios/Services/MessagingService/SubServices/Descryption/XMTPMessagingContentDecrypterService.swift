@@ -10,7 +10,8 @@ import Foundation
 final class XMTPMessagingContentDecrypterService: MessagingContentDecrypterService {
     
     private var xmtpKeysCache = [String : Data]()
-    
+    private let xmtpHelper = XMTPServiceHelper()
+
     func isMessageEncrypted(serviceMetadata: Data?) -> Bool {
         true
     }
@@ -37,7 +38,8 @@ final class XMTPMessagingContentDecrypterService: MessagingContentDecrypterServi
             return cachedKey
         }
         
-        if let keysData = KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: .dev) {
+        let env = xmtpHelper.getCurrentXMTPEnvironment()
+        if let keysData = KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) {
             xmtpKeysCache[wallet] = keysData
             return keysData
         }
