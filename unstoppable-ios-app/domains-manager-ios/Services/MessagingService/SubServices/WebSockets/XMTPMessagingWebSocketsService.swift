@@ -58,6 +58,9 @@ private extension XMTPMessagingWebSocketsService {
                     let webSocketChat = XMTPEntitiesTransformer.convertXMTPConversationToWebSocketChatEntity(conversation,
                                                                                                              userId: profileId)
                     eventCallback(.newChat(webSocketChat))
+                    listenForMessages(in: conversation,
+                                      for: profileId,
+                                      eventCallback: eventCallback)
                 }
             } catch {
                 try? await Task.sleep(seconds: 3)
