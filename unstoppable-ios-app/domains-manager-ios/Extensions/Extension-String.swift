@@ -193,7 +193,7 @@ extension String {
         static let leave = "LEAVE"
         static let download = "DOWNLOAD"
         static let unencrypted = "UNENCRYPTED"
-
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
@@ -364,7 +364,7 @@ extension String {
         static let unableToFindAccountMessage = "UNABLE_TO_FIND_ACCOUNT_MESSAGE"
         static let incorrectEmailError = "INCORRECT_EMAIL_ERROR"
         static let incorrectPasswordOrEmailError = "INCORRECT_PASSWORD_OR_EMAIL_ERROR"
-
+        
         // iCloud not enabled
         static let iCloudNotEnabledAlertTitle = "ICLOUD_NOT_ENABLED_ALERT_TITLE"
         static let iCloudNotEnabledAlertMessage = "ICLOUD_NOT_ENABLED_ALERT_MESSAGE"
@@ -396,7 +396,7 @@ extension String {
         static let settingsSupportNFeedback = "SETTINGS_SUPPORT_N_FEEDBACK"
         static let settingsLegal = "SETTINGS_LEGAL"
         static let settingsInviteFriends = "SETTINGS_INVITE_FRIENDS"
-
+        
         static let settingsSecurityPasscode = "SETTINGS_SECURITY_PASSCODE"
         static let settingsSecurityChangePasscode = "SETTINGS_SECURITY_CHANGE_PASSCODE"
         static let settingsSecurityRequireWhenOpeningHeader = "SETTINGS_SECURITY_REQUIRE_WHEN_OPENING_HEADER"
@@ -759,7 +759,7 @@ extension String {
         static let profileBadgesLeaderboardHoldersMessage = "PROFILE_BADGES_LEADERBOARD_HOLDERS_MESSAGE"
         static let profileBadgesSponsoredByMessage = "PROFILE_BADGES_LEADERBOARD_SPONSORED_BY_MESSAGE"
         static let profileAddSocialProfiles = "PROFILE_ADD_SOCIAL_PROFILES"
-
+        
         // Recent activities
         static let noRecentActivity = "NO_RECENT_ACTIVITY"
         static let noConnectedApps = "NO_CONNECTED_APPS"
@@ -855,7 +855,7 @@ extension String {
         static let clearRecordsUponTransfer = "CLEAR_RECORDS_UPON_TRANSFER"
         static let optional = "OPTIONAL"
         static let transferInProgress = "TRANSFER_IN_PROGRESS"
-
+        
         // Referral
         static let inviteFriendsTitle = "INVITE_FRIENDS_TITLE"
         static let inviteFriendsSubtitle = "INVITE_FRIENDS_SUBTITLE"
@@ -905,6 +905,7 @@ extension String {
         static let messagingAdmin = "MESSAGING_ADMIN"
         static let messagingShareDecryptionErrorMessage = "MESSAGING_SHARE_DECRYPTION_ERROR_MESSAGE"
         static let messagingSetPrimaryDomain = "MESSAGING_SET_PRIMARY_DOMAIN"
+        static let messagingRemoteContent = "MESSAGING_REMOTE_CONTENT"
     }
 
     

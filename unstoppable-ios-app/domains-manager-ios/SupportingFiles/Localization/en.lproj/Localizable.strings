@@ -828,3 +828,4 @@
 "MESSAGING_ADMIN" = "Admin";
 "MESSAGING_SHARE_DECRYPTION_ERROR_MESSAGE" = "Failed to decrypt message content.";
 "MESSAGING_SET_PRIMARY_DOMAIN" = "Set primary domain";
+"MESSAGING_REMOTE_CONTENT" = "Remote content";
