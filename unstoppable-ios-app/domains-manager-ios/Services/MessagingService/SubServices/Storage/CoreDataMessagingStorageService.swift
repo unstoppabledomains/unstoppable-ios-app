@@ -583,48 +583,73 @@ private extension CoreDataMessagingStorageService {
     }
     
     // Message type
+    enum CoreDataMessageTypeWrapper: Int {
+        case text = 0
+        case imageBase64 = 1
+        case imageData = 2
+        case remoteContent = 3
+        case unknown = 999
+     
+        static func valueFor(_ messageType: MessagingChatMessageDisplayType) -> CoreDataMessageTypeWrapper {
+            switch messageType {
+            case .text:
+                return .text
+            case .imageBase64:
+                return .imageBase64
+            case .imageData:
+                return .imageData
+            case .unknown:
+                return .unknown
+            case .remoteContent:
+                return .remoteContent
+            }
+        }
+    }
     func getMessageDisplayType(from coreDataMessage: CoreDataMessagingChatMessage,
                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState) -> MessagingChatMessageDisplayType? {
-        let typesWithoutContentInCoreData: Set<Int64> = [999]
-        if !typesWithoutContentInCoreData.contains(coreDataMessage.messageType) {
+        guard let coreDataMessageType = CoreDataMessageTypeWrapper(rawValue: Int(coreDataMessage.messageType)) else { return  nil }
+        
+        func getDecryptedContent() -> String? {
             guard let messageContent = coreDataMessage.messageContent else { return nil }
-            
+
             var decryptedContent = messageContent
             if deliveryState == .delivered {
                 guard let decrypted = try? decrypterService.decryptText(messageContent) else {
                     return nil }
                 decryptedContent = decrypted
             }
-            
-            if coreDataMessage.messageType == 0 {
-                let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
-                return .text(textDisplayInfo)
-            } else if coreDataMessage.messageType == 1 {
-                let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent)
-                return .imageBase64(imageBase64DisplayInfo)
-            } else if coreDataMessage.messageType == 2 {
-                guard let decryptedData = Data(base64Encoded: decryptedContent),
-                      let imageDataDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: decryptedData) else { return nil }
-                return .imageData(imageDataDisplayInfo)
-            } else if coreDataMessage.messageType == 3 {
-                guard let decryptedData = Data(base64Encoded: decryptedContent) else { return nil }
-                let remoteContentDisplayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: decryptedData)
-                return .remoteContent(remoteContentDisplayInfo)
-            }
-        } else {
-            if coreDataMessage.messageType == 999 {
-                guard let json = coreDataMessage.genericMessageDetails,
-                      let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
-                
-                let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: details.fileName,
-                                                                                    type: details.type,
-                                                                                    name: details.name,
-                                                                                    size: details.size)
-                return .unknown(unknownDisplayInfo)
-            }
+            return decryptedContent
         }
         
-        return nil
+        switch coreDataMessageType {
+        case .text:
+            guard let decryptedContent = getDecryptedContent() else { return nil }
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
+            return .text(textDisplayInfo)
+        case .imageBase64:
+            guard let decryptedContent = getDecryptedContent() else { return nil }
+            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent)
+            return .imageBase64(imageBase64DisplayInfo)
+        case .imageData:
+            guard let decryptedContent = getDecryptedContent(),
+                  let decryptedData = Data(base64Encoded: decryptedContent),
+                  let imageDataDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: decryptedData) else { return nil }
+            return .imageData(imageDataDisplayInfo)
+        case .remoteContent:
+            guard let decryptedContent = getDecryptedContent(),
+                  let decryptedData = Data(base64Encoded: decryptedContent) else { return nil }
+            let remoteContentDisplayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: decryptedData)
+            return .remoteContent(remoteContentDisplayInfo)
+        case .unknown:
+            guard let json = coreDataMessage.genericMessageDetails,
+                  let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
+            
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: details.fileName,
+                                                                                type: details.type,
+                                                                                name: details.name,
+                                                                                size: details.size)
+            return .unknown(unknownDisplayInfo)
+        }
     }
     
     func saveMessageDisplayType(_ messageType: MessagingChatMessageDisplayType,
@@ -635,25 +660,23 @@ private extension CoreDataMessagingStorageService {
             return encryptedContent
         }
         
+        let coreDataMessageType = CoreDataMessageTypeWrapper.valueFor(messageType)
+        coreDataMessage.messageType = Int64(coreDataMessageType.rawValue)
+        
         switch messageType {
         case .text(let info):
-            coreDataMessage.messageType = 0
             let encryptedContent = try decrypterService.encryptText(info.text)
             coreDataMessage.messageContent = encryptedContent
         case .imageBase64(let info):
-            coreDataMessage.messageType = 1
             let encryptedContent = try decrypterService.encryptText(info.base64)
             coreDataMessage.messageContent = encryptedContent
         case .imageData(let info):
-            coreDataMessage.messageType = 2
             let encryptedContent = try encryptDataContent(info.data)
             coreDataMessage.messageContent = encryptedContent
         case .remoteContent(let info):
-            coreDataMessage.messageType = 3
             let encryptedContent = try encryptDataContent(info.serviceData)
             coreDataMessage.messageContent = encryptedContent
         case .unknown(let info):
-            coreDataMessage.messageType = 999
             coreDataMessage.genericMessageDetails = CoreDataUnknownMessageDetails(type: info.type,
                                                                                   fileName: info.fileName,
                                                                                   name: info.name,
