@@ -128,10 +128,11 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,
                                                                        isApproved: true) else { throw XMTPServiceError.failedToParseChat }
-        let message = try await sendMessage(messageType,
+        var message = try await sendMessage(messageType,
                                             in: conversation,
                                             chat: chat,
                                             filesService: filesService)
+        message.displayInfo.isFirstInChat = true 
         return (chat, message)
     }
     

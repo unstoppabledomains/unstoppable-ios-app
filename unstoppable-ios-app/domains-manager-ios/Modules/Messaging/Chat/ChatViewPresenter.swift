@@ -643,16 +643,19 @@ private extension ChatViewPresenter {
                                                                                    isEncrypted: isChannelEncrypted,
                                                                                    in: chat)
                 case .newChat(let userInfo):
+                    view?.setLoading(active: true)
                     let (chat, message) = try await appContext.messagingService.sendFirstMessage(type,
                                                                                                  to: userInfo,
                                                                                                  by: profile)
                     self.conversationState = .existingChat(chat)
                     newMessage = message
+                    view?.setLoading(active: false)
                 }
                 await newMessage.prepareToDisplay()
                 messages.insert(newMessage, at: 0)
                 showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
             } catch {
+                view?.setLoading(active: false)
                 view?.showAlertWith(error: error, handler: nil)
             }
         }
