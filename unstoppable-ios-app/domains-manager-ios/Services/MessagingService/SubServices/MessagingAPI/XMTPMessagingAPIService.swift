@@ -179,7 +179,8 @@ private extension XMTPMessagingAPIService {
         
         let keysData = try client.privateKeyBundle.serializedData()
         KeychainXMTPKeysStorage.instance.saveKeysData(keysData,
-                                                      forIdentifier: wallet, env: env)
+                                                      forIdentifier: wallet,
+                                                      env: env)
     }
     
     func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
