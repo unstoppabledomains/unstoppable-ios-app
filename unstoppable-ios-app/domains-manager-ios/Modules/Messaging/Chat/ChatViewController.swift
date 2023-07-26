@@ -43,7 +43,8 @@ final class ChatViewController: BaseViewController {
                                                         ChatImageCell.self,
                                                         ChatUnsupportedMessageCell.self,
                                                         ChannelFeedCell.self,
-                                                        ChatLoadingCell.self] }
+                                                        ChatLoadingCell.self,
+                                                        ChatRemoteContentCell.self] }
     var presenter: ChatViewPresenterProtocol!
     let operationQueue = OperationQueue()
     private(set) var dataSource: DataSource!
@@ -480,12 +481,17 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .remoteContentMessage(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatRemoteContentCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             case .channelFeed(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChannelFeedCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
                 
                 return cell
-            case .loading, .remoteContentMessage:
+            case .loading:
                 let cell = collectionView.dequeueCellOfType(ChatLoadingCell.self, forIndexPath: indexPath)
 
                 return cell

@@ -978,6 +978,14 @@
 		C6157AFF2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */; };
 		C6157B002A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */; };
 		C6157B012A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */; };
+		C6157B052A7113C900081574 /* ChatRemoteContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */; };
+		C6157B062A7113C900081574 /* ChatRemoteContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */; };
+		C6157B072A7113C900081574 /* ChatRemoteContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */; };
+		C6157B082A7113C900081574 /* ChatRemoteContentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */; };
+		C6157B092A7113C900081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
+		C6157B0A2A7113C900081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
+		C6157B0B2A7113C900081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
+		C6157B0C2A7113CA00081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
 		C615E0D228891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D328891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D428891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
@@ -4297,6 +4305,8 @@
 		C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExistingExternalWalletPresenter.swift; sourceTree = "<group>"; };
 		C613C22129E3BEEC0001A3AF /* NFCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCService.swift; sourceTree = "<group>"; };
 		C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageRemoteContentTypeDisplayInfo.swift; sourceTree = "<group>"; };
+		C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRemoteContentCell.swift; sourceTree = "<group>"; };
+		C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatRemoteContentCell.xib; sourceTree = "<group>"; };
 		C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionSearchEmptyCell.swift; sourceTree = "<group>"; };
 		C615E0D128891BC10082490B /* DomainsCollectionSearchEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionSearchEmptyCell.xib; sourceTree = "<group>"; };
 		C6166CBE28EC179E00004252 /* SafeContinuation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeContinuation.swift; sourceTree = "<group>"; };
@@ -6028,6 +6038,15 @@
 			path = Changes;
 			sourceTree = "<group>";
 		};
+		C6157B022A7113BD00081574 /* ChatRemoteContentCell */ = {
+			isa = PBXGroup;
+			children = (
+				C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */,
+				C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */,
+			);
+			path = ChatRemoteContentCell;
+			sourceTree = "<group>";
+		};
 		C615E0CF28891BA00082490B /* DomainsCollectionSearchEmptyCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -6797,6 +6816,7 @@
 				C629A46F2A3FF5CE00A528A1 /* ChatBaseCell.swift */,
 				C6E0D66C2A4AC2AE009431AF /* ChatUserMessageCell.swift */,
 				C603D7A92A56FC2300CEC696 /* ChatUserBubbledMessageCell.swift */,
+				C6157B022A7113BD00081574 /* ChatRemoteContentCell */,
 				C603D79E2A56B6FF00CEC696 /* ChatUnsupportedMessageCell */,
 				C6BF42C92A49552700A02860 /* ChatLoadingCell */,
 				C6500B372A41875E00ACAA8C /* ChannelFeedCell */,
@@ -9014,6 +9034,7 @@
 				C6A2D5B0285062D100327C47 /* BaseSignTransactionView.xib in Resources */,
 				C691CF6C28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */,
 				C628E34927FDB1310044E408 /* TableViewSelectionCell.xib in Resources */,
+				C6157B092A7113C900081574 /* ChatRemoteContentCell.xib in Resources */,
 				C666E09429CB3F430003DECB /* ParkedDomainsFoundViewController.xib in Resources */,
 				C6ECBF9028D2D20D00E94309 /* WalletInfoBadgeView.xib in Resources */,
 				C66804CD280D9EC8007E6390 /* EnterPasscodeViewController.xib in Resources */,
@@ -9131,6 +9152,7 @@
 				30BFA4DC27E1087700644CD5 /* ProtectWallet.storyboard in Resources */,
 				C635B02C283393040058F14F /* ManageDomainRecordCell.xib in Resources */,
 				C6A474EA29D1756D0073415F /* LoadingParkedDomainsViewController.xib in Resources */,
+				C6157B0B2A7113C900081574 /* ChatRemoteContentCell.xib in Resources */,
 				307F8435267A339F0070A9A6 /* apple-app-site-association in Resources */,
 				C664B676291542E300A76154 /* DomainProfileWeb3WebsiteCell.xib in Resources */,
 				C6500B552A41924700ACAA8C /* ChannelFeedCell.xib in Resources */,
@@ -9367,6 +9389,7 @@
 				C691CF6F28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */,
 				C628E34C27FDB1310044E408 /* TableViewSelectionCell.xib in Resources */,
 				C6ECBF9328D2D20D00E94309 /* WalletInfoBadgeView.xib in Resources */,
+				C6157B0C2A7113CA00081574 /* ChatRemoteContentCell.xib in Resources */,
 				C666E09729CB3F430003DECB /* ParkedDomainsFoundViewController.xib in Resources */,
 				C66804D0280D9EC8007E6390 /* EnterPasscodeViewController.xib in Resources */,
 				30784C9127F455350034FA4A /* UDTextView.xib in Resources */,
@@ -9536,6 +9559,7 @@
 				306DB21A268B2BFE009D95DE /* uns-config.json in Resources */,
 				C691CF6D28BE4DA80077C59F /* HelveticaNeue-Custom.ttf in Resources */,
 				C628E34A27FDB1310044E408 /* TableViewSelectionCell.xib in Resources */,
+				C6157B0A2A7113C900081574 /* ChatRemoteContentCell.xib in Resources */,
 				C666E09529CB3F430003DECB /* ParkedDomainsFoundViewController.xib in Resources */,
 				C6ECBF9128D2D20D00E94309 /* WalletInfoBadgeView.xib in Resources */,
 				C66804CE280D9EC8007E6390 /* EnterPasscodeViewController.xib in Resources */,
@@ -9731,6 +9755,7 @@
 				C6D6E55428193A35008C66BB /* DomainsCollectionViewController.swift in Sources */,
 				C6BEEF3029C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */,
 				C6C9DE942834A9DB00BAC36F /* TextWhiteButton.swift in Sources */,
+				C6157B052A7113C900081574 /* ChatRemoteContentCell.swift in Sources */,
 				3026FA2B27E885B600FE058B /* ConfirmWordsViewController.swift in Sources */,
 				C652726B2A15E483001A084C /* ChatTextView.swift in Sources */,
 				C692C360282EA71C00C31393 /* AppearanceSettingsCell.swift in Sources */,
@@ -11219,6 +11244,7 @@
 				C60E9B8D2821193400CD7593 /* WalletsListViewController.swift in Sources */,
 				2930E1A728AFA31E0002D280 /* Debug-Tools-Dev.swift in Sources */,
 				C695C26A2A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */,
+				C6157B072A7113C900081574 /* ChatRemoteContentCell.swift in Sources */,
 				C617370229D68F1B00E6686D /* BadgeLeaderboardSelectionItem.swift in Sources */,
 				C61B3E86283E626400500B6D /* UserDataValidator.swift in Sources */,
 				C6E69FFD288AEAAF000A8346 /* ExternalEvent.swift in Sources */,
@@ -11298,6 +11324,7 @@
 				307F8580267B60300070A9A6 /* UDWalletEthereum.swift in Sources */,
 				C6C99591289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
 				C6124CBD2922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift in Sources */,
+				C6157B082A7113C900081574 /* ChatRemoteContentCell.swift in Sources */,
 				C6B366D52A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
 				C65271E42A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
 				C609821F2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
@@ -12163,6 +12190,7 @@
 				C60982312823EF3900546392 /* AddWalletNavigationController.swift in Sources */,
 				C6BEEF3129C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */,
 				C6D6E55528193A35008C66BB /* DomainsCollectionViewController.swift in Sources */,
+				C6157B062A7113C900081574 /* ChatRemoteContentCell.swift in Sources */,
 				C6C9DE952834A9DB00BAC36F /* TextWhiteButton.swift in Sources */,
 				C652726C2A15E483001A084C /* ChatTextView.swift in Sources */,
 				3026FA2C27E885B600FE058B /* ConfirmWordsViewController.swift in Sources */,
