@@ -13,6 +13,11 @@ final class XMTPMessagingAPIService {
     private let messagingHelper = MessagingAPIServiceHelper()
     private let xmtpHelper = XMTPServiceHelper()
 
+    init() {
+        Client.register(codec: AttachmentCodec())
+        Client.register(codec: RemoteAttachmentCodec())
+    }
+    
 }
 
 // MARK: - MessagingAPIServiceProtocol
