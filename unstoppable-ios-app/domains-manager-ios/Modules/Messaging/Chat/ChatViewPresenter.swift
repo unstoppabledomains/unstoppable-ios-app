@@ -276,9 +276,29 @@ private extension ChatViewPresenter {
             } else {
                 self.messages.append(message)
             }
+            loadRemoteContentOfMessageAsync(message)
         }
         
         self.messages.sort(by: { $0.time > $1.time })
+    }
+    
+    func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
+        guard case .remoteContent = message.type,
+              case .existingChat(let chat) = conversationState else { return }
+        
+        Task {
+            do {
+                let updatedMessage = try await appContext.messagingService.loadRemoteContentFor(message,
+                                                                                                in: chat)
+                if let i = messages.firstIndex(where: { $0.id == updatedMessage.id }) {
+                    messages[i] = updatedMessage
+                    showData(animated: true, isLoading: isLoadingMessages)
+                }
+            } catch {
+                try? await Task.sleep(seconds: 5)
+                loadRemoteContentOfMessageAsync(message)
+            }
+        }
     }
     
     func awaitForUIReady() async {
@@ -361,6 +381,12 @@ private extension ChatViewPresenter {
                                                             pressedCallback: { [weak self] in
                 self?.logButtonPressedAnalyticEvents(button: .downloadUnsupportedMessage)
                 self?.shareContentOfMessage(message)
+            }))
+        case .remoteContent:
+            return .remoteContentMessage(configuration: .init(message: message,
+                                                              isGroupChatMessage: isGroupChatMessage,
+                                                              pressedCallback: {
+                
             }))
         }
     }

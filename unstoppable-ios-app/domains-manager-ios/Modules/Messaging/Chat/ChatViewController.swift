@@ -485,7 +485,7 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
-            case .loading:
+            case .loading, .remoteContentMessage:
                 let cell = collectionView.dequeueCellOfType(ChatLoadingCell.self, forIndexPath: indexPath)
 
                 return cell
@@ -558,6 +558,7 @@ extension ChatViewController {
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
         case imageDataMessage(configuration: ImageDataMessageUIConfiguration)
         case unsupportedMessage(configuration: UnsupportedMessageUIConfiguration)
+        case remoteContentMessage(configuration: RemoteConfigMessageUIConfiguration)
         case channelFeed(configuration: ChannelFeedUIConfiguration)
         case loading
         
@@ -570,6 +571,8 @@ extension ChatViewController {
             case .imageDataMessage(let configuration):
                 return configuration.message
             case .unsupportedMessage(let configuration):
+                return configuration.message
+            case .remoteContentMessage(let configuration):
                 return configuration.message
             case .channelFeed, .loading:
                 return nil
@@ -632,6 +635,20 @@ extension ChatViewController {
     }
     
     struct UnsupportedMessageUIConfiguration: Hashable {
+        let message: MessagingChatMessageDisplayInfo
+        let isGroupChatMessage: Bool
+        let pressedCallback: EmptyCallback
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.message.id == rhs.message.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(message.id)
+        }
+    }
+    
+    struct RemoteConfigMessageUIConfiguration: Hashable {
         let message: MessagingChatMessageDisplayInfo
         let isGroupChatMessage: Bool
         let pressedCallback: EmptyCallback

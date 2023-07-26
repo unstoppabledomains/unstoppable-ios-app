@@ -112,7 +112,7 @@ private extension ChatListCell {
             return description.text
         case .imageBase64, .imageData:
             return String.Constants.photo.localized()
-        case .unknown:
+        case .unknown, .remoteContent:
             return String.Constants.messageNotSupported.localized()
         }
     }

@@ -974,6 +974,10 @@
 		C613C22329E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
 		C613C22429E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
 		C613C22529E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
+		C6157AFE2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */; };
+		C6157AFF2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */; };
+		C6157B002A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */; };
+		C6157B012A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */; };
 		C615E0D228891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D328891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D428891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
@@ -4292,6 +4296,7 @@
 		C6124CEA29252E8F005E6537 /* DomainProfileSignExternalWalletViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignExternalWalletViewPresenter.swift; sourceTree = "<group>"; };
 		C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExistingExternalWalletPresenter.swift; sourceTree = "<group>"; };
 		C613C22129E3BEEC0001A3AF /* NFCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCService.swift; sourceTree = "<group>"; };
+		C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageRemoteContentTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionSearchEmptyCell.swift; sourceTree = "<group>"; };
 		C615E0D128891BC10082490B /* DomainsCollectionSearchEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionSearchEmptyCell.xib; sourceTree = "<group>"; };
 		C6166CBE28EC179E00004252 /* SafeContinuation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeContinuation.swift; sourceTree = "<group>"; };
@@ -6702,6 +6707,7 @@
 				C629A45F2A3FF13600A528A1 /* MessagingChatMessageImageBase64TypeDisplayInfo.swift */,
 				C64BCB7A2A6FB5B700EF8B47 /* MessagingChatMessageImageDataTypeDisplayInfo.swift */,
 				C603D7992A56B11800CEC696 /* MessagingChatMessageUnknownTypeDisplayInfo.swift */,
+				C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */,
 				C623967B2A288A8A00363F60 /* MessagingChatMessageDisplayType.swift */,
 				C62396802A288A9400363F60 /* MessagingChatMessageDisplayInfo.swift */,
 				C62396852A288A9E00363F60 /* MessagingChatMessage.swift */,
@@ -10108,6 +10114,7 @@
 				C60E9BA728218F1B00CD7593 /* ManageBackupsAction.swift in Sources */,
 				C6500B482A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */,
 				C664B6432913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */,
+				C6157AFE2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
 				C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */,
 				C635A5CE287BD74400CCF533 /* LoadingIndicatorView.swift in Sources */,
 				C628E35E27FDDA930044E408 /* String.swift in Sources */,
@@ -10524,6 +10531,7 @@
 				C652723E2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */,
 				C6D9E29628535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */,
 				C6C995C4289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
+				C6157B002A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
 				C6E0415D295053DC0080F8E3 /* UIScrollView.swift in Sources */,
 				C692C32C282E4C6500C31393 /* SecuritySettingsAuthSelectionCell.swift in Sources */,
 				C61ECD762A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */,
@@ -11901,6 +11909,7 @@
 				C628E38027FEE2D40044E408 /* NSLayoutHelper.swift in Sources */,
 				C691CFAB28C06F120077C59F /* ReverseResolutionIllustrationView.swift in Sources */,
 				C6A2D53D284E139E00327C47 /* QRScannerPermissionsView.swift in Sources */,
+				C6157B012A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
 				307F85BD267B60300070A9A6 /* LocalStorage.swift in Sources */,
 				C60CA2952832501D00AB1B36 /* QRCodeMonkeyServiceProvider.swift in Sources */,
 				C6526DF529D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
@@ -12537,6 +12546,7 @@
 				C664B6442913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */,
 				C6500B492A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */,
 				C60E9BA828218F1B00CD7593 /* ManageBackupsAction.swift in Sources */,
+				C6157AFF2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
 				C642A6A62841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */,
 				C635A5CF287BD74400CCF533 /* LoadingIndicatorView.swift in Sources */,
 				C628E35F27FDDA930044E408 /* String.swift in Sources */,

@@ -286,6 +286,12 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         return messagesToKeep + remoteMessages
     }
     
+    func loadRemoteContentFor(_ message: MessagingChatMessage,
+                              serviceData: Data,
+                              filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
+        throw PushMessagingAPIServiceError.actionNotSupported
+    }
+    
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool {
         switch chatType {
         case .private(let details):
@@ -521,7 +527,7 @@ private extension PushMessagingAPIService {
             let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
             let imageBase64TypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64)
             return try getPushMessageContentFrom(displayType: .imageBase64(imageBase64TypeDetails))
-        case .unknown:
+        case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
         }
     }
@@ -532,7 +538,7 @@ private extension PushMessagingAPIService {
             return .text
         case .imageBase64, .imageData:
             return .image
-        case .unknown:
+        case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
         }
     }
@@ -567,6 +573,7 @@ extension PushMessagingAPIService {
         case failedToConvertPushMessage
         case declineRequestNotSupported
         case failedToPrepareMessageContent
+        case actionNotSupported
         
         public var errorDescription: String? { rawValue }
 

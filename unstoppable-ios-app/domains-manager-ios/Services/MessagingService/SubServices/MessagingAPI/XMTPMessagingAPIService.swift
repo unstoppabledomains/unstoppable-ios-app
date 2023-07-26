@@ -89,10 +89,18 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let conversation = try getXMTPConversationFromChat(chat, client: client )
         let messages = try await conversation.messages(limit: fetchLimit, before: message?.displayInfo.time)
         
-        return messages.compactMap({ XMTPEntitiesTransformer.convertXMTPMessageToChatMessage($0,
-                                                                                             in: chat,
-                                                                                             isRead: isRead,
-                                                                                             filesService: filesService) })
+        var chatMessages = messages.compactMap({ xmtpMessage in
+            XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                    cachedMessage: cachedMessages.first(where: { $0.displayInfo.id == xmtpMessage.id }),
+                                                                    in: chat,
+                                                                    isRead: isRead,
+                                                                    filesService: filesService)
+        })
+        if chatMessages.count < fetchLimit,
+           !chatMessages.isEmpty {
+            chatMessages[chatMessages.count - 1].displayInfo.isFirstInChat = true 
+        }
+        return chatMessages
     }
     
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool {
@@ -134,6 +142,15 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func leaveGroupChat(_ chat: MessagingChat, by user: MessagingChatUserProfile) async throws {
         throw XMTPServiceError.unsupportedAction
     }
+    
+    func loadRemoteContentFor(_ message: MessagingChatMessage,
+                              serviceData: Data,
+                              filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
+        try await XMTPEntitiesTransformer.loadRemoteContentFrom(data: serviceData,
+                                                                messageId: message.displayInfo.id,
+                                                                userId: message.userId,
+                                                                filesService: filesService)
+    }
 }
 
 // MARK: - Private methods
@@ -159,13 +176,14 @@ private extension XMTPMessagingAPIService {
         case .imageData(let displayInfo):
             messageID = try await sendImageAttachment(data: displayInfo.data,
                                                       in: conversation)
-        case .unknown:
+        case .unknown, .remoteContent:
             throw XMTPServiceError.unsupportedAction
         }
         
         let newestMessages = try await conversation.messages(limit: 3, before: Date().addingTimeInterval(100)) // Get latest message
         guard let xmtpMessage = newestMessages.first(where: { $0.id == messageID }),
               let message = XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                                    cachedMessage: nil,
                                                                                     in: chat,
                                                                                     isRead: true,
                                                                                     filesService: filesService) else { throw XMTPServiceError.failedToFindSentMessage }

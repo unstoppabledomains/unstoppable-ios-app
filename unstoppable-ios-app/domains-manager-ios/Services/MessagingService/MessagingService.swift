@@ -185,6 +185,26 @@ extension MessagingService: MessagingServiceProtocol {
         await storageService.saveMessages(messages)
         return messages.map { $0.displayInfo }
     }
+    
+    func loadRemoteContentFor(_ message: MessagingChatMessageDisplayInfo,
+                              in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
+        guard let messagingChat = await storageService.getChatWith(id: message.chatId, of: message.userId),
+              var chatMessage = await storageService.getMessageWith(id: message.id, in: messagingChat) else {
+            throw MessagingServiceError.messageNotFound
+        }
+        
+        switch chatMessage.displayInfo.type {
+        case .text, .imageData, .imageBase64, .unknown:
+            return message
+        case .remoteContent(let info):
+            let loadedType = try await apiService.loadRemoteContentFor(chatMessage,
+                                                                       serviceData: info.serviceData,
+                                                                       filesService: filesService)
+            chatMessage.displayInfo.type = loadedType
+            await storageService.saveMessages([chatMessage])
+            return chatMessage.displayInfo
+        }
+    }
 
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      isEncrypted: Bool,

@@ -13,6 +13,7 @@ enum XMTPEnvironmentNamespace {
     enum KnownType: String {
         case text
         case attachment
+        case remoteStaticAttachment
     }
     
     struct ChatServiceMetadata: Codable {

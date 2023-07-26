@@ -71,9 +71,14 @@ struct XMTPEntitiesTransformer {
     }
     
     static func convertXMTPMessageToChatMessage(_ xmtpMessage: XMTP.DecodedMessage,
+                                                cachedMessage: MessagingChatMessage?,
                                                 in chat: MessagingChat,
                                                 isRead: Bool,
                                                 filesService: MessagingFilesServiceProtocol) -> MessagingChatMessage? {
+        if let cachedMessage {
+            return cachedMessage
+        }
+        
         let id = xmtpMessage.id
         let userId = chat.userId
         let metadataModel = XMTPEnvironmentNamespace.MessageServiceMetadata(encodedContent: xmtpMessage.encodedContent)
@@ -126,27 +131,19 @@ struct XMTPEntitiesTransformer {
                 return .text(textDisplayInfo)
             case .attachment:
                 let attachment: XMTP.Attachment = try xmtpMessage.content()
-                if let image = UIImage(data: attachment.data) {
-                    let imageDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: attachment.data,
-                                                                                        image: image)
-                    return .imageData(imageDisplayInfo)
-                } else {
-                    let name = attachment.filename
-                    let data = attachment.data
-                    
-                    
-                    let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + name
-                    try filesService.saveData(data, fileName: fileName)// TODO: - Encrypt content
-                    let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
-                                                                                        type: typeId,
-                                                                                        name: name,
-                                                                                        size: data.count)
-                    return .unknown(unknownDisplayInfo)
-                }
+                return try getMessageTypeFor(attachment: attachment,
+                                             messageId: messageId,
+                                             userId: userId,
+                                             filesService: filesService)
+            case .remoteStaticAttachment:
+                let remoteAttachment: XMTP.RemoteAttachment = try xmtpMessage.content()
+                let attachmentProperties = RemoteAttachmentProperties(remoteAttachment: remoteAttachment)
+                let serviceData = try attachmentProperties.jsonDataThrowing()
+                let displayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: serviceData)
+                return .remoteContent(displayInfo)
             }
         } else {
-            guard let decryptedContent: String = try? xmtpMessage.content(),
-                  let contentData = decryptedContent.data(using: .utf8) else { return nil }
+            guard let contentData: Data = try? xmtpMessage.content() else { return nil }
 
             let fileName = messageId + "_" + String(userId.suffix(4))
             try filesService.saveData(contentData, fileName: fileName)
@@ -158,6 +155,28 @@ struct XMTPEntitiesTransformer {
         }
     }
     
+    private static func getMessageTypeFor(attachment: Attachment,
+                                          messageId: String,
+                                          userId: String,
+                                          filesService: MessagingFilesServiceProtocol) throws -> MessagingChatMessageDisplayType {
+        if let image = UIImage(data: attachment.data) {
+            let imageDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: attachment.data,
+                                                                                image: image)
+            return .imageData(imageDisplayInfo)
+        } else {
+            let name = attachment.filename
+            let data = attachment.data
+            
+            let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + name
+            try filesService.saveData(data, fileName: fileName)
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
+                                                                                type: XMTPEnvironmentNamespace.KnownType.attachment.rawValue,
+                                                                                name: name,
+                                                                                size: data.count)
+            return .unknown(unknownDisplayInfo)
+        }
+    }
+
     static func convertXMTPMessageToWebSocketMessageEntity(_ xmtpMessage: XMTP.DecodedMessage,
                                                            peerAddress: String,
                                                            userAddress: String) -> MessagingWebSocketMessageEntity {
@@ -180,6 +199,7 @@ struct XMTPEntitiesTransformer {
         let thisUserWallet = chat.displayInfo.thisUserDetails.wallet
         
         return convertXMTPMessageToChatMessage(serviceContent.xmtpMessage,
+                                               cachedMessage: nil,
                                                in: chat,
                                                isRead: thisUserWallet == webSocketMessage.senderWallet,
                                                filesService: filesService)
@@ -201,5 +221,46 @@ struct XMTPEntitiesTransformer {
                                      userId: profile.id,
                                      userWallet: profile.wallet,
                                      isApproved: true)
+    }
+    
+    static func loadRemoteContentFrom(data: Data,
+                                      messageId: String,
+                                      userId: String,
+                                      filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
+        let remoteAttachmentProperties = try RemoteAttachmentProperties.objectFromDataThrowing(data)
+        let remoteAttachment = try remoteAttachmentProperties.createRemoteAttachment()
+        let remoteAttachmentEncodedContent = try await remoteAttachment.content()
+        let attachment: Attachment = try remoteAttachmentEncodedContent.decoded()
+        return try getMessageTypeFor(attachment: attachment,
+                                     messageId: messageId,
+                                     userId: userId,
+                                     filesService: filesService)
+    }
+    
+    private struct RemoteAttachmentProperties: Codable {
+        let url: String
+        let contentDigest: String
+        let secret: Data
+        let salt: Data
+        let nonce: Data
+        let scheme: String
+        
+        init(remoteAttachment: XMTP.RemoteAttachment) {
+            self.url = remoteAttachment.url
+            self.contentDigest = remoteAttachment.contentDigest
+            self.secret = remoteAttachment.secret
+            self.salt = remoteAttachment.salt
+            self.nonce = remoteAttachment.nonce
+            self.scheme = remoteAttachment.scheme.rawValue
+        }
+        
+        func createRemoteAttachment() throws -> XMTP.RemoteAttachment {
+            try XMTP.RemoteAttachment(url: url,
+                                      contentDigest: contentDigest,
+                                      secret: secret,
+                                      salt: salt,
+                                      nonce: nonce,
+                                      scheme: .init(rawValue: scheme)!)
+        }
     }
 }

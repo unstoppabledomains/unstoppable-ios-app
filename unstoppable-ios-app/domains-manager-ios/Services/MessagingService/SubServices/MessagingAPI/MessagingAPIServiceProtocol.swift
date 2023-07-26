@@ -36,6 +36,9 @@ protocol MessagingAPIServiceProtocol {
                             isRead: Bool,
                             for user: MessagingChatUserProfile,
                             filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage]
+    func loadRemoteContentFor(_ message: MessagingChatMessage,
+                              serviceData: Data,
+                              filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat,

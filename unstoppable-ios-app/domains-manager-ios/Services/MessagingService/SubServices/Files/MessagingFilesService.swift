@@ -42,7 +42,7 @@ extension MessagingFilesService: MessagingFilesServiceProtocol {
         let fileName: String
         
         switch message.type {
-        case .text, .imageBase64, .imageData:
+        case .text, .imageBase64, .imageData, .remoteContent:
             return nil
         case .unknown(let info):
             fileName = info.fileName

@@ -54,7 +54,8 @@ extension MockMessagingService: MessagingServiceProtocol {
         chatsMessages[chat] = messages
         return messages
     }
-    
+    func loadRemoteContentFor(_ message: MessagingChatMessageDisplayInfo,
+                              in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo { message }
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      isEncrypted: Bool,
                      in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo {

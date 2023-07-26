@@ -585,8 +585,8 @@ private extension CoreDataMessagingStorageService {
     // Message type
     func getMessageDisplayType(from coreDataMessage: CoreDataMessagingChatMessage,
                                deliveryState: MessagingChatMessageDisplayInfo.DeliveryState) -> MessagingChatMessageDisplayType? {
-        let typesWithContentInCoreData: Set<Int64> = [0, 1, 2]
-        if typesWithContentInCoreData.contains(coreDataMessage.messageType) {
+        let typesWithoutContentInCoreData: Set<Int64> = [999]
+        if !typesWithoutContentInCoreData.contains(coreDataMessage.messageType) {
             guard let messageContent = coreDataMessage.messageContent else { return nil }
             
             var decryptedContent = messageContent
@@ -606,6 +606,10 @@ private extension CoreDataMessagingStorageService {
                 guard let decryptedData = Data(base64Encoded: decryptedContent),
                       let imageDataDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: decryptedData) else { return nil }
                 return .imageData(imageDataDisplayInfo)
+            } else if coreDataMessage.messageType == 3 {
+                guard let decryptedData = Data(base64Encoded: decryptedContent) else { return nil }
+                let remoteContentDisplayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: decryptedData)
+                return .remoteContent(remoteContentDisplayInfo)
             }
         } else {
             if coreDataMessage.messageType == 999 {
@@ -625,6 +629,12 @@ private extension CoreDataMessagingStorageService {
     
     func saveMessageDisplayType(_ messageType: MessagingChatMessageDisplayType,
                                 to coreDataMessage: CoreDataMessagingChatMessage) throws {
+        func encryptDataContent(_ data: Data) throws -> String {
+            let content = data.base64EncodedString()
+            let encryptedContent = try decrypterService.encryptText(content)
+            return encryptedContent
+        }
+        
         switch messageType {
         case .text(let info):
             coreDataMessage.messageType = 0
@@ -636,8 +646,11 @@ private extension CoreDataMessagingStorageService {
             coreDataMessage.messageContent = encryptedContent
         case .imageData(let info):
             coreDataMessage.messageType = 2
-            let content = info.data.base64EncodedString()
-            let encryptedContent = try decrypterService.encryptText(content)
+            let encryptedContent = try encryptDataContent(info.data)
+            coreDataMessage.messageContent = encryptedContent
+        case .remoteContent(let info):
+            coreDataMessage.messageType = 3
+            let encryptedContent = try encryptDataContent(info.serviceData)
             coreDataMessage.messageContent = encryptedContent
         case .unknown(let info):
             coreDataMessage.messageType = 999
