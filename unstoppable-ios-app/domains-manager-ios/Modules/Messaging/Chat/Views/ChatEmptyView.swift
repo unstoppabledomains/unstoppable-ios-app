@@ -120,6 +120,7 @@ extension ChatEmptyView {
     enum State {
         case chatEncrypted
         case chatUnEncrypted
+        case cantContact
         case channel
         
         var message: String? {
@@ -128,6 +129,8 @@ extension ChatEmptyView {
                 return String.Constants.messagingChatEmptyEncryptedMessage.localized()
             case .chatUnEncrypted:
                 return String.Constants.messagingChatEmptyUnencryptedMessage.localized()
+            case .cantContact:
+                return "User is not yet on the XMTP network" // TODO: - Localize
             case .channel: return nil
             }
         }

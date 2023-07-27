@@ -180,6 +180,12 @@ extension ChatViewController: ChatViewProtocol {
             secondaryButton.setConfiguration(configuration)
             secondaryButton.isUserInteractionEnabled = false
             secondaryButton.setTitle(String.Constants.messagingYouAreBlocked.localized(), image: nil)
+        case .cantContactUser(let ableToInvite):
+            if ableToInvite {
+                approveContentView.isHidden = false
+                acceptButton.isHidden = false
+                acceptButton.setTitle("Invite", image: nil) // TODO: - Localize
+            }
         }
     }
     
@@ -699,6 +705,7 @@ extension ChatViewController {
         case joinChannel
         case otherUserIsBlocked
         case userIsBlocked
+        case cantContactUser(ableToInvite: Bool)
     }
     
     struct NavButtonConfiguration {

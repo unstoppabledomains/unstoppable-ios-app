@@ -50,6 +50,7 @@ final class ChatViewPresenter {
     private var isLoadingMessages = false
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     private var isChannelEncrypted: Bool = true
+    private var isAbleToContactUser: Bool = true
     private var didLoadTime = Date()
     
     var analyticsName: Analytics.ViewName { .chatDialog }
@@ -235,7 +236,6 @@ private extension ChatViewPresenter {
                     isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
                     view?.setLoading(active: false)
-                    view?.startTyping()
                     showData(animated: false, isLoading: false)
                 }
             } catch {
@@ -325,7 +325,11 @@ private extension ChatViewPresenter {
             if isLoading {
                 view?.setEmptyState(nil)
             } else {
-                view?.setEmptyState(isChannelEncrypted ? .chatEncrypted : .chatUnEncrypted)
+                if isAbleToContactUser {
+                    view?.setEmptyState(isChannelEncrypted ? .chatEncrypted : .chatUnEncrypted)
+                } else {
+                    view?.setEmptyState(.cantContact)
+                }
             }
             view?.setScrollEnabled(false)
             snapshot.appendSections([])
@@ -563,28 +567,48 @@ private extension ChatViewPresenter {
     }
     
     func updateUIForChatApprovedState() async {
-        guard case .existingChat(let chat) = conversationState else {
-            self.view?.setUIState(.chat)
-            return
-        }
-        
-        if case .group = chat.type {
-            self.view?.setUIState(.chat)
-            return
-        }
-        
-        if let blockStatus = try? await appContext.messagingService.getBlockingStatusForChat(chat) {
-            self.blockStatus = blockStatus
-            switch blockStatus {
-            case .unblocked:
+        switch conversationState {
+        case .existingChat(let chat):
+            if case .group = chat.type {
                 self.view?.setUIState(.chat)
-            case .currentUserIsBlocked:
-                self.view?.setUIState(.userIsBlocked)
-            case .otherUserIsBlocked, .bothBlocked:
-                self.view?.setUIState(.otherUserIsBlocked)
+                return
             }
-            await awaitForUIReady()
-            setupBarButtons()
+            
+            if let blockStatus = try? await appContext.messagingService.getBlockingStatusForChat(chat) {
+                self.blockStatus = blockStatus
+                switch blockStatus {
+                case .unblocked:
+                    self.view?.setUIState(.chat)
+                case .currentUserIsBlocked:
+                    self.view?.setUIState(.userIsBlocked)
+                case .otherUserIsBlocked, .bothBlocked:
+                    self.view?.setUIState(.otherUserIsBlocked)
+                }
+                await awaitForUIReady()
+                setupBarButtons()
+            }
+        case .newChat(let user):
+            func prepareToChat() {
+                view?.setUIState(.chat)
+                view?.startTyping()
+            }
+            
+            if !appContext.messagingService.canContactWithoutProfile {
+                do {
+                    let canContact = try await appContext.messagingService.isAbleToContactAddress(user.wallet,
+                                                                                                  by: profile)
+                    if canContact {
+                        prepareToChat()
+                    } else {
+                        isAbleToContactUser = false
+                        self.view?.setUIState(.cantContactUser(ableToInvite: user.domainName != nil))
+                    }
+                } catch {
+                    view?.showAlertWith(error: error, handler: nil )
+                }
+            } else {
+                prepareToChat()
+            }
         }
     }
     
