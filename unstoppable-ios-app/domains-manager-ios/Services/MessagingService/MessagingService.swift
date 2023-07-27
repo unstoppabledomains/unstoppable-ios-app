@@ -20,7 +20,7 @@ final class MessagingService {
     private var listenerHolders: [MessagingListenerHolder] = []
     private var currentUser: MessagingChatUserProfileDisplayInfo?
     
-    private var isSendingMessage = false
+    private var stateHolder = StateHolder()
 
     init(apiService: MessagingAPIServiceProtocol,
          channelsApiService: MessagingChannelsAPIServiceProtocol,
@@ -777,8 +777,8 @@ private extension MessagingService {
                               messageType: MessagingChatMessageDisplayType,
                               in chat: MessagingChat,
                               by user: MessagingChatUserProfile) {
-        isSendingMessage = true
         Task {
+            await stateHolder.willStartToSendMessage()
             do {
                 var sentMessage = try await apiService.sendMessage(messageType,
                                                                    in: chat,
@@ -795,7 +795,7 @@ private extension MessagingService {
                 replaceCacheMessageAndNotify(message,
                                              with: failedMessage)
             }
-            isSendingMessage = false
+            await stateHolder.didSendMessage()
         }
     }
     
@@ -938,7 +938,7 @@ private extension MessagingService {
             func addNewChatMessages(_ chatMessages: [GroupChatMessageWithProfile]) async {
                 guard !chatMessages.isEmpty else { return }
                 
-                if isSendingMessage,
+                if await stateHolder.isSendingMessage,
                    chatMessages.first(where: { $0.message.displayInfo.senderType.isThisUser }) != nil {
                     return
                 }
@@ -1111,5 +1111,27 @@ extension MessagingService {
         public var errorDescription: String? {
             return rawValue
         }
+    }
+}
+
+// MARK: - Private methods
+private extension MessagingService {
+    actor StateHolder {
+        
+        private var sendingMessagesCounter: Int = 0
+        
+        var isSendingMessage: Bool { sendingMessagesCounter > 0 }
+        
+        func willStartToSendMessage() {
+            sendingMessagesCounter += 1
+        }
+        
+        func didSendMessage() {
+            sendingMessagesCounter -= 1
+            if sendingMessagesCounter < 0 {
+                Debugger.printFailure("Unmatched call to send message", critical: true)
+            }
+        }
+        
     }
 }
