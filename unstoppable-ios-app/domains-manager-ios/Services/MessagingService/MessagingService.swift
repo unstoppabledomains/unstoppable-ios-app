@@ -19,6 +19,8 @@ final class MessagingService {
     private let dataRefreshManager = MessagingServiceDataRefreshManager()
     private var listenerHolders: [MessagingListenerHolder] = []
     private var currentUser: MessagingChatUserProfileDisplayInfo?
+    
+    private var isSendingMessage = false
 
     init(apiService: MessagingAPIServiceProtocol,
          channelsApiService: MessagingChannelsAPIServiceProtocol,
@@ -775,6 +777,7 @@ private extension MessagingService {
                               messageType: MessagingChatMessageDisplayType,
                               in chat: MessagingChat,
                               by user: MessagingChatUserProfile) {
+        isSendingMessage = true
         Task {
             do {
                 let sentMessage = try await apiService.sendMessage(messageType,
@@ -791,6 +794,7 @@ private extension MessagingService {
                 replaceCacheMessageAndNotify(message,
                                              with: failedMessage)
             }
+            isSendingMessage = false
         }
     }
     
@@ -932,6 +936,11 @@ private extension MessagingService {
         Task {
             func addNewChatMessages(_ chatMessages: [GroupChatMessageWithProfile]) async {
                 guard !chatMessages.isEmpty else { return }
+                
+                if isSendingMessage,
+                   chatMessages.first(where: { $0.message.displayInfo.senderType.isThisUser }) != nil {
+                    return
+                }
                 
                 await storageService.saveMessages(chatMessages.map({ $0.message }))
                 for messageWithProfile in chatMessages {
