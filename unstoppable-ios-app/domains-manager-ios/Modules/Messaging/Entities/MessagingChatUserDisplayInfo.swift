@@ -17,9 +17,9 @@ struct MessagingChatUserDisplayInfo: Hashable {
     }
     
     var isUDDomain: Bool {
-        guard let domainName else { return false }
+        guard let tld = domainName?.getTldName() else { return false }
         
-        return  domainName.isValidTld()
+        return tld.isValidTld()
     }
     
     func getETHWallet() -> String {
