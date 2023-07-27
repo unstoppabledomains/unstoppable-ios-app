@@ -610,15 +610,10 @@ private extension CoreDataMessagingStorageService {
         guard let coreDataMessageType = CoreDataMessageTypeWrapper(rawValue: Int(coreDataMessage.messageType)) else { return  nil }
         
         func getDecryptedContent() -> String? {
-            guard let messageContent = coreDataMessage.messageContent else { return nil }
-
-            var decryptedContent = messageContent
-            if deliveryState == .delivered {
-                guard let decrypted = try? decrypterService.decryptText(messageContent) else {
-                    return nil }
-                decryptedContent = decrypted
-            }
-            return decryptedContent
+            guard let messageContent = coreDataMessage.messageContent,
+                  let decrypted = try? decrypterService.decryptText(messageContent) else { return nil }
+            
+            return decrypted
         }
         
         switch coreDataMessageType {
