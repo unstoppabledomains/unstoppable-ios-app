@@ -83,7 +83,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                 by user: MessagingChatUserProfile) async throws -> Bool {
         let env = getCurrentXMTPEnvironment()
         let client = try await xmtpHelper.getClientFor(user: user, env: env)
-        return try await client.canMessage(address)
+        return try await client.canMessage(address.ethChecksumAddress())
     }
     
     func getMessagesForChat(_ chat: MessagingChat,
@@ -290,7 +290,7 @@ extension XMTPMessagingAPIService {
 }
 
 extension DomainItem: SigningKey {
-    var address: String { ownerWallet ?? "" }
+    var address: String { getETHAddress() ?? "" }
     
     func sign(_ data: Data) async throws -> XMTP.Signature {
         try await sign(message: HexAddress.hexPrefix + data.dataToHexString())
