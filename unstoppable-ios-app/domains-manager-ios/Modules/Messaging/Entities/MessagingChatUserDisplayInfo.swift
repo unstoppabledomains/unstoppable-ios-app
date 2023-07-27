@@ -21,4 +21,8 @@ struct MessagingChatUserDisplayInfo: Hashable {
         
         return  domainName.isValidTld()
     }
+    
+    func getETHWallet() -> String {
+        wallet.ethChecksumAddress()
+    }
 }

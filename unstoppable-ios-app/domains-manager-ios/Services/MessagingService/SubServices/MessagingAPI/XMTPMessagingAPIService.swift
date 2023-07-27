@@ -132,7 +132,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType, to userInfo: MessagingChatUserDisplayInfo, by user: MessagingChatUserProfile, filesService: MessagingFilesServiceProtocol) async throws -> (MessagingChat, MessagingChatMessage) {
         let env = getCurrentXMTPEnvironment()
         let client = try await xmtpHelper.getClientFor(user: user, env: env)
-        let conversation = try await client.conversations.newConversation(with: userInfo.wallet)
+        let conversation = try await client.conversations.newConversation(with: userInfo.getETHWallet())
         guard let chat = XMTPEntitiesTransformer.convertXMTPChatToChat(conversation,
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,
