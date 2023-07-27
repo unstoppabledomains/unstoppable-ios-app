@@ -446,14 +446,16 @@ private extension ChatViewPresenter {
                     }))
                 }
                 
-                switch blockStatus {
-                case .unblocked, .currentUserIsBlocked:
-                    actions.append(.init(type: .block, callback: { [weak self] in
-                        self?.logButtonPressedAnalyticEvents(button: .block)
-                        self?.didPressBlockButton()
-                    }))
-                case .bothBlocked, .otherUserIsBlocked:
-                    Void()
+                if appContext.messagingService.canBlockUsers {
+                    switch blockStatus {
+                    case .unblocked, .currentUserIsBlocked:
+                        actions.append(.init(type: .block, callback: { [weak self] in
+                            self?.logButtonPressedAnalyticEvents(button: .block)
+                            self?.didPressBlockButton()
+                        }))
+                    case .bothBlocked, .otherUserIsBlocked:
+                        Void()
+                    }
                 }
             case .group(let groupDetails):
                 actions.append(.init(type: .viewInfo, callback: { [weak self] in
