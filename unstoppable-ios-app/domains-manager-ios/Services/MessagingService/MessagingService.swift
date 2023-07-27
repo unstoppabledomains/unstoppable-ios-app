@@ -780,10 +780,11 @@ private extension MessagingService {
         isSendingMessage = true
         Task {
             do {
-                let sentMessage = try await apiService.sendMessage(messageType,
+                var sentMessage = try await apiService.sendMessage(messageType,
                                                                    in: chat,
                                                                    by: user,
                                                                    filesService: filesService)
+                sentMessage.displayInfo.type = messageType
                 replaceCacheMessageAndNotify(message,
                                              with: sentMessage)
                 try await setLastMessageAndNotify(sentMessage.displayInfo,
