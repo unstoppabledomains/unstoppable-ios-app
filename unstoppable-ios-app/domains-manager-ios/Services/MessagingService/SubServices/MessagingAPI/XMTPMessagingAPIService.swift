@@ -239,8 +239,38 @@ private extension XMTPMessagingAPIService {
         let attachment = Attachment(filename: filename,
                                     mimeType: mimeType,
                                     data: data)
-        return try await conversation.send(content: attachment,
-                                           options: .init(contentType: ContentTypeAttachment))
+        let encryptedAttachment = try RemoteAttachment.encodeEncrypted(content: attachment,
+                                                                       codec: AttachmentCodec())
+        let url = try await uploadDataToWeb3Storage(encryptedAttachment.payload)
+        let remoteAttachment = try RemoteAttachment(url: url,
+                                                    encryptedEncodedContent: encryptedAttachment)
+        return try await conversation.send(content: remoteAttachment,
+                                           options: .init(contentType: ContentTypeRemoteAttachment))
+    }
+    
+    func uploadDataToWeb3Storage(_ data: Data) async throws -> String {
+        struct Web3StorageResponse: Codable {
+            let carCid: String
+            let cid: String
+        }
+        
+        let token: String
+        if User.instance.getSettings().isTestnetUsed {
+            token = Web3Storage.StagingAPIKey
+        } else {
+            token = Web3Storage.ProductionAPIKey
+        }
+        
+        let url = URL(string: "https://api.web3.storage/upload")!
+        var request = URLRequest(url: url)
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.addValue("XMTP", forHTTPHeaderField: "X-NAME")
+        request.httpMethod = "POST"
+        
+        let responseData = try await URLSession.shared.upload(for: request, from: data).0
+        let response = try Web3StorageResponse.objectFromDataThrowing(responseData)
+        
+        return "https://\(response.cid).ipfs.w3s.link"
     }
 }
 

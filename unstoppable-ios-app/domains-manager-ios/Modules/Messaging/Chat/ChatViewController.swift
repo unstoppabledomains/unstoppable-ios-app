@@ -313,6 +313,7 @@ extension ChatViewController: ChatInputViewDelegate {
     
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
         setupMoveToTopButtonFrame()
+        setupEmptyViewFrame()
     }
     
     func chatInputViewAdditionalActionsButtonPressed(_ chatInputView: ChatInputView) {
