@@ -79,8 +79,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         throw XMTPServiceError.unsupportedAction
     }
     
-    func isUserWithAddressAvailable(_ address: String,
-                                    by user: MessagingChatUserProfile) async throws -> Bool {
+    func isAbleToContactAddress(_ address: String,
+                                by user: MessagingChatUserProfile) async throws -> Bool {
         let env = getCurrentXMTPEnvironment()
         let client = try await xmtpHelper.getClientFor(user: user, env: env)
         return try await client.canMessage(address)

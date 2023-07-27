@@ -9,6 +9,13 @@ import Foundation
 
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
+    // Capabilities
+    var canContactWithoutProfile: Bool { get }
+    var canBlockUsers: Bool { get }
+    func isAbleToContactAddress(_ address: String,
+                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool
+    
+    // User
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)

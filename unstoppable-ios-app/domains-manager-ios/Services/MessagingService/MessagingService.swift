@@ -44,6 +44,18 @@ final class MessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MessagingService: MessagingServiceProtocol {
+    // Capabilities
+    var canContactWithoutProfile: Bool { apiService.capabilities.canContactWithoutProfile }
+    var canBlockUsers: Bool { apiService.capabilities.canBlockUsers }
+    
+    func isAbleToContactAddress(_ address: String,
+                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool {
+        let profile = try storageService.getUserProfileWith(userId: user.id)
+        
+        return try await apiService.isAbleToContactAddress(address, by: profile)
+    }
+    
+    // User
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
         if let cachedProfile = try? storageService.getUserProfileFor(domain: domain) {
@@ -98,7 +110,7 @@ extension MessagingService: MessagingServiceProtocol {
         
         return false
     }
-
+    
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         let profile = try await getUserProfileWith(wallet: profile.wallet)

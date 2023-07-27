@@ -236,6 +236,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         }
     }
     
+    func isAbleToContactAddress(_ address: String,
+                                by user: MessagingChatUserProfile) async throws -> Bool {
+        true
+    }
+    
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
                             before message: MessagingChatMessage?,
