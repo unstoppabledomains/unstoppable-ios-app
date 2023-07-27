@@ -22,6 +22,7 @@ final class ChatRemoteContentCell: ChatUserMessageCell {
 // MARK: - Open methods
 extension ChatRemoteContentCell {
     func setWith(configuration: ChatViewController.RemoteConfigMessageUIConfiguration) {
+        (containerView as? UIStackView)?.alignment = configuration.message.senderType.isThisUser ? .trailing : .leading
         setWith(message: configuration.message, isGroupChatMessage: configuration.isGroupChatMessage)
         loadingIndicator.startAnimating()
     }
