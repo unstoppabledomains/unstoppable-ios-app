@@ -986,6 +986,10 @@
 		C6157B0A2A7113C900081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
 		C6157B0B2A7113C900081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
 		C6157B0C2A7113CA00081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
+		C6157B0E2A72159E00081574 /* Encrypting2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B0D2A72159E00081574 /* Encrypting2.swift */; };
+		C6157B0F2A72159E00081574 /* Encrypting2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B0D2A72159E00081574 /* Encrypting2.swift */; };
+		C6157B102A72159E00081574 /* Encrypting2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B0D2A72159E00081574 /* Encrypting2.swift */; };
+		C6157B112A72159E00081574 /* Encrypting2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B0D2A72159E00081574 /* Encrypting2.swift */; };
 		C615E0D228891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D328891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D428891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
@@ -4307,6 +4311,7 @@
 		C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageRemoteContentTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRemoteContentCell.swift; sourceTree = "<group>"; };
 		C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatRemoteContentCell.xib; sourceTree = "<group>"; };
+		C6157B0D2A72159E00081574 /* Encrypting2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Encrypting2.swift; sourceTree = "<group>"; };
 		C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionSearchEmptyCell.swift; sourceTree = "<group>"; };
 		C615E0D128891BC10082490B /* DomainsCollectionSearchEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionSearchEmptyCell.xib; sourceTree = "<group>"; };
 		C6166CBE28EC179E00004252 /* SafeContinuation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeContinuation.swift; sourceTree = "<group>"; };
@@ -7349,6 +7354,7 @@
 				C6538DC62A32248C00B63E84 /* CoreDataService.swift */,
 				C6B6B047297039E500D4E30F /* DateFormattingService.swift */,
 				296BB61E2A309DD90068EEEC /* Encrypting.swift */,
+				C6157B0D2A72159E00081574 /* Encrypting2.swift */,
 				C6E69FF5288AE47D000A8346 /* ExternalEventsService.swift */,
 				C681092028041325002D780E /* GIFAnimationsService.swift */,
 				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
@@ -9844,6 +9850,7 @@
 				C6526DF229D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C603D7A12A56B72700CEC696 /* ChatUnsupportedMessageCell.swift in Sources */,
 				C6E459032925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift in Sources */,
+				C6157B0E2A72159E00081574 /* Encrypting2.swift in Sources */,
 				C60982352823F10C00546392 /* CreateLocalWalletPresenter.swift in Sources */,
 				C6FECF41282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift in Sources */,
 				C691CFE128C1D5600077C59F /* SetupNewReverseResolutionDomainPresenter.swift in Sources */,
@@ -10758,6 +10765,7 @@
 				C63A77AA28F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */,
 				C63902C428E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */,
 				C671E39028FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */,
+				C6157B102A72159E00081574 /* Encrypting2.swift in Sources */,
 				C629A4692A3FF4A600A528A1 /* ChatImageCell.swift in Sources */,
 				C6D5DAF62837866800379C38 /* SecondaryDangerButton.swift in Sources */,
 				C672FD7C2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */,
@@ -11900,6 +11908,7 @@
 				C6ED31F9295D372B00BC6919 /* DomainsCollectionDashesSwipeTutorialHeader.swift in Sources */,
 				C6420BF628AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */,
 				C664B67C291551E600A76154 /* LinkPresentationService.swift in Sources */,
+				C6157B112A72159E00081574 /* Encrypting2.swift in Sources */,
 				C6109E3228E5AB310027D5D8 /* AuthentificationServiceProtocol.swift in Sources */,
 				C60CA2912832501D00AB1B36 /* QRCodeService.swift in Sources */,
 				C689538B2834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */,
@@ -12279,6 +12288,7 @@
 				C6526DF329D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C603D7A22A56B72700CEC696 /* ChatUnsupportedMessageCell.swift in Sources */,
 				C6E459042925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift in Sources */,
+				C6157B0F2A72159E00081574 /* Encrypting2.swift in Sources */,
 				C60982362823F10C00546392 /* CreateLocalWalletPresenter.swift in Sources */,
 				C6FECF42282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift in Sources */,
 				C691CFE228C1D5600077C59F /* SetupNewReverseResolutionDomainPresenter.swift in Sources */,
