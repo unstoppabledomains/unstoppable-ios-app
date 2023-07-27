@@ -24,6 +24,9 @@ final class PushMessagingAPIService {
     private let pushHelper = PushServiceHelper()
     private let messagingHelper = MessagingAPIServiceHelper()
     private let dataProvider: PushMessagingAPIServiceDataProvider
+    let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: true,
+                                                    canBlockUsers: true,
+                                                    isSupportChatsListPagination: true)
 
     init(dataProvider: PushMessagingAPIServiceDataProvider = DefaultPushMessagingAPIServiceDataProvider()) {
         self.dataProvider = dataProvider
@@ -79,7 +82,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     // Chats
-    var isSupportChatsListPagination: Bool { true }
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {

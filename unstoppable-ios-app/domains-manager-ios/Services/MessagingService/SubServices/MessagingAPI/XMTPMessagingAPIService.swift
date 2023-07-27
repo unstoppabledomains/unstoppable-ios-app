@@ -12,7 +12,9 @@ final class XMTPMessagingAPIService {
     
     private let messagingHelper = MessagingAPIServiceHelper()
     private let xmtpHelper = XMTPServiceHelper()
-
+    let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
+                                                    canBlockUsers: false,
+                                                    isSupportChatsListPagination: false)
     init() {
         Client.register(codec: AttachmentCodec())
         Client.register(codec: RemoteAttachmentCodec())
@@ -139,7 +141,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                             in: conversation,
                                             chat: chat,
                                             filesService: filesService)
-        message.displayInfo.isFirstInChat = true 
+        message.displayInfo.isFirstInChat = true
         return (chat, message)
     }
     

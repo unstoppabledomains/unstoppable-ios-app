@@ -8,6 +8,8 @@
 import Foundation
 
 protocol MessagingAPIServiceProtocol {
+    var capabilities: MessagingServiceCapabilities { get }
+
     // User profile
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile
     func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile
@@ -16,7 +18,6 @@ protocol MessagingAPIServiceProtocol {
                            avatar: String) async throws
     
     // Chats
-    var isSupportChatsListPagination: Bool { get }
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                              page: Int,
                              limit: Int) async throws -> [MessagingChat]
@@ -56,8 +57,8 @@ protocol MessagingAPIServiceProtocol {
                         by user: MessagingChatUserProfile) async throws
 }
 
-enum MessagingAPIServiceLoadMessagesOptions {
-    case `default`
-    case before(message: MessagingChatMessage)
-    case after(message: MessagingChatMessage)
+struct MessagingServiceCapabilities {
+    let canContactWithoutProfile: Bool
+    let canBlockUsers: Bool
+    let isSupportChatsListPagination: Bool
 }
