@@ -33,7 +33,7 @@ extension UDWallet {
         return signatures
     }
     
-    func getPersonalSignature(messageString: String) async throws -> String {
+    func getPersonalSignature(messageString: String, shouldTryToConverToReadable: Bool = true) async throws -> String {
         guard self.walletState == .verified else {
             if self.shouldParseMessage {
                 let message = messageString.convertedIntoReadableMessage
@@ -42,7 +42,9 @@ extension UDWallet {
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
-        guard let signature = self.signPersonal(messageString: messageString.convertedIntoReadableMessage) else {
+        let messageToSend = shouldTryToConverToReadable ? messageString.convertedIntoReadableMessage : messageString
+        
+        guard let signature = self.signPersonal(messageString: messageToSend) else {
             throw UDWallet.Error.failedToSignMessage
         }
         return signature
