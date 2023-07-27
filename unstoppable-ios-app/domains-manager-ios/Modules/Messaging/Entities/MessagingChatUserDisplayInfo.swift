@@ -15,4 +15,10 @@ struct MessagingChatUserDisplayInfo: Hashable {
     var displayName: String {
         domainName ?? wallet.walletAddressTruncated
     }
+    
+    var isUDDomain: Bool {
+        guard let domainName else { return false }
+        
+        return  domainName.isValidTld()
+    }
 }

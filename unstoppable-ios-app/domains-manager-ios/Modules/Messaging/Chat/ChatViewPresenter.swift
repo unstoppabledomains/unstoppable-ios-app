@@ -430,25 +430,23 @@ private extension ChatViewPresenter {
     func setupBarButtons() {
         var actions: [ChatViewController.NavButtonConfiguration.Action] = []
         
-        switch conversationState {
-        case .newChat(let userInfo):
-            if let domainName = userInfo.domainName {
+        func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) {
+            if let domainName = userInfo.domainName,
+               userInfo.isUDDomain {
                 actions.append(.init(type: .viewProfile, callback: { [weak self] in
                     self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
                     self?.didPressViewDomainProfileButton(domainName: domainName)
                 }))
-            } else {
-                return // No actions
             }
+        }
+        
+        switch conversationState {
+        case .newChat(let userInfo):
+            addViewProfileActionIfPossibleFor(userInfo: userInfo)
         case .existingChat(let chat):
             switch chat.type {
             case .private(let details):
-                if let domainName = details.otherUser.domainName {
-                    actions.append(.init(type: .viewProfile, callback: { [weak self] in
-                        self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
-                        self?.didPressViewDomainProfileButton(domainName: domainName)
-                    }))
-                }
+                addViewProfileActionIfPossibleFor(userInfo: details.otherUser)
                 
                 if appContext.messagingService.canBlockUsers {
                     switch blockStatus {
