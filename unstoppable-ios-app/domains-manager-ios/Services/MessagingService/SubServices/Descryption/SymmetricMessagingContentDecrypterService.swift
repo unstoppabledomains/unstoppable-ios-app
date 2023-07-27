@@ -16,28 +16,22 @@ final class SymmetricMessagingContentDecrypterService: MessagingContentDecrypter
 
     func encryptText(_ text: String) throws -> String {
         let key256 = try getOrCreateAESPassword()
-        let start = Date()
         guard let data = text.data(using: .utf8) else { throw EncryptionError.failedToGetDataRepresentationOfString }
         guard let sealedBoxData = try AES.GCM.seal(data, using: key256).combined else { throw EncryptionError.failedToCreateSealedBox }
-        
         let encryptedString = sealedBoxData.base64EncodedString()
-        Debugger.printTimeSensitiveInfo(topic: .None, "CRYPTO: - encrypted text of size \(text.count)", startDate: start, timeout: 0.1)
+        
         return encryptedString
     }
     
     func decryptText(_ text: String) throws -> String {
         let key256 = try getOrCreateAESPassword()
-        let start = Date()
         guard let sealedBoxData = Data(base64Encoded: text) else { throw EncryptionError.failedToGetDataRepresentationOfString }
         let sealedBox = try AES.GCM.SealedBox(combined: sealedBoxData)
         let decryptedData = try AES.GCM.open(sealedBox, using: key256)
-        
         guard let decryptedString = String(data: decryptedData, encoding: .utf8) else { throw EncryptionError.failedToGetStringRepresentationOfData }
-        Debugger.printTimeSensitiveInfo(topic: .None, "CRYPTO: - decrypted text of size \(text.count)", startDate: start, timeout: 0.1)
 
         return decryptedString
     }
-    
     
 }
 
