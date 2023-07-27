@@ -85,7 +85,7 @@ final class GeneralAppContext: AppContextProtocol {
         let messagingAPIService: MessagingAPIServiceProtocol = XMTPMessagingAPIService()
         let messagingChannelsAPIService: MessagingChannelsAPIServiceProtocol = PushMessagingChannelsAPIService()
         let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = XMTPMessagingWebSocketsService()
-        let messagingDecrypterService: MessagingContentDecrypterService = AESMessagingContentDecrypterService()
+        let messagingDecrypterService: MessagingContentDecrypterService = SymmetricMessagingContentDecrypterService()
         let messagingStorageService: MessagingStorageServiceProtocol = CoreDataMessagingStorageService(decrypterService: messagingDecrypterService)
         let messagingFilesService: MessagingFilesServiceProtocol = MessagingFilesService(decrypterService: messagingDecrypterService)
         let messagingService = MessagingService(apiService: messagingAPIService,

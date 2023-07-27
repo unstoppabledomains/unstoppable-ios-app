@@ -986,6 +986,10 @@
 		C6157B0A2A7113C900081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
 		C6157B0B2A7113C900081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
 		C6157B0C2A7113CA00081574 /* ChatRemoteContentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */; };
+		C6157B242A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B232A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift */; };
+		C6157B252A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B232A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift */; };
+		C6157B262A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B232A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift */; };
+		C6157B272A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6157B232A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift */; };
 		C615E0D228891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D328891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
 		C615E0D428891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */; };
@@ -4307,6 +4311,7 @@
 		C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageRemoteContentTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRemoteContentCell.swift; sourceTree = "<group>"; };
 		C6157B042A7113C900081574 /* ChatRemoteContentCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatRemoteContentCell.xib; sourceTree = "<group>"; };
+		C6157B232A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymmetricMessagingContentDecrypterService.swift; sourceTree = "<group>"; };
 		C615E0D028891BC10082490B /* DomainsCollectionSearchEmptyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionSearchEmptyCell.swift; sourceTree = "<group>"; };
 		C615E0D128891BC10082490B /* DomainsCollectionSearchEmptyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionSearchEmptyCell.xib; sourceTree = "<group>"; };
 		C6166CBE28EC179E00004252 /* SafeContinuation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeContinuation.swift; sourceTree = "<group>"; };
@@ -6863,6 +6868,7 @@
 			children = (
 				C6538DD22A330F7900B63E84 /* MessagingContentDecrypterService.swift */,
 				C623E2042A70061600595662 /* AESMessagingContentDecrypterService.swift */,
+				C6157B232A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift */,
 				C6538DD72A3313A900B63E84 /* PushMessagingContentDecrypterService.swift */,
 				C64BCB6B2A6FA0D500EF8B47 /* XMTPMessagingContentDecrypterService.swift */,
 			);
@@ -9702,6 +9708,7 @@
 				C61B3E7F283E441200500B6D /* EnterEmailToMintDomainsPresenter.swift in Sources */,
 				C628E38227FEE31D0044E408 /* DeviceHelper.swift in Sources */,
 				C600AB8D29F8085D0089107B /* MockDomainTransferService.swift in Sources */,
+				C6157B242A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift in Sources */,
 				C6D2F13028729585005F4F2E /* DomainDisplayInfo.swift in Sources */,
 				C629A4702A3FF5CE00A528A1 /* ChatBaseCell.swift in Sources */,
 				C6A2D59F28504EB300327C47 /* ConnectedAppCell.swift in Sources */,
@@ -10760,6 +10767,7 @@
 				C671E39028FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */,
 				C629A4692A3FF4A600A528A1 /* ChatImageCell.swift in Sources */,
 				C6D5DAF62837866800379C38 /* SecondaryDangerButton.swift in Sources */,
+				C6157B262A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift in Sources */,
 				C672FD7C2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */,
 				C671E3A628FEA2D200A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
 				C66FCCF52844863E009B9525 /* UDGradientCoverView.swift in Sources */,
@@ -11286,6 +11294,7 @@
 				C603E8CC285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C673D59929FA56C1001CC77C /* TransferDomainTransactionInProgressViewPresenter.swift in Sources */,
 				C65271E82A148D91001A084C /* ChatsListViewController.swift in Sources */,
+				C6157B272A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift in Sources */,
 				C6C421732934A839005B791B /* DomainProfileSignatureValidator.swift in Sources */,
 				C63F1D1828AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
 				C6C995AD289D313D00367362 /* CNavigationControllerSlidePopAnimation.swift in Sources */,
@@ -12137,6 +12146,7 @@
 				C62247B6283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
 				C61B3E80283E441200500B6D /* EnterEmailToMintDomainsPresenter.swift in Sources */,
 				C600AB8E29F8085D0089107B /* MockDomainTransferService.swift in Sources */,
+				C6157B252A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift in Sources */,
 				C6D2F13128729585005F4F2E /* DomainDisplayInfo.swift in Sources */,
 				C629A4712A3FF5CE00A528A1 /* ChatBaseCell.swift in Sources */,
 				C6A2D5A028504EB300327C47 /* ConnectedAppCell.swift in Sources */,
