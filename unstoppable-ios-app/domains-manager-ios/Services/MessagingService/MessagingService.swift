@@ -1020,6 +1020,7 @@ private extension MessagingService {
     }
     
     func notifyListenersChangedDataType(_ messagingDataType: MessagingDataType) {
+        Debugger.printInfo(topic: .Messaging, "Will notify listeners about data type: \(messagingDataType)")
         listenerHolders.forEach { holder in
             holder.listener?.messagingDataTypeDidUpdated(messagingDataType)
         }
@@ -1124,10 +1125,12 @@ private extension MessagingService {
         
         func willStartToSendMessage() {
             sendingMessagesCounter += 1
+            Debugger.printInfo(topic: .Messaging, "Will inrecase send message counter to \(sendingMessagesCounter)")
         }
         
         func didSendMessage() {
             sendingMessagesCounter -= 1
+            Debugger.printInfo(topic: .Messaging, "Will decrease send message counter to \(sendingMessagesCounter)")
             if sendingMessagesCounter < 0 {
                 Debugger.printFailure("Unmatched call to send message", critical: true)
             }
