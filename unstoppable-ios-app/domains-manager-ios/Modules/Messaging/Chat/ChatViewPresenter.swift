@@ -110,7 +110,9 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         sendTextMesssage(text)
     }
      
-    func approveButtonPressed() { }
+    func approveButtonPressed() {
+        view?.showSimpleAlert(title: "Not ready", body: "We're on it, stay in touch!")
+    }
     
     func secondaryButtonPressed() {
         switch blockStatus {
