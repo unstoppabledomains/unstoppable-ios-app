@@ -187,14 +187,15 @@ extension ChatViewPresenter: MessagingServiceListener {
                    updatedMessage.chatId == chat.id,
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     await newMessage.prepareToDisplay()
-                    self.messages[i] = newMessage
+                    self.messages.remove(at: i)
+//                    self.messages[i] = newMessage
+//
+//                    if updatedMessage.id != newMessage.id,
+//                       let j = messages.firstIndex(where: { $0.id == newMessage.id }) {
+//                        self.messages.remove(at: j)
+//                    }
                     
-                    if updatedMessage.id != newMessage.id,
-                       let j = messages.firstIndex(where: { $0.id == newMessage.id }) {
-                        self.messages.remove(at: j)
-                    }
-                    
-                    await addMessages([])
+                    await addMessages([newMessage])
                     showData(animated: false, isLoading: isLoadingMessages)
                 }
             case .messagesRemoved(let messages, let chatId):
