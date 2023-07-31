@@ -14,11 +14,11 @@ import Web3ContractABI
 
 struct NetworkService {
     struct DebugOptions {
-        #if TESTFLIGHT
+#if TESTFLIGHT
         static let shouldCrashIfBadResponse = false // FALSE if ignoring API errors
-        #else
+#else
         static let shouldCrashIfBadResponse = false // always FALSE
-        #endif
+#endif
     }
     
     
@@ -59,36 +59,6 @@ struct NetworkService {
         case .mainnet: return Self.startBlockNumberMainnet
         case .testnet: return Self.startBlockNumberMRinkeby
         }
-    }
-    
-    func fetchData(for url: URL,
-                   body: String = "",
-                   method: HttpRequestMethod = .post,
-                   extraHeaders: [String: String]  = [:],
-                   completionHandler: @escaping (Result<Data>)->Void) {
-        let urlRequest = urlRequest(for: url, body: body, method: method, extraHeaders: extraHeaders)
-        
-        URLSession.shared.dataTask(
-            with: urlRequest,
-            completionHandler: { (taskData: Data?, response: URLResponse?, taskError: Error?) in
-                if let response = response as? HTTPURLResponse {
-                    if Self.httpSuccessRange.contains(response.statusCode) {
-                        completionHandler(.fulfilled(taskData ?? Data()))
-                    } else {
-                        if response.statusCode == Constants.backEndThrottleErrorCode {
-                            Debugger.printWarning("Request failed due to backend throttling issue")
-                            completionHandler(.rejected(NetworkLayerError.backendThrottle))
-                        } else {
-                            let message = extractErrorMessage(from: taskData)
-                            completionHandler(.rejected(NetworkLayerError.badResponseOrStatusCode(code: response.statusCode, message: "\(message)")))
-                        }
-                    }
-                } else {
-                    Debugger.printFailure("Error accessing url: \(url), status code = \(String(describing: (response as? HTTPURLResponse)?.statusCode)), error: \(String(describing: taskError))", critical: NetworkService.DebugOptions.shouldCrashIfBadResponse)
-                    completionHandler(.rejected(taskError ?? NetworkLayerError.badResponseOrStatusCode(code: 0, message: "No Http response")))
-                }
-            }
-        ).resume()
     }
     
     func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest,
@@ -153,19 +123,10 @@ struct NetworkService {
                 }
             }
         } else {
-            return try await withSafeCheckedThrowingContinuation { completion in
-                fetchData(for: url,
-                          body: body,
-                          method: method,
-                          extraHeaders: extraHeaders) { result in
-                    switch result {
-                    case .fulfilled(let data):
-                        return completion(.success(data))
-                    case .rejected(let error):
-                        return completion(.failure(error))
-                    }
-                }
-            }
+            return try await fetchData(for: url,
+                                       body: body,
+                                       method: method,
+                                       extraHeaders: extraHeaders)
         }
     }
     
@@ -193,7 +154,7 @@ struct NetworkService {
         extraHeaders.forEach { urlRequest.addValue($0.value, forHTTPHeaderField: $0.key)}
         
         urlRequest.addValue(Version.getCurrentAppVersionString() ?? "version n/a", forHTTPHeaderField: Self.appVersionHeaderKey)
-                
+        
         Debugger.printInfo(topic: .Network, "--- REQUEST TO ENDPOINT")
         Debugger.printInfo(topic: .Network, "METHOD: \(method) | URL: \(url.absoluteString)")
         Debugger.printInfo(topic: .Network, "BODY: \(body)")
@@ -246,42 +207,18 @@ extension NetworkService {
     
     func fetchBalance (address: HexAddress,
                        layerId: UnsConfigManager.BlockchainLayerId) async throws -> SplitQuantity {
-        try await withSafeCheckedThrowingContinuation({ completion in
-            let start = Date()
-            fetchBalance(address: address, layerId: layerId) { quantity in
-                Debugger.printTimeSensitiveInfo(topic: .Network,
-                                                "to load balance for layer \(layerId)",
-                                                startDate: start,
-                                                timeout: 2)
-                guard let quantity = quantity else {
-                    completion(.failure(NetworkLayerError.failedFetchBalance))
-                    return
-                }
-
-                completion(.success(quantity))
-            }
-        })
+        
+        
+        guard let data = try? await NetworkService().fetchData(for: getJRPCProviderUrl(layerId: layerId),
+                                                               body: "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\": [\"\(address)\", \"latest\"],\"id\":1}",
+                                                               method: .post),
+              let response = try? JSONDecoder().decode(JRPCResponse.self, from: data) else {
+            throw NetworkLayerError.failedFetchBalance
+        }
+        let bigUInt = BigUInt(response.result.dropFirst(2), radix: 16) ?? 0
+        return try SplitQuantity(bigUInt)
     }
     
-    func fetchBalance (address: HexAddress,
-                        layerId: UnsConfigManager.BlockchainLayerId,
-                        callback: @escaping (SplitQuantity?)->Void) {
-        
-        NetworkService().fetchData(for: getJRPCProviderUrl(layerId: layerId),
-                                   body: "{\"jsonrpc\":\"2.0\",\"method\":\"eth_getBalance\",\"params\": [\"\(address)\", \"latest\"],\"id\":1}",
-                                   method: .post) {
-            switch $0 {
-            case .fulfilled (let data): guard let response = try? JSONDecoder().decode(JRPCResponse.self, from: data) else {
-                callback(nil)
-                return
-            }
-                let bigUInt = BigUInt(response.result.dropFirst(2), radix: 16) ?? 0
-                callback(try? SplitQuantity(bigUInt))
-                return
-            case .rejected: callback(nil)
-            }
-        }
-    }
     
     struct JRPCRequestInfo {
         let name: String
@@ -303,75 +240,46 @@ extension NetworkService {
     }
     
     func getJRPCRequest(chainId: Int,
-                        requestInfo: JRPCRequestInfo,
-                        callback: @escaping (Result<String>)->Void) {
+                        requestInfo: JRPCRequestInfo) async throws -> String {
         
         guard let url = getJRPCProviderUrl(chainId: chainId) else {
-            callback(.rejected(JRPCError.failedBuildUrl))
-            return
+            throw JRPCError.failedBuildUrl
         }
-        NetworkService().fetchData(for: url,
-                                   body: "{\"jsonrpc\":\"2.0\",\"method\":\"\(requestInfo.name)\",\"params\":\(requestInfo.paramsBuilder()),\"id\":1}",
-                                   method: .post) {
-            switch $0 {
-            case .fulfilled (let data):
-                
-                if let response = try? JSONDecoder().decode(JRPCResponse.self, from: data) {
-                    callback(.fulfilled(response.result))
-                    return
-                }
-                
-                if let response = try? JSONDecoder().decode(JRPCErrorResponse.self, from: data),
-                   let message = response.error.message {
-                    callback(.rejected(JRPCError(message: message)))
-                    return
-                }
-                
-                callback(.rejected(JRPCError.genericError("Failed to parse \(String(data: data, encoding: .utf8) ?? "no data in response")")))
-                return
-                
-            case .rejected(let error): callback(.rejected(JRPCError.genericError(error.localizedDescription)))
-            }
+        let data = try await NetworkService().fetchData(for: url,
+                                                        body: "{\"jsonrpc\":\"2.0\",\"method\":\"\(requestInfo.name)\",\"params\":\(requestInfo.paramsBuilder()),\"id\":1}",
+                                                        method: .post)
+        if let response = try? JSONDecoder().decode(JRPCResponse.self, from: data) {
+            return response.result
         }
-    }
-    
-    func getJRPCRequest(chainId: Int,
-                        requestInfo: JRPCRequestInfo,
-                        callback: @escaping (String?)->Void) {
-        getJRPCRequest(chainId: chainId, requestInfo: requestInfo) { (result: Result<String>) in
-            switch result {
-            case .fulfilled(let s): callback(s)
-            case .rejected: callback(nil)
-            }
+        
+        if let response = try? JSONDecoder().decode(JRPCErrorResponse.self, from: data),
+           let message = response.error.message {
+            throw JRPCError(message: message)
         }
+        
+        throw JRPCError.genericError("Failed to parse \(String(data: data, encoding: .utf8) ?? "no data in response")")
     }
     
     func getTransactionCount(address: HexAddress,
-                             chainId: Int,
-                             callback: @escaping (String?)->Void) {
+                             chainId: Int) async throws -> String {
         
-        getJRPCRequest(chainId: chainId,
+        try await getJRPCRequest(chainId: chainId,
                        requestInfo: JRPCRequestInfo(name: "eth_getTransactionCount",
-                                                    paramsBuilder: { "[\"\(address)\", \"latest\"]"} ),
-                       callback: callback)
+                                                    paramsBuilder: { "[\"\(address)\", \"latest\"]"} ))
     }
     
     func getGasEstimation(tx: EthereumTransaction,
-                          chainId: Int,
-                          callback: @escaping (Result<String>)->Void) {
+                          chainId: Int) async throws -> String {
         
-        getJRPCRequest(chainId: chainId,
+        try await getJRPCRequest(chainId: chainId,
                        requestInfo: JRPCRequestInfo(name: "eth_estimateGas",
-                                                    paramsBuilder: { "[\(tx.parameters), \"latest\"]"} ),
-                       callback: callback)
+                                                    paramsBuilder: { "[\(tx.parameters), \"latest\"]"} ))
     }
     
-    func getGasPrice(chainId: Int,
-                     callback: @escaping (String?)->Void) {
-        getJRPCRequest(chainId: chainId,
+    func getGasPrice(chainId: Int) async throws -> String {
+        try await getJRPCRequest(chainId: chainId,
                        requestInfo: JRPCRequestInfo(name: "eth_gasPrice",
-                                                    paramsBuilder: { "[]"} ),
-                       callback: callback)
+                                                    paramsBuilder: { "[]"} ))
     }
 }
 
@@ -428,8 +336,8 @@ extension NetworkService {
     }
     
     static func getRequestForActionSign(id: UInt64,
-                                         response: NetworkService.ActionsResponse,
-                                         signatures: [String]) throws -> APIRequest {
+                                        response: NetworkService.ActionsResponse,
+                                        signatures: [String]) throws -> APIRequest {
         let request = try APIRequestBuilder()
             .actionSign(for: id, response: response, signatures: signatures)
             .build()
@@ -486,7 +394,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable {
     case emptyParameters
     case invalidBlockchainAbbreviation
     case failedBuildSignRequest
-
+    
     static let tooManyResponsesCode = -32005
     
     static func parse (errorResponse: ErrorResponseHolder) -> NetworkLayerError? {
@@ -535,7 +443,7 @@ enum NetworkLayerError: LocalizedError, RawValueLocalizable {
 struct ResponseLog: Codable {
     public var topics: [HexAddress]
     public var data: String
-
+    
     init(_ log: EthereumLogObject) {
         var tops: [HexAddress] = []
         log.topics.forEach {
