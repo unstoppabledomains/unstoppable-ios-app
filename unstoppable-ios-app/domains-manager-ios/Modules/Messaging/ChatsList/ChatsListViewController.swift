@@ -301,7 +301,7 @@ private extension ChatsListViewController {
     }
     
     func configureDataSource() {
-        dataSource = ChatsListDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
+        dataSource = ChatsListDataSource.init(collectionView: collectionView, cellProvider: {  [weak self] collectionView, indexPath, item in
             switch item {
             case .chat(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
