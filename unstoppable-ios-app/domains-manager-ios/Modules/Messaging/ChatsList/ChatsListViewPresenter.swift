@@ -73,7 +73,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     
     func didSelectItem(_ item: ChatsListViewController.Item) {
         UDVibration.buttonTap.vibrate()
-        view?.hideKeyboard()
+        view?.stopSearching()
         switch item {
         case .domainSelection(let configuration):
             guard !configuration.isSelected else { return }

@@ -12,6 +12,7 @@ protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
     func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
+    func stopSearching()
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -123,6 +124,15 @@ extension ChatsListViewController: ChatsListViewProtocol {
                                             wallets: wallets,
                                             isLoading: isLoading))
     }
+    
+    func stopSearching() {
+        hideKeyboard()
+        if searchBar.isEditing {
+            searchBar.text = ""
+            searchBar.forceLayout()
+            udSearchBarTextDidEndEditing(searchBar)
+        }
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -151,9 +161,8 @@ extension ChatsListViewController: UDSearchBarDelegate {
         presenter.didSearchWith(key: searchText)
     }
     
-    func udSearchBarSearchButtonClicked(_ udSearchBar: UDSearchBar) {
-        cNavigationBar?.setSearchActive(false, animated: true)
-        searchBar.text = ""
+    func udSearchBarClearButtonClicked(_ udSearchBar: UDSearchBar) {
+        udSearchBarTextDidEndEditing(udSearchBar)
     }
     
     func udSearchBarCancelButtonClicked(_ udSearchBar: UDSearchBar) {
@@ -164,10 +173,12 @@ extension ChatsListViewController: UDSearchBarDelegate {
     }
     
     func udSearchBarTextDidEndEditing(_ udSearchBar: UDSearchBar) {
-        searchBar.text = ""
-        logAnalytic(event: .didStopSearching)
-        setSearchBarActive(false)
-        presenter.didStopSearch()
+        if !udSearchBar.isEditing {
+            searchBar.text = ""
+            logAnalytic(event: .didStopSearching)
+            setSearchBarActive(false)
+            presenter.didStopSearch()
+        }
     }
 }
 
