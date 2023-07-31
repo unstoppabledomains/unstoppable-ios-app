@@ -75,7 +75,8 @@ struct XMTPEntitiesTransformer {
                                                 in chat: MessagingChat,
                                                 isRead: Bool,
                                                 filesService: MessagingFilesServiceProtocol) -> MessagingChatMessage? {
-        if let cachedMessage {
+        if var cachedMessage {
+            cachedMessage.displayInfo.isRead = isRead 
             return cachedMessage
         }
         
