@@ -124,7 +124,7 @@ extension PrivateKeyStorage {
             try valet.setObject(data, forKey: key)
             Debugger.printInfo("Stored data to keychain: \(key)")
         } catch {
-            Debugger.printFailure("Failed to store data keychain: \(key) with error \(error.localizedDescription)", critical: true)
+            Debugger.printFailure("Failed to store data to keychain: \(key) with error \(error.localizedDescription)", critical: true)
         }
     }
     

@@ -109,7 +109,7 @@ struct XMTPEntitiesTransformer {
                                                           time: time,
                                                           type: type,
                                                           isRead: isRead,
-                                                          isFirstInChat: false, // TODO: - Set this property
+                                                          isFirstInChat: false,
                                                           deliveryState: .delivered,
                                                           isEncrypted: isMessageEncrypted)
         let chatMessage = MessagingChatMessage(userId: userId,

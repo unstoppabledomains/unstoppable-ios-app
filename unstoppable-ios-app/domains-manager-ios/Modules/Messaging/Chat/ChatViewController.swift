@@ -185,7 +185,7 @@ extension ChatViewController: ChatViewProtocol {
             if ableToInvite {
                 approveContentView.isHidden = false
                 acceptButton.isHidden = false
-                acceptButton.setTitle("Invite", image: nil) // TODO: - Localize
+                acceptButton.setTitle(String.Constants.messagingInvite.localized(), image: nil)
             }
         }
     }

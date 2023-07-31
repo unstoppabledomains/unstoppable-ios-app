@@ -829,3 +829,5 @@
 "MESSAGING_SHARE_DECRYPTION_ERROR_MESSAGE" = "Failed to decrypt message content.";
 "MESSAGING_SET_PRIMARY_DOMAIN" = "Set primary domain";
 "MESSAGING_REMOTE_CONTENT" = "Remote content";
+"MESSAGING_CANT_CONTACT_MESSAGE" = "User is not yet on the XMTP network";
+"MESSAGING_INVITE" = "Invite";

@@ -906,6 +906,8 @@ extension String {
         static let messagingShareDecryptionErrorMessage = "MESSAGING_SHARE_DECRYPTION_ERROR_MESSAGE"
         static let messagingSetPrimaryDomain = "MESSAGING_SET_PRIMARY_DOMAIN"
         static let messagingRemoteContent = "MESSAGING_REMOTE_CONTENT"
+        static let messagingCantContactMessage = "MESSAGING_CANT_CONTACT_MESSAGE"
+        static let messagingInvite = "MESSAGING_INVITE"
     }
 
     

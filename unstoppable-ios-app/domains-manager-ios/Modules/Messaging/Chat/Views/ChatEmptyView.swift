@@ -130,7 +130,7 @@ extension ChatEmptyView {
             case .chatUnEncrypted:
                 return String.Constants.messagingChatEmptyUnencryptedMessage.localized()
             case .cantContact:
-                return "User is not yet on the XMTP network" // TODO: - Localize
+                return String.Constants.messagingCantContactMessage.localized()
             case .channel: return nil
             }
         }
