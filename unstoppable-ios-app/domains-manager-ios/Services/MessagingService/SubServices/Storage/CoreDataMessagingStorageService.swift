@@ -63,13 +63,16 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
                                                           predicate: predicate,
                                                           in: backgroundContext)) ?? 0
+            Debugger.printInfo(topic: .Messaging, "Total unreadMessagesCount = \(unreadMessagesCount).")
             return unreadMessagesCount
         }
     }
     
     func getNumberOfUnreadMessagesIn(chatId: String, userId: String) -> Int {
         queue.sync {
-            fetchNumberOfUnreadMessagesIn(chatId: chatId, userId: userId)
+            let unreadMessagesCount = fetchNumberOfUnreadMessagesIn(chatId: chatId, userId: userId)
+            Debugger.printInfo(topic: .Messaging, "UnreadMessagesCount in chat: \(chatId) = \(unreadMessagesCount).")
+            return unreadMessagesCount
         }
     }
     
@@ -120,7 +123,8 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                         with newMessage: MessagingChatMessage) async throws {
         try queue.sync {
             guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataChatMessageWith(id: messageToReplace.displayInfo.id, userId: messageToReplace.displayInfo.userId) else { throw Error.entityNotFound }
-            
+            Debugger.printInfo(topic: .Messaging, "Will replace message \(messageToReplace.displayInfo.id) isRead \(messageToReplace.displayInfo.isRead) With \(newMessage.displayInfo.id) isRead \(newMessage.displayInfo.isRead)")
+
             deleteObject(coreDataMessage, from: backgroundContext, shouldSaveContext: false)
             _ = try? convertChatMessageToCoreDataMessage(newMessage)
             saveContext(backgroundContext)
@@ -139,6 +143,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         try queue.sync {
             guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataChatMessageWith(id: message.id, userId: message.userId) else { throw Error.entityNotFound }
             coreDataMessage.isRead = isRead
+            Debugger.printInfo(topic: .Messaging, "Will mark in storage message \(message.id) as read = \(isRead)")
             saveContext(backgroundContext)
         }
     }
