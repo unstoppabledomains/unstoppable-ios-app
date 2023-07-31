@@ -394,7 +394,6 @@ private extension ChatsListViewPresenter {
             profileWalletPairsCache.append(chatProfile)
         }
         
-        updateNavigationUI()
         
         guard let profile = chatProfile.profile else {
             let state: MessagingProfileStateAnalytics = chatProfile.wallet.reverseResolutionDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet
@@ -402,6 +401,7 @@ private extension ChatsListViewPresenter {
                         parameters: [.state : state.rawValue,
                                      .wallet: chatProfile.wallet.address])
             await awaitForUIReady()
+            updateNavigationUI()
             view?.setState(.createProfile)
             showData()
             return
@@ -420,6 +420,7 @@ private extension ChatsListViewPresenter {
         self.channels = channels
         
         await awaitForUIReady()
+        updateNavigationUI()
         view?.setState(.chatsList)
         showData()
         appContext.messagingService.setCurrentUser(profile)
