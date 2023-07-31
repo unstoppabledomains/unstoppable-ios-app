@@ -50,7 +50,7 @@ struct ChatTextCell_Previews: PreviewProvider {
         
         return UICollectionViewCellPreview(cellType: ChatTextCell.self, height: height) { cell in
             let user = MockEntitiesFabric.Messaging.messagingChatUserDisplayInfo(withPFP: true)
-            let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text message", encryptedText: "")
+            let textDetails = MessagingChatMessageTextTypeDisplayInfo(text: "Some text message")
             
             let message = MessagingChatMessageDisplayInfo(id: "1",
                                                           chatId: "2",

@@ -11,6 +11,11 @@ import CoreData
 final class CoreDataMessagingStorageService: CoreDataService {
     
     private let queue = DispatchQueue(label: "com.coredata")
+    private let decrypterService: MessagingContentDecrypterService
+    
+    init(decrypterService: MessagingContentDecrypterService) {
+        self.decrypterService = decrypterService
+    }
     
 }
 
@@ -58,18 +63,20 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
                                                           predicate: predicate,
                                                           in: backgroundContext)) ?? 0
+            Debugger.printInfo(topic: .Messaging, "Total unreadMessagesCount = \(unreadMessagesCount).")
             return unreadMessagesCount
         }
     }
     
     func getNumberOfUnreadMessagesIn(chatId: String, userId: String) -> Int {
         queue.sync {
-            fetchNumberOfUnreadMessagesIn(chatId: chatId, userId: userId)
+            let unreadMessagesCount = fetchNumberOfUnreadMessagesIn(chatId: chatId, userId: userId)
+            Debugger.printInfo(topic: .Messaging, "UnreadMessagesCount in chat: \(chatId) = \(unreadMessagesCount).")
+            return unreadMessagesCount
         }
     }
     
     func getMessagesFor(chat: MessagingChat,
-                        decrypter: MessagingContentDecrypterService,
                         before message: MessagingChatMessageDisplayInfo?,
                         limit: Int) async throws -> [MessagingChatMessage] {
         try queue.sync {
@@ -90,18 +97,15 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                                                                                    fetchSize: limit,
                                                                                    from: backgroundContext)
             return coreDataMessages.compactMap { convertCoreDataMessageToChatMessage($0,
-                                                                                     decrypter: decrypter,
                                                                                      wallet: chat.displayInfo.thisUserDetails.wallet) }
         }
     }
     
     func getMessageWith(id: String,
-                        in chat: MessagingChat,
-                        decrypter: MessagingContentDecrypterService) async -> MessagingChatMessage? {
+                        in chat: MessagingChat) async -> MessagingChatMessage? {
         queue.sync {
             if let coreDataMessage = getCoreDataChatMessageWith(id: id, userId: chat.userId) {
                 return convertCoreDataMessageToChatMessage(coreDataMessage,
-                                                           decrypter: decrypter,
                                                            wallet: chat.displayInfo.thisUserDetails.wallet)
             }
             return nil
@@ -119,7 +123,8 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                         with newMessage: MessagingChatMessage) async throws {
         try queue.sync {
             guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataChatMessageWith(id: messageToReplace.displayInfo.id, userId: messageToReplace.displayInfo.userId) else { throw Error.entityNotFound }
-            
+            Debugger.printInfo(topic: .Messaging, "Will replace message \(messageToReplace.displayInfo.id) isRead \(messageToReplace.displayInfo.isRead) With \(newMessage.displayInfo.id) isRead \(newMessage.displayInfo.isRead)")
+
             deleteObject(coreDataMessage, from: backgroundContext, shouldSaveContext: false)
             _ = try? convertChatMessageToCoreDataMessage(newMessage)
             saveContext(backgroundContext)
@@ -138,6 +143,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         try queue.sync {
             guard let coreDataMessage: CoreDataMessagingChatMessage = getCoreDataChatMessageWith(id: message.id, userId: message.userId) else { throw Error.entityNotFound }
             coreDataMessage.isRead = isRead
+            Debugger.printInfo(topic: .Messaging, "Will mark in storage message \(message.id) as read = \(isRead)")
             saveContext(backgroundContext)
         }
     }
@@ -153,26 +159,22 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     // Chats
-    func getChatsFor(profile: MessagingChatUserProfile,
-                     decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat] {
+    func getChatsFor(profile: MessagingChatUserProfile) async throws -> [MessagingChat] {
         try queue.sync {
             let predicate = NSPredicate(format: "userId == %@", profile.id)
             let timeSortDescriptor = NSSortDescriptor(key: "lastMessageTime", ascending: false)
             let coreDataChats: [CoreDataMessagingChat] = try getEntities(predicate: predicate,
                                                                          sortDescriptions: [timeSortDescriptor],
                                                                          from: backgroundContext)
-            return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0,
-                                                                                 decrypter: decrypter) }.sortedByLastMessage()
+            return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0) }.sortedByLastMessage()
         }
     }
     
     func getChatWith(id: String,
-                     of userId: String,
-                     decrypter: MessagingContentDecrypterService) async -> MessagingChat? {
+                     of userId: String) async -> MessagingChat? {
         queue.sync {
             if let coreDataChat = getCoreDataChatWith(id: id, userId: userId) {
-                return convertCoreDataChatToMessagingChat(coreDataChat,
-                                                          decrypter: decrypter)
+                return convertCoreDataChatToMessagingChat(coreDataChat)
             }
             return nil
         }
@@ -347,7 +349,7 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         guard let json = message.genericMessageDetails,
            let details = FileDetails.objectFromJSON(json) else { return }
         
-        filesService.deleteEncryptedDataWith(fileName: details.fileName)
+        filesService.deleteDataWith(fileName: details.fileName)
     }
     
     private func deleteFeedWithChannelId(_ channelId: String) {
@@ -412,8 +414,7 @@ private extension CoreDataMessagingStorageService {
 
 // MARK: - Chats parsing
 private extension CoreDataMessagingStorageService {
-    func convertCoreDataChatToMessagingChat(_ coreDataChat: CoreDataMessagingChat,
-                                            decrypter: MessagingContentDecrypterService) -> MessagingChat? {
+    func convertCoreDataChatToMessagingChat(_ coreDataChat: CoreDataMessagingChat) -> MessagingChat? {
         guard let chatType = getChatType(from: coreDataChat) else { return nil }
         
         let serviceMetadata = coreDataChat.serviceMetadata
@@ -422,13 +423,11 @@ private extension CoreDataMessagingStorageService {
         var lastMessage: MessagingChatMessageDisplayInfo?
         if let coreDataLastMessage = coreDataChat.lastMessage,
            let message = convertCoreDataMessageToChatMessage(coreDataLastMessage,
-                                                             decrypter: decrypter,
                                                              wallet: coreDataChat.thisUserWallet!) {
             lastMessage = message.displayInfo
         } else if let lastMessageId = coreDataChat.lastMessageId,
                   let coreDataLastMessage = getCoreDataChatMessageWith(id: lastMessageId, userId: coreDataChat.userId!),
                   let message = convertCoreDataMessageToChatMessage(coreDataLastMessage,
-                                                                    decrypter: decrypter,
                                                                     wallet: coreDataChat.thisUserWallet!) {
             lastMessage = message.displayInfo
         }
@@ -549,16 +548,12 @@ private extension CoreDataMessagingStorageService {
 // MARK: - Message parsing
 private extension CoreDataMessagingStorageService {
     func convertCoreDataMessageToChatMessage(_ coreDataMessage: CoreDataMessagingChatMessage,
-                                             decrypter: MessagingContentDecrypterService,
                                              wallet: String) -> MessagingChatMessage? {
         let deliveryState = MessagingChatMessageDisplayInfo.DeliveryState(rawValue: Int(coreDataMessage.deliveryState))!
         guard let type = getMessageDisplayType(from: coreDataMessage,
-                                               decrypter: decrypter,
-                                               deliveryState: deliveryState,
-                                               wallet: wallet) else { return nil }
+                                               deliveryState: deliveryState) else { return nil }
         
         let senderType = getMessagingChatSender(from: coreDataMessage)
-        let isEncrypted = decrypter.isMessageEncrypted(serviceMetadata: coreDataMessage.serviceMetadata)
         let displayInfo = MessagingChatMessageDisplayInfo(id: coreDataMessage.id!,
                                                           chatId: coreDataMessage.chatId!,
                                                           userId: coreDataMessage.userId!,
@@ -568,7 +563,7 @@ private extension CoreDataMessagingStorageService {
                                                           isRead: coreDataMessage.isRead,
                                                           isFirstInChat: coreDataMessage.isFirstInChat,
                                                           deliveryState: deliveryState,
-                                                          isEncrypted: isEncrypted)
+                                                          isEncrypted: coreDataMessage.isEncrypted)
         
         return MessagingChatMessage(userId: coreDataMessage.userId!,
                                     displayInfo: displayInfo,
@@ -586,64 +581,102 @@ private extension CoreDataMessagingStorageService {
         coreDataMessage.isFirstInChat = displayInfo.isFirstInChat
         coreDataMessage.deliveryState = Int64(displayInfo.deliveryState.rawValue)
         coreDataMessage.userId = chatMessage.userId
-        saveMessageDisplayType(displayInfo.type, to: coreDataMessage)
+        coreDataMessage.isEncrypted = displayInfo.isEncrypted
+        try saveMessageDisplayType(displayInfo.type, to: coreDataMessage)
         saveMessagingChatSender(displayInfo.senderType, to: coreDataMessage)
         return coreDataMessage
     }
     
     // Message type
-    func getMessageDisplayType(from coreDataMessage: CoreDataMessagingChatMessage,
-                               decrypter: MessagingContentDecrypterService,
-                               deliveryState: MessagingChatMessageDisplayInfo.DeliveryState,
-                               wallet: String) -> MessagingChatMessageDisplayType? {
-        let typesWithContentInCoreData: Set<Int64> = [0, 1]
-        if typesWithContentInCoreData.contains(coreDataMessage.messageType) {
-            guard let messageContent = coreDataMessage.messageContent else { return nil }
-            
-            var decryptedContent = messageContent
-            if deliveryState == .delivered {
-                guard let decrypted = try? decrypter.decryptText(messageContent,
-                                                                 with: coreDataMessage.serviceMetadata,
-                                                                 wallet: wallet) else {
-                    return nil }
-                decryptedContent = decrypted
-            }
-            
-            if coreDataMessage.messageType == 0 {
-                let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
-                                                                              encryptedText: messageContent)
-                return .text(textDisplayInfo)
-            } else if coreDataMessage.messageType == 1 {
-                let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent,
-                                                                                            encryptedContent: messageContent)
-                return .imageBase64(imageBase64DisplayInfo)
-            }
-        } else {
-            if coreDataMessage.messageType == 999 {
-                guard let json = coreDataMessage.genericMessageDetails,
-                      let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
-                
-                let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: details.fileName,
-                                                                                    type: details.type,
-                                                                                    name: details.name,
-                                                                                    size: details.size)
-                return .unknown(unknownDisplayInfo)
+    enum CoreDataMessageTypeWrapper: Int {
+        case text = 0
+        case imageBase64 = 1
+        case imageData = 2
+        case remoteContent = 3
+        case unknown = 999
+     
+        static func valueFor(_ messageType: MessagingChatMessageDisplayType) -> CoreDataMessageTypeWrapper {
+            switch messageType {
+            case .text:
+                return .text
+            case .imageBase64:
+                return .imageBase64
+            case .imageData:
+                return .imageData
+            case .unknown:
+                return .unknown
+            case .remoteContent:
+                return .remoteContent
             }
         }
+    }
+    func getMessageDisplayType(from coreDataMessage: CoreDataMessagingChatMessage,
+                               deliveryState: MessagingChatMessageDisplayInfo.DeliveryState) -> MessagingChatMessageDisplayType? {
+        guard let coreDataMessageType = CoreDataMessageTypeWrapper(rawValue: Int(coreDataMessage.messageType)) else { return  nil }
         
-        return nil
+        func getDecryptedContent() -> String? {
+            guard let messageContent = coreDataMessage.messageContent,
+                  let decrypted = try? decrypterService.decryptText(messageContent) else { return nil }
+            
+            return decrypted
+        }
+        
+        switch coreDataMessageType {
+        case .text:
+            guard let decryptedContent = getDecryptedContent() else { return nil }
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
+            return .text(textDisplayInfo)
+        case .imageBase64:
+            guard let decryptedContent = getDecryptedContent() else { return nil }
+            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: decryptedContent)
+            return .imageBase64(imageBase64DisplayInfo)
+        case .imageData:
+            guard let decryptedContent = getDecryptedContent(),
+                  let decryptedData = Data(base64Encoded: decryptedContent),
+                  let imageDataDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: decryptedData) else { return nil }
+            return .imageData(imageDataDisplayInfo)
+        case .remoteContent:
+            guard let decryptedContent = getDecryptedContent(),
+                  let decryptedData = Data(base64Encoded: decryptedContent) else { return nil }
+            let remoteContentDisplayInfo = MessagingChatMessageRemoteContentTypeDisplayInfo(serviceData: decryptedData)
+            return .remoteContent(remoteContentDisplayInfo)
+        case .unknown:
+            guard let json = coreDataMessage.genericMessageDetails,
+                  let details = CoreDataUnknownMessageDetails.objectFromJSON(json) else { return nil }
+            
+            let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: details.fileName,
+                                                                                type: details.type,
+                                                                                name: details.name,
+                                                                                size: details.size)
+            return .unknown(unknownDisplayInfo)
+        }
     }
     
-    func saveMessageDisplayType(_ messageType: MessagingChatMessageDisplayType, to coreDataMessage: CoreDataMessagingChatMessage) {
+    func saveMessageDisplayType(_ messageType: MessagingChatMessageDisplayType,
+                                to coreDataMessage: CoreDataMessagingChatMessage) throws {
+        func encryptDataContent(_ data: Data) throws -> String {
+            let content = data.base64EncodedString()
+            let encryptedContent = try decrypterService.encryptText(content)
+            return encryptedContent
+        }
+        
+        let coreDataMessageType = CoreDataMessageTypeWrapper.valueFor(messageType)
+        coreDataMessage.messageType = Int64(coreDataMessageType.rawValue)
+        
         switch messageType {
         case .text(let info):
-            coreDataMessage.messageType = 0
-            coreDataMessage.messageContent = info.encryptedText
+            let encryptedContent = try decrypterService.encryptText(info.text)
+            coreDataMessage.messageContent = encryptedContent
         case .imageBase64(let info):
-            coreDataMessage.messageType = 1
-            coreDataMessage.messageContent = info.encryptedContent
+            let encryptedContent = try decrypterService.encryptText(info.base64)
+            coreDataMessage.messageContent = encryptedContent
+        case .imageData(let info):
+            let encryptedContent = try encryptDataContent(info.data)
+            coreDataMessage.messageContent = encryptedContent
+        case .remoteContent(let info):
+            let encryptedContent = try encryptDataContent(info.serviceData)
+            coreDataMessage.messageContent = encryptedContent
         case .unknown(let info):
-            coreDataMessage.messageType = 999
             coreDataMessage.genericMessageDetails = CoreDataUnknownMessageDetails(type: info.type,
                                                                                   fileName: info.fileName,
                                                                                   name: info.name,
@@ -868,7 +901,7 @@ private extension CoreDataMessagingStorageService {
     }
     
     struct CoreDataChatGroupDetails: Codable {
-        let name: String
+        let name: String?
         let adminWallets: [String]?
         let isPublic: Bool
         let memberWallets: [String]

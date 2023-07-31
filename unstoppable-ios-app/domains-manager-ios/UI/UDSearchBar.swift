@@ -12,7 +12,13 @@ protocol UDSearchBarDelegate: AnyObject {
     func udSearchBar(_ udSearchBar: UDSearchBar, textDidChange searchText: String)
     func udSearchBarSearchButtonClicked(_ udSearchBar: UDSearchBar)
     func udSearchBarCancelButtonClicked(_ udSearchBar: UDSearchBar)
+    func udSearchBarClearButtonClicked(_ udSearchBar: UDSearchBar)
     func udSearchBarTextDidEndEditing(_ udSearchBar: UDSearchBar)
+}
+
+extension UDSearchBarDelegate {
+    func udSearchBarSearchButtonClicked(_ udSearchBar: UDSearchBar) { }
+    func udSearchBarClearButtonClicked(_ udSearchBar: UDSearchBar) { }
 }
 
 final class UDSearchBar: UIView {
@@ -45,6 +51,7 @@ final class UDSearchBar: UIView {
     private var state: State = .idle { didSet { setUIForCurrentState() } }
     private var isEnabled: Bool = true
     var isActive: Bool { state == .focused }
+    var isEditing: Bool { isFirstResponder || !text.isEmpty }
     var shouldAnimateStateUpdate = true
     weak var delegate: UDSearchBarDelegate?
     var responderChangedCallback: ((Bool)->())?
@@ -70,7 +77,7 @@ final class UDSearchBar: UIView {
                                             y: cancelButtonY)
         
         let containerWidth: CGFloat
-        if isFirstResponder {
+        if isEditing {
             let xSpaceTakenByCancelButton = bounds.width - cancelButton.frame.minX
             containerWidth = bounds.width - xSpaceTakenByCancelButton - containerSidePadding - cancelButtonToContainerPadding
         } else {
@@ -114,6 +121,7 @@ extension UDSearchBar {
         set {
             textField.text = newValue
             textFieldDidEdit(textField)
+            checkCancelButtonVisibility()
         }
     }
 
@@ -148,7 +156,9 @@ extension UDSearchBar: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         delegate?.udSearchBarTextDidEndEditing(self)
-        responderChangedCallback?(false)
+        if text.isEmpty {
+            responderChangedCallback?(false)
+        }
         let isEnabled = self.isEnabled
         forceLayout(animated: shouldAnimateStateUpdate, additionalAnimation: { [weak self] in
             self?.state = isEnabled ? .idle : .disabled
@@ -179,6 +189,8 @@ private extension UDSearchBar {
     @objc func clearButtonPressed() {
         UDVibration.buttonTap.vibrate()
         text = ""
+        forceLayout(animated: shouldAnimateStateUpdate)
+        delegate?.udSearchBarClearButtonClicked(self)
     }
     
     func checkClearButtonVisibility() {
@@ -186,7 +198,7 @@ private extension UDSearchBar {
     }
     
     func checkCancelButtonVisibility() {
-        cancelButton.alpha = isFirstResponder ? 1 : 0
+        cancelButton.alpha = isEditing ? 1 : 0
     }
 }
 

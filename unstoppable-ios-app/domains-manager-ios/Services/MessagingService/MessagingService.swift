@@ -10,6 +10,7 @@ import Foundation
 final class MessagingService {
 
     private let apiService: MessagingAPIServiceProtocol
+    private let channelsApiService: MessagingChannelsAPIServiceProtocol
     private let webSocketsService: MessagingWebSocketsServiceProtocol
     private let storageService: MessagingStorageServiceProtocol
     private let decrypterService: MessagingContentDecrypterService
@@ -18,14 +19,18 @@ final class MessagingService {
     private let dataRefreshManager = MessagingServiceDataRefreshManager()
     private var listenerHolders: [MessagingListenerHolder] = []
     private var currentUser: MessagingChatUserProfileDisplayInfo?
+    
+    private var stateHolder = StateHolder()
 
     init(apiService: MessagingAPIServiceProtocol,
+         channelsApiService: MessagingChannelsAPIServiceProtocol,
          webSocketsService: MessagingWebSocketsServiceProtocol,
          storageProtocol: MessagingStorageServiceProtocol,
          decrypterService: MessagingContentDecrypterService,
          filesService: MessagingFilesServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol) {
         self.apiService = apiService
+        self.channelsApiService = channelsApiService
         self.webSocketsService = webSocketsService
         self.storageService = storageProtocol
         self.decrypterService = decrypterService
@@ -41,6 +46,18 @@ final class MessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MessagingService: MessagingServiceProtocol {
+    // Capabilities
+    var canContactWithoutProfile: Bool { apiService.capabilities.canContactWithoutProfile }
+    var canBlockUsers: Bool { apiService.capabilities.canBlockUsers }
+    
+    func isAbleToContactAddress(_ address: String,
+                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool {
+        let profile = try storageService.getUserProfileWith(userId: user.id)
+        
+        return try await apiService.isAbleToContactAddress(address, by: profile)
+    }
+    
+    // User
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
         if let cachedProfile = try? storageService.getUserProfileFor(domain: domain) {
@@ -95,12 +112,11 @@ extension MessagingService: MessagingServiceProtocol {
         
         return false
     }
-
+    
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
-        let chats = try await storageService.getChatsFor(profile: profile,
-                                                         decrypter: decrypterService)
+        let chats = try await storageService.getChatsFor(profile: profile)
         
         let chatsDisplayInfo = chats.map { $0.displayInfo }
         return chatsDisplayInfo
@@ -156,7 +172,6 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try await getUserProfileWith(wallet: chatDisplayInfo.thisUserDetails.wallet)
         let chat = try await getMessagingChatFor(displayInfo: chatDisplayInfo, userId: profile.id)
         let cachedMessages = try await storageService.getMessagesFor(chat: chat,
-                                                                     decrypter: decrypterService,
                                                                      before: message,
                                                                      limit: limit)
         if cachedOnly {
@@ -166,8 +181,7 @@ extension MessagingService: MessagingServiceProtocol {
         var chatMessage: MessagingChatMessage?
         if let message {
             chatMessage = await storageService.getMessageWith(id: message.id,
-                                                              in: chat,
-                                                              decrypter: decrypterService)
+                                                              in: chat)
         }
         
         let messages = try await apiService.getMessagesForChat(chat,
@@ -184,6 +198,26 @@ extension MessagingService: MessagingServiceProtocol {
 
         await storageService.saveMessages(messages)
         return messages.map { $0.displayInfo }
+    }
+    
+    func loadRemoteContentFor(_ message: MessagingChatMessageDisplayInfo,
+                              in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo {
+        guard let messagingChat = await storageService.getChatWith(id: message.chatId, of: message.userId),
+              var chatMessage = await storageService.getMessageWith(id: message.id, in: messagingChat) else {
+            throw MessagingServiceError.messageNotFound
+        }
+        
+        switch chatMessage.displayInfo.type {
+        case .text, .imageData, .imageBase64, .unknown:
+            return message
+        case .remoteContent(let info):
+            let loadedType = try await apiService.loadRemoteContentFor(chatMessage,
+                                                                       serviceData: info.serviceData,
+                                                                       filesService: filesService)
+            chatMessage.displayInfo.type = loadedType
+            await storageService.saveMessages([chatMessage])
+            return chatMessage.displayInfo
+        }
     }
 
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
@@ -266,7 +300,6 @@ extension MessagingService: MessagingServiceProtocol {
         storageService.deleteMessage(message)
         if isLastMessageInChat {
             guard let newLastMessage = (try await storageService.getMessagesFor(chat: messagingChat,
-                                                                                decrypter: decrypterService,
                                                                                 before: nil,
                                                                                 limit: 1)).first else { return }
             
@@ -282,33 +315,7 @@ extension MessagingService: MessagingServiceProtocol {
     }
    
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? {
-        let fileName: String
-        
-        switch message.type {
-        case .text, .imageBase64:
-            return nil
-        case .unknown(let info):
-            fileName = info.fileName
-        }
-        
-        if let url = filesService.getDecryptedDataURLFor(fileName: fileName) {
-            return url
-        }
-        
-        guard let chat = await storageService.getChatWith(id: message.chatId, of: message.userId, decrypter: decrypterService),
-              let chatMessage = await storageService.getMessageWith(id: message.id,
-                                                                    in: chat,
-                                                                    decrypter: decrypterService) else { return nil }
-        let wallet = chat.displayInfo.thisUserDetails.wallet
-        guard let encryptedDataURL = filesService.getEncryptedDataURLFor(fileName: fileName),
-              let encryptedData = try? Data(contentsOf: encryptedDataURL),
-              let encryptedContent = String(data: encryptedData, encoding: .utf8),
-              let decryptedContent = try? decrypterService.decryptText(encryptedContent,
-                                                                       with: chatMessage.serviceMetadata,
-                                                                       wallet: wallet),
-              let decryptedData = Base64DataTransformer.dataFrom(base64String: decryptedContent) else { return nil }
-        
-        return try? filesService.saveDecryptedData(decryptedData, fileName: fileName)
+        await filesService.decryptedContentURLFor(message: message)
     }
     
     // Channels
@@ -351,12 +358,12 @@ extension MessagingService: MessagingServiceProtocol {
             /// User has opened channel before and there's no unread messages
             if storedFeed.count < limit {
                 if storedFeed.last?.isFirstInChannel == true || (storedFeed.isEmpty && page == 1) {
-                     return storedFeed
+                    return storedFeed
                 } else {
-                    var loadedFeed = try await apiService.getFeedFor(channel: channel,
-                                                                     page: page,
-                                                                     limit: limit,
-                                                                     isRead: true)
+                    var loadedFeed = try await channelsApiService.getFeedFor(channel: channel,
+                                                                             page: page,
+                                                                             limit: limit,
+                                                                             isRead: true)
                     checkIfFirstFeedInChannel(&loadedFeed)
                     await storageService.saveChannelsFeed(loadedFeed,
                                                           in: channel)
@@ -371,10 +378,10 @@ extension MessagingService: MessagingServiceProtocol {
             let preLoadLimit = 30
             var preloadedFeed = [MessagingNewsChannelFeed]()
             while true {
-                let feed = try await apiService.getFeedFor(channel: channel,
-                                                           page: preLoadPage,
-                                                           limit: preLoadLimit,
-                                                           isRead: false)
+                let feed = try await channelsApiService.getFeedFor(channel: channel,
+                                                                   page: preLoadPage,
+                                                                   limit: preLoadLimit,
+                                                                   isRead: false)
                 if let i = feed.firstIndex(where: { $0.id == latestLocalFeed.id }) {
                     let missedChunk = feed[0..<i]
                     preloadedFeed.append(contentsOf: missedChunk)
@@ -393,10 +400,10 @@ extension MessagingService: MessagingServiceProtocol {
             return result
         } else {
             /// User open channel for the first time
-            var loadedFeed = try await apiService.getFeedFor(channel: channel,
-                                                             page: page,
-                                                             limit: limit,
-                                                             isRead: true)
+            var loadedFeed = try await channelsApiService.getFeedFor(channel: channel,
+                                                                     page: page,
+                                                                     limit: limit,
+                                                                     isRead: true)
             checkIfFirstFeedInChannel(&loadedFeed)
             await storageService.saveChannelsFeed(loadedFeed,
                                                   in: channel)
@@ -417,7 +424,7 @@ extension MessagingService: MessagingServiceProtocol {
                     subscribed: Bool,
                     by user: MessagingChatUserProfileDisplayInfo) async throws {
         let profile = try await getUserProfileWith(wallet: user.wallet)
-        try await apiService.setChannel(channel, subscribed: subscribed, by: profile)
+        try await channelsApiService.setChannel(channel, subscribed: subscribed, by: profile)
         var channel = channel
         channel.isCurrentUserSubscribed = subscribed
         if subscribed {
@@ -448,7 +455,7 @@ extension MessagingService: MessagingServiceProtocol {
                                searchKey: String,
                                for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] {
         let profile = try await getUserProfileWith(wallet: user.wallet)
-        let channels = try await apiService.searchForChannels(page: page, limit: limit, searchKey: searchKey, for: profile)
+        let channels = try await channelsApiService.searchForChannels(page: page, limit: limit, searchKey: searchKey, for: profile)
         
         return channels
     }
@@ -544,8 +551,7 @@ private extension MessagingService {
             dataRefreshManager.startUpdatingChats(for: profile.displayInfo)
             var startTime = Date()
             do {
-                let allLocalChats = try await storageService.getChatsFor(profile: profile,
-                                                                         decrypter: decrypterService)
+                let allLocalChats = try await storageService.getChatsFor(profile: profile)
                 let localChats = allLocalChats.filter { $0.displayInfo.isApproved}
                 let localRequests = allLocalChats.filter { !$0.displayInfo.isApproved}
                 
@@ -560,8 +566,7 @@ private extension MessagingService {
                                                               for: profile)
                 await storageService.saveChats(updatedChats)
                 
-                let updatedStoredChats = try await storageService.getChatsFor(profile: profile,
-                                                                              decrypter: decrypterService)
+                let updatedStoredChats = try await storageService.getChatsFor(profile: profile)
                 let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
                 notifyListenersChangedDataType(.chats(chatsDisplayInfo, profile: profile.displayInfo))
                 Debugger.printTimeSensitiveInfo(topic: .Messaging,
@@ -600,7 +605,7 @@ private extension MessagingService {
                 }
                 
                 remoteChats.append(contentsOf: chatsPage)
-                if chatsPage.count < limit {
+                if !apiService.capabilities.isSupportChatsListPagination || chatsPage.count < limit {
                     /// Loaded all chats
                     break
                 } else if let lastPageChat = chatsPage.last,
@@ -643,8 +648,7 @@ private extension MessagingService {
                             
                             var updatedChat = remoteChat
                             if let storedMessage = await self.storageService.getMessageWith(id: lastMessage.displayInfo.id,
-                                                                                            in: remoteChat,
-                                                                                            decrypter: self.decrypterService) {
+                                                                                            in: remoteChat) {
                                 lastMessage.displayInfo.isRead = storedMessage.displayInfo.isRead
                             } else {
                                 switch lastMessage.displayInfo.senderType {
@@ -678,8 +682,7 @@ private extension MessagingService {
     
     func refreshUsersInfoFor(profile: MessagingChatUserProfile) async{
         do {
-            let chats = try await storageService.getChatsFor(profile: profile,
-                                                             decrypter: decrypterService)
+            let chats = try await storageService.getChatsFor(profile: profile)
             await withTaskGroup(of: Void.self, body: { group in
                 for chat in chats {
                     group.addTask {
@@ -697,8 +700,7 @@ private extension MessagingService {
                 }
             })
             
-            let updatedChats = try await storageService.getChatsFor(profile: profile,
-                                                                    decrypter: decrypterService)
+            let updatedChats = try await storageService.getChatsFor(profile: profile)
             notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, profile: profile.displayInfo))
         } catch { }
     }
@@ -763,8 +765,7 @@ private extension MessagingService {
     func isNewMessagesFromChatsAvailable(_ chats: [MessagingChat], for profile: MessagingChatUserProfile) async throws -> Bool {
         guard let latestChat = chats.first else { return false } /// No messages if no chats
         guard let localChat = await storageService.getChatWith(id: latestChat.displayInfo.id,
-                                                               of: latestChat.userId,
-                                                               decrypter: decrypterService) else { return true } /// New chat => new message
+                                                               of: latestChat.userId) else { return true } /// New chat => new message
         
         return !localChat.isUpToDateWith(otherChat: latestChat)
     }
@@ -777,11 +778,13 @@ private extension MessagingService {
                               in chat: MessagingChat,
                               by user: MessagingChatUserProfile) {
         Task {
+            await stateHolder.willStartToSendMessage()
             do {
-                let sentMessage = try await apiService.sendMessage(messageType,
+                var sentMessage = try await apiService.sendMessage(messageType,
                                                                    in: chat,
                                                                    by: user,
                                                                    filesService: filesService)
+                sentMessage.displayInfo.type = messageType
                 replaceCacheMessageAndNotify(message,
                                              with: sentMessage)
                 try await setLastMessageAndNotify(sentMessage.displayInfo,
@@ -792,6 +795,7 @@ private extension MessagingService {
                 replaceCacheMessageAndNotify(message,
                                              with: failedMessage)
             }
+            await stateHolder.didSendMessage()
         }
     }
     
@@ -809,12 +813,12 @@ private extension MessagingService {
             let startTime = Date()
             do {
                 let storedChannels = try await storageService.getChannelsFor(profile: profile)
-
+                
                 async let channelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
-                    try await apiService.getSubscribedChannelsForUser(profile)
+                    try await channelsApiService.getSubscribedChannelsForUser(profile)
                 }, defaultValue: [])
                 async let spamChannelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
-                    try await apiService.getSpamChannelsForUser(profile)
+                    try await channelsApiService.getSpamChannelsForUser(profile)
                 }, defaultValue: [])
                 
                 let (channels, spamChannels) = await (channelsTask, spamChannelsTask)
@@ -844,10 +848,10 @@ private extension MessagingService {
         await withTaskGroup(of: MessagingNewsChannel.self, body: { group in
             for channel in channels {
                 group.addTask {
-                    if var lastMessage = try? await self.apiService.getFeedFor(channel: channel,
-                                                                               page: 1,
-                                                                               limit: 1,
-                                                                               isRead: false).first {
+                    if var lastMessage = try? await self.channelsApiService.getFeedFor(channel: channel,
+                                                                                       page: 1,
+                                                                                       limit: 1,
+                                                                                       isRead: false).first {
                         var updatedChannel = channel
                         if let storedChannel = storedChannels.first(where: { $0.id == channel.id }),
                            let storedLastMessage = storedChannel.lastMessage,
@@ -899,8 +903,7 @@ private extension MessagingService {
     func getMessagingChatWith(chatId: String,
                               userId: String) async throws -> MessagingChat {
         guard let chat = await storageService.getChatWith(id: chatId,
-                                                          of: userId,
-                                                          decrypter: decrypterService) else { throw MessagingServiceError.chatNotFound }
+                                                          of: userId) else { throw MessagingServiceError.chatNotFound }
         
         return chat
     }
@@ -935,6 +938,11 @@ private extension MessagingService {
             func addNewChatMessages(_ chatMessages: [GroupChatMessageWithProfile]) async {
                 guard !chatMessages.isEmpty else { return }
                 
+                if await stateHolder.isSendingMessage,
+                   chatMessages.first(where: { $0.message.displayInfo.senderType.isThisUser }) != nil {
+                    return
+                }
+                
                 await storageService.saveMessages(chatMessages.map({ $0.message }))
                 for messageWithProfile in chatMessages {
                     let message = messageWithProfile.message
@@ -968,6 +976,13 @@ private extension MessagingService {
                 case .chatReceivedMessage(let message):
                     let chatMessages = try await convertMessagingWebSocketMessageEntityToMessage(message)
                     await addNewChatMessages(chatMessages)
+                case .newChat(let webSocketsChat):
+                    let profile = try storageService.getUserProfileWith(userId: webSocketsChat.userId)
+                    guard let chat = webSocketsChat.transformToChatBlock(webSocketsChat, profile) else { return }
+                    
+                    let updatedChats = await refreshChatsMetadata(remoteChats: [chat], localChats: [], for: profile)
+                    await storageService.saveChats(updatedChats)
+                    notifyChatsChanged(wallet: profile.wallet)
                 }
             } catch { }
         }
@@ -997,8 +1012,7 @@ private extension MessagingService {
         Task {
             do {
                 let profile = try await getUserProfileWith(wallet: wallet)
-                let chats = try await storageService.getChatsFor(profile: profile,
-                                                                 decrypter: decrypterService)
+                let chats = try await storageService.getChatsFor(profile: profile)
                 let displayInfo = chats.map { $0.displayInfo }
                 notifyListenersChangedDataType(.chats(displayInfo, profile: profile.displayInfo))
             } catch { }
@@ -1006,13 +1020,14 @@ private extension MessagingService {
     }
     
     func notifyListenersChangedDataType(_ messagingDataType: MessagingDataType) {
+        Debugger.printInfo(topic: .Messaging, "Will notify listeners about data type: \(messagingDataType.debugDescription)")
         listenerHolders.forEach { holder in
             holder.listener?.messagingDataTypeDidUpdated(messagingDataType)
         }
     }
     
     func setLastMessageAndNotify(lastMessage: MessagingChatMessageDisplayInfo) async throws {
-        guard let chat = await storageService.getChatWith(id: lastMessage.chatId, of: lastMessage.userId, decrypter: decrypterService) else { return }
+        guard let chat = await storageService.getChatWith(id: lastMessage.chatId, of: lastMessage.userId) else { return }
         try await setLastMessageAndNotify(lastMessage, to: chat)
     }
     
@@ -1031,8 +1046,7 @@ private extension MessagingService {
         
         func getMessageFor(wallet: String, otherUserWallet: String) async throws -> GroupChatMessageWithProfile {
             let profile = try await getUserProfileWith(wallet: wallet)
-            let chats = try await storageService.getChatsFor(profile: profile,
-                                                             decrypter: decrypterService)
+            let chats = try await storageService.getChatsFor(profile: profile)
             guard let chat = chats.first(where: { chat in
                 switch chat.displayInfo.type {
                 case .private(let details):
@@ -1064,8 +1078,7 @@ private extension MessagingService {
         let profiles = try storageService.getAllUserProfiles()
         for profile in profiles {
             if let chat = await storageService.getChatWith(id: messageEntity.chatId,
-                                                           of: profile.id,
-                                                           decrypter: decrypterService),
+                                                           of: profile.id),
             let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) {
                 messages.append(.init(message: message, profile: profile))
             }
@@ -1099,5 +1112,29 @@ extension MessagingService {
         public var errorDescription: String? {
             return rawValue
         }
+    }
+}
+
+// MARK: - Private methods
+private extension MessagingService {
+    actor StateHolder {
+        
+        private var sendingMessagesCounter: Int = 0
+        
+        var isSendingMessage: Bool { sendingMessagesCounter > 0 }
+        
+        func willStartToSendMessage() {
+            sendingMessagesCounter += 1
+            Debugger.printInfo(topic: .Messaging, "Will inrecase send message counter to \(sendingMessagesCounter)")
+        }
+        
+        func didSendMessage() {
+            sendingMessagesCounter -= 1
+            Debugger.printInfo(topic: .Messaging, "Will decrease send message counter to \(sendingMessagesCounter)")
+            if sendingMessagesCounter < 0 {
+                Debugger.printFailure("Unmatched call to send message", critical: true)
+            }
+        }
+        
     }
 }

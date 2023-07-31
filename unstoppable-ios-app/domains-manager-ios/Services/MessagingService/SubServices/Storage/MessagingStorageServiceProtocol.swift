@@ -8,6 +8,9 @@
 import Foundation
 
 protocol MessagingStorageServiceProtocol {
+    // Init
+    init(decrypterService: MessagingContentDecrypterService)
+    
     // User Profile
     func getUserProfileFor(domain: DomainItem) throws -> MessagingChatUserProfile
     func getUserProfileWith(userId: String) throws -> MessagingChatUserProfile
@@ -19,12 +22,10 @@ protocol MessagingStorageServiceProtocol {
     func getNumberOfUnreadMessagesIn(chatId: String,
                                      userId: String) -> Int
     func getMessagesFor(chat: MessagingChat,
-                        decrypter: MessagingContentDecrypterService,
                         before message: MessagingChatMessageDisplayInfo?,
                         limit: Int) async throws -> [MessagingChatMessage]
     func getMessageWith(id: String,
-                        in chat: MessagingChat,
-                        decrypter: MessagingContentDecrypterService) async -> MessagingChatMessage?
+                        in chat: MessagingChat) async -> MessagingChatMessage?
     func saveMessages(_ messages: [MessagingChatMessage]) async
     func replaceMessage(_ messageToReplace: MessagingChatMessage,
                         with newMessage: MessagingChatMessage) async throws
@@ -34,11 +35,9 @@ protocol MessagingStorageServiceProtocol {
     func markSendingMessagesAsFailed()
     
     // Chats
-    func getChatsFor(profile: MessagingChatUserProfile,
-                     decrypter: MessagingContentDecrypterService) async throws -> [MessagingChat]
+    func getChatsFor(profile: MessagingChatUserProfile) async throws -> [MessagingChat]
     func getChatWith(id: String,
-                     of userId: String,
-                     decrypter: MessagingContentDecrypterService) async -> MessagingChat?
+                     of userId: String) async -> MessagingChat?
     func saveChats(_ chats: [MessagingChat]) async
     func replaceChat(_ chatToReplace: MessagingChat,
                      with newChat: MessagingChat) async throws

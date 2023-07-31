@@ -61,12 +61,15 @@
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="QBs-Cp-Wiu">
+                                                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="QBs-Cp-Wiu">
                                                                 <rect key="frame" x="0.0" y="24" width="273.33333333333331" height="20"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" horizontalHuggingPriority="253" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="GaL-yl-6hd" customClass="UDButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="228" height="20"/>
+                                                                        <rect key="frame" x="0.0" y="1.3333333333333357" width="228" height="17"/>
                                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="height" constant="17" id="qKy-W3-1oV"/>
+                                                                        </constraints>
                                                                     </view>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="avE-5e-FQy">
                                                                         <rect key="frame" x="232" y="0.0" width="41.333333333333314" height="20"/>

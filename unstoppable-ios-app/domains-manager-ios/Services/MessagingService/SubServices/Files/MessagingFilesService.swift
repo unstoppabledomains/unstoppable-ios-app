@@ -10,8 +10,10 @@ import Foundation
 final class MessagingFilesService {
     
     private let fileManager = FileManager.default
+    private let decrypterService: MessagingContentDecrypterService
 
-    init() {
+    init(decrypterService: MessagingContentDecrypterService) {
+        self.decrypterService = decrypterService
         checkDirectoriesExists()
     }
     
@@ -19,29 +21,43 @@ final class MessagingFilesService {
 
 // MARK: - MessagingFilesServiceProtocol
 extension MessagingFilesService: MessagingFilesServiceProtocol {
-    /// Encrypted
-    func getEncryptedDataURLFor(fileName: String) -> URL? {
-        getURLIfFileExistFor(fileName: fileName, dataType: .encrypted)
-    }
-    
+    ///
     @discardableResult
-    func saveEncryptedData(_ data: Data, fileName: String) throws -> URL {
-        try saveData(data, fileName: fileName, dataType: .encrypted)
+    func saveData(_ data: Data, fileName: String) throws -> URL {
+        let base64 = data.base64EncodedString()
+        let encryptedBase64 = try decrypterService.encryptText(base64)
+        let encryptedData = try stringToBase64Data(encryptedBase64)
+        return try saveEncryptedData(encryptedData, fileName: fileName)
     }
     
-    func deleteEncryptedDataWith(fileName: String) {
+    func deleteDataWith(fileName: String) {
         let url = urlToFileWith(fileName: fileName, dataType: .encrypted)
         try? fileManager.removeItem(at: url)
+        if let decryptedURL = getDecryptedDataURLFor(fileName: fileName) {
+            try? fileManager.removeItem(at: decryptedURL)
+        }
     }
     
-    /// Decrypted
-    func getDecryptedDataURLFor(fileName: String) -> URL? {
-        getURLIfFileExistFor(fileName: fileName, dataType: .decrypted)
-    }
-    
-    @discardableResult
-    func saveDecryptedData(_ data: Data, fileName: String) throws -> URL {
-        try saveData(data, fileName: fileName, dataType: .decrypted)
+    func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? {
+        let fileName: String
+        
+        switch message.type {
+        case .text, .imageBase64, .imageData, .remoteContent:
+            return nil
+        case .unknown(let info):
+            fileName = info.fileName
+        }
+        
+        if let url = getDecryptedDataURLFor(fileName: fileName) {
+            return url
+        }
+        
+        guard let encryptedDataURL = getEncryptedDataURLFor(fileName: fileName),
+              let encryptedData = try? Data(contentsOf: encryptedDataURL),
+              let decryptedContent = try? decrypterService.decryptText(encryptedData.base64EncodedString()),
+              let decryptedData = Base64DataTransformer.dataFrom(base64String: decryptedContent) else { return nil }
+        
+        return try? saveDecryptedData(decryptedData, fileName: fileName)
     }
 }
 
@@ -63,6 +79,30 @@ extension MessagingFilesService {
 
 // MARK: - Private methods
 private extension MessagingFilesService {
+    func stringToBase64Data(_ string: String) throws -> Data {
+        guard let data = Data(base64Encoded: string) else { throw MessagingFilesError.failedToCreateBase64Data }
+    
+        return data
+    }
+    
+    func getEncryptedDataURLFor(fileName: String) -> URL? {
+        getURLIfFileExistFor(fileName: fileName, dataType: .encrypted)
+    }
+    
+    @discardableResult
+    func saveEncryptedData(_ data: Data, fileName: String) throws -> URL {
+        try saveData(data, fileName: fileName, dataType: .encrypted)
+    }
+    
+    func getDecryptedDataURLFor(fileName: String) -> URL? {
+        getURLIfFileExistFor(fileName: fileName, dataType: .decrypted)
+    }
+    
+    @discardableResult
+    func saveDecryptedData(_ data: Data, fileName: String) throws -> URL {
+        try saveData(data, fileName: fileName, dataType: .decrypted)
+    }
+    
     func getURLIfFileExistFor(fileName: String, dataType: MessagingDataType) -> URL? {
         let url = urlToFileWith(fileName: fileName, dataType: dataType)
         if fileManager.fileExists(atPath: url.path) {
@@ -122,6 +162,13 @@ private extension MessagingFilesService {
 
 // MARK: - Private methods
 private extension MessagingFilesService {
+    enum MessagingFilesError: String, LocalizedError {
+        case failedToCreateBase64Data
+        
+        public var errorDescription: String? { rawValue }
+
+    }
+    
     enum MessagingDataType {
         case encrypted
         case decrypted

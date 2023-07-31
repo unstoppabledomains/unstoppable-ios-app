@@ -19,6 +19,8 @@ final class PushMessagingContentDecrypterService: MessagingContentDecrypterServi
         return isMessageDataEncrypted(messageMetadata: messageMetadata)
     }
     
+    func encryptText(_ text: String) throws -> String { text }
+    
     func decryptText(_ text: String, with serviceMetadata: Data?, wallet: String) throws -> String {
         guard let serviceMetadata,
               let pgpKey = getPGPKeyFor(wallet: wallet),

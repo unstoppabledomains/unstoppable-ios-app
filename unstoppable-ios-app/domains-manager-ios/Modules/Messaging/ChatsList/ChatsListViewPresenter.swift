@@ -15,7 +15,7 @@ protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLog
     func didSelectWallet(_ wallet: WalletDisplayInfo)
     func actionButtonPressed()
     
-    func didStartSearch()
+    func didStartSearch(with mode: ChatsList.SearchMode)
     func didStopSearch()
     func didSearchWith(key: String)
 }
@@ -23,7 +23,7 @@ protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLog
 extension ChatsListViewPresenterProtocol {
     func didSelectWallet(_ wallet: WalletDisplayInfo) { }
     func actionButtonPressed() { }
-    func didStartSearch() { }
+    func didStartSearch(with mode: ChatsList.SearchMode) { }
     func didStopSearch() { }
     func didSearchWith(key: String) { }
 }
@@ -49,7 +49,7 @@ final class ChatsListViewPresenter {
     private var chatsList: [MessagingChatDisplayInfo] = []
     private var channels: [MessagingNewsChannel] = []
     private var searchData = SearchData()
-    private let searchManager = SearchManager(debounce: 0.3)
+    private let searchManager = ChatsList.SearchManager(debounce: 0.3)
     
     var analyticsName: Analytics.ViewName { .chatsHome }
     
@@ -73,7 +73,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     
     func didSelectItem(_ item: ChatsListViewController.Item) {
         UDVibration.buttonTap.vibrate()
-        view?.hideKeyboard()
+        view?.stopSearching()
         switch item {
         case .domainSelection(let configuration):
             guard !configuration.isSelected else { return }
@@ -153,6 +153,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         Task {
             do {
                 let (searchUsers, searchChannels, domainNames) = try await searchManager.search(with: key,
+                                                                                                mode: searchData.mode,
                                                                                                 page: 1,
                                                                                                 limit: fetchLimit,
                                                                                                 for: profile)
@@ -166,8 +167,9 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         }
     }
     
-    func didStartSearch() {
+    func didStartSearch(with mode: ChatsList.SearchMode) {
         self.searchData.isSearchActive = true
+        self.searchData.mode = mode
         showData()
     }
     
@@ -394,7 +396,6 @@ private extension ChatsListViewPresenter {
             profileWalletPairsCache.append(chatProfile)
         }
         
-        updateNavigationUI()
         
         guard let profile = chatProfile.profile else {
             let state: MessagingProfileStateAnalytics = chatProfile.wallet.reverseResolutionDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet
@@ -402,6 +403,7 @@ private extension ChatsListViewPresenter {
                         parameters: [.state : state.rawValue,
                                      .wallet: chatProfile.wallet.address])
             await awaitForUIReady()
+            updateNavigationUI()
             view?.setState(.createProfile)
             showData()
             return
@@ -420,6 +422,7 @@ private extension ChatsListViewPresenter {
         self.channels = channels
         
         await awaitForUIReady()
+        updateNavigationUI()
         view?.setState(.chatsList)
         showData()
         appContext.messagingService.setCurrentUser(profile)
@@ -551,6 +554,15 @@ private extension ChatsListViewPresenter {
             channels = localChannels + remoteChannels
         }
         
+        switch searchData.mode {
+        case .default:
+            Void()
+        case .chatsOnly:
+            channels.removeAll()
+        case .channelsOnly:
+            people.removeAll()
+        }
+        
         if people.isEmpty && channels.isEmpty {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptySearch])
@@ -680,6 +692,7 @@ private extension ChatsListViewPresenter {
     
     struct SearchData {
         var isSearchActive = false
+        var mode: ChatsList.SearchMode = .default
         var searchKey: String = ""
         var searchUsers: [MessagingChatUserDisplayInfo] = []
         var searchChannels: [MessagingNewsChannel] = []
@@ -694,60 +707,5 @@ private extension ChatsListViewPresenter {
     
     enum ChatsListError: Error {
         case noWalletsForChatting
-    }
-}
-
-private final class SearchManager {
-    
-    typealias SearchResult = ([MessagingChatUserDisplayInfo], [MessagingNewsChannel], [SearchDomainProfile])
-    typealias SearchUsersTask = Task<SearchResult, Error>
-    
-    private let debounce: TimeInterval
-    private var currentTask: SearchUsersTask?
-    
-    init(debounce: TimeInterval) {
-        self.debounce = debounce
-    }
-    
-    func search(with searchKey: String,
-                page: Int,
-                limit: Int,
-                for profile: MessagingChatUserProfileDisplayInfo) async throws -> SearchResult {
-        // Cancel previous search task if it exists
-        currentTask?.cancel()
-        
-        let debounce = self.debounce
-        let task: SearchUsersTask = Task.detached {
-            do {
-                try await Task.sleep(seconds: debounce)
-                try Task.checkCancellation()
-                
-                let messagingService = appContext.messagingService
-                async let searchUsersTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
-                    try await messagingService.searchForUsersWith(searchKey: searchKey)
-                }, defaultValue: [])
-                async let searchChannelsTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
-                    try await messagingService.searchForChannelsWith(page: page, limit: limit,
-                                                                     searchKey: searchKey, for: profile)
-                }, defaultValue: [])
-                async let domainNamesTask = Utilities.catchingFailureAsyncTask(asyncCatching: {
-                    try await NetworkService().searchForRRDomainsWith(name: searchKey)
-                }, defaultValue: [])
-                
-                
-                let (users, channels, domainNames) = await (searchUsersTask, searchChannelsTask, domainNamesTask)
-                
-                try Task.checkCancellation()
-                return (users, channels, domainNames)
-            } catch NetworkLayerError.requestCancelled, is CancellationError {
-                return ([], [], [])
-            } catch {
-                throw error
-            }
-        }
-        
-        currentTask = task
-        let users = try await task.value
-        return users
     }
 }

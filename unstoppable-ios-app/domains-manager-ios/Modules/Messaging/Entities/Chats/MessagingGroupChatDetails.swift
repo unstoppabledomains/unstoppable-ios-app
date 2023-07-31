@@ -10,11 +10,12 @@ import Foundation
 struct MessagingGroupChatDetails: Hashable {
     let members: [MessagingChatUserDisplayInfo]
     let pendingMembers: [MessagingChatUserDisplayInfo]
-    let name: String
+    let name: String?
     let adminWallets: [String]
     let isPublic: Bool
     
     var allMembers: [MessagingChatUserDisplayInfo] { members + pendingMembers }
+    var displayName: String { name ?? allMembers.prefix(3).map({ $0.displayName }).joined(separator: ", ") }
 }
 
 // MARK: - Open methods

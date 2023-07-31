@@ -170,7 +170,9 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     }
     
     func showChatsListScreen() {
-        Task { await showChatsListWith(options: .default) }
+        guard let navigationController = self.navigationController else { return }
+
+        showChatsListScreen(in: navigationController, presentOptions: .default)
     }
 }
 

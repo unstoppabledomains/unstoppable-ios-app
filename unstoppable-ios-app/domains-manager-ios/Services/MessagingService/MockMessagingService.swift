@@ -16,6 +16,11 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
+    var canContactWithoutProfile: Bool { true }
+    var canBlockUsers: Bool { true }
+    func isAbleToContactAddress(_ address: String,
+                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool { true }
+    
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) { }
@@ -54,7 +59,8 @@ extension MockMessagingService: MessagingServiceProtocol {
         chatsMessages[chat] = messages
         return messages
     }
-    
+    func loadRemoteContentFor(_ message: MessagingChatMessageDisplayInfo,
+                              in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo { message }
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      isEncrypted: Bool,
                      in chat: MessagingChatDisplayInfo) throws -> MessagingChatMessageDisplayInfo {
@@ -175,8 +181,7 @@ private extension MockMessagingService {
               userId: "1",
               senderType: sender,
               time: createMockMessageDate(),
-              type: .text(.init(text: mockLastMessageTexts.randomElement()!,
-                                encryptedText: mockLastMessageTexts.randomElement()!)),
+              type: .text(.init(text: mockLastMessageTexts.randomElement()!)),
               isRead: true,
               isFirstInChat: false,
               deliveryState: .delivered,
@@ -219,8 +224,7 @@ private extension MockMessagingService {
                                                           userId: "a",
                                                           senderType: sender,
                                                           time: time,
-                                                          type: .text(.init(text: text,
-                                                                           encryptedText: text)),
+                                                          type: .text(.init(text: text)),
                                                           isRead: true,
                                                           isFirstInChat: false,
                                                           deliveryState: .delivered,

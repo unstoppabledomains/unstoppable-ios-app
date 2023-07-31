@@ -171,7 +171,6 @@ struct PushEntitiesTransformer {
                                                filesService: MessagingFilesServiceProtocol) throws -> (MessagingChatMessageDisplayType, String)? {
         let messageType = PushMessageType(rawValue: pushMessage.messageType) ?? .unknown
         let isMessageEncrypted = pushMessage.encType == pgpEncryptionType
-        let encryptedContent = pushMessage.messageContent
         guard let decryptedContent = try? Push.PushChat.decryptMessage(message: pushMessage, privateKeyArmored: pgpKey) else { return nil }
         
         let type: MessagingChatMessageDisplayType
@@ -190,24 +189,19 @@ struct PushEntitiesTransformer {
 
         switch messageType {
         case .text:
-            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent,
-                                                                          encryptedText: encryptedContent)
+            let textDisplayInfo = MessagingChatMessageTextTypeDisplayInfo(text: decryptedContent)
             type = .text(textDisplayInfo)
         case .image:
             guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
             let base64Image = contentInfo.content
-            guard let encryptedImage = encryptMessageContentIfNeeded(base64Image) else { return nil }
-            
-            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64Image,
-                                                                                        encryptedContent: encryptedImage)
+            let imageBase64DisplayInfo = MessagingChatMessageImageBase64TypeDisplayInfo(base64: base64Image)
             type = .imageBase64(imageBase64DisplayInfo)
         default:
             guard let contentInfo = PushEnvironment.PushMessageContentResponse.objectFromJSONString(decryptedContent) else { return nil }
-            guard let messageContent = encryptMessageContentIfNeeded(contentInfo.content),
-                  let data = messageContent.data(using: .utf8) else { return nil }
+            guard let data = contentInfo.content.data(using: .utf8) else { return nil }
             
             let fileName = messageId + "_" + String(userId.suffix(4)) + "_" + (contentInfo.name ?? "")
-            try filesService.saveEncryptedData(data, fileName: fileName)
+            try filesService.saveData(data, fileName: fileName)
             let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
                                                                                 type: pushMessage.messageType,
                                                                                 name: contentInfo.name,

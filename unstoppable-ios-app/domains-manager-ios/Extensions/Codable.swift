@@ -14,6 +14,12 @@ extension Decodable {
         genericObjectFromData(data, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy)
     }
     
+    static func objectFromDataThrowing(_ data: Data,
+                                       using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                       dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) throws -> Self {
+        try genericObjectFromDataThrowing(data, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy)
+    }
+    
     static func objectsFromData(_ data: Data,
                                 using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                 dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) -> [Self]? {
@@ -61,16 +67,24 @@ extension Decodable {
         }
         return genericObjectFromData(jsonData, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy)
     }
+ 
+    static func genericObjectFromDataThrowing<T: Decodable>(_ data: Data,
+                                                    using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                                    dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) throws -> T {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = keyDecodingStrategy
+        decoder.dateDecodingStrategy = dateDecodingStrategy
+        let object = try decoder.decode(T.self, from: data)
+        return object
+    }
     
     static func genericObjectFromData<T: Decodable>(_ data: Data,
                                                     using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                     dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) -> T? {
         do {
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = keyDecodingStrategy
-            decoder.dateDecodingStrategy = dateDecodingStrategy
-            let object = try decoder.decode(T.self, from: data)
-            return object
+            return try genericObjectFromDataThrowing(data,
+                                                     using: keyDecodingStrategy,
+                                                     dateDecodingStrategy: dateDecodingStrategy)
         } catch {
             Debugger.printInfo("Failed to parse \(self) with error \((error as NSError).userInfo)")
             return nil
@@ -80,13 +94,18 @@ extension Decodable {
 }
 
 extension Encodable {
-    func jsonData(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
-                  dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .iso8601) -> Data? {
+    func jsonDataThrowing(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
+                          dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .iso8601) throws -> Data {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = keyEncodingStrategy
         encoder.dateEncodingStrategy = dateEncodingStrategy
         
-        return try? encoder.encode(self)
+        return try encoder.encode(self)
+    }
+    
+    func jsonData(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
+                  dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .iso8601) -> Data? {
+        try? jsonDataThrowing(using: keyEncodingStrategy, dateEncodingStrategy: dateEncodingStrategy)
     }
     
     func jsonString(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,

@@ -73,4 +73,17 @@ extension DomainEntity {
         
         return walletAddress.ethChecksumAddress()
     }
+    
+    func getETHAddressThrowing() throws -> String {
+        guard let address = getETHAddress() else { throw DomainEntityError.noOwnerWalletInDomain }
+        
+        return address
+    }
+}
+
+enum DomainEntityError: String, LocalizedError {
+    case noOwnerWalletInDomain
+    
+    public var errorDescription: String? { rawValue }
+    
 }

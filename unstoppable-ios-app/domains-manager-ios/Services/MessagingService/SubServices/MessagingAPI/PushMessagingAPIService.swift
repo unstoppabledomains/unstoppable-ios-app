@@ -21,8 +21,13 @@ protocol PushMessagingAPIServiceDataProvider {
 final class PushMessagingAPIService {
     
     private let pushRESTService = PushRESTAPIService()
+    private let pushHelper = PushServiceHelper()
+    private let messagingHelper = MessagingAPIServiceHelper()
     private let dataProvider: PushMessagingAPIServiceDataProvider
-    
+    let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: true,
+                                                    canBlockUsers: true,
+                                                    isSupportChatsListPagination: true)
+
     init(dataProvider: PushMessagingAPIServiceDataProvider = DefaultPushMessagingAPIServiceDataProvider()) {
         self.dataProvider = dataProvider
     }
@@ -231,6 +236,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         }
     }
     
+    func isAbleToContactAddress(_ address: String,
+                                by user: MessagingChatUserProfile) async throws -> Bool {
+        true
+    }
+    
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
                             before message: MessagingChatMessage?,
@@ -281,6 +291,12 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                                pgpPrivateKey: pgpPrivateKey)
         
         return messagesToKeep + remoteMessages
+    }
+    
+    func loadRemoteContentFor(_ message: MessagingChatMessage,
+                              serviceData: Data,
+                              filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
+        throw PushMessagingAPIServiceError.actionNotSupported
     }
     
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool {
@@ -403,83 +419,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                            userPgpPrivateKey: pgpPrivateKey,
                                            env: env)
     }
-    
-    // Channels
-    func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
-        let subscribedChannelsIds = try await pushRESTService.getSubscribedChannelsIds(for: user.wallet)
-        
-        return try await getChannelsWithIds(Set(subscribedChannelsIds), isCurrentUserSubscribed: true, user: user)
-    }
-    
-    func getSpamChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
-        let spamChannelIds = try await pushRESTService.getSpamChannelsIds(for: user.wallet)
-        
-        return try await getChannelsWithIds(Set(spamChannelIds), isCurrentUserSubscribed: false, user: user)
-    }
-    
-    private func getChannelsWithIds(_ channelIds: Set<String>,
-                                    isCurrentUserSubscribed: Bool,
-                                    user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
-        guard !channelIds.isEmpty else { return [] }
-
-        var channels = [PushChannel?]()
-        await withTaskGroup(of: PushChannel?.self, body: { group in
-            for id in channelIds {
-                group.addTask {
-                    try? await self.pushRESTService.getChannelDetails(for: id)
-                }
-            }
-            
-            for await channel in group {
-                channels.append(channel)
-            }
-        })
-        
-        return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
-                                                                                                              isCurrentUserSubscribed: isCurrentUserSubscribed,
-                                                                                                              isSearchResult: false,
-                                                                                                              userId: user.id) })
-    }
-    
-    func getFeedFor(channel: MessagingNewsChannel,
-                    page: Int,
-                    limit: Int,
-                    isRead: Bool) async throws -> [MessagingNewsChannelFeed] {
-        let feed = try await pushRESTService.getChannelFeed(for: channel.channel, page: page, limit: limit)
-        
-        return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0,isRead: isRead) })
-    }
-    
-    func searchForChannels(page: Int,
-                           limit: Int,
-                           searchKey: String,
-                           for user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
-        guard !searchKey.trimmedSpaces.isEmpty else { return [] }
-        let channels = try await pushRESTService.searchForChannels(page: page, limit: limit, query: searchKey)
-        
-        return channels.compactMap({ $0 }).map({ PushEntitiesTransformer.convertPushChannelToMessagingChannel($0,
-                                                                                                              isCurrentUserSubscribed: false,
-                                                                                                              isSearchResult: true,
-                                                                                                              userId: user.id) })
-    }
-    
-    func setChannel(_ channel: MessagingNewsChannel,
-                    subscribed: Bool,
-                    by user: MessagingChatUserProfile) async throws {
-        
-        let domain = try await getAnyDomainItem(for: user.normalizedWallet)
-        let env = getCurrentPushEnvironment()
-        
-        let subscribeOptions = Push.PushChannel.SubscribeOption(signer: domain,
-                                                              channelAddress: channel.channel,
-                                                              env: env)
-        if subscribed {
-            _ = try await Push.PushChannel.subscribe(option: subscribeOptions)
-        } else {
-            _ = try await Push.PushChannel.unsubscribe(option: subscribeOptions)
-        }
-    }
-    
 }
 
 // MARK: - Get message related
@@ -546,20 +485,15 @@ private extension PushMessagingAPIService {
             return key
         }
         
-        let chatMetadata: PushEnvironment.UserProfileServiceMetadata = try decodeServiceMetadata(from: user.serviceMetadata)
+        let userMetadata: PushEnvironment.UserProfileServiceMetadata = try decodeServiceMetadata(from: user.serviceMetadata)
         let domain = try await getAnyDomainItem(for: wallet)
-        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: chatMetadata.encryptedPrivateKey, signer: domain)
+        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: userMetadata.encryptedPrivateKey, signer: domain)
         KeychainPGPKeysStorage.instance.savePGPKey(pgpPrivateKey, forIdentifier: wallet)
         return pgpPrivateKey
     }
     
     func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
-        let wallet = wallet.normalized
-        guard let domain = await appContext.dataAggregatorService.getDomainItems().first(where: { $0.ownerWallet == wallet }) else {
-            throw PushMessagingAPIServiceError.noDomainForWallet
-        }
-        
-        return domain
+        try await messagingHelper.getAnyDomainItem(for: wallet)
     }
     
     func buildPushSendOptions(for messageType: MessagingChatMessageDisplayType,
@@ -580,19 +514,11 @@ private extension PushMessagingAPIService {
     }
     
     func getCurrentPushEnvironment() -> Push.ENV {
-        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
-        return isTestnetUsed ? .STAGING : .PROD
+        pushHelper.getCurrentPushEnvironment()
     }
     
     func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
-        guard let data else {
-            throw PushMessagingAPIServiceError.failedToDecodeServiceData
-        }
-        guard let serviceMetadata = T.objectFromData(data) else {
-            throw PushMessagingAPIServiceError.failedToDecodeServiceData
-        }
-        
-        return serviceMetadata
+        try messagingHelper.decodeServiceMetadata(from: data)
     }
    
     func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType) throws -> String {
@@ -603,7 +529,12 @@ private extension PushMessagingAPIService {
             let entity = PushEnvironment.PushMessageContentResponse(content: details.base64)
             guard let jsonString = entity.jsonString() else { throw PushMessagingAPIServiceError.failedToPrepareMessageContent }
             return jsonString
-        case .unknown:
+        case .imageData(let details):
+            guard let base64 = details.image.base64String else { throw PushMessagingAPIServiceError.unsupportedType }
+            let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
+            let imageBase64TypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64)
+            return try getPushMessageContentFrom(displayType: .imageBase64(imageBase64TypeDetails))
+        case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
         }
     }
@@ -612,9 +543,9 @@ private extension PushMessagingAPIService {
         switch displayType {
         case .text:
             return .text
-        case .imageBase64:
+        case .imageBase64, .imageData:
             return .image
-        case .unknown:
+        case .unknown, .remoteContent:
             throw PushMessagingAPIServiceError.unsupportedType
         }
     }
@@ -649,6 +580,7 @@ extension PushMessagingAPIService {
         case failedToConvertPushMessage
         case declineRequestNotSupported
         case failedToPrepareMessageContent
+        case actionNotSupported
         
         public var errorDescription: String? { rawValue }
 
@@ -665,9 +597,7 @@ extension DomainItem: Push.Signer, Push.TypedSinger {
     }
     
     func getAddress() async throws -> String {
-        guard let ownerWallet else { throw PushMessagingAPIService.PushMessagingAPIServiceError.noOwnerWalletInDomain }
-        
-        return getETHAddress() ?? ownerWallet
+        try getETHAddressThrowing()
     }
 }
 

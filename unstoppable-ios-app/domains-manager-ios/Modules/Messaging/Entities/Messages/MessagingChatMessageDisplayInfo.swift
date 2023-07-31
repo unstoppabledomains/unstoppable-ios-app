@@ -15,13 +15,13 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     var time: Date
     var type: MessagingChatMessageDisplayType
     var isRead: Bool
-    let isFirstInChat: Bool
+    var isFirstInChat: Bool
     var deliveryState: DeliveryState
     var isEncrypted: Bool
     
     mutating func prepareToDisplay() async {
         switch type {
-        case .text, .unknown:
+        case .text, .unknown, .imageData, .remoteContent:
             return
         case .imageBase64(var info):
             if info.image == nil {

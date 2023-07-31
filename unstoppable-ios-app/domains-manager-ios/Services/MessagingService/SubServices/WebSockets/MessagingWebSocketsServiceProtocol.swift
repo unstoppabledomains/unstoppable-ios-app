@@ -13,6 +13,14 @@ protocol MessagingWebSocketsServiceProtocol {
     func disconnectAll()
 }
 
+struct MessagingWebSocketChatEntity {
+    let userId: String
+    let serviceContent: Any
+    
+    var transformToChatBlock: ((_ webSocketChat: MessagingWebSocketChatEntity,
+                                _ profile: MessagingChatUserProfile)->(MessagingChat?))
+}
+
 struct MessagingWebSocketMessageEntity {
     let id: String
     let senderWallet: String

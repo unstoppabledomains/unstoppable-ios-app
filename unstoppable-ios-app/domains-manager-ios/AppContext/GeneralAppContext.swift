@@ -82,12 +82,14 @@ final class GeneralAppContext: AppContextProtocol {
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
         
         // Messaging
-        let messagingAPIService: MessagingAPIServiceProtocol = PushMessagingAPIService()
-        let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = PushMessagingWebSocketsService()
-        let messagingStorageService: MessagingStorageServiceProtocol = CoreDataMessagingStorageService()
-        let messagingDecrypterService: MessagingContentDecrypterService = PushMessagingContentDecrypterService()
-        let messagingFilesService: MessagingFilesServiceProtocol = MessagingFilesService()
+        let messagingAPIService: MessagingAPIServiceProtocol = XMTPMessagingAPIService()
+        let messagingChannelsAPIService: MessagingChannelsAPIServiceProtocol = PushMessagingChannelsAPIService()
+        let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = XMTPMessagingWebSocketsService()
+        let messagingDecrypterService: MessagingContentDecrypterService = SymmetricMessagingContentDecrypterService()
+        let messagingStorageService: MessagingStorageServiceProtocol = CoreDataMessagingStorageService(decrypterService: messagingDecrypterService)
+        let messagingFilesService: MessagingFilesServiceProtocol = MessagingFilesService(decrypterService: messagingDecrypterService)
         let messagingService = MessagingService(apiService: messagingAPIService,
+                                                channelsApiService: messagingChannelsAPIService,
                                                 webSocketsService: messagingWebSocketsService,
                                                 storageProtocol: messagingStorageService,
                                                 decrypterService: messagingDecrypterService,

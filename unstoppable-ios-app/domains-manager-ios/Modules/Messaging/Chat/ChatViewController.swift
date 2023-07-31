@@ -43,7 +43,8 @@ final class ChatViewController: BaseViewController {
                                                         ChatImageCell.self,
                                                         ChatUnsupportedMessageCell.self,
                                                         ChannelFeedCell.self,
-                                                        ChatLoadingCell.self] }
+                                                        ChatLoadingCell.self,
+                                                        ChatRemoteContentCell.self] }
     var presenter: ChatViewPresenterProtocol!
     let operationQueue = OperationQueue()
     private(set) var dataSource: DataSource!
@@ -129,6 +130,7 @@ extension ChatViewController: ChatViewProtocol {
     
     func scrollToTheBottom(animated: Bool) {
         guard let indexPath = getLastItemIndexPath() else { return }
+        Debugger.printInfo(topic: .Messaging, "Will scroll to the bottom at \(indexPath)")
         
         scrollTo(indexPath: indexPath, at: .bottom, animated: animated)
     }
@@ -179,6 +181,12 @@ extension ChatViewController: ChatViewProtocol {
             secondaryButton.setConfiguration(configuration)
             secondaryButton.isUserInteractionEnabled = false
             secondaryButton.setTitle(String.Constants.messagingYouAreBlocked.localized(), image: nil)
+        case .cantContactUser(let ableToInvite):
+            if ableToInvite {
+                approveContentView.isHidden = false
+                acceptButton.isHidden = false
+                acceptButton.setTitle(String.Constants.messagingInvite.localized(), image: nil)
+            }
         }
     }
     
@@ -280,9 +288,10 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         CGSize(width: collectionView.bounds.width, height: ChatSectionHeaderView.Height)
     }
-    
+ 
     func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
-        if let scrollingInfo {
+        if let scrollingInfo,
+           isContentHeightBiggerThanVisibleFrame {
             let newContentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
             let delta = newContentHeight - scrollingInfo.prevContentHeight
             let adjustedOffset = CGPoint(x: proposedContentOffset.x, y: scrollingInfo.contentOffsetBeforeUpdate.y + delta)
@@ -306,6 +315,7 @@ extension ChatViewController: ChatInputViewDelegate {
     
     func chatInputViewDidAdjustContentHeight(_ chatInputView: ChatInputView) {
         setupMoveToTopButtonFrame()
+        setupEmptyViewFrame()
     }
     
     func chatInputViewAdditionalActionsButtonPressed(_ chatInputView: ChatInputView) {
@@ -398,6 +408,15 @@ private extension ChatViewController {
                                        size: .square(size: moveToTopButtonSize))
     }
     
+    var isContentHeightBiggerThanVisibleFrame: Bool {
+        let newContentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
+        if newContentHeight > view.bounds.height {
+            return true
+        }
+        let visibleChatHeight = view.bounds.height - (view.bounds.height - chatInputView.frame.minY) - (cNavigationBar?.bounds.height ?? 0)
+        return newContentHeight > visibleChatHeight
+    }
+    
     func setupEmptyViewFrame() {
         let y = cNavigationBar?.frame.height ?? 0
         let height = view.bounds.height - y - (view.bounds.height - chatInputView.frame.minY)
@@ -469,8 +488,19 @@ private extension ChatViewController {
                 cell.setWith(configuration: configuration)
                 
                 return cell
+            case .imageDataMessage(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatImageCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
+                
             case .unsupportedMessage(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatUnsupportedMessageCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
+            case .remoteContentMessage(let configuration):
+                let cell = collectionView.dequeueCellOfType(ChatRemoteContentCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
                 
                 return cell
@@ -550,7 +580,9 @@ extension ChatViewController {
     enum Item: Hashable {
         case textMessage(configuration: TextMessageUIConfiguration)
         case imageBase64Message(configuration: ImageBase64MessageUIConfiguration)
+        case imageDataMessage(configuration: ImageDataMessageUIConfiguration)
         case unsupportedMessage(configuration: UnsupportedMessageUIConfiguration)
+        case remoteContentMessage(configuration: RemoteConfigMessageUIConfiguration)
         case channelFeed(configuration: ChannelFeedUIConfiguration)
         case loading
         
@@ -560,7 +592,11 @@ extension ChatViewController {
                 return configuration.message
             case .imageBase64Message(let configuration):
                 return configuration.message
+            case .imageDataMessage(let configuration):
+                return configuration.message
             case .unsupportedMessage(let configuration):
+                return configuration.message
+            case .remoteContentMessage(let configuration):
                 return configuration.message
             case .channelFeed, .loading:
                 return nil
@@ -604,7 +640,39 @@ extension ChatViewController {
         }
     }
     
+    struct ImageDataMessageUIConfiguration: Hashable {
+        
+        let message: MessagingChatMessageDisplayInfo
+        let imageMessageDisplayInfo: MessagingChatMessageImageDataTypeDisplayInfo
+        let isGroupChatMessage: Bool
+        var actionCallback: (ChatMessageAction)->()
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.message.id == rhs.message.id &&
+            lhs.message.deliveryState == rhs.message.deliveryState
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(message.id)
+            hasher.combine(message.deliveryState)
+        }
+    }
+    
     struct UnsupportedMessageUIConfiguration: Hashable {
+        let message: MessagingChatMessageDisplayInfo
+        let isGroupChatMessage: Bool
+        let pressedCallback: EmptyCallback
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.message.id == rhs.message.id
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(message.id)
+        }
+    }
+    
+    struct RemoteConfigMessageUIConfiguration: Hashable {
         let message: MessagingChatMessageDisplayInfo
         let isGroupChatMessage: Bool
         let pressedCallback: EmptyCallback
@@ -649,6 +717,7 @@ extension ChatViewController {
         case joinChannel
         case otherUserIsBlocked
         case userIsBlocked
+        case cantContactUser(ableToInvite: Bool)
     }
     
     struct NavButtonConfiguration {

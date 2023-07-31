@@ -50,6 +50,7 @@ final class ChatViewPresenter {
     private var isLoadingMessages = false
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
     private var isChannelEncrypted: Bool = true
+    private var isAbleToContactUser: Bool = true
     private var didLoadTime = Date()
     
     var analyticsName: Analytics.ViewName { .chatDialog }
@@ -109,7 +110,9 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         sendTextMesssage(text)
     }
      
-    func approveButtonPressed() { }
+    func approveButtonPressed() {
+        view?.showSimpleAlert(title: "Not ready", body: "We're on it, stay in touch!")
+    }
     
     func secondaryButtonPressed() {
         switch blockStatus {
@@ -184,8 +187,8 @@ extension ChatViewPresenter: MessagingServiceListener {
                    updatedMessage.chatId == chat.id,
                    let i = self.messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     await newMessage.prepareToDisplay()
-                    self.messages[i] = newMessage
-                    await addMessages([])
+                    self.messages.remove(at: i)
+                    await addMessages([newMessage])
                     showData(animated: false, isLoading: isLoadingMessages)
                 }
             case .messagesRemoved(let messages, let chatId):
@@ -235,7 +238,6 @@ private extension ChatViewPresenter {
                     isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
                     view?.setLoading(active: false)
-                    view?.startTyping()
                     showData(animated: false, isLoading: false)
                 }
             } catch {
@@ -276,9 +278,29 @@ private extension ChatViewPresenter {
             } else {
                 self.messages.append(message)
             }
+            loadRemoteContentOfMessageAsync(message)
         }
         
         self.messages.sort(by: { $0.time > $1.time })
+    }
+    
+    func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
+        guard case .remoteContent = message.type,
+              case .existingChat(let chat) = conversationState else { return }
+        
+        Task {
+            do {
+                let updatedMessage = try await appContext.messagingService.loadRemoteContentFor(message,
+                                                                                                in: chat)
+                if let i = messages.firstIndex(where: { $0.id == updatedMessage.id }) {
+                    messages[i] = updatedMessage
+                    showData(animated: true, isLoading: isLoadingMessages)
+                }
+            } catch {
+                try? await Task.sleep(seconds: 5)
+                loadRemoteContentOfMessageAsync(message)
+            }
+        }
     }
     
     func awaitForUIReady() async {
@@ -305,7 +327,11 @@ private extension ChatViewPresenter {
             if isLoading {
                 view?.setEmptyState(nil)
             } else {
-                view?.setEmptyState(isChannelEncrypted ? .chatEncrypted : .chatUnEncrypted)
+                if isAbleToContactUser {
+                    view?.setEmptyState(isChannelEncrypted ? .chatEncrypted : .chatUnEncrypted)
+                } else {
+                    view?.setEmptyState(.cantContact)
+                }
             }
             view?.setScrollEnabled(false)
             snapshot.appendSections([])
@@ -348,12 +374,25 @@ private extension ChatViewPresenter {
                                                             actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             }))
+        case .imageData(let imageMessageDisplayInfo):
+            return .imageDataMessage(configuration: .init(message: message,
+                                                            imageMessageDisplayInfo: imageMessageDisplayInfo,
+                                                            isGroupChatMessage: isGroupChatMessage,
+                                                            actionCallback: { [weak self] action in
+                self?.handleChatMessageAction(action, forMessage: message)
+            }))
         case .unknown:
             return .unsupportedMessage(configuration: .init(message: message,
                                                             isGroupChatMessage: isGroupChatMessage,
                                                             pressedCallback: { [weak self] in
                 self?.logButtonPressedAnalyticEvents(button: .downloadUnsupportedMessage)
                 self?.shareContentOfMessage(message)
+            }))
+        case .remoteContent:
+            return .remoteContentMessage(configuration: .init(message: message,
+                                                              isGroupChatMessage: isGroupChatMessage,
+                                                              pressedCallback: {
+                
             }))
         }
     }
@@ -393,34 +432,34 @@ private extension ChatViewPresenter {
     func setupBarButtons() {
         var actions: [ChatViewController.NavButtonConfiguration.Action] = []
         
-        switch conversationState {
-        case .newChat(let userInfo):
-            if let domainName = userInfo.domainName {
+        func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) {
+            if let domainName = userInfo.domainName,
+               userInfo.isUDDomain {
                 actions.append(.init(type: .viewProfile, callback: { [weak self] in
                     self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
                     self?.didPressViewDomainProfileButton(domainName: domainName)
                 }))
-            } else {
-                return // No actions
             }
+        }
+        
+        switch conversationState {
+        case .newChat(let userInfo):
+            addViewProfileActionIfPossibleFor(userInfo: userInfo)
         case .existingChat(let chat):
             switch chat.type {
             case .private(let details):
-                if let domainName = details.otherUser.domainName {
-                    actions.append(.init(type: .viewProfile, callback: { [weak self] in
-                        self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
-                        self?.didPressViewDomainProfileButton(domainName: domainName)
-                    }))
-                }
+                addViewProfileActionIfPossibleFor(userInfo: details.otherUser)
                 
-                switch blockStatus {
-                case .unblocked, .currentUserIsBlocked:
-                    actions.append(.init(type: .block, callback: { [weak self] in
-                        self?.logButtonPressedAnalyticEvents(button: .block)
-                        self?.didPressBlockButton()
-                    }))
-                case .bothBlocked, .otherUserIsBlocked:
-                    Void()
+                if appContext.messagingService.canBlockUsers {
+                    switch blockStatus {
+                    case .unblocked, .currentUserIsBlocked:
+                        actions.append(.init(type: .block, callback: { [weak self] in
+                            self?.logButtonPressedAnalyticEvents(button: .block)
+                            self?.didPressBlockButton()
+                        }))
+                    case .bothBlocked, .otherUserIsBlocked:
+                        Void()
+                    }
                 }
             case .group(let groupDetails):
                 actions.append(.init(type: .viewInfo, callback: { [weak self] in
@@ -528,28 +567,48 @@ private extension ChatViewPresenter {
     }
     
     func updateUIForChatApprovedState() async {
-        guard case .existingChat(let chat) = conversationState else {
-            self.view?.setUIState(.chat)
-            return
-        }
-        
-        if case .group = chat.type {
-            self.view?.setUIState(.chat)
-            return
-        }
-        
-        if let blockStatus = try? await appContext.messagingService.getBlockingStatusForChat(chat) {
-            self.blockStatus = blockStatus
-            switch blockStatus {
-            case .unblocked:
+        switch conversationState {
+        case .existingChat(let chat):
+            if case .group = chat.type {
                 self.view?.setUIState(.chat)
-            case .currentUserIsBlocked:
-                self.view?.setUIState(.userIsBlocked)
-            case .otherUserIsBlocked, .bothBlocked:
-                self.view?.setUIState(.otherUserIsBlocked)
+                return
             }
-            await awaitForUIReady()
-            setupBarButtons()
+            
+            if let blockStatus = try? await appContext.messagingService.getBlockingStatusForChat(chat) {
+                self.blockStatus = blockStatus
+                switch blockStatus {
+                case .unblocked:
+                    self.view?.setUIState(.chat)
+                case .currentUserIsBlocked:
+                    self.view?.setUIState(.userIsBlocked)
+                case .otherUserIsBlocked, .bothBlocked:
+                    self.view?.setUIState(.otherUserIsBlocked)
+                }
+                await awaitForUIReady()
+                setupBarButtons()
+            }
+        case .newChat(let user):
+            func prepareToChat() {
+                view?.setUIState(.chat)
+                view?.startTyping()
+            }
+            
+            if !appContext.messagingService.canContactWithoutProfile {
+                do {
+                    let canContact = try await appContext.messagingService.isAbleToContactAddress(user.wallet,
+                                                                                                  by: profile)
+                    if canContact {
+                        prepareToChat()
+                    } else {
+                        isAbleToContactUser = false
+                        self.view?.setUIState(.cantContactUser(ableToInvite: user.domainName != nil))
+                    }
+                } catch {
+                    view?.showAlertWith(error: error, handler: nil )
+                }
+            } else {
+                prepareToChat()
+            }
         }
     }
     
@@ -584,18 +643,15 @@ private extension ChatViewPresenter {
 // MARK: - Send message
 private extension ChatViewPresenter {
     func sendTextMesssage(_ text: String) {
-        let textTypeDetails = MessagingChatMessageTextTypeDisplayInfo(text: text,
-                                                                      encryptedText: text)
+        let textTypeDetails = MessagingChatMessageTextTypeDisplayInfo(text: text)
         let messageType = MessagingChatMessageDisplayType.text(textTypeDetails)
         sendMessageOfType(messageType)
     }
     
     func sendImageMessage(_ image: UIImage) {
-        guard let base64 = image.base64String else { return }
-        let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
-        let imageTypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64,
-                                                                              encryptedContent: preparedBase64)
-        sendMessageOfType(.imageBase64(imageTypeDetails))
+        guard let data = image.dataToUpload else { return }
+        let imageTypeDetails = MessagingChatMessageImageDataTypeDisplayInfo(data: data, image: image)
+        sendMessageOfType(.imageData(imageTypeDetails))
     }
     
     func sendMessageOfType(_ type: MessagingChatMessageDisplayType) {
@@ -613,16 +669,19 @@ private extension ChatViewPresenter {
                                                                                    isEncrypted: isChannelEncrypted,
                                                                                    in: chat)
                 case .newChat(let userInfo):
+                    view?.setLoading(active: true)
                     let (chat, message) = try await appContext.messagingService.sendFirstMessage(type,
                                                                                                  to: userInfo,
                                                                                                  by: profile)
                     self.conversationState = .existingChat(chat)
                     newMessage = message
+                    view?.setLoading(active: false)
                 }
                 await newMessage.prepareToDisplay()
                 messages.insert(newMessage, at: 0)
                 showData(animated: true, scrollToBottomAnimated: true, isLoading: isLoadingMessages)
             } catch {
+                view?.setLoading(active: false)
                 view?.showAlertWith(error: error, handler: nil)
             }
         }

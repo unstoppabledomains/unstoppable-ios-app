@@ -7,7 +7,7 @@
 
 import Foundation
 import Combine
-import Web3
+import Boilertalk_Web3
 
 // WC V2
 import WalletConnectUtils

@@ -12,6 +12,7 @@ protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: ChatsListSnapshot, animated: Bool)
     func setState(_ state: ChatsListViewController.State)
     func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
+    func stopSearching()
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -55,7 +56,8 @@ final class ChatsListViewController: BaseViewController {
             self?.searchBar ?? UDSearchBar()
         }
     }()
-    
+    private var searchMode: ChatsList.SearchMode = .default
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -123,6 +125,15 @@ extension ChatsListViewController: ChatsListViewProtocol {
                                             wallets: wallets,
                                             isLoading: isLoading))
     }
+    
+    func stopSearching() {
+        hideKeyboard()
+        if searchBar.isEditing {
+            searchBar.text = ""
+            searchBar.forceLayout()
+            udSearchBarTextDidEndEditing(searchBar)
+        }
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -143,7 +154,7 @@ extension ChatsListViewController: UDSearchBarDelegate {
     func udSearchBarTextDidBeginEditing(_ udSearchBar: UDSearchBar) {
         logAnalytic(event: .didStartSearching)
         setupCollectionInset(isSearchActive: true)
-        presenter.didStartSearch()
+        presenter.didStartSearch(with: searchMode)
     }
     
     func udSearchBar(_ udSearchBar: UDSearchBar, textDidChange searchText: String) {
@@ -151,9 +162,8 @@ extension ChatsListViewController: UDSearchBarDelegate {
         presenter.didSearchWith(key: searchText)
     }
     
-    func udSearchBarSearchButtonClicked(_ udSearchBar: UDSearchBar) {
-        cNavigationBar?.setSearchActive(false, animated: true)
-        searchBar.text = ""
+    func udSearchBarClearButtonClicked(_ udSearchBar: UDSearchBar) {
+        udSearchBarTextDidEndEditing(udSearchBar)
     }
     
     func udSearchBarCancelButtonClicked(_ udSearchBar: UDSearchBar) {
@@ -164,10 +174,12 @@ extension ChatsListViewController: UDSearchBarDelegate {
     }
     
     func udSearchBarTextDidEndEditing(_ udSearchBar: UDSearchBar) {
-        searchBar.text = ""
-        logAnalytic(event: .didStopSearching)
-        setSearchBarActive(false)
-        presenter.didStopSearch()
+        if !udSearchBar.isEditing {
+            searchBar.text = ""
+            logAnalytic(event: .didStopSearching)
+            setSearchBarActive(false)
+            presenter.didStopSearch()
+        }
     }
 }
 
@@ -181,6 +193,7 @@ private extension ChatsListViewController {
     @objc func newMessageButtonPressed() {
         logButtonPressedAnalyticEvents(button: .newMessage)
         UDVibration.buttonTap.vibrate()
+        searchMode = .chatsOnly
         searchBar.becomeFirstResponder()
     }
     
@@ -197,6 +210,9 @@ private extension ChatsListViewController {
     func setSearchBarActive(_ isActive: Bool) {
         setupCollectionInset(isSearchActive: isActive)
         cNavigationBar?.setSearchActive(isActive, animated: true)
+        if !isActive {
+            searchMode = .default
+        }
     }
 }
 
@@ -290,7 +306,7 @@ private extension ChatsListViewController {
     }
     
     func configureDataSource() {
-        dataSource = ChatsListDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
+        dataSource = ChatsListDataSource.init(collectionView: collectionView, cellProvider: {  [weak self] collectionView, indexPath, item in
             switch item {
             case .chat(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
@@ -324,9 +340,15 @@ private extension ChatsListViewController {
             case .emptyState(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration,
-                             actionButtonCallback: { [weak self] in
+                             actionButtonCallback: {
                     self?.logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
                                                          parameters: [.value: configuration.dataType.rawValue])
+                    switch configuration.dataType {
+                    case .channels:
+                        self?.searchMode = .channelsOnly
+                    case .chats:
+                        self?.searchMode = .chatsOnly
+                    }
                     self?.setSearchBarActive(true)
                 })
                 

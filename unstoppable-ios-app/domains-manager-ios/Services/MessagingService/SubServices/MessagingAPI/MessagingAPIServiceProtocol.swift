@@ -8,6 +8,8 @@
 import Foundation
 
 protocol MessagingAPIServiceProtocol {
+    var capabilities: MessagingServiceCapabilities { get }
+
     // User profile
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile
     func createUser(for domain: DomainItem) async throws -> MessagingChatUserProfile
@@ -26,6 +28,8 @@ protocol MessagingAPIServiceProtocol {
     func setUser(in chat: MessagingChat,
                  blocked: Bool,
                  by user: MessagingChatUserProfile) async throws
+    func isAbleToContactAddress(_ address: String,
+                                by user: MessagingChatUserProfile) async throws -> Bool
     
     // Messages
     func getMessagesForChat(_ chat: MessagingChat,
@@ -35,6 +39,9 @@ protocol MessagingAPIServiceProtocol {
                             isRead: Bool,
                             for user: MessagingChatUserProfile,
                             filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage]
+    func loadRemoteContentFor(_ message: MessagingChatMessage,
+                              serviceData: Data,
+                              filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType
     func isMessagesEncryptedIn(chatType: MessagingChatType) async -> Bool
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in chat: MessagingChat,
@@ -50,25 +57,10 @@ protocol MessagingAPIServiceProtocol {
                          by user: MessagingChatUserProfile) async throws
     func leaveGroupChat(_ chat: MessagingChat,
                         by user: MessagingChatUserProfile) async throws
-    
-    // Channels
-    func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
-    func getSpamChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
-    func getFeedFor(channel: MessagingNewsChannel,
-                    page: Int,
-                    limit: Int,
-                    isRead: Bool) async throws -> [MessagingNewsChannelFeed]
-    func searchForChannels(page: Int,
-                           limit: Int,
-                           searchKey: String,
-                           for user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
-    func setChannel(_ channel: MessagingNewsChannel,
-                    subscribed: Bool,
-                    by user: MessagingChatUserProfile) async throws
 }
 
-enum MessagingAPIServiceLoadMessagesOptions {
-    case `default`
-    case before(message: MessagingChatMessage)
-    case after(message: MessagingChatMessage)
+struct MessagingServiceCapabilities {
+    let canContactWithoutProfile: Bool
+    let canBlockUsers: Bool
+    let isSupportChatsListPagination: Bool
 }
