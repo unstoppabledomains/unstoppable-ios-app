@@ -56,7 +56,8 @@ final class ChatsListViewController: BaseViewController {
             self?.searchBar ?? UDSearchBar()
         }
     }()
-    
+    private var searchMode: ChatsList.SearchMode = .default
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -153,7 +154,7 @@ extension ChatsListViewController: UDSearchBarDelegate {
     func udSearchBarTextDidBeginEditing(_ udSearchBar: UDSearchBar) {
         logAnalytic(event: .didStartSearching)
         setupCollectionInset(isSearchActive: true)
-        presenter.didStartSearch()
+        presenter.didStartSearch(with: searchMode)
     }
     
     func udSearchBar(_ udSearchBar: UDSearchBar, textDidChange searchText: String) {
@@ -192,6 +193,7 @@ private extension ChatsListViewController {
     @objc func newMessageButtonPressed() {
         logButtonPressedAnalyticEvents(button: .newMessage)
         UDVibration.buttonTap.vibrate()
+        searchMode = .chatsOnly
         searchBar.becomeFirstResponder()
     }
     
@@ -208,6 +210,9 @@ private extension ChatsListViewController {
     func setSearchBarActive(_ isActive: Bool) {
         setupCollectionInset(isSearchActive: isActive)
         cNavigationBar?.setSearchActive(isActive, animated: true)
+        if !isActive {
+            searchMode = .default
+        }
     }
 }
 
@@ -335,9 +340,15 @@ private extension ChatsListViewController {
             case .emptyState(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration,
-                             actionButtonCallback: { [weak self] in
+                             actionButtonCallback: {
                     self?.logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
                                                          parameters: [.value: configuration.dataType.rawValue])
+                    switch configuration.dataType {
+                    case .channels:
+                        self?.searchMode = .channelsOnly
+                    case .chats:
+                        self?.searchMode = .chatsOnly
+                    }
                     self?.setSearchBarActive(true)
                 })
                 
