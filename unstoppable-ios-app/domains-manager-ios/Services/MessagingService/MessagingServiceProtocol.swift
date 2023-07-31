@@ -105,4 +105,25 @@ enum MessagingDataType {
     case messageReadStatusUpdated(_ message: MessagingChatMessageDisplayInfo, numberOfUnreadMessagesInSameChat: Int)
     case channelFeedAdded(_ feed: MessagingNewsChannelFeed, channelId: String)
     case refreshOfUserProfile(_ userProfile: MessagingChatUserProfileDisplayInfo, isInProgress: Bool)
+    
+    var debugDescription: String {
+        switch self {
+        case .chats(let chats, let profile):
+            return "Chats: \(chats.count) for \(profile.id)"
+        case .channels(let channels, let profile):
+            return "Channels: \(channels.count) for \(profile.id)"
+        case .messagesAdded(let messages, let chatId, let userId):
+            return "Messages added: \(messages.map { $0.id }) in \(chatId) for \(userId)"
+        case .messageUpdated(let updatedMessage, let newMessage):
+            return "Message updated from \(updatedMessage.id) to \(newMessage.id)"
+        case .messagesRemoved(let messages, let chatId):
+            return "Messages removed: \(messages.map { $0.id }) in \(chatId)"
+        case .messageReadStatusUpdated(let message, let numberOfUnreadMessagesInSameChat):
+            return "Message read status update: \(message.id). numberOfUnreadMessagesInSameChat: \(numberOfUnreadMessagesInSameChat)"
+        case .channelFeedAdded(let feed, let channelId):
+            return "Channel feed added: \(feed.id) in \(channelId)"
+        case .refreshOfUserProfile(let profile, let isInProgress):
+            return "Refresh of profile \(profile.id) in progress: \(isInProgress)"
+        }
+    }
 }

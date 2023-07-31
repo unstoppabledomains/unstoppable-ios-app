@@ -1020,7 +1020,7 @@ private extension MessagingService {
     }
     
     func notifyListenersChangedDataType(_ messagingDataType: MessagingDataType) {
-        Debugger.printInfo(topic: .Messaging, "Will notify listeners about data type: \(messagingDataType)")
+        Debugger.printInfo(topic: .Messaging, "Will notify listeners about data type: \(messagingDataType.debugDescription)")
         listenerHolders.forEach { holder in
             holder.listener?.messagingDataTypeDidUpdated(messagingDataType)
         }
