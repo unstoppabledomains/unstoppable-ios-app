@@ -130,6 +130,7 @@ extension ChatViewController: ChatViewProtocol {
     
     func scrollToTheBottom(animated: Bool) {
         guard let indexPath = getLastItemIndexPath() else { return }
+        Debugger.printInfo(topic: .Messaging, "Will scroll to the bottom at \(indexPath)")
         
         scrollTo(indexPath: indexPath, at: .bottom, animated: animated)
     }
@@ -287,9 +288,10 @@ extension ChatViewController: UICollectionViewDelegate, UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         CGSize(width: collectionView.bounds.width, height: ChatSectionHeaderView.Height)
     }
-    
+ 
     func collectionView(_ collectionView: UICollectionView, targetContentOffsetForProposedContentOffset proposedContentOffset: CGPoint) -> CGPoint {
-        if let scrollingInfo {
+        if let scrollingInfo,
+           isContentHeightBiggerThanVisibleFrame {
             let newContentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
             let delta = newContentHeight - scrollingInfo.prevContentHeight
             let adjustedOffset = CGPoint(x: proposedContentOffset.x, y: scrollingInfo.contentOffsetBeforeUpdate.y + delta)
@@ -404,6 +406,15 @@ private extension ChatViewController {
         moveToTopButton.frame = CGRect(origin: CGPoint(x: view.bounds.width - moveToTopButtonSize - edgeSpacing,
                                                        y: chatInputView.frame.minY - moveToTopButtonSize - edgeSpacing),
                                        size: .square(size: moveToTopButtonSize))
+    }
+    
+    var isContentHeightBiggerThanVisibleFrame: Bool {
+        let newContentHeight = collectionView.collectionViewLayout.collectionViewContentSize.height
+        if newContentHeight > view.bounds.height {
+            return true
+        }
+        let visibleChatHeight = view.bounds.height - (view.bounds.height - chatInputView.frame.minY) - (cNavigationBar?.bounds.height ?? 0)
+        return newContentHeight > visibleChatHeight
     }
     
     func setupEmptyViewFrame() {
