@@ -9,7 +9,6 @@ import Foundation
 import web3swift
 import CryptoSwift
 import Boilertalk_Web3
-import PromiseKit
 import UIKit
 
 enum BlockchainType: String, CaseIterable, Codable, Hashable {
@@ -110,7 +109,7 @@ protocol AddressContainer {
 typealias WalletBalance = WalletBalanceDisplayInfo
 
 struct WalletBalanceDisplayInfo: Hashable {
- 
+    
     let address: String
     let exchangeRate: Double
     let blockchain: BlockchainType
@@ -176,28 +175,23 @@ struct UDWallet: Codable {
     static func create(backedupWallet: BackedUpWallet, password: String) async throws -> UDWalletWithPrivateSeed {
         let encryptedArray = backedupWallet.encryptedPrivateSeed.description.hexToBytes()
         guard  let privateKeyOrSeed = try? Encrypting.decrypt(encryptedMessage: encryptedArray,
-                                                                       password: password) else {
+                                                              password: password) else {
             Debugger.printFailure("Failed to decrypt private key or seed in \(backedupWallet)", critical: true)
             throw ValetError.failedToDecrypt
         }
         
-        return try await withCheckedThrowingContinuation { continuation in
-            if backedupWallet.type == .privateKeyEntered  {
-                UDWalletWithPrivateSeed.create(aliasName: backedupWallet.name,
-                                               type: backedupWallet.type,
-                                               privateKeyEthereum: privateKeyOrSeed)
-                                        .done { continuation.resume(returning: $0) }
-                                        .catch { error in continuation.resume(throwing: error) }
-            }
-            else {   UDWalletWithPrivateSeed.create(aliasName: backedupWallet.name,
-                                                    type: backedupWallet.type,
-                                                    mnemonicsEthereum: privateKeyOrSeed)
-                                        .done { continuation.resume(returning: $0) }
-                                        .catch { error in continuation.resume(throwing: error) }
-            }
+        if backedupWallet.type == .privateKeyEntered  {
+            return try await UDWalletWithPrivateSeed.create(aliasName: backedupWallet.name,
+                                                            type: backedupWallet.type,
+                                                            privateKeyEthereum: privateKeyOrSeed)
+        }
+        else {
+            return try await UDWalletWithPrivateSeed.create(aliasName: backedupWallet.name,
+                                                            type: backedupWallet.type,
+                                                            mnemonicsEthereum: privateKeyOrSeed)
         }
     }
-            
+    
     func getPrivateKey() -> String? {
         guard let ethWallet = self.ethWallet else { return nil }
         switch ethWallet.securityType {
@@ -264,29 +258,17 @@ struct UDWallet: Codable {
         return udWallet
     }
     
-    static func create(aliasName: String) -> Promise<UDWallet> {
+    static func create(aliasName: String) async throws -> UDWallet {
         guard let wrappedWallet = try? UDWalletEthereum.createHDWallet(name: aliasName,
                                                                        type: .generatedLocally) else {
-            return Promise {seal in seal.reject(WalletError.EthWalletFailedInit)}
+            throw WalletError.EthWalletFailedInit
         }
         
         let mnemonics = wrappedWallet.privateSeed
-        let generatedWallet: Promise<UDWallet> = UDWallet.create(aliasName: aliasName,
-                                                                 type: .generatedLocally,
-                                                                 mnemonicsEthereum: mnemonics)
+        let generatedWallet: UDWallet = try await UDWallet.create(aliasName: aliasName,
+                                                                  type: .generatedLocally,
+                                                                  mnemonicsEthereum: mnemonics)
         return generatedWallet
-    }
-    
-    static func create(aliasName: String) async throws -> UDWallet {
-        try await withSafeCheckedThrowingContinuation({ completion in
-            create(aliasName: aliasName)
-                .done { wallet in
-                    completion(.success(wallet))
-                }
-                .catch { error in
-                    completion(.failure(error))
-                }
-        })
     }
     
     static func createEmpty(aliasName: String) -> UDWallet {
@@ -297,119 +279,77 @@ struct UDWallet: Codable {
         return generatedWallet
     }
     
-    static func create (aliasName: String,
-                        type: WalletType,
-                        mnemonicsEthereum: String,
-                        hasBeenBackedUp: Bool = false) -> Promise<UDWallet> {
-        return Promise { seal in
-            let wrappedWallet: UDWalletEthereumWithPrivateSeed
-            let privateKeyEthereum: String
-            do {
-                wrappedWallet = try UDWalletEthereum.createVerified(mnemonics: mnemonicsEthereum)
-                privateKeyEthereum = try wrappedWallet.getPrivateKey()
-            } catch {
-                Debugger.printFailure("Failed to init UDWalletEthereum with mnemonics", critical: false)
-                seal.reject(error)
-                return
-            }
-            
-            createWithPromiseResolver(aliasName: aliasName,
-                                      wrappedWallet: wrappedWallet,
-                                      privateKeyEthereum: privateKeyEthereum,
-                                      type: type,
-                                      seal: seal,
-                                      hasBeenBackedUp: hasBeenBackedUp)
-        }
-    }
     
     static func create (aliasName: String,
                         type: WalletType,
                         mnemonicsEthereum: String,
                         hasBeenBackedUp: Bool = false) async throws -> UDWallet {
-        try await withSafeCheckedThrowingContinuation({ completion in
-            create(aliasName: aliasName,
-                   type: type,
-                   mnemonicsEthereum: mnemonicsEthereum,
-                   hasBeenBackedUp: hasBeenBackedUp)
-            .done { wallet in
-                completion(.success(wallet))
-            }
-            .catch { error in
-                completion(.failure(error))
-            }
-        })
-    }
-    
-    static func create(aliasName: String,
-                       type: WalletType,
-                       privateKeyEthereum: String,
-                       hasBeenBackedUp: Bool = false) -> Promise<UDWallet> {
-        return Promise { seal in
-            let wrappedWallet: UDWalletEthereumWithPrivateSeed
-            do {
-                wrappedWallet = try UDWalletEthereum.createVerified(privateKey: privateKeyEthereum)
-            } catch {
-                Debugger.printFailure("Failed to init UDWalletEthereum with priv key", critical: false)
-                seal.reject(error)
-                return
-            }
-            
-            createWithPromiseResolver(aliasName: aliasName,
-                                      wrappedWallet: wrappedWallet,
-                                      privateKeyEthereum: privateKeyEthereum,
-                                      type: type,
-                                      seal: seal,
-                                      hasBeenBackedUp: hasBeenBackedUp)
+        let wrappedWallet: UDWalletEthereumWithPrivateSeed
+        let privateKeyEthereum: String
+        do {
+            wrappedWallet = try UDWalletEthereum.createVerified(mnemonics: mnemonicsEthereum)
+            privateKeyEthereum = try wrappedWallet.getPrivateKey()
+        } catch {
+            Debugger.printFailure("Failed to init UDWalletEthereum with mnemonics", critical: false)
+            throw error
         }
+        
+        return try await create(with: wrappedWallet,
+                                aliasName: aliasName,
+                                privateKeyEthereum: privateKeyEthereum,
+                                type: type,
+                                hasBeenBackedUp: hasBeenBackedUp)
     }
     
     static func create(aliasName: String,
                        type: WalletType,
                        privateKeyEthereum: String,
                        hasBeenBackedUp: Bool = false) async throws -> UDWallet {
-        try await withSafeCheckedThrowingContinuation({ continuation in
-            create(aliasName: aliasName,
-                   type: type,
-                   privateKeyEthereum: privateKeyEthereum,
-                   hasBeenBackedUp: hasBeenBackedUp)
-            .done { wallet in
-                continuation(.success(wallet))
-            }
-            .catch { error in
-                continuation(.failure(error))
-            }
-        })
-    }
-    
-    static private func createWithPromiseResolver(aliasName: String,
-                                                  wrappedWallet: UDWalletEthereumWithPrivateSeed,
-                                                  privateKeyEthereum: String,
-                                                  type: WalletType,
-                                                  seal: Resolver<UDWallet>,
-                                                  hasBeenBackedUp: Bool = false) {
-        let address = wrappedWallet.ethWallet.address
-        guard !UDWalletsStorage.instance.doesWalletExist(address: address, namingService: .UNS) else {
-            seal.reject(WalletError.ethWalletAlreadyExists(address))
-            return
+        let wrappedWallet: UDWalletEthereumWithPrivateSeed
+        do {
+            wrappedWallet = try UDWalletEthereum.createVerified(privateKey: privateKeyEthereum)
+        } catch {
+            Debugger.printFailure("Failed to init UDWalletEthereum with priv key", critical: false)
+            throw error
         }
         
-        UDWalletZil.create(privateKey: privateKeyEthereum) { zil in
-            guard let zilWallet = zil else {
-                Debugger.printFailure("Failed to init UDWalletZil with priv key", critical: true)
-                seal.reject(WalletError.zilWalletFailedInit)
-                return
+        return try await create(with: wrappedWallet,
+                                aliasName: aliasName,
+                                
+                                privateKeyEthereum: privateKeyEthereum,
+                                type: type,
+                                hasBeenBackedUp: hasBeenBackedUp)
+    }
+    
+    static private func create(with wrappedWallet: UDWalletEthereumWithPrivateSeed,
+                               aliasName: String,
+                               privateKeyEthereum: String,
+                               type: WalletType,
+                               hasBeenBackedUp: Bool = false) async throws -> UDWallet {
+        let address = wrappedWallet.ethWallet.address
+        guard !UDWalletsStorage.instance.doesWalletExist(address: address, namingService: .UNS) else {
+            throw WalletError.ethWalletAlreadyExists(address)
+        }
+        return try await withSafeCheckedThrowingContinuation { completion in
+            
+            UDWalletZil.create(privateKey: privateKeyEthereum) { zil in
+                guard let zilWallet = zil else {
+                    Debugger.printFailure("Failed to init UDWalletZil with priv key", critical: true)
+                    completion(.failure(WalletError.zilWalletFailedInit))
+                    return
+                }
+                
+                // all checks done, 2 subwallets created -- storing to Keychain
+                let privateSeedString: String = wrappedWallet.privateSeed
+                KeychainPrivateKeyStorage.instance.store(privateKey: privateSeedString, for: address)
+                
+                let udWallet: UDWallet = Self.create(aliasName: aliasName,
+                                                     type: type,
+                                                     ethWallet: wrappedWallet.ethWallet,
+                                                     zilWallet: zilWallet,
+                                                     hasBeenBackedUp: hasBeenBackedUp)
+                completion(.success(udWallet))
             }
-            
-            // all checks done, 2 subwallets created -- storing to Keychain
-            let privateSeedString: String = wrappedWallet.privateSeed
-            KeychainPrivateKeyStorage.instance.store(privateKey: privateSeedString, for: address)
-            
-            let udWallet = Self.create(aliasName: aliasName,
-                                       type: type,
-                                       ethWallet: wrappedWallet.ethWallet,
-                                       zilWallet: zilWallet,
-                                       hasBeenBackedUp: hasBeenBackedUp)
-            seal.fulfill(udWallet)
         }
     }
     
@@ -435,26 +375,26 @@ struct UDWallet: Codable {
     static func create (aliasName: String,
                         type: WalletType,
                         keyStoreZil: String,
-                        encryptionPassword: String) -> Promise<UDWallet> {
-        return Promise { seal in
+                        encryptionPassword: String) async throws -> UDWallet {
+        return try await withSafeCheckedThrowingContinuation { completion in
             UDWalletZil.create(keystoreJson: keyStoreZil,
                                encryptionPassword: encryptionPassword) { zil, prKey in
                 guard let zilWallet = zil,
                       let privateKey = prKey else {
-                    seal.reject(WalletZilError.failedToRestoreFromJson)
+                    completion(.failure(WalletZilError.failedToRestoreFromJson))
                     return
                 }
                 let privateKeyEthereum = privateKey
                 let wrappedWallet: UDWalletEthereumWithPrivateSeed
                 
                 do { wrappedWallet = try UDWalletEthereum.createVerified(privateKey: privateKeyEthereum) } catch {
-                    seal.reject(WalletError.EthWalletFailedInit)
+                    completion(.failure(WalletError.EthWalletFailedInit))
                     return
                 }
                 
                 let address = wrappedWallet.ethWallet.address
                 guard !UDWalletsStorage.instance.doesWalletExist(address: address, namingService: .UNS) else {
-                    seal.reject(WalletError.ethWalletAlreadyExists(address))
+                    completion(.failure(WalletError.ethWalletAlreadyExists(address)))
                     return
                 }
                 
@@ -465,17 +405,15 @@ struct UDWallet: Codable {
                                         type: type,
                                         ethWallet: wrappedWallet.ethWallet,
                                         zilWallet: zilWallet)
-                seal.fulfill(udWallet)
+                completion(.success(udWallet))
             }
         }
     }
     
-    func setNameAsAddress() -> Promise<UDWallet> {
-        return Promise { seal in
-            var _wallet = self
-            _wallet.aliasName = self.getActiveAddress(for: .UNS) ?? "Wallet"
-            seal.fulfill(_wallet)
-        }
+    func setNameAsAddress() -> UDWallet {
+        var _wallet = self
+        _wallet.aliasName = self.getActiveAddress(for: .UNS) ?? "Wallet"
+        return _wallet
     }
     
     mutating func mutateNameToAddress() {
@@ -499,24 +437,24 @@ extension UDWallet {
     // MARK: Shortcut storage for private keys
     // ONLY FOR DEBUG MODE
     
-    #if DEBUG
+#if DEBUG
     static var shortcutKeyStorage: [String: String] = [:]
-    #endif
+#endif
     
     private func getKeyShortcut(for address: String) -> String? {
-        #if DEBUG
+#if DEBUG
         return Self.shortcutKeyStorage[address]
-        #else
-            return nil
-        #endif
+#else
+        return nil
+#endif
     }
     
     private func saveKeyShortcut(address: String, privateKey: String) {
-        #if DEBUG
+#if DEBUG
         Self.shortcutKeyStorage[address] = privateKey
-        #else
-            return
-        #endif
+#else
+        return
+#endif
     }
 }
 
@@ -537,7 +475,7 @@ enum WalletError: Error {
     case unsupportedBlockchainType
     
     case failedToBackUp
-    case incorrectBackupPassword 
+    case incorrectBackupPassword
 }
 
 extension Array where Element == UDWallet {
@@ -602,14 +540,14 @@ extension UDWallet {
             throw WalletConnectRequestError.failedToFindExternalAppLink
         }
         
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Swift.Error>) in
+        try await withCheckedThrowingContinuation { (completion: CheckedContinuation<Void, Swift.Error>) in
             DispatchQueue.main.async {
                 guard UIApplication.shared.canOpenURL(url) else {
-                    continuation.resume(throwing: WalletConnectRequestError.failedOpenExternalApp)
+                    completion.resume(throwing: WalletConnectRequestError.failedOpenExternalApp)
                     return
                 }
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                continuation.resume(returning: ())
+                completion.resume(returning: ())
             }
         }
     }
@@ -617,12 +555,12 @@ extension UDWallet {
     func getExternalWallet() -> WCWalletsProvider.WalletRecord? {
         walletConnectionInfo?.externalWallet
     }
-
+    
     
     func getExternalWalletName() -> String? {
         walletConnectionInfo?.externalWallet.name
     }
-        
+    
     var isExternalConnectionActive: Bool {
         !(appContext.walletConnectClientService.findSessions(by: self.address).isEmpty && appContext.walletConnectServiceV2.findSessions(by: self.address).isEmpty)
     }
@@ -645,7 +583,7 @@ extension WalletConnectController {
         self.showSimpleAlert(title: title, body: "Please switch to the external wallet app manually, confirm to sign the transaction and return back")
     }
 }
- 
+
 extension UDWallet {
     var recoveryType: RecoveryType? {
         .init(walletType: type)

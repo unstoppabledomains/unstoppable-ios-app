@@ -172,7 +172,7 @@ extension WalletConnectService: WalletConnectV1RequestHandlingServiceProtocol {
         var txBuilding = transaction
         
         if txBuilding.gasPrice == nil {
-            guard let gasPrice = await fetchGasPrice(chainId: chainId) else {
+            guard let gasPrice = try await fetchGasPrice(chainId: chainId) else {
                 throw WalletConnectRequestError.failedFetchGas
             }
             txBuilding.gasPrice = EthereumQuantity(quantity: gasPrice)
@@ -353,18 +353,13 @@ extension WalletConnectService {
     }
     
     private func fetchNonce(address: HexAddress, chainId: Int) async -> String? {
-        await withSafeCheckedContinuation { completion in
-            NetworkService().getTransactionCount(address: address,
-                                                 chainId: chainId) { response in
-                guard let nonceString = response else {
-                    Debugger.printFailure("Failed to fetch nonce for address: \(address)", critical: true)
-                    completion(nil)
-                    return
-                }
-                Debugger.printInfo(topic: .WalletConnect, "Fetched nonce successfully: \(nonceString)")
-                completion(nonceString)
-            }
+        guard let nonceString = try? await NetworkService().getTransactionCount(address: address,
+                                                                     chainId: chainId) else {
+            Debugger.printFailure("Failed to fetch nonce for address: \(address)", critical: true)
+            return nil
         }
+        Debugger.printInfo(topic: .WalletConnect, "Fetched nonce successfully: \(nonceString)")
+        return nonceString
     }
     
     private func ensureNonce(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumTransaction {
@@ -382,34 +377,26 @@ extension WalletConnectService {
     }
     
     private func fetchGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> BigUInt {
-        try await withSafeCheckedThrowingContinuation { completion in
-            NetworkService().getGasEstimation(tx: transaction,
-                                                 chainId: chainId) { response in
-                
-                switch response {
-                case .fulfilled(let gasPriceString):
-                    guard let result = BigUInt(gasPriceString.droppedHexPrefix, radix: 16) else {
-                        Debugger.printFailure("Failed to parse gas Estimate from: \(gasPriceString)", critical: true)
-                        completion(.failure(WalletConnectRequestError.failedFetchGas))
-                        return
-                    }
-                    Debugger.printInfo(topic: .WalletConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
-                    completion(.success(result))
-                case .rejected(let error):
-                    if let jrpcError = error as? NetworkService.JRPCError {
-                        switch jrpcError {
-                        case .gasRequiredExceedsAllowance:
-                            Debugger.printFailure("Failed to fetch gas Estimate because of Low Allowance Error", critical: false)
-                            completion(.failure(WalletConnectRequestError.lowAllowance))
-                            return
-                        default: break
-                        }
-                    }
-                    
-                    Debugger.printFailure("Failed to fetch gas Estimate: \(error.localizedDescription)", critical: false)
-                    completion(.failure(WalletConnectRequestError.failedFetchGas))
-                    return
+        do {
+            let gasPriceString = try await NetworkService().getGasEstimation(tx: transaction,
+                                                                             chainId: chainId)
+            guard let result = BigUInt(gasPriceString.droppedHexPrefix, radix: 16) else {
+                Debugger.printFailure("Failed to parse gas Estimate from: \(gasPriceString)", critical: true)
+                throw WalletConnectRequestError.failedFetchGas
+            }
+            Debugger.printInfo(topic: .WalletConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
+            return result
+        } catch {
+            if let jrpcError = error as? NetworkService.JRPCError {
+                switch jrpcError {
+                case .gasRequiredExceedsAllowance:
+                    Debugger.printFailure("Failed to fetch gas Estimate because of Low Allowance Error", critical: false)
+                    throw WalletConnectRequestError.lowAllowance
+                default: throw WalletConnectRequestError.failedFetchGas
                 }
+            } else {
+                Debugger.printFailure("Failed to fetch gas Estimate: \(error.localizedDescription)", critical: false)
+                throw WalletConnectRequestError.failedFetchGas
             }
         }
     }
@@ -425,18 +412,13 @@ extension WalletConnectService {
         return newTx
     }
     
-    private func fetchGasPrice(chainId: Int) async -> BigUInt? {
-        await withSafeCheckedContinuation { completion in
-            NetworkService().getGasPrice(chainId: chainId) { response in
-                guard let gasPrice = response else {
-                    Debugger.printFailure("Failed to fetch gasPrice", critical: false)
-                    completion(nil)
-                    return
-                }
-                Debugger.printInfo(topic: .WalletConnect, "Fetched gasPrice successfully: \(gasPrice)")
-                completion(BigUInt(gasPrice.droppedHexPrefix, radix: 16))
-            }
+    private func fetchGasPrice(chainId: Int) async throws -> BigUInt? {
+        guard let gasPrice = try? await NetworkService().getGasPrice(chainId: chainId) else {
+            Debugger.printFailure("Failed to fetch gasPrice", critical: false)
+            throw WalletConnectRequestError.failedFetchGas
         }
+        Debugger.printInfo(topic: .WalletConnect, "Fetched gasPrice successfully: \(gasPrice)")
+        return BigUInt(gasPrice.droppedHexPrefix, radix: 16)
     }
 }
 
