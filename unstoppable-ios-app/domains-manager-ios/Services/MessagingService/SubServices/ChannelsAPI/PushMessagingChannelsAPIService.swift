@@ -58,7 +58,10 @@ extension PushMessagingChannelsAPIService: MessagingChannelsAPIServiceProtocol {
                     page: Int,
                     limit: Int,
                     isRead: Bool) async throws -> [MessagingNewsChannelFeed] {
-        let feed = try await pushRESTService.getChannelFeed(for: channel.channel, page: page, limit: limit)
+        let feed = try await pushRESTService.getChannelFeedForUser(channel.userId,
+                                                                   in: channel.channel,
+                                                                   page: page,
+                                                                   limit: limit)
         
         return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0,isRead: isRead) })
     }
