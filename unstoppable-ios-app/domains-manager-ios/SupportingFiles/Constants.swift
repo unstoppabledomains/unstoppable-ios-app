@@ -46,6 +46,7 @@ struct Constants {
     static let parkingBetaLaunchDate = Date(timeIntervalSince1970: 1678401000)
     static let numberOfUnreadMessagesBeforePrefetch: Int = 7
     static let maxImageResolution: CGFloat = 1000
+    static let shouldHideBlockedUsersLocally = true
     
     #if DEBUG
     static let isTestingMinting: Bool = false

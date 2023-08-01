@@ -156,6 +156,9 @@ extension MessagingService: MessagingServiceProtocol {
         let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
 
         try await apiService.setUser(in: chat, blocked: blocked, by: profile)
+        if Constants.shouldHideBlockedUsersLocally {
+            notifyChatsChanged(wallet: profile.wallet)
+        }
     }
     
     // Messages
