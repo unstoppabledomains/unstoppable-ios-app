@@ -77,7 +77,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         case .private(let details):
             let userId = chat.displayInfo.thisUserDetails.wallet
             let otherUserId = details.otherUser.wallet
-            let isOtherUserBlocked = blockedUsersStorage.isUser(userId, blockingUser: otherUserId)
+            let isOtherUserBlocked = blockedUsersStorage.isUser(userId,
+                                                                blockingUser: otherUserId)
             if isOtherUserBlocked {
                 return .otherUserIsBlocked
             } else {

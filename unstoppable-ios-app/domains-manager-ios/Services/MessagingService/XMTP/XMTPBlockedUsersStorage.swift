@@ -15,12 +15,14 @@ struct XMTPBlockedUsersStorage {
     private let key: Key = .xmtpBlockedUsersList
     
     private func getBlockedUsersList() -> [XMTPBlockedUserDescription] {
-        UserDefaults.standard.object(forKey: key.rawValue) as? [XMTPBlockedUserDescription] ?? []
+        guard let data = UserDefaults.standard.object(forKey: key.rawValue) as? Data,
+              let usersList = XMTPBlockedUserDescription.objectsFromData(data) else { return [] }
+        return usersList
     }
     
     func isUser(_ userId: String, blockingUser otherUserId: String) -> Bool {
         let blockedUsersList = getBlockedUsersList()
-        return blockedUsersList.first(where: { $0.userId == userId && $0.blockedUserId == otherUserId }) != nil 
+        return blockedUsersList.first(where: { $0.userId == userId && $0.blockedUserId == otherUserId }) != nil
     }
     
     func addBlockedUser(_ blockedUserDescription: XMTPBlockedUserDescription) {
@@ -36,12 +38,13 @@ struct XMTPBlockedUsersStorage {
     }
     
     private func set(newList: [XMTPBlockedUserDescription]) {
-        UserDefaults.standard.set(newList, forKey: key.rawValue)
+        let data = newList.jsonData()
+        UserDefaults.standard.set(data, forKey: key.rawValue)
     }
     
 }
 
-struct XMTPBlockedUserDescription: Hashable {
+struct XMTPBlockedUserDescription: Hashable, Codable {
     let userId: String
     let blockedUserId: String
 }
