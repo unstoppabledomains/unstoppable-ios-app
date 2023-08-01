@@ -970,6 +970,10 @@
 		C6124CF129253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */; };
 		C6124CF229253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */; };
 		C6124CF329253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */; };
+		C61308642A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61308632A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift */; };
+		C61308652A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61308632A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift */; };
+		C61308662A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61308632A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift */; };
+		C61308672A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61308632A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift */; };
 		C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
 		C613C22329E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
 		C613C22429E3BEEC0001A3AF /* NFCService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C613C22129E3BEEC0001A3AF /* NFCService.swift */; };
@@ -4307,6 +4311,7 @@
 		C6124CE52924C2B8005E6537 /* DomainProfileInfoStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileInfoStorage.swift; sourceTree = "<group>"; };
 		C6124CEA29252E8F005E6537 /* DomainProfileSignExternalWalletViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileSignExternalWalletViewPresenter.swift; sourceTree = "<group>"; };
 		C6124CEF29253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportExistingExternalWalletPresenter.swift; sourceTree = "<group>"; };
+		C61308632A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPBlockedUsersStorage.swift; sourceTree = "<group>"; };
 		C613C22129E3BEEC0001A3AF /* NFCService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCService.swift; sourceTree = "<group>"; };
 		C6157AFD2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatMessageRemoteContentTypeDisplayInfo.swift; sourceTree = "<group>"; };
 		C6157B032A7113C900081574 /* ChatRemoteContentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatRemoteContentCell.swift; sourceTree = "<group>"; };
@@ -8163,6 +8168,7 @@
 				C6D3B9CE2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift */,
 				C6D3B9D82A6ECC9B0091B279 /* XMTPEntitiesTransformer.swift */,
 				C64BCB752A6FA61F00EF8B47 /* XMTPServiceHelper.swift */,
+				C61308632A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift */,
 			);
 			path = XMTP;
 			sourceTree = "<group>";
@@ -9682,6 +9688,7 @@
 				C64836BD282BCAFB007BD3F1 /* PrimaryDangerButton.swift in Sources */,
 				C6C4218C293A1E21005B791B /* UDConfigurableButton.swift in Sources */,
 				C60DCEEF282D13F800F71C13 /* RenameWalletViewController.swift in Sources */,
+				C61308642A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */,
 				C66107992A31A4BC0076782F /* PushEntitiesTransformer.swift in Sources */,
 				C6538DB22A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */,
 				C6668941281150FA002062B4 /* SecondaryButton.swift in Sources */,
@@ -10914,6 +10921,7 @@
 				307F83F1267A339F0070A9A6 /* AppDelegate.swift in Sources */,
 				C6456F2C280030AB00A517D5 /* UICollectionView.swift in Sources */,
 				C6B6B04A297039E500D4E30F /* DateFormattingService.swift in Sources */,
+				C61308662A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */,
 				C64836BA282BADB1007BD3F1 /* PullUpViewService.swift in Sources */,
 				C63B1F362A4595D000B1D7D1 /* Base64DataTransformer.swift in Sources */,
 				C665B9BC28334D6E005E535C /* UIUserInterfaceStyle.swift in Sources */,
@@ -11685,6 +11693,7 @@
 				C685A9972840FD6300E54044 /* ChoosePrimaryDomainDuringMintingPresenter.swift in Sources */,
 				C6FAFDE928119E0400734E0F /* TextButton.swift in Sources */,
 				C6EECEAA2833A68A00978ED5 /* DomainRecordsService.swift in Sources */,
+				C61308672A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */,
 				C62C3FAC283F67B60094FC93 /* NoDomainsToMintViewPresenter.swift in Sources */,
 				C669C358291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */,
 				C6A2D509284DBDCD00327C47 /* QRScannerViewPresenter.swift in Sources */,
@@ -12120,6 +12129,7 @@
 				C61B3E6B283E24BB00500B6D /* MintDomainsNavigationController.swift in Sources */,
 				C6C4218D293A1E21005B791B /* UDConfigurableButton.swift in Sources */,
 				C64836BE282BCAFB007BD3F1 /* PrimaryDangerButton.swift in Sources */,
+				C61308652A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */,
 				C661079A2A31A4BC0076782F /* PushEntitiesTransformer.swift in Sources */,
 				C6538DB32A32164300B63E84 /* KeychainPrivateKeyStorage.swift in Sources */,
 				C60DCEF0282D13F800F71C13 /* RenameWalletViewController.swift in Sources */,

@@ -12,8 +12,9 @@ final class XMTPMessagingAPIService {
     
     private let messagingHelper = MessagingAPIServiceHelper()
     private let xmtpHelper = XMTPServiceHelper()
+    private let blockedUsersStorage = XMTPBlockedUsersStorage()
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
-                                                    canBlockUsers: false,
+                                                    canBlockUsers: true,
                                                     isSupportChatsListPagination: false)
     init() {
         Client.register(codec: AttachmentCodec())
@@ -72,11 +73,36 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
-        .unblocked
+        switch chat.displayInfo.type {
+        case .private(let details):
+            let userId = chat.displayInfo.thisUserDetails.wallet
+            let otherUserId = details.otherUser.wallet
+            let isOtherUserBlocked = blockedUsersStorage.isUser(userId, blockingUser: otherUserId)
+            if isOtherUserBlocked {
+                return .otherUserIsBlocked
+            } else {
+                return .unblocked
+            }
+        case .group:
+            return .unblocked
+        }
     }
     
     func setUser(in chat: MessagingChat, blocked: Bool, by user: MessagingChatUserProfile) async throws {
-        throw XMTPServiceError.unsupportedAction
+        switch chat.displayInfo.type {
+        case .private(let details):
+            let userId = user.displayInfo.wallet
+            let otherUserId = details.otherUser.wallet
+            let blockedUserDescription = XMTPBlockedUserDescription(userId: userId,
+                                                                    blockedUserId: otherUserId)
+            if blocked {
+                blockedUsersStorage.addBlockedUser(blockedUserDescription)
+            } else {
+                blockedUsersStorage.removeBlockedUser(blockedUserDescription)
+            }
+        case .group:
+            throw XMTPServiceError.unsupportedAction
+        }
     }
     
     func isAbleToContactAddress(_ address: String,
