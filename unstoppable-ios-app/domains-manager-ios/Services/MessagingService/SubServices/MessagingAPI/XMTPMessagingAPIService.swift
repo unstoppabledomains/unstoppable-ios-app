@@ -12,7 +12,7 @@ final class XMTPMessagingAPIService {
     
     private let messagingHelper = MessagingAPIServiceHelper()
     private let xmtpHelper = XMTPServiceHelper()
-    private let blockedUsersStorage = XMTPBlockedUsersStorage()
+    private let blockedUsersStorage = XMTPBlockedUsersStorage.shared
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
                                                     canBlockUsers: true,
                                                     isSupportChatsListPagination: false)
@@ -73,18 +73,10 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
-        switch chat.displayInfo.type {
-        case .private(let details):
-            let userId = chat.displayInfo.thisUserDetails.wallet
-            let otherUserId = details.otherUser.wallet
-            let isOtherUserBlocked = blockedUsersStorage.isUser(userId,
-                                                                blockingUser: otherUserId)
-            if isOtherUserBlocked {
-                return .otherUserIsBlocked
-            } else {
-                return .unblocked
-            }
-        case .group:
+        let isOtherUserBlocked = blockedUsersStorage.isOtherUserBlockedInChat(chat)
+        if isOtherUserBlocked {
+            return .otherUserIsBlocked
+        } else {
             return .unblocked
         }
     }

@@ -14,10 +14,27 @@ struct XMTPBlockedUsersStorage {
     }
     private let key: Key = .xmtpBlockedUsersList
     
+    static let shared = XMTPBlockedUsersStorage()
+    
+    private init() { }
+    
     private func getBlockedUsersList() -> [XMTPBlockedUserDescription] {
         guard let data = UserDefaults.standard.object(forKey: key.rawValue) as? Data,
               let usersList = XMTPBlockedUserDescription.objectsFromData(data) else { return [] }
         return usersList
+    }
+    
+    func isOtherUserBlockedInChat(_ chat: MessagingChat) -> Bool {
+        switch chat.displayInfo.type {
+        case .private(let details):
+            let userId = chat.displayInfo.thisUserDetails.wallet
+            let otherUserId = details.otherUser.wallet
+            let isOtherUserBlocked = isUser(userId,
+                                            blockingUser: otherUserId)
+            return isOtherUserBlocked
+        case .group:
+            return false
+        }
     }
     
     func isUser(_ userId: String, blockingUser otherUserId: String) -> Bool {

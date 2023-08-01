@@ -75,6 +75,12 @@ struct XMTPEntitiesTransformer {
                                                 in chat: MessagingChat,
                                                 isRead: Bool,
                                                 filesService: MessagingFilesServiceProtocol) -> MessagingChatMessage? {
+        var isRead = isRead
+        if Constants.shouldHideBlockedUsersLocally,
+           XMTPBlockedUsersStorage.shared.isOtherUserBlockedInChat(chat) {
+            isRead = true /// Messages from other user should always be marked as read
+        }
+        
         if var cachedMessage {
             cachedMessage.displayInfo.isRead = isRead 
             return cachedMessage
@@ -99,8 +105,6 @@ struct XMTPEntitiesTransformer {
         }
         let time = xmtpMessage.sent
         let isMessageEncrypted = true
-        
-        
         
         let displayInfo = MessagingChatMessageDisplayInfo(id: id,
                                                           chatId: chat.displayInfo.id,

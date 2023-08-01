@@ -157,6 +157,7 @@ extension MessagingService: MessagingServiceProtocol {
 
         try await apiService.setUser(in: chat, blocked: blocked, by: profile)
         if Constants.shouldHideBlockedUsersLocally {
+            try? await storageService.markAllMessagesIn(chat: chat, isRead: true)
             notifyChatsChanged(wallet: profile.wallet)
         }
     }
