@@ -54,6 +54,9 @@ private extension PushRESTAPIService.URLSList {
     static func GET_CHANNEL_FEED_URL(channelEIP: String) -> String {
         CHANNELS_URL.appendingURLPathComponents(channelEIP, "feeds")
     }
+    static func GET_CHANNEL_FEED_FOR_USER_URL(channelEIP: String, userEIP: String) -> String {
+        GET_USER_URL.appendingURLPathComponents(userEIP, "channels", channelEIP, "feeds")
+    }
 }
 
 // MARK: - Open methods
@@ -173,6 +176,26 @@ extension PushRESTAPIService {
         let queryComponents = ["page" : String(page),
                                "limit" : String(limit)]
         let urlString = URLSList.GET_CHANNEL_FEED_URL(channelEIP: channelEIP).appendingURLQueryComponents(queryComponents)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
+        
+        let response: InboxResponse = try await getDecodableObjectWith(request: request)
+        return response.feeds
+    }
+    
+    func getChannelFeedForUser(_ user: String,
+                               in channel: String,
+                               page: Int,
+                               limit: Int) async throws -> [PushInboxNotification] {
+        let chainId = getCurrentChainId()
+        let channelEIP = createEIPFormatFor(address: channel,
+                                            chain: chainId)
+        let userEIP = createEIPFormatFor(address: user,
+                                         chain: chainId)
+        let queryComponents = ["page" : String(page),
+                               "limit" : String(limit)]
+        let urlString = URLSList.GET_CHANNEL_FEED_FOR_USER_URL(channelEIP: channelEIP,
+                                                               userEIP: userEIP).appendingURLQueryComponents(queryComponents)
         let request = try apiRequestWith(urlString: urlString,
                                          method: .get)
         
