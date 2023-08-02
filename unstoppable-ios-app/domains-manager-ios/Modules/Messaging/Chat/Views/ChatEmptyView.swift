@@ -131,7 +131,8 @@ extension ChatEmptyView {
                 return String.Constants.messagingChatEmptyUnencryptedMessage.localized()
             case .cantContact:
                 return String.Constants.messagingCantContactMessage.localized()
-            case .channel: return nil
+            case .channel:
+                return String.Constants.messagingChannelEmptyMessage.localized()
             }
         }
     }
