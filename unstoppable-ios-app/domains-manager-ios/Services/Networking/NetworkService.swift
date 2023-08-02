@@ -338,14 +338,19 @@ extension NetworkService {
     }
     
     /// This function will return UD/ENS/Null name and corresponding PFP if available OR throw 404
-    func fetchGlobalReverseResolution(for address: HexAddress) async throws -> GlobalRR {
-//        let url = URL(string: "\(NetworkConfig.baseResolveUrl)/profile/resolve/\(address)")!
-        let url = URL(string: "https://api.ud-staging.com/profile/resolve/\(address)")! // Works only in staging ATM
-        let data = try await NetworkService().fetchData(for: url,
-                                                        method: .get,
-                                                        extraHeaders: MetadataNetworkConfig.authHeader)
-        let response = try JSONDecoder().decode(GlobalRR.self, from: data)
-        return response
+    func fetchGlobalReverseResolution(for address: HexAddress) async throws -> GlobalRR? {
+        do {
+            let url = URL(string: "\(NetworkConfig.baseProfileAPIUrl)/profile/resolve/\(address)")!
+            let data = try await NetworkService().fetchData(for: url,
+                                                            method: .get,
+                                                            extraHeaders: MetadataNetworkConfig.authHeader)
+            let response = try JSONDecoder().decode(GlobalRR.self, from: data)
+            return response
+        } catch NetworkLayerError.badResponseOrStatusCode(let code, _) where code == 404 { // 404 means no RR domain or ENS domain
+            return nil
+        } catch {
+            throw error
+        }
     }
     
     private func getRegex(for expandedTicker: String, coins: [CoinRecord]) -> String? {
