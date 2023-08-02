@@ -636,7 +636,11 @@ private extension ChatViewPresenter {
 private extension ChatViewPresenter {
     func didPickImageToSend(_ image: UIImage) {
         let resizedImage = image.resized(to: Constants.maxImageResolution) ?? image
-        sendImageMessage(resizedImage)
+        
+        let confirmationVC = MessagingImageView.instantiate(mode: .confirmSending(callback: { [weak self] in
+            self?.sendImageMessage(resizedImage)
+        }), image: resizedImage)
+        view?.present(confirmationVC, animated: true)
     }
 }
 

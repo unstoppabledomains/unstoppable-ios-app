@@ -141,6 +141,7 @@ extension String {
         static let removed = "REMOVED"
         static let updated = "UPDATED"
         static let discard = "DISCARD"
+        static let save = "SAVE"
         static let saved = "SAVED"
         static let wallet = "WALLET"
         static let vault = "VAULT"
