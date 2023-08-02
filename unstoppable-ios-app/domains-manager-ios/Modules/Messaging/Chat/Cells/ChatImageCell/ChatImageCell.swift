@@ -15,6 +15,8 @@ final class ChatImageCell: ChatUserMessageCell {
     private var imageViewConstraints: [NSLayoutConstraint] = []
     private let maxSize: CGFloat = (294/390) * UIScreen.main.bounds.width
     private var timeLabelTapGesture: UITapGestureRecognizer?
+    private var currentImage: UIImage?
+    var imagePressedCallback: ((UIImage)->())?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -22,6 +24,8 @@ final class ChatImageCell: ChatUserMessageCell {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 12
         imageView.tintColor = .foregroundDefault
+        imageView.isUserInteractionEnabled = true
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapImage)))
         setImageSize(.square(size: maxSize))
     }
 
@@ -46,6 +50,7 @@ extension ChatImageCell {
 private extension ChatImageCell {
     func setImage(_ image: UIImage?) {
         let imageSize: CGSize
+        currentImage = image
         if let image {
             imageView.image = image
             imageSize = image.size
@@ -82,6 +87,13 @@ private extension ChatImageCell {
         heightConstraint.priority = .init(999)
         imageViewConstraints = [widthConstraint, heightConstraint]
         NSLayoutConstraint.activate(imageViewConstraints)
+    }
+    
+    @objc func didTapImage() {
+        guard let currentImage else { return }
+        
+        UDVibration.buttonTap.vibrate()
+        imagePressedCallback?(currentImage)
     }
 }
 

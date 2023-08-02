@@ -100,6 +100,7 @@
 "REMOVED" = "Removed";
 "UPDATED" = "Updated";
 "DISCARD" = "Discard";
+"SAVE" = "Save";
 "SAVED" = "Saved";
 "WALLET" = "Wallet";
 "VAULT" = "Vault";
