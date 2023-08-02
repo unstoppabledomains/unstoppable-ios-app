@@ -726,17 +726,10 @@ private extension MessagingService {
     }
     
     func loadUserInfoFor(wallet: String) async -> MessagingChatUserDisplayInfo? {
-        if let domain = try? await appContext.udWalletsService.reverseResolutionDomainName(for: wallet.normalized),
-           !domain.isEmpty {
-            let pfpInfo = await appContext.udDomainsService.loadPFP(for: domain)
-            var pfpURL: URL?
-            if let urlString = pfpInfo?.pfpURL,
-               let url = URL(string: urlString) {
-                pfpURL = url
-            }
+        if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: wallet) {
             return MessagingChatUserDisplayInfo(wallet: wallet,
-                                                domainName: domain,
-                                                pfpURL: pfpURL)
+                                                domainName: rrInfo.name,
+                                                pfpURL: rrInfo.avatarUrl)
         }
         
         return nil
