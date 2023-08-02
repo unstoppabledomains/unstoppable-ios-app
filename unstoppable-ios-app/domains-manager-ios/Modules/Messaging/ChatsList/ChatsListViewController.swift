@@ -107,8 +107,10 @@ extension ChatsListViewController: ChatsListViewProtocol {
         self.state = state
         
         if case .loading = state {
+            setAndAnimateCollectionViewHidden(true)
             activityIndicator.startAnimating()
         } else {
+            setAndAnimateCollectionViewHidden(false)
             activityIndicator.stopAnimating()
         }
         
@@ -117,7 +119,7 @@ extension ChatsListViewController: ChatsListViewProtocol {
         setupNavigation()
         cNavigationController?.updateNavigationBar()
     }
-    
+ 
     func setNavigationWith(selectedWallet: WalletDisplayInfo,
                            wallets: [ChatsListNavigationView.WalletTitleInfo],
                            isLoading: Bool) {
@@ -212,6 +214,12 @@ private extension ChatsListViewController {
         cNavigationBar?.setSearchActive(isActive, animated: true)
         if !isActive {
             searchMode = .default
+        }
+    }
+    
+    func setAndAnimateCollectionViewHidden(_ hidden: Bool) {
+        UIView.animate(withDuration: 0.15) {
+            self.collectionView.alpha = hidden ? 0 : 1
         }
     }
 }
