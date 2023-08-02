@@ -425,6 +425,33 @@ private extension ChatViewController {
                                      width: view.bounds.width,
                                      height: height)
     }
+    
+    func userDidTapImage(_ image: UIImage) {
+        let imageDetailsVC = MessagingImageView.instantiate(mode: .view(saveCallback: { [weak self] in
+            self?.saveImage(image)
+        }), image: image)
+        present(imageDetailsVC, animated: true)
+    }
+    
+    func saveImage(_ image: UIImage) {
+        appContext.permissionsService.askPermissionsFor(functionality: .photoLibrary(options: .addOnly),
+                                                        in: presentedViewController,
+                                                        shouldShowAlertIfNotGranted: true) { granted in
+            if granted {
+                UIImageWriteToSavedPhotosAlbum(image, self, #selector(Self.handleImageSavingWith(image:error:contextInfo:)), nil)
+            }
+        }
+    }
+    
+    @objc func handleImageSavingWith(image: UIImage, error: Error?, contextInfo: UnsafeRawPointer) {
+        Task { @MainActor in
+            if error != nil {
+                Vibration.error.vibrate()
+            } else {
+                Vibration.success.vibrate()
+            }
+        }
+    }
 }
 
 // MARK: - Setup functions
@@ -476,7 +503,7 @@ private extension ChatViewController {
     }
     
     func configureDataSource() {
-        dataSource = ChatDataSource.init(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
+        dataSource = ChatDataSource.init(collectionView: collectionView, cellProvider: { [weak self] collectionView, indexPath, item in
             switch item {
             case .textMessage(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatTextCell.self, forIndexPath: indexPath)
@@ -486,14 +513,19 @@ private extension ChatViewController {
             case .imageBase64Message(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatImageCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
+                cell.imagePressedCallback = { image in
+                    self?.userDidTapImage(image)
+                }
                 
                 return cell
             case .imageDataMessage(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatImageCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
+                cell.imagePressedCallback = { image in
+                    self?.userDidTapImage(image)
+                }
                 
                 return cell
-                
             case .unsupportedMessage(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatUnsupportedMessageCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration)
