@@ -58,14 +58,18 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentXMTPEnvironment()
         let client = try await xmtpHelper.getClientFor(user: user, env: env)
         let conversations = try await client.conversations.list()
+        let chats = conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0,
+                                                                                             userId: user.id,
+                                                                                             userWallet: user.wallet,
+                                                                                             isApproved: true) })
+        let blockedUsersStorage = self.blockedUsersStorage
         Task.detached {
-            try? await XMTPPush.shared.subscribe(topics: conversations.map(\.topic))
+            let notBlockedChats = chats.filter({ !blockedUsersStorage.isOtherUserBlockedInChat($0) })
+            let topicsToSubscribeForPN = notBlockedChats.map { $0.displayInfo.id } // XMTP Chat's topic = chat's id
+            try? await XMTPPush.shared.subscribe(topics: topicsToSubscribeForPN)
         }
         
-        return conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0,
-                                                                                        userId: user.id,
-                                                                                        userWallet: user.wallet,
-                                                                                        isApproved: true) })
+        return chats
     }
     
     func getChatRequestsForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
@@ -93,8 +97,16 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
             } else {
                 blockedUsersStorage.removeBlockedUser(blockedUserDescription)
             }
+            setSubscribed(!blocked, toChat: chat)
         case .group:
             throw XMTPServiceError.unsupportedAction
+        }
+    }
+    
+    private func setSubscribed(_ isSubscribed: Bool,
+                       toChat chat: MessagingChat) {
+        Task.detached {
+
         }
     }
     
