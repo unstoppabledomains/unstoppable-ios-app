@@ -181,8 +181,9 @@ private extension UDSearchBar {
     
     @objc func cancelButtonPressed(_ sender: UIButton) {
         UDVibration.buttonTap.vibrate()
-        resignFirstResponder()
         text = ""
+        resignFirstResponder()
+        forceLayout(animated: shouldAnimateStateUpdate)
         delegate?.udSearchBarCancelButtonClicked(self)
     }
     
