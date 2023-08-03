@@ -440,14 +440,18 @@ extension MessagingService: MessagingServiceProtocol {
     
     // Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
-        guard searchKey.isValidAddress() else { return [] }
-        
-        let wallet = searchKey
-        if let userInfo = await loadUserInfoFor(wallet: wallet) {
+        if searchKey.isValidAddress() {
+            let wallet = searchKey
+            if let userInfo = await loadUserInfoFor(wallet: wallet) {
+                return [userInfo]
+            }
+            
+            return [.init(wallet: wallet)]
+        } else if searchKey.isValidDomainName(),
+                  let userInfo = await loadGlobalUserInfoFor(value: searchKey) {
             return [userInfo]
         }
-        
-        return [.init(wallet: wallet)]
+        return []
     }
     
     func searchForChannelsWith(page: Int,
@@ -737,12 +741,20 @@ private extension MessagingService {
             return MessagingChatUserDisplayInfo(wallet: wallet,
                                                 domainName: domain,
                                                 pfpURL: pfpURL)
-        } else if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: wallet) {
-            return MessagingChatUserDisplayInfo(wallet: wallet,
+        } else if let userInfo = await loadGlobalUserInfoFor(value: wallet) {
+            return userInfo
+        }
+        
+        return nil
+    }
+    
+    // Value can be either wallet address or domain name
+    func loadGlobalUserInfoFor(value: String) async -> MessagingChatUserDisplayInfo? {
+        if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: value) {
+            return MessagingChatUserDisplayInfo(wallet: rrInfo.address,
                                                 domainName: rrInfo.name,
                                                 pfpURL: rrInfo.avatarUrl)
         }
-        
         return nil
     }
     
