@@ -638,7 +638,8 @@ private extension MessagingService {
         await withTaskGroup(of: MessagingChat.self, body: { group in
             for remoteChat in remoteChats {
                 group.addTask {
-                    if let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
+                    if !self.apiService.capabilities.isRequiredToReloadLastMessage,
+                       let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
                        localChat.isUpToDateWith(otherChat: remoteChat) {
                         return localChat
                     } else {

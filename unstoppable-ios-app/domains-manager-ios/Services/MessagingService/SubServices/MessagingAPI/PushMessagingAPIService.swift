@@ -26,7 +26,8 @@ final class PushMessagingAPIService {
     private let dataProvider: PushMessagingAPIServiceDataProvider
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: true,
                                                     canBlockUsers: true,
-                                                    isSupportChatsListPagination: true)
+                                                    isSupportChatsListPagination: true,
+                                                    isRequiredToReloadLastMessage: false)
 
     init(dataProvider: PushMessagingAPIServiceDataProvider = DefaultPushMessagingAPIServiceDataProvider()) {
         self.dataProvider = dataProvider

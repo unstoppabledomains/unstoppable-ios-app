@@ -14,7 +14,8 @@ final class XMTPMessagingAPIService {
     private let xmtpHelper = XMTPServiceHelper()
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
                                                     canBlockUsers: false,
-                                                    isSupportChatsListPagination: false)
+                                                    isSupportChatsListPagination: false,
+                                                    isRequiredToReloadLastMessage: true)
     init() {
         Client.register(codec: AttachmentCodec())
         Client.register(codec: RemoteAttachmentCodec())
@@ -96,7 +97,9 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentXMTPEnvironment()
         let client = try await xmtpHelper.getClientFor(user: user, env: env)
         let conversation = try getXMTPConversationFromChat(chat, client: client )
+        let start = Date()
         let messages = try await conversation.messages(limit: fetchLimit, before: message?.displayInfo.time)
+        Debugger.printTimeSensitiveInfo(topic: .Messaging, "load \(messages.count) messages. fetchLimit: \(fetchLimit). before: \(message?.displayInfo.time)", startDate: start, timeout: 1)
         
         var chatMessages = messages.compactMap({ xmtpMessage in
             XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
