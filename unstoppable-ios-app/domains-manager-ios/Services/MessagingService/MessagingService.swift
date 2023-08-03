@@ -750,7 +750,7 @@ private extension MessagingService {
     
     // Value can be either wallet address or domain name
     func loadGlobalUserInfoFor(value: String) async -> MessagingChatUserDisplayInfo? {
-        if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: value) {
+        if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: value.lowercased()) {
             return MessagingChatUserDisplayInfo(wallet: rrInfo.address,
                                                 domainName: rrInfo.name,
                                                 pfpURL: rrInfo.avatarUrl)
