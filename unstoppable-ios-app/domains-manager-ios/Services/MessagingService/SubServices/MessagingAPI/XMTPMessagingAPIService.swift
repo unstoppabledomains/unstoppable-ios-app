@@ -66,11 +66,64 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         Task.detached {
             let notBlockedChats = chats.filter({ !blockedUsersStorage.isOtherUserBlockedInChat($0) })
             let topicsToSubscribeForPN = notBlockedChats.map { $0.displayInfo.id } // XMTP Chat's topic = chat's id
-            try? await XMTPPush.shared.subscribe(topics: topicsToSubscribeForPN)
+            try? await self.subscribeForTopics(topicsToSubscribeForPN, by: client)
+//            try? await XMTPPush.shared.subscribe(topics: topicsToSubscribeForPN)
         }
         
         return chats
     }
+    
+    func signString(_ str: String,
+                    by client: Client) async throws -> String {
+        let data = str.data(using: .utf8)!
+        let digest = data.web3.keccak256
+        let signature = try await client.keys.identityKey.sign(digest)
+
+        return try signature.serializedData().base64EncodedString()
+    }
+    
+    func subscribeForTopics(_ topics: [String], by client: Client) async throws {
+        do {
+            let url = URL(string: "https://messaging.ud-staging.com/api/xmtp/topics/register")!
+            let ownerAddress = client.address
+            let signedPublicKey = client.publicKeyBundle.identityKey.keyBytes.base64EncodedString()
+            
+            var registrations: [Registration] = []
+            
+            for topic in topics {
+                let signature = try await signString(topic, by: client)
+                let registration = Registration(topic: topic, signature: signature)
+                registrations.append(registration)
+            }
+            
+            struct Registration: Codable {
+                let topic: String
+                let signature: String
+            }
+
+            struct SubscribeRequest: Codable {
+                let ownerAddress: String
+                let registrations: [Registration]
+                let signedPublicKey: String
+            }
+            
+            let subReq = SubscribeRequest(ownerAddress: ownerAddress,
+                                          registrations: registrations,
+                                          signedPublicKey: signedPublicKey)
+            let reqData = subReq.jsonString()!
+            let request = APIRequest(url: url,
+                                     headers: [:],
+                                     body: reqData,
+                                     method: .post)
+            let data = try await NetworkService().makeAPIRequest(request)
+            print("Finished")
+        } catch {
+            
+            print("Failed")
+        }
+    }
+    
+    
     
     func getChatRequestsForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
         []
@@ -104,7 +157,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     private func setSubscribed(_ isSubscribed: Bool,
-                       toChat chat: MessagingChat) {
+                               toChat chat: MessagingChat) {
         Task.detached {
 
         }
