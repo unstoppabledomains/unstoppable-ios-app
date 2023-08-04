@@ -433,11 +433,11 @@ private extension ChatViewPresenter {
         var actions: [ChatViewController.NavButtonConfiguration.Action] = []
         
         func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) {
-            if let domainName = userInfo.domainName,
-               userInfo.isUDDomain {
+            if let domainName = userInfo.domainName {
                 actions.append(.init(type: .viewProfile, callback: { [weak self] in
                     self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
-                    self?.didPressViewDomainProfileButton(domainName: domainName)
+                    self?.didPressViewDomainProfileButton(domainName: domainName,
+                                                          isUDDomain: userInfo.isUDDomain)
                 }))
             }
         }
@@ -479,8 +479,14 @@ private extension ChatViewPresenter {
         view?.setupRightBarButton(with: .init(actions: actions))
     }
     
-    func didPressViewDomainProfileButton(domainName: String) {
-        let link = String.Links.domainProfilePage(domainName: domainName)
+    func didPressViewDomainProfileButton(domainName: String,
+                                         isUDDomain: Bool) {
+        let link: String.Links
+        if isUDDomain {
+            link = .domainProfilePage(domainName: domainName)
+        } else {
+            link = .ensDomainProfilePage(domainName: domainName)
+        }
         view?.openLink(link)
     }
     
