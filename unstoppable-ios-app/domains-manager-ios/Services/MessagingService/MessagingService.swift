@@ -746,7 +746,8 @@ private extension MessagingService {
             return MessagingChatUserDisplayInfo(wallet: wallet,
                                                 domainName: domain,
                                                 pfpURL: pfpURL)
-        } else if let userInfo = await loadGlobalUserInfoFor(value: wallet) {
+        } else if var userInfo = await loadGlobalUserInfoFor(value: wallet) {
+            userInfo.wallet = wallet // Fix lower/uppercase inconsistency issue 
             return userInfo
         }
         
