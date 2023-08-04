@@ -15,7 +15,7 @@ final class XMTPMessagingAPIService {
     private let blockedUsersStorage = XMTPBlockedUsersStorage.shared
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
                                                     canBlockUsers: true,
-                                                    isSupportChatsListPagination: false)
+                                                    isSupportChatsListPagination: false,
                                                     isRequiredToReloadLastMessage: true)
     
     init() {
