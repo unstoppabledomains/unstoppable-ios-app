@@ -13354,7 +13354,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.6;
+				MARKETING_VERSION = 4.6.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -13379,7 +13379,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.6.6;
+				MARKETING_VERSION = 4.6.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
