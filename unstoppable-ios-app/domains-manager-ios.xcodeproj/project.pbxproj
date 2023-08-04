@@ -1432,6 +1432,11 @@
 		C634028A2886548D00AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C63402892886548D00AB5D38 /* SVGKit */; };
 		C634028C2886549200AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C634028B2886549200AB5D38 /* SVGKit */; };
 		C634028E2886549800AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C634028D2886549800AB5D38 /* SVGKit */; };
+		C63414DA2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
+		C63414DB2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
+		C63414DC2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
+		C63414DD2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
+		C63414DE2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
 		C635193828D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */; };
 		C635193928D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */; };
 		C635193A28D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */; };
@@ -4448,6 +4453,7 @@
 		C62C3FC5283F70970094FC93 /* SelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorButton.swift; sourceTree = "<group>"; };
 		C62C8DC328DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaymentTransactionGasOnlyCostView.xib; sourceTree = "<group>"; };
 		C62C8DC428DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentTransactionGasOnlyCostView.swift; sourceTree = "<group>"; };
+		C63414D92A7D335100C80B77 /* GlobalRR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalRR.swift; sourceTree = "<group>"; };
 		C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
 		C635193628D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewController.swift; sourceTree = "<group>"; };
 		C635193728D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChooseReverseResolutionDomainViewController.xib; sourceTree = "<group>"; };
@@ -7909,6 +7915,7 @@
 				307852632771FB020039FF40 /* DeepLinks.swift */,
 				C6E69FFA288AEAAF000A8346 /* ExternalEvent.swift */,
 				C60C298B2834E30000626851 /* GroupedCoinRecord.swift */,
+				C63414D92A7D335100C80B77 /* GlobalRR.swift */,
 				30BA2B35252914100097817E /* Helpers.swift */,
 				C6F946DA2A6788E0008043AC /* MockEntitiesFabric.swift */,
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
@@ -9744,6 +9751,7 @@
 				C6A474E429D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C6C995C6289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */,
 				C6456F0627FF291D00A517D5 /* GradientView.swift in Sources */,
+				C63414DA2A7D335100C80B77 /* GlobalRR.swift in Sources */,
 				29BECD0E2979BD7B00662FC1 /* CloudStorage.swift in Sources */,
 				C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
 				3004E32726D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */,
@@ -10768,6 +10776,7 @@
 				C691CFE328C1D5600077C59F /* SetupNewReverseResolutionDomainPresenter.swift in Sources */,
 				C60982172823B6B900546392 /* MockUDWalletsService.swift in Sources */,
 				3026FA1E27E76F6600FE058B /* ProtectWalletViewController.swift in Sources */,
+				C63414DC2A7D335100C80B77 /* GlobalRR.swift in Sources */,
 				C63902C928E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift in Sources */,
 				C6B6859228007C09000F9037 /* UDCheckBox.swift in Sources */,
 				C6D3B9C12A6EBC2B0091B279 /* PushServiceHelper.swift in Sources */,
@@ -11859,6 +11868,7 @@
 				C671E3A228FE974900A2B3A0 /* UDCarouselFeature.swift in Sources */,
 				C62396892A288A9E00363F60 /* MessagingChatMessage.swift in Sources */,
 				C65271F32A148FA4001A084C /* ChatListCell.swift in Sources */,
+				C63414DD2A7D335100C80B77 /* GlobalRR.swift in Sources */,
 				C6C99589289D313D00367362 /* CNavigationTransitionHandler.swift in Sources */,
 				C66FCD0B2844F06B009B9525 /* ChooseNewPrimaryDomainPresenter.swift in Sources */,
 				C6AD181228D319BF0008A479 /* CollectionViewShowHideCell.swift in Sources */,
@@ -12197,6 +12207,7 @@
 				C6A474E529D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */,
 				C6C995C7289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */,
 				30AE84D1257836E2003A0142 /* User.swift in Sources */,
+				C63414DB2A7D335100C80B77 /* GlobalRR.swift in Sources */,
 				29BECD0F2979BD7B00662FC1 /* CloudStorage.swift in Sources */,
 				C6456F0727FF291D00A517D5 /* GradientView.swift in Sources */,
 				C6D0F439283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
@@ -12945,6 +12956,7 @@
 				C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */,
 				C6E69F97288AB6BE000A8346 /* Debugger.swift in Sources */,
 				C6E69FEF288AD405000A8346 /* String+Notification.swift in Sources */,
+				C63414DE2A7D335100C80B77 /* GlobalRR.swift in Sources */,
 				C6E69F8D288A93D3000A8346 /* NotificationService.swift in Sources */,
 				C61236EB292C895C002BA97B /* ImagesStorage.swift in Sources */,
 				C6E69FE5288AD264000A8346 /* String+Localization.swift in Sources */,

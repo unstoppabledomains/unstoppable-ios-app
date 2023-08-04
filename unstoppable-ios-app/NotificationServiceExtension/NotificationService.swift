@@ -230,13 +230,20 @@ private extension NotificationService {
                                    data: ExternalEvent.ChatXMTPMessageEventData,
                                    completion: @escaping NotificationContentCallback) {
         Task {
-            do {
-                let notificationDisplayInfo = try await XMTPPushNotificationsExtensionHelper.parseNotificationMessageFrom(data: data)
-                notificationContent.title = notificationDisplayInfo.walletAddress.walletAddressTruncated
-                notificationContent.body = notificationDisplayInfo.localizedMessage
+            let notificationDisplayInfo = await XMTPPushNotificationsExtensionHelper.parseNotificationMessageFrom(data: data)
+            notificationContent.title = notificationDisplayInfo.walletAddress.walletAddressTruncated
+            notificationContent.body = notificationDisplayInfo.localizedMessage
+            
+            let senderWalletAddress = notificationDisplayInfo.walletAddress
+            if senderWalletAddress != data.toAddress,
+               let rrInfo = try? await loadRRInfoFor(address: senderWalletAddress),
+               let url = pfpURLToUse {
+                loadAvatarFor(source: .url(url),
+                              name: rrInfo.name,
+                              in: notificationContent,
+                              completion: completion)
+            } else {
                 completion(notificationContent)
-            } catch {
-                completion(nil)
             }
         }
     }
@@ -277,6 +284,49 @@ private extension NotificationService {
         }
     }
 
+    func loadRRInfoFor(address: String) async throws -> GlobalRR? {
+        do {
+            let url = URL(string: "https://api.unstoppabledomains.com/profile/resolve/\(address)")!
+            let urlRequest = URLRequest(url: url)
+            let (data, response) = try await makeURLRequest(urlRequest)
+
+            if response.statusCode == 404 {
+                return nil // 404 means no RR domain or ENS domain
+            }
+            let rrInfo = try JSONDecoder().decode(GlobalRR.self, from: data)
+            return rrInfo
+        } catch {
+            throw error
+        }
+    }
+    
+    func makeURLRequest(_ urlRequest: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        try await withCheckedThrowingContinuation { continuation in
+            makeURLRequest(urlRequest) { result in
+                switch result {
+                case .success(let tuple):
+                    continuation.resume(with: .success(tuple))
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    func makeURLRequest(_ urlRequest: URLRequest, completion: @escaping ((Result<(Data, HTTPURLResponse), Error>)->())) {
+        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            if let data,
+               let response = response as? HTTPURLResponse {
+                completion(.success((data, response)))
+            } else if let error {
+                completion(.failure(error))
+            } else {
+                completion(.failure(NSError(domain: "notification.extension", code: 1)))
+            }
+        }
+        task.resume()
+    }
+    
     func loadDomainAvatarFor(domainName: String,
                              in notificationContent: UNMutableNotificationContent,
                              completion: @escaping NotificationContentCallback) {

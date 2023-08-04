@@ -747,7 +747,7 @@ private extension MessagingService {
                                                 domainName: domain,
                                                 pfpURL: pfpURL)
         } else if var userInfo = await loadGlobalUserInfoFor(value: wallet) {
-            userInfo.wallet = wallet // Fix lower/uppercase inconsistency issue 
+            userInfo.wallet = wallet // Fix lower/uppercase inconsistency issue
             return userInfo
         }
         
