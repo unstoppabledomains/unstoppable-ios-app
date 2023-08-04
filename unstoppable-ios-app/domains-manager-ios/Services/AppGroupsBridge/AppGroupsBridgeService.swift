@@ -15,16 +15,22 @@ protocol AppGroupsBridgeServiceProtocol {
     
     func getAvatarPath(for domainName: String) -> String?
     func saveAvatarPath(_ path: String?, for domainName: String)
+    
+    // XMTP
+    func saveXMTPConversationData(conversationData: Data?, topic: String)
+    func getXMTPConversationDataFor(topic: String) -> Data?
 }
 
 enum AppGroupDataType: Codable {
     case domainChanges
     case domainAvatarURL(domainName: String)
+    case xmtpConversation(topic: String)
     
     var key: String {
         switch self {
         case .domainChanges: return "domainChanges"
         case .domainAvatarURL(let domainName): return domainName
+        case .xmtpConversation(let topic): return "xmtp_\(topic)"
         }
     }
 }
@@ -72,6 +78,17 @@ extension AppGroupsBridgeService: AppGroupsBridgeServiceProtocol {
     }
 }
 
+// MARK: - XMTP Related
+extension AppGroupsBridgeService {
+    func saveXMTPConversationData(conversationData: Data?, topic: String) {
+        saveData(conversationData, for: .xmtpConversation(topic: topic))
+    }
+    
+    func getXMTPConversationDataFor(topic: String) -> Data? {
+        dataFor(type: .xmtpConversation(topic: topic))
+    }
+}
+
 // MARK: - Private methods
 private extension AppGroupsBridgeService {
     func dataFor(type: AppGroupDataType) -> Data? {
@@ -85,7 +102,15 @@ private extension AppGroupsBridgeService {
     }
     
     func save<T: Codable>(entity: T?, for type: AppGroupDataType) {
-        appGroupsContainer.set(entity?.jsonData(), forKey: type.key)
+        saveData(entity?.jsonData(), for: type)
+    }
+    
+    func saveData(_ data: Data?, for type: AppGroupDataType) {
+        saveData(data, forKey: type.key)
+    }
+    
+    func saveData(_ data: Data?, forKey key: String) {
+        appGroupsContainer.set(data, forKey: key)
     }
 }
  

@@ -63,6 +63,12 @@ struct XMTPEntitiesTransformer {
                                                    lastMessage: nil)
         
         let metadataModel = XMTPEnvironmentNamespace.ChatServiceMetadata(encodedContainer: xmtpChat.encodedContainer)
+        
+        // Bridging for PNs
+        AppGroupsBridgeService.shared.saveXMTPConversationData(conversationData: xmtpChat.encodedContainer.jsonData(),
+                                                               topic: xmtpChat.topic)
+        //
+        
         let serviceMetadata = metadataModel.jsonData()
         let chat = MessagingChat(userId: userId,
                                  displayInfo: displayInfo,
@@ -127,8 +133,7 @@ struct XMTPEntitiesTransformer {
                                            messageId: String,
                                            userId: String,
                                            filesService: MessagingFilesServiceProtocol) throws -> MessagingChatMessageDisplayType? {
-        let typeId = xmtpMessage.encodedContent.type.typeID
-        if let knownType = XMTPEnvironmentNamespace.KnownType(rawValue: typeId) {
+        if let knownType = XMTPMessageKnownTypeFrom(xmtpMessage) {
             switch knownType {
             case .text:
                 let decryptedContent: String = try xmtpMessage.content()
@@ -153,11 +158,19 @@ struct XMTPEntitiesTransformer {
             let fileName = messageId + "_" + String(userId.suffix(4))
             try filesService.saveData(contentData, fileName: fileName)
             let unknownDisplayInfo = MessagingChatMessageUnknownTypeDisplayInfo(fileName: fileName,
-                                                                                type: typeId,
+                                                                                type: XMTPMessageTypeIDFrom(xmtpMessage),
                                                                                 name: nil,
                                                                                 size: nil)
             return .unknown(unknownDisplayInfo)
         }
+    }
+    
+    static func XMTPMessageTypeIDFrom(_ xmtpMessage: XMTP.DecodedMessage) -> String {
+        xmtpMessage.encodedContent.type.typeID
+    }
+    
+    static func XMTPMessageKnownTypeFrom(_ xmtpMessage: XMTP.DecodedMessage) -> XMTPEnvironmentNamespace.KnownType? {
+        XMTPEnvironmentNamespace.KnownType(rawValue: XMTPMessageTypeIDFrom(xmtpMessage))
     }
     
     private static func getMessageTypeFor(attachment: Attachment,

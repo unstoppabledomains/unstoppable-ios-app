@@ -757,6 +757,7 @@
 		C60CA29B2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CA28D2832501D00AB1B36 /* QRCodeServiceProtocol.swift */; };
 		C60CA29C2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CA28D2832501D00AB1B36 /* QRCodeServiceProtocol.swift */; };
 		C60CA29D2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CA28D2832501D00AB1B36 /* QRCodeServiceProtocol.swift */; };
+		C60CB2DA2A7CAF9000663989 /* XMTPEnvironmentNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9CE2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift */; };
 		C60D2712295AAE420060635D /* DomainsCollectionUICache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */; };
 		C60D2713295AAE420060635D /* DomainsCollectionUICache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */; };
 		C60D2714295AAE420060635D /* DomainsCollectionUICache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */; };
@@ -1952,6 +1953,16 @@
 		C65DD4BA2A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */; };
 		C65DD4BB2A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */; };
 		C65DD4BC2A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */; };
+		C65DD4BE2A7CAB1500CAB10C /* XMTP in Frameworks */ = {isa = PBXBuildFile; productRef = C65DD4BD2A7CAB1500CAB10C /* XMTP */; };
+		C65DD4C42A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4BF2A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift */; };
+		C65DD4C62A7CABC700CAB10C /* Valet in Frameworks */ = {isa = PBXBuildFile; productRef = C65DD4C52A7CABC700CAB10C /* Valet */; };
+		C65DD4C72A7CAC8000CAB10C /* KeychainLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3070B1D725AF8AF300DEC81C /* KeychainLayer.swift */; };
+		C65DD4C82A7CAC8500CAB10C /* KeychainXMTPKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9C92A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift */; };
+		C65DD4CA2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4C92A7CACEC00CAB10C /* Extension-String-Common.swift */; };
+		C65DD4CB2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4C92A7CACEC00CAB10C /* Extension-String-Common.swift */; };
+		C65DD4CC2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4C92A7CACEC00CAB10C /* Extension-String-Common.swift */; };
+		C65DD4CD2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4C92A7CACEC00CAB10C /* Extension-String-Common.swift */; };
+		C65DD4CE2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DD4C92A7CACEC00CAB10C /* Extension-String-Common.swift */; };
 		C65DEA3E29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DEA3D29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift */; };
 		C65DEA3F29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DEA3D29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift */; };
 		C65DEA4029B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65DEA3D29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift */; };
@@ -4569,6 +4580,8 @@
 		C65955FA287C621100319ACC /* UIImage+Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Colors.swift"; sourceTree = "<group>"; };
 		C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserPullUpSelectionItem.swift; sourceTree = "<group>"; };
 		C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPPushNotificationsHelper.swift; sourceTree = "<group>"; };
+		C65DD4BF2A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPPushNotificationsExtensionHelper.swift; sourceTree = "<group>"; };
+		C65DD4C92A7CACEC00CAB10C /* Extension-String-Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension-String-Common.swift"; sourceTree = "<group>"; };
 		C65DEA3D29B1B0CC00FF142B /* WalletConnectExternalWalletConnectionWaiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectExternalWalletConnectionWaiter.swift; sourceTree = "<group>"; };
 		C65DEA7029B5837600FF142B /* WalletConnectExternalWalletHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletConnectExternalWalletHandler.swift; sourceTree = "<group>"; };
 		C65DEA7129B5837600FF142B /* WalletConnectExternalWalletHandlerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletConnectExternalWalletHandlerProtocol.swift; sourceTree = "<group>"; };
@@ -5191,6 +5204,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C65DD4BE2A7CAB1500CAB10C /* XMTP in Frameworks */,
+				C65DD4C62A7CABC700CAB10C /* Valet in Frameworks */,
 				C6E69FA3288AB821000A8346 /* SVGKit in Frameworks */,
 				C6E69F99288AB6DC000A8346 /* Bugsnag in Frameworks */,
 			);
@@ -6255,6 +6270,7 @@
 				C608C8302877F9D300EDEC6E /* Double.swift */,
 				C6ED31E2295BF8DF00BC6919 /* Equatable.swift */,
 				306DB241268F4EE1009D95DE /* Extension-String.swift */,
+				C65DD4C92A7CACEC00CAB10C /* Extension-String-Common.swift */,
 				30BA2B2F2529020E0097817E /* Extensions.swift */,
 				C6538DCB2A32269000B63E84 /* NSObject.swift */,
 				C6166CBE28EC179E00004252 /* SafeContinuation.swift */,
@@ -8515,6 +8531,7 @@
 				C66435BC288E57550098E1B8 /* NotificationServiceExtension.entitlements */,
 				C6E69F8C288A93D3000A8346 /* NotificationService.swift */,
 				C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */,
+				C65DD4BF2A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift */,
 				C6E69FED288AD3FB000A8346 /* Extenstions */,
 				C6E69FEB288AD323000A8346 /* Localizable.strings */,
 				C6E69F8E288A93D3000A8346 /* Info.plist */,
@@ -8861,6 +8878,8 @@
 			packageProductDependencies = (
 				C6E69F98288AB6DC000A8346 /* Bugsnag */,
 				C6E69FA2288AB821000A8346 /* SVGKit */,
+				C65DD4BD2A7CAB1500CAB10C /* XMTP */,
+				C65DD4C52A7CABC700CAB10C /* Valet */,
 			);
 			productName = NotificationServiceExtension;
 			productReference = C6E69F8A288A93D2000A8346 /* NotificationServiceExtension.appex */;
@@ -9916,6 +9935,7 @@
 				C62396B32A28DE3B00363F60 /* PushEnvironment.swift in Sources */,
 				C6E1189928F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6B6859028007C09000F9037 /* UDCheckBox.swift in Sources */,
+				C65DD4CA2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */,
 				C6D6E50C2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
 				C6124CD7292351F8005E6537 /* DomainProfileSectionChangeDescription.swift in Sources */,
 				C666893228114B0E002062B4 /* BaseButton.swift in Sources */,
@@ -11002,6 +11022,7 @@
 				C623969C2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
 				C623969C2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
 				296BB6212A309DD90068EEEC /* Encrypting.swift in Sources */,
+				C65DD4CC2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */,
 				296BB6212A309DD90068EEEC /* Encrypting.swift in Sources */,
 				C6D5DAE128374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
 				C66435C3288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
@@ -11601,6 +11622,7 @@
 				C6A474D729D150A40073415F /* NoParkedDomainsFoundViewController.swift in Sources */,
 				C6D3B9DC2A6ECC9C0091B279 /* XMTPEntitiesTransformer.swift in Sources */,
 				C61002ED2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
+				C65DD4CD2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */,
 				C6456F0E27FF299800A517D5 /* UIView.swift in Sources */,
 				C6D5DAB62835505200379C38 /* AddCurrencyEmptyCell.swift in Sources */,
 				C6098295282A4CC400546392 /* ConnectNewExternalWalletPresenter.swift in Sources */,
@@ -12366,6 +12388,7 @@
 				C62396B42A28DE3B00363F60 /* PushEnvironment.swift in Sources */,
 				C6E1189A28F8391800C6AD4D /* DomainProfileViewControllerItemsEntities.swift in Sources */,
 				C6B6859128007C09000F9037 /* UDCheckBox.swift in Sources */,
+				C65DD4CB2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */,
 				C6D6E50D2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
 				C6124CD8292351F8005E6537 /* DomainProfileSectionChangeDescription.swift in Sources */,
 				C666893328114B0E002062B4 /* BaseButton.swift in Sources */,
@@ -12911,7 +12934,9 @@
 				C6E69FA1288AB813000A8346 /* UIImage+SVG.swift in Sources */,
 				C66435C5288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
 				C6670A1328D46E2900415EBB /* String.swift in Sources */,
+				C65DD4C42A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift in Sources */,
 				C66435C7288E59F30098E1B8 /* Codable.swift in Sources */,
+				C65DD4C72A7CAC8000CAB10C /* KeychainLayer.swift in Sources */,
 				C66A26E228B3CEAE005470B9 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */,
 				C6E69F97288AB6BE000A8346 /* Debugger.swift in Sources */,
@@ -12920,6 +12945,9 @@
 				C61236EB292C895C002BA97B /* ImagesStorage.swift in Sources */,
 				C6E69FE5288AD264000A8346 /* String+Localization.swift in Sources */,
 				C6E69FFF288AEAAF000A8346 /* ExternalEvent.swift in Sources */,
+				C60CB2DA2A7CAF9000663989 /* XMTPEnvironmentNamespace.swift in Sources */,
+				C65DD4C82A7CAC8500CAB10C /* KeychainXMTPKeysStorage.swift in Sources */,
+				C65DD4CE2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13414,7 +13442,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationServiceExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -13443,7 +13471,7 @@
 				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NotificationServiceExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -14038,6 +14066,16 @@
 			productName = SVGKit;
 		};
 		C63812232993E009002590E7 /* Valet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */;
+			productName = Valet;
+		};
+		C65DD4BD2A7CAB1500CAB10C /* XMTP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */;
+			productName = XMTP;
+		};
+		C65DD4C52A7CABC700CAB10C /* Valet */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */;
 			productName = Valet;

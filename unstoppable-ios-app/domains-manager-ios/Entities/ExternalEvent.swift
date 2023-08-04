@@ -94,6 +94,18 @@ enum ExternalEvent: Codable, Hashable {
                                                    channelName: channelName,
                                                    channelIcon: channelIcon)
                 self = .chatChannelMessage(data)
+            case .chatXMTPMessage:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let xmtpTopic: String = try Self.getValueFrom(json: json, forKey: "xmtpTopic", notificationType: eventTypeRaw)
+                let xmtpEnvelope: String = try Self.getValueFrom(json: json, forKey: "xmtpEnvelope", notificationType: eventTypeRaw)
+                let xmtpWalletAddress: String = try Self.getValueFrom(json: json, forKey: "xmtpWalletAddress", notificationType: eventTypeRaw)
+                
+                let data = ChatXMTPMessageEventData(toDomainName: domainName,
+                                                    toAddress: xmtpWalletAddress,
+                                                    topic: xmtpTopic,
+                                                    envelop: xmtpEnvelope)
+                
+                return nil
             }
         } catch {
             return nil
@@ -180,6 +192,13 @@ extension ExternalEvent {
         let channelName: String
         let channelIcon: String
     }
+    
+    struct ChatXMTPMessageEventData: Codable, Hashable {
+        let toDomainName: String
+        let toAddress: String
+        let topic: String
+        let envelop: String
+    }
 }
 
 // MARK: - Private methods
@@ -215,6 +234,9 @@ extension ExternalEvent {
         // Messaging
         case chatMessage = "DomainPushProtocolChat"
         case chatChannelMessage = "DomainPushProtocolNotification"
+        // Messaging XMTP
+        case chatXMTPMessage = "DomainXmtpTopic"
+        
         
         /// Local
         case parkingStatusLocal = "ParkingStatusLocal"

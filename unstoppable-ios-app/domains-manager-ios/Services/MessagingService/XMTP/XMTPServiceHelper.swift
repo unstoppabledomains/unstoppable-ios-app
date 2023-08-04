@@ -9,24 +9,24 @@ import Foundation
 import XMTP
 
 struct XMTPServiceHelper {
-    func getCurrentXMTPEnvironment() -> XMTPEnvironment {
+    static func getCurrentXMTPEnvironment() -> XMTPEnvironment {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         return isTestnetUsed ? .dev : .production
     }
     
-    func getClientFor(user: MessagingChatUserProfile,
+    static func getClientFor(user: MessagingChatUserProfile,
                       env: XMTPEnvironment) async throws -> XMTP.Client {
         let wallet = user.wallet
         return try await getClientFor(wallet: wallet, env: env)
     }
     
-    func getClientFor(domain: DomainItem,
+    static func getClientFor(domain: DomainItem,
                       env: XMTPEnvironment) async throws -> XMTP.Client {
         let wallet = try domain.getETHAddressThrowing()
         return try await getClientFor(wallet: wallet, env: env)
     }
     
-    func getClientFor(wallet: String,
+    static func getClientFor(wallet: String,
                       env: XMTPEnvironment) async throws -> XMTP.Client {
         if let keysData = KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) {
             return try await createClientUsing(keysData: keysData, env: env)

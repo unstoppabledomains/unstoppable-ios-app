@@ -32,7 +32,8 @@ struct KeychainXMTPKeysStorage: PrivateKeyStorage, KeychainXMTPKeysStorageProtoc
     
     static var instance: KeychainXMTPKeysStorageProtocol = KeychainXMTPKeysStorage()
     
-    func saveKeysData(_ keysData: Data, forIdentifier identifier: String,
+    func saveKeysData(_ keysData: Data,
+                      forIdentifier identifier: String,
                       env: XMTPEnvironment) {
         let key = getKeyFor(identifier: identifier,
                             env: env)
