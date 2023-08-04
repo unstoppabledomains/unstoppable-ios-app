@@ -14,35 +14,41 @@ struct XMTPPushNotificationsExtensionHelper {
         let localizedMessage: String
     }
     
-    static func parseNotificationMessageFrom(data: ExternalEvent.ChatXMTPMessageEventData) async throws -> NotificationDisplayInfo {
-        guard let encryptedMessageData = Data(base64Encoded: Data(data.envelop.utf8)) else { throw XMTPPushNotificationError.failedToGetEncryptedMessageData }
-        
-        let topic = data.topic
-        let wallet = data.toAddress.ethChecksumAddress()
-        let env: XMTPEnvironment = .production
-        let client = try await getClientFor(wallet: wallet, env: env)
-        
-        let conversationData = AppGroupsBridgeService.shared.getXMTPConversationDataFor(topic: topic)
-        let conversationContainer: XMTP.ConversationContainer = try decodeConversationData(from: conversationData)
-        let conversation = conversationContainer.decode(with: client)
-        let envelope = XMTP.Envelope.with { envelope in
-            envelope.message = encryptedMessageData
-            envelope.contentTopic = topic
-        }
-        let xmtpMessage = try conversation.decode(envelope)
-        let typeID = xmtpMessage.encodedContent.type.typeID
-        let knownType = XMTPEnvironmentNamespace.KnownType(rawValue: typeID)
+    static func parseNotificationMessageFrom(data: ExternalEvent.ChatXMTPMessageEventData) async -> NotificationDisplayInfo {
+        var address: String = data.toAddress
         var message: String = String.Constants.newChatMessage.localized()
-        switch knownType {
-        case .text:
-            if let decryptedContent: String = try? xmtpMessage.content() {
-                message = decryptedContent
+
+        do {
+            guard let encryptedMessageData = Data(base64Encoded: Data(data.envelop.utf8)) else { throw XMTPPushNotificationError.failedToGetEncryptedMessageData }
+            
+            let topic = data.topic
+            let wallet = data.toAddress.ethChecksumAddress()
+            let env: XMTPEnvironment = .production
+            let client = try await getClientFor(wallet: wallet, env: env)
+            
+            let conversationData = AppGroupsBridgeService.shared.getXMTPConversationDataFor(topic: topic)
+            let conversationContainer: XMTP.ConversationContainer = try decodeConversationData(from: conversationData)
+            let conversation = conversationContainer.decode(with: client)
+            address = conversation.peerAddress
+            let envelope = XMTP.Envelope.with { envelope in
+                envelope.message = encryptedMessageData
+                envelope.contentTopic = topic
             }
-        case .attachment, .remoteStaticAttachment, .none:
+            let xmtpMessage = try conversation.decode(envelope)
+            let typeID = xmtpMessage.encodedContent.type.typeID
+            let knownType = XMTPEnvironmentNamespace.KnownType(rawValue: typeID)
+            switch knownType {
+            case .text:
+                if let decryptedContent: String = try? xmtpMessage.content() {
+                    message = decryptedContent
+                }
+            case .attachment, .remoteStaticAttachment, .none:
+                Void()
+            }
+        } catch {
             Void()
         }
-        
-        return NotificationDisplayInfo(walletAddress: conversation.peerAddress,
+        return NotificationDisplayInfo(walletAddress: address,
                                        localizedMessage: message)
     }
     
