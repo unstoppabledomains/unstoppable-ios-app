@@ -444,14 +444,18 @@ extension MessagingService: MessagingServiceProtocol {
     
     // Search
     func searchForUsersWith(searchKey: String) async throws -> [MessagingChatUserDisplayInfo] {
-        guard searchKey.isValidAddress() else { return [] }
-        
-        let wallet = searchKey
-        if let userInfo = await loadUserInfoFor(wallet: wallet) {
+        if searchKey.isValidAddress() {
+            let wallet = searchKey
+            if let userInfo = await loadUserInfoFor(wallet: wallet) {
+                return [userInfo]
+            }
+            
+            return [.init(wallet: wallet)]
+        } else if searchKey.isValidDomainName(),
+                  let userInfo = await loadGlobalUserInfoFor(value: searchKey) {
             return [userInfo]
         }
-        
-        return [.init(wallet: wallet)]
+        return []
     }
     
     func searchForChannelsWith(page: Int,
@@ -638,7 +642,8 @@ private extension MessagingService {
         await withTaskGroup(of: MessagingChat.self, body: { group in
             for remoteChat in remoteChats {
                 group.addTask {
-                    if let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
+                    if !self.apiService.capabilities.isRequiredToReloadLastMessage,
+                       let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
                        localChat.isUpToDateWith(otherChat: remoteChat) {
                         return localChat
                     } else {
@@ -741,8 +746,20 @@ private extension MessagingService {
             return MessagingChatUserDisplayInfo(wallet: wallet,
                                                 domainName: domain,
                                                 pfpURL: pfpURL)
+        } else if let userInfo = await loadGlobalUserInfoFor(value: wallet) {
+            return userInfo
         }
         
+        return nil
+    }
+    
+    // Value can be either wallet address or domain name
+    func loadGlobalUserInfoFor(value: String) async -> MessagingChatUserDisplayInfo? {
+        if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: value.lowercased()) {
+            return MessagingChatUserDisplayInfo(wallet: rrInfo.address,
+                                                domainName: rrInfo.name,
+                                                pfpURL: rrInfo.avatarUrl)
+        }
         return nil
     }
     

@@ -47,6 +47,7 @@ struct Constants {
     static let numberOfUnreadMessagesBeforePrefetch: Int = 7
     static let maxImageResolution: CGFloat = 1000
     static let shouldHideBlockedUsersLocally = true
+    static let ensDomainTLD: String = "eth"
     
     #if DEBUG
     static let isTestingMinting: Bool = false

@@ -63,4 +63,5 @@ struct MessagingServiceCapabilities {
     let canContactWithoutProfile: Bool
     let canBlockUsers: Bool
     let isSupportChatsListPagination: Bool
+    let isRequiredToReloadLastMessage: Bool
 }

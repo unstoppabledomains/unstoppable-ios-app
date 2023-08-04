@@ -16,6 +16,7 @@ extension String {
         case polygonScanTransaction(_ transaction: String)
         case deprecatedCoinTLDPage
         case domainProfilePage(domainName: String)
+        case ensDomainProfilePage(domainName: String)
         case openSeaETHAsset(value: String)
         case openSeaPolygonAsset(value: String)
         case writeAppStoreReview(appId: String)
@@ -62,6 +63,8 @@ extension String {
                 return "https://unstoppabledomains.com/blog/coin"
             case .domainProfilePage(let domainName):
                 return NetworkConfig.baseDomainProfileUrl + "\(domainName)"
+            case .ensDomainProfilePage(let domainName):
+                return "https://app.ens.domains/\(domainName)"
             case .openSeaETHAsset(let value):
                 return "https://opensea.io/assets/ethereum/\(value)"
             case .openSeaPolygonAsset(let value):
