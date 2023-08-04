@@ -34,7 +34,7 @@ struct XMTPServiceHelper {
         throw XMTPHelperError.noClientKeys
     }
     
-    func createClientUsing(keysData: Data,
+    static func createClientUsing(keysData: Data,
                            env: XMTPEnvironment) async throws -> XMTP.Client {
         let keys = try PrivateKeyBundle(serializedData: keysData)
         let client = try await XMTP.Client.from(bundle: keys,

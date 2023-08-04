@@ -8,7 +8,7 @@
 import Foundation
 
 struct MessagingAPIServiceHelper {
-    func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
+    static func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
         let wallet = wallet.normalized
         guard let domain = await appContext.dataAggregatorService.getDomainItems().first(where: { $0.ownerWallet == wallet }) else {
             throw MessagingHelperError.noDomainForWallet
@@ -17,7 +17,7 @@ struct MessagingAPIServiceHelper {
         return domain
     }
     
-    func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
+    static func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
         guard let data else {
             throw MessagingHelperError.failedToDecodeServiceData
         }
