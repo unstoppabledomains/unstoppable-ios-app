@@ -222,7 +222,7 @@ fileprivate extension NotificationsService {
             case .chatChannelMessage(let data):
                 return appContext.coreAppCoordinator.isActiveState(.channelOpened(channelId: data.channelId)) ? [] : defaultPresentationOptions
             case .chatXMTPMessage(let data):
-                return defaultPresentationOptions
+                return appContext.coreAppCoordinator.isActiveState(.chatOpened(chatId: data.topic)) ? [] : defaultPresentationOptions
             case .walletConnectRequest:
                 return []
             }

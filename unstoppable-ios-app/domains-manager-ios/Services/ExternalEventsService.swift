@@ -232,8 +232,10 @@ private extension ExternalEventsService {
             let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
             
             return .showChannel(channelId: data.channelId, profile: profile)
-        case .chatXMTPMessage:
-            throw EventsHandlingError.ignoreEvent            
+        case .chatXMTPMessage(let data):
+            let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
+
+            return .showChat(chatId: data.topic, profile: profile)
         }
     }
     
