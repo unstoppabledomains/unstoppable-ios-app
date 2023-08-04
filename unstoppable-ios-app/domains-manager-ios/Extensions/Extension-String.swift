@@ -977,11 +977,7 @@ extension String {
     var isHexNumber: Bool {
         filter(\.isHexDigit).count == count
     }
-    
-    func ethChecksumAddress() -> String {
-        EthereumAddress.toChecksumAddress(self) ?? self
-    }
-    
+  
     var convertedIntoReadableMessage: String {
         if self.droppedHexPrefix.isHexNumber {
             return String(data: Data(self.droppedHexPrefix.hexToBytes()), encoding: .utf8) ?? self

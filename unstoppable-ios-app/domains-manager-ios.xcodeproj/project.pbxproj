@@ -758,6 +758,8 @@
 		C60CA29C2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CA28D2832501D00AB1B36 /* QRCodeServiceProtocol.swift */; };
 		C60CA29D2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60CA28D2832501D00AB1B36 /* QRCodeServiceProtocol.swift */; };
 		C60CB2DA2A7CAF9000663989 /* XMTPEnvironmentNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D3B9CE2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift */; };
+		C60CB2E02A7CB62E00663989 /* web3swift in Frameworks */ = {isa = PBXBuildFile; productRef = C60CB2DF2A7CB62E00663989 /* web3swift */; };
+		C60CB2E12A7CD18500663989 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306B3D6B253DF88200102A76 /* Constants.swift */; };
 		C60D2712295AAE420060635D /* DomainsCollectionUICache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */; };
 		C60D2713295AAE420060635D /* DomainsCollectionUICache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */; };
 		C60D2714295AAE420060635D /* DomainsCollectionUICache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60D2711295AAE420060635D /* DomainsCollectionUICache.swift */; };
@@ -5205,6 +5207,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C65DD4BE2A7CAB1500CAB10C /* XMTP in Frameworks */,
+				C60CB2E02A7CB62E00663989 /* web3swift in Frameworks */,
 				C65DD4C62A7CABC700CAB10C /* Valet in Frameworks */,
 				C6E69FA3288AB821000A8346 /* SVGKit in Frameworks */,
 				C6E69F99288AB6DC000A8346 /* Bugsnag in Frameworks */,
@@ -8530,8 +8533,8 @@
 			children = (
 				C66435BC288E57550098E1B8 /* NotificationServiceExtension.entitlements */,
 				C6E69F8C288A93D3000A8346 /* NotificationService.swift */,
-				C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */,
 				C65DD4BF2A7CAB5400CAB10C /* XMTPPushNotificationsExtensionHelper.swift */,
+				C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */,
 				C6E69FED288AD3FB000A8346 /* Extenstions */,
 				C6E69FEB288AD323000A8346 /* Localizable.strings */,
 				C6E69F8E288A93D3000A8346 /* Info.plist */,
@@ -8880,6 +8883,7 @@
 				C6E69FA2288AB821000A8346 /* SVGKit */,
 				C65DD4BD2A7CAB1500CAB10C /* XMTP */,
 				C65DD4C52A7CABC700CAB10C /* Valet */,
+				C60CB2DF2A7CB62E00663989 /* web3swift */,
 			);
 			productName = NotificationServiceExtension;
 			productReference = C6E69F8A288A93D2000A8346 /* NotificationServiceExtension.appex */;
@@ -12948,6 +12952,7 @@
 				C60CB2DA2A7CAF9000663989 /* XMTPEnvironmentNamespace.swift in Sources */,
 				C65DD4C82A7CAC8500CAB10C /* KeychainXMTPKeysStorage.swift in Sources */,
 				C65DD4CE2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */,
+				C60CB2E12A7CD18500663989 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14004,6 +14009,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 30D89F5926A9EB5500251C2D /* XCRemoteSwiftPackageReference "bugsnag-cocoa" */;
 			productName = Bugsnag;
+		};
+		C60CB2DF2A7CB62E00663989 /* web3swift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 30CE604A26A9DED000E0D29B /* XCRemoteSwiftPackageReference "web3swift" */;
+			productName = web3swift;
 		};
 		C61ECD852A25AB4200E97D70 /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;

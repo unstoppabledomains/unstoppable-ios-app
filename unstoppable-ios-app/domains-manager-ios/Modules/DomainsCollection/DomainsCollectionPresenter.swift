@@ -238,7 +238,7 @@ extension DomainsCollectionPresenter: AppLaunchServiceListener {
 extension DomainsCollectionPresenter: ExternalEventsServiceListener {
     func didReceive(event: ExternalEvent) {
         switch event {
-        case .chatMessage, .chatChannelMessage:
+        case .chatMessage, .chatChannelMessage, .chatXMTPMessage:
             updateUnreadMessagesCounter()
         default:
             return

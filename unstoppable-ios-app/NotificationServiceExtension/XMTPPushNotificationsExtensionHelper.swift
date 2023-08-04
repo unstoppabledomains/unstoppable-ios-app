@@ -9,11 +9,16 @@ import Foundation
 import XMTP
 
 struct XMTPPushNotificationsExtensionHelper {
-    static func parseNotificationMessageFrom(data: ExternalEvent.ChatXMTPMessageEventData) async throws -> String {
+    struct NotificationDisplayInfo {
+        let walletAddress: String
+        let localizedMessage: String
+    }
+    
+    static func parseNotificationMessageFrom(data: ExternalEvent.ChatXMTPMessageEventData) async throws -> NotificationDisplayInfo {
         guard let encryptedMessageData = Data(base64Encoded: Data(data.envelop.utf8)) else { throw XMTPPushNotificationError.failedToGetEncryptedMessageData }
         
         let topic = data.topic
-        let wallet = data.toAddress
+        let wallet = data.toAddress.ethChecksumAddress()
         let env: XMTPEnvironment = .production
         let client = try await getClientFor(wallet: wallet, env: env)
         
@@ -27,16 +32,18 @@ struct XMTPPushNotificationsExtensionHelper {
         let xmtpMessage = try conversation.decode(envelope)
         let typeID = xmtpMessage.encodedContent.type.typeID
         let knownType = XMTPEnvironmentNamespace.KnownType(rawValue: typeID)
-        
+        var message: String = String.Constants.newChatMessage.localized()
         switch knownType {
         case .text:
             if let decryptedContent: String = try? xmtpMessage.content() {
-                return decryptedContent
+                message = decryptedContent
             }
         case .attachment, .remoteStaticAttachment, .none:
             Void()
         }
-        return String.Constants.newChatMessage.localized()
+        
+        return NotificationDisplayInfo(walletAddress: conversation.peerAddress,
+                                       localizedMessage: message)
     }
     
     enum XMTPPushNotificationError: Error {

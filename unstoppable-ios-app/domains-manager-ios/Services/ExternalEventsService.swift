@@ -156,7 +156,7 @@ private extension ExternalEventsService {
                 return
             case .badgeAdded:
                 return
-            case .chatMessage, .chatChannelMessage:
+            case .chatMessage, .chatChannelMessage, .chatXMTPMessage:
                 return
             }
         }
@@ -232,6 +232,8 @@ private extension ExternalEventsService {
             let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
             
             return .showChannel(channelId: data.channelId, profile: profile)
+        case .chatXMTPMessage:
+            throw EventsHandlingError.ignoreEvent            
         }
     }
     

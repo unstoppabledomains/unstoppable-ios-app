@@ -9,8 +9,6 @@ import UserNotifications
 import UIKit
 import Intents
 
-typealias EmptyCallback = ()->()
-
 final class NotificationService: UNNotificationServiceExtension {
 
     private let fileManager = FileManager.default
@@ -77,6 +75,8 @@ private extension NotificationService {
             setChatMessageContent(in: notificationContent, data: data, completion: completion)
         case .chatChannelMessage(let data):
             setChatChannelMessageContent(in: notificationContent, data: data, completion: completion)
+        case .chatXMTPMessage(let data):
+            setChatXMTPMessageContent(in: notificationContent, data: data, completion: completion)
         }
     }
     
@@ -225,6 +225,22 @@ private extension NotificationService {
             completion(nil)
         }
     }
+    
+    func setChatXMTPMessageContent(in notificationContent: UNMutableNotificationContent,
+                                   data: ExternalEvent.ChatXMTPMessageEventData,
+                                   completion: @escaping NotificationContentCallback) {
+        Task {
+            do {
+                let notificationDisplayInfo = try await XMTPPushNotificationsExtensionHelper.parseNotificationMessageFrom(data: data)
+                notificationContent.title = notificationDisplayInfo.walletAddress.walletAddressTruncated
+                notificationContent.body = notificationDisplayInfo.localizedMessage
+                completion(notificationContent)
+            } catch {
+                completion(nil)
+            }
+        }
+    }
+    
 }
 
 // MARK: - Private methods

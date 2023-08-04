@@ -9,6 +9,10 @@ import UIKit
 import Bugsnag
 import Push
 
+var appContext: AppContextProtocol {
+    return AppDelegate.shared.appContext
+}
+
 protocol AppDelegateProtocol {
     var appContext: AppContextProtocol { get }
     func setAppContextType(_ contextType: AppContextType)

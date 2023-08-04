@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import web3swift
 
 /// This extension shared with NotificationServiceExtension
 typealias HexAddress = String
@@ -28,4 +29,9 @@ extension HexAddress {
     var droppedHexPrefix: String {
         return self.hasHexPrefix ? String(self.dropFirst(String.hexPrefix.count)) : self
     }
+    
+    func ethChecksumAddress() -> String {
+        EthereumAddress.toChecksumAddress(self) ?? self
+    }
+    
 }

@@ -20,6 +20,7 @@ enum ExternalEvent: Codable, Hashable {
     case badgeAdded(domainName: String, count: Int)
     case chatMessage(ChatMessageEventData)
     case chatChannelMessage(ChannelMessageEventData)
+    case chatXMTPMessage(ChatXMTPMessageEventData)
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
         guard let eventTypeRaw = json["type"] as? String,
@@ -105,7 +106,7 @@ enum ExternalEvent: Codable, Hashable {
                                                     topic: xmtpTopic,
                                                     envelop: xmtpEnvelope)
                 
-                return nil
+                self = .chatXMTPMessage(data)
             }
         } catch {
             return nil
@@ -114,7 +115,7 @@ enum ExternalEvent: Codable, Hashable {
     
     var analyticsEvent: Analytics.Event {
         switch self {
-        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage:
+        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage:
             return .didReceivePushNotification
         case .wcDeepLink:
             return .didOpenDeepLink
@@ -163,6 +164,9 @@ enum ExternalEvent: Codable, Hashable {
             return [.pushNotification: "chatChannelMessage",
                     .domainName: data.toDomainName,
                     .channelName: data.channelName]
+        case .chatXMTPMessage(let data):
+            return [.pushNotification: "chatXMTPMessage",
+                    .domainName: data.toDomainName]
         }
     }
 }

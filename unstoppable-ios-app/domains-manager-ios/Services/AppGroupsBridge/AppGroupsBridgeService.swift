@@ -38,7 +38,7 @@ enum AppGroupDataType: Codable {
 final class AppGroupsBridgeService {
     
     static let shared: AppGroupsBridgeServiceProtocol = AppGroupsBridgeService()
-    private let appGroupsContainer = UserDefaults(suiteName: "group.unstoppabledomains.manager.extensions")!
+    private let appGroupsContainer = UserDefaults(suiteName: Constants.UnstoppableGroupIdentifier)!
 
     private init() { }
     
