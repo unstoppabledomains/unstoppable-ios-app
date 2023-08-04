@@ -237,7 +237,7 @@ private extension NotificationService {
             let senderWalletAddress = notificationDisplayInfo.walletAddress
             if senderWalletAddress != data.toAddress,
                let rrInfo = try? await loadRRInfoFor(address: senderWalletAddress),
-               let url = pfpURLToUse {
+               let url = rrInfo.pfpURLToUse {
                 loadAvatarFor(source: .url(url),
                               name: rrInfo.name,
                               in: notificationContent,
