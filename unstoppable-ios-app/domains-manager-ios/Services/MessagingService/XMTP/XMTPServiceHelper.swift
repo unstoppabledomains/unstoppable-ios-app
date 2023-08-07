@@ -10,9 +10,8 @@ import XMTP
 
 struct XMTPServiceHelper {
     static func getCurrentXMTPEnvironment() -> XMTPEnvironment {
-        return .production
-//        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
-//        return isTestnetUsed ? .dev : .production
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        return isTestnetUsed ? .dev : .production
     }
     
     static func getClientFor(user: MessagingChatUserProfile,
