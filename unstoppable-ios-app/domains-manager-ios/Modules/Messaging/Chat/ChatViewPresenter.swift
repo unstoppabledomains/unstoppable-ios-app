@@ -198,7 +198,7 @@ extension ChatViewPresenter: MessagingServiceListener {
                     self.messages = self.messages.filter({ !removedIds.contains($0.id) })
                     showData(animated: true, isLoading: isLoadingMessages)
                 }
-            case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated:
+            case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated, .totalUnreadMessagesCountUpdated:
                 return
             }
         }

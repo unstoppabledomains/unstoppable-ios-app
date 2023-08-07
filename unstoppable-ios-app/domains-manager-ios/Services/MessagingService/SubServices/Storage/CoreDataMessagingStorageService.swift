@@ -57,25 +57,6 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     // Messages
-    func getTotalNumberOfUnreadMessages() -> Int {
-        queue.sync {
-            let predicate = NSPredicate(format: "isRead == NO")
-            let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
-                                                          predicate: predicate,
-                                                          in: backgroundContext)) ?? 0
-            Debugger.printInfo(topic: .Messaging, "Total unreadMessagesCount = \(unreadMessagesCount).")
-            return unreadMessagesCount
-        }
-    }
-    
-    func getNumberOfUnreadMessagesIn(chatId: String, userId: String) -> Int {
-        queue.sync {
-            let unreadMessagesCount = fetchNumberOfUnreadMessagesIn(chatId: chatId, userId: userId)
-            Debugger.printInfo(topic: .Messaging, "UnreadMessagesCount in chat: \(chatId) = \(unreadMessagesCount).")
-            return unreadMessagesCount
-        }
-    }
-    
     func getMessagesFor(chat: MessagingChat,
                         before message: MessagingChatMessageDisplayInfo?,
                         limit: Int) async throws -> [MessagingChatMessage] {

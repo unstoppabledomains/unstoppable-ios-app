@@ -15,6 +15,7 @@ final class MessagingService {
     private let storageService: MessagingStorageServiceProtocol
     private let decrypterService: MessagingContentDecrypterService
     private let filesService: MessagingFilesServiceProtocol
+    private let unreadCountingService: MessagingUnreadCountingServiceProtocol
     
     private let dataRefreshManager = MessagingServiceDataRefreshManager()
     private var listenerHolders: [MessagingListenerHolder] = []
@@ -28,6 +29,7 @@ final class MessagingService {
          storageProtocol: MessagingStorageServiceProtocol,
          decrypterService: MessagingContentDecrypterService,
          filesService: MessagingFilesServiceProtocol,
+         unreadCountingService: MessagingUnreadCountingServiceProtocol,
          udWalletsService: UDWalletsServiceProtocol) {
         self.apiService = apiService
         self.channelsApiService = channelsApiService
@@ -35,11 +37,13 @@ final class MessagingService {
         self.storageService = storageProtocol
         self.decrypterService = decrypterService
         self.filesService = filesService
+        self.unreadCountingService = unreadCountingService
         udWalletsService.addListener(self)
         
         storageService.markSendingMessagesAsFailed()
         setSceneActivationListener()
         dataRefreshManager.delegate = self
+        unreadCountingService.totalUnreadMessagesCountUpdated = { [weak self] val in self?.totalUnreadMessagesCountUpdated(val) }
     }
     
 }
@@ -92,7 +96,7 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func isNewMessagesAvailable() async throws -> Bool {
-        let totalNumberOfUnreadMessages = storageService.getTotalNumberOfUnreadMessages()
+        let totalNumberOfUnreadMessages = unreadCountingService.getTotalNumberOfUnreadMessages()
         if totalNumberOfUnreadMessages > 0 {
             return true
         }
@@ -817,7 +821,7 @@ private extension MessagingService {
     }
     
     func notifyReadStatusUpdatedFor(message: MessagingChatMessageDisplayInfo) {
-        let number = storageService.getNumberOfUnreadMessagesIn(chatId: message.chatId, userId: message.userId)
+        let number = unreadCountingService.getNumberOfUnreadMessagesIn(chatId: message.chatId, userId: message.userId)
         notifyListenersChangedDataType(.messageReadStatusUpdated(message, numberOfUnreadMessagesInSameChat: number))
     }
 }
@@ -971,6 +975,7 @@ private extension MessagingService {
                                                                   userId: profile.id))
                     try? await setLastMessageAndNotify(lastMessage: message.displayInfo)
                 }
+                
             }
             
             do {
@@ -1113,6 +1118,10 @@ private extension MessagingService {
     struct GroupChatMessageWithProfile {
         let message: MessagingChatMessage
         let profile: MessagingChatUserProfile
+    }
+    
+    func totalUnreadMessagesCountUpdated(_ havingUnreadMessages: Bool) {
+        notifyListenersChangedDataType(.totalUnreadMessagesCountUpdated(havingUnreadMessages))
     }
 }
 

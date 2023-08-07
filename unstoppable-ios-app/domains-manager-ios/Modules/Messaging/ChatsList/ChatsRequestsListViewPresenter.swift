@@ -94,7 +94,7 @@ extension ChatsRequestsListViewPresenter: MessagingServiceListener {
                 case .channelsSpam:
                     return
                 }
-            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .refreshOfUserProfile:
+            case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .refreshOfUserProfile, .totalUnreadMessagesCountUpdated:
                 return
             }
         }
