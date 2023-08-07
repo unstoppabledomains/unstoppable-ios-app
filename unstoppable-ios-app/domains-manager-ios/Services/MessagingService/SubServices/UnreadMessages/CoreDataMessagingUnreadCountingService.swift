@@ -17,7 +17,7 @@ final class CoreDataMessagingUnreadCountingService: NSObject {
     var totalUnreadMessagesCountUpdated: ((Bool)->())?
     
     init(storageService: CoreDataMessagingStorageService) {
-        context = storageService.viewContext
+        context = storageService.backgroundContext
         super.init()
         
         initializeFetchedResultsController()

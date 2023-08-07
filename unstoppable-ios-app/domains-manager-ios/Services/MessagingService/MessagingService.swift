@@ -96,7 +96,7 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func isNewMessagesAvailable() async throws -> Bool {
-        let totalNumberOfUnreadMessages = storageService.getTotalNumberOfUnreadMessages()
+        let totalNumberOfUnreadMessages = unreadCountingService.getTotalNumberOfUnreadMessages()
         if totalNumberOfUnreadMessages > 0 {
             return true
         }
@@ -821,7 +821,7 @@ private extension MessagingService {
     }
     
     func notifyReadStatusUpdatedFor(message: MessagingChatMessageDisplayInfo) {
-        let number = storageService.getNumberOfUnreadMessagesIn(chatId: message.chatId, userId: message.userId)
+        let number = unreadCountingService.getNumberOfUnreadMessagesIn(chatId: message.chatId, userId: message.userId)
         notifyListenersChangedDataType(.messageReadStatusUpdated(message, numberOfUnreadMessagesInSameChat: number))
     }
 }
