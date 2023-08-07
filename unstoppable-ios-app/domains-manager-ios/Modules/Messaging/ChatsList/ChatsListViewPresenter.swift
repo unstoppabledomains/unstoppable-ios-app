@@ -261,7 +261,7 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                        showData()
                    }
                }
-           case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded:
+           case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .totalUnreadMessagesCountUpdated:
                return
            }
        }

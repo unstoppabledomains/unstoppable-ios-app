@@ -250,9 +250,9 @@ extension DomainsCollectionPresenter: ExternalEventsServiceListener {
 extension DomainsCollectionPresenter: MessagingServiceListener {
     func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
         switch messagingDataType {
-        case .messageReadStatusUpdated(_, let numberOfUnreadMessagesInSameChat):
-            if numberOfUnreadMessagesInSameChat == 0 {
-                updateUnreadMessagesCounter()
+        case .totalUnreadMessagesCountUpdated(let havingUnreadMessages):
+            Task { @MainActor in
+                view?.setUnreadMessagesCount(havingUnreadMessages ? 1 : 0)
             }
         default:
             return 

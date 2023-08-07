@@ -105,6 +105,7 @@ enum MessagingDataType {
     case messageReadStatusUpdated(_ message: MessagingChatMessageDisplayInfo, numberOfUnreadMessagesInSameChat: Int)
     case channelFeedAdded(_ feed: MessagingNewsChannelFeed, channelId: String)
     case refreshOfUserProfile(_ userProfile: MessagingChatUserProfileDisplayInfo, isInProgress: Bool)
+    case totalUnreadMessagesCountUpdated(_ havingUnreadMessages: Bool)
     
     var debugDescription: String {
         switch self {
@@ -124,6 +125,8 @@ enum MessagingDataType {
             return "Channel feed added: \(feed.id) in \(channelId)"
         case .refreshOfUserProfile(let profile, let isInProgress):
             return "Refresh of profile \(profile.id) in progress: \(isInProgress)"
+        case .totalUnreadMessagesCountUpdated(let havingUnreadMessages):
+            return "TotalUnreadMessagesCountUpdated to havingUnreadMessages: \(havingUnreadMessages)"
         }
     }
 }
