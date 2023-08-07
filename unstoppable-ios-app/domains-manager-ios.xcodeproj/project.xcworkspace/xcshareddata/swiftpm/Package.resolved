@@ -248,8 +248,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-protobuf.git",
       "state" : {
-        "revision" : "f25867a208f459d3c5a06935dceb9083b11cd539",
-        "version" : "1.22.0"
+        "revision" : "ce20dc083ee485524b802669890291c0d8090170",
+        "version" : "1.22.1"
       }
     },
     {
@@ -329,7 +329,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/xmtp/xmtp-ios.git",
       "state" : {
-        "revision" : "5d6444b64c81e2b7a3b42827f8369500e242b993"
+        "branch" : "main",
+        "revision" : "7bf1fd0d0cf88a56e766f44b4d099697a9d11603"
       }
     },
     {
