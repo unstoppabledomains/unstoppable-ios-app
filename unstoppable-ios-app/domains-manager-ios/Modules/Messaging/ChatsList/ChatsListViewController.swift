@@ -88,10 +88,8 @@ final class ChatsListViewController: BaseViewController {
         collectionView.contentInset.bottom = Constants.scrollableContentBottomOffset
     }
     
-    override func shouldPopOnBackButton() -> Bool {
-        presenter.viewWillDismiss()
-        return true
-    }
+    deinit { presenter.viewDeinit() }
+
 }
 
 // MARK: - ChatsListViewProtocol

@@ -67,7 +67,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         loadAndShowData()
     }
     
-    func viewWillDismiss() {
+    func viewDeinit() {
         appContext.messagingService.setCurrentUser(nil)
     }
     
