@@ -333,91 +333,42 @@ extension MessagingService: MessagingServiceProtocol {
         return channels
     }
     
-    // TODO: - Break down
     func getFeedFor(channel: MessagingNewsChannel,
+                    cachedOnly: Bool,
                     page: Int,
                     limit: Int) async throws -> [MessagingNewsChannelFeed] {
-        let storedFeed = try await storageService.getChannelsFeedFor(channel: channel,
-                                                                     page: page,
-                                                                     limit: limit)
+        if cachedOnly {
+            let storedFeed = try await storageService.getChannelsFeedFor(channel: channel,
+                                                                         page: page,
+                                                                         limit: limit)
+    
+            return storedFeed
+        }
         
-        func checkIfFirstFeedInChannel(_ feed: inout [MessagingNewsChannelFeed]) {
-            if feed.count < limit,
-               var lastFeed = feed.last {
+        let startTime = Date()
+        var feed = try await channelsApiService.getFeedFor(channel: channel,
+                                                           page: page,
+                                                           limit: limit,
+                                                           isRead: true)
+        Debugger.printTimeSensitiveInfo(topic: .Messaging,
+                                        "to fetch \(feed.count) feed",
+                                        startDate: startTime,
+                                        timeout: 3)
+        // Set first in channel for optimisation
+        if feed.count < limit {
+            if var lastFeed = feed.last {
                 lastFeed.isFirstInChannel = true
                 feed[feed.count - 1] = lastFeed
             }
         }
         
-        func setChannelUpToDate(feed: [MessagingNewsChannelFeed]) async throws {
-            guard channel.isCurrentUserSubscribed else { return }
-            
-            var updatedChannel = channel
-            if page == 1,
-               let latestFeed = feed.first {
-                updatedChannel.lastMessage = latestFeed
-            }
-            try await storageService.replaceChannel(channel, with: updatedChannel)
-            notifyChannelsChanged(userId: channel.userId)
+        // Store if subscribed
+        if channel.isCurrentUserSubscribed {
+            await storageService.saveChannelsFeed(feed,
+                                                  in: channel)
         }
         
-        if channel.lastMessage?.id == storedFeed.first?.id && channel.isCurrentUserSubscribed {
-            /// User has opened channel before and there's no unread messages
-            if storedFeed.count < limit {
-                if storedFeed.last?.isFirstInChannel == true || (storedFeed.isEmpty && page == 1) {
-                    return storedFeed
-                } else {
-                    var loadedFeed = try await channelsApiService.getFeedFor(channel: channel,
-                                                                             page: page,
-                                                                             limit: limit,
-                                                                             isRead: true)
-                    checkIfFirstFeedInChannel(&loadedFeed)
-                    await storageService.saveChannelsFeed(loadedFeed,
-                                                          in: channel)
-                    return loadedFeed
-                }
-            } else {
-                return storedFeed
-            }
-        } else if let latestLocalFeed = storedFeed.first(where: { $0.isRead }) {
-            /// User has already opened channel before, but there's some unread messages
-            var preLoadPage = 1
-            let preLoadLimit = 30
-            var preloadedFeed = [MessagingNewsChannelFeed]()
-            while true {
-                let feed = try await channelsApiService.getFeedFor(channel: channel,
-                                                                   page: preLoadPage,
-                                                                   limit: preLoadLimit,
-                                                                   isRead: false)
-                if let i = feed.firstIndex(where: { $0.id == latestLocalFeed.id }) {
-                    let missedChunk = feed[0..<i]
-                    preloadedFeed.append(contentsOf: missedChunk)
-                    break
-                } else {
-                    preloadedFeed.append(contentsOf: feed)
-                    preLoadPage += 1
-                }
-            }
-            
-            await storageService.saveChannelsFeed(preloadedFeed,
-                                                  in: channel)
-            try await setChannelUpToDate(feed: preloadedFeed)
-            
-            let result = storedFeed + preloadedFeed
-            return result
-        } else {
-            /// User open channel for the first time
-            var loadedFeed = try await channelsApiService.getFeedFor(channel: channel,
-                                                                     page: page,
-                                                                     limit: limit,
-                                                                     isRead: true)
-            checkIfFirstFeedInChannel(&loadedFeed)
-            await storageService.saveChannelsFeed(loadedFeed,
-                                                  in: channel)
-            try await setChannelUpToDate(feed: loadedFeed)
-            
-            return loadedFeed
-        }
+        return feed
     }
     
     func markFeedItem(_ feedItem: MessagingNewsChannelFeed,

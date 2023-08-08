@@ -137,18 +137,12 @@ private extension ChannelViewPresenter {
             do {
                 isLoadingFeed = true
                 view?.setLoading(active: true)
-                let feed = try await loadAndAddFeed(forPage: currentPage)
-
-                if !feed.isEmpty,
-                   !feed[0].isRead,
-                   let firstReadFeedItem = feed.first(where: { $0.isRead }) {
-                    showData(animated: false, isLoading: false, completion: {
-                        let item = self.createSnapshotItemFrom(feedItem: firstReadFeedItem)
-                        self.view?.scrollToItem(item, animated: false)
-                    })
-                } else {
-                    showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
-                }
+                
+                try await loadAndAddFeed(forPage: currentPage, cachedOnly: true)
+                showData(animated: true, isLoading: true)
+        
+                try await loadAndAddFeed(forPage: currentPage)
+                showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     self.isLoadingFeed = false
@@ -161,10 +155,16 @@ private extension ChannelViewPresenter {
     }
     
     @discardableResult
-    func loadAndAddFeed(forPage page: Int) async throws -> [MessagingNewsChannelFeed] {
+    func loadAndAddFeed(forPage page: Int,
+                        cachedOnly: Bool = false) async throws -> [MessagingNewsChannelFeed] {
         let feed = try await appContext.messagingService.getFeedFor(channel: channel,
+                                                                    cachedOnly: cachedOnly,
                                                                     page: page,
                                                                     limit: fetchLimit)
+        if feed.isEmpty,
+           !self.feed.isEmpty {
+            self.feed[self.feed.count - 1].isFirstInChannel = true
+        }
         addFeed(feed)
         return feed
     }

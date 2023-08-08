@@ -72,10 +72,10 @@ extension PushMessagingChannelsAPIService: MessagingChannelsAPIServiceProtocol {
                     limit: Int,
                     isRead: Bool) async throws -> [MessagingNewsChannelFeed] {
         let feed = try await dataProvider.getChannelFeedForUser(channel.userId,
-                                                                   in: channel.channel,
-                                                                   page: page,
-                                                                   limit: limit,
-                                                                   isRead: isRead)
+                                                                in: channel.channel,
+                                                                page: page,
+                                                                limit: limit,
+                                                                isRead: isRead)
         
         return feed
     }
