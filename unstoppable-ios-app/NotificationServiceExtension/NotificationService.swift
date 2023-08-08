@@ -77,6 +77,8 @@ private extension NotificationService {
             setChatChannelMessageContent(in: notificationContent, data: data, completion: completion)
         case .chatXMTPMessage(let data):
             setChatXMTPMessageContent(in: notificationContent, data: data, completion: completion)
+        case .chatXMTPInvite(let data):
+            setChatXMTPInviteContent(in: notificationContent, data: data, completion: completion)
         }
     }
     
@@ -248,6 +250,27 @@ private extension NotificationService {
         }
     }
     
+    func setChatXMTPInviteContent(in notificationContent: UNMutableNotificationContent,
+                                  data: ExternalEvent.ChatXMTPInviteEventData,
+                                  completion: @escaping NotificationContentCallback) {
+        Task {
+//            let notificationDisplayInfo = await XMTPPushNotificationsExtensionHelper.parseNotificationMessageFrom(data: data)
+//            notificationContent.title = notificationDisplayInfo.walletAddress.walletAddressTruncated
+//            notificationContent.body = notificationDisplayInfo.localizedMessage
+//            
+//            let senderWalletAddress = notificationDisplayInfo.walletAddress
+//            if senderWalletAddress != data.toAddress,
+//               let rrInfo = try? await loadRRInfoFor(address: senderWalletAddress),
+//               let url = rrInfo.pfpURLToUse {
+//                loadAvatarFor(source: .url(url),
+//                              name: rrInfo.name,
+//                              in: notificationContent,
+//                              completion: completion)
+//            } else {
+//                completion(notificationContent)
+//            }
+        }
+    }
 }
 
 // MARK: - Private methods

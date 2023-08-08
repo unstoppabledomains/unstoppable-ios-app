@@ -2473,6 +2473,11 @@
 		C672FD7B2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */; };
 		C672FD7C2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */; };
 		C672FD7D2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */; };
+		C673BA2E2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
+		C673BA2F2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
+		C673BA302A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
+		C673BA312A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
+		C673BA322A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
 		C673D57229FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D56F29FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift */; };
 		C673D57329FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D56F29FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift */; };
 		C673D57429FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D56F29FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift */; };
@@ -4713,6 +4718,7 @@
 		C671E3ED2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionDashesHeaderReusableView.swift; sourceTree = "<group>"; };
 		C672FD74286061E300D27078 /* WalletBackUpPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletBackUpPassword.swift; sourceTree = "<group>"; };
 		C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionRouter.swift; sourceTree = "<group>"; };
+		C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPServiceSharedHelper.swift; sourceTree = "<group>"; };
 		C673D56F29FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewAndConfirmTransferViewPresenter.swift; sourceTree = "<group>"; };
 		C673D57029FA3645001CC77C /* ReviewAndConfirmTransferViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewAndConfirmTransferViewController.swift; sourceTree = "<group>"; };
 		C673D57129FA3645001CC77C /* ReviewAndConfirmTransferViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewAndConfirmTransferViewController.xib; sourceTree = "<group>"; };
@@ -8208,6 +8214,7 @@
 			children = (
 				C6D3B9C92A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift */,
 				C6D3B9CE2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift */,
+				C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */,
 				C6D3B9D82A6ECC9B0091B279 /* XMTPEntitiesTransformer.swift */,
 				C64BCB752A6FA61F00EF8B47 /* XMTPServiceHelper.swift */,
 				C61308632A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift */,
@@ -9757,6 +9764,7 @@
 				3004E32726D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */,
 				307B1D392603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */,
 				C6D9E28928533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */,
+				C673BA2E2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
 				C609821C2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C6C9958E289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
 				C62247B5283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
@@ -10729,6 +10737,7 @@
 				C68BEC282A39ABEA00A0B809 /* ChatListCreateProfileCell.swift in Sources */,
 				C65272682A15DEB9001A084C /* KeyboardService.swift in Sources */,
 				C673D57429FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */,
+				C673BA302A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
 				C6ED320F295E8EDE00BC6919 /* NonEmptyArray.swift in Sources */,
 				C68953802834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */,
 				C6ECBF7728D2C6D300E94309 /* BaseMintingTransactionInProgressViewPresenter.swift in Sources */,
@@ -11416,6 +11425,7 @@
 				C624D7B7281BCFC600F55530 /* IconBorderedContainerView.swift in Sources */,
 				C66804C4280D9EC8007E6390 /* DigitalKeyboardViewController.swift in Sources */,
 				C609831D282B707C00546392 /* UINavigationController.swift in Sources */,
+				C673BA312A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
 				C6A2D55B284F3E3200327C47 /* SignTransactionDomainSelectionViewPresenter.swift in Sources */,
 				C652723F2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */,
 				C6D9E29728535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */,
@@ -12213,6 +12223,7 @@
 				C6D0F439283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
 				3004E32826D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */,
 				C6D9E28A28533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */,
+				C673BA2F2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
 				307B1D3A2603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */,
 				C6C9958F289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
 				C609821D2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
@@ -12955,6 +12966,7 @@
 				C66A26E228B3CEAE005470B9 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */,
 				C6E69F97288AB6BE000A8346 /* Debugger.swift in Sources */,
+				C673BA322A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
 				C6E69FEF288AD405000A8346 /* String+Notification.swift in Sources */,
 				C63414DE2A7D335100C80B77 /* GlobalRR.swift in Sources */,
 				C6E69F8D288A93D3000A8346 /* NotificationService.swift in Sources */,

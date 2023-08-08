@@ -21,6 +21,7 @@ enum ExternalEvent: Codable, Hashable {
     case chatMessage(ChatMessageEventData)
     case chatChannelMessage(ChannelMessageEventData)
     case chatXMTPMessage(ChatXMTPMessageEventData)
+    case chatXMTPInvite(ChatXMTPInviteEventData)
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
         guard let eventTypeRaw = json["type"] as? String,
@@ -101,12 +102,20 @@ enum ExternalEvent: Codable, Hashable {
                 let xmtpEnvelope: String = try Self.getValueFrom(json: json, forKey: "xmtpEnvelope", notificationType: eventTypeRaw)
                 let xmtpWalletAddress: String = try Self.getValueFrom(json: json, forKey: "xmtpWalletAddress", notificationType: eventTypeRaw)
                 
-                let data = ChatXMTPMessageEventData(toDomainName: domainName,
-                                                    toAddress: xmtpWalletAddress,
-                                                    topic: xmtpTopic,
-                                                    envelop: xmtpEnvelope)
-                
-                self = .chatXMTPMessage(data)
+                if XMTPServiceSharedHelper.inviterAddressFrom(topic: xmtpTopic) != nil {
+                    let data = ChatXMTPInviteEventData(toDomainName: domainName,
+                                                       toAddress: xmtpWalletAddress,
+                                                       topic: xmtpTopic,
+                                                       envelop: xmtpEnvelope)
+                    self = .chatXMTPInvite(data)
+                } else {
+                    let data = ChatXMTPMessageEventData(toDomainName: domainName,
+                                                        toAddress: xmtpWalletAddress,
+                                                        topic: xmtpTopic,
+                                                        envelop: xmtpEnvelope)
+                    
+                    self = .chatXMTPMessage(data)
+                }
             }
         } catch {
             return nil
@@ -115,7 +124,7 @@ enum ExternalEvent: Codable, Hashable {
     
     var analyticsEvent: Analytics.Event {
         switch self {
-        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage:
+        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite:
             return .didReceivePushNotification
         case .wcDeepLink:
             return .didOpenDeepLink
@@ -167,6 +176,9 @@ enum ExternalEvent: Codable, Hashable {
         case .chatXMTPMessage(let data):
             return [.pushNotification: "chatXMTPMessage",
                     .domainName: data.toDomainName]
+        case .chatXMTPInvite(let data):
+            return [.pushNotification: "chatXMTPInvite",
+                    .wallet: data.toAddress]
         }
     }
 }
@@ -198,6 +210,13 @@ extension ExternalEvent {
     }
     
     struct ChatXMTPMessageEventData: Codable, Hashable {
+        let toDomainName: String
+        let toAddress: String
+        let topic: String
+        let envelop: String
+    }
+    
+    struct ChatXMTPInviteEventData: Codable, Hashable {
         let toDomainName: String
         let toAddress: String
         let topic: String
