@@ -74,7 +74,7 @@ private extension XMTPPushNotificationsExtensionHelper {
     }
     
     static func getClientFor(wallet: String,
-                                     env: XMTPEnvironment) async throws -> XMTP.Client {
+                             env: XMTPEnvironment) async throws -> XMTP.Client {
         if let keysData = KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) {
             return try await createClientUsing(keysData: keysData, env: env)
         }
@@ -82,10 +82,11 @@ private extension XMTPPushNotificationsExtensionHelper {
     }
     
     static func createClientUsing(keysData: Data,
-                                          env: XMTPEnvironment) async throws -> XMTP.Client {
+                                  env: XMTPEnvironment) async throws -> XMTP.Client {
         let keys = try PrivateKeyBundle(serializedData: keysData)
         let client = try await XMTP.Client.from(bundle: keys,
-                                                options: .init(api: .init(env: env)))
+                                                options: .init(api: .init(env: env,
+                                                                          appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
         return client
     }
 }

@@ -24,4 +24,11 @@ struct XMTPServiceSharedHelper {
         return true
     }
     
+    static func getXMTPVersion() -> String {
+        let appName = Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String ?? ""
+        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+        let xmtpVersion = "\(appName)/\(version)(\(build))"
+        return xmtpVersion
+    }
 }

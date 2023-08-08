@@ -41,7 +41,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentXMTPEnvironment()
         let client = try await XMTP.Client.create(account: domain,
                                                   options: .init(api: .init(env: env,
-                                                                            isSecure: true)))
+                                                                            isSecure: true,
+                                                                            appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
 
         try storeKeysDataFromClientIfNeeded(client, domain: domain, env: env)
         let userProfile = XMTPEntitiesTransformer.convertXMTPClientToChatUser(client)

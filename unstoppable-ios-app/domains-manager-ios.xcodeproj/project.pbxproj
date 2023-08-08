@@ -8214,9 +8214,9 @@
 			children = (
 				C6D3B9C92A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift */,
 				C6D3B9CE2A6EC4AE0091B279 /* XMTPEnvironmentNamespace.swift */,
-				C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */,
 				C6D3B9D82A6ECC9B0091B279 /* XMTPEntitiesTransformer.swift */,
 				C64BCB752A6FA61F00EF8B47 /* XMTPServiceHelper.swift */,
+				C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */,
 				C61308632A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift */,
 				C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */,
 			);
