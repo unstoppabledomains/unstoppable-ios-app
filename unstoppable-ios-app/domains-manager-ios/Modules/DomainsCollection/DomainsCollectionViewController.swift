@@ -218,7 +218,8 @@ extension DomainsCollectionViewController: DomainsCollectionViewProtocol {
                 cNavigationController?.updateNavigationBar()
             }
         } else {
-            if navigationItem.rightBarButtonItem == nil {
+            let expectedNumberOfBarButtons = canMessaging ? 2 : 1
+            if navigationItem.rightBarButtonItems?.count != expectedNumberOfBarButtons {
                 addRightBarButtons(canMessaging: canMessaging)
                 cNavigationController?.updateNavigationBar()
             }
