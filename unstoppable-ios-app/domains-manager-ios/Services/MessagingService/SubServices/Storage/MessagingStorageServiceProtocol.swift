@@ -18,9 +18,6 @@ protocol MessagingStorageServiceProtocol {
     func saveUserProfile(_ profile: MessagingChatUserProfile) async
     
     // Messages
-    func getTotalNumberOfUnreadMessages() -> Int
-    func getNumberOfUnreadMessagesIn(chatId: String,
-                                     userId: String) -> Int
     func getMessagesFor(chat: MessagingChat,
                         before message: MessagingChatMessageDisplayInfo?,
                         limit: Int) async throws -> [MessagingChatMessage]

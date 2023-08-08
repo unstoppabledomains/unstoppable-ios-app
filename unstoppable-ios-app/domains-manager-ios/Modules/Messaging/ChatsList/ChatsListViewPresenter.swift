@@ -67,7 +67,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         loadAndShowData()
     }
     
-    func viewWillDismiss() {
+    func viewDeinit() {
         appContext.messagingService.setCurrentUser(nil)
     }
     
@@ -263,7 +263,7 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                        showData()
                    }
                }
-           case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded:
+           case .messageUpdated, .messagesRemoved, .messagesAdded, .channelFeedAdded, .totalUnreadMessagesCountUpdated:
                return
            }
        }
