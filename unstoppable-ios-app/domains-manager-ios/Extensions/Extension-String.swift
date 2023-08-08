@@ -969,6 +969,12 @@ extension String {
         return allTlds.contains(where: { $0.lowercased() == self.lowercased() } )
     }
     
+    func isUDTLD() -> Bool {
+        guard let tld = getTldName() else { return false }
+        
+        return tld.isValidTld() && tld != GlobalConstants.ensDomainTLD
+    }
+    
     func isValidAddress() -> Bool {
         let clean = self.droppedHexPrefix
         return clean.count == 40 && clean.isHexNumber

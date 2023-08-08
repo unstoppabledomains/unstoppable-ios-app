@@ -182,7 +182,9 @@ private extension MintDomainsConfigurationViewPresenter {
     @MainActor
     func updateUIForSelectedWallet() {
         guard let selectedWallet = self.selectedWallet,
-            let walletInfo = WalletDisplayInfo(wallet: selectedWallet, domainsCount: 0) else { return }
+              let walletInfo = WalletDisplayInfo(wallet: selectedWallet,
+                                                 domainsCount: 0,
+                                                 udDomainsCount: 0) else { return }
         
         view?.setWalletInfo(walletInfo, canSelect: wallets.count > 1)
     }

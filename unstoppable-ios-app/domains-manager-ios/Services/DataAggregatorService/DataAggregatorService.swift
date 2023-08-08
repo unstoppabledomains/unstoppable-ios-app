@@ -84,8 +84,10 @@ extension DataAggregatorService: DataAggregatorServiceProtocol {
     func getWalletDisplayInfo(for wallet: UDWallet) async -> WalletDisplayInfo? {
         let domains = await getDomainsDisplayInfo()
         let reverseResolutionDomain = await reverseResolutionDomain(for: wallet)
+        let walletDomains = domains.filter { wallet.owns(domain: $0) }
         return WalletDisplayInfo(wallet: wallet,
-                                 domainsCount: domains.filter( { wallet.owns(domain: $0) } ).count,
+                                 domainsCount: walletDomains.count,
+                                 udDomainsCount: walletDomains.filter { $0.isUDDomain }.count,
                                  reverseResolutionDomain: reverseResolutionDomain)
     }
     

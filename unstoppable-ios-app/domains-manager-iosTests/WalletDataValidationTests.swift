@@ -119,6 +119,6 @@ private extension WalletDataValidationTests {
     }
     
     func walletInfoFor(wallet: UDWallet) -> WalletDisplayInfo {
-        WalletDisplayInfo(wallet: wallet, domainsCount: 0)!
+        WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0)!
     }
 }

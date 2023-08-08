@@ -309,7 +309,7 @@ private extension ChatsListViewPresenter {
     func loadReadyForChattingWalletsOrClose() async throws -> [WalletDisplayInfo] {
         wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
             .compactMap { $0.displayInfo }
-            .filter { $0.domainsCount > 0 }
+            .filter { $0.udDomainsCount > 0 }
             .sorted(by: {
                 if $0.reverseResolutionDomain == nil && $1.reverseResolutionDomain != nil {
                     return false
