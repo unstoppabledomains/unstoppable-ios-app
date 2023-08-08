@@ -12,6 +12,7 @@ final class MessagingService {
     private let apiService: MessagingAPIServiceProtocol
     private let channelsApiService: MessagingChannelsAPIServiceProtocol
     private let webSocketsService: MessagingWebSocketsServiceProtocol
+    private let channelsWebSocketsService: MessagingChannelsWebSocketsServiceProtocol
     private let storageService: MessagingStorageServiceProtocol
     private let decrypterService: MessagingContentDecrypterService
     private let filesService: MessagingFilesServiceProtocol
@@ -26,6 +27,7 @@ final class MessagingService {
     init(apiService: MessagingAPIServiceProtocol,
          channelsApiService: MessagingChannelsAPIServiceProtocol,
          webSocketsService: MessagingWebSocketsServiceProtocol,
+         channelsWebSocketsService: MessagingChannelsWebSocketsServiceProtocol,
          storageProtocol: MessagingStorageServiceProtocol,
          decrypterService: MessagingContentDecrypterService,
          filesService: MessagingFilesServiceProtocol,
@@ -34,6 +36,7 @@ final class MessagingService {
         self.apiService = apiService
         self.channelsApiService = channelsApiService
         self.webSocketsService = webSocketsService
+        self.channelsWebSocketsService = channelsWebSocketsService
         self.storageService = storageProtocol
         self.decrypterService = decrypterService
         self.filesService = filesService
@@ -477,6 +480,7 @@ extension MessagingService: SceneActivationListener {
             refreshMessagingInfoFor(userProfile: currentUser, shouldRefreshUserInfo: false)
         case .background:
             webSocketsService.disconnectAll()
+            channelsWebSocketsService.disconnectAll()
         case .foregroundInactive, .unattached:
             return
         @unknown default:
@@ -500,6 +504,7 @@ private extension MessagingService {
                     setupSocketConnection(profile: profile)
                 } else {
                     webSocketsService.disconnectAll()
+                    channelsWebSocketsService.disconnectAll()
                 }
             } catch { }
         }
@@ -900,6 +905,12 @@ private extension MessagingService {
             do {
                 webSocketsService.disconnectAll()
                 try webSocketsService.subscribeFor(profile: profile,
+                                                   eventCallback: { [weak self] event in
+                    self?.handleWebSocketEvent(event)
+                })
+                
+                channelsWebSocketsService.disconnectAll()
+                try channelsWebSocketsService.subscribeFor(profile: profile,
                                                    eventCallback: { [weak self] event in
                     self?.handleWebSocketEvent(event)
                 })

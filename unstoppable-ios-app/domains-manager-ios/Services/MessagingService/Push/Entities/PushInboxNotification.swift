@@ -13,7 +13,7 @@ struct PushInboxNotification: Codable {
     let sender: String
     let epoch: String
     let payload: Payload
-    let source: String
+    let source: String?
     let etime: String?
     
     enum CodingKeys: String, CodingKey {
@@ -31,8 +31,8 @@ extension PushInboxNotification {
     struct Payload: Codable {
         let data: Data
 //        let recipients: String
-        let notification: Notification
-        let verificationProof: String
+        let notification: Notification?
+        let verificationProof: String?
         
         enum CodingKeys: String, CodingKey {
             case data
@@ -43,18 +43,17 @@ extension PushInboxNotification {
     }
     
     struct Data: Codable {
-        let app: String
-        let sid: String
+        let app: String?
+        let sid: String?
         let url: String?
         let acta: String?
-        let aimg: String
+        let aimg: String?
         let amsg: String
         let asub: String
-        let icon: String
+        let icon: String?
 //        let type: Int?
-        let epoch: String
         let etime: String?
-        let hidden: String
+        let hidden: String?
         let sectype: String?
         let additionalMeta: String?
         
@@ -68,7 +67,6 @@ extension PushInboxNotification {
             case asub
             case icon
 //            case type
-            case epoch
             case etime
             case hidden
             case sectype

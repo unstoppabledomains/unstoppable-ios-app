@@ -2473,11 +2473,6 @@
 		C672FD7B2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */; };
 		C672FD7C2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */; };
 		C672FD7D2860B42100D27078 /* DomainsCollectionRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */; };
-		C673BA2E2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
-		C673BA2F2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
-		C673BA302A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
-		C673BA312A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
-		C673BA322A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
 		C673BA1E2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA1D2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift */; };
 		C673BA1F2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA1D2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift */; };
 		C673BA202A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA1D2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift */; };
@@ -2486,6 +2481,15 @@
 		C673BA252A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA232A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift */; };
 		C673BA262A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA232A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift */; };
 		C673BA272A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA232A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift */; };
+		C673BA2E2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
+		C673BA2F2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
+		C673BA302A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
+		C673BA312A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
+		C673BA322A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */; };
+		C673BA3B2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA3A2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift */; };
+		C673BA3C2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA3A2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift */; };
+		C673BA3D2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA3A2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift */; };
+		C673BA3E2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673BA3A2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift */; };
 		C673D57229FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D56F29FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift */; };
 		C673D57329FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D56F29FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift */; };
 		C673D57429FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C673D56F29FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift */; };
@@ -3932,10 +3936,10 @@
 		C6F9FBDA2A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */; };
 		C6F9FBDB2A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */; };
 		C6F9FBDC2A25C58C00102F81 /* PushMessagingAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */; };
-		C6F9FBDE2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
-		C6F9FBDF2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
-		C6F9FBE02A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
-		C6F9FBE12A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */; };
+		C6F9FBDE2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift */; };
+		C6F9FBDF2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift */; };
+		C6F9FBE02A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift */; };
+		C6F9FBE12A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBDD2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift */; };
 		C6F9FBE32A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */; };
 		C6F9FBE42A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */; };
 		C6F9FBE52A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */; };
@@ -4726,9 +4730,10 @@
 		C671E3ED2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionDashesHeaderReusableView.swift; sourceTree = "<group>"; };
 		C672FD74286061E300D27078 /* WalletBackUpPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletBackUpPassword.swift; sourceTree = "<group>"; };
 		C672FD792860B42100D27078 /* DomainsCollectionRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionRouter.swift; sourceTree = "<group>"; };
-		C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPServiceSharedHelper.swift; sourceTree = "<group>"; };
 		C673BA1D2A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessagingUnreadCountingService.swift; sourceTree = "<group>"; };
 		C673BA232A80E17D001FD763 /* MessagingUnreadCountingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingUnreadCountingServiceProtocol.swift; sourceTree = "<group>"; };
+		C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPServiceSharedHelper.swift; sourceTree = "<group>"; };
+		C673BA3A2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChannelsWebSocketsServiceProtocol.swift; sourceTree = "<group>"; };
 		C673D56F29FA3645001CC77C /* ReviewAndConfirmTransferViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewAndConfirmTransferViewPresenter.swift; sourceTree = "<group>"; };
 		C673D57029FA3645001CC77C /* ReviewAndConfirmTransferViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewAndConfirmTransferViewController.swift; sourceTree = "<group>"; };
 		C673D57129FA3645001CC77C /* ReviewAndConfirmTransferViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewAndConfirmTransferViewController.xib; sourceTree = "<group>"; };
@@ -5096,7 +5101,7 @@
 		C6F9FBCE2A25C41900102F81 /* MessagingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingService.swift; sourceTree = "<group>"; };
 		C6F9FBD32A25C4ED00102F81 /* MessagingChatUserDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserDisplayInfo.swift; sourceTree = "<group>"; };
 		C6F9FBD82A25C58C00102F81 /* PushMessagingAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingAPIService.swift; sourceTree = "<group>"; };
-		C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingWebSocketsService.swift; sourceTree = "<group>"; };
+		C6F9FBDD2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingChannelsWebSocketsService.swift; sourceTree = "<group>"; };
 		C6F9FBE22A25C5C600102F81 /* CoreDataMessagingStorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessagingStorageService.swift; sourceTree = "<group>"; };
 		C6F9FBE72A25CB5800102F81 /* PushMessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessageType.swift; sourceTree = "<group>"; };
 		C6FAFDE528119E0400734E0F /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
@@ -7314,6 +7319,15 @@
 			path = UnreadMessages;
 			sourceTree = "<group>";
 		};
+		C673BA392A82786C001FD763 /* ChannelsWebsockets */ = {
+			isa = PBXGroup;
+			children = (
+				C673BA3A2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift */,
+				C6F9FBDD2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift */,
+			);
+			path = ChannelsWebsockets;
+			sourceTree = "<group>";
+		};
 		C673D56E29FA362D001CC77C /* ReviewAndConfirmTransfer */ = {
 			isa = PBXGroup;
 			children = (
@@ -8654,6 +8668,7 @@
 		C6F9FBB62A25C2F900102F81 /* SubServices */ = {
 			isa = PBXGroup;
 			children = (
+				C673BA392A82786C001FD763 /* ChannelsWebsockets */,
 				C6D3B9B32A6EB85E0091B279 /* ChannelsAPI */,
 				C6538DD12A330F6600B63E84 /* Descryption */,
 				C686BF1B2A5FEE4C0036C7C1 /* Files */,
@@ -8669,7 +8684,6 @@
 			isa = PBXGroup;
 			children = (
 				C6F9FBB72A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift */,
-				C6F9FBDD2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift */,
 				C6F9FBBD2A25C32700102F81 /* MessagingWebSocketEvent.swift */,
 				C64BCB702A6FA59200EF8B47 /* XMTPMessagingWebSocketsService.swift */,
 			);
@@ -10170,6 +10184,7 @@
 				C60610D929A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C669C3A52912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */,
 				C61ECD742A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */,
+				C673BA3B2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */,
 				C66804DD280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */,
 				C6500B4F2A41924700ACAA8C /* ChannelFeedCell.swift in Sources */,
 				309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */,
@@ -10219,7 +10234,7 @@
 				C6AD180F28D319BF0008A479 /* CollectionViewShowHideCell.swift in Sources */,
 				C6C995BE289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C60981E728225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
-				C6F9FBDE2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */,
+				C6F9FBDE2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */,
 				C6F6AF6E28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6A2D598284FA0B200327C47 /* MockWalletConnectService.swift in Sources */,
 				C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */,
@@ -10628,6 +10643,7 @@
 				C6D9E28B28533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */,
 				307F83C7267A339F0070A9A6 /* UDWalletEthereum.swift in Sources */,
 				C6C99590289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
+				C673BA3D2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */,
 				C6124CBC2922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift in Sources */,
 				C6B366D42A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
 				C65271E32A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
@@ -10814,7 +10830,7 @@
 				C6D3B9C12A6EBC2B0091B279 /* PushServiceHelper.swift in Sources */,
 				C6D6E50E2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
 				C666893428114B0E002062B4 /* BaseButton.swift in Sources */,
-				C6F9FBE02A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */,
+				C6F9FBE02A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */,
 				C681092328041325002D780E /* GIFAnimationsService.swift in Sources */,
 				C609825E2823FF7700546392 /* BaseConfirmRecoveryWordsPresenter.swift in Sources */,
 				C6098317282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
@@ -11611,7 +11627,7 @@
 				C63902CA28E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift in Sources */,
 				C6D6E50F2817E66E008C66BB /* BaseAddWalletPresenter.swift in Sources */,
 				C666893528114B0E002062B4 /* BaseButton.swift in Sources */,
-				C6F9FBE12A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */,
+				C6F9FBE12A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */,
 				C681092428041325002D780E /* GIFAnimationsService.swift in Sources */,
 				C609825F2823FF7700546392 /* BaseConfirmRecoveryWordsPresenter.swift in Sources */,
 				C6098318282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
@@ -11684,6 +11700,7 @@
 				C642A6B8284118E800299C6E /* MintingDomainListCell.swift in Sources */,
 				C685A98E2840FD4900E54044 /* ChoosePrimaryDomainViewController.swift in Sources */,
 				C60E9B8A2821193400CD7593 /* WalletsListViewPresenter.swift in Sources */,
+				C673BA3E2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */,
 				C655D027284630A700E80A65 /* DataAggregatorServiceProtocol.swift in Sources */,
 				C6E69FE4288AD264000A8346 /* String+Localization.swift in Sources */,
 				C624D76E281AD2BA00F55530 /* FABButton.swift in Sources */,
@@ -12635,6 +12652,7 @@
 				C60610DA29A5FEDA005DC0D5 /* MockWCRequestsHandlingService.swift in Sources */,
 				C669C3A62912AD4200837F21 /* DomainProfileBadgeCell.swift in Sources */,
 				C61ECD752A20E87100E97D70 /* PushGroupChatDTO.swift in Sources */,
+				C673BA3C2A82789B001FD763 /* MessagingChannelsWebSocketsServiceProtocol.swift in Sources */,
 				C66804DE280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */,
 				C6500B502A41924700ACAA8C /* ChannelFeedCell.swift in Sources */,
 				30AE84E4257836E2003A0142 /* AppDelegate.swift in Sources */,
@@ -12684,7 +12702,7 @@
 				C6C99597289D313D00367362 /* CNavigationController.swift in Sources */,
 				C6C995BF289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C60981E828225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
-				C6F9FBDF2A25C5AF00102F81 /* PushMessagingWebSocketsService.swift in Sources */,
+				C6F9FBDF2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */,
 				C6F6AF6F28A4D4BA00A7B571 /* BlurVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6A2D599284FA0B200327C47 /* MockWalletConnectService.swift in Sources */,
 				C6E041AA2951F3DE0080F8E3 /* EmptyCollectionSectionFooter.swift in Sources */,

@@ -9,14 +9,14 @@ import Foundation
 import SocketIO
 import Push
 
-final class PushMessagingWebSocketsService {
+final class PushMessagingChannelsWebSocketsService {
     
     private var domainNameToConnectionMap: [DomainName : PushConnection] = [:]
     
 }
 
 // MARK: - MessagingWebSocketsServiceProtocol
-extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
+extension PushMessagingChannelsWebSocketsService: MessagingChannelsWebSocketsServiceProtocol {
     func subscribeFor(profile: MessagingChatUserProfile,
                       eventCallback: @escaping MessagingWebSocketEventCallback) throws {
         if let connection = domainNameToConnectionMap[profile.wallet] {
@@ -32,7 +32,7 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
         let pushConnection = try buildPushConnectionFor(profile: profile)
         pushConnection.onAny = { [weak self] event in
             guard let pushEvent = Events(rawValue: event.event) else {
-                Debugger.printInfo(topic: .WebSockets, "Unknowned Push socket event: \(event.event)")
+                Debugger.printInfo(topic: .WebSockets, "Unknown Push socket event: \(event.event)")
                 return
             }
             
@@ -60,7 +60,7 @@ extension PushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
 }
 
 // MARK: - Private methods
-private extension PushMessagingWebSocketsService {
+private extension PushMessagingChannelsWebSocketsService {
     func buildPushConnectionFor(profile: MessagingChatUserProfile) throws -> PushConnection {
         let feedsConnection = try buildConnectionFor(profile: profile, connectionType: .feed)
         let chatsConnection = try buildConnectionFor(profile: profile, connectionType: .chats)
@@ -194,7 +194,7 @@ private extension PushMessagingWebSocketsService {
 }
 
 // MARK: - Private methods
-private extension PushMessagingWebSocketsService {
+private extension PushMessagingChannelsWebSocketsService {
     enum Events: String {
         case connect
         case disconnect
@@ -243,19 +243,20 @@ private extension PushMessagingWebSocketsService {
                 self?.onAny?(event)
             }
             
-            chatsConnection.socketManager.defaultSocket.onAny { [weak self] event in
-                self?.onAny?(event)
-            }
+            // Disabled for now
+//            chatsConnection.socketManager.defaultSocket.onAny { [weak self] event in
+//                self?.onAny?(event)
+//            }
         }
         
         func connect() {
             feedsConnection.connect()
-            chatsConnection.connect()
+//            chatsConnection.connect()
         }
         
         func reconnect() {
             feedsConnection.reconnect()
-            chatsConnection.reconnect()
+//            chatsConnection.reconnect()
         }
         
         func disconnect() {
@@ -266,7 +267,7 @@ private extension PushMessagingWebSocketsService {
 }
 
 // MARK: - Open methods
-extension PushMessagingWebSocketsService {
+extension PushMessagingChannelsWebSocketsService {
     enum PushWebSocketError: String, LocalizedError {
         case failedToCreateEIP155Address
         case failedToGetPayloadData
