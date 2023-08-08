@@ -269,7 +269,9 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                             limit: Int) async throws -> [MessagingNewsChannelFeed] {
         try queue.sync {
             let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
-            let predicate = NSPredicate(format: "channelId == %@", channel.id)
+            let channelPredicate = NSPredicate(format: "channelId == %@", channel.id)
+            let userPredicate = NSPredicate(format: "userId == %@", channel.userId)
+            let predicate = NSCompoundPredicate(type: .and, subpredicates: [channelPredicate, userPredicate])
             let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(predicate: predicate,
                                                                                            sortDescriptions: [timeSortDescriptor],
                                                                                            batchDescription: .init(size: limit,
@@ -798,6 +800,7 @@ private extension CoreDataMessagingStorageService {
         coreDataMessage.isRead = channelFeed.isRead
         coreDataMessage.isFirstInChannel = channelFeed.isFirstInChannel
         coreDataMessage.channelId = channel.id
+        coreDataMessage.userId = channel.userId
         
         return coreDataMessage
     }
