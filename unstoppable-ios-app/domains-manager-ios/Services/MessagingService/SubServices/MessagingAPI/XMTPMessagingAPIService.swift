@@ -28,7 +28,6 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
         let env = getCurrentXMTPEnvironment()
         
-        //TODO: - Check for .canMessage
         let wallet = try domain.getETHAddressThrowing()
         guard KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) != nil else {
             throw XMTPServiceError.userNotCreatedYet
