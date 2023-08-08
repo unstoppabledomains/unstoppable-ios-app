@@ -112,6 +112,8 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
                 await router.showChat(chatId, profile: profile)
             case .showChannel(let channelId, let profile):
                 await router.showChannel(channelId, profile: profile)
+            case .showChatsList(let profile):
+                await router.jumpToChatsList(profile: profile)
             }
         default:
             throw CoordinatorError.notSuitableRoot

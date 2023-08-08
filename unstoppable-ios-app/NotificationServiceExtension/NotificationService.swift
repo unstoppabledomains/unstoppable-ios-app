@@ -253,23 +253,11 @@ private extension NotificationService {
     func setChatXMTPInviteContent(in notificationContent: UNMutableNotificationContent,
                                   data: ExternalEvent.ChatXMTPInviteEventData,
                                   completion: @escaping NotificationContentCallback) {
-        Task {
-//            let notificationDisplayInfo = await XMTPPushNotificationsExtensionHelper.parseNotificationMessageFrom(data: data)
-//            notificationContent.title = notificationDisplayInfo.walletAddress.walletAddressTruncated
-//            notificationContent.body = notificationDisplayInfo.localizedMessage
-//            
-//            let senderWalletAddress = notificationDisplayInfo.walletAddress
-//            if senderWalletAddress != data.toAddress,
-//               let rrInfo = try? await loadRRInfoFor(address: senderWalletAddress),
-//               let url = rrInfo.pfpURLToUse {
-//                loadAvatarFor(source: .url(url),
-//                              name: rrInfo.name,
-//                              in: notificationContent,
-//                              completion: completion)
-//            } else {
-//                completion(notificationContent)
-//            }
-        }
+        notificationContent.title = data.toDomainName
+        notificationContent.body = String.Constants.newChatRequest.localized()
+        loadDomainAvatarFor(domainName: data.toDomainName,
+                            in: notificationContent,
+                            completion: completion)
     }
 }
 

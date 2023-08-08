@@ -102,11 +102,9 @@ enum ExternalEvent: Codable, Hashable {
                 let xmtpEnvelope: String = try Self.getValueFrom(json: json, forKey: "xmtpEnvelope", notificationType: eventTypeRaw)
                 let xmtpWalletAddress: String = try Self.getValueFrom(json: json, forKey: "xmtpWalletAddress", notificationType: eventTypeRaw)
                 
-                if XMTPServiceSharedHelper.inviterAddressFrom(topic: xmtpTopic) != nil {
+                if XMTPServiceSharedHelper.isInvitationTopic(xmtpTopic) {
                     let data = ChatXMTPInviteEventData(toDomainName: domainName,
-                                                       toAddress: xmtpWalletAddress,
-                                                       topic: xmtpTopic,
-                                                       envelop: xmtpEnvelope)
+                                                       toAddress: xmtpWalletAddress)
                     self = .chatXMTPInvite(data)
                 } else {
                     let data = ChatXMTPMessageEventData(toDomainName: domainName,
@@ -219,8 +217,6 @@ extension ExternalEvent {
     struct ChatXMTPInviteEventData: Codable, Hashable {
         let toDomainName: String
         let toAddress: String
-        let topic: String
-        let envelop: String
     }
 }
 

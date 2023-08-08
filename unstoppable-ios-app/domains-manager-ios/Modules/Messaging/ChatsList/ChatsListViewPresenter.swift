@@ -200,6 +200,8 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                 case .default:
                     self.presentOptions = presentOptions
                     return
+                case .showChatsList(let profile):
+                    try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
                 case .showChat(let chatId, let profile):
                     if selectedProfileWalletPair?.profile?.id != profile.id ||
                         !appCoordinator.isActiveState(.chatOpened(chatId: chatId)) {
@@ -285,6 +287,8 @@ private extension ChatsListViewPresenter {
                 switch presentOptions {
                 case .default:
                     try await resolveInitialProfileWith(wallets: wallets)
+                case .showChatsList(let profile):
+                    try await preselectProfile(profile, usingWallets: wallets)
                 case .showChat(let chatId, let profile):
                     try await preselectProfile(profile, usingWallets: wallets)
                     tryAutoOpenChat(chatId, profile: profile)

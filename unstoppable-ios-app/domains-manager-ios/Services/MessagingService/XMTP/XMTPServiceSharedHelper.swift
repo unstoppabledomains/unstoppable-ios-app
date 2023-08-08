@@ -9,19 +9,19 @@ import Foundation
 
 struct XMTPServiceSharedHelper {
     
-    static func inviterAddressFrom(topic: String) -> String? {
+    static func isInvitationTopic(_ topic: String) -> Bool {
         let inviteKeyword = "invite"
         let inviteAddressSeparator = "-"
         
         let topicComponents = topic.components(separatedBy: "/")
         guard let inviteComponent = topicComponents.first(where: { $0.lowercased().contains(inviteKeyword) }),
-              inviteComponent.contains(inviteAddressSeparator) else { return nil }
+              inviteComponent.contains(inviteAddressSeparator) else { return false }
         
         let inviteComponents = inviteComponent.components(separatedBy: inviteAddressSeparator)
         guard inviteComponents.count == 2,
-              inviteComponents.first == inviteKeyword else { return nil }
+              inviteComponents.first == inviteKeyword else { return false }
         
-        return inviteComponents.last
+        return true
     }
     
 }
