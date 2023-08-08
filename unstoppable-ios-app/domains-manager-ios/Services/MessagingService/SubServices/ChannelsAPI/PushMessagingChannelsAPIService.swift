@@ -8,10 +8,24 @@
 import Foundation
 import Push
 
+protocol PushChannelsAPIServiceDataProvider {
+    func getChannelFeedForUser(_ user: String,
+                               in channel: String,
+                               page: Int,
+                               limit: Int,
+                               isRead: Bool) async throws -> [MessagingNewsChannelFeed]
+}
+
 final class PushMessagingChannelsAPIService {
     
     private let pushRESTService = PushRESTAPIService()
     private let pushHelper = PushServiceHelper()
+    
+    let dataProvider: PushChannelsAPIServiceDataProvider
+    
+    init(dataProvider: PushChannelsAPIServiceDataProvider = PushRESTAPIService()) {
+        self.dataProvider = dataProvider
+    }
     
 }
 
@@ -57,12 +71,13 @@ extension PushMessagingChannelsAPIService: MessagingChannelsAPIServiceProtocol {
                     page: Int,
                     limit: Int,
                     isRead: Bool) async throws -> [MessagingNewsChannelFeed] {
-        let feed = try await pushRESTService.getChannelFeedForUser(channel.userId,
+        let feed = try await dataProvider.getChannelFeedForUser(channel.userId,
                                                                    in: channel.channel,
                                                                    page: page,
-                                                                   limit: limit)
+                                                                   limit: limit,
+                                                                   isRead: isRead)
         
-        return feed.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0,isRead: isRead) })
+        return feed
     }
     
     func searchForChannels(page: Int,
