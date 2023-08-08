@@ -353,7 +353,6 @@ extension MessagingService: MessagingServiceProtocol {
             guard channel.isCurrentUserSubscribed else { return }
             
             var updatedChannel = channel
-            updatedChannel.isUpToDate = true
             if page == 1,
                let latestFeed = feed.first {
                 updatedChannel.lastMessage = latestFeed
@@ -362,7 +361,7 @@ extension MessagingService: MessagingServiceProtocol {
             notifyChannelsChanged(userId: channel.userId)
         }
         
-        if channel.isUpToDate && channel.isCurrentUserSubscribed {
+        if channel.lastMessage?.id == storedFeed.first?.id && channel.isCurrentUserSubscribed {
             /// User has opened channel before and there's no unread messages
             if storedFeed.count < limit {
                 if storedFeed.last?.isFirstInChannel == true || (storedFeed.isEmpty && page == 1) {
@@ -882,10 +881,8 @@ private extension MessagingService {
                         if let storedChannel = storedChannels.first(where: { $0.id == channel.id }),
                            let storedLastMessage = storedChannel.lastMessage,
                            storedLastMessage.id == lastMessage.id {
-                            updatedChannel.isUpToDate = true
                             lastMessage.isRead = storedLastMessage.isRead
                         } else {
-                            updatedChannel.isUpToDate = false
                             lastMessage.isRead = true
                             await self.storageService.saveChannelsFeed([lastMessage],
                                                                        in: channel)
@@ -992,7 +989,6 @@ private extension MessagingService {
                         let profile = try storageService.getUserProfileWith(userId: channel.userId)
                         await storageService.saveChannelsFeed([feed], in: channel)
                         channel.lastMessage = feed
-                        channel.isUpToDate = false
                         await storageService.saveChannels([channel], for: profile)
                         notifyListenersChangedDataType(.channelFeedAdded(feed, channelId: channel.id))
                         notifyChannelsChanged(userId: profile.id)

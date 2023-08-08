@@ -739,7 +739,6 @@ private extension CoreDataMessagingStorageService {
                                                blocked: coreDataChannel.blocked ? 1 : 0,
                                                subscriberCount: Int(coreDataChannel.subscriberCount),
                                                unreadMessagesCount: unreadMessagesCount,
-                                               isUpToDate: coreDataChannel.isUpToDate,
                                                isCurrentUserSubscribed: coreDataChannel.isCurrentUserSubscribed,
                                                isSearchResult: false, /// We store only channels that user is opt-in for
                                                lastMessage: lastMessage)
@@ -759,7 +758,6 @@ private extension CoreDataMessagingStorageService {
         coreDataChannel.info = channel.info
         coreDataChannel.url = channel.url
         coreDataChannel.icon = channel.icon
-        coreDataChannel.isUpToDate = channel.isUpToDate
         coreDataChannel.isCurrentUserSubscribed = channel.isCurrentUserSubscribed
         coreDataChannel.verifiedStatus = Int64(channel.verifiedStatus)
         coreDataChannel.blocked = channel.blocked == 1

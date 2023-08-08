@@ -281,7 +281,6 @@ struct PushEntitiesTransformer {
                              blocked: pushChannel.blocked,
                              subscriberCount: pushChannel.subscriber_count,
                              unreadMessagesCount: 0,
-                             isUpToDate: true,
                              isCurrentUserSubscribed: isCurrentUserSubscribed,
                              isSearchResult: isSearchResult)
     }
