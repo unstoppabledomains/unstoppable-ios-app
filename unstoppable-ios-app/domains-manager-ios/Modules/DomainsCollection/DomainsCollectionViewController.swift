@@ -20,7 +20,7 @@ protocol DomainsCollectionViewProtocol: BaseViewControllerProtocol {
     func setNumberOfSteps(_ numberOfSteps: Int)
     func showToast(_ toast: Toast)
     func showMintingDomains(_ mintingDomains: [DomainDisplayInfo])
-    func setAddButtonHidden(_ isHidden: Bool)
+    func setAddButtonHidden(_ isHidden: Bool, canMessaging: Bool)
     func setUnreadMessagesCount(_ unreadMessagesCount: Int)
 }
 
@@ -210,15 +210,16 @@ extension DomainsCollectionViewController: DomainsCollectionViewProtocol {
         setTitleViewFor(cardState: cardState)
     }
     
-    func setAddButtonHidden(_ isHidden: Bool) {
+    func setAddButtonHidden(_ isHidden: Bool,
+                            canMessaging: Bool) {
         if isHidden {
-            if navigationItem.rightBarButtonItem != nil {
-                navigationItem.rightBarButtonItem = nil
+            if navigationItem.rightBarButtonItems != nil {
+                navigationItem.rightBarButtonItems = nil
                 cNavigationController?.updateNavigationBar()
             }
         } else {
             if navigationItem.rightBarButtonItem == nil {
-                addRightBarButtons()
+                addRightBarButtons(canMessaging: canMessaging)
                 cNavigationController?.updateNavigationBar()
             }
         }
@@ -675,7 +676,7 @@ private extension DomainsCollectionViewController {
         setupEmptyView()
         setupPageViewController()
         setupNavBar()
-        setAddButtonHidden(true)
+        setAddButtonHidden(true, canMessaging: false)
         scanButton.setTitle(String.Constants.login.localized(), image: .scanQRIcon20)
         scanButton.applyFigmaShadow(style: .medium)
         setScanButtonHidden(true)
@@ -686,24 +687,27 @@ private extension DomainsCollectionViewController {
     }
     
     func setupNavBar() {
-        addRightBarButtons()
         titleView = DomainsCollectionTitleView(frame: .zero)
         titleView.delegate = self
         setTitleViewFor(cardState: cardState)
         navigationItem.titleView = titleView
     }
     
-    func addRightBarButtons() {
+    func addRightBarButtons(canMessaging: Bool) {
         let addBarButton = UIBarButtonItem(image: .plusIconNav, style: .plain, target: self, action: #selector(didTapAddButton))
         addBarButton.tintColor = .foregroundDefault
         addBarButton.accessibilityIdentifier = "Domains Collection Plus Button"
         
-        let messagingButton = DomainsCollectionMessagingBarButton()
-        messagingButton.pressedCallback = { [weak self] in self?.didTapMessagingButton() }
-        self.messagingButton = messagingButton
-        let messagingBarButton = UIBarButtonItem(customView: messagingButton)
-        
-        navigationItem.rightBarButtonItems = [addBarButton, messagingBarButton]
+        if canMessaging {
+            let messagingButton = DomainsCollectionMessagingBarButton()
+            messagingButton.pressedCallback = { [weak self] in self?.didTapMessagingButton() }
+            self.messagingButton = messagingButton
+            let messagingBarButton = UIBarButtonItem(customView: messagingButton)
+            
+            navigationItem.rightBarButtonItems = [addBarButton, messagingBarButton]
+        } else {
+            navigationItem.rightBarButtonItems = [addBarButton]
+        }
     }
 
     func addSettingsButton() {
