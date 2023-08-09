@@ -243,7 +243,7 @@ private extension PushMessagingChannelsWebSocketsService {
                 self?.onAny?(event)
             }
             
-            // Disabled for now
+            // MARK: - Disabled until we need Push messaging functionality
 //            chatsConnection.socketManager.defaultSocket.onAny { [weak self] event in
 //                self?.onAny?(event)
 //            }
