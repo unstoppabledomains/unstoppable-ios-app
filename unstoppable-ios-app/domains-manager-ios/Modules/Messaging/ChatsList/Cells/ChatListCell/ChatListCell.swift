@@ -88,6 +88,8 @@ extension ChatListCell {
         setTimeText(nil)
         if let rrDomain = userInfo.rrDomainName {
             setLastMessageText("\(rrDomain) - Reverse Resolution domain")
+        } else {
+            setLastMessageText("")            
         }
         chevron.isHidden = false
     }
