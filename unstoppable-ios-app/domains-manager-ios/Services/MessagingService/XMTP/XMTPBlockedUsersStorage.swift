@@ -19,9 +19,7 @@ struct XMTPBlockedUsersStorage {
     private init() { }
     
     private func getBlockedUsersList() -> [XMTPBlockedUserDescription] {
-        guard let data = UserDefaults.standard.object(forKey: key.rawValue) as? Data,
-              let usersList = XMTPBlockedUserDescription.objectsFromData(data) else { return [] }
-        return usersList
+        AppGroupsBridgeService.shared.getXMTPBlockedUsersList()
     }
     
     func isOtherUserBlockedInChat(_ chat: MessagingChat) -> Bool {
@@ -55,13 +53,7 @@ struct XMTPBlockedUsersStorage {
     }
     
     private func set(newList: [XMTPBlockedUserDescription]) {
-        let data = newList.jsonData()
-        UserDefaults.standard.set(data, forKey: key.rawValue)
+        AppGroupsBridgeService.shared.setXMTPBlockedUsersList(newList)
     }
     
-}
-
-struct XMTPBlockedUserDescription: Hashable, Codable {
-    let userId: String
-    let blockedUserId: String
 }
