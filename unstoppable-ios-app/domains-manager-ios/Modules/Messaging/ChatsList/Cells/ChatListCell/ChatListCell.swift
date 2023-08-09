@@ -87,7 +87,7 @@ extension ChatListCell {
 
         setTimeText(nil)
         if let rrDomain = userInfo.rrDomainName {
-            setLastMessageText("\(rrDomain) - Reverse Resolution domain")
+            setLastMessageText(String.Constants.messagingSearchResultNotRRDomain.localized(rrDomain))
         } else {
             setLastMessageText("")            
         }
