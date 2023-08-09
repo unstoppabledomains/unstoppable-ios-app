@@ -88,6 +88,10 @@ final class ChatsListViewController: BaseViewController {
         collectionView.contentInset.bottom = Constants.scrollableContentBottomOffset
     }
     
+    override func shouldPopOnBackButton() -> Bool {
+        !searchBar.isEditing
+    }
+    
     deinit { presenter.viewDeinit() }
 
 }
@@ -212,6 +216,7 @@ private extension ChatsListViewController {
         cNavigationBar?.setSearchActive(isActive, animated: true)
         if !isActive {
             searchMode = .default
+            collectionView.setContentOffset(CGPoint(x: 0, y: -collectionView.contentInset.top), animated: true)
         }
     }
     
