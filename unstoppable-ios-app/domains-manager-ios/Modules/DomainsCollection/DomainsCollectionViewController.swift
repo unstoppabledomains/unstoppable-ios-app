@@ -20,7 +20,7 @@ protocol DomainsCollectionViewProtocol: BaseViewControllerProtocol {
     func setNumberOfSteps(_ numberOfSteps: Int)
     func showToast(_ toast: Toast)
     func showMintingDomains(_ mintingDomains: [DomainDisplayInfo])
-    func setAddButtonHidden(_ isHidden: Bool, canMessaging: Bool)
+    func setAddButtonHidden(_ isHidden: Bool, isMessagingAvailable: Bool)
     func setUnreadMessagesCount(_ unreadMessagesCount: Int)
 }
 
@@ -211,16 +211,16 @@ extension DomainsCollectionViewController: DomainsCollectionViewProtocol {
     }
     
     func setAddButtonHidden(_ isHidden: Bool,
-                            canMessaging: Bool) {
+                            isMessagingAvailable: Bool) {
         if isHidden {
             if navigationItem.rightBarButtonItems != nil {
                 navigationItem.rightBarButtonItems = nil
                 cNavigationController?.updateNavigationBar()
             }
         } else {
-            let expectedNumberOfBarButtons = canMessaging ? 2 : 1
+            let expectedNumberOfBarButtons = isMessagingAvailable ? 2 : 1
             if navigationItem.rightBarButtonItems?.count != expectedNumberOfBarButtons {
-                addRightBarButtons(canMessaging: canMessaging)
+                addRightBarButtons(isMessagingAvailable: isMessagingAvailable)
                 cNavigationController?.updateNavigationBar()
             }
         }
@@ -677,7 +677,7 @@ private extension DomainsCollectionViewController {
         setupEmptyView()
         setupPageViewController()
         setupNavBar()
-        setAddButtonHidden(true, canMessaging: false)
+        setAddButtonHidden(true, isMessagingAvailable: false)
         scanButton.setTitle(String.Constants.login.localized(), image: .scanQRIcon20)
         scanButton.applyFigmaShadow(style: .medium)
         setScanButtonHidden(true)
@@ -694,12 +694,12 @@ private extension DomainsCollectionViewController {
         navigationItem.titleView = titleView
     }
     
-    func addRightBarButtons(canMessaging: Bool) {
+    func addRightBarButtons(isMessagingAvailable: Bool) {
         let addBarButton = UIBarButtonItem(image: .plusIconNav, style: .plain, target: self, action: #selector(didTapAddButton))
         addBarButton.tintColor = .foregroundDefault
         addBarButton.accessibilityIdentifier = "Domains Collection Plus Button"
         
-        if canMessaging {
+        if isMessagingAvailable {
             let messagingButton = DomainsCollectionMessagingBarButton()
             messagingButton.pressedCallback = { [weak self] in self?.didTapMessagingButton() }
             self.messagingButton = messagingButton
