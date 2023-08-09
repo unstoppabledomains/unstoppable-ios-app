@@ -236,7 +236,7 @@ private extension XMTPMessagingAPIService {
             do {
                 let env = getCurrentXMTPEnvironment()
                 let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
-                let topic = getXMTPConversationTopicFromChat(chat) // Topic
+                let topic = getXMTPConversationTopicFromChat(chat)
                 let topics = [topic]
                 if isSubscribed {
                     try await XMTPPushNotificationsHelper.subscribeForTopics(topics, by: client)

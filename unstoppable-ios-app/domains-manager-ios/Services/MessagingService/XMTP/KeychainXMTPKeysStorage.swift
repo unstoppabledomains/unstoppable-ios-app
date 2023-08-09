@@ -24,9 +24,9 @@ struct KeychainXMTPKeysStorage: PrivateKeyStorage, KeychainXMTPKeysStorageProtoc
     
     private let xmtpPrefix = "xmtp_"
     private static let groupIdentifierWithoutGroupPrefix = Constants.UnstoppableGroupIdentifier
-        .components(separatedBy: ".")
+        .components(separatedBy: .dotSeparator)
         .dropFirst()
-        .joined(separator: ".")
+        .joined(separator: .dotSeparator)
     
     private init() {
         valet = Valet.sharedGroupValet(with: SharedGroupIdentifier(groupPrefix: "group",
