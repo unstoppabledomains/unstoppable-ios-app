@@ -29,6 +29,8 @@ protocol MessagingStorageServiceProtocol {
     func deleteMessage(_ message: MessagingChatMessageDisplayInfo)
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool) throws
+    func markAllMessagesIn(chat: MessagingChat,
+                           isRead: Bool) async throws
     func markSendingMessagesAsFailed()
     
     // Chats

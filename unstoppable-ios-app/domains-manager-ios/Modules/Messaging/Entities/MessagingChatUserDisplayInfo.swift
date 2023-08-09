@@ -8,7 +8,7 @@
 import Foundation
 
 struct MessagingChatUserDisplayInfo: Hashable {
-    let wallet: String
+    var wallet: String
     var domainName: DomainName? = nil
     var pfpURL: URL?
     

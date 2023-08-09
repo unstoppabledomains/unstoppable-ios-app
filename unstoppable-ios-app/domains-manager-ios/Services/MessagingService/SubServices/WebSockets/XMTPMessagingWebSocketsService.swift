@@ -12,7 +12,6 @@ final class XMTPMessagingWebSocketsService {
     typealias ConversationStream = AsyncThrowingStream<Conversation, Error>
     typealias MessagesStream = AsyncThrowingStream<DecodedMessage, Error>
     
-    private let xmtpHelper = XMTPServiceHelper()
     private var listeningProfileId: String?
 }
 
@@ -23,8 +22,8 @@ extension XMTPMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
             do {
                 listeningProfileId = profile.id
                 let profileId = profile.id
-                let env = xmtpHelper.getCurrentXMTPEnvironment()
-                let client = try await xmtpHelper.getClientFor(user: profile, env: env)
+                let env = XMTPServiceHelper.getCurrentXMTPEnvironment()
+                let client = try await XMTPServiceHelper.getClientFor(user: profile, env: env)
                 
                 listenForConversations(in: client, for: profileId, eventCallback: eventCallback)
 

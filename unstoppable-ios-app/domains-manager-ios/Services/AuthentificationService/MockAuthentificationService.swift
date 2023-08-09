@@ -28,6 +28,10 @@ final class MockAuthentificationService {
 
 // MARK: - AuthentificationServiceProtocol
 extension MockAuthentificationService: AuthentificationServiceProtocol {
+    var biometricUIProcessingTime: TimeInterval {
+        0.1
+    }
+    
     var biometricType: LABiometryType {
         biometricTypeToUse
     }

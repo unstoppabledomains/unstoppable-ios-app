@@ -9,8 +9,6 @@ import UserNotifications
 import UIKit
 import Intents
 
-typealias EmptyCallback = ()->()
-
 final class NotificationService: UNNotificationServiceExtension {
 
     private let fileManager = FileManager.default
@@ -27,9 +25,13 @@ final class NotificationService: UNNotificationServiceExtension {
            let event = ExternalEvent(pushNotificationPayload: bestAttemptContent.userInfo) {
             
             set(notificationContent: bestAttemptContent, for: event, completion: { content in
-                let notificationContent = content ?? bestAttemptContent
-                (notificationContent as? UNMutableNotificationContent)?.sound = .default
-                contentHandler(notificationContent)
+                if let content {
+                    (content as? UNMutableNotificationContent)?.sound = .default
+                    contentHandler(content)
+                } else {
+                    contentHandler(bestAttemptContent)
+//                    contentHandler(UNNotificationContent()) // TODO: - Ignore notification. Enable when filtering entitlement is added to the project
+                }
             })
         } else if let bestAttemptContent = bestAttemptContent {
             contentHandler(bestAttemptContent)
@@ -77,6 +79,10 @@ private extension NotificationService {
             setChatMessageContent(in: notificationContent, data: data, completion: completion)
         case .chatChannelMessage(let data):
             setChatChannelMessageContent(in: notificationContent, data: data, completion: completion)
+        case .chatXMTPMessage(let data):
+            setChatXMTPMessageContent(in: notificationContent, data: data, completion: completion)
+        case .chatXMTPInvite(let data):
+            setChatXMTPInviteContent(in: notificationContent, data: data, completion: completion)
         }
     }
     
@@ -225,6 +231,41 @@ private extension NotificationService {
             completion(nil)
         }
     }
+    
+    func setChatXMTPMessageContent(in notificationContent: UNMutableNotificationContent,
+                                   data: ExternalEvent.ChatXMTPMessageEventData,
+                                   completion: @escaping NotificationContentCallback) {
+        Task {
+            guard let notificationDisplayInfo = await XMTPPushNotificationsExtensionHelper.parseNotificationMessageFrom(data: data) else {
+                completion(nil)
+                return
+            }
+            notificationContent.title = notificationDisplayInfo.walletAddress.walletAddressTruncated
+            notificationContent.body = notificationDisplayInfo.localizedMessage
+            
+            let senderWalletAddress = notificationDisplayInfo.walletAddress
+            if senderWalletAddress != data.toAddress,
+               let rrInfo = try? await loadRRInfoFor(address: senderWalletAddress),
+               let url = rrInfo.pfpURLToUse {
+                loadAvatarFor(source: .url(url),
+                              name: rrInfo.name,
+                              in: notificationContent,
+                              completion: completion)
+            } else {
+                completion(notificationContent)
+            }
+        }
+    }
+    
+    func setChatXMTPInviteContent(in notificationContent: UNMutableNotificationContent,
+                                  data: ExternalEvent.ChatXMTPInviteEventData,
+                                  completion: @escaping NotificationContentCallback) {
+        notificationContent.title = data.toDomainName
+        notificationContent.body = String.Constants.newChatRequest.localized()
+        loadDomainAvatarFor(domainName: data.toDomainName,
+                            in: notificationContent,
+                            completion: completion)
+    }
 }
 
 // MARK: - Private methods
@@ -261,6 +302,53 @@ private extension NotificationService {
         }
     }
 
+    func loadRRInfoFor(address: String) async throws -> GlobalRR? {
+        do {
+            let url = buildRRInfoURLFor(address: address)
+            let urlRequest = URLRequest(url: url)
+            let (data, response) = try await makeURLRequest(urlRequest)
+
+            if response.statusCode == 404 {
+                return nil // 404 means no RR domain or ENS domain
+            }
+            let rrInfo = try JSONDecoder().decode(GlobalRR.self, from: data)
+            return rrInfo
+        } catch {
+            throw error
+        }
+    }
+    
+    func buildRRInfoURLFor(address: String) -> URL {
+        URL(string: "\(NetworkConfig.baseProfileAPIUrl)/profile/resolve/\(address)")!
+    }
+    
+    func makeURLRequest(_ urlRequest: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        try await withCheckedThrowingContinuation { continuation in
+            makeURLRequest(urlRequest) { result in
+                switch result {
+                case .success(let tuple):
+                    continuation.resume(with: .success(tuple))
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    func makeURLRequest(_ urlRequest: URLRequest, completion: @escaping ((Result<(Data, HTTPURLResponse), Error>)->())) {
+        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            if let data,
+               let response = response as? HTTPURLResponse {
+                completion(.success((data, response)))
+            } else if let error {
+                completion(.failure(error))
+            } else {
+                completion(.failure(NSError(domain: "notification.extension", code: 1)))
+            }
+        }
+        task.resume()
+    }
+    
     func loadDomainAvatarFor(domainName: String,
                              in notificationContent: UNMutableNotificationContent,
                              completion: @escaping NotificationContentCallback) {
@@ -313,5 +401,11 @@ private extension NotificationService {
         //                        intent.setImage(avatar, forParameterNamed: \.sender)
 
         return intent
+    }
+    
+    struct NetworkConfig {
+        static var baseProfileAPIUrl: String {
+            return "https://api.unstoppabledomains.com"
+        }
     }
 }

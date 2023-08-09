@@ -10,12 +10,12 @@ import XMTP
 
 final class XMTPMessagingAPIService {
     
-    private let messagingHelper = MessagingAPIServiceHelper()
-    private let xmtpHelper = XMTPServiceHelper()
+    private let blockedUsersStorage = XMTPBlockedUsersStorage.shared
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
-                                                    canBlockUsers: false,
+                                                    canBlockUsers: true,
                                                     isSupportChatsListPagination: false,
                                                     isRequiredToReloadLastMessage: true)
+    
     init() {
         Client.register(codec: AttachmentCodec())
         Client.register(codec: RemoteAttachmentCodec())
@@ -28,7 +28,6 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
         let env = getCurrentXMTPEnvironment()
         
-        //TODO: - Check for .canMessage
         let wallet = try domain.getETHAddressThrowing()
         guard KeychainXMTPKeysStorage.instance.getKeysDataFor(identifier: wallet, env: env) != nil else {
             throw XMTPServiceError.userNotCreatedYet
@@ -41,7 +40,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentXMTPEnvironment()
         let client = try await XMTP.Client.create(account: domain,
                                                   options: .init(api: .init(env: env,
-                                                                            isSecure: true)))
+                                                                            isSecure: true,
+                                                                            appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
 
         try storeKeysDataFromClientIfNeeded(client, domain: domain, env: env)
         let userProfile = XMTPEntitiesTransformer.convertXMTPClientToChatUser(client)
@@ -56,16 +56,20 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     
     func getChatsListForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
         let env = getCurrentXMTPEnvironment()
-        let client = try await xmtpHelper.getClientFor(user: user, env: env)
+        let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         let conversations = try await client.conversations.list()
+        let chats = conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0,
+                                                                                             userId: user.id,
+                                                                                             userWallet: user.wallet,
+                                                                                             isApproved: true) })
+        let blockedUsersStorage = self.blockedUsersStorage
         Task.detached {
-            try? await XMTPPush.shared.subscribe(topics: conversations.map(\.topic))
+            let notBlockedChats = chats.filter({ !blockedUsersStorage.isOtherUserBlockedInChat($0) })
+            let topicsToSubscribeForPN = notBlockedChats.map { self.getXMTPConversationTopicFromChat($0) }
+            try? await XMTPPushNotificationsHelper.subscribeForTopics(topicsToSubscribeForPN, by: client)
         }
         
-        return conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0,
-                                                                                        userId: user.id,
-                                                                                        userWallet: user.wallet,
-                                                                                        isApproved: true) })
+        return chats
     }
     
     func getChatRequestsForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
@@ -73,17 +77,38 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
-        .unblocked
+        let isOtherUserBlocked = blockedUsersStorage.isOtherUserBlockedInChat(chat)
+        if isOtherUserBlocked {
+            return .otherUserIsBlocked
+        } else {
+            return .unblocked
+        }
     }
     
     func setUser(in chat: MessagingChat, blocked: Bool, by user: MessagingChatUserProfile) async throws {
-        throw XMTPServiceError.unsupportedAction
+        switch chat.displayInfo.type {
+        case .private(let details):
+            let userId = user.displayInfo.wallet
+            let otherUserId = details.otherUser.wallet
+            let blockedUserDescription = XMTPBlockedUserDescription(userId: userId,
+                                                                    blockedUserId: otherUserId)
+            if blocked {
+                blockedUsersStorage.addBlockedUser(blockedUserDescription)
+            } else {
+                blockedUsersStorage.removeBlockedUser(blockedUserDescription)
+            }
+            setSubscribed(!blocked,
+                          toChat: chat,
+                          by: user)
+        case .group:
+            throw XMTPServiceError.unsupportedAction
+        }
     }
     
     func isAbleToContactAddress(_ address: String,
                                 by user: MessagingChatUserProfile) async throws -> Bool {
         let env = getCurrentXMTPEnvironment()
-        let client = try await xmtpHelper.getClientFor(user: user, env: env)
+        let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         return try await client.canMessage(address.ethChecksumAddress())
     }
     
@@ -95,7 +120,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                             for user: MessagingChatUserProfile,
                             filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
         let env = getCurrentXMTPEnvironment()
-        let client = try await xmtpHelper.getClientFor(user: user, env: env)
+        let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         let conversation = try getXMTPConversationFromChat(chat, client: client )
         let start = Date()
         let messages = try await conversation.messages(limit: fetchLimit, before: message?.displayInfo.time)
@@ -124,7 +149,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                      by user: MessagingChatUserProfile,
                      filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
         let env = getCurrentXMTPEnvironment()
-        let client = try await xmtpHelper.getClientFor(user: user, env: env)
+        let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         let conversation = try getXMTPConversationFromChat(chat, client: client )
         return try await sendMessage(messageType,
                                      in: conversation,
@@ -134,7 +159,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType, to userInfo: MessagingChatUserDisplayInfo, by user: MessagingChatUserProfile, filesService: MessagingFilesServiceProtocol) async throws -> (MessagingChat, MessagingChatMessage) {
         let env = getCurrentXMTPEnvironment()
-        let client = try await xmtpHelper.getClientFor(user: user, env: env)
+        let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         let conversation = try await client.conversations.newConversation(with: userInfo.getETHWallet())
         guard let chat = XMTPEntitiesTransformer.convertXMTPChatToChat(conversation,
                                                                        userId: user.id,
@@ -170,7 +195,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
 private extension XMTPMessagingAPIService {
     func getXMTPConversationFromChat(_ chat: MessagingChat,
                                      client: XMTP.Client) throws -> XMTP.Conversation {
-        let metadata: XMTPEnvironmentNamespace.ChatServiceMetadata = try messagingHelper.decodeServiceMetadata(from: chat.serviceMetadata)
+        let metadata: XMTPEnvironmentNamespace.ChatServiceMetadata = try MessagingAPIServiceHelper.decodeServiceMetadata(from: chat.serviceMetadata)
         return metadata.encodedContainer.decode(with: client)
     }
     
@@ -203,6 +228,26 @@ private extension XMTPMessagingAPIService {
         
         return message
     }
+    
+    func setSubscribed(_ isSubscribed: Bool,
+                       toChat chat: MessagingChat,
+                       by user: MessagingChatUserProfile) {
+        Task {
+            do {
+                let env = getCurrentXMTPEnvironment()
+                let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
+                let topic = getXMTPConversationTopicFromChat(chat)
+                let topics = [topic]
+                if isSubscribed {
+                    try await XMTPPushNotificationsHelper.subscribeForTopics(topics, by: client)
+                } else {
+                    try await XMTPPushNotificationsHelper.unsubscribeFromTopics(topics, by: client)
+                }
+            } catch {
+                Debugger.printFailure("Failed to set subscribed: \(isSubscribed) for XMTP topics")
+            }
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -220,11 +265,11 @@ private extension XMTPMessagingAPIService {
     }
     
     func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
-        try await messagingHelper.getAnyDomainItem(for: wallet)
+        try await MessagingAPIServiceHelper.getAnyDomainItem(for: wallet)
     }
     
     func getCurrentXMTPEnvironment() -> XMTPEnvironment {
-        xmtpHelper.getCurrentXMTPEnvironment()
+        XMTPServiceHelper.getCurrentXMTPEnvironment()
     }
     
     func sendImageAttachment(data: Data,
@@ -274,6 +319,10 @@ private extension XMTPMessagingAPIService {
         let response = try Web3StorageResponse.objectFromDataThrowing(responseData)
         
         return "https://\(response.cid).ipfs.w3s.link"
+    }
+    
+    func getXMTPConversationTopicFromChat(_ chat: MessagingChat) -> String {
+        chat.displayInfo.id // XMTP Chat's topic = chat's id
     }
 }
 

@@ -331,12 +331,6 @@ extension NetworkService {
         return response.meta.owner
     }
     
-    struct GlobalRR: Codable {
-        let address: String
-        let name: String?
-        let avatarUrl: URL?
-    }
-    
     /// This function will return UD/ENS/Null name and corresponding PFP if available OR throw 404
     func fetchGlobalReverseResolution(for address: HexAddress) async throws -> GlobalRR? {
         do {

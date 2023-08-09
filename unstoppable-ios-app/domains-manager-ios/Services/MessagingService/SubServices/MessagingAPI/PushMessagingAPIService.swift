@@ -22,7 +22,6 @@ final class PushMessagingAPIService {
     
     private let pushRESTService = PushRESTAPIService()
     private let pushHelper = PushServiceHelper()
-    private let messagingHelper = MessagingAPIServiceHelper()
     private let dataProvider: PushMessagingAPIServiceDataProvider
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: true,
                                                     canBlockUsers: true,
@@ -494,7 +493,7 @@ private extension PushMessagingAPIService {
     }
     
     func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
-        try await messagingHelper.getAnyDomainItem(for: wallet)
+        try await MessagingAPIServiceHelper.getAnyDomainItem(for: wallet)
     }
     
     func buildPushSendOptions(for messageType: MessagingChatMessageDisplayType,
@@ -519,7 +518,7 @@ private extension PushMessagingAPIService {
     }
     
     func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
-        try messagingHelper.decodeServiceMetadata(from: data)
+        try MessagingAPIServiceHelper.decodeServiceMetadata(from: data)
     }
    
     func getPushMessageContentFrom(displayType: MessagingChatMessageDisplayType) throws -> String {

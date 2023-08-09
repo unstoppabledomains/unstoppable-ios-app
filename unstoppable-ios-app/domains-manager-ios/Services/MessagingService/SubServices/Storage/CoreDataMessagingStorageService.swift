@@ -129,6 +129,22 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
         }
     }
     
+    func markAllMessagesIn(chat: MessagingChat,
+                           isRead: Bool) async throws {
+        try queue.sync {
+            let chatIdPredicate = NSPredicate(format: "chatId == %@", chat.displayInfo.id)
+            let userIdPredicate = NSPredicate(format: "userId == %@", chat.userId)
+            let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, userIdPredicate])
+            
+            let coreDataMessages: [CoreDataMessagingChatMessage] = try getEntities(predicate: predicate,
+                                                                                   from: backgroundContext)
+            coreDataMessages.forEach { message in
+                message.isRead = isRead
+            }
+            saveContext(backgroundContext)
+        }
+    }
+    
     func markSendingMessagesAsFailed() {
         try? queue.sync {
             let messages: [CoreDataMessagingChatMessage] = try getEntities(from: backgroundContext)

@@ -110,7 +110,7 @@ private extension SecuritySettingsViewPresenter {
             }
         } else {
             /// Need to give time for blur view disappear. Otherwise it will stuck forever and be visible if user navigate back.
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.biometricUIProcessingTime) { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + appContext.authentificationService.biometricUIProcessingTime) { [weak self] in
                 self?.setupPasscode {
                     self?.setSettingsBiometricEnabled(false)
                 }

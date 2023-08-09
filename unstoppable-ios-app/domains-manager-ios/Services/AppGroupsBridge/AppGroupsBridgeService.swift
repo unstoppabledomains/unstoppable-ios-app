@@ -15,16 +15,26 @@ protocol AppGroupsBridgeServiceProtocol {
     
     func getAvatarPath(for domainName: String) -> String?
     func saveAvatarPath(_ path: String?, for domainName: String)
+    
+    // XMTP
+    func saveXMTPConversationData(conversationData: Data?, topic: String)
+    func getXMTPConversationDataFor(topic: String) -> Data?
+    func getXMTPBlockedUsersList() -> [XMTPBlockedUserDescription]
+    func setXMTPBlockedUsersList(_ newList: [XMTPBlockedUserDescription])
 }
 
 enum AppGroupDataType: Codable {
     case domainChanges
     case domainAvatarURL(domainName: String)
+    case xmtpConversation(topic: String)
+    case xmtpBlockedUsersList
     
     var key: String {
         switch self {
         case .domainChanges: return "domainChanges"
         case .domainAvatarURL(let domainName): return domainName
+        case .xmtpConversation(let topic): return "xmtp_\(topic)"
+        case .xmtpBlockedUsersList: return "xmtpBlockedUsersList"
         }
     }
 }
@@ -32,7 +42,7 @@ enum AppGroupDataType: Codable {
 final class AppGroupsBridgeService {
     
     static let shared: AppGroupsBridgeServiceProtocol = AppGroupsBridgeService()
-    private let appGroupsContainer = UserDefaults(suiteName: "group.unstoppabledomains.manager.extensions")!
+    private let appGroupsContainer = UserDefaults(suiteName: Constants.UnstoppableGroupIdentifier)!
 
     private init() { }
     
@@ -72,6 +82,25 @@ extension AppGroupsBridgeService: AppGroupsBridgeServiceProtocol {
     }
 }
 
+// MARK: - XMTP Related
+extension AppGroupsBridgeService {
+    func saveXMTPConversationData(conversationData: Data?, topic: String) {
+        saveData(conversationData, for: .xmtpConversation(topic: topic))
+    }
+    
+    func getXMTPConversationDataFor(topic: String) -> Data? {
+        dataFor(type: .xmtpConversation(topic: topic))
+    }
+    
+    func getXMTPBlockedUsersList() -> [XMTPBlockedUserDescription] {
+        entityFor(type: .xmtpBlockedUsersList) ?? []
+    }
+    
+    func setXMTPBlockedUsersList(_ newList: [XMTPBlockedUserDescription]) {
+        save(entity: newList, for: .xmtpBlockedUsersList)
+    }
+}
+
 // MARK: - Private methods
 private extension AppGroupsBridgeService {
     func dataFor(type: AppGroupDataType) -> Data? {
@@ -85,7 +114,15 @@ private extension AppGroupsBridgeService {
     }
     
     func save<T: Codable>(entity: T?, for type: AppGroupDataType) {
-        appGroupsContainer.set(entity?.jsonData(), forKey: type.key)
+        saveData(entity?.jsonData(), for: type)
+    }
+    
+    func saveData(_ data: Data?, for type: AppGroupDataType) {
+        saveData(data, forKey: type.key)
+    }
+    
+    func saveData(_ data: Data?, forKey key: String) {
+        appGroupsContainer.set(data, forKey: key)
     }
 }
  
@@ -103,4 +140,9 @@ struct DomainRecordChanges: Codable, Hashable {
     
     let domainName: String
     let changes: [ChangeType]
+}
+
+struct XMTPBlockedUserDescription: Hashable, Codable {
+    let userId: String
+    let blockedUserId: String
 }

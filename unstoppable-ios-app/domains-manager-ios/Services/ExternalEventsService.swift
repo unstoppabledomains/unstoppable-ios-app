@@ -53,6 +53,7 @@ enum ExternalEventUIFlow {
     case primaryDomainMinted(domain: DomainDisplayInfo)
     case showHomeScreenList
     case showPullUpLoading
+    case showChatsList(profile: MessagingChatUserProfileDisplayInfo)
     case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
     case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)
 }
@@ -156,7 +157,7 @@ private extension ExternalEventsService {
                 return
             case .badgeAdded:
                 return
-            case .chatMessage, .chatChannelMessage:
+            case .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite:
                 return
             }
         }
@@ -232,6 +233,13 @@ private extension ExternalEventsService {
             let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
             
             return .showChannel(channelId: data.channelId, profile: profile)
+        case .chatXMTPMessage(let data):
+            let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
+
+            return .showChat(chatId: data.topic, profile: profile)
+        case .chatXMTPInvite(let data):
+            let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
+            return .showChatsList(profile: profile)
         }
     }
     

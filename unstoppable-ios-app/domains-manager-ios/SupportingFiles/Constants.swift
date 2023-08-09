@@ -20,11 +20,11 @@ struct Constants {
     #endif
         
     static let distanceFromButtonToKeyboard: CGFloat = 16
-    static var biometricUIProcessingTime: TimeInterval { appContext.authentificationService.biometricType == .touchID ? 0.5 : 1.2 }
     static let scrollableContentBottomOffset: CGFloat = 32
     static let ETHRegexPattern = "^0x[a-fA-F0-9]{40}$"
     static let UnstoppableSupportMail = "support@unstoppabledomains.com"
     static let UnstoppableTwitterName = "unstoppableweb"
+    static let UnstoppableGroupIdentifier = "group.unstoppabledomains.manager.extensions"
 
     static let nonRemovableDomainCoins = ["ETH", "MATIC"]
     static let domainNameMinimumScaleFactor: CGFloat = 0.625
@@ -46,6 +46,7 @@ struct Constants {
     static let parkingBetaLaunchDate = Date(timeIntervalSince1970: 1678401000)
     static let numberOfUnreadMessagesBeforePrefetch: Int = 7
     static let maxImageResolution: CGFloat = 1000
+    static let shouldHideBlockedUsersLocally = true
     static let ensDomainTLD: String = "eth"
     
     #if DEBUG
@@ -89,11 +90,6 @@ struct Env {
         // Intentionally let builds fail that are not explicitly described here
     }()
 }
-
-var appContext: AppContextProtocol {
-    return AppDelegate.shared.appContext
-}
-
 
 enum BlockchainNetwork: Int, CaseIterable {
     case ethMainnet = 1

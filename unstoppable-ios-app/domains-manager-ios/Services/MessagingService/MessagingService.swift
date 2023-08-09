@@ -160,6 +160,10 @@ extension MessagingService: MessagingServiceProtocol {
         let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
 
         try await apiService.setUser(in: chat, blocked: blocked, by: profile)
+        if Constants.shouldHideBlockedUsersLocally {
+            try? await storageService.markAllMessagesIn(chat: chat, isRead: true)
+            notifyChatsChanged(wallet: profile.wallet)
+        }
     }
     
     // Messages
@@ -746,7 +750,8 @@ private extension MessagingService {
             return MessagingChatUserDisplayInfo(wallet: wallet,
                                                 domainName: domain,
                                                 pfpURL: pfpURL)
-        } else if let userInfo = await loadGlobalUserInfoFor(value: wallet) {
+        } else if var userInfo = await loadGlobalUserInfoFor(value: wallet) {
+            userInfo.wallet = wallet // Fix lower/uppercase inconsistency issue
             return userInfo
         }
         

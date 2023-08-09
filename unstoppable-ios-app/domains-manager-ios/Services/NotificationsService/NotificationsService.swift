@@ -106,7 +106,7 @@ extension NotificationsService: UNUserNotificationCenterDelegate {
         // NOTE: this function will only be called when the app is in foreground.
         Task { @MainActor in
             Debugger.printInfo(topic: .PNs, "Did receive PN in foreground: \(notification.request.content.userInfo)")
-            let presentationOptions = await checkNotificationPayload(notification.request.content.userInfo, receiveState: .foreground)
+            let presentationOptions = checkNotificationPayload(notification.request.content.userInfo, receiveState: .foreground)
             completionHandler(presentationOptions)
         }
     }
@@ -117,7 +117,7 @@ extension NotificationsService: UNUserNotificationCenterDelegate {
             Debugger.printInfo(topic: .PNs, "Did receive PN in background: \(response.notification.request.content.userInfo)")
             
             if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
-                await checkNotificationPayload(response.notification.request.content.userInfo, receiveState: applicationState != .active ? .background : .foregroundAction)
+                checkNotificationPayload(response.notification.request.content.userInfo, receiveState: applicationState != .active ? .background : .foregroundAction)
             }
             completionHandler()
         }
@@ -201,7 +201,8 @@ fileprivate extension NotificationsService {
     
     @discardableResult
     @MainActor
-    func checkNotificationPayload(_ userInfo: [AnyHashable : Any], receiveState: ExternalEventReceivedState) -> UNNotificationPresentationOptions {
+    func checkNotificationPayload(_ userInfo: [AnyHashable : Any],
+                                  receiveState: ExternalEventReceivedState) -> UNNotificationPresentationOptions {
         if let json = userInfo as? [String : Any],
            let event = ExternalEvent(pushNotificationPayload: json) {
             appContext.analyticsService.log(event: event.analyticsEvent,
@@ -214,12 +215,14 @@ fileprivate extension NotificationsService {
             switch event {
             case .domainProfileUpdated, .mintingFinished, .domainTransferred,
                     .reverseResolutionSet, .reverseResolutionRemoved, .wcDeepLink,
-                    .recordsUpdated, .parkingStatusLocal, .badgeAdded:
+                    .recordsUpdated, .parkingStatusLocal, .badgeAdded, .chatXMTPInvite:
                 return defaultPresentationOptions
             case .chatMessage(let data):
                 return appContext.coreAppCoordinator.isActiveState(.chatOpened(chatId: data.chatId)) ? [] : defaultPresentationOptions
             case .chatChannelMessage(let data):
                 return appContext.coreAppCoordinator.isActiveState(.channelOpened(channelId: data.channelId)) ? [] : defaultPresentationOptions
+            case .chatXMTPMessage(let data):
+                return appContext.coreAppCoordinator.isActiveState(.chatOpened(chatId: data.topic)) ? [] : defaultPresentationOptions
             case .walletConnectRequest:
                 return []
             }

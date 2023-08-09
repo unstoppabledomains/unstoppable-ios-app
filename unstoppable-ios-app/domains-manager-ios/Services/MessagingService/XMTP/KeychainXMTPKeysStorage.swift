@@ -22,17 +22,22 @@ protocol KeychainXMTPKeysStorageProtocol {
 struct KeychainXMTPKeysStorage: PrivateKeyStorage, KeychainXMTPKeysStorageProtocol {
     let valet: ValetProtocol
     
-    static let keychainName = "unstoppable-keychain-xmtp-keys"
     private let xmtpPrefix = "xmtp_"
+    private static let groupIdentifierWithoutGroupPrefix = Constants.UnstoppableGroupIdentifier
+        .components(separatedBy: .dotSeparator)
+        .dropFirst()
+        .joined(separator: .dotSeparator)
     
     private init() {
-        valet = Valet.valet(with: Identifier(nonEmpty: Self.keychainName)!,
-                            accessibility: .whenUnlockedThisDeviceOnly)
+        valet = Valet.sharedGroupValet(with: SharedGroupIdentifier(groupPrefix: "group",
+                                                                   nonEmptyGroup: KeychainXMTPKeysStorage.groupIdentifierWithoutGroupPrefix)!,
+                                       accessibility: .afterFirstUnlockThisDeviceOnly)
     }
     
     static var instance: KeychainXMTPKeysStorageProtocol = KeychainXMTPKeysStorage()
     
-    func saveKeysData(_ keysData: Data, forIdentifier identifier: String,
+    func saveKeysData(_ keysData: Data,
+                      forIdentifier identifier: String,
                       env: XMTPEnvironment) {
         let key = getKeyFor(identifier: identifier,
                             env: env)

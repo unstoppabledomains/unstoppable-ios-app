@@ -20,6 +20,8 @@ enum ExternalEvent: Codable, Hashable {
     case badgeAdded(domainName: String, count: Int)
     case chatMessage(ChatMessageEventData)
     case chatChannelMessage(ChannelMessageEventData)
+    case chatXMTPMessage(ChatXMTPMessageEventData)
+    case chatXMTPInvite(ChatXMTPInviteEventData)
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
         guard let eventTypeRaw = json["type"] as? String,
@@ -94,6 +96,24 @@ enum ExternalEvent: Codable, Hashable {
                                                    channelName: channelName,
                                                    channelIcon: channelIcon)
                 self = .chatChannelMessage(data)
+            case .chatXMTPMessage:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let xmtpTopic: String = try Self.getValueFrom(json: json, forKey: "xmtpTopic", notificationType: eventTypeRaw)
+                let xmtpEnvelope: String = try Self.getValueFrom(json: json, forKey: "xmtpEnvelope", notificationType: eventTypeRaw)
+                let xmtpWalletAddress: String = try Self.getValueFrom(json: json, forKey: "xmtpWalletAddress", notificationType: eventTypeRaw)
+                
+                if XMTPServiceSharedHelper.isInvitationTopic(xmtpTopic) {
+                    let data = ChatXMTPInviteEventData(toDomainName: domainName,
+                                                       toAddress: xmtpWalletAddress)
+                    self = .chatXMTPInvite(data)
+                } else {
+                    let data = ChatXMTPMessageEventData(toDomainName: domainName,
+                                                        toAddress: xmtpWalletAddress,
+                                                        topic: xmtpTopic,
+                                                        envelop: xmtpEnvelope)
+                    
+                    self = .chatXMTPMessage(data)
+                }
             }
         } catch {
             return nil
@@ -102,7 +122,7 @@ enum ExternalEvent: Codable, Hashable {
     
     var analyticsEvent: Analytics.Event {
         switch self {
-        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage:
+        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite:
             return .didReceivePushNotification
         case .wcDeepLink:
             return .didOpenDeepLink
@@ -151,6 +171,12 @@ enum ExternalEvent: Codable, Hashable {
             return [.pushNotification: "chatChannelMessage",
                     .domainName: data.toDomainName,
                     .channelName: data.channelName]
+        case .chatXMTPMessage(let data):
+            return [.pushNotification: "chatXMTPMessage",
+                    .domainName: data.toDomainName]
+        case .chatXMTPInvite(let data):
+            return [.pushNotification: "chatXMTPInvite",
+                    .wallet: data.toAddress]
         }
     }
 }
@@ -179,6 +205,18 @@ extension ExternalEvent {
         let channelId: String
         let channelName: String
         let channelIcon: String
+    }
+    
+    struct ChatXMTPMessageEventData: Codable, Hashable {
+        let toDomainName: String
+        let toAddress: String
+        let topic: String
+        let envelop: String
+    }
+    
+    struct ChatXMTPInviteEventData: Codable, Hashable {
+        let toDomainName: String
+        let toAddress: String
     }
 }
 
@@ -215,6 +253,9 @@ extension ExternalEvent {
         // Messaging
         case chatMessage = "DomainPushProtocolChat"
         case chatChannelMessage = "DomainPushProtocolNotification"
+        // Messaging XMTP
+        case chatXMTPMessage = "DomainXmtpTopic"
+        
         
         /// Local
         case parkingStatusLocal = "ParkingStatusLocal"

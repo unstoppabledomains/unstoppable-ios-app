@@ -200,6 +200,8 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                 case .default:
                     self.presentOptions = presentOptions
                     return
+                case .showChatsList(let profile):
+                    try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
                 case .showChat(let chatId, let profile):
                     if selectedProfileWalletPair?.profile?.id != profile.id ||
                         !appCoordinator.isActiveState(.chatOpened(chatId: chatId)) {
@@ -237,7 +239,7 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                   showProfile.id == profile.id {
                    loadAndShowData()
                } else if profile.id == selectedProfileWalletPair?.profile?.id,
-                         chatsList != chats {
+                         chatsList != chats || Constants.shouldHideBlockedUsersLocally {
                    chatsList = chats
                    showData()
                }
@@ -285,6 +287,8 @@ private extension ChatsListViewPresenter {
                 switch presentOptions {
                 case .default:
                     try await resolveInitialProfileWith(wallets: wallets)
+                case .showChatsList(let profile):
+                    try await preselectProfile(profile, usingWallets: wallets)
                 case .showChat(let chatId, let profile):
                     try await preselectProfile(profile, usingWallets: wallets)
                     tryAutoOpenChat(chatId, profile: profile)
@@ -445,28 +449,30 @@ private extension ChatsListViewPresenter {
     }
     
     func showData() {
-        var snapshot = ChatsListSnapshot()
-        
-        if selectedProfileWalletPair?.profile == nil {
-            fillSnapshotForUserWithoutProfile(&snapshot)
-        } else {
-            if searchData.isSearchActive {
-                fillSnapshotForSearchActiveState(&snapshot)
+        Task {
+            var snapshot = ChatsListSnapshot()
+            
+            if selectedProfileWalletPair?.profile == nil {
+                fillSnapshotForUserWithoutProfile(&snapshot)
             } else {
-                let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
-                snapshot.appendSections([.dataTypeSelection])
-                snapshot.appendItems([.dataTypeSelection(configuration: dataTypeSelectionUIConfiguration)])
-                
-                switch selectedDataType {
-                case .chats:
-                    fillSnapshotForUserChatsList(&snapshot)
-                case .channels:
-                    fillSnapshotForUserChannelsList(&snapshot)
+                if searchData.isSearchActive {
+                    fillSnapshotForSearchActiveState(&snapshot)
+                } else {
+                    let dataTypeSelectionUIConfiguration = getDataTypeSelectionUIConfiguration()
+                    snapshot.appendSections([.dataTypeSelection])
+                    snapshot.appendItems([.dataTypeSelection(configuration: dataTypeSelectionUIConfiguration)])
+                    
+                    switch selectedDataType {
+                    case .chats:
+                        await fillSnapshotForUserChatsList(&snapshot)
+                    case .channels:
+                        fillSnapshotForUserChannelsList(&snapshot)
+                    }
                 }
             }
+            
+            view?.applySnapshot(snapshot, animated: true)
         }
-        
-        view?.applySnapshot(snapshot, animated: true)
     }
     
     func fillSnapshotForUserWithoutProfile(_ snapshot: inout ChatsListSnapshot) {
@@ -474,7 +480,25 @@ private extension ChatsListViewPresenter {
         snapshot.appendItems([.createProfile])
     }
     
-    func fillSnapshotForUserChatsList(_ snapshot: inout ChatsListSnapshot) {
+    func fillSnapshotForUserChatsList(_ snapshot: inout ChatsListSnapshot) async {
+        var chatsList = [MessagingChatDisplayInfo]()
+        
+        if Constants.shouldHideBlockedUsersLocally {
+            // MARK: - Make function sync again when blocking feature will be handled on the service side
+            for chat in self.chatsList {
+                if let blockingStatus = try? await appContext.messagingService.getBlockingStatusForChat(chat) {
+                    switch blockingStatus {
+                    case .unblocked, .currentUserIsBlocked:
+                        chatsList.append(chat)
+                    case .bothBlocked, .otherUserIsBlocked:
+                        continue
+                    }
+                }
+            }
+        } else {
+            chatsList = self.chatsList
+        }
+        
         if chatsList.isEmpty {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
