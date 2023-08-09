@@ -833,3 +833,4 @@
 "MESSAGING_REMOTE_CONTENT" = "Remote content";
 "MESSAGING_CANT_CONTACT_MESSAGE" = "User is not yet on the XMTP network";
 "MESSAGING_INVITE" = "Invite";
+"MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN" = "%@ - Reverse Resolution domain";

@@ -413,7 +413,7 @@ private extension ChatViewPresenter {
     }
     
     func setupTitleFor(userInfo: MessagingChatUserDisplayInfo) {
-        if let domainName = userInfo.domainName {
+        if let domainName = userInfo.rrDomainName ?? userInfo.domainName {
             view?.setTitleOfType(.domainName(domainName))
         } else {
             view?.setTitleOfType(.walletAddress(userInfo.wallet))

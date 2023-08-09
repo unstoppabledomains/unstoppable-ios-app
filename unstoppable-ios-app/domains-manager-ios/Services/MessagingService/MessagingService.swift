@@ -409,7 +409,14 @@ extension MessagingService: MessagingServiceProtocol {
             
             return [.init(wallet: wallet)]
         } else if searchKey.isValidDomainName(),
-                  let userInfo = await loadGlobalUserInfoFor(value: searchKey) {
+                  var userInfo = await loadGlobalUserInfoFor(value: searchKey) {
+            if userInfo.isUDDomain,
+               let userRRDomain = try? await appContext.udWalletsService.reverseResolutionDomainName(for: userInfo.wallet.normalized),
+               userRRDomain != userInfo.domainName {
+                // RR domain does not match
+                userInfo.rrDomainName = userRRDomain
+                Debugger.printInfo(topic: .Messaging, "Searched UD domain name \(userInfo.domainName ?? "") does not match RR domain name \(userRRDomain). Will suggest RR in search result.")
+            }
             return [userInfo]
         }
         return []
