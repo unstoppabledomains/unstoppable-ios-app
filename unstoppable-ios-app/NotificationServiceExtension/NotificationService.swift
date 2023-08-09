@@ -30,7 +30,7 @@ final class NotificationService: UNNotificationServiceExtension {
                     contentHandler(content)
                 } else {
                     contentHandler(bestAttemptContent)
-//                    contentHandler(UNNotificationContent()) // Ignore notification. Enable when filtering entitlement is added to the project
+//                    contentHandler(UNNotificationContent()) // TODO: - Ignore notification. Enable when filtering entitlement is added to the project
                 }
             })
         } else if let bestAttemptContent = bestAttemptContent {
@@ -304,7 +304,7 @@ private extension NotificationService {
 
     func loadRRInfoFor(address: String) async throws -> GlobalRR? {
         do {
-            let url = URL(string: "https://api.unstoppabledomains.com/profile/resolve/\(address)")!
+            let url = buildRRInfoURLFor(address: address)
             let urlRequest = URLRequest(url: url)
             let (data, response) = try await makeURLRequest(urlRequest)
 
@@ -316,6 +316,10 @@ private extension NotificationService {
         } catch {
             throw error
         }
+    }
+    
+    func buildRRInfoURLFor(address: String) -> URL {
+        URL(string: "\(NetworkConfig.baseProfileAPIUrl)/profile/resolve/\(address)")!
     }
     
     func makeURLRequest(_ urlRequest: URLRequest) async throws -> (Data, HTTPURLResponse) {
@@ -397,5 +401,11 @@ private extension NotificationService {
         //                        intent.setImage(avatar, forParameterNamed: \.sender)
 
         return intent
+    }
+    
+    struct NetworkConfig {
+        static var baseProfileAPIUrl: String {
+            return "https://api.unstoppabledomains.com"
+        }
     }
 }
