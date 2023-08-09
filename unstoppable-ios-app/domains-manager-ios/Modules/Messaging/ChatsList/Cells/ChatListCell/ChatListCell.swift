@@ -86,7 +86,9 @@ extension ChatListCell {
         badgeView.setUnreadMessagesCount(0)
 
         setTimeText(nil)
-        setLastMessageText("")
+        if let rrDomain = userInfo.rrDomainName {
+            setLastMessageText("\(rrDomain) - Reverse Resolution domain")
+        }
         chevron.isHidden = false
     }
 }
@@ -103,7 +105,11 @@ private extension ChatListCell {
     }
     
     func chatNameFrom(userInfo: MessagingChatUserDisplayInfo) -> String {
-        userInfo.displayName
+        if userInfo.rrDomainName == nil {
+            return userInfo.displayName
+        } else {
+            return userInfo.domainName ?? ""
+        }
     }
     
     func lastMessageTextFrom(message: MessagingChatMessageDisplayInfo) -> String  {
