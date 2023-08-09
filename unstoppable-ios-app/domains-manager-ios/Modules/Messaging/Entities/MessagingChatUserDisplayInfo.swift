@@ -10,10 +10,11 @@ import Foundation
 struct MessagingChatUserDisplayInfo: Hashable {
     var wallet: String
     var domainName: DomainName? = nil
+    var rrDomainName: DomainName? = nil
     var pfpURL: URL?
     
     var displayName: String {
-        domainName ?? wallet.walletAddressTruncated
+        rrDomainName ?? domainName ?? wallet.walletAddressTruncated
     }
     
     var isUDDomain: Bool {

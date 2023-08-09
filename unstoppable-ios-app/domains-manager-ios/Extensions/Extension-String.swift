@@ -913,9 +913,9 @@ extension String {
         static let messagingRemoteContent = "MESSAGING_REMOTE_CONTENT"
         static let messagingCantContactMessage = "MESSAGING_CANT_CONTACT_MESSAGE"
         static let messagingInvite = "MESSAGING_INVITE"
+        static let messagingSearchResultNotRRDomain = "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN"
     }
 
-    
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
         case zilliqa = "smallZilliqa"
