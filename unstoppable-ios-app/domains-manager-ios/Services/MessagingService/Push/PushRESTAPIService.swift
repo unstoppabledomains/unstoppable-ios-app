@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class PushRESTAPIService {
+final class PushRESTAPIService: PushChannelsAPIServiceDataProvider {
     
     private let networkService = NetworkService()
         
@@ -186,7 +186,8 @@ extension PushRESTAPIService {
     func getChannelFeedForUser(_ user: String,
                                in channel: String,
                                page: Int,
-                               limit: Int) async throws -> [PushInboxNotification] {
+                               limit: Int,
+                               isRead: Bool) async throws -> [MessagingNewsChannelFeed] {
         let chainId = getCurrentChainId()
         let channelEIP = createEIPFormatFor(address: channel,
                                             chain: chainId)
@@ -200,7 +201,7 @@ extension PushRESTAPIService {
                                          method: .get)
         
         let response: InboxResponse = try await getDecodableObjectWith(request: request)
-        return response.feeds
+        return response.feeds.map({ PushEntitiesTransformer.convertPushInboxToChannelFeed($0,isRead: isRead) }) 
     }
 }
 

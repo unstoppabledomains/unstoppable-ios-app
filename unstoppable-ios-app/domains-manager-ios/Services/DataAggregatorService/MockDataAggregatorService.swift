@@ -102,6 +102,7 @@ extension MockDataAggregatorService: DataAggregatorServiceProtocol {
         let domainsCount = domains.filter({ $0.isOwned(by: [wallet] )}).count
         return WalletDisplayInfo(wallet: wallet,
                                  domainsCount: domainsCount,
+                                 udDomainsCount: domainsCount,
                                  reverseResolutionDomain: rrDomain)
         
     }

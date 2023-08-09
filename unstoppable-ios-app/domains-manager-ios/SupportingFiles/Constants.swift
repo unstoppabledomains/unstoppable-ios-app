@@ -10,7 +10,8 @@ import UIKit
 
 typealias EmptyCallback = ()->()
 typealias EmptyAsyncCallback = @Sendable ()->()
- 
+typealias GlobalConstants = Constants
+
 struct Constants {
     
     #if DEBUG

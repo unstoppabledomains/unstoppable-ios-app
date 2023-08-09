@@ -19,7 +19,6 @@ struct MessagingNewsChannel: Hashable {
     let blocked: Int
     let subscriberCount: Int
     let unreadMessagesCount: Int
-    var isUpToDate: Bool
     var isCurrentUserSubscribed: Bool
     var isSearchResult: Bool
     var lastMessage: MessagingNewsChannelFeed?

@@ -416,7 +416,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     private func updateWalletsCacheAndUi(walletAddress: HexAddress) {
         if let toRemove = self.udWalletsService.find(by: walletAddress) {
-            if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0) {
+            if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0, udDomainsCount: 0) {
                 self.walletsUiHandler?.didDisconnect(walletDisplayInfo: walletDisplayInfo)
             }
             self.udWalletsService.remove(wallet: toRemove)

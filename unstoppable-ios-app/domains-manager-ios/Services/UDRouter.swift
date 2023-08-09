@@ -411,6 +411,7 @@ class UDRouter: DomainProfileSignatureValidator {
                                   sourceScreen: DomainProfileViewPresenter.SourceScreen) -> UIViewController {
         let walletInfo = WalletDisplayInfo(wallet: wallet,
                                            domainsCount: walletInfo.domainsCount,
+                                           udDomainsCount: walletInfo.udDomainsCount,
                                            reverseResolutionDomain: walletInfo.reverseResolutionDomain) ?? walletInfo
         let vc = DomainProfileViewController.nibInstance()
         let presenter = DomainProfileViewPresenter(view: vc,

@@ -158,7 +158,7 @@ extension WalletConnectClientService: WalletConnectSwift.ClientDelegate {
             
             if let walletAddress = accounts?.first,
                let toRemove = udWalletsService.find(by: walletAddress) {
-                if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0) {
+                if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0, udDomainsCount: 0) {
                     self.uiHandler?.didDisconnect(walletDisplayInfo: walletDisplayInfo)
                 }
                 udWalletsService.remove(wallet: toRemove)

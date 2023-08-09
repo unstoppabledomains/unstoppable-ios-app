@@ -54,6 +54,7 @@ protocol MessagingServiceProtocol {
     // Channels
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
     func getFeedFor(channel: MessagingNewsChannel,
+                    cachedOnly: Bool,
                     page: Int,
                     limit: Int) async throws -> [MessagingNewsChannelFeed]
     func markFeedItem(_ feedItem: MessagingNewsChannelFeed,

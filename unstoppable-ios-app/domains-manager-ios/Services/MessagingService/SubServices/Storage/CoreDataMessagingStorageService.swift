@@ -269,7 +269,9 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                             limit: Int) async throws -> [MessagingNewsChannelFeed] {
         try queue.sync {
             let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
-            let predicate = NSPredicate(format: "channelId == %@", channel.id)
+            let channelPredicate = NSPredicate(format: "channelId == %@", channel.id)
+            let userPredicate = NSPredicate(format: "userId == %@", channel.userId)
+            let predicate = NSCompoundPredicate(type: .and, subpredicates: [channelPredicate, userPredicate])
             let coreDataChannelsFeed: [CoreDataMessagingNewsChannelFeed] = try getEntities(predicate: predicate,
                                                                                            sortDescriptions: [timeSortDescriptor],
                                                                                            batchDescription: .init(size: limit,
@@ -737,7 +739,6 @@ private extension CoreDataMessagingStorageService {
                                                blocked: coreDataChannel.blocked ? 1 : 0,
                                                subscriberCount: Int(coreDataChannel.subscriberCount),
                                                unreadMessagesCount: unreadMessagesCount,
-                                               isUpToDate: coreDataChannel.isUpToDate,
                                                isCurrentUserSubscribed: coreDataChannel.isCurrentUserSubscribed,
                                                isSearchResult: false, /// We store only channels that user is opt-in for
                                                lastMessage: lastMessage)
@@ -757,7 +758,6 @@ private extension CoreDataMessagingStorageService {
         coreDataChannel.info = channel.info
         coreDataChannel.url = channel.url
         coreDataChannel.icon = channel.icon
-        coreDataChannel.isUpToDate = channel.isUpToDate
         coreDataChannel.isCurrentUserSubscribed = channel.isCurrentUserSubscribed
         coreDataChannel.verifiedStatus = Int64(channel.verifiedStatus)
         coreDataChannel.blocked = channel.blocked == 1
@@ -798,6 +798,7 @@ private extension CoreDataMessagingStorageService {
         coreDataMessage.isRead = channelFeed.isRead
         coreDataMessage.isFirstInChannel = channelFeed.isFirstInChannel
         coreDataMessage.channelId = channel.id
+        coreDataMessage.userId = channel.userId
         
         return coreDataMessage
     }

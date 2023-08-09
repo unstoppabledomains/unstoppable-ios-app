@@ -237,15 +237,17 @@ struct ChatsListNavigationView_Previews: PreviewProvider {
             let wallet = WalletDisplayInfo(name: "name.x",
                                            address: "asdads",
                                            domainsCount: 1,
+                                           udDomainsCount: 1,
                                            source: .imported,
                                            isBackedUp: false,
                                            reverseResolutionDomain: .init(name: "name.x", ownerWallet: "asdasd", isSetForRR: true))
             let wallet2 = WalletDisplayInfo(name: "0x12412312312312",
-                                           address: "asdads",
-                                           domainsCount: 1,
-                                           source: .imported,
-                                           isBackedUp: false,
-                                           reverseResolutionDomain: .init(name: "nameasdasdasdasd2.x", ownerWallet: "asdasd", isSetForRR: true))
+                                            address: "asdads",
+                                            domainsCount: 1,
+                                            udDomainsCount: 1,
+                                            source: .imported,
+                                            isBackedUp: false,
+                                            reverseResolutionDomain: .init(name: "nameasdasdasdasd2.x", ownerWallet: "asdasd", isSetForRR: true))
             view.setWithConfiguration(.init(selectedWallet: wallet,
                                             wallets: [.init(wallet: wallet, numberOfUnreadMessages: nil),
                                                       .init(wallet: wallet2, numberOfUnreadMessages: 0)],

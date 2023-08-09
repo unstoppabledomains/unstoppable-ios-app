@@ -46,6 +46,10 @@ extension DomainEntity {
         
         return wallet.extractEthWallet()?.address.normalized == ownerWallet || wallet.extractZilWallet()?.address.normalized == ownerWallet
     }
+    
+    var isUDDomain: Bool {
+        name.isUDTLD()
+    }
 }
 
 extension Array where Element: DomainEntity {

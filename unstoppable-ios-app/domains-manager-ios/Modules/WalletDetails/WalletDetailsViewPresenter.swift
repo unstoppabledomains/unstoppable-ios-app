@@ -361,7 +361,9 @@ private extension WalletDetailsViewPresenter {
     func didImportExternalWallet(_ wallet: UDWallet) {
         self.view?.presentedViewController?.dismiss(animated: true)
         self.wallet = wallet
-        self.walletInfo = WalletDisplayInfo(wallet: wallet, domainsCount: self.walletInfo.domainsCount) ?? self.walletInfo
+        self.walletInfo = WalletDisplayInfo(wallet: wallet,
+                                            domainsCount: self.walletInfo.domainsCount,
+                                            udDomainsCount: self.walletInfo.domainsCount) ?? self.walletInfo
         showWalletDetails()
     }
     
