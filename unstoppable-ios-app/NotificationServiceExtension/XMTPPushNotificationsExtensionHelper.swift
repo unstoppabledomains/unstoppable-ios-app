@@ -14,7 +14,7 @@ struct XMTPPushNotificationsExtensionHelper {
         let localizedMessage: String
     }
     
-    static func parseNotificationMessageFrom(data: ExternalEvent.ChatXMTPMessageEventData) async -> NotificationDisplayInfo {
+    static func parseNotificationMessageFrom(data: ExternalEvent.ChatXMTPMessageEventData) async -> NotificationDisplayInfo? {
         var address: String = data.toAddress
         var message: String = String.Constants.newChatMessage.localized()
 
@@ -30,6 +30,9 @@ struct XMTPPushNotificationsExtensionHelper {
             let conversationContainer: XMTP.ConversationContainer = try decodeConversationData(from: conversationData)
             let conversation = conversationContainer.decode(with: client)
             address = conversation.peerAddress
+            
+            guard AppGroupsBridgeService.shared.getXMTPBlockedUsersList().first(where: { $0.userId == data.toAddress && $0.blockedUserId == address }) == nil else { return nil }// Ignore notification from blocked user
+            
             let envelope = XMTP.Envelope.with { envelope in
                 envelope.message = encryptedMessageData
                 envelope.contentTopic = topic

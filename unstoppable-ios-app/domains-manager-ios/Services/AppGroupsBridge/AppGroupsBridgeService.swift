@@ -19,18 +19,22 @@ protocol AppGroupsBridgeServiceProtocol {
     // XMTP
     func saveXMTPConversationData(conversationData: Data?, topic: String)
     func getXMTPConversationDataFor(topic: String) -> Data?
+    func getXMTPBlockedUsersList() -> [XMTPBlockedUserDescription]
+    func setXMTPBlockedUsersList(_ newList: [XMTPBlockedUserDescription])
 }
 
 enum AppGroupDataType: Codable {
     case domainChanges
     case domainAvatarURL(domainName: String)
     case xmtpConversation(topic: String)
+    case xmtpBlockedUsersList
     
     var key: String {
         switch self {
         case .domainChanges: return "domainChanges"
         case .domainAvatarURL(let domainName): return domainName
         case .xmtpConversation(let topic): return "xmtp_\(topic)"
+        case .xmtpBlockedUsersList: return "xmtpBlockedUsersList"
         }
     }
 }
@@ -87,6 +91,14 @@ extension AppGroupsBridgeService {
     func getXMTPConversationDataFor(topic: String) -> Data? {
         dataFor(type: .xmtpConversation(topic: topic))
     }
+    
+    func getXMTPBlockedUsersList() -> [XMTPBlockedUserDescription] {
+        entityFor(type: .xmtpBlockedUsersList) ?? []
+    }
+    
+    func setXMTPBlockedUsersList(_ newList: [XMTPBlockedUserDescription]) {
+        save(entity: newList, for: .xmtpBlockedUsersList)
+    }
 }
 
 // MARK: - Private methods
@@ -128,4 +140,9 @@ struct DomainRecordChanges: Codable, Hashable {
     
     let domainName: String
     let changes: [ChangeType]
+}
+
+struct XMTPBlockedUserDescription: Hashable, Codable {
+    let userId: String
+    let blockedUserId: String
 }

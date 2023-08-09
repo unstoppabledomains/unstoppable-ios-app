@@ -25,9 +25,13 @@ final class NotificationService: UNNotificationServiceExtension {
            let event = ExternalEvent(pushNotificationPayload: bestAttemptContent.userInfo) {
             
             set(notificationContent: bestAttemptContent, for: event, completion: { content in
-                let notificationContent = content ?? bestAttemptContent
-                (notificationContent as? UNMutableNotificationContent)?.sound = .default
-                contentHandler(notificationContent)
+                if let content {
+                    (content as? UNMutableNotificationContent)?.sound = .default
+                    contentHandler(content)
+                } else {
+                    contentHandler(bestAttemptContent)
+//                    contentHandler(UNNotificationContent()) // Ignore notification. Enable when filtering entitlement is added to the project
+                }
             })
         } else if let bestAttemptContent = bestAttemptContent {
             contentHandler(bestAttemptContent)
@@ -232,7 +236,10 @@ private extension NotificationService {
                                    data: ExternalEvent.ChatXMTPMessageEventData,
                                    completion: @escaping NotificationContentCallback) {
         Task {
-            let notificationDisplayInfo = await XMTPPushNotificationsExtensionHelper.parseNotificationMessageFrom(data: data)
+            guard let notificationDisplayInfo = await XMTPPushNotificationsExtensionHelper.parseNotificationMessageFrom(data: data) else {
+                completion(nil)
+                return
+            }
             notificationContent.title = notificationDisplayInfo.walletAddress.walletAddressTruncated
             notificationContent.body = notificationDisplayInfo.localizedMessage
             
