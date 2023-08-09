@@ -559,7 +559,8 @@ private extension ChatsListViewPresenter {
             people = chatsList.map({ .existingChat($0) })
             channels = self.channels
         } else {
-            // Chats
+            /// Chats
+            // Local chats
             let localChats = chatsList.filter { isChatMatchingSearchKey($0, searchKey: searchKey) }
             var localChatsPeopleWallets = Set(localChats.compactMap { chat in
                 if case .private(let details) = chat.type {
@@ -568,17 +569,25 @@ private extension ChatsListViewPresenter {
                 return nil
             })
             localChatsPeopleWallets.insert(selectedProfileWalletPair?.wallet.address.lowercased() ?? "")
-            let remotePeople = searchData.searchUsers.filter({ !localChatsPeopleWallets.contains($0.wallet.lowercased()) })
-            people = localChats.map { .existingChat($0) } + remotePeople.map { .newUser($0) }
+            people = localChats.map { .existingChat($0) }
             
-            let domainProfiles = searchData.domainProfiles.filter({ $0.name != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name })
+            // Domain profiles
+            let domainProfiles = searchData.domainProfiles.filter({ $0.name != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name && !localChatsPeopleWallets.contains($0.ownerAddress.lowercased()) })
             people += domainProfiles.map { profile in
                 let pfpURL: URL? = profile.imageType == .default ? nil : URL(string: profile.imagePath ?? "")
                 
                 return .newUser(.init(wallet: profile.ownerAddress, domainName: profile.name, pfpURL: pfpURL))
             }
             
-            // Channels
+            // Search users
+            let remotePeople = searchData.searchUsers.filter({ searchUser in
+                !localChatsPeopleWallets.contains(searchUser.wallet.lowercased()) &&
+                !domainProfiles.contains(where: { $0.ownerAddress.lowercased() == searchUser.wallet.lowercased()})
+            })
+            people += remotePeople.map { .newUser($0) }
+            
+            
+            /// Channels
             let localChannels = self.channels.filter { $0.name.lowercased().contains(searchKey) }
             let subscribedChannelsIds = self.channels.map { $0.id }
             let remoteChannels = searchData.searchChannels.filter { !subscribedChannelsIds.contains($0.id) }
