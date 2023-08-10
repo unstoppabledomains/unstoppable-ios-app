@@ -150,11 +150,15 @@ private extension WalletDetailsViewPresenter {
             var snapshot = WalletDetailsSnapshot()
             let isReverseResolutionChangeAllowed = await dataAggregatorService.isReverseResolutionChangeAllowed(for: wallet)
             
+            let domains = await dataAggregatorService.getDomainsDisplayInfo()
+            let walletDomains = domains.filter({ $0.isOwned(by: [wallet] )})
+            let interactableDomains = walletDomains.filter({ $0.isInteractable })
             let rrDomain = await dataAggregatorService.reverseResolutionDomain(for: wallet)
             var isRRSetupInProgress = false
             if let rrDomain = rrDomain {
                 isRRSetupInProgress = await dataAggregatorService.isReverseResolutionSetupInProgress(for: rrDomain.name)
             }
+            
             let isExternalWallet: Bool
             switch walletInfo.source {
             case .locallyGenerated, .imported:
@@ -185,11 +189,11 @@ private extension WalletDetailsViewPresenter {
             snapshot.appendSections([.renameAndDomains])
             snapshot.appendItems([.listItem(.rename)])
             
-            if let rrDomain = rrDomain {
+            if let rrDomain {
                 if isRRSetupInProgress {
                     snapshot.appendItems([.listItem(.reverseResolution(state: .settingFor(domain: rrDomain)))])
                 } else {
-                    if walletInfo.domainsCount == 1 {
+                    if interactableDomains.count == 1 {
                         // For single domain there's no reason to show updating records state since user can't change it. 
                         snapshot.appendItems([.listItem(.reverseResolution(state: .setFor(domain: rrDomain, isEnabled: false, isUpdatingRecords: false)))])
                     } else {
@@ -199,12 +203,12 @@ private extension WalletDetailsViewPresenter {
                     }
                 }
             } else {
-                if walletInfo.domainsCount > 0 {
+                if !interactableDomains.isEmpty {
                     snapshot.appendItems([.listItem(.reverseResolution(state: .notSet(isEnabled: isReverseResolutionChangeAllowed)))])
                 }
             }
             
-            if walletInfo.domainsCount > 0 {
+            if !walletDomains.isEmpty {
                 snapshot.appendItems([.listItem(.domains(domainsCount: walletInfo.domainsCount,
                                                          walletName: walletInfo.walletSourceName))])
             }

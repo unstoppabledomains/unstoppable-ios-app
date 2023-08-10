@@ -64,16 +64,30 @@ extension MessagingService: MessagingServiceProtocol {
         
         return try await apiService.isAbleToContactAddress(address, by: profile)
     }
+    
     func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] {
         let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
         let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
             .compactMap { walletWithInfo -> WalletDisplayInfo? in
                 let walletDomains = domains.filter { walletWithInfo.wallet.owns(domain: $0) }
-                let interactableDomains = walletDomains.filter({ $0.isInteractable })
-                if interactableDomains.isEmpty {
+                let applicableDomains = walletDomains.filter({
+                    switch $0.usageType {
+                    case .newNonInteractable, .normal:
+                        return true
+                    default:
+                        return false
+                    }
+                })
+                if applicableDomains.isEmpty {
                     return nil
                 }
-                return walletWithInfo.displayInfo
+                var walletDisplayInfo = walletWithInfo.displayInfo
+                if walletDisplayInfo?.reverseResolutionDomain == nil,
+                   applicableDomains.first(where: { $0.isUDDomain }) == nil {
+                    /// If wallet doesn't have any UNS domain, we still allow to chat as other (ENS only for now) domain
+                    walletDisplayInfo?.reverseResolutionDomain = applicableDomains.first
+                }
+                return walletDisplayInfo
             }
             .sorted(by: {
                 if $0.reverseResolutionDomain == nil && $1.reverseResolutionDomain != nil {
@@ -922,10 +936,12 @@ private extension MessagingService {
 // MARK: - Private methods
 private extension MessagingService {
     func getReverseResolutionDomainItem(for wallet: String) async throws -> DomainItem {
-        guard let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: wallet.normalized) else {
+        let walletsForMessaging = await fetchWalletsAvailableForMessaging()
+        guard let wallet = walletsForMessaging.first(where: { $0.address == wallet.normalized }),
+              let domainInfo = wallet.reverseResolutionDomain else {
             throw MessagingServiceError.noRRDomainForProfile
         }
-        return try await appContext.dataAggregatorService.getDomainWith(name: domainName)
+        return try await appContext.dataAggregatorService.getDomainWith(name: domainInfo.name)
     }
     
     func getDomainEthWalletAddress(_ domain: DomainDisplayInfo) throws -> String {
