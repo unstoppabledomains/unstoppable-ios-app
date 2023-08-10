@@ -316,7 +316,7 @@ private extension ChatsListViewPresenter {
     
     func resolveInitialProfileWith(wallets: [WalletDisplayInfo]) async throws {
         if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: wallets),
-           let wallet = wallets.first(where: { $0.address == profile.wallet }){
+           let wallet = wallets.first(where: { $0.address == profile.wallet.normalized }) {
             /// User already used chat with some profile, select last used.
             try await selectProfileWalletPair(.init(wallet: wallet,
                                                     profile: profile))
