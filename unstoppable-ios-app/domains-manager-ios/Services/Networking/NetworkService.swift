@@ -82,6 +82,14 @@ struct NetworkService {
                             extraHeaders: apiRequest.headers)
     }
     
+    @discardableResult
+    func fetchDataFor(endpoint: Endpoint,
+                      method: HttpRequestMethod) async throws -> Data {
+        guard let url = endpoint.url else { throw NetworkLayerError.creatingURLFailed }
+        let data = try await fetchData(for: url, body: endpoint.body, method: method, extraHeaders: endpoint.headers)
+        return data
+    }
+    
     func fetchData(for url: URL,
                    body: String = "",
                    method: HttpRequestMethod = .post,
