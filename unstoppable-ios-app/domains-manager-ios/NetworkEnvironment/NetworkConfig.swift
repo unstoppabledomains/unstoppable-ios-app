@@ -58,12 +58,16 @@ struct NetworkConfig {
         }
     }
     
-    static var baseProfileAPIUrl: String {
+    static var baseProfileAPIHost: String {
         if User.instance.getSettings().isTestnetUsed {
-            return "https://api.ud-staging.com"
+            return "api.ud-staging.com"
         } else {
-            return "https://api.unstoppabledomains.com"
+            return "api.unstoppabledomains.com"
         }
+    }
+    
+    static var baseProfileAPIUrl: String {
+        "https://\(baseProfileAPIHost)"
     }
     
     private static let StagingAccessApiKey = "mob-01-stg-8792ed66-f0d6-463d-b08b-7f5667980676"

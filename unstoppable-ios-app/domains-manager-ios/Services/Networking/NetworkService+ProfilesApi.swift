@@ -362,6 +362,14 @@ struct UserDomainProfileHumanityCheckAttribute: Codable {
     }
 }
 
+struct UserDomainNotificationsPreferences: Codable {
+    var blockedTopics: [String]
+    
+    enum CodingKeys: String, CodingKey {
+        case blockedTopics = "blocked_topics"
+    }
+}
+
 extension NetworkService {
     
     //MARK: public methods
@@ -434,34 +442,32 @@ extension NetworkService {
     }
     
     public func fetchUserDomainProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedUserDomainProfile {
-        let signature: String
-        let expires: UInt64
-        if let storedSignature = try? appContext.persistedProfileSignaturesStorage
-            .getUserDomainProfileSignature(for: domain.name) {
-            signature = storedSignature.sign
-            expires = storedSignature.expires
-        } else {
-            let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
-            signature = persistedSignature.sign
-            expires = persistedSignature.expires
-        }
+        let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
+        let signature = persistedSignature.sign
+        let expires = persistedSignature.expires
+        
         do {
             let profile = try await fetchExtendedDomainProfile(for: domain,
-                                                 expires: expires,
-                                                 signature: signature,
-                                                 fields: fields)
+                                                               expires: expires,
+                                                               signature: signature,
+                                                               fields: fields)
             return profile
         } catch {
-            if let detectedError = error as? NetworkLayerError,
-               case let .badResponseOrStatusCode(code, _) = detectedError,
-               code == 403 {
-                appContext.persistedProfileSignaturesStorage
-                    .revokeSignatures(for: domain)
-            }
+            checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
             throw error
         }
     }
     
+    public func getOrCreateAndStorePersistedProfileSignature(for domain: DomainItem) async throws -> PersistedTimedSignature {
+        if let storedSignature = try? appContext.persistedProfileSignaturesStorage
+            .getUserDomainProfileSignature(for: domain.name) {
+            return storedSignature
+        } else {
+            let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
+            return persistedSignature
+        }
+    }
+
     @discardableResult
     public func createAndStorePersistedProfileSignature(for domain: DomainItem) async throws -> PersistedTimedSignature {
         let message = try await NetworkService().getGeneratedMessageToRetrieve(for: domain)
@@ -478,9 +484,45 @@ extension NetworkService {
     @discardableResult
     public func updateUserDomainProfile(for domain: DomainItem,
                                         request: ProfileUpdateRequest) async throws -> SerializedUserDomainProfile {
-        let data = try JSONEncoder().encode(request)
-        guard let body = String(data: data, encoding: .utf8) else { throw NetworkLayerError.responseFailedToParse }
+        let body = try prepareRequestBodyFrom(entity: request)
         return try await updateUserDomainProfile(for: domain, body: body)
+    }
+    
+    public func fetchUserDomainNotificationsPreferences(for domain: DomainItem) async throws -> UserDomainNotificationsPreferences {
+        let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
+        let signature = persistedSignature.sign
+        let expires = persistedSignature.expires
+        
+        do {
+            let endpoint = try Endpoint.getDomainNotificationsPreferences(for: domain,
+                                                                          expires: expires,
+                                                                          signature: signature)
+            let data = try await fetchDataFor(endpoint: endpoint, method: .get)
+            let preferences = try UserDomainNotificationsPreferences.objectFromDataThrowing(data)
+            return preferences
+        } catch {
+            checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
+            throw error
+        }
+    }
+    
+    public func updateUserDomainNotificationsPreferences(_ preferences: UserDomainNotificationsPreferences,
+                                                         for domain: DomainItem) async throws {
+        let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
+        let signature = persistedSignature.sign
+        let expires = persistedSignature.expires
+        
+        do {
+            let body = try prepareRequestBodyFrom(entity: preferences)
+            let endpoint = try Endpoint.getDomainNotificationsPreferences(for: domain,
+                                                                          expires: expires,
+                                                                          signature: signature,
+                                                                          body: body)
+            try await fetchDataFor(endpoint: endpoint, method: .post)
+        } catch {
+            checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
+            throw error
+        }
     }
     
     //MARK: private methods
@@ -503,13 +545,8 @@ extension NetworkService {
                                                      expires: expires,
                                                      signature: signature,
                                                      fields: fields)
-        guard let url = endpoint.url else {
-            throw NetworkLayerError.creatingURLFailed
-        }
-        let data = try await fetchData(for: url, method: .get, extraHeaders: endpoint.headers)
-        guard let info = SerializedUserDomainProfile.objectFromData(data) else {
-            throw NetworkLayerError.failedParseProfileData
-        }
+        let data = try await fetchDataFor(endpoint: endpoint, method: .get)
+        let info = try SerializedUserDomainProfile.objectFromDataThrowing(data)
         return info
     }
     
@@ -556,8 +593,28 @@ extension NetworkService {
         }
         return info
     }
+    
+    /// - Parameters:
+    ///   - error: Error from request
+    ///   - domain: Domain who's signature was used
+    /// - Returns: Return true if error related to bad signature and signature was revoked
+    @discardableResult
+    private func checkIfBadSignatureErrorAndRevokeSignature(_ error: Error, for domain: DomainItem) -> Bool {
+        if let detectedError = error as? NetworkLayerError,
+           case let .badResponseOrStatusCode(code, _) = detectedError,
+           code == 403 {
+            appContext.persistedProfileSignaturesStorage.revokeSignatures(for: domain)
+            return true
+        }
+        return false
+    }
+    
+    private func prepareRequestBodyFrom(entity: any Encodable) throws -> String {
+        let data = try JSONEncoder().encode(entity)
+        guard let body = String(data: data, encoding: .utf8) else { throw NetworkLayerError.responseFailedToParse }
+        return body
+    }
 }
-
 
 // MARK: Profile Update Request Structures
 struct ProfileUpdateRequest: Encodable, Hashable {

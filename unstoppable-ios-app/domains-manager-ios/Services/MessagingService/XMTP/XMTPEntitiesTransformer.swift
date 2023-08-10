@@ -83,7 +83,7 @@ struct XMTPEntitiesTransformer {
                                                 filesService: MessagingFilesServiceProtocol) -> MessagingChatMessage? {
         var isRead = isRead
         if Constants.shouldHideBlockedUsersLocally,
-           XMTPBlockedUsersStorage.shared.isOtherUserBlockedInChat(chat) {
+           XMTPBlockedUsersStorage.shared.isOtherUserBlockedInChat(chat.displayInfo) {
             isRead = true /// Messages from other user should always be marked as read
         }
         

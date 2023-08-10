@@ -20,6 +20,8 @@ extension MockMessagingService: MessagingServiceProtocol {
     var canBlockUsers: Bool { true }
     func isAbleToContactAddress(_ address: String,
                                 by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool { true }
+    func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] { [] }
+    func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo? { nil }
     
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
@@ -39,6 +41,7 @@ extension MockMessagingService: MessagingServiceProtocol {
          return chats
          */
     }
+    func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus { .unblocked }
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus { .unblocked }
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws { }

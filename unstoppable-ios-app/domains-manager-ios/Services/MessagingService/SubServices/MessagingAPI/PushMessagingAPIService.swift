@@ -173,6 +173,10 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         return chats
     }
     
+    func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus {
+        .unblocked
+    }
+    
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
         func isPushUser(_ pushUser: Push.PushUser?, blockedBy otherPushUser: Push.PushUser?) -> Bool {
             if let blockedUsersList = otherPushUser?.profile.blockedUsersList,

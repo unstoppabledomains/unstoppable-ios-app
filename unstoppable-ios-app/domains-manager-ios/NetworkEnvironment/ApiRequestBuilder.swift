@@ -659,7 +659,8 @@ extension Endpoint {
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
             path: "/api/user/\(domain.name)/signature",
-            queryItems: [URLQueryItem(name: "expiry", value: String(expiry))],
+            queryItems: [URLQueryItem(name: "expiry", value: String(expiry)),
+                         URLQueryItem(name: "device", value: String(true))], /// This flag will allow signature to be used in all profile API endpoints for this domain
             body: ""
         )
     }
@@ -723,4 +724,25 @@ extension Endpoint {
             headers: headers
         )
     }
+    
+    static func getDomainNotificationsPreferences(for domain: DomainItem,
+                                                  expires: UInt64,
+                                                  signature: String,
+                                                  body: String = "") throws -> Endpoint {
+        // https://profile.ud-staging.com/api/user/aaron.x
+        let expiresString = "\(expires)"
+        let headers = [
+            SignatureComponentHeaders.CodingKeys.domain.rawValue: domain.name,
+            SignatureComponentHeaders.CodingKeys.expires.rawValue: expiresString,
+            SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
+        ]
+        return Endpoint(
+            host: NetworkConfig.baseProfileAPIHost,
+            path: "/profile/user/\(domain.name)/notifications/preferences",
+            queryItems: [],
+            body: body,
+            headers: headers
+        )
+    }
+    
 }

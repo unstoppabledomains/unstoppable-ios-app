@@ -67,10 +67,6 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         loadAndShowData()
     }
     
-    func viewDeinit() {
-        appContext.messagingService.setCurrentUser(nil)
-    }
-    
     func didSelectItem(_ item: ChatsListViewController.Item) {
         UDVibration.buttonTap.vibrate()
         view?.stopSearching()
@@ -307,25 +303,7 @@ private extension ChatsListViewPresenter {
     }
     
     func loadReadyForChattingWalletsOrClose() async throws -> [WalletDisplayInfo] {
-        let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-        let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-            .compactMap { walletWithInfo -> WalletDisplayInfo? in
-                let walletDomains = domains.filter { walletWithInfo.wallet.owns(domain: $0) }
-                let interactableDomains = walletDomains.filter({ $0.isInteractable })
-                if interactableDomains.isEmpty {
-                    return nil
-                }
-                return walletWithInfo.displayInfo
-            }
-            .sorted(by: {
-                if $0.reverseResolutionDomain == nil && $1.reverseResolutionDomain != nil {
-                    return false
-                } else if $0.reverseResolutionDomain != nil && $1.reverseResolutionDomain == nil {
-                    return true
-                }
-                return $0.domainsCount > $1.domainsCount
-            })
-        
+        let wallets = await appContext.messagingService.fetchWalletsAvailableForMessaging()
         guard !wallets.isEmpty else {
             Debugger.printWarning("User got to chats screen without wallets with domains")
             await awaitForUIReady()
@@ -337,10 +315,8 @@ private extension ChatsListViewPresenter {
     }
     
     func resolveInitialProfileWith(wallets: [WalletDisplayInfo]) async throws {
-        if let lastUsedWallet = UserDefaults.currentMessagingOwnerWallet,
-           let wallet = wallets.first(where: { $0.address == lastUsedWallet }),
-           let rrDomain = wallet.reverseResolutionDomain,
-           let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
+        if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: wallets),
+           let wallet = wallets.first(where: { $0.address == profile.wallet }){
             /// User already used chat with some profile, select last used.
             try await selectProfileWalletPair(.init(wallet: wallet,
                                                     profile: profile))
@@ -471,7 +447,7 @@ private extension ChatsListViewPresenter {
                     
                     switch selectedDataType {
                     case .chats:
-                        await fillSnapshotForUserChatsList(&snapshot)
+                        fillSnapshotForUserChatsList(&snapshot)
                     case .channels:
                         fillSnapshotForUserChannelsList(&snapshot)
                     }
@@ -487,19 +463,18 @@ private extension ChatsListViewPresenter {
         snapshot.appendItems([.createProfile])
     }
     
-    func fillSnapshotForUserChatsList(_ snapshot: inout ChatsListSnapshot) async {
+    func fillSnapshotForUserChatsList(_ snapshot: inout ChatsListSnapshot) {
         var chatsList = [MessagingChatDisplayInfo]()
         
         if Constants.shouldHideBlockedUsersLocally {
             // MARK: - Make function sync again when blocking feature will be handled on the service side
             for chat in self.chatsList {
-                if let blockingStatus = try? await appContext.messagingService.getBlockingStatusForChat(chat) {
-                    switch blockingStatus {
-                    case .unblocked, .currentUserIsBlocked:
-                        chatsList.append(chat)
-                    case .bothBlocked, .otherUserIsBlocked:
-                        continue
-                    }
+                let blockingStatus = appContext.messagingService.getCachedBlockingStatusForChat(chat)
+                switch blockingStatus {
+                case .unblocked, .currentUserIsBlocked:
+                    chatsList.append(chat)
+                case .bothBlocked, .otherUserIsBlocked:
+                    continue
                 }
             }
         } else {

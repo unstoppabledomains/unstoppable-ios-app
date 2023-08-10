@@ -14,6 +14,8 @@ protocol MessagingServiceProtocol {
     var canBlockUsers: Bool { get }
     func isAbleToContactAddress(_ address: String,
                                 by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool
+    func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo]
+    func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo?
     
     // User
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
@@ -25,6 +27,7 @@ protocol MessagingServiceProtocol {
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo]
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
+    func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws

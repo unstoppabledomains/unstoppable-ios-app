@@ -144,5 +144,5 @@ struct DomainRecordChanges: Codable, Hashable {
 
 struct XMTPBlockedUserDescription: Hashable, Codable {
     let userId: String
-    let blockedUserId: String
+    let blockedTopic: String
 }

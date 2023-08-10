@@ -47,6 +47,7 @@ final class MessagingService {
         setSceneActivationListener()
         dataRefreshManager.delegate = self
         unreadCountingService.totalUnreadMessagesCountUpdated = { [weak self] val in self?.totalUnreadMessagesCountUpdated(val) }
+        preloadLastUsedProfile()
     }
     
 }
@@ -62,6 +63,49 @@ extension MessagingService: MessagingServiceProtocol {
         let profile = try storageService.getUserProfileWith(userId: user.id)
         
         return try await apiService.isAbleToContactAddress(address, by: profile)
+    }
+    func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] {
+        let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+        let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+            .compactMap { walletWithInfo -> WalletDisplayInfo? in
+                let walletDomains = domains.filter { walletWithInfo.wallet.owns(domain: $0) }
+                let interactableDomains = walletDomains.filter({ $0.isInteractable })
+                if interactableDomains.isEmpty {
+                    return nil
+                }
+                return walletWithInfo.displayInfo
+            }
+            .sorted(by: {
+                if $0.reverseResolutionDomain == nil && $1.reverseResolutionDomain != nil {
+                    return false
+                } else if $0.reverseResolutionDomain != nil && $1.reverseResolutionDomain == nil {
+                    return true
+                }
+                return $0.domainsCount > $1.domainsCount
+            })
+        
+        return wallets
+    }
+    
+    func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo? {
+        let wallets: [WalletDisplayInfo]
+        
+        if let givenWallets {
+            wallets = givenWallets
+        } else {
+            wallets = await fetchWalletsAvailableForMessaging()
+        }
+        
+        if let lastUsedWallet = UserDefaults.currentMessagingOwnerWallet,
+           let wallet = wallets.first(where: { $0.address == lastUsedWallet }),
+           let rrDomain = wallet.reverseResolutionDomain,
+           let profile = try? await getUserProfile(for: rrDomain) {
+            /// User already used chat with some profile, select last used.
+            //                try await selectProfileWalletPair(.init(wallet: wallet,
+            //                                                        profile: profile))
+            return profile
+        }
+        return nil
     }
     
     // User
@@ -148,6 +192,10 @@ extension MessagingService: MessagingServiceProtocol {
         try await apiService.leaveGroupChat(chat, by: profile)
         storageService.deleteChat(chat, filesService: filesService)
         notifyChatsChanged(wallet: profile.wallet)
+    }
+    
+    func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus {
+        apiService.getCachedBlockingStatusForChat(chat)
     }
     
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus {
@@ -522,6 +570,8 @@ private extension MessagingService {
 private extension MessagingService {
     func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
         Task {
+            guard !dataRefreshManager.isUpdatingUserData(profile.displayInfo) else { return }
+            
             dataRefreshManager.startUpdatingChats(for: profile.displayInfo)
             var startTime = Date()
             do {
@@ -725,7 +775,7 @@ private extension MessagingService {
         if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: value.lowercased()) {
             return MessagingChatUserDisplayInfo(wallet: rrInfo.address,
                                                 domainName: rrInfo.name,
-                                                pfpURL: rrInfo.avatarUrl)
+                                                pfpURL: rrInfo.pfpURLToUse)
         }
         return nil
     }
@@ -797,6 +847,8 @@ private extension MessagingService {
 private extension MessagingService {
     func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
         Task {
+            guard !dataRefreshManager.isUpdatingUserData(profile.displayInfo) else { return }
+            
             dataRefreshManager.startUpdatingChannels(for: profile.displayInfo)
             let startTime = Date()
             do {
@@ -1092,6 +1144,15 @@ private extension MessagingService {
     
     func totalUnreadMessagesCountUpdated(_ havingUnreadMessages: Bool) {
         notifyListenersChangedDataType(.totalUnreadMessagesCountUpdated(havingUnreadMessages))
+    }
+    
+    func preloadLastUsedProfile() {
+        Task {
+            try? await Task.sleep(seconds: 0.5)
+            if let lastUsedProfile = await getLastUsedMessagingProfile(among: nil) {
+                setCurrentUser(lastUsedProfile)
+            }
+        }
     }
 }
 
