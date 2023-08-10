@@ -138,6 +138,25 @@ struct NetworkService {
         }
     }
     
+    func isProfilePageExistsFor(domainName: String) async throws -> Bool {
+        let link = String.Links.domainProfilePage(domainName: domainName)
+        guard let url = link.url else { throw NetworkLayerError.creatingURLFailed }
+        
+        return try await withCheckedThrowingContinuation({ continuation in
+            let request = URLRequest(url: url)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                if let response = response as? HTTPURLResponse {
+                    let header = response.headers["x-debug-service"]
+                    let isProfilePage = header == "ud.me"
+                    continuation.resume(returning: isProfilePage)
+                } else {
+                    continuation.resume(throwing: error ?? NetworkLayerError.connectionLost)
+                }
+            }
+            task.resume()
+        })
+    }
+    
     private func extractErrorMessage(from taskData: Data?) -> String {
         guard let responseData = taskData,
               let errorResponse = try? JSONDecoder().decode(MobileAPiErrorResponse.self, from: responseData) else {

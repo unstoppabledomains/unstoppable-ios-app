@@ -71,7 +71,6 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         view?.setUIState(.loading)
         setupTitle()
         setupPlaceholder()
-        setupBarButtons()
         loadAndShowData()
     }
     
@@ -430,26 +429,35 @@ private extension ChatViewPresenter {
         }
     }
     
-    func setupBarButtons() {
+    func setupBarButtons() async {
         var actions: [ChatViewController.NavButtonConfiguration.Action] = []
         
-        func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) {
+        func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) async {
             if let domainName = userInfo.domainName {
-                actions.append(.init(type: .viewProfile, callback: { [weak self] in
-                    self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
-                    self?.didPressViewDomainProfileButton(domainName: domainName,
-                                                          isUDDomain: userInfo.isUDDomain)
-                }))
+                let canViewProfile: Bool
+                if domainName.isUDTLD() {
+                    canViewProfile = true
+                } else {
+                    canViewProfile = (try? await NetworkService().isProfilePageExistsFor(domainName: domainName)) ?? false
+                }
+                
+                if canViewProfile  {
+                    actions.append(.init(type: .viewProfile, callback: { [weak self] in
+                        self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
+                        self?.didPressViewDomainProfileButton(domainName: domainName,
+                                                              isUDDomain: userInfo.isUDDomain)
+                    }))
+                }
             }
         }
         
         switch conversationState {
         case .newChat(let userInfo):
-            addViewProfileActionIfPossibleFor(userInfo: userInfo)
+            await addViewProfileActionIfPossibleFor(userInfo: userInfo)
         case .existingChat(let chat):
             switch chat.type {
             case .private(let details):
-                addViewProfileActionIfPossibleFor(userInfo: details.otherUser)
+                await addViewProfileActionIfPossibleFor(userInfo: details.otherUser)
                 
                 if appContext.messagingService.canBlockUsers {
                     switch blockStatus {
@@ -482,13 +490,7 @@ private extension ChatViewPresenter {
     
     func didPressViewDomainProfileButton(domainName: String,
                                          isUDDomain: Bool) {
-        let link: String.Links
-        if isUDDomain {
-            link = .domainProfilePage(domainName: domainName)
-        } else {
-            link = .ensDomainProfilePage(domainName: domainName)
-        }
-        view?.openLink(link)
+        view?.openLink(.domainProfilePage(domainName: domainName))
     }
     
     func didPressViewGroupInfoButton(groupDetails: MessagingGroupChatDetails) {
@@ -591,8 +593,6 @@ private extension ChatViewPresenter {
                 case .otherUserIsBlocked, .bothBlocked:
                     self.view?.setUIState(.otherUserIsBlocked)
                 }
-                await awaitForUIReady()
-                setupBarButtons()
             }
         case .newChat(let user):
             func prepareToChat() {
@@ -617,6 +617,8 @@ private extension ChatViewPresenter {
                 prepareToChat()
             }
         }
+        await awaitForUIReady()
+        await setupBarButtons()
     }
     
     func shareContentOfMessage(_ message: MessagingChatMessageDisplayInfo) {
