@@ -64,7 +64,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                                                                              isApproved: true) })
         let blockedUsersStorage = self.blockedUsersStorage
         Task.detached {
-            let notBlockedChats = chats.filter({ !blockedUsersStorage.isOtherUserBlockedInChat($0) })
+            let notBlockedChats = chats.filter({ !blockedUsersStorage.isOtherUserBlockedInChat($0.displayInfo) })
             let topicsToSubscribeForPN = notBlockedChats.map { self.getXMTPConversationTopicFromChat($0) }
             try? await XMTPPushNotificationsHelper.subscribeForTopics(topicsToSubscribeForPN, by: client)
         }
@@ -74,6 +74,14 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     
     func getChatRequestsForUser(_ user: MessagingChatUserProfile, page: Int, limit: Int) async throws -> [MessagingChat] {
         []
+    }
+    
+    func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus {
+        if blockedUsersStorage.isOtherUserBlockedInChat(chat) {
+            return .otherUserIsBlocked
+        } else {
+            return .unblocked
+        }
     }
     
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
@@ -86,7 +94,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
 
             isOtherUserBlocked = notificationsPreferences.blockedTopics.contains(chatTopic)
         } catch {
-            isOtherUserBlocked = blockedUsersStorage.isOtherUserBlockedInChat(chat)
+            isOtherUserBlocked = blockedUsersStorage.isOtherUserBlockedInChat(chat.displayInfo)
         }
         
         if isOtherUserBlocked {

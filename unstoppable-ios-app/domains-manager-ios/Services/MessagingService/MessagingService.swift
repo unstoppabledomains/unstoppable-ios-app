@@ -150,6 +150,10 @@ extension MessagingService: MessagingServiceProtocol {
         notifyChatsChanged(wallet: profile.wallet)
     }
     
+    func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus {
+        apiService.getCachedBlockingStatusForChat(chat)
+    }
+    
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus {
         let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
         let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)

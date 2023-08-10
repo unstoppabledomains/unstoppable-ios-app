@@ -22,11 +22,11 @@ struct XMTPBlockedUsersStorage {
         AppGroupsBridgeService.shared.getXMTPBlockedUsersList()
     }
     
-    func isOtherUserBlockedInChat(_ chat: MessagingChat) -> Bool {
-        switch chat.displayInfo.type {
+    func isOtherUserBlockedInChat(_ chat: MessagingChatDisplayInfo) -> Bool {
+        switch chat.type {
         case .private:
-            let userId = chat.displayInfo.thisUserDetails.wallet
-            let chatTopic = chat.displayInfo.id
+            let userId = chat.thisUserDetails.wallet
+            let chatTopic = chat.id
             let isOtherUserBlocked = isUser(userId,
                                             blockingChatTopic: chatTopic)
             return isOtherUserBlocked

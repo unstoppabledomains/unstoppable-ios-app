@@ -25,6 +25,7 @@ protocol MessagingServiceProtocol {
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo]
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws
+    func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws
