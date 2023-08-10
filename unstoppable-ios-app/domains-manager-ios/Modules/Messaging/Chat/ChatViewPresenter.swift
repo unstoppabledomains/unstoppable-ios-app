@@ -104,7 +104,8 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
     }
     
     func didPressSendText(_ text: String) {
-        guard !text.trimmedSpaces.isEmpty else { return }
+        let text = text.trimmedSpaces
+        guard !text.isEmpty else { return }
         
         view?.setInputText("")
         sendTextMesssage(text)
