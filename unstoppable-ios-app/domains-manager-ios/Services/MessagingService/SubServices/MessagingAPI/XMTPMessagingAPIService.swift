@@ -77,7 +77,18 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus {
-        let isOtherUserBlocked = blockedUsersStorage.isOtherUserBlockedInChat(chat)
+        let isOtherUserBlocked: Bool
+        do {
+            let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: chat.displayInfo.thisUserDetails.wallet)
+            let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
+            let chatTopic = chat.displayInfo.id
+            blockedUsersStorage.updatedBlockedUsersListFor(userId: chat.userId, blockedTopics: notificationsPreferences.blockedTopics)
+
+            isOtherUserBlocked = notificationsPreferences.blockedTopics.contains(chatTopic)
+        } catch {
+            isOtherUserBlocked = blockedUsersStorage.isOtherUserBlockedInChat(chat)
+        }
+        
         if isOtherUserBlocked {
             return .otherUserIsBlocked
         } else {
@@ -87,16 +98,17 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     
     func setUser(in chat: MessagingChat, blocked: Bool, by user: MessagingChatUserProfile) async throws {
         switch chat.displayInfo.type {
-        case .private(let details):
-            let userId = user.displayInfo.wallet
-            let otherUserId = details.otherUser.wallet
-            let blockedUserDescription = XMTPBlockedUserDescription(userId: userId,
-                                                                    blockedTopic: chat.displayInfo.id)
+        case .private:
+            let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
+            var notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
+            let chatTopic = chat.displayInfo.id
             if blocked {
-                blockedUsersStorage.addBlockedUser(blockedUserDescription)
+                notificationsPreferences.blockedTopics.append(chatTopic)
             } else {
-                blockedUsersStorage.removeBlockedUser(blockedUserDescription)
+                notificationsPreferences.blockedTopics.removeAll(where: { $0 == chatTopic })
             }
+            try await NetworkService().updateUserDomainNotificationsPreferences(notificationsPreferences, for: domain)
+            blockedUsersStorage.updatedBlockedUsersListFor(userId: chat.userId, blockedTopics: notificationsPreferences.blockedTopics)
             setSubscribed(!blocked,
                           toChat: chat,
                           by: user)

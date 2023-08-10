@@ -40,15 +40,13 @@ struct XMTPBlockedUsersStorage {
         return blockedUsersList.first(where: { $0.userId == userId && $0.blockedTopic == topic }) != nil
     }
     
-    func addBlockedUser(_ blockedUserDescription: XMTPBlockedUserDescription) {
+    func updatedBlockedUsersListFor(userId: String, blockedTopics: [String]) {
         var blockedUsersList = getBlockedUsersList()
-        blockedUsersList.append(blockedUserDescription)
-        set(newList: blockedUsersList)
-    }
-    
-    func removeBlockedUser(_ blockedUserDescription: XMTPBlockedUserDescription) {
-        var blockedUsersList = getBlockedUsersList()
-        blockedUsersList.removeAll(where: { $0 == blockedUserDescription })
+        blockedUsersList.removeAll(where: { $0.userId == userId }) /// Remove all blocked topics list related to user
+        
+        let blockedUserTopics = blockedTopics.map { XMTPBlockedUserDescription(userId: userId, blockedTopic: $0) } /// Replace it with new data
+        blockedUsersList.append(contentsOf: blockedUserTopics)
+        
         set(newList: blockedUsersList)
     }
     
