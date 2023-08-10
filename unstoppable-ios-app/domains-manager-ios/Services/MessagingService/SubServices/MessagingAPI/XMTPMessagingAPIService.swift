@@ -91,7 +91,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
             let userId = user.displayInfo.wallet
             let otherUserId = details.otherUser.wallet
             let blockedUserDescription = XMTPBlockedUserDescription(userId: userId,
-                                                                    blockedUserId: otherUserId)
+                                                                    blockedTopic: chat.displayInfo.id)
             if blocked {
                 blockedUsersStorage.addBlockedUser(blockedUserDescription)
             } else {

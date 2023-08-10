@@ -24,20 +24,20 @@ struct XMTPBlockedUsersStorage {
     
     func isOtherUserBlockedInChat(_ chat: MessagingChat) -> Bool {
         switch chat.displayInfo.type {
-        case .private(let details):
+        case .private:
             let userId = chat.displayInfo.thisUserDetails.wallet
-            let otherUserId = details.otherUser.wallet
+            let chatTopic = chat.displayInfo.id
             let isOtherUserBlocked = isUser(userId,
-                                            blockingUser: otherUserId)
+                                            blockingChatTopic: chatTopic)
             return isOtherUserBlocked
         case .group:
             return false
         }
     }
     
-    func isUser(_ userId: String, blockingUser otherUserId: String) -> Bool {
+    func isUser(_ userId: String, blockingChatTopic topic: String) -> Bool {
         let blockedUsersList = getBlockedUsersList()
-        return blockedUsersList.first(where: { $0.userId == userId && $0.blockedUserId == otherUserId }) != nil
+        return blockedUsersList.first(where: { $0.userId == userId && $0.blockedTopic == topic }) != nil
     }
     
     func addBlockedUser(_ blockedUserDescription: XMTPBlockedUserDescription) {
