@@ -608,7 +608,7 @@ private extension ChatViewPresenter {
                         prepareToChat()
                     } else {
                         isAbleToContactUser = false
-                        self.view?.setUIState(.cantContactUser(ableToInvite: user.domainName != nil))
+                        self.view?.setUIState(.cantContactUser(ableToInvite: false))
                     }
                 } catch {
                     view?.showAlertWith(error: error, handler: nil )
