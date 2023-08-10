@@ -729,7 +729,7 @@ private extension MessagingService {
         if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: value.lowercased()) {
             return MessagingChatUserDisplayInfo(wallet: rrInfo.address,
                                                 domainName: rrInfo.name,
-                                                pfpURL: rrInfo.avatarUrl)
+                                                pfpURL: rrInfo.pfpURLToUse)
         }
         return nil
     }
