@@ -570,6 +570,8 @@ private extension MessagingService {
 private extension MessagingService {
     func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
         Task {
+            guard !dataRefreshManager.isUpdatingUserData(profile.displayInfo) else { return }
+            
             dataRefreshManager.startUpdatingChats(for: profile.displayInfo)
             var startTime = Date()
             do {
@@ -845,6 +847,8 @@ private extension MessagingService {
 private extension MessagingService {
     func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
         Task {
+            guard !dataRefreshManager.isUpdatingUserData(profile.displayInfo) else { return }
+            
             dataRefreshManager.startUpdatingChannels(for: profile.displayInfo)
             let startTime = Date()
             do {
