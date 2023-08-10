@@ -434,32 +434,45 @@ extension NetworkService {
     }
     
     public func fetchUserDomainProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedUserDomainProfile {
-        let signature: String
-        let expires: UInt64
-        if let storedSignature = try? appContext.persistedProfileSignaturesStorage
-            .getUserDomainProfileSignature(for: domain.name) {
-            signature = storedSignature.sign
-            expires = storedSignature.expires
-        } else {
-            let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
-            signature = persistedSignature.sign
-            expires = persistedSignature.expires
-        }
+        let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
+        let signature = persistedSignature.sign
+        let expires = persistedSignature.expires
+        
         do {
             let profile = try await fetchExtendedDomainProfile(for: domain,
-                                                 expires: expires,
-                                                 signature: signature,
-                                                 fields: fields)
+                                                               expires: expires,
+                                                               signature: signature,
+                                                               fields: fields)
             return profile
         } catch {
-            if let detectedError = error as? NetworkLayerError,
-               case let .badResponseOrStatusCode(code, _) = detectedError,
-               code == 403 {
-                appContext.persistedProfileSignaturesStorage
-                    .revokeSignatures(for: domain)
-            }
+            checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
             throw error
         }
+    }
+    
+    public func getOrCreateAndStorePersistedProfileSignature(for domain: DomainItem) async throws -> PersistedTimedSignature {
+        if let storedSignature = try? appContext.persistedProfileSignaturesStorage
+            .getUserDomainProfileSignature(for: domain.name) {
+            return storedSignature
+        } else {
+            let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
+            return persistedSignature
+        }
+    }
+    
+    /// - Parameters:
+    ///   - error: Error from request
+    ///   - domain: Domain who's signature was used
+    /// - Returns: Return true if error related to bad signature and signature was revoked
+    @discardableResult
+    private func checkIfBadSignatureErrorAndRevokeSignature(_ error: Error, for domain: DomainItem) -> Bool {
+        if let detectedError = error as? NetworkLayerError,
+           case let .badResponseOrStatusCode(code, _) = detectedError,
+           code == 403 {
+            appContext.persistedProfileSignaturesStorage.revokeSignatures(for: domain)
+            return true
+        }
+        return false
     }
     
     @discardableResult
