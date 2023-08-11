@@ -8,6 +8,16 @@
 import Foundation
 import XMTP
 
+protocol XMTPMessagingAPIServiceDataProvider {
+    func getPreviousMessagesForChat(_ chat: MessagingChat,
+                                    before: Date?,
+                                    cachedMessages: [MessagingChatMessage],
+                                    fetchLimit: Int,
+                                    isRead: Bool,
+                                    filesService: MessagingFilesServiceProtocol,
+                                    for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage]
+}
+
 final class XMTPMessagingAPIService {
     
     private let blockedUsersStorage = XMTPBlockedUsersStorage.shared
@@ -15,14 +25,16 @@ final class XMTPMessagingAPIService {
                                                     canBlockUsers: true,
                                                     isSupportChatsListPagination: false,
                                                     isRequiredToReloadLastMessage: true)
+    let dataProvider: XMTPMessagingAPIServiceDataProvider
     
-    init() {
+    init(dataProvider: XMTPMessagingAPIServiceDataProvider = DefaultXMTPMessagingAPIServiceDataProvider()) {
+        self.dataProvider = dataProvider
         Client.register(codec: AttachmentCodec())
         Client.register(codec: RemoteAttachmentCodec())
     }
     
 }
-
+ 
 // MARK: - MessagingAPIServiceProtocol
 extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
@@ -139,24 +151,52 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                             isRead: Bool,
                             for user: MessagingChatUserProfile,
                             filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
-        let env = getCurrentXMTPEnvironment()
-        let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
-        let conversation = try getXMTPConversationFromChat(chat, client: client )
-        let start = Date()
-        let messages = try await conversation.messages(limit: fetchLimit, before: message?.displayInfo.time)
-        Debugger.printTimeSensitiveInfo(topic: .Messaging, "load \(messages.count) messages. fetchLimit: \(fetchLimit). before: \(message?.displayInfo.time)", startDate: start, timeout: 1)
         
-        var chatMessages = messages.compactMap({ xmtpMessage in
-            XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
-                                                                    cachedMessage: cachedMessages.first(where: { $0.displayInfo.id == xmtpMessage.id }),
-                                                                    in: chat,
-                                                                    isRead: isRead,
-                                                                    filesService: filesService)
-        })
-        if chatMessages.count < fetchLimit,
-           !chatMessages.isEmpty {
-            chatMessages[chatMessages.count - 1].displayInfo.isFirstInChat = true 
+        var fetchLimitToUse = fetchLimit
+        var beforeTimeFilter = message?.displayInfo.time
+        var messagesToKeep = [MessagingChatMessage]()
+        let result = messageToLoadDescriptionFrom(in: cachedMessages, before: message)
+        
+        switch result {
+        case .noCachedMessages:
+            Void()
+        case .reachedFirstMessageInChat:
+            messagesToKeep = cachedMessages
+        case .messageToLoad(let missingMessageThreadHash):
+            beforeTimeFilter = missingMessageThreadHash.beforeTimeFilter
+            fetchLimitToUse -= missingMessageThreadHash.offset
+            messagesToKeep = missingMessageThreadHash.messagesToKeep
         }
+        
+        if messagesToKeep.count >= fetchLimit {
+            return messagesToKeep
+        }
+        if messagesToKeep.last?.displayInfo.isFirstInChat == true {
+            return messagesToKeep
+        }
+        
+        var remoteMessages = try await dataProvider.getPreviousMessagesForChat(chat,
+                                                                               before: beforeTimeFilter,
+                                                                               cachedMessages: cachedMessages,
+                                                                               fetchLimit: fetchLimitToUse,
+                                                                               isRead: isRead,
+                                                                               filesService: filesService,
+                                                                               for: user)
+        if remoteMessages.count < fetchLimit,
+           !remoteMessages.isEmpty {
+            remoteMessages[remoteMessages.count - 1].displayInfo.isFirstInChat = true
+        }
+        
+        var chatMessages = [MessagingChatMessage]()
+        if let message {
+            chatMessages = [message]
+        }
+        chatMessages += messagesToKeep
+        chatMessages += remoteMessages
+        
+        
+        assignPreviousMessagesIn(messages: &chatMessages)
+        
         return chatMessages
     }
     
@@ -170,7 +210,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                      filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessage {
         let env = getCurrentXMTPEnvironment()
         let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
-        let conversation = try getXMTPConversationFromChat(chat, client: client )
+        let conversation = try MessagingAPIServiceHelper.getXMTPConversationFromChat(chat, client: client )
         return try await sendMessage(messageType,
                                      in: conversation,
                                      chat: chat,
@@ -213,12 +253,6 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
 
 // MARK: - Private methods
 private extension XMTPMessagingAPIService {
-    func getXMTPConversationFromChat(_ chat: MessagingChat,
-                                     client: XMTP.Client) throws -> XMTP.Conversation {
-        let metadata: XMTPEnvironmentNamespace.ChatServiceMetadata = try MessagingAPIServiceHelper.decodeServiceMetadata(from: chat.serviceMetadata)
-        return metadata.encodedContainer.decode(with: client)
-    }
-    
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      in conversation: XMTP.Conversation,
                      chat: MessagingChat,
@@ -267,6 +301,72 @@ private extension XMTPMessagingAPIService {
                 Debugger.printFailure("Failed to set subscribed: \(isSubscribed) for XMTP topics")
             }
         }
+    }
+}
+
+// MARK: - Get messages related
+private extension XMTPMessagingAPIService {
+    func messageToLoadDescriptionFrom(in cachedMessages: [MessagingChatMessage], before message: MessagingChatMessage?) -> MessageToLoadFromResult {
+        guard let message,
+              !cachedMessages.isEmpty else { return .noCachedMessages }
+        guard let cachedMessage = cachedMessages.first,
+              let beforeMessageLink = getLinkFrom(message: message),
+              beforeMessageLink == cachedMessage.displayInfo.id else {
+            return .messageToLoad(MessageToLoad(beforeTimeFilter: message.displayInfo.time,
+                                                offset: 0,
+                                                messagesToKeep: []))
+        }
+        
+        var currentMessage = cachedMessages.first!
+        var offset = 1
+        var messagesToKeep: [MessagingChatMessage] = [currentMessage]
+        
+        for i in 1..<cachedMessages.count {
+            let previousMessage = cachedMessages[i]
+            guard let currentMessageLink = getLinkFrom(message: currentMessage) else { return .reachedFirstMessageInChat }
+            if currentMessageLink != previousMessage.displayInfo.id {
+                return .messageToLoad(MessageToLoad(beforeTimeFilter: currentMessage.displayInfo.time,
+                                                    offset: offset,
+                                                    messagesToKeep: messagesToKeep))
+            }
+            offset += 1
+            currentMessage = previousMessage
+            messagesToKeep.append(previousMessage)
+        }
+        
+        return .messageToLoad(MessageToLoad(beforeTimeFilter: currentMessage.displayInfo.time,
+                                            offset: offset,
+                                            messagesToKeep: messagesToKeep))
+    }
+    enum MessageToLoadFromResult {
+        case noCachedMessages
+        case reachedFirstMessageInChat
+        case messageToLoad(MessageToLoad)
+    }
+    struct MessageToLoad {
+        let beforeTimeFilter: Date
+        let offset: Int
+        let messagesToKeep: [MessagingChatMessage]
+    }
+    
+    func getLinkFrom(message: MessagingChatMessage) -> String? {
+        let messageMetadata: XMTPEnvironmentNamespace.MessageServiceMetadata? = try? MessagingAPIServiceHelper.decodeServiceMetadata(from: message.serviceMetadata)
+        return messageMetadata?.previousMessageId
+    }
+    
+    func assignPreviousMessagesIn(messages: inout [MessagingChatMessage]) {
+        guard !messages.isEmpty else { return }
+        
+        for i in 1..<messages.count {
+            setPreviousMessageId(messages[i].displayInfo.id, to: &messages[i-1])
+        }
+    }
+    
+    func setPreviousMessageId(_ previousMessageId: String, to message: inout MessagingChatMessage) {
+        guard var messageMetadata: XMTPEnvironmentNamespace.MessageServiceMetadata = try? MessagingAPIServiceHelper.decodeServiceMetadata(from: message.serviceMetadata) else { return }
+
+        messageMetadata.previousMessageId = previousMessageId
+        message.serviceMetadata = messageMetadata.jsonData()
     }
 }
 
@@ -377,5 +477,33 @@ extension DomainItem: SigningKey {
         var bytes = sign.hexToBytes()
         bytes[bytes.count - 1] = 1 - bytes[bytes.count - 1] % 2
         return .init(bytes: Data(bytes[0...63]), recovery: Int(bytes[64]))
+    }
+}
+
+final class DefaultXMTPMessagingAPIServiceDataProvider: XMTPMessagingAPIServiceDataProvider {
+    func getPreviousMessagesForChat(_ chat: MessagingChat,
+                                    before: Date?,
+                                    cachedMessages: [MessagingChatMessage],
+                                    fetchLimit: Int,
+                                    isRead: Bool,
+                                    filesService: MessagingFilesServiceProtocol,
+                                    for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
+        
+        let env = XMTPServiceHelper.getCurrentXMTPEnvironment()
+        let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
+        let conversation = try MessagingAPIServiceHelper.getXMTPConversationFromChat(chat, client: client)
+        let start = Date()
+        let messages = try await conversation.messages(limit: fetchLimit, before: before)
+        Debugger.printTimeSensitiveInfo(topic: .Messaging, "load \(messages.count) messages. fetchLimit: \(fetchLimit). before: \(before)", startDate: start, timeout: 1)
+        
+        let chatMessages = messages.compactMap({ xmtpMessage in
+            XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                    cachedMessage: cachedMessages.first(where: { $0.displayInfo.id == xmtpMessage.id }),
+                                                                    in: chat,
+                                                                    isRead: isRead,
+                                                                    filesService: filesService)
+        })
+        
+        return chatMessages
     }
 }

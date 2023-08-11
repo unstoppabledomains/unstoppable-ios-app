@@ -6,8 +6,15 @@
 //
 
 import Foundation
+import XMTP
 
 struct MessagingAPIServiceHelper {
+    static func getXMTPConversationFromChat(_ chat: MessagingChat,
+                                             client: XMTP.Client) throws -> XMTP.Conversation {
+        let metadata: XMTPEnvironmentNamespace.ChatServiceMetadata = try decodeServiceMetadata(from: chat.serviceMetadata)
+        return metadata.encodedContainer.decode(with: client)
+    }
+    
     static func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
         let wallet = wallet.normalized
         guard let domain = await appContext.dataAggregatorService.getDomainItems().first(where: { $0.ownerWallet == wallet }) else {

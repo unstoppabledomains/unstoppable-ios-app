@@ -10,5 +10,5 @@ import Foundation
 struct MessagingChatMessage: Hashable {
     let userId: String
     var displayInfo: MessagingChatMessageDisplayInfo
-    let serviceMetadata: Data?
+    var serviceMetadata: Data?
 }

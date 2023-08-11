@@ -24,6 +24,7 @@ enum XMTPEnvironmentNamespace {
         let encodedContentData: Data
         let type: TypeDescription
         let compression: Xmtp_MessageContents_Compression
+        var previousMessageId: String? = nil
         
         init(encodedContent: EncodedContent) {
             self.encodedContentData = encodedContent.content
