@@ -9,7 +9,7 @@ import XCTest
 import Push
 @testable import domains_manager_ios
 
-final class MessagingAPIServiceTests: XCTestCase {
+final class PushMessagingAPIServiceTests: XCTestCase {
     
     private var dataProvider: MockMessagingServiceDataProvider!
     private var messagingService: PushMessagingAPIService!
@@ -176,7 +176,7 @@ final class MessagingAPIServiceTests: XCTestCase {
 }
 
 // MARK: - Private methods
-private extension MessagingAPIServiceTests {
+private extension PushMessagingAPIServiceTests {
     func createMessagingChat(lastMessage: MessagingChatMessageDisplayInfo?, threadHash: String?) -> MessagingChat {
         let serviceMetadata = PushEnvironment.ChatServiceMetadata(threadHash: threadHash, publicKeys: []).jsonData()
         let displayInfo = MessagingChatDisplayInfo(id: "", thisUserDetails: .init(wallet: ""),
@@ -211,7 +211,7 @@ private extension MessagingAPIServiceTests {
 }
 
 // MARK: - Private methods
-private extension MessagingAPIServiceTests {
+private extension PushMessagingAPIServiceTests {
     final class MockMessagingServiceDataProvider: PushMessagingAPIServiceDataProvider {
         var requests: [RequestDescription] = []
         
