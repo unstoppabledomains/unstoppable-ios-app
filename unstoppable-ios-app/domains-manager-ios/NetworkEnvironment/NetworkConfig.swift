@@ -16,7 +16,7 @@ struct NetworkConfig {
     static var migratedEndpoint: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
-            return "mobile-staging.api.ud-staging.com"
+            return "api.ud-staging.com"
         } else {
             return "unstoppabledomains.com"
         }
