@@ -1428,6 +1428,7 @@
 		C62C8DCA28DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C8DC428DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift */; };
 		C62C8DCB28DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C8DC428DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift */; };
 		C62C8DCC28DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C8DC428DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift */; };
+		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63402882886547C00AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C63402872886547C00AB5D38 /* SVGKit */; };
 		C634028A2886548D00AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C63402892886548D00AB5D38 /* SVGKit */; };
 		C634028C2886549200AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C634028B2886549200AB5D38 /* SVGKit */; };
@@ -4470,6 +4471,7 @@
 		C62C3FC5283F70970094FC93 /* SelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorButton.swift; sourceTree = "<group>"; };
 		C62C8DC328DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaymentTransactionGasOnlyCostView.xib; sourceTree = "<group>"; };
 		C62C8DC428DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentTransactionGasOnlyCostView.swift; sourceTree = "<group>"; };
+		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63414D92A7D335100C80B77 /* GlobalRR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalRR.swift; sourceTree = "<group>"; };
 		C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
 		C635193628D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewController.swift; sourceTree = "<group>"; };
@@ -5385,6 +5387,7 @@
 				300F291B25D3D4A1007EEAD1 /* DomainRecordsViewModelTests.swift */,
 				306486972527253D00388026 /* domains_manager_iosTests.swift */,
 				C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */,
+				C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */,
 				30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */,
 				29EDB622290A94E700A0BD08 /* ProfilesTests.swift */,
 				30F526452785BB22004C7AB6 /* ResolutionInitTests.swift */,
@@ -10553,6 +10556,7 @@
 				C6DF986A290F83020098733A /* WalletDataValidationTests.swift in Sources */,
 				C6AB383E2A692D45003C0944 /* PushMessagingAPIServiceTests.swift in Sources */,
 				C6DF986E290F83020098733A /* DomainRecordsViewModelTests.swift in Sources */,
+				C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */,
 				C6DF9870290F83020098733A /* testUpdateRecords.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
