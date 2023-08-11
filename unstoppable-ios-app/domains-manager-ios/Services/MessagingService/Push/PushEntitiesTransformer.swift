@@ -155,8 +155,7 @@ struct PushEntitiesTransformer {
                                                           isFirstInChat: pushMessage.link == nil,
                                                           deliveryState: .delivered,
                                                           isEncrypted: isMessageEncrypted)
-        let chatMessage = MessagingChatMessage(userId: chat.userId,
-                                               displayInfo: displayInfo,
+        let chatMessage = MessagingChatMessage(displayInfo: displayInfo,
                                                serviceMetadata: serviceMetadata)
         return chatMessage
     }

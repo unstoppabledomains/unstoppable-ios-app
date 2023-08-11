@@ -122,8 +122,7 @@ struct XMTPEntitiesTransformer {
                                                           isFirstInChat: false,
                                                           deliveryState: .delivered,
                                                           isEncrypted: isMessageEncrypted)
-        let chatMessage = MessagingChatMessage(userId: userId,
-                                               displayInfo: displayInfo,
+        let chatMessage = MessagingChatMessage(displayInfo: displayInfo,
                                                serviceMetadata: serviceMetadata)
         return chatMessage
     }

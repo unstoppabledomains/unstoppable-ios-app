@@ -13,7 +13,7 @@ final class PushMessagingAPIServiceTests: XCTestCase {
     
     private var dataProvider: MockMessagingServiceDataProvider!
     private var messagingService: PushMessagingAPIService!
-    private let filesService = MessagingFilesServiceProtocolMock()
+    private let filesService = MessagingFilesServiceProtocolMock(decrypterService: SymmetricMessagingContentDecrypterService())
     private let user = MessagingChatUserProfile(id: "", wallet: "", displayInfo: .init(id: "", wallet: ""))
     private let fetchLimit = 5
     private var firstMessage: MessagingChatMessage { getMockMessage(at: 0) }
@@ -205,6 +205,7 @@ private extension PushMessagingAPIServiceTests {
                                                       before: message,
                                                       cachedMessages: cachedMessages,
                                                       fetchLimit: fetchLimit ?? self.fetchLimit,
+                                                      isRead: true,
                                                       for: user,
                                                       filesService: filesService)
     }
@@ -220,8 +221,7 @@ private extension PushMessagingAPIServiceTests {
                                         fetchLimit: Int,
                                         isRead: Bool,
                                         filesService: MessagingFilesServiceProtocol,
-                                        env: Push.ENV,
-                                        pgpPrivateKey: String) async throws -> [MessagingChatMessage] {
+                                        for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
             requests.append(.init(threadHash: threadHash, fetchLimit: fetchLimit))
             let messages = MessagesMockData.messagesBefore(threadHash).prefix(fetchLimit)
             return Array(messages)
@@ -234,25 +234,12 @@ private extension PushMessagingAPIServiceTests {
     }
     
     final class MessagingFilesServiceProtocolMock: MessagingFilesServiceProtocol {
-        func getEncryptedDataURLFor(fileName: String) -> URL? {
-            nil
-        }
+        init(decrypterService: MessagingContentDecrypterService) { }
         
-        func saveEncryptedData(_ data: Data, fileName: String) throws -> URL {
-            throw NSError()
-        }
-        
-        func deleteEncryptedDataWith(fileName: String) {
-            
-        }
-        
-        func getDecryptedDataURLFor(fileName: String) -> URL? {
-            nil
-        }
-        
-        func saveDecryptedData(_ data: Data, fileName: String) throws -> URL {
-            throw NSError()
-        }
+        @discardableResult
+        func saveData(_ data: Data, fileName: String) throws -> URL { throw NSError() }
+        func deleteDataWith(fileName: String) { }
+        func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? { nil }
     }
     
     
@@ -289,9 +276,10 @@ private extension PushMessagingAPIServiceTests {
                                                                          link: link).jsonData()
             let displayInfo = MessagingChatMessageDisplayInfo(id: id,
                                                               chatId: "",
+                                                              userId: "",
                                                               senderType: .thisUser(.init(wallet: "")),
                                                               time: Date(),
-                                                              type: .text(.init(text: "", encryptedText: "")),
+                                                              type: .text(.init(text: "")),
                                                               isRead: true,
                                                               isFirstInChat: isFirstInChat,
                                                               deliveryState: .delivered,

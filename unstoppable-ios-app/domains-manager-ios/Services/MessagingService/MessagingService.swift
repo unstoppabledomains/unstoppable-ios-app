@@ -308,15 +308,13 @@ extension MessagingService: MessagingServiceProtocol {
                                                                     isFirstInChat: false,
                                                                     deliveryState: .sending,
                                                                     isEncrypted: isEncrypted)
-        let message = MessagingChatMessage(userId: profile.id,
-                                           displayInfo: newMessageDisplayInfo,
+        let message = MessagingChatMessage(displayInfo: newMessageDisplayInfo,
                                            serviceMetadata: nil)
         await storageService.saveMessages([message])
         
         try await setLastMessageAndNotify(newMessageDisplayInfo,
                                           to: messagingChat)
-        let newMessage = MessagingChatMessage(userId: profile.id,
-                                              displayInfo: newMessageDisplayInfo,
+        let newMessage = MessagingChatMessage(displayInfo: newMessageDisplayInfo,
                                               serviceMetadata: nil)
         sendMessageToBEAsync(message: newMessage, messageType: messageType, in: messagingChat, by: profile)
 
@@ -355,12 +353,10 @@ extension MessagingService: MessagingServiceProtocol {
         var updatedMessage = message
         updatedMessage.deliveryState = .sending
         updatedMessage.time = Date()
-        let newMessage = MessagingChatMessage(userId: profile.id,
-                                              displayInfo: updatedMessage,
+        let newMessage = MessagingChatMessage(displayInfo: updatedMessage,
                                               serviceMetadata: nil)
 
-        replaceCacheMessageAndNotify(.init(userId: profile.id,
-                                           displayInfo: message,
+        replaceCacheMessageAndNotify(.init(displayInfo: message,
                                            serviceMetadata: nil),
                                      with: newMessage)
         sendMessageToBEAsync(message: newMessage, messageType: updatedMessage.type, in: messagingChat, by: profile)

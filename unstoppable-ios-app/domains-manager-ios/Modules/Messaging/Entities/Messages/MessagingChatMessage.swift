@@ -8,7 +8,9 @@
 import Foundation
 
 struct MessagingChatMessage: Hashable {
-    let userId: String
+    var userId: String { displayInfo.userId }
+    var id: String { displayInfo.id }
+    
     var displayInfo: MessagingChatMessageDisplayInfo
     var serviceMetadata: Data?
 }

@@ -564,8 +564,7 @@ private extension CoreDataMessagingStorageService {
                                                           deliveryState: deliveryState,
                                                           isEncrypted: coreDataMessage.isEncrypted)
         
-        return MessagingChatMessage(userId: coreDataMessage.userId!,
-                                    displayInfo: displayInfo,
+        return MessagingChatMessage(displayInfo: displayInfo,
                                     serviceMetadata: coreDataMessage.serviceMetadata)
     }
     

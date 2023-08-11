@@ -19,7 +19,6 @@ protocol PushChannelsAPIServiceDataProvider {
 final class PushMessagingChannelsAPIService {
     
     private let pushRESTService = PushRESTAPIService()
-    private let pushHelper = PushServiceHelper()
     
     let dataProvider: PushChannelsAPIServiceDataProvider
     
@@ -98,7 +97,7 @@ extension PushMessagingChannelsAPIService: MessagingChannelsAPIServiceProtocol {
                     by user: MessagingChatUserProfile) async throws {
         
         let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.normalizedWallet)
-        let env = pushHelper.getCurrentPushEnvironment()
+        let env = PushServiceHelper.getCurrentPushEnvironment()
         
         let subscribeOptions = Push.PushChannel.SubscribeOption(signer: domain,
                                                                 channelAddress: channel.channel,

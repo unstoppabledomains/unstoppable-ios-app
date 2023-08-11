@@ -192,7 +192,7 @@ private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
     func setKeyWindow() {
         
     }
-    
+    func isActiveState(_ state: AppCoordinationState) -> Bool { false }
     func goBackToPreviousApp() -> Bool {
         didGoBackToPreviousAppCalled = true
         return true

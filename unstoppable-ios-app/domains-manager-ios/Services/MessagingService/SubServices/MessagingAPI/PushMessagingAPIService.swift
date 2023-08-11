@@ -14,14 +14,12 @@ protocol PushMessagingAPIServiceDataProvider {
                                     fetchLimit: Int,
                                     isRead: Bool,
                                     filesService: MessagingFilesServiceProtocol,
-                                    env: Push.ENV,
-                                    pgpPrivateKey: String) async throws -> [MessagingChatMessage]
+                                    for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage]
 }
 
 final class PushMessagingAPIService {
     
     private let pushRESTService = PushRESTAPIService()
-    private let pushHelper = PushServiceHelper()
     private let dataProvider: PushMessagingAPIServiceDataProvider
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: true,
                                                     canBlockUsers: true,
@@ -259,8 +257,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         var fetchLimitToUse = fetchLimit
         var threadHash = chatThreadHash
         var messagesToKeep = [MessagingChatMessage]()
-        let env = getCurrentPushEnvironment()
-        let pgpPrivateKey = try await getPGPPrivateKeyFor(user: user)
 
         if let message {
             guard let currentMessageLink = getLinkFrom(message: message) else { return [] } // Request messages before first in chat
@@ -291,8 +287,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                                                fetchLimit: fetchLimitToUse,
                                                                                isRead: isRead,
                                                                                filesService: filesService,
-                                                                               env: env,
-                                                                               pgpPrivateKey: pgpPrivateKey)
+                                                                               for: user)
         
         return messagesToKeep + remoteMessages
     }
@@ -484,16 +479,7 @@ private extension PushMessagingAPIService {
     }
     
     func getPGPPrivateKeyFor(user: MessagingChatUserProfile) async throws -> String {
-        let wallet = user.wallet
-        if let key = KeychainPGPKeysStorage.instance.getPGPKeyFor(identifier: wallet) {
-            return key
-        }
-        
-        let userMetadata: PushEnvironment.UserProfileServiceMetadata = try decodeServiceMetadata(from: user.serviceMetadata)
-        let domain = try await getAnyDomainItem(for: wallet)
-        let pgpPrivateKey = try await PushUser.DecryptPGPKey(encryptedPrivateKey: userMetadata.encryptedPrivateKey, signer: domain)
-        KeychainPGPKeysStorage.instance.savePGPKey(pgpPrivateKey, forIdentifier: wallet)
-        return pgpPrivateKey
+        try await PushServiceHelper.getPGPPrivateKeyFor(user: user)
     }
     
     func getAnyDomainItem(for wallet: HexAddress) async throws -> DomainItem {
@@ -518,7 +504,7 @@ private extension PushMessagingAPIService {
     }
     
     func getCurrentPushEnvironment() -> Push.ENV {
-        pushHelper.getCurrentPushEnvironment()
+        PushServiceHelper.getCurrentPushEnvironment()
     }
     
     func decodeServiceMetadata<T: Codable>(from data: Data?) throws -> T {
@@ -611,9 +597,9 @@ final class DefaultPushMessagingAPIServiceDataProvider: PushMessagingAPIServiceD
                                     fetchLimit: Int,
                                     isRead: Bool,
                                     filesService: MessagingFilesServiceProtocol,
-                                    env: Push.ENV,
-                                    pgpPrivateKey: String) async throws -> [MessagingChatMessage] {
-        
+                                    for user: MessagingChatUserProfile) async throws -> [MessagingChatMessage] {
+        let env = PushServiceHelper.getCurrentPushEnvironment()
+        let pgpPrivateKey = try await PushServiceHelper.getPGPPrivateKeyFor(user: user)
         let pushMessages = try await Push.PushChat.History(threadHash: threadHash,
                                                            limit: fetchLimit,
                                                            pgpPrivateKey: "", // Get encrypted messages
