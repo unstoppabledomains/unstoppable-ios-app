@@ -147,6 +147,9 @@ struct NetworkService {
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 if let response = response as? HTTPURLResponse {
                     let header = response.headers["x-debug-service"]
+                    if header == nil {
+                        Debugger.printFailure("Domain profile page has changed response structure", critical: true)
+                    }
                     let isProfilePage = header == "ud.me"
                     continuation.resume(returning: isProfilePage)
                 } else {
