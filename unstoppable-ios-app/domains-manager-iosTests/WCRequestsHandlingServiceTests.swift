@@ -27,6 +27,7 @@ final class WCRequestsHandlingServiceTests: BaseTestClass {
     override func setUp() async throws {
         try await super.setUp()
         
+        configureWC2()
         Constants.wcConnectionTimeout = 0.2
         mockWCServiceV1 = MockWCServiceV1()
         mockWCServiceV2 = MockWCServiceV2()
@@ -37,6 +38,18 @@ final class WCRequestsHandlingServiceTests: BaseTestClass {
         wcRequestsHandlingService.setUIHandler(mockUIErrorHandler)
         mockListener = MockWCServiceListener()
         wcRequestsHandlingService.addListener(mockListener)
+    }
+    
+    private func configureWC2() {
+        Networking.configure(projectId: AppIdentificators.wc2ProjectId,
+                             socketFactory: SocketFactory())
+        
+        let metadata = AppMetadata(name: String.Constants.mobileAppName.localized(),
+                                   description: String.Constants.mobileAppDescription.localized(),
+                                   url: String.Links.mainLanding.urlString,
+                                   icons: [String.Links.udLogoPng.urlString])
+        
+        Pair.configure(metadata: metadata)
     }
 }
 
