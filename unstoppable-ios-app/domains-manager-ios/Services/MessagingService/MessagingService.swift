@@ -116,11 +116,13 @@ extension MessagingService: MessagingServiceProtocol {
         if let lastUsedWallet = UserDefaults.currentMessagingOwnerWallet,
            let wallet = wallets.first(where: { $0.address == lastUsedWallet }),
            let rrDomain = wallet.reverseResolutionDomain,
-           let profile = try? await getUserProfile(for: rrDomain) {
+           let domain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomain.name),
+           let profile = try? storageService.getUserProfileFor(domain: domain,
+                                                               serviceIdentifier: apiService.serviceIdentifier) {
             /// User already used chat with some profile, select last used.
             //                try await selectProfileWalletPair(.init(wallet: wallet,
             //                                                        profile: profile))
-            return profile
+            return profile.displayInfo
         }
         return nil
     }
