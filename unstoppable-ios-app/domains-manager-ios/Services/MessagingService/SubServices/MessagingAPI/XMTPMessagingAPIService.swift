@@ -152,6 +152,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                             for user: MessagingChatUserProfile,
                             filesService: MessagingFilesServiceProtocol) async throws -> [MessagingChatMessage] {
         
+        var message = message
         var fetchLimitToUse = fetchLimit
         var beforeTimeFilter = message?.displayInfo.time
         var messagesToKeep = [MessagingChatMessage]()
@@ -182,9 +183,12 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                                                                isRead: isRead,
                                                                                filesService: filesService,
                                                                                for: user)
-        if remoteMessages.count < fetchLimit,
-           !remoteMessages.isEmpty {
-            remoteMessages[remoteMessages.count - 1].displayInfo.isFirstInChat = true
+        if remoteMessages.count < fetchLimit {
+            if !remoteMessages.isEmpty {
+                remoteMessages[remoteMessages.count - 1].displayInfo.isFirstInChat = true
+            } else {
+                message?.displayInfo.isFirstInChat = true
+            }
         }
         
         var chatMessages = [MessagingChatMessage]()
