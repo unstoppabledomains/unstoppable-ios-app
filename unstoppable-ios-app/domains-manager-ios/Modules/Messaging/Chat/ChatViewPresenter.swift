@@ -45,7 +45,7 @@ final class ChatViewPresenter {
     private weak var view: (any ChatViewProtocol)?
     private let profile: MessagingChatUserProfileDisplayInfo
     private var conversationState: MessagingChatConversationState
-    private let fetchLimit: Int = 30
+    private let fetchLimit: Int = 20
     private var messages: [MessagingChatMessageDisplayInfo] = []
     private var isLoadingMessages = false
     private var blockStatus: MessagingPrivateChatBlockingStatus = .unblocked
