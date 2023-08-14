@@ -442,7 +442,7 @@ extension NetworkService {
     }
     
     public func fetchUserDomainProfile(for domain: DomainItem, fields: Set<GetDomainProfileField>) async throws -> SerializedUserDomainProfile {
-        let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
+        let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
         let signature = persistedSignature.sign
         let expires = persistedSignature.expires
         
@@ -489,7 +489,7 @@ extension NetworkService {
     }
     
     public func fetchUserDomainNotificationsPreferences(for domain: DomainItem) async throws -> UserDomainNotificationsPreferences {
-        let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
+        let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
         let signature = persistedSignature.sign
         let expires = persistedSignature.expires
         
@@ -508,7 +508,7 @@ extension NetworkService {
     
     public func updateUserDomainNotificationsPreferences(_ preferences: UserDomainNotificationsPreferences,
                                                          for domain: DomainItem) async throws {
-        let persistedSignature = try await createAndStorePersistedProfileSignature(for: domain)
+        let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
         let signature = persistedSignature.sign
         let expires = persistedSignature.expires
         
