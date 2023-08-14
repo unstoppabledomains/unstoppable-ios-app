@@ -211,7 +211,7 @@ private extension AppLaunchService {
         if appVersion.dotcoinDeprecationReleased == true {
             Constants.deprecatedTLDs = ["coin"]
         }
-        Constants.newNonInteractableTLDs = ["eth"]
+        Constants.newNonInteractableTLDs = [Constants.ensDomainTLD]
         if !appVersion.mintingIsEnabled {
             appContext.toastMessageService.showToast(.mintingUnavailable, isSticky: true)
         } else {

@@ -73,8 +73,10 @@ extension MessagingService: MessagingServiceProtocol {
                 let walletDomains = domains.filter { walletWithInfo.wallet.owns(domain: $0) }
                 let applicableDomains = walletDomains.filter({
                     switch $0.usageType {
-                    case .newNonInteractable, .normal:
+                    case .normal:
                         return true
+                    case .newNonInteractable(let tld):
+                        return tld == Constants.ensDomainTLD
                     default:
                         return false
                     }
