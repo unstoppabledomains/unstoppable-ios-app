@@ -18,11 +18,11 @@ extension UDWallet {
         guard let walletName = self.getExternalWalletName()?.lowercased() else {
             return false
         }
-        return walletName.contains("rainbow") || walletName.contains("metamask")
+        return walletName.contains("alpha")
     }
     
     static func createSignaturesByPersonalSign(messages: [String],
-                                domain: DomainItem) async throws -> [String] {
+                                               domain: DomainItem) async throws -> [String] {
         guard let walletAddress = domain.ownerWallet else {
             throw UDWallet.Error.noWalletOwner
         }
@@ -42,7 +42,7 @@ extension UDWallet {
             return try await signViaWalletConnectPersonalSign(message: messageString)
         }
         
-        guard let signature = self.signPersonal(messageString: messageString) else {
+        guard let signature = self.signPersonal(messageString: messageString.convertedIntoReadableMessage) else {
             throw UDWallet.Error.failedToSignMessage
         }
         return signature
@@ -88,7 +88,7 @@ extension UDWallet {
             }
             return walletName.contains("rainbow") || walletName.contains("alpha") || walletName.contains("ledger")
         }
-
+        
         let messageToSend: String
         if willHash() {
             messageToSend = message
@@ -97,6 +97,39 @@ extension UDWallet {
             messageToSend = hash
         }
         return messageToSend
+    }
+    
+    func getSignTypedData(dataString: String) async throws -> String {
+        guard self.walletState == .verified else {
+            let signature = try await signViaWalletConnectTypedData(dataString: dataString)
+            return signature
+        }        
+        let data = dataString.data(using: .utf8)!
+        let typedData = try! JSONDecoder().decode(EIP712TypedData.self, from: data)
+        let signHash = typedData.signHash
+        
+        let privKey = self.getPrivateKey()! // safe
+        guard let sig = try UDWallet.signMessageHash(messageHash: signHash, with: privKey) else {
+            throw UDWallet.Error.failedToSignMessage
+        }
+
+        return "0x" + sig.dataToHexString()
+    }
+    
+    func signViaWalletConnectTypedData(dataString: String) async throws -> String {
+        let session = try detectWCSessionType()
+        switch session {
+        case .wc1(let wc1Session):
+            let response = try await appContext.walletConnectExternalWalletHandler.signTypedDataViaWalletConnect_V1(session: wc1Session, walletAddress: self.address, message: dataString, in: self)
+            return try handleResponse(response: response)
+        case .wc2(let wc2Sessions):
+            let response = try await appContext.walletConnectServiceV2.sendSignTypedData(sessions: wc2Sessions,
+                                                                                        chainId: 1, // chain here makes no difference
+                                                                                        dataString: dataString,
+                                                                                        address: address,
+                                                                                        in: self)
+            return try appContext.walletConnectServiceV2.handle(response: response)
+        }
     }
     
     func signViaWalletConnectPersonalSign(message: String) async throws -> String {
@@ -197,7 +230,7 @@ extension UDWallet {
 extension UDWallet {
     
     func signPersonal(messageString: String) -> String? {
-        if messageString.droppedHexPrefix.isHexNumber {
+        if messageString.hasHexPrefix {
             return signPersonalAsHexString(messageString: messageString)
         }
         

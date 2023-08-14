@@ -59,6 +59,8 @@ final class DomainsCollectionCarouselCardCell: UICollectionViewCell {
     }
     
     override func layoutSubviews() {
+        super.layoutSubviews()
+        
         setFrame()
     }
     
@@ -218,6 +220,9 @@ private extension DomainsCollectionCarouselCardCell {
         case .default:
             switch domain.usageType {
             case .normal:
+                setIndicatorStyle(nil)
+                setStatusMessageComponent(nil)
+            case .newNonInteractable:
                 setIndicatorStyle(nil)
                 setStatusMessageComponent(nil)
             case .deprecated(let tld):

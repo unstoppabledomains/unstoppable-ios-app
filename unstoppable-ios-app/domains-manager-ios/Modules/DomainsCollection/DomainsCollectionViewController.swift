@@ -274,7 +274,7 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
 
 // MARK: - DomainsCollectionCarouselViewControllerActionsDelegate
 extension DomainsCollectionViewController: DomainsCollectionCarouselViewControllerActionsDelegate {
-    func didOccursUIAction(_ action: DomainsCollectionCarouselItemViewController.Action) {
+    func didOccurUIAction(_ action: DomainsCollectionCarouselItemViewController.Action) {
         switch action {
         case .recentActivityLearnMore:
             presenter.didOccureUIAction(.recentActivityLearnMore)

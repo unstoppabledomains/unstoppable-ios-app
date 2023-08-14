@@ -126,7 +126,7 @@ private extension ParkedDomainsFoundViewController {
                                                                        withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier,
                                                                        for: indexPath) as! CollectionTextHeaderReusableView
       
-            view.setHeader("Parked domains")
+            view.setHeader(String.Constants.parkedDomains.localized())
             
             return view
         }

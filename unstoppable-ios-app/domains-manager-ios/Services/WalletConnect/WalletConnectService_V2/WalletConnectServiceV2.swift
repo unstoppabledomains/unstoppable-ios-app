@@ -70,6 +70,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
     func disconnect(from wcWallet: HexAddress) async
     
     func sendPersonalSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response
+    func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, dataString: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response
     func sendEthSign(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, message: String, address: HexAddress,
                      in wallet: UDWallet) async throws -> WalletConnectSign.Response
     func handle(response: WalletConnectSign.Response) throws -> String
@@ -99,6 +100,7 @@ protocol WalletConnectV2RequestHandlingServiceProtocol {
     func handleGetTransactionCount(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleSendRawTx(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     func handleSignTypedData(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
+    func handleSignTypedData_v4(request: WalletConnectSign.Request) async throws -> WalletConnectSign.RPCResult
     
     func sendResponse(_ response: WalletConnectSign.RPCResult, toRequest request: WalletConnectSign.Request) async throws
 }
@@ -464,10 +466,19 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
             let caip2Namespace = $0.key
             let proposalNamespace = $0.value
             guard let chains = proposalNamespace.chains else { return }
+            
+            // get methods
+            var methods = proposalNamespace.methods
+            if let optionalNamespaces = proposal.optionalNamespaces,
+               let optional = optionalNamespaces[caip2Namespace],
+               optional.chains == chains {
+                methods = methods.union(optional.methods)
+            }
+            
             let accounts = Set(chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
-
+            
             let sessionNamespace = SessionNamespace(accounts: accounts,
-                                                    methods: proposalNamespace.methods,
+                                                    methods: methods,
                                                     events: proposalNamespace.events)
             sessionNamespaces[caip2Namespace] = sessionNamespace
         }
@@ -539,11 +550,11 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         let incomingMessageString = paramsAny[0]
         let address = try parseAddress(from: paramsAny[1])
         
-        let messageString = incomingMessageString.convertedIntoReadableMessage
+        let messageString = incomingMessageString
         
         let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
                                                                          request: request,
-                                                                         messageString: messageString)
+                                                                         messageString: messageString.convertedIntoReadableMessage)
         
         let sig: AnyCodable
         do {
@@ -683,7 +694,47 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
     }
     
     func handleSignTypedData(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
-        throw WalletConnectRequestError.methodUnsupported
+         return try await handleSignTypedData_generic(request: request, version: .standard)
+    }
+    
+    func handleSignTypedData_v4(request: WalletConnectSign.Request) async throws -> JSONRPC.RPCResult {
+        return try await handleSignTypedData_generic(request: request, version: .v4)
+    }
+    
+    enum SignTypeDataVersion {
+        case standard, v4
+    }
+    
+    func handleSignTypedData_generic(request: WalletConnectSign.Request,
+                                     version: SignTypeDataVersion) async throws -> JSONRPC.RPCResult {
+        Debugger.printInfo(topic: .WalletConnectV2, "Incoming request with payload: \(String(describing: request.jsonString))")
+        
+        guard let paramsAny = request.params.value as? [String],
+              paramsAny.count >= 2 else {
+            Debugger.printFailure("Invalid parameters", critical: true)
+            throw WalletConnectRequestError.failedBuildParams
+        }
+        let typedDataString = paramsAny[1]
+        let address = try parseAddress(from: paramsAny[0])
+                
+        let (_, udWallet) = try await getClientAfterConfirmationIfNeeded(address: address,
+                                                                         request: request,
+                                                                         messageString: typedDataString)
+        
+        let sig: AnyCodable
+        do {
+            let sigTyped: String
+            switch version {
+            case .standard: sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString)
+            case .v4: sigTyped = try await udWallet.getSignTypedData(dataString: typedDataString)
+            }
+            sig = AnyCodable(sigTyped)
+        } catch {
+            Debugger.printFailure("Failed to sign typed data: \(typedDataString) by wallet:\(address), error: \(error)", critical: false)
+            throw WalletConnectRequestError.failedToSignMessage
+        }
+        
+        return .response(sig)
     }
 }
 
@@ -973,6 +1024,10 @@ final class MockWalletConnectServiceV2 {
 
 // MARK: - WalletConnectServiceProtocol
 extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy], chainId: Int, dataString: String, address: HexAddress, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+        throw WalletConnectRequestError.failedToSignMessage
+    }
+    
     func proceedSendTxViaWC_2(sessions: [SessionV2Proxy], chainId: Int, txParams: Commons.AnyCodable, in wallet: UDWallet) async throws -> WalletConnectSign.Response {
         throw WalletConnectRequestError.noWCSessionFound
     }
@@ -1064,7 +1119,8 @@ extension WalletConnectServiceV2 {
 //                "eth_signTransaction",    // less methods as not all wallets may support
                 "personal_sign",
 //                "eth_sign",
-//                "eth_signTypedData"
+                "eth_signTypedData",
+                "eth_signTypedData_v4"
             ], events: []
         )] }
     
@@ -1193,6 +1249,22 @@ extension WalletConnectServiceV2 {
         }
         let params = WalletConnectServiceV2.getParamsPersonalSign(message: sentMessage, address: address)
         return try await sendRequest(method: .personalSign,
+                                     session: sessionSettled,
+                                     chainId: chainId,
+                                     requestParams: params,
+                                     in: wallet)
+    }
+    
+    func sendSignTypedData(sessions: [WCConnectedAppsStorageV2.SessionProxy],
+                          chainId: Int,
+                          dataString: String,
+                          address: HexAddress,
+                          in wallet: UDWallet) async throws -> WalletConnectSign.Response {
+        guard let sessionSettled = pickOnlyActiveSessions(from: sessions).first else {
+            throw WalletConnectRequestError.noWCSessionFound
+        }
+        let params = WalletConnectServiceV2.getParamsEthSign(message: dataString, address: address) // the same params as ethSign
+        return try await sendRequest(method: .ethSignTypedData,
                                      session: sessionSettled,
                                      chainId: chainId,
                                      requestParams: params,

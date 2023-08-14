@@ -62,9 +62,9 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     func didSelectItem(_ item: DomainsCollectionCarouselItemViewController.Item) {
         switch item {
         case .domainCard(let configuration):
-            actionsDelegate?.didOccursUIAction(.domainSelected(configuration.domain))
+            actionsDelegate?.didOccurUIAction(.domainSelected(configuration.domain))
         case .nft(let configuration):
-            actionsDelegate?.didOccursUIAction(.nftSelected(configuration.nft))
+            actionsDelegate?.didOccurUIAction(.nftSelected(configuration.nft))
         case .noRecentActivities, .recentActivity, .dataTypeSelector:
             return
         }
@@ -415,7 +415,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     
     func recentActivitiesLearnMoreButtonPressed() {
         if case .parking = domain.state {
-            actionsDelegate?.didOccursUIAction(.parkedDomainLearnMore)
+            actionsDelegate?.didOccurUIAction(.parkedDomainLearnMore)
             return
         }
         
@@ -431,9 +431,9 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                 }
             }
         case .activity:
-            actionsDelegate?.didOccursUIAction(.recentActivityLearnMore)
+            actionsDelegate?.didOccurUIAction(.recentActivityLearnMore)
         case .parkedDomain:
-            actionsDelegate?.didOccursUIAction(.parkedDomainLearnMore)
+            actionsDelegate?.didOccurUIAction(.parkedDomainLearnMore)
         }
     }
 }
@@ -443,7 +443,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     func copyDomainName(_ domainName: DomainName) {
         UIPasteboard.general.string = domainName
         DispatchQueue.main.async { [weak self] in
-            self?.actionsDelegate?.didOccursUIAction(.domainNameCopied)
+            self?.actionsDelegate?.didOccurUIAction(.domainNameCopied)
         }
     }
     
@@ -484,7 +484,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     
     func rearrangeDomains() {
         DispatchQueue.main.async { [weak self] in
-            self?.actionsDelegate?.didOccursUIAction(.rearrangeDomains)
+            self?.actionsDelegate?.didOccurUIAction(.rearrangeDomains)
         }
     }
 }
