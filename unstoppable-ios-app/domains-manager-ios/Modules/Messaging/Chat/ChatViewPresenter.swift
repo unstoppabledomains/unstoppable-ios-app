@@ -280,6 +280,8 @@ private extension ChatViewPresenter {
             }
             loadRemoteContentOfMessageAsync(message)
         }
+        
+        self.messages.sort(by: { $0.time > $1.time })
     }
     
     func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
