@@ -14,7 +14,7 @@ final class PushMessagingAPIServiceTests: XCTestCase {
     private var dataProvider: MockMessagingServiceDataProvider!
     private var messagingService: PushMessagingAPIService!
     private let filesService = MessagingFilesServiceProtocolMock(decrypterService: SymmetricMessagingContentDecrypterService())
-    private let user = MessagingChatUserProfile(id: "", wallet: "", displayInfo: .init(id: "", wallet: ""))
+    private let user = MessagingChatUserProfile(id: "", wallet: "", displayInfo: .init(id: "", wallet: "", serviceIdentifier: ""))
     private let fetchLimit = 5
     private var firstMessage: MessagingChatMessage { getMockMessage(at: 0) }
     private var firstMessageId: String { firstMessage.displayInfo.id }
