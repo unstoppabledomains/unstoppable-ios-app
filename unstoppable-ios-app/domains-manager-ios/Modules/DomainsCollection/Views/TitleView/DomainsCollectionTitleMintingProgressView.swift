@@ -94,7 +94,7 @@ private extension DomainsCollectionTitleMintingProgressView {
 // MARK: - Private methods
 private extension DomainsCollectionTitleMintingProgressView {
     func menuElement(for domain: DomainDisplayInfo) async -> UIMenuElement {
-        let avatar = await avatarFor(domain: domain)
+        let avatar = await UIMenuDomainAvatarLoader.menuAvatarFor(domain: domain)
         let action = UIAction(title: domain.name,
                               image: avatar,
                               identifier: .init(UUID().uuidString),
@@ -114,20 +114,6 @@ private extension DomainsCollectionTitleMintingProgressView {
             self?.showMoreSelectedCallback?()
         })
         return UIMenu(title: "", options: .displayInline, children: [action])
-    }
-    
-    func avatarFor(domain: DomainDisplayInfo) async -> UIImage? {
-        var avatar = await appContext.imageLoadingService.loadImage(from: .domain(domain),
-                                                                    downsampleDescription: nil)
-        
-        if let image = avatar {
-            avatar = image.uiMenuCroppedImage()
-        } else {
-            avatar = await appContext.imageLoadingService.loadImage(from: .domainInitials(domain,
-                                                                                          size: .default),
-                                                                    downsampleDescription: nil)
-        }
-        return avatar
     }
 }
 

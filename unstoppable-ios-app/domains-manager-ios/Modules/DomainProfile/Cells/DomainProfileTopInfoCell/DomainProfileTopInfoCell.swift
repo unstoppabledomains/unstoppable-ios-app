@@ -231,11 +231,11 @@ private extension DomainProfileTopInfoCell {
         var attributes: UIMenuElement.Attributes = imageAction.isEnabled ? [] : [.disabled]
         switch imageAction {
         case .upload(let callback), .change(_, _, let callback), .view(_, let callback), .setAccess(_, let callback), .changeNFT(let callback):
-            if #available(iOS 15.0, *) {
-                return UIAction(title: imageAction.title, subtitle: imageAction.subtitle, image: imageAction.icon, identifier: .init(UUID().uuidString), attributes: attributes, handler: { _ in callback() })
-            } else {
-                return UIAction(title: imageAction.title, image: imageAction.icon, identifier: .init(UUID().uuidString), attributes: attributes, handler: { _ in callback() })
-            }
+            return UIAction.createWith(title: imageAction.title,
+                                       subtitle: imageAction.subtitle,
+                                       image: imageAction.icon,
+                                       attributes: attributes,
+                                       handler: { _ in callback() })
         case .remove(_, _, let callback):
             attributes.insert(.destructive)
             let remove = UIAction(title: imageAction.title, image: imageAction.icon, identifier: .init(UUID().uuidString), attributes: attributes, handler: { _ in callback() })

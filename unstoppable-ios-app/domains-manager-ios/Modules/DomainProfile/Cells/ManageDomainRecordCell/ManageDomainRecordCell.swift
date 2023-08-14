@@ -209,16 +209,19 @@ private extension ManageDomainRecordCell {
         case .edit(let callback):
             return UIAction(title: action.title, image: action.icon, identifier: .init(UUID().uuidString), handler: { _ in callback() })
         case .editForAllChains(let chains, let callback):
-            if #available(iOS 15.0, *) {
-                let subtitle = chains.prefix(3).map({ $0 }).joined(separator: ", ")
-                return UIAction(title: action.title, subtitle: subtitle, image: action.icon, identifier: .init(UUID().uuidString), handler: { _ in callback() })
-            } else {
-                return UIAction(title: action.title,  image: action.icon, identifier: .init(UUID().uuidString), handler: { _ in callback() })
-            }
+            let subtitle = chains.prefix(3).map({ $0 }).joined(separator: ", ")
+            return UIAction.createWith(title: action.title,
+                                       subtitle: subtitle,
+                                       image: action.icon,
+                                       handler: { _ in callback() })
         case .remove(let callback):
             let remove = UIAction(title: action.title, image: action.icon, identifier: .init(UUID().uuidString), attributes: .destructive, handler: { _ in callback() })
             return UIMenu(title: "", options: .displayInline, children: [remove])
         }
+    }
+    
+    func shrunkChains(_ chains: [String]) -> [String] {
+        Array(chains.prefix(3))
     }
     
     func setupControlsForCurrentMode(error: CryptoRecord.RecordError?, isEnabled: Bool, isWithActions: Bool) {

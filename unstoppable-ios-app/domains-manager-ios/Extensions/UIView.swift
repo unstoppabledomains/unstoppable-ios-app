@@ -146,6 +146,53 @@ extension UIView {
         return image
     }
     
+    /// This function will works properly with snapshot of blur
+    func toImageInWindowHierarchy(afterScreenUpdates: Bool = true) -> UIImage? {
+        guard let window else { return nil }
+         
+        let scale = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(window.bounds.size, false, 0)
+        
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        context.interpolationQuality = .high
+        context.setAllowsFontSmoothing(true)
+        context.setShouldSmoothFonts(true)
+        context.setAllowsAntialiasing(true)
+        context.setShouldAntialias(true)
+        
+        window.drawHierarchy(in: window.bounds, afterScreenUpdates: afterScreenUpdates)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        let frameInWindow = calculateFrameInWindow()
+        let croppingRect = CGRect(origin: CGPoint(x: frameInWindow.origin.x * scale,
+                                                  y: frameInWindow.origin.y * scale),
+                                  size: CGSize(width: bounds.width * scale,
+                                               height: bounds.height * scale))
+        guard let cgIImage = image?.cgImage?.cropping(to: croppingRect) else { return nil }
+        
+        let newImage = UIImage(cgImage: cgIImage,
+                               scale: scale,
+                               orientation: UIImage.Orientation.up)
+        
+        return newImage
+    }
+    
+    func calculateFrameInWindow() -> CGRect {
+        guard let window else { return frame }
+        
+        if let superview {
+            return superview.convert(frame, to: window)
+        }
+        return convert(frame, to: window)
+    }
+    
+    func renderedImageView() -> UIImageView {
+        let imageView = UIImageView(frame: frame)
+        imageView.image = self.renderedImage()
+        return imageView
+    }
+    
     func renderedImage() -> UIImage {
         let renderer = UIGraphicsImageRenderer(bounds: bounds)
         return renderer.image { rendererContext in
@@ -239,13 +286,15 @@ extension UIView {
               y: bounds.height / 2)
     }
     
-    func forceLayout(animated: Bool = false) {
+    func forceLayout(animated: Bool = false, additionalAnimation: EmptyCallback? = nil) {
         if animated {
             UIView.animate(withDuration: 0.25) {
+                additionalAnimation?()
                 self.setNeedsLayout()
                 self.layoutIfNeeded()
             }
         } else {
+            additionalAnimation?()
             setNeedsLayout()
             layoutIfNeeded()
         }

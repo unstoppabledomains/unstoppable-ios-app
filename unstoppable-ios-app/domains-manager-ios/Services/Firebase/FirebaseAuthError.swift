@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum FirebaseAuthError: Error {
+enum FirebaseAuthError: String, LocalizedError {
     case unexpectedResponse
     case refreshTokenExpired
     case failedToBuildURL
@@ -18,4 +18,7 @@ enum FirebaseAuthError: Error {
     
     case failedToGetTokenExpiresData
     case firebaseUserNotAuthorisedInTheApp
+    
+    public var errorDescription: String? { rawValue }
+
 }

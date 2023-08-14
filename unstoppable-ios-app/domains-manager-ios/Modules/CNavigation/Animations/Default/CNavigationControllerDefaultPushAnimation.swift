@@ -23,9 +23,7 @@ final class CNavigationControllerDefaultPushAnimation: CBaseTransitioningAnimati
         fadeView.backgroundColor = .black.withAlphaComponent(0.2)
         fromViewController.view.addSubview(fadeView)
         
-        let animator = UIViewPropertyAnimator(duration: transitionDuration(using: transitionContext),
-                                              controlPoint1: CNavigationHelper.AnimationCurveControlPoint1,
-                                              controlPoint2: CNavigationHelper.AnimationCurveControlPoint2) {
+        let animator = createAnimatorIn(transitionContext: transitionContext) {
             toViewController.view.frame = containerView.bounds
             fromViewController.view.frame = containerView.bounds.offsetBy(dx: -containerView.frame.size.width * 0.3, dy: 0)
             fadeView.alpha = 1

@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import Web3
+import web3
 @testable import domains_manager_ios
 
 class SignatureTests: XCTestCase {

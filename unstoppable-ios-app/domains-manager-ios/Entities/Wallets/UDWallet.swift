@@ -8,7 +8,7 @@
 import Foundation
 import web3swift
 import CryptoSwift
-import Web3
+import Boilertalk_Web3
 import UIKit
 
 enum BlockchainType: String, CaseIterable, Codable, Hashable {
@@ -47,6 +47,17 @@ enum BlockchainType: String, CaseIterable, Codable, Hashable {
             return "Zilliqa"
         case .Matic:
             return "Polygon"
+        }
+    }
+    
+    func supportedChainId(isTestNet: Bool) -> Int? {
+        switch self {
+        case .Ethereum:
+            return isTestNet ? 5 : 1 // Goerly or Mainnet
+        case .Matic:
+            return isTestNet ? 80001 : 137 // Mumbai or
+        case .Zilliqa:
+            return nil 
         }
     }
 }

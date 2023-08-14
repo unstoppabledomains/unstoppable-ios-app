@@ -11,6 +11,7 @@ struct WalletDisplayInfo: Hashable {
     let name: String
     let address: String
     let domainsCount: Int
+    let udDomainsCount: Int
     let source: Source
     let isBackedUp: Bool
     var isWithPrivateKey: Bool = false
@@ -63,21 +64,18 @@ struct WalletDisplayInfo: Hashable {
 }
 
 extension WalletDisplayInfo {
-    init?(wallet: UDWallet, domainsCount: Int, reverseResolutionDomain: DomainDisplayInfo? = nil) {
+    init?(wallet: UDWallet,
+          domainsCount: Int,
+          udDomainsCount: Int,
+          reverseResolutionDomain: DomainDisplayInfo? = nil) {
         if wallet.walletState == .externalLinked {
             guard let externalWallet = wallet.getExternalWallet(),
                   let walletMake = externalWallet.make else { return nil }
             
-            self.name = wallet.aliasName
-            self.address = wallet.address
-            self.domainsCount = domainsCount
             self.source = .external(externalWallet.name, walletMake)
             self.isBackedUp = false
             self.isWithPrivateKey = false
         } else {
-            self.name = wallet.aliasName
-            self.address = wallet.address
-            self.domainsCount = domainsCount
             self.isBackedUp = wallet.hasBeenBackedUp == true
             switch wallet.type {
             case .generatedLocally, .defaultGeneratedLocally:
@@ -88,7 +86,11 @@ extension WalletDisplayInfo {
                 self.isWithPrivateKey = wallet.type == .privateKeyEntered
             }
         }
+        self.name = wallet.aliasName
+        self.address = wallet.address
         self.reverseResolutionDomain = reverseResolutionDomain
+        self.domainsCount = domainsCount
+        self.udDomainsCount = udDomainsCount
     }
 }
 

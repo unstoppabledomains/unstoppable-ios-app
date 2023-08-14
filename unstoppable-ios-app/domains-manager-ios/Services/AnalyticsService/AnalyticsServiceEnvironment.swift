@@ -56,6 +56,9 @@ extension Analytics {
         
         // Permissions
         case permissionsRequested, permissionsGranted, permissionsDeclined
+        
+        // Messaging
+        case willShowMessagingProfile, willSendMessage
     }
 }
 
@@ -91,6 +94,11 @@ extension Analytics {
         case section
         case fieldName
         case websiteLoginOption
+        case value
+        case state
+        case channelName
+        case messageType
+        case feedName
     }
 }
 
@@ -155,6 +163,8 @@ extension Analytics {
         case parkedDomainsList, noParkedDomainsFound, loadingParkedDomains
         case transferEnterRecipient, transferReviewAndConfirm
         case inviteFriends
+        case chatsHome, chatRequestsList, chatChannelsSpamList
+        case chatDialog, channelFeed
     }
 }
 
@@ -193,7 +203,7 @@ extension Analytics {
         case importWithPKOrSP, watchWallet, externalWallet
         
         // Domains collection
-        case homeTopControl, settings, plus
+        case homeTopControl, settings, plus, messaging
         
         // Confirm words (from recovery phrase)
         case correctWord, incorrectWord, forgotPassword
@@ -261,6 +271,19 @@ extension Analytics {
         
         // Referral
         case inviteFriendInfo, copyLink
+        
+        // Messaging
+        case chatInList, groupChatInList, chatRequests, channelInList, channelsSpam, userToChatInList, domainToChatInList
+        case messagingProfileSelection, messagingProfileInList
+        case messagingDataType
+        case newMessage, emptyMessagingAction
+        case createMessagingProfile
+        case messageInputSend, messageInputPlus, messageInputPlusAction
+        case viewMessagingProfile, viewGroupChatInfo
+        case viewChannelInfo, leaveChannel, learnMoreChannelFeed
+        case block, unblock, leaveGroup
+        case resendMessage, deleteMessage
+        case downloadUnsupportedMessage
     }
 }
 
@@ -305,6 +328,8 @@ extension Analytics {
         case logOutConfirmation, loggedInUserProfile
         case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
         case applePayRequired
+        case messagingChannelInfo
+        case unencryptedMessageInfo
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection

@@ -63,7 +63,7 @@ extension CNavigationHelper {
         for subview in view.subviews.reversed() {
             if let view = subview as? T {
                 return view
-            } else if let view = firstSubviewOfType(type, in: subview) {
+            } else if let view = lastSubviewOfType(type, in: subview) {
                 return view
             }
         }

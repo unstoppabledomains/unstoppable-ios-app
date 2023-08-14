@@ -62,6 +62,24 @@ extension UDDomainsService: UDDomainsServiceProtocol {
         return domainsPFPInfo
     }
     
+    func loadPFP(for domainName: DomainName) async -> DomainPFPInfo? {
+        let start = Date()
+        
+        if let profile = (try? await NetworkService().fetchPublicProfile(for: domainName,
+                                                                         fields: [.profile, .records])) {
+            Debugger.printTimeSensitiveInfo(topic: .Images,
+                                            "to load \(domainName) domain pfp",
+                                            startDate: start,
+                                            timeout: 1)
+            return DomainPFPInfo(domainName: domainName,
+                                 pfpURL: profile.profile.imagePath,
+                                 imageType: profile.profile.imageType)
+        } else {
+            Debugger.printWarning("Failed to load domains PFP info for domain \(domainName)")
+            return nil
+        }
+    }
+    
     func getAllUnMintedDomains(for email: String, securityCode: String) async throws -> [String] {
         let domainsInfo = try await NetworkService().getAllUnMintedDomains(for: email, withAccessCode: securityCode)
         let domainNames = domainsInfo.domainNames
@@ -149,19 +167,14 @@ private extension UDDomainsService {
         guard !domains.isEmpty else { return  [] }
         
         let start = Date()
-        let networkService = NetworkService()
         var domainsPFPInfo = [DomainPFPInfo]()
         
         await withTaskGroup(of: DomainPFPInfo?.self, body: { group in
             for domain in domains {
                 group.addTask {
-                    if let profile = (try? await networkService.fetchPublicProfile(for: domain,
-                                                                                   fields: [.profile, .records])) {
-                        return DomainPFPInfo(domainName: domain.name,
-                                             pfpURL: profile.profile.imagePath,
-                                             imageType: profile.profile.imageType)
+                    if let pfpInfo = await self.loadPFP(for: domain.name) {
+                        return pfpInfo
                     } else {
-                        Debugger.printFailure("Failed to load domains PFP info for domain \(domain.name)", critical: false)
                         return nil
                     }
                 }

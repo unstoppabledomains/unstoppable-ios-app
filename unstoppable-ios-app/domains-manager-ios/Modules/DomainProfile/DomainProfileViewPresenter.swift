@@ -32,7 +32,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
     
     var analyticsName: Analytics.ViewName { .domainProfile }
 
-    private weak var view: DomainProfileViewProtocol?
+    private weak var view: (any DomainProfileViewProtocol)?
     private var refreshTransactionsTimer: Timer?
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let domainRecordsService: DomainRecordsServiceProtocol
@@ -50,7 +50,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
         }
     }
 
-    init(view: DomainProfileViewProtocol,
+    init(view: any DomainProfileViewProtocol,
          domain: DomainDisplayInfo,
          wallet: UDWallet,
          walletInfo: WalletDisplayInfo,
@@ -310,7 +310,7 @@ extension DomainProfileViewPresenter: ExternalEventsServiceListener {
                 if domainNames.contains(dataHolder.domain.name) {
                     refreshData()
                 }
-            case .wcDeepLink, .walletConnectRequest, .parkingStatusLocal:
+            case .wcDeepLink, .walletConnectRequest, .parkingStatusLocal, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite:
                 return
             }
         }
@@ -1007,7 +1007,7 @@ private extension DomainProfileViewPresenter {
             section.fill(snapshot: &snapshot, withGeneralData: dataHolder)
         }
         
-        view?.applySnapshot(snapshot, animated: animated)
+        view?.applySnapshot(snapshot, animated: animated, completion: nil)
     }
     
     @MainActor

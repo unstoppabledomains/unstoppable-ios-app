@@ -12,6 +12,8 @@ protocol AuthentificationServiceProtocol {
     var biometricType: LABiometryType { get }
     var biometricsName: String? { get }
     var isSecureAuthSet: Bool { get }
+    var biometricUIProcessingTime: TimeInterval { get }
+    
     func biometryState() -> AuthentificationService.BiometryState
     func authenticateWithBiometricWith(uiHandler: AuthenticationUIHandler,
                                        completion: @escaping (Bool?) -> Void)

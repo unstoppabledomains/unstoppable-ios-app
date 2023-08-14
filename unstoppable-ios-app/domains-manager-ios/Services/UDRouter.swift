@@ -409,7 +409,10 @@ class UDRouter: DomainProfileSignatureValidator {
                                   wallet: UDWallet,
                                   walletInfo: WalletDisplayInfo,
                                   sourceScreen: DomainProfileViewPresenter.SourceScreen) -> UIViewController {
-        let walletInfo = WalletDisplayInfo(wallet: wallet, domainsCount: walletInfo.domainsCount) ?? walletInfo
+        let walletInfo = WalletDisplayInfo(wallet: wallet,
+                                           domainsCount: walletInfo.domainsCount,
+                                           udDomainsCount: walletInfo.udDomainsCount,
+                                           reverseResolutionDomain: walletInfo.reverseResolutionDomain) ?? walletInfo
         let vc = DomainProfileViewController.nibInstance()
         let presenter = DomainProfileViewPresenter(view: vc,
                                                    domain: domain,
@@ -564,6 +567,40 @@ class UDRouter: DomainProfileSignatureValidator {
     func showInviteFriendsScreen(domain: DomainItem,
                                  in nav: CNavigationController) {
         let vc = buildInviteFriendsModule(domain: domain)
+        
+        nav.pushViewController(vc, animated: true)
+    }
+    
+    func showChatsListScreen(in nav: CNavigationController,
+                             presentOptions: ChatsList.PresentOptions) {
+        let vc = buildChatsListModule(presentOptions: presentOptions)
+        
+        nav.pushViewController(vc, animated: true)
+    }
+    
+    func showChatRequestsScreen(dataType: ChatsRequestsListViewPresenter.DataType,
+                                profile: MessagingChatUserProfileDisplayInfo,
+                                in nav: CNavigationController) {
+        let vc = buildChatRequestsModuleWith(dataType: dataType,
+                                             profile: profile)
+        
+        nav.pushViewController(vc, animated: true)
+    }
+    
+    func showChatScreen(profile: MessagingChatUserProfileDisplayInfo,
+                        conversationState: MessagingChatConversationState,
+                        in nav: CNavigationController) {
+        let vc = buildChatModule(profile: profile,
+                                 conversationState: conversationState)
+        
+        nav.pushViewController(vc, animated: true)
+    }
+    
+    func showChannelScreen(profile: MessagingChatUserProfileDisplayInfo,
+                           channel: MessagingNewsChannel,
+                           in nav: CNavigationController) {
+        let vc = buildChannelModule(profile: profile,
+                                    channel: channel)
         
         nav.pushViewController(vc, animated: true)
     }
@@ -963,6 +1000,44 @@ private extension UDRouter {
         let vc = InviteFriendsViewController.nibInstance()
         let presenter = InviteFriendsViewPresenter(view: vc,
                                                    domain: domain)
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func buildChatsListModule(presentOptions: ChatsList.PresentOptions) -> UIViewController {
+        let vc = ChatsListViewController.nibInstance()
+        let presenter = ChatsListViewPresenter(view: vc,
+                                               presentOptions: presentOptions)
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func buildChatRequestsModuleWith(dataType: ChatsRequestsListViewPresenter.DataType,
+                                     profile: MessagingChatUserProfileDisplayInfo) -> UIViewController {
+        let vc = ChatsListViewController.nibInstance()
+        let presenter = ChatsRequestsListViewPresenter(view: vc,
+                                                       dataType: dataType,
+                                                       profile: profile)
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func buildChatModule(profile: MessagingChatUserProfileDisplayInfo,
+                         conversationState: MessagingChatConversationState) -> UIViewController {
+        let vc = ChatViewController.nibInstance()
+        let presenter = ChatViewPresenter(view: vc,
+                                          profile: profile,
+                                          conversationState: conversationState)
+        vc.presenter = presenter
+        return vc
+    }
+    
+    func buildChannelModule(profile: MessagingChatUserProfileDisplayInfo,
+                            channel: MessagingNewsChannel) -> UIViewController {
+        let vc = ChatViewController.nibInstance()
+        let presenter = ChannelViewPresenter(view: vc,
+                                             profile: profile,
+                                             channel: channel)
         vc.presenter = presenter
         return vc
     }
