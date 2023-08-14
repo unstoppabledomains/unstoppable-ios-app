@@ -20,6 +20,9 @@ struct MessagingChatMessageDisplayInfo: Hashable {
     var isEncrypted: Bool
     
     mutating func prepareToDisplay() async {
+        if deliveryState == .failedToSend {
+            time = Date() 
+        }
         switch type {
         case .text, .unknown, .imageData, .remoteContent:
             return

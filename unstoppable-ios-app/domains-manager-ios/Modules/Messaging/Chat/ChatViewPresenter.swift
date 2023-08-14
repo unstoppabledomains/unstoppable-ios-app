@@ -280,8 +280,6 @@ private extension ChatViewPresenter {
             }
             loadRemoteContentOfMessageAsync(message)
         }
-        
-        self.messages.sort(by: { $0.time > $1.time })
     }
     
     func loadRemoteContentOfMessageAsync(_ message: MessagingChatMessageDisplayInfo) {
@@ -349,11 +347,23 @@ private extension ChatViewPresenter {
                 let messages = groupedMessages[date] ?? []
                 let title = MessageDateFormatter.formatMessagesSectionDate(date)
                 snapshot.appendSections([.messages(title: title)])
-                snapshot.appendItems(messages.sorted(by: { $0.time < $1.time }).map({ createSnapshotItemFrom(message: $0) }))
+                snapshot.appendItems(sortMessagesToDisplay(messages).map({ createSnapshotItemFrom(message: $0) }))
             }
         }
         
         view?.applySnapshot(snapshot, animated: animated, completion: completion)
+    }
+    
+    func sortMessagesToDisplay(_ messages: [MessagingChatMessageDisplayInfo]) -> [MessagingChatMessageDisplayInfo] {
+        messages.sorted(by: {
+            // Always show failed messages first
+            if $0.deliveryState == .failedToSend && $1.deliveryState != .failedToSend {
+                return false
+            } else if $0.deliveryState != .failedToSend && $1.deliveryState == .failedToSend {
+                return true
+            }
+            return $0.time < $1.time
+        })
     }
     
     func createSnapshotItemFrom(message: MessagingChatMessageDisplayInfo) -> ChatViewController.Item {
