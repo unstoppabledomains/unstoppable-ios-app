@@ -60,7 +60,8 @@ extension MessagingService: MessagingServiceProtocol {
     
     func isAbleToContactAddress(_ address: String,
                                 by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool {
-        let profile = try storageService.getUserProfileWith(userId: user.id)
+        let profile = try storageService.getUserProfileWith(userId: user.id,
+                                                            serviceIdentifier: user.serviceIdentifier)
         
         return try await apiService.isAbleToContactAddress(address, by: profile)
     }
@@ -125,7 +126,8 @@ extension MessagingService: MessagingServiceProtocol {
     // User
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
-        if let cachedProfile = try? storageService.getUserProfileFor(domain: domain) {
+        if let cachedProfile = try? storageService.getUserProfileFor(domain: domain,
+                                                                     serviceIdentifier: apiService.serviceIdentifier) {
             return cachedProfile.displayInfo
         }
         
@@ -167,7 +169,8 @@ extension MessagingService: MessagingServiceProtocol {
         for wallet in wallets {
             guard let rrDomain = wallet.displayInfo?.reverseResolutionDomain,
                   let domain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomain.name),
-                  let cachedProfile = try? storageService.getUserProfileFor(domain: domain) else { continue }
+                  let cachedProfile = try? storageService.getUserProfileFor(domain: domain,
+                                                                            serviceIdentifier: apiService.serviceIdentifier) else { continue }
             
             let isNewMessagesForProfileAvailable = try? await isNewMessagesAvailable(for: cachedProfile)
             if isNewMessagesForProfileAvailable == true {
@@ -527,7 +530,7 @@ extension MessagingService: UDWalletsServiceListener {
             case .walletRemoved(let wallet):
                 if let rrDomainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: wallet.address),
                    let rrDomain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomainName),
-                   let profile = try? storageService.getUserProfileFor(domain: rrDomain) {
+                   let profile = try? storageService.getUserProfileFor(domain: rrDomain, serviceIdentifier: apiService.serviceIdentifier) {
                     await storageService.clearAllDataOf(profile: profile, filesService: filesService)
                 }
             }
@@ -562,7 +565,8 @@ private extension MessagingService {
             do {
                 if let userProfile {
                     let rrDomain = try await getReverseResolutionDomainItem(for: userProfile.wallet)
-                    let profile = try storageService.getUserProfileFor(domain: rrDomain)
+                    let profile = try storageService.getUserProfileFor(domain: rrDomain,
+                                                                       serviceIdentifier: userProfile.serviceIdentifier)
                     
                     refreshChatsForProfile(profile, shouldRefreshUserInfo: shouldRefreshUserInfo)
                     refreshChannelsForProfile(profile)
@@ -960,7 +964,8 @@ private extension MessagingService {
   
     func getUserProfileWith(wallet: String) async throws -> MessagingChatUserProfile {
         let rrDomain = try await getReverseResolutionDomainItem(for: wallet)
-        return try storageService.getUserProfileFor(domain: rrDomain)
+        return try storageService.getUserProfileFor(domain: rrDomain,
+                                                    serviceIdentifier: apiService.serviceIdentifier)
     }
     
     func replaceCacheMessageAndNotify(_ messageToReplace: MessagingChatMessage,
@@ -1019,7 +1024,8 @@ private extension MessagingService {
                     let channels = try await storageService.getChannelsWith(address: channelAddress)
                     
                     for var channel in channels {
-                        let profile = try storageService.getUserProfileWith(userId: channel.userId)
+                        let profile = try storageService.getUserProfileWith(userId: channel.userId,
+                                                                            serviceIdentifier: apiService.serviceIdentifier)
                         await storageService.saveChannelsFeed([feed], in: channel)
                         channel.lastMessage = feed
                         await storageService.saveChannels([channel], for: profile)
@@ -1033,7 +1039,8 @@ private extension MessagingService {
                     let chatMessages = try await convertMessagingWebSocketMessageEntityToMessage(message)
                     await addNewChatMessages(chatMessages)
                 case .newChat(let webSocketsChat):
-                    let profile = try storageService.getUserProfileWith(userId: webSocketsChat.userId)
+                    let profile = try storageService.getUserProfileWith(userId: webSocketsChat.userId,
+                                                                        serviceIdentifier: webSocketsChat.serviceIdentifier)
                     guard let chat = webSocketsChat.transformToChatBlock(webSocketsChat, profile) else { return }
                     
                     let updatedChats = await refreshChatsMetadata(remoteChats: [chat], localChats: [], for: profile)
@@ -1057,7 +1064,8 @@ private extension MessagingService {
     func notifyChannelsChanged(userId: String) {
         Task {
             do {
-                let profile = try storageService.getUserProfileWith(userId: userId)
+                let profile = try storageService.getUserProfileWith(userId: userId,
+                                                                    serviceIdentifier: apiService.serviceIdentifier)
                 let channels = try await storageService.getChannelsFor(profile: profile)
                 notifyListenersChangedDataType(.channels(channels, profile: profile.displayInfo))
             } catch { }

@@ -16,7 +16,8 @@ protocol MessagingWebSocketsServiceProtocol {
 struct MessagingWebSocketChatEntity {
     let userId: String
     let serviceContent: Any
-    
+    let serviceIdentifier: String
+
     var transformToChatBlock: ((_ webSocketChat: MessagingWebSocketChatEntity,
                                 _ profile: MessagingChatUserProfile)->(MessagingChat?))
 }

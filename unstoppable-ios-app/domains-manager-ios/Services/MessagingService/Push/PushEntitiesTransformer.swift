@@ -24,6 +24,7 @@ struct PushEntitiesTransformer {
         let userId = pushUser.did
         let displayInfo = MessagingChatUserProfileDisplayInfo(id: userId,
                                                               wallet: wallet,
+                                                              serviceIdentifier: Constants.pushMessagingServiceIdentifier,
                                                               name: pushUser.profile.name,
                                                               about: pushUser.profile.desc,
                                                               unreadMessagesCount: nil)

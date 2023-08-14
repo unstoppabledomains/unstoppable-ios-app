@@ -8,6 +8,7 @@
 import Foundation
 
 protocol MessagingAPIServiceProtocol {
+    var serviceIdentifier: String { get }
     var capabilities: MessagingServiceCapabilities { get }
 
     // User profile

@@ -97,11 +97,13 @@
         <attribute name="id" attributeType="String" defaultValueString=""/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="normalizedWallet" attributeType="String" defaultValueString=""/>
+        <attribute name="serviceIdentifier" attributeType="String" defaultValueString=""/>
         <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>
         <attribute name="wallet" attributeType="String" defaultValueString=""/>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
+                <constraint value="serviceIdentifier"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

@@ -12,8 +12,10 @@ protocol MessagingStorageServiceProtocol {
     init(decrypterService: MessagingContentDecrypterService)
     
     // User Profile
-    func getUserProfileFor(domain: DomainItem) throws -> MessagingChatUserProfile
-    func getUserProfileWith(userId: String) throws -> MessagingChatUserProfile
+    func getUserProfileFor(domain: DomainItem,
+                           serviceIdentifier: String) throws -> MessagingChatUserProfile
+    func getUserProfileWith(userId: String,
+                            serviceIdentifier: String) throws -> MessagingChatUserProfile
     func getAllUserProfiles() throws -> [MessagingChatUserProfile]
     func saveUserProfile(_ profile: MessagingChatUserProfile) async
     

@@ -13,6 +13,7 @@ struct MessagingChatUserProfile: Hashable {
     var displayInfo: MessagingChatUserProfileDisplayInfo
     var serviceMetadata: Data?
     
+    var serviceIdentifier: String { displayInfo.serviceIdentifier }
     var normalizedWallet: String {
         wallet.normalized
     }
