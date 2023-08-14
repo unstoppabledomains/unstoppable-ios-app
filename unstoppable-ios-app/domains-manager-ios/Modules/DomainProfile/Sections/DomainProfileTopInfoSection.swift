@@ -289,7 +289,7 @@ private extension DomainProfileTopInfoSection {
         controller?.sectionDidUpdate(animated: true)
     }
     
-    func checkImageChanges(for item: DomainProfileSectionChangeUIDescription,
+    func checkImageChanges(for item: any DomainProfileSectionChangeUIDescription,
                            initialState: DomainProfileTopInfoData.ImageState,
                            editingState: DomainProfileTopInfoData.ImageState) -> DomainProfileSectionUIChangeType? {
         switch editingState {

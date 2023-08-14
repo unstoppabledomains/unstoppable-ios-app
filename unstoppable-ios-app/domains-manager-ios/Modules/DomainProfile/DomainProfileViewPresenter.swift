@@ -528,8 +528,8 @@ private extension DomainProfileViewPresenter {
                 UserDefaults.didEverUpdateDomainProfile = true
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
                 
-                let changes = requestsWithChanges.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.changes })
-                saveChangesToAppGroup(changes, domain: await dataHolder.domain)
+                let changes = Set(requestsWithChanges.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.changes }).map { $0.uiChange })
+                saveChangesToAppGroup(Array(changes), domain: await dataHolder.domain)
             } else if updateErrors.count == requestsWithChanges.count {
                 // All requests are failed
                 await dataHolder.didFailToUpdateProfile()
@@ -622,11 +622,11 @@ private extension DomainProfileViewPresenter {
         }
     }
      
-    func saveChangesToAppGroup(_ changes: [DomainProfileSectionChangeDescription], domain: DomainDisplayInfo) {
+    func saveChangesToAppGroup(_ changes: [DomainProfileSectionUIChangeType], domain: DomainDisplayInfo) {
         guard !changes.isEmpty else { return }
         
         let bridgeChanges = changes.compactMap { change -> DomainRecordChanges.ChangeType? in
-            switch change.uiChange {
+            switch change {
             case .added(let item), .removed(let item), .updated(let item):
                 if let recordChangeType = item as? RecordChangeType {
                     switch recordChangeType {
