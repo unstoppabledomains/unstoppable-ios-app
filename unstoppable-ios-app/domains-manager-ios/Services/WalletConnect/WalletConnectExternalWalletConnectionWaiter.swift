@@ -9,6 +9,7 @@ import UIKit
 
 protocol WalletConnectExternalWalletConnectionWaiter: AnyObject {
     var noResponseFromExternalWalletWorkItem: DispatchWorkItem? { get set }
+    var noResponseFromExternalWalletTimeOut: TimeInterval { get }
     
     func isWaitingForResponseFromExternalWallet() -> Bool
     func handleExternalWalletDidNotRespond()
@@ -37,7 +38,7 @@ extension WalletConnectExternalWalletConnectionWaiter {
             self?.handleExternalWalletDidNotRespond()
         })
         self.noResponseFromExternalWalletWorkItem = noResponseFromExternalWalletWorkItem
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.wcNoResponseFromExternalWalletTimeout,
+        DispatchQueue.main.asyncAfter(deadline: .now() + noResponseFromExternalWalletTimeOut,
                                       execute: noResponseFromExternalWalletWorkItem)
     }
     

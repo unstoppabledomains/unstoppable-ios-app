@@ -191,6 +191,8 @@ extension WalletConnectExternalWalletHandler {
 
 // MARK: - WalletConnectExternalWalletConnectionWaiter
 extension WalletConnectExternalWalletHandler: WalletConnectExternalWalletConnectionWaiter {
+    var noResponseFromExternalWalletTimeOut: TimeInterval { 0.5 }
+
     func isWaitingForResponseFromExternalWallet() -> Bool {
         externalWalletWC1ResponseCallback != nil || externalWalletWC2ResponseCallback != nil
     }
