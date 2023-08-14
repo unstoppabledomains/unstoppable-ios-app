@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol DomainProfileSectionChangeUIDescription: PullUpCollectionViewCellItem {
+protocol DomainProfileSectionChangeUIDescription: PullUpCollectionViewCellItem, Hashable {
     var title: String { get }
     var icon: UIImage { get async }
     var backgroundColor: UIColor { get }
