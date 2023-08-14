@@ -163,7 +163,7 @@ extension WCRequestsHandlingServiceTests {
         XCTAssertNil(mockWCServiceV2.completion)
         XCTAssertNil(mockWCServiceV1.completion)
         
-        mockWCServiceV2.pSessionProposalPublisher.send(getWC2SessionProposal())
+        mockWCServiceV2.pSessionProposalPublisher.send((getWC2SessionProposal(), nil))
         try await waitFor(interval: 0.1)
         XCTAssertNotNil(mockWCServiceV2.completion)
         XCTAssertNil(mockWCServiceV1.completion)
@@ -485,7 +485,7 @@ private extension WCRequestsHandlingServiceTests {
     func handleWCV2ConnectionRequestAndProposalAndWait(topic: String = "topic") async throws {
         try await handleWCV2ConnectionRequestAndWait(topic: topic)
         
-        mockWCServiceV2.pSessionProposalPublisher.send(getWC2SessionProposal(topic: topic))
+        mockWCServiceV2.pSessionProposalPublisher.send((getWC2SessionProposal(topic: topic), nil))
         try await waitFor(interval: 0.1)
     }
     
@@ -545,7 +545,13 @@ private extension WCRequestsHandlingServiceTests {
     }
     
     func callWC2Handler(requestType: WalletConnectRequestType) {
-        mockWCServiceV2.pSessionRequestPublisher.send(.init(topic: "topic", method: requestType.rawValue, params: AnyCodable(""), chainId: .init("eip155:1")!))
+        mockWCServiceV2.pSessionRequestPublisher.send((Request(topic: "topic",
+                                                              method: requestType.rawValue,
+                                                              params: AnyCodable(""),
+                                                              chainId: Blockchain("eip155:1")!),
+                                                       VerifyContext(origin: nil,
+                                                                     validation: .valid,
+                                                                     verifyUrl: "")))
     }
     
     func awaitForLongerThanConnectionTimeout() async throws {
@@ -626,11 +632,11 @@ private final class MockWCServiceV1: WalletConnectV1RequestHandlingServiceProtoc
 
 private final class MockWCServiceV2: WalletConnectV2RequestHandlingServiceProtocol, WalletConnectV2PublishersProvider {
     
-    private(set) var pSessionProposalPublisher = PassthroughSubject<WalletConnectSign.Session.Proposal, Never>()
-    var sessionProposalPublisher: AnyPublisher<WalletConnectSign.Session.Proposal, Never> { pSessionProposalPublisher.eraseToAnyPublisher() }
+    private(set) var pSessionProposalPublisher = PassthroughSubject<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never>()
+    var sessionProposalPublisher: AnyPublisher<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never> { pSessionProposalPublisher.eraseToAnyPublisher() }
     
-    private(set) var pSessionRequestPublisher = PassthroughSubject<WalletConnectSign.Request, Never>()
-    var sessionRequestPublisher: AnyPublisher<WalletConnectSign.Request, Never> { pSessionRequestPublisher.eraseToAnyPublisher() }
+    private(set) var pSessionRequestPublisher = PassthroughSubject<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never>()
+    var sessionRequestPublisher: AnyPublisher<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never> { pSessionRequestPublisher.eraseToAnyPublisher() }
     
     // Mock properties
     var errorToFail: Error?

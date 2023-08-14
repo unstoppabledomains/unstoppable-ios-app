@@ -117,7 +117,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
                                       in wallet: UDWallet) async throws -> WalletConnectSign.Response
 }
 
-protocol WalletConnectV2RequestHandlingServiceProtocol {
+protocol WalletConnectV2RequestHandlingServiceProtocol: WalletConnectV2PublishersProvider {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
     var willHandleRequestCallback: EmptyCallback? { get set }
 
@@ -138,19 +138,20 @@ protocol WalletConnectV2RequestHandlingServiceProtocol {
 }
 
 protocol WalletConnectV2PublishersProvider {
-    var sessionProposalPublisher: AnyPublisher<WalletConnectSign.Session.Proposal, Never> { get }
-    var sessionRequestPublisher: AnyPublisher<WalletConnectSign.Request, Never> { get }
+    var sessionProposalPublisher: AnyPublisher<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never> { get }
+    var sessionRequestPublisher: AnyPublisher<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never> { get }
 }
 
 typealias SessionV2 = WalletConnectSign.Session
 typealias ResponseV2 = WalletConnectSign.Response
 typealias SessionV2Proxy = WCConnectedAppsStorageV2.SessionProxy
 
-class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
+class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2PublishersProvider {
     struct ExtWalletDataV2: Codable, Equatable {
         let session: WCConnectedAppsStorageV2.SessionProxy
     }
-    
+    var sessionProposalPublisher: AnyPublisher<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never> { Sign.instance.sessionProposalPublisher }
+    var sessionRequestPublisher: AnyPublisher<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never> { Sign.instance.sessionRequestPublisher }
     private let udWalletsService: UDWalletsServiceProtocol
     var delegate: WalletConnectDelegate?
     
