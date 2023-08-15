@@ -23,6 +23,7 @@ class ConnectExternalWalletViewPresenter: WalletConnector, WalletConnectExternal
     var analyticsName: Analytics.ViewName { .unspecified }
     private var connectingWallet: WCWalletsProvider.WalletRecord?
     var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
+    var noResponseFromExternalWalletTimeOut: TimeInterval { 2 }
 
     init(view: ConnectExternalWalletViewProtocol,
          udWalletsService: UDWalletsServiceProtocol,
@@ -37,6 +38,7 @@ class ConnectExternalWalletViewPresenter: WalletConnector, WalletConnectExternal
     func updateUI() {}
     func didConnectWallet(wallet: UDWallet) {
         Vibration.success.vibrate()
+        cancelNoResponseFromExternalWalletWorkItem()
     }
     func viewDidLoad() { }
     func viewWillAppear() {
