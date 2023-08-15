@@ -62,14 +62,14 @@ extension UIViewController {
         navigationItem.backBarButtonItem = backBarButton
     }
 
-    func showInfoScreenWith(preset: InfoScreen.Preset, dismissCallback: EmptyCallback? = nil) {
-        let vc = InfoScreen.instantiate(preset: preset,
-                                        dismissCallback: dismissCallback)
+    func showInfoScreenWith(preset: InfoScreen.Preset) {
+        let vc = InfoScreen.instantiate(preset: preset)
         if let nav = cNavigationController {
             nav.pushViewController(vc, animated: true)
         } else {
-            vc.modalPresentationStyle = .overFullScreen
-            present(vc, animated: true)
+            let nav = EmptyRootCNavigationController(rootViewController: vc)            
+            nav.modalPresentationStyle = .overFullScreen
+            present(nav, animated: true)
         }
     }
     

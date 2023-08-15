@@ -21,6 +21,12 @@ struct Encrypting {
         return cipherText
     }
     
+    static func decrypt(encryptedMessage: String, password: String) throws -> String {
+        guard let bytes = stringToBytes(encryptedMessage) else { throw EncryptingError.failedToGetBytesFromString }
+       
+        return try decrypt(encryptedMessage: bytes, password: password)
+    }
+   
     static func decrypt(encryptedMessage: [UInt8], password: String) throws -> String {
         guard let hashedPassword = password.hashSha3Value else { throw ValetError.failedHashPassword }
         let key = UInt(bitPattern: hashedPassword).asHexString16
@@ -32,5 +38,32 @@ struct Encrypting {
             throw ValetError.failedToDecrypt
         }
         return decryptedString
+    }
+    
+    private static func stringToBytes(_ string: String) -> [UInt8]? {
+        let length = string.count
+        if length & 1 != 0 {
+            return nil
+        }
+        var bytes = [UInt8]()
+        bytes.reserveCapacity(length/2)
+        var index = string.startIndex
+        for _ in 0..<length/2 {
+            let nextIndex = string.index(index, offsetBy: 2)
+            if let b = UInt8(string[index..<nextIndex], radix: 16) {
+                bytes.append(b)
+            } else {
+                return nil
+            }
+            index = nextIndex
+        }
+        return bytes
+    }
+    
+    enum EncryptingError: String, LocalizedError {
+        case failedToGetBytesFromString
+        
+        public var errorDescription: String? { rawValue }
+
     }
 }

@@ -6,25 +6,7 @@
 //
 
 import Foundation
-
-struct Storyboards {
-    enum OnboardingUI: String {
-        case home = "Home"
-        case happyEnd = "HappyEnd"
-        
-        var string: String { rawValue }
-    }
-    
-}
-
-struct NavigationControllers {
-    enum OnboardingUI: String {
-        case home = "HomeNavigationController"
-        
-        var string: String { rawValue }
-    }
-    
-}
+import web3swift
 
 extension String {
     enum Links {
@@ -34,6 +16,7 @@ extension String {
         case polygonScanTransaction(_ transaction: String)
         case deprecatedCoinTLDPage
         case domainProfilePage(domainName: String)
+        case ensDomainProfilePage(domainName: String)
         case openSeaETHAsset(value: String)
         case openSeaPolygonAsset(value: String)
         case writeAppStoreReview(appId: String)
@@ -80,6 +63,8 @@ extension String {
                 return "https://unstoppabledomains.com/blog/coin"
             case .domainProfilePage(let domainName):
                 return NetworkConfig.baseDomainProfileUrl + "\(domainName)"
+            case .ensDomainProfilePage(let domainName):
+                return "https://app.ens.domains/\(domainName)"
             case .openSeaETHAsset(let value):
                 return "https://opensea.io/assets/ethereum/\(value)"
             case .openSeaPolygonAsset(let value):
@@ -159,6 +144,7 @@ extension String {
         static let removed = "REMOVED"
         static let updated = "UPDATED"
         static let discard = "DISCARD"
+        static let save = "SAVE"
         static let saved = "SAVED"
         static let wallet = "WALLET"
         static let vault = "VAULT"
@@ -194,7 +180,24 @@ extension String {
         static let both = "BOTH"
         static let manage = "MANAGE"
         static let link = "LINK"
-
+        static let enable = "ENABLE"
+        static let accept = "ACCEPT"
+        static let delete = "DELETE"
+        static let join = "JOIN"
+        static let choosePhoto = "CHOOSE_PHOTO"
+        static let takePhoto = "TAKE_PHOTO"
+        static let photo = "PHOTO"
+        static let deleteAll = "DELETE_ALL"
+        static let people = "PEOPLE"
+        static let apps = "APPS"
+        static let viewProfile = "VIEW_PROFILE"
+        static let block = "BLOCK"
+        static let unblock = "UNBLOCK"
+        static let viewInfo = "VIEW_INFO"
+        static let leave = "LEAVE"
+        static let download = "DOWNLOAD"
+        static let unencrypted = "UNENCRYPTED"
+        
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"
         static let createDomainVault = "CREATE_DOMAIN_VAULT"
@@ -332,6 +335,9 @@ extension String {
         static let pluralNParkedDomains = "SDICT:N_PARKED_DOMAINS"
         static let pluralNParkedDomainsImported = "SDICT:N_PARKED_DOMAINS_IMPORTED"
         static let pluralExpire = "SDICT:EXPIRE"
+        static let pluralNMessages = "SDICT:N_MESSAGES"
+        static let pluralNPeopleYouMayKnow = "SDICT:N_PEOPLE_YOU_MAY_KNOW"
+        static let pluralNMembers = "SDICT:N_MEMBERS"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -362,7 +368,7 @@ extension String {
         static let unableToFindAccountMessage = "UNABLE_TO_FIND_ACCOUNT_MESSAGE"
         static let incorrectEmailError = "INCORRECT_EMAIL_ERROR"
         static let incorrectPasswordOrEmailError = "INCORRECT_PASSWORD_OR_EMAIL_ERROR"
-
+        
         // iCloud not enabled
         static let iCloudNotEnabledAlertTitle = "ICLOUD_NOT_ENABLED_ALERT_TITLE"
         static let iCloudNotEnabledAlertMessage = "ICLOUD_NOT_ENABLED_ALERT_MESSAGE"
@@ -394,7 +400,7 @@ extension String {
         static let settingsSupportNFeedback = "SETTINGS_SUPPORT_N_FEEDBACK"
         static let settingsLegal = "SETTINGS_LEGAL"
         static let settingsInviteFriends = "SETTINGS_INVITE_FRIENDS"
-
+        
         static let settingsSecurityPasscode = "SETTINGS_SECURITY_PASSCODE"
         static let settingsSecurityChangePasscode = "SETTINGS_SECURITY_CHANGE_PASSCODE"
         static let settingsSecurityRequireWhenOpeningHeader = "SETTINGS_SECURITY_REQUIRE_WHEN_OPENING_HEADER"
@@ -660,6 +666,7 @@ extension String {
         static let setReverseResolution = "SET_REVERSE_RESOLUTION"
         static let showNMore = "SHOW_N_MORE"
         static let reverseResolutionUnavailableWhileRecordsUpdating = "REVERSE_RESOLUTION_UNAVAILABLE_WHILE_RECORDS_UPDATING"
+        static let selectDomainForReverseResolutionForMessagingDescription = "SELECT_DOMAIN_FOR_REVERSE_RESOLUTION_FOR_MESSAGING_DESCRIPTION"
         
         // Deprecated TLD
         static let tldHasBeenDeprecated = "TLD_HAS_BEEN_DEPRECATED"
@@ -756,7 +763,7 @@ extension String {
         static let profileBadgesLeaderboardHoldersMessage = "PROFILE_BADGES_LEADERBOARD_HOLDERS_MESSAGE"
         static let profileBadgesSponsoredByMessage = "PROFILE_BADGES_LEADERBOARD_SPONSORED_BY_MESSAGE"
         static let profileAddSocialProfiles = "PROFILE_ADD_SOCIAL_PROFILES"
-
+        
         // Recent activities
         static let noRecentActivity = "NO_RECENT_ACTIVITY"
         static let noConnectedApps = "NO_CONNECTED_APPS"
@@ -853,7 +860,7 @@ extension String {
         static let clearRecordsUponTransfer = "CLEAR_RECORDS_UPON_TRANSFER"
         static let optional = "OPTIONAL"
         static let transferInProgress = "TRANSFER_IN_PROGRESS"
-
+        
         // Referral
         static let inviteFriendsTitle = "INVITE_FRIENDS_TITLE"
         static let inviteFriendsSubtitle = "INVITE_FRIENDS_SUBTITLE"
@@ -866,21 +873,50 @@ extension String {
         static let applePayRequiredPullUpTitle = "APPLE_PAY_REQUIRED_PULL_UP_TITLE"
         static let applePayRequiredPullUpMessage = "APPLE_PAY_REQUIRED_PULL_UP_MESSAGE"
         
+        // Messaging
+        static let chats = "CHATS"
+        static let today = "TODAY"
+        static let yesterday = "YESTERDAY"
+        static let chatInputPlaceholderAsDomain = "CHAT_INPUT_PLACEHOLDER_AS_DOMAIN"
+        static let appsInbox = "APPS_INBOX"
+        static let chatRequests = "CHAT_REQUESTS"
+        static let sending = "SENDING"
+        static let sendingFailed = "SENDING_FAILED"
+        static let tapToRetry = "TAP_TO_RETRY"
+        static let spam = "SPAM"
+        static let messagingIntroductionTitle = "MESSAGING_INTRODUCTION_TITLE"
+        static let messagingIntroductionHint1Title = "MESSAGING_INTRODUCTION_HINT_1_TITLE"
+        static let messagingIntroductionHint1Subtitle = "MESSAGING_INTRODUCTION_HINT_1_SUBTITLE"
+        static let messagingIntroductionHint2Title = "MESSAGING_INTRODUCTION_HINT_2_TITLE"
+        static let messagingIntroductionHint2Subtitle = "MESSAGING_INTRODUCTION_HINT_2_SUBTITLE"
+        static let messagingIntroductionHint3Title = "MESSAGING_INTRODUCTION_HINT_3_TITLE"
+        static let messagingIntroductionHint3Subtitle = "MESSAGING_INTRODUCTION_HINT_3_SUBTITLE"
+        static let messagingChatsListEmptyTitle = "MESSAGING_CHATS_LIST_EMPTY_TITLE"
+        static let messagingChatsListEmptySubtitle = "MESSAGING_CHATS_LIST_EMPTY_SUBTITLE"
+        static let messagingChannelsEmptyTitle = "MESSAGING_CHANNELS_EMPTY_TITLE"
+        static let messagingChannelsEmptySubtitle = "MESSAGING_CHANNELS_EMPTY_SUBTITLE"
+        static let messagingChatEmptyTitle = "MESSAGING_CHAT_EMPTY_TITLE"
+        static let messagingChatEmptyEncryptedMessage = "MESSAGING_CHAT_EMPTY_ENCRYPTED_MESSAGE"
+        static let messagingChatEmptyUnencryptedMessage = "MESSAGING_CHAT_EMPTY_UNENCRYPTED_MESSAGE"
+        static let messagingChannelEmptyMessage = "MESSAGING_CHANNEL_EMPTY_MESSAGE"
+        static let messagingNFollowers = "MESSAGING_N_FOLLOWERS"
+        static let messagingBlockUserConfirmationTitle = "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE"
+        static let messagingYouAreBlocked = "MESSAGING_YOU_ARE_BLOCKED"
+        static let messageNotSupported = "MESSAGE_NOT_SUPPORTED"
+        static let newMessage = "NEW_MESSAGE"
+        static let searchApps = "SEARCH_APPS"
+        static let messageUnencryptedPullUpTitle = "MESSAGE_UNENCRYPTED_PULL_UP_TITLE"
+        static let messageUnencryptedPullUpReason1 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_1"
+        static let messageUnencryptedPullUpReason2 = "MESSAGE_UNENCRYPTED_PULL_UP_REASON_2"
+        static let messagingAdmin = "MESSAGING_ADMIN"
+        static let messagingShareDecryptionErrorMessage = "MESSAGING_SHARE_DECRYPTION_ERROR_MESSAGE"
+        static let messagingSetPrimaryDomain = "MESSAGING_SET_PRIMARY_DOMAIN"
+        static let messagingRemoteContent = "MESSAGING_REMOTE_CONTENT"
+        static let messagingCantContactMessage = "MESSAGING_CANT_CONTACT_MESSAGE"
+        static let messagingInvite = "MESSAGING_INVITE"
+        static let messagingSearchResultNotRRDomain = "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN"
     }
 
-    
-    struct Segues {
-        static let homeToDomainDetail = "HomeToDomainDetails"
-        static let walletDetailsToDomainDetail = "WalletDetailsToDomainDetails"
-        static let domainDetailsToTransferDomain = "DomainDetailsToTransferDomain"
-        
-        static let homeToMint = "HomeToMintDomainsSegue"
-        
-        static let walletsListToImportWallet = "WalletsListToImportWallet"
-    
-        static let walletsListToWalletDetails = "WalletsListToWalletDetailsSegue"
-    }
-    
     enum BlockChainIcons: String {
         case ethereum = "smallEthereum"
         case zilliqa = "smallZilliqa"
@@ -934,6 +970,12 @@ extension String {
         return allTlds.contains(where: { $0.lowercased() == self.lowercased() } )
     }
     
+    func isUDTLD() -> Bool {
+        guard let tld = getTldName() else { return false }
+        
+        return tld.isValidTld() && tld != GlobalConstants.ensDomainTLD
+    }
+    
     func isValidAddress() -> Bool {
         let clean = self.droppedHexPrefix
         return clean.count == 40 && clean.isHexNumber
@@ -942,7 +984,7 @@ extension String {
     var isHexNumber: Bool {
         filter(\.isHexDigit).count == count
     }
-    
+  
     var convertedIntoReadableMessage: String {
         if self.droppedHexPrefix.isHexNumber {
             return String(data: Data(self.droppedHexPrefix.hexToBytes()), encoding: .utf8) ?? self

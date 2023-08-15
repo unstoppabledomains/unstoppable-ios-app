@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ChatsListViewController" customModule="domains_manager_ios" customModuleProvider="target">
+            <connections>
+                <outlet property="actionButton" destination="ZsM-pA-ldq" id="kd2-yG-m05"/>
+                <outlet property="actionButtonContainerView" destination="yQi-Rh-aBS" id="N36-ht-nQa"/>
+                <outlet property="activityIndicator" destination="h9l-YX-iY1" id="eyP-wP-q23"/>
+                <outlet property="collectionView" destination="Ia4-4O-ihP" id="buX-Pd-mYh"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="Ia4-4O-ihP">
+                    <rect key="frame" x="0.0" y="59" width="393" height="793"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="126-y7-FnI">
+                        <size key="itemSize" width="128" height="128"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yQi-Rh-aBS">
+                    <rect key="frame" x="0.0" y="740" width="393" height="112"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="D6M-I5-vbX">
+                            <rect key="frame" x="0.0" y="16" width="393" height="96"/>
+                            <color key="backgroundColor" name="backgroundDefault"/>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XAm-OV-Rgz" customClass="UDGradientCoverView" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="16"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="16" id="6Tp-v0-sqf"/>
+                            </constraints>
+                        </view>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZsM-pA-ldq" customClass="MainButton" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="16" y="16" width="361" height="48"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="48" id="u8g-ns-65h"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <connections>
+                                <action selector="actionButtonPressed:" destination="-1" eventType="touchUpInside" id="DO0-Ct-wmo"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="XAm-OV-Rgz" firstAttribute="leading" secondItem="yQi-Rh-aBS" secondAttribute="leading" id="7p5-hy-vHY"/>
+                        <constraint firstItem="D6M-I5-vbX" firstAttribute="top" secondItem="ZsM-pA-ldq" secondAttribute="top" id="BNc-IR-12C"/>
+                        <constraint firstItem="ZsM-pA-ldq" firstAttribute="centerX" secondItem="yQi-Rh-aBS" secondAttribute="centerX" id="C1M-Qh-OI5"/>
+                        <constraint firstAttribute="trailing" secondItem="XAm-OV-Rgz" secondAttribute="trailing" id="IAs-0d-GLR"/>
+                        <constraint firstItem="D6M-I5-vbX" firstAttribute="top" secondItem="XAm-OV-Rgz" secondAttribute="bottom" id="Qn7-fB-pDB"/>
+                        <constraint firstItem="D6M-I5-vbX" firstAttribute="leading" secondItem="yQi-Rh-aBS" secondAttribute="leading" id="Z0g-px-s4E"/>
+                        <constraint firstAttribute="trailing" secondItem="D6M-I5-vbX" secondAttribute="trailing" id="fRy-iO-FRw"/>
+                        <constraint firstAttribute="bottom" secondItem="D6M-I5-vbX" secondAttribute="bottom" id="hmt-bI-CKl"/>
+                        <constraint firstItem="XAm-OV-Rgz" firstAttribute="top" secondItem="yQi-Rh-aBS" secondAttribute="top" id="mz6-fN-cHy"/>
+                        <constraint firstItem="ZsM-pA-ldq" firstAttribute="leading" secondItem="yQi-Rh-aBS" secondAttribute="leading" constant="16" id="qNi-st-VLa"/>
+                    </constraints>
+                </view>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="h9l-YX-iY1">
+                    <rect key="frame" x="186.66666666666666" y="416" width="20" height="20"/>
+                </activityIndicatorView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="yQi-Rh-aBS" secondAttribute="trailing" id="55B-Op-5FT"/>
+                <constraint firstAttribute="bottom" secondItem="yQi-Rh-aBS" secondAttribute="bottom" id="6wS-67-qgP"/>
+                <constraint firstItem="yQi-Rh-aBS" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="8u5-PH-i2J"/>
+                <constraint firstItem="h9l-YX-iY1" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="DmH-cy-ehi"/>
+                <constraint firstItem="h9l-YX-iY1" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="JIb-bF-5RU"/>
+                <constraint firstItem="Ia4-4O-ihP" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="QYT-ko-wqZ"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="ZsM-pA-ldq" secondAttribute="bottom" constant="14" id="QhI-ER-W3c"/>
+                <constraint firstItem="Ia4-4O-ihP" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="fmt-uE-mPT"/>
+                <constraint firstAttribute="bottom" secondItem="Ia4-4O-ihP" secondAttribute="bottom" id="qp2-mX-wft"/>
+                <constraint firstItem="Ia4-4O-ihP" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="t30-iU-tLZ"/>
+            </constraints>
+            <point key="canvasLocation" x="38.931297709923662" y="41.549295774647888"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="backgroundDefault">
+            <color red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

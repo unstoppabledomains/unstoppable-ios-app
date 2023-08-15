@@ -7,7 +7,7 @@
 
 import Foundation
 import Combine
-import Web3
+import Boilertalk_Web3
 
 // WC V2
 import WalletConnectUtils
@@ -16,11 +16,43 @@ import WalletConnectEcho
 
 import Starscream
 
-extension WebSocket: WebSocketConnecting { }
+final class WCWebSocket: WebSocket, WebSocketConnecting {
+    var isConnected: Bool = false
+    var onConnect: (() -> Void)?
+    var onDisconnect: ((Error?) -> Void)?
+    var onText: ((String) -> Void)?
+    
+    convenience init(url: URL) {
+        let req = URLRequest(url: url)
+        self.init(request: req)
+        
+        self.onEvent = { [weak self] event in
+            switch event {
+            case .connected:
+                self?.isConnected = true
+                self?.onConnect?()
+            case .error:
+                return
+            case .cancelled:
+                self?.isConnected = false
+                self?.onDisconnect?(nil)
+            case .disconnected:
+                self?.isConnected = false
+                self?.onDisconnect?(nil)
+            case .text(let msg):
+                self?.onText?(msg)
+            case .binary:
+                return
+            case _:
+                break
+            }
+        }
+    }
+}
 
 struct SocketFactory: WebSocketFactory {
     func create(with url: URL) -> WebSocketConnecting {
-        return WebSocket(url: url)
+        return WCWebSocket(url: url)
     }
 }
 
@@ -85,7 +117,7 @@ protocol WalletConnectServiceV2Protocol: AnyObject {
                                       in wallet: UDWallet) async throws -> WalletConnectSign.Response
 }
 
-protocol WalletConnectV2RequestHandlingServiceProtocol {
+protocol WalletConnectV2RequestHandlingServiceProtocol: WalletConnectV2PublishersProvider {
     var appDisconnectedCallback: WCAppDisconnectedCallback? { get set }
     var willHandleRequestCallback: EmptyCallback? { get set }
 
@@ -106,19 +138,20 @@ protocol WalletConnectV2RequestHandlingServiceProtocol {
 }
 
 protocol WalletConnectV2PublishersProvider {
-    var sessionProposalPublisher: AnyPublisher<WalletConnectSign.Session.Proposal, Never> { get }
-    var sessionRequestPublisher: AnyPublisher<WalletConnectSign.Request, Never> { get }
+    var sessionProposalPublisher: AnyPublisher<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never> { get }
+    var sessionRequestPublisher: AnyPublisher<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never> { get }
 }
 
 typealias SessionV2 = WalletConnectSign.Session
 typealias ResponseV2 = WalletConnectSign.Response
 typealias SessionV2Proxy = WCConnectedAppsStorageV2.SessionProxy
 
-class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
+class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2PublishersProvider {
     struct ExtWalletDataV2: Codable, Equatable {
         let session: WCConnectedAppsStorageV2.SessionProxy
     }
-    
+    var sessionProposalPublisher: AnyPublisher<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never> { Sign.instance.sessionProposalPublisher }
+    var sessionRequestPublisher: AnyPublisher<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never> { Sign.instance.sessionRequestPublisher }
     private let udWalletsService: UDWalletsServiceProtocol
     var delegate: WalletConnectDelegate?
     
@@ -134,7 +167,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     var sanitizedClientId: String?
 
     static let supportedNamespace = "eip155"
-    static let supportedReferences: Set<String> = Set(UnsConfigManager.blockchainNamesMapForClient.map({String($0.key)}))
+    static let supportedReferences: Set<String> = Set(BlockchainNetwork.allCases.map({ String($0.id) }))
     
     var appDisconnectedCallback: WCAppDisconnectedCallback?
     var willHandleRequestCallback: EmptyCallback?
@@ -384,7 +417,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
     
     private func updateWalletsCacheAndUi(walletAddress: HexAddress) {
         if let toRemove = self.udWalletsService.find(by: walletAddress) {
-            if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0) {
+            if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0, udDomainsCount: 0) {
                 self.walletsUiHandler?.didDisconnect(walletDisplayInfo: walletDisplayInfo)
             }
             self.udWalletsService.remove(wallet: toRemove)

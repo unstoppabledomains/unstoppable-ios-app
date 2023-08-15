@@ -7,7 +7,7 @@
 
 import Foundation
 import WalletConnectSwift
-import Web3
+import Boilertalk_Web3
 
 typealias WCConnectionResult = Swift.Result<UnifiedConnectAppInfo, Swift.Error>
 typealias WCConnectionResultCompletion = ((WCConnectionResult)->())

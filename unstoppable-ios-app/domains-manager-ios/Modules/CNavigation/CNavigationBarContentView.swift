@@ -45,6 +45,7 @@ final class CNavigationBarContentView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        let currentHeight = bounds.size.height
         bounds.size.height = CNavigationBar.Constants.navigationBarHeight
         titleLabel.frame.size = CNavigationHelper.sizeOf(label: titleLabel, withConstrainedSize: bounds.size)
         let contentCenter = CNavigationHelper.center(of: bounds)
@@ -101,7 +102,14 @@ final class CNavigationBarContentView: UIView {
                                               in: searchBar)
                 }
          
-                bounds.size.height = max(bounds.size.height, searchBar.frame.maxY)
+                let origin = frame.origin
+                let newHeight = max(bounds.size.height, searchBar.frame.maxY)
+                bounds.size.height = newHeight
+                
+                let shouldFixOrigin = currentHeight != newHeight
+                if shouldFixOrigin {
+                    frame.origin = origin
+                }
             }
             bringSubviewToFront(searchBar)
         }
@@ -111,6 +119,8 @@ final class CNavigationBarContentView: UIView {
 
 // MARK: - Open methods
 extension CNavigationBarContentView {
+    var isBackButtonHidden: Bool { backButton.alpha == 0 }
+    
     func setBackButton(hidden: Bool) {
         backButton.alpha = hidden ? 0 : 1
     }
@@ -161,18 +171,16 @@ extension CNavigationBarContentView {
     func set(titleView: UIView?) {
         self.titleView?.removeFromSuperview()
         if let titleView = titleView {
-            titleView.alpha = 1
             addSubview(titleView)
             titleLabel.alpha = 0
         } else {
             titleLabel.alpha = isTitleHidden ? 0 : 1
         }
         self.titleView = titleView
-        titleView?.alpha = isTitleViewHidden ? 0 : 1
         setNeedsLayout()
         layoutIfNeeded()
     }
-
+    
     func setBarButtons(_ leftItems: [UIBarButtonItem], rightItems: [UIBarButtonItem]) {
         leftBarViews.forEach { view in
             view.removeFromSuperview()
@@ -244,14 +252,6 @@ extension CNavigationBarContentView {
                 }
             }
         case .inline:
-            animationDuration = 0 // Animation disabled for now
-            searchBar.frame.origin = CGPoint(x: 0,
-                                             y: calculateInlineSearchBarY())
-            
-            afterAnimationAction = { [weak searchBar] in
-                searchBar?.layer.mask = nil
-            }
-            
             views.forEach { view in
                 if let view {
                     if isSearchActive {
@@ -322,7 +322,7 @@ private extension CNavigationBarContentView {
         if barButtonItem.title == nil && barButtonItem.image != nil {
             button.frame.size.width = 44
         }
-        button.frame.size.height = bounds.height
+        button.frame.size.height = CNavigationBar.Constants.navigationBarHeight
         
         addSubview(button)
         button.setNeedsLayout()
@@ -345,8 +345,8 @@ private extension CNavigationBarContentView {
     }
     
     func calculateInlineSearchBarY() -> CGFloat {
-        let searchBarY: CGFloat = 76
-        return isSearchActive ? 0 : (searchBarY - yOffset)
+        let searchBarY: CGFloat = Constants.inlineSearchBarY
+        return isSearchActive ? ((CNavigationBar.Constants.navigationBarHeight - UDSearchBar.searchContainerHeight) / 2) : (searchBarY - yOffset)
     }
     
     func addSearchControllerWith(searchBarConfiguration: SearchBarConfiguration) {
@@ -354,6 +354,11 @@ private extension CNavigationBarContentView {
         let searchBarView = searchBarConfiguration.searchBarViewBuilder()
         addSubview(searchBarView)
         self.searchBarConfiguration?.searchBarView = searchBarView
+        if case .inline = searchBarConfiguration.searchBarPlacement {
+            searchBarView.responderChangedCallback = { [weak self] isActive in
+                self?.setSearchActive(isActive, animated: true)
+            }
+        }
 
         switch searchBarConfiguration.searchBarPlacement {
         case .rightBarButton:
@@ -431,13 +436,13 @@ extension CNavigationBarContentView {
     struct SearchBarConfiguration {
         let id: UUID
         var searchBarPlacement: SearchBarPlacement = .rightBarButton
-        var searchBarViewBuilder: (()->(UIView))
+        var searchBarViewBuilder: (()->(UDSearchBar))
         
-        var searchBarView: UIView?
+        var searchBarView: UDSearchBar?
         
         internal init(id: UUID = .init(),
                       searchBarPlacement: CNavigationBarContentView.SearchBarPlacement = .rightBarButton,
-                      searchBarViewBuilder: @escaping (() -> (UIView))) {
+                      searchBarViewBuilder: @escaping (() -> (UDSearchBar))) {
             self.id = id
             self.searchBarPlacement = searchBarPlacement
             self.searchBarViewBuilder = searchBarViewBuilder
@@ -450,7 +455,7 @@ extension CNavigationBarContentView {
     }
     
     struct Constants {
-        static let inlineSearchBarY: CGFloat = 76
+        static let inlineSearchBarY: CGFloat = 56
     }
     
 }

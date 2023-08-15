@@ -24,6 +24,7 @@ protocol DomainsCollectionPresenterProtocol: BasePresenterProtocol {
     func didMintDomains(result: MintDomainsNavigationController.MintDomainsResult)
     func didRecognizeQRCode()
     func didTapAddButton()
+    func didTapMessagingButton()
 }
 
 final class DomainsCollectionPresenter: ViewAnalyticsLogger {
@@ -65,6 +66,8 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     @MainActor
     func viewDidLoad() {
         dataAggregatorService.addListener(self)
+        appContext.externalEventsService.addListener(self)
+        appContext.messagingService.addListener(self)
         view?.setSettingsButtonHidden(false)
         updateGoToSettingsTutorialVisibility()
         updateUIControlsVisibility()
@@ -219,6 +222,10 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             }
         }
     }
+    
+    func didTapMessagingButton() {
+        router.showChatsListScreen()
+    }
 }
 
 // MARK: - AppLaunchServiceListener
@@ -227,6 +234,32 @@ extension DomainsCollectionPresenter: AppLaunchServiceListener {
         Task {
             let domains = await stateController.domains
             await resolvePrimaryDomain(domains: domains)
+        }
+    }
+}
+
+// MARK: - ExternalEventsServiceListener
+extension DomainsCollectionPresenter: ExternalEventsServiceListener {
+    func didReceive(event: ExternalEvent) {
+        switch event {
+        case .chatMessage, .chatChannelMessage, .chatXMTPMessage:
+            updateUnreadMessagesCounter()
+        default:
+            return
+        }
+    }
+}
+
+// MARK: - MessagingServiceListener
+extension DomainsCollectionPresenter: MessagingServiceListener {
+    func messagingDataTypeDidUpdated(_ messagingDataType: MessagingDataType) {
+        switch messagingDataType {
+        case .totalUnreadMessagesCountUpdated(let havingUnreadMessages):
+            Task { @MainActor in
+                view?.setUnreadMessagesCount(havingUnreadMessages ? 1 : 0)
+            }
+        default:
+            return 
         }
     }
 }
@@ -519,6 +552,7 @@ extension DomainsCollectionPresenter: DataAggregatorServiceListener {
             case .failure:
                 return
             }
+            updateUnreadMessagesCounter()
         }
     }
 }
@@ -611,7 +645,8 @@ private extension DomainsCollectionPresenter {
         } else {
             view?.setScanButtonHidden(!domains[currentIndex].isInteractable)
         }
-        view?.setAddButtonHidden(domains.isEmpty)
+        let interactableDomains = domains.filter({ $0.isInteractable })
+        view?.setAddButtonHidden(domains.isEmpty, isMessagingAvailable: !interactableDomains.isEmpty )
         view?.setEmptyState(hidden: !domains.isEmpty)
     }
     
@@ -824,6 +859,17 @@ private extension DomainsCollectionPresenter {
         getCurrentDomain()?.name ?? "N/A"
     }
     
+    func updateUnreadMessagesCounter() {
+        Task {
+            let isNewMessagesAvailable: Bool
+            do {
+                isNewMessagesAvailable = try await appContext.messagingService.isNewMessagesAvailable()
+            } catch {
+                isNewMessagesAvailable = false
+            }
+            await view?.setUnreadMessagesCount(isNewMessagesAvailable ? 1 : 0)
+        }
+    }
 }
 
 // MARK: - State

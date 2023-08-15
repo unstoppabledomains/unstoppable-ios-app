@@ -7,18 +7,16 @@
 
 import UIKit
 
-class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnalyticsLogger {
+class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnalyticsLogger, KeyboardServiceListener {
        
-    private let notificationCenter = NotificationCenter.default
-    private var keyboardWillShowObserver: NSObjectProtocol?
-    private var keyboardDidShowObserver: NSObjectProtocol?
-    private var keyboardWillHideObserver: NSObjectProtocol?
-    private(set) var keyboardFrame: CGRect = .zero
-    private(set) var keyboardAnimationDuration: TimeInterval = 0.25
-    private(set) var keyboardAppeared = false
-    private(set) var isKeyboardOpened = false
     private(set) var isDisappearing = false
+    
+    var keyboardFrame: CGRect { KeyboardService.shared.keyboardFrame }
+    var keyboardAnimationDuration: TimeInterval { KeyboardService.shared.keyboardAnimationDuration }
+    var keyboardAppeared: Bool { KeyboardService.shared.keyboardAppeared }
+    var isKeyboardOpened: Bool { KeyboardService.shared.isKeyboardOpened }
     var isObservingKeyboard: Bool { false }
+    
     var prefersLargeTitles: Bool { false }
     var navBackStyle: NavBackIconStyle { .arrow }
     var scrollableContentYOffset: CGFloat? { nil }
@@ -86,6 +84,12 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
         navBarUpdated()
     }
     
+    // MARK: - KeyboardServiceListener
+    func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) { }
+    func keyboardDidShowAction() { }
+    func keyboardWillHideAction(duration: Double, curve: Int) { }
+    func keyboardDidAdjustFrame(keyboardHeight: CGFloat) { }
+
     // MARK: - CNavigationControllerChild
     var navBarTitleAttributes: [NSAttributedString.Key : Any]? { [.foregroundColor : UIColor.foregroundDefault,
                                                                   .font: UIFont.currentFont(withSize: 16, weight: .semibold)] }
@@ -117,7 +121,10 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
     
     func shouldPopOnBackButton() -> Bool { true }
     func customScrollingBehaviour(yOffset: CGFloat, in navBar: CNavigationBar) -> (()->())? { nil }
-
+    func setupHideKeyboardTap() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
 }
 
 // MARK: - BaseViewControllerProtocol
@@ -132,9 +139,6 @@ extension BaseViewController: BaseViewControllerProtocol {
 
 // MARK: - Open methods
 extension BaseViewController {
-    @objc func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) { }
-    @objc func keyboardDidShowAction() { }
-    @objc func keyboardWillHideAction(duration: Double, curve: Int) { }
     @objc func navBarUpdated() { }
 }
 
@@ -149,68 +153,15 @@ private extension BaseViewController {
     }
     
     func addKeyboardObservers() {
-        if keyboardDidShowObserver == nil {
-            keyboardDidShowObserver = notificationCenter.addObserver(forName: UIResponder.keyboardDidShowNotification, object: nil, queue: .main, using: { [weak self] (notification) in
-                self?.keyboardDidShowAction()
-            })
-        }
-        if keyboardWillShowObserver == nil {
-            keyboardWillShowObserver = notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification, object: nil, queue: .main, using: { [weak self] (notification) in
-                guard let self = self else { return }
-                
-                if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-                    guard keyboardFrame.cgRectValue != self.keyboardFrame else { return }
-                    
-                    self.keyboardFrame = keyboardFrame.cgRectValue
-                }
-                var animationDuration: Double = 0
-                if let keyboardAnimationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval {
-                    animationDuration = keyboardAnimationDuration
-                }
-                var curve: Int = 0
-                if let keyboardCurve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int {
-                    curve = keyboardCurve
-                }
-                
-                self.isKeyboardOpened = true
-                self.keyboardWillShowAction(duration: animationDuration, curve: curve, keyboardHeight: self.keyboardFrame.height)
-            })
-        }
-        if keyboardWillHideObserver == nil {
-            keyboardWillHideObserver = notificationCenter.addObserver(forName: UIResponder.keyboardWillHideNotification, object: nil, queue: .main, using: { [weak self] (notification) in
-                guard let self = self else { return }
-                guard self.isKeyboardOpened else { return }
-                
-                self.isKeyboardOpened = false
-                self.keyboardFrame = .zero
-                
-                var animationDuration: Double = 0
-                if let keyboardAnimationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? TimeInterval {
-                    animationDuration = keyboardAnimationDuration
-                }
-                var curve: Int = 0
-                if let keyboardCurve = notification.userInfo?[UIResponder.keyboardAnimationCurveUserInfoKey] as? Int {
-                    curve = keyboardCurve
-                }
-                self.keyboardWillHideAction(duration: animationDuration, curve: curve)
-            })
-        }
+        KeyboardService.shared.addListener(self)
     }
     
     func removeKeyboardObservers() {
-        if keyboardWillShowObserver != nil {
-            notificationCenter.removeObserver(keyboardWillShowObserver!)
-        }
-        if keyboardDidShowObserver != nil {
-            notificationCenter.removeObserver(keyboardDidShowObserver!)
-        }
-        if keyboardWillHideObserver != nil {
-            notificationCenter.removeObserver(keyboardWillHideObserver!)
-        }
-        
-        keyboardWillShowObserver = nil
-        keyboardDidShowObserver = nil
-        keyboardWillHideObserver = nil
+        KeyboardService.shared.removeListener(self)
+    }
+    
+    @objc func dismissKeyboard() {
+        hideKeyboard()
     }
 }
 

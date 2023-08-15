@@ -185,6 +185,7 @@ private extension SettingsPresenter {
         Storage.instance.cleanAllCache()
         StripeService.shared.setup()
         firebaseInteractionService.logout()
+        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
         updateAppVersion()
         Task { await dataAggregatorService.aggregateData(shouldRefreshPFP: true) }
         notificationsService.updateTokenSubscriptions()

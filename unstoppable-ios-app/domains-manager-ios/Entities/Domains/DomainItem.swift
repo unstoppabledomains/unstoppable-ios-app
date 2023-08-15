@@ -107,6 +107,14 @@ extension DomainItem {
         }
         return try await ownerWallet.getPersonalSignature(messageString: message)
     }
+    
+    public func typedDataSign(message: String) async throws -> String {
+        guard let ownerAddress = self.ownerWallet,
+              let ownerWallet = appContext.udWalletsService.find(by: ownerAddress) else {
+            throw NetworkLayerError.failedToFindOwnerWallet
+        }
+        return try await ownerWallet.getSignTypedData(dataString: message)
+    }
 }
 
 extension DomainItem {

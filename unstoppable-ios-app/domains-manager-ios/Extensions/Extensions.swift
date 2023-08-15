@@ -20,17 +20,7 @@ extension String {
     
 }
 
-typealias HexAddress = String
-
 extension HexAddress {
-    var normalized: String {
-        let cleanAddress = self.droppedHexPrefix.lowercased()
-        if cleanAddress.count == 64 {
-            return String.hexPrefix + cleanAddress.dropFirst(24)
-        }
-        return String.hexPrefix + cleanAddress
-    }
-    
     var normalized32: String {
         let cleanAddress = self.droppedHexPrefix.lowercased()
         if cleanAddress.count < 64 {
@@ -45,12 +35,6 @@ extension HexAddress {
 }
 
 extension HexAddress {
-    static var hexPrefix: String { "0x" }
-    
-    var hasHexPrefix: Bool {
-        return self.hasPrefix(String.hexPrefix)
-    }
-    
     var hexToDec: UInt64? {
         return UInt64(self.droppedHexPrefix, radix: 16)
     }
@@ -92,10 +76,6 @@ extension HexAddress {
     
     var trimmedSpaces: String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-    
-    var droppedHexPrefix: String {
-        return self.hasHexPrefix ? String(self.dropFirst(String.hexPrefix.count)) : self
     }
     
     var bytesArray: [UInt8]? {

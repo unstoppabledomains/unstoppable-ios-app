@@ -20,7 +20,8 @@ protocol DomainsCollectionViewProtocol: BaseViewControllerProtocol {
     func setNumberOfSteps(_ numberOfSteps: Int)
     func showToast(_ toast: Toast)
     func showMintingDomains(_ mintingDomains: [DomainDisplayInfo])
-    func setAddButtonHidden(_ isHidden: Bool)
+    func setAddButtonHidden(_ isHidden: Bool, isMessagingAvailable: Bool)
+    func setUnreadMessagesCount(_ unreadMessagesCount: Int)
 }
 
 @MainActor
@@ -51,6 +52,7 @@ final class DomainsCollectionViewController: BaseViewController, TitleVisibility
         
     private var defaultBottomOffset: CGFloat { Constants.scrollableContentBottomOffset }
     private var pageViewController: DomainsCollectionPageViewController!
+    private var messagingButton: DomainsCollectionMessagingBarButton?
     private var currentOffset: CGPoint = CGPoint(x: 0,
                                                  y: -DomainsCollectionCarouselItemViewController.scrollViewTopInset)
     private var cardState: CarouselCardState = .expanded
@@ -208,18 +210,24 @@ extension DomainsCollectionViewController: DomainsCollectionViewProtocol {
         setTitleViewFor(cardState: cardState)
     }
     
-    func setAddButtonHidden(_ isHidden: Bool) {
+    func setAddButtonHidden(_ isHidden: Bool,
+                            isMessagingAvailable: Bool) {
         if isHidden {
-            if navigationItem.rightBarButtonItem != nil {
-                navigationItem.rightBarButtonItem = nil
+            if navigationItem.rightBarButtonItems != nil {
+                navigationItem.rightBarButtonItems = nil
                 cNavigationController?.updateNavigationBar()
             }
         } else {
-            if navigationItem.rightBarButtonItem == nil {
-                addAddBarButton()
+            let expectedNumberOfBarButtons = isMessagingAvailable ? 2 : 1
+            if navigationItem.rightBarButtonItems?.count != expectedNumberOfBarButtons {
+                addRightBarButtons(isMessagingAvailable: isMessagingAvailable)
                 cNavigationController?.updateNavigationBar()
             }
         }
+    }
+    
+    func setUnreadMessagesCount(_ unreadMessagesCount: Int) {
+        messagingButton?.setUnreadMessagesCount(unreadMessagesCount)
     }
 }
 
@@ -547,6 +555,8 @@ private extension DomainsCollectionViewController {
     func updateTitleVisibility(for yOffset: CGFloat,
                                in navBar: CNavigationBar,
                                cardState: CarouselCardState) {
+        guard cNavigationController?.topViewController == self else { return }
+        
         if havingMintingDomains {
             setNavBarTitleViewHidden(false, in: navBar)
         } else if !didShowSwipeDomainCardTutorial {
@@ -607,6 +617,12 @@ private extension DomainsCollectionViewController {
         UDVibration.buttonTap.vibrate()
         presenter.didTapAddButton()
     }
+    
+    @objc func didTapMessagingButton() {
+        logButtonPressedAnalyticEvents(button: .messaging)
+        UDVibration.buttonTap.vibrate()
+        presenter.didTapMessagingButton()
+    }
 }
 
 // MARK: - Private methods
@@ -665,7 +681,7 @@ private extension DomainsCollectionViewController {
         setupEmptyView()
         setupPageViewController()
         setupNavBar()
-        setAddButtonHidden(true)
+        setAddButtonHidden(true, isMessagingAvailable: false)
         scanButton.setTitle(String.Constants.login.localized(), image: .scanQRIcon20)
         scanButton.applyFigmaShadow(style: .medium)
         setScanButtonHidden(true)
@@ -676,18 +692,27 @@ private extension DomainsCollectionViewController {
     }
     
     func setupNavBar() {
-        addAddBarButton()
         titleView = DomainsCollectionTitleView(frame: .zero)
         titleView.delegate = self
         setTitleViewFor(cardState: cardState)
         navigationItem.titleView = titleView
     }
     
-    func addAddBarButton() {
-        let rightBarButton = UIBarButtonItem(image: .plusIconNav, style: .plain, target: self, action: #selector(didTapAddButton))
-        rightBarButton.tintColor = .foregroundDefault
-        rightBarButton.accessibilityIdentifier = "Domains Collection Plus Button"
-        navigationItem.rightBarButtonItem = rightBarButton
+    func addRightBarButtons(isMessagingAvailable: Bool) {
+        let addBarButton = UIBarButtonItem(image: .plusIconNav, style: .plain, target: self, action: #selector(didTapAddButton))
+        addBarButton.tintColor = .foregroundDefault
+        addBarButton.accessibilityIdentifier = "Domains Collection Plus Button"
+        
+        if isMessagingAvailable {
+            let messagingButton = DomainsCollectionMessagingBarButton()
+            messagingButton.pressedCallback = { [weak self] in self?.didTapMessagingButton() }
+            self.messagingButton = messagingButton
+            let messagingBarButton = UIBarButtonItem(customView: messagingButton)
+            
+            navigationItem.rightBarButtonItems = [addBarButton, messagingBarButton]
+        } else {
+            navigationItem.rightBarButtonItems = [addBarButton]
+        }
     }
 
     func addSettingsButton() {

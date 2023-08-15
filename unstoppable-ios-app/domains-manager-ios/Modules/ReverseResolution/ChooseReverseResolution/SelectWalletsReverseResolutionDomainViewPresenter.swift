@@ -9,15 +9,25 @@ import Foundation
 
 final class SelectWalletsReverseResolutionDomainViewPresenter: ChooseReverseResolutionDomainViewPresenter {
     
-    private weak var setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager?
     override var title: String { String.Constants.selectDomainForReverseResolution.localized() }
     override var analyticsName: Analytics.ViewName { .selectFirstDomainForReverseResolution }
+    override var navBackStyle: BaseViewController.NavBackIconStyle {
+        switch useCase {
+        case .default: return .arrow
+        case .messaging: return .cancel
+        }
+    }
+
+    private weak var setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager?
+    private let useCase: UseCase
     
     init(view: ChooseReverseResolutionDomainViewProtocol,
          wallet: UDWallet,
          walletInfo: WalletDisplayInfo,
+         useCase: UseCase,
          setupWalletsReverseResolutionFlowManager: SetupWalletsReverseResolutionFlowManager,
          dataAggregatorService: DataAggregatorServiceProtocol) {
+        self.useCase = useCase
         super.init(view: view,
                    wallet: wallet,
                    walletInfo: walletInfo,
@@ -58,7 +68,7 @@ final class SelectWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
                                                                              textColor: .foregroundDefault)]))])
             
         } else {
-            snapshot.appendItems([.header(subtitle: .init(subtitle: String.Constants.selectDomainForReverseResolutionDescription.localized()))])
+            snapshot.appendItems([.header(subtitle: .init(subtitle: useCase.subtitle))])
         }
         
         snapshot.appendSections([.main(0)])
@@ -70,11 +80,21 @@ final class SelectWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
     }
 }
 
-// MARK: - Private methods
-private extension SelectWalletsReverseResolutionDomainViewPresenter {
-  
-    
-    
+// MARK: - UseCase
+extension SelectWalletsReverseResolutionDomainViewPresenter {
+    enum UseCase {
+        case `default`
+        case messaging
+        
+        var subtitle: String {
+            switch self {
+            case .default:
+                return String.Constants.selectDomainForReverseResolutionDescription.localized()
+            case .messaging:
+                return String.Constants.selectDomainForReverseResolutionForMessagingDescription.localized()
+            }
+        }
+    }
 }
 
 

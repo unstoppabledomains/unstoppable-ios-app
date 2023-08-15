@@ -122,6 +122,7 @@ extension FirebaseInteractionService: FirebaseInteractionServiceProtocol, Fireba
         firebaseAuthService.logout()
         setFirebaseUser(nil)
         setTokenData(nil)
+        appContext.firebaseDomainsService.clearParkedDomains()
     }
     
     // Listeners

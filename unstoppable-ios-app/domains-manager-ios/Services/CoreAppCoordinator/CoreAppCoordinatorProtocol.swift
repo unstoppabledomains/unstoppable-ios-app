@@ -16,4 +16,11 @@ protocol CoreAppCoordinatorProtocol: WalletConnectClientUIHandler, ExternalEvent
     func setKeyWindow()
     @discardableResult
     func goBackToPreviousApp() -> Bool
+    
+    func isActiveState(_ state: AppCoordinationState) -> Bool
+}
+
+enum AppCoordinationState {
+    case chatOpened(chatId: String)
+    case channelOpened(channelId: String)
 }

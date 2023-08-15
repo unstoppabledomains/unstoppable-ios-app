@@ -6,5 +6,9 @@
 	<array>
 		<string>TAG</string>
 	</array>
+    <key>com.apple.security.application-groups</key>
+    <array>
+        <string>group.unstoppabledomains.manager.extensions</string>
+    </array>
 </dict>
 </plist>

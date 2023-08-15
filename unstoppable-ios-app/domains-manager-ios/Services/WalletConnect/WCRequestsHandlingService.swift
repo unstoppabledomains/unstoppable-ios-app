@@ -398,7 +398,7 @@ private extension WCRequestsHandlingService {
     }
     
     func registerV2ProposalHandler() {
-        Sign.instance.sessionProposalPublisher
+        walletConnectServiceV2.sessionProposalPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] proposalResponse in
                 Task { [weak self] in
@@ -409,7 +409,7 @@ private extension WCRequestsHandlingService {
     }
     
     func registerV2RequestHandlers() {
-        Sign.instance.sessionRequestPublisher
+        walletConnectServiceV2.sessionRequestPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] requestResponse in
                 let methodString = requestResponse.request.method

@@ -48,9 +48,7 @@ final class DashesProgressNavBarPopAnimation: CBaseTransitioningAnimation {
         let fromProgress: CGFloat = dashesView.progress
         let toProgress: CGFloat = self.toProgress
         let duration = transitionDuration(using: transitionContext)
-        let animator = UIViewPropertyAnimator(duration: duration,
-                                              controlPoint1: CNavigationHelper.AnimationCurveControlPoint1,
-                                              controlPoint2: CNavigationHelper.AnimationCurveControlPoint2) {
+        let animator = createAnimatorIn(transitionContext: transitionContext) {
             dashesView.setProgress(toProgress)
             largeTitleView.frame.origin.x += navBar.bounds.width
         }

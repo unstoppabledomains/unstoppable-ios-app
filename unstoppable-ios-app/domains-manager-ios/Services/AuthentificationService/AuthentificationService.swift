@@ -24,6 +24,8 @@ final class AuthentificationService {
 
 // MARK: - AuthentificationServiceProtocol
 extension AuthentificationService: AuthentificationServiceProtocol {
+    var biometricUIProcessingTime: TimeInterval { biometricType == .touchID ? 0.5 : 1.2 }
+
     var biometricType: LABiometryType {
         let context = LAContext()
         context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)

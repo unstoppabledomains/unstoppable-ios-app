@@ -53,6 +53,7 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var firebaseAuthService: FirebaseAuthServiceProtocol = FirebaseAuthService(firebaseSigner: UDFirebaseSigner())
     private(set) lazy var firebaseDomainsService: FirebaseDomainsServiceProtocol = FirebaseDomainsService(firebaseInteractionService: firebaseInteractionService as! FirebaseDomainsLoaderProtocol)
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = MockDomainTransferService()
+    private(set) lazy var messagingService: MessagingServiceProtocol = MockMessagingService()
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
 }

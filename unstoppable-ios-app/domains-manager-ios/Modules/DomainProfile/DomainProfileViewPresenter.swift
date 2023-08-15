@@ -32,7 +32,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
     
     var analyticsName: Analytics.ViewName { .domainProfile }
 
-    private weak var view: DomainProfileViewProtocol?
+    private weak var view: (any DomainProfileViewProtocol)?
     private var refreshTransactionsTimer: Timer?
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let domainRecordsService: DomainRecordsServiceProtocol
@@ -50,7 +50,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
         }
     }
 
-    init(view: DomainProfileViewProtocol,
+    init(view: any DomainProfileViewProtocol,
          domain: DomainDisplayInfo,
          wallet: UDWallet,
          walletInfo: WalletDisplayInfo,
@@ -310,7 +310,7 @@ extension DomainProfileViewPresenter: ExternalEventsServiceListener {
                 if domainNames.contains(dataHolder.domain.name) {
                     refreshData()
                 }
-            case .wcDeepLink, .walletConnectRequest, .parkingStatusLocal:
+            case .wcDeepLink, .walletConnectRequest, .parkingStatusLocal, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite:
                 return
             }
         }
@@ -528,8 +528,8 @@ private extension DomainProfileViewPresenter {
                 UserDefaults.didEverUpdateDomainProfile = true
                 AppReviewService.shared.appReviewEventDidOccurs(event: .didUpdateProfile)
                 
-                let changes = requestsWithChanges.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.changes })
-                saveChangesToAppGroup(changes, domain: await dataHolder.domain)
+                let changes = Set(requestsWithChanges.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.changes }).map { $0.uiChange })
+                saveChangesToAppGroup(Array(changes), domain: await dataHolder.domain)
             } else if updateErrors.count == requestsWithChanges.count {
                 // All requests are failed
                 await dataHolder.didFailToUpdateProfile()
@@ -622,11 +622,11 @@ private extension DomainProfileViewPresenter {
         }
     }
      
-    func saveChangesToAppGroup(_ changes: [DomainProfileSectionChangeDescription], domain: DomainDisplayInfo) {
+    func saveChangesToAppGroup(_ changes: [DomainProfileSectionUIChangeType], domain: DomainDisplayInfo) {
         guard !changes.isEmpty else { return }
         
         let bridgeChanges = changes.compactMap { change -> DomainRecordChanges.ChangeType? in
-            switch change.uiChange {
+            switch change {
             case .added(let item), .removed(let item), .updated(let item):
                 if let recordChangeType = item as? RecordChangeType {
                     switch recordChangeType {
@@ -1007,7 +1007,7 @@ private extension DomainProfileViewPresenter {
             section.fill(snapshot: &snapshot, withGeneralData: dataHolder)
         }
         
-        view?.applySnapshot(snapshot, animated: animated)
+        view?.applySnapshot(snapshot, animated: animated, completion: nil)
     }
     
     @MainActor

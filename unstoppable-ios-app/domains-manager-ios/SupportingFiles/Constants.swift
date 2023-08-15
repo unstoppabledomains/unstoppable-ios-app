@@ -10,7 +10,8 @@ import UIKit
 
 typealias EmptyCallback = ()->()
 typealias EmptyAsyncCallback = @Sendable ()->()
- 
+typealias GlobalConstants = Constants
+
 struct Constants {
     
     #if DEBUG
@@ -20,11 +21,11 @@ struct Constants {
     #endif
         
     static let distanceFromButtonToKeyboard: CGFloat = 16
-    static var biometricUIProcessingTime: TimeInterval { appContext.authentificationService.biometricType == .touchID ? 0.5 : 1.2 }
     static let scrollableContentBottomOffset: CGFloat = 32
     static let ETHRegexPattern = "^0x[a-fA-F0-9]{40}$"
     static let UnstoppableSupportMail = "support@unstoppabledomains.com"
     static let UnstoppableTwitterName = "unstoppableweb"
+    static let UnstoppableGroupIdentifier = "group.unstoppabledomains.manager.extensions"
 
     static let nonRemovableDomainCoins = ["ETH", "MATIC"]
     static let domainNameMinimumScaleFactor: CGFloat = 0.625
@@ -32,7 +33,6 @@ struct Constants {
     static let backEndThrottleErrorCode = 429
     static let setupRRPromptRepeatInterval = 7
     static var wcConnectionTimeout: TimeInterval = 5
-    static let wcNoResponseFromExternalWalletTimeout: TimeInterval = 0.5
     static var newNonInteractableTLDs: Set<String> = []
     static var deprecatedTLDs: Set<String> = []
     static let imageProfileMaxSize: Int = 4_000_000 // 4 MB
@@ -44,6 +44,12 @@ struct Constants {
     static let appStoreAppId = "1544748602"
     static let refreshDomainBadgesInterval: TimeInterval = 60 * 3 // 3 min
     static let parkingBetaLaunchDate = Date(timeIntervalSince1970: 1678401000)
+    static let numberOfUnreadMessagesBeforePrefetch: Int = 7
+    static let maxImageResolution: CGFloat = 1000
+    static let shouldHideBlockedUsersLocally = true
+    static let ensDomainTLD: String = "eth"
+    static let xmtpMessagingServiceIdentifier: String = "xmtp"
+    static let pushMessagingServiceIdentifier: String = "push"
     
     #if DEBUG
     static let isTestingMinting: Bool = false
@@ -54,7 +60,7 @@ struct Constants {
     #endif
 
 }
-
+ 
 let currencyNumberFormatter: NumberFormatter = {
     let formatter = NumberFormatter()
     formatter.minimumFractionDigits = 0
@@ -66,6 +72,11 @@ let currencyNumberFormatter: NumberFormatter = {
 let largeNumberFormatter: NumberFormatter = {
     let formatter = NumberFormatter()
     formatter.numberStyle = .decimal
+    return formatter
+}()
+
+let bytesFormatter: ByteCountFormatter = {
+    let formatter = ByteCountFormatter()
     return formatter
 }()
 
@@ -82,6 +93,52 @@ struct Env {
     }()
 }
 
-var appContext: AppContextProtocol {
-    return AppDelegate.shared.appContext
+enum BlockchainNetwork: Int, CaseIterable {
+    case ethMainnet = 1
+    case ethRinkby = 4
+    case ethGoerli = 5
+    case polygonMainnet = 137
+    case polygonMumbai = 80001
+    
+    var id: Int { rawValue }
+    
+    var name: String {
+        switch self {
+        case .ethMainnet:
+            return "mainnet"
+        case .ethRinkby:
+            return "rinkby"
+        case .ethGoerli:
+            return "goerli"
+        case .polygonMainnet:
+            return "polygon-mainnet"
+        case .polygonMumbai:
+            return "polygon-mumbai"
+        }
+    }
+    
+    var nameForClient: String {
+        switch self {
+        case .ethMainnet:
+            return "Ethereum"
+        case .ethRinkby:
+            return "Ethereum: Rinkby"
+        case .ethGoerli:
+            return "Ethereum: Goerli"
+        case .polygonMainnet:
+            return "Polygon"
+        case .polygonMumbai:
+            return "Polygon: Mumbai"
+        }
+    }
+}
+
+struct Utilities {
+    static func catchingFailureAsyncTask<T>(asyncCatching block: () async throws -> T, defaultValue: T) async -> T {
+        do {
+            return try await block()
+        } catch {
+            return defaultValue
+        }
+    }
 }

@@ -14,6 +14,7 @@ protocol BasePresenterProtocol: AnyObject {
     func viewDidAppear()
     func viewWillDisappear()
     func viewDidDisappear()
+    func viewDeinit()
 }
 
 extension BasePresenterProtocol {
@@ -22,4 +23,5 @@ extension BasePresenterProtocol {
     func viewDidAppear() { }
     func viewWillDisappear() { }
     func viewDidDisappear() { }
+    func viewDeinit() { }
 }

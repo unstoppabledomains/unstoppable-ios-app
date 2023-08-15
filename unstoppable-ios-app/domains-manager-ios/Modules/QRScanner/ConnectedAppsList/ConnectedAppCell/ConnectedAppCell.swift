@@ -68,18 +68,10 @@ private extension ConnectedAppCell {
     func menuElement(for action: ConnectedAppsListViewController.ItemAction) async -> UIMenuElement {
         switch action {
         case .domainInfo, .networksInfo:
-            if #available(iOS 15.0, *) {
-                return UIAction(title: action.title,
-                                subtitle: action.subtitle,
-                                image: await action.icon,
-                                identifier: .init(UUID().uuidString),
-                                handler: { [weak self] _ in  self?.actionCallback?(action) })
-            } else {
-                return UIAction(title: action.title,
-                                image: await action.icon,
-                                identifier: .init(UUID().uuidString),
-                                handler: { [weak self] _ in  self?.actionCallback?(action) })
-            }
+            return UIAction.createWith(title: action.title,
+                                       subtitle: action.subtitle,
+                                       image: await action.icon,
+                                       handler: { [weak self] _ in  self?.actionCallback?(action) })
         case .disconnect:
             let action = UIAction(title: action.title, image: await action.icon, identifier: .init(UUID().uuidString), attributes: .destructive, handler: { [weak self] _ in self?.actionCallback?(action) })
             return UIMenu(options: [.displayInline], children: [action])

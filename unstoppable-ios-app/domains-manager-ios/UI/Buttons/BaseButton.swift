@@ -109,7 +109,7 @@ class BaseButton: UIButton {
         
         if let image = image {
             if title == nil {
-                let iconPadding: CGFloat = 20
+                let iconPadding: CGFloat = customImageEdgePadding ?? 20
                 self.setIcon(image, leftPadding: iconPadding, rightPadding: iconPadding, titleImagePadding: 0, imageLayout: imageLayout, forState: .normal)
             } else {
                 let leftPadding: CGFloat = imageLayout == .trailing ? titleEdgePadding : imageEdgePadding

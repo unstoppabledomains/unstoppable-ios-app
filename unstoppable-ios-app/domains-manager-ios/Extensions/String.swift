@@ -12,6 +12,10 @@ extension Character {
     static let dotSeparator: Character = "."
 }
 
+extension CharacterSet {
+    static let dotSeparator: CharacterSet = CharacterSet(charactersIn: ".")
+}
+
 extension String {
     static let dotSeparator: String = "."
 

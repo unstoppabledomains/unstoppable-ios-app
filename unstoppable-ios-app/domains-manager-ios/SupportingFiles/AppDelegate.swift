@@ -7,6 +7,11 @@
 
 import UIKit
 import Bugsnag
+import Push
+
+var appContext: AppContextProtocol {
+    return AppDelegate.shared.appContext
+}
 
 protocol AppDelegateProtocol {
     var appContext: AppContextProtocol { get }
@@ -15,7 +20,6 @@ protocol AppDelegateProtocol {
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
     
     private(set) lazy var appContext: AppContextProtocol = {
         GeneralAppContext()
@@ -27,12 +31,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         #if DEBUG
+        Debugger.setAllowedTopicsSet(.debugDefault)
+//        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
+//        MessagingFilesService(decrypterService: AESMessagingContentDecrypterService()).clear()
+//        Task {
+//            await appContext.imageLoadingService.clearStoredImages()
+//        }
         if TestsEnvironment.isTestModeOn {
             setAppContextType(.mock)
         }
-        Debugger.setAllowedTopicsSet(.debugDefault)
         #endif
-        
+         
         setVersionAndBuildNumber()
 
         configureNavBar()
@@ -43,6 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         StripeService.shared.setup()
         
         appContext.analyticsService.log(event: .appLaunch, withParameters: nil)
+
         return true
     }
 

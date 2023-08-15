@@ -139,6 +139,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     
     func remove(wallet: UDWallet) {
         removeFromCacheWithoutNotification(wallet: wallet)
+        notifyListeners(.walletRemoved(wallet))
         notifyListeners(.walletsUpdated(getUserWallets()))
     }
     
@@ -260,7 +261,7 @@ extension UDWalletsService: UDWalletsServiceProtocol {
         getUserWallets().forEach({ updateWalletInStorage($0, backedUpState: false) })
         notifyListeners(.walletsUpdated(getUserWallets()))
     }
-
+    
     // Balance
     func getBalanceFor(walletAddress: HexAddress, blockchainType: BlockchainType, forceRefresh: Bool) async throws -> WalletBalance {
         let layerId = try UnsConfigManager.getBlockchainLayerId(for: blockchainType)
@@ -288,8 +289,12 @@ extension UDWalletsService: UDWalletsServiceProtocol {
     }
     
     // Reverse Resolution
-    func reverseResolutionDomainName(for wallet: UDWallet) async -> DomainName? {
-        return try? await NetworkService().fetchReverseResolution(for: wallet.address)
+    func reverseResolutionDomainName(for wallet: UDWallet) async throws -> DomainName? {
+        try await reverseResolutionDomainName(for: wallet.address)
+    }
+    
+    func reverseResolutionDomainName(for walletAddress: HexAddress) async throws -> DomainName? {
+        try await NetworkService().fetchReverseResolution(for: walletAddress)
     }
     
     enum ReverseResolutionError: Error {

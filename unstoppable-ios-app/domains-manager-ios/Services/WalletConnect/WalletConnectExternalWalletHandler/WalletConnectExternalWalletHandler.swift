@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 import UIKit
-import Web3
+import Boilertalk_Web3
 
 // V1
 import WalletConnectSwift
@@ -191,6 +191,8 @@ extension WalletConnectExternalWalletHandler {
 
 // MARK: - WalletConnectExternalWalletConnectionWaiter
 extension WalletConnectExternalWalletHandler: WalletConnectExternalWalletConnectionWaiter {
+    var noResponseFromExternalWalletTimeOut: TimeInterval { 0.5 }
+
     func isWaitingForResponseFromExternalWallet() -> Bool {
         externalWalletWC1ResponseCallback != nil || externalWalletWC2ResponseCallback != nil
     }

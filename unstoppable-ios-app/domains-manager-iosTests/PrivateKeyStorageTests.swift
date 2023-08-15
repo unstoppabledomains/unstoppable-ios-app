@@ -63,6 +63,10 @@ class PrivateKeyStorageTests: XCTestCase {
 }
 
 class MockedValet: ValetProtocol {
+    func setObject(_ object: Data, forKey key: String) throws { }
+    
+    func object(forKey key: String) throws -> Data { Data() }
+    
     var store: [String: String] = [:]
     func setString(_ privateKey: String, forKey: String) throws {
         store.updateValue(privateKey, forKey: forKey)

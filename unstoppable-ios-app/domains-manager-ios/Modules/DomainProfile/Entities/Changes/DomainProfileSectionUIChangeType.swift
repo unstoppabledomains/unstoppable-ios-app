@@ -7,9 +7,43 @@
 
 import UIKit
 
-enum DomainProfileSectionUIChangeType {
-    case added(_ item: DomainProfileSectionChangeUIDescription), removed(_ item: DomainProfileSectionChangeUIDescription), updated(_ item: DomainProfileSectionChangeUIDescription)
+enum DomainProfileSectionUIChangeType: Hashable {
+ 
+    case added(_ item: any DomainProfileSectionChangeUIDescription), removed(_ item: any DomainProfileSectionChangeUIDescription), updated(_ item: any DomainProfileSectionChangeUIDescription)
     case moreChanges(_ num: Int)
+    
+    static func == (lhs: DomainProfileSectionUIChangeType, rhs: DomainProfileSectionUIChangeType) -> Bool {
+        switch (lhs, rhs) {
+        case (.added(let lhsItem), .added(let rhsItem)):
+            return lhsItem.isEqual(rhsItem)
+        case (.removed(let lhsItem), .removed(let rhsItem)):
+            return lhsItem.isEqual(rhsItem)
+        case (.updated(let lhsItem), .updated(let rhsItem)):
+            return lhsItem.isEqual(rhsItem)
+        case (.moreChanges(let lhsNum), .moreChanges(let rhsNum)):
+            return lhsNum == rhsNum
+        default:
+            return false
+        }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .added(let item):
+            hasher.combine(0)
+            hasher.combine(item)
+        case .removed(let item):
+            hasher.combine(1)
+            hasher.combine(item)
+        case .updated(let item):
+            hasher.combine(2)
+            hasher.combine(item)
+        case .moreChanges(let item):
+            hasher.combine(3)
+            hasher.combine(item)
+        }
+    }
+    
 }
 
 // MARK: - PullUpCollectionViewCellItem

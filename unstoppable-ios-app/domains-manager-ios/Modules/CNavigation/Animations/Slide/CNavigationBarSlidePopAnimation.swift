@@ -56,8 +56,10 @@ final class CNavigationBarSlidePopAnimation: NSObject, UIViewControllerAnimatedT
         
         let contentOffset = (toViewController as? CNavigationControllerChild)?.scrollableContentYOffset ?? 0
         let isBlurActive = toYOffset >= contentOffset
-        toNavBarCopy.navBarBlur.alpha = isBlurActive ? 1 : 0
-        toNavBarCopy.divider.alpha = isBlurActive ? 1 : 0
+        UIView.performWithoutAnimation {
+            toNavBarCopy.setBlur(hidden: !isBlurActive, animated: false)
+            toNavBarCopy.divider.alpha = isBlurActive ? 1 : 0
+        }
         
         let duration = transitionDuration(using: transitionContext)
         let animator = UIViewPropertyAnimator(duration: duration,
@@ -72,7 +74,7 @@ final class CNavigationBarSlidePopAnimation: NSObject, UIViewControllerAnimatedT
                 toNavBarCopy.removeFromSuperview()
                 if position == .end {
                     navBar.setBackButton(title: newBackButtonTitle ?? "")
-                    navBar.setYOffset(toYOffset)
+                    CNavigationBarScrollingController().setYOffset(toYOffset, in: navBar)
                 }
             }
         }

@@ -51,9 +51,7 @@ final class DashesProgressNavBarPushAnimation: CBaseTransitioningAnimation {
         let toProgress: CGFloat? = self.toProgress
         let duration = transitionDuration(using: transitionContext)
         let start = Date()
-        let animator = UIViewPropertyAnimator(duration: duration,
-                                              controlPoint1: CNavigationHelper.AnimationCurveControlPoint1,
-                                              controlPoint2: CNavigationHelper.AnimationCurveControlPoint2) {
+        let animator = createAnimatorIn(transitionContext: transitionContext) {
             if let toProgress {
                 dashesView.setProgress(toProgress)
                 dashesView.alpha = 1
