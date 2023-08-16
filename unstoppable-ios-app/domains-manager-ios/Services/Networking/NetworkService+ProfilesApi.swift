@@ -19,6 +19,7 @@ struct SerializedUserDomainProfile: Codable {
     let socialAccounts: SocialAccounts
     let humanityCheck: UserDomainProfileHumanityCheckAttribute
     let records: [String : String]
+    let storage: UserDomainStorageDetails?
     
     enum CodingKeys: CodingKey {
         case profile
@@ -26,14 +27,21 @@ struct SerializedUserDomainProfile: Codable {
         case socialAccounts
         case humanityCheck
         case records
+        case storage
     }
     
-    init(profile: UserDomainProfileAttributes, messaging: DomainMessagingAttributes, socialAccounts: SocialAccounts, humanityCheck: UserDomainProfileHumanityCheckAttribute, records: [String : String]) {
+    init(profile: UserDomainProfileAttributes,
+         messaging: DomainMessagingAttributes,
+         socialAccounts: SocialAccounts,
+         humanityCheck: UserDomainProfileHumanityCheckAttribute,
+         records: [String : String],
+         storage: UserDomainStorageDetails?) {
         self.profile = profile
         self.messaging = messaging
         self.socialAccounts = socialAccounts
         self.humanityCheck = humanityCheck
         self.records = records
+        self.storage = storage
     }
     
     init(from decoder: Decoder) throws {
@@ -43,6 +51,7 @@ struct SerializedUserDomainProfile: Codable {
         self.socialAccounts = (try? container.decode(SocialAccounts.self, forKey: .socialAccounts)) ?? .init()
         self.humanityCheck = (try? container.decode(UserDomainProfileHumanityCheckAttribute.self, forKey: .humanityCheck)) ?? .init()
         self.records = (try? container.decode([String : String].self, forKey: .records)) ?? .init()
+        self.storage = (try? container.decode(UserDomainStorageDetails.self, forKey: .storage))
     }
     
     func encode(to encoder: Encoder) throws {
@@ -52,6 +61,16 @@ struct SerializedUserDomainProfile: Codable {
         try container.encode(self.socialAccounts, forKey: .socialAccounts)
         try container.encode(self.humanityCheck, forKey: .humanityCheck)
         try container.encode(self.records, forKey: .records)
+        try container.encode(self.storage, forKey: .storage)
+    }
+    
+    static func newEmpty() -> SerializedUserDomainProfile {
+        SerializedUserDomainProfile(profile: .init(),
+                                    messaging: .init(),
+                                    socialAccounts: .init(),
+                                    humanityCheck: .init(),
+                                    records: [:],
+                                    storage: nil)
     }
 }
 
@@ -367,6 +386,15 @@ struct UserDomainNotificationsPreferences: Codable {
     
     enum CodingKeys: String, CodingKey {
         case blockedTopics = "blocked_topics"
+    }
+}
+
+struct UserDomainStorageDetails: Codable {
+    let apiKey: String
+    let type: StorageType
+    
+    enum StorageType: String, Codable {
+        case web3 = "web3.storage"
     }
 }
 
