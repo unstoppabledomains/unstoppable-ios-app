@@ -602,7 +602,7 @@ extension Endpoint {
         let fieldsQuery = fields.map({ $0.rawValue }).joined(separator: ",")
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/public/\(domainName)",
+            path: "/profile/public/\(domainName)",
             queryItems: [URLQueryItem(name: "fields", value: fieldsQuery)],
             body: ""
         )
@@ -612,7 +612,7 @@ extension Endpoint {
         //https://profile.unstoppabledomains.com/api/public/aaronquirk.x/badges
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/public/\(domain.name)/badges",
+            path: "/profile/public/\(domain.name)/badges",
             queryItems: [],
             body: ""
         )
@@ -631,7 +631,7 @@ extension Endpoint {
         // https://profile.unstoppabledomains.com/api/badges/opensea-tothemoonalisa
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/badges/\(badge.code)",
+            path: "/profile/badges/\(badge.code)",
             queryItems: [],
             body: ""
         )
@@ -646,7 +646,7 @@ extension Endpoint {
         
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/search",
+            path: "/profile/search",
             queryItems: queryItems,
             body: ""
         )
@@ -658,7 +658,7 @@ extension Endpoint {
         let expiry = Int( (Date().timeIntervalSince1970 + yearInSecs) * 1000)
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/user/\(domain.name)/signature",
+            path: "/profile/user/\(domain.name)/signature",
             queryItems: [URLQueryItem(name: "expiry", value: String(expiry)),
                          URLQueryItem(name: "device", value: String(true))], /// This flag will allow signature to be used in all profile API endpoints for this domain
             body: ""
@@ -687,7 +687,7 @@ extension Endpoint {
         let fieldsQuery = fields.map({ $0.rawValue }).joined(separator: ",")
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/user/\(domain.name)",
+            path: "/profile/user/\(domain.name)",
             queryItems: [URLQueryItem(name: "fields", value: fieldsQuery)],
             body: "",
             headers: headers
@@ -699,7 +699,7 @@ extension Endpoint {
         let expiry = Int( (Date().timeIntervalSince1970 + 60_000_000) * 1000)
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/user/\(domain.name)/signature",
+            path: "/profile/user/\(domain.name)/signature",
             queryItems: [URLQueryItem(name: "expiry", value: String(expiry))],
             body: body
         )
@@ -718,7 +718,7 @@ extension Endpoint {
         ]
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/user/\(domain.name)",
+            path: "/profile/user/\(domain.name)",
             queryItems: [],
             body: body,
             headers: headers
@@ -737,7 +737,7 @@ extension Endpoint {
             SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
         ]
         return Endpoint(
-            host: NetworkConfig.baseProfileAPIHost,
+            host: NetworkConfig.baseProfileHost,
             path: "/profile/user/\(domain.name)/notifications/preferences",
             queryItems: [],
             body: body,
