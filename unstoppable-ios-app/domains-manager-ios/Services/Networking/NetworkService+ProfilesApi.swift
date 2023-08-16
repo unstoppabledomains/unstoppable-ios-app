@@ -536,6 +536,12 @@ extension NetworkService {
     
     public func updateUserDomainNotificationsPreferences(_ preferences: UserDomainNotificationsPreferences,
                                                          for domain: DomainItem) async throws {
+        try await updateUserDomainNotificationsPreferences(preferences, for: domain, isRetryAfterSignatureFailed: false)
+    }
+    
+    private func updateUserDomainNotificationsPreferences(_ preferences: UserDomainNotificationsPreferences,
+                                                          for domain: DomainItem,
+                                                          isRetryAfterSignatureFailed: Bool) async throws {
         let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
         let signature = persistedSignature.sign
         let expires = persistedSignature.expires
@@ -548,8 +554,12 @@ extension NetworkService {
                                                                           body: body)
             try await fetchDataFor(endpoint: endpoint, method: .post)
         } catch {
-            checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
-            throw error
+            if checkIfBadSignatureErrorAndRevokeSignature(error, for: domain),
+               !isRetryAfterSignatureFailed {
+                try await updateUserDomainNotificationsPreferences(preferences, for: domain, isRetryAfterSignatureFailed: true)
+            } else {
+                throw error
+            }
         }
     }
     
