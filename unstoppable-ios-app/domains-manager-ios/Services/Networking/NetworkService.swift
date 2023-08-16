@@ -364,7 +364,7 @@ extension NetworkService {
     /// This function will return UD/ENS/Null name and corresponding PFP if available OR throw 404
     func fetchGlobalReverseResolution(for address: HexAddress) async throws -> GlobalRR? {
         do {
-            guard let url = URL(string: "\(NetworkConfig.baseProfileAPIUrl)/profile/resolve/\(address)") else { return nil } // User's input contains not allowed characters
+            guard let url = URL(string: "\(NetworkConfig.baseProfileUrl)/profile/resolve/\(address)") else { return nil } // User's input contains not allowed characters
             
             let data = try await NetworkService().fetchData(for: url,
                                                             method: .get,
