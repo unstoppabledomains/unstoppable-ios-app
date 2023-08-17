@@ -68,7 +68,6 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
                         before message: MessagingChatMessageDisplayInfo?,
                         limit: Int) async throws -> [MessagingChatMessage] {
         try queue.sync {
-            
             let timeSortDescriptor = NSSortDescriptor(key: "time", ascending: false)
             let chatIdPredicate = NSPredicate(format: "chatId == %@", chat.displayInfo.id)
             let userIdPredicate = NSPredicate(format: "userId == %@", chat.userId)

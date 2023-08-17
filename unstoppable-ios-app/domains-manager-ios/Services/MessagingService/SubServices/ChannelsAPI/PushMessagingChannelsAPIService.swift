@@ -42,9 +42,9 @@ extension PushMessagingChannelsAPIService: MessagingChannelsAPIServiceProtocol {
         return try await getChannelsWithIds(Set(spamChannelIds), isCurrentUserSubscribed: false, user: user)
     }
     
-    private func getChannelsWithIds(_ channelIds: Set<String>,
-                                    isCurrentUserSubscribed: Bool,
-                                    user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
+    func getChannelsWithIds(_ channelIds: Set<String>,
+                            isCurrentUserSubscribed: Bool,
+                            user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel] {
         guard !channelIds.isEmpty else { return [] }
         
         var channels = [PushChannel?]()
