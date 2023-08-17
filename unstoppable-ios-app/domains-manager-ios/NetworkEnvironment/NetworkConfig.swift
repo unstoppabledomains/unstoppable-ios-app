@@ -62,6 +62,14 @@ struct NetworkConfig {
         "https://\(baseProfileHost)"
     }
     
+    static var baseMessagingHost: String {
+        if User.instance.getSettings().isTestnetUsed {
+            return "messaging.ud-staging.com"
+        } else {
+            return "messaging.unstoppabledomains.com"
+        }
+    }
+    
     private static let StagingAccessApiKey = "mob-01-stg-8792ed66-f0d6-463d-b08b-7f5667980676"
     static var stagingAccessKeyIfNecessary: [String : String] {
         if User.instance.getSettings().isTestnetUsed {

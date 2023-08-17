@@ -11,7 +11,7 @@ import XMTP
 struct XMTPPushNotificationsHelper {
     static func subscribeForTopics(_ topics: [String], by client: Client) async throws {
         do {
-            let url = URL(string: "https://messaging.ud-staging.com/api/xmtp/topics/register")!
+            let url = URL(string: "https://\(NetworkConfig.baseMessagingHost)/api/xmtp/topics/register")!
             let subReq = try await buildSubscribeRequestFor(topics: topics, by: client)
             let reqData = subReq.jsonString()!
             let request = APIRequest(url: url,
