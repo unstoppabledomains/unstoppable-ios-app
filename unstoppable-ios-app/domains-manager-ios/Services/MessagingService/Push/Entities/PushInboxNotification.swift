@@ -30,15 +30,27 @@ struct PushInboxNotification: Codable {
 extension PushInboxNotification {
     struct Payload: Codable {
         let data: Data
-//        let recipients: String
+        let recipients: [String]
         let notification: Notification?
         let verificationProof: String?
         
         enum CodingKeys: String, CodingKey {
             case data
-//            case recipients
+            case recipients
             case notification
             case verificationProof = "verificationProof"
+        }
+        
+        init(from decoder: Decoder) throws {
+            let container: KeyedDecodingContainer<PushInboxNotification.Payload.CodingKeys> = try decoder.container(keyedBy: PushInboxNotification.Payload.CodingKeys.self)
+            self.data = try container.decode(PushInboxNotification.Data.self, forKey: PushInboxNotification.Payload.CodingKeys.data)
+            if let dict = try? container.decode([String: String?].self, forKey: PushInboxNotification.Payload.CodingKeys.recipients) {
+                self.recipients = Array(dict.keys)
+            } else {
+                self.recipients = []
+            }
+            self.notification = try? container.decodeIfPresent(PushInboxNotification.Notification.self, forKey: PushInboxNotification.Payload.CodingKeys.notification)
+            self.verificationProof = try container.decodeIfPresent(String.self, forKey: PushInboxNotification.Payload.CodingKeys.verificationProof)
         }
     }
     
