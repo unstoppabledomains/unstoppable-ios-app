@@ -730,8 +730,9 @@ private extension CoreDataMessagingStorageService {
         }
         
         let chatIdPredicate = NSPredicate(format: "channelId == %@", coreDataChannel.id!)
+        let userIdPredicate = NSPredicate(format: "userId == %@", coreDataChannel.userId!)
         let isNotReadPredicate = NSPredicate(format: "isRead == NO")
-        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, isNotReadPredicate])
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, userIdPredicate, isNotReadPredicate])
         let unreadMessagesCount = (try? countEntities(CoreDataMessagingNewsChannelFeed.self,
                                                       predicate: predicate,
                                                       in: backgroundContext)) ?? 0
@@ -843,16 +844,6 @@ private extension CoreDataMessagingStorageService {
         let userIdPredicate = NSPredicate(format: "userId == %@", userId)
         let isNotReadPredicate = NSPredicate(format: "isRead == NO")
         let predicate = NSCompoundPredicate(type: .and, subpredicates: [chatIdPredicate, userIdPredicate, isNotReadPredicate])
-        let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
-                                                      predicate: predicate,
-                                                      in: backgroundContext)) ?? 0
-        return unreadMessagesCount
-    }
-    
-    func fetchNumberOfUnreadMessagesForUser(_ userId: String) -> Int {
-        let userIdPredicate = NSPredicate(format: "userId == %@", userId)
-        let isNotReadPredicate = NSPredicate(format: "isRead == NO")
-        let predicate = NSCompoundPredicate(type: .and, subpredicates: [userIdPredicate, isNotReadPredicate])
         let unreadMessagesCount = (try? countEntities(CoreDataMessagingChatMessage.self,
                                                       predicate: predicate,
                                                       in: backgroundContext)) ?? 0
