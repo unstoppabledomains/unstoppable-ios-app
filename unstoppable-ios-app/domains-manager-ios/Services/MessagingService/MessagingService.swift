@@ -571,9 +571,11 @@ private extension MessagingService {
                     let rrDomain = try await getReverseResolutionDomainItem(for: userProfile.wallet)
                     let profile = try storageService.getUserProfileFor(domain: rrDomain,
                                                                        serviceIdentifier: userProfile.serviceIdentifier)
-                    
-                    refreshChatsForProfile(profile, shouldRefreshUserInfo: shouldRefreshUserInfo)
-                    refreshChannelsForProfile(profile)
+                    if !dataRefreshManager.isUpdatingUserData(profile.displayInfo) {
+                        refreshChatsForProfile(profile, shouldRefreshUserInfo: shouldRefreshUserInfo)
+                        refreshChannelsForProfile(profile)
+                    }
+
                     setupSocketConnection(profile: profile)
                 } else {
                     webSocketsService.disconnectAll()
@@ -588,8 +590,6 @@ private extension MessagingService {
 private extension MessagingService {
     func refreshChatsForProfile(_ profile: MessagingChatUserProfile, shouldRefreshUserInfo: Bool) {
         Task {
-            guard !dataRefreshManager.isUpdatingUserData(profile.displayInfo) else { return }
-            
             dataRefreshManager.startUpdatingChats(for: profile.displayInfo)
             var startTime = Date()
             do {
@@ -864,9 +864,7 @@ private extension MessagingService {
 // MARK: - Channels
 private extension MessagingService {
     func refreshChannelsForProfile(_ profile: MessagingChatUserProfile) {
-        Task {
-            guard !dataRefreshManager.isUpdatingUserData(profile.displayInfo) else { return }
-            
+        Task {            
             dataRefreshManager.startUpdatingChannels(for: profile.displayInfo)
             let startTime = Date()
             do {
@@ -880,7 +878,8 @@ private extension MessagingService {
                 }, defaultValue: [])
                 
                 let (channels, spamChannels) = await (channelsTask, spamChannelsTask)
-                let allChannels = channels + spamChannels
+                let channelsIds = Set(channels.map { $0.id })
+                let allChannels = channels + spamChannels.filter { !channelsIds.contains($0.id) }
                 
                 let updatedChats = await refreshChannelsMetadata(allChannels, storedChannels: storedChannels).sortedByLastMessage()
                 
@@ -1019,22 +1018,28 @@ private extension MessagingService {
                                                                   userId: profile.id))
                     try? await setLastMessageAndNotify(lastMessage: message.displayInfo)
                 }
-                
+            }
+            
+            func addNewChannelFeed(_ feed: MessagingNewsChannelFeed, to channel: MessagingNewsChannel) async throws {
+                var channel = channel
+                let profile = try storageService.getUserProfileWith(userId: channel.userId,
+                                                                    serviceIdentifier: apiService.serviceIdentifier)
+                await storageService.saveChannelsFeed([feed], in: channel)
+                channel.lastMessage = feed
+                await storageService.saveChannels([channel], for: profile)
+                notifyListenersChangedDataType(.channelFeedAdded(feed, channelId: channel.id))
+                notifyChannelsChanged(userId: profile.id)
             }
             
             do {
                 switch event {
-                case .channelNewFeed(let feed, let channelAddress), .channelSpamFeed(let feed, let channelAddress):
-                    let channels = try await storageService.getChannelsWith(address: channelAddress)
-                    
-                    for var channel in channels {
-                        let profile = try storageService.getUserProfileWith(userId: channel.userId,
-                                                                            serviceIdentifier: apiService.serviceIdentifier)
-                        await storageService.saveChannelsFeed([feed], in: channel)
-                        channel.lastMessage = feed
-                        await storageService.saveChannels([channel], for: profile)
-                        notifyListenersChangedDataType(.channelFeedAdded(feed, channelId: channel.id))
-                        notifyChannelsChanged(userId: profile.id)
+                case .channelNewFeed(let feed, let channelAddress, _):
+                    if let channel = try await getOrFetchChannelOfCurrentUserWithAddress(channelAddress, isCurrentUserSubscribed: true) {
+                        try await addNewChannelFeed(feed, to: channel)
+                    }
+                case .channelSpamFeed(let feed, let channelAddress, _):
+                    if let channel = try await getOrFetchChannelOfCurrentUserWithAddress(channelAddress, isCurrentUserSubscribed: false) {
+                        try await addNewChannelFeed(feed, to: channel)
                     }
                 case .groupChatReceivedMessage(let message):
                     let chatMessages = try await convertMessagingWebSocketGroupMessageEntityToMessage(message)
@@ -1053,6 +1058,23 @@ private extension MessagingService {
                 }
             } catch { }
         }
+    }
+    
+    func getOrFetchChannelOfCurrentUserWithAddress(_ channelAddress: String,
+                                                   isCurrentUserSubscribed: Bool) async throws -> MessagingNewsChannel? {
+        guard let currentUser else { return nil }
+        
+        let profile = try storageService.getUserProfileWith(userId: currentUser.id,
+                                                            serviceIdentifier: apiService.serviceIdentifier)
+        let cachedChannels = try await storageService.getChannelsFor(profile: profile)
+        if let cachedChannel = cachedChannels.first(where: { $0.channel == channelAddress }) {
+            return cachedChannel
+        }
+        
+        let channels = try await channelsApiService.getChannelsWithIds([channelAddress],
+                                                                       isCurrentUserSubscribed: isCurrentUserSubscribed,
+                                                                       user: profile)
+        return channels.first
     }
     
     func refreshChatsInSameDomain(as chatId: String, userId: String) {

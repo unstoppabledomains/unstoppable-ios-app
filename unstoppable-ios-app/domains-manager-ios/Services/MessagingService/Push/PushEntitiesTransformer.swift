@@ -289,10 +289,10 @@ struct PushEntitiesTransformer {
                                               isRead: Bool) -> MessagingNewsChannelFeed {
         let data = pushNotification.payload.data
         var link: URL?
-        if let url = URL(string: data.url ?? "") {
-            link = url
-        } else if let acta = URL(string: data.acta ?? "") {
-            link = acta
+        if let mediaLink = URL(string: data.aimg ?? "") {
+            link = mediaLink
+        } else if let ctaLink = URL(string: data.acta ?? "") {
+            link = ctaLink
         }
         return MessagingNewsChannelFeed(id: String(pushNotification.payloadId),
                                         title: data.asub,
