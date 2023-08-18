@@ -72,6 +72,13 @@ struct MessagingImageLoader {
            let image = await appContext.imageLoadingService.loadImage(from: .domainPFPSource(pfpInfo.source),
                                                                       downsampleDescription: nil) {
             return image
+        } else if domainName.isValidDomainNameForMessagingSearch(),
+                  let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: domainName.lowercased()),
+                  let pfpURL = rrInfo.pfpURLToUse {
+            
+            let image = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
+                                                                       downsampleDescription: nil)
+            return image
         } else {
             return await getIconWithInitialsFor(name: domainName)
         }

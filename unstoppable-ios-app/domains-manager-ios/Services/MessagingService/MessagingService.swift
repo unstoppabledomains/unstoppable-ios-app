@@ -481,7 +481,7 @@ extension MessagingService: MessagingServiceProtocol {
             }
             
             return [.init(wallet: wallet)]
-        } else if searchKey.isValidDomainName(),
+        } else if searchKey.isValidDomainNameForMessagingSearch(),
                   var userInfo = await loadGlobalUserInfoFor(value: searchKey) {
             if userInfo.isUDDomain,
                let userRRDomain = try? await appContext.udWalletsService.reverseResolutionDomainName(for: userInfo.wallet.normalized),
