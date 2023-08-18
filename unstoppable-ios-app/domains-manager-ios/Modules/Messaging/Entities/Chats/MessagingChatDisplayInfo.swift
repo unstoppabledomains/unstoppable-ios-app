@@ -11,7 +11,7 @@ struct MessagingChatDisplayInfo: Hashable {
     let id: String
     let thisUserDetails: MessagingChatUserDisplayInfo
     let avatarURL: URL?
-    let type: MessagingChatType
+    var type: MessagingChatType
     var unreadMessagesCount: Int
     var isApproved: Bool
     var lastMessageTime: Date

@@ -341,11 +341,19 @@ extension MessagingService: MessagingServiceProtocol {
                           to userInfo: MessagingChatUserDisplayInfo,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo) {
         let profile = try await getUserProfileWith(wallet: profile.wallet)
-        let (chat, message) = try await apiService.sendFirstMessage(messageType,
+        var (chat, message) = try await apiService.sendFirstMessage(messageType,
                                                                     to: userInfo,
                                                                     by: profile,
                                                                     filesService: filesService)
-        
+        switch chat.displayInfo.type {
+        case .private(let infoInChat):
+            var userInfo = userInfo
+            userInfo.wallet = infoInChat.otherUser.wallet
+            await storageService.saveMessagingUserInfo(userInfo)
+            chat.displayInfo.type = .private(.init(otherUser: userInfo))
+        case .group:
+            Void()
+        }
         await storageService.saveChats([chat])
         await storageService.saveMessages([message])
         try? await setLastMessageAndNotify(message.displayInfo, to: chat)
@@ -1050,6 +1058,7 @@ private extension MessagingService {
                     let updatedChats = await refreshChatsMetadata(remoteChats: [chat], localChats: [], for: profile)
                     await storageService.saveChats(updatedChats)
                     notifyChatsChanged(wallet: profile.wallet)
+                    await refreshUsersInfoFor(profile: profile)
                 }
             } catch { }
         }
