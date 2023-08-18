@@ -13,7 +13,8 @@ protocol PushChannelsAPIServiceDataProvider {
                                in channel: String,
                                page: Int,
                                limit: Int,
-                               isRead: Bool) async throws -> [MessagingNewsChannelFeed]
+                               isRead: Bool,
+                               isSpam: Bool) async throws -> [MessagingNewsChannelFeed]
 }
 
 final class PushMessagingChannelsAPIService {
@@ -70,13 +71,22 @@ extension PushMessagingChannelsAPIService: MessagingChannelsAPIServiceProtocol {
                     page: Int,
                     limit: Int,
                     isRead: Bool) async throws -> [MessagingNewsChannelFeed] {
-        let feed = try await dataProvider.getChannelFeedForUser(channel.userId,
+        async let feedTask = dataProvider.getChannelFeedForUser(channel.userId,
                                                                 in: channel.channel,
                                                                 page: page,
                                                                 limit: limit,
-                                                                isRead: isRead)
+                                                                isRead: isRead,
+                                                                isSpam: false)
+        async let feedSpamTask = dataProvider.getChannelFeedForUser(channel.userId,
+                                                                    in: channel.channel,
+                                                                    page: page,
+                                                                    limit: limit,
+                                                                    isRead: isRead,
+                                                                    isSpam: true)
         
-        return feed
+        let (feed, feedSpam) = try await (feedTask, feedSpamTask)
+        
+        return (feed + feedSpam).sorted(by: { $0.time > $1.time })
     }
     
     func searchForChannels(page: Int,
