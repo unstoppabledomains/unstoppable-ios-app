@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CoreDataMessagingChat" representedClassName="CoreDataMessagingChat" syncable="YES" codeGenerationType="class">
+        <attribute name="avatarURL" optional="YES" attributeType="URI"/>
+        <attribute name="groupDetails" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String : Any]"/>
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="isApproved" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="lastMessageId" optional="YES" attributeType="String"/>
+        <attribute name="lastMessageTime" attributeType="Date" defaultDateTimeInterval="707980500" usesScalarValueType="NO"/>
+        <attribute name="otherUserWallet" optional="YES" attributeType="String"/>
+        <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>
+        <attribute name="thisUserWallet" attributeType="String" defaultValueString=""/>
+        <attribute name="type" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="userId" attributeType="String" defaultValueString=""/>
+        <relationship name="lastMessage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingChatMessage" inverseName="lastMessageInChat" inverseEntity="CoreDataMessagingChatMessage"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+                <constraint value="userId"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CoreDataMessagingChatMessage" representedClassName="CoreDataMessagingChatMessage" syncable="YES" codeGenerationType="class">
+        <attribute name="chatId" attributeType="String" defaultValueString=""/>
+        <attribute name="deliveryState" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="genericMessageDetails" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String : Any]"/>
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="isEncrypted" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="isFirstInChat" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="messageContent" optional="YES" attributeType="String"/>
+        <attribute name="messageType" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="senderType" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="senderWallet" attributeType="String" defaultValueString=""/>
+        <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>
+        <attribute name="time" attributeType="Date" defaultDateTimeInterval="707930820" usesScalarValueType="NO"/>
+        <attribute name="userId" attributeType="String" defaultValueString=""/>
+        <relationship name="lastMessageInChat" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingChat" inverseName="lastMessage" inverseEntity="CoreDataMessagingChat"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+                <constraint value="userId"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CoreDataMessagingNewsChannel" representedClassName="CoreDataMessagingNewsChannel" syncable="YES" codeGenerationType="class">
+        <attribute name="blocked" attributeType="Boolean" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="channel" attributeType="String" defaultValueString=""/>
+        <attribute name="icon" attributeType="URI" defaultValueString=""/>
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="info" attributeType="String" defaultValueString=""/>
+        <attribute name="isCurrentUserSubscribed" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="lastFeedId" optional="YES" attributeType="String"/>
+        <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="subscriberCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="url" attributeType="URI" defaultValueString=""/>
+        <attribute name="userId" attributeType="String" defaultValueString=""/>
+        <attribute name="verifiedStatus" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="lastFeed" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannelFeed" inverseName="lastInChannel" inverseEntity="CoreDataMessagingNewsChannelFeed"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+                <constraint value="userId"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CoreDataMessagingNewsChannelFeed" representedClassName="CoreDataMessagingNewsChannelFeed" syncable="YES" codeGenerationType="class">
+        <attribute name="channelId" attributeType="String" defaultValueString=""/>
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="isFirstInChannel" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="link" optional="YES" attributeType="URI" defaultValueString=""/>
+        <attribute name="message" attributeType="String" defaultValueString=""/>
+        <attribute name="time" attributeType="Date" defaultDateTimeInterval="707931660" usesScalarValueType="NO"/>
+        <attribute name="title" attributeType="String" defaultValueString=""/>
+        <attribute name="userId" attributeType="String" defaultValueString=""/>
+        <relationship name="lastInChannel" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDataMessagingNewsChannel" inverseName="lastFeed" inverseEntity="CoreDataMessagingNewsChannel"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+                <constraint value="userId"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CoreDataMessagingUserInfo" representedClassName="CoreDataMessagingUserInfo" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="pfpURL" optional="YES" attributeType="URI"/>
+        <attribute name="wallet" attributeType="String" defaultValueString=""/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="wallet"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CoreDataMessagingUserProfile" representedClassName="CoreDataMessagingUserProfile" syncable="YES" codeGenerationType="class">
+        <attribute name="about" optional="YES" attributeType="String"/>
+        <attribute name="id" attributeType="String" defaultValueString=""/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="normalizedWallet" attributeType="String" defaultValueString=""/>
+        <attribute name="serviceIdentifier" attributeType="String" defaultValueString=""/>
+        <attribute name="serviceMetadata" optional="YES" attributeType="Binary"/>
+        <attribute name="wallet" attributeType="String" defaultValueString=""/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+                <constraint value="serviceIdentifier"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+</model>

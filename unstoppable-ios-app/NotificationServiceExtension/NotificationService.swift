@@ -9,8 +9,6 @@ import UserNotifications
 import UIKit
 import Intents
 
-typealias EmptyCallback = ()->()
-
 final class NotificationService: UNNotificationServiceExtension {
 
     private let fileManager = FileManager.default
@@ -27,9 +25,13 @@ final class NotificationService: UNNotificationServiceExtension {
            let event = ExternalEvent(pushNotificationPayload: bestAttemptContent.userInfo) {
             
             set(notificationContent: bestAttemptContent, for: event, completion: { content in
-                let notificationContent = content ?? bestAttemptContent
-                (notificationContent as? UNMutableNotificationContent)?.sound = .default
-                contentHandler(notificationContent)
+                if let content {
+                    (content as? UNMutableNotificationContent)?.sound = .default
+                    contentHandler(content)
+                } else {
+                    contentHandler(bestAttemptContent)
+//                    contentHandler(UNNotificationContent()) // TODO: - Ignore notification. Enable when filtering entitlement is added to the project
+                }
             })
         } else if let bestAttemptContent = bestAttemptContent {
             contentHandler(bestAttemptContent)
@@ -71,8 +73,18 @@ private extension NotificationService {
             return
         case .domainProfileUpdated(let domainName):
             setDomainProfileUpdatedContent(in: notificationContent, domainName: domainName, completion: completion)
+        case .domainFollowerAdded(let domainName, let domainFollower):
+            setDomainFollowerAddedContent(in: notificationContent, domainName: domainName, domainFollower: domainFollower, completion: completion)
         case .badgeAdded(let domainName, let count):
             setBadgeAddedContent(in: notificationContent, domainName: domainName, count: count, completion: completion)
+        case .chatMessage(let data):
+            setChatMessageContent(in: notificationContent, data: data, completion: completion)
+        case .chatChannelMessage(let data):
+            setChatChannelMessageContent(in: notificationContent, data: data, completion: completion)
+        case .chatXMTPMessage(let data):
+            setChatXMTPMessageContent(in: notificationContent, data: data, completion: completion)
+        case .chatXMTPInvite(let data):
+            setChatXMTPInviteContent(in: notificationContent, data: data, completion: completion)
         }
     }
     
@@ -176,6 +188,17 @@ private extension NotificationService {
                             completion: completion)
     }
     
+    func setDomainFollowerAddedContent(in notificationContent: UNMutableNotificationContent,
+                                        domainName: String,
+                                        domainFollower: String,
+                                        completion: @escaping NotificationContentCallback) {
+        notificationContent.title = domainName
+        notificationContent.body = String.Constants.domainFollowerAdded.localized(domainFollower)
+        loadDomainAvatarFor(domainName: domainName,
+                            in: notificationContent,
+                            completion: completion)
+    }
+    
     func setBadgeAddedContent(in notificationContent: UNMutableNotificationContent,
                               domainName: String,
                               count: Int,
@@ -183,6 +206,76 @@ private extension NotificationService {
         notificationContent.title = domainName
         notificationContent.body = count > 1 ? String.Constants.badgesAdded.localized(count) : String.Constants.badgeAdded.localized()
         loadDomainAvatarFor(domainName: domainName,
+                            in: notificationContent,
+                            completion: completion)
+    }
+    
+    func setChatMessageContent(in notificationContent: UNMutableNotificationContent,
+                               data: ExternalEvent.ChatMessageEventData,
+                               completion: @escaping NotificationContentCallback) {
+        notificationContent.title = data.fromDomain ?? data.fromAddress.walletAddressTruncated
+        switch data.requestType {
+        case .message:
+            notificationContent.body = String.Constants.newChatMessage.localized()
+        case .request:
+            notificationContent.body = String.Constants.newChatRequest.localized()            
+        }
+        
+        if let domainName = data.fromDomain {
+            loadDomainAvatarFor(domainName: domainName,
+                                in: notificationContent,
+                                completion: completion)
+        } else {
+            completion(nil)
+        }
+    }
+    
+    func setChatChannelMessageContent(in notificationContent: UNMutableNotificationContent,
+                                      data: ExternalEvent.ChannelMessageEventData,
+                                      completion: @escaping NotificationContentCallback) {
+        notificationContent.title = data.channelName
+        
+        if let url = URL(string: data.channelIcon) {
+            loadAvatarFor(source: .url(url),
+                          name: data.channelName,
+                          in: notificationContent,
+                          completion: completion)
+        } else {
+            completion(nil)
+        }
+    }
+    
+    func setChatXMTPMessageContent(in notificationContent: UNMutableNotificationContent,
+                                   data: ExternalEvent.ChatXMTPMessageEventData,
+                                   completion: @escaping NotificationContentCallback) {
+        Task {
+            guard let notificationDisplayInfo = await XMTPPushNotificationsExtensionHelper.parseNotificationMessageFrom(data: data) else {
+                completion(nil)
+                return
+            }
+            notificationContent.title = notificationDisplayInfo.walletAddress.walletAddressTruncated
+            notificationContent.body = notificationDisplayInfo.localizedMessage
+            
+            let senderWalletAddress = notificationDisplayInfo.walletAddress
+            if senderWalletAddress != data.toAddress,
+               let rrInfo = try? await loadRRInfoFor(address: senderWalletAddress),
+               let url = rrInfo.pfpURLToUse {
+                loadAvatarFor(source: .url(url),
+                              name: rrInfo.name,
+                              in: notificationContent,
+                              completion: completion)
+            } else {
+                completion(notificationContent)
+            }
+        }
+    }
+    
+    func setChatXMTPInviteContent(in notificationContent: UNMutableNotificationContent,
+                                  data: ExternalEvent.ChatXMTPInviteEventData,
+                                  completion: @escaping NotificationContentCallback) {
+        notificationContent.title = data.toDomainName
+        notificationContent.body = String.Constants.newChatRequest.localized()
+        loadDomainAvatarFor(domainName: data.toDomainName,
                             in: notificationContent,
                             completion: completion)
     }
@@ -222,15 +315,69 @@ private extension NotificationService {
         }
     }
 
+    func loadRRInfoFor(address: String) async throws -> GlobalRR? {
+        do {
+            let url = buildRRInfoURLFor(address: address)
+            let urlRequest = URLRequest(url: url)
+            let (data, response) = try await makeURLRequest(urlRequest)
+
+            if response.statusCode == 404 {
+                return nil // 404 means no RR domain or ENS domain
+            }
+            let rrInfo = try JSONDecoder().decode(GlobalRR.self, from: data)
+            return rrInfo
+        } catch {
+            throw error
+        }
+    }
+    
+    func buildRRInfoURLFor(address: String) -> URL {
+        URL(string: "\(NetworkConfig.baseProfileAPIUrl)/profile/resolve/\(address)")!
+    }
+    
+    func makeURLRequest(_ urlRequest: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        try await withCheckedThrowingContinuation { continuation in
+            makeURLRequest(urlRequest) { result in
+                switch result {
+                case .success(let tuple):
+                    continuation.resume(with: .success(tuple))
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    func makeURLRequest(_ urlRequest: URLRequest, completion: @escaping ((Result<(Data, HTTPURLResponse), Error>)->())) {
+        let task = URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            if let data,
+               let response = response as? HTTPURLResponse {
+                completion(.success((data, response)))
+            } else if let error {
+                completion(.failure(error))
+            } else {
+                completion(.failure(NSError(domain: "notification.extension", code: 1)))
+            }
+        }
+        task.resume()
+    }
+    
     func loadDomainAvatarFor(domainName: String,
                              in notificationContent: UNMutableNotificationContent,
                              completion: @escaping NotificationContentCallback) {
+        loadAvatarFor(source: .domain(domainName), name: domainName, in: notificationContent, completion: completion)
+    }
+    
+    func loadAvatarFor(source: NotificationImageLoadingService.ImageSource,
+                       name: String,
+                       in notificationContent: UNMutableNotificationContent,
+                       completion: @escaping NotificationContentCallback) {
         if #available(iOSApplicationExtension 15.0, *) {
-            NotificationImageLoadingService.shared.imageFor(source: .domain(domainName)) { image in
+            NotificationImageLoadingService.shared.imageFor(source: source) { image in
                 if let image,
                    let imageData = image.jpegData(compressionQuality: 1) {
                     
-                    let intent = self.intentFor(domainName: domainName,
+                    let intent = self.intentFor(domainName: name,
                                                 imageData: imageData)
                     
                     if let updatedContent = try? notificationContent.updating(from: intent) {
@@ -267,5 +414,11 @@ private extension NotificationService {
         //                        intent.setImage(avatar, forParameterNamed: \.sender)
 
         return intent
+    }
+    
+    struct NetworkConfig {
+        static var baseProfileAPIUrl: String {
+            return "https://api.unstoppabledomains.com"
+        }
     }
 }

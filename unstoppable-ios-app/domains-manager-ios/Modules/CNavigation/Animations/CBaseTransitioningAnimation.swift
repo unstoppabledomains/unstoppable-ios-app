@@ -46,4 +46,14 @@ class CBaseTransitioningAnimation: NSObject, UIViewControllerAnimatedTransitioni
     func buildAnimator(using transitionContext: UIViewControllerContextTransitioning) -> UIViewPropertyAnimator? {
         fatalError("Should be overridden")
     }
+    
+    func createAnimatorIn(transitionContext: UIViewControllerContextTransitioning,
+                          animationBlock: @escaping EmptyCallback) -> UIViewPropertyAnimator {
+        let duration = transitionDuration(using: transitionContext)
+        return UIViewPropertyAnimator(duration: duration,
+                                      controlPoint1: CNavigationHelper.AnimationCurveControlPoint1,
+                                      controlPoint2: CNavigationHelper.AnimationCurveControlPoint2) {
+            animationBlock()
+        }
+    }
 }

@@ -16,8 +16,13 @@ enum ExternalEvent: Codable, Hashable {
     case walletConnectRequest(dAppName: String, domainName: String?)
     case wcDeepLink(_ wcURL: URL)
     case domainProfileUpdated(domainName: String)
+    case domainFollowerAdded(domainName: String, domainFollower: String)
     case parkingStatusLocal
     case badgeAdded(domainName: String, count: Int)
+    case chatMessage(ChatMessageEventData)
+    case chatChannelMessage(ChannelMessageEventData)
+    case chatXMTPMessage(ChatXMTPMessageEventData)
+    case chatXMTPInvite(ChatXMTPInviteEventData)
     
     init?(pushNotificationPayload json: [AnyHashable : Any]) {
         guard let eventTypeRaw = json["type"] as? String,
@@ -25,91 +30,105 @@ enum ExternalEvent: Codable, Hashable {
             return nil
         }
         
-        switch pushNotificationType {
-        case .recordsUpdated:
-            guard let domainName = json["domainName"] as? String else {
-                Debugger.printFailure("No domain name in records updated notification", critical: true)
-                return nil
-            }
-            self = .recordsUpdated(domainName: domainName)
-        case .mintingFinished:
-            guard let domainName = json["domainName"] as? String else {
-                Debugger.printFailure("No domain name in minting finished notification", critical: true)
-                return nil
-            }
-            var domainNames = Set(json[ExternalEvent.Constants.DomainNamesNotificationKey] as? [String] ?? [])
-            domainNames.insert(domainName)
-            self = .mintingFinished(domainNames: Array(domainNames))
-        case .domainTransferred:
-            guard let domainName = json["domainName"] as? String else {
-                Debugger.printFailure("No domain name in domain transferred notification", critical: true)
-                return nil
-            }
-            self = .domainTransferred(domainName: domainName)
-        case .reverseResolutionSet:
-            guard let domainName = json["domainName"] as? String else {
-                Debugger.printFailure("No domain name in reverse resolution set notification", critical: true)
-                return nil
-            }
-            guard let wallet = json["wallet"] as? String else {
-                Debugger.printFailure("No wallet in reverse resolution set notification", critical: true)
-                return nil
-            }
-            
-            self = .reverseResolutionSet(domainName: domainName, wallet: wallet)
-        case .reverseResolutionRemoved:
-            guard let domainName = json["domainName"] as? String else {
-                Debugger.printFailure("No domain name in reverse resolution removed notification", critical: true)
-                return nil
-            }
-            guard let wallet = json["wallet"] as? String else {
-                Debugger.printFailure("No wallet in reverse resolution removed notification", critical: true)
-                return nil
-            }
-            
-            self = .reverseResolutionRemoved(domainName: domainName, wallet: wallet)
-        case .walletConnectRequest:
-            guard let dAppName = json["dappName"] as? String else {
-                Debugger.printFailure("No dApp name in wallet connect notification", critical: true)
-                return nil
-            }
-            let domainName = json["domainName"] as? String
-            self = .walletConnectRequest(dAppName: dAppName, domainName: domainName)
-        case .domainProfileUpdated:
-            guard let domainName = json["domainName"] as? String else {
-                Debugger.printFailure("No domain name in profile updated notification", critical: true)
-                return nil
-            }
-            self = .domainProfileUpdated(domainName: domainName)
-        case .parkingStatusLocal:
-            self = .parkingStatusLocal
-        case .badgeAdded:
-            guard let domainName = json["domainName"] as? String else {
-                Debugger.printFailure("No domain name in badge added notification", critical: true)
-                return nil
-            }
-            
-            var count: Int?
+        do {
+            switch pushNotificationType {
+            case .recordsUpdated:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                self = .recordsUpdated(domainName: domainName)
+            case .mintingFinished:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                var domainNames = Set(json[ExternalEvent.Constants.DomainNamesNotificationKey] as? [String] ?? [])
+                domainNames.insert(domainName)
+                self = .mintingFinished(domainNames: Array(domainNames))
+            case .domainTransferred:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                self = .domainTransferred(domainName: domainName)
+            case .reverseResolutionSet:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let wallet: String = try Self.getValueFrom(json: json, forKey: "wallet", notificationType: eventTypeRaw)
+                self = .reverseResolutionSet(domainName: domainName, wallet: wallet)
+            case .reverseResolutionRemoved:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let wallet: String = try Self.getValueFrom(json: json, forKey: "wallet", notificationType: eventTypeRaw)
+                self = .reverseResolutionRemoved(domainName: domainName, wallet: wallet)
+            case .walletConnectRequest:
+                let dAppName: String = try Self.getValueFrom(json: json, forKey: "dappName", notificationType: eventTypeRaw)
+                let domainName = json["domainName"] as? String
+                self = .walletConnectRequest(dAppName: dAppName, domainName: domainName)
+            case .domainProfileUpdated:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                self = .domainProfileUpdated(domainName: domainName)
+            case .domainFollowerAdded:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let domainFollower: String = try Self.getValueFrom(json: json, forKey: "domainFollower", notificationType: eventTypeRaw)
+                
+                self = .domainFollowerAdded(domainName: domainName, domainFollower: domainFollower)
+            case .parkingStatusLocal:
+                self = .parkingStatusLocal
+            case .badgeAdded:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let count: Int
+                
+                if let countString: String = try? Self.getValueFrom(json: json, forKey: "count", notificationType: eventTypeRaw),
+                   let countValue = Int(countString) {
+                    count = countValue
+                } else {
+                    count = try Self.getValueFrom(json: json, forKey: "count", notificationType: eventTypeRaw)
+                }
+                
+                self = .badgeAdded(domainName: domainName, count: count)
+            case .chatMessage:
+                let chatId: String = try Self.getValueFrom(json: json, forKey: "chatId", notificationType: eventTypeRaw)
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let fromAddress: String = try Self.getValueFrom(json: json, forKey: "fromAddress", notificationType: eventTypeRaw)
 
-            if let countValue = json["count"] as? Int {
-                count = countValue
-            } else if let countString = json["count"] as? String,
-               let countValue = Int(countString) {
-                count = countValue
+                let fromDomain = json["fromDomain"] as? String
+                let requestTypeRaw = json["notificationType"] as? String ?? ""
+                let requestType = ChatMessageEventData.RequestType(rawValue: requestTypeRaw) ?? .message
+                let data = ChatMessageEventData(chatId: chatId,
+                                                toDomainName: domainName,
+                                                fromAddress: fromAddress,
+                                                fromDomain: fromDomain,
+                                                requestType: requestType)
+                
+                self = .chatMessage(data)
+            case .chatChannelMessage:
+                let channelId: String = try Self.getValueFrom(json: json, forKey: "channelId", notificationType: eventTypeRaw)
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let channelName: String = try Self.getValueFrom(json: json, forKey: "channelName", notificationType: eventTypeRaw)
+                let channelIcon: String = try Self.getValueFrom(json: json, forKey: "channelIcon", notificationType: eventTypeRaw)
+                let data = ChannelMessageEventData(toDomainName: domainName,
+                                                   channelId: channelId,
+                                                   channelName: channelName,
+                                                   channelIcon: channelIcon)
+                self = .chatChannelMessage(data)
+            case .chatXMTPMessage:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let xmtpTopic: String = try Self.getValueFrom(json: json, forKey: "xmtpTopic", notificationType: eventTypeRaw)
+                let xmtpEnvelope: String = try Self.getValueFrom(json: json, forKey: "xmtpEnvelope", notificationType: eventTypeRaw)
+                let xmtpWalletAddress: String = try Self.getValueFrom(json: json, forKey: "xmtpWalletAddress", notificationType: eventTypeRaw)
+                
+                if XMTPServiceSharedHelper.isInvitationTopic(xmtpTopic) {
+                    let data = ChatXMTPInviteEventData(toDomainName: domainName,
+                                                       toAddress: xmtpWalletAddress)
+                    self = .chatXMTPInvite(data)
+                } else {
+                    let data = ChatXMTPMessageEventData(toDomainName: domainName,
+                                                        toAddress: xmtpWalletAddress,
+                                                        topic: xmtpTopic,
+                                                        envelop: xmtpEnvelope)
+                    
+                    self = .chatXMTPMessage(data)
+                }
             }
-            
-            guard let count else {
-                Debugger.printFailure("No count property in badge added notification", critical: true)
-                return nil
-            }
-            
-            self = .badgeAdded(domainName: domainName, count: count)
+        } catch {
+            return nil
         }
     }
     
     var analyticsEvent: Analytics.Event {
         switch self {
-        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded:
+        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite, .domainFollowerAdded:
             return .didReceivePushNotification
         case .wcDeepLink:
             return .didOpenDeepLink
@@ -145,12 +164,28 @@ enum ExternalEvent: Codable, Hashable {
         case .domainProfileUpdated(let domainName):
             return [.pushNotification: "domainProfileUpdated",
                     .domainName: domainName]
+        case .domainFollowerAdded(let domainName, _):
+            return [.pushNotification: "domainFollowerAdded",
+                    .domainName: domainName]
         case .parkingStatusLocal:
             return [:]
         case .badgeAdded(let domainName, let count):
             return [.pushNotification: "badgeAdded",
                     .count: "\(count)",
                     .domainName: domainName]
+        case .chatMessage(let data):
+            return [.pushNotification: "chatMessage",
+                    .domainName: data.toDomainName]
+        case .chatChannelMessage(let data):
+            return [.pushNotification: "chatChannelMessage",
+                    .domainName: data.toDomainName,
+                    .channelName: data.channelName]
+        case .chatXMTPMessage(let data):
+            return [.pushNotification: "chatXMTPMessage",
+                    .domainName: data.toDomainName]
+        case .chatXMTPInvite(let data):
+            return [.pushNotification: "chatXMTPInvite",
+                    .wallet: data.toAddress]
         }
     }
 }
@@ -160,12 +195,63 @@ extension ExternalEvent {
     struct Constants {
         static let DomainNamesNotificationKey = "counter"
     }
+    
+    struct ChatMessageEventData: Codable, Hashable {
+        let chatId: String
+        let toDomainName: String
+        let fromAddress: String
+        let fromDomain: String?
+        let requestType: RequestType
+        
+        enum RequestType: String, Codable, Hashable {
+            case message = "chat"
+            case request = "request_new"
+        }
+    }
+    
+    struct ChannelMessageEventData: Codable, Hashable {
+        let toDomainName: String
+        let channelId: String
+        let channelName: String
+        let channelIcon: String
+    }
+    
+    struct ChatXMTPMessageEventData: Codable, Hashable {
+        let toDomainName: String
+        let toAddress: String
+        let topic: String
+        let envelop: String
+    }
+    
+    struct ChatXMTPInviteEventData: Codable, Hashable {
+        let toDomainName: String
+        let toAddress: String
+    }
+}
+
+// MARK: - Private methods
+private extension ExternalEvent {
+    static func getValueFrom<T>(json: [AnyHashable : Any],
+                         forKey key: String,
+                         notificationType: String) throws -> T {
+        guard let value = json[key] as? T else {
+            Debugger.printFailure("No \(key) in \(notificationType) notification", critical: true)
+            throw ExternalEventError.missingRequiredProperty
+        }
+        
+        return value
+    }
+    
+    enum ExternalEventError: Error {
+        case missingRequiredProperty
+    }
 }
 
 // MARK: - Private methods
 extension ExternalEvent {
     enum PushNotificationType: String {
-        // Remote
+        /// Remote
+        // UD
         case recordsUpdated = "RecordsUpdated"
         case mintingFinished = "MintingFinished"
         case domainTransferred = "DomainTransferred"
@@ -173,10 +259,18 @@ extension ExternalEvent {
         case reverseResolutionRemoved = "ReverseResolutionRemoved"
         case walletConnectRequest = "WalletConnectNotification"
         case domainProfileUpdated = "DomainProfileUpdated"
+        case domainFollowerAdded = "DomainFollowerAdded"
+        // Messaging
+        case chatMessage = "DomainPushProtocolChat"
+        case chatChannelMessage = "DomainPushProtocolNotification"
+        // Messaging XMTP
+        case chatXMTPMessage = "DomainXmtpTopic"
         
-        // Local
+        
+        /// Local
         case parkingStatusLocal = "ParkingStatusLocal"
         case badgeAdded = "DomainBadgesAddedMessage"
+        
     }
 }
 

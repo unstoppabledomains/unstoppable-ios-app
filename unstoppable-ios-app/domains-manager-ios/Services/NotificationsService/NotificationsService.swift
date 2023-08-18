@@ -104,17 +104,23 @@ extension NotificationsService: NotificationsServiceProtocol {
 extension NotificationsService: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         // NOTE: this function will only be called when the app is in foreground.
-        let presentationOptions = checkNotificationPayload(notification.request.content.userInfo, receiveState: .foreground)
-        completionHandler(presentationOptions)
+        Task { @MainActor in
+            Debugger.printInfo(topic: .PNs, "Did receive PN in foreground: \(notification.request.content.userInfo)")
+            let presentationOptions = checkNotificationPayload(notification.request.content.userInfo, receiveState: .foreground)
+            completionHandler(presentationOptions)
+        }
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        let applicationState = UIApplication.shared.applicationState
-        
-        if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
-            checkNotificationPayload(response.notification.request.content.userInfo, receiveState: applicationState != .active ? .background : .foregroundAction)
+        Task { @MainActor in
+            let applicationState = UIApplication.shared.applicationState
+            Debugger.printInfo(topic: .PNs, "Did receive PN in background: \(response.notification.request.content.userInfo)")
+            
+            if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+                checkNotificationPayload(response.notification.request.content.userInfo, receiveState: applicationState != .active ? .background : .foregroundAction)
+            }
+            completionHandler()
         }
-        completionHandler()
     }
 }
 
@@ -124,7 +130,7 @@ extension NotificationsService: UDWalletsServiceListener {
         switch notification {
         case .walletsUpdated:
             updateTokenSubscriptions()
-        case .reverseResolutionDomainChanged:
+        case .reverseResolutionDomainChanged, .walletRemoved:
             return
         }
     }
@@ -194,16 +200,29 @@ fileprivate extension NotificationsService {
     }
     
     @discardableResult
-    func checkNotificationPayload(_ userInfo: [AnyHashable : Any], receiveState: ExternalEventReceivedState) -> UNNotificationPresentationOptions {
+    @MainActor
+    func checkNotificationPayload(_ userInfo: [AnyHashable : Any],
+                                  receiveState: ExternalEventReceivedState) -> UNNotificationPresentationOptions {
         if let json = userInfo as? [String : Any],
            let event = ExternalEvent(pushNotificationPayload: json) {
             appContext.analyticsService.log(event: event.analyticsEvent,
-                                        withParameters: event.analyticsParameters)
+                                            withParameters: event.analyticsParameters)
             externalEventsService.receiveEvent(event,
                                                receivedState: receiveState)
+            
+            let defaultPresentationOptions: UNNotificationPresentationOptions = [.list, .banner, .sound]
+            
             switch event {
-            case .domainProfileUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .wcDeepLink, .recordsUpdated, .parkingStatusLocal, .badgeAdded:
-                return [.list, .banner, .sound]
+            case .domainProfileUpdated, .mintingFinished, .domainTransferred,
+                    .reverseResolutionSet, .reverseResolutionRemoved, .wcDeepLink,
+                    .recordsUpdated, .parkingStatusLocal, .badgeAdded, .chatXMTPInvite, .domainFollowerAdded:
+                return defaultPresentationOptions
+            case .chatMessage(let data):
+                return appContext.coreAppCoordinator.isActiveState(.chatOpened(chatId: data.chatId)) ? [] : defaultPresentationOptions
+            case .chatChannelMessage(let data):
+                return appContext.coreAppCoordinator.isActiveState(.channelOpened(channelId: data.channelId)) ? [] : defaultPresentationOptions
+            case .chatXMTPMessage(let data):
+                return appContext.coreAppCoordinator.isActiveState(.chatOpened(chatId: data.topic)) ? [] : defaultPresentationOptions
             case .walletConnectRequest:
                 return []
             }

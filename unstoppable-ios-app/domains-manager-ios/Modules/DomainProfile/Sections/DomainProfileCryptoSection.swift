@@ -433,7 +433,7 @@ private extension DomainProfileCryptoSection {
         controller?.sectionDidUpdate(animated: true)
         let displayInfo = displayInfo(of: record)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-            self?.controller?.viewController?.scroll(to: .record(displayInfo: displayInfo))
+            self?.controller?.viewController?.scrollToItem(.record(displayInfo: displayInfo), atPosition: .centeredVertically, animated: true)
         }
     }
     

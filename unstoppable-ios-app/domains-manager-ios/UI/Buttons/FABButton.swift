@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class FABButton: BaseButton {
+class FABButton: BaseButton {
     
     override var backgroundIdleColor: UIColor { .white }
     override var backgroundHighlightedColor: UIColor { .backgroundDefault.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)) }
@@ -17,6 +17,7 @@ final class FABButton: BaseButton {
     override var textDisabledColor: UIColor { .foregroundMuted.resolvedColor(with: UITraitCollection(userInterfaceStyle: .light)) }
     override var fontWeight: UIFont.Weight { customFont ?? .semibold }
     
+    var fabBorderColor: UIColor? { .brandBlack }
     var customFont: UIFont.Weight?
     
     override func layoutSubviews() {
@@ -44,7 +45,7 @@ final class FABButton: BaseButton {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        layer.borderColor = UIColor.brandBlack.withAlphaComponent(0.08).cgColor
+        layer.borderColor = fabBorderColor?.withAlphaComponent(0.08).cgColor
     }
     
 }
@@ -52,7 +53,7 @@ final class FABButton: BaseButton {
 // MARK: - Setup methods
 private extension FABButton {
     func setup() {
-        layer.borderColor = UIColor.brandBlack.withAlphaComponent(0.08).cgColor
+        layer.borderColor = fabBorderColor?.withAlphaComponent(0.08).cgColor
         layer.borderWidth = 1
         setTitle("", for: .normal)
         applyFigmaShadow(style: .medium)

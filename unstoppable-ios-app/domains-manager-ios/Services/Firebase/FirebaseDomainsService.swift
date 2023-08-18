@@ -10,6 +10,7 @@ import Foundation
 protocol FirebaseDomainsServiceProtocol {
     func getCachedDomains() -> [FirebaseDomain]
     func loadParkedDomains() async throws -> [FirebaseDomain]
+    func clearParkedDomains()
 }
 
 final class FirebaseDomainsService {
@@ -34,5 +35,9 @@ extension FirebaseDomainsService: FirebaseDomainsServiceProtocol {
         storage.saveFirebaseDomains(domains)
         
         return domains
+    }
+    
+    func clearParkedDomains() {
+        storage.saveFirebaseDomains([])
     }
 }

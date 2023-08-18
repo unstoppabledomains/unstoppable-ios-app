@@ -52,9 +52,21 @@ struct NetworkConfig {
     
     static var baseProfileHost: String {
         if User.instance.getSettings().isTestnetUsed {
-            return "profile.ud-staging.com"
+            return "api.ud-staging.com"
         } else {
-            return "profile.unstoppabledomains.com"
+            return "api.unstoppabledomains.com"
+        }
+    }
+    
+    static var baseProfileUrl: String {
+        "https://\(baseProfileHost)"
+    }
+    
+    static var baseMessagingHost: String {
+        if User.instance.getSettings().isTestnetUsed {
+            return "messaging.ud-staging.com"
+        } else {
+            return "messaging.unstoppabledomains.com"
         }
     }
     
@@ -96,7 +108,6 @@ struct NetworkConfig {
     static func coinsResolverURL(version: String) -> String {
         "https://" + migratedEndpoint + "/uns_resolver_keys.json?tag=\(version)"
     }
-    
 }
 
 

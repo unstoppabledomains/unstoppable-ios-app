@@ -29,6 +29,7 @@ final class GeneralAppContext: AppContextProtocol {
     let firebaseInteractionService: FirebaseInteractionServiceProtocol
     let firebaseAuthService: FirebaseAuthServiceProtocol
     let firebaseDomainsService: FirebaseDomainsServiceProtocol
+    let messagingService: MessagingServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
@@ -67,24 +68,48 @@ final class GeneralAppContext: AppContextProtocol {
         walletConnectService.setUIHandler(coreAppCoordinator)
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
         
-        
+        // Data aggregator
         let dataAggregatorService = DataAggregatorService(domainsService: udDomainsService,
                                                           walletsService: udWalletsService,
                                                           transactionsService: domainTransactionsService,
                                                           walletConnectServiceV2: walletConnectServiceV2)
         self.dataAggregatorService = dataAggregatorService
         
+        // WC requests
         wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
                                                               walletConnectServiceV2: walletConnectServiceV2,
                                                               walletConnectExternalWalletHandler: walletConnectExternalWalletHandler)
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
         
+        // Messaging
+        let messagingAPIService: MessagingAPIServiceProtocol = XMTPMessagingAPIService()
+        let messagingChannelsAPIService: MessagingChannelsAPIServiceProtocol = PushMessagingChannelsAPIService()
+        let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = XMTPMessagingWebSocketsService()
+        let messagingChannelsWebSocketsService: MessagingChannelsWebSocketsServiceProtocol = PushMessagingChannelsWebSocketsService()
+        let messagingDecrypterService: MessagingContentDecrypterService = SymmetricMessagingContentDecrypterService()
+        let coreDataMessagingStorageService = CoreDataMessagingStorageService(decrypterService: messagingDecrypterService)
+        let messagingStorageService: MessagingStorageServiceProtocol = coreDataMessagingStorageService
+        let messagingUnreadCountingService: MessagingUnreadCountingServiceProtocol = CoreDataMessagingUnreadCountingService(storageService: coreDataMessagingStorageService)
+        let messagingFilesService: MessagingFilesServiceProtocol = MessagingFilesService(decrypterService: messagingDecrypterService)
+        let messagingService = MessagingService(apiService: messagingAPIService,
+                                                channelsApiService: messagingChannelsAPIService,
+                                                webSocketsService: messagingWebSocketsService,
+                                                channelsWebSocketsService: messagingChannelsWebSocketsService,
+                                                storageProtocol: messagingStorageService,
+                                                decrypterService: messagingDecrypterService,
+                                                filesService: messagingFilesService,
+                                                unreadCountingService: messagingUnreadCountingService,
+                                                udWalletsService: udWalletsService)
+        self.messagingService = messagingService
+        
+        // External events
         externalEventsService = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
                                                       dataAggregatorService: dataAggregatorService,
                                                       udWalletsService: udWalletsService,
                                                       walletConnectServiceV2: walletConnectServiceV2,
                                                       walletConnectRequestsHandlingService: wcRequestsHandlingService)
         
+        // Deep links
         let deepLinksService = DeepLinksService(externalEventsService: externalEventsService,
                                                 coreAppCoordinator: coreAppCoordinator)
         self.deepLinksService = deepLinksService
@@ -99,6 +124,7 @@ final class GeneralAppContext: AppContextProtocol {
         persistedProfileSignaturesStorage = PersistedSignaturesStorage(queueLabel: "ud.profile.signatures.queue",
                                                                        storageFileKey: "ud.profile.signatures.file")
         
+        // Firebase
         let firebaseSigner = UDFirebaseSigner()
         let firebaseAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner)
         self.firebaseAuthService = firebaseAuthService
@@ -109,6 +135,7 @@ final class GeneralAppContext: AppContextProtocol {
         
         firebaseInteractionService.addListener(dataAggregatorService)
         dataAggregatorService.addListener(LocalNotificationsService.shared)
+        
         Task {
             persistedProfileSignaturesStorage.removeExpired()
         }

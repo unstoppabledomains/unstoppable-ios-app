@@ -14,6 +14,12 @@ extension Decodable {
         genericObjectFromData(data, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy)
     }
     
+    static func objectFromDataThrowing(_ data: Data,
+                                       using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                       dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) throws -> Self {
+        try genericObjectFromDataThrowing(data, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy)
+    }
+    
     static func objectsFromData(_ data: Data,
                                 using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                 dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) -> [Self]? {
@@ -44,26 +50,62 @@ extension Decodable {
         }
     }
     
-    static func genericObjectFromData<T: Decodable>(_ data: Data,
+    static func objectFromJSONString(_ jsonString: String,
+                               using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                     dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601,
+                                     encoding: String.Encoding = .utf8) -> Self? {
+        genericObjectFromJSONString(jsonString, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy, encoding: encoding)
+    }
+    
+    static func genericObjectFromJSONString<T: Decodable>(_ jsonString: String,
                                                     using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
-                                                    dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) -> T? {
+                                                          dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601,
+                                                          encoding: String.Encoding = .utf8) -> T? {
+        guard let jsonData = jsonString.data(using: encoding) else {
+            Debugger.printInfo("Failed to parse jsonString to entity")
+            return nil
+        }
+        return genericObjectFromData(jsonData, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy)
+    }
+ 
+    static func genericObjectFromDataThrowing<T: Decodable>(_ data: Data,
+                                                    using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                                    dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) throws -> T {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = keyDecodingStrategy
         decoder.dateDecodingStrategy = dateDecodingStrategy
-        let object = try? decoder.decode(T.self, from: data)
+        let object = try decoder.decode(T.self, from: data)
         return object
+    }
+    
+    static func genericObjectFromData<T: Decodable>(_ data: Data,
+                                                    using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                                    dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) -> T? {
+        do {
+            return try genericObjectFromDataThrowing(data,
+                                                     using: keyDecodingStrategy,
+                                                     dateDecodingStrategy: dateDecodingStrategy)
+        } catch {
+            Debugger.printInfo("Failed to parse \(self) with error \((error as NSError).userInfo)")
+            return nil
+        }
     }
     
 }
 
 extension Encodable {
-    func jsonData(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
-                  dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .iso8601) -> Data? {
+    func jsonDataThrowing(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
+                          dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .iso8601) throws -> Data {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = keyEncodingStrategy
         encoder.dateEncodingStrategy = dateEncodingStrategy
         
-        return try? encoder.encode(self)
+        return try encoder.encode(self)
+    }
+    
+    func jsonData(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
+                  dateEncodingStrategy: JSONEncoder.DateEncodingStrategy = .iso8601) -> Data? {
+        try? jsonDataThrowing(using: keyEncodingStrategy, dateEncodingStrategy: dateEncodingStrategy)
     }
     
     func jsonString(using keyEncodingStrategy: JSONEncoder.KeyEncodingStrategy = .useDefaultKeys,
@@ -103,6 +145,26 @@ extension JSONDecoder.DateDecodingStrategy {
             }
             
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Cannot decode date string \(dateString)")
+        }
+    }
+}
+
+@propertyWrapper
+struct DecodeIgnoringFailed<Value: Codable>: Codable {
+    var wrappedValue: [Value] = []
+    
+    private struct _None: Decodable {}
+    
+    init(from decoder: Decoder) throws {
+        var container = try decoder.unkeyedContainer()
+        while !container.isAtEnd {
+            if let decoded = try? container.decode(Value.self) {
+                wrappedValue.append(decoded)
+            }
+            else {
+                // item is silently ignored.
+                _ = try? container.decode(_None.self)
+            }
         }
     }
 }

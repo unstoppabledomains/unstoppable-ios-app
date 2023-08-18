@@ -194,6 +194,30 @@
 			<string>domains</string>
 		</dict>
 	</dict>
+	<key>SDICT:N_MESSAGES</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@message@</string>
+		<key>message</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>messages</string>
+			<key>one</key>
+			<string>message</string>
+			<key>two</key>
+			<string>messages</string>
+			<key>few</key>
+			<string>messages</string>
+			<key>many</key>
+			<string>messages</string>
+			<key>other</key>
+			<string>messages</string>
+		</dict>
+	</dict>
 	<key>SDICT:EXPIRE</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>
@@ -360,6 +384,54 @@
 			<string>domains</string>
 			<key>other</key>
 			<string>domains</string>
+		</dict>
+	</dict>
+	<key>SDICT:N_PEOPLE_YOU_MAY_KNOW</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@people@ you may know</string>
+		<key>people</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>people</string>
+			<key>one</key>
+			<string>person</string>
+			<key>two</key>
+			<string>people</string>
+			<key>few</key>
+			<string>people</string>
+			<key>many</key>
+			<string>people</string>
+			<key>other</key>
+			<string>people</string>
+		</dict>
+	</dict>
+	<key>SDICT:N_MEMBERS</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@member@</string>
+		<key>member</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>members</string>
+			<key>one</key>
+			<string>member</string>
+			<key>two</key>
+			<string>members</string>
+			<key>few</key>
+			<string>members</string>
+			<key>many</key>
+			<string>members</string>
+			<key>other</key>
+			<string>members</string>
 		</dict>
 	</dict>
 </dict>

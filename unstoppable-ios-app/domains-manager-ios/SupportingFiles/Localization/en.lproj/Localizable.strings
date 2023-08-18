@@ -100,6 +100,7 @@
 "REMOVED" = "Removed";
 "UPDATED" = "Updated";
 "DISCARD" = "Discard";
+"SAVE" = "Save";
 "SAVED" = "Saved";
 "WALLET" = "Wallet";
 "VAULT" = "Vault";
@@ -135,6 +136,23 @@
 "BOTH" = "Both";
 "MANAGE" = "Manage";
 "LINK" = "Link";
+"ENABLE" = "Enable";
+"ACCEPT" = "Accept";
+"DELETE" = "Delete";
+"JOIN" = "Join";
+"CHOOSE_PHOTO" = "Choose Photo";
+"TAKE_PHOTO" = "Take Photo";
+"PHOTO" = "Photo";
+"DELETE_ALL" = "Delete all";
+"PEOPLE" = "People";
+"APPS" = "Apps";
+"VIEW_PROFILE" = "View profile";
+"BLOCK" = "Block";
+"UNBLOCK" = "Unblock";
+"VIEW_INFO" = "View info";
+"LEAVE" = "Leave";
+"DOWNLOAD" = "Download";
+"UNENCRYPTED" = "Unencrypted";
 
 /* ONBOARDING */
 // Tutorial screens
@@ -569,6 +587,7 @@
 "SET_REVERSE_RESOLUTION" = "Set reverse resolution";
 "SHOW_N_MORE" = "Show %i more";
 "REVERSE_RESOLUTION_UNAVAILABLE_WHILE_RECORDS_UPDATING" = "Unavailable while records are updating";
+"SELECT_DOMAIN_FOR_REVERSE_RESOLUTION_FOR_MESSAGING_DESCRIPTION" = "Essential for receiving messages to your vault's associated domain.";
 
 // Deprecated TLD
 "TLD_HAS_BEEN_DEPRECATED" = ".%@ has been deprecated";
@@ -772,3 +791,46 @@
 // Apple Pay required
 "APPLE_PAY_REQUIRED_PULL_UP_TITLE" = "Please configure Apple Pay";
 "APPLE_PAY_REQUIRED_PULL_UP_MESSAGE" = "Apple Pay is required to pay gas fees to update domains on Ethereum";
+
+// Messaging
+"CHATS" = "Chats";
+"TODAY" = "Today";
+"YESTERDAY" = "Yesterday";
+"CHAT_INPUT_PLACEHOLDER_AS_DOMAIN" = "Message as %@...";
+"APPS_INBOX" = "Apps Inbox";
+"CHAT_REQUESTS" = "Chat Requests";
+"SENDING" = "Sending";
+"SENDING_FAILED" = "Sending failed";
+"TAP_TO_RETRY" = "Tap to retry";
+"SPAM" = "Spam";
+"MESSAGING_INTRODUCTION_TITLE" = "Introducing\nMessaging";
+"MESSAGING_INTRODUCTION_HINT_1_TITLE" = "Stay in the loop with notifications";
+"MESSAGING_INTRODUCTION_HINT_1_SUBTITLE" = "Don't miss out on important messages with our built-in notification feature.";
+"MESSAGING_INTRODUCTION_HINT_2_TITLE" = "Ensuring your privacy and security";
+"MESSAGING_INTRODUCTION_HINT_2_SUBTITLE" = "Rest assured that your messages are signed and encrypted end-to-end.";
+"MESSAGING_INTRODUCTION_HINT_3_TITLE" = "No transaction fees";
+"MESSAGING_INTRODUCTION_HINT_3_SUBTITLE" = "Enjoy the freedom of sending messages without any additional charges.";
+"MESSAGING_CHATS_LIST_EMPTY_TITLE" = "Start your first chat";
+"MESSAGING_CHATS_LIST_EMPTY_SUBTITLE" = "Get started by messaging a friend.";
+"MESSAGING_CHANNELS_EMPTY_TITLE" = "No messages from apps yet";
+"MESSAGING_CHANNELS_EMPTY_SUBTITLE" = "Keep an eye out for upcoming messages from the apps you connect with.";
+"MESSAGING_CHAT_EMPTY_TITLE" = "No messages yet";
+"MESSAGING_CHAT_EMPTY_ENCRYPTED_MESSAGE" = "Send a message to request to join the chat.\nChat is encrypted.";
+"MESSAGING_CHAT_EMPTY_UNENCRYPTED_MESSAGE" = "Send a message to request to join the chat.\nUntil the recipient joins the chat, your messages will be unencrypted";
+"MESSAGING_CHANNEL_EMPTY_MESSAGE" = "You haven't received any messages from this channel yet. Join to start receiving new messages.";
+"MESSAGING_N_FOLLOWERS" = "%i Followers";
+"MESSAGING_BLOCK_USER_CONFIRMATION_TITLE" = "Are you sure you want to block %@?";
+"MESSAGING_YOU_ARE_BLOCKED" = "You are blocked";
+"MESSAGE_NOT_SUPPORTED" = "Unsupported message";
+"NEW_MESSAGE" = "New message";
+"SEARCH_APPS" = "Search apps";
+"MESSAGE_UNENCRYPTED_PULL_UP_TITLE" = "Message may be unencrypted:";
+"MESSAGE_UNENCRYPTED_PULL_UP_REASON_1" = "If recipient uses a different messaging client that doesn't support encryption.";
+"MESSAGE_UNENCRYPTED_PULL_UP_REASON_2" = "Until the recipient joins the chat messages remain unencrypted.";
+"MESSAGING_ADMIN" = "Admin";
+"MESSAGING_SHARE_DECRYPTION_ERROR_MESSAGE" = "Failed to decrypt message content.";
+"MESSAGING_SET_PRIMARY_DOMAIN" = "Set primary domain";
+"MESSAGING_REMOTE_CONTENT" = "Remote content";
+"MESSAGING_CANT_CONTACT_MESSAGE" = "User is not yet on the XMTP network";
+"MESSAGING_INVITE" = "Invite";
+"MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN" = "%@ - Reverse Resolution domain";

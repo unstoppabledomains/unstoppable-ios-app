@@ -259,7 +259,7 @@ private extension WalletsListViewPresenter {
                 return
             case .created(let wallet), .createdAndBackedUp(let wallet):
                 var walletName = String.Constants.vault.localized()
-                if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0) {
+                if let displayInfo = WalletDisplayInfo(wallet: wallet, domainsCount: 0, udDomainsCount: 0) {
                     walletName = displayInfo.walletSourceName
                 }
                 await appContext.toastMessageService.showToast(.walletAdded(walletName: walletName), isSticky: false)

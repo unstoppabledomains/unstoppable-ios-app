@@ -32,7 +32,7 @@ final class WalletListSelectionToMintDomainsPresenter: WalletsListViewPresenter 
                    networkReachabilityService: networkReachabilityService,
                    udWalletsService: udWalletsService)
         if let selectedWallet = selectedWallet,
-           let walletInfo = WalletDisplayInfo(wallet: selectedWallet, domainsCount: 0) {
+           let walletInfo = WalletDisplayInfo(wallet: selectedWallet, domainsCount: 0, udDomainsCount: 0) {
             selectedWalletInfo = walletInfo
         }
         self.walletSelectedCallback = walletSelectedCallback

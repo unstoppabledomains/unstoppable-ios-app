@@ -196,17 +196,13 @@ private extension DomainProfileGeneralInfoCell {
     func menuElement(for action: DomainProfileGeneralInfoSection.InfoAction) -> UIMenuElement {
         switch action {
         case .edit(_, let callback), .open(_, let callback), .setAccess(_, let callback), .copy(_, let callback):
-            if #available(iOS 15.0, *) {
-                return UIAction(title: action.title, subtitle: action.subtitle, image: action.icon, identifier: .init(UUID().uuidString), handler: { _ in
-                    UDVibration.buttonTap.vibrate()
-                    callback()
-                })
-            } else {
-                return UIAction(title: action.title, image: action.icon, identifier: .init(UUID().uuidString), handler: { _ in
-                    UDVibration.buttonTap.vibrate()
-                    callback()
-                })
-            }
+            return UIAction.createWith(title: action.title,
+                                       subtitle: action.subtitle,
+                                       image: action.icon,
+                                       handler: { _ in
+                UDVibration.buttonTap.vibrate()
+                callback()
+            })
         case .clear(_, let callback):
             let remove = UIAction(title: action.title, image: action.icon, identifier: .init(UUID().uuidString), attributes: .destructive, handler: { _ in
                 UDVibration.buttonTap.vibrate()

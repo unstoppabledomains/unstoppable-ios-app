@@ -112,7 +112,7 @@ extension DomainsCollectionCarouselItemViewPresenter: ExternalEventsServiceListe
             switch event {
             case .mintingFinished, .domainTransferred, .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainProfileUpdated, .parkingStatusLocal:
                 await showDomainDataWithActions(animated: false)
-            case .wcDeepLink, .walletConnectRequest, .badgeAdded:
+            case .wcDeepLink, .walletConnectRequest, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite, .domainFollowerAdded:
                 return
             }
         }

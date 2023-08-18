@@ -56,9 +56,7 @@ final class SetupReverseResolutionNavBarPopAnimation: CBaseTransitioningAnimatio
         
         let largeTitleView = navBar.largeTitleView!
         let duration = transitionDuration(using: transitionContext)
-        let animator = UIViewPropertyAnimator(duration: duration,
-                                              controlPoint1: CNavigationHelper.AnimationCurveControlPoint1,
-                                              controlPoint2: CNavigationHelper.AnimationCurveControlPoint2) {
+        let animator = createAnimatorIn(transitionContext: transitionContext) {
             largeTitleView.frame.origin.x += navBar.bounds.width
             if isBackButtonHidden {
                 navBarContent.backButton.icon.alpha = 0

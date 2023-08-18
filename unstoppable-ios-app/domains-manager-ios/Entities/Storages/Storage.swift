@@ -41,11 +41,11 @@ class Storage {
         guard let _ = userInfo else {
             return User.getDefault()
         }
-        var user = userInfo!
-        var fixedSettings = user.getSettings()
+        var thisUser = userInfo!
+        var fixedSettings = thisUser.getSettings()
         fixedSettings.networkType = .mainnet
-        user.update(settings: fixedSettings)
-        return user
+        thisUser.update(settings: fixedSettings)
+        return thisUser
         #endif
     }
     

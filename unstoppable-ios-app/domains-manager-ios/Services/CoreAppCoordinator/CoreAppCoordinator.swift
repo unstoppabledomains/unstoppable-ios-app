@@ -62,6 +62,20 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
     func goBackToPreviousApp() -> Bool {
         goBackToPreviousAppIfCan()
     }
+    
+    func isActiveState(_ state: AppCoordinationState) -> Bool {
+        switch currentRoot {
+        case .domainsCollection(let router):
+            switch state {
+            case .chatOpened(let chatId):
+                return router.isChatOpenedWith(chatId: chatId)
+            case .channelOpened(let channelId):
+                return router.isChannelOpenedWith(channelId: channelId)
+            }
+        default:
+            return false
+        }
+    }
 }
 
 // MARK: - DeepLinkServiceListener
@@ -94,6 +108,12 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
                 guard let topVC = router.topViewController() else { throw CoordinatorError.noRootVC }
                 
                 pullUpViewService.showLoadingIndicator(in: topVC)
+            case .showChat(let chatId, let profile):
+                await router.showChat(chatId, profile: profile)
+            case .showChannel(let channelId, let profile):
+                await router.showChannel(channelId, profile: profile)
+            case .showChatsList(let profile):
+                await router.jumpToChatsList(profile: profile)
             }
         default:
             throw CoordinatorError.notSuitableRoot
@@ -283,8 +303,10 @@ private extension CoreAppCoordinator {
 
 // MARK: - CoordinatorError
 extension CoreAppCoordinator {
-    enum CoordinatorError: Error {
+    enum CoordinatorError: String, LocalizedError {
         case notSuitableRoot, noRootVC, incorrectArguments
+        
+        public var errorDescription: String? { rawValue }
     }
 }
 

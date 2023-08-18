@@ -593,10 +593,16 @@ extension Endpoint {
     static func getPublicProfile(for domain: DomainItem,
                                  fields: Set<GetDomainProfileField>) -> Endpoint {
         // https://profile.ud-staging.com/api/public/aaron.x
+        return getPublicProfile(for: domain.name, fields: fields)
+    }
+    
+    static func getPublicProfile(for domainName: DomainName,
+                                 fields: Set<GetDomainProfileField>) -> Endpoint {
+        // https://profile.ud-staging.com/api/public/aaron.x
         let fieldsQuery = fields.map({ $0.rawValue }).joined(separator: ",")
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/public/\(domain.name)",
+            path: "/profile/public/\(domainName)",
             queryItems: [URLQueryItem(name: "fields", value: fieldsQuery)],
             body: ""
         )
@@ -606,7 +612,7 @@ extension Endpoint {
         //https://profile.unstoppabledomains.com/api/public/aaronquirk.x/badges
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/public/\(domain.name)/badges",
+            path: "/profile/public/\(domain.name)/badges",
             queryItems: [],
             body: ""
         )
@@ -625,8 +631,23 @@ extension Endpoint {
         // https://profile.unstoppabledomains.com/api/badges/opensea-tothemoonalisa
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/badges/\(badge.code)",
+            path: "/profile/badges/\(badge.code)",
             queryItems: [],
+            body: ""
+        )
+    }
+    
+    static func searchDomains(with name: String,
+                              shouldHaveProfile: Bool = true,
+                              shouldBeSetAsRR: Bool = false) -> Endpoint {
+        let queryItems: [URLQueryItem] = [.init(name: "name", value: name),
+                                          .init(name: "profile-required", value: String(shouldHaveProfile)),
+                                          .init(name: "reverse-resolution-required", value: String(shouldBeSetAsRR))]
+        
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/search",
+            queryItems: queryItems,
             body: ""
         )
     }
@@ -637,8 +658,9 @@ extension Endpoint {
         let expiry = Int( (Date().timeIntervalSince1970 + yearInSecs) * 1000)
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/user/\(domain.name)/signature",
-            queryItems: [URLQueryItem(name: "expiry", value: String(expiry))],
+            path: "/profile/user/\(domain.name)/signature",
+            queryItems: [URLQueryItem(name: "expiry", value: String(expiry)),
+                         URLQueryItem(name: "device", value: String(true))], /// This flag will allow signature to be used in all profile API endpoints for this domain
             body: ""
         )
     }
@@ -665,7 +687,7 @@ extension Endpoint {
         let fieldsQuery = fields.map({ $0.rawValue }).joined(separator: ",")
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/user/\(domain.name)",
+            path: "/profile/user/\(domain.name)",
             queryItems: [URLQueryItem(name: "fields", value: fieldsQuery)],
             body: "",
             headers: headers
@@ -677,7 +699,7 @@ extension Endpoint {
         let expiry = Int( (Date().timeIntervalSince1970 + 60_000_000) * 1000)
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/user/\(domain.name)/signature",
+            path: "/profile/user/\(domain.name)/signature",
             queryItems: [URLQueryItem(name: "expiry", value: String(expiry))],
             body: body
         )
@@ -696,10 +718,31 @@ extension Endpoint {
         ]
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/api/user/\(domain.name)",
+            path: "/profile/user/\(domain.name)",
             queryItems: [],
             body: body,
             headers: headers
         )
     }
+    
+    static func getDomainNotificationsPreferences(for domain: DomainItem,
+                                                  expires: UInt64,
+                                                  signature: String,
+                                                  body: String = "") throws -> Endpoint {
+        // https://profile.ud-staging.com/api/user/aaron.x
+        let expiresString = "\(expires)"
+        let headers = [
+            SignatureComponentHeaders.CodingKeys.domain.rawValue: domain.name,
+            SignatureComponentHeaders.CodingKeys.expires.rawValue: expiresString,
+            SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
+        ]
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/user/\(domain.name)/notifications/preferences",
+            queryItems: [],
+            body: body,
+            headers: headers
+        )
+    }
+    
 }

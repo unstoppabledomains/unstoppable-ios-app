@@ -153,7 +153,7 @@ private extension OnboardingProtectWalletViewPresenter {
             User.instance.update(settings: settings)
             
             /// Need to give time for blur view disappear. Otherwise it will stuck forever and be visible if user navigate back.
-            DispatchQueue.main.asyncAfter(deadline: .now() + Constants.biometricUIProcessingTime) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + appContext.authentificationService.biometricUIProcessingTime) {
                 self.didInitiateBiometrics()
             }
         }

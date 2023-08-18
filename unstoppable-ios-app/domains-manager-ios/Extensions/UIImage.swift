@@ -127,6 +127,16 @@ extension UIImage {
     static let nfcIcon20 = UIImage(named: "nfcIcon20")!
     static let giftBoxIcon20 = UIImage(named: "giftBoxIcon20")!
     static let helpCircleIcon24 = UIImage(named: "helpCircleIcon24")!
+    static let messageCircleIcon24 = UIImage(named: "messageCircleIcon24")!
+    static let plusIcon18 = UIImage(named: "plusIcon18")!
+    static let arrowUp24 = UIImage(named: "arrowUp24")!
+    static let chatRequestsIcon = UIImage(named: "chatRequestsIcon")!
+    static let newMessageIcon = UIImage(named: "newMessageIcon")!
+    static let trashIcon16 = UIImage(named: "trashIcon16")!
+    static let alertOctagon24 = UIImage(named: "alertOctagon24")!
+    static let infoEmptyIcon24 = UIImage(named: "infoEmptyIcon24")!
+    static let docsIcon24 = UIImage(named: "docsIcon24")!
+    static let helpIcon24 = UIImage(named: "helpIcon24")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
@@ -140,6 +150,7 @@ extension UIImage {
     
     // System SF symbols
     static let personCropCircle = UIImage(systemName: "person.crop.circle")
+    static let personCircle = UIImage(systemName: "person.circle")!
     static let arrowUpRightCircle = UIImage(systemName: "arrowshape.turn.up.right.circle")
     static let arrowUpRight = UIImage(systemName: "arrowshape.turn.up.right")!
     static let safari = UIImage(systemName: "safari")!
@@ -159,6 +170,8 @@ extension UIImage {
     static let systemGlobe = UIImage(systemName: "globe")!
     static let systemChevronUpDown = UIImage(systemName: "chevron.up.chevron.down")!
     static let systemArrowTurnUpRight = UIImage(systemName: "arrow.turn.up.right")!
+    static let systemCamera = UIImage(systemName: "camera")!
+    static let systemRectangleArrowRight = UIImage(systemName: "rectangle.portrait.and.arrow.right")!
     
 }
 
@@ -261,18 +274,49 @@ extension UIImage {
         }
     }
     
-    @MainActor
-    func uiMenuCroppedImage() -> UIImage {
-       circleCroppedImage(size: 20)
+    func resized(to maxResolution: CGFloat) -> UIImage? {
+        let size = self.size
+        let largestSide = max(size.width, size.height)
+        if largestSide <= maxResolution {
+            return self
+        }
+        let scale = maxResolution / largestSide
+        let newWidth = size.width * scale
+        let newHeight = size.height * scale
+        let newSize = CGSize(width: newWidth, height: newHeight)
+        
+        let image = self.gifImageDownsampled(to: newSize,
+                                             scale: 1)
+        
+        return image
+    }
+    
+    func scalePreservingAspectRatio(targetSize: CGSize) -> UIImage {
+        let widthRatio = targetSize.width / size.width
+        let heightRatio = targetSize.height / size.height
+        let scaleFactor = min(widthRatio, heightRatio)
+        let scaledImageSize = CGSize(width: size.width * scaleFactor, height: size.height * scaleFactor)
+        let renderer = UIGraphicsImageRenderer(size: scaledImageSize)
+        let scaledImage = renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: scaledImageSize))
+        }
+        
+        return scaledImage
     }
 }
 
 extension UIImage {
-    var dataToUpload: Data? { try? self.gifDataRepresentation() }
+    var dataToUpload: Data? { try? self.gifDataRepresentation(quality: 0.7) }
     var base64String: String? { dataToUpload?.base64EncodedString() }
 }
 
 extension UIImage {
+    static func from(base64String: String) async -> UIImage? {
+        guard let dataDecoded = Data(base64Encoded: base64String, options: .ignoreUnknownCharacters) else { return nil }
+
+        return await createWith(anyData: dataDecoded)
+    }
+    
     static func createWith(anyData data: Data) async -> UIImage? {
         if let gif = await GIFAnimationsService.shared.createGIFImageWithData(data) {
             return gif

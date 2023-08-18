@@ -38,13 +38,15 @@ final class UDButton: UIControl {
     private var iconSize: CGFloat { udConfiguration.iconSize }
     private var loadingIndicator: UIActivityIndicatorView?
     
+    private var _intrinsicContentSize: CGSize  = .zero
+    override var intrinsicContentSize: CGSize { _intrinsicContentSize }
     override var showsMenuAsPrimaryAction: Bool {
         get { underlyingButton.showsMenuAsPrimaryAction }
         set { underlyingButton.showsMenuAsPrimaryAction = newValue }
     }
 
     // MARK: - Open properties
-    var contentInset: UIEdgeInsets = .zero
+    var contentInset: UIEdgeInsets { udConfiguration.contentInset ?? .zero }
     var customFontWeight: UIFont.Weight?
     var imageLayout: ButtonImageLayout = .leading
 
@@ -69,6 +71,7 @@ final class UDButton: UIControl {
         
         alignViews()
         underlyingButton.frame = bounds
+        updateCorners()
         guard let loadingIndicator else { return }
         
         loadingIndicator.frame.origin.y = (bounds.height - loadingIndicator.bounds.height) / 2
@@ -79,7 +82,7 @@ final class UDButton: UIControl {
             loadingIndicator.frame.origin.x = (titleLabel?.frame.maxX ?? 0) + titleImagePadding
         }
     }
-    
+  
     func showLoadingIndicator() {
         guard self.loadingIndicator == nil else { return }
         
@@ -117,6 +120,7 @@ extension UDButton: UnderlyingButtonDelegate {
 // MARK: - Open methods
 extension UDButton {
     var title: String { titleLabel.text ?? "" }
+    var font: UIFont { titleLabel.font }
 
     var menu: UIMenu? {
         get { underlyingButton.menu }
@@ -126,6 +130,7 @@ extension UDButton {
     func setConfiguration(_ configuration: UDButtonConfiguration) {
         self.udConfiguration = configuration
         setTitle(titleLabel.text, image: imageView.image)
+        backgroundColor = backgroundColorForEnabledState
     }
     
     func setTitle(_ title: String?, image: UIImage?) {
@@ -159,24 +164,21 @@ private extension UDButton {
         if imageView.image == nil,
            !title.isEmpty {
             // Title only
-            bounds.size = CGSize(width: titleWidth + contentInset.left + contentInset.right,
-                                 height: titleHeight + contentInset.top + contentInset.bottom)
-            
-            titleLabel.frame.origin = CGPoint(x: contentInset.left,
-                                              y: contentInset.top)
+            setSizeIfPossible(CGSize(width: titleWidth + contentInset.left + contentInset.right,
+                                     height: titleHeight + contentInset.top + contentInset.bottom))
+            titleLabel.center = localCenter
         } else if title.isEmpty,
                   imageView.image != nil {
             // Image only
-            bounds.size = CGSize(width: iconSize + contentInset.left + contentInset.right,
-                                 height: iconSize + contentInset.top + contentInset.bottom)
-            
-            imageView.frame.origin = CGPoint(x: contentInset.left,
-                                             y: contentInset.top)
+            setSizeIfPossible(CGSize(width: iconSize + contentInset.left + contentInset.right,
+                                     height: iconSize + contentInset.top + contentInset.bottom))
+            imageView.center = localCenter
         } else {
             // Title and image
             let maxContentHeight = max(titleHeight, iconSize)
-            bounds.size = CGSize(width: titleWidth + iconSize + titleImagePadding + contentInset.left + contentInset.right,
-                                 height: maxContentHeight + contentInset.top + contentInset.bottom)
+            setSizeIfPossible(CGSize(width: titleWidth + iconSize + titleImagePadding + contentInset.left + contentInset.right,
+                                     height: maxContentHeight + contentInset.top + contentInset.bottom))
+            
             let center = self.localCenter
             titleLabel.center = center
             imageView.center = center
@@ -192,12 +194,28 @@ private extension UDButton {
         }
     }
     
+    func setSizeIfPossible(_ size: CGSize) {
+        if translatesAutoresizingMaskIntoConstraints || bounds.size != _intrinsicContentSize {
+            bounds.size = size
+        }
+        _intrinsicContentSize = size
+    }
+    
     func widthForTitle() -> CGFloat {
         title.width(withConstrainedHeight: fontSize, font: titleLabel.font)
     }
     
     func heightForTitle() -> CGFloat {
         title.height(withConstrainedWidth: .infinity, font: titleLabel.font)
+    }
+    
+    func updateCorners() {
+        switch udConfiguration.cornersStyle {
+        case .capsule:
+            layer.cornerRadius = bounds.height / 2
+        case .custom(let radius):
+            layer.cornerRadius = radius
+        }
     }
 }
 
@@ -214,6 +232,7 @@ private extension UDButton {
 // MARK: - Setup methods
 private extension UDButton {
     func setup() {
+        clipsToBounds = true
         setupTitleLabel()
         setupImageView()
         setupUnderlyingButton()
@@ -280,12 +299,15 @@ struct UDButtonConfiguration {
     var fontSize: CGFloat = 16
     var iconSize: CGFloat = 20
     var titleImagePadding: CGFloat = 8
+    var contentInset: UIEdgeInsets? = nil
+    var cornersStyle: CornersStyle = .capsule
     
     // Large
     static let largePrimaryButtonConfiguration: UDButtonConfiguration = .init(backgroundHighlightedColor: .backgroundAccentEmphasis2,
                                                                               backgroundDisabledColor: .backgroundAccent,
                                                                               textDisabledColor: .foregroundOnEmphasisOpacity,
-                                                                              fontWeight: .semibold)
+                                                                              fontWeight: .semibold,
+                                                                              cornersStyle: .custom(12))
     
     static let largeGhostPrimaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,
                                                                                    backgroundHighlightedColor: .backgroundMuted,
@@ -293,23 +315,28 @@ struct UDButtonConfiguration {
                                                                                    textColor: .foregroundAccent,
                                                                                    textHighlightedColor: .foregroundAccent,
                                                                                    textDisabledColor: .foregroundAccentMuted,
-                                                                                   fontWeight: .semibold)
+                                                                                   fontWeight: .semibold,
+                                                                                   cornersStyle: .custom(12))
     static let secondaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,
                                                                            backgroundHighlightedColor: .backgroundSubtle,
                                                                            backgroundDisabledColor: .clear,
                                                                            textColor: .foregroundAccent,
                                                                            textHighlightedColor: .foregroundAccent,
                                                                            textDisabledColor: .foregroundAccentMuted,
-                                                                           fontWeight: .semibold)
+                                                                           fontWeight: .semibold,
+                                                                           cornersStyle: .custom(12))
     
     // Medium
-    static let mediumGhostPrimaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,
-                                                                                    backgroundHighlightedColor: .clear,
-                                                                                    backgroundDisabledColor: .clear,
-                                                                                    textColor: .foregroundAccent,
-                                                                                    textHighlightedColor: .foregroundAccentMuted,
-                                                                                    textDisabledColor: .foregroundAccentMuted,
-                                                                                    fontWeight: .medium)
+    static func mediumGhostPrimaryButtonConfiguration(contentInset: UIEdgeInsets = .zero) -> UDButtonConfiguration {
+        .init(backgroundIdleColor: .clear,
+              backgroundHighlightedColor: .clear,
+              backgroundDisabledColor: .clear,
+              textColor: .foregroundAccent,
+              textHighlightedColor: .foregroundAccentMuted,
+              textDisabledColor: .foregroundAccentMuted,
+              fontWeight: .medium,
+              contentInset: contentInset)
+    }
     
     static let mediumGhostTertiaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,
                                                                                      backgroundHighlightedColor: .clear,
@@ -319,13 +346,53 @@ struct UDButtonConfiguration {
                                                                                      textDisabledColor: .foregroundMuted,
                                                                                      fontWeight: .medium)
     
+    static let MediumButtonContentInset: UIEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+    static let mediumRaisedPrimaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .backgroundAccentEmphasis,
+                                                                                     backgroundHighlightedColor: .backgroundAccentEmphasis2,
+                                                                                     backgroundDisabledColor: .backgroundAccent.withAlphaComponent(0.16),
+                                                                                     textColor: .foregroundOnEmphasis,
+                                                                                     textHighlightedColor: .foregroundOnEmphasis,
+                                                                                     textDisabledColor: .foregroundOnEmphasis.withAlphaComponent(0.56),
+                                                                                     fontWeight: .medium,
+                                                                                     contentInset: UDButtonConfiguration.MediumButtonContentInset)
+    
+    static let mediumRaisedWhiteButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .brandWhite,
+                                                                                           backgroundHighlightedColor: .brandWhite.withAlphaComponent(0.64),
+                                                                                           backgroundDisabledColor: .brandWhite.withAlphaComponent(0.16),
+                                                                                           textColor: .brandBlack,
+                                                                                           textHighlightedColor: .brandBlack,
+                                                                                           textDisabledColor: .brandBlack,
+                                                                                           fontWeight: .medium,
+                                                                                           contentInset: UDButtonConfiguration.MediumButtonContentInset)
+    
     static let mediumRaisedTertiaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .backgroundMuted2,
-                                                                                     backgroundHighlightedColor: .backgroundMuted,
-                                                                                     backgroundDisabledColor: .backgroundSubtle,
-                                                                                     textColor: .foregroundDefault,
-                                                                                     textHighlightedColor: .foregroundDefault,
-                                                                                     textDisabledColor: .foregroundMuted,
-                                                                                     fontWeight: .medium)
+                                                                                      backgroundHighlightedColor: .backgroundMuted,
+                                                                                      backgroundDisabledColor: .backgroundSubtle,
+                                                                                      textColor: .foregroundDefault,
+                                                                                      textHighlightedColor: .foregroundDefault,
+                                                                                      textDisabledColor: .foregroundMuted,
+                                                                                      fontWeight: .medium,
+                                                                                      contentInset: UDButtonConfiguration.MediumButtonContentInset)
+    
+    // Small
+    static let smallGhostPrimaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,
+                                                                                   backgroundHighlightedColor: .clear,
+                                                                                   backgroundDisabledColor: .clear,
+                                                                                   textColor: .foregroundAccent,
+                                                                                   textHighlightedColor: .foregroundAccentMuted,
+                                                                                   textDisabledColor: .foregroundAccentMuted,
+                                                                                   fontWeight: .medium,
+                                                                                   fontSize: 14,
+                                                                                   iconSize: 16)
+    static let smallGhostPrimaryWhiteButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,
+                                                                                        backgroundHighlightedColor: .clear,
+                                                                                        backgroundDisabledColor: .clear,
+                                                                                        textColor: .brandWhite,
+                                                                                        textHighlightedColor: .brandWhite.withAlphaComponent(0.32),
+                                                                                        textDisabledColor: .brandWhite.withAlphaComponent(0.24),
+                                                                                        fontWeight: .medium,
+                                                                                        fontSize: 14,
+                                                                                        iconSize: 16)
     
     // Very small
     static let verySmallGhostTertiaryButtonConfiguration: UDButtonConfiguration = .init(backgroundIdleColor: .clear,
@@ -339,6 +406,9 @@ struct UDButtonConfiguration {
                                                                                         iconSize: 12,
                                                                                         titleImagePadding: 4)
     
-    
+    enum CornersStyle {
+        case capsule
+        case custom(CGFloat)
+    }
 }
 

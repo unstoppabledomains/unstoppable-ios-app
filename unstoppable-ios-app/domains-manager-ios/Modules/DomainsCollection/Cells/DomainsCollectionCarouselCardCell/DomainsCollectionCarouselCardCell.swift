@@ -161,24 +161,14 @@ private extension DomainsCollectionCarouselCardCell {
     }
     
     func createMenuAction(title: String, subtitle: String?, icon: UIImage, isEnabled: Bool = true, callback: @escaping EmptyCallback) -> UIAction{
-        if #available(iOS 15.0, *) {
-            return UIAction(title: title,
-                            subtitle: subtitle,
-                            image: icon,
-                            identifier: .init(UUID().uuidString), attributes: isEnabled ? [] : [.disabled],
-                            handler: { _ in
-                UDVibration.buttonTap.vibrate()
-                callback()
-            })
-        } else {
-            return UIAction(title: title,
-                            image: icon,
-                            identifier: .init(UUID().uuidString),
-                            handler: { _ in
-                UDVibration.buttonTap.vibrate()
-                callback()
-            })
-        }
+        return UIAction.createWith(title: title,
+                                   subtitle: subtitle,
+                                   image: icon,
+                                   attributes: isEnabled ? [] : [.disabled],
+                                   handler: { _ in
+            UDVibration.buttonTap.vibrate()
+            callback()
+        })
     }
 }
 

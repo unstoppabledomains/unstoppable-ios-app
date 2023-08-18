@@ -23,6 +23,7 @@ protocol DomainsCollectionRouterProtocol {
     func showAppUpdateRequired()
     func showDomainsSearch(_ domains: [DomainDisplayInfo],
                            searchCallback: @escaping DomainsListSearchCallback)
+    func showChatsListScreen()
 }
 
 @MainActor
@@ -103,7 +104,7 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
             dismissCallback?()
         })
     }
-    
+
     func isMintingAvailable(in viewController: UIViewController) async -> Bool {
         guard networkReachabilityService?.isReachable == true else {
             await appContext.pullUpViewService.showYouAreOfflinePullUp(in: viewController,
@@ -167,6 +168,12 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
 
         self.showDomainsSearch(domains, searchCallback: searchCallback, in: viewController)
     }
+    
+    func showChatsListScreen() {
+        guard let navigationController = self.navigationController else { return }
+
+        showChatsListScreen(in: navigationController, presentOptions: .default)
+    }
 }
 
 // MARK: - Open methods
@@ -188,6 +195,31 @@ extension DomainsCollectionRouter {
             Debugger.printWarning("Primary domain minted: Already on minting screen")
             return
         }
+    }
+    
+    func jumpToChatsList(profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChatsList(profile: profile))
+    }
+    
+    func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
+    }
+    
+    func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
+    }
+    
+    private var topChatViewController: ChatViewController? { navigationController?.viewControllers.last as? ChatViewController }
+    private var topOpenedChatIdentifiable: ChatPresenterContentIdentifiable? { (topChatViewController?.presenter as? ChatPresenterContentIdentifiable) }
+    func isChatOpenedWith(chatId: String) -> Bool {
+        guard let openedChatId = topOpenedChatIdentifiable?.chatId else { return false }
+        
+        return openedChatId.lowercased().contains(chatId.lowercased())
+    }
+    func isChannelOpenedWith(channelId: String) -> Bool {
+        guard let openedChannelId = topOpenedChatIdentifiable?.channelId else { return false }
+        
+        return openedChannelId.normalized.contains(channelId.normalized)
     }
 }
 
@@ -246,8 +278,20 @@ private extension DomainsCollectionRouter {
     }
     
     func awaitUIUpdated() async {
-        let interval: TimeInterval = 0.3
+        let interval: TimeInterval = 0.5
         let duration = UInt64(interval * 1_000_000_000)
         try? await Task.sleep(nanoseconds: duration)
+    }
+    
+    func showChatsListWith(options: ChatsList.PresentOptions) async {
+        guard let navigationController = self.navigationController else { return }
+        
+        if let presentedChatsList = navigationController.viewControllers.first(where: { $0 is ChatsListViewController } ) as? ChatsListViewController,
+           let chatsListCoordinator = presentedChatsList.presenter as? ChatsListCoordinator {
+            chatsListCoordinator.update(presentOptions: options)
+        } else  {
+            await resetNavigationToRoot()
+            showChatsListScreen(in: navigationController, presentOptions: options)
+        }
     }
 }

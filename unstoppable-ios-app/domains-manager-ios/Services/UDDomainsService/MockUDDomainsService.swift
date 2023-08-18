@@ -64,6 +64,8 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
         }
     }
 
+    func loadPFP(for domainName: DomainName) async -> DomainPFPInfo? { nil }
+    
     func getCachedDomainsPFPInfo() -> [DomainPFPInfo] {
         []
     }

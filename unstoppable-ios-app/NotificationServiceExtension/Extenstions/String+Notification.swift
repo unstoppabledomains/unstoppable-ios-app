@@ -28,6 +28,10 @@ extension String {
         case reverseResolutionRemoved = "NOTIFICATION_REVERSE_RESOLUTION_REMOVED"
 
         case domainProfileUpdated = "NOTIFICATION_DOMAIN_PROFILE_UPDATED"
+        case domainFollowerAdded = "NOTIFICATION_DOMAIN_FOLLOWER_ADDED"
+
+        case newChatMessage = "NOTIFICATION_NEW_CHAT_MESSAGE"
+        case newChatRequest = "NOTIFICATION_NEW_CHAT_REQUEST"
         
         case badgeAdded = "NOTIFICATION_BADGE_ADDED"
         case badgesAdded = "NOTIFICATION_BADGES_ADDED"

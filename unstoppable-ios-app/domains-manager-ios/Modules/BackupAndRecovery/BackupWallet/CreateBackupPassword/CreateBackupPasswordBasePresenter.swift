@@ -46,10 +46,7 @@ extension CreateBackupPasswordBasePresenter: CreateBackupPasswordPresenterProtoc
         UDVibration.buttonTap.vibrate()
         isShowingHelp = true
         view?.view.endEditing(true)
-        view?.showInfoScreenWith(preset: .createBackupPassword, dismissCallback: { [weak self] in
-            self?.isShowingHelp = false
-            self?.view?.startEditing()
-        })
+        view?.showInfoScreenWith(preset: .createBackupPassword)
     }
     
     func createPasswordButtonPressed() {

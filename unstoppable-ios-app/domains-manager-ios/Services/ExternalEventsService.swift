@@ -53,6 +53,9 @@ enum ExternalEventUIFlow {
     case primaryDomainMinted(domain: DomainDisplayInfo)
     case showHomeScreenList
     case showPullUpLoading
+    case showChatsList(profile: MessagingChatUserProfileDisplayInfo)
+    case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
+    case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)
 }
 
 final class ExternalEventsService {
@@ -152,7 +155,9 @@ private extension ExternalEventsService {
                 handle(event: event)
             case .parkingStatusLocal:
                 return
-            case .badgeAdded:
+            case .badgeAdded, .domainFollowerAdded:
+                return
+            case .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite:
                 return
             }
         }
@@ -164,21 +169,17 @@ private extension ExternalEventsService {
                 let uiFlow = try await uiFlowFor(event: event)
                 try await coreAppCoordinator.handle(uiFlow: uiFlow)
                 receiveEventCompletion?()
-            } catch EventsHandlingError.cantFindDomain, CoreAppCoordinator.CoordinatorError.incorrectArguments, EventsHandlingError.invalidWCURL, EventsHandlingError.cantFindWallet, EventsHandlingError.walletWithoutDisplayInfo {
+            } catch {
                 processingEvent = nil
                 receiveEventCompletion = nil
                 eventsStorage.deleteEvent(event)
-            } catch  {
-                processingEvent = nil
-                receiveEventCompletion = nil
-                eventsStorage.moveEventToTheEnd(event)
             }
         }
     }
     
     func uiFlowFor(event: ExternalEvent) async throws -> ExternalEventUIFlow {
         switch event {
-        case .recordsUpdated(let domainName), .domainTransferred(let domainName), .reverseResolutionSet(let domainName, _), .reverseResolutionRemoved(let domainName, _), .domainProfileUpdated(let domainName), .badgeAdded(let domainName, _):
+        case .recordsUpdated(let domainName), .domainTransferred(let domainName), .reverseResolutionSet(let domainName, _), .reverseResolutionRemoved(let domainName, _), .domainProfileUpdated(let domainName), .badgeAdded(let domainName, _), .domainFollowerAdded(let domainName, _):
             AppGroupsBridgeService.shared.clearChanges(for: domainName)
             guard let domain = (try await findDomainsWith(domainNames: [domainName])).first else {
                 throw EventsHandlingError.cantFindDomain
@@ -224,7 +225,29 @@ private extension ExternalEventsService {
             return .showPullUpLoading
         case .parkingStatusLocal:
             throw EventsHandlingError.ignoreEvent
+        case .chatMessage(let data):
+            let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
+                
+            return .showChat(chatId: data.chatId, profile: profile)
+        case .chatChannelMessage(let data):
+            let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
+            
+            return .showChannel(channelId: data.channelId, profile: profile)
+        case .chatXMTPMessage(let data):
+            let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
+
+            return .showChat(chatId: data.topic, profile: profile)
+        case .chatXMTPInvite(let data):
+            let profile = try await getMessagingProfileFor(domainName: data.toDomainName)
+            return .showChatsList(profile: profile)
         }
+    }
+    
+    private func getMessagingProfileFor(domainName: String) async throws -> MessagingChatUserProfileDisplayInfo {
+        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
+        let domainDisplayInfo = DomainDisplayInfo(domainItem: domain, isSetForRR: true)
+        let profile = try await appContext.messagingService.getUserProfile(for: domainDisplayInfo)
+        return profile
     }
     
     private func resolveRequest(from url: URL) throws -> WalletConnectService.ConnectWalletRequest {
@@ -272,12 +295,15 @@ private extension ExternalEventsService {
 }
 
 extension ExternalEventsService {
-    enum EventsHandlingError: Error {
+    enum EventsHandlingError: String, LocalizedError {
         case cantFindDomain
         case invalidWCURL
         case cantFindWallet, walletWithoutDisplayInfo
         case cantFindConnectedApp
         
         case ignoreEvent
+        
+        public var errorDescription: String? { rawValue }
+
     }
 }

@@ -140,7 +140,8 @@ extension MockUDWalletsService: UDWalletsServiceProtocol {
         listenerHolders.removeAll(where: { $0.listener == nil || $0.listener === listener })
     }
 
-    func reverseResolutionDomainName(for wallet: UDWallet) async -> DomainName? { nil }
+    func reverseResolutionDomainName(for wallet: UDWallet) async throws -> DomainName? { nil }
+    func reverseResolutionDomainName(for walletAddress: HexAddress) async throws -> DomainName? { nil }
     func setReverseResolution(to domain: DomainName, paymentConfirmationDelegate: PaymentConfirmationDelegate) async throws { }
 }
 
