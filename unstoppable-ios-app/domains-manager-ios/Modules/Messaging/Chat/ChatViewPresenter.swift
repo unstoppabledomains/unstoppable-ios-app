@@ -229,11 +229,8 @@ private extension ChatViewPresenter {
                                                                                                   limit: fetchLimit)
                     await addMessages(updateMessages)
                     showData(animated: true, isLoading: false)
-
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        self.view?.setLoading(active: false)
-                        self.isLoadingMessages = false
-                    }
+                    isLoadingMessages = false
+                    view?.setLoading(active: false)
                 case .newChat:
                     isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
