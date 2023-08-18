@@ -147,7 +147,7 @@ private extension PushMessagingChannelsWebSocketsService {
             case .userSpamFeeds:
                 let inboxNotification: PushInboxNotification = try parseEntityFrom(data: data)
                 let feed = PushEntitiesTransformer.convertPushInboxToChannelFeed(inboxNotification,
-                                                                                 isRead: false)
+                                                                                 isRead: true)
                 return .channelSpamFeed(feed,
                                         channelAddress: inboxNotification.sender,
                                         recipients: inboxNotification.payload.recipients)
