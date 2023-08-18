@@ -964,6 +964,11 @@ extension String {
         return tld.isValidTld()
     }
     
+    func isValidDomainNameForMessagingSearch() -> Bool {
+        guard let tld = self.getTldName() else { return false }
+        return tld.isValidTld() || tld.lowercased() == GlobalConstants.lensDomainTLD // TODO: - Temporary urgent request
+    }
+    
     func isValidTld() -> Bool {
         let allTlds = User.instance.getAppVersionInfo().tlds
         return allTlds.contains(where: { $0.lowercased() == self.lowercased() } )
