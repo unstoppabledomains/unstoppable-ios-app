@@ -16,6 +16,7 @@ enum ExternalEvent: Codable, Hashable {
     case walletConnectRequest(dAppName: String, domainName: String?)
     case wcDeepLink(_ wcURL: URL)
     case domainProfileUpdated(domainName: String)
+    case domainFollowerAdded(domainName: String, domainFollower: String)
     case parkingStatusLocal
     case badgeAdded(domainName: String, count: Int)
     case chatMessage(ChatMessageEventData)
@@ -57,6 +58,11 @@ enum ExternalEvent: Codable, Hashable {
             case .domainProfileUpdated:
                 let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
                 self = .domainProfileUpdated(domainName: domainName)
+            case .domainFollowerAdded:
+                let domainName: String = try Self.getValueFrom(json: json, forKey: "domainName", notificationType: eventTypeRaw)
+                let domainFollower: String = try Self.getValueFrom(json: json, forKey: "domainFollower", notificationType: eventTypeRaw)
+                
+                self = .domainFollowerAdded(domainName: domainName, domainFollower: domainFollower)
             case .parkingStatusLocal:
                 self = .parkingStatusLocal
             case .badgeAdded:
@@ -122,7 +128,7 @@ enum ExternalEvent: Codable, Hashable {
     
     var analyticsEvent: Analytics.Event {
         switch self {
-        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite:
+        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite, .domainFollowerAdded:
             return .didReceivePushNotification
         case .wcDeepLink:
             return .didOpenDeepLink
@@ -157,6 +163,9 @@ enum ExternalEvent: Codable, Hashable {
                     .wcAppName: dAppName]
         case .domainProfileUpdated(let domainName):
             return [.pushNotification: "domainProfileUpdated",
+                    .domainName: domainName]
+        case .domainFollowerAdded(let domainName, _):
+            return [.pushNotification: "domainFollowerAdded",
                     .domainName: domainName]
         case .parkingStatusLocal:
             return [:]
@@ -250,6 +259,7 @@ extension ExternalEvent {
         case reverseResolutionRemoved = "ReverseResolutionRemoved"
         case walletConnectRequest = "WalletConnectNotification"
         case domainProfileUpdated = "DomainProfileUpdated"
+        case domainFollowerAdded = "DomainFollowerAdded"
         // Messaging
         case chatMessage = "DomainPushProtocolChat"
         case chatChannelMessage = "DomainPushProtocolNotification"
