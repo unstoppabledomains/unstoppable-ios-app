@@ -878,7 +878,8 @@ private extension MessagingService {
                 }, defaultValue: [])
                 
                 let (channels, spamChannels) = await (channelsTask, spamChannelsTask)
-                let allChannels = channels + spamChannels
+                let channelsIds = Set(channels.map { $0.id })
+                let allChannels = channels + spamChannels.filter { !channelsIds.contains($0.id) }
                 
                 let updatedChats = await refreshChannelsMetadata(allChannels, storedChannels: storedChannels).sortedByLastMessage()
                 
