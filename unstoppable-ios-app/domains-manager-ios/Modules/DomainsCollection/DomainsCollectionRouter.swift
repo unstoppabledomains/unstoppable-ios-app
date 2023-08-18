@@ -214,12 +214,12 @@ extension DomainsCollectionRouter {
     func isChatOpenedWith(chatId: String) -> Bool {
         guard let openedChatId = topOpenedChatIdentifiable?.chatId else { return false }
         
-        return openedChatId.contains(chatId)
+        return openedChatId.lowercased().contains(chatId.lowercased())
     }
     func isChannelOpenedWith(channelId: String) -> Bool {
         guard let openedChannelId = topOpenedChatIdentifiable?.channelId else { return false }
         
-        return openedChannelId.contains(channelId)
+        return openedChannelId.normalized.contains(channelId.normalized)
     }
 }
 
