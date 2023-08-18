@@ -302,7 +302,7 @@ extension DomainProfileViewPresenter: ExternalEventsServiceListener {
             }
             
             switch event {
-            case .domainTransferred(let domainName), .recordsUpdated(let domainName), .reverseResolutionSet(domainName: let domainName, _), .reverseResolutionRemoved(domainName: let domainName, _), .domainProfileUpdated(let domainName), .badgeAdded(let domainName, _):
+            case .domainTransferred(let domainName), .recordsUpdated(let domainName), .reverseResolutionSet(domainName: let domainName, _), .reverseResolutionRemoved(domainName: let domainName, _), .domainProfileUpdated(let domainName), .badgeAdded(let domainName, _), .domainFollowerAdded(let domainName, _):
                 if domainName == dataHolder.domain.name {
                     refreshData()
                 }

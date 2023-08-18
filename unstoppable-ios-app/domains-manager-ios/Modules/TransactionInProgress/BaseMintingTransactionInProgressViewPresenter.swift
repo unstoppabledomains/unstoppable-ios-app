@@ -64,7 +64,7 @@ extension BaseMintingTransactionInProgressViewPresenter: ExternalEventsServiceLi
             switch event {
             case .mintingFinished, .domainTransferred:
                 refreshMintingTransactions()
-            case .wcDeepLink, .walletConnectRequest, .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainProfileUpdated, .parkingStatusLocal, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite:
+            case .wcDeepLink, .walletConnectRequest, .recordsUpdated, .reverseResolutionSet, .reverseResolutionRemoved, .domainProfileUpdated, .parkingStatusLocal, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite, .domainFollowerAdded:
                 return
             }
         }
