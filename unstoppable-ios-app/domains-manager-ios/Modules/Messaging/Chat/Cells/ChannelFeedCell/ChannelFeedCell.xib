@@ -108,6 +108,7 @@
                 <outlet property="containerView" destination="5AF-IE-M3F" id="q0g-AW-krg"/>
                 <outlet property="learnButton" destination="lVW-TN-bNe" id="z58-e4-Jkg"/>
                 <outlet property="messageTextView" destination="5Do-sN-kaz" id="xfk-1R-VVc"/>
+                <outlet property="separatorView" destination="IWD-un-nfn" id="EBy-Kr-1jD"/>
                 <outlet property="timeLabel" destination="hEp-VX-agm" id="LVb-fw-HIN"/>
             </connections>
             <point key="canvasLocation" x="249.61832061068702" y="-5.6338028169014089"/>
