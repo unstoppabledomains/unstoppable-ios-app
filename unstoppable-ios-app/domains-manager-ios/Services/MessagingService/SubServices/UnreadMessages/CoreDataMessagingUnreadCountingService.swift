@@ -10,7 +10,8 @@ import CoreData
 
 final class CoreDataMessagingUnreadCountingService: NSObject {
     
-    private var fetchedResultsController: NSFetchedResultsController<CoreDataMessagingChatMessage>!
+    private var messagesFetchedResultsController: NSFetchedResultsController<CoreDataMessagingChatMessage>!
+    private var feedFetchedResultsController: NSFetchedResultsController<CoreDataMessagingNewsChannelFeed>!
     private var stateHolder = StateHolder()
     private let serialQueue = DispatchQueue(label: "com.unstoppable.MessagingUnreadCountingService")
     private let context: NSManagedObjectContext
@@ -20,14 +21,14 @@ final class CoreDataMessagingUnreadCountingService: NSObject {
         context = storageService.backgroundContext
         super.init()
         
-        initializeFetchedResultsController()
+        initializeFetchedResultsControllers()
     }
 }
 
 // MARK: - MessagingUnreadCountingService
 extension CoreDataMessagingUnreadCountingService: MessagingUnreadCountingServiceProtocol {
     func getTotalNumberOfUnreadMessages() -> Int {
-        serialQueue.sync { unreadMessages.count }
+        serialQueue.sync { totalUnreadEntitiesCount }
     }
     
     func getNumberOfUnreadMessagesIn(chatId: String, userId: String) -> Int {
@@ -40,7 +41,7 @@ extension CoreDataMessagingUnreadCountingService: NSFetchedResultsControllerDele
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith diff: CollectionDifference<NSManagedObjectID>) {
         serialQueue.sync {
             let currentCounter = stateHolder.unreadMessagesCounter
-            let newCounter = unreadMessages.count
+            let newCounter = totalUnreadEntitiesCount
             Debugger.printInfo(topic: .Messaging, "CoreDataMessagingUnreadCountingService did receive update from fetch results controller. currentCounter = \(currentCounter). newCounter = \(newCounter)")
             if (currentCounter == 0 && newCounter != 0) {
                 asyncNotifyHavingTotalUnreadMessagesCountChangedTo(havingUnreadMessages: true)
@@ -54,24 +55,48 @@ extension CoreDataMessagingUnreadCountingService: NSFetchedResultsControllerDele
 
 // MARK: - Private methods
 private extension CoreDataMessagingUnreadCountingService {
-    func initializeFetchedResultsController() {
+    func initializeFetchedResultsControllers() {
+        initializeMessagesFetchedResultsController()
+        initializeFeedFetchedResultsController()
+        
+        stateHolder.unreadMessagesCounter = getTotalNumberOfUnreadMessages()
+    }
+    
+    func initializeMessagesFetchedResultsController() {
         let request = CoreDataMessagingChatMessage.fetchRequest()
         request.predicate = NSPredicate(format: "isRead == NO")
         request.sortDescriptors = [NSSortDescriptor(key: "time", ascending: false)]
-        fetchedResultsController = NSFetchedResultsController(fetchRequest: request,
-                                                              managedObjectContext: context,
-                                                              sectionNameKeyPath: nil,
-                                                              cacheName: nil)
+        messagesFetchedResultsController = NSFetchedResultsController(fetchRequest: request,
+                                                                      managedObjectContext: context,
+                                                                      sectionNameKeyPath: nil,
+                                                                      cacheName: nil)
         do {
-            try fetchedResultsController.performFetch()
-            fetchedResultsController.delegate = self
-            stateHolder.unreadMessagesCounter = getTotalNumberOfUnreadMessages()
+            try messagesFetchedResultsController.performFetch()
+            messagesFetchedResultsController.delegate = self
         } catch {
             Debugger.printFailure("Failed to get unread messages", critical: true)
         }
     }
     
-    var unreadMessages: [CoreDataMessagingChatMessage] { fetchedResultsController.fetchedObjects ?? [] }
+    func initializeFeedFetchedResultsController() {
+        let request = CoreDataMessagingNewsChannelFeed.fetchRequest()
+        request.predicate = NSPredicate(format: "isRead == NO")
+        request.sortDescriptors = [NSSortDescriptor(key: "time", ascending: false)]
+        feedFetchedResultsController = NSFetchedResultsController(fetchRequest: request,
+                                                                      managedObjectContext: context,
+                                                                      sectionNameKeyPath: nil,
+                                                                      cacheName: nil)
+        do {
+            try feedFetchedResultsController.performFetch()
+            feedFetchedResultsController.delegate = self
+        } catch {
+            Debugger.printFailure("Failed to get unread messages", critical: true)
+        }
+    }
+    
+    var unreadMessages: [CoreDataMessagingChatMessage] { messagesFetchedResultsController.fetchedObjects ?? [] }
+    var unreadFeed: [CoreDataMessagingNewsChannelFeed] { feedFetchedResultsController.fetchedObjects ?? [] }
+    var totalUnreadEntitiesCount: Int { unreadMessages.count + unreadFeed.count }
     
     func asyncNotifyHavingTotalUnreadMessagesCountChangedTo(havingUnreadMessages: Bool) {
         DispatchQueue.global().async {
