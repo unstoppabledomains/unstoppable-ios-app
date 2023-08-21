@@ -215,7 +215,7 @@ fileprivate extension NotificationsService {
             switch event {
             case .domainProfileUpdated, .mintingFinished, .domainTransferred,
                     .reverseResolutionSet, .reverseResolutionRemoved, .wcDeepLink,
-                    .recordsUpdated, .parkingStatusLocal, .badgeAdded, .chatXMTPInvite:
+                    .recordsUpdated, .parkingStatusLocal, .badgeAdded, .chatXMTPInvite, .domainFollowerAdded:
                 return defaultPresentationOptions
             case .chatMessage(let data):
                 return appContext.coreAppCoordinator.isActiveState(.chatOpened(chatId: data.chatId)) ? [] : defaultPresentationOptions

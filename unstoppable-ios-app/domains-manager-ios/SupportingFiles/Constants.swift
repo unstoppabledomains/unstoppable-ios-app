@@ -48,6 +48,8 @@ struct Constants {
     static let maxImageResolution: CGFloat = 1000
     static let shouldHideBlockedUsersLocally = true
     static let ensDomainTLD: String = "eth"
+    static let lensDomainTLD: String = "lens"
+    static let coinbaseDomainTLD: String = "id"
     static let xmtpMessagingServiceIdentifier: String = "xmtp"
     static let pushMessagingServiceIdentifier: String = "push"
     

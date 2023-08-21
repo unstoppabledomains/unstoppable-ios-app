@@ -10,6 +10,9 @@ import Foundation
 protocol MessagingChannelsAPIServiceProtocol {
     func getSubscribedChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
     func getSpamChannelsForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
+    func getChannelsWithIds(_ channelIds: Set<String>,
+                            isCurrentUserSubscribed: Bool,
+                            user: MessagingChatUserProfile) async throws -> [MessagingNewsChannel]
     func getFeedFor(channel: MessagingNewsChannel,
                     page: Int,
                     limit: Int,

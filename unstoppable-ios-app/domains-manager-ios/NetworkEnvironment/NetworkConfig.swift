@@ -54,22 +54,22 @@ struct NetworkConfig {
     
     static var baseProfileHost: String {
         if User.instance.getSettings().isTestnetUsed {
-            return "profile.ud-staging.com"
-        } else {
-            return baseProfileProductionHost
-        }
-    }
-    
-    static var baseProfileAPIHost: String {
-        if User.instance.getSettings().isTestnetUsed {
             return "api.ud-staging.com"
         } else {
             return "api.unstoppabledomains.com"
         }
     }
     
-    static var baseProfileAPIUrl: String {
-        "https://\(baseProfileAPIHost)"
+    static var baseProfileUrl: String {
+        "https://\(baseProfileHost)"
+    }
+    
+    static var baseMessagingHost: String {
+        if User.instance.getSettings().isTestnetUsed {
+            return "messaging.ud-staging.com"
+        } else {
+            return "messaging.unstoppabledomains.com"
+        }
     }
     
     private static let StagingAccessApiKey = "mob-01-stg-8792ed66-f0d6-463d-b08b-7f5667980676"

@@ -965,6 +965,16 @@ extension String {
         return tld.isValidTld()
     }
     
+    static let messagingAdditionalSupportedTLDs: Set = [GlobalConstants.lensDomainTLD,
+                                                                GlobalConstants.coinbaseDomainTLD] // MARK: - Temporary urgent request
+
+    func isValidDomainNameForMessagingSearch() -> Bool {
+        guard let tld = self.getTldName() else { return false }
+        
+        let isMessagingTLD = Self.messagingAdditionalSupportedTLDs.contains(tld.lowercased())
+        return tld.isValidTld() || isMessagingTLD
+    }
+    
     func isValidTld() -> Bool {
         let allTlds = User.instance.getAppVersionInfo().tlds
         return allTlds.contains(where: { $0.lowercased() == self.lowercased() } )

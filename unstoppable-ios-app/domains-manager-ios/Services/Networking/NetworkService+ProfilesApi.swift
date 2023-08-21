@@ -19,6 +19,7 @@ struct SerializedUserDomainProfile: Codable {
     let socialAccounts: SocialAccounts
     let humanityCheck: UserDomainProfileHumanityCheckAttribute
     let records: [String : String]
+    let storage: UserDomainStorageDetails?
     
     enum CodingKeys: CodingKey {
         case profile
@@ -26,14 +27,21 @@ struct SerializedUserDomainProfile: Codable {
         case socialAccounts
         case humanityCheck
         case records
+        case storage
     }
     
-    init(profile: UserDomainProfileAttributes, messaging: DomainMessagingAttributes, socialAccounts: SocialAccounts, humanityCheck: UserDomainProfileHumanityCheckAttribute, records: [String : String]) {
+    init(profile: UserDomainProfileAttributes,
+         messaging: DomainMessagingAttributes,
+         socialAccounts: SocialAccounts,
+         humanityCheck: UserDomainProfileHumanityCheckAttribute,
+         records: [String : String],
+         storage: UserDomainStorageDetails?) {
         self.profile = profile
         self.messaging = messaging
         self.socialAccounts = socialAccounts
         self.humanityCheck = humanityCheck
         self.records = records
+        self.storage = storage
     }
     
     init(from decoder: Decoder) throws {
@@ -43,6 +51,7 @@ struct SerializedUserDomainProfile: Codable {
         self.socialAccounts = (try? container.decode(SocialAccounts.self, forKey: .socialAccounts)) ?? .init()
         self.humanityCheck = (try? container.decode(UserDomainProfileHumanityCheckAttribute.self, forKey: .humanityCheck)) ?? .init()
         self.records = (try? container.decode([String : String].self, forKey: .records)) ?? .init()
+        self.storage = (try? container.decode(UserDomainStorageDetails.self, forKey: .storage))
     }
     
     func encode(to encoder: Encoder) throws {
@@ -52,6 +61,16 @@ struct SerializedUserDomainProfile: Codable {
         try container.encode(self.socialAccounts, forKey: .socialAccounts)
         try container.encode(self.humanityCheck, forKey: .humanityCheck)
         try container.encode(self.records, forKey: .records)
+        try container.encode(self.storage, forKey: .storage)
+    }
+    
+    static func newEmpty() -> SerializedUserDomainProfile {
+        SerializedUserDomainProfile(profile: .init(),
+                                    messaging: .init(),
+                                    socialAccounts: .init(),
+                                    humanityCheck: .init(),
+                                    records: [:],
+                                    storage: nil)
     }
 }
 
@@ -370,6 +389,15 @@ struct UserDomainNotificationsPreferences: Codable {
     }
 }
 
+struct UserDomainStorageDetails: Codable {
+    let apiKey: String
+    let type: StorageType
+    
+    enum StorageType: String, Codable {
+        case web3 = "web3.storage"
+    }
+}
+
 extension NetworkService {
     
     //MARK: public methods
@@ -508,6 +536,12 @@ extension NetworkService {
     
     public func updateUserDomainNotificationsPreferences(_ preferences: UserDomainNotificationsPreferences,
                                                          for domain: DomainItem) async throws {
+        try await updateUserDomainNotificationsPreferences(preferences, for: domain, isRetryAfterSignatureFailed: false)
+    }
+    
+    private func updateUserDomainNotificationsPreferences(_ preferences: UserDomainNotificationsPreferences,
+                                                          for domain: DomainItem,
+                                                          isRetryAfterSignatureFailed: Bool) async throws {
         let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
         let signature = persistedSignature.sign
         let expires = persistedSignature.expires
@@ -520,8 +554,12 @@ extension NetworkService {
                                                                           body: body)
             try await fetchDataFor(endpoint: endpoint, method: .post)
         } catch {
-            checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
-            throw error
+            if checkIfBadSignatureErrorAndRevokeSignature(error, for: domain),
+               !isRetryAfterSignatureFailed {
+                try await updateUserDomainNotificationsPreferences(preferences, for: domain, isRetryAfterSignatureFailed: true)
+            } else {
+                throw error
+            }
         }
     }
     

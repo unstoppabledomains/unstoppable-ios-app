@@ -187,14 +187,16 @@ extension PushRESTAPIService {
                                in channel: String,
                                page: Int,
                                limit: Int,
-                               isRead: Bool) async throws -> [MessagingNewsChannelFeed] {
+                               isRead: Bool,
+                               isSpam: Bool) async throws -> [MessagingNewsChannelFeed] {
         let chainId = getCurrentChainId()
         let channelEIP = createEIPFormatFor(address: channel,
                                             chain: chainId)
         let userEIP = createEIPFormatFor(address: user,
                                          chain: chainId)
         let queryComponents = ["page" : String(page),
-                               "limit" : String(limit)]
+                               "limit" : String(limit),
+                               "spam" : String(isSpam)]
         let urlString = URLSList.GET_CHANNEL_FEED_FOR_USER_URL(channelEIP: channelEIP,
                                                                userEIP: userEIP).appendingURLQueryComponents(queryComponents)
         let request = try apiRequestWith(urlString: urlString,

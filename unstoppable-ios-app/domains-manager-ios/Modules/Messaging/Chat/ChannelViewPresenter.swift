@@ -143,11 +143,8 @@ private extension ChannelViewPresenter {
         
                 try await loadAndAddFeed(forPage: currentPage)
                 showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.isLoadingFeed = false
-                    self.view?.setLoading(active: false)
-                }
+                self.isLoadingFeed = false
+                self.view?.setLoading(active: false)
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }

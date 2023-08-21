@@ -302,7 +302,7 @@ extension DomainProfileViewPresenter: ExternalEventsServiceListener {
             }
             
             switch event {
-            case .domainTransferred(let domainName), .recordsUpdated(let domainName), .reverseResolutionSet(domainName: let domainName, _), .reverseResolutionRemoved(domainName: let domainName, _), .domainProfileUpdated(let domainName), .badgeAdded(let domainName, _):
+            case .domainTransferred(let domainName), .recordsUpdated(let domainName), .reverseResolutionSet(domainName: let domainName, _), .reverseResolutionRemoved(domainName: let domainName, _), .domainProfileUpdated(let domainName), .badgeAdded(let domainName, _), .domainFollowerAdded(let domainName, _):
                 if domainName == dataHolder.domain.name {
                     refreshData()
                 }
@@ -1162,11 +1162,7 @@ private extension DomainProfileViewPresenter {
         var currencies: [CoinRecord] = []
         var badgesInfo: BadgesInfo = .init(badges: [],
                                            refresh: .init(last: Date(), next: Date()))
-        var profile: SerializedUserDomainProfile = .init(profile: .init(),
-                                                         messaging: .init(),
-                                                         socialAccounts: .init(),
-                                                         humanityCheck: .init(),
-                                                         records: [:])
+        var profile: SerializedUserDomainProfile = .newEmpty()
         var domainImagesInfo: DomainImagesInfo = .init()
         var numberOfFailedToUpdateProfileAttempts = 0
         
@@ -1218,11 +1214,7 @@ private extension DomainProfileViewPresenter {
             transactions = []
             recordsData = .init(records: [], resolver: nil, ipfsRedirectUrl: nil)
             badgesInfo = .init(badges: [], refresh: .init(last: Date(), next: Date()))
-            profile = .init(profile: .init(),
-                            messaging: .init(),
-                            socialAccounts: .init(),
-                            humanityCheck: .init(),
-                            records: [:])
+            profile = .newEmpty()
             domainImagesInfo = .init()
             numberOfFailedToUpdateProfileAttempts = 0
         }

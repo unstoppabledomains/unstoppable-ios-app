@@ -141,12 +141,16 @@ private extension PushMessagingChannelsWebSocketsService {
                 let inboxNotification: PushInboxNotification = try parseEntityFrom(data: data)
                 let feed = PushEntitiesTransformer.convertPushInboxToChannelFeed(inboxNotification,
                                                                                  isRead: false)
-                return .channelNewFeed(feed, channelAddress: inboxNotification.sender)
+                return .channelNewFeed(feed,
+                                       channelAddress: inboxNotification.sender,
+                                       recipients: inboxNotification.payload.recipients)
             case .userSpamFeeds:
                 let inboxNotification: PushInboxNotification = try parseEntityFrom(data: data)
                 let feed = PushEntitiesTransformer.convertPushInboxToChannelFeed(inboxNotification,
-                                                                                 isRead: false)
-                return .channelSpamFeed(feed, channelAddress: inboxNotification.sender)
+                                                                                 isRead: true)
+                return .channelSpamFeed(feed,
+                                        channelAddress: inboxNotification.sender,
+                                        recipients: inboxNotification.payload.recipients)
             case .chatReceivedMessage:
                 let pushMessage: Push.Message = try parseEntityFrom(data: data)
 

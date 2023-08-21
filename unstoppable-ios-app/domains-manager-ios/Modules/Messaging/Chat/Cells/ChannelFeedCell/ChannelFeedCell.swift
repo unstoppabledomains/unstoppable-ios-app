@@ -12,6 +12,7 @@ final class ChannelFeedCell: ChatBaseCell {
     @IBOutlet private weak var bubbleContainerView: UIView!
     @IBOutlet private weak var messageTextView: UITextView!
     @IBOutlet private weak var timeLabel: UILabel!
+    @IBOutlet private weak var separatorView: UIView!
     @IBOutlet private weak var learnButton: GhostPrimaryButton!
 
     private var learnMoreLink: URL?
@@ -24,6 +25,7 @@ final class ChannelFeedCell: ChatBaseCell {
         setWith(sender: sender)
         setBubbleUI(bubbleContainerView, sender: sender)
         setupTextView(messageTextView)
+        messageTextView.textContainerInset.top = 0
         learnButton.setTitle(String.Constants.learnMore.localized(), image: nil)
     }
 
@@ -35,12 +37,20 @@ extension ChannelFeedCell {
         feedActionCallback = configuration.actionCallback
         let feed = configuration.feed
         
-        let text = feed.title + "\n\n" + feed.message
+        let title = feed.title.trimmedSpaces
+        let text: String
+        if title.isEmpty {
+            text = feed.message
+        } else {
+            text = feed.title + "\n\n" + feed.message
+        }
+        
         messageTextView.setAttributedTextWith(text: text,
                                               font: .currentFont(withSize: 16, weight: .regular),
                                               textColor: .foregroundDefault)
         messageTextView.updateAttributesOf(text: feed.title,
-                                           withFont: .currentFont(withSize: 16, weight: .medium))
+                                           withFont: .currentFont(withSize: 16, weight: .medium),
+                                           numberOfRepeatanceToUpdate: 1)
         
         let formatterTime = MessageDateFormatter.formatMessageDate(feed.time)
         timeLabel.setAttributedTextWith(text: formatterTime,
@@ -49,6 +59,7 @@ extension ChannelFeedCell {
         
         learnMoreLink = feed.link
         learnButton.isHidden = feed.link == nil
+        separatorView.isHidden = learnButton.isHidden
     }
 }
 
