@@ -469,9 +469,9 @@
 // Scan QR Code
 "SCAN_QR_CODE_TITLE" = "Scan QR code";
 "WALLET_CONNECT_COMPATIBLE" = "Connect via WalletConnect";
-"SCAN_TO_PAY_OR_CONNECT" = "Connect to apps, metaverses, and games";
+"SCAN_TO_PAY_OR_CONNECT" = "Connect to apps, metaverses, and games by scanning QR code with your camera";
 "CAMERA_ACCESS_NEEDED_TO_SCAN" = "Camera access needed to scan.";
-"ENABLE_CAMERA_ACCESS" = "Enable camera access";
+"ENABLE_CAMERA_ACCESS" = "Continue";
 "CAMERA_NOT_AVAILABLE" = "Camera unavailable.";
 "SHOW_WALLET_BALANCE_IN" = "Show balance in";
 "SHOW_OHTER_N" = "Show other %@";
