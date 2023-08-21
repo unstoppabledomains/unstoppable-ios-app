@@ -141,6 +141,14 @@ extension UDSearchBar {
         
         isUserInteractionEnabled = isEnabled
     }
+    
+    func setCorrectionType(_ correctionType: UITextAutocorrectionType) {
+        textField.autocorrectionType = correctionType
+    }
+    
+    func setAutoCapitalizationType(_ autoCapitalizationType: UITextAutocapitalizationType) {
+        textField.autocapitalizationType = autoCapitalizationType
+    }
 }
 
 // MARK: - UITextFieldDelegate
