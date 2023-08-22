@@ -24,6 +24,7 @@ protocol DomainsCollectionRouterProtocol {
     func showDomainsSearch(_ domains: [DomainDisplayInfo],
                            searchCallback: @escaping DomainsListSearchCallback)
     func showChatsListScreen()
+    func didShakeDevice(domain: DomainDisplayInfo)
 }
 
 @MainActor
@@ -173,6 +174,16 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
         guard let navigationController = self.navigationController else { return }
 
         showChatsListScreen(in: navigationController, presentOptions: .default)
+    }
+    
+    func didShakeDevice(domain: DomainDisplayInfo) {
+        guard let navigationController = self.navigationController else { return }
+    
+        let topViewController = navigationController.topVisibleViewController()
+        let searchVC = UDBTSearchView.instantiate(domain: domain) { device in
+            
+        }
+        topViewController.present(searchVC, animated: true)
     }
 }
 

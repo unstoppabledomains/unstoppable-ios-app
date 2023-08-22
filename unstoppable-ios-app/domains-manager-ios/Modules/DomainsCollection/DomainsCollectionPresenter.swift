@@ -25,6 +25,7 @@ protocol DomainsCollectionPresenterProtocol: BasePresenterProtocol {
     func didRecognizeQRCode()
     func didTapAddButton()
     func didTapMessagingButton()
+    func didShakeDevice()
 }
 
 final class DomainsCollectionPresenter: ViewAnalyticsLogger {
@@ -221,6 +222,11 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     
     func didTapMessagingButton() {
         router.showChatsListScreen()
+    }
+    
+    func didShakeDevice() {
+        guard let domain = getCurrentDomain() else { return }
+        router.didShakeDevice(domain: domain)
     }
 }
 
