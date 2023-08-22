@@ -47,10 +47,8 @@ struct UBTDomainCardView: View {
             }
             .frame(width: contentWidth, height: contentHeight)
             .cornerRadius(12)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray, lineWidth: 1)
-            ) // Border // TODO: - Set border color
+            .offset(y: 2)
+            .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.08), radius: 2)
         }
         .onAppear(perform: loadAvatar)
     }

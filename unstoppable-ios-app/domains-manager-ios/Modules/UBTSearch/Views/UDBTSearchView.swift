@@ -17,8 +17,9 @@ struct UDBTSearchView: View {
         let controller = UBTController(domainEntity: domain)
         let vc = UIHostingController(rootView: UDBTSearchView(controller: controller,
                                                               searchResultCallback: searchResultCallback))
-        vc.modalPresentationStyle = .fullScreen
+        vc.modalPresentationStyle = .overFullScreen
         vc.modalTransitionStyle = .crossDissolve
+        vc.view.backgroundColor = .clear
         return vc
     }
     
@@ -31,64 +32,58 @@ struct UDBTSearchView: View {
     private(set) var btState: UBTControllerState = .ready
     
     var body: some View {
-        NavigationView {
-            ZStack {
-                let blurRadius: CGFloat = 30
-                LinearGradient(gradient: Gradient(colors: [.black, .blue]),
-                               startPoint: .top,
-                               endPoint: .bottom)
-                    .opacity(0.3)
-                    .blur(radius: blurRadius)
-                    .padding(EdgeInsets(top: -blurRadius,
-                                        leading: -blurRadius,
-                                        bottom: -blurRadius,
-                                        trailing: -blurRadius))
-                    .ignoresSafeArea()
-                
-                if controller.readyDevices.isEmpty {
-                    switch controller.btState {
-                    case .notReady:
-//                        Text("Launching...")
-                        Text("")
-                            .foregroundColor(.white)
-                            .bold()
-                    case .setupFailed:
-                        Text("Setup failed")
-                            .foregroundColor(.white)
-                    case .unauthorized:
-                        VStack(spacing: 20) {
-                            Text("Please give access to Bluetooth functionality to find people nearby")
-                                .foregroundColor(.white)
-                                .multilineTextAlignment(.center)
-                            Button("Give access") {
-                                // TODO: - Ask for BT permissions
-                            }
-                            .padding(EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14))
-                            .font(.headline)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .clipShape(Capsule())
-                        }
-                        .padding()
-                    case .ready:
-                        UBTSearchingView(profilesFound: controller.readyDevices.count)
-                    }
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [Color(red: 0, green: 0, blue: 0, opacity: 0.72),
+                                                       Color(uiColor: .backgroundAccentEmphasis)]),
+                           startPoint: .top,
+                           endPoint: .bottom)
+            .opacity(0.8)
+            .ignoresSafeArea()
+
+//                if controller.readyDevices.isEmpty {
+//                    switch controller.btState {
+//                    case .notReady:
+////                        Text("Launching...")
+//                        Text("")
+//                            .foregroundColor(.white)
+//                            .bold()
+//                    case .setupFailed:
+//                        Text("Setup failed")
+//                            .foregroundColor(.white)
+//                    case .unauthorized:
+//                        VStack(spacing: 20) {
+//                            Text("Please give access to Bluetooth functionality to find people nearby")
+//                                .foregroundColor(.white)
+//                                .multilineTextAlignment(.center)
+//                            Button("Give access") {
+//                                // TODO: - Ask for BT permissions
+//                            }
+//                            .padding(EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14))
+//                            .font(.headline)
+//                            .background(Color.blue)
+//                            .foregroundColor(.white)
+//                            .clipShape(Capsule())
+//                        }
+//                        .padding()
+//                    case .ready:
+//                        UBTSearchingView(profilesFound: controller.readyDevices.count)
+//                    }
+//                }
+            UBTSearchingView(profilesFound: controller.readyDevices.count)
+            discoveredCardsView()
+            
+            
+            VStack {
+                HStack {
+                    closeButton()
+                        .offset(x: 20)
+                    Spacer()
                 }
-                UBTSearchingView(profilesFound: controller.readyDevices.count)
-                discoveredCardsView()
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        UDVibration.buttonTap.vibrate()
-                        dismiss()
-                    }) {
-                        Image.cancelIcon
-                            .foregroundColor(.white)
-                    }
-                }
+                Spacer()
             }
         }
+        .background(.ultraThinMaterial)
+
         .onChange(of: controller.btState, perform: { newValue in
             if newValue == .ready {
                 controller.startScanning()
@@ -127,6 +122,17 @@ private extension UDBTSearchView {
 
 // MARK: - Private methods
 private extension UDBTSearchView {
+    @ViewBuilder
+    func closeButton() -> some View {
+        Button(action: {
+            UDVibration.buttonTap.vibrate()
+            dismiss()
+        }) {
+            Image.cancelIcon
+                .foregroundColor(.white)
+        }
+    }
+    
     @ViewBuilder
     func discoveredCardsView() -> some View {
         GeometryReader { geom in
