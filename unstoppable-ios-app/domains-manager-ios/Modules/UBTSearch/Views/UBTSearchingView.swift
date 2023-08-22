@@ -22,20 +22,22 @@ struct UBTSearchingView: View {
             VStack {
                 VStack {
                     VStack(spacing: 24) {
-                        Image(systemName: "magnifyingglass")
+                        Image.searchIcon
                             .resizable()
                             .frame(width: 40, height: 40)
-                            .foregroundColor(.gray) // TODO: - Set color
+                            .foregroundColor(.white)
+                            .opacity(0.48)
                             .rotationEffect(animate ? .degrees(15) : .degrees(60))
                         VStack(spacing: 16) {
-                            Text("Searching...")
+                            currentTitle()
                                 .foregroundColor(.white)
-                                .font(.system(size: 32, weight: .bold))
-                            Text("Ensure other people shaking their phones.")
+                                .font(.currentFont(size: 32, weight: .bold))
+                            Text(String.Constants.shakeToFindSearchSubtitle.localized())
                                 .lineLimit(2)
-                                .foregroundColor(.white) // TODO: - Set color
+                                .foregroundColor(.white)
+                                .opacity(0.56)
                                 .multilineTextAlignment(.center)
-                                .font(.system(size: 16, weight: .regular))
+                                .font(.currentFont(size: 16, weight: .regular))
                         }
                     }
                 }
@@ -57,6 +59,14 @@ struct UBTSearchingView: View {
 
 // MARK: - Private methods
 private extension UBTSearchingView {
+    func currentTitle() -> Text {
+        if profilesFound > 0 {
+            return Text(String.Constants.pluralNProfilesFound.localized(profilesFound, profilesFound))
+        } else {
+            return Text(String.Constants.shakeToFindSearchTitle.localized())
+        }
+    }
+    
     func backgroundCircleWith(opacity: CGFloat, size: CGFloat) -> some View {
         Circle()
             .stroke(.white, lineWidth: 1)

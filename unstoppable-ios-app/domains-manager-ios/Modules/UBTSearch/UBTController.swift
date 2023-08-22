@@ -52,6 +52,7 @@ final class UBTController: NSObject, ObservableObject {
         super.init()
         
         setup()
+        print("0xb2fb91c03db880c3ec1086e938c24608c6b56cc6".ethChecksumAddress())
     }
     
     func setup() {

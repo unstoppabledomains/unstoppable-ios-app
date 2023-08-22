@@ -22,6 +22,7 @@ struct UDBTSearchView: View {
         return vc
     }
     
+    @Environment(\.presentationMode) private var presentationMode
     @ObservedObject private var controller: UBTController
     private var gridColumns = [GridItem(.flexible()),
                                GridItem(.flexible()),
@@ -36,7 +37,7 @@ struct UDBTSearchView: View {
                 LinearGradient(gradient: Gradient(colors: [.black, .blue]),
                                startPoint: .top,
                                endPoint: .bottom)
-//                    .opacity(0.3)
+                    .opacity(0.3)
                     .blur(radius: blurRadius)
                     .padding(EdgeInsets(top: -blurRadius,
                                         leading: -blurRadius,
@@ -80,9 +81,9 @@ struct UDBTSearchView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
                         UDVibration.buttonTap.vibrate()
-//                        dismiss()
+                        dismiss()
                     }) {
-                        Image("cancelIcon")
+                        Image.cancelIcon
                             .foregroundColor(.white)
                     }
                 }
@@ -117,6 +118,10 @@ private extension UDBTSearchView {
             controller.addMock()
             scheduleAddMock()
         }
+    }
+    
+    private func dismiss() {
+        presentationMode.wrappedValue.dismiss()
     }
 }
 
@@ -160,13 +165,14 @@ private extension UDBTSearchView {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        let devices = ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone SE (1st generation)", "iPhone SE (3rd generation)", "iPhone 13 mini"]
-        
-        ForEach(devices, id: \.self) { device in
-            UDBTSearchView(controller: .init(domainEntity: DomainItem(name: "olegkuhkjdfsjhfdkhflakjhdfi748723642in.coin", blockchain: .Ethereum)), searchResultCallback: { _ in })
-                .previewDevice(PreviewDevice(rawValue: device))
-                .previewDisplayName(device)
-        }
+//        let devices = ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone SE (1st generation)", "iPhone SE (3rd generation)", "iPhone 13 mini"]
+//
+//        ForEach(devices, id: \.self) { device in
+//            UDBTSearchView(controller: .init(domainEntity: DomainItem(name: "olegkuhkjdfsjhfdkhflakjhdfi748723642in.coin", blockchain: .Ethereum)), searchResultCallback: { _ in })
+//                .previewDevice(PreviewDevice(rawValue: device))
+//                .previewDisplayName(device)
+//        }
+        UDBTSearchView(controller: .init(domainEntity: DomainItem(name: "olegkuhkjdfsjhfdkhflakjhdfi748723642in.coin", blockchain: .Ethereum)), searchResultCallback: { _ in })
     }
 }
 

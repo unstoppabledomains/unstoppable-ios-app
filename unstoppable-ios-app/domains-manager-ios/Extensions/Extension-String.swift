@@ -338,6 +338,7 @@ extension String {
         static let pluralNMessages = "SDICT:N_MESSAGES"
         static let pluralNPeopleYouMayKnow = "SDICT:N_PEOPLE_YOU_MAY_KNOW"
         static let pluralNMembers = "SDICT:N_MEMBERS"
+        static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -914,6 +915,10 @@ extension String {
         static let messagingCantContactMessage = "MESSAGING_CANT_CONTACT_MESSAGE"
         static let messagingInvite = "MESSAGING_INVITE"
         static let messagingSearchResultNotRRDomain = "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN"
+        
+        // Shake to find
+        static let shakeToFindSearchTitle = "SHAKE_TO_FIND_SEARCH_TITLE"
+        static let shakeToFindSearchSubtitle = "SHAKE_TO_FIND_SEARCH_SUBTITLE"
     }
 
     enum BlockChainIcons: String {
