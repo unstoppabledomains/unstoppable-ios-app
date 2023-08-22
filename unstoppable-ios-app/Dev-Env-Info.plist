@@ -165,5 +165,7 @@
 	</dict>
 	<key>NFCReaderUsageDescription</key>
 	<string>NFC tag to read NDEF messages into the application</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>To discover and connect with other devices</string>
 </dict>
 </plist>
