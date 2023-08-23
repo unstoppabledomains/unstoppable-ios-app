@@ -17,12 +17,12 @@ enum UBTControllerState {
 
 struct BTDeviceUI: Hashable, Identifiable {
     let id: UUID
-    var name: String = ""
+    var domainName: String = ""
     var walletAddress: String = ""
     
-    static let mock = BTDeviceUI(id: UUID(), name: "one.x", walletAddress: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52")
+    static let mock = BTDeviceUI(id: UUID(), domainName: "one.x", walletAddress: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52")
     static func newMock() -> BTDeviceUI {
-        BTDeviceUI(id: UUID(), name: "kuplin.hi", walletAddress: "0x557fc13812460e5414d9881cb3659902e9501041")
+        BTDeviceUI(id: UUID(), domainName: "kuplin.hi", walletAddress: "0x557fc13812460e5414d9881cb3659902e9501041")
     }
     static func newMock(_ count: Int) -> [BTDeviceUI] {
         var arr = [BTDeviceUI]()
@@ -230,7 +230,7 @@ private extension UBTController {
         }
         
         func btUI() -> BTDeviceUI {
-            BTDeviceUI(id: id, name: name, walletAddress: walletAddress)
+            BTDeviceUI(id: id, domainName: name, walletAddress: walletAddress)
         }
     }
 

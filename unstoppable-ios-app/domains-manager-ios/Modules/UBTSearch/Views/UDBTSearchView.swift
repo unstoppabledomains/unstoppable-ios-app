@@ -152,6 +152,7 @@ private extension UDBTSearchView {
                         ForEach(controller.readyDevices, id: \.id) { device in
                             Button {
                                 UDVibration.buttonTap.vibrate()
+                                dismiss()
                                 didSelectDeviceToConnect(device)
                             } label: {
                                 UBTDomainCardView(device: device)

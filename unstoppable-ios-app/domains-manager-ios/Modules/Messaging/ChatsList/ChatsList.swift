@@ -15,6 +15,7 @@ extension ChatsList {
         case `default`
         case showChatsList(profile: MessagingChatUserProfileDisplayInfo)
         case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
+        case newChat(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo)
         case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)
     }
     

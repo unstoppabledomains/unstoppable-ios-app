@@ -121,12 +121,12 @@ private extension UBTDomainCardView {
     func labelsView(domainNameHeight: CGFloat,
                     domainTLDHeight: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(device.name.getBelowTld()?.uppercased() ?? "") // TODO: - set name part
+            Text(device.domainName.getBelowTld()?.uppercased() ?? "") // TODO: - set name part
                 .foregroundColor(.white)
                 .frame(height: domainNameHeight, alignment: .leading)
                 .font(.helveticaNeueCustom(size: 21))
             
-            AttributedText(text: ".\(device.name.getTldName() ?? "")".uppercased(), // TODO: - set tld
+            AttributedText(text: ".\(device.domainName.getTldName() ?? "")".uppercased(), // TODO: - set tld
                             font: .helveticaNeueCustom(size: 18),
                             letterSpacing: 0,
                             textColor: .clear,

@@ -210,6 +210,11 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                         try await prepareToAutoOpenWith(profile: profile, dataType: .channels)
                         tryAutoOpenChannel(channelId, profile: profile)
                     }
+                case .newChat(let userInfo, let profile):
+                    if selectedProfileWalletPair?.profile?.id != profile.id {
+                        try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
+                    }
+                    autoOpenNewChat(with: userInfo)
                 }
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -293,6 +298,9 @@ private extension ChatsListViewPresenter {
                     try await preselectProfile(profile, usingWallets: wallets)
                     showData()
                     tryAutoOpenChannel(channelId, profile: profile)
+                case .newChat(let userInfo, let profile):
+                    try await preselectProfile(profile, usingWallets: wallets)
+                    autoOpenNewChat(with: userInfo)
                 }
             } catch ChatsListError.noWalletsForChatting {
                 return
@@ -361,6 +369,11 @@ private extension ChatsListViewPresenter {
     func tryAutoOpenChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) {
         guard let channel = channels.first(where: { $0.channel == channelId }) else { return }
         openChannel(channel)
+        presentOptions = .default
+    }
+    
+    func autoOpenNewChat(with userInfo: MessagingChatUserDisplayInfo) {
+        openChatWith(conversationState: .newChat(userInfo))
         presentOptions = .default
     }
     

@@ -177,11 +177,13 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     }
     
     func didShakeDevice(domain: DomainDisplayInfo) {
-        guard let navigationController = self.navigationController else { return }
+        guard let navigationController = self.navigationController,
+            let messagingProfile = appContext.messagingService.getProfileForImmediateMessagingPreferring(domain: domain) else { return }
     
         let topViewController = navigationController.topVisibleViewController()
-        let searchVC = UDBTSearchView.instantiate(domain: domain) { device in
-            
+        let searchVC = UDBTSearchView.instantiate(domain: domain) { [weak self] device in
+            let userInfo = MessagingChatUserDisplayInfo(wallet: device.walletAddress, domainName: device.domainName)
+            self?.newChatAsyncWith(userInfo: userInfo, profile: messagingProfile)
         }
         topViewController.present(searchVC, animated: true)
     }
@@ -218,6 +220,16 @@ extension DomainsCollectionRouter {
     
     func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
         await showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
+    }
+    
+    func newChatAsyncWith(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo) {
+        Task {
+            await newChatWith(userInfo: userInfo, profile: profile)
+        }
+    }
+    
+    func newChatWith(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .newChat(userInfo: userInfo, profile: profile))
     }
     
     private var topChatViewController: ChatViewController? { navigationController?.viewControllers.last as? ChatViewController }
@@ -300,7 +312,7 @@ private extension DomainsCollectionRouter {
         if let presentedChatsList = navigationController.viewControllers.first(where: { $0 is ChatsListViewController } ) as? ChatsListViewController,
            let chatsListCoordinator = presentedChatsList.presenter as? ChatsListCoordinator {
             chatsListCoordinator.update(presentOptions: options)
-        } else  {
+        } else {
             await resetNavigationToRoot()
             showChatsListScreen(in: navigationController, presentOptions: options)
         }
