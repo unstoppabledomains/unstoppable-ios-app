@@ -360,7 +360,7 @@ private extension ChatsListViewPresenter {
         try await selectProfileWalletPair(.init(wallet: wallet, profile: profile))
     }
     
-    func tryAutoOpenChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo){
+    func tryAutoOpenChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) {
         guard let chat = chatsList.first(where: { $0.id.contains(chatId) }) else { return }
         openChatWith(conversationState: .existingChat(chat))
         presentOptions = .default
@@ -373,7 +373,18 @@ private extension ChatsListViewPresenter {
     }
     
     func autoOpenNewChat(with userInfo: MessagingChatUserDisplayInfo) {
-        openChatWith(conversationState: .newChat(userInfo))
+        if let chat = chatsList.first(where: { chat in
+            switch chat.type {
+            case .private(let details):
+                return details.otherUser.wallet.normalized == userInfo.wallet.normalized
+            case .group:
+                return false
+            }
+        }) {
+            openChatWith(conversationState: .existingChat(chat))
+        } else {
+            openChatWith(conversationState: .newChat(userInfo))
+        }
         presentOptions = .default
     }
     
