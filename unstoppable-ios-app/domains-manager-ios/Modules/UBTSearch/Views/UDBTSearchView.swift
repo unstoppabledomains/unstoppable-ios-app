@@ -33,8 +33,8 @@ struct UDBTSearchView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color(red: 0, green: 0, blue: 0, opacity: 0.72),
-                                                       Color(uiColor: .backgroundAccentEmphasis)]),
+            LinearGradient(gradient: Gradient(colors: [.black.opacity(0.72),
+                                                       .backgroundAccentEmphasis]),
                            startPoint: .top,
                            endPoint: .bottom)
             .opacity(0.8)
@@ -69,9 +69,9 @@ struct UDBTSearchView: View {
 //                        UBTSearchingView(profilesFound: controller.readyDevices.count)
 //                    }
 //                }
+            
             UBTSearchingView(profilesFound: controller.readyDevices.count)
             discoveredCardsView()
-            
             
             VStack {
                 HStack {
@@ -108,11 +108,13 @@ private extension UDBTSearchView {
     }
     
     func scheduleAddMock() {
+        #if DEBUG
         Task {
             try? await Task.sleep(seconds: 2)
             controller.addMock()
             scheduleAddMock()
         }
+        #endif
     }
     
     private func dismiss() {

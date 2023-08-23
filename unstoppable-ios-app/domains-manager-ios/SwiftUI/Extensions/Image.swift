@@ -11,5 +11,6 @@ extension Image {
     
     static let cancelIcon = Image(uiImage: .cancelIcon)
     static let searchIcon = Image(uiImage: .searchIcon)
+    static let messageCircleIcon24 = Image(uiImage: .messageCircleIcon24)
     
 }

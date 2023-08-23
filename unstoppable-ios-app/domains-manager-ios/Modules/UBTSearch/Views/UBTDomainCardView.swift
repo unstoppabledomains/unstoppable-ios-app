@@ -37,7 +37,7 @@ struct UBTDomainCardView: View {
                             labelsView(domainNameHeight: domainNameHeight,
                                        domainTLDHeight: domainTLDHeight)
                             Spacer()
-                            CircleIconButton(icon: .named("messageCircleIcon24"),
+                            CircleIconButton(icon: .uiImage(.messageCircleIcon24),
                                              size: .small, callback: {})
                         }
                     }
@@ -48,7 +48,7 @@ struct UBTDomainCardView: View {
             .frame(width: contentWidth, height: contentHeight)
             .cornerRadius(12)
             .offset(y: 2)
-            .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.08), radius: 2)
+            .shadow(color: .black.opacity(0.08), radius: 2)
         }
         .onAppear(perform: loadAvatar)
     }
@@ -63,9 +63,13 @@ struct UBTDomainCardView: View {
 private extension UBTDomainCardView {
     func loadAvatar() {
         Task {
-            // TODO: - Load avatar
-            let names = ["landscape", "portrait", "testava", "testava2"]
-            avatarImage = UIImage(named: names.randomElement()!)
+            do {
+                let profileDetails = try await NetworkService().fetchGlobalReverseResolution(for: device.walletAddress)
+                if let pfpURL = profileDetails?.pfpURLToUse {
+                    avatarImage = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
+                                                                                 downsampleDescription: nil)
+                }
+            }
         }
     }
 }
@@ -83,7 +87,7 @@ private extension UBTDomainCardView {
                 .clipped()
                 .blur(radius: 50, opaque: true)
         } else {
-            Color.blue // TODO: - Set backgroundAccentEmphasis color
+            Color.backgroundAccentEmphasis
                 .frame(width: contentWidth, height: contentHeight)
         }
     }
@@ -92,7 +96,7 @@ private extension UBTDomainCardView {
     func innerImageView(innerImageSize: CGFloat,
                       udLogoSize: CGFloat) -> some View {
         ZStack(alignment: .topLeading) {
-            Image(uiImage: avatarImage ?? UIImage(named: "domainSharePlaceholder")!)
+            Image(uiImage: avatarImage ?? .domainSharePlaceholder)
                 .resizable()
                 .scaledToFill()
                 .frame(width: innerImageSize,

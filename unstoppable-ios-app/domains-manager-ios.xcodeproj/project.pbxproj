@@ -1781,6 +1781,10 @@
 		C6500B542A41924700ACAA8C /* ChannelFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6500B4E2A41924700ACAA8C /* ChannelFeedCell.xib */; };
 		C6500B552A41924700ACAA8C /* ChannelFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6500B4E2A41924700ACAA8C /* ChannelFeedCell.xib */; };
 		C6500B562A41924700ACAA8C /* ChannelFeedCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6500B4E2A41924700ACAA8C /* ChannelFeedCell.xib */; };
+		C65034B02A95ABDE008CEDBC /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65034AF2A95ABDE008CEDBC /* Color.swift */; };
+		C65034B12A95ABDE008CEDBC /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65034AF2A95ABDE008CEDBC /* Color.swift */; };
+		C65034B22A95ABDE008CEDBC /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65034AF2A95ABDE008CEDBC /* Color.swift */; };
+		C65034B32A95ABDE008CEDBC /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65034AF2A95ABDE008CEDBC /* Color.swift */; };
 		C650AC3D298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C650AC3E298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
 		C650AC3F298105C900A398AB /* UDSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650AC3C298105C900A398AB /* UDSegmentedControl.swift */; };
@@ -4601,6 +4605,7 @@
 		C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelViewPresenter.swift; sourceTree = "<group>"; };
 		C6500B4D2A41924700ACAA8C /* ChannelFeedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelFeedCell.swift; sourceTree = "<group>"; };
 		C6500B4E2A41924700ACAA8C /* ChannelFeedCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelFeedCell.xib; sourceTree = "<group>"; };
+		C65034AF2A95ABDE008CEDBC /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		C650AC3C298105C900A398AB /* UDSegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDSegmentedControl.swift; sourceTree = "<group>"; };
 		C650AC412983B20D00A398AB /* AppReviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewService.swift; sourceTree = "<group>"; };
 		C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileGeneralData.swift; sourceTree = "<group>"; };
@@ -6525,6 +6530,7 @@
 			children = (
 				C62F1D822A94B75000AB493C /* Font.swift */,
 				C62F1D972A94BB8700AB493C /* Image.swift */,
+				C65034AF2A95ABDE008CEDBC /* Color.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -10008,6 +10014,7 @@
 				C60982102823B6AC00546392 /* UDWalletsServiceProtocol.swift in Sources */,
 				C6109E2B28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */,
 				C60CA29A2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */,
+				C65034B02A95ABDE008CEDBC /* Color.swift in Sources */,
 				C6E1188328F5709D00C6AD4D /* WalletConnectPushNotificationsSubscribeInfo.swift in Sources */,
 				C642A6BD28411ECE00299C6E /* MintDomainsNavigationController.swift in Sources */,
 				C6637A6A2810074D0000AE56 /* SecurityWindow.swift in Sources */,
@@ -11273,6 +11280,7 @@
 				C6ECBF6828D067EF00E94309 /* SelectWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
 				290A60442950A89900882109 /* WalletConnectServiceV2.swift in Sources */,
 				C638683A285C0ED1000F98C4 /* AppUpdatedRequired.swift in Sources */,
+				C65034B22A95ABDE008CEDBC /* Color.swift in Sources */,
 				C6109E4728E5ABFE0027D5D8 /* TestsEnum.swift in Sources */,
 				C673BA202A80D0BE001FD763 /* CoreDataMessagingUnreadCountingService.swift in Sources */,
 				307F83FA267A339F0070A9A6 /* SceneDelegate.swift in Sources */,
@@ -11861,6 +11869,7 @@
 				C6A2D50D284DBDCD00327C47 /* QRScannerViewController.swift in Sources */,
 				C6AF12432A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift in Sources */,
 				C6F9FBC12A25C32700102F81 /* MessagingWebSocketEvent.swift in Sources */,
+				C65034B32A95ABDE008CEDBC /* Color.swift in Sources */,
 				C6E041D129554C370080F8E3 /* GhostTertiaryButton.swift in Sources */,
 				C6124CCF29223066005E6537 /* DomainAvatarImageView.swift in Sources */,
 				3018AEB127E9D50A00E8C37D /* RestoreWalletViewController.swift in Sources */,
@@ -12507,6 +12516,7 @@
 				C692C320282E485C00C31393 /* SecuritySettingsViewController.swift in Sources */,
 				C6109E2C28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */,
 				C60982112823B6AC00546392 /* UDWalletsServiceProtocol.swift in Sources */,
+				C65034B12A95ABDE008CEDBC /* Color.swift in Sources */,
 				C6E1188428F5709D00C6AD4D /* WalletConnectPushNotificationsSubscribeInfo.swift in Sources */,
 				C60CA29B2832501D00AB1B36 /* QRCodeServiceProtocol.swift in Sources */,
 				C6637A6B2810074D0000AE56 /* SecurityWindow.swift in Sources */,
