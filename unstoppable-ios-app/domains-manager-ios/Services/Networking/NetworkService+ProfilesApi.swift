@@ -638,7 +638,7 @@ extension NetworkService {
     }
     
     private func updateUserDomainProfile(for domain: DomainItem,
-                                     body: String) async throws -> SerializedUserDomainProfile {
+                                         body: String) async throws -> SerializedUserDomainProfile {
         let message = try await getGeneratedMessageToUpdate(for: domain, body: body)
         let signature = try await domain.personalSign(message: message.message)
         return try await updateDomainProfile(for: domain,
@@ -698,7 +698,7 @@ extension NetworkService {
         }
         
         let endpoint = Endpoint.getFollowingStatus(for: followerDomain,
-                                                    followingDomain: followingDomain)
+                                                   followingDomain: followingDomain)
         let statusResponse: FollowingStatusResponse = try await fetchDecodableDataFor(endpoint: endpoint, method: .get)
         return statusResponse.isFollowing
     }
@@ -717,8 +717,27 @@ extension NetworkService {
         return response
     }
     
-    func follow(_ domainNameToFollow: String, by domain: DomainItem) {
+    func follow(_ domainNameToFollow: String, by domain: DomainItem) async throws {
+        struct FollowRequest: Codable {
+            let domain: String
+        }
+        let request = FollowRequest(domain: domain.name)
+        let body = try prepareRequestBodyFrom(entity: request)
+        let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
+        let signature = persistedSignature.sign
+        let expires = persistedSignature.expires
+        let endpoint = Endpoint.follow(domainNameToFollow: domainNameToFollow,
+                                       by: domain.name,
+                                       expires: expires,
+                                       signature: signature,
+                                       body: body)
         
+        do {
+            try await fetchDataFor(endpoint: endpoint, method: .post)
+        } catch {
+            checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
+            throw error
+        }
     }
     
     func unfollow(_ domainNameToFollow: String, by domain: DomainItem) {

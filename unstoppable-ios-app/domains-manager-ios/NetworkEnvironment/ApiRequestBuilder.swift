@@ -773,4 +773,27 @@ extension Endpoint {
             body: ""
         )
     }
+    
+    
+    static func follow(domainNameToFollow: String,
+                       by domain: String,
+                       expires: UInt64,
+                       signature: String,
+                       body: String) -> Endpoint {
+        // https://profile.ud-staging.com/api/user/aaron.x
+        let expiresString = "\(expires)"
+        let headers = [
+            SignatureComponentHeaders.CodingKeys.domain.rawValue: domain,
+            SignatureComponentHeaders.CodingKeys.expires.rawValue: expiresString,
+            SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
+        ]
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/followers/\(domainNameToFollow)",
+            queryItems: [],
+            body: body,
+            headers: headers
+        )
+    }
+    
 }
