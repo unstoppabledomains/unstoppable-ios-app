@@ -90,6 +90,19 @@ struct NetworkService {
         return data
     }
     
+    func fetchDecodableDataFor<T: Decodable>(endpoint: Endpoint,
+                                             method: HttpRequestMethod,
+                                             using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                             dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
+        let data = try await fetchDataFor(endpoint: endpoint, method: method)
+        guard let entity = T.objectFromData(data,
+                                            using: keyDecodingStrategy,
+                                            dateDecodingStrategy: dateDecodingStrategy) else {
+            throw NetworkLayerError.failedParseProfileData
+        }
+        return entity
+    }
+    
     func fetchData(for url: URL,
                    body: String = "",
                    method: HttpRequestMethod = .post,

@@ -745,4 +745,32 @@ extension Endpoint {
         )
     }
     
+    static func getFollowingStatus(for followerDomain: DomainName,
+                                   followingDomain: DomainName) -> Endpoint {
+        //https://api.unstoppabledomains.com/profile/followers/lisa.x/follow-status/oleg.x
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/followers/\(followingDomain)/follow-status/\(followerDomain)",
+            queryItems: [],
+            body: ""
+        )
+    }
+    
+    static func getFollowersList(for domain: DomainName,
+                                 relationshipType: DomainProfileFollowerRelationshipType,
+                                 count: Int,
+                                 cursor: Int?) -> Endpoint {
+        //https://api.unstoppabledomains.com/profile/followers/oleg.x?relationship_type=followers&cursor=4266&take=50
+        var queryItems: [URLQueryItem] = [.init(name: "relationship_type", value: relationshipType.rawValue),
+                                          .init(name: "take", value: "\(count)")]
+        if let cursor {
+            queryItems.append(.init(name: "cursor", value: "\(cursor)"))
+        }
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/followers/\(domain)",
+            queryItems: queryItems,
+            body: ""
+        )
+    }
 }

@@ -11,6 +11,7 @@ struct SerializedPublicDomainProfile: Decodable {
     let profile: PublicDomainProfileAttributes
     let socialAccounts: SocialAccounts?
     let referralCode: String?
+    let social: DomainProfileSocialInfo?
 }
 
 struct SerializedUserDomainProfile: Codable {
@@ -96,7 +97,10 @@ struct PublicDomainProfileAttributes: Decodable {
         case phoneNumber
         case domainPurchased
     }
-    
+}
+
+// MARK: - PublicDomainProfileAttributes init(from decoder:
+extension PublicDomainProfileAttributes {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: PublicDomainProfileAttributes.CodingKeys.self)
         
@@ -398,6 +402,38 @@ struct UserDomainStorageDetails: Codable {
     }
 }
 
+struct DomainProfileSocialInfo: Codable {
+    let followingCount: Int
+    let followerCount: Int
+}
+
+enum DomainProfileFollowerRelationshipType: String, Codable {
+    case followers, following
+}
+
+struct DomainProfileFollowersResponse: Codable {
+    
+    let domain: String
+    let data: [DomainProfileFollower]
+    let relationshipType: DomainProfileFollowerRelationshipType
+    let meta: CursorInfo
+    
+    struct CursorInfo: Codable {
+        let totalCount: Int
+        let pagination: Pagination
+    }
+    
+    struct Pagination: Codable {
+        let cursor: Int
+        let take: Int
+    }
+    
+}
+
+struct DomainProfileFollower: Codable {
+    let domain: String
+}
+
 extension NetworkService {
     
     //MARK: public methods
@@ -651,6 +687,42 @@ extension NetworkService {
         let data = try JSONEncoder().encode(entity)
         guard let body = String(data: data, encoding: .utf8) else { throw NetworkLayerError.responseFailedToParse }
         return body
+    }
+}
+
+// MARK: - Followers related
+extension NetworkService {
+    func isDomain(_ followerDomain: String, following followingDomain: String) async throws -> Bool {
+        struct FollowingStatusResponse: Codable {
+            let isFollowing: Bool
+        }
+        
+        let endpoint = Endpoint.getFollowingStatus(for: followerDomain,
+                                                    followingDomain: followingDomain)
+        let statusResponse: FollowingStatusResponse = try await fetchDecodableDataFor(endpoint: endpoint, method: .get)
+        return statusResponse.isFollowing
+    }
+    
+    func fetchListOfFollowers(for domain: DomainName,
+                              relationshipType: DomainProfileFollowerRelationshipType,
+                              count: Int,
+                              cursor: Int?) async throws -> DomainProfileFollowersResponse {
+        let endpoint = Endpoint.getFollowersList(for: domain,
+                                                 relationshipType: relationshipType,
+                                                 count: count,
+                                                 cursor: cursor)
+        let response: DomainProfileFollowersResponse = try await fetchDecodableDataFor(endpoint: endpoint,
+                                                                                       method: .get,
+                                                                                       using: .convertFromSnakeCase)
+        return response
+    }
+    
+    func follow(_ domainNameToFollow: String, by domain: DomainItem) {
+        
+    }
+    
+    func unfollow(_ domainNameToFollow: String, by domain: DomainItem) {
+        
     }
 }
 
