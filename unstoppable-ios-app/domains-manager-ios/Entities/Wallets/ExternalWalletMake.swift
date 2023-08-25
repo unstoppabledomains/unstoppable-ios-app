@@ -71,6 +71,7 @@ enum ExternalWalletMake: String, Codable, Hashable {
     case Omni = "afbd95522f4041c71dd4f1a065f971fd32372865b416f95a0b1db759ae33f2a7"
     case Exodus = "e9ff15be73584489ca4a66f64d32c4537711797e30b6660dbcb71ea72a42b1f4"
     case Zerion = "ecc4036f814562b41a5268adc86270fba1365471402006302e70169465b7ac18"
+    case Mew = "f5b4eeb6015d66be3f5940a895cbaa49ef3439e518cd771270e6b553b48f31d2"
 }
 
 extension ExternalWalletMake {        
@@ -97,6 +98,7 @@ extension ExternalWalletMake {
         case .Exodus: return .cancelCircleIcon
         case .CryptoComDeFiWallet: return UIImage(named: "walletCryptoComDeFi")!
         case .Zerion: return UIImage(named: "walletZerion")!
+        case .Mew: return .cancelCircleIcon
         default: return .init()
         }
     }
@@ -123,6 +125,7 @@ extension ExternalWalletMake {
         case .Zelus: return "id1588430343"
         case .Exodus: return "id1414384820"
         case .Spot: return "id1390560448"
+        case .Mew: return "id1464614025"
         default: return .init()
         }
     }
