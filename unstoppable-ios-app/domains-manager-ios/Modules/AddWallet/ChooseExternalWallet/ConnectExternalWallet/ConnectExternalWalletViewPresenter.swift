@@ -54,6 +54,8 @@ extension ConnectExternalWalletViewPresenter: ConnectExternalWalletViewPresenter
                     do {
                         let wallet = try await connector.connect(externalWallet: wcWalletSelected)
                         didConnectWallet(wallet: wallet)
+                    } catch ExternalWalletConnectionService.ConnectionError.noResponse {
+                        // Ignore
                     } catch {
                         view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
                                               body: String.Constants.failedToConnectExternalWallet.localized())

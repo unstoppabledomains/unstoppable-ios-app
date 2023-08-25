@@ -11,7 +11,7 @@ import WalletConnectSwift
 
 final class ExternalWalletConnectionService {
         
-    typealias ConnectionResult = Result<UDWallet, ReconnectError>
+    typealias ConnectionResult = Result<UDWallet, ConnectionError>
     
     private var connectingWallet: WCWalletsProvider.WalletRecord?
     private var completion: ((ConnectionResult)->())?
@@ -97,7 +97,7 @@ extension ExternalWalletConnectionService: WalletConnectExternalWalletConnection
     func handleExternalWalletDidNotRespond() {
         guard let connectingWallet else { return }
         
-        finishWith(result: .failure(.failedToConnect))
+        finishWith(result: .failure(.noResponse))
         Task {
             await appContext.coreAppCoordinator.showExternalWalletDidNotRespondPullUp(for: connectingWallet)
         }
@@ -187,11 +187,12 @@ private extension ExternalWalletConnectionService {
 
 // MARK: - ReconnectError
 extension ExternalWalletConnectionService {
-    enum ReconnectError: String, LocalizedError {
+    enum ConnectionError: String, LocalizedError {
         case failedToConnect
         case walletAddressIsNil
         case failedToFindInstalledWallet
         case failedToAddWallet
+        case noResponse
         
         public var errorDescription: String? {
             return rawValue
