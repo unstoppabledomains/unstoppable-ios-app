@@ -29,7 +29,7 @@ protocol WalletConnectDelegate: AnyObject {
 protocol WalletConnectClientUIHandler: AnyObject {
     func didDisconnect(walletDisplayInfo: WalletDisplayInfo)
     func askToReconnectExternalWallet(_ walletDisplayInfo: WalletDisplayInfo) async -> Bool
-    func showExternalWalletDidNotRespondPullUp(for connectingWallet: WCWalletsProvider.WalletRecord)
+    func showExternalWalletDidNotRespondPullUp(for connectingWallet: WCWalletsProvider.WalletRecord) async
 }
 
 class WCClientConnections: DefaultsStorage<WalletConnectClientService.ConnectionData> {

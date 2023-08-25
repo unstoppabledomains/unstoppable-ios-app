@@ -393,20 +393,27 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         // request to sign a TX or message
         Sign.instance.sessionDeletePublisher
             .receive(on: DispatchQueue.main)
-            .sink { (topic, _) in
-                Task { [weak self]  in
-                    if let removedApp = await self?.appsStorageV2.remove(byTopic: topic) {
+            .sink { [weak self] (topic, _) in
+                guard let self else { return }
+                
+                Task {
+                    if let removedApp = await self.appsStorageV2.remove(byTopic: topic) {
                         Debugger.printWarning("Disconnected from dApp topic: \(topic)")
                         
-                        self?.appDisconnectedCallback?(UnifiedConnectAppInfo(from: removedApp))
-                    } else if let toRemoveSession = self?.walletStorageV2.find(byTopic: topic) {
+                        self.appDisconnectedCallback?(UnifiedConnectAppInfo(from: removedApp))
+                    } else if let toRemoveSessionData = self.walletStorageV2.find(byTopic: topic) {
                         // Client part, an external wallet has killed the session
                         Debugger.printWarning("Disconnected from Wallet topic: \(topic)")
-                        self?.disconnectAppsConnected(to: toRemoveSession.session.getWalletAddresses())
-                        toRemoveSession.session.getWalletAddresses().forEach({ walletAddress in
-                            self?.updateWalletsCacheAndUi(walletAddress: walletAddress)
-                        })
-                        await self?.walletStorageV2.remove(byTopic: topic)
+                        let session = toRemoveSessionData.session
+                        
+                        let didReconnect = await self.reconnectSession(session,
+                                                                       reconnectWalletsData: nil)
+                        
+                        if !didReconnect {
+                            session.getWalletAddresses().forEach({ walletAddress in
+                                self.removeDisconnectedWalletWith(walletAddress: walletAddress)
+                            })
+                        }
                     } else {
                         Debugger.printFailure("Topic disconnected that was not in cache :\(topic)", critical: false)
                         return
@@ -415,11 +422,71 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
             }.store(in: &publishers)
     }
     
-    private func updateWalletsCacheAndUi(walletAddress: HexAddress) {
-        if let toRemove = self.udWalletsService.find(by: walletAddress) {
-            if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0, udDomainsCount: 0) {
-                self.walletsUiHandler?.didDisconnect(walletDisplayInfo: walletDisplayInfo)
+    typealias ReconnectWalletsData = (WalletDisplayInfo, WCWalletsProvider.WalletRecord)
+    
+    private func reconnectSession(_ session: WCConnectedAppsStorageV2.SessionProxy,
+                                  reconnectWalletsData: ReconnectWalletsData?) async -> Bool {
+        let topic = session.topic
+        Debugger.printInfo(topic: .WalletConnectV2, "Will try to reconnect wallet with topic: \(topic)")
+
+        func cleanWCCacheData() async {
+            await walletStorageV2.remove(byTopic: topic)
+            disconnectAppsConnected(to: session.getWalletAddresses())
+        }
+        
+        guard let reconnectWalletsData = reconnectWalletsData ?? findDisconnectedWalletWithProviderBy(session: session) else {
+            await cleanWCCacheData()
+            return false
+        }
+        
+        await cleanWCCacheData()
+        let didReconnect = await tryToReconnect(reconnectWalletsData: reconnectWalletsData)
+        if didReconnect {
+            Debugger.printInfo(topic: .WalletConnectV2, "Did reconnect wallet with topic: \(topic)")
+        } else {
+            Debugger.printInfo(topic: .WalletConnectV2, "Failed to reconnect wallet with topic: \(topic)")
+        }
+     
+        return didReconnect
+    }
+    
+    private func findDisconnectedWalletWithProviderBy(session: WCConnectedAppsStorageV2.SessionProxy) -> ReconnectWalletsData? {
+        if let host = URL(string: session.peer.url)?.host,
+           let externalWallet = WCWalletsProvider
+            .getGroupedInstalledAndNotWcWallets(for: .supported)
+            .installed
+            .first(where: { record in
+                if let homepage = record.homepage {
+                    return URL(string: homepage)?.host == host
+                }
+                return false
+            }),
+           let toRemoveWalletAddress = session.getWalletAddresses().first,
+           let toRemove = udWalletsService.find(by: toRemoveWalletAddress),
+           let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0, udDomainsCount: 0) {
+            return (walletDisplayInfo, externalWallet)
+        }
+        return nil
+    }
+    
+    private func tryToReconnect(reconnectWalletsData: ReconnectWalletsData) async -> Bool {
+        let (walletDisplayInfo, externalWallet) = reconnectWalletsData
+        let shouldTryToReconnect = await appContext.coreAppCoordinator.askToReconnectExternalWallet(walletDisplayInfo)
+        
+        if shouldTryToReconnect {
+            do {
+                let reconnectService = ExternalWalletConnectionService()
+                try await reconnectService.connect(externalWallet: externalWallet)
+                return true
+            } catch {
+                return await tryToReconnect(reconnectWalletsData: reconnectWalletsData)
             }
+        }
+        return false
+    }
+
+    private func removeDisconnectedWalletWith(walletAddress: HexAddress) {
+        if let toRemove = self.udWalletsService.find(by: walletAddress) {
             self.udWalletsService.remove(wallet: toRemove)
             Debugger.printWarning("Disconnected external wallet: \(toRemove.aliasName)")
         }

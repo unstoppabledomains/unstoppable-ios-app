@@ -73,7 +73,7 @@ extension ExternalWalletConnectionService: WalletConnectDelegate {
             successfullyAddedCallback?()
             finishWith(result: .success(wallet))
         } catch WalletError.ethWalletAlreadyExists {
-            guard let wallet = appContext.udWalletsService.getUserWallets().first(where: { $0.address == walletAddress }) else {
+            guard let wallet = appContext.udWalletsService.find(by: walletAddress) else {
                 Debugger.printFailure("Failed to find existing wallet", critical: true)
                 finishWith(result: .failure(.failedToAddWallet))
                 return
@@ -97,9 +97,10 @@ extension ExternalWalletConnectionService: WalletConnectExternalWalletConnection
     func handleExternalWalletDidNotRespond() {
         guard let connectingWallet else { return }
         
-        finishWith(result: .failure(.noResponse))
         Task {
             await appContext.coreAppCoordinator.showExternalWalletDidNotRespondPullUp(for: connectingWallet)
+            try? await Task.sleep(seconds: 0.3)
+            finishWith(result: .failure(.noResponse))
         }
     }
 }
