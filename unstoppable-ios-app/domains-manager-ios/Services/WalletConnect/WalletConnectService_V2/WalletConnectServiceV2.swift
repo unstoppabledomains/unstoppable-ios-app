@@ -378,7 +378,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
                     if let pendingIntent = self?.intentsStorage.retrieveIntents().first {
                         // connection initiated by UI
                         self?.handleConnection(session: session,
-                                         with: pendingIntent)
+                                               with: pendingIntent)
                     } else {
                         Debugger.printInfo(topic: .WalletConnectV2, "App connected with no intent \(session.peer.name)")
                     }
@@ -390,6 +390,14 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
                 self?.intentsStorage.removeAll()
             }.store(in: &publishers)
 
+        // External wallet connection rejected
+        Sign.instance.sessionRejectionPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] (proposal, reason) in
+                self?.delegate?.failedToConnect()
+            }.store(in: &publishers)
+        
+        
         // request to sign a TX or message
         Sign.instance.sessionDeletePublisher
             .receive(on: DispatchQueue.main)
