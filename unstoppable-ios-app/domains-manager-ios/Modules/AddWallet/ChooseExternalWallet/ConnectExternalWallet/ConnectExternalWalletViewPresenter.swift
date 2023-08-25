@@ -15,15 +15,12 @@ protocol ConnectExternalWalletViewPresenterProtocol: BasePresenterProtocol, View
     func applicationWillEnterForeground()
 }
 
-class ConnectExternalWalletViewPresenter: WalletConnector, WalletConnectExternalWalletConnectionWaiter {
+class ConnectExternalWalletViewPresenter {
     
     private(set) weak var view: ConnectExternalWalletViewProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     var analyticsName: Analytics.ViewName { .unspecified }
-    private var connectingWallet: WCWalletsProvider.WalletRecord?
-    var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
-    var noResponseFromExternalWalletTimeOut: TimeInterval { 2 }
 
     init(view: ConnectExternalWalletViewProtocol,
          udWalletsService: UDWalletsServiceProtocol,
@@ -31,33 +28,13 @@ class ConnectExternalWalletViewPresenter: WalletConnector, WalletConnectExternal
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
         self.udWalletsService = udWalletsService
-        walletConnectClientService.delegate = self
-        walletConnectServiceV2.delegate = self
-        registerForAppBecomeActiveNotification()
     }
     func didConnectWallet(wallet: UDWallet) {
         Vibration.success.vibrate()
-        cancelNoResponseFromExternalWalletWorkItem()
     }
     func viewDidLoad() { }
     func viewWillAppear() {
         showData()
-    }
-    
-    func isWaitingForResponseFromExternalWallet() -> Bool {
-        connectingWallet != nil
-    }
-    
-    func handleExternalWalletDidNotRespond() {
-        Task { @MainActor in
-            guard let view,
-                let connectingWallet else { return }
-            
-            self.connectingWallet = nil
-            Vibration.error.vibrate()
-            appContext.pullUpViewService.showExternalWalletConnectionHintPullUp(for: connectingWallet,
-                                                                                in: view)
-        }
     }
 }
 
@@ -72,9 +49,15 @@ extension ConnectExternalWalletViewPresenter: ConnectExternalWalletViewPresenter
             logButtonPressedAnalyticEvents(button: .externalWalletSelected, parameters: [.externalWallet: wcWalletSelected.name])
 
             if description.isInstalled {
-                connectingWallet = wcWalletSelected
-                Task {
-                    await self.evokeConnectExternalWallet(wcWallet: wcWalletSelected)
+                Task { @MainActor in
+                    let connector = ExternalWalletConnectionService()
+                    do {
+                        let wallet = try await connector.connect(externalWallet: wcWalletSelected)
+                        didConnectWallet(wallet: wallet)
+                    } catch {
+                        view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
+                                              body: String.Constants.failedToConnectExternalWallet.localized())
+                    }
                 }
             } else if let appStoreId = wcWalletSelected.make?.appStoreId {
                 view?.openAppStore(for: appStoreId)
@@ -123,59 +106,6 @@ private extension ConnectExternalWalletViewPresenter {
             
             await view?.applySnapshot(snapshot, animated: true)
         }
-    }
-}
-
-// MARK: - WalletConnectDelegate
-extension ConnectExternalWalletViewPresenter: WalletConnectDelegate {
-    func failedToConnect() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
-                                       body: String.Constants.failedToConnectExternalWallet.localized())
-            appContext.analyticsService.log(event: .failedToConnectExternalWallet, withParameters: [.externalWallet: self.connectingWallet?.name ?? "Unknown",
-                                                                                                .viewName: self.analyticsName.rawValue])
-            self.connectingWallet = nil
-        }
-    }
-    
-    func didConnect(to walletAddress: HexAddress?,
-                    with wcRegistryWallet: WCRegistryWalletProxy?,
-                    successfullyAddedCallback: (() -> Void)? ) {
-        appContext.analyticsService.log(event: .didConnectToExternalWallet, withParameters: [.externalWallet: connectingWallet?.name ?? "Unknown",
-                                                                                             .viewName: analyticsName.rawValue])
-        connectingWallet = nil
-
-        guard let walletAddress = walletAddress else {
-            Debugger.printFailure("WC wallet connected with errors, walletAddress is nil", critical: true)
-            return
-        }
-        
-        guard let proxy = wcRegistryWallet, let wcWallet = WCWalletsProvider.findBy(walletProxy: proxy)  else {
-            Debugger.printFailure("Failed to find an installed wallet that connected", critical: true)
-            return
-        }
-        
-        do {
-            let wallet = try udWalletsService.addExternalWalletWith(address: walletAddress,
-                                                                    walletRecord: wcWallet)
-            successfullyAddedCallback?()
-            
-            didConnectWallet(wallet: wallet)
-        } catch WalletError.ethWalletAlreadyExists {
-            Debugger.printWarning("Attempt to connect a wallet already connected")
-            DispatchQueue.main.async { [weak self] in
-                self?.view?.showSimpleAlert(title: String.Constants.connectionFailed.localized(),
-                                            body: String.Constants.walletAlreadyConnectedError.localized())
-            }
-        } catch {
-            Debugger.printFailure("Error adding a new wallet: \(error)", critical: true)
-        }
-    }
-    
-    func didDisconnect(from accounts: [HexAddress]?, with wcRegistryWallet: WCRegistryWalletProxy?) {
-        // no op
     }
 }
 
