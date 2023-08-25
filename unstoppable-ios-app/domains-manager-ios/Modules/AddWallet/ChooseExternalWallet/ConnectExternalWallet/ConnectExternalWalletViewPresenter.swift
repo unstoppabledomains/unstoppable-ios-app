@@ -35,7 +35,6 @@ class ConnectExternalWalletViewPresenter: WalletConnector, WalletConnectExternal
         walletConnectServiceV2.delegate = self
         registerForAppBecomeActiveNotification()
     }
-    func updateUI() {}
     func didConnectWallet(wallet: UDWallet) {
         Vibration.success.vibrate()
         cancelNoResponseFromExternalWalletWorkItem()

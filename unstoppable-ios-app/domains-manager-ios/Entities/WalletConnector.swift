@@ -9,12 +9,10 @@ import Foundation
 import UIKit
 import WalletConnectSwift
 
-protocol WalletConnector {
-    func updateUI()
-}
+protocol WalletConnector { }
+
 extension WalletConnector {
     func evokeConnectExternalWallet(wcWallet: WCWalletsProvider.WalletRecord) async {
-        
         let connectionUrlString: String?
         if wcWallet.isV2Compatible {
             guard let uri = try? await appContext.walletConnectServiceV2.connect(to: wcWallet) else {
@@ -36,7 +34,6 @@ extension WalletConnector {
         }
         
         startExternalWallet(wcWallet: wcWallet, connectionUrlString: connectionUrlString)
-        self.updateUI()
     }
     
     private func startExternalWallet(wcWallet: WCWalletsProvider.WalletRecord, connectionUrlString: String?) {
