@@ -25,8 +25,11 @@ protocol WalletConnectDelegate: AnyObject {
 }
 
 
+@MainActor
 protocol WalletConnectClientUIHandler: AnyObject {
     func didDisconnect(walletDisplayInfo: WalletDisplayInfo)
+    func askToReconnectExternalWallet(_ walletDisplayInfo: WalletDisplayInfo) async -> Bool
+    func showExternalWalletDidNotRespondPullUp(for connectingWallet: WCWalletsProvider.WalletRecord) async
 }
 
 class WCClientConnections: DefaultsStorage<WalletConnectClientService.ConnectionData> {
@@ -159,7 +162,7 @@ extension WalletConnectClientService: WalletConnectSwift.ClientDelegate {
             if let walletAddress = accounts?.first,
                let toRemove = udWalletsService.find(by: walletAddress) {
                 if let walletDisplayInfo = WalletDisplayInfo(wallet: toRemove, domainsCount: 0, udDomainsCount: 0) {
-                    self.uiHandler?.didDisconnect(walletDisplayInfo: walletDisplayInfo)
+                    await self.uiHandler?.didDisconnect(walletDisplayInfo: walletDisplayInfo)
                 }
                 udWalletsService.remove(wallet: toRemove)
                 Debugger.printWarning("Disconnected external wallet: \(toRemove.aliasName)")
