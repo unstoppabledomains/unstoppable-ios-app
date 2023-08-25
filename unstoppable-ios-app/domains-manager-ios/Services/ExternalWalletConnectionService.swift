@@ -112,6 +112,7 @@ private extension ExternalWalletConnectionService {
         if wcWallet.isV2Compatible {
             guard let uri = try? await appContext.walletConnectServiceV2.connect(to: wcWallet) else {
                 Debugger.printFailure("Failed to connect via URI", critical: true)
+                finishWith(result: .failure(.failedToConnect))
                 return
             }
             switch uri {
@@ -123,6 +124,7 @@ private extension ExternalWalletConnectionService {
         } else {
             guard let connectionUrl = try? appContext.walletConnectClientService.connect() else {
                 Debugger.printFailure("Failed to connect via WCURL", critical: true)
+                finishWith(result: .failure(.failedToConnect))
                 return
             }
             connectionUrlString = connectionUrl.absoluteStringCorrect
@@ -141,12 +143,14 @@ private extension ExternalWalletConnectionService {
             appPrefix = nativePrefix
         } else {
             Debugger.printFailure("Cannot get a Universal or Native link for a wallet \(wcWallet.name)", critical: true)
+            finishWith(result: .failure(.failedToConnect))
             return
         }
         
         guard let coreUrl = URL(string: appPrefix),
               let comps = URLComponents(url: coreUrl, resolvingAgainstBaseURL: false) else {
             Debugger.printFailure("Cannot break into components \(appPrefix)", critical: true)
+            finishWith(result: .failure(.failedToConnect))
             return
         }
         let universalUrl: URL
@@ -168,6 +172,7 @@ private extension ExternalWalletConnectionService {
                 UIApplication.shared.open(universalUrl, options: [:], completionHandler: nil)
             } else {
                 Debugger.printFailure("Cannot open a wallet \(wcWallet.name)", critical: true)
+                self.finishWith(result: .failure(.failedToConnect))
             }
         }
     }
