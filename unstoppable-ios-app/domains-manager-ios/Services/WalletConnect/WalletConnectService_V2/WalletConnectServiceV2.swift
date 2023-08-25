@@ -1398,7 +1398,7 @@ extension WalletConnectServiceV2 {
         let targetWalletAddresses = sessions.flatMap({$0.getWalletAddresses()})
         disconnectAppsConnected(to: targetWalletAddresses)
         targetWalletAddresses.forEach({ walletAddress in
-            updateWalletsCacheAndUi(walletAddress: walletAddress)
+            removeDisconnectedWalletWith(walletAddress: walletAddress)
         })
         sessions.map({$0.topic}).forEach({ topic in
             Task {
