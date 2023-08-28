@@ -4139,7 +4139,6 @@
 		306665E02778AE72005F6F55 /* UnsConfigManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsConfigManager.swift; sourceTree = "<group>"; };
 		306B3D6B253DF88200102A76 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		306C9ACC273184FA00FD9D9C /* ReleaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseConfig.swift; sourceTree = "<group>"; };
-		306D402C25BC4C7300D08935 /* domains-manager-ios Dev EnvRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios Dev EnvRelease.entitlements"; sourceTree = "<group>"; };
 		306DB218268B2BFE009D95DE /* uns-config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "uns-config.json"; sourceTree = "<group>"; };
 		306DB241268F4EE1009D95DE /* Extension-String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension-String.swift"; sourceTree = "<group>"; };
 		306DB27126936C57009D95DE /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
@@ -4173,7 +4172,6 @@
 		30B3DC8C2870DBEF006FAA64 /* WCSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCSigner.swift; sourceTree = "<group>"; };
 		30B3DC9128758E9B006FAA64 /* CurrencyExchangeRates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyExchangeRates.swift; sourceTree = "<group>"; };
 		30B3DC9628763294006FAA64 /* WCConnectionIntentStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCConnectionIntentStorage.swift; sourceTree = "<group>"; };
-		30B3DC9C287D93BB006FAA64 /* domains-manager-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios.entitlements"; sourceTree = "<group>"; };
 		30B6581F26A9E19C004F707F /* Stripe.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = Stripe.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B6582026A9E19C004F707F /* Stripe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Stripe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B6582126A9E19C004F707F /* Stripe3DS2.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = Stripe3DS2.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4192,7 +4190,6 @@
 		30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateKeyStorageTests.swift; sourceTree = "<group>"; };
 		30CB2D2125C2E98C00203052 /* ApiRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRequestBuilder.swift; sourceTree = "<group>"; };
 		30D89F5526A9EA2900251C2D /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		30E1379D276A342F0086E5E5 /* domains-manager-ios TESTFLIGHT RELEASE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios TESTFLIGHT RELEASE.entitlements"; sourceTree = "<group>"; };
 		30E1379E276A34570086E5E5 /* domains-manager-ios  TESTFLIGHT DEV.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios  TESTFLIGHT DEV.entitlements"; sourceTree = "<group>"; };
 		30E549C22886DA27009833FB /* DefaultsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsStorage.swift; sourceTree = "<group>"; };
 		30EFBBDB27F4754E00B8D667 /* MainButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButton.swift; sourceTree = "<group>"; };
@@ -5270,6 +5267,16 @@
 			path = EIP712;
 			sourceTree = "<group>";
 		};
+		299A3E082A9B9D9600884F51 /* entitlements */ = {
+			isa = PBXGroup;
+			children = (
+				309748DB259A371800846137 /* domains-manager-iosRelease.entitlements */,
+				29EDB62429128D4E00A0BD08 /* domains-manager-ios Dev Env.entitlements */,
+				30E1379E276A34570086E5E5 /* domains-manager-ios  TESTFLIGHT DEV.entitlements */,
+			);
+			path = entitlements;
+			sourceTree = "<group>";
+		};
 		300A5F4825ADE0FE00CB1753 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -5323,11 +5330,7 @@
 		306486742527253700388026 = {
 			isa = PBXGroup;
 			children = (
-				29EDB62429128D4E00A0BD08 /* domains-manager-ios Dev Env.entitlements */,
-				30E1379E276A34570086E5E5 /* domains-manager-ios  TESTFLIGHT DEV.entitlements */,
-				30E1379D276A342F0086E5E5 /* domains-manager-ios TESTFLIGHT RELEASE.entitlements */,
 				304C928D25752625007A9F01 /* apple-app-site-association */,
-				306D402C25BC4C7300D08935 /* domains-manager-ios Dev EnvRelease.entitlements */,
 				3064867F2527253700388026 /* domains-manager-ios */,
 				306486962527253D00388026 /* domains-manager-iosTests */,
 				306486A12527253D00388026 /* domains-manager-iosUITests */,
@@ -5355,8 +5358,7 @@
 		3064867F2527253700388026 /* domains-manager-ios */ = {
 			isa = PBXGroup;
 			children = (
-				30B3DC9C287D93BB006FAA64 /* domains-manager-ios.entitlements */,
-				309748DB259A371800846137 /* domains-manager-iosRelease.entitlements */,
+				299A3E082A9B9D9600884F51 /* entitlements */,
 				30AE8516257836E2003A0142 /* Dev-Env-Info.plist */,
 				3064868E2527253C00388026 /* Info.plist */,
 				3064868B2527253C00388026 /* LaunchScreen.storyboard */,
@@ -13233,7 +13235,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/domains-manager-ios.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -13257,7 +13259,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/domains-manager-iosRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -13366,7 +13368,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios TESTFLIGHT RELEASE.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
@@ -13392,7 +13394,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/domains-manager-iosRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
@@ -13418,7 +13420,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios  TESTFLIGHT DEV.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-ios  TESTFLIGHT DEV.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -13443,7 +13445,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios Dev EnvRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-ios  TESTFLIGHT DEV.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -13468,7 +13470,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios Dev Env.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-ios Dev Env.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -13491,7 +13493,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios Dev EnvRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-ios Dev Env.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
