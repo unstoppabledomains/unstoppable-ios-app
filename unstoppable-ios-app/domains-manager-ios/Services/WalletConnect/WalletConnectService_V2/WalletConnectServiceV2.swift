@@ -1257,7 +1257,9 @@ extension WalletConnectServiceV2 {
             return .oldPairing
         }
         let uri = try await Pair.instance.create()
-        try await Sign.instance.connect(requiredNamespaces: requiredNamespaces, topic: uri.topic)
+        try await Sign.instance.connect(requiredNamespaces: requiredNamespaces,
+                                        optionalNamespaces: optionalNamespaces,
+                                        topic: uri.topic)
         return .newPairing(uri)
     }
     
@@ -1423,10 +1425,8 @@ extension WalletConnectServiceV2 {
     }
     
     func handle(response: WalletConnectSign.Response) throws -> String {
-        let record = Sign.instance.getSessionRequestRecord(id: response.id)!
         switch response.result {
         case  .response(let response):
-            let m = "Received Response\n\(record.method)"
             let r = try response.get(String.self).description
             return r
         case .error(let error):
