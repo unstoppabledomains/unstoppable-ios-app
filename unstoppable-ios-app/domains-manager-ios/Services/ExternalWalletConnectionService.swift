@@ -111,7 +111,7 @@ private extension ExternalWalletConnectionService {
         let connectionUrlString: String?
         if wcWallet.isV2Compatible {
             guard let uri = try? await appContext.walletConnectServiceV2.connect(to: wcWallet) else {
-                Debugger.printFailure("Failed to connect via URI", critical: true)
+                Debugger.printFailure("Failed to connect via URI", critical: false)
                 finishWith(result: .failure(.failedToConnect))
                 return
             }
