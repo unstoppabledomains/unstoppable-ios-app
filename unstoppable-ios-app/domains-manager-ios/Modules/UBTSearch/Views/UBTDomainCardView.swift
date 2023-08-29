@@ -109,7 +109,7 @@ private extension UBTDomainCardView {
                        height: udLogoSize)
                 .offset(x: 8, y: 8)
             if avatarImage == nil {
-                Color.black.opacity(0.16) // TODO: - set backgroundEmphasisOpacity2
+                Color.black.opacity(0.16) 
                     .cornerRadius(8)
                     .frame(width: innerImageSize,
                            height: innerImageSize)
@@ -121,12 +121,12 @@ private extension UBTDomainCardView {
     func labelsView(domainNameHeight: CGFloat,
                     domainTLDHeight: CGFloat) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(device.domainName.getBelowTld()?.uppercased() ?? "") // TODO: - set name part
+            Text(device.domainName.getBelowTld()?.uppercased() ?? "")
                 .foregroundColor(.white)
                 .frame(height: domainNameHeight, alignment: .leading)
                 .font(.helveticaNeueCustom(size: 21))
             
-            AttributedText(text: ".\(device.domainName.getTldName() ?? "")".uppercased(), // TODO: - set tld
+            AttributedText(text: ".\(device.domainName.getTldName() ?? "")".uppercased(),
                             font: .helveticaNeueCustom(size: 18),
                             letterSpacing: 0,
                             textColor: .clear,

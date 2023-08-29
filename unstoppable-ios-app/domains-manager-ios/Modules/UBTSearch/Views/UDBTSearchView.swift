@@ -31,10 +31,22 @@ struct UDBTSearchView: View {
     let searchResultCallback: UDBTSearchResultCallback
     private(set) var btState: UBTControllerState = .ready
     
+    var currentColor: Color {
+        switch controller.btState {
+        case .notReady, .ready, .unauthorized:
+            if controller.readyDevices.isEmpty {
+                return .backgroundAccentEmphasis
+            } else {
+                return .backgroundSuccessEmphasis
+            }
+        case .setupFailed:
+            return .foregroundDanger
+        }
+    }
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [.black.opacity(0.72),
-                                                       .backgroundAccentEmphasis]),
+                                                       currentColor]),
                            startPoint: .top,
                            endPoint: .bottom)
             .opacity(0.8)

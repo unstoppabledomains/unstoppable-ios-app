@@ -10,5 +10,7 @@ import SwiftUI
 extension Color {
     
     static let backgroundAccentEmphasis = Color(uiColor: .backgroundAccentEmphasis)
+    static let foregroundDanger = Color(uiColor: .foregroundDanger)
+    static let backgroundSuccessEmphasis = Color(uiColor: .backgroundSuccessEmphasis)
     
 }
