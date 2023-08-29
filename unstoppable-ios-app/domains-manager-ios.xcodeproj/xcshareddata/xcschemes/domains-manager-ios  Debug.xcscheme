@@ -99,12 +99,21 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
+            BlueprintIdentifier = "3064867C2527253700388026"
+            BuildableName = "domains-manager-ios.app"
+            BlueprintName = "domains-manager-ios"
+            ReferencedContainer = "container:domains-manager-ios.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
             BlueprintIdentifier = "307F8570267B60300070A9A6"
             BuildableName = "domains-manager-ios  TESTFLIGHT DEV.app"
             BlueprintName = "domains-manager-ios  TESTFLIGHT DEV"
             ReferencedContainer = "container:domains-manager-ios.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Debug"
@@ -122,6 +131,15 @@
             ReferencedContainer = "container:domains-manager-ios.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "307F8570267B60300070A9A6"
+            BuildableName = "domains-manager-ios  TESTFLIGHT DEV.app"
+            BlueprintName = "domains-manager-ios  TESTFLIGHT DEV"
+            ReferencedContainer = "container:domains-manager-ios.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
