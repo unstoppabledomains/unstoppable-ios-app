@@ -57,6 +57,7 @@ final class ChatsListViewPresenter {
          presentOptions: ChatsList.PresentOptions) {
         self.view = view
         self.presentOptions = presentOptions
+        appContext.udWalletsService.addListener(self)
     }
 }
 
@@ -271,6 +272,26 @@ extension ChatsListViewPresenter: MessagingServiceListener {
     }
 }
 
+// MARK: - UDWalletsServiceListener
+extension ChatsListViewPresenter: UDWalletsServiceListener {
+    func walletsDataUpdated(notification: UDWalletsServiceNotification) {
+        switch notification {
+        case .walletsUpdated(let wallets):
+            let addresses = wallets.map { $0.address }
+            if let selectedAddress = selectedProfileWalletPair?.wallet.address,
+               !addresses.contains(selectedAddress) {
+                loadAndShowData()
+            } else {
+                refreshAvailableWalletsList()
+            }
+        case .reverseResolutionDomainChanged:
+            refreshAvailableWalletsList()
+        case .walletRemoved:
+            return
+        }
+    }
+}
+
 // MARK: - Private functions
 private extension ChatsListViewPresenter {
     func runLoadingState() {
@@ -307,6 +328,15 @@ private extension ChatsListViewPresenter {
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
+        }
+    }
+    
+    func refreshAvailableWalletsList() {
+        Task {
+            do {
+                wallets = try await loadReadyForChattingWalletsOrClose()
+                updateNavigationUI()
+            } catch { }
         }
     }
     
@@ -406,7 +436,6 @@ private extension ChatsListViewPresenter {
         } else {
             profileWalletPairsCache.append(chatProfile)
         }
-        
         
         guard let profile = chatProfile.profile else {
             let state: MessagingProfileStateAnalytics = chatProfile.wallet.reverseResolutionDomain == nil ? .notCreatedRRNotSet : .notCreatedRRSet

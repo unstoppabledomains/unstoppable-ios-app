@@ -94,51 +94,6 @@ extension HexAddress {
     }
 }
 
-protocol UiUpdateable {}
-extension UiUpdateable {
-    func updateUI() {}
-}
-
-class UiUpdateableViewController: UIViewController, UiUpdateable {
-}
-
-class GenericViewController: UiUpdateableViewController, SelfNameable {
-    
-    override func viewWillAppear(_ animated: Bool) {
-        setBackgroundLayer()
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissKeyboard (_:)))
-        self.view.addGestureRecognizer(tapGesture)
-        tapGesture.cancelsTouchesInView = false // fixes the need to tap with 2 fingers on other controls
-        
-        updateUI()
-        
-        super.viewWillAppear(animated)
-    }
-    
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        
-        setBackgroundLayer()
-    }
-    
-    private func setBackgroundLayer() {
-        if let gradient = (self.view.layer.sublayers ?? []).first(where: { $0 is CAGradientLayer }) {
-            gradient.removeFromSuperlayer()
-        }
-        
-        let layer = CAGradientLayer()
-        layer.frame = self.view.bounds
-        layer.colors = [UIColor.UD.topGradient!.cgColor,
-                        UIColor.UD.middleGradient!.cgColor,
-                        UIColor.UD.bottomGradient!.cgColor]
-        self.view.layer.insertSublayer(layer, at: 0)
-    }
-    
-    @objc func dismissKeyboard (_ sender: UITapGestureRecognizer) {
-        self.view.endEditing(true)
-    }
-}
-
 @nonobjc extension UIViewController {
     func addChildViewController(_ childController: UIViewController, andEmbedToView containerView: UIView) {
         childController.willMove(toParent: self)
@@ -176,26 +131,6 @@ class GenericViewController: UiUpdateableViewController, SelfNameable {
     }
 }
 
-protocol SecureSelectionHost where Self: GenericViewController { }
-
-class RoundedCornersView: UIView {
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.layer.cornerRadius = 12
-    }
-}
-
-class ShadowedView: UIView {
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        self.subviews.forEach {
-            $0.layer.shadowColor = UIColor.label.cgColor
-            $0.layer.shadowOpacity = 0.15
-            $0.layer.shadowRadius = 16  
-        }
-    }
-}
-
 // UI Animations
 extension UIView {
     func embedInSuperView(_ superView: UIView, constraints: UIEdgeInsets = .zero) {
@@ -213,57 +148,6 @@ extension UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func growAndSqueeze() {
-        let MAX_GROW: CGFloat = 1.08
-        let MIN_GROW: CGFloat = 1.04
-        let ONE_MOTION_PHASE_DURATION = 0.6
-        UIView.animate(withDuration: ONE_MOTION_PHASE_DURATION) {
-            self.transform = CGAffineTransform(scaleX: MAX_GROW, y: MAX_GROW)
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + ONE_MOTION_PHASE_DURATION) {
-            UIView.animate(withDuration: ONE_MOTION_PHASE_DURATION) {
-                self.transform = CGAffineTransform(scaleX: MIN_GROW, y: MIN_GROW)
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + ONE_MOTION_PHASE_DURATION * 4) {
-            UIView.animate(withDuration: ONE_MOTION_PHASE_DURATION) {
-                self.transform = CGAffineTransform.identity
-            }
-        }
-    }
-    
-    func addwFlipping(to hostView: UIView,
-                      via animationOption: UIView.AnimationOptions = .transitionFlipFromRight) {
-        addwView(to: hostView, onTop: false, via: animationOption)
-    }
-    
-    func addwView(to hostView: UIView,
-                  onTop: Bool,
-                  via animationOption: UIView.AnimationOptions,
-                  over: UIView? = nil) {
-        if !onTop {
-            hostView.subviews.forEach{ $0.removeFromSuperview() }
-        }
-        hostView.subviews.forEach{ $0.isHidden = true }
-        
-        UIView.transition(with: hostView, duration: 0.3,
-                          options: [animationOption, .curveEaseOut],
-                          animations: {
-                            if let overlay = over {
-                                hostView.addSubview(overlay)
-                            }
-                            hostView.addSubview(self)
-                            self.translatesAutoresizingMaskIntoConstraints = false
-                            NSLayoutConstraint.activate([
-                                self.topAnchor.constraint(equalTo: hostView.topAnchor),
-                                self.bottomAnchor.constraint(equalTo: hostView.bottomAnchor),
-                                self.leadingAnchor.constraint(equalTo: hostView.leadingAnchor),
-                                self.trailingAnchor.constraint(equalTo: hostView.trailingAnchor)
-                            ])
-                          },
-                          completion: nil)
-    }
-    
     func shake() {
         DispatchQueue.main.async {
             self.transform = CGAffineTransform(translationX: 12, y: 0)
@@ -271,100 +155,6 @@ extension UIView {
                 self.transform = CGAffineTransform.identity
             }, completion: nil)
         }
-    }
-    
-    func showAndHideAndRemove() {
-        self.alpha = 0
-        UIView.animate( withDuration: 0.2,
-                        animations: { self.alpha = 1 }
-                        )
-        DispatchQueue.main
-            .asyncAfter(deadline: .now() + 0.8,
-                        execute: {
-                            UIView.animate(withDuration: 0.3, animations: {
-                                self.alpha = 0
-                            },
-                            completion: {_ in self.removeFromSuperview()})
-                        })
-    }
-    
-    func dismissUpperSubview(tag: Int? = nil) {
-        let count = self.subviews.count
-        guard count > 0 else { return }
-        let toDismiss = self.subviews[count - 1]
-        if let blurViewTag = tag {
-            guard toDismiss.tag == blurViewTag else { return }
-        }
-        toDismiss.removeFromSuperview()
-    }
-    
-    func removeSubviewWith(tag: Int? = nil) {
-        for view in subviews where view.tag == tag {
-            view.removeFromSuperview()
-        }
-    }
-        
-    func isTopSubviewTagged(with tag: Int) -> Bool {
-        let count = self.subviews.count
-        guard count > 0 else { return false }
-        let toDismiss = self.subviews[count - 1]
-        return toDismiss.tag == tag
-    }
-    
-    func getUpperSubview() -> UIView? {
-        return getUpperSubview(offset: 0)
-    }
-    
-    func getUpperSubview(offset index: Int) -> UIView? {
-        let count = self.subviews.count
-        guard count > index else { return nil }
-        return self.subviews[count - 1 - index]
-    }
-    
-    func createBlurView(with alpha: CGFloat = 0) -> UIView {
-        let blurEffect = UIBlurEffect(style: .dark)
-        let blurEffectView = UIVisualEffectView(effect: blurEffect)
-        blurEffectView.frame = self.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        blurEffectView.alpha = alpha
-        return blurEffectView
-    }
-    
-    static func createCopiedLabel(frame: CGRect) -> UILabel {
-        let copied = UILabel(frame: frame)
-        copied.text = "Copied to Clipboard"
-        copied.textAlignment = .center
-        copied.backgroundColor = UIColor.secondarySystemBackground
-        copied.layer.cornerRadius = 10
-        copied.clipsToBounds = true
-        return copied
-    }
-    
-    static func createLabel(frame: CGRect, text: String) -> UILabel {
-        let label = UILabel(frame: frame)
-        label.text = text
-        label.textAlignment = .center
-        label.backgroundColor = UIColor.secondarySystemBackground
-        label.textColor = UIColor.systemRed
-        label.layer.cornerRadius = 10
-        label.clipsToBounds = true
-        return label
-    }
-    
-    func displayCopiedMessage() {
-        let copied = UIView.createCopiedLabel(frame: self.bounds)
-        self.addSubview(copied)
-        copied.showAndHideAndRemove()
-    }
-    
-    func findTheSubview(by tag: Int) -> UIView? {
-        self.subviews.filter({$0.tag == tag}).first
-    }
-    
-    func displayMessage(_ message: String) {
-        let messageView = UIView.createLabel(frame: self.bounds, text: message)
-        self.addSubview(messageView)
-        messageView.showAndHideAndRemove()
     }
 }
 
@@ -387,39 +177,6 @@ extension UIViewController {
     }
 }
 
-extension UIColor {
-    struct UD {
-        static let mainAccent = UIColor(named: "MainBlue")
-        static let mainAccentDesaturated = UIColor(named: "MainBlueDesat")
-        
-        // bckgrnd gradient
-        static let topGradient = UIColor(named: "TopGradientPink")
-        static let middleGradient = UIColor(named: "MiddleGradientBlue")
-        static let bottomGradient = UIColor(named: "BottomGradientBlue")
-        
-        //Pending Indication
-        static let pendingFont = UIColor(named: "PendingFont")
-        static let pendingBackground = UIColor(named: "PendingBackground")
-        
-        //controls
-        static let disabledBackground = UIColor(named: "DisabledBackground")
-        static let disabledFont = UIColor(named: "DisabledFont")
-        
-        static let grayBorder = UIColor(named: "GrayBorder")
-        static let redCritical = UIColor(named: "RedCritical")
-        
-        static let menuSelectionBorder = UIColor(named: "MenuSelectionBorder")
-        
-        static let neutralGray = UIColor(named: "NeutralGray")
-    }
-}
-
-extension UIImage {
-    static func makeMenuIcon() -> UIImage? {
-        UIImage(named: "menu")
-    }
-}
-
 extension Array {
   mutating func remove(at indexes: [Int]) {
     for index in indexes.sorted(by: >) {
@@ -429,10 +186,6 @@ extension Array {
 }
 
 extension Array where Element: Equatable {
-    enum ManagementError: Swift.Error {
-        case failedToFindElement
-    }
-
     mutating func update(newElement: Element) {
         if let index = self.firstIndex(of: newElement) {
             self[index] = newElement
@@ -458,26 +211,6 @@ extension Array where Element == String {
             .map({ String($0.dropFirst(namePrefix.count)).trimmedSpaces })
             .compactMap({Int($0)})
             )
-    }
-}
-
-extension UITableView {
-    func tweakForVersions() {
-        // workaround for empty rows separators
-        self.tableFooterView = UIView()
-        
-        // workaround for insets of separators
-        if #available(iOS 9, *) {
-            self.cellLayoutMarginsFollowReadableWidth = false
-        }
-    }
-    
-    // Must be called from the main thread
-    func selectAllRows() {
-        let totalRows = self.numberOfRows(inSection: 0)
-        for row in 0..<totalRows {
-            self.selectRow(at: IndexPath(row: row, section: 0), animated: true, scrollPosition: .none)
-        }
     }
 }
 
