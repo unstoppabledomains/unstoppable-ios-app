@@ -235,6 +235,30 @@ extension CoreAppCoordinator: WalletConnectClientUIHandler {
             }
         }
     }
+    
+    func askToReconnectExternalWallet(_ walletDisplayInfo: WalletDisplayInfo) async -> Bool {
+        switch self.currentRoot {
+        case .domainsCollection(let router):
+            guard let topVC = router.topViewController() else { return false }
+            
+            let response = await self.pullUpViewService.showExternalWalletDisconnected(from: walletDisplayInfo, in: topVC)
+            await topVC.dismissPullUpMenu()
+            return response 
+        default: return false
+        }
+    }
+    
+    func showExternalWalletDidNotRespondPullUp(for connectingWallet: WCWalletsProvider.WalletRecord) async {
+        switch self.currentRoot {
+        case .domainsCollection(let router):
+            guard let topVC = router.topViewController() else { return }
+            
+            await appContext.pullUpViewService.showExternalWalletConnectionHintPullUp(for: connectingWallet,
+                                                                                in: topVC)
+        default: return
+        }
+    }
+    
 }
 
 // MARK: - Passing events

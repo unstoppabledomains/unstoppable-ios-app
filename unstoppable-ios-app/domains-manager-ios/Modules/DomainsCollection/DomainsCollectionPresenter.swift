@@ -226,6 +226,13 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
     func didTapMessagingButton() {
         router.showChatsListScreen()
     }
+    
+    @MainActor
+    func scrollTo(domain: DomainDisplayInfo, animated: Bool) {
+        guard let i = stateController.domains.firstIndex(where: { $0.name == domain.name }) else { return }
+        
+        setNewIndex(i, animated: animated)
+    }
 }
 
 // MARK: - AppLaunchServiceListener

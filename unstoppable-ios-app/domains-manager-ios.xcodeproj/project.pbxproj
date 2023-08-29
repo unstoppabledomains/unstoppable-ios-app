@@ -1531,10 +1531,10 @@
 		C63902B928E2FB5B00E16B42 /* PaymentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902B728E2FB5B00E16B42 /* PaymentError.swift */; };
 		C63902BA28E2FB5B00E16B42 /* PaymentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902B728E2FB5B00E16B42 /* PaymentError.swift */; };
 		C63902BB28E2FB5B00E16B42 /* PaymentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902B728E2FB5B00E16B42 /* PaymentError.swift */; };
-		C63902BD28E2FCF200E16B42 /* WalletConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902BC28E2FCF200E16B42 /* WalletConnector.swift */; };
-		C63902BE28E2FCF200E16B42 /* WalletConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902BC28E2FCF200E16B42 /* WalletConnector.swift */; };
-		C63902BF28E2FCF200E16B42 /* WalletConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902BC28E2FCF200E16B42 /* WalletConnector.swift */; };
-		C63902C028E2FCF200E16B42 /* WalletConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902BC28E2FCF200E16B42 /* WalletConnector.swift */; };
+		C63902BD28E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902BC28E2FCF200E16B42 /* ExternalWalletConnectionService.swift */; };
+		C63902BE28E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902BC28E2FCF200E16B42 /* ExternalWalletConnectionService.swift */; };
+		C63902BF28E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902BC28E2FCF200E16B42 /* ExternalWalletConnectionService.swift */; };
+		C63902C028E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902BC28E2FCF200E16B42 /* ExternalWalletConnectionService.swift */; };
 		C63902C228E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902C128E307A900E16B42 /* CryptoEditingGroupedRecord.swift */; };
 		C63902C328E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902C128E307A900E16B42 /* CryptoEditingGroupedRecord.swift */; };
 		C63902C428E307A900E16B42 /* CryptoEditingGroupedRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63902C128E307A900E16B42 /* CryptoEditingGroupedRecord.swift */; };
@@ -4187,7 +4187,6 @@
 		306665E02778AE72005F6F55 /* UnsConfigManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnsConfigManager.swift; sourceTree = "<group>"; };
 		306B3D6B253DF88200102A76 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		306C9ACC273184FA00FD9D9C /* ReleaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReleaseConfig.swift; sourceTree = "<group>"; };
-		306D402C25BC4C7300D08935 /* domains-manager-ios Dev EnvRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios Dev EnvRelease.entitlements"; sourceTree = "<group>"; };
 		306DB218268B2BFE009D95DE /* uns-config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "uns-config.json"; sourceTree = "<group>"; };
 		306DB241268F4EE1009D95DE /* Extension-String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension-String.swift"; sourceTree = "<group>"; };
 		306DB27126936C57009D95DE /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
@@ -4221,7 +4220,6 @@
 		30B3DC8C2870DBEF006FAA64 /* WCSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCSigner.swift; sourceTree = "<group>"; };
 		30B3DC9128758E9B006FAA64 /* CurrencyExchangeRates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyExchangeRates.swift; sourceTree = "<group>"; };
 		30B3DC9628763294006FAA64 /* WCConnectionIntentStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCConnectionIntentStorage.swift; sourceTree = "<group>"; };
-		30B3DC9C287D93BB006FAA64 /* domains-manager-ios.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios.entitlements"; sourceTree = "<group>"; };
 		30B6581F26A9E19C004F707F /* Stripe.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = Stripe.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B6582026A9E19C004F707F /* Stripe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Stripe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B6582126A9E19C004F707F /* Stripe3DS2.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = Stripe3DS2.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -4240,7 +4238,6 @@
 		30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateKeyStorageTests.swift; sourceTree = "<group>"; };
 		30CB2D2125C2E98C00203052 /* ApiRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRequestBuilder.swift; sourceTree = "<group>"; };
 		30D89F5526A9EA2900251C2D /* Bugsnag.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Bugsnag.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		30E1379D276A342F0086E5E5 /* domains-manager-ios TESTFLIGHT RELEASE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios TESTFLIGHT RELEASE.entitlements"; sourceTree = "<group>"; };
 		30E1379E276A34570086E5E5 /* domains-manager-ios  TESTFLIGHT DEV.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "domains-manager-ios  TESTFLIGHT DEV.entitlements"; sourceTree = "<group>"; };
 		30E549C22886DA27009833FB /* DefaultsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsStorage.swift; sourceTree = "<group>"; };
 		30EFBBDB27F4754E00B8D667 /* MainButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButton.swift; sourceTree = "<group>"; };
@@ -4546,7 +4543,7 @@
 		C6386870285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTransactionInProgressViewPresenter.swift; sourceTree = "<group>"; };
 		C63902B228E2FADC00E16B42 /* WCCompatibleWallet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WCCompatibleWallet.swift; sourceTree = "<group>"; };
 		C63902B728E2FB5B00E16B42 /* PaymentError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentError.swift; sourceTree = "<group>"; };
-		C63902BC28E2FCF200E16B42 /* WalletConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletConnector.swift; sourceTree = "<group>"; };
+		C63902BC28E2FCF200E16B42 /* ExternalWalletConnectionService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExternalWalletConnectionService.swift; sourceTree = "<group>"; };
 		C63902C128E307A900E16B42 /* CryptoEditingGroupedRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoEditingGroupedRecord.swift; sourceTree = "<group>"; };
 		C63902C628E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoEditingGroupedRecordsChangesCalculator.swift; sourceTree = "<group>"; };
 		C63A350928F0071B0057D34B /* DomainProfileViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileViewPresenter.swift; sourceTree = "<group>"; };
@@ -5330,6 +5327,16 @@
 			path = EIP712;
 			sourceTree = "<group>";
 		};
+		299A3E082A9B9D9600884F51 /* entitlements */ = {
+			isa = PBXGroup;
+			children = (
+				309748DB259A371800846137 /* domains-manager-iosRelease.entitlements */,
+				29EDB62429128D4E00A0BD08 /* domains-manager-ios Dev Env.entitlements */,
+				30E1379E276A34570086E5E5 /* domains-manager-ios  TESTFLIGHT DEV.entitlements */,
+			);
+			path = entitlements;
+			sourceTree = "<group>";
+		};
 		300A5F4825ADE0FE00CB1753 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -5383,11 +5390,7 @@
 		306486742527253700388026 = {
 			isa = PBXGroup;
 			children = (
-				29EDB62429128D4E00A0BD08 /* domains-manager-ios Dev Env.entitlements */,
-				30E1379E276A34570086E5E5 /* domains-manager-ios  TESTFLIGHT DEV.entitlements */,
-				30E1379D276A342F0086E5E5 /* domains-manager-ios TESTFLIGHT RELEASE.entitlements */,
 				304C928D25752625007A9F01 /* apple-app-site-association */,
-				306D402C25BC4C7300D08935 /* domains-manager-ios Dev EnvRelease.entitlements */,
 				3064867F2527253700388026 /* domains-manager-ios */,
 				306486962527253D00388026 /* domains-manager-iosTests */,
 				306486A12527253D00388026 /* domains-manager-iosUITests */,
@@ -5415,8 +5418,7 @@
 		3064867F2527253700388026 /* domains-manager-ios */ = {
 			isa = PBXGroup;
 			children = (
-				30B3DC9C287D93BB006FAA64 /* domains-manager-ios.entitlements */,
-				309748DB259A371800846137 /* domains-manager-iosRelease.entitlements */,
+				299A3E082A9B9D9600884F51 /* entitlements */,
 				30AE8516257836E2003A0142 /* Dev-Env-Info.plist */,
 				3064868E2527253C00388026 /* Info.plist */,
 				3064868B2527253C00388026 /* LaunchScreen.storyboard */,
@@ -7504,6 +7506,7 @@
 				C6B6B047297039E500D4E30F /* DateFormattingService.swift */,
 				296BB61E2A309DD90068EEEC /* Encrypting.swift */,
 				C6E69FF5288AE47D000A8346 /* ExternalEventsService.swift */,
+				C63902BC28E2FCF200E16B42 /* ExternalWalletConnectionService.swift */,
 				C681092028041325002D780E /* GIFAnimationsService.swift */,
 				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
 				C65272652A15DEB9001A084C /* KeyboardService.swift */,
@@ -8034,7 +8037,6 @@
 				301EFCBA25E6CD1500DEB2C1 /* Version.swift */,
 				C6456F2E2800520E00A517D5 /* Vibration.swift */,
 				C672FD74286061E300D27078 /* WalletBackUpPassword.swift */,
-				C63902BC28E2FCF200E16B42 /* WalletConnector.swift */,
 				C60981F92822612F00546392 /* WalletDisplayInfo.swift */,
 				C606B740286474E000DC562B /* WalletWithInfo.swift */,
 				C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */,
@@ -10234,7 +10236,7 @@
 				C63A350C28F0071B0057D34B /* DomainProfileViewPresenter.swift in Sources */,
 				307F82B82677532D0070A9A6 /* PaymentConfirmationDelegate.swift in Sources */,
 				C63F1D1128AF31D5000A5C12 /* AnalyticsService.swift in Sources */,
-				C63902BD28E2FCF200E16B42 /* WalletConnector.swift in Sources */,
+				C63902BD28E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */,
 				C66435D4288EE4A00098E1B8 /* MetadataNetworkConfig.swift in Sources */,
 				C671E3AA28FEA2D400A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
 				C6D6E5452819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
@@ -11342,7 +11344,7 @@
 				C6010D21287FC99400FBD401 /* Task.swift in Sources */,
 				C664310E28D8BEB600A9C734 /* ConnectExternalWalletCell.swift in Sources */,
 				C692C310282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
-				C63902BF28E2FCF200E16B42 /* WalletConnector.swift in Sources */,
+				C63902BF28E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */,
 				C6F9FBD12A25C41900102F81 /* MessagingService.swift in Sources */,
 				C60610D629A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
 				C6670A0B28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */,
@@ -12144,7 +12146,7 @@
 				C6010D22287FC99400FBD401 /* Task.swift in Sources */,
 				C664310F28D8BEB600A9C734 /* ConnectExternalWalletCell.swift in Sources */,
 				C692C311282E0C7500C31393 /* CreateBackupPasswordToBackupWalletPresenter.swift in Sources */,
-				C63902C028E2FCF200E16B42 /* WalletConnector.swift in Sources */,
+				C63902C028E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */,
 				C6F9FBD22A25C41900102F81 /* MessagingService.swift in Sources */,
 				C60610D729A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
 				C6670A0C28D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */,
@@ -12730,7 +12732,7 @@
 				C63A350D28F0071B0057D34B /* DomainProfileViewPresenter.swift in Sources */,
 				30AE84DF257836E2003A0142 /* TransactionProtocol.swift in Sources */,
 				C63F1D1228AF31D5000A5C12 /* AnalyticsService.swift in Sources */,
-				C63902BE28E2FCF200E16B42 /* WalletConnector.swift in Sources */,
+				C63902BE28E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */,
 				C66435D5288EE4A00098E1B8 /* MetadataNetworkConfig.swift in Sources */,
 				C671E3A828FEA2D300A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
 				C6D6E5462819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
@@ -13393,7 +13395,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/domains-manager-ios.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -13417,7 +13419,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/domains-manager-iosRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -13526,7 +13528,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios TESTFLIGHT RELEASE.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
@@ -13552,7 +13554,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/domains-manager-iosRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-iosRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
@@ -13578,7 +13580,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios  TESTFLIGHT DEV.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-ios  TESTFLIGHT DEV.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -13603,7 +13605,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Dev";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios Dev EnvRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-ios  TESTFLIGHT DEV.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -13628,7 +13630,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios Dev Env.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-ios Dev Env.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -13651,7 +13653,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios Dev EnvRelease.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "domains-manager-ios/entitlements/domains-manager-ios Dev Env.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 22QSRWWPVJ;
@@ -13809,7 +13811,7 @@
 			repositoryURL = "https://github.com/WalletConnect/WalletConnectSwiftV2";
 			requirement = {
 				kind = exactVersion;
-				version = 1.6.10;
+				version = 1.6.17;
 			};
 		};
 		29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */ = {

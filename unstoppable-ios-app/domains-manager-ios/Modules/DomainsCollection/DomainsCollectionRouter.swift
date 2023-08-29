@@ -246,6 +246,12 @@ private extension DomainsCollectionRouter {
                                                 wallet: UDWallet,
                                                 walletInfo: WalletDisplayInfo,
                                                 dismissCallback: EmptyCallback?) async -> CNavigationController? {
+        guard domain.isInteractable else {
+            await resetNavigationToRoot()
+            presenter?.scrollTo(domain: domain, animated: true)
+            return nil
+        }
+        
         guard let viewController = self.viewController else { return nil }
         
         defer {

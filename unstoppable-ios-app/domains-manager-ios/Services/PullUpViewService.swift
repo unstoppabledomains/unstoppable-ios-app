@@ -59,7 +59,7 @@ protocol PullUpViewServiceProtocol {
                                        in viewController: UIViewController) async throws
     func showMintingNotAvailablePullUp(in viewController: UIViewController) async
     func showWCFriendlyReminderPullUp(in viewController: UIViewController)
-    func showExternalWalletDisconnected(from walletDisplayInfo: WalletDisplayInfo, in viewController: UIViewController) async
+    func showExternalWalletDisconnected(from walletDisplayInfo: WalletDisplayInfo, in viewController: UIViewController) async -> Bool
     func showSwitchExternalWalletConfirmation(from walletDisplayInfo: WalletDisplayInfo, in viewController: UIViewController) async throws
     func showLoadingIndicator(in viewController: UIViewController)
     func showWhatIsReverseResolutionInfoPullUp(in viewController: UIViewController)
@@ -94,7 +94,7 @@ protocol PullUpViewServiceProtocol {
     func showChooseCoinVersionPullUp(for coin: CoinRecord,
                                      in viewController: UIViewController) async throws -> CoinVersionSelectionResult
     func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
-                                                in viewController: UIViewController)
+                                                in viewController: UIViewController) async
     func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async
     func showLogoutConfirmationPullUp(in viewController: UIViewController) async throws
     func showUserProfilePullUp(with email: String,
@@ -818,7 +818,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         presentPullUpView(in: viewController, pullUp: .wcFriendlyReminder, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
     
-    func showExternalWalletDisconnected(from walletDisplayInfo: WalletDisplayInfo, in viewController: UIViewController) async {
+    func showExternalWalletDisconnected(from walletDisplayInfo: WalletDisplayInfo, in viewController: UIViewController) async -> Bool {
         var providerName: String = ""
         var icon: UIImage = .init()
         switch walletDisplayInfo.source {
@@ -831,8 +831,8 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let walletAddress = walletDisplayInfo.address.walletAddressTruncated
         let title = String.Constants.wcExternalWalletDisconnectedMessage.localized(walletAddress, providerName)
         
-        await withSafeCheckedMainActorContinuation(critical: false) { completion in
-            let selectionViewHeight: CGFloat = 292
+        return await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            let selectionViewHeight: CGFloat = 356
             let selectionView = PullUpSelectionView(configuration: .init(title: .highlightedText(.init(text: title,
                                                                                                        highlightedText: [.init(highlightedText: walletAddress,
                                                                                                                                highlightedColor: .foregroundSecondary)],
@@ -841,10 +841,15 @@ extension PullUpViewService: PullUpViewServiceProtocol {
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: icon,
                                                                                      size: .large),
+                                                                         // TODO: - set title, icon, analytics name
+                                                                         actionButton: .main(content: .init(title: "Reconnect",
+                                                                                                            icon: .appleIcon,
+                                                                                                            analyticsName: .domainRecord,
+                                                                                                            action: { completion(true) })),
                                                                          cancelButton: .gotItButton()),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
-            showOrUpdate(in: viewController, pullUp: .externalWalletDisconnected, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(Void()) })
+            showOrUpdate(in: viewController, pullUp: .externalWalletDisconnected, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(false) })
         }
     }
     
@@ -1332,26 +1337,29 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     }
     
     func showExternalWalletConnectionHintPullUp(for walletRecord: WCWalletsProvider.WalletRecord,
-                                                in viewController: UIViewController) {
-        let selectionViewHeight: CGFloat = 328
-        let walletName = walletRecord.name
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.externalWalletConnectionHintPullUpTitle.localized(walletName)),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: .externalWalletIndicator,
-                                                                                 size: .large),
-                                                                     subtitle: .label(.highlightedText(.init(text: String.Constants.externalWalletConnectionHintPullUpSubtitle.localized(walletName),
-                                                                                                             highlightedText: [.init(highlightedText: String.Constants.learnMore.localized(),
-                                                                                                                                     highlightedColor: .foregroundAccent)],
-                                                                                                             analyticsActionName: .learnMore,
-                                                                                                             action: { [weak viewController] in
-            guard let viewController else { return }
-            UDVibration.buttonTap.vibrate()
-            viewController.topVisibleViewController().openLink(.udExternalWalletTutorial)
-        }))),
-                                                                     cancelButton: .gotItButton()),
-                                                items: PullUpSelectionViewEmptyItem.allCases)
-        
-        presentPullUpView(in: viewController, pullUp: .externalWalletConnectionHint, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+                                                in viewController: UIViewController) async {
+        await withSafeCheckedMainActorContinuation(critical: false) { completion in
+            
+            let selectionViewHeight: CGFloat = 358
+            let walletName = walletRecord.name
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.externalWalletConnectionHintPullUpTitle.localized(walletName)),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .externalWalletIndicator,
+                                                                                     size: .large),
+                                                                         subtitle: .label(.highlightedText(.init(text: String.Constants.externalWalletConnectionHintPullUpSubtitle.localized(walletName),
+                                                                                                                 highlightedText: [.init(highlightedText: String.Constants.learnMore.localized(),
+                                                                                                                                         highlightedColor: .foregroundAccent)],
+                                                                                                                 analyticsActionName: .learnMore,
+                                                                                                                 action: { [weak viewController] in
+                guard let viewController else { return }
+                UDVibration.buttonTap.vibrate()
+                viewController.topVisibleViewController().openLink(.udExternalWalletTutorial)
+            }))),
+                                                                         cancelButton: .gotItButton()),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            presentPullUpView(in: viewController, pullUp: .externalWalletConnectionHint, contentView: selectionView, isDismissAble: true, height: selectionViewHeight, closedCallback: { completion(Void()) })
+        }
     }
         
     func showExternalWalletFailedToSignPullUp(in viewController: UIViewController) async {
