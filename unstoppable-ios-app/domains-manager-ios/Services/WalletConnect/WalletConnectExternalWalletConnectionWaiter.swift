@@ -22,17 +22,17 @@ extension WalletConnectExternalWalletConnectionWaiter {
         }
     }
     
-    func applicationDidBecomeActive() {
+    private func applicationDidBecomeActive() {
         scheduleNoResponseTimerIfWaitingForResponseFromExternalWallet()
     }
     
-    func scheduleNoResponseTimerIfWaitingForResponseFromExternalWallet() {
+    private func scheduleNoResponseTimerIfWaitingForResponseFromExternalWallet() {
         if isWaitingForResponseFromExternalWallet() {
             scheduleNoResponseFromExternalWalletWorkItem()
         }
     }
     
-    func scheduleNoResponseFromExternalWalletWorkItem() {
+    private func scheduleNoResponseFromExternalWalletWorkItem() {
         cancelNoResponseFromExternalWalletWorkItem()
         let noResponseFromExternalWalletWorkItem = DispatchWorkItem(block: { [weak self] in
             self?.handleExternalWalletDidNotRespond()
