@@ -216,7 +216,7 @@ extension WCWalletsProvider {
             switch self {
             case .supported:
                 #if DEBUG
-                return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .Spot, .MathWallet, .Omni, .ONTO, .KleverWallet, .Coinomi, .Coin98, .Argent, .Guarda, .Blockchain, .imToken, .Exodus]
+                return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .Spot, .MathWallet, .Omni, .ONTO, .KleverWallet, .Coinomi, .Coin98, .Argent, .Guarda, .Blockchain, .imToken, .Exodus, .Mew]
                 #else
                 return [.MetaMask, .Rainbow, .TrustWallet, .ledgerLive, .CryptoComDeFiWallet, .Zerion, .AlphaWallet, .Zelus, .Spot, .MathWallet, .Omni]
                 #endif
