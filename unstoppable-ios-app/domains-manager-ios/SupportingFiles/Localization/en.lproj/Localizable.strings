@@ -834,3 +834,14 @@
 "MESSAGING_CANT_CONTACT_MESSAGE" = "User is not yet on the XMTP network";
 "MESSAGING_INVITE" = "Invite";
 "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN" = "%@ - Reverse Resolution domain";
+
+// Public profile
+"FOLLOWERS" = "Followers";
+"FOLLOWING" = "Following";
+"FOLLOW" = "Follow";
+"FOLLOWERS_LIST_EMPTY_MESSAGE" = "When people follow %@, you’ll see them here";
+"FOLLOWING_LIST_EMPTY_MESSAGE" = "When %@ follow people, you’ll see them here";
+"FOLLOWED_BY" = "Followed by";
+"FOLLOWED_BY_N_OTHERS_SUFFIX" = "%i others";
+"AND" = "And";
+"LEADERBOARD" = "Leaderboard";
