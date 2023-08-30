@@ -765,15 +765,15 @@
 		C69F992B2A9F1264004B1958 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F991E2A9F1264004B1958 /* Font.swift */; };
 		C69F992C2A9F1264004B1958 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F991F2A9F1264004B1958 /* Color.swift */; };
 		C69F99412A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99402A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift */; };
-		C69F994D2A9F1566004B1958 /* ProfileFollowerImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99432A9F1566004B1958 /* ProfileFollowerImageLoader.swift */; };
-		C69F994E2A9F1566004B1958 /* PublicProfileCryptoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99442A9F1566004B1958 /* PublicProfileCryptoListView.swift */; };
-		C69F994F2A9F1566004B1958 /* PublicProfileFollowersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99462A9F1566004B1958 /* PublicProfileFollowersViewModel.swift */; };
-		C69F99502A9F1566004B1958 /* PublicProfileFollowersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99472A9F1566004B1958 /* PublicProfileFollowersView.swift */; };
-		C69F99512A9F1566004B1958 /* PublicProfilePullUpHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99482A9F1566004B1958 /* PublicProfilePullUpHeaderView.swift */; };
-		C69F99522A9F1566004B1958 /* PublicProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F994A2A9F1566004B1958 /* PublicProfileView.swift */; };
-		C69F99532A9F1566004B1958 /* PublicProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F994B2A9F1566004B1958 /* PublicProfileViewModel.swift */; };
-		C69F99542A9F1566004B1958 /* PublicProfileSocialsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F994C2A9F1566004B1958 /* PublicProfileSocialsListView.swift */; };
 		C69F99562A9F167F004B1958 /* SocialDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99552A9F167F004B1958 /* SocialDescription.swift */; };
+		C69F99752A9F2206004B1958 /* ProfileFollowerImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F996B2A9F2206004B1958 /* ProfileFollowerImageLoader.swift */; };
+		C69F99762A9F2206004B1958 /* PublicProfileCryptoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F996C2A9F2206004B1958 /* PublicProfileCryptoListView.swift */; };
+		C69F99772A9F2206004B1958 /* PublicProfileFollowersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F996E2A9F2206004B1958 /* PublicProfileFollowersViewModel.swift */; };
+		C69F99782A9F2206004B1958 /* PublicProfileFollowersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F996F2A9F2206004B1958 /* PublicProfileFollowersView.swift */; };
+		C69F99792A9F2206004B1958 /* PublicProfilePullUpHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99702A9F2206004B1958 /* PublicProfilePullUpHeaderView.swift */; };
+		C69F997A2A9F2206004B1958 /* PublicProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99722A9F2206004B1958 /* PublicProfileView.swift */; };
+		C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */; };
+		C69F997C2A9F2206004B1958 /* PublicProfileSocialsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99742A9F2206004B1958 /* PublicProfileSocialsListView.swift */; };
 		C6A223C32869FE1E005C3267 /* SocialsDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */; };
 		C6A223C82869FE24005C3267 /* SocialsDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */; };
 		C6A2D506284DBDCD00327C47 /* QRScannerViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */; };
@@ -1875,15 +1875,15 @@
 		C69F991E2A9F1264004B1958 /* Font.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		C69F991F2A9F1264004B1958 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		C69F99402A9F1478004B1958 /* DomainProfileBadgeDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileBadgeDisplayInfo.swift; sourceTree = "<group>"; };
-		C69F99432A9F1566004B1958 /* ProfileFollowerImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileFollowerImageLoader.swift; sourceTree = "<group>"; };
-		C69F99442A9F1566004B1958 /* PublicProfileCryptoListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileCryptoListView.swift; sourceTree = "<group>"; };
-		C69F99462A9F1566004B1958 /* PublicProfileFollowersViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileFollowersViewModel.swift; sourceTree = "<group>"; };
-		C69F99472A9F1566004B1958 /* PublicProfileFollowersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileFollowersView.swift; sourceTree = "<group>"; };
-		C69F99482A9F1566004B1958 /* PublicProfilePullUpHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfilePullUpHeaderView.swift; sourceTree = "<group>"; };
-		C69F994A2A9F1566004B1958 /* PublicProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileView.swift; sourceTree = "<group>"; };
-		C69F994B2A9F1566004B1958 /* PublicProfileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileViewModel.swift; sourceTree = "<group>"; };
-		C69F994C2A9F1566004B1958 /* PublicProfileSocialsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileSocialsListView.swift; sourceTree = "<group>"; };
 		C69F99552A9F167F004B1958 /* SocialDescription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialDescription.swift; sourceTree = "<group>"; };
+		C69F996B2A9F2206004B1958 /* ProfileFollowerImageLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileFollowerImageLoader.swift; sourceTree = "<group>"; };
+		C69F996C2A9F2206004B1958 /* PublicProfileCryptoListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileCryptoListView.swift; sourceTree = "<group>"; };
+		C69F996E2A9F2206004B1958 /* PublicProfileFollowersViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileFollowersViewModel.swift; sourceTree = "<group>"; };
+		C69F996F2A9F2206004B1958 /* PublicProfileFollowersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileFollowersView.swift; sourceTree = "<group>"; };
+		C69F99702A9F2206004B1958 /* PublicProfilePullUpHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfilePullUpHeaderView.swift; sourceTree = "<group>"; };
+		C69F99722A9F2206004B1958 /* PublicProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileView.swift; sourceTree = "<group>"; };
+		C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileViewModel.swift; sourceTree = "<group>"; };
+		C69F99742A9F2206004B1958 /* PublicProfileSocialsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileSocialsListView.swift; sourceTree = "<group>"; };
 		C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocialsDomainImagePreviewView.xib; sourceTree = "<group>"; };
 		C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewPresenter.swift; sourceTree = "<group>"; };
@@ -3541,7 +3541,7 @@
 				C6C9DEB22834C90700BAC36F /* AddCurrency */,
 				C6124CB629222830005E6537 /* DomainProfileActionCover */,
 				C6D5DACC28374B1F00379C38 /* ManageMultiChainDomainAddresses */,
-				C69F99422A9F1566004B1958 /* Public Profile */,
+				C69F996A2A9F2206004B1958 /* Public Profile */,
 			);
 			path = DomainProfile;
 			sourceTree = "<group>";
@@ -4740,34 +4740,33 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		C69F99422A9F1566004B1958 /* Public Profile */ = {
+		C69F996A2A9F2206004B1958 /* Public Profile */ = {
 			isa = PBXGroup;
 			children = (
-				C69F99432A9F1566004B1958 /* ProfileFollowerImageLoader.swift */,
-				C69F99442A9F1566004B1958 /* PublicProfileCryptoListView.swift */,
-				C69F99452A9F1566004B1958 /* FollowersView */,
-				C69F99482A9F1566004B1958 /* PublicProfilePullUpHeaderView.swift */,
-				C69F99492A9F1566004B1958 /* Public profileView */,
-				C69F994C2A9F1566004B1958 /* PublicProfileSocialsListView.swift */,
+				C69F99712A9F2206004B1958 /* Public profileView */,
+				C69F996D2A9F2206004B1958 /* FollowersView */,
+				C69F996B2A9F2206004B1958 /* ProfileFollowerImageLoader.swift */,
+				C69F996C2A9F2206004B1958 /* PublicProfileCryptoListView.swift */,
+				C69F99742A9F2206004B1958 /* PublicProfileSocialsListView.swift */,
+				C69F99702A9F2206004B1958 /* PublicProfilePullUpHeaderView.swift */,
 			);
-			name = "Public Profile";
-			path = "../../../../../UBTSharing/UBTSharing/Public Profile";
+			path = "Public Profile";
 			sourceTree = "<group>";
 		};
-		C69F99452A9F1566004B1958 /* FollowersView */ = {
+		C69F996D2A9F2206004B1958 /* FollowersView */ = {
 			isa = PBXGroup;
 			children = (
-				C69F99462A9F1566004B1958 /* PublicProfileFollowersViewModel.swift */,
-				C69F99472A9F1566004B1958 /* PublicProfileFollowersView.swift */,
+				C69F996E2A9F2206004B1958 /* PublicProfileFollowersViewModel.swift */,
+				C69F996F2A9F2206004B1958 /* PublicProfileFollowersView.swift */,
 			);
 			path = FollowersView;
 			sourceTree = "<group>";
 		};
-		C69F99492A9F1566004B1958 /* Public profileView */ = {
+		C69F99712A9F2206004B1958 /* Public profileView */ = {
 			isa = PBXGroup;
 			children = (
-				C69F994A2A9F1566004B1958 /* PublicProfileView.swift */,
-				C69F994B2A9F1566004B1958 /* PublicProfileViewModel.swift */,
+				C69F99722A9F2206004B1958 /* PublicProfileView.swift */,
+				C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */,
 			);
 			path = "Public profileView";
 			sourceTree = "<group>";
@@ -6289,6 +6288,7 @@
 				C6B6B039296EA86300D4E30F /* SignTransactionDomainSelectionHeaderView.swift in Sources */,
 				C669C38C2912632100837F21 /* SocialsVerificationViewPresenter.swift in Sources */,
 				C6D6E5062817E5ED008C66BB /* OnboardingAddWalletPresenter.swift in Sources */,
+				C69F99782A9F2206004B1958 /* PublicProfileFollowersView.swift in Sources */,
 				C60982302823EF3900546392 /* AddWalletNavigationController.swift in Sources */,
 				C6538DBC2A32168500B63E84 /* KeychainPGPKeysStorage.swift in Sources */,
 				C6124CD129223374005E6537 /* DomainProfileFetchFailedActionCoverViewPresenter.swift in Sources */,
@@ -6334,6 +6334,7 @@
 				C6C57C5D2869DC860093FD8C /* WallpaperDomainImagePreviewView.swift in Sources */,
 				C671E3B9290133E000A2B3A0 /* CropImageViewController.swift in Sources */,
 				C6ED3208295D4C4F00BC6919 /* DomainsCollectionTitleMintingProgressView.swift in Sources */,
+				C69F99792A9F2206004B1958 /* PublicProfilePullUpHeaderView.swift in Sources */,
 				299713D228F6933F00743003 /* ABIEncoder.swift in Sources */,
 				C6D5DABC2836021300379C38 /* CryptoRecord.swift in Sources */,
 				C665B9C028335808005E535C /* ListItemView.swift in Sources */,
@@ -6434,7 +6435,6 @@
 				C666893228114B0E002062B4 /* BaseButton.swift in Sources */,
 				C681092128041325002D780E /* GIFAnimationsService.swift in Sources */,
 				C666E0AF29CB41960003DECB /* DomainParkingStatus.swift in Sources */,
-				C69F99502A9F1566004B1958 /* PublicProfileFollowersView.swift in Sources */,
 				C609825C2823FF7700546392 /* BaseConfirmRecoveryWordsPresenter.swift in Sources */,
 				C6E0415B295053DC0080F8E3 /* UIScrollView.swift in Sources */,
 				C623969A2A288ADB00363F60 /* MessagingChatDisplayInfo.swift in Sources */,
@@ -6465,8 +6465,8 @@
 				C671E3DE29027BE200A2B3A0 /* DomainProfileTopInfoData.swift in Sources */,
 				C6E04140295051CA0080F8E3 /* DomainsCollectionPageViewController.swift in Sources */,
 				C679B5F62918F38100F543A7 /* DefaultCodable.swift in Sources */,
+				C69F99772A9F2206004B1958 /* PublicProfileFollowersViewModel.swift in Sources */,
 				C6E041B429546AB60080F8E3 /* DomainsCollectionCarouselViewController.swift in Sources */,
-				C69F99542A9F1566004B1958 /* PublicProfileSocialsListView.swift in Sources */,
 				C6E69FF6288AE47D000A8346 /* ExternalEventsService.swift in Sources */,
 				C64836C2282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */,
 				C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
@@ -6477,8 +6477,8 @@
 				C6E0419F2951A4E60080F8E3 /* DomainsCollectionSectionHeader.swift in Sources */,
 				C63902B828E2FB5B00E16B42 /* PaymentError.swift in Sources */,
 				C6109E3328E5AB310027D5D8 /* AuthentificationService.swift in Sources */,
+				C69F997A2A9F2206004B1958 /* PublicProfileView.swift in Sources */,
 				C6F9FBE32A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */,
-				C69F994D2A9F1566004B1958 /* ProfileFollowerImageLoader.swift in Sources */,
 				C6456F1027FF3C6B00A517D5 /* UIViewController.swift in Sources */,
 				C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */,
 				C6C995AE289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
@@ -6636,6 +6636,7 @@
 				309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */,
 				C6109E5028E5AC310027D5D8 /* WalletConnectClientService.swift in Sources */,
 				C669C37529121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift in Sources */,
+				C69F99752A9F2206004B1958 /* ProfileFollowerImageLoader.swift in Sources */,
 				C6456F2A280030AB00A517D5 /* UICollectionView.swift in Sources */,
 				C64836B8282BADB1007BD3F1 /* PullUpViewService.swift in Sources */,
 				C665B9BA28334D6E005E535C /* UIUserInterfaceStyle.swift in Sources */,
@@ -6648,6 +6649,7 @@
 				C6456F152800212000A517D5 /* UIStackView.swift in Sources */,
 				C6B366CD2A1BA1A700DE512B /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */,
+				C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */,
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824B2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C665FC1F29B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,
@@ -6656,7 +6658,6 @@
 				C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */,
 				C624D77A281BAB5000F55530 /* UDDomainsService.swift in Sources */,
 				C6526DCF29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
-				C69F99532A9F1566004B1958 /* PublicProfileViewModel.swift in Sources */,
 				C6C75C692848E82000DD8E3F /* Sequence.swift in Sources */,
 				C686BF172A5FE8870036C7C1 /* MessagingFilesService.swift in Sources */,
 				C6098322282B8BA300546392 /* WalletViewTransactionsAction.swift in Sources */,
@@ -6679,7 +6680,6 @@
 				C691CFC428C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */,
 				C6F9FBCA2A25C39400102F81 /* MessagingStorageServiceProtocol.swift in Sources */,
 				C6AD180F28D319BF0008A479 /* CollectionViewShowHideCell.swift in Sources */,
-				C69F994E2A9F1566004B1958 /* PublicProfileCryptoListView.swift in Sources */,
 				C6C995BE289D313D00367362 /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C60981E728225B8300546392 /* WalletDetailsTopInfoCell.swift in Sources */,
 				C6F9FBDE2A25C5AF00102F81 /* PushMessagingChannelsWebSocketsService.swift in Sources */,
@@ -6696,6 +6696,7 @@
 				C60982612824000000546392 /* CreateLocalWalletRecoveryWordsPresenter.swift in Sources */,
 				C60E9BA728218F1B00CD7593 /* ManageBackupsAction.swift in Sources */,
 				C6500B482A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */,
+				C69F99762A9F2206004B1958 /* PublicProfileCryptoListView.swift in Sources */,
 				C664B6432913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */,
 				C6157AFE2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
 				C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */,
@@ -6797,7 +6798,6 @@
 				306DB242268F4EE2009D95DE /* Extension-String.swift in Sources */,
 				C6B4098F28CF097400A9D5A7 /* SetupReverseResolutionNavBarPopAnimation.swift in Sources */,
 				30BFA4D027DE0C1400644CD5 /* TutorialViewController.swift in Sources */,
-				C69F99512A9F1566004B1958 /* PublicProfilePullUpHeaderView.swift in Sources */,
 				C63538E62949C2C100ECABA6 /* DomainsPFPInfoStorage.swift in Sources */,
 				C6456F252800308200A517D5 /* UICollectionViewCell.swift in Sources */,
 				C673D58D29FA3E26001CC77C /* ReviewTransferSwitcherCell.swift in Sources */,
@@ -6834,7 +6834,6 @@
 				C671E38E28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */,
 				C60982672824012200546392 /* EnterBackupCreateLocalWalletPresenter.swift in Sources */,
 				304C66CF2807F1E800E1ACFE /* OnboardingData.swift in Sources */,
-				C69F994F2A9F1566004B1958 /* PublicProfileFollowersViewModel.swift in Sources */,
 				C6EA6D6828B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
 				C6E04152295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift in Sources */,
 				C666E0C329CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
@@ -6879,9 +6878,9 @@
 				C63902C728E3081600E16B42 /* CryptoEditingGroupedRecordsChangesCalculator.swift in Sources */,
 				C69F99222A9F1264004B1958 /* CircleIconButton.swift in Sources */,
 				30972CC4258A62A700D7E229 /* LocalStorage.swift in Sources */,
+				C69F997C2A9F2206004B1958 /* PublicProfileSocialsListView.swift in Sources */,
 				C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */,
 				C6D0F442283F870F00444921 /* MintDomainsConfigurationListHeaderView.swift in Sources */,
-				C69F99522A9F1566004B1958 /* PublicProfileView.swift in Sources */,
 				C6A2D5BC2850848500327C47 /* PaymentTransactionRequestConfirmationView.swift in Sources */,
 				C66435D9288EF0520098E1B8 /* MetadataEndpoint.swift in Sources */,
 				3018AED227EE45B400E8C37D /* CreatePasswordViewController.swift in Sources */,
