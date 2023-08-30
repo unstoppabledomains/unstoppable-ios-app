@@ -434,5 +434,101 @@
 			<string>members</string>
 		</dict>
 	</dict>
+	<key>SDICT:N_SOCIALS</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@member@</string>
+		<key>member</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>socials</string>
+			<key>one</key>
+			<string>social</string>
+			<key>two</key>
+			<string>socials</string>
+			<key>few</key>
+			<string>socials</string>
+			<key>many</key>
+			<string>socials</string>
+			<key>other</key>
+			<string>socials</string>
+		</dict>
+	</dict>
+	<key>SDICT:N_CRYPTO</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@member@</string>
+		<key>member</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>crypto</string>
+			<key>one</key>
+			<string>crypto</string>
+			<key>two</key>
+			<string>crypto</string>
+			<key>few</key>
+			<string>crypto</string>
+			<key>many</key>
+			<string>crypto</string>
+			<key>other</key>
+			<string>crypto</string>
+		</dict>
+	</dict>
+	<key>SDICT:N_FOLLOWERS</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@member@</string>
+		<key>member</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>followers</string>
+			<key>one</key>
+			<string>follower</string>
+			<key>two</key>
+			<string>followers</string>
+			<key>few</key>
+			<string>followers</string>
+			<key>many</key>
+			<string>followers</string>
+			<key>other</key>
+			<string>followers</string>
+		</dict>
+	</dict>
+	<key>SDICT:N_FOLLOWING</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@member@</string>
+		<key>member</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>followings</string>
+			<key>one</key>
+			<string>following</string>
+			<key>two</key>
+			<string>followings</string>
+			<key>few</key>
+			<string>followings</string>
+			<key>many</key>
+			<string>followings</string>
+			<key>other</key>
+			<string>followings</string>
+		</dict>
+	</dict>
 </dict>
 </plist>
