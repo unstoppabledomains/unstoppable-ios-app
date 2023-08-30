@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class DomainProfileSocialCell: BaseListCollectionViewCell, WebsiteURLValidator {
+final class DomainProfileSocialCell: BaseListCollectionViewCell {
 
     @IBOutlet private weak var iconImageView: UIImageView!
     @IBOutlet private weak var infoNameLabel: UILabel!
@@ -45,9 +45,8 @@ extension DomainProfileSocialCell {
                                                    font: .currentFont(withSize: 16, weight: .regular),
                                                    textColor: .white.withAlphaComponent(0.56))
         } else {
-            let prefix = prefixFor(socialType: description.type)
-            let formattedValue = formattedValue(description.value, for: description.type)
-            let value = prefix + formattedValue
+            let prefix = description.type.prefix
+            let value = description.type.displayStringForValue(description.value)
             socialValueLabel.setAttributedTextWith(text: value,
                                                    font: .currentFont(withSize: 16, weight: .regular),
                                                    textColor: .white,
@@ -77,38 +76,6 @@ private extension DomainProfileSocialCell {
         "\(socialDescription?.type.title ?? "") • \(socialValueLabel.attributedString?.string ?? "")"
     }
     
-    func prefixFor(socialType: SocialsType) -> String {
-        switch socialType {
-        case .twitter, .telegram:
-            return "@"
-        case .reddit:
-            return "u/"
-        case .youTube, .linkedIn, .gitHub:
-            return "/"
-        case .discord:
-            return ""
-        }
-    }
-
-    func formattedValue(_ value: String, for socialType: SocialsType) -> String {
-        switch socialType {
-        case .twitter, .discord, .telegram:
-            return value.replacingOccurrences(of: "@", with: "")
-        case .reddit:
-            if isWebsiteValid(value),
-               let url = URL(string: value) {
-                return url.lastPathComponent
-            }
-            return value.replacingOccurrences(of: "u/", with: "")
-        case .youTube, .linkedIn, .gitHub:
-            if isWebsiteValid(value),
-               let url = URL(string: value) {
-                return url.pathComponents.suffix(2).joined(separator: "/")
-            }
-            return value
-        }
-    }
-
     func menuElement(for action: DomainProfileSocialsSection.SocialsAction) -> UIMenuElement {
         switch action {
         case .edit(_, let callback), .open(_, let callback), .copy(_, let callback):

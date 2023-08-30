@@ -608,11 +608,11 @@ extension Endpoint {
         )
     }
     
-    static func getBadgesInfo(for domain: DomainItem) -> Endpoint {
+    static func getBadgesInfo(for domainName: DomainName) -> Endpoint {
         //https://profile.unstoppabledomains.com/api/public/aaronquirk.x/badges
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/profile/public/\(domain.name)/badges",
+            path: "/profile/public/\(domainName)/badges",
             queryItems: [],
             body: ""
         )

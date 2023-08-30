@@ -454,8 +454,12 @@ extension NetworkService {
     }
     
     public func fetchBadgesInfo(for domain: DomainItem) async throws -> BadgesInfo {
+        try await fetchBadgesInfo(for: domain.name)
+    }
+    
+    public func fetchBadgesInfo(for domainName: DomainName) async throws -> BadgesInfo {
         // https://profile.unstoppabledomains.com/api/public/aaronquirk.x/badges
-        guard let url = Endpoint.getBadgesInfo(for: domain).url else {
+        guard let url = Endpoint.getBadgesInfo(for: domainName).url else {
             throw NetworkLayerError.creatingURLFailed
         }
         let data = try await fetchData(for: url, method: .get)
