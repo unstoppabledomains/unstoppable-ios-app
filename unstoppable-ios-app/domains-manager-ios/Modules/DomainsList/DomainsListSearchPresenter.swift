@@ -86,19 +86,23 @@ private extension DomainsListSearchPresenter {
         var snapshot = DomainsListSnapshot()
         
         var domains = domains
+        var domainsSectionTitle: String?
         if !searchKey.isEmpty {
             domains = domains.filter({ $0.name.lowercased().contains(searchKey) })
+            domainsSectionTitle = String.Constants.yourDomains.localized()
+            snapshot.appendSections([.globalSearchHint])
+            snapshot.appendSections([.dashesSeparator])
         }
         
         if domains.isEmpty {
             snapshot.appendSections([.searchEmptyState])
             snapshot.appendItems([.searchEmptyState])
         } else {
-            snapshot.appendSections([.other(title: searchKey.isEmpty ? nil : "Your domains")])
+            snapshot.appendSections([.other(title: domainsSectionTitle)])
             snapshot.appendItems(domains.map({ DomainsListViewController.Item.domainListItem($0,
                                                                                              isSelectable: true) }))
         }
         
-        view?.applySnapshot(snapshot, animated: false)
+        view?.applySnapshot(snapshot, animated: true)
     }
 }

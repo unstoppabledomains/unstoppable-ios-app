@@ -774,6 +774,7 @@
 		C69F997A2A9F2206004B1958 /* PublicProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99722A9F2206004B1958 /* PublicProfileView.swift */; };
 		C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */; };
 		C69F997C2A9F2206004B1958 /* PublicProfileSocialsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99742A9F2206004B1958 /* PublicProfileSocialsListView.swift */; };
+		C69F997F2A9F40EC004B1958 /* DomainsGlobalSearchHintHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F997E2A9F40EC004B1958 /* DomainsGlobalSearchHintHeader.swift */; };
 		C6A223C32869FE1E005C3267 /* SocialsDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */; };
 		C6A223C82869FE24005C3267 /* SocialsDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */; };
 		C6A2D506284DBDCD00327C47 /* QRScannerViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */; };
@@ -1884,6 +1885,7 @@
 		C69F99722A9F2206004B1958 /* PublicProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileView.swift; sourceTree = "<group>"; };
 		C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileViewModel.swift; sourceTree = "<group>"; };
 		C69F99742A9F2206004B1958 /* PublicProfileSocialsListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileSocialsListView.swift; sourceTree = "<group>"; };
+		C69F997E2A9F40EC004B1958 /* DomainsGlobalSearchHintHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsGlobalSearchHintHeader.swift; sourceTree = "<group>"; };
 		C6A223C22869FE1E005C3267 /* SocialsDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialsDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C6A223C72869FE24005C3267 /* SocialsDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SocialsDomainImagePreviewView.xib; sourceTree = "<group>"; };
 		C6A2D503284DBDCD00327C47 /* QRScannerViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScannerViewPresenter.swift; sourceTree = "<group>"; };
@@ -4774,6 +4776,7 @@
 		C69F997D2A9F254D004B1958 /* CollectionReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				C69F997E2A9F40EC004B1958 /* DomainsGlobalSearchHintHeader.swift */,
 			);
 			path = CollectionReusableViews;
 			sourceTree = "<group>";
@@ -6990,6 +6993,7 @@
 				C6109EA728E6B55A0027D5D8 /* AppearanceTheme.swift in Sources */,
 				C62C3FB9283F6E410094FC93 /* MintDomainsConfigurationViewPresenter.swift in Sources */,
 				C6109EA228E6B1CC0027D5D8 /* Toast.swift in Sources */,
+				C69F997F2A9F40EC004B1958 /* DomainsGlobalSearchHintHeader.swift in Sources */,
 				C6045B8C281C2AA900B16761 /* EmptyCollectionReusableView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
