@@ -4743,7 +4743,7 @@
 		C69F996A2A9F2206004B1958 /* Public Profile */ = {
 			isa = PBXGroup;
 			children = (
-				C69F99712A9F2206004B1958 /* Public profileView */,
+				C69F99712A9F2206004B1958 /* Public profile view */,
 				C69F996D2A9F2206004B1958 /* FollowersView */,
 				C69F996B2A9F2206004B1958 /* ProfileFollowerImageLoader.swift */,
 				C69F996C2A9F2206004B1958 /* PublicProfileCryptoListView.swift */,
@@ -4762,13 +4762,13 @@
 			path = FollowersView;
 			sourceTree = "<group>";
 		};
-		C69F99712A9F2206004B1958 /* Public profileView */ = {
+		C69F99712A9F2206004B1958 /* Public profile view */ = {
 			isa = PBXGroup;
 			children = (
 				C69F99722A9F2206004B1958 /* PublicProfileView.swift */,
 				C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */,
 			);
-			path = "Public profileView";
+			path = "Public profile view";
 			sourceTree = "<group>";
 		};
 		C6A223C12869FE12005C3267 /* SocialsDomainImagePreviewView */ = {
