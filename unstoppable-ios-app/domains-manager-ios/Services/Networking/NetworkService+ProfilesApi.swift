@@ -424,7 +424,7 @@ struct DomainProfileFollowersResponse: Codable {
     }
     
     struct Pagination: Codable {
-        let cursor: Int
+        let cursor: Int?
         let take: Int
     }
     
@@ -740,7 +740,7 @@ extension NetworkService {
         }
     }
     
-    func unfollow(_ domainNameToFollow: String, by domain: DomainItem) {
+    func unfollow(_ domainNameToFollow: String, by domain: DomainItem) async throws {
         
     }
 }
