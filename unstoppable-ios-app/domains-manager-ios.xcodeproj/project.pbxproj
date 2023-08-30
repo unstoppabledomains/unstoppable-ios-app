@@ -4771,6 +4771,13 @@
 			path = "Public profile view";
 			sourceTree = "<group>";
 		};
+		C69F997D2A9F254D004B1958 /* CollectionReusableViews */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CollectionReusableViews;
+			sourceTree = "<group>";
+		};
 		C6A223C12869FE12005C3267 /* SocialsDomainImagePreviewView */ = {
 			isa = PBXGroup;
 			children = (
@@ -5534,6 +5541,7 @@
 				C6B6B0692976607D00D4E30F /* DomainsListSearchPresenter.swift */,
 				C6E0417C295057FE0080F8E3 /* DomainsListViewController.swift */,
 				C6E0417D295057FE0080F8E3 /* DomainsListViewController.xib */,
+				C69F997D2A9F254D004B1958 /* CollectionReusableViews */,
 				C6E0418A295058A80080F8E3 /* Cells */,
 			);
 			path = DomainsList;

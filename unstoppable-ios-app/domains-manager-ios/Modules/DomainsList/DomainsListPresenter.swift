@@ -97,7 +97,7 @@ private extension DomainsListPresenter {
         }
         
         if !otherDomains.isEmpty {
-            snapshot.appendSections([.other]) // For other domains
+            snapshot.appendSections([.other(title: nil)]) // For other domains
             snapshot.appendItems(otherDomains.map({ DomainsListViewController.Item.domainListItem($0,
                                                                                                   isSelectable: true) }))
         }

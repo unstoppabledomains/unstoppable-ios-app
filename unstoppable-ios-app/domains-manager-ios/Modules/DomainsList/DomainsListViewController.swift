@@ -141,7 +141,10 @@ private extension DomainsListViewController {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
         collectionView.contentInset.top = presenter.isSearchable ? 140 : 103
-
+        collectionView.register(CollectionTextHeaderReusableView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier)
+        
         configureDataSource()
     }
     
@@ -177,6 +180,23 @@ private extension DomainsListViewController {
                 return cell
             }
         })
+        
+        
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
+            guard let section = self?.section(at: indexPath) else { return nil }
+            
+            switch section {
+            case .other(let title):
+                guard let title else { return nil }
+                let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                           withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier,
+                                                                           for: indexPath) as! CollectionTextHeaderReusableView
+                view.setHeader(title)
+                return view
+            default:
+                return nil
+            }
+        }
     }
     
     func section(at indexPath: IndexPath) -> Section? {
@@ -200,14 +220,34 @@ private extension DomainsListViewController {
                                                                   bottom: 1,
                                                                   trailing: spacing + 1)
             
-            switch section {
-            case .other, .minting:
+            func addBackground(inset: CGFloat? = nil) {
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
+                if let inset {
+                    background.contentInsets.top = inset
+                }
                 layoutSection.decorationItems = [background]
+            }
+            
+            switch section {
+            case .other(let title):
+                var inset: CGFloat?
+                if title != nil {
+                    let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                      heightDimension: .absolute(CollectionTextHeaderReusableView.Height))
+                    let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: size,
+                                                                             elementKind: UICollectionView.elementKindSectionHeader,
+                                                                             alignment: .top)
+                    layoutSection.boundarySupplementaryItems = [header]
+                    inset = CollectionTextHeaderReusableView.Height
+                }
+                
+                addBackground(inset: inset)
+            case .minting:
+                addBackground()
             case .searchEmptyState, .none:
                 Void()
             }
-          
+            
             
             
             return layoutSection
@@ -222,7 +262,7 @@ private extension DomainsListViewController {
 // MARK: - Collection elements
 extension DomainsListViewController {
     enum Section: Hashable {
-        case other, minting, searchEmptyState
+        case other(title: String?), minting, searchEmptyState
     }
     
     enum Item: Hashable {

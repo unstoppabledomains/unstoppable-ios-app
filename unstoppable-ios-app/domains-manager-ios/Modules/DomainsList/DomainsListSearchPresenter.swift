@@ -94,7 +94,7 @@ private extension DomainsListSearchPresenter {
             snapshot.appendSections([.searchEmptyState])
             snapshot.appendItems([.searchEmptyState])
         } else {
-            snapshot.appendSections([.other])
+            snapshot.appendSections([.other(title: searchKey.isEmpty ? nil : "Your domains")])
             snapshot.appendItems(domains.map({ DomainsListViewController.Item.domainListItem($0,
                                                                                              isSelectable: true) }))
         }
