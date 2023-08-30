@@ -914,6 +914,22 @@ extension String {
         static let messagingCantContactMessage = "MESSAGING_CANT_CONTACT_MESSAGE"
         static let messagingInvite = "MESSAGING_INVITE"
         static let messagingSearchResultNotRRDomain = "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN"
+        
+        // Public profile
+        static let followers = "Followers"
+        static let following = "Following"
+        static let follow = "Follow"
+        static let followersListEmptyMessage = "When people follow %@, you’ll see them here"
+        static let followingListEmptyMessage = "When %@ follow people, you’ll see them here"
+        static let pluralNSocials = "%i socials"
+        static let pluralNCrypto = "%i crypto"
+        static let pluralNFollowers = "%i Followers"
+        static let pluralNFollowing = "%i Following"
+        static let followedBy = "Followed by"
+        static let followedByNOthersSuffix = "%i others"
+        static let and = "And"
+        static let leaderboard = "Leaderboard"
+        
     }
 
     enum BlockChainIcons: String {

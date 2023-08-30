@@ -33,7 +33,7 @@ final class DomainProfileBadgeCell: BaseListCollectionViewCell {
 
 // MARK: - Open methods
 extension DomainProfileBadgeCell {
-    func setWith(displayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo) {
+    func setWith(displayInfo: DomainProfileBadgeDisplayInfo) {
         iconSizeConstraint.constant = displayInfo.badge.isUDBadge ? 40 : 56
         badgeIconImageView.layer.cornerRadius = displayInfo.badge.isUDBadge ? 0 : 28
         set(badgeIcon: displayInfo.defaultIcon)

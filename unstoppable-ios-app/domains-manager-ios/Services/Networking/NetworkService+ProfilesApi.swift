@@ -12,6 +12,7 @@ struct SerializedPublicDomainProfile: Decodable {
     let socialAccounts: SocialAccounts?
     let referralCode: String?
     let social: DomainProfileSocialInfo?
+    let records: [String : String]?
 }
 
 struct SerializedUserDomainProfile: Codable {
@@ -407,7 +408,7 @@ struct DomainProfileSocialInfo: Codable {
     let followerCount: Int
 }
 
-enum DomainProfileFollowerRelationshipType: String, Codable {
+enum DomainProfileFollowerRelationshipType: String, Codable, CaseIterable {
     case followers, following
 }
 

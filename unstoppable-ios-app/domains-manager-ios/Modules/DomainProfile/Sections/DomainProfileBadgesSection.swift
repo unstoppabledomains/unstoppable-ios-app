@@ -176,7 +176,7 @@ private extension DomainProfileBadgesSection {
         }
     }
 
-    func didSelect(displayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo) {
+    func didSelect(displayInfo: DomainProfileBadgeDisplayInfo) {
         Task { @MainActor in
             guard let view = controller?.viewController,
                   let domain = controller?.generalData.domain else { return }

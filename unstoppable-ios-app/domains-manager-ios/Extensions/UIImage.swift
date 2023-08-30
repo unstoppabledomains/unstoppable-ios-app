@@ -137,6 +137,8 @@ extension UIImage {
     static let infoEmptyIcon24 = UIImage(named: "infoEmptyIcon24")!
     static let docsIcon24 = UIImage(named: "docsIcon24")!
     static let helpIcon24 = UIImage(named: "helpIcon24")!
+    static let followerGrayPlaceholder = UIImage(named: "followerGrayPlaceholder")!
+    static let cellChevron = UIImage(named: "cellChevron")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
