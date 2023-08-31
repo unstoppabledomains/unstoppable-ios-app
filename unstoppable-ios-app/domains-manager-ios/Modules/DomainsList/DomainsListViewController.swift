@@ -64,6 +64,12 @@ final class DomainsListViewController: BaseViewController, BlurVisibilityAfterLi
             self.updateBlurVisibility(for: yOffset, in: navBar)
         }
     }
+    
+    override func hideKeyboard() {
+        super.hideKeyboard()
+        
+        cNavigationBar?.setSearchActive(false, animated: true)
+    }
 }
 
 // MARK: - DomainsListViewProtocol

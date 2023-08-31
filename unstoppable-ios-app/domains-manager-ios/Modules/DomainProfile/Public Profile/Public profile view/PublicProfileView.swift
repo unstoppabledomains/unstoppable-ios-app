@@ -215,9 +215,15 @@ private extension PublicProfileView {
     }
     
     func isBioTextAvailable() -> Bool {
-        viewModel.profile?.profile.description != nil ||
-        viewModel.profile?.profile.web2Url != nil ||
-        viewModel.profile?.profile.location != nil
+        isStringValueSet(viewModel.profile?.profile.description) ||
+        isStringValueSet(viewModel.profile?.profile.web2Url) ||
+        isStringValueSet(viewModel.profile?.profile.location)
+    }
+    
+    func isStringValueSet(_ string: String?) -> Bool {
+        guard let string else { return false }
+        
+        return !string.trimmedSpaces.isEmpty
     }
     
     @ViewBuilder
