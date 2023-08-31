@@ -111,7 +111,7 @@ extension ChatsList {
                                           mode: ChatsList.SearchMode) async throws -> [SearchDomainProfile] {
             switch mode {
             case .default, .chatsOnly:
-                return try await NetworkService().searchForRRDomainsWith(name: searchKey)
+                return try await NetworkService().searchForDomainsWith(name: searchKey, shouldBeSetAsRR: true)
             case .channelsOnly:
                 return []
             }

@@ -183,6 +183,11 @@ private extension DomainsListViewController {
                 cell.setWith(domainItem: domainItem, isSelectable: isSelectable)
                 
                 return cell
+            case .domainSearchItem(let searchDomain, let isSelectable):
+                let cell = collectionView.dequeueCellOfType(DomainsCollectionListCell.self, forIndexPath: indexPath)
+                cell.setWith(searchDomain: searchDomain, isSelectable: isSelectable)
+                
+                return cell
             case .domainsMintingInProgress(let domainsCount):
                 let cell = collectionView.dequeueCellOfType(DomainsCollectionMintingInProgressCell.self, forIndexPath: indexPath)
                 cell.setWith(domainsCount: domainsCount)
@@ -195,7 +200,6 @@ private extension DomainsListViewController {
                 return cell
             }
         })
-        
         
         dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
             guard let section = self?.section(at: indexPath) else { return nil }
@@ -311,6 +315,7 @@ extension DomainsListViewController {
     
     enum Item: Hashable {
         case domainListItem(_ domainItem: DomainDisplayInfo, isSelectable: Bool)
+        case domainSearchItem(_ domainItem: SearchDomainProfile, isSelectable: Bool)
         case domainsMintingInProgress(domainsCount: Int)
         case searchEmptyState
     }

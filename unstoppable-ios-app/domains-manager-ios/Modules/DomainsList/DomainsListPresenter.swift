@@ -45,6 +45,8 @@ final class DomainsListPresenter: DomainsListViewPresenter {
         case .domainsMintingInProgress:
             logAnalytic(event: .mintingDomainsPressed)
             showDomainsMintingInProgress()
+        case .domainSearchItem:
+            Debugger.printFailure("Unexpected event", critical: true)
         }
     }
 }

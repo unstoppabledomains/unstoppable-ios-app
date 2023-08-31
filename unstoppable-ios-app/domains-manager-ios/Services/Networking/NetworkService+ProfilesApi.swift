@@ -121,7 +121,7 @@ extension PublicDomainProfileAttributes {
     }
 }
 
-enum DomainProfileImageType: String, Codable {
+enum DomainProfileImageType: String, Codable, Hashable {
     case onChain, offChain
     case `default` /// Means no avatar is set
 }
@@ -371,7 +371,7 @@ struct SignatureComponentHeaders: Decodable {
     }
 }
 
-struct SearchDomainProfile: Codable {
+struct SearchDomainProfile: Codable, Hashable {
     let name: String
     let ownerAddress: String
     let imagePath: String?
@@ -496,9 +496,13 @@ extension NetworkService {
         return info
     }
     
-    public func searchForRRDomainsWith(name: String) async throws -> [SearchDomainProfile] {
+    public func searchForDomainsWith(name: String,
+                                     shouldHaveProfile: Bool = false,
+                                     shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
         let startTime = Date()
-        guard let url = Endpoint.searchDomains(with: name, shouldHaveProfile: false, shouldBeSetAsRR: true).url else {
+        guard let url = Endpoint.searchDomains(with: name,
+                                               shouldHaveProfile: shouldHaveProfile,
+                                               shouldBeSetAsRR: shouldBeSetAsRR).url else {
             throw NetworkLayerError.creatingURLFailed
         }
         let data = try await fetchData(for: url, method: .get)

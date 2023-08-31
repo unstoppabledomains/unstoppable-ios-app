@@ -43,6 +43,8 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
             searchCallback?(domain)
         case .domainsMintingInProgress:
             Debugger.printFailure("Unexpected event", critical: true)
+        case .domainSearchItem(let domain, _):
+            return 
         }
     }
     
@@ -104,5 +106,36 @@ private extension DomainsListSearchPresenter {
         }
         
         view?.applySnapshot(snapshot, animated: true)
+    }
+}
+
+
+// MARK: - Private methods
+private extension DomainsListSearchPresenter {
+    func searchForDomains(searchKey: String) async throws -> [SearchDomainProfile] {
+        if searchKey.isValidAddress() {
+            let wallet = searchKey
+            if let domain = try? await loadGlobalDomainRRInfo(for: wallet) {
+                return [domain]
+            }
+            
+            return []
+        } else {
+            let domains = try await NetworkService().searchForDomainsWith(name: searchKey, shouldBeSetAsRR: false)
+            return domains
+        }
+    }
+    
+    func loadGlobalDomainRRInfo(for key: String) async throws -> SearchDomainProfile? {
+        if let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: key.lowercased()),
+           rrInfo.name.isUDTLD() {
+            
+            return SearchDomainProfile(name: rrInfo.name,
+                                       ownerAddress: rrInfo.address,
+                                       imagePath: rrInfo.pfpURLToUse?.absoluteString,
+                                       imageType: .offChain)
+        }
+        
+        return nil
     }
 }
