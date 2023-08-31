@@ -202,6 +202,21 @@ extension UIViewController {
             UIApplication.shared.open(url)
         }
     }
+    
+    func shareDomainProfile(domainName: DomainName, additionalItems: [Any] = []) {
+        guard let url = String.Links.domainProfilePage(domainName: domainName).url else { return }
+
+        let titleItem = DomainURLActivityItemSource(url: url, isTitleOnly: true)
+        let linkItem = DomainURLActivityItemSource(url: url, isTitleOnly: false)
+        var activityItems: [Any] = [titleItem, linkItem] + additionalItems
+        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        activityViewController.completionWithItemsHandler = { _, completed, _, _ in
+            if completed {
+                AppReviewService.shared.appReviewEventDidOccurs(event: .didShareProfile)
+            }
+        }
+        present(activityViewController, animated: true)
+    }
 }
  
 extension UIViewController {

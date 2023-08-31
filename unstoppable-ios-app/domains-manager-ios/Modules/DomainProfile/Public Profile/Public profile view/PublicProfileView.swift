@@ -7,13 +7,6 @@
 
 import SwiftUI
 
-protocol PublicProfileViewDelegate: AnyObject {
-    func publicProfileDidSelectBadge(_ badge: DomainProfileBadgeDisplayInfo)
-    func publicProfileDidSelectShareProfile(_ profile: DomainName)
-    func publicProfileDidSelectMessagingProfile(_ profile: DomainName)
-    func publicProfileDidSelectOpenLeaderboard()
-}
-
 struct PublicProfileView: View {
     
     @MainActor
@@ -541,7 +534,7 @@ private extension PublicProfileView {
     func badgeView(badge: DomainProfileBadgeDisplayInfo) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            delegate?.publicProfileDidSelectBadge(badge)
+            delegate?.publicProfileDidSelectBadge(badge, in: viewModel.domainName)
         } label: {
             ZStack {
                 Color.white

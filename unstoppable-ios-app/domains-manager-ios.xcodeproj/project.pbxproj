@@ -450,6 +450,7 @@
 		C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645131028095BA400413C51 /* ExistingUsersTutorialViewController.swift */; };
 		C645131B28096CB600413C51 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = C645132028096CB600413C51 /* Localizable.stringsdict */; };
 		C64513232809912F00413C51 /* PullUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64513222809912F00413C51 /* PullUpViewController.swift */; };
+		C64528D32AA0CDFC00298121 /* PublicProfileViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */; };
 		C6456F0627FF291D00A517D5 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0527FF291D00A517D5 /* GradientView.swift */; };
 		C6456F0B27FF299800A517D5 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0A27FF299800A517D5 /* UIView.swift */; };
 		C6456F1027FF3C6B00A517D5 /* UIViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6456F0F27FF3C6B00A517D5 /* UIViewController.swift */; };
@@ -1570,6 +1571,7 @@
 		C645131028095BA400413C51 /* ExistingUsersTutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingUsersTutorialViewController.swift; sourceTree = "<group>"; };
 		C645131F28096CB600413C51 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		C64513222809912F00413C51 /* PullUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpViewController.swift; sourceTree = "<group>"; };
+		C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicProfileViewDelegate.swift; sourceTree = "<group>"; };
 		C6456F0527FF291D00A517D5 /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		C6456F0A27FF299800A517D5 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		C6456F0F27FF3C6B00A517D5 /* UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewController.swift; sourceTree = "<group>"; };
@@ -4769,6 +4771,7 @@
 			children = (
 				C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */,
 				C69F99722A9F2206004B1958 /* PublicProfileView.swift */,
+				C64528D22AA0CDFC00298121 /* PublicProfileViewDelegate.swift */,
 			);
 			path = "Public profile view";
 			sourceTree = "<group>";
@@ -6664,6 +6667,7 @@
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824B2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C665FC1F29B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,
+				C64528D32AA0CDFC00298121 /* PublicProfileViewDelegate.swift in Sources */,
 				C6D6E52C28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
 				C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
 				C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */,

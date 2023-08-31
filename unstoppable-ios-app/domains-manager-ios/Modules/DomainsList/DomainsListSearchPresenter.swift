@@ -140,7 +140,8 @@ private extension DomainsListSearchPresenter {
         Task {
             do {
                 let profiles = try await searchForGlobalProfiles(with: searchKey)
-                self.globalProfiles = profiles
+                let userDomains = Set(self.domains.map({ $0.name }))
+                self.globalProfiles = profiles.filter({ !userDomains.contains($0.name) })
                 showDomains()
             }
             isLoadingGlobalProfiles = false
