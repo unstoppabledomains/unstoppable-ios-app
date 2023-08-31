@@ -576,17 +576,17 @@ private extension ChatsListViewPresenter {
             people = localChats.map { .existingChat($0) }
             
             // Domain profiles
-            let domainProfiles = searchData.domainProfiles.filter({ $0.name != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name && !localChatsPeopleWallets.contains($0.ownerAddress.lowercased()) })
+            let domainProfiles = searchData.domainProfiles.filter({ $0.ownerAddress != nil && $0.name != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name && !localChatsPeopleWallets.contains($0.ownerAddress!.lowercased()) })
             people += domainProfiles.map { profile in
                 let pfpURL: URL? = profile.imageType == .default ? nil : URL(string: profile.imagePath ?? "")
                 
-                return .newUser(.init(wallet: profile.ownerAddress, domainName: profile.name, pfpURL: pfpURL))
+                return .newUser(.init(wallet: profile.ownerAddress!, domainName: profile.name, pfpURL: pfpURL))
             }
             
             // Search users
             let remotePeople = searchData.searchUsers.filter({ searchUser in
                 !localChatsPeopleWallets.contains(searchUser.wallet.lowercased()) &&
-                !domainProfiles.contains(where: { $0.ownerAddress.lowercased() == searchUser.wallet.lowercased()})
+                !domainProfiles.contains(where: { $0.ownerAddress!.lowercased() == searchUser.wallet.lowercased()})
             })
             people += remotePeople.map { .newUser($0) }
             

@@ -17,6 +17,12 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
     override var title: String { String.Constants.allDomains.localized() }
     override var isSearchable: Bool { true }
     
+    typealias SearchProfilesTask = Task<[SearchDomainProfile], Error>
+    private let debounce: TimeInterval = 0.3
+    private var currentTask: SearchProfilesTask?
+    private var globalProfiles: [SearchDomainProfile] = []
+    private var isLoadingGlobalProfiles = false
+    
     init(view: DomainsListViewProtocol,
          domains: [DomainDisplayInfo],
          searchCallback: @escaping DomainsListSearchCallback) {
@@ -50,7 +56,9 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
     
     @MainActor
     override func didSearchWith(key: String) {
+        globalProfiles.removeAll()
         super.didSearchWith(key: key)
+        scheduleSearchGlobalProfiles()
         showDomains()
     }
     
@@ -96,22 +104,67 @@ private extension DomainsListSearchPresenter {
             snapshot.appendSections([.dashesSeparator])
         }
         
-        if domains.isEmpty {
+        if domains.isEmpty && globalProfiles.isEmpty && !isLoadingGlobalProfiles {
             snapshot.appendSections([.searchEmptyState])
             snapshot.appendItems([.searchEmptyState])
-        } else {
+        }
+        
+        if !domains.isEmpty {
             snapshot.appendSections([.other(title: domainsSectionTitle)])
             snapshot.appendItems(domains.map({ DomainsListViewController.Item.domainListItem($0,
                                                                                              isSelectable: true) }))
+        }
+        
+        if !globalProfiles.isEmpty {
+            snapshot.appendSections([.other(title: String.Constants.globalSearch.localized())])
+            snapshot.appendItems(globalProfiles.map({ DomainsListViewController.Item.domainSearchItem($0, isSelectable: true) }))
         }
         
         view?.applySnapshot(snapshot, animated: true)
     }
 }
 
-
 // MARK: - Private methods
 private extension DomainsListSearchPresenter {
+    func scheduleSearchGlobalProfiles() {
+        let searchKey = self.searchKey
+        isLoadingGlobalProfiles = true
+        Task {
+            do {
+                let profiles = try await searchForGlobalProfiles(with: searchKey)
+                self.globalProfiles = profiles
+                showDomains()
+            }
+            isLoadingGlobalProfiles = false
+        }
+    }
+    
+    func searchForGlobalProfiles(with searchKey: String) async throws -> [SearchDomainProfile] {
+        // Cancel previous search task if it exists
+        currentTask?.cancel()
+        
+        let debounce = self.debounce
+        let task: SearchProfilesTask = Task.detached {
+            do {
+                try await Task.sleep(seconds: debounce)
+                try Task.checkCancellation()
+                
+                let profiles = try await self.searchForDomains(searchKey: searchKey)
+                
+                try Task.checkCancellation()
+                return profiles
+            } catch NetworkLayerError.requestCancelled, is CancellationError {
+                return []
+            } catch {
+                throw error
+            }
+        }
+        
+        currentTask = task
+        let users = try await task.value
+        return users
+    }
+    
     func searchForDomains(searchKey: String) async throws -> [SearchDomainProfile] {
         if searchKey.isValidAddress() {
             let wallet = searchKey

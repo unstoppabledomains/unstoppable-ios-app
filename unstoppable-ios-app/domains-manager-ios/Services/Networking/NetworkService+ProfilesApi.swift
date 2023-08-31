@@ -373,7 +373,7 @@ struct SignatureComponentHeaders: Decodable {
 
 struct SearchDomainProfile: Codable, Hashable {
     let name: String
-    let ownerAddress: String
+    let ownerAddress: String?
     let imagePath: String?
     let imageType: DomainProfileImageType?
 }
@@ -497,11 +497,10 @@ extension NetworkService {
     }
     
     public func searchForDomainsWith(name: String,
-                                     shouldHaveProfile: Bool = false,
                                      shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
         let startTime = Date()
         guard let url = Endpoint.searchDomains(with: name,
-                                               shouldHaveProfile: shouldHaveProfile,
+                                               shouldHaveProfile: !shouldBeSetAsRR,
                                                shouldBeSetAsRR: shouldBeSetAsRR).url else {
             throw NetworkLayerError.creatingURLFailed
         }

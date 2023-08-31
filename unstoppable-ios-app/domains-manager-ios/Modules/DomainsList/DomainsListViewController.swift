@@ -122,7 +122,7 @@ extension DomainsListViewController: UDSearchBarDelegate {
 // MARK: - Private functions
 private extension DomainsListViewController {
     func setSearchBarActive(_ isActive: Bool) {
-        let topInset: CGFloat = isActive ? 84 : 100
+        let topInset: CGFloat = isActive ? 84 : 140
         collectionView.contentInset.top = topInset
         DispatchQueue.main.asyncAfter(deadline: .now()) {
             self.collectionView.setContentOffset(CGPoint(x: 0, y: -topInset),
