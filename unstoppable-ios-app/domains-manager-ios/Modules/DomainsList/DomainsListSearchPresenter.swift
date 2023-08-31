@@ -50,6 +50,7 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
         case .domainsMintingInProgress:
             Debugger.printFailure("Unexpected event", critical: true)
         case .domainSearchItem(let searchProfile, _):
+            UDVibration.buttonTap.vibrate()
             view?.hideKeyboard()
             Task {
                 guard let domainDisplayInfo = domains.first,

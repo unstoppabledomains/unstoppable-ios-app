@@ -123,6 +123,8 @@ private extension PublicProfileFollowersView {
     }
     
     func dismiss() {
+        guard isPresenting else { return }
+        
         isPresenting = false
     }
 }

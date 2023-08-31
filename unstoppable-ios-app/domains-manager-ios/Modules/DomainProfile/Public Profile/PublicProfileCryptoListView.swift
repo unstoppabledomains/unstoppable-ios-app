@@ -37,9 +37,7 @@ struct PublicProfileCryptoListView: View {
         .onAppear {
             UITableView.appearance().backgroundColor = .clear
         }
-        .onDisappear {
-            isPresenting = false
-        }
+        .onDisappear(perform: dismiss)
     }
     
 }
@@ -59,6 +57,8 @@ private extension PublicProfileCryptoListView {
     }
     
     func dismiss() {
+        guard isPresenting else { return }
+
         isPresenting = false
     }
     

@@ -57,13 +57,13 @@ struct PublicProfileView: View {
         .animation(.easeInOut(duration: 0.3), value: UUID())
         .modifier(ShowingCryptoList(isCryptoListPresented: $isCryptoListPresented,
                                     domainName: viewModel.domainName,
-                                    records: $viewModel.records))
+                                    records: viewModel.records))
         .modifier(ShowingFollowersList(isFollowersListPresented: $isFollowersListPresented,
-                                      socialInfo: $viewModel.socialInfo,
+                                      socialInfo: viewModel.socialInfo,
                                       domainName: viewModel.domainName,
                                       followerSelectionCallback: followerSelected))
         .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
-                                     socialAccounts: $viewModel.socialAccounts,
+                                     socialAccounts: viewModel.socialAccounts,
                                      domainName: viewModel.domainName))
     }
     
@@ -611,7 +611,7 @@ private extension PublicProfileView {
     struct ShowingCryptoList: ViewModifier {
         @Binding var isCryptoListPresented: Bool
         let domainName: DomainName
-        @Binding var records: [String : String]?
+        var records: [String : String]?
         
         func body(content: Content) -> some View {
             if let records {
@@ -631,7 +631,7 @@ private extension PublicProfileView {
     
     struct ShowingFollowersList: ViewModifier {
         @Binding var isFollowersListPresented: Bool
-        @Binding var socialInfo: DomainProfileSocialInfo?
+        var socialInfo: DomainProfileSocialInfo?
         let domainName: DomainName
         let followerSelectionCallback: FollowerSelectionCallback
         
@@ -654,7 +654,7 @@ private extension PublicProfileView {
     
     struct ShowingSocialsList: ViewModifier {
         @Binding var isSocialsListPresented: Bool
-        @Binding var socialAccounts: SocialAccounts?
+        var socialAccounts: SocialAccounts?
         let domainName: DomainName
         
         func body(content: Content) -> some View {
