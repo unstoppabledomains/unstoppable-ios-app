@@ -722,6 +722,20 @@ extension NetworkService {
     }
     
     func follow(_ domainNameToFollow: String, by domain: DomainItem) async throws {
+        try await setFollowingStatusTo(domainName: domainNameToFollow,
+                                       by: domain,
+                                       isFollowing: true)
+    }
+    
+    func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws {
+        try await setFollowingStatusTo(domainName: domainNameToUnfollow,
+                                       by: domain,
+                                       isFollowing: false)
+    }
+    
+    private func setFollowingStatusTo(domainName: String,
+                                      by domain: DomainItem,
+                                      isFollowing: Bool) async throws {
         struct FollowRequest: Codable {
             let domain: String
         }
@@ -730,22 +744,18 @@ extension NetworkService {
         let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
         let signature = persistedSignature.sign
         let expires = persistedSignature.expires
-        let endpoint = Endpoint.follow(domainNameToFollow: domainNameToFollow,
+        let endpoint = Endpoint.follow(domainNameToFollow: domainName,
                                        by: domain.name,
                                        expires: expires,
                                        signature: signature,
                                        body: body)
-        
+        let method: HttpRequestMethod = isFollowing ? .post : .delete
         do {
-            try await fetchDataFor(endpoint: endpoint, method: .post)
+            try await fetchDataFor(endpoint: endpoint, method: method)
         } catch {
             checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
             throw error
         }
-    }
-    
-    func unfollow(_ domainNameToFollow: String, by domain: DomainItem) async throws {
-        
     }
 }
 
