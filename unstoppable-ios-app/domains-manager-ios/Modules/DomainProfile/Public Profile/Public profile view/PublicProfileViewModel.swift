@@ -20,7 +20,7 @@ extension PublicProfileView {
     }
     
    @MainActor
-    final class PublicProfileViewModel: ObservableObject, ProfileFollowerImageLoader {
+    final class PublicProfileViewModel: ObservableObject, ProfileImageLoader {
         
         private(set) var domainName: DomainName
         let viewingDomain: DomainItem
@@ -155,18 +155,20 @@ extension PublicProfileView {
         
         private func loadAvatar() {
             Task {
-                if profile?.profile.imagePath != nil {
-                    try? await Task.sleep(seconds: 1)
-                    avatarImage = UIImage(named: "testava2")
+                if let imagePath = profile?.profile.imagePath,
+                   let url = URL(string: imagePath) {
+                    avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
+                                                                                 downsampleDescription: nil)
                 }
             }
         }
         
         private func loadCoverImage() {
             Task {
-                if profile?.profile.coverPath != nil {
-                    try? await Task.sleep(seconds: 0.5)
-                    coverImage = UIImage(named: "testava")
+                if let coverPath = profile?.profile.coverPath,
+                   let url = URL(string: coverPath) {
+                    coverImage = await appContext.imageLoadingService.loadImage(from: .url(url),
+                                                                                downsampleDescription: nil)
                 }
             }
         }

@@ -65,7 +65,7 @@ private extension PublicProfileCryptoListView {
     @ViewBuilder
     func viewForRecordRow(_ record: RecordWithIcon) -> some View {
         HStack(spacing: 16) {
-            Image(uiImage: record.icon ?? .cancelIcon)
+            Image(uiImage: record.icon ?? .init())
                 .resizable()
                 .background(record.icon == nil ? Color.backgroundMuted2 : Color.clear)
                 .frame(width: 40,
@@ -148,12 +148,26 @@ private extension PublicProfileCryptoListView {
         guard record.icon == nil else { return }
         
         Task {
-            let num = Double(arc4random_uniform(10))
-            try? await Task.sleep(seconds: num / 10)
-            let icon = UIImage(named: "testava")
             
-            if let i = records.firstIndex(where: { $0.record.coin == record.record.coin }) {
-                records[i].icon = icon
+            func setIcon(_ icon: UIImage?, to record: RecordWithIcon) {
+                if let i = records.firstIndex(where: { $0.record.coin == record.record.coin }) {
+                    records[i].icon = icon
+                }
+            }
+            
+            let coin = record.record.coin
+            let initials = await appContext.imageLoadingService.loadImage(from: .initials(coin.ticker,
+                                                                                          size: .default,
+                                                                                          style: .gray),
+                                                                downsampleDescription: nil)
+            setIcon(initials, to: record)
+
+            
+            if let icon = await appContext.imageLoadingService.loadImage(from: .currency(coin,
+                                                                                         size: .default,
+                                                                                         style: .gray),
+                                                                         downsampleDescription: nil) {
+                setIcon(icon, to: record)
             }
         }
     }
