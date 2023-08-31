@@ -132,7 +132,7 @@ private extension PublicProfileFollowersView {
     @ViewBuilder
     func rowForFollower(_ follower: DomainProfileFollowerDisplayInfo) -> some View {
         HStack(spacing: 16) {
-            Image(uiImage: follower.icon ?? .domainSharePlaceholder)
+            Image(uiImage: follower.icon ?? .init())
                 .resizable()
                 .id(follower.icon)
                 .frame(width: 40,

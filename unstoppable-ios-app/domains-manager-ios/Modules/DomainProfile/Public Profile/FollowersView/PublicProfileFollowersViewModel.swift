@@ -10,7 +10,7 @@ import SwiftUI
 extension PublicProfileFollowersView {
     
     @MainActor
-    final class PublicProfileFollowersViewModel: ObservableObject, ProfileFollowerImageLoader {
+    final class PublicProfileFollowersViewModel: ObservableObject, ProfileImageLoader {
        
         let domainName: DomainName
         let socialInfo: DomainProfileSocialInfo
@@ -41,7 +41,7 @@ extension PublicProfileFollowersView {
             let type = selectedType
             
             Task {
-                let icon = await loadIconFor(follower: follower)
+                let icon = await loadIconOrInitialsFor(follower: follower)
                 
                 if case .followers = type,
                    let i = followersList?.firstIndex(where: { $0.domain == follower.domain }) {

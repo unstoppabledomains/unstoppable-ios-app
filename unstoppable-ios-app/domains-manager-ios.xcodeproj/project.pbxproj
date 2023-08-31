@@ -4765,8 +4765,8 @@
 		C69F99712A9F2206004B1958 /* Public profile view */ = {
 			isa = PBXGroup;
 			children = (
-				C69F99722A9F2206004B1958 /* PublicProfileView.swift */,
 				C69F99732A9F2206004B1958 /* PublicProfileViewModel.swift */,
+				C69F99722A9F2206004B1958 /* PublicProfileView.swift */,
 			);
 			path = "Public profile view";
 			sourceTree = "<group>";

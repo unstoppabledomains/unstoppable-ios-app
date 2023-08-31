@@ -7,15 +7,17 @@
 
 import SwiftUI
 
-struct PublicProfilePullUpHeaderView: View {
+struct PublicProfilePullUpHeaderView: View, ProfileImageLoader {
     
     let domainName: DomainName
     let closeCallback: EmptyCallback
     
+    @State private var domainIcon: UIImage? = nil
+    
     var body: some View {
         ZStack {
             HStack(spacing: 8) {
-                Image.domainSharePlaceholder
+                Image(uiImage: domainIcon ?? .domainSharePlaceholder)
                     .resizable()
                     .frame(width: 20,
                            height: 20)
@@ -43,6 +45,19 @@ struct PublicProfilePullUpHeaderView: View {
         }
         .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
         .frame(height: 44)
+        .onAppear(perform: loadDomainIcon)
+    }
+}
+
+// MARK: - Private methods
+private extension PublicProfilePullUpHeaderView {
+    func loadDomainIcon() {
+        Task {
+            domainIcon = await loadInitialsFor(domainName: domainName)
+            if let icon = await loadIconFor(domainName: domainName) {
+                domainIcon = icon
+            }
+        }
     }
 }
 
