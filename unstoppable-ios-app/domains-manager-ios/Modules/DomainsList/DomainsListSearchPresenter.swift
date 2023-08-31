@@ -49,15 +49,22 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
             searchCallback?(domain)
         case .domainsMintingInProgress:
             Debugger.printFailure("Unexpected event", critical: true)
-        case .domainSearchItem(let domain, _):
-            return 
+        case .domainSearchItem(let searchProfile, _):
+            view?.hideKeyboard()
+            Task {
+                guard let domainDisplayInfo = domains.first,
+                      let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domainDisplayInfo.name),
+                      let view else { return }
+                
+                UDRouter().showPublicDomainProfile(of: searchProfile.name, viewingDomain: domain, in: view)
+            }
         }
     }
     
     @MainActor
     override func didSearchWith(key: String) {
-        globalProfiles.removeAll()
         super.didSearchWith(key: key)
+        globalProfiles.removeAll()
         scheduleSearchGlobalProfiles()
         showDomains()
     }

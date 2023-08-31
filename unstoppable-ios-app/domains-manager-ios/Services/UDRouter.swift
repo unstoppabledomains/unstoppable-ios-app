@@ -604,6 +604,14 @@ class UDRouter: DomainProfileSignatureValidator {
         
         nav.pushViewController(vc, animated: true)
     }
+    
+    func showPublicDomainProfile(of domainName: String,
+                                 viewingDomain: DomainItem,
+                                 in viewController: UIViewController) {
+        let vc = PublicProfileView.instantiate(domainName: domainName, viewingDomain: viewingDomain)
+        
+        viewController.present(vc, animated: true)
+    }
 }
 
 // MARK: - Private methods
