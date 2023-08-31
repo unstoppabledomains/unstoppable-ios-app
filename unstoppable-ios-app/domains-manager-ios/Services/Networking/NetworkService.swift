@@ -29,6 +29,7 @@ struct NetworkService {
         case post = "POST"
         case get = "GET"
         case patch = "PATCH"
+        case delete = "DELETE"
         
         var string: String { self.rawValue }
     }
@@ -88,6 +89,19 @@ struct NetworkService {
         guard let url = endpoint.url else { throw NetworkLayerError.creatingURLFailed }
         let data = try await fetchData(for: url, body: endpoint.body, method: method, extraHeaders: endpoint.headers)
         return data
+    }
+    
+    func fetchDecodableDataFor<T: Decodable>(endpoint: Endpoint,
+                                             method: HttpRequestMethod,
+                                             using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                             dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
+        let data = try await fetchDataFor(endpoint: endpoint, method: method)
+        guard let entity = T.objectFromData(data,
+                                            using: keyDecodingStrategy,
+                                            dateDecodingStrategy: dateDecodingStrategy) else {
+            throw NetworkLayerError.failedParseProfileData
+        }
+        return entity
     }
     
     func fetchData(for url: URL,

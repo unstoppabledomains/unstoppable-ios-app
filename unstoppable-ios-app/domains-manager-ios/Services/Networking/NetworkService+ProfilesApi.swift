@@ -11,6 +11,7 @@ struct SerializedPublicDomainProfile: Decodable {
     let profile: PublicDomainProfileAttributes
     let socialAccounts: SocialAccounts?
     let referralCode: String?
+    let social: DomainProfileSocialInfo?
 }
 
 struct SerializedUserDomainProfile: Codable {
@@ -96,7 +97,10 @@ struct PublicDomainProfileAttributes: Decodable {
         case phoneNumber
         case domainPurchased
     }
-    
+}
+
+// MARK: - PublicDomainProfileAttributes init(from decoder:
+extension PublicDomainProfileAttributes {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: PublicDomainProfileAttributes.CodingKeys.self)
         
@@ -398,6 +402,38 @@ struct UserDomainStorageDetails: Codable {
     }
 }
 
+struct DomainProfileSocialInfo: Codable {
+    let followingCount: Int
+    let followerCount: Int
+}
+
+enum DomainProfileFollowerRelationshipType: String, Codable {
+    case followers, following
+}
+
+struct DomainProfileFollowersResponse: Codable {
+    
+    let domain: String
+    let data: [DomainProfileFollower]
+    let relationshipType: DomainProfileFollowerRelationshipType
+    let meta: CursorInfo
+    
+    struct CursorInfo: Codable {
+        let totalCount: Int
+        let pagination: Pagination
+    }
+    
+    struct Pagination: Codable {
+        let cursor: Int?
+        let take: Int
+    }
+    
+}
+
+struct DomainProfileFollower: Codable {
+    let domain: String
+}
+
 extension NetworkService {
     
     //MARK: public methods
@@ -418,8 +454,12 @@ extension NetworkService {
     }
     
     public func fetchBadgesInfo(for domain: DomainItem) async throws -> BadgesInfo {
+        try await fetchBadgesInfo(for: domain.name)
+    }
+    
+    public func fetchBadgesInfo(for domainName: DomainName) async throws -> BadgesInfo {
         // https://profile.unstoppabledomains.com/api/public/aaronquirk.x/badges
-        guard let url = Endpoint.getBadgesInfo(for: domain).url else {
+        guard let url = Endpoint.getBadgesInfo(for: domainName).url else {
             throw NetworkLayerError.creatingURLFailed
         }
         let data = try await fetchData(for: url, method: .get)
@@ -602,7 +642,7 @@ extension NetworkService {
     }
     
     private func updateUserDomainProfile(for domain: DomainItem,
-                                     body: String) async throws -> SerializedUserDomainProfile {
+                                         body: String) async throws -> SerializedUserDomainProfile {
         let message = try await getGeneratedMessageToUpdate(for: domain, body: body)
         let signature = try await domain.personalSign(message: message.message)
         return try await updateDomainProfile(for: domain,
@@ -651,6 +691,71 @@ extension NetworkService {
         let data = try JSONEncoder().encode(entity)
         guard let body = String(data: data, encoding: .utf8) else { throw NetworkLayerError.responseFailedToParse }
         return body
+    }
+}
+
+// MARK: - Followers related
+extension NetworkService {
+    func isDomain(_ followerDomain: String, following followingDomain: String) async throws -> Bool {
+        struct FollowingStatusResponse: Codable {
+            let isFollowing: Bool
+        }
+        
+        let endpoint = Endpoint.getFollowingStatus(for: followerDomain,
+                                                   followingDomain: followingDomain)
+        let statusResponse: FollowingStatusResponse = try await fetchDecodableDataFor(endpoint: endpoint, method: .get)
+        return statusResponse.isFollowing
+    }
+    
+    func fetchListOfFollowers(for domain: DomainName,
+                              relationshipType: DomainProfileFollowerRelationshipType,
+                              count: Int,
+                              cursor: Int?) async throws -> DomainProfileFollowersResponse {
+        let endpoint = Endpoint.getFollowersList(for: domain,
+                                                 relationshipType: relationshipType,
+                                                 count: count,
+                                                 cursor: cursor)
+        let response: DomainProfileFollowersResponse = try await fetchDecodableDataFor(endpoint: endpoint,
+                                                                                       method: .get,
+                                                                                       using: .convertFromSnakeCase)
+        return response
+    }
+    
+    func follow(_ domainNameToFollow: String, by domain: DomainItem) async throws {
+        try await setFollowingStatusTo(domainName: domainNameToFollow,
+                                       by: domain,
+                                       isFollowing: true)
+    }
+    
+    func unfollow(_ domainNameToUnfollow: String, by domain: DomainItem) async throws {
+        try await setFollowingStatusTo(domainName: domainNameToUnfollow,
+                                       by: domain,
+                                       isFollowing: false)
+    }
+    
+    private func setFollowingStatusTo(domainName: String,
+                                      by domain: DomainItem,
+                                      isFollowing: Bool) async throws {
+        struct FollowRequest: Codable {
+            let domain: String
+        }
+        let request = FollowRequest(domain: domain.name)
+        let body = try prepareRequestBodyFrom(entity: request)
+        let persistedSignature = try await getOrCreateAndStorePersistedProfileSignature(for: domain)
+        let signature = persistedSignature.sign
+        let expires = persistedSignature.expires
+        let endpoint = Endpoint.follow(domainNameToFollow: domainName,
+                                       by: domain.name,
+                                       expires: expires,
+                                       signature: signature,
+                                       body: body)
+        let method: HttpRequestMethod = isFollowing ? .post : .delete
+        do {
+            try await fetchDataFor(endpoint: endpoint, method: method)
+        } catch {
+            checkIfBadSignatureErrorAndRevokeSignature(error, for: domain)
+            throw error
+        }
     }
 }
 

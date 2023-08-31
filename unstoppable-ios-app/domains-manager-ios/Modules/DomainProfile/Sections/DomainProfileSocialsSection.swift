@@ -107,13 +107,7 @@ extension DomainProfileSocialsSection: DomainProfileSection {
 // MARK: - Private methods
 private extension DomainProfileSocialsSection {
     var currentSocialDescriptions: [SocialDescription] {
-        let types: [SocialsType] = [.twitter, .discord, .telegram, .reddit, .youTube, .gitHub, .linkedIn]
-        return types.compactMap({
-            if let account = account(of: $0, in: editingSocialsData) {
-                return SocialDescription(type: $0, account: account)
-            }
-            return nil
-        })
+        SocialDescription.typesFrom(accounts: editingSocialsData)
     }
     
     func sectionHeader(numberOfAddedSocials: Int,
@@ -205,13 +199,7 @@ private extension DomainProfileSocialsSection {
     }
     
     func handleOpenAction(for description: SocialDescription) {
-        if let appURL = description.appURL,
-           UIApplication.shared.canOpenURL(appURL) {
-            UIApplication.shared.open(appURL)
-        } else if let webURL = description.webURL,
-                  UIApplication.shared.canOpenURL(webURL) {
-            UIApplication.shared.open(webURL)
-        }
+        description.openSocialAccount()
     }
     
     func handleClearAction(for description: SocialDescription) {
@@ -241,26 +229,7 @@ private extension DomainProfileSocialsSection {
     }
     
     func value(of description: SocialDescription, in sectionData: SectionData) -> String {
-        account(of: description.type, in: sectionData)?.location ?? ""
-    }
-    
-    func account(of type: SocialsType, in sectionData: SectionData) -> SerializedDomainSocialAccount? {
-        switch type {
-        case .twitter:
-            return sectionData.twitter
-        case .discord:
-            return sectionData.discord
-        case .telegram:
-            return sectionData.telegram
-        case .reddit:
-            return sectionData.reddit
-        case .youTube:
-            return sectionData.youtube
-        case .linkedIn:
-            return sectionData.linkedin
-        case .gitHub:
-            return sectionData.github
-        }
+        description.value(in: sectionData)
     }
 }
 
@@ -327,6 +296,49 @@ extension DomainProfileSocialsSection {
                 return URL(string: value)
             case .gitHub:
                 return URL(string: "https://github.com/\(value)")
+            }
+        }
+        
+        func openSocialAccount() {
+            if let appURL,
+               UIApplication.shared.canOpenURL(appURL) {
+                UIApplication.shared.open(appURL)
+            } else if let webURL,
+                      UIApplication.shared.canOpenURL(webURL) {
+                UIApplication.shared.open(webURL)
+            }
+        }
+        
+        func value(in accounts: SocialAccounts) -> String {
+            SocialDescription.account(of: type, in: accounts)?.location ?? ""
+        }
+        
+        static func typesFrom(accounts: SocialAccounts) -> [SocialDescription] {
+            let types: [SocialsType] = [.twitter, .discord, .telegram, .reddit, .youTube, .gitHub, .linkedIn]
+            return types.compactMap({
+                if let account = account(of: $0, in: accounts) {
+                    return SocialDescription(type: $0, account: account)
+                }
+                return nil
+            })
+        }
+        
+        static func account(of type: SocialsType, in accounts: SocialAccounts) -> SerializedDomainSocialAccount? {
+            switch type {
+            case .twitter:
+                return accounts.twitter
+            case .discord:
+                return accounts.discord
+            case .telegram:
+                return accounts.telegram
+            case .reddit:
+                return accounts.reddit
+            case .youTube:
+                return accounts.youtube
+            case .linkedIn:
+                return accounts.linkedin
+            case .gitHub:
+                return accounts.github
             }
         }
     }
