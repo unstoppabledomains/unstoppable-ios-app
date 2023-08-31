@@ -29,6 +29,7 @@ struct NetworkService {
         case post = "POST"
         case get = "GET"
         case patch = "PATCH"
+        case delete = "DELETE"
         
         var string: String { self.rawValue }
     }
