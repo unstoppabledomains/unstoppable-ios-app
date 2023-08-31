@@ -104,6 +104,8 @@ extension PublicProfileView {
             badgesInfo = nil
             badgesDisplayInfo = nil
             followersDisplayInfo = nil
+            avatarImage = nil
+            coverImage = nil
         }
         
         private func loadPublicProfile() {

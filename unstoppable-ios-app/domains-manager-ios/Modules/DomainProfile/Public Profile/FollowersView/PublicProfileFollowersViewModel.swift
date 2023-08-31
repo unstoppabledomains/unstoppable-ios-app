@@ -41,14 +41,22 @@ extension PublicProfileFollowersView {
             let type = selectedType
             
             Task {
-                let icon = await loadIconOrInitialsFor(follower: follower)
+                @MainActor
+                func setIcon(_ icon: UIImage?) {
+                    if case .followers = type,
+                       let i = followersList?.firstIndex(where: { $0.domain == follower.domain }) {
+                        followersList?[i].icon = icon
+                    } else if case .following = type,
+                              let i = followingList?.firstIndex(where: { $0.domain == follower.domain }) {
+                        followingList?[i].icon = icon
+                    }
+                }
                 
-                if case .followers = type,
-                   let i = followersList?.firstIndex(where: { $0.domain == follower.domain }) {
-                    followersList?[i].icon = icon
-                } else if case .following = type,
-                          let i = followingList?.firstIndex(where: { $0.domain == follower.domain }) {
-                    followingList?[i].icon = icon
+                let initials = await loadInitialsFor(domainName: follower.domain)
+                setIcon(initials)
+                
+                if let icon = await loadIconFor(follower: follower) {
+                    setIcon(icon)
                 }
             }
         }

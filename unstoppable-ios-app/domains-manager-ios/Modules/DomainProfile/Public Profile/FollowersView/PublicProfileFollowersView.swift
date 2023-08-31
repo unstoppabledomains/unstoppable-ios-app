@@ -108,9 +108,9 @@ private extension PublicProfileFollowersView {
     func titleFor(type: DomainProfileFollowerRelationshipType) -> String {
         switch type {
         case .followers:
-            return String.Constants.followers.localized()
+            return String.Constants.pluralNFollowers.localized(viewModel.socialInfo.followerCount).lowercased()
         case .following:
-            return String.Constants.following.localized()
+            return String.Constants.pluralNFollowing.localized(viewModel.socialInfo.followingCount).lowercased()
         }
     }
     
