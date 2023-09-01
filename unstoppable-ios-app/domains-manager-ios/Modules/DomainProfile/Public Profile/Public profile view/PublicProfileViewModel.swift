@@ -22,7 +22,7 @@ extension PublicProfileView {
    @MainActor
     final class PublicProfileViewModel: ObservableObject, ProfileImageLoader {
         
-        private(set) var domainName: DomainName
+        private(set) var domain: PublicDomainDisplayInfo
         let viewingDomain: DomainItem
         @Published var records: [String : String]?
         @Published var socialInfo: DomainProfileSocialInfo?
@@ -36,9 +36,9 @@ extension PublicProfileView {
         @Published private(set) var followersDisplayInfo: FollowersDisplayInfo?
         private var badgesInfo: BadgesInfo?
         
-        init(domain: DomainName,
+        init(domain: PublicDomainDisplayInfo,
              viewingDomain: DomainItem) {
-            self.domainName = domain
+            self.domain = domain
             self.viewingDomain = viewingDomain
             loadAllProfileData()
         }
@@ -71,9 +71,9 @@ extension PublicProfileView {
             Task {
                 do {
                     if isFollowing {
-                        try await NetworkService().unfollow(domainName, by: viewingDomain)
+                        try await NetworkService().unfollow(domain.name, by: viewingDomain)
                     } else {
-                        try await NetworkService().follow(domainName, by: viewingDomain)
+                        try await NetworkService().follow(domain.name, by: viewingDomain)
                     }
                     self.isFollowing = !isFollowing
                 } catch {
@@ -83,9 +83,16 @@ extension PublicProfileView {
         }
         
         func didSelectFollower(_ follower: DomainProfileFollowerDisplayInfo) {
-            clearAllProfileData()
-            domainName = follower.domain
-            loadAllProfileData()
+            Task {
+                guard let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: follower.domain) else {
+                    // TODO: - Handle error
+                    return
+                }
+                clearAllProfileData()
+                domain = .init(walletAddress: rrInfo.address,
+                               name: follower.domain)
+                loadAllProfileData()
+            }
         }
         
         private func loadAllProfileData() {
@@ -112,7 +119,7 @@ extension PublicProfileView {
             isLoading = true
             Task {
                 do {
-                    profile = try await NetworkService().fetchPublicProfile(for: domainName,
+                    profile = try await NetworkService().fetchPublicProfile(for: domain.name,
                                                                             fields: [.profile, .records, .socialAccounts])
                     records = profile?.records
                     socialInfo = profile?.social
@@ -127,13 +134,13 @@ extension PublicProfileView {
         
         private func loadFollowingState() {
             Task {
-                isFollowing = try await NetworkService().isDomain(viewingDomain.name, following: domainName)
+                isFollowing = try await NetworkService().isDomain(viewingDomain.name, following: domain.name)
             }
         }
         
         private func loadBadgesInfo() {
             Task {
-                badgesInfo = try await NetworkService().fetchBadgesInfo(for: domainName)
+                badgesInfo = try await NetworkService().fetchBadgesInfo(for: domain.name)
                 badgesDisplayInfo = badgesInfo?.badges.map({ DomainProfileBadgeDisplayInfo(badge: $0,
                                                                               isExploreWeb3Badge: false) })
             }
@@ -141,7 +148,7 @@ extension PublicProfileView {
        
         private func loadFollowersList() {
             Task {
-                let response = try await NetworkService().fetchListOfFollowers(for: domainName,
+                let response = try await NetworkService().fetchListOfFollowers(for: domain.name,
                                                                                relationshipType: .followers,
                                                                                count: 3,
                                                                                cursor: nil)

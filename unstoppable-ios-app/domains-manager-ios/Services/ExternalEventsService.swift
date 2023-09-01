@@ -55,6 +55,7 @@ enum ExternalEventUIFlow {
     case showPullUpLoading
     case showChatsList(profile: MessagingChatUserProfileDisplayInfo)
     case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
+    case showNewChat(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo)
     case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)
 }
 

@@ -53,11 +53,13 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
             UDVibration.buttonTap.vibrate()
             view?.hideKeyboard()
             Task {
-                guard let domainDisplayInfo = domains.first,
+                guard let walletAddress = searchProfile.ownerAddress,
+                      let domainDisplayInfo = domains.first,
                       let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domainDisplayInfo.name),
                       let view else { return }
                 
-                UDRouter().showPublicDomainProfile(of: searchProfile.name, viewingDomain: domain, in: view)
+                let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: searchProfile.name)
+                UDRouter().showPublicDomainProfile(of: domainPublicInfo, viewingDomain: domain, in: view)
             }
         }
     }
@@ -141,7 +143,7 @@ private extension DomainsListSearchPresenter {
             do {
                 let profiles = try await searchForGlobalProfiles(with: searchKey)
                 let userDomains = Set(self.domains.map({ $0.name }))
-                self.globalProfiles = profiles.filter({ !userDomains.contains($0.name) })
+                self.globalProfiles = profiles.filter({ !userDomains.contains($0.name) && $0.ownerAddress != nil })
                 showDomains()
             }
             isLoadingGlobalProfiles = false
