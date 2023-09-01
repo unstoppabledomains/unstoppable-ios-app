@@ -53,7 +53,7 @@ enum ExternalEventUIFlow {
     case primaryDomainMinted(domain: DomainDisplayInfo)
     case showHomeScreenList
     case showPullUpLoading
-    case showChatsList(profile: MessagingChatUserProfileDisplayInfo)
+    case showChatsList(profile: MessagingChatUserProfileDisplayInfo?)
     case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
     case showNewChat(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo)
     case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)

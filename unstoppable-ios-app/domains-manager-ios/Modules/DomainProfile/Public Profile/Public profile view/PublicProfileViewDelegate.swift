@@ -29,7 +29,15 @@ extension UIViewController: PublicProfileViewDelegate {
     func publicProfileDidSelectMessagingWithProfile(_ profile: PublicDomainDisplayInfo, by userDomain: DomainItem) {
         Task {
             let displayInfo = DomainDisplayInfo(domainItem: userDomain, isSetForRR: false)
-            guard let messagingProfile = try? await appContext.messagingService.getUserProfile(for: displayInfo) else { return }
+            var messagingProfile: MessagingChatUserProfileDisplayInfo
+            if let profile = try? await appContext.messagingService.getUserProfile(for: displayInfo) {
+                messagingProfile = profile
+            } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
+                messagingProfile = profile
+            } else {
+                try? await appContext.coreAppCoordinator.handle(uiFlow: .showChatsList(profile: nil))
+                return
+            }
             
             let uiFlowToRun: ExternalEventUIFlow
             if let chatsList = try? await appContext.messagingService.getChatsListForProfile(messagingProfile),
