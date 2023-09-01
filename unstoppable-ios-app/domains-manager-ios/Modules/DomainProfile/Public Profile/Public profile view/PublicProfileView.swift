@@ -117,7 +117,8 @@ private extension PublicProfileView {
                                      callback: {
                         delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.viewingDomain)
                     })
-                    if let isFollowing = viewModel.isFollowing {
+                    if let isFollowing = viewModel.isFollowing,
+                       viewModel.domain.name != viewModel.viewingDomain.name { // Can't follow myself
                         followButton(isFollowing: isFollowing)
                     }
                 }

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 @MainActor
 class UDRouter: DomainProfileSignatureValidator {
@@ -638,7 +639,7 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(vc, animated: true)
     }
 }
-import SwiftUI
+
 // MARK: - Private methods
 private extension UDRouter {
     func presentInEmptyRootNavigation(_ rootViewController: UIViewController,
