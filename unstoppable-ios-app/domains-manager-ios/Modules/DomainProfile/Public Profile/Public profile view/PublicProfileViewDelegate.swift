@@ -30,10 +30,25 @@ extension UIViewController: PublicProfileViewDelegate {
         Task {
             let displayInfo = DomainDisplayInfo(domainItem: userDomain, isSetForRR: false)
             guard let messagingProfile = try? await appContext.messagingService.getUserProfile(for: displayInfo) else { return }
-            let messagingUserDisplayInfo = MessagingChatUserDisplayInfo(wallet: profile.walletAddress, domainName: profile.name)
             
-            try? await appContext.coreAppCoordinator.handle(uiFlow: .showNewChat(userInfo: messagingUserDisplayInfo,
-                                                                                 profile: messagingProfile))
+            let uiFlowToRun: ExternalEventUIFlow
+            if let chatsList = try? await appContext.messagingService.getChatsListForProfile(messagingProfile),
+               let chat = chatsList.first(where: { chat in
+                   switch chat.type {
+                   case .private(let details):
+                       return details.otherUser.wallet.lowercased() == profile.walletAddress
+                   case .group:
+                       return false
+                   }
+               }) {
+                uiFlowToRun = .showChat(chatId: chat.id, profile: messagingProfile)
+            } else {
+                let messagingUserDisplayInfo = MessagingChatUserDisplayInfo(wallet: profile.walletAddress.ethChecksumAddress(),
+                                                                            domainName: profile.name)
+                uiFlowToRun = .showNewChat(userInfo: messagingUserDisplayInfo, profile: messagingProfile)
+            }
+            
+            try? await appContext.coreAppCoordinator.handle(uiFlow: uiFlowToRun)
         }
     }
     
