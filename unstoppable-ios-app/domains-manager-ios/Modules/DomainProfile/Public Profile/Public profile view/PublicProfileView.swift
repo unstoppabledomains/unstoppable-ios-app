@@ -114,7 +114,7 @@ private extension PublicProfileView {
                     CircleIconButton(icon: .uiImage(.messageCircleIcon24),
                                      size: .medium,
                                      callback: {
-                        delegate?.publicProfileDidSelectMessagingProfile(viewModel.domainName)
+                        delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domainName, by: viewModel.viewingDomain)
                     })
                     if let isFollowing = viewModel.isFollowing {
                         followButton(isFollowing: isFollowing)

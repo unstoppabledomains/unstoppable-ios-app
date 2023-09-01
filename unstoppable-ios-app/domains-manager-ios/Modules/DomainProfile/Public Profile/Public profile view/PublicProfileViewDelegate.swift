@@ -10,7 +10,7 @@ import UIKit
 protocol PublicProfileViewDelegate: AnyObject {
     func publicProfileDidSelectBadge(_ badge: DomainProfileBadgeDisplayInfo, in profile: DomainName)
     func publicProfileDidSelectShareProfile(_ profile: DomainName)
-    func publicProfileDidSelectMessagingProfile(_ profile: DomainName)
+    func publicProfileDidSelectMessagingWithProfile(_ profile: DomainName, by userDomain: DomainItem)
     func publicProfileDidSelectOpenLeaderboard()
 }
 
@@ -26,8 +26,13 @@ extension UIViewController: PublicProfileViewDelegate {
         getViewControllerToPresent().shareDomainProfile(domainName: profile)
     }
     
-    func publicProfileDidSelectMessagingProfile(_ profile: DomainName) {
-        
+    func publicProfileDidSelectMessagingWithProfile(_ profile: DomainName, by userDomain: DomainItem) {
+        Task {
+            let displayInfo = DomainDisplayInfo(domainItem: userDomain, isSetForRR: false)
+            guard let messagingProfile = try? await appContext.messagingService.getUserProfile(for: displayInfo) else { return }
+            
+            
+        }
     }
     
     func publicProfileDidSelectOpenLeaderboard() {
