@@ -28,6 +28,7 @@ extension DomainProfileViewController {
         
         let id: UUID
         let domain: DomainDisplayInfo
+        let social: DomainProfileSocialInfo
         let isEnabled: Bool
         let avatarImageState: DomainProfileTopInfoData.ImageState
         let bannerImageState: DomainProfileTopInfoData.ImageState
@@ -63,6 +64,7 @@ extension DomainProfileViewController {
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id &&
             lhs.domain == rhs.domain &&
+            lhs.social == rhs.social &&
             lhs.isEnabled == rhs.isEnabled &&
             lhs.avatarImageState == rhs.avatarImageState &&
             lhs.bannerImageState == rhs.bannerImageState &&
@@ -73,6 +75,7 @@ extension DomainProfileViewController {
         func hash(into hasher: inout Hasher) {
             hasher.combine(id)
             hasher.combine(domain)
+            hasher.combine(social)
             hasher.combine(isEnabled)
             hasher.combine(avatarImageState)
             hasher.combine(bannerImageState)

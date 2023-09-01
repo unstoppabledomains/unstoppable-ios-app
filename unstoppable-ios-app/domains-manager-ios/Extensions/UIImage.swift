@@ -88,6 +88,7 @@ extension UIImage {
     static let framesIcon = UIImage(named: "framesIcon")!
     static let framesIcon20 = UIImage(named: "framesIcon20")!
     static let scanQRIcon = UIImage(named: "scanQRIcon")!
+    static let scanQRIcon16 = UIImage(named: "scanQRIcon16")!
     static let scanQRIcon20 = UIImage(named: "scanQRIcon20")!
     static let web3ProfileIllustration = UIImage(named: "web3ProfileIllustration")!
     static let web3ProfileIllustrationLarge = UIImage(named: "web3ProfileIllustrationLarge")!
