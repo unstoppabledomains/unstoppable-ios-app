@@ -102,7 +102,7 @@
                                                             </userDefinedRuntimeAttribute>
                                                         </userDefinedRuntimeAttributes>
                                                         <connections>
-                                                            <action selector="publicProfileButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="alj-bG-SqH"/>
+                                                            <action selector="socialButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="alj-bG-SqH"/>
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" horizontalCompressionResistancePriority="753" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GJQ-Ck-XLe" customClass="SmallRaisedTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
@@ -165,8 +165,8 @@
                 <outlet property="domainAvatarImageView" destination="D8f-DF-qvd" id="mn3-DY-3XU"/>
                 <outlet property="domainBannerImageView" destination="8v8-I7-B0o" id="bl1-Nd-WGr"/>
                 <outlet property="domainNameLabel" destination="LrO-nW-5kD" id="D9s-nG-i8V"/>
-                <outlet property="publicProfileButton" destination="rHb-ab-50F" id="WLu-1c-e8x"/>
                 <outlet property="qrCodeButton" destination="GJQ-Ck-XLe" id="aLD-IN-eN1"/>
+                <outlet property="socialButton" destination="rHb-ab-50F" id="WLu-1c-e8x"/>
             </connections>
             <point key="canvasLocation" x="272.30769230769232" y="38.388625592417057"/>
         </collectionViewCell>

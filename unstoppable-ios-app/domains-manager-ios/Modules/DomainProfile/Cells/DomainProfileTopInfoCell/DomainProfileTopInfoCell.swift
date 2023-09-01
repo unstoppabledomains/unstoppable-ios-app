@@ -22,7 +22,7 @@ final class DomainProfileTopInfoCell: UICollectionViewCell {
     @IBOutlet private weak var avatarButton: GhostTertiaryWhiteButton!
     @IBOutlet private weak var domainNameLabel: UILabel!
     @IBOutlet private weak var qrCodeButton: SmallRaisedTertiaryWhiteButton!
-    @IBOutlet private weak var publicProfileButton: SmallRaisedTertiaryWhiteButton!
+    @IBOutlet private weak var socialButton: SmallRaisedTertiaryWhiteButton!
     @IBOutlet private weak var bannerTopConstraint: NSLayoutConstraint!
     
     private var avatarStyle: DomainAvatarImageView.AvatarStyle = .circle
@@ -37,7 +37,7 @@ final class DomainProfileTopInfoCell: UICollectionViewCell {
         avatarButton.setTitle(nil, image: .avatarsIcon32)
         bannerButton.setTitle(String.Constants.addCover.localized(), image: .framesIcon20)
         qrCodeButton.setTitle(String.Constants.qrCode.localized(), image: .scanQRIcon16)
-        publicProfileButton.isHidden = true
+        socialButton.isHidden = true
         domainNameLabel.numberOfLines = 2
         domainNameLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapDomainNameLabel)))
         
@@ -113,7 +113,7 @@ extension DomainProfileTopInfoCell {
                                               textColor: .white,
                                               lineBreakMode: .byTruncatingTail)
         
-        publicProfileButton.isHidden = false
+        socialButton.isHidden = false
         let social = data.social
         let havingFollowers = social.followerCount > 0
         let havingFollowings = social.followingCount > 0
@@ -122,8 +122,8 @@ extension DomainProfileTopInfoCell {
         let socialFollowingsTitle = String.Constants.pluralNFollowing.localized(social.followingCount, social.followingCount)
         let socialTitle = socialFollowersTitle + " · " + socialFollowingsTitle
         
-        publicProfileButton.setTitle(socialTitle, image: nil)
-        publicProfileButton.isEnabled = havingFollowersOrFollowings
+        socialButton.setTitle(socialTitle, image: nil)
+        socialButton.isEnabled = havingFollowersOrFollowings
         
         switch data.avatarImageState {
         case .untouched(let source):
@@ -223,8 +223,8 @@ private extension DomainProfileTopInfoCell {
         buttonPressedCallback?(.qrCode)
     }
     
-    @IBAction func publicProfileButtonPressed(_ sender: Any) {
-        buttonPressedCallback?(.publicProfile)
+    @IBAction func socialButtonPressed(_ sender: Any) {
+        buttonPressedCallback?(.social)
     }
     
     @objc func didTapDomainNameLabel() {

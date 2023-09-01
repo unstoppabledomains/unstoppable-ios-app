@@ -613,8 +613,32 @@ class UDRouter: DomainProfileSignatureValidator {
                                                delegate: viewController)
         viewController.present(vc, animated: true)
     }
+    
+    func showFollowersList(domainName: DomainName,
+                           socialInfo: DomainProfileSocialInfo,
+                           followerSelectionCallback: @escaping FollowerSelectionCallback,
+                           in viewController: UIViewController) {
+        var isDismissed = false
+        var isPresenting: Binding<Bool> {
+            Binding {
+                true
+            } set: { value in
+                if !value,
+                !isDismissed {
+                    isDismissed = true
+                    viewController.presentedViewController?.dismiss(animated: true)
+                }
+            }
+        }
+        
+        let vc = PublicProfileFollowersView.instantiate(domainName: domainName,
+                                                        socialInfo: socialInfo,
+                                                        followerSelectionCallback: followerSelectionCallback,
+                                                        isPresenting: isPresenting)
+        viewController.present(vc, animated: true)
+    }
 }
-
+import SwiftUI
 // MARK: - Private methods
 private extension UDRouter {
     func presentInEmptyRootNavigation(_ rootViewController: UIViewController,
