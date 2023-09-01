@@ -19,14 +19,19 @@ extension PublicProfileView {
         var totalNumberOfFollowers: Int
     }
     
+    enum PublicProfileError: Error {
+        case failedToLoadFollowerInfo
+    }
+    
    @MainActor
-    final class PublicProfileViewModel: ObservableObject, ProfileImageLoader {
+    final class PublicProfileViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
         
         private(set) var domain: PublicDomainDisplayInfo
         let viewingDomain: DomainItem
         @Published var records: [String : String]?
         @Published var socialInfo: DomainProfileSocialInfo?
         @Published var socialAccounts: SocialAccounts?
+        @Published var error: Error?
         @Published private(set) var isLoading = false
         @Published private(set) var profile: SerializedPublicDomainProfile?
         @Published private(set) var badgesDisplayInfo: [DomainProfileBadgeDisplayInfo]?
@@ -69,15 +74,13 @@ extension PublicProfileView {
             guard let isFollowing else { return }
             
             Task {
-                do {
+                await performAsyncErrorCatchingBlock {
                     if isFollowing {
                         try await NetworkService().unfollow(domain.name, by: viewingDomain)
                     } else {
                         try await NetworkService().follow(domain.name, by: viewingDomain)
                     }
                     self.isFollowing = !isFollowing
-                } catch {
-                    
                 }
             }
         }
@@ -85,7 +88,7 @@ extension PublicProfileView {
         func didSelectFollower(_ follower: DomainProfileFollowerDisplayInfo) {
             Task {
                 guard let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: follower.domain) else {
-                    // TODO: - Handle error
+                    self.error = PublicProfileError.failedToLoadFollowerInfo
                     return
                 }
                 clearAllProfileData()
@@ -118,7 +121,7 @@ extension PublicProfileView {
         private func loadPublicProfile() {
             isLoading = true
             Task {
-                do {
+                await performAsyncErrorCatchingBlock {
                     profile = try await NetworkService().fetchPublicProfile(for: domain.name,
                                                                             fields: [.profile, .records, .socialAccounts])
                     records = profile?.records
@@ -126,34 +129,38 @@ extension PublicProfileView {
                     socialAccounts = profile?.socialAccounts
                     isLoading = false
                     loadImages()
-                } catch {
-                    
                 }
             }
         }
         
         private func loadFollowingState() {
             Task {
-                isFollowing = try await NetworkService().isDomain(viewingDomain.name, following: domain.name)
+                await performAsyncErrorCatchingBlock {
+                    isFollowing = try await NetworkService().isDomain(viewingDomain.name, following: domain.name)
+                }
             }
         }
         
         private func loadBadgesInfo() {
             Task {
-                badgesInfo = try await NetworkService().fetchBadgesInfo(for: domain.name)
-                badgesDisplayInfo = badgesInfo?.badges.map({ DomainProfileBadgeDisplayInfo(badge: $0,
-                                                                              isExploreWeb3Badge: false) })
+                await performAsyncErrorCatchingBlock {
+                    badgesInfo = try await NetworkService().fetchBadgesInfo(for: domain.name)
+                    badgesDisplayInfo = badgesInfo?.badges.map({ DomainProfileBadgeDisplayInfo(badge: $0,
+                                                                                               isExploreWeb3Badge: false) })
+                }
             }
         }
        
         private func loadFollowersList() {
             Task {
-                let response = try await NetworkService().fetchListOfFollowers(for: domain.name,
-                                                                               relationshipType: .followers,
-                                                                               count: 3,
-                                                                               cursor: nil)
-                followersDisplayInfo = .init(topFollowersList: response.data.map({ DomainProfileFollowerDisplayInfo(domain: $0.domain) }),
-                                             totalNumberOfFollowers: response.meta.totalCount)
+                await performAsyncErrorCatchingBlock {
+                    let response = try await NetworkService().fetchListOfFollowers(for: domain.name,
+                                                                                   relationshipType: .followers,
+                                                                                   count: 3,
+                                                                                   cursor: nil)
+                    followersDisplayInfo = .init(topFollowersList: response.data.map({ DomainProfileFollowerDisplayInfo(domain: $0.domain) }),
+                                                 totalNumberOfFollowers: response.meta.totalCount)
+                }
             }
         }
         

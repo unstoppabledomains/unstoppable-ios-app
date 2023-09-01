@@ -48,6 +48,7 @@ struct PublicProfileView: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: UUID())
+        .displayError($viewModel.error)
         .modifier(ShowingCryptoList(isCryptoListPresented: $isCryptoListPresented,
                                     domainName: viewModel.domain.name,
                                     records: viewModel.records))
