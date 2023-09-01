@@ -71,16 +71,7 @@ extension MessagingService: MessagingServiceProtocol {
         let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
             .compactMap { walletWithInfo -> WalletDisplayInfo? in
                 let walletDomains = domains.filter { walletWithInfo.wallet.owns(domain: $0) }
-                let applicableDomains = walletDomains.filter({
-                    switch $0.usageType {
-                    case .normal:
-                        return true
-                    case .newNonInteractable(let tld):
-                        return tld == Constants.ensDomainTLD
-                    default:
-                        return false
-                    }
-                })
+                let applicableDomains = walletDomains.availableForMessagingItems()
                 if applicableDomains.isEmpty {
                     return nil
                 }
