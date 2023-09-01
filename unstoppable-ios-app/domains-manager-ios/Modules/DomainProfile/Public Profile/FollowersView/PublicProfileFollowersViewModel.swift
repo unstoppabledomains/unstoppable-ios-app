@@ -10,7 +10,7 @@ import SwiftUI
 extension PublicProfileFollowersView {
     
     @MainActor
-    final class PublicProfileFollowersViewModel: ObservableObject, ProfileImageLoader {
+    final class PublicProfileFollowersViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
        
         let domainName: DomainName
         let socialInfo: DomainProfileSocialInfo
@@ -21,6 +21,7 @@ extension PublicProfileFollowersView {
                 didChangeRelationshipType()
             }
         }
+        @Published var error: Error?
         private let numberOfFollowersToTake = 40
         @Published private(set) var followersList: [DomainProfileFollowerDisplayInfo]?
         private var followersPaginationInfo: FollowersPaginationInfo = .init()
@@ -89,7 +90,7 @@ extension PublicProfileFollowersView {
             
             isLoadingPage = true
             Task {
-                do {
+                await performAsyncErrorCatchingBlock {
                     let response = try await NetworkService().fetchListOfFollowers(for: domainName,
                                                                                     relationshipType: type,
                                                                                     count: numberOfFollowersToTake,
@@ -108,9 +109,7 @@ extension PublicProfileFollowersView {
                         followingPaginationInfo.canLoadMore = canLoadMore
                         followingList = currentList
                     }
-                } catch {
-                    // TODO: - Handle error
-                }
+                } 
                 isLoadingPage = false
             }
         }

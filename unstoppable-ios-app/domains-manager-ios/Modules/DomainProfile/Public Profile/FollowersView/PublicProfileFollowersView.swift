@@ -77,6 +77,7 @@ struct PublicProfileFollowersView: View {
                 ProgressView()
             }
         }
+        .displayError($viewModel.error)
         .background(Color.backgroundDefault)
         .onAppear(perform: viewModel.onAppear)
         .onDisappear(perform: dismiss)
