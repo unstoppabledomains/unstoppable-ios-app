@@ -738,10 +738,11 @@ private extension DomainsCollectionPresenter {
             await router.runMintDomainsFlow(with: .default(email: email))
         }
     }
-    
     func showNoWalletsToClaimDomainAlert() {
-        view?.showSimpleAlert(title: String.Constants.noWalletsToClaimAlertTitle.localized(),
-                              body: String.Constants.noWalletsToClaimAlertSubtitle.localized())
+        Task { @MainActor in
+            view?.showSimpleAlert(title: String.Constants.noWalletsToClaimAlertTitle.localized(),
+                                  body: String.Constants.noWalletsToClaimAlertSubtitle.localized())
+        }
     }
     
     func didCloseDomainProfile(_ domain: DomainDisplayInfo) {
