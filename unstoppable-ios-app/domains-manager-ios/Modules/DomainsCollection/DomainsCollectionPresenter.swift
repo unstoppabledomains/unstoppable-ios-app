@@ -897,12 +897,12 @@ extension DomainsCollectionPresenter {
 }
 
 enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem {
-    case importWallet, connectWallet, importFromWebsite
+    case connectWallet, importFromWebsite, importWallet
     
     var title: String {
         switch self {
         case .importFromWebsite:
-            return String.Constants.importFromTheWebsite.localized()
+            return String.Constants.claimDomainsToSelfCustodial.localized()
         case .importWallet:
             return String.Constants.connectWalletRecovery.localized()
         case .connectWallet:
@@ -913,9 +913,9 @@ enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem 
     var subtitle: String? {
         switch self {
         case .importFromWebsite:
-            return String.Constants.storeInYourDomainVault.localized()
-        case .importWallet:
             return nil
+        case .importWallet:
+            return String.Constants.domainsCollectionEmptyStateImportSubtitle.localized()
         case .connectWallet:
             return String.Constants.domainsCollectionEmptyStateExternalSubtitle.localized()
         }
