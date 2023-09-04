@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -165,8 +164,8 @@
                 <outlet property="domainAvatarImageView" destination="D8f-DF-qvd" id="mn3-DY-3XU"/>
                 <outlet property="domainBannerImageView" destination="8v8-I7-B0o" id="bl1-Nd-WGr"/>
                 <outlet property="domainNameLabel" destination="LrO-nW-5kD" id="D9s-nG-i8V"/>
+                <outlet property="followersButton" destination="rHb-ab-50F" id="WLu-1c-e8x"/>
                 <outlet property="qrCodeButton" destination="GJQ-Ck-XLe" id="aLD-IN-eN1"/>
-                <outlet property="socialButton" destination="rHb-ab-50F" id="WLu-1c-e8x"/>
             </connections>
             <point key="canvasLocation" x="272.30769230769232" y="38.388625592417057"/>
         </collectionViewCell>
