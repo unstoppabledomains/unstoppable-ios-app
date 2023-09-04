@@ -915,6 +915,10 @@ extension String {
         static let messagingCantContactMessage = "MESSAGING_CANT_CONTACT_MESSAGE"
         static let messagingInvite = "MESSAGING_INVITE"
         static let messagingSearchResultNotRRDomain = "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN"
+        
+        // No wallets to claim
+        static let noWalletsToClaimAlertTitle = "NO_WALLETS_TO_CLAIM_ALERT_TITLE"
+        static let noWalletsToClaimAlertSubtitle = "NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE"
     }
 
     enum BlockChainIcons: String {

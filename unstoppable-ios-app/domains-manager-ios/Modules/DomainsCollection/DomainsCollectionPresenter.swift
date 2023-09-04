@@ -728,9 +728,20 @@ private extension DomainsCollectionPresenter {
     
     func runDefaultMintingFlow() {
         Task {
+            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+            guard !wallets.isEmpty else {
+                showNoWalletsToClaimDomainAlert()
+                return
+            }
             let userProfile = try? await appContext.firebaseInteractionService.getUserProfile()
             let email = userProfile?.email ?? User.instance.email
             await router.runMintDomainsFlow(with: .default(email: email))
+        }
+    }
+    func showNoWalletsToClaimDomainAlert() {
+        Task { @MainActor in
+            view?.showSimpleAlert(title: String.Constants.noWalletsToClaimAlertTitle.localized(),
+                                  body: String.Constants.noWalletsToClaimAlertSubtitle.localized())
         }
     }
     
