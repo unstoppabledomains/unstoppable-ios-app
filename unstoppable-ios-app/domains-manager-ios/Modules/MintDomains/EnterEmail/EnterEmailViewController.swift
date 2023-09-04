@@ -53,13 +53,10 @@ final class EnterEmailViewController: BaseViewController, UserDataValidator {
         self.hideKeyboard()
     }
     
-    override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
+    override func keyboardDidAdjustFrame(keyboardHeight: CGFloat) {
         let newValue = keyboardFrame.height + Constants.distanceFromButtonToKeyboard
-        continueButtonBottomConstraint.constant = max(newValue, continueButtonBottomConstraint.constant)
-        let options = UIView.AnimationOptions(rawValue: UInt(curve))
-        UIView.animate(withDuration: duration, delay: 0, options: options) {
-            self.view.layoutIfNeeded()
-        }
+        continueButtonBottomConstraint.constant = newValue
+        view.layoutIfNeeded()
     }
 }
 
