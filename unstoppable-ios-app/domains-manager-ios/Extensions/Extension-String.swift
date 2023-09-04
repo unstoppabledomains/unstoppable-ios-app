@@ -338,6 +338,10 @@ extension String {
         static let pluralNMessages = "SDICT:N_MESSAGES"
         static let pluralNPeopleYouMayKnow = "SDICT:N_PEOPLE_YOU_MAY_KNOW"
         static let pluralNMembers = "SDICT:N_MEMBERS"
+        static let pluralNSocials = "SDICT:N_SOCIALS"
+        static let pluralNCrypto = "SDICT:N_CRYPTO"
+        static let pluralNFollowers = "SDICT:N_FOLLOWERS"
+        static let pluralNFollowing = "SDICT:N_FOLLOWING"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -914,6 +918,17 @@ extension String {
         static let messagingCantContactMessage = "MESSAGING_CANT_CONTACT_MESSAGE"
         static let messagingInvite = "MESSAGING_INVITE"
         static let messagingSearchResultNotRRDomain = "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN"
+        
+        // Public profile
+        static let followers = "FOLLOWERS"
+        static let following = "FOLLOWING"
+        static let follow = "FOLLOW"
+        static let followersListEmptyMessage = "FOLLOWERS_LIST_EMPTY_MESSAGE"
+        static let followingListEmptyMessage = "FOLLOWING_LIST_EMPTY_MESSAGE"
+        static let followedBy = "FOLLOWED_BY"
+        static let followedByNOthersSuffix = "FOLLOWED_BY_N_OTHERS_SUFFIX"
+        static let and = "AND"
+        static let leaderboard = "LEADERBOARD"
     }
 
     enum BlockChainIcons: String {

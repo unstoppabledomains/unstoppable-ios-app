@@ -70,7 +70,7 @@ protocol PullUpViewServiceProtocol {
                                                   chain: BlockchainType)
     func showDomainProfileInfoPullUp(in viewController: UIViewController)
     func showBadgeInfoPullUp(in viewController: UIViewController,
-                             badgeDisplayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo,
+                             badgeDisplayInfo: DomainProfileBadgeDisplayInfo,
                              domainName: String)
     func showImageTooLargeToUploadPullUp(in viewController: UIViewController) async throws
     func showSelectedImageBadPullUp(in viewController: UIViewController)
@@ -1008,7 +1008,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     }
     
     func showBadgeInfoPullUp(in viewController: UIViewController,
-                             badgeDisplayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo,
+                             badgeDisplayInfo: DomainProfileBadgeDisplayInfo,
                              domainName: String) {
         Task {
             var selectionViewHeight: CGFloat = 0
@@ -1794,7 +1794,7 @@ extension PullUpViewService {
 // MARK: - Private methods
 private extension PullUpViewService {
     func buildBadgesInfoPullUp(in viewController: UIViewController,
-                               badgeDisplayInfo: DomainProfileViewController.DomainProfileBadgeDisplayInfo,
+                               badgeDisplayInfo: DomainProfileBadgeDisplayInfo,
                                domainName: String,
                                selectionViewHeight: inout CGFloat) async -> PullUpSelectionView<BadgeLeaderboardSelectionItem> {
         

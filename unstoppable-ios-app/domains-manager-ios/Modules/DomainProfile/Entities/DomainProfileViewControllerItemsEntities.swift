@@ -230,7 +230,7 @@ extension DomainProfileViewController {
 extension DomainProfileViewController {
     struct DomainProfileSocialsDisplayInfo: Hashable {
         let id: UUID
-        let description: DomainProfileSocialsSection.SocialDescription
+        let description: SocialDescription
         let isEnabled: Bool
         let availableActions: [DomainProfileSocialsSection.SocialsAction]
         let actionButtonPressedCallback: EmptyCallback
@@ -259,30 +259,6 @@ extension DomainProfileViewController {
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(id)
-        }
-    }
-}
-
-// MARK: - Socials Info data
-extension DomainProfileViewController {
-    struct DomainProfileBadgeDisplayInfo: Hashable {
-        
-        let badge: BadgesInfo.BadgeInfo
-        let isExploreWeb3Badge: Bool
-        
-        var defaultIcon: UIImage {
-            isExploreWeb3Badge ? .magicWandIcon : .badgesStarIcon24
-        }
-        
-        func loadBadgeIcon() async -> UIImage? {
-            if badge.code == "Web3DomainHolder" {
-                // Hard code specifically for UD logo in mobile app. Request from designer. 
-                return .udBadgeLogo
-            } else if let url = URL(string: badge.logo) {
-                return await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedIconMaxSize),
-                                                                      downsampleDescription: nil)
-            }
-            return nil
         }
     }
 }
