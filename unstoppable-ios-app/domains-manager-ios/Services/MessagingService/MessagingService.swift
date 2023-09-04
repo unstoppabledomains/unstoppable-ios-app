@@ -1137,14 +1137,7 @@ private extension MessagingService {
         func getMessageFor(wallet: String, otherUserWallet: String) async throws -> GroupChatMessageWithProfile {
             let profile = try await getUserProfileWith(wallet: wallet)
             let chats = try await storageService.getChatsFor(profile: profile)
-            guard let chat = chats.first(where: { chat in
-                switch chat.displayInfo.type {
-                case .private(let details):
-                    return details.otherUser.wallet == otherUserWallet
-                case .group:
-                    return false
-                }
-            }) else { throw MessagingServiceError.chatNotFound }
+            guard let chat = chats.first(where: { $0.displayInfo.type.otherUserDisplayInfo?.wallet == otherUserWallet }) else { throw MessagingServiceError.chatNotFound }
             guard let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
             return GroupChatMessageWithProfile(message: message, profile: profile)
         }
