@@ -71,16 +71,7 @@ extension MessagingService: MessagingServiceProtocol {
         let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
             .compactMap { walletWithInfo -> WalletDisplayInfo? in
                 let walletDomains = domains.filter { walletWithInfo.wallet.owns(domain: $0) }
-                let applicableDomains = walletDomains.filter({
-                    switch $0.usageType {
-                    case .normal:
-                        return true
-                    case .newNonInteractable(let tld):
-                        return tld == Constants.ensDomainTLD
-                    default:
-                        return false
-                    }
-                })
+                let applicableDomains = walletDomains.availableForMessagingItems()
                 if applicableDomains.isEmpty {
                     return nil
                 }
@@ -1146,14 +1137,7 @@ private extension MessagingService {
         func getMessageFor(wallet: String, otherUserWallet: String) async throws -> GroupChatMessageWithProfile {
             let profile = try await getUserProfileWith(wallet: wallet)
             let chats = try await storageService.getChatsFor(profile: profile)
-            guard let chat = chats.first(where: { chat in
-                switch chat.displayInfo.type {
-                case .private(let details):
-                    return details.otherUser.wallet == otherUserWallet
-                case .group:
-                    return false
-                }
-            }) else { throw MessagingServiceError.chatNotFound }
+            guard let chat = chats.first(where: { $0.displayInfo.type.otherUserDisplayInfo?.wallet == otherUserWallet }) else { throw MessagingServiceError.chatNotFound }
             guard let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
             return GroupChatMessageWithProfile(message: message, profile: profile)
         }
