@@ -431,8 +431,9 @@ private extension ChatViewPresenter {
     
     func setupPlaceholder() {
         Task {
-            let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: profile.wallet.normalized)
-            let sender = domainName ?? profile.wallet.walletAddressTruncated
+            let wallets = await appContext.messagingService.fetchWalletsAvailableForMessaging()
+            let userWallet = wallets.first(where: { $0.address.normalized == profile.wallet.normalized })
+            let sender = userWallet?.reverseResolutionDomain?.name ?? profile.wallet.walletAddressTruncated
             let placeholder = String.Constants.chatInputPlaceholderAsDomain.localized(sender)
             view?.setPlaceholder(placeholder)
         }
