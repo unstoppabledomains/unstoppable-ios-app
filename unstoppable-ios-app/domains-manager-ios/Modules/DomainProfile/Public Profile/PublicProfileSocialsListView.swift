@@ -34,9 +34,7 @@ struct PublicProfileSocialsListView: View {
         .onAppear {
             UITableView.appearance().backgroundColor = .clear
         }
-        .onDisappear {
-            isPresenting = false
-        }
+        .onDisappear(perform: dismiss)
         .onChange(of: selectedSocial, perform: didSelectSocial)
     }
     
@@ -51,6 +49,8 @@ struct PublicProfileSocialsListView: View {
 // MARK: - Private methods
 private extension PublicProfileSocialsListView {
     func dismiss() {
+        guard isPresenting else { return }
+
         isPresenting = false
     }
     

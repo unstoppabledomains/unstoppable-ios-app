@@ -22,7 +22,7 @@ final class DomainsCollectionSearchEmptyCell: UICollectionViewCell {
         case .i4Inch:
             setCenterYOffset(60)
         case .i4_7Inch:
-            setCenterYOffset(110)
+            setCenterYOffset(60)
         default:
             setCenterYOffset(150)
         }

@@ -845,3 +845,8 @@
 "FOLLOWED_BY_N_OTHERS_SUFFIX" = "%i others";
 "AND" = "And";
 "LEADERBOARD" = "Leaderboard";
+
+// Domains search
+"YOUR_DOMAINS" = "Your domains";
+"GLOBAL_SEARCH" = "Global search";
+"GLOBAL_SEARCH_HINT" = "Discover more profiles by entering a domain or wallet address.";

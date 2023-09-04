@@ -121,21 +121,11 @@ private extension ShareDomainHandler {
     
     @MainActor
     func shareLink(image: UIImage?, in view: UIViewController) {
-        guard let url = domain.qrCodeURL else { return }
-        
-        let titleItem = DomainURLActivityItemSource(url: url, isTitleOnly: true)
-        let linkItem = DomainURLActivityItemSource(url: url, isTitleOnly: false)
-        var activityItems: [Any] = [titleItem, linkItem]
-        if let image = image {
-            activityItems.append(image)
+        var items: [Any] = []
+        if let image {
+            items.append(image)
         }
-        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        activityViewController.completionWithItemsHandler = { _, completed, _, _ in
-            if completed {
-                AppReviewService.shared.appReviewEventDidOccurs(event: .didShareProfile)
-            }
-        }
-        view.present(activityViewController, animated: true)
+        view.shareDomainProfile(domainName: domain.name, additionalItems: items)
     }
     
     func saveImage(_ image: UIImage) {

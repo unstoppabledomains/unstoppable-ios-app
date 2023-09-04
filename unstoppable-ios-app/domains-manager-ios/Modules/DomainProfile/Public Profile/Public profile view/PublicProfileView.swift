@@ -7,22 +7,15 @@
 
 import SwiftUI
 
-protocol PublicProfileViewDelegate: AnyObject {
-    func publicProfileDidSelectBadge(_ badge: DomainProfileBadgeDisplayInfo)
-    func publicProfileDidSelectShareProfile(_ profile: DomainName)
-    func publicProfileDidSelectMessagingProfile(_ profile: DomainName)
-    func publicProfileDidSelectOpenLeaderboard()
-}
-
 struct PublicProfileView: View {
     
     @MainActor
-    static func instantiate(domainName: String,
+    static func instantiate(domain: PublicDomainDisplayInfo,
                             viewingDomain: DomainItem,
                             delegate: PublicProfileViewDelegate? = nil) -> UIViewController {
-        let view = PublicProfileView(domainName: domainName,
-                                           viewingDomain: viewingDomain,
-                                           delegate: delegate)
+        let view = PublicProfileView(domain: domain,
+                                     viewingDomain: viewingDomain,
+                                     delegate: delegate)
         let vc = UIHostingController(rootView: view)
         return vc
     }
@@ -55,22 +48,23 @@ struct PublicProfileView: View {
             }
         }
         .animation(.easeInOut(duration: 0.3), value: UUID())
+        .displayError($viewModel.error)
         .modifier(ShowingCryptoList(isCryptoListPresented: $isCryptoListPresented,
-                                    domainName: viewModel.domainName,
-                                    records: $viewModel.records))
+                                    domainName: viewModel.domain.name,
+                                    records: viewModel.records))
         .modifier(ShowingFollowersList(isFollowersListPresented: $isFollowersListPresented,
-                                      socialInfo: $viewModel.socialInfo,
-                                      domainName: viewModel.domainName,
-                                      followerSelectionCallback: followerSelected))
+                                       socialInfo: viewModel.socialInfo,
+                                       domainName: viewModel.domain.name,
+                                       followerSelectionCallback: followerSelected))
         .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
-                                     socialAccounts: $viewModel.socialAccounts,
-                                     domainName: viewModel.domainName))
+                                     socialAccounts: viewModel.socialAccounts,
+                                     domainName: viewModel.domain.name))
     }
     
-    init(domainName: String,
+    init(domain: PublicDomainDisplayInfo,
          viewingDomain: DomainItem,
          delegate: PublicProfileViewDelegate? = nil) {
-        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domainName, viewingDomain: viewingDomain))
+        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, viewingDomain: viewingDomain))
         self.delegate = delegate
     }
 }
@@ -116,12 +110,12 @@ private extension PublicProfileView {
                     CircleIconButton(icon: .uiImage(.shareIcon),
                                      size: .medium,
                                      callback: {
-                        delegate?.publicProfileDidSelectShareProfile(viewModel.domainName)
+                        delegate?.publicProfileDidSelectShareProfile(viewModel.domain.name)
                     })
                     CircleIconButton(icon: .uiImage(.messageCircleIcon24),
                                      size: .medium,
                                      callback: {
-                        delegate?.publicProfileDidSelectMessagingProfile(viewModel.domainName)
+                        delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.viewingDomain)
                     })
                     if let isFollowing = viewModel.isFollowing {
                         followButton(isFollowing: isFollowing)
@@ -201,9 +195,9 @@ private extension PublicProfileView {
                        spacing: 0) {
                     if let displayName = viewModel.profile?.profile.displayName {
                         primaryLargeText(displayName)
-                        secondaryLargeText(viewModel.domainName)
+                        secondaryLargeText(viewModel.domain.name)
                     } else {
-                        primaryLargeText(viewModel.domainName)
+                        primaryLargeText(viewModel.domain.name)
                     }
                 }
                 if isBioTextAvailable() {
@@ -215,9 +209,15 @@ private extension PublicProfileView {
     }
     
     func isBioTextAvailable() -> Bool {
-        viewModel.profile?.profile.description != nil ||
-        viewModel.profile?.profile.web2Url != nil ||
-        viewModel.profile?.profile.location != nil
+        isStringValueSet(viewModel.profile?.profile.description) ||
+        isStringValueSet(viewModel.profile?.profile.web2Url) ||
+        isStringValueSet(viewModel.profile?.profile.location)
+    }
+    
+    func isStringValueSet(_ string: String?) -> Bool {
+        guard let string else { return false }
+        
+        return !string.trimmedSpaces.isEmpty
     }
     
     @ViewBuilder
@@ -535,7 +535,7 @@ private extension PublicProfileView {
     func badgeView(badge: DomainProfileBadgeDisplayInfo) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
-            delegate?.publicProfileDidSelectBadge(badge)
+            delegate?.publicProfileDidSelectBadge(badge, in: viewModel.domain.name)
         } label: {
             ZStack {
                 Color.white
@@ -611,7 +611,7 @@ private extension PublicProfileView {
     struct ShowingCryptoList: ViewModifier {
         @Binding var isCryptoListPresented: Bool
         let domainName: DomainName
-        @Binding var records: [String : String]?
+        var records: [String : String]?
         
         func body(content: Content) -> some View {
             if let records {
@@ -631,7 +631,7 @@ private extension PublicProfileView {
     
     struct ShowingFollowersList: ViewModifier {
         @Binding var isFollowersListPresented: Bool
-        @Binding var socialInfo: DomainProfileSocialInfo?
+        var socialInfo: DomainProfileSocialInfo?
         let domainName: DomainName
         let followerSelectionCallback: FollowerSelectionCallback
         
@@ -654,7 +654,7 @@ private extension PublicProfileView {
     
     struct ShowingSocialsList: ViewModifier {
         @Binding var isSocialsListPresented: Bool
-        @Binding var socialAccounts: SocialAccounts?
+        var socialAccounts: SocialAccounts?
         let domainName: DomainName
         
         func body(content: Content) -> some View {
@@ -678,7 +678,7 @@ private extension PublicProfileView {
 struct PublicProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(Constants.swiftUIPreviewDevices, id: \.self) { device in
-            PublicProfileView(domainName: "dans.crypto",
+            PublicProfileView(domain: .init(walletAddress: "0x123", name: "dans.crypto"),
                               viewingDomain: .init(name: "oleg.x"))
                 .previewDevice(PreviewDevice(rawValue: device))
                 .previewDisplayName(device)

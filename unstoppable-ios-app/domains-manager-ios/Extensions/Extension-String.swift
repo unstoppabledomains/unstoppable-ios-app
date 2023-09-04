@@ -929,6 +929,12 @@ extension String {
         static let followedByNOthersSuffix = "FOLLOWED_BY_N_OTHERS_SUFFIX"
         static let and = "AND"
         static let leaderboard = "LEADERBOARD"
+        
+        // Domains search
+        static let yourDomains = "YOUR_DOMAINS"
+        static let globalSearch = "GLOBAL_SEARCH"
+        static let globalSearchHint = "GLOBAL_SEARCH_HINT"
+
     }
 
     enum BlockChainIcons: String {

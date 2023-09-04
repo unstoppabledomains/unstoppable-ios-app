@@ -197,12 +197,16 @@ extension DomainsCollectionRouter {
         }
     }
     
-    func jumpToChatsList(profile: MessagingChatUserProfileDisplayInfo) async {
+    func jumpToChatsList(profile: MessagingChatUserProfileDisplayInfo?) async {
         await showChatsListWith(options: .showChatsList(profile: profile))
     }
     
     func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
-        await showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
+        await showChatWith(options: .existingChat(chatId: chatId), profile: profile)
+    }
+    
+    func showChatWith(options: ChatsList.PresentOptions.PresentChatOptions, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChat(options: options, profile: profile))
     }
     
     func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {

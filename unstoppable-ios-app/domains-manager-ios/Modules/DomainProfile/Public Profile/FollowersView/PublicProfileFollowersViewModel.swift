@@ -10,7 +10,7 @@ import SwiftUI
 extension PublicProfileFollowersView {
     
     @MainActor
-    final class PublicProfileFollowersViewModel: ObservableObject, ProfileImageLoader {
+    final class PublicProfileFollowersViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
        
         let domainName: DomainName
         let socialInfo: DomainProfileSocialInfo
@@ -21,6 +21,7 @@ extension PublicProfileFollowersView {
                 didChangeRelationshipType()
             }
         }
+        @Published var error: Error?
         private let numberOfFollowersToTake = 40
         @Published private(set) var followersList: [DomainProfileFollowerDisplayInfo]?
         private var followersPaginationInfo: FollowersPaginationInfo = .init()
@@ -41,14 +42,22 @@ extension PublicProfileFollowersView {
             let type = selectedType
             
             Task {
-                let icon = await loadIconOrInitialsFor(follower: follower)
+                @MainActor
+                func setIcon(_ icon: UIImage?) {
+                    if case .followers = type,
+                       let i = followersList?.firstIndex(where: { $0.domain == follower.domain }) {
+                        followersList?[i].icon = icon
+                    } else if case .following = type,
+                              let i = followingList?.firstIndex(where: { $0.domain == follower.domain }) {
+                        followingList?[i].icon = icon
+                    }
+                }
                 
-                if case .followers = type,
-                   let i = followersList?.firstIndex(where: { $0.domain == follower.domain }) {
-                    followersList?[i].icon = icon
-                } else if case .following = type,
-                          let i = followingList?.firstIndex(where: { $0.domain == follower.domain }) {
-                    followingList?[i].icon = icon
+                let initials = await loadInitialsFor(domainName: follower.domain)
+                setIcon(initials)
+                
+                if let icon = await loadIconFor(follower: follower) {
+                    setIcon(icon)
                 }
             }
         }
@@ -81,7 +90,7 @@ extension PublicProfileFollowersView {
             
             isLoadingPage = true
             Task {
-                do {
+                await performAsyncErrorCatchingBlock {
                     let response = try await NetworkService().fetchListOfFollowers(for: domainName,
                                                                                     relationshipType: type,
                                                                                     count: numberOfFollowersToTake,
@@ -100,9 +109,7 @@ extension PublicProfileFollowersView {
                         followingPaginationInfo.canLoadMore = canLoadMore
                         followingList = currentList
                     }
-                } catch {
-                    // TODO: - Handle error
-                }
+                } 
                 isLoadingPage = false
             }
         }
