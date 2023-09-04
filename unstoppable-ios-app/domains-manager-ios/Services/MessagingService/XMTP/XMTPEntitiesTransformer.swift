@@ -67,7 +67,8 @@ struct XMTPEntitiesTransformer {
         
         // Bridging for PNs
         AppGroupsBridgeService.shared.saveXMTPConversationData(conversationData: xmtpChat.encodedContainer.jsonData(),
-                                                               topic: xmtpChat.topic)
+                                                               topic: xmtpChat.topic,
+                                                               userWallet: userWallet)
         //
         
         let serviceMetadata = metadataModel.jsonData()

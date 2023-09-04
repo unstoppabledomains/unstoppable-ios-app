@@ -17,8 +17,8 @@ protocol AppGroupsBridgeServiceProtocol {
     func saveAvatarPath(_ path: String?, for domainName: String)
     
     // XMTP
-    func saveXMTPConversationData(conversationData: Data?, topic: String)
-    func getXMTPConversationDataFor(topic: String) -> Data?
+    func saveXMTPConversationData(conversationData: Data?, topic: String, userWallet: String)
+    func getXMTPConversationDataFor(topic: String, userWallet: String) -> Data?
     func getXMTPBlockedUsersList() -> [XMTPBlockedUserDescription]
     func setXMTPBlockedUsersList(_ newList: [XMTPBlockedUserDescription])
 }
@@ -26,14 +26,14 @@ protocol AppGroupsBridgeServiceProtocol {
 enum AppGroupDataType: Codable {
     case domainChanges
     case domainAvatarURL(domainName: String)
-    case xmtpConversation(topic: String)
+    case xmtpConversation(topic: String, userWallet: String)
     case xmtpBlockedUsersList
     
     var key: String {
         switch self {
         case .domainChanges: return "domainChanges"
         case .domainAvatarURL(let domainName): return domainName
-        case .xmtpConversation(let topic): return "xmtp_\(topic)"
+        case .xmtpConversation(let topic, let userWallet): return "xmtp_\(topic)_\(userWallet)"
         case .xmtpBlockedUsersList: return "xmtpBlockedUsersList"
         }
     }
@@ -84,12 +84,12 @@ extension AppGroupsBridgeService: AppGroupsBridgeServiceProtocol {
 
 // MARK: - XMTP Related
 extension AppGroupsBridgeService {
-    func saveXMTPConversationData(conversationData: Data?, topic: String) {
-        saveData(conversationData, for: .xmtpConversation(topic: topic))
+    func saveXMTPConversationData(conversationData: Data?, topic: String, userWallet: String) {
+        saveData(conversationData, for: .xmtpConversation(topic: topic, userWallet: userWallet.normalized))
     }
     
-    func getXMTPConversationDataFor(topic: String) -> Data? {
-        dataFor(type: .xmtpConversation(topic: topic))
+    func getXMTPConversationDataFor(topic: String, userWallet: String) -> Data? {
+        dataFor(type: .xmtpConversation(topic: topic, userWallet: userWallet.normalized))
     }
     
     func getXMTPBlockedUsersList() -> [XMTPBlockedUserDescription] {

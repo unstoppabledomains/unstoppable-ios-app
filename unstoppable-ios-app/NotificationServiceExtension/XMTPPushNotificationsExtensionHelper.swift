@@ -23,10 +23,15 @@ struct XMTPPushNotificationsExtensionHelper {
             
             let topic = data.topic
             let wallet = data.toAddress.ethChecksumAddress()
+            #if DEBUG
+            let env: XMTPEnvironment = .dev
+            #else
             let env: XMTPEnvironment = .production
+            #endif
             let client = try await getClientFor(wallet: wallet, env: env)
             
-            let conversationData = AppGroupsBridgeService.shared.getXMTPConversationDataFor(topic: topic)
+            let conversationData = AppGroupsBridgeService.shared.getXMTPConversationDataFor(topic: topic,
+                                                                                            userWallet: wallet)
             let conversationContainer: XMTP.ConversationContainer = try decodeConversationData(from: conversationData)
             let conversation = conversationContainer.decode(with: client)
             address = conversation.peerAddress
