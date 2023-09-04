@@ -165,7 +165,7 @@ extension DomainsCollectionEmptyStateView {
         var subtitle: String? {
             switch self {
             case .importWallet:
-                return nil
+                return String.Constants.domainsCollectionEmptyStateImportSubtitle.localized()
             case .external:
                 return String.Constants.domainsCollectionEmptyStateExternalSubtitle.localized()
             }

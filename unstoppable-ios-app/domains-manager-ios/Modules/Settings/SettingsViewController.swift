@@ -226,7 +226,7 @@ extension SettingsViewController {
             case .homeScreen:
                 return String.Constants.settingsHomeScreen.localized()
             case .websiteAccount:
-                return String.Constants.websiteAccount.localized()
+                return String.Constants.viewVaultedDomains.localized()
             case .inviteFriends:
                 return String.Constants.settingsInviteFriends.localized()
             }
@@ -234,8 +234,10 @@ extension SettingsViewController {
         
         var subtitle: String? {
             switch self {
-            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen, .websiteAccount, .inviteFriends:
+            case .wallets, .security, .appearance, .rateUs, .learn, .twitter, .support, .legal, .testnet, .homeScreen, .inviteFriends:
                 return nil
+            case .websiteAccount:
+                return String.Constants.protectedByUD.localized()
             }
         }
         

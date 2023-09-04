@@ -381,6 +381,7 @@ extension String {
         static let domainsCollectionEmptyStateTitle = "DOMAINS_COLLECTION_EMPTY_STATE_TITLE"
         static let domainsCollectionEmptyStateSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE"
         static let domainsCollectionEmptyStateImportTitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE"
+        static let domainsCollectionEmptyStateImportSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE"
         static let domainsCollectionEmptyStateExternalTitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE"
         static let domainsCollectionEmptyStateExternalSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE"
         static let importYourDomains = "IMPORT_YOUR_DOMAINS"
@@ -778,8 +779,7 @@ extension String {
         static let domainCardSwipeToCard = "DOMAIN_CARD_SWIPE_TO_CARD"
         
         // Minting-Claiming
-        static let importFromTheWebsite = "IMPORT_FROM_THE_WEBSITE"
-        static let storeInYourDomainVault = "STORE_IN_YOUR_DOMAIN_VAULT"
+        static let claimDomainsToSelfCustodial = "CLAIM_DOMAINS_TO_SELF_CUSTODIAL"
         
         // Legacy tokens
         static let legacy = "LEGACY"
@@ -795,7 +795,8 @@ extension String {
         static let externalWalletFailedToSignPullUpSubtitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE"
         
         // Login
-        static let websiteAccount = "WEBSITE_ACCOUNT"
+        static let viewVaultedDomains = "VIEW_VAULTED_DOMAINS"
+        static let protectedByUD = "PROTECTED_BY_UD"
         static let loginWithWebTitle = "LOGIN_WITH_WEB_TITLE"
         static let loginWithWebSubtitle = "LOGIN_WITH_WEB_SUBTITLE"
         static let loginWithProviderN = "LOGIN_WITH_PROVIDER_N"

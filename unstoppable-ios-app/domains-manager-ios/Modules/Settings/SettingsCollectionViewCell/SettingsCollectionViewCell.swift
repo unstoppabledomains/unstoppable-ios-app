@@ -30,6 +30,7 @@ extension SettingsCollectionViewCell {
         switcher.isHidden = true
         valueLabel.isHidden = true
         subtitleLabel.isHidden = menuItem.subtitle == nil
+        setSubtitle(menuItem.subtitle ?? "")
 
         switch menuItem.controlType {
         case .empty:
@@ -73,6 +74,12 @@ private extension SettingsCollectionViewCell {
         titleLabel.setAttributedTextWith(text: title,
                                          font: .currentFont(withSize: 16, weight: .medium),
                                          textColor: .foregroundDefault)
+    }
+    
+    func setSubtitle(_ subtitle: String) {
+        subtitleLabel.setAttributedTextWith(text: subtitle,
+                                            font: .currentFont(withSize: 16, weight: .regular),
+                                            textColor: .foregroundSecondary)
     }
     
     func setValue(_ value: String) {

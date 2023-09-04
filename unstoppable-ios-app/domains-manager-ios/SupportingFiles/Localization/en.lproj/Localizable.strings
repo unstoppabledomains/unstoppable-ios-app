@@ -297,8 +297,9 @@
 "DOMAINS_COLLECTION_EMPTY_STATE_TITLE" = "No domains";
 "DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE" = "Import your domains to manage your profile and login to apps.";
 "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE" = "Recovery phrase\nor private key";
+"DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE" = "For domains already minted";
 "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE" = "External wallet";
-"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE" = "MetaMask, Rainbow, etc.";
+"DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE" = "MetaMask, Rainbow, etc for domains already minted";
 "IMPORT_YOUR_DOMAINS" = "Import your domains";
 
 // Statuses
@@ -698,8 +699,7 @@
 "DOMAIN_CARD_SWIPE_TO_CARD" = "Swipe to the card";
 
 // Minting-Claiming
-"IMPORT_FROM_THE_WEBSITE" = "Import from the website";
-"STORE_IN_YOUR_DOMAIN_VAULT" = "Store in your domain vault";
+"CLAIM_DOMAINS_TO_SELF_CUSTODIAL" = "Claim domains to a self-custodial wallet";
 
 // Legacy tokens
 "LEGACY" = "Legacy";
@@ -715,12 +715,13 @@
 "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE" = "Request from external wallet failed. Please try again.";
 
 // Login
-"WEBSITE_ACCOUNT" = "Website account";
-"LOGIN_WITH_WEB_TITLE" = "Login with your website account";
-"LOGIN_WITH_WEB_SUBTITLE" = "Sync your domains and wallets with the Unstoppable app.";
+"VIEW_VAULTED_DOMAINS" = "View Vaulted domains";
+"PROTECTED_BY_UD" = "Protected by Unstoppable";
+"LOGIN_WITH_WEB_TITLE" = "Login to view your domains in the Unstoppable Vault";
+"LOGIN_WITH_WEB_SUBTITLE" = "Domains in your self-custody wallets will NOT be shown";
 "LOGIN_WITH_PROVIDER_N" = "Continue with %@";
 "LOG_OUT" = "Log out";
-"LOG_OUT_CONFIRMATION_MESSAGE" = "You will no longer be able to manage domains in Unstoppable Vault.";
+"LOG_OUT_CONFIRMATION_MESSAGE" = "You will need to login again to view domains in the Unstoppable Vault";
 
 // Login with Email+Password
 "LOGIN_WITH_EMAIL_TITLE" = "Enter your credentials";
