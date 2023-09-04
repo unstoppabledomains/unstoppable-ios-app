@@ -7,13 +7,16 @@
 
 import Foundation
 import XMTP
+import web3
 
 struct XMTPPushNotificationsHelper {
     static func subscribeForTopics(_ topics: [String], by client: Client) async throws {
         do {
             let url = URL(string: "https://\(NetworkConfig.baseMessagingHost)/api/xmtp/topics/register")!
             let subReq = try await buildSubscribeRequestFor(topics: topics, by: client)
-            let reqData = subReq.jsonString()!
+            guard let reqData = subReq.jsonString() else {
+                throw XMTPPushNotificationError.failedToPrepareRequestData
+            }
             let request = APIRequest(url: url,
                                      body: reqData,
                                      method: .post)
@@ -55,15 +58,21 @@ private extension XMTPPushNotificationsHelper {
     
     static func signTopic(_ topic: String,
                           by client: Client) async throws -> Registration {
-        let signature = try await signString(topic, by: client)
+        guard let topicData = topic.data(using: .utf8) else {
+            throw XMTPPushNotificationError.failedToPrepareTopicData
+        }
+        let hashedTopicData = topicData.web3.keccak256
+        let signature = try await signData(hashedTopicData, by: client)
         let registration = Registration(topic: topic, signature: signature)
         return registration
     }
     
-    static func signString(_ str: String,
+    static func signData(_ data: Data,
                            by client: Client) async throws -> String {
-        let data = str.data(using: .utf8)!
-        let signature = try await client.keys.preKeys.first!.sign(data)
+        guard let preKey = client.keys.preKeys.first else {
+            throw XMTPPushNotificationError.noPreKeysInXMTPClient
+        }
+        let signature = try await preKey.sign(data)
         
         return try signature.serializedData().base64EncodedString()
     }
@@ -77,5 +86,11 @@ private extension XMTPPushNotificationsHelper {
         let ownerAddress: String
         let registrations: [Registration]
         let signedPublicKey: String
+    }
+    
+    enum XMTPPushNotificationError: Error {
+        case failedToPrepareTopicData
+        case noPreKeysInXMTPClient
+        case failedToPrepareRequestData
     }
 }

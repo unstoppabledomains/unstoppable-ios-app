@@ -141,4 +141,17 @@ extension Array where Element == DomainDisplayInfo {
     func interactableItems() -> [DomainDisplayInfo] {
         self.filter({ $0.isInteractable })
     }
+    
+    func availableForMessagingItems() -> [DomainDisplayInfo] {
+        self.filter { 
+            switch $0.usageType {
+            case .normal:
+                return true
+            case .newNonInteractable(let tld):
+                return tld == Constants.ensDomainTLD
+            default:
+                return false
+            }
+        }
+    }
 }

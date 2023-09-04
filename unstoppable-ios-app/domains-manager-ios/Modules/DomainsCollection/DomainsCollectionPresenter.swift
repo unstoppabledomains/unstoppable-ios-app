@@ -648,8 +648,8 @@ private extension DomainsCollectionPresenter {
         } else {
             view?.setScanButtonHidden(!domains[currentIndex].isInteractable)
         }
-        let interactableDomains = domains.filter({ $0.isInteractable })
-        view?.setAddButtonHidden(domains.isEmpty, isMessagingAvailable: !interactableDomains.isEmpty )
+        let availableForMessagingDomains = domains.availableForMessagingItems()
+        view?.setAddButtonHidden(domains.isEmpty, isMessagingAvailable: !availableForMessagingDomains.isEmpty )
         view?.setEmptyState(hidden: !domains.isEmpty)
     }
     
