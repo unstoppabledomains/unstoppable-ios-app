@@ -36,7 +36,10 @@ final class DomainsListViewController: BaseViewController, BlurVisibilityAfterLi
     private var searchBar: UDSearchBar = UDSearchBar()
     private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
         .init(searchBarPlacement: .inline) { [weak self] in
-            self?.searchBar ?? UDSearchBar()
+            let searchBar = self?.searchBar ?? UDSearchBar()
+            searchBar.setCorrectionType(.no)
+            searchBar.setAutoCapitalizationType(.none)
+            return searchBar
         }
     }()
 
