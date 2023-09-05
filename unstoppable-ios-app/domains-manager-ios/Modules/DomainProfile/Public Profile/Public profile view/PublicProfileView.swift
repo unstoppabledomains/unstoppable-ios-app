@@ -36,6 +36,7 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @State private var isCryptoListPresented = false
     @State private var isFollowersListPresented = false
     @State private var isSocialsListPresented = false
+    @State private var isDomainsListPresented = false
     var analyticsName: Analytics.ViewName { .publicDomainProfile }
 
     var body: some View {
@@ -60,6 +61,10 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
         .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
                                      socialAccounts: viewModel.socialAccounts,
                                      domainName: viewModel.domain.name))
+        .modifier(ShowingDomainsList(isDomainsListPresented: $isDomainsListPresented,
+                                     domainSelectionCallback: domainSelected,
+                                     profileDomain: viewModel.domain.name,
+                                     currentDomainName: viewModel.viewingDomain.name))
         .onAppear(perform: {
             logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
         })
@@ -77,6 +82,10 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
 private extension PublicProfileView {
     func followerSelected(_ follower: DomainProfileFollowerDisplayInfo) {
         viewModel.didSelectFollower(follower)
+    }
+    
+    func domainSelected(_ domain: DomainItem) {
+        viewModel.didSelectViewingDomain(domain)
     }
     
     @ViewBuilder
@@ -172,25 +181,56 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func followButton(isFollowing: Bool) -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            viewModel.followButtonPressed()
-            logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
+        Menu {
+            Button {
+                UDVibration.buttonTap.vibrate()
+                showDomainsList()
+            } label: {
+                if isFollowing {
+                    Text(String.Constants.followingAsDomain.localized(viewModel.viewingDomain.name))
+                } else {
+                    Text(String.Constants.followAsDomain.localized(viewModel.viewingDomain.name))
+                }
+                Text(String.Constants.tapToSwitch.localized())
+                if let viewingDomainImage = viewModel.viewingDomainImage {
+                    Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
+                }
+            }
+            Divider()
+            Button(role: isFollowing ? .destructive : .cancel) {
+                UDVibration.buttonTap.vibrate()
+                viewModel.followButtonPressed()
+                logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
+            } label: {
+                if isFollowing {
+                    Label(String.Constants.unfollow.localized(), systemImage: "minus.circle")
+                } else {
+                    Label(String.Constants.follow.localized(), image: "arrowTopRight")
+                }
+            }
         } label: {
             HStack(spacing: 8) {
                 if !isFollowing {
-                    Image.plusIconNav
+                    Image.arrowTopRight
                 }
                 
                 Text(isFollowing ? String.Constants.following.localized() : String.Constants.follow.localized())
+                
+                if isFollowing {
+                    Image(uiImage: viewModel.viewingDomainImage ?? .chevronDown)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 20, height: 20)
+                        .clipShape(Circle())
+                }
             }
             .foregroundColor(isFollowing ? .white : .black)
             .font(.currentFont(size: 16, weight: .medium))
             .frame(height: 24)
+            .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
+            .background(.white.opacity(isFollowing ? 0.16 : 1.0))
+            .clipShape(Capsule())
         }
-        .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
-        .background(.white.opacity(isFollowing ? 0.16 : 1.0))
-        .clipShape(Capsule())
     }
     
     // Profile info
@@ -298,7 +338,7 @@ private extension PublicProfileView {
     }
     
     enum PresentingModalsOption: CaseIterable, Hashable {
-        case followers, crypto, socials
+        case followers, crypto, socials, domains
     }
     
     func isPresenting(modal: PresentingModalsOption) -> Bool {
@@ -309,6 +349,8 @@ private extension PublicProfileView {
             return isCryptoListPresented
         case .socials:
             return isSocialsListPresented
+        case .domains:
+            return isDomainsListPresented
         }
     }
     
@@ -333,6 +375,8 @@ private extension PublicProfileView {
             isCryptoListPresented = presented
         case .socials:
             isSocialsListPresented = presented
+        case .domains:
+            isDomainsListPresented = presented
         }
     }
     
@@ -346,6 +390,10 @@ private extension PublicProfileView {
     
     func showSocialsList() {
         present(modal: .socials)
+    }
+    
+    func showDomainsList() {
+        present(modal: .domains)
     }
     
     @ViewBuilder
@@ -690,6 +738,24 @@ private extension PublicProfileView {
         }
     }
     
+    struct ShowingDomainsList: ViewModifier {
+        @Binding var isDomainsListPresented: Bool
+        let domainSelectionCallback: DomainSelectionCallback
+        let profileDomain: DomainName
+        let currentDomainName: DomainName
+        
+        func body(content: Content) -> some View {
+            content
+                .adaptiveSheet(isPresented: $isDomainsListPresented,
+                               detents: [.medium(), .large()],
+                               smallestUndimmedDetentIdentifier: .large) {
+                    PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
+                                                     profileDomain: profileDomain,
+                                                     currentDomainName: currentDomainName,
+                                                     isPresenting: $isDomainsListPresented)
+                }
+        }
+    }
 }
 
 struct PublicProfileView_Previews: PreviewProvider {

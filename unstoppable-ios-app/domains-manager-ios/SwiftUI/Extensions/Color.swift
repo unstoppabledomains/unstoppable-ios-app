@@ -19,7 +19,8 @@ extension Color {
     static let backgroundSuccessEmphasis = Color(uiColor: .backgroundSuccessEmphasis)
     static let backgroundDefault = Color(uiColor: .backgroundDefault)
     static let backgroundMuted2 = Color(uiColor: .backgroundMuted2)
-    
+    static let backgroundOverlay = Color(uiColor: .backgroundOverlay)
+
     
     static let borderSubtle = Color(uiColor: .borderSubtle)
     

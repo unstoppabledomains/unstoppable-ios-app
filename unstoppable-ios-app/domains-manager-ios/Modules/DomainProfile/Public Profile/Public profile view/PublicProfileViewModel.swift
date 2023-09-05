@@ -27,7 +27,7 @@ extension PublicProfileView {
     final class PublicProfileViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
         
         private(set) var domain: PublicDomainDisplayInfo
-        let viewingDomain: DomainItem
+        private(set) var viewingDomain: DomainItem
         @Published var records: [String : String]?
         @Published var socialInfo: DomainProfileSocialInfo?
         @Published var socialAccounts: SocialAccounts?
@@ -37,6 +37,7 @@ extension PublicProfileView {
         @Published private(set) var badgesDisplayInfo: [DomainProfileBadgeDisplayInfo]?
         @Published private(set) var coverImage: UIImage?
         @Published private(set) var avatarImage: UIImage?
+        @Published private(set) var viewingDomainImage: UIImage?
         @Published private(set) var isFollowing: Bool?
         @Published private(set) var followersDisplayInfo: FollowersDisplayInfo?
         private var badgesInfo: BadgesInfo?
@@ -46,6 +47,7 @@ extension PublicProfileView {
             self.domain = domain
             self.viewingDomain = viewingDomain
             loadAllProfileData()
+            loadViewingDomainData()
         }
      
         func loadIconIfNeededFor(follower: DomainProfileFollowerDisplayInfo) {
@@ -97,6 +99,14 @@ extension PublicProfileView {
                                name: follower.domain)
                 loadAllProfileData()
             }
+        }
+        
+        func didSelectViewingDomain(_ domain: DomainItem) {
+            viewingDomainImage = nil
+            isFollowing = nil
+            loadFollowingState()
+            viewingDomain = domain
+            loadViewingDomainData()
         }
         
         private func loadAllProfileData() {
@@ -187,6 +197,16 @@ extension PublicProfileView {
                     coverImage = await appContext.imageLoadingService.loadImage(from: .url(url),
                                                                                 downsampleDescription: nil)
                 }
+            }
+        }
+        
+        private func loadViewingDomainData() {
+            Task {
+                let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+                guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }
+                
+                viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),
+                                                                                    downsampleDescription: nil)
             }
         }
     }

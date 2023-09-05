@@ -710,6 +710,7 @@
 		C685A9942840FD6300E54044 /* ChoosePrimaryDomainDuringMintingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A9932840FD6300E54044 /* ChoosePrimaryDomainDuringMintingPresenter.swift */; };
 		C685A99B284101DA00E54044 /* DomainSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A999284101DA00E54044 /* DomainSelectionCell.swift */; };
 		C685A99F284101DA00E54044 /* DomainSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C685A99A284101DA00E54044 /* DomainSelectionCell.xib */; };
+		C685D8102AA7071300212879 /* PublicProfileDomainSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D80F2AA7071300212879 /* PublicProfileDomainSelectionView.swift */; };
 		C6861B742A5BE9AA00A1632B /* ChatEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6861B732A5BE9AA00A1632B /* ChatEmptyView.swift */; };
 		C686BF172A5FE8870036C7C1 /* MessagingFilesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF162A5FE8870036C7C1 /* MessagingFilesService.swift */; };
 		C686BF1D2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */; };
@@ -1827,6 +1828,7 @@
 		C685A9932840FD6300E54044 /* ChoosePrimaryDomainDuringMintingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoosePrimaryDomainDuringMintingPresenter.swift; sourceTree = "<group>"; };
 		C685A999284101DA00E54044 /* DomainSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSelectionCell.swift; sourceTree = "<group>"; };
 		C685A99A284101DA00E54044 /* DomainSelectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainSelectionCell.xib; sourceTree = "<group>"; };
+		C685D80F2AA7071300212879 /* PublicProfileDomainSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileDomainSelectionView.swift; sourceTree = "<group>"; };
 		C6861B732A5BE9AA00A1632B /* ChatEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatEmptyView.swift; sourceTree = "<group>"; };
 		C686BF162A5FE8870036C7C1 /* MessagingFilesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesService.swift; sourceTree = "<group>"; };
 		C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesServiceProtocol.swift; sourceTree = "<group>"; };
@@ -4763,6 +4765,7 @@
 				C69F996B2A9F2206004B1958 /* ProfileFollowerImageLoader.swift */,
 				C69F996C2A9F2206004B1958 /* PublicProfileCryptoListView.swift */,
 				C69F99742A9F2206004B1958 /* PublicProfileSocialsListView.swift */,
+				C685D80F2AA7071300212879 /* PublicProfileDomainSelectionView.swift */,
 				C69F99702A9F2206004B1958 /* PublicProfilePullUpHeaderView.swift */,
 			);
 			path = "Public Profile";
@@ -6922,6 +6925,7 @@
 				C64513232809912F00413C51 /* PullUpViewController.swift in Sources */,
 				C624D770281B884600F55530 /* ImageLoadingService.swift in Sources */,
 				C692C304282E012900C31393 /* WalletDataValidator.swift in Sources */,
+				C685D8102AA7071300212879 /* PublicProfileDomainSelectionView.swift in Sources */,
 				C6109E3F28E5AB310027D5D8 /* AppLaunchService.swift in Sources */,
 				C6A2D593284FA0AE00327C47 /* WalletConnectService.swift in Sources */,
 				C6124CBA2922283D005E6537 /* DomainProfileActionCoverViewPresenter.swift in Sources */,

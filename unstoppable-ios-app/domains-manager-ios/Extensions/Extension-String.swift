@@ -930,6 +930,10 @@ extension String {
         static let followedByNOthersSuffix = "FOLLOWED_BY_N_OTHERS_SUFFIX"
         static let and = "AND"
         static let leaderboard = "LEADERBOARD"
+        static let unfollow = "Unfollow"
+        static let followingAsDomain = "Following as %@"
+        static let followAsDomain = "Follow as %@"
+        static let tapToSwitch = "Tap to switch"
         
         // Domains search
         static let yourDomains = "YOUR_DOMAINS"
