@@ -198,7 +198,7 @@ extension RestoreWalletViewController {
             case .externalWallet:
                 return String.Constants.connectWalletExternal.localized()
             case .websiteAccount:
-                return String.Constants.websiteAccount.localized()
+                return String.Constants.viewVaultedDomains.localized()
             }
         }
         
@@ -207,13 +207,13 @@ extension RestoreWalletViewController {
             case .iCloud(let value):
                 return String.Constants.connectWalletICloudHint.localized(value)
             case .recoveryPhrase:
-                return nil
+                return String.Constants.domainsCollectionEmptyStateImportSubtitle.localized()
             case .watchWallet:
                 return String.Constants.connectWalletWatchHint.localized()
             case .externalWallet:
                 return String.Constants.connectWalletExternalHint.localized()
             case .websiteAccount:
-                return "Email, Google or Twitter"
+                return String.Constants.protectedByUD.localized()
             }
         }
         
