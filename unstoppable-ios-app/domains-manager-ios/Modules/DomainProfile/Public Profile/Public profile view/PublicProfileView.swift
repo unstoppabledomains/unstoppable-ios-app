@@ -241,7 +241,8 @@ private extension PublicProfileView {
                    spacing: 16) {
                 VStack(alignment: .leading,
                        spacing: 0) {
-                    if let displayName = viewModel.profile?.profile.displayName {
+                    if let displayName = viewModel.profile?.profile.displayName,
+                       !displayName.trimmedSpaces.isEmpty {
                         primaryLargeText(displayName)
                         secondaryLargeText(viewModel.domain.name)
                     } else {
