@@ -40,12 +40,14 @@ extension PublicProfileView {
         @Published private(set) var viewingDomainImage: UIImage?
         @Published private(set) var isFollowing: Bool?
         @Published private(set) var followersDisplayInfo: FollowersDisplayInfo?
+        private var appearTime: Date
         private var badgesInfo: BadgesInfo?
         
         init(domain: PublicDomainDisplayInfo,
              viewingDomain: DomainItem) {
             self.domain = domain
             self.viewingDomain = viewingDomain
+            self.appearTime = Date()
             loadAllProfileData()
             loadViewingDomainData()
         }
@@ -127,17 +129,20 @@ extension PublicProfileView {
             followersDisplayInfo = nil
             avatarImage = nil
             coverImage = nil
+            appearTime = Date()
         }
         
         private func loadPublicProfile() {
             isLoading = true
             Task {
                 await performAsyncErrorCatchingBlock {
-                    profile = try await NetworkService().fetchPublicProfile(for: domain.name,
-                                                                            fields: [.profile, .records, .socialAccounts])
-                    records = profile?.records
-                    socialInfo = profile?.social
-                    socialAccounts = profile?.socialAccounts
+                    let profile = try await NetworkService().fetchPublicProfile(for: domain.name,
+                                                                                fields: [.profile, .records, .socialAccounts])
+                    await waitForAppear()
+                    self.profile = profile
+                    records = profile.records
+                    socialInfo = profile.social
+                    socialAccounts = profile.socialAccounts
                     isLoading = false
                     loadImages()
                 }
@@ -147,7 +152,9 @@ extension PublicProfileView {
         private func loadFollowingState() {
             Task {
                 await performAsyncErrorCatchingBlock {
-                    isFollowing = try await NetworkService().isDomain(viewingDomain.name, following: domain.name)
+                    let isFollowing = try await NetworkService().isDomain(viewingDomain.name, following: domain.name)
+                    await waitForAppear()
+                    self.isFollowing = isFollowing
                 }
             }
         }
@@ -155,9 +162,11 @@ extension PublicProfileView {
         private func loadBadgesInfo() {
             Task {
                 await performAsyncErrorCatchingBlock {
-                    badgesInfo = try await NetworkService().fetchBadgesInfo(for: domain.name)
-                    badgesDisplayInfo = badgesInfo?.badges.map({ DomainProfileBadgeDisplayInfo(badge: $0,
-                                                                                               isExploreWeb3Badge: false) })
+                    let badgesInfo = try await NetworkService().fetchBadgesInfo(for: domain.name)
+                    await waitForAppear()
+                    self.badgesInfo = badgesInfo
+                    badgesDisplayInfo = badgesInfo.badges.map({ DomainProfileBadgeDisplayInfo(badge: $0,
+                                                                                              isExploreWeb3Badge: false) })
                 }
             }
         }
@@ -169,6 +178,7 @@ extension PublicProfileView {
                                                                                    relationshipType: .followers,
                                                                                    count: 3,
                                                                                    cursor: nil)
+                    await waitForAppear()
                     followersDisplayInfo = .init(topFollowersList: response.data.map({ DomainProfileFollowerDisplayInfo(domain: $0.domain) }),
                                                  totalNumberOfFollowers: response.meta.totalCount)
                 }
@@ -184,8 +194,10 @@ extension PublicProfileView {
             Task {
                 if let imagePath = profile?.profile.imagePath,
                    let url = URL(string: imagePath) {
-                    avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
+                    let avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
                                                                                  downsampleDescription: nil)
+                    await waitForAppear()
+                    self.avatarImage = avatarImage
                 }
             }
         }
@@ -194,8 +206,10 @@ extension PublicProfileView {
             Task {
                 if let coverPath = profile?.profile.coverPath,
                    let url = URL(string: coverPath) {
-                    coverImage = await appContext.imageLoadingService.loadImage(from: .url(url),
+                    let coverImage = await appContext.imageLoadingService.loadImage(from: .url(url),
                                                                                 downsampleDescription: nil)
+                    await waitForAppear()
+                    self.coverImage = coverImage
                 }
             }
         }
@@ -205,8 +219,20 @@ extension PublicProfileView {
                 let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
                 guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }
                 
-                viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),
+                let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),
                                                                                     downsampleDescription: nil)
+                await waitForAppear()
+                self.viewingDomainImage = viewingDomainImage
+            }
+        }
+        
+        private func waitForAppear() async {
+            let timeSinceViewAppear = Date().timeIntervalSince(appearTime)
+            let uiReadyTime = 0.5
+            
+            let dif = uiReadyTime - timeSinceViewAppear
+            if dif > 0 {
+                try? await Task.sleep(seconds: dif)
             }
         }
     }
