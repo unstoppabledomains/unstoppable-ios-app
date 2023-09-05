@@ -9,9 +9,10 @@ import SwiftUI
 
 struct PublicProfileSocialsListView: View, ViewAnalyticsLogger {
     
+    @Environment(\.presentationMode) private var presentationMode
+
     let domainName: DomainName
     let accounts: [SocialDescription]
-    @Binding var isPresenting: Bool
     @State private var selectedSocial: SocialDescription?
     var analyticsName: Analytics.ViewName { .domainSocialsList }
 
@@ -39,14 +40,12 @@ struct PublicProfileSocialsListView: View, ViewAnalyticsLogger {
             UITableView.appearance().backgroundColor = .clear
             logAnalytic(event: .viewDidAppear, parameters: [.domainName : domainName])
         }
-        .onDisappear(perform: dismiss)
         .onChange(of: selectedSocial, perform: didSelectSocial)
     }
     
-    init(domainName: DomainName, socialAccounts: SocialAccounts, isPresenting: Binding<Bool>) {
+    init(domainName: DomainName, socialAccounts: SocialAccounts) {
         self.domainName = domainName
         self.accounts = SocialDescription.typesFrom(accounts: socialAccounts)
-        self._isPresenting = isPresenting
     }
     
 }
@@ -54,9 +53,7 @@ struct PublicProfileSocialsListView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension PublicProfileSocialsListView {
     func dismiss() {
-        guard isPresenting else { return }
-
-        isPresenting = false
+        presentationMode.wrappedValue.dismiss()
     }
     
     func didSelectSocial(_ social: SocialDescription?) {
@@ -105,7 +102,6 @@ private extension PublicProfileSocialsListView {
 struct PublicProfileSocialsListView_Previews: PreviewProvider {
     static var previews: some View {
         PublicProfileSocialsListView(domainName: "dans.crypto",
-                                     socialAccounts: .mock(),
-                                     isPresenting: .constant(true))
+                                     socialAccounts: .mock())
     }
 }

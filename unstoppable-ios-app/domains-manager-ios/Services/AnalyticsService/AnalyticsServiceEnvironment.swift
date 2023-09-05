@@ -167,7 +167,7 @@ extension Analytics {
         case chatsHome, chatRequestsList, chatChannelsSpamList
         case chatDialog, channelFeed
         case publicDomainProfile
-        case domainFollowersList, domainCryptoList, domainSocialsList
+        case domainFollowersList, domainCryptoList, domainSocialsList, publicProfileDomainsSelectionList
     }
 }
 

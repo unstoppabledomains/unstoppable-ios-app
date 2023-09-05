@@ -14,18 +14,17 @@ struct PublicProfileFollowersView: View, ViewAnalyticsLogger {
     @MainActor
     static func instantiate(domainName: DomainName,
                             socialInfo: DomainProfileSocialInfo,
-                            followerSelectionCallback: @escaping FollowerSelectionCallback,
-                            isPresenting: Binding<Bool>) -> UIViewController {
+                            followerSelectionCallback: @escaping FollowerSelectionCallback) -> UIViewController {
         let view = PublicProfileFollowersView(domainName: domainName,
                                               socialInfo: socialInfo,
-                                              followerSelectionCallback: followerSelectionCallback,
-                                              isPresenting: isPresenting)
+                                              followerSelectionCallback: followerSelectionCallback)
         let vc = UIHostingController(rootView: view)
         return vc
     }
     
+    @Environment(\.presentationMode) private var presentationMode
+    
     let followerSelectionCallback: FollowerSelectionCallback
-    @Binding var isPresenting: Bool
     @StateObject private var viewModel: PublicProfileFollowersViewModel
     @State private var selectedFollower: DomainProfileFollowerDisplayInfo?
     var analyticsName: Analytics.ViewName { .domainFollowersList }
@@ -101,15 +100,12 @@ struct PublicProfileFollowersView: View, ViewAnalyticsLogger {
             viewModel.onAppear()
             logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domainName])
         })
-        .onDisappear(perform: dismiss)
     }
     
     init(domainName: DomainName,
          socialInfo: DomainProfileSocialInfo,
-         followerSelectionCallback: @escaping FollowerSelectionCallback,
-         isPresenting: Binding<Bool>) {
+         followerSelectionCallback: @escaping FollowerSelectionCallback) {
         self.followerSelectionCallback = followerSelectionCallback
-        self._isPresenting = isPresenting
         _viewModel = StateObject(wrappedValue: PublicProfileFollowersViewModel(domainName: domainName,
                                                                                socialInfo: socialInfo))
     }
@@ -146,9 +142,7 @@ private extension PublicProfileFollowersView {
     }
     
     func dismiss() {
-        guard isPresenting else { return }
-        
-        isPresenting = false
+        presentationMode.wrappedValue.dismiss()
     }
 }
 
@@ -210,8 +204,7 @@ struct PublicProfileFollowersView_Previews: PreviewProvider {
         ForEach(Constants.swiftUIPreviewDevices, id: \.self) { device in
             PublicProfileFollowersView(domainName: "dans.crypto",
                                        socialInfo: .init(followingCount: 10, followerCount: 10001),
-                                       followerSelectionCallback: { _ in },
-                                       isPresenting: .constant(true))
+                                       followerSelectionCallback: { _ in })
             .previewDevice(PreviewDevice(rawValue: device))
             .previewDisplayName(device)
         }

@@ -36,6 +36,7 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @State private var isCryptoListPresented = false
     @State private var isFollowersListPresented = false
     @State private var isSocialsListPresented = false
+    @State private var isDomainsListPresented = false
     var analyticsName: Analytics.ViewName { .publicDomainProfile }
 
     var body: some View {
@@ -60,6 +61,10 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
         .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
                                      socialAccounts: viewModel.socialAccounts,
                                      domainName: viewModel.domain.name))
+        .modifier(ShowingDomainsList(isDomainsListPresented: $isDomainsListPresented,
+                                     domainSelectionCallback: domainSelected,
+                                     profileDomain: viewModel.domain.name,
+                                     currentDomainName: viewModel.viewingDomain.name))
         .onAppear(perform: {
             logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
         })
@@ -77,6 +82,10 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
 private extension PublicProfileView {
     func followerSelected(_ follower: DomainProfileFollowerDisplayInfo) {
         viewModel.didSelectFollower(follower)
+    }
+    
+    func domainSelected(_ domain: DomainItem) {
+        viewModel.didSelectViewingDomain(domain)
     }
     
     @ViewBuilder
@@ -172,25 +181,56 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func followButton(isFollowing: Bool) -> some View {
-        Button {
-            UDVibration.buttonTap.vibrate()
-            viewModel.followButtonPressed()
-            logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
+        Menu {
+            Button {
+                UDVibration.buttonTap.vibrate()
+                showDomainsList()
+            } label: {
+                if isFollowing {
+                    Text(String.Constants.followingAsDomain.localized(viewModel.viewingDomain.name))
+                } else {
+                    Text(String.Constants.followAsDomain.localized(viewModel.viewingDomain.name))
+                }
+                Text(String.Constants.tapToSwitch.localized())
+                if let viewingDomainImage = viewModel.viewingDomainImage {
+                    Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
+                }
+            }
+            Divider()
+            Button(role: isFollowing ? .destructive : .cancel) {
+                UDVibration.buttonTap.vibrate()
+                viewModel.followButtonPressed()
+                logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
+            } label: {
+                if isFollowing {
+                    Label(String.Constants.unfollow.localized(), systemImage: "minus.circle")
+                } else {
+                    Label(String.Constants.follow.localized(), image: "arrowTopRight")
+                }
+            }
         } label: {
             HStack(spacing: 8) {
                 if !isFollowing {
-                    Image.plusIconNav
+                    Image.arrowTopRight
                 }
                 
                 Text(isFollowing ? String.Constants.following.localized() : String.Constants.follow.localized())
+                
+                if isFollowing {
+                    Image(uiImage: viewModel.viewingDomainImage ?? .chevronDown)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 20, height: 20)
+                        .clipShape(Circle())
+                }
             }
             .foregroundColor(isFollowing ? .white : .black)
             .font(.currentFont(size: 16, weight: .medium))
             .frame(height: 24)
+            .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
+            .background(.white.opacity(isFollowing ? 0.16 : 1.0))
+            .clipShape(Capsule())
         }
-        .padding(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
-        .background(.white.opacity(isFollowing ? 0.16 : 1.0))
-        .clipShape(Capsule())
     }
     
     // Profile info
@@ -201,7 +241,8 @@ private extension PublicProfileView {
                    spacing: 16) {
                 VStack(alignment: .leading,
                        spacing: 0) {
-                    if let displayName = viewModel.profile?.profile.displayName {
+                    if let displayName = viewModel.profile?.profile.displayName,
+                       !displayName.trimmedSpaces.isEmpty {
                         primaryLargeText(displayName)
                         secondaryLargeText(viewModel.domain.name)
                     } else {
@@ -298,7 +339,7 @@ private extension PublicProfileView {
     }
     
     enum PresentingModalsOption: CaseIterable, Hashable {
-        case followers, crypto, socials
+        case followers, crypto, socials, domains
     }
     
     func isPresenting(modal: PresentingModalsOption) -> Bool {
@@ -309,31 +350,26 @@ private extension PublicProfileView {
             return isCryptoListPresented
         case .socials:
             return isSocialsListPresented
+        case .domains:
+            return isDomainsListPresented
         }
     }
     
     func present(modal: PresentingModalsOption) {
-        let otherViews = PresentingModalsOption.allCases.filter({ $0 != modal })
-        if let presentedView = otherViews.first(where: { isPresenting(modal: $0) }) {
-            // Showing some other view
-            setModal(presentedView, presented: false)
-            afterAdaptiveSheetDismiss {
-                present(modal: modal)
+        func setModal(_ modal: PresentingModalsOption, presented: Bool) {
+            switch modal {
+            case .followers:
+                isFollowersListPresented = presented
+            case .crypto:
+                isCryptoListPresented = presented
+            case .socials:
+                isSocialsListPresented = presented
+            case .domains:
+                isDomainsListPresented = presented
             }
-        } else {
-            setModal(modal, presented: true)
         }
-    }
-    
-    func setModal(_ modal: PresentingModalsOption, presented: Bool) {
-        switch modal {
-        case .followers:
-            isFollowersListPresented = presented
-        case .crypto:
-            isCryptoListPresented = presented
-        case .socials:
-            isSocialsListPresented = presented
-        }
+        
+        setModal(modal, presented: true)
     }
     
     func showFollowersList() {
@@ -346,6 +382,10 @@ private extension PublicProfileView {
     
     func showSocialsList() {
         present(modal: .socials)
+    }
+    
+    func showDomainsList() {
+        present(modal: .domains)
     }
     
     @ViewBuilder
@@ -633,13 +673,16 @@ private extension PublicProfileView {
         func body(content: Content) -> some View {
             if let records {
                 content
-                    .adaptiveSheet(isPresented: $isCryptoListPresented,
-                                   detents: [.medium(), .large()],
-                                   smallestUndimmedDetentIdentifier: .large) {
-                        PublicProfileCryptoListView(domainName: domainName,
-                                                    recordsDict: records,
-                                                    isPresenting: $isCryptoListPresented)
-                    }
+                    .sheet(isPresented: $isCryptoListPresented, content: {
+                        if #available(iOS 16.0, *) {
+                            PublicProfileCryptoListView(domainName: domainName,
+                                                        recordsDict: records)
+                            .presentationDetents([.medium, .large])
+                        } else {
+                            PublicProfileCryptoListView(domainName: domainName,
+                                                        recordsDict: records)
+                        }
+                    })
             } else {
                 content
             }
@@ -655,14 +698,18 @@ private extension PublicProfileView {
         func body(content: Content) -> some View {
             if let socialInfo {
                 content
-                    .adaptiveSheet(isPresented: $isFollowersListPresented,
-                                   detents: [.medium(), .large()],
-                                   smallestUndimmedDetentIdentifier: .large) {
-                        PublicProfileFollowersView(domainName: domainName,
-                                                   socialInfo: socialInfo,
-                                                   followerSelectionCallback: followerSelectionCallback,
-                                                   isPresenting: $isFollowersListPresented)
-                    }
+                    .sheet(isPresented: $isFollowersListPresented, content: {
+                        if #available(iOS 16.0, *) {
+                            PublicProfileFollowersView(domainName: domainName,
+                                                       socialInfo: socialInfo,
+                                                       followerSelectionCallback: followerSelectionCallback)
+                            .presentationDetents([.medium, .large])
+                        } else {
+                            PublicProfileFollowersView(domainName: domainName,
+                                                       socialInfo: socialInfo,
+                                                       followerSelectionCallback: followerSelectionCallback)
+                        }
+                    })
             } else {
                 content
             }
@@ -677,19 +724,44 @@ private extension PublicProfileView {
         func body(content: Content) -> some View {
             if let socialAccounts {
                 content
-                    .adaptiveSheet(isPresented: $isSocialsListPresented,
-                                   detents: [.medium(), .large()],
-                                   smallestUndimmedDetentIdentifier: .large) {
-                        PublicProfileSocialsListView(domainName: domainName,
-                                                     socialAccounts: socialAccounts,
-                                                     isPresenting: $isSocialsListPresented)
-                    }
+                    .sheet(isPresented: $isSocialsListPresented, content: {
+                        if #available(iOS 16.0, *) {
+                            PublicProfileSocialsListView(domainName: domainName,
+                                                         socialAccounts: socialAccounts)
+                            .presentationDetents([.medium, .large])
+                        } else {
+                            PublicProfileSocialsListView(domainName: domainName,
+                                                         socialAccounts: socialAccounts)
+                        }
+                    })
             } else {
                 content
             }
         }
     }
     
+    struct ShowingDomainsList: ViewModifier {
+        @Binding var isDomainsListPresented: Bool
+        let domainSelectionCallback: DomainSelectionCallback
+        let profileDomain: DomainName
+        let currentDomainName: DomainName
+        
+        func body(content: Content) -> some View {
+            content
+                .sheet(isPresented: $isDomainsListPresented, content: {
+                    if #available(iOS 16.0, *) {
+                        PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
+                                                         profileDomain: profileDomain,
+                                                         currentDomainName: currentDomainName)
+                        .presentationDetents([.medium, .large])
+                    } else {
+                        PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
+                                                         profileDomain: profileDomain,
+                                                         currentDomainName: currentDomainName)
+                    }
+                })
+        }
+    }
 }
 
 struct PublicProfileView_Previews: PreviewProvider {
