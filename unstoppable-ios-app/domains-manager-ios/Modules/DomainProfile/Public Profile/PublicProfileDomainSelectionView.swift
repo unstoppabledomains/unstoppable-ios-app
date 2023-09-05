@@ -11,10 +11,11 @@ typealias DomainSelectionCallback = (DomainItem)->()
 
 struct PublicProfileDomainSelectionView: View, ViewAnalyticsLogger {
     
+    @Environment(\.presentationMode) private var presentationMode
+
     let domainSelectionCallback: DomainSelectionCallback
     let profileDomain: DomainName
     let currentDomainName: DomainName
-    @Binding var isPresenting: Bool
     @State private var domainsWithIcons: [DomainDisplayInfoWithIcon] = []
     @State private var selectedDomain: DomainDisplayInfoWithIcon?
     var analyticsName: Analytics.ViewName { .publicProfileDomainsSelectionList }
@@ -43,7 +44,6 @@ struct PublicProfileDomainSelectionView: View, ViewAnalyticsLogger {
         }
         .background(Color.backgroundDefault)
         .onAppear(perform: onAppear)
-        .onDisappear(perform: dismiss)
     }
 }
 
@@ -52,7 +52,6 @@ private extension PublicProfileDomainSelectionView {
     func onAppear() {
         UITableView.appearance().backgroundColor = .clear
         logAnalytic(event: .viewDidAppear, parameters: [.domainName : profileDomain])
-
         Task {
             let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
             domainsWithIcons = domains.map { DomainDisplayInfoWithIcon(domain: $0) }
@@ -63,9 +62,7 @@ private extension PublicProfileDomainSelectionView {
     }
     
     func dismiss() {
-        guard isPresenting else { return }
-        
-        isPresenting = false
+        presentationMode.wrappedValue.dismiss()
     }
     
     func domainSelected(_ domainWithIcon: DomainDisplayInfoWithIcon?) {
@@ -116,9 +113,9 @@ private extension PublicProfileDomainSelectionView {
         guard domainWithIcon.icon == nil else { return }
         
         Task {
-            let num = Double(arc4random_uniform(10))
-            try? await Task.sleep(seconds: num / 10)
-            let icon = UIImage(named: "testava")
+            let icon = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainWithIcon.domain,
+                                                                                                  size: .default),
+                                                                      downsampleDescription: nil)
             
             if let i = domainsWithIcons.firstIndex(where: { $0.domain.name == domainWithIcon.domain.name }) {
                 domainsWithIcons[i].icon = icon
@@ -131,7 +128,6 @@ struct PublicProfileDomainSelectionView_Previews: PreviewProvider {
     static var previews: some View {
         PublicProfileDomainSelectionView(domainSelectionCallback: { _ in },
                                          profileDomain: "sandy.crypto",
-                                         currentDomainName: "one.x",
-                                         isPresenting: .constant(true))
+                                         currentDomainName: "one.x")
     }
 }

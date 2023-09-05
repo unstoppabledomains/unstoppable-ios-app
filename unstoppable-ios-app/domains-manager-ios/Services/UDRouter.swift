@@ -619,23 +619,9 @@ class UDRouter: DomainProfileSignatureValidator {
                            socialInfo: DomainProfileSocialInfo,
                            followerSelectionCallback: @escaping FollowerSelectionCallback,
                            in viewController: UIViewController) {
-        var isDismissed = false
-        var isPresenting: Binding<Bool> {
-            Binding {
-                true
-            } set: { value in
-                if !value,
-                !isDismissed {
-                    isDismissed = true
-                    viewController.presentedViewController?.dismiss(animated: true)
-                }
-            }
-        }
-        
         let vc = PublicProfileFollowersView.instantiate(domainName: domainName,
                                                         socialInfo: socialInfo,
-                                                        followerSelectionCallback: followerSelectionCallback,
-                                                        isPresenting: isPresenting)
+                                                        followerSelectionCallback: followerSelectionCallback)
         viewController.present(vc, animated: true)
     }
 }

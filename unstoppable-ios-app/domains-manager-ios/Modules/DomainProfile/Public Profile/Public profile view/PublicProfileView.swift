@@ -61,10 +61,11 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
         .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
                                      socialAccounts: viewModel.socialAccounts,
                                      domainName: viewModel.domain.name))
-        .modifier(ShowingDomainsList(isDomainsListPresented: $isDomainsListPresented,
-                                     domainSelectionCallback: domainSelected,
-                                     profileDomain: viewModel.domain.name,
-                                     currentDomainName: viewModel.viewingDomain.name))
+        .sheet(isPresented: $isDomainsListPresented, content: {
+            PublicProfileDomainSelectionView(domainSelectionCallback: domainSelected,
+                                             profileDomain: viewModel.domain.name,
+                                             currentDomainName: viewModel.viewingDomain.name)
+        })
         .onAppear(perform: {
             logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
         })
@@ -355,29 +356,20 @@ private extension PublicProfileView {
     }
     
     func present(modal: PresentingModalsOption) {
-        let otherViews = PresentingModalsOption.allCases.filter({ $0 != modal })
-        if let presentedView = otherViews.first(where: { isPresenting(modal: $0) }) {
-            // Showing some other view
-            setModal(presentedView, presented: false)
-            afterAdaptiveSheetDismiss {
-                present(modal: modal)
+        func setModal(_ modal: PresentingModalsOption, presented: Bool) {
+            switch modal {
+            case .followers:
+                isFollowersListPresented = presented
+            case .crypto:
+                isCryptoListPresented = presented
+            case .socials:
+                isSocialsListPresented = presented
+            case .domains:
+                isDomainsListPresented = presented
             }
-        } else {
-            setModal(modal, presented: true)
         }
-    }
-    
-    func setModal(_ modal: PresentingModalsOption, presented: Bool) {
-        switch modal {
-        case .followers:
-            isFollowersListPresented = presented
-        case .crypto:
-            isCryptoListPresented = presented
-        case .socials:
-            isSocialsListPresented = presented
-        case .domains:
-            isDomainsListPresented = presented
-        }
+        
+        setModal(modal, presented: true)
     }
     
     func showFollowersList() {
@@ -681,13 +673,17 @@ private extension PublicProfileView {
         func body(content: Content) -> some View {
             if let records {
                 content
-                    .adaptiveSheet(isPresented: $isCryptoListPresented,
-                                   detents: [.medium(), .large()],
-                                   smallestUndimmedDetentIdentifier: .large) {
+                    .sheet(isPresented: $isCryptoListPresented, content: {
                         PublicProfileCryptoListView(domainName: domainName,
-                                                    recordsDict: records,
-                                                    isPresenting: $isCryptoListPresented)
-                    }
+                                                    recordsDict: records)
+                    })
+//                    .adaptiveSheet(isPresented: $isCryptoListPresented,
+//                                   detents: [.medium(), .large()],
+//                                   smallestUndimmedDetentIdentifier: .large) {
+//                        PublicProfileCryptoListView(domainName: domainName,
+//                                                    recordsDict: records,
+//                                                    isPresenting: $isCryptoListPresented)
+//                    }
             } else {
                 content
             }
@@ -703,14 +699,19 @@ private extension PublicProfileView {
         func body(content: Content) -> some View {
             if let socialInfo {
                 content
-                    .adaptiveSheet(isPresented: $isFollowersListPresented,
-                                   detents: [.medium(), .large()],
-                                   smallestUndimmedDetentIdentifier: .large) {
+                    .sheet(isPresented: $isFollowersListPresented, content: {
                         PublicProfileFollowersView(domainName: domainName,
                                                    socialInfo: socialInfo,
-                                                   followerSelectionCallback: followerSelectionCallback,
-                                                   isPresenting: $isFollowersListPresented)
-                    }
+                                                   followerSelectionCallback: followerSelectionCallback)
+                    })
+//                    .adaptiveSheet(isPresented: $isFollowersListPresented,
+//                                   detents: [.medium(), .large()],
+//                                   smallestUndimmedDetentIdentifier: .large) {
+//                        PublicProfileFollowersView(domainName: domainName,
+//                                                   socialInfo: socialInfo,
+//                                                   followerSelectionCallback: followerSelectionCallback,
+//                                                   isPresenting: $isFollowersListPresented)
+//                    }
             } else {
                 content
             }
@@ -725,13 +726,17 @@ private extension PublicProfileView {
         func body(content: Content) -> some View {
             if let socialAccounts {
                 content
-                    .adaptiveSheet(isPresented: $isSocialsListPresented,
-                                   detents: [.medium(), .large()],
-                                   smallestUndimmedDetentIdentifier: .large) {
+                    .sheet(isPresented: $isSocialsListPresented, content: {
                         PublicProfileSocialsListView(domainName: domainName,
-                                                     socialAccounts: socialAccounts,
-                                                     isPresenting: $isSocialsListPresented)
-                    }
+                                                     socialAccounts: socialAccounts)
+                    })
+//                    .adaptiveSheet(isPresented: $isSocialsListPresented,
+//                                   detents: [.medium(), .large()],
+//                                   smallestUndimmedDetentIdentifier: .large) {
+//                        PublicProfileSocialsListView(domainName: domainName,
+//                                                     socialAccounts: socialAccounts,
+//                                                     isPresenting: $isSocialsListPresented)
+//                    }
             } else {
                 content
             }
@@ -742,18 +747,21 @@ private extension PublicProfileView {
         @Binding var isDomainsListPresented: Bool
         let domainSelectionCallback: DomainSelectionCallback
         let profileDomain: DomainName
-        let currentDomainName: DomainName
+        var currentDomainName: DomainName?
         
         func body(content: Content) -> some View {
-            content
-                .adaptiveSheet(isPresented: $isDomainsListPresented,
-                               detents: [.medium(), .large()],
-                               smallestUndimmedDetentIdentifier: .large) {
-                    PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
-                                                     profileDomain: profileDomain,
-                                                     currentDomainName: currentDomainName,
-                                                     isPresenting: $isDomainsListPresented)
-                }
+            if let currentDomainName {
+                content
+                    .adaptiveSheet(isPresented: $isDomainsListPresented,
+                                   detents: [.medium(), .large()],
+                                   smallestUndimmedDetentIdentifier: .large) {
+                        PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
+                                                         profileDomain: profileDomain,
+                                                         currentDomainName: currentDomainName)
+                    }
+            } else {
+                content
+            }
         }
     }
 }

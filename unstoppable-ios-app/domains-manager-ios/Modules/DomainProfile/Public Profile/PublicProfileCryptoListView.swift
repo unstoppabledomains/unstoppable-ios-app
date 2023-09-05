@@ -9,9 +9,10 @@ import SwiftUI
 
 struct PublicProfileCryptoListView: View, ViewAnalyticsLogger {
     
+    @Environment(\.presentationMode) private var presentationMode
+
     let domainName: DomainName
     let recordsDict: [String : String]
-    @Binding var isPresenting: Bool
     @State private var records: [RecordWithIcon] = []
     @State private var copiedRecord: CryptoRecord?
     @State private var copiedTimer: Timer?
@@ -42,7 +43,6 @@ struct PublicProfileCryptoListView: View, ViewAnalyticsLogger {
             UITableView.appearance().backgroundColor = .clear
             logAnalytic(event: .viewDidAppear, parameters: [.domainName : domainName])
         }
-        .onDisappear(perform: dismiss)
     }
     
 }
@@ -62,9 +62,7 @@ private extension PublicProfileCryptoListView {
     }
     
     func dismiss() {
-        guard isPresenting else { return }
-
-        isPresenting = false
+        presentationMode.wrappedValue.dismiss()
     }
     
     @ViewBuilder
@@ -187,8 +185,7 @@ struct PublicProfileCryptoListView_Previews: PreviewProvider {
                                                       "crypto.1INCH.version.ERC20.address": "0x557fc13812460e5414d9881cb3659902e9501041",
                                                       "crypto.MATIC.version.ERC20.address": "0x557fc13812460e5414d9881cb3659902e9501041",
                                                       "crypto.MATIC.version.MATIC.address": "0x557fc13812460e5414d9881cb3659902e9501041",
-                                                      "crypto.1INCH.version.MATIC.address": "0x557fc13812460e5414d9881cb3659902e9501041"],
-                                        isPresenting: .constant(true))
+                                                      "crypto.1INCH.version.MATIC.address": "0x557fc13812460e5414d9881cb3659902e9501041"])
                 .previewDevice(PreviewDevice(rawValue: device))
                 .previewDisplayName(device)
         }
