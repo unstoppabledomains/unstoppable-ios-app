@@ -203,11 +203,13 @@ extension UIViewController {
         }
     }
     
-    func shareDomainProfile(domainName: DomainName, additionalItems: [Any] = []) {
+    func shareDomainProfile(domainName: DomainName,
+                            isUserDomain: Bool,
+                            additionalItems: [Any] = []) {
         guard let url = String.Links.domainProfilePage(domainName: domainName).url else { return }
 
-        let titleItem = DomainURLActivityItemSource(url: url, isTitleOnly: true)
-        let linkItem = DomainURLActivityItemSource(url: url, isTitleOnly: false)
+        let titleItem = DomainURLActivityItemSource(isUserDomain: isUserDomain, url: url, isTitleOnly: true)
+        let linkItem = DomainURLActivityItemSource(isUserDomain: isUserDomain, url: url, isTitleOnly: false)
         var activityItems: [Any] = [titleItem, linkItem] + additionalItems
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         activityViewController.completionWithItemsHandler = { _, completed, _, _ in

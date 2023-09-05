@@ -125,7 +125,7 @@ private extension ShareDomainHandler {
         if let image {
             items.append(image)
         }
-        view.shareDomainProfile(domainName: domain.name, additionalItems: items)
+        view.shareDomainProfile(domainName: domain.name, isUserDomain: true, additionalItems: items)
     }
     
     func saveImage(_ image: UIImage) {
