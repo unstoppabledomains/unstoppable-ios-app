@@ -24,19 +24,6 @@ struct PublicProfileFollowersView: View, ViewAnalyticsLogger {
         return vc
     }
     
-    @MainActor
-    static func instantiate(domainName: DomainName,
-                            socialInfo: DomainProfileSocialInfo,
-                            followerSelectionCallback: @escaping FollowerSelectionCallback,
-                            isPresenting: Binding<Bool>) -> UIViewController {
-        let view = PublicProfileFollowersView(domainName: domainName,
-                                              socialInfo: socialInfo,
-                                              followerSelectionCallback: followerSelectionCallback,
-                                              isPresenting: isPresenting)
-        let vc = UIHostingController(rootView: view)
-        return vc
-    }
-    
     let followerSelectionCallback: FollowerSelectionCallback
     @Binding var isPresenting: Bool
     @StateObject private var viewModel: PublicProfileFollowersViewModel
