@@ -475,6 +475,7 @@ extension String {
         static let domainDetailsEditProfile = "DOMAIN_DETAILS_EDIT_PROFILE";
         static let domainDetailsManageDomain = "DOMAIN_DETAILS_MANAGE_DOMAIN";
         static let domainDetailsShareMessage = "DOMAIN_DETAILS_SHARE_MESSAGE";
+        static let publicDomainDetailsShareMessage = "PUBLIC_DOMAIN_DETAILS_SHARE_MESSAGE";
         static let domainDetailsAddCurrency = "DOMAIN_DETAILS_ADD_CURRENCY";
         
         // Manage domain

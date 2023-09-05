@@ -23,7 +23,7 @@ extension UIViewController: PublicProfileViewDelegate {
     }
     
     func publicProfileDidSelectShareProfile(_ profile: DomainName) {
-        getViewControllerToPresent().shareDomainProfile(domainName: profile)
+        getViewControllerToPresent().shareDomainProfile(domainName: profile, isUserDomain: false)
     }
     
     func publicProfileDidSelectMessagingWithProfile(_ profile: PublicDomainDisplayInfo, by userDomain: DomainItem) {
