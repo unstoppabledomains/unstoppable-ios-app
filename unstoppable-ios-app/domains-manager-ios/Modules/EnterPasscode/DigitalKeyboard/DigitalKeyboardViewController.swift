@@ -150,7 +150,10 @@ private extension DigitalKeyboardViewController {
         view.clipsToBounds = false
         
         for button in keyboardButtons {
-            let text = button.title(for: .normal) ?? ""
+            guard let text = button.titleLabel?.text else {
+                Debugger.printFailure("Failed to get passcode's button's title", critical: true)
+                continue
+            }
             let title = button.tag == 33 ? "" : text
             let image: UIImage? = button.tag == 33 ? UIImage(named: "deleteKeyboardButton") : nil
             button.setTitle("", for: .normal)

@@ -97,7 +97,11 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             openChannel(configuration.channel)
         case .userInfo(let configuration):
             logButtonPressedAnalyticEvents(button: .userToChatInList)
-            openChatWith(conversationState: .newChat(configuration.userInfo))
+            if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == configuration.userInfo.wallet.normalized }) {
+                openChatWith(conversationState: .existingChat(existingChat))
+            } else {
+                openChatWith(conversationState: .newChat(configuration.userInfo))
+            }
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
         }
@@ -143,6 +147,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     }
     
     func didSearchWith(key: String) {
+        let key = key.trimmedSpaces
         self.searchData.searchKey = key.trimmedSpaces
         searchData.searchUsers = []
         searchData.searchChannels = []
@@ -589,12 +594,7 @@ private extension ChatsListViewPresenter {
             /// Chats
             // Local chats
             let localChats = chatsList.filter { isChatMatchingSearchKey($0, searchKey: searchKey) }
-            var localChatsPeopleWallets = Set(localChats.compactMap { chat in
-                if case .private(let details) = chat.type {
-                    return details.otherUser.wallet.lowercased()
-                }
-                return nil
-            })
+            var localChatsPeopleWallets = Set(localChats.compactMap { $0.type.otherUserDisplayInfo?.wallet.lowercased() })
             localChatsPeopleWallets.insert(selectedProfileWalletPair?.wallet.address.lowercased() ?? "")
             people = localChats.map { .existingChat($0) }
             

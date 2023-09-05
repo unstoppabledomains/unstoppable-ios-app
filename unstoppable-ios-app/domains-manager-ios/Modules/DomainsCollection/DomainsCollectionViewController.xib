@@ -85,6 +85,32 @@
                         <constraint firstItem="c4h-pM-LUr" firstAttribute="top" secondItem="II4-Xi-ATf" secondAttribute="top" id="og1-M3-Qn9"/>
                     </constraints>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sdy-SI-Lnl">
+                    <rect key="frame" x="0.0" y="80" width="414" height="816"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h8J-lL-Rza">
+                            <rect key="frame" x="0.0" y="0.0" width="414" height="816"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </view>
+                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r5S-XQ-l2K" customClass="UDGradientCoverView" customModule="domains_manager_ios" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="720" width="414" height="96"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="96" id="H9k-Al-mBr"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="h8J-lL-Rza" firstAttribute="leading" secondItem="sdy-SI-Lnl" secondAttribute="leading" id="6Bp-36-FdI"/>
+                        <constraint firstAttribute="trailing" secondItem="h8J-lL-Rza" secondAttribute="trailing" id="9m1-W9-2a3"/>
+                        <constraint firstAttribute="trailing" secondItem="r5S-XQ-l2K" secondAttribute="trailing" id="9y5-8G-Rcg"/>
+                        <constraint firstAttribute="bottom" secondItem="r5S-XQ-l2K" secondAttribute="bottom" id="GaT-FM-0NW"/>
+                        <constraint firstItem="r5S-XQ-l2K" firstAttribute="leading" secondItem="sdy-SI-Lnl" secondAttribute="leading" id="Kkl-Fg-jcy"/>
+                        <constraint firstAttribute="bottom" secondItem="h8J-lL-Rza" secondAttribute="bottom" id="Twd-Gz-qHv"/>
+                        <constraint firstItem="h8J-lL-Rza" firstAttribute="top" secondItem="sdy-SI-Lnl" secondAttribute="top" id="Y44-KI-ujP"/>
+                    </constraints>
+                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yGa-3F-V0E">
                     <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                     <subviews>
@@ -112,32 +138,6 @@
                         <constraint firstItem="gsF-t2-Cms" firstAttribute="centerX" secondItem="yGa-3F-V0E" secondAttribute="centerX" id="j6c-5h-MBg"/>
                         <constraint firstAttribute="trailing" secondItem="toV-pA-zM2" secondAttribute="trailing" id="lAw-SQ-rpo"/>
                         <constraint firstItem="gsF-t2-Cms" firstAttribute="leading" secondItem="yGa-3F-V0E" secondAttribute="leading" constant="16" id="qNZ-lt-AtY"/>
-                    </constraints>
-                </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sdy-SI-Lnl">
-                    <rect key="frame" x="0.0" y="80" width="414" height="816"/>
-                    <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h8J-lL-Rza">
-                            <rect key="frame" x="0.0" y="0.0" width="414" height="816"/>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        </view>
-                        <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r5S-XQ-l2K" customClass="UDGradientCoverView" customModule="domains_manager_ios" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="720" width="414" height="96"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="96" id="H9k-Al-mBr"/>
-                            </constraints>
-                        </view>
-                    </subviews>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <constraints>
-                        <constraint firstItem="h8J-lL-Rza" firstAttribute="leading" secondItem="sdy-SI-Lnl" secondAttribute="leading" id="6Bp-36-FdI"/>
-                        <constraint firstAttribute="trailing" secondItem="h8J-lL-Rza" secondAttribute="trailing" id="9m1-W9-2a3"/>
-                        <constraint firstAttribute="trailing" secondItem="r5S-XQ-l2K" secondAttribute="trailing" id="9y5-8G-Rcg"/>
-                        <constraint firstAttribute="bottom" secondItem="r5S-XQ-l2K" secondAttribute="bottom" id="GaT-FM-0NW"/>
-                        <constraint firstItem="r5S-XQ-l2K" firstAttribute="leading" secondItem="sdy-SI-Lnl" secondAttribute="leading" id="Kkl-Fg-jcy"/>
-                        <constraint firstAttribute="bottom" secondItem="h8J-lL-Rza" secondAttribute="bottom" id="Twd-Gz-qHv"/>
-                        <constraint firstItem="h8J-lL-Rza" firstAttribute="top" secondItem="sdy-SI-Lnl" secondAttribute="top" id="Y44-KI-ujP"/>
                     </constraints>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LZk-Ht-9jZ" customClass="FABButton" customModule="domains_manager_ios" customModuleProvider="target">
