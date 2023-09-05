@@ -81,6 +81,7 @@ extension PublicProfileView {
                         try await NetworkService().follow(domain.name, by: viewingDomain)
                     }
                     self.isFollowing = !isFollowing
+                    loadPublicProfile() // Refresh social info
                 }
             }
         }

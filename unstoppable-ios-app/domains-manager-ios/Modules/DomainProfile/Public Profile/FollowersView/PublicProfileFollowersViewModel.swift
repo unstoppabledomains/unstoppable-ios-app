@@ -97,19 +97,18 @@ extension PublicProfileFollowersView {
                                                                                     cursor: paginationInfo.cursor)
                     var currentList = getFollowersListFor(type: type) ?? []
                     currentList.append(contentsOf: response.data.map({ DomainProfileFollowerDisplayInfo(domain: $0.domain) }))
-                    let canLoadMore = currentList.count < response.meta.totalCount
                     
                     switch type {
                     case .followers:
                         followersPaginationInfo.cursor = response.meta.pagination.cursor
-                        followersPaginationInfo.canLoadMore = canLoadMore
+                        followersPaginationInfo.canLoadMore = currentList.count < socialInfo.followerCount
                         followersList = currentList
                     case .following:
                         followingPaginationInfo.cursor = response.meta.pagination.cursor
-                        followingPaginationInfo.canLoadMore = canLoadMore
+                        followingPaginationInfo.canLoadMore = currentList.count < socialInfo.followingCount
                         followingList = currentList
                     }
-                } 
+                }
                 isLoadingPage = false
             }
         }
