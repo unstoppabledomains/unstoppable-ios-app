@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PublicProfileView: View {
+struct PublicProfileView: View, ViewAnalyticsLogger {
     
     @MainActor
     static func instantiate(domain: PublicDomainDisplayInfo,
@@ -36,6 +36,7 @@ struct PublicProfileView: View {
     @State private var isCryptoListPresented = false
     @State private var isFollowersListPresented = false
     @State private var isSocialsListPresented = false
+    var analyticsName: Analytics.ViewName { .publicDomainProfile }
 
     var body: some View {
         ZStack {
@@ -59,6 +60,9 @@ struct PublicProfileView: View {
         .modifier(ShowingSocialsList(isSocialsListPresented: $isSocialsListPresented,
                                      socialAccounts: viewModel.socialAccounts,
                                      domainName: viewModel.domain.name))
+        .onAppear(perform: {
+            logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domain.name])
+        })
     }
     
     init(domain: PublicDomainDisplayInfo,
@@ -110,11 +114,13 @@ private extension PublicProfileView {
                     CircleIconButton(icon: .uiImage(.shareIcon),
                                      size: .medium,
                                      callback: {
+                        logButtonPressedAnalyticEvents(button: .share)
                         delegate?.publicProfileDidSelectShareProfile(viewModel.domain.name)
                     })
                     CircleIconButton(icon: .uiImage(.messageCircleIcon24),
                                      size: .medium,
                                      callback: {
+                        logButtonPressedAnalyticEvents(button: .messaging)
                         delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.viewingDomain)
                     })
                     if let isFollowing = viewModel.isFollowing,
@@ -169,6 +175,7 @@ private extension PublicProfileView {
         Button {
             UDVibration.buttonTap.vibrate()
             viewModel.followButtonPressed()
+            logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
         } label: {
             HStack(spacing: 8) {
                 if !isFollowing {
@@ -273,6 +280,7 @@ private extension PublicProfileView {
                     if !accounts.isEmpty {
                         carouselItem(text: String.Constants.pluralNSocials.localized(accounts.count, accounts.count),
                                      icon: .twitterIcon24,
+                                     button: .socialsList,
                                      callback: showSocialsList)
                     }
                 }
@@ -280,6 +288,7 @@ private extension PublicProfileView {
                    !records.isEmpty {
                     carouselItem(text: String.Constants.pluralNCrypto.localized(records.count, records.count),
                                  icon: .walletBTCIcon20,
+                                 button: .cryptoList,
                                  callback: showCryptoList)
                 }
             }
@@ -341,9 +350,11 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func carouselItemWithContent(callback: @escaping EmptyCallback,
+                                 button: Analytics.Button,
                                  @ViewBuilder content: ()->(any View)) -> some View {
         Button {
             UDVibration.buttonTap.vibrate()
+            logButtonPressedAnalyticEvents(button: button)
             callback()
         } label: {
             ZStack {
@@ -365,7 +376,8 @@ private extension PublicProfileView {
         let havingFollowings = social.followingCount > 0
         let havingFollowersOrFollowings = havingFollowers || havingFollowings
         let dimOpacity: CGFloat = 0.32
-        carouselItemWithContent(callback: callback) {
+        carouselItemWithContent(callback: callback,
+                                button: .followersList) {
             HStack(spacing: 8) {
                 Text(String.Constants.pluralNFollowers.localized(social.followerCount, social.followerCount))
                     .foregroundColor(.white)
@@ -384,8 +396,10 @@ private extension PublicProfileView {
     @ViewBuilder
     func carouselItem(text: String,
                       icon: UIImage,
+                      button: Analytics.Button,
                       callback: @escaping EmptyCallback) -> some View {
-        carouselItemWithContent(callback: callback) {
+        carouselItemWithContent(callback: callback,
+                                button: button) {
             HStack(spacing: 8) {
                 Image(uiImage: icon)
                     .resizable()
@@ -508,6 +522,7 @@ private extension PublicProfileView {
             Button {
                 UDVibration.buttonTap.vibrate()
                 delegate?.publicProfileDidSelectOpenLeaderboard()
+                logButtonPressedAnalyticEvents(button: .badgesLeaderboard)
             } label: {
                 HStack(spacing: 8) {
                     Text(String.Constants.leaderboard.localized())
@@ -537,6 +552,7 @@ private extension PublicProfileView {
         Button {
             UDVibration.buttonTap.vibrate()
             delegate?.publicProfileDidSelectBadge(badge, in: viewModel.domain.name)
+            logButtonPressedAnalyticEvents(button: .badge, parameters: [.fieldName: badge.badge.name])
         } label: {
             ZStack {
                 Color.white

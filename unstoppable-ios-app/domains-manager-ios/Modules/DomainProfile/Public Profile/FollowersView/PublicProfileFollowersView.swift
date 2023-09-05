@@ -9,7 +9,7 @@ import SwiftUI
 
 typealias FollowerSelectionCallback = (DomainProfileFollowerDisplayInfo)->()
 
-struct PublicProfileFollowersView: View {
+struct PublicProfileFollowersView: View, ViewAnalyticsLogger {
     
     @MainActor
     static func instantiate(domainName: DomainName,
@@ -28,12 +28,16 @@ struct PublicProfileFollowersView: View {
     @Binding var isPresenting: Bool
     @StateObject private var viewModel: PublicProfileFollowersViewModel
     @State private var selectedFollower: DomainProfileFollowerDisplayInfo?
+    var analyticsName: Analytics.ViewName { .domainFollowersList }
     
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
                 PublicProfilePullUpHeaderView(domainName: viewModel.domainName,
-                                              closeCallback: dismiss)
+                                              closeCallback: {
+                    logButtonPressedAnalyticEvents(button: .close)
+                    dismiss()
+                })
                 Picker("", selection: $viewModel.selectedType) {
                     ForEach(DomainProfileFollowerRelationshipType.allCases, id: \.self) {
                         Text(titleFor(type: $0))
@@ -66,8 +70,9 @@ struct PublicProfileFollowersView: View {
                                 .listRowBackground(Color.clear)
                             }
                         }
-                        .onChange(of: viewModel.selectedType) { _ in
+                        .onChange(of: viewModel.selectedType) { selectedType in
                             proxy.scrollTo(currentFollowersList.first, anchor: .top)
+                            logButtonPressedAnalyticEvents(button: .followerType, parameters: [.value: selectedType.rawValue])
                         }
                     }
                     
@@ -92,7 +97,10 @@ struct PublicProfileFollowersView: View {
         }
         .displayError($viewModel.error)
         .background(Color.backgroundDefault)
-        .onAppear(perform: viewModel.onAppear)
+        .onAppear(perform: {
+            viewModel.onAppear()
+            logAnalytic(event: .viewDidAppear, parameters: [.domainName : viewModel.domainName])
+        })
         .onDisappear(perform: dismiss)
     }
     
@@ -131,6 +139,7 @@ private extension PublicProfileFollowersView {
     func followerSelected(_ follower: DomainProfileFollowerDisplayInfo?) {
         guard let follower else { return }
         
+        logButtonPressedAnalyticEvents(button: .follower, parameters: [.domainName: follower.domain])
         UDVibration.buttonTap.vibrate()
         dismiss()
         followerSelectionCallback(follower)

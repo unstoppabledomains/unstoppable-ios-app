@@ -99,6 +99,7 @@ extension Analytics {
         case channelName
         case messageType
         case feedName
+        case isUserDomain
     }
 }
 
@@ -165,6 +166,8 @@ extension Analytics {
         case inviteFriends
         case chatsHome, chatRequestsList, chatChannelsSpamList
         case chatDialog, channelFeed
+        case publicDomainProfile
+        case domainFollowersList, domainCryptoList, domainSocialsList
     }
 }
 
@@ -284,6 +287,12 @@ extension Analytics {
         case block, unblock, leaveGroup
         case resendMessage, deleteMessage
         case downloadUnsupportedMessage
+        
+        // Public profile
+        case follow, unfollow
+        case followersList, socialsList, cryptoList
+        case badgesLeaderboard
+        case followerType, follower
     }
 }
 

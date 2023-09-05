@@ -44,7 +44,8 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
             return
         case .domainListItem(let domain, _):
             UDVibration.buttonTap.vibrate()
-            logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
+            logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name,
+                                                            .isUserDomain : String(false)])
             view?.cNavigationController?.dismiss(animated: true)
             searchCallback?(domain)
         case .domainsMintingInProgress:
@@ -52,6 +53,8 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
         case .domainSearchItem(let searchProfile, _):
             UDVibration.buttonTap.vibrate()
             view?.hideKeyboard()
+            logAnalytic(event: .domainPressed, parameters: [.domainName : searchProfile.name,
+                                                            .isUserDomain : String(true)])
             Task {
                 guard let walletAddress = searchProfile.ownerAddress,
                       let domainDisplayInfo = domains.first,

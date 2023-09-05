@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PublicProfileCryptoListView: View {
+struct PublicProfileCryptoListView: View, ViewAnalyticsLogger {
     
     let domainName: DomainName
     let recordsDict: [String : String]
@@ -15,11 +15,15 @@ struct PublicProfileCryptoListView: View {
     @State private var records: [RecordWithIcon] = []
     @State private var copiedRecord: CryptoRecord?
     @State private var copiedTimer: Timer?
-    
+    var analyticsName: Analytics.ViewName { .domainCryptoList }
+
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             PublicProfilePullUpHeaderView(domainName: domainName,
-                                          closeCallback: dismiss)
+                                          closeCallback: {
+                logButtonPressedAnalyticEvents(button: .close)
+                dismiss()
+            })
             List(records, id: \.record.coin) { record in
                 viewForRecordRow(record)
                     .listRowSeparator(.hidden)
@@ -36,6 +40,7 @@ struct PublicProfileCryptoListView: View {
         }
         .onAppear {
             UITableView.appearance().backgroundColor = .clear
+            logAnalytic(event: .viewDidAppear, parameters: [.domainName : domainName])
         }
         .onDisappear(perform: dismiss)
     }
@@ -118,6 +123,7 @@ private extension PublicProfileCryptoListView {
             UIPasteboard.general.string = record.address
             UDVibration.buttonTap.vibrate()
             copiedRecord = record
+            logButtonPressedAnalyticEvents(button: .copyCoinAddress)
             startResetCopiedTimer()
         } label: {
             Text(isCopied ? copiedString : copyString)

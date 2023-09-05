@@ -7,17 +7,21 @@
 
 import SwiftUI
 
-struct PublicProfileSocialsListView: View {
+struct PublicProfileSocialsListView: View, ViewAnalyticsLogger {
     
     let domainName: DomainName
     let accounts: [SocialDescription]
     @Binding var isPresenting: Bool
     @State private var selectedSocial: SocialDescription?
+    var analyticsName: Analytics.ViewName { .domainSocialsList }
 
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             PublicProfilePullUpHeaderView(domainName: domainName,
-                                          closeCallback: dismiss)
+                                          closeCallback: {
+                logButtonPressedAnalyticEvents(button: .close)
+                dismiss()
+            })
             List(accounts, id: \.type, selection: $selectedSocial) { social in
                 viewForSocialRow(social)
                     .tag(social)
@@ -33,6 +37,7 @@ struct PublicProfileSocialsListView: View {
         .background(Color.backgroundDefault)
         .onAppear {
             UITableView.appearance().backgroundColor = .clear
+            logAnalytic(event: .viewDidAppear, parameters: [.domainName : domainName])
         }
         .onDisappear(perform: dismiss)
         .onChange(of: selectedSocial, perform: didSelectSocial)
@@ -58,6 +63,8 @@ private extension PublicProfileSocialsListView {
         selectedSocial = nil
 
         guard let social else { return }
+        logButtonPressedAnalyticEvents(button: .social, parameters: [.value: social.analyticsName])
+
         social.openSocialAccount()
     }
     

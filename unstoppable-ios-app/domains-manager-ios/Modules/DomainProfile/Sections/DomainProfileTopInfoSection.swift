@@ -159,7 +159,7 @@ private extension DomainProfileTopInfoSection {
         case .domainName:
             UIPasteboard.general.string = controller.generalData.domain.name
             appContext.toastMessageService.showToast(.domainCopied, isSticky: false)
-        case .social:
+        case .followersList:
             UDRouter().showFollowersList(domainName: controller.generalData.domain.name,
                                          socialInfo: topInfoData.social,
                                          followerSelectionCallback: { [weak self] follower in

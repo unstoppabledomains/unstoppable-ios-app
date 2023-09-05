@@ -39,7 +39,7 @@ extension DomainProfileViewController {
         let bannerDropCallback: ImageDropCallback
 
         enum Button {
-            case banner, avatar, qrCode, publicProfile, domainName, social
+            case banner, avatar, qrCode, publicProfile, domainName, followersList
             
             var analyticName: Analytics.Button {
                 switch self {
@@ -53,8 +53,8 @@ extension DomainProfileViewController {
                     return .publicProfile
                 case .domainName:
                     return .copyDomain
-                case .social:
-                    return .social
+                case .followersList:
+                    return .followersList
                 }
             }
         }
