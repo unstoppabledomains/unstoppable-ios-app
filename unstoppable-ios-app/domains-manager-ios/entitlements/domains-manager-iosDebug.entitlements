@@ -8,7 +8,7 @@
 	<array>
 		<string>webcredentials:unstoppabledomains.com</string>
 		<string>applinks:unstoppabledomains.com</string>
-		<string>applinks:mobile-staging.www.ud-staging.com</string>
+		<string>applinks:www.ud-staging.com</string>
 	</array>
 	<key>com.apple.developer.in-app-payments</key>
 	<array>
