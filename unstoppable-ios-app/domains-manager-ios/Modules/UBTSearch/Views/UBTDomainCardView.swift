@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UBTDomainCardView: View {
     
-    let device: BTDeviceUI
+    let device: BTDomainUIInfo
     private let widthToHeightRatio: CGFloat = 160/208
     private let innerImageOffset: CGFloat = 8
     @State private var avatarImage: UIImage?
@@ -36,9 +36,6 @@ struct UBTDomainCardView: View {
                         HStack {
                             labelsView(domainNameHeight: domainNameHeight,
                                        domainTLDHeight: domainTLDHeight)
-                            Spacer()
-                            CircleIconButton(icon: .uiImage(.messageCircleIcon24),
-                                             size: .small, callback: {})
                         }
                     }
                     .offset(y: innerImageOffset)
@@ -53,7 +50,7 @@ struct UBTDomainCardView: View {
         .onAppear(perform: loadAvatar)
     }
     
-    init(device: BTDeviceUI) {
+    init(device: BTDomainUIInfo) {
         self.device = device
     }
     
@@ -94,7 +91,7 @@ private extension UBTDomainCardView {
     
     @ViewBuilder
     func innerImageView(innerImageSize: CGFloat,
-                      udLogoSize: CGFloat) -> some View {
+                        udLogoSize: CGFloat) -> some View {
         ZStack(alignment: .topLeading) {
             Image(uiImage: avatarImage ?? .domainSharePlaceholder)
                 .resizable()
@@ -103,13 +100,13 @@ private extension UBTDomainCardView {
                        height: innerImageSize)
                 .cornerRadius(8)
                 .clipped()
-            Image("udCartLogoRaster")
+            Image.udCartLogoRaster
                 .resizable()
                 .frame(width: udLogoSize,
                        height: udLogoSize)
                 .offset(x: 8, y: 8)
             if avatarImage == nil {
-                Color.black.opacity(0.16) 
+                Color.black.opacity(0.16)
                     .cornerRadius(8)
                     .frame(width: innerImageSize,
                            height: innerImageSize)
@@ -127,12 +124,12 @@ private extension UBTDomainCardView {
                 .font(.helveticaNeueCustom(size: 21))
             
             AttributedText(text: ".\(device.domainName.getTldName() ?? "")".uppercased(),
-                            font: .helveticaNeueCustom(size: 18),
-                            letterSpacing: 0,
-                            textColor: .clear,
-                            lineBreakMode: .byTruncatingTail,
-                            strokeColor: .white,
-                            strokeWidth: 3)
+                           font: .helveticaNeueCustom(size: 18),
+                           letterSpacing: 0,
+                           textColor: .clear,
+                           lineBreakMode: .byTruncatingTail,
+                           strokeColor: .white,
+                           strokeWidth: 3)
             .frame(height: domainTLDHeight, alignment: .leading)
             .offset(x: -4)
         }

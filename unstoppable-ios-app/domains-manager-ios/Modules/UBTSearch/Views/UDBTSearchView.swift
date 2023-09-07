@@ -7,7 +7,7 @@
     
 import SwiftUI
 
-typealias UDBTSearchResultCallback = (BTDeviceUI)->()
+typealias UDBTSearchResultCallback = (BTDomainUIInfo)->()
 
 struct UDBTSearchView: View {
     
@@ -31,18 +31,6 @@ struct UDBTSearchView: View {
     let searchResultCallback: UDBTSearchResultCallback
     private(set) var btState: UBTControllerState = .ready
     
-    var currentColor: Color {
-        switch controller.btState {
-        case .notReady, .ready, .unauthorized:
-            if controller.readyDevices.isEmpty {
-                return .backgroundAccentEmphasis
-            } else {
-                return .backgroundSuccessEmphasis
-            }
-        case .setupFailed:
-            return .foregroundDanger
-        }
-    }
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [.black.opacity(0.72),
@@ -51,38 +39,9 @@ struct UDBTSearchView: View {
                            endPoint: .bottom)
             .opacity(0.8)
             .ignoresSafeArea()
-
-//                if controller.readyDevices.isEmpty {
-//                    switch controller.btState {
-//                    case .notReady:
-////                        Text("Launching...")
-//                        Text("")
-//                            .foregroundColor(.white)
-//                            .bold()
-//                    case .setupFailed:
-//                        Text("Setup failed")
-//                            .foregroundColor(.white)
-//                    case .unauthorized:
-//                        VStack(spacing: 20) {
-//                            Text("Please give access to Bluetooth functionality to find people nearby")
-//                                .foregroundColor(.white)
-//                                .multilineTextAlignment(.center)
-//                            Button("Give access") {
-//                                // TODO: - Ask for BT permissions
-//                            }
-//                            .padding(EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14))
-//                            .font(.headline)
-//                            .background(Color.blue)
-//                            .foregroundColor(.white)
-//                            .clipShape(Capsule())
-//                        }
-//                        .padding()
-//                    case .ready:
-//                        UBTSearchingView(profilesFound: controller.readyDevices.count)
-//                    }
-//                }
             
-            UBTSearchingView(profilesFound: controller.readyDevices.count)
+            UBTSearchingView(profilesFound: controller.readyDevices.count,
+                             state: controller.btState)
             discoveredCardsView()
             
             VStack {
@@ -101,9 +60,6 @@ struct UDBTSearchView: View {
                 controller.startScanning()
             }
         })
-        .onAppear {
-            scheduleAddMock()
-        }
     }
     
     init(controller: UBTController,
@@ -115,7 +71,20 @@ struct UDBTSearchView: View {
 
 // MARK: - Private methods
 private extension UDBTSearchView {
-    func didSelectDeviceToConnect(_ device: BTDeviceUI) {
+    var currentColor: Color {
+        switch controller.btState {
+        case .notReady, .ready, .unauthorized:
+            if controller.readyDevices.isEmpty {
+                return .backgroundAccentEmphasis
+            } else {
+                return .backgroundSuccessEmphasis
+            }
+        case .setupFailed:
+            return .foregroundDanger
+        }
+    }
+    
+    func didSelectDeviceToConnect(_ device: BTDomainUIInfo) {
         searchResultCallback(device)
     }
     

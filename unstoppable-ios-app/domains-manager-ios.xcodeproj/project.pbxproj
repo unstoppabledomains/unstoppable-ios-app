@@ -4605,9 +4605,9 @@
 		C685D8132AA978DE00212879 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				C685D8142AA978DE00212879 /* UBTDomainCardView.swift */,
-				C685D8152AA978DE00212879 /* UBTSearchingView.swift */,
 				C685D8162AA978DE00212879 /* UDBTSearchView.swift */,
+				C685D8152AA978DE00212879 /* UBTSearchingView.swift */,
+				C685D8142AA978DE00212879 /* UBTDomainCardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

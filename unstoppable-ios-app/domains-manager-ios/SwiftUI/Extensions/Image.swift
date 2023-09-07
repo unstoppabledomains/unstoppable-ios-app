@@ -22,5 +22,6 @@ extension Image {
     static let cellChevron = Image(uiImage: .cellChevron)
     static let chevronDown = Image(uiImage: .chevronDown)
     static let checkCircle = Image(uiImage: .checkCircle)
+    static let udCartLogoRaster = Image(uiImage: .udCartLogoRaster)
     
 }

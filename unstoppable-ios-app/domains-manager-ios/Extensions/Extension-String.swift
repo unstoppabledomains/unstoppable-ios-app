@@ -949,6 +949,11 @@ extension String {
         // Shake to find
         static let shakeToFindSearchTitle = "SHAKE_TO_FIND_SEARCH_TITLE"
         static let shakeToFindSearchSubtitle = "SHAKE_TO_FIND_SEARCH_SUBTITLE"
+        static let shakeToFindPermissionsTitle = "Permissions\nnot granted"
+        static let shakeToFindFailedTitle = "Failed to run\nBluetooth services"
+        static let shakeToFindFailedSubtitle = "Looks like Bluetooth doesn't work on your phone. Ensure your device is working fine."
+        static let openSettings = "Open settings"
+        
     }
 
     enum BlockChainIcons: String {

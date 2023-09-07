@@ -15,17 +15,17 @@ enum UBTControllerState {
     case ready
 }
 
-struct BTDeviceUI: Hashable, Identifiable {
+struct BTDomainUIInfo: Hashable, Identifiable {
     let id: UUID
     var domainName: String = ""
     var walletAddress: String = ""
     
-    static let mock = BTDeviceUI(id: UUID(), domainName: "one.x", walletAddress: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52")
-    static func newMock() -> BTDeviceUI {
-        BTDeviceUI(id: UUID(), domainName: "kuplin.hi", walletAddress: "0x557fc13812460e5414d9881cb3659902e9501041")
+    static let mock = BTDomainUIInfo(id: UUID(), domainName: "one.x", walletAddress: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52")
+    static func newMock() -> BTDomainUIInfo {
+        BTDomainUIInfo(id: UUID(), domainName: "kuplin.hi", walletAddress: "0x557fc13812460e5414d9881cb3659902e9501041")
     }
-    static func newMock(_ count: Int) -> [BTDeviceUI] {
-        var arr = [BTDeviceUI]()
+    static func newMock(_ count: Int) -> [BTDomainUIInfo] {
+        var arr = [BTDomainUIInfo]()
         for _ in 0..<count {
             arr.append(.newMock())
         }
@@ -45,7 +45,7 @@ final class UBTController: NSObject, ObservableObject {
     
     @Published private(set) var btState: UBTControllerState = .notReady
     @Published private(set) var isScanning = false
-    @Published private(set) var readyDevices: [BTDeviceUI] = [] // BTDeviceUI.newMock(3)
+    @Published private(set) var readyDevices: [BTDomainUIInfo] = [] // BTDeviceUI.newMock(3)
     
     init(domainEntity: any DomainEntity) {
         self.domainEntity = domainEntity
@@ -111,7 +111,9 @@ final class UBTController: NSObject, ObservableObject {
     }
     
     func addMock() {
-        readyDevices.append(contentsOf: BTDeviceUI.newMock(1))
+        #if DEBUG
+        readyDevices.append(contentsOf: BTDomainUIInfo.newMock(1))
+        #endif
     }
     
     struct DomainBTInfo: Codable {
@@ -229,8 +231,8 @@ private extension UBTController {
             id = peripheral.identifier
         }
         
-        func btUI() -> BTDeviceUI {
-            BTDeviceUI(id: id, domainName: name, walletAddress: walletAddress)
+        func btUI() -> BTDomainUIInfo {
+            BTDomainUIInfo(id: id, domainName: name, walletAddress: walletAddress)
         }
     }
 

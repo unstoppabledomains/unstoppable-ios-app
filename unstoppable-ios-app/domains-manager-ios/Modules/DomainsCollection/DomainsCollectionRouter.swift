@@ -316,7 +316,7 @@ private extension DomainsCollectionRouter {
         }
     }
     
-    func didSelectUBTDomain(_ btDomainInfo: BTDeviceUI,
+    func didSelectUBTDomain(_ btDomainInfo: BTDomainUIInfo,
                             by domain: DomainDisplayInfo,
                             in topViewController: UIViewController?) {
         Task {
