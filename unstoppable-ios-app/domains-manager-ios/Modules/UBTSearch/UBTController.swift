@@ -36,7 +36,7 @@ struct BTDomainUIInfo: Hashable, Identifiable {
 final class UBTController: NSObject, ObservableObject {
     
     let domainEntity: any DomainEntity
-    private let serviceId = CBUUID(string: "090DAE5A-0DD8-4327-B074-E1E09B259597")
+    private let serviceId = CBUUID(string: Constants.shakeToFindServiceId)
     private var centralManager: CBCentralManager!
     private var peripheralManager: CBPeripheralManager!
     private var peripheralService: CBMutableService!
@@ -52,7 +52,6 @@ final class UBTController: NSObject, ObservableObject {
         super.init()
         
         setup()
-        print("0xb2fb91c03db880c3ec1086e938c24608c6b56cc6".ethChecksumAddress())
     }
     
     func setup() {
@@ -95,7 +94,7 @@ final class UBTController: NSObject, ObservableObject {
         var id: String {
             switch self {
             case .domainInfo:
-                return "3403C4D9-2C2C-4A6A-A9DB-115D10095771"
+                return Constants.shakeToFindCharacteristicId
             }
         }
         var uuid: UUID {
@@ -194,7 +193,6 @@ private extension UBTController {
         default:
             btState = .notReady
         }
-//        btState = (centralManager.state == .poweredOn && peripheralManager.state == .poweredOn) ?.ready : .notReady
     }
     
     func updateReadyDevices() {
@@ -235,19 +233,4 @@ private extension UBTController {
             BTDomainUIInfo(id: id, domainName: name, walletAddress: walletAddress)
         }
     }
-
 }
-
-/*
-case unknown = 0
-
-case resetting = 1
-
-case unsupported = 2
-
-case unauthorized = 3
-
-case poweredOff = 4
-
-case poweredOn = 5
-*/

@@ -54,7 +54,11 @@ struct Constants {
     static let pushMessagingServiceIdentifier: String = "push"
     static let swiftUIPreviewDevices = ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone SE (1st generation)", "iPhone SE (3rd generation)", "iPhone 13 mini"]
 
-    #if DEBUG
+    // Shake to find
+    static let shakeToFindServiceId: String = "090DAE5A-0DD8-4327-B074-E1E09B259597"
+    static let shakeToFindCharacteristicId: String = "3403C4D9-2C2C-4A6A-A9DB-115D10095771"
+
+#if DEBUG
     static let isTestingMinting: Bool = false
     static let testMintingDomainsCount = 10
     #else
