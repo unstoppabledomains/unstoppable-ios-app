@@ -352,6 +352,9 @@ private extension DomainsCollectionPresenter {
             updateUI()
             self.isResolvingPrimaryDomain = false
             view.runConfettiAnimation()
+        }
+        
+        if !domains.requirePNItems().isEmpty {
             notificationsService.checkNotificationsPermissions()
         }
     }
