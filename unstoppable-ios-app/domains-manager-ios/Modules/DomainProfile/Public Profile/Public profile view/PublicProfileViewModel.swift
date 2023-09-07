@@ -64,13 +64,12 @@ extension PublicProfileView {
         }
         
         func loadIconIfNeededFor(badge: DomainProfileBadgeDisplayInfo) {
-            guard badge.icon == nil else { return }
+            guard badge.icon == nil,
+                let i = badgesDisplayInfo?.firstIndex(where: { $0.badge.code == badge.badge.code }) else { return }
             
             Task {
                 let icon = await badge.loadBadgeIcon()
-                if let i = badgesDisplayInfo?.firstIndex(where: { $0.badge.code == badge.badge.code }) {
-                    badgesDisplayInfo?[i].icon = icon
-                }
+                badgesDisplayInfo?[i].icon = icon
             }
         }
         

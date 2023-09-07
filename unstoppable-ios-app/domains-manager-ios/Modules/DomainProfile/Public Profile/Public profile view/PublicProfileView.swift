@@ -597,6 +597,7 @@ private extension PublicProfileView {
             ZStack {
                 Color.white
                     .opacity(0.16)
+                let badge = viewModel.badgesDisplayInfo?.first(where: { $0.badge.code == badge.badge.code }) ?? badge // Fix issue when SwiftUI could not pick up badge icon update sometimes
                 let imagePadding: CGFloat = badge.badge.isUDBadge ? 8 : 4
                 Image(uiImage: badge.icon ?? badge.defaultIcon)
                     .resizable()
