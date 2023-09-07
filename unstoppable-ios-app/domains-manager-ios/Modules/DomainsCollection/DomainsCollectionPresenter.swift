@@ -347,7 +347,8 @@ private extension DomainsCollectionPresenter {
             self.isResolvingPrimaryDomain = false
             view.runConfettiAnimation()
         }
-        if !domains.isEmpty {
+        
+        if !domains.requirePNItems().isEmpty {
             notificationsService.checkNotificationsPermissions()
         }
     }
