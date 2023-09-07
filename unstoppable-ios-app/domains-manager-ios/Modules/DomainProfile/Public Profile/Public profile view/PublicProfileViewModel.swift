@@ -154,6 +154,7 @@ extension PublicProfileView {
                     let isFollowing = try await NetworkService().isDomain(viewingDomain.name, following: domain.name)
                     await waitForAppear()
                     self.isFollowing = isFollowing
+                    // Hack for SwiftUI doesn't update button status 
                     try? await Task.sleep(seconds: 0.1)
                     self.isFollowing = isFollowing
                 }
