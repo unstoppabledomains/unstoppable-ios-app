@@ -54,32 +54,16 @@ final class UBTController: NSObject, ObservableObject {
         setup()
     }
     
-    func setup() {
-        do {
-            setupCentralManager()
-            try setupPeripheralManager()
-        } catch {
-            btState = .setupFailed
-        }
-    }
-    
-    func setupCentralManager() {
-        centralManager = CBCentralManager(delegate: self, queue: nil)
-    }
-    
-    func setupPeripheralManager() throws {
-        peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
-        peripheralService = CBMutableService(type: serviceId, primary: true)
-        
-        try setCharacteristicsWith(domainName: domainEntity.name, walletAddress: domainEntity.ownerWallet ?? "")
-    }
-    
+}
+
+// MARK: - Open methods
+extension UBTController {
     func startScanning() {
-        if btState == .ready {
-            isScanning = true
-            centralManager.scanForPeripherals(withServices: [serviceId], options: nil)
-            peripheralManager.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [serviceId]])
-        }
+        guard btState == .ready else { return }
+        
+        isScanning = true
+        centralManager.scanForPeripherals(withServices: [serviceId], options: nil)
+        peripheralManager.startAdvertising([CBAdvertisementDataServiceUUIDsKey: [serviceId]])
     }
     
     func stopScanning() {
@@ -88,36 +72,10 @@ final class UBTController: NSObject, ObservableObject {
         peripheralManager.stopAdvertising()
     }
     
-    enum CharacteristicType: CaseIterable {
-        case domainInfo
-        
-        var id: String {
-            switch self {
-            case .domainInfo:
-                return Constants.shakeToFindCharacteristicId
-            }
-        }
-        var uuid: UUID {
-            UUID(uuidString: id)!
-        }
-        var cbuuid: CBUUID {
-            CBUUID(string: id)
-        }
-        
-        func buildCharacteristicWith(value: Data?) -> CBMutableCharacteristic {
-            CBMutableCharacteristic(type: cbuuid, properties: .read, value: value, permissions: .readable)
-        }
-    }
-    
     func addMock() {
         #if DEBUG
         readyDevices.append(contentsOf: BTDomainUIInfo.newMock(1))
         #endif
-    }
-    
-    struct DomainBTInfo: Codable {
-        let name: String
-        let walletAddress: String
     }
 }
 
@@ -184,6 +142,26 @@ extension UBTController: CBPeripheralManagerDelegate {
 
 // MARK: - Private methods
 private extension UBTController {
+    func setup() {
+        do {
+            setupCentralManager()
+            try setupPeripheralManager()
+        } catch {
+            btState = .setupFailed
+        }
+    }
+    
+    func setupCentralManager() {
+        centralManager = CBCentralManager(delegate: self, queue: nil)
+    }
+    
+    func setupPeripheralManager() throws {
+        peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
+        peripheralService = CBMutableService(type: serviceId, primary: true)
+        
+        try setCharacteristicsWith(domainName: domainEntity.name, walletAddress: domainEntity.ownerWallet ?? "")
+    }
+    
     func updateState() {
         switch (centralManager.state, peripheralManager.state) {
         case (.poweredOn, .poweredOn):
@@ -213,6 +191,27 @@ private extension UBTController {
 
 // MARK: - Private methods
 private extension UBTController {
+    enum CharacteristicType: CaseIterable {
+        case domainInfo
+        
+        var id: String {
+            switch self {
+            case .domainInfo:
+                return Constants.shakeToFindCharacteristicId
+            }
+        }
+        var uuid: UUID {
+            UUID(uuidString: id)!
+        }
+        var cbuuid: CBUUID {
+            CBUUID(string: id)
+        }
+        
+        func buildCharacteristicWith(value: Data?) -> CBMutableCharacteristic {
+            CBMutableCharacteristic(type: cbuuid, properties: .read, value: value, permissions: .readable)
+        }
+    }
+    
     struct DiscoveredBTDevice: Hashable, Identifiable {
         
         let peripheral: CBPeripheral
@@ -232,5 +231,10 @@ private extension UBTController {
         func btUI() -> BTDomainUIInfo {
             BTDomainUIInfo(id: id, domainName: name, walletAddress: walletAddress)
         }
+    }
+    
+    struct DomainBTInfo: Codable {
+        let name: String
+        let walletAddress: String
     }
 }
