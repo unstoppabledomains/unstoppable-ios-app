@@ -72,6 +72,8 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
                 await importNewWallet()
             case .connectWallet:
                 await connectNewWallet()
+            case .createNewWallet:
+                await createNewWallet()
             }
             initialAction = .none
         }
@@ -138,6 +140,7 @@ private extension WalletsListViewPresenter {
             }
             do {
                 let action = try await appContext.pullUpViewService.showAddWalletSelectionPullUp(in: view,
+                                                                                                 presentationOptions: .default,
                                                                                              actions: actions)
                 didSelectAddWalletAction(action)
             } catch { }
@@ -377,6 +380,6 @@ private extension WalletsListViewPresenter {
 // MARK: - WalletsListViewPresenter
 extension WalletsListViewPresenter {
     enum InitialAction {
-        case none, showImportWalletOptionsPullUp, importWallet, connectWallet
+        case none, showImportWalletOptionsPullUp, importWallet, connectWallet, createNewWallet
     }
 }

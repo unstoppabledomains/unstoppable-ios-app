@@ -11,6 +11,7 @@ import UIKit
 protocol PullUpViewServiceProtocol {
     func showLegalSelectionPullUp(in viewController: UIViewController) async throws -> LegalType
     func showAddWalletSelectionPullUp(in viewController: UIViewController,
+                                      presentationOptions: PullUpNamespace.AddWalletPullUpPresentationOptions,
                                       actions: [WalletDetailsAddWalletAction]) async throws -> WalletDetailsAddWalletAction
     func showManageBackupsSelectionPullUp(in viewController: UIViewController) async throws -> ManageBackupsAction
     func showDeleteAllICloudBackupsPullUp(in viewController: UIViewController) async throws
@@ -142,13 +143,29 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             showOrUpdate(in: viewController, pullUp: .settingsLegalSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
         }
     }
-    
+ 
     func showAddWalletSelectionPullUp(in viewController: UIViewController,
+                                      presentationOptions: PullUpNamespace.AddWalletPullUpPresentationOptions,
                                       actions: [WalletDetailsAddWalletAction]) async throws -> WalletDetailsAddWalletAction {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { continuation in
-            let selectionViewHeight: CGFloat = 72 + (CGFloat(actions.count) * PullUpCollectionViewCell.Height)
-            let selectionView = PullUpSelectionView(configuration: .init(title: nil,
-                                                                         contentAlignment: .left),
+            var selectionViewHeight: CGFloat = 72 + (CGFloat(actions.count) * PullUpCollectionViewCell.Height)
+            
+            var titleConfiguration: PullUpSelectionViewConfiguration.LabelType? = nil
+            if let title = presentationOptions.title {
+                titleConfiguration = .text(title)
+                selectionViewHeight += 36
+            }
+            
+            var subtitleConfiguration: PullUpSelectionViewConfiguration.Subtitle? = nil
+            if let subtitle = presentationOptions.subtitle {
+                subtitleConfiguration = .label(.text(subtitle))
+                selectionViewHeight += 64
+            }
+            
+            
+            let selectionView = PullUpSelectionView(configuration: .init(title: titleConfiguration,
+                                                                         contentAlignment: .center,
+                                                                         subtitle: subtitleConfiguration),
                                                     items: actions,
                                                     itemSelectedCallback: { action in
                 continuation(.success(action))

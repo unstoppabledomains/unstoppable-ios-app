@@ -700,7 +700,7 @@
 "DOMAIN_CARD_SWIPE_TO_CARD" = "Swipe to the card";
 
 // Minting-Claiming
-"CLAIM_DOMAINS_TO_SELF_CUSTODIAL" = "Claim domains to a new wallet";
+"CLAIM_DOMAINS_TO_SELF_CUSTODIAL" = "Claim domains to my wallet";
 
 // Legacy tokens
 "LEGACY" = "Legacy";
