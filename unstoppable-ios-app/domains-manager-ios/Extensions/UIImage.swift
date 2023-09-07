@@ -88,6 +88,7 @@ extension UIImage {
     static let framesIcon = UIImage(named: "framesIcon")!
     static let framesIcon20 = UIImage(named: "framesIcon20")!
     static let scanQRIcon = UIImage(named: "scanQRIcon")!
+    static let scanQRIcon16 = UIImage(named: "scanQRIcon16")!
     static let scanQRIcon20 = UIImage(named: "scanQRIcon20")!
     static let web3ProfileIllustration = UIImage(named: "web3ProfileIllustration")!
     static let web3ProfileIllustrationLarge = UIImage(named: "web3ProfileIllustrationLarge")!
@@ -137,6 +138,8 @@ extension UIImage {
     static let infoEmptyIcon24 = UIImage(named: "infoEmptyIcon24")!
     static let docsIcon24 = UIImage(named: "docsIcon24")!
     static let helpIcon24 = UIImage(named: "helpIcon24")!
+    static let followerGrayPlaceholder = UIImage(named: "followerGrayPlaceholder")!
+    static let cellChevron = UIImage(named: "cellChevron")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
@@ -145,7 +148,13 @@ extension UIImage {
     static let youTubeIcon24 = UIImage(named: "youTubeIcon24")!
     static let linkedInIcon24 = UIImage(named: "linkedInIcon24")!
     static let gitHubIcon24 = UIImage(named: "gitHubIcon24")!
-    
+    static let twitterOriginalIcon = UIImage(named: "twitterOriginalIcon")!
+    static let discordOriginalIcon = UIImage(named: "discordOriginalIcon")!
+    static let telegramOriginalIcon = UIImage(named: "telegramOriginalIcon")!
+    static let redditOriginalIcon = UIImage(named: "redditOriginalIcon")!
+    static let youTubeOriginalIcon = UIImage(named: "youTubeOriginalIcon")!
+    static let linkedInOriginalIcon = UIImage(named: "linkedInIcon24")!
+    static let gitHubOriginalIcon = UIImage(named: "gitHubIcon24")!
 
     
     // System SF symbols

@@ -431,8 +431,9 @@ private extension ChatViewPresenter {
     
     func setupPlaceholder() {
         Task {
-            let domainName = await appContext.dataAggregatorService.getReverseResolutionDomain(for: profile.wallet.normalized)
-            let sender = domainName ?? profile.wallet.walletAddressTruncated
+            let wallets = await appContext.messagingService.fetchWalletsAvailableForMessaging()
+            let userWallet = wallets.first(where: { $0.address.normalized == profile.wallet.normalized })
+            let sender = userWallet?.reverseResolutionDomain?.name ?? profile.wallet.walletAddressTruncated
             let placeholder = String.Constants.chatInputPlaceholderAsDomain.localized(sender)
             view?.setPlaceholder(placeholder)
         }
@@ -454,7 +455,7 @@ private extension ChatViewPresenter {
                     actions.append(.init(type: .viewProfile, callback: { [weak self] in
                         self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
                         self?.didPressViewDomainProfileButton(domainName: domainName,
-                                                              isUDDomain: userInfo.isUDDomain)
+                                                              walletAddress: userInfo.wallet)
                     }))
                 }
             }
@@ -498,8 +499,23 @@ private extension ChatViewPresenter {
     }
     
     func didPressViewDomainProfileButton(domainName: String,
-                                         isUDDomain: Bool) {
-        view?.openLink(.domainProfilePage(domainName: domainName))
+                                         walletAddress: String) {
+        if domainName.isUDTLD() {
+            Task {
+                guard let view else { return }
+                let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+                let walletDomains = userDomains.filter({ $0.ownerWallet?.normalized == profile.wallet.normalized })
+                guard let viewingDomainDisplayInfo = walletDomains.first(where: { $0.isSetForRR }) ?? walletDomains.first,
+                      let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return }
+                
+                UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
+                                                             name: domainName),
+                                                   viewingDomain: viewingDomain,
+                                                   in: view)
+            }
+        } else {
+            view?.openLink(.domainProfilePage(domainName: domainName))
+        }
     }
     
     func didPressViewGroupInfoButton(groupDetails: MessagingGroupChatDetails) {

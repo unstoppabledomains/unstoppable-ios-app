@@ -13,10 +13,14 @@ enum ChatsList { }
 extension ChatsList {
     enum PresentOptions {
         case `default`
-        case showChatsList(profile: MessagingChatUserProfileDisplayInfo)
-        case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
-        case newChat(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo)
+        case showChatsList(profile: MessagingChatUserProfileDisplayInfo?)
+        case showChat(options: PresentChatOptions, profile: MessagingChatUserProfileDisplayInfo)
         case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)
+        
+        enum PresentChatOptions {
+            case existingChat(chatId: String)
+            case newChat(userInfo: MessagingChatUserDisplayInfo)
+        }
     }
     
     enum SearchMode {
@@ -112,7 +116,7 @@ extension ChatsList {
                                           mode: ChatsList.SearchMode) async throws -> [SearchDomainProfile] {
             switch mode {
             case .default, .chatsOnly:
-                return try await NetworkService().searchForRRDomainsWith(name: searchKey)
+                return try await NetworkService().searchForDomainsWith(name: searchKey, shouldBeSetAsRR: true)
             case .channelsOnly:
                 return []
             }

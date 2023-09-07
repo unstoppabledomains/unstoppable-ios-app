@@ -52,7 +52,8 @@ struct Constants {
     static let coinbaseDomainTLD: String = "id"
     static let xmtpMessagingServiceIdentifier: String = "xmtp"
     static let pushMessagingServiceIdentifier: String = "push"
-    
+    static let swiftUIPreviewDevices = ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone SE (1st generation)", "iPhone SE (3rd generation)", "iPhone 13 mini"]
+
     #if DEBUG
     static let isTestingMinting: Bool = false
     static let testMintingDomainsCount = 10

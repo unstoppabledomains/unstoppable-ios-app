@@ -125,6 +125,10 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
     }
+    func hideKeyboard() {
+        view.endEditing(true)
+        cNavigationController?.view.endEditing(true)
+    }
 }
 
 // MARK: - BaseViewControllerProtocol

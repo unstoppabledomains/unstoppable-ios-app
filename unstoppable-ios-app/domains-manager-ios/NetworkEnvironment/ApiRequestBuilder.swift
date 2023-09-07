@@ -608,11 +608,11 @@ extension Endpoint {
         )
     }
     
-    static func getBadgesInfo(for domain: DomainItem) -> Endpoint {
+    static func getBadgesInfo(for domainName: DomainName) -> Endpoint {
         //https://profile.unstoppabledomains.com/api/public/aaronquirk.x/badges
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
-            path: "/profile/public/\(domain.name)/badges",
+            path: "/profile/public/\(domainName)/badges",
             queryItems: [],
             body: ""
         )
@@ -739,6 +739,57 @@ extension Endpoint {
         return Endpoint(
             host: NetworkConfig.baseProfileHost,
             path: "/profile/user/\(domain.name)/notifications/preferences",
+            queryItems: [],
+            body: body,
+            headers: headers
+        )
+    }
+    
+    static func getFollowingStatus(for followerDomain: DomainName,
+                                   followingDomain: DomainName) -> Endpoint {
+        //https://api.unstoppabledomains.com/profile/followers/lisa.x/follow-status/oleg.x
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/followers/\(followingDomain)/follow-status/\(followerDomain)",
+            queryItems: [],
+            body: ""
+        )
+    }
+    
+    static func getFollowersList(for domain: DomainName,
+                                 relationshipType: DomainProfileFollowerRelationshipType,
+                                 count: Int,
+                                 cursor: Int?) -> Endpoint {
+        //https://api.unstoppabledomains.com/profile/followers/oleg.x?relationship_type=followers&cursor=4266&take=50
+        var queryItems: [URLQueryItem] = [.init(name: "relationship_type", value: relationshipType.rawValue),
+                                          .init(name: "take", value: "\(count)")]
+        if let cursor {
+            queryItems.append(.init(name: "cursor", value: "\(cursor)"))
+        }
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/followers/\(domain)",
+            queryItems: queryItems,
+            body: ""
+        )
+    }
+    
+    
+    static func follow(domainNameToFollow: String,
+                       by domain: String,
+                       expires: UInt64,
+                       signature: String,
+                       body: String) -> Endpoint {
+        // https://profile.ud-staging.com/api/user/aaron.x
+        let expiresString = "\(expires)"
+        let headers = [
+            SignatureComponentHeaders.CodingKeys.domain.rawValue: domain,
+            SignatureComponentHeaders.CodingKeys.expires.rawValue: expiresString,
+            SignatureComponentHeaders.CodingKeys.signature.rawValue: signature
+        ]
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/profile/followers/\(domainNameToFollow)",
             queryItems: [],
             body: body,
             headers: headers

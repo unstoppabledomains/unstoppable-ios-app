@@ -338,6 +338,10 @@ extension String {
         static let pluralNMessages = "SDICT:N_MESSAGES"
         static let pluralNPeopleYouMayKnow = "SDICT:N_PEOPLE_YOU_MAY_KNOW"
         static let pluralNMembers = "SDICT:N_MEMBERS"
+        static let pluralNSocials = "SDICT:N_SOCIALS"
+        static let pluralNCrypto = "SDICT:N_CRYPTO"
+        static let pluralNFollowers = "SDICT:N_FOLLOWERS"
+        static let pluralNFollowing = "SDICT:N_FOLLOWING"
         static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
         
         // Errors
@@ -382,6 +386,7 @@ extension String {
         static let domainsCollectionEmptyStateTitle = "DOMAINS_COLLECTION_EMPTY_STATE_TITLE"
         static let domainsCollectionEmptyStateSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_SUBTITLE"
         static let domainsCollectionEmptyStateImportTitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_TITLE"
+        static let domainsCollectionEmptyStateImportSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_IMPORT_SUBTITLE"
         static let domainsCollectionEmptyStateExternalTitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_TITLE"
         static let domainsCollectionEmptyStateExternalSubtitle = "DOMAINS_COLLECTION_EMPTY_STATE_EXTERNAL_SUBTITLE"
         static let importYourDomains = "IMPORT_YOUR_DOMAINS"
@@ -471,6 +476,7 @@ extension String {
         static let domainDetailsEditProfile = "DOMAIN_DETAILS_EDIT_PROFILE";
         static let domainDetailsManageDomain = "DOMAIN_DETAILS_MANAGE_DOMAIN";
         static let domainDetailsShareMessage = "DOMAIN_DETAILS_SHARE_MESSAGE";
+        static let publicDomainDetailsShareMessage = "PUBLIC_DOMAIN_DETAILS_SHARE_MESSAGE";
         static let domainDetailsAddCurrency = "DOMAIN_DETAILS_ADD_CURRENCY";
         
         // Manage domain
@@ -779,8 +785,7 @@ extension String {
         static let domainCardSwipeToCard = "DOMAIN_CARD_SWIPE_TO_CARD"
         
         // Minting-Claiming
-        static let importFromTheWebsite = "IMPORT_FROM_THE_WEBSITE"
-        static let storeInYourDomainVault = "STORE_IN_YOUR_DOMAIN_VAULT"
+        static let claimDomainsToSelfCustodial = "CLAIM_DOMAINS_TO_SELF_CUSTODIAL"
         
         // Legacy tokens
         static let legacy = "LEGACY"
@@ -796,7 +801,8 @@ extension String {
         static let externalWalletFailedToSignPullUpSubtitle = "EXTERNAL_WALLET_FAILED_TO_SIGN_PULLUP_SUBTITLE"
         
         // Login
-        static let websiteAccount = "WEBSITE_ACCOUNT"
+        static let viewVaultedDomains = "VIEW_VAULTED_DOMAINS"
+        static let protectedByUD = "PROTECTED_BY_UD"
         static let loginWithWebTitle = "LOGIN_WITH_WEB_TITLE"
         static let loginWithWebSubtitle = "LOGIN_WITH_WEB_SUBTITLE"
         static let loginWithProviderN = "LOGIN_WITH_PROVIDER_N"
@@ -915,6 +921,30 @@ extension String {
         static let messagingCantContactMessage = "MESSAGING_CANT_CONTACT_MESSAGE"
         static let messagingInvite = "MESSAGING_INVITE"
         static let messagingSearchResultNotRRDomain = "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN"
+        
+        // Public profile
+        static let followers = "FOLLOWERS"
+        static let following = "FOLLOWING"
+        static let follow = "FOLLOW"
+        static let followersListEmptyMessage = "FOLLOWERS_LIST_EMPTY_MESSAGE"
+        static let followingListEmptyMessage = "FOLLOWING_LIST_EMPTY_MESSAGE"
+        static let followedBy = "FOLLOWED_BY"
+        static let followedByNOthersSuffix = "FOLLOWED_BY_N_OTHERS_SUFFIX"
+        static let and = "AND"
+        static let leaderboard = "LEADERBOARD"
+        static let unfollow = "Unfollow"
+        static let followingAsDomain = "Following as %@"
+        static let followAsDomain = "Follow as %@"
+        static let tapToSwitch = "Tap to switch"
+        
+        // Domains search
+        static let yourDomains = "YOUR_DOMAINS"
+        static let globalSearch = "GLOBAL_SEARCH"
+        static let globalSearchHint = "GLOBAL_SEARCH_HINT"
+
+        // No wallets to claim
+        static let noWalletsToClaimAlertTitle = "NO_WALLETS_TO_CLAIM_ALERT_TITLE"
+        static let noWalletsToClaimAlertSubtitle = "NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE"
         
         // Shake to find
         static let shakeToFindSearchTitle = "SHAKE_TO_FIND_SEARCH_TITLE"

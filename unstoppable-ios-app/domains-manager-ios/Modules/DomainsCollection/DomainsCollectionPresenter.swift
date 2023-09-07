@@ -654,8 +654,8 @@ private extension DomainsCollectionPresenter {
         } else {
             view?.setScanButtonHidden(!domains[currentIndex].isInteractable)
         }
-        let interactableDomains = domains.filter({ $0.isInteractable })
-        view?.setAddButtonHidden(domains.isEmpty, isMessagingAvailable: !interactableDomains.isEmpty )
+        let availableForMessagingDomains = domains.availableForMessagingItems()
+        view?.setAddButtonHidden(domains.isEmpty, isMessagingAvailable: !availableForMessagingDomains.isEmpty )
         view?.setEmptyState(hidden: !domains.isEmpty)
     }
     
@@ -734,9 +734,20 @@ private extension DomainsCollectionPresenter {
     
     func runDefaultMintingFlow() {
         Task {
+            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+            guard !wallets.isEmpty else {
+                showNoWalletsToClaimDomainAlert()
+                return
+            }
             let userProfile = try? await appContext.firebaseInteractionService.getUserProfile()
             let email = userProfile?.email ?? User.instance.email
             await router.runMintDomainsFlow(with: .default(email: email))
+        }
+    }
+    func showNoWalletsToClaimDomainAlert() {
+        Task { @MainActor in
+            view?.showSimpleAlert(title: String.Constants.noWalletsToClaimAlertTitle.localized(),
+                                  body: String.Constants.noWalletsToClaimAlertSubtitle.localized())
         }
     }
     
@@ -903,12 +914,12 @@ extension DomainsCollectionPresenter {
 }
 
 enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem {
-    case importWallet, connectWallet, importFromWebsite
+    case connectWallet, importFromWebsite, importWallet
     
     var title: String {
         switch self {
         case .importFromWebsite:
-            return String.Constants.importFromTheWebsite.localized()
+            return String.Constants.claimDomainsToSelfCustodial.localized()
         case .importWallet:
             return String.Constants.connectWalletRecovery.localized()
         case .connectWallet:
@@ -919,9 +930,9 @@ enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem 
     var subtitle: String? {
         switch self {
         case .importFromWebsite:
-            return String.Constants.storeInYourDomainVault.localized()
-        case .importWallet:
             return nil
+        case .importWallet:
+            return String.Constants.domainsCollectionEmptyStateImportSubtitle.localized()
         case .connectWallet:
             return String.Constants.domainsCollectionEmptyStateExternalSubtitle.localized()
         }

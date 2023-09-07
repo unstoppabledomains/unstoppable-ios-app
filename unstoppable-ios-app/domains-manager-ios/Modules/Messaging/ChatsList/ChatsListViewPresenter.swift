@@ -97,7 +97,11 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             openChannel(configuration.channel)
         case .userInfo(let configuration):
             logButtonPressedAnalyticEvents(button: .userToChatInList)
-            openChatWith(conversationState: .newChat(configuration.userInfo))
+            if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == configuration.userInfo.wallet.normalized }) {
+                openChatWith(conversationState: .existingChat(existingChat))
+            } else {
+                openChatWith(conversationState: .newChat(configuration.userInfo))
+            }
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
         }
@@ -143,6 +147,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     }
     
     func didSearchWith(key: String) {
+        let key = key.trimmedSpaces
         self.searchData.searchKey = key.trimmedSpaces
         searchData.searchUsers = []
         searchData.searchChannels = []
@@ -196,14 +201,23 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                 switch presentOptions {
                 case .default:
                     self.presentOptions = presentOptions
-                    return
                 case .showChatsList(let profile):
-                    try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
-                case .showChat(let chatId, let profile):
-                    if selectedProfileWalletPair?.profile?.id != profile.id ||
-                        !appCoordinator.isActiveState(.chatOpened(chatId: chatId)) {
+                    if let profile {
                         try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
-                        tryAutoOpenChat(chatId, profile: profile)
+                    } else {
+                        self.presentOptions = presentOptions
+                    }
+                case .showChat(let options, let profile):
+                    switch options {
+                    case .existingChat(chatId: let chatId):
+                        if selectedProfileWalletPair?.profile?.id != profile.id ||
+                            !appCoordinator.isActiveState(.chatOpened(chatId: chatId)) {
+                            try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
+                            tryAutoOpenChat(chatId, profile: profile)
+                        }
+                    case .newChat(let userInfo):
+                        try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
+                        autoOpenNewChat(with: userInfo)
                     }
                 case .showChannel(let channelId, let profile):
                     if selectedProfileWalletPair?.profile?.id != profile.id ||
@@ -211,11 +225,6 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                         try await prepareToAutoOpenWith(profile: profile, dataType: .channels)
                         tryAutoOpenChannel(channelId, profile: profile)
                     }
-                case .newChat(let userInfo, let profile):
-                    if selectedProfileWalletPair?.profile?.id != profile.id {
-                        try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
-                    }
-                    autoOpenNewChat(with: userInfo)
                 }
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -310,18 +319,24 @@ private extension ChatsListViewPresenter {
                 case .default:
                     try await resolveInitialProfileWith(wallets: wallets)
                 case .showChatsList(let profile):
+                    if let profile {
+                        try await preselectProfile(profile, usingWallets: wallets)
+                    } else {
+                        try await resolveInitialProfileWith(wallets: wallets)
+                    }
+                case .showChat(let options, let profile):
                     try await preselectProfile(profile, usingWallets: wallets)
-                case .showChat(let chatId, let profile):
-                    try await preselectProfile(profile, usingWallets: wallets)
-                    tryAutoOpenChat(chatId, profile: profile)
+                    switch options {
+                    case .existingChat(let chatId):
+                        tryAutoOpenChat(chatId, profile: profile)
+                    case .newChat(let userInfo):
+                        autoOpenNewChat(with: userInfo)
+                    }
                 case .showChannel(let channelId, let profile):
                     selectedDataType = .channels
                     try await preselectProfile(profile, usingWallets: wallets)
                     showData()
                     tryAutoOpenChannel(channelId, profile: profile)
-                case .newChat(let userInfo, let profile):
-                    try await preselectProfile(profile, usingWallets: wallets)
-                    autoOpenNewChat(with: userInfo)
                 }
             } catch ChatsListError.noWalletsForChatting {
                 return
@@ -403,19 +418,8 @@ private extension ChatsListViewPresenter {
     }
     
     func autoOpenNewChat(with userInfo: MessagingChatUserDisplayInfo) {
-        if let chat = chatsList.first(where: { chat in
-            switch chat.type {
-            case .private(let details):
-                return details.otherUser.wallet.normalized == userInfo.wallet.normalized
-            case .group:
-                return false
-            }
-        }) {
-            openChatWith(conversationState: .existingChat(chat))
-        } else {
-            openChatWith(conversationState: .newChat(userInfo))
-        }
-        presentOptions = .default
+        openChatWith(conversationState: .newChat(userInfo))
+        self.presentOptions = .default
     }
     
     func awaitForUIReady() async {
@@ -590,27 +594,22 @@ private extension ChatsListViewPresenter {
             /// Chats
             // Local chats
             let localChats = chatsList.filter { isChatMatchingSearchKey($0, searchKey: searchKey) }
-            var localChatsPeopleWallets = Set(localChats.compactMap { chat in
-                if case .private(let details) = chat.type {
-                    return details.otherUser.wallet.lowercased()
-                }
-                return nil
-            })
+            var localChatsPeopleWallets = Set(localChats.compactMap { $0.type.otherUserDisplayInfo?.wallet.lowercased() })
             localChatsPeopleWallets.insert(selectedProfileWalletPair?.wallet.address.lowercased() ?? "")
             people = localChats.map { .existingChat($0) }
             
             // Domain profiles
-            let domainProfiles = searchData.domainProfiles.filter({ $0.name != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name && !localChatsPeopleWallets.contains($0.ownerAddress.lowercased()) })
+            let domainProfiles = searchData.domainProfiles.filter({ $0.ownerAddress != nil && $0.name != selectedProfileWalletPair?.wallet.reverseResolutionDomain?.name && !localChatsPeopleWallets.contains($0.ownerAddress!.lowercased()) })
             people += domainProfiles.map { profile in
                 let pfpURL: URL? = profile.imageType == .default ? nil : URL(string: profile.imagePath ?? "")
                 
-                return .newUser(.init(wallet: profile.ownerAddress, domainName: profile.name, pfpURL: pfpURL))
+                return .newUser(.init(wallet: profile.ownerAddress!, domainName: profile.name, pfpURL: pfpURL))
             }
             
             // Search users
             let remotePeople = searchData.searchUsers.filter({ searchUser in
                 !localChatsPeopleWallets.contains(searchUser.wallet.lowercased()) &&
-                !domainProfiles.contains(where: { $0.ownerAddress.lowercased() == searchUser.wallet.lowercased()})
+                !domainProfiles.contains(where: { $0.ownerAddress!.lowercased() == searchUser.wallet.lowercased()})
             })
             people += remotePeople.map { .newUser($0) }
             

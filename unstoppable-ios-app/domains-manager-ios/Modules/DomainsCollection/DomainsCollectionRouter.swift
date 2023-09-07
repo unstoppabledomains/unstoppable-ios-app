@@ -177,13 +177,11 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     }
     
     func didShakeDevice(domain: DomainDisplayInfo) {
-        guard let navigationController = self.navigationController,
-            let messagingProfile = appContext.messagingService.getProfileForImmediateMessagingPreferring(domain: domain) else { return }
+        guard let navigationController = self.navigationController else { return }
     
         let topViewController = navigationController.topVisibleViewController()
-        let searchVC = UDBTSearchView.instantiate(domain: domain) { [weak self] device in
-            let userInfo = MessagingChatUserDisplayInfo(wallet: device.walletAddress, domainName: device.domainName)
-            self?.newChatAsyncWith(userInfo: userInfo, profile: messagingProfile)
+        let searchVC = UDBTSearchView.instantiate(domain: domain) { [weak topViewController, weak self] device in
+            self?.didSelectUBTDomain(device, by: domain, in: topViewController)
         }
         topViewController.present(searchVC, animated: true)
     }
@@ -210,26 +208,20 @@ extension DomainsCollectionRouter {
         }
     }
     
-    func jumpToChatsList(profile: MessagingChatUserProfileDisplayInfo) async {
+    func jumpToChatsList(profile: MessagingChatUserProfileDisplayInfo?) async {
         await showChatsListWith(options: .showChatsList(profile: profile))
     }
     
     func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
-        await showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
+        await showChatWith(options: .existingChat(chatId: chatId), profile: profile)
+    }
+    
+    func showChatWith(options: ChatsList.PresentOptions.PresentChatOptions, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChat(options: options, profile: profile))
     }
     
     func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
         await showChatsListWith(options: .showChannel(channelId: channelId, profile: profile))
-    }
-    
-    func newChatAsyncWith(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo) {
-        Task {
-            await newChatWith(userInfo: userInfo, profile: profile)
-        }
-    }
-    
-    func newChatWith(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo) async {
-        await showChatsListWith(options: .newChat(userInfo: userInfo, profile: profile))
     }
     
     private var topChatViewController: ChatViewController? { navigationController?.viewControllers.last as? ChatViewController }
@@ -321,6 +313,21 @@ private extension DomainsCollectionRouter {
         } else {
             await resetNavigationToRoot()
             showChatsListScreen(in: navigationController, presentOptions: options)
+        }
+    }
+    
+    func didSelectUBTDomain(_ btDomainInfo: BTDeviceUI,
+                            by domain: DomainDisplayInfo,
+                            in topViewController: UIViewController?) {
+        Task {
+            guard let topViewController,
+                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else { return }
+            
+            let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
+                                                           name: btDomainInfo.domainName)
+            showPublicDomainProfile(of: publicDomainInfo,
+                                    viewingDomain: domain,
+                                    in: topViewController)
         }
     }
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum SocialsType: Hashable {
+enum SocialsType: Hashable, WebsiteURLValidator {
     
     case twitter
     case discord
@@ -55,6 +55,25 @@ enum SocialsType: Hashable {
         }
     }
     
+    var originalIcon: UIImage {
+        switch self {
+        case .twitter:
+            return .twitterOriginalIcon
+        case .discord:
+            return .discordOriginalIcon
+        case .telegram:
+            return .telegramOriginalIcon
+        case .reddit:
+            return .redditOriginalIcon
+        case .youTube:
+            return .youTubeOriginalIcon
+        case .linkedIn:
+            return .linkedInOriginalIcon
+        case .gitHub:
+            return .gitHubOriginalIcon
+        }
+    }
+    
     var placeholder: String {
         switch self {
         case .twitter:
@@ -91,6 +110,44 @@ enum SocialsType: Hashable {
         case .gitHub:
             return #colorLiteral(red: 0.3495665193, green: 0.6941498518, blue: 0.9350705147, alpha: 1)
         }
+    }
+    
+    var prefix: String {
+        switch self {
+        case .twitter, .telegram:
+            return "@"
+        case .reddit:
+            return "u/"
+        case .youTube, .linkedIn, .gitHub:
+            return "/"
+        case .discord:
+            return ""
+        }
+    }
+    
+    func formattedValue(_ value: String) -> String {
+        switch self {
+        case .twitter, .discord, .telegram:
+            return value.replacingOccurrences(of: "@", with: "")
+        case .reddit:
+            if isWebsiteValid(value),
+               let url = URL(string: value) {
+                return url.lastPathComponent
+            }
+            return value.replacingOccurrences(of: "u/", with: "")
+        case .youTube, .linkedIn, .gitHub:
+            if isWebsiteValid(value),
+               let url = URL(string: value) {
+                return url.pathComponents.suffix(2).joined(separator: "/")
+            }
+            return value
+        }
+    }
+    
+    func displayStringForValue(_ value: String) -> String {
+        let formattedValue = formattedValue(value)
+        let displayValue = prefix + formattedValue
+        return displayValue
     }
 }
 

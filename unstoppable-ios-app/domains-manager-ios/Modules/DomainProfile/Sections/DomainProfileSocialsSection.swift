@@ -107,13 +107,7 @@ extension DomainProfileSocialsSection: DomainProfileSection {
 // MARK: - Private methods
 private extension DomainProfileSocialsSection {
     var currentSocialDescriptions: [SocialDescription] {
-        let types: [SocialsType] = [.twitter, .discord, .telegram, .reddit, .youTube, .gitHub, .linkedIn]
-        return types.compactMap({
-            if let account = account(of: $0, in: editingSocialsData) {
-                return SocialDescription(type: $0, account: account)
-            }
-            return nil
-        })
+        SocialDescription.typesFrom(accounts: editingSocialsData)
     }
     
     func sectionHeader(numberOfAddedSocials: Int,
@@ -205,13 +199,7 @@ private extension DomainProfileSocialsSection {
     }
     
     func handleOpenAction(for description: SocialDescription) {
-        if let appURL = description.appURL,
-           UIApplication.shared.canOpenURL(appURL) {
-            UIApplication.shared.open(appURL)
-        } else if let webURL = description.webURL,
-                  UIApplication.shared.canOpenURL(webURL) {
-            UIApplication.shared.open(webURL)
-        }
+        description.openSocialAccount()
     }
     
     func handleClearAction(for description: SocialDescription) {
@@ -241,96 +229,11 @@ private extension DomainProfileSocialsSection {
     }
     
     func value(of description: SocialDescription, in sectionData: SectionData) -> String {
-        account(of: description.type, in: sectionData)?.location ?? ""
-    }
-    
-    func account(of type: SocialsType, in sectionData: SectionData) -> SerializedDomainSocialAccount? {
-        switch type {
-        case .twitter:
-            return sectionData.twitter
-        case .discord:
-            return sectionData.discord
-        case .telegram:
-            return sectionData.telegram
-        case .reddit:
-            return sectionData.reddit
-        case .youTube:
-            return sectionData.youtube
-        case .linkedIn:
-            return sectionData.linkedin
-        case .gitHub:
-            return sectionData.github
-        }
+        description.value(in: sectionData)
     }
 }
 
-extension DomainProfileSocialsSection {
-    struct SocialDescription: Hashable, WebsiteURLValidator {
-        let type: SocialsType
-        let account: SerializedDomainSocialAccount
-        
-        var value: String { account.location }
-        var analyticsName: String {
-            switch type {
-            case .twitter:
-                return "twitter"
-            case .discord:
-                return "discord"
-            case .telegram:
-                return "telegram"
-            case .reddit:
-                return "reddit"
-            case .youTube:
-                return "youTube"
-            case .linkedIn:
-                return "linkedIn"
-            case .gitHub:
-                return "gitHub"
-            }
-        }
-        
-        var appURL: URL? {
-            switch type {
-            case .twitter:
-                return URL(string: "twitter://user?screen_name=\(value)")
-            case .discord:
-                return URL(string: "discord://")
-            case .telegram:
-                return webURL
-            case .reddit:
-                return webURL
-            case .youTube:
-                return webURL
-            case .linkedIn:
-                return webURL
-            case .gitHub:
-                return webURL
-            }
-        }
-        
-        var webURL: URL? {
-            switch type {
-            case .twitter:
-                return URL(string: "https://twitter.com/\(value)")
-            case .discord:
-                return URL(string: "https://discord.com")
-            case .telegram:
-                return URL(string: "https://t.me/\(value)")
-            case .reddit:
-                if isWebsiteValid(value) {
-                    return URL(string: value)
-                }
-                return URL(string: "https://www.reddit.com/user/\(value.replacingOccurrences(of: "u/", with: ""))")
-            case .youTube:
-                return URL(string: value)
-            case .linkedIn:
-                return URL(string: value)
-            case .gitHub:
-                return URL(string: "https://github.com/\(value)")
-            }
-        }
-    }
-    
+extension DomainProfileSocialsSection {    
     enum SocialsAction: Hashable {
         case edit(description: SocialDescription, callback: EmptyCallback)
         case open(description: SocialDescription, callback: EmptyCallback)

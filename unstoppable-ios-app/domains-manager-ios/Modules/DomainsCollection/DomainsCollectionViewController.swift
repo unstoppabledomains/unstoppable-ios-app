@@ -731,7 +731,7 @@ private extension DomainsCollectionViewController {
   
     func setupEmptyView() {
         importFromSiteButton.setConfiguration(.largeGhostPrimaryButtonConfiguration)
-        importFromSiteButton.setTitle(String.Constants.importFromTheWebsite.localized(), image: nil)
+        importFromSiteButton.setTitle(String.Constants.claimDomainsToSelfCustodial.localized(), image: nil)
     }
     
     func setupConfettiAnimation() {

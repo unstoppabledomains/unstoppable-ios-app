@@ -45,6 +45,8 @@ final class DomainsListPresenter: DomainsListViewPresenter {
         case .domainsMintingInProgress:
             logAnalytic(event: .mintingDomainsPressed)
             showDomainsMintingInProgress()
+        case .domainSearchItem:
+            Debugger.printFailure("Unexpected event", critical: true)
         }
     }
 }
@@ -97,7 +99,7 @@ private extension DomainsListPresenter {
         }
         
         if !otherDomains.isEmpty {
-            snapshot.appendSections([.other]) // For other domains
+            snapshot.appendSections([.other(title: nil)]) // For other domains
             snapshot.appendItems(otherDomains.map({ DomainsListViewController.Item.domainListItem($0,
                                                                                                   isSelectable: true) }))
         }

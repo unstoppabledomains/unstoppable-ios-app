@@ -28,6 +28,7 @@ extension DomainProfileViewController {
         
         let id: UUID
         let domain: DomainDisplayInfo
+        let social: DomainProfileSocialInfo
         let isEnabled: Bool
         let avatarImageState: DomainProfileTopInfoData.ImageState
         let bannerImageState: DomainProfileTopInfoData.ImageState
@@ -38,7 +39,7 @@ extension DomainProfileViewController {
         let bannerDropCallback: ImageDropCallback
 
         enum Button {
-            case banner, avatar, qrCode, publicProfile, domainName
+            case banner, avatar, qrCode, publicProfile, domainName, followersList
             
             var analyticName: Analytics.Button {
                 switch self {
@@ -52,6 +53,8 @@ extension DomainProfileViewController {
                     return .publicProfile
                 case .domainName:
                     return .copyDomain
+                case .followersList:
+                    return .followersList
                 }
             }
         }
@@ -63,6 +66,7 @@ extension DomainProfileViewController {
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.id == rhs.id &&
             lhs.domain == rhs.domain &&
+            lhs.social == rhs.social &&
             lhs.isEnabled == rhs.isEnabled &&
             lhs.avatarImageState == rhs.avatarImageState &&
             lhs.bannerImageState == rhs.bannerImageState &&
@@ -73,6 +77,7 @@ extension DomainProfileViewController {
         func hash(into hasher: inout Hasher) {
             hasher.combine(id)
             hasher.combine(domain)
+            hasher.combine(social)
             hasher.combine(isEnabled)
             hasher.combine(avatarImageState)
             hasher.combine(bannerImageState)
@@ -230,7 +235,7 @@ extension DomainProfileViewController {
 extension DomainProfileViewController {
     struct DomainProfileSocialsDisplayInfo: Hashable {
         let id: UUID
-        let description: DomainProfileSocialsSection.SocialDescription
+        let description: SocialDescription
         let isEnabled: Bool
         let availableActions: [DomainProfileSocialsSection.SocialsAction]
         let actionButtonPressedCallback: EmptyCallback
@@ -259,40 +264,6 @@ extension DomainProfileViewController {
         
         func hash(into hasher: inout Hasher) {
             hasher.combine(id)
-        }
-    }
-}
-
-// MARK: - Socials Info data
-extension DomainProfileViewController {
-    struct DomainProfileBadgeDisplayInfo: Hashable {
-        
-        let badge: BadgesInfo.BadgeInfo
-        let isExploreWeb3Badge: Bool
-        
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.badge == rhs.badge &&
-            lhs.isExploreWeb3Badge == rhs.isExploreWeb3Badge
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(badge)
-            hasher.combine(isExploreWeb3Badge)
-        }
-        
-        var defaultIcon: UIImage {
-            isExploreWeb3Badge ? .magicWandIcon : .badgesStarIcon24
-        }
-        
-        func loadBadgeIcon() async -> UIImage? {
-            if badge.code == "Web3DomainHolder" {
-                // Hard code specifically for UD logo in mobile app. Request from designer. 
-                return .udBadgeLogo
-            } else if let url = URL(string: badge.logo) {
-                return await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedIconMaxSize),
-                                                                      downsampleDescription: nil)
-            }
-            return nil
         }
     }
 }
