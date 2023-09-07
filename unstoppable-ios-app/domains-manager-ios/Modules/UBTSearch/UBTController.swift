@@ -163,12 +163,12 @@ extension UBTController: CBCentralManagerDelegate, CBPeripheralDelegate {
         let domainInfo = DomainBTInfo.objectFromData(value),
               let i = self.discoveredDevices.firstIndex(where: { $0.peripheral.identifier == peripheral.identifier }) else { return }
         
-        
         switch type {
         case .domainInfo:
             discoveredDevices[i].name = domainInfo.name
             discoveredDevices[i].walletAddress = domainInfo.walletAddress
         }
+        appContext.analyticsService.log(event: .didDiscoverBTDomain, withParameters: nil)
         updateReadyDevices()
     }
 }

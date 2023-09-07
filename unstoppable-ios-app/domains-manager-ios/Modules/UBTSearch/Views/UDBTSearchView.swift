@@ -9,7 +9,7 @@ import SwiftUI
 
 typealias UDBTSearchResultCallback = (BTDomainUIInfo)->()
 
-struct UDBTSearchView: View {
+struct UDBTSearchView: View, ViewAnalyticsLogger {
     
     @MainActor
     static func instantiate(domain: any DomainEntity,
@@ -30,7 +30,8 @@ struct UDBTSearchView: View {
                                GridItem(.flexible())]
     let searchResultCallback: UDBTSearchResultCallback
     private(set) var btState: UBTControllerState = .ready
-    
+    var analyticsName: Analytics.ViewName { .shakeToFind }
+
     var body: some View {
         ZStack {
             LinearGradient(gradient: Gradient(colors: [.black.opacity(0.72),
@@ -54,11 +55,13 @@ struct UDBTSearchView: View {
             }
         }
         .background(.ultraThinMaterial)
-
         .onChange(of: controller.btState, perform: { newValue in
             if newValue == .ready {
                 controller.startScanning()
             }
+        })
+        .onAppear(perform: {
+            logAnalytic(event: .viewDidAppear)
         })
     }
     
@@ -85,6 +88,8 @@ private extension UDBTSearchView {
     }
     
     func didSelectDeviceToConnect(_ device: BTDomainUIInfo) {
+        UDVibration.buttonTap.vibrate()
+        logButtonPressedAnalyticEvents(button: .btDomain)
         searchResultCallback(device)
     }
     
