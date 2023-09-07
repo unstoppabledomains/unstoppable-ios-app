@@ -419,7 +419,11 @@ private extension NotificationService {
     
     struct NetworkConfig {
         static var baseProfileAPIUrl: String {
+            #if DEBUG
             return "https://api.unstoppabledomains.com"
+            #else
+            return "https://api.ud-staging.com"
+            #endif
         }
     }
 }
