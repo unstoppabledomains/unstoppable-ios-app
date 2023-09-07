@@ -733,7 +733,7 @@ private extension DomainsCollectionPresenter {
         Task {
             let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
             guard !wallets.isEmpty else {
-                showNoWalletsToClaimDomainAlert()
+                showNoWalletsToClaimDomainPullUp()
                 return
             }
             let userProfile = try? await appContext.firebaseInteractionService.getUserProfile()
@@ -741,10 +741,25 @@ private extension DomainsCollectionPresenter {
             await router.runMintDomainsFlow(with: .default(email: email))
         }
     }
-    func showNoWalletsToClaimDomainAlert() {
+    func showNoWalletsToClaimDomainPullUp() {
         Task { @MainActor in
-            view?.showSimpleAlert(title: String.Constants.noWalletsToClaimAlertTitle.localized(),
-                                  body: String.Constants.noWalletsToClaimAlertSubtitle.localized())
+            guard let view else { return }
+            
+            do {
+                let action = try await appContext.pullUpViewService.showAddWalletSelectionPullUp(in: view,
+                                                                                                 presentationOptions: .claimWithoutWallets,
+                                                                                                 actions: WalletDetailsAddWalletAction.allCases)
+                await view.dismissPullUpMenu()
+                
+                switch action {
+                case .create:
+                    router.showImportWalletsWith(initialAction: .createNewWallet)
+                case .recoveryOrKey:
+                    router.showImportWalletsWith(initialAction: .importWallet)
+                case .connect:
+                    router.showImportWalletsWith(initialAction: .connectWallet)
+                }
+            } catch { }
         }
     }
     
