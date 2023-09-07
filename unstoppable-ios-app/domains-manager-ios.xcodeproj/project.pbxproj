@@ -1036,6 +1036,7 @@
 		C6EECEA22833A67900978ED5 /* DomainRecordsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EECEA12833A67900978ED5 /* DomainRecordsServiceProtocol.swift */; };
 		C6EECEA72833A68A00978ED5 /* DomainRecordsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EECEA62833A68A00978ED5 /* DomainRecordsService.swift */; };
 		C6EECEB12833BBE300978ED5 /* DomainRecordsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EECEB02833BBE300978ED5 /* DomainRecordsData.swift */; };
+		C6F3FD632AAA11E700208679 /* PullUpNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */; };
 		C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */; };
 		C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */; };
 		C6F6AF6928A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6828A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift */; };
@@ -2108,6 +2109,7 @@
 		C6EECEA12833A67900978ED5 /* DomainRecordsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRecordsServiceProtocol.swift; sourceTree = "<group>"; };
 		C6EECEA62833A68A00978ED5 /* DomainRecordsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRecordsService.swift; sourceTree = "<group>"; };
 		C6EECEB02833BBE300978ED5 /* DomainRecordsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRecordsData.swift; sourceTree = "<group>"; };
+		C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpNamespace.swift; sourceTree = "<group>"; };
 		C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackToSettingsNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationBarScrollingController.swift; sourceTree = "<group>"; };
 		C6F6AF6828A4D20A00A7B571 /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift; sourceTree = "<group>"; };
@@ -4396,7 +4398,6 @@
 				C6209F9729D4180500D573EB /* LocalNotificationsService.swift */,
 				C613C22129E3BEEC0001A3AF /* NFCService.swift */,
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
-				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
 				C6B91EB329BB718100389FF5 /* StripeService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
@@ -4415,6 +4416,7 @@
 				C652721F2A14B31E001A084C /* MessagingService */,
 				C6B366DB2A1C715D00DE512B /* Networking */,
 				C665FC1D29B0687D009699D2 /* NotificationsService */,
+				C6F3FD642AAA11F000208679 /* PullUp */,
 				C624D783281BB67F00F55530 /* UDDomainsService */,
 				C609820E2823B69A00546392 /* UDWalletsService */,
 				C66FCCFC28448710009B9525 /* UserDataService */,
@@ -5594,6 +5596,15 @@
 			path = DomainRecordsService;
 			sourceTree = "<group>";
 		};
+		C6F3FD642AAA11F000208679 /* PullUp */ = {
+			isa = PBXGroup;
+			children = (
+				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
+				C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */,
+			);
+			path = PullUp;
+			sourceTree = "<group>";
+		};
 		C6F6AF5728A24D3100A7B571 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
@@ -6252,6 +6263,7 @@
 				C62396862A288A9E00363F60 /* MessagingChatMessage.swift in Sources */,
 				30B3DC8D2870DBEF006FAA64 /* WCSigner.swift in Sources */,
 				C61B3E99283E70C100500B6D /* EnterEmailVerificationCodeToMintDomainsPresenter.swift in Sources */,
+				C6F3FD632AAA11E700208679 /* PullUpNamespace.swift in Sources */,
 				C6C99582289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
 				C6D5DAE928374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
 				C635193C28D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.swift in Sources */,
