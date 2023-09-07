@@ -24,6 +24,7 @@ protocol DomainsCollectionRouterProtocol {
     func showDomainsSearch(_ domains: [DomainDisplayInfo],
                            searchCallback: @escaping DomainsListSearchCallback)
     func showChatsListScreen()
+    func didShakeDevice(domain: DomainDisplayInfo)
 }
 
 @MainActor
@@ -174,6 +175,16 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
 
         showChatsListScreen(in: navigationController, presentOptions: .default)
     }
+    
+    func didShakeDevice(domain: DomainDisplayInfo) {
+        guard let navigationController = self.navigationController else { return }
+    
+        let topViewController = navigationController.topVisibleViewController()
+        let searchVC = UDBTSearchView.instantiate(domain: domain) { [weak topViewController, weak self] device in
+            self?.didSelectUBTDomain(device, by: domain, in: topViewController)
+        }
+        topViewController.present(searchVC, animated: true)
+    }
 }
 
 // MARK: - Open methods
@@ -299,9 +310,24 @@ private extension DomainsCollectionRouter {
         if let presentedChatsList = navigationController.viewControllers.first(where: { $0 is ChatsListViewController } ) as? ChatsListViewController,
            let chatsListCoordinator = presentedChatsList.presenter as? ChatsListCoordinator {
             chatsListCoordinator.update(presentOptions: options)
-        } else  {
+        } else {
             await resetNavigationToRoot()
             showChatsListScreen(in: navigationController, presentOptions: options)
+        }
+    }
+    
+    func didSelectUBTDomain(_ btDomainInfo: BTDomainUIInfo,
+                            by domain: DomainDisplayInfo,
+                            in topViewController: UIViewController?) {
+        Task {
+            guard let topViewController,
+                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else { return }
+            
+            let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
+                                                           name: btDomainInfo.domainName)
+            showPublicDomainProfile(of: publicDomainInfo,
+                                    viewingDomain: domain,
+                                    in: topViewController)
         }
     }
 }

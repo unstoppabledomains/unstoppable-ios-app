@@ -29,7 +29,10 @@ struct AttributedText: UIViewRepresentable {
     var strokeWidth: CGFloat? = nil
     
     func makeUIView(context: Context) -> UILabel {
-        UILabel()
+        let label = UILabel()
+        label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+
+        return label
     }
     
     func updateUIView(_ uiView: UIViewType, context: Context) {

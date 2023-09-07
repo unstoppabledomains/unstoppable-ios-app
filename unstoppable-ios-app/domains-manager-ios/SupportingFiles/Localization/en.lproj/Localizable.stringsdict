@@ -434,6 +434,30 @@
 			<string>members</string>
 		</dict>
 	</dict>
+	<key>SDICT:N_PROFILES_FOUND</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%d %#@profiles@ found</string>
+		<key>profiles</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>profiles</string>
+			<key>one</key>
+			<string>profile</string>
+			<key>two</key>
+			<string>profiles</string>
+			<key>few</key>
+			<string>profiles</string>
+			<key>many</key>
+			<string>profiles</string>
+			<key>other</key>
+			<string>profiles</string>
+		</dict>
+	</dict>
 	<key>SDICT:N_SOCIALS</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

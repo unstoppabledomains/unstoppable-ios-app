@@ -342,6 +342,7 @@ extension String {
         static let pluralNCrypto = "SDICT:N_CRYPTO"
         static let pluralNFollowers = "SDICT:N_FOLLOWERS"
         static let pluralNFollowing = "SDICT:N_FOLLOWING"
+        static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -944,6 +945,15 @@ extension String {
         // No wallets to claim
         static let noWalletsToClaimAlertTitle = "NO_WALLETS_TO_CLAIM_ALERT_TITLE"
         static let noWalletsToClaimAlertSubtitle = "NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE"
+        
+        // Shake to find
+        static let shakeToFindSearchTitle = "SHAKE_TO_FIND_SEARCH_TITLE"
+        static let shakeToFindSearchSubtitle = "SHAKE_TO_FIND_SEARCH_SUBTITLE"
+        static let shakeToFindPermissionsTitle = "Permissions\nnot granted"
+        static let shakeToFindFailedTitle = "Failed to run\nBluetooth services"
+        static let shakeToFindFailedSubtitle = "Looks like Bluetooth doesn't work on your phone. Ensure your device is working fine."
+        static let openSettings = "Open settings"
+        
     }
 
     enum BlockChainIcons: String {

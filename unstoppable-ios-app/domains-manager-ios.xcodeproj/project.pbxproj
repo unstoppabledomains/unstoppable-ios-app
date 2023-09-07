@@ -711,6 +711,10 @@
 		C685A99B284101DA00E54044 /* DomainSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685A999284101DA00E54044 /* DomainSelectionCell.swift */; };
 		C685A99F284101DA00E54044 /* DomainSelectionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C685A99A284101DA00E54044 /* DomainSelectionCell.xib */; };
 		C685D8102AA7071300212879 /* PublicProfileDomainSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D80F2AA7071300212879 /* PublicProfileDomainSelectionView.swift */; };
+		C685D8172AA978DE00212879 /* UBTController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D8122AA978DE00212879 /* UBTController.swift */; };
+		C685D8182AA978DE00212879 /* UBTDomainCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D8142AA978DE00212879 /* UBTDomainCardView.swift */; };
+		C685D8192AA978DE00212879 /* UBTSearchingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D8152AA978DE00212879 /* UBTSearchingView.swift */; };
+		C685D81A2AA978DE00212879 /* UDBTSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C685D8162AA978DE00212879 /* UDBTSearchView.swift */; };
 		C6861B742A5BE9AA00A1632B /* ChatEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6861B732A5BE9AA00A1632B /* ChatEmptyView.swift */; };
 		C686BF172A5FE8870036C7C1 /* MessagingFilesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF162A5FE8870036C7C1 /* MessagingFilesService.swift */; };
 		C686BF1D2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */; };
@@ -1829,6 +1833,10 @@
 		C685A999284101DA00E54044 /* DomainSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainSelectionCell.swift; sourceTree = "<group>"; };
 		C685A99A284101DA00E54044 /* DomainSelectionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainSelectionCell.xib; sourceTree = "<group>"; };
 		C685D80F2AA7071300212879 /* PublicProfileDomainSelectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublicProfileDomainSelectionView.swift; sourceTree = "<group>"; };
+		C685D8122AA978DE00212879 /* UBTController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UBTController.swift; sourceTree = "<group>"; };
+		C685D8142AA978DE00212879 /* UBTDomainCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UBTDomainCardView.swift; sourceTree = "<group>"; };
+		C685D8152AA978DE00212879 /* UBTSearchingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UBTSearchingView.swift; sourceTree = "<group>"; };
+		C685D8162AA978DE00212879 /* UDBTSearchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDBTSearchView.swift; sourceTree = "<group>"; };
 		C6861B732A5BE9AA00A1632B /* ChatEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatEmptyView.swift; sourceTree = "<group>"; };
 		C686BF162A5FE8870036C7C1 /* MessagingFilesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesService.swift; sourceTree = "<group>"; };
 		C686BF1C2A5FEE5D0036C7C1 /* MessagingFilesServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingFilesServiceProtocol.swift; sourceTree = "<group>"; };
@@ -4585,6 +4593,25 @@
 			path = DomainSelectionCell;
 			sourceTree = "<group>";
 		};
+		C685D8112AA978DE00212879 /* UBTSearch */ = {
+			isa = PBXGroup;
+			children = (
+				C685D8122AA978DE00212879 /* UBTController.swift */,
+				C685D8132AA978DE00212879 /* Views */,
+			);
+			path = UBTSearch;
+			sourceTree = "<group>";
+		};
+		C685D8132AA978DE00212879 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C685D8162AA978DE00212879 /* UDBTSearchView.swift */,
+				C685D8152AA978DE00212879 /* UBTSearchingView.swift */,
+				C685D8142AA978DE00212879 /* UBTDomainCardView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		C686BF1B2A5FEE4C0036C7C1 /* Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -5461,6 +5488,7 @@
 				C669C3882912630D00837F21 /* SocialsVerification */,
 				C642A6A12841155700299C6E /* TransactionInProgress */,
 				C600AB9629FA0CE00089107B /* Transfer */,
+				C685D8112AA978DE00212879 /* UBTSearch */,
 				C6386840285C2D37000F98C4 /* UpgradeToPolygonTutorial */,
 				C60981D22822563E00546392 /* WalletDetails */,
 				C60E9B7F2821193400CD7593 /* WalletsList */,
@@ -6458,10 +6486,12 @@
 				299713C828F692D700743003 /* ABIError.swift in Sources */,
 				C61B3E90283E708500500B6D /* EnterEmailVerificationCodeViewController.swift in Sources */,
 				C6FE49D6285CBAA50058F9D1 /* CoreAppCoordinator.swift in Sources */,
+				C685D8192AA978DE00212879 /* UBTSearchingView.swift in Sources */,
 				C65272852A166E75001A084C /* ChatTitleView.swift in Sources */,
 				C6A2D566284F3FC600327C47 /* SignTransactionDomainSelectionSectionHeaderView.swift in Sources */,
 				C62247A5283B92C0002A0CBD /* UDNavigationController.swift in Sources */,
 				C6F9FBE82A25CB5800102F81 /* PushMessageType.swift in Sources */,
+				C685D8172AA978DE00212879 /* UBTController.swift in Sources */,
 				C60610E329A65739005DC0D5 /* WalletConnectRequestError.swift in Sources */,
 				C6386871285C5C29000F98C4 /* BaseTransactionInProgressViewPresenter.swift in Sources */,
 				C62C8DC928DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */,
@@ -6615,6 +6645,7 @@
 				C66435D4288EE4A00098E1B8 /* MetadataNetworkConfig.swift in Sources */,
 				C671E3AA28FEA2D400A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
 				C6D6E5452819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
+				C685D81A2AA978DE00212879 /* UDBTSearchView.swift in Sources */,
 				C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
 				29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
 				C66804C9280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
@@ -6982,6 +7013,7 @@
 				C666E0C829CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
 				C679B60A291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C628E34527FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
+				C685D8182AA978DE00212879 /* UBTDomainCardView.swift in Sources */,
 				C692C313282E303B00C31393 /* NetworkReachabilityService.swift in Sources */,
 				C655D029284630AC00E80A65 /* MockDataAggregatorService.swift in Sources */,
 				C628E35427FDB8560044E408 /* DashesProgressView.swift in Sources */,

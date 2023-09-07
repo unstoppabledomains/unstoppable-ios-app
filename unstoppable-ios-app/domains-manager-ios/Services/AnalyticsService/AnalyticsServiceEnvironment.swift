@@ -59,6 +59,9 @@ extension Analytics {
         
         // Messaging
         case willShowMessagingProfile, willSendMessage
+        
+        // Shake to find
+        case didDiscoverBTDomain
     }
 }
 
@@ -168,6 +171,7 @@ extension Analytics {
         case chatDialog, channelFeed
         case publicDomainProfile
         case domainFollowersList, domainCryptoList, domainSocialsList, publicProfileDomainsSelectionList
+        case shakeToFind
     }
 }
 
@@ -293,6 +297,9 @@ extension Analytics {
         case followersList, socialsList, cryptoList
         case badgesLeaderboard
         case followerType, follower
+        
+        // Shake and find
+        case btDomain
     }
 }
 

@@ -856,3 +856,11 @@
 // No wallets to claim
 "NO_WALLETS_TO_CLAIM_ALERT_TITLE" = "You haven't added a wallet yet";
 "NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE" = "You need to add a wallet first in order to claim domains";
+
+// Shake to find
+"SHAKE_TO_FIND_SEARCH_TITLE" = "Searching...";
+"SHAKE_TO_FIND_SEARCH_SUBTITLE" = "Ensure other people shaking their phones.";
+"SHAKE_TO_FIND_PERMISSIONS_TITLE" = "Permissions\nnot granted";
+"SHAKE_TO_FIND_FAILED_TITLE" = "Failed to run\nBluetooth services";
+"SHAKE_TO_FIND_FAILED_SUBTITLE" = "Looks like Bluetooth doesn't work on your phone. Ensure your device is working fine.";
+"OPEN_SETTINGS" = "Open settings";

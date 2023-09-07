@@ -18,6 +18,7 @@ protocol MessagingServiceProtocol {
     func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo?
     
     // User
+    func getProfileForImmediateMessagingPreferring(domain: DomainDisplayInfo) -> MessagingChatUserProfileDisplayInfo?
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)
