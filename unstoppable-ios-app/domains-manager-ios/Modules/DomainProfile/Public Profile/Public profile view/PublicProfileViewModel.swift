@@ -21,6 +21,7 @@ extension PublicProfileView {
     
     enum PublicProfileError: Error {
         case failedToLoadFollowerInfo
+        case failedToFindDomain
     }
     
    @MainActor
@@ -102,12 +103,18 @@ extension PublicProfileView {
             }
         }
         
-        func didSelectViewingDomain(_ domain: DomainItem) {
-            viewingDomainImage = nil
-            isFollowing = nil
-            loadFollowingState()
-            viewingDomain = domain
-            loadViewingDomainData()
+        func didSelectViewingDomain(_ domain: DomainDisplayInfo) {
+            Task {
+                guard let domainItem = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else {
+                    error = PublicProfileError.failedToFindDomain
+                    return
+                }
+                viewingDomainImage = nil
+                isFollowing = nil
+                loadFollowingState()
+                viewingDomain = domainItem
+                loadViewingDomainData()
+            }
         }
         
         private func loadAllProfileData() {

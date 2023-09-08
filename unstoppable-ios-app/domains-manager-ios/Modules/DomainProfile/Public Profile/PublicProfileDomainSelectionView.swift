@@ -7,17 +7,16 @@
 
 import SwiftUI
 
-typealias DomainSelectionCallback = (DomainItem)->()
+typealias PublicProfileDomainSelectionCallback = (DomainDisplayInfo)->()
 
 struct PublicProfileDomainSelectionView: View, ViewAnalyticsLogger {
     
     @Environment(\.presentationMode) private var presentationMode
 
-    let domainSelectionCallback: DomainSelectionCallback
+    let domainSelectionCallback: PublicProfileDomainSelectionCallback
     let profileDomain: DomainName
     let currentDomainName: DomainName
-    @State private var domainsWithIcons: [DomainDisplayInfoWithIcon] = []
-    @State private var selectedDomain: DomainDisplayInfoWithIcon?
+    @State private var domainsToSelectFrom: [DomainDisplayInfo]?
     var analyticsName: Analytics.ViewName { .publicProfileDomainsSelectionList }
 
     var body: some View {
@@ -26,20 +25,13 @@ struct PublicProfileDomainSelectionView: View, ViewAnalyticsLogger {
                 PublicProfilePullUpHeaderView(domainName: profileDomain,
                                               closeCallback: dismiss)
                 
-                List(domainsWithIcons,
-                     id: \.domain.name,
-                     selection: $selectedDomain) { domain in
-                    rowForDomain(domain)
-                        .tag(domain)
-                        .id(domain)
-                        .listRowSeparator(.hidden)
-                        .unstoppableListRowInset()
-                        .listRowBackground(Color.backgroundOverlay)
+                if let domainsToSelectFrom {
+                    let selectedDomain = domainsToSelectFrom.first(where: { $0.name == currentDomainName } )
+                    DomainSelectionListView(mode: .singleSelection(selectedDomain: selectedDomain,
+                                                                   selectionCallback: domainSelected),
+                                            domainsToSelectFrom: domainsToSelectFrom)
+                    .ignoresSafeArea()
                 }
-                .background(.clear)
-                .clearListBackground()
-                .ignoresSafeArea()
-                .onChange(of: selectedDomain, perform: domainSelected)
             }
         }
         .background(Color.backgroundDefault)
@@ -50,14 +42,10 @@ struct PublicProfileDomainSelectionView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension PublicProfileDomainSelectionView {
     func onAppear() {
-        UITableView.appearance().backgroundColor = .clear
         logAnalytic(event: .viewDidAppear, parameters: [.domainName : profileDomain])
         Task {
             let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-            domainsWithIcons = domains.map { DomainDisplayInfoWithIcon(domain: $0) }
-            if let selected = domains.first(where: { $0.name == currentDomainName }) {
-                selectedDomain = DomainDisplayInfoWithIcon(domain: selected)
-            }
+            domainsToSelectFrom = domains
         }
     }
     
@@ -65,62 +53,11 @@ private extension PublicProfileDomainSelectionView {
         presentationMode.wrappedValue.dismiss()
     }
     
-    func domainSelected(_ domainWithIcon: DomainDisplayInfoWithIcon?) {
-        Task { @MainActor in
-            guard let domain = domainWithIcon?.domain,
-                  domain.name != currentDomainName,
-                  let domainItem = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else { return }
-            
-            domainSelectionCallback(domainItem)
-            dismiss()
-        }
-    }
-    
-    @ViewBuilder
-    func rowForDomain(_ domainWithIcon: DomainDisplayInfoWithIcon) -> some View {
-        HStack(spacing: 16) {
-            Image(uiImage: domainWithIcon.icon ?? .domainSharePlaceholder)
-                .resizable()
-                .id(domainWithIcon.icon)
-                .frame(width: 40,
-                       height: 40)
-                .clipShape(Circle())
-            Text(domainWithIcon.domain.name)
-                .font(.currentFont(size: 16, weight: .medium))
-                .foregroundColor(.foregroundDefault)
-                .lineLimit(1)
-            if domainWithIcon.domain == selectedDomain?.domain {
-                Spacer()
-                Image.checkCircle
-                    .resizable()
-                    .frame(width: 24,
-                           height: 24)
-                    .foregroundColor(.brandUnstoppableBlue)
-            }
-        }
-        .frame(height: 64)
-        .task {
-            loadIconIfNeededFor(domainWithIcon: domainWithIcon)
-        }
-    }
-    
-    struct DomainDisplayInfoWithIcon: Hashable {
-        let domain: DomainDisplayInfo
-        var icon: UIImage?
-    }
-    
-    func loadIconIfNeededFor(domainWithIcon: DomainDisplayInfoWithIcon) {
-        guard domainWithIcon.icon == nil else { return }
+    func domainSelected(_ domain: DomainDisplayInfo?) {
+        guard let domain else { return }
         
-        Task {
-            let icon = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainWithIcon.domain,
-                                                                                                  size: .default),
-                                                                      downsampleDescription: nil)
-            
-            if let i = domainsWithIcons.firstIndex(where: { $0.domain.name == domainWithIcon.domain.name }) {
-                domainsWithIcons[i].icon = icon
-            }
-        }
+        domainSelectionCallback(domain)
+        dismiss()
     }
 }
 

@@ -35,7 +35,7 @@ struct BTDomainUIInfo: Hashable, Identifiable {
 
 final class UBTController: NSObject, ObservableObject {
     
-    let domainEntity: any DomainEntity
+    private(set) var promotingDomain: DomainDisplayInfo?
     private let serviceId = CBUUID(string: Constants.shakeToFindServiceId)
     private var centralManager: CBCentralManager!
     private var peripheralManager: CBPeripheralManager!
@@ -47,8 +47,7 @@ final class UBTController: NSObject, ObservableObject {
     @Published private(set) var isScanning = false
     @Published private(set) var readyDevices: [BTDomainUIInfo] = [] // BTDeviceUI.newMock(3)
     
-    init(domainEntity: any DomainEntity) {
-        self.domainEntity = domainEntity
+    override init() {
         super.init()
         
         setup()
@@ -59,7 +58,8 @@ final class UBTController: NSObject, ObservableObject {
 // MARK: - Open methods
 extension UBTController {
     func startScanning() {
-        guard btState == .ready else { return }
+        guard btState == .ready,
+              !isScanning else { return }
         
         isScanning = true
         centralManager.scanForPeripherals(withServices: [serviceId], options: nil)
@@ -76,6 +76,17 @@ extension UBTController {
         #if DEBUG
         readyDevices.append(contentsOf: BTDomainUIInfo.newMock(1))
         #endif
+    }
+    
+    func setPromotingDomainInfo(_ domain: DomainDisplayInfo) {
+        do {
+            self.promotingDomain = domain
+            peripheralManager.removeAllServices()
+            try setCharacteristicsWith(domainName: domain.name, walletAddress: domain.ownerWallet ?? "")
+            peripheralManager.add(peripheralService)
+        } catch {
+            btState = .setupFailed
+        }
     }
 }
 
@@ -114,6 +125,10 @@ extension UBTController: CBCentralManagerDelegate, CBPeripheralDelegate {
         }
     }
     
+    func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
+        peripheral.discoverServices(nil)
+    }
+    
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard let type = CharacteristicType.allCases.first(where: { $0.cbuuid == characteristic.uuid }),
               let value = characteristic.value,
@@ -143,23 +158,17 @@ extension UBTController: CBPeripheralManagerDelegate {
 // MARK: - Private methods
 private extension UBTController {
     func setup() {
-        do {
-            setupCentralManager()
-            try setupPeripheralManager()
-        } catch {
-            btState = .setupFailed
-        }
+        setupCentralManager()
+        setupPeripheralManager()
     }
     
     func setupCentralManager() {
         centralManager = CBCentralManager(delegate: self, queue: nil)
     }
     
-    func setupPeripheralManager() throws {
+    func setupPeripheralManager() {
         peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
         peripheralService = CBMutableService(type: serviceId, primary: true)
-        
-        try setCharacteristicsWith(domainName: domainEntity.name, walletAddress: domainEntity.ownerWallet ?? "")
     }
     
     func updateState() {

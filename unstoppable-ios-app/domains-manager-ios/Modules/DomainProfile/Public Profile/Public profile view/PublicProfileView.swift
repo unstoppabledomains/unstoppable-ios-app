@@ -84,7 +84,7 @@ private extension PublicProfileView {
         viewModel.didSelectFollower(follower)
     }
     
-    func domainSelected(_ domain: DomainItem) {
+    func domainSelected(_ domain: DomainDisplayInfo) {
         viewModel.didSelectViewingDomain(domain)
     }
     
@@ -743,7 +743,7 @@ private extension PublicProfileView {
     
     struct ShowingDomainsList: ViewModifier {
         @Binding var isDomainsListPresented: Bool
-        let domainSelectionCallback: DomainSelectionCallback
+        let domainSelectionCallback: PublicProfileDomainSelectionCallback
         let profileDomain: DomainName
         let currentDomainName: DomainName
         

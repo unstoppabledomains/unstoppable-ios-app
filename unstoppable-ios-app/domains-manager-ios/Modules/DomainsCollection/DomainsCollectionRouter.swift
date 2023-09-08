@@ -180,7 +180,7 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
         guard let navigationController = self.navigationController else { return }
     
         let topViewController = navigationController.topVisibleViewController()
-        let searchVC = UDBTSearchView.instantiate(domain: domain) { [weak topViewController, weak self] device in
+        let searchVC = UDBTSearchView.instantiate() { [weak topViewController, weak self] device in
             self?.didSelectUBTDomain(device, by: domain, in: topViewController)
         }
         topViewController.present(searchVC, animated: true)
