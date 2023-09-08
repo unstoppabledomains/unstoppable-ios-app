@@ -36,8 +36,7 @@ struct PublicProfilePullUpHeaderView: View, ProfileImageLoader {
                 } label: {
                     Image.cancelIcon
                         .resizable()
-                        .frame(width: 24,
-                               height: 24)
+                        .squareFrame(24)
                         .foregroundColor(.foregroundDefault)
                 }
                 Spacer()

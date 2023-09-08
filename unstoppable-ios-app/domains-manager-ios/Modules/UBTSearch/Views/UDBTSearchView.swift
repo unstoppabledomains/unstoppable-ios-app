@@ -12,9 +12,8 @@ typealias UDBTSearchResultCallback = (BTDomainUIInfo)->()
 struct UDBTSearchView: View, ViewAnalyticsLogger {
     
     @MainActor
-    static func instantiate(domain: any DomainEntity,
-                            searchResultCallback: @escaping UDBTSearchResultCallback) -> UIViewController {
-        let controller = UBTController(domainEntity: domain)
+    static func instantiate(searchResultCallback: @escaping UDBTSearchResultCallback) -> UIViewController {
+        let controller = UBTController()
         let vc = UIHostingController(rootView: UDBTSearchView(controller: controller,
                                                               searchResultCallback: searchResultCallback))
         vc.modalPresentationStyle = .overFullScreen
@@ -29,7 +28,11 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
                                GridItem(.flexible()),
                                GridItem(.flexible())]
     let searchResultCallback: UDBTSearchResultCallback
-    private(set) var btState: UBTControllerState = .ready
+    private(set) var btState: UBTControllerState = .notReady
+    @State private var promotingDomain: DomainDisplayInfo?
+    @State private var promotingDomainImage: UIImage?
+    @State private var canChangePromotingDomain: Bool = false
+    @State private var isDomainsListPresented = false
     var analyticsName: Analytics.ViewName { .shakeToFind }
 
     var body: some View {
@@ -38,6 +41,7 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
                                                        currentColor]),
                            startPoint: .top,
                            endPoint: .bottom)
+            
             .opacity(0.8)
             .ignoresSafeArea()
             
@@ -49,7 +53,18 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
                 HStack {
                     closeButton()
                         .offset(x: 20)
+                        .squareFrame(24)
                     Spacer()
+                    if let promotingDomain {
+                        Spacer()
+                        Spacer()
+                        domainSelectionView(domain: promotingDomain)
+                        Spacer()
+                        Spacer()
+                        Spacer()
+                        HStack { } // Placeholder to center domain selection
+                            .squareFrame(24)
+                    }
                 }
                 Spacer()
             }
@@ -60,9 +75,13 @@ struct UDBTSearchView: View, ViewAnalyticsLogger {
                 controller.startScanning()
             }
         })
-        .onAppear(perform: {
+        .onAppear {
             logAnalytic(event: .viewDidAppear)
-        })
+            setInitialPromotingDomain()
+        }
+        .modifier(ShowingPromotingDomainsList(isDomainsListPresented: $isDomainsListPresented,
+                                              domainSelectionCallback: setPromotingDomain,
+                                              currentDomainName: promotingDomain?.name))
     }
     
     init(controller: UBTController,
@@ -103,7 +122,31 @@ private extension UDBTSearchView {
         #endif
     }
     
-    private func dismiss() {
+    func setInitialPromotingDomain() {
+        Task {
+            let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo().availableForMessagingItems()
+            guard !domains.isEmpty else { return }
+            
+            setPromotingDomain(domains[0])
+            canChangePromotingDomain = domains.count > 1
+        }
+    }
+    
+    func setPromotingDomain(_ domain: DomainDisplayInfo) {
+        promotingDomain = domain
+        Task {
+            // TODO: - load avatar
+            promotingDomainImage = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
+                                                                                  downsampleDescription: nil)
+        }
+        controller.setPromotingDomainInfo(domain)
+    }
+    
+    func showDomainsSelection() {
+        isDomainsListPresented = true
+    }
+    
+    func dismiss() {
         presentationMode.wrappedValue.dismiss()
     }
 }
@@ -119,6 +162,36 @@ private extension UDBTSearchView {
             Image.cancelIcon
                 .foregroundColor(.white)
         }
+    }
+    
+    @ViewBuilder
+    func domainSelectionView(domain: DomainDisplayInfo) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            showDomainsSelection()
+        } label: {
+            HStack(spacing: 8) {
+                Image(uiImage: promotingDomainImage ?? .domainSharePlaceholder)
+                    .resizable()
+                    .scaledToFill()
+                    .squareFrame(20)
+                    .clipShape(Circle())
+                
+                Text(domain.name)
+                    .foregroundColor(.white)
+                    .font(.currentFont(size: 16, weight: .semibold))
+                    .lineLimit(1)
+                
+                if canChangePromotingDomain{
+                    Image.chevronDown
+                        .resizable()
+                        .scaledToFill()
+                        .squareFrame(20)
+                        .foregroundColor(.white)
+                        .clipShape(Circle())
+                }
+            }
+        }.disabled(!canChangePromotingDomain)
     }
     
     @ViewBuilder
@@ -156,6 +229,26 @@ private extension UDBTSearchView {
                     - 64) // Bottom offset
         }
     }
+    
+    struct ShowingPromotingDomainsList: ViewModifier {
+        @Binding var isDomainsListPresented: Bool
+        let domainSelectionCallback: UBTPromotingDomainSelectionCallback
+        let currentDomainName: DomainName?
+        
+        func body(content: Content) -> some View {
+            content
+                .sheet(isPresented: $isDomainsListPresented, content: {
+                    if #available(iOS 16.0, *) {
+                        UBTPromotingDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
+                                                        currentDomainName: currentDomainName)
+                        .presentationDetents([.medium, .large])
+                    } else {
+                        UBTPromotingDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
+                                                        currentDomainName: currentDomainName)
+                    }
+                })
+        }
+    }
 }
 
 struct ContentView_Previews: PreviewProvider {
@@ -167,7 +260,7 @@ struct ContentView_Previews: PreviewProvider {
 //                .previewDevice(PreviewDevice(rawValue: device))
 //                .previewDisplayName(device)
 //        }
-        UDBTSearchView(controller: .init(domainEntity: DomainItem(name: "olegkuhkjdfsjhfdkhflakjhdfi748723642in.coin", blockchain: .Ethereum)), searchResultCallback: { _ in })
+        UDBTSearchView(controller: .init(), searchResultCallback: { _ in })
     }
 }
 
