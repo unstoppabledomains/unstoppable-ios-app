@@ -675,14 +675,9 @@ private extension PublicProfileView {
             if let records {
                 content
                     .sheet(isPresented: $isCryptoListPresented, content: {
-                        if #available(iOS 16.0, *) {
-                            PublicProfileCryptoListView(domainName: domainName,
-                                                        recordsDict: records)
-                            .presentationDetents([.medium, .large])
-                        } else {
-                            PublicProfileCryptoListView(domainName: domainName,
-                                                        recordsDict: records)
-                        }
+                        PublicProfileCryptoListView(domainName: domainName,
+                                                    recordsDict: records)
+                        .adaptiveSheet()
                     })
             } else {
                 content
@@ -700,16 +695,10 @@ private extension PublicProfileView {
             if let socialInfo {
                 content
                     .sheet(isPresented: $isFollowersListPresented, content: {
-                        if #available(iOS 16.0, *) {
-                            PublicProfileFollowersView(domainName: domainName,
-                                                       socialInfo: socialInfo,
-                                                       followerSelectionCallback: followerSelectionCallback)
-                            .presentationDetents([.medium, .large])
-                        } else {
-                            PublicProfileFollowersView(domainName: domainName,
-                                                       socialInfo: socialInfo,
-                                                       followerSelectionCallback: followerSelectionCallback)
-                        }
+                        PublicProfileFollowersView(domainName: domainName,
+                                                   socialInfo: socialInfo,
+                                                   followerSelectionCallback: followerSelectionCallback)
+                        .adaptiveSheet()
                     })
             } else {
                 content
@@ -726,14 +715,9 @@ private extension PublicProfileView {
             if let socialAccounts {
                 content
                     .sheet(isPresented: $isSocialsListPresented, content: {
-                        if #available(iOS 16.0, *) {
-                            PublicProfileSocialsListView(domainName: domainName,
-                                                         socialAccounts: socialAccounts)
-                            .presentationDetents([.medium, .large])
-                        } else {
-                            PublicProfileSocialsListView(domainName: domainName,
-                                                         socialAccounts: socialAccounts)
-                        }
+                        PublicProfileSocialsListView(domainName: domainName,
+                                                     socialAccounts: socialAccounts)
+                        .adaptiveSheet()
                     })
             } else {
                 content
@@ -750,16 +734,10 @@ private extension PublicProfileView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isDomainsListPresented, content: {
-                    if #available(iOS 16.0, *) {
-                        PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
-                                                         profileDomain: profileDomain,
-                                                         currentDomainName: currentDomainName)
-                        .presentationDetents([.medium, .large])
-                    } else {
-                        PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
-                                                         profileDomain: profileDomain,
-                                                         currentDomainName: currentDomainName)
-                    }
+                    PublicProfileDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
+                                                     profileDomain: profileDomain,
+                                                     currentDomainName: currentDomainName)
+                    .adaptiveSheet()
                 })
         }
     }

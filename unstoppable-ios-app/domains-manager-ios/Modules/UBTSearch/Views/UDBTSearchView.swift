@@ -238,14 +238,9 @@ private extension UDBTSearchView {
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isDomainsListPresented, content: {
-                    if #available(iOS 16.0, *) {
-                        UBTPromotingDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
-                                                        currentDomainName: currentDomainName)
-                        .presentationDetents([.medium, .large])
-                    } else {
-                        UBTPromotingDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
-                                                        currentDomainName: currentDomainName)
-                    }
+                    UBTPromotingDomainSelectionView(domainSelectionCallback: domainSelectionCallback,
+                                                    currentDomainName: currentDomainName)
+                    .adaptiveSheet()
                 })
         }
     }
