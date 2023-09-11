@@ -394,7 +394,8 @@ private extension ChatsListViewPresenter {
     }
     
     func tryAutoOpenChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) {
-        guard let channel = channels.first(where: { $0.channel == channelId }) else { return }
+        guard let channel = channels.first(where: { $0.channel.normalized == channelId.normalized }) else { return }
+        
         openChannel(channel)
         presentOptions = .default
     }
