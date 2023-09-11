@@ -4773,13 +4773,13 @@
 		C69F99152A9F1264004B1958 /* ViewModifiers */ = {
 			isa = PBXGroup;
 			children = (
-				C69F99162A9F1264004B1958 /* ClearListBackground.swift */,
-				C69F99172A9F1264004B1958 /* UnstoppableListRowInset.swift */,
-				C69F99182A9F1264004B1958 /* SideInsets.swift */,
-				C69F99192A9F1264004B1958 /* AvatarStyleClipped.swift */,
 				C69F991A2A9F1264004B1958 /* AdaptiveSheet.swift */,
+				C69F99192A9F1264004B1958 /* AvatarStyleClipped.swift */,
+				C69F99162A9F1264004B1958 /* ClearListBackground.swift */,
 				C6DF46262AA18F8900D124E7 /* DisplayError.swift */,
+				C69F99182A9F1264004B1958 /* SideInsets.swift */,
 				C6289A462AAB06F9002C2DEC /* SquareFrame.swift */,
+				C69F99172A9F1264004B1958 /* UnstoppableListRowInset.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";

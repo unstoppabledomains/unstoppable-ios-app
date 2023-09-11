@@ -171,9 +171,7 @@ private extension BaseButton {
         let contentInsets = UIEdgeInsets(top: 0, left: leftPadding + titleImagePadding / 2,
                                          bottom: 0, right: rightPadding + titleImagePadding / 2)
         
-        if #available(iOS 15.0, *) {
-            self.configuration = nil
-        }
+        self.configuration = nil
         
         self.titleEdgeInsets = UIEdgeInsets(top: 0, left: titleLeftPadding,
                                             bottom: 0, right: titleRightPadding)

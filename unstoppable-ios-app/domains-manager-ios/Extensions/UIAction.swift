@@ -17,25 +17,14 @@ extension UIAction {
                            attributes: UIMenuElement.Attributes = [],
                            state: UIMenuElement.State = .off,
                            handler: @escaping UIActionHandler) -> UIAction {
-        if #available(iOS 15.0, *) {
-            return UIAction(title: title,
-                            subtitle: subtitle,
-                            image: image,
-                            identifier: identifier,
-                            discoverabilityTitle: discoverabilityTitle,
-                            attributes: attributes,
-                            state: state,
-                            handler: handler)
-            
-        } else {
-            return UIAction(title: title,
-                            image: image,
-                            identifier: identifier,
-                            discoverabilityTitle: discoverabilityTitle,
-                            attributes: attributes,
-                            state: state,
-                            handler: handler)
-        }
+        UIAction(title: title,
+                 subtitle: subtitle,
+                 image: image,
+                 identifier: identifier,
+                 discoverabilityTitle: discoverabilityTitle,
+                 attributes: attributes,
+                 state: state,
+                 handler: handler)
     }
     
 }

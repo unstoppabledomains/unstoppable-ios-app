@@ -110,45 +110,38 @@ struct NetworkService {
                    extraHeaders: [String: String]  = [:]) async throws -> Data {
         let urlRequest = urlRequest(for: url, body: body, method: method, extraHeaders: extraHeaders)
         
-        if #available(iOS 15.0, *) {
-            do {
-                let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
-                guard let response = response as? HTTPURLResponse else {
-                    throw NetworkLayerError.badResponseOrStatusCode(code: 0, message: "No Http response")
-                }
-                
-                if response.statusCode < 300 {
-                    return data
-                } else {
-                    if response.statusCode == Constants.backEndThrottleErrorCode {
-                        Debugger.printWarning("Request failed due to backend throttling issue")
-                        throw NetworkLayerError.backendThrottle
-                    }
-                    let message = extractErrorMessage(from: data)
-                    throw NetworkLayerError.badResponseOrStatusCode(code: response.statusCode, message: "\(message)")
-                }
-            } catch {
-                let error = error as NSError
-                switch error.code {
-                case NSURLErrorNetworkConnectionLost:
-                    throw NetworkLayerError.connectionLost
-                case NSURLErrorCancelled:
-                    throw NetworkLayerError.requestCancelled
-                case NSURLErrorNotConnectedToInternet:
-                    throw NetworkLayerError.notConnectedToInternet
-                default:
-                    if let networkError = error as? NetworkLayerError {
-                        throw networkError
-                    }
-                    Debugger.printFailure("Error \(error.code) - \(error.localizedDescription)", critical: false)
-                    throw NetworkLayerError.noMessageError
-                }
+        do {
+            let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
+            guard let response = response as? HTTPURLResponse else {
+                throw NetworkLayerError.badResponseOrStatusCode(code: 0, message: "No Http response")
             }
-        } else {
-            return try await fetchData(for: url,
-                                       body: body,
-                                       method: method,
-                                       extraHeaders: extraHeaders)
+            
+            if response.statusCode < 300 {
+                return data
+            } else {
+                if response.statusCode == Constants.backEndThrottleErrorCode {
+                    Debugger.printWarning("Request failed due to backend throttling issue")
+                    throw NetworkLayerError.backendThrottle
+                }
+                let message = extractErrorMessage(from: data)
+                throw NetworkLayerError.badResponseOrStatusCode(code: response.statusCode, message: "\(message)")
+            }
+        } catch {
+            let error = error as NSError
+            switch error.code {
+            case NSURLErrorNetworkConnectionLost:
+                throw NetworkLayerError.connectionLost
+            case NSURLErrorCancelled:
+                throw NetworkLayerError.requestCancelled
+            case NSURLErrorNotConnectedToInternet:
+                throw NetworkLayerError.notConnectedToInternet
+            default:
+                if let networkError = error as? NetworkLayerError {
+                    throw networkError
+                }
+                Debugger.printFailure("Error \(error.code) - \(error.localizedDescription)", critical: false)
+                throw NetworkLayerError.noMessageError
+            }
         }
     }
     

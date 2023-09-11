@@ -29,8 +29,4 @@ extension View {
         }
     }
     
-    func afterAdaptiveSheetDismiss(_ block: @escaping EmptyCallback) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6, execute: block)
-    }
-    
 }
