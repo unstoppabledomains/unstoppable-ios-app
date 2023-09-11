@@ -26,7 +26,6 @@ struct PublicProfileFollowersView: View, ViewAnalyticsLogger {
     
     let followerSelectionCallback: FollowerSelectionCallback
     @StateObject private var viewModel: PublicProfileFollowersViewModel
-    @State private var selectedFollower: DomainProfileFollowerDisplayInfo?
     var analyticsName: Analytics.ViewName { .domainFollowersList }
     
     var body: some View {
@@ -48,10 +47,12 @@ struct PublicProfileFollowersView: View, ViewAnalyticsLogger {
                 if let currentFollowersList = viewModel.currentFollowersList,
                    !currentFollowersList.isEmpty {
                     ScrollViewReader { proxy in
-                        List(getCurrentPublishedFollowersList() ?? [], id: \.domain, selection: $selectedFollower) { follower in
-                            rowForFollower(follower)
-                                .tag(follower)
-                                .id(follower)
+                        List(getCurrentPublishedFollowersList() ?? [], id: \.domain) { follower in
+                            Button {
+                                followerSelected(follower)
+                            } label: {
+                                rowForFollower(follower)
+                            }
                                 .listRowSeparator(.hidden)
                                 .unstoppableListRowInset()
                                 .onAppear {
@@ -79,7 +80,6 @@ struct PublicProfileFollowersView: View, ViewAnalyticsLogger {
                     .background(.clear)
                     .clearListBackground()
                     .ignoresSafeArea()
-                    .onChange(of: selectedFollower, perform: followerSelected)
                     
                 } else {
                     Spacer()

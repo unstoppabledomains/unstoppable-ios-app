@@ -12,23 +12,22 @@ struct DomainSelectionListView: View {
     let mode: SelectionMode
     let domainsToSelectFrom: [DomainDisplayInfo]
     @State private var domainsWithIcons: [DomainDisplayInfoWithIcon] = []
-    @State private var selectedDomain: DomainDisplayInfoWithIcon?
     @State private var selectedDomainsNames: Set<String> = []
     
     var body: some View {
         List(domainsWithIcons,
-             id: \.domain.name,
-             selection: $selectedDomain) { domain in
-            rowForDomain(domain)
-                .tag(domain)
-                .id(domain)
-                .listRowSeparator(.hidden)
-                .unstoppableListRowInset()
-                .listRowBackground(Color.backgroundOverlay)
+             id: \.domain.name) { domain in
+            Button {
+                domainSelected(domain)
+            } label: {
+                rowForDomain(domain)
+            }
+            .listRowSeparator(.hidden)
+            .unstoppableListRowInset()
+            .listRowBackground(Color.backgroundOverlay)
         }
              .background(.clear)
              .clearListBackground()
-             .onChange(of: selectedDomain, perform: domainSelected)
              .onAppear(perform: prepare)
     }
     
@@ -76,7 +75,6 @@ private extension DomainSelectionListView {
             let selectedDomains = domainsToSelectFrom.filter({ selectedDomainsNames.contains($0.name) })
             selectionCallback(Set(selectedDomains))
         }
-        selectedDomain = nil
     }
     
     @ViewBuilder
