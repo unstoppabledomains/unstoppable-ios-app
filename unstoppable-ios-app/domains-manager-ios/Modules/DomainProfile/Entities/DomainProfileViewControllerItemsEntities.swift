@@ -270,16 +270,6 @@ extension DomainProfileViewController {
         let badge: BadgesInfo.BadgeInfo
         let isExploreWeb3Badge: Bool
         
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.badge == rhs.badge &&
-            lhs.isExploreWeb3Badge == rhs.isExploreWeb3Badge
-        }
-        
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(badge)
-            hasher.combine(isExploreWeb3Badge)
-        }
-        
         var defaultIcon: UIImage {
             isExploreWeb3Badge ? .magicWandIcon : .badgesStarIcon24
         }

@@ -134,11 +134,35 @@ extension DomainDisplayInfo {
     }
     var isZilliqaBased: Bool { blockchain == .Zilliqa }
     var isInteractable: Bool { usageType == .normal }
-    
+    var isAvailableForMessaging: Bool {
+        switch usageType {
+        case .normal:
+            return true
+        case .newNonInteractable(let tld):
+            return tld == Constants.ensDomainTLD
+        default:
+            return false
+        }
+    }
 }
 
 extension Array where Element == DomainDisplayInfo {
     func interactableItems() -> [DomainDisplayInfo] {
         self.filter({ $0.isInteractable })
+    }
+    
+    func availableForMessagingItems() -> [DomainDisplayInfo] {
+        self.filter { $0.isAvailableForMessaging }
+    }
+    
+    func requirePNItems() -> [DomainDisplayInfo] {
+        self.filter {
+            if $0.isAvailableForMessaging {
+                return true
+            } else if case .parked = $0.usageType {
+                return true
+            }
+            return false
+        }
     }
 }

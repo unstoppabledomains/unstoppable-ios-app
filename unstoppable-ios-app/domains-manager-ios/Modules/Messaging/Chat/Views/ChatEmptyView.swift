@@ -55,7 +55,10 @@ final class ChatEmptyView: UIView {
         }
         
         let contentHeight = iconSize + spacing + titleHeight + subtitleSpacing + subtitleHeight
-        let contentMinY = bounds.height / 2 - contentHeight / 2
+        var contentMinY = bounds.height / 2 - contentHeight / 2
+        if deviceSize == .i4_7Inch {
+            contentMinY -= 70
+        }
         
         iconImageView.frame.origin = CGPoint(x: bounds.width / 2 - iconSize / 2,
                                              y: contentMinY)

@@ -107,6 +107,7 @@ extension UDTextField {
         case .default:
             placeholderLabel.isHidden = true
             setTextFieldPlaceholder(placeholder)
+            textField.rightViewYOffset = 0
         case .title(let additionalHint):
             let fontSize: CGFloat = (textField.isFirstResponder || !text.isEmpty) ? 12 : 16
             
@@ -121,6 +122,7 @@ extension UDTextField {
                                                    font: .currentFont(withSize: fontSize, weight: .regular),
                                                    textColor: .foregroundSecondary)
             placeholderLabel.isHidden = false
+            textField.rightViewYOffset = -8
         }
     }
     
@@ -446,13 +448,6 @@ extension UDTextField {
         case loading
         case success
         
-        var yOffset: CGFloat {
-            switch self {
-            case .clear, .paste, .loading, .success:
-                return -8
-            }
-        }
-        
         var size: CGSize {
             switch self {
             case .clear, .loading, .success:
@@ -471,14 +466,14 @@ extension UDTextField {
 final class CustomTextField: UITextField {
     
     var rightViewType: UDTextField.RightViewType = .clear
+    var rightViewYOffset: CGFloat = 0
         
     override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
         let buttonSize: CGSize = rightViewType.size
         let x = bounds.width - buttonSize.width
         let y = (bounds.height / 2) - (buttonSize.height / 2)
-        let yOffset = rightViewType.yOffset
         return CGRect(x: x,
-                      y: y + yOffset,
+                      y: y + rightViewYOffset,
                       width: buttonSize.width,
                       height: buttonSize.height)
     }

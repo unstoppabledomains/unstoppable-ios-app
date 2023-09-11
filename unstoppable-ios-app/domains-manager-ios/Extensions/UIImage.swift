@@ -152,7 +152,13 @@ extension UIImage {
     static let youTubeIcon24 = UIImage(named: "youTubeIcon24")!
     static let linkedInIcon24 = UIImage(named: "linkedInIcon24")!
     static let gitHubIcon24 = UIImage(named: "gitHubIcon24")!
-    
+    static let twitterOriginalIcon = UIImage(named: "twitterOriginalIcon")!
+    static let discordOriginalIcon = UIImage(named: "discordOriginalIcon")!
+    static let telegramOriginalIcon = UIImage(named: "telegramOriginalIcon")!
+    static let redditOriginalIcon = UIImage(named: "redditOriginalIcon")!
+    static let youTubeOriginalIcon = UIImage(named: "youTubeOriginalIcon")!
+    static let linkedInOriginalIcon = UIImage(named: "linkedInIcon24")!
+    static let gitHubOriginalIcon = UIImage(named: "gitHubIcon24")!
 
     
     // System SF symbols

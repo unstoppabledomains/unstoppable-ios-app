@@ -20,13 +20,13 @@ final class NotificationService: UNNotificationServiceExtension {
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
+        bestAttemptContent?.sound = .default
         
         if let bestAttemptContent = bestAttemptContent,
            let event = ExternalEvent(pushNotificationPayload: bestAttemptContent.userInfo) {
             
             set(notificationContent: bestAttemptContent, for: event, completion: { content in
                 if let content {
-                    (content as? UNMutableNotificationContent)?.sound = .default
                     contentHandler(content)
                 } else {
                     contentHandler(bestAttemptContent)
@@ -260,6 +260,7 @@ private extension NotificationService {
             if senderWalletAddress != data.toAddress,
                let rrInfo = try? await loadRRInfoFor(address: senderWalletAddress),
                let url = rrInfo.pfpURLToUse {
+                notificationContent.title = rrInfo.name
                 loadAvatarFor(source: .url(url),
                               name: rrInfo.name,
                               in: notificationContent,
@@ -418,7 +419,11 @@ private extension NotificationService {
     
     struct NetworkConfig {
         static var baseProfileAPIUrl: String {
+            #if DEBUG
+            return "https://api.ud-staging.com"
+            #else
             return "https://api.unstoppabledomains.com"
+            #endif
         }
     }
 }
