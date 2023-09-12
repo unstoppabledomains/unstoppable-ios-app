@@ -34,6 +34,7 @@ extension PublicProfileView {
         @Published var socialAccounts: SocialAccounts?
         @Published var error: Error?
         @Published private(set) var isLoading = false
+        @Published private(set) var isUserDomainSelected = true
         @Published private(set) var profile: SerializedPublicDomainProfile?
         @Published private(set) var badgesDisplayInfo: [DomainProfileBadgeDisplayInfo]?
         @Published private(set) var coverImage: UIImage?
@@ -126,6 +127,7 @@ extension PublicProfileView {
         
         private func clearAllProfileData() {
             profile = nil
+            isUserDomainSelected = true
             records = nil
             socialInfo = nil
             socialAccounts = nil
@@ -144,8 +146,10 @@ extension PublicProfileView {
                 await performAsyncErrorCatchingBlock {
                     let profile = try await NetworkService().fetchPublicProfile(for: domain.name,
                                                                                 fields: [.profile, .records, .socialAccounts])
+                    let domains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
                     await waitForAppear()
                     self.profile = profile
+                    isUserDomainSelected = domains.first(where: { $0.name == domain.name }) != nil
                     records = profile.records
                     socialInfo = profile.social
                     socialAccounts = profile.socialAccounts

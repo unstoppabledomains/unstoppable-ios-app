@@ -126,15 +126,17 @@ private extension PublicProfileView {
                         logButtonPressedAnalyticEvents(button: .share)
                         delegate?.publicProfileDidSelectShareProfile(viewModel.domain.name)
                     })
-                    CircleIconButton(icon: .uiImage(.messageCircleIcon24),
-                                     size: .medium,
-                                     callback: {
-                        logButtonPressedAnalyticEvents(button: .messaging)
-                        delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.viewingDomain)
-                    })
-                    if let isFollowing = viewModel.isFollowing,
-                       viewModel.domain.name != viewModel.viewingDomain.name { // Can't follow myself
-                        followButton(isFollowing: isFollowing)
+                    if !viewModel.isUserDomainSelected {
+                        CircleIconButton(icon: .uiImage(.messageCircleIcon24),
+                                         size: .medium,
+                                         callback: {
+                            logButtonPressedAnalyticEvents(button: .messaging)
+                            delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.viewingDomain)
+                        })
+                        if let isFollowing = viewModel.isFollowing,
+                           viewModel.domain.name != viewModel.viewingDomain.name { // Can't follow myself
+                            followButton(isFollowing: isFollowing)
+                        }
                     }
                 }
                 .offset(y: -18)
