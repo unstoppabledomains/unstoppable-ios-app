@@ -847,6 +847,10 @@
 "FOLLOWED_BY_N_OTHERS_SUFFIX" = "%i others";
 "AND" = "And";
 "LEADERBOARD" = "Leaderboard";
+"UNFOLLOW" = "Unfollow";
+"FOLLOW_AS_DOMAIN" = "Follow as %@";
+"UNFOLLOW_AS_DOMAIN" = "Unfollow as %@";
+"SWITCH_MY_DOMAIN" = "Switch my domain";
 
 // Domains search
 "YOUR_DOMAINS" = "Your domains";
