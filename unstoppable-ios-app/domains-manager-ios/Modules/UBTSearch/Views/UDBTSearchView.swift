@@ -135,7 +135,6 @@ private extension UDBTSearchView {
     func setPromotingDomain(_ domain: DomainDisplayInfo) {
         promotingDomain = domain
         Task {
-            // TODO: - load avatar
             promotingDomainImage = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
                                                                                   downsampleDescription: nil)
         }
