@@ -25,6 +25,8 @@ protocol DomainsCollectionRouterProtocol {
                            searchCallback: @escaping DomainsListSearchCallback)
     func showChatsListScreen()
     func didShakeDevice(domain: DomainDisplayInfo)
+    func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
+                                 viewingDomain: DomainItem)
 }
 
 @MainActor
@@ -184,6 +186,13 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
             self?.didSelectUBTDomain(device, by: domain, in: topViewController)
         }
         topViewController.present(searchVC, animated: true)
+    }
+    
+    func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
+                                 viewingDomain: DomainItem) {
+        guard let viewController else { return }
+        
+        showPublicDomainProfile(of: domain, viewingDomain: viewingDomain, in: viewController)
     }
 }
 
