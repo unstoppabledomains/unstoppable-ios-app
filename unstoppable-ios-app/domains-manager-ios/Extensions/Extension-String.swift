@@ -932,11 +932,11 @@ extension String {
         static let followedByNOthersSuffix = "FOLLOWED_BY_N_OTHERS_SUFFIX"
         static let and = "AND"
         static let leaderboard = "LEADERBOARD"
-        static let unfollow = "Unfollow"
-        static let followingAsDomain = "Following as %@"
-        static let followAsDomain = "Follow as %@"
-        static let tapToSwitch = "Tap to switch"
-        
+        static let unfollow = "UNFOLLOW"
+        static let followAsDomain = "FOLLOW_AS_DOMAIN"
+        static let unfollowAsDomain = "UNFOLLOW_AS_DOMAIN"
+        static let switchMyDomain = "SWITCH_MY_DOMAIN"
+
         // Domains search
         static let yourDomains = "YOUR_DOMAINS"
         static let globalSearch = "GLOBAL_SEARCH"

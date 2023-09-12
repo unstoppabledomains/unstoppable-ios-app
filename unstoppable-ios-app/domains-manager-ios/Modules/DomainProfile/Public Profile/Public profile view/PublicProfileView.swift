@@ -188,15 +188,7 @@ private extension PublicProfileView {
                 UDVibration.buttonTap.vibrate()
                 showDomainsList()
             } label: {
-                if isFollowing {
-                    Text(String.Constants.followingAsDomain.localized(viewModel.viewingDomain.name))
-                } else {
-                    Text(String.Constants.followAsDomain.localized(viewModel.viewingDomain.name))
-                }
-                Text(String.Constants.tapToSwitch.localized())
-                if let viewingDomainImage = viewModel.viewingDomainImage {
-                    Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
-                }
+                Label(String.Constants.switchMyDomain.localized(), systemImage: "person.crop.circle")
             }
             Divider()
             Button(role: isFollowing ? .destructive : .cancel) {
@@ -205,9 +197,12 @@ private extension PublicProfileView {
                 logButtonPressedAnalyticEvents(button: isFollowing ? .unfollow : .follow)
             } label: {
                 if isFollowing {
-                    Label(String.Constants.unfollow.localized(), systemImage: "minus.circle")
+                    Text(String.Constants.unfollowAsDomain.localized(viewModel.viewingDomain.name))
                 } else {
-                    Label(String.Constants.follow.localized(), image: "arrowTopRight")
+                    Text(String.Constants.followAsDomain.localized(viewModel.viewingDomain.name))
+                }
+                if let viewingDomainImage = viewModel.viewingDomainImage {
+                    Image(uiImage: viewingDomainImage.circleCroppedImage(size: 24))
                 }
             }
         } label: {
