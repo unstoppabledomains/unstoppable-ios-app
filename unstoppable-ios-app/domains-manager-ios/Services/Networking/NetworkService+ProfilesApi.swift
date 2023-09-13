@@ -507,7 +507,7 @@ extension NetworkService {
                                      shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
         let startTime = Date()
         guard let url = Endpoint.searchDomains(with: name,
-                                               shouldHaveProfile: !shouldBeSetAsRR,
+                                               shouldHaveProfile: false,
                                                shouldBeSetAsRR: shouldBeSetAsRR).url else {
             throw NetworkLayerError.creatingURLFailed
         }
