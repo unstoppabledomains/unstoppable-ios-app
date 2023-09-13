@@ -16,6 +16,7 @@ protocol CoreAppCoordinatorProtocol: WalletConnectClientUIHandler, ExternalEvent
     func setKeyWindow()
     @discardableResult
     func goBackToPreviousApp() -> Bool
+    func didRegisterShakeDevice()
     
     func isActiveState(_ state: AppCoordinationState) -> Bool
 }
