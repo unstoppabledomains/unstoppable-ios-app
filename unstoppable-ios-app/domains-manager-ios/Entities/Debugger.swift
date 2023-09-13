@@ -100,7 +100,7 @@ public struct Debugger {
     public static func printFailure(_ s: String, critical: Bool = false) {
         #if DEBUG
         if critical {
-//            fatalError("⛔️ CRITICAL ERROR: \(s)")
+            fatalError("⛔️ CRITICAL ERROR: \(s)")
         } else { printInfo(topic: .Error, "🟨 \(s)") }
         #else
         let exception = NSException(name:NSExceptionName(rawValue: "\(critical ? "CRITICAL" : "NON-CRITICAL"): \(s)"),
