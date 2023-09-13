@@ -45,10 +45,10 @@ extension PublicProfileFollowersView {
                 @MainActor
                 func setIcon(_ icon: UIImage?) {
                     if case .followers = type,
-                       let i = followersList?.firstIndex(where: { $0.domain == follower.domain }) {
+                       let i = followersList?.getFirstIndexForFollowerDomain(follower) {
                         followersList?[i].icon = icon
                     } else if case .following = type,
-                              let i = followingList?.firstIndex(where: { $0.domain == follower.domain }) {
+                              let i = followingList?.getFirstIndexForFollowerDomain(follower) {
                         followingList?[i].icon = icon
                     }
                 }
@@ -68,7 +68,7 @@ extension PublicProfileFollowersView {
         
         func loadMoreContentIfNeeded(currentFollower: DomainProfileFollowerDisplayInfo) {
             if let currentFollowersList,
-               let i = currentFollowersList.firstIndex(where: { $0.domain == currentFollower.domain }),
+               let i = currentFollowersList.getFirstIndexForFollowerDomain(currentFollower),
                i >= (currentFollowersList.count - 6),
                !isLoadingPage {
                 loadFollowersList()

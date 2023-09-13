@@ -12,6 +12,12 @@ struct DomainProfileFollowerDisplayInfo: Hashable {
     var icon: UIImage?
 }
 
+extension Array where Element == DomainProfileFollowerDisplayInfo {
+    func getFirstIndexForFollowerDomain(_ follower: DomainProfileFollowerDisplayInfo) -> Int? {
+        firstIndex(where: { $0.domain == follower.domain })
+    }
+}
+
 extension PublicProfileView {
     
     struct FollowersDisplayInfo {
