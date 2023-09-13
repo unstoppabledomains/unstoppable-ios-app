@@ -373,27 +373,22 @@ private extension NotificationService {
                        name: String,
                        in notificationContent: UNMutableNotificationContent,
                        completion: @escaping NotificationContentCallback) {
-        if #available(iOSApplicationExtension 15.0, *) {
-            NotificationImageLoadingService.shared.imageFor(source: source) { image in
-                if let image,
-                   let imageData = image.jpegData(compressionQuality: 1) {
-                    
-                    let intent = self.intentFor(domainName: name,
-                                                imageData: imageData)
-                    
-                    if let updatedContent = try? notificationContent.updating(from: intent) {
-                        completion(updatedContent)
-                        return
-                    }
+        NotificationImageLoadingService.shared.imageFor(source: source) { image in
+            if let image,
+               let imageData = image.jpegData(compressionQuality: 1) {
+                
+                let intent = self.intentFor(domainName: name,
+                                            imageData: imageData)
+                
+                if let updatedContent = try? notificationContent.updating(from: intent) {
+                    completion(updatedContent)
+                    return
                 }
-                completion(nil)
             }
-        } else {
             completion(nil)
         }
     }
     
-    @available(iOSApplicationExtension 15.0, *)
     func intentFor(domainName: String, imageData: Data) -> INSendMessageIntent {
         let handle = INPersonHandle(value: domainName, type: .unknown)
         let avatar = INImage(imageData: imageData)

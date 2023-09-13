@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 @MainActor
 class UDRouter: DomainProfileSignatureValidator {
@@ -603,6 +604,25 @@ class UDRouter: DomainProfileSignatureValidator {
                                     channel: channel)
         
         nav.pushViewController(vc, animated: true)
+    }
+    
+    func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
+                                 viewingDomain: DomainItem,
+                                 in viewController: UIViewController) {
+        let vc = PublicProfileView.instantiate(domain: domain,
+                                               viewingDomain: viewingDomain,
+                                               delegate: viewController)
+        viewController.present(vc, animated: true)
+    }
+    
+    func showFollowersList(domainName: DomainName,
+                           socialInfo: DomainProfileSocialInfo,
+                           followerSelectionCallback: @escaping FollowerSelectionCallback,
+                           in viewController: UIViewController) {
+        let vc = PublicProfileFollowersView.instantiate(domainName: domainName,
+                                                        socialInfo: socialInfo,
+                                                        followerSelectionCallback: followerSelectionCallback)
+        viewController.present(vc, animated: true)
     }
 }
 

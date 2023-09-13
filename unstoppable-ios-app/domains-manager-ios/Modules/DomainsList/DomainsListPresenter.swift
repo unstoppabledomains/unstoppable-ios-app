@@ -36,15 +36,18 @@ final class DomainsListPresenter: DomainsListViewPresenter {
             return
         case .domainListItem(let domain, _):
             logAnalytic(event: .domainPressed, parameters: [.domainName : domain.name])
-            guard domain.isInteractable else {
-                self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
-                UDVibration.buttonTap.vibrate()
-                return
+            UDVibration.buttonTap.vibrate()
+            switch domain.usageType {
+            case .newNonInteractable:
+              showPublicDomainProfile(of: domain)
+            default:
+                showProfile(of: domain)
             }
-            showProfile(of: domain)
         case .domainsMintingInProgress:
             logAnalytic(event: .mintingDomainsPressed)
             showDomainsMintingInProgress()
+        case .domainSearchItem:
+            Debugger.printFailure("Unexpected event", critical: true)
         }
     }
 }
@@ -97,7 +100,7 @@ private extension DomainsListPresenter {
         }
         
         if !otherDomains.isEmpty {
-            snapshot.appendSections([.other]) // For other domains
+            snapshot.appendSections([.other(title: nil)]) // For other domains
             snapshot.appendItems(otherDomains.map({ DomainsListViewController.Item.domainListItem($0,
                                                                                                   isSelectable: true) }))
         }
@@ -110,7 +113,6 @@ private extension DomainsListPresenter {
         guard let nav = self.view?.cNavigationController,
             let walletInfo = walletWithInfo.displayInfo else { return }
         
-        UDVibration.buttonTap.vibrate()
         Task {
             await UDRouter().pushDomainProfileScreen(in: nav, domain: domain, wallet: walletWithInfo.wallet, walletInfo: walletInfo)
         }
@@ -133,5 +135,21 @@ private extension DomainsListPresenter {
         UDRouter().showMintingDomainsInProgressScreen(mintingDomainsWithDisplayInfo: mintingDomainsWithDisplayInfo,
                                                       mintingDomainSelectedCallback: nil,
                                                       in: view)
+    }
+    
+    @MainActor
+    func showPublicDomainProfile(of domain: DomainDisplayInfo) {
+        Task {
+            guard let view,
+                  let walletAddress = domain.ownerWallet,
+                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else {
+                Debugger.printInfo("No profile for a non-interactible domain")
+                self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
+                return
+            }
+            
+            let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
+            UDRouter().showPublicDomainProfile(of: domainPublicInfo, viewingDomain: domain, in: view)
+        }
     }
 }

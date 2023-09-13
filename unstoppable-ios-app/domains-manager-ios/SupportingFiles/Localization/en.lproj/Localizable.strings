@@ -387,6 +387,7 @@
 "DOMAIN_DETAILS_EDIT_PROFILE" = "Edit profile";
 "DOMAIN_DETAILS_MANAGE_DOMAIN" = "Manage domain";
 "DOMAIN_DETAILS_SHARE_MESSAGE" = "This is my #NFTDomain profile made with the @UnstoppableWeb mobile app! Check it out and join the community that's building the future of #Web3\n\n";
+"PUBLIC_DOMAIN_DETAILS_SHARE_MESSAGE" = "Check out this #NFTDomain profile made with the @UnstoppableWeb mobile app and join the community that's building the future of #Web3\n\n";
 "DOMAIN_DETAILS_ADD_CURRENCY" = "Add currency";
 
 // Manage domain
@@ -836,6 +837,34 @@
 "MESSAGING_INVITE" = "Invite";
 "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN" = "%@ - Reverse Resolution domain";
 
+// Public profile
+"FOLLOWERS" = "Followers";
+"FOLLOWING" = "Following";
+"FOLLOW" = "Follow";
+"FOLLOWERS_LIST_EMPTY_MESSAGE" = "When people follow %@, you’ll see them here";
+"FOLLOWING_LIST_EMPTY_MESSAGE" = "When %@ follow people, you’ll see them here";
+"FOLLOWED_BY" = "Followed by";
+"FOLLOWED_BY_N_OTHERS_SUFFIX" = "%i others";
+"AND" = "And";
+"LEADERBOARD" = "Leaderboard";
+"UNFOLLOW" = "Unfollow";
+"FOLLOW_AS_DOMAIN" = "Follow as %@";
+"UNFOLLOW_AS_DOMAIN" = "Unfollow as %@";
+"SWITCH_MY_DOMAIN" = "Switch my domain";
+
+// Domains search
+"YOUR_DOMAINS" = "Your domains";
+"GLOBAL_SEARCH" = "Global search";
+"GLOBAL_SEARCH_HINT" = "Discover more profiles by entering a domain or wallet address.";
+
 // No wallets to claim
 "NO_WALLETS_TO_CLAIM_ALERT_TITLE" = "You haven't added a wallet yet";
 "NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE" = "You need to add a wallet first in order to claim domains";
+
+// Shake to find
+"SHAKE_TO_FIND_SEARCH_TITLE" = "Searching...";
+"SHAKE_TO_FIND_SEARCH_SUBTITLE" = "Ensure other people shaking their phones.";
+"SHAKE_TO_FIND_PERMISSIONS_TITLE" = "Permissions\nnot granted";
+"SHAKE_TO_FIND_FAILED_TITLE" = "Failed to run\nBluetooth services";
+"SHAKE_TO_FIND_FAILED_SUBTITLE" = "Looks like Bluetooth doesn't work on your phone. Ensure your device is working fine.";
+"OPEN_SETTINGS" = "Open settings";

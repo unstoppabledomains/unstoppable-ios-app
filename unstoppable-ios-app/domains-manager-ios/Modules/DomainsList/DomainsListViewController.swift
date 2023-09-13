@@ -17,7 +17,7 @@ typealias DomainsListDataSource = UICollectionViewDiffableDataSource<DomainsList
 typealias DomainsListSnapshot = NSDiffableDataSourceSnapshot<DomainsListViewController.Section, DomainsListViewController.Item>
 
 @MainActor
-final class DomainsListViewController: BaseViewController {
+final class DomainsListViewController: BaseViewController, BlurVisibilityAfterLimitNavBarScrollingBehaviour {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -36,7 +36,10 @@ final class DomainsListViewController: BaseViewController {
     private var searchBar: UDSearchBar = UDSearchBar()
     private lazy var cSearchBarConfiguration: CNavigationBarContentView.SearchBarConfiguration = {
         .init(searchBarPlacement: .inline) { [weak self] in
-            self?.searchBar ?? UDSearchBar()
+            let searchBar = self?.searchBar ?? UDSearchBar()
+            searchBar.setCorrectionType(.no)
+            searchBar.setAutoCapitalizationType(.none)
+            return searchBar
         }
     }()
 
@@ -54,6 +57,21 @@ final class DomainsListViewController: BaseViewController {
     
     override func keyboardWillHideAction(duration: Double, curve: Int) {
         collectionView.contentInset.bottom = defaultBottomOffset
+    }
+    
+    override func customScrollingBehaviour(yOffset: CGFloat, in navBar: CNavigationBar) -> (()->())? {
+        { [weak self, weak navBar] in
+            guard let self,
+                  let navBar else { return }
+            
+            self.updateBlurVisibility(for: yOffset, in: navBar)
+        }
+    }
+    
+    override func hideKeyboard() {
+        super.hideKeyboard()
+        
+        cNavigationBar?.setSearchActive(false, animated: true)
     }
 }
 
@@ -141,7 +159,16 @@ private extension DomainsListViewController {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
         collectionView.contentInset.top = presenter.isSearchable ? 140 : 103
-
+        collectionView.register(CollectionTextHeaderReusableView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier)
+        collectionView.register(CollectionDashesHeaderReusableView.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: CollectionDashesHeaderReusableView.reuseIdentifier)
+        collectionView.register(DomainsGlobalSearchHintHeader.self,
+                                forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+                                withReuseIdentifier: DomainsGlobalSearchHintHeader.reuseIdentifier)
+        
         configureDataSource()
     }
     
@@ -165,6 +192,11 @@ private extension DomainsListViewController {
                 cell.setWith(domainItem: domainItem, isSelectable: isSelectable)
                 
                 return cell
+            case .domainSearchItem(let searchDomain, let isSelectable):
+                let cell = collectionView.dequeueCellOfType(DomainsCollectionListCell.self, forIndexPath: indexPath)
+                cell.setWith(searchDomain: searchDomain, isSelectable: isSelectable)
+                
+                return cell
             case .domainsMintingInProgress(let domainsCount):
                 let cell = collectionView.dequeueCellOfType(DomainsCollectionMintingInProgressCell.self, forIndexPath: indexPath)
                 cell.setWith(domainsCount: domainsCount)
@@ -177,6 +209,35 @@ private extension DomainsListViewController {
                 return cell
             }
         })
+        
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, elementKind, indexPath in
+            guard let section = self?.section(at: indexPath) else { return nil }
+            
+            switch section {
+            case .other(let title):
+                guard let title else { return nil }
+                let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                           withReuseIdentifier: CollectionTextHeaderReusableView.reuseIdentifier,
+                                                                           for: indexPath) as! CollectionTextHeaderReusableView
+                view.setHeader(title)
+                return view
+            case .dashesSeparator:
+                let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                           withReuseIdentifier: CollectionDashesHeaderReusableView.reuseIdentifier,
+                                                                           for: indexPath) as! CollectionDashesHeaderReusableView
+                view.setDashesConfiguration(.domainsCollection)
+                
+                return view
+            case .globalSearchHint:
+                let view = collectionView.dequeueReusableSupplementaryView(ofKind: elementKind,
+                                                                           withReuseIdentifier: DomainsGlobalSearchHintHeader.reuseIdentifier,
+                                                                           for: indexPath) as! DomainsGlobalSearchHintHeader
+                
+                return view
+            default:
+                return nil
+            }
+        }
     }
     
     func section(at indexPath: IndexPath) -> Section? {
@@ -200,15 +261,42 @@ private extension DomainsListViewController {
                                                                   bottom: 1,
                                                                   trailing: spacing + 1)
             
-            switch section {
-            case .other, .minting:
+            func addBackground(inset: CGFloat? = nil) {
                 let background = NSCollectionLayoutDecorationItem.background(elementKind: CollectionReusableRoundedBackground.reuseIdentifier)
+                if let inset {
+                    background.contentInsets.top = inset
+                }
                 layoutSection.decorationItems = [background]
+            }
+            
+            func addHeader() {
+                let headerHeight = section?.headerHeight ?? 0
+                let size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .absolute(headerHeight))
+                let header = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: size,
+                                                                         elementKind: UICollectionView.elementKindSectionHeader,
+                                                                         alignment: .top)
+                layoutSection.boundarySupplementaryItems = [header]
+            }
+            
+            switch section {
+            case .other(let title):
+                var inset: CGFloat?
+                if title != nil {
+                    addHeader()
+                    inset = section?.headerHeight
+                }
+                
+                addBackground(inset: inset)
+            case .minting:
+                addBackground()
+            case .dashesSeparator:
+                addHeader()
+            case .globalSearchHint:
+                addHeader()
             case .searchEmptyState, .none:
                 Void()
             }
-          
-            
             
             return layoutSection
             
@@ -222,11 +310,21 @@ private extension DomainsListViewController {
 // MARK: - Collection elements
 extension DomainsListViewController {
     enum Section: Hashable {
-        case other, minting, searchEmptyState
+        case other(title: String?), minting, searchEmptyState, dashesSeparator, globalSearchHint
+        
+        var headerHeight: CGFloat {
+            switch self {
+            case .other: return CollectionTextHeaderReusableView.Height
+            case .dashesSeparator: return 2
+            case .globalSearchHint: return 40
+            default: return 0
+            }
+        }
     }
     
     enum Item: Hashable {
         case domainListItem(_ domainItem: DomainDisplayInfo, isSelectable: Bool)
+        case domainSearchItem(_ domainItem: SearchDomainProfile, isSelectable: Bool)
         case domainsMintingInProgress(domainsCount: Int)
         case searchEmptyState
     }
