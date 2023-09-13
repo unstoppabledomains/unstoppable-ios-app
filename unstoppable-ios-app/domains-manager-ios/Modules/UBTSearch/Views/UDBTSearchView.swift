@@ -7,7 +7,7 @@
     
 import SwiftUI
 
-typealias UDBTSearchResultCallback = (BTDomainUIInfo)->()
+typealias UDBTSearchResultCallback = (_ discoveredDomain: BTDomainUIInfo, _ promotingDomain: DomainDisplayInfo)->()
 
 struct UDBTSearchView: View, ViewAnalyticsLogger {
     
@@ -107,9 +107,10 @@ private extension UDBTSearchView {
     }
     
     func didSelectDeviceToConnect(_ device: BTDomainUIInfo) {
+        guard let promotingDomain else { return }
         UDVibration.buttonTap.vibrate()
         logButtonPressedAnalyticEvents(button: .btDomain)
-        searchResultCallback(device)
+        searchResultCallback(device, promotingDomain)
     }
     
     func scheduleAddMock() {
@@ -254,7 +255,7 @@ struct ContentView_Previews: PreviewProvider {
 //                .previewDevice(PreviewDevice(rawValue: device))
 //                .previewDisplayName(device)
 //        }
-        UDBTSearchView(controller: .init(), searchResultCallback: { _ in })
+        UDBTSearchView(controller: .init(), searchResultCallback: { _, _ in })
     }
 }
 

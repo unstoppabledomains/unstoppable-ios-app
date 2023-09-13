@@ -110,12 +110,6 @@ final class DomainsCollectionViewController: BaseViewController, TitleVisibility
     override func becomeFirstResponder() -> Bool {
         return true
     }
-    
-    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?){
-        if motion == .motionShake {
-            presenter.didShakeDevice()
-        }
-    }
 
 }
 

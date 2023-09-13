@@ -24,7 +24,6 @@ protocol DomainsCollectionRouterProtocol {
     func showDomainsSearch(_ domains: [DomainDisplayInfo],
                            searchCallback: @escaping DomainsListSearchCallback)
     func showChatsListScreen()
-    func didShakeDevice(domain: DomainDisplayInfo)
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
                                  viewingDomain: DomainItem)
 }
@@ -177,17 +176,7 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
 
         showChatsListScreen(in: navigationController, presentOptions: .default)
     }
-    
-    func didShakeDevice(domain: DomainDisplayInfo) {
-        guard let navigationController = self.navigationController else { return }
-    
-        let topViewController = navigationController.topVisibleViewController()
-        let searchVC = UDBTSearchView.instantiate() { [weak topViewController, weak self] device in
-            self?.didSelectUBTDomain(device, by: domain, in: topViewController)
-        }
-        topViewController.present(searchVC, animated: true)
-    }
-    
+   
     func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
                                  viewingDomain: DomainItem) {
         guard let viewController else { return }
@@ -244,6 +233,16 @@ extension DomainsCollectionRouter {
         guard let openedChannelId = topOpenedChatIdentifiable?.channelId else { return false }
         
         return openedChannelId.normalized.contains(channelId.normalized)
+    }
+    
+    func didRegisterShakeDevice() {
+        guard let navigationController = self.navigationController else { return }
+        
+        let topViewController = navigationController.topVisibleViewController()
+        let searchVC = UDBTSearchView.instantiate() { [weak topViewController, weak self] (device, domain) in
+            self?.didSelectUBTDomain(device, by: domain, in: topViewController)
+        }
+        topViewController.present(searchVC, animated: true)
     }
 }
 

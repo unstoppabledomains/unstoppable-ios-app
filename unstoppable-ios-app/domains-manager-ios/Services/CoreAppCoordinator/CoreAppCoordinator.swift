@@ -63,6 +63,15 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         goBackToPreviousAppIfCan()
     }
     
+    func didRegisterShakeDevice() {
+        switch currentRoot {
+        case .domainsCollection(let router):
+            router.didRegisterShakeDevice()
+        default:
+            return 
+        }
+    }
+    
     func isActiveState(_ state: AppCoordinationState) -> Bool {
         switch currentRoot {
         case .domainsCollection(let router):
