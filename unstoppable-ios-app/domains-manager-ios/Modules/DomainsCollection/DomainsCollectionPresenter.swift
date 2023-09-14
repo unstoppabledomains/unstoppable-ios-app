@@ -692,8 +692,14 @@ private extension DomainsCollectionPresenter {
         Task {
             switch domain.usageType {
             case .newNonInteractable:
-                Debugger.printInfo("No profile for a non-interactible domain")
-                await self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
+                guard let walletAddress = domain.ownerWallet,
+                      let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else {
+                    Debugger.printInfo("No profile for a non-interactible domain")
+                    await self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
+                    return }
+                
+                let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
+                await router.showPublicDomainProfile(of: domainPublicInfo, viewingDomain: domain)
             case .zil:
                 do {
                     try await appContext.pullUpViewService.showZilDomainsNotSupportedPullUp(in: topView)

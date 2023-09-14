@@ -16,7 +16,7 @@ final class DomainProfileSocialCell: BaseListCollectionViewCell {
 
     override var containerColor: UIColor { .clear }
 
-    private var socialDescription: DomainProfileSocialsSection.SocialDescription?
+    private var socialDescription: SocialDescription?
     private var actionButtonPressedCallback: EmptyCallback?
     
     override func awakeFromNib() {

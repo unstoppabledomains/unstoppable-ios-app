@@ -303,19 +303,13 @@ fileprivate extension ImageLoadingService {
     }
     
     func loadImage(from url: URL) async throws -> Data {
-        if #available(iOS 15.0, *) {
-            let urlRequest = URLRequest(url: url)
-            let (imageData, _) = try await URLSession.shared.data(for: urlRequest)
-            return imageData
-        } else {
-            return try await withSafeCheckedThrowingContinuation { completion in
-                Task.detached {
-                    do {
-                        let imageData = try Data(contentsOf: url)
-                        completion(.success(imageData))
-                    } catch {
-                        completion(.failure(error))
-                    }
+        try await withSafeCheckedThrowingContinuation { completion in
+            Task.detached {
+                do {
+                    let imageData = try Data(contentsOf: url)
+                    completion(.success(imageData))
+                } catch {
+                    completion(.failure(error))
                 }
             }
         }

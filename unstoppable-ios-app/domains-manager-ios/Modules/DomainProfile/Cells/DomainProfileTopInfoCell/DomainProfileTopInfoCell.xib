@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -70,10 +69,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="8Ee-Fh-fmj">
-                                        <rect key="frame" x="0.0" y="96" width="346" height="186"/>
+                                        <rect key="frame" x="0.0" y="96" width="346" height="178"/>
                                         <subviews>
                                             <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label kh ksjhdfkasdjhflksjdhaf slkjdhflaskjhdflkasjhf lksjahdfkljsahdflksjhdflksjhdfsakjlfh" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LrO-nW-5kD">
-                                                <rect key="frame" x="0.0" y="79" width="346" height="28"/>
+                                                <rect key="frame" x="0.0" y="75" width="346" height="28"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="28" id="pzK-OF-xKl"/>
                                                 </constraints>
@@ -84,25 +83,41 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="q9W-Tp-GK2">
-                                        <rect key="frame" x="102" y="298" width="142" height="24"/>
+                                        <rect key="frame" x="94" y="290" width="158" height="32"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" spacing="-8" translatesAutoresizingMaskIntoConstraints="NO" id="5I4-jb-pu4">
-                                                <rect key="frame" x="0.0" y="0.0" width="142" height="24"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="5I4-jb-pu4">
+                                                <rect key="frame" x="0.0" y="0.0" width="158" height="32"/>
                                                 <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" horizontalCompressionResistancePriority="753" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GJQ-Ck-XLe" customClass="GhostTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="0.0" width="75" height="24"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="254" horizontalCompressionResistancePriority="754" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rHb-ab-50F" customClass="SmallRaisedTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="75" height="32"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="32" id="HCZ-7O-q8d"/>
+                                                        </constraints>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                                <real key="value" value="16"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
                                                         <connections>
-                                                            <action selector="qrCodeButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="81h-4H-NyY"/>
+                                                            <action selector="socialButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="alj-bG-SqH"/>
                                                         </connections>
                                                     </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="254" horizontalCompressionResistancePriority="754" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rHb-ab-50F" customClass="GhostTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                                        <rect key="frame" x="67" y="0.0" width="75" height="24"/>
+                                                    <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="253" horizontalCompressionResistancePriority="753" contentHorizontalAlignment="right" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GJQ-Ck-XLe" customClass="SmallRaisedTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                        <rect key="frame" x="83" y="0.0" width="75" height="32"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="32" id="JPd-pc-iin"/>
+                                                        </constraints>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                        <userDefinedRuntimeAttributes>
+                                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                                <real key="value" value="16"/>
+                                                            </userDefinedRuntimeAttribute>
+                                                        </userDefinedRuntimeAttributes>
                                                         <connections>
-                                                            <action selector="publicProfileButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="alj-bG-SqH"/>
+                                                            <action selector="qrCodeButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="81h-4H-NyY"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -149,7 +164,7 @@
                 <outlet property="domainAvatarImageView" destination="D8f-DF-qvd" id="mn3-DY-3XU"/>
                 <outlet property="domainBannerImageView" destination="8v8-I7-B0o" id="bl1-Nd-WGr"/>
                 <outlet property="domainNameLabel" destination="LrO-nW-5kD" id="D9s-nG-i8V"/>
-                <outlet property="publicProfileButton" destination="rHb-ab-50F" id="WLu-1c-e8x"/>
+                <outlet property="followersButton" destination="rHb-ab-50F" id="WLu-1c-e8x"/>
                 <outlet property="qrCodeButton" destination="GJQ-Ck-XLe" id="aLD-IN-eN1"/>
             </connections>
             <point key="canvasLocation" x="272.30769230769232" y="38.388625592417057"/>

@@ -63,6 +63,15 @@ extension CoreAppCoordinator: CoreAppCoordinatorProtocol {
         goBackToPreviousAppIfCan()
     }
     
+    func didRegisterShakeDevice() {
+        switch currentRoot {
+        case .domainsCollection(let router):
+            router.didRegisterShakeDevice()
+        default:
+            return 
+        }
+    }
+    
     func isActiveState(_ state: AppCoordinationState) -> Bool {
         switch currentRoot {
         case .domainsCollection(let router):
@@ -110,6 +119,8 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
                 pullUpViewService.showLoadingIndicator(in: topVC)
             case .showChat(let chatId, let profile):
                 await router.showChat(chatId, profile: profile)
+            case .showNewChat(let userInfo, let profile):
+                await router.showChatWith(options: .newChat(userInfo: userInfo), profile: profile)
             case .showChannel(let channelId, let profile):
                 await router.showChannel(channelId, profile: profile)
             case .showChatsList(let profile):

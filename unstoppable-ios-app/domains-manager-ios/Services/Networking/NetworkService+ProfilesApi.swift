@@ -12,6 +12,7 @@ struct SerializedPublicDomainProfile: Decodable {
     let socialAccounts: SocialAccounts?
     let referralCode: String?
     let social: DomainProfileSocialInfo?
+    let records: [String : String]?
 }
 
 struct SerializedUserDomainProfile: Codable {
@@ -21,6 +22,7 @@ struct SerializedUserDomainProfile: Codable {
     let humanityCheck: UserDomainProfileHumanityCheckAttribute
     let records: [String : String]
     let storage: UserDomainStorageDetails?
+    let social: DomainProfileSocialInfo
     
     enum CodingKeys: CodingKey {
         case profile
@@ -29,6 +31,7 @@ struct SerializedUserDomainProfile: Codable {
         case humanityCheck
         case records
         case storage
+        case social
     }
     
     init(profile: UserDomainProfileAttributes,
@@ -36,13 +39,15 @@ struct SerializedUserDomainProfile: Codable {
          socialAccounts: SocialAccounts,
          humanityCheck: UserDomainProfileHumanityCheckAttribute,
          records: [String : String],
-         storage: UserDomainStorageDetails?) {
+         storage: UserDomainStorageDetails?,
+         social: DomainProfileSocialInfo?) {
         self.profile = profile
         self.messaging = messaging
         self.socialAccounts = socialAccounts
         self.humanityCheck = humanityCheck
         self.records = records
         self.storage = storage
+        self.social = social ?? .init(followingCount: 0, followerCount: 0)
     }
     
     init(from decoder: Decoder) throws {
@@ -53,6 +58,7 @@ struct SerializedUserDomainProfile: Codable {
         self.humanityCheck = (try? container.decode(UserDomainProfileHumanityCheckAttribute.self, forKey: .humanityCheck)) ?? .init()
         self.records = (try? container.decode([String : String].self, forKey: .records)) ?? .init()
         self.storage = (try? container.decode(UserDomainStorageDetails.self, forKey: .storage))
+        self.social = (try? container.decode(DomainProfileSocialInfo.self, forKey: .social)) ?? .init(followingCount: 0, followerCount: 0)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -63,6 +69,7 @@ struct SerializedUserDomainProfile: Codable {
         try container.encode(self.humanityCheck, forKey: .humanityCheck)
         try container.encode(self.records, forKey: .records)
         try container.encode(self.storage, forKey: .storage)
+        try container.encode(self.social, forKey: .social)
     }
     
     static func newEmpty() -> SerializedUserDomainProfile {
@@ -71,7 +78,8 @@ struct SerializedUserDomainProfile: Codable {
                                     socialAccounts: .init(),
                                     humanityCheck: .init(),
                                     records: [:],
-                                    storage: nil)
+                                    storage: nil,
+                                    social: nil)
     }
 }
 
@@ -120,7 +128,7 @@ extension PublicDomainProfileAttributes {
     }
 }
 
-enum DomainProfileImageType: String, Codable {
+enum DomainProfileImageType: String, Codable, Hashable {
     case onChain, offChain
     case `default` /// Means no avatar is set
 }
@@ -370,9 +378,9 @@ struct SignatureComponentHeaders: Decodable {
     }
 }
 
-struct SearchDomainProfile: Codable {
+struct SearchDomainProfile: Codable, Hashable {
     let name: String
-    let ownerAddress: String
+    let ownerAddress: String?
     let imagePath: String?
     let imageType: DomainProfileImageType?
 }
@@ -402,12 +410,12 @@ struct UserDomainStorageDetails: Codable {
     }
 }
 
-struct DomainProfileSocialInfo: Codable {
+struct DomainProfileSocialInfo: Codable, Hashable {
     let followingCount: Int
     let followerCount: Int
 }
 
-enum DomainProfileFollowerRelationshipType: String, Codable {
+enum DomainProfileFollowerRelationshipType: String, Codable, CaseIterable {
     case followers, following
 }
 
@@ -495,9 +503,12 @@ extension NetworkService {
         return info
     }
     
-    public func searchForRRDomainsWith(name: String) async throws -> [SearchDomainProfile] {
+    public func searchForDomainsWith(name: String,
+                                     shouldBeSetAsRR: Bool) async throws -> [SearchDomainProfile] {
         let startTime = Date()
-        guard let url = Endpoint.searchDomains(with: name, shouldHaveProfile: false, shouldBeSetAsRR: true).url else {
+        guard let url = Endpoint.searchDomains(with: name,
+                                               shouldHaveProfile: false,
+                                               shouldBeSetAsRR: shouldBeSetAsRR).url else {
             throw NetworkLayerError.creatingURLFailed
         }
         let data = try await fetchData(for: url, method: .get)

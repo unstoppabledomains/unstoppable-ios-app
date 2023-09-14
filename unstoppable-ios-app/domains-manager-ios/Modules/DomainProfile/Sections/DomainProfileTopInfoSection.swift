@@ -32,11 +32,13 @@ final class DomainProfileTopInfoSection {
 extension DomainProfileTopInfoSection: DomainProfileSection {
     func fill(snapshot: inout DomainProfileSnapshot, withGeneralData generalData: DomainProfileGeneralData) {
         let domain = generalData.domain
+        let social = topInfoData.social
         
         let isEnabled = state == .default || state == .updatingRecords
         snapshot.appendSections([.topInfo])
         snapshot.appendItems([.topInfo(data: .init(id: id,
                                                    domain: domain,
+                                                   social: social,
                                                    isEnabled: isEnabled,
                                                    avatarImageState: editingTopInfoData.avatarImageState,
                                                    bannerImageState: editingTopInfoData.bannerImageState,
@@ -157,6 +159,33 @@ private extension DomainProfileTopInfoSection {
         case .domainName:
             UIPasteboard.general.string = controller.generalData.domain.name
             appContext.toastMessageService.showToast(.domainCopied, isSticky: false)
+        case .followersList:
+            UDRouter().showFollowersList(domainName: controller.generalData.domain.name,
+                                         socialInfo: topInfoData.social,
+                                         followerSelectionCallback: { [weak self] follower in
+                self?.didSelectFollower(follower)
+            },
+                                         in: viewController)
+        }
+    }
+    
+    func didSelectFollower(_ follower: DomainProfileFollowerDisplayInfo) {
+        Task {
+            guard let controller,
+                  let viewController = controller.viewController else { return }
+            
+            guard let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: follower.domain),
+                  let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: controller.generalData.domain.name) else {
+                await (viewController as BaseViewController).showAlertWith(error: PublicProfileView.PublicProfileError.failedToLoadFollowerInfo)
+                return
+            }
+            
+            let domain = PublicDomainDisplayInfo(walletAddress: rrInfo.address,
+                                                 name: follower.domain)
+            try? await Task.sleep(seconds: 0.2)
+            await UDRouter().showPublicDomainProfile(of: domain,
+                                               viewingDomain: viewingDomain,
+                                               in: viewController)
         }
     }
     

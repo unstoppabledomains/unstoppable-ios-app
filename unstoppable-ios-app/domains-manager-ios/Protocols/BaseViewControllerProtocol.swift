@@ -43,25 +43,8 @@ extension BaseViewControllerProtocol {
             return
         }
         
-        var message: String
-        let title: String
-        
-        if error is TransactionError {
-            title = String.Constants.transactionFailed.localized()
-            message = String.Constants.pleaseTryAgain.localized()
-        } else if let networkError = error as? NetworkLayerError,
-                case .notConnectedToInternet = networkError {
-            title = String.Constants.connectionLost.localized()
-            message = String.Constants.pleaseCheckInternetConnection.localized()
-        } else {
-            title = String.Constants.somethingWentWrong.localized()
-            message = String.Constants.pleaseTryAgain.localized()
-        }
-        
-        #if DEBUG
-        message = error.localizedDescription
-        #endif
-        
+        let (title, message) = error.displayTitleAndMessage()
+     
         let alert = UIAlertController(title: title,
                                       message: message,
                                       preferredStyle: .alert)

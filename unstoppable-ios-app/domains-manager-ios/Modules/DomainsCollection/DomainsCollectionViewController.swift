@@ -106,6 +106,11 @@ final class DomainsCollectionViewController: BaseViewController, TitleVisibility
         underCardControl.center = self.view.localCenter
         underCardControl.frame.origin.y = domainCardY
     }
+    
+    override func becomeFirstResponder() -> Bool {
+        return true
+    }
+
 }
 
 // MARK: - DomainsCollectionViewProtocol

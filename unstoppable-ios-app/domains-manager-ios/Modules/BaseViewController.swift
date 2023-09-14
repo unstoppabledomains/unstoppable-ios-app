@@ -84,6 +84,12 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
         navBarUpdated()
     }
     
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?){
+        if motion == .motionShake {
+            appContext.coreAppCoordinator.didRegisterShakeDevice()
+        }
+    }
+    
     // MARK: - KeyboardServiceListener
     func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) { }
     func keyboardDidShowAction() { }
@@ -124,6 +130,10 @@ class BaseViewController: UIViewController, CNavigationControllerChild, ViewAnal
     func setupHideKeyboardTap() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+    }
+    func hideKeyboard() {
+        view.endEditing(true)
+        cNavigationController?.view.endEditing(true)
     }
 }
 
