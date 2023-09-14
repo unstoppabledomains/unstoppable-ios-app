@@ -230,28 +230,33 @@ extension UIFont {
     
     static func interFont(ofSize fontSize: CGFloat, weight: UIFont.Weight = .regular) -> UIFont {
         let defaultFont: UIFont = .systemFont(ofSize: fontSize, weight: weight)
+        let fontName = interFontNameFor(weight: weight)
         
+        return UIFont(name: fontName, size: fontSize) ?? defaultFont
+    }
+    
+    static func interFontNameFor(weight: UIFont.Weight) -> String {
         switch weight {
         case .black:
-            return UIFont(name: "Inter-Black", size: fontSize) ?? defaultFont
+            return "Inter-Black"
         case .bold:
-            return UIFont(name: "Inter-Bold", size: fontSize) ?? defaultFont
+            return "Inter-Bold"
         case .heavy:
-            return UIFont(name: "Inter-ExtraBold", size: fontSize) ?? defaultFont
+            return "Inter-ExtraBold"
         case .ultraLight:
-            return UIFont(name: "Inter-ExtraLight", size: fontSize) ?? defaultFont
+            return "Inter-ExtraLight"
         case .light:
-            return UIFont(name: "Inter-Light", size: fontSize) ?? defaultFont
+            return "Inter-Light"
         case .regular:
-            return UIFont(name: "Inter-Regular", size: fontSize) ?? defaultFont
+            return "Inter-Regular"
         case .semibold:
-            return UIFont(name: "Inter-SemiBold", size: fontSize) ?? defaultFont
+            return "Inter-SemiBold"
         case .medium:
-            return UIFont(name: "Inter-Medium", size: fontSize) ?? defaultFont
+            return "Inter-Medium"
         case .thin:
-            return UIFont(name: "Inter-Thin", size: fontSize) ?? defaultFont
+            return "Inter-Thin"
         default:
-            return .interFont(ofSize: fontSize, weight: .regular)
+            return "Inter-Regular"
         }
     }
     

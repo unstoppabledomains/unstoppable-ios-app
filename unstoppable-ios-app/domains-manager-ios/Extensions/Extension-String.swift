@@ -338,6 +338,11 @@ extension String {
         static let pluralNMessages = "SDICT:N_MESSAGES"
         static let pluralNPeopleYouMayKnow = "SDICT:N_PEOPLE_YOU_MAY_KNOW"
         static let pluralNMembers = "SDICT:N_MEMBERS"
+        static let pluralNSocials = "SDICT:N_SOCIALS"
+        static let pluralNCrypto = "SDICT:N_CRYPTO"
+        static let pluralNFollowers = "SDICT:N_FOLLOWERS"
+        static let pluralNFollowing = "SDICT:N_FOLLOWING"
+        static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -471,6 +476,7 @@ extension String {
         static let domainDetailsEditProfile = "DOMAIN_DETAILS_EDIT_PROFILE";
         static let domainDetailsManageDomain = "DOMAIN_DETAILS_MANAGE_DOMAIN";
         static let domainDetailsShareMessage = "DOMAIN_DETAILS_SHARE_MESSAGE";
+        static let publicDomainDetailsShareMessage = "PUBLIC_DOMAIN_DETAILS_SHARE_MESSAGE";
         static let domainDetailsAddCurrency = "DOMAIN_DETAILS_ADD_CURRENCY";
         
         // Manage domain
@@ -916,9 +922,38 @@ extension String {
         static let messagingInvite = "MESSAGING_INVITE"
         static let messagingSearchResultNotRRDomain = "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN"
         
+        // Public profile
+        static let followers = "FOLLOWERS"
+        static let following = "FOLLOWING"
+        static let follow = "FOLLOW"
+        static let followersListEmptyMessage = "FOLLOWERS_LIST_EMPTY_MESSAGE"
+        static let followingListEmptyMessage = "FOLLOWING_LIST_EMPTY_MESSAGE"
+        static let followedBy = "FOLLOWED_BY"
+        static let followedByNOthersSuffix = "FOLLOWED_BY_N_OTHERS_SUFFIX"
+        static let and = "AND"
+        static let leaderboard = "LEADERBOARD"
+        static let unfollow = "UNFOLLOW"
+        static let followAsDomain = "FOLLOW_AS_DOMAIN"
+        static let unfollowAsDomain = "UNFOLLOW_AS_DOMAIN"
+        static let switchMyDomain = "SWITCH_MY_DOMAIN"
+
+        // Domains search
+        static let yourDomains = "YOUR_DOMAINS"
+        static let globalSearch = "GLOBAL_SEARCH"
+        static let globalSearchHint = "GLOBAL_SEARCH_HINT"
+
         // No wallets to claim
         static let noWalletsToClaimAlertTitle = "NO_WALLETS_TO_CLAIM_ALERT_TITLE"
         static let noWalletsToClaimAlertSubtitle = "NO_WALLETS_TO_CLAIM_ALERT_SUBTITLE"
+        
+        // Shake to find
+        static let shakeToFindSearchTitle = "SHAKE_TO_FIND_SEARCH_TITLE"
+        static let shakeToFindSearchSubtitle = "SHAKE_TO_FIND_SEARCH_SUBTITLE"
+        static let shakeToFindPermissionsTitle = "Permissions\nnot granted"
+        static let shakeToFindFailedTitle = "Failed to run\nBluetooth services"
+        static let shakeToFindFailedSubtitle = "Looks like Bluetooth doesn't work on your phone. Ensure your device is working fine."
+        static let openSettings = "Open settings"
+        
     }
 
     enum BlockChainIcons: String {

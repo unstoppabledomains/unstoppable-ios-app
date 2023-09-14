@@ -14,8 +14,8 @@ final class DomainURLActivityItemSource: NSObject, UIActivityItemSource {
     var url: URL
     var isTitleOnly: Bool
     
-    init(title: String? = nil , url: URL, isTitleOnly: Bool) {
-        let title = title ?? String.Constants.domainDetailsShareMessage.localized()
+    init(isUserDomain: Bool , url: URL, isTitleOnly: Bool) {
+        let title = isUserDomain ? String.Constants.domainDetailsShareMessage.localized() : String.Constants.publicDomainDetailsShareMessage.localized()
         self.title = title
         self.url = url
         self.isTitleOnly = isTitleOnly

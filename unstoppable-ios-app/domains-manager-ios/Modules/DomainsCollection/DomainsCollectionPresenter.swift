@@ -346,6 +346,9 @@ private extension DomainsCollectionPresenter {
             updateUI()
             self.isResolvingPrimaryDomain = false
             view.runConfettiAnimation()
+        }
+        
+        if !domains.requirePNItems().isEmpty {
             notificationsService.checkNotificationsPermissions()
         }
     }
@@ -685,8 +688,14 @@ private extension DomainsCollectionPresenter {
         Task {
             switch domain.usageType {
             case .newNonInteractable:
-                Debugger.printInfo("No profile for a non-interactible domain")
-                await self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
+                guard let walletAddress = domain.ownerWallet,
+                      let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else {
+                    Debugger.printInfo("No profile for a non-interactible domain")
+                    await self.view?.showSimpleAlert(title: "", body: String.Constants.ensSoon.localized())
+                    return }
+                
+                let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: domain.name)
+                await router.showPublicDomainProfile(of: domainPublicInfo, viewingDomain: domain)
             case .zil:
                 do {
                     try await appContext.pullUpViewService.showZilDomainsNotSupportedPullUp(in: topView)
@@ -730,7 +739,7 @@ private extension DomainsCollectionPresenter {
         Task {
             let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
             guard !wallets.isEmpty else {
-                showNoWalletsToClaimDomainAlert()
+                showNoWalletsToClaimDomainPullUp()
                 return
             }
             let userProfile = try? await appContext.firebaseInteractionService.getUserProfile()
@@ -738,10 +747,25 @@ private extension DomainsCollectionPresenter {
             await router.runMintDomainsFlow(with: .default(email: email))
         }
     }
-    func showNoWalletsToClaimDomainAlert() {
+    func showNoWalletsToClaimDomainPullUp() {
         Task { @MainActor in
-            view?.showSimpleAlert(title: String.Constants.noWalletsToClaimAlertTitle.localized(),
-                                  body: String.Constants.noWalletsToClaimAlertSubtitle.localized())
+            guard let view else { return }
+            
+            do {
+                let action = try await appContext.pullUpViewService.showAddWalletSelectionPullUp(in: view,
+                                                                                                 presentationOptions: .claimWithoutWallets,
+                                                                                                 actions: WalletDetailsAddWalletAction.allCases)
+                await view.dismissPullUpMenu()
+                
+                switch action {
+                case .create:
+                    router.showImportWalletsWith(initialAction: .createNewWallet)
+                case .recoveryOrKey:
+                    router.showImportWalletsWith(initialAction: .importWallet)
+                case .connect:
+                    router.showImportWalletsWith(initialAction: .connectWallet)
+                }
+            } catch { }
         }
     }
     

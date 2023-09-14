@@ -165,5 +165,7 @@
 		<key>apiKey</key>
 		<string>bc471d79e666ce83787724f3b14c8562</string>
 	</dict>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>To discover and connect with other devices</string>
 </dict>
 </plist>

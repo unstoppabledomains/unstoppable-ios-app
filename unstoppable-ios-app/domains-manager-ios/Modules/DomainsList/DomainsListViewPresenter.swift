@@ -25,7 +25,7 @@ class DomainsListViewPresenter: ViewAnalyticsLogger {
     private(set) weak var view: DomainsListViewProtocol?
     var domains: [DomainDisplayInfo]
 
-    var scrollableContentYOffset: CGFloat { 48 }
+    var scrollableContentYOffset: CGFloat { 36 }
     var analyticsName: Analytics.ViewName { .unspecified }
     var navBackStyle: BaseViewController.NavBackIconStyle { .arrow }
     var title: String { "" }

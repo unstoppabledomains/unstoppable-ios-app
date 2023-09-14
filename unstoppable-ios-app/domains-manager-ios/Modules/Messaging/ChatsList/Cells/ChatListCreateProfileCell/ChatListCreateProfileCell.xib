@@ -140,7 +140,13 @@
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
                 <constraint firstItem="qeM-ad-rwl" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="PLE-ro-b9Y"/>
-                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="qeM-ad-rwl" secondAttribute="bottom" constant="16" id="YUD-Np-Qq6"/>
+                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="qeM-ad-rwl" secondAttribute="bottom" constant="16" id="YUD-Np-Qq6" customClass="NSLayoutHelper" customModule="domains_manager_ios" customModuleProvider="target">
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="iPhone8">
+                            <real key="value" value="48"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </constraint>
                 <constraint firstItem="qeM-ad-rwl" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="ajk-2F-Gdb"/>
                 <constraint firstItem="qeM-ad-rwl" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="xpp-WO-P7Y"/>
             </constraints>

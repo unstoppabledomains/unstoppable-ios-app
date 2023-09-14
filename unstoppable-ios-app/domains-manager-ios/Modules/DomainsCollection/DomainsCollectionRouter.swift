@@ -24,6 +24,8 @@ protocol DomainsCollectionRouterProtocol {
     func showDomainsSearch(_ domains: [DomainDisplayInfo],
                            searchCallback: @escaping DomainsListSearchCallback)
     func showChatsListScreen()
+    func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
+                                 viewingDomain: DomainItem)
 }
 
 @MainActor
@@ -174,6 +176,13 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
 
         showChatsListScreen(in: navigationController, presentOptions: .default)
     }
+   
+    func showPublicDomainProfile(of domain: PublicDomainDisplayInfo,
+                                 viewingDomain: DomainItem) {
+        guard let viewController else { return }
+        
+        showPublicDomainProfile(of: domain, viewingDomain: viewingDomain, in: viewController)
+    }
 }
 
 // MARK: - Open methods
@@ -197,12 +206,16 @@ extension DomainsCollectionRouter {
         }
     }
     
-    func jumpToChatsList(profile: MessagingChatUserProfileDisplayInfo) async {
+    func jumpToChatsList(profile: MessagingChatUserProfileDisplayInfo?) async {
         await showChatsListWith(options: .showChatsList(profile: profile))
     }
     
     func showChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) async {
-        await showChatsListWith(options: .showChat(chatId: chatId, profile: profile))
+        await showChatWith(options: .existingChat(chatId: chatId), profile: profile)
+    }
+    
+    func showChatWith(options: ChatsList.PresentOptions.PresentChatOptions, profile: MessagingChatUserProfileDisplayInfo) async {
+        await showChatsListWith(options: .showChat(options: options, profile: profile))
     }
     
     func showChannel(_ channelId: String, profile: MessagingChatUserProfileDisplayInfo) async {
@@ -220,6 +233,16 @@ extension DomainsCollectionRouter {
         guard let openedChannelId = topOpenedChatIdentifiable?.channelId else { return false }
         
         return openedChannelId.normalized.contains(channelId.normalized)
+    }
+    
+    func didRegisterShakeDevice() {
+        guard let navigationController = self.navigationController else { return }
+        
+        let topViewController = navigationController.topVisibleViewController()
+        let searchVC = UDBTSearchView.instantiate() { [weak topViewController, weak self] (device, domain) in
+            self?.didSelectUBTDomain(device, by: domain, in: topViewController)
+        }
+        topViewController.present(searchVC, animated: true)
     }
 }
 
@@ -295,9 +318,24 @@ private extension DomainsCollectionRouter {
         if let presentedChatsList = navigationController.viewControllers.first(where: { $0 is ChatsListViewController } ) as? ChatsListViewController,
            let chatsListCoordinator = presentedChatsList.presenter as? ChatsListCoordinator {
             chatsListCoordinator.update(presentOptions: options)
-        } else  {
+        } else {
             await resetNavigationToRoot()
             showChatsListScreen(in: navigationController, presentOptions: options)
+        }
+    }
+    
+    func didSelectUBTDomain(_ btDomainInfo: BTDomainUIInfo,
+                            by domain: DomainDisplayInfo,
+                            in topViewController: UIViewController?) {
+        Task {
+            guard let topViewController,
+                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: domain.name) else { return }
+            
+            let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
+                                                           name: btDomainInfo.domainName)
+            showPublicDomainProfile(of: publicDomainInfo,
+                                    viewingDomain: domain,
+                                    in: topViewController)
         }
     }
 }

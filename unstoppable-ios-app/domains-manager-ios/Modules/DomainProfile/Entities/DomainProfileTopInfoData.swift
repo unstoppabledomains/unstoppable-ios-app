@@ -12,10 +12,12 @@ struct DomainProfileTopInfoData {
     var bannerImageState: ImageState
     var imagePathPublic: Bool
     var coverPathPublic: Bool
+    let social: DomainProfileSocialInfo
     
     init(profile: SerializedUserDomainProfile) {
         imagePathPublic = profile.profile.imagePathPublic
         coverPathPublic = profile.profile.coverPathPublic
+        social = profile.social
         
         if let avatarPath = profile.profile.imagePath,
            let avatarURL = URL(string: avatarPath),

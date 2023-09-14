@@ -28,11 +28,7 @@ extension PermissionsService: PermissionsServiceProtocol {
         case .camera:
             checkCameraPermissions(in: viewController, shouldShowAlertIfNotGranted: shouldShowAlertIfNotGranted, completion: completion)
         case .photoLibrary(let options):
-            if #available(iOS 14, *) {
-                checkPhotoLibraryPermissions(in: viewController, for: options.accessLevel, shouldShowAlertIfNotGranted: shouldShowAlertIfNotGranted, completion: completion)
-            } else {
-                checkPhotoLibraryPermissions(in: viewController, shouldShowAlertIfNotGranted: shouldShowAlertIfNotGranted, completion: completion)
-            }
+            checkPhotoLibraryPermissions(in: viewController, for: options.accessLevel, shouldShowAlertIfNotGranted: shouldShowAlertIfNotGranted, completion: completion)
         case .notifications(let options):
             checkNotificationsPermissions(in: viewController, options: options, shouldShowAlertIfNotGranted: shouldShowAlertIfNotGranted, completion: completion)
         }
@@ -101,7 +97,6 @@ private extension PermissionsService {
         }
     }
     
-    @available(iOS 14, *)
     func checkPhotoLibraryPermissions(in controller: UIViewController?, for accessLevel: PHAccessLevel, shouldShowAlertIfNotGranted: Bool, completion: @escaping PermissionsServiceCallback) {
         let analyticsName = Functionality.photoLibrary(options: .addOnly).analyticsName
         let status = PHPhotoLibrary.authorizationStatus()
@@ -109,34 +104,6 @@ private extension PermissionsService {
             appContext.analyticsService.log(event: .permissionsRequested,
                                         withParameters: [.permissionsType: analyticsName])
             PHPhotoLibrary.requestAuthorization(for: accessLevel) { [unowned self] (newStatus) in
-                if newStatus == .authorized {
-                    appContext.analyticsService.log(event: .permissionsGranted,
-                                                withParameters: [.permissionsType: analyticsName])
-                    completion(true)
-                } else {
-                    appContext.analyticsService.log(event: .permissionsDeclined,
-                                                withParameters: [.permissionsType: analyticsName])
-                    DispatchQueue.main.async { [unowned self] in
-                        self.presentPhotoLibraryPermissionsErrorController(in: controller, ifNeeded: shouldShowAlertIfNotGranted)
-                    }
-                    completion(false)
-                }
-            }
-        } else if status == .denied {
-            presentPhotoLibraryPermissionsErrorController(in: controller, ifNeeded: shouldShowAlertIfNotGranted)
-            completion(false)
-        } else {
-            completion(true)
-        }
-    }
-    
-    func checkPhotoLibraryPermissions(in controller: UIViewController?, shouldShowAlertIfNotGranted: Bool, completion: @escaping PermissionsServiceCallback) {
-        let analyticsName = Functionality.notifications(options: []).analyticsName
-        let status = PHPhotoLibrary.authorizationStatus()
-        if status == .notDetermined {
-            appContext.analyticsService.log(event: .permissionsRequested,
-                                        withParameters: [.permissionsType: analyticsName])
-            PHPhotoLibrary.requestAuthorization { [unowned self] (newStatus) in
                 if newStatus == .authorized {
                     appContext.analyticsService.log(event: .permissionsGranted,
                                                 withParameters: [.permissionsType: analyticsName])
@@ -246,13 +213,11 @@ extension PermissionsService {
     enum PhotoLibraryPermissionsOptions {
         case addOnly, readWrite
         
-        @available(iOS 14, *)
         var accessLevel: PHAccessLevel {
             switch self {
             case .addOnly: return .addOnly
             case .readWrite: return .readWrite
             }
         }
-        
     }
 }
