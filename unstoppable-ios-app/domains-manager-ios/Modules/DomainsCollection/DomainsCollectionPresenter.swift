@@ -364,7 +364,8 @@ private extension DomainsCollectionPresenter {
         if let walletWithoutRR = findWalletWithoutRRDomain(domains: domains),
            let walletInfo = walletWithoutRR.displayInfo,
            !isResolvingPrimaryDomain,
-           router.isTopPresented() {
+           router.isTopPresented(),
+           await appContext.dataAggregatorService.isReverseResolutionChangeAllowed(for: walletWithoutRR.wallet) {
             guard let view = self.view else { return }
             
             self.isResolvingPrimaryDomain = true
