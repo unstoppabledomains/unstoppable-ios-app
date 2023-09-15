@@ -51,7 +51,7 @@ final class CNavigationBar: UIView {
         
         guard let superview = self.superview else { return }
         
-        let modalOffset: CGFloat = isModalInPageSheet ? 10 : 0
+        let modalOffset = self.modalOffset
         let safeAreaTopInset: CGFloat = superview.safeAreaLayoutGuide.layoutFrame.minY
         navBarContentView.frame.size.width = bounds.width
         navBarContentView.frame.origin = CGPoint(x: 0,
@@ -60,7 +60,7 @@ final class CNavigationBar: UIView {
         navBarBlur.frame = CGRect(x: 0, y: 0, width: bounds.width, height: navBarContentView.frame.maxY)
         
         largeTitleView.frame = CGRect(x: 0,
-                                      y: Self.Constants.navigationBarHeight + safeAreaTopInset,
+                                      y: Self.Constants.navigationBarHeight + safeAreaTopInset + modalOffset,
                                       width: bounds.width,
                                       height: largeTitleHeight)
         
@@ -87,6 +87,10 @@ final class CNavigationBar: UIView {
 
 // MARK: - Open methods
 extension CNavigationBar {
+    var modalOffset: CGFloat {
+        isModalInPageSheet ? 10 : 0
+    }
+    
     func setupWith(child: CNavigationControllerChild?, navigationItem: UINavigationItem) {
         self.scrollableContentYOffset = child?.scrollableContentYOffset
         navBarContentView.set(titleAttributes: child?.navBarTitleAttributes)
