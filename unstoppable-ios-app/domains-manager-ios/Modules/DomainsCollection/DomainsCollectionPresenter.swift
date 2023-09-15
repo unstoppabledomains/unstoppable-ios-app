@@ -311,6 +311,19 @@ private extension DomainsCollectionPresenter {
     }
     
     @MainActor
+    func findWalletWithoutRRDomain(domains: [DomainDisplayInfo]) -> WalletWithInfo? {
+        let walletsWithoutRR = stateController.walletsWithInfo.filter({ $0.displayInfo?.reverseResolutionDomain == nil })
+        
+        for wallet in walletsWithoutRR {
+            let walletInteractableDomains = domains.filter({ $0.isOwned(by: [wallet.wallet] )}).interactableItems()
+            if !walletInteractableDomains.isEmpty {
+                return wallet
+            }
+        }
+        return nil
+    }
+    
+    @MainActor
     func resolvePrimaryDomain(domains: [DomainDisplayInfo]) async {
         if !isPrimaryDomainResolved(domains: domains),
            !isResolvingPrimaryDomain,
@@ -346,6 +359,21 @@ private extension DomainsCollectionPresenter {
             updateUI()
             self.isResolvingPrimaryDomain = false
             view.runConfettiAnimation()
+        }
+        
+        if let walletWithoutRR = findWalletWithoutRRDomain(domains: domains),
+           let walletInfo = walletWithoutRR.displayInfo,
+           !isResolvingPrimaryDomain,
+           router.isTopPresented() {
+            guard let view = self.view else { return }
+            
+            self.isResolvingPrimaryDomain = true
+            _ = await UDRouter().runSetupReverseResolutionFlow(in: view,
+                                                               for: walletWithoutRR.wallet,
+                                                               walletInfo: walletInfo,
+                                                               mode: .chooseFirstDomain)
+            self.isResolvingPrimaryDomain = false
+            await resolvePrimaryDomain(domains: domains)
         }
         
         if !domains.requirePNItems().isEmpty {

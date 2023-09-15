@@ -49,9 +49,6 @@ final class SetupWalletsReverseResolutionNavigationManager: CNavigationControlle
             return super.popViewController(animated: animated)
         }
         
-        if self.isLastViewController(topViewController) {
-            self.dismiss(result: .cancelled)
-        }
         
         return super.popViewController(animated: animated)
     }
@@ -134,13 +131,7 @@ private extension SetupWalletsReverseResolutionNavigationManager {
             }
         }
         
-        setupBackButtonAlwaysVisible()
         checkSwipeGestureEnabled()
-    }
-    
-    func setupBackButtonAlwaysVisible() {
-        navigationBar.alwaysShowBackButton = true
-        navigationBar.setBackButton(hidden: false)
     }
     
     func createStep(_ step: Step) -> UIViewController? {
