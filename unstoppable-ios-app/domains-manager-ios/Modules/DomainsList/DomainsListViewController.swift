@@ -11,6 +11,7 @@ import UIKit
 protocol DomainsListViewProtocol: BaseCollectionViewControllerProtocol {
     func applySnapshot(_ snapshot: DomainsListSnapshot, animated: Bool)
     func setLayout(_ layout: UICollectionViewLayout)
+    func refreshTitle()
 }
 
 typealias DomainsListDataSource = UICollectionViewDiffableDataSource<DomainsListViewController.Section, DomainsListViewController.Item>
@@ -84,6 +85,11 @@ extension DomainsListViewController: DomainsListViewProtocol {
     func setLayout(_ layout: UICollectionViewLayout) {
         collectionView.collectionViewLayout = layout
         collectionView.collectionViewLayout.invalidateLayout()
+    }
+    
+    func refreshTitle() {
+        title = presenter.title
+        cNavigationController?.updateNavigationBar()
     }
 }
 
