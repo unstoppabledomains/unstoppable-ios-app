@@ -66,6 +66,7 @@ extension DomainsListPresenter: DataAggregatorServiceListener {
                             let wallet = walletWithInfo.wallet
                             self.domains = domains.filter({ $0.isOwned(by: [wallet])})
                             showDomains()
+                            view?.refreshTitle()
                         }
                     case .primaryDomainChanged, .walletsListUpdated: return
                     }
