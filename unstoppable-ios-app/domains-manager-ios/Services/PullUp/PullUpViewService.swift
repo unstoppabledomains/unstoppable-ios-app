@@ -115,6 +115,7 @@ protocol PullUpViewServiceProtocol {
     func showGroupChatInfoPullUp(groupChatDetails: MessagingGroupChatDetails,
                                  in viewController: UIViewController) async
     func showUnencryptedMessageInfoPullUp(in viewController: UIViewController)
+    func showHandleChatLinkSelectionPullUp(in viewController: UIViewController) async throws -> Chat.ChatLinkHandleAction
 }
 
 @MainActor
@@ -1656,6 +1657,27 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         showOrUpdate(in: viewController, pullUp: .unencryptedMessageInfo, contentView: shareDomainPullUpView, height: selectionViewHeight)
         shareDomainPullUpView.dismissCallback = { [weak viewController] in
             viewController?.dismissPullUpMenu()
+        }
+    }
+    
+    func showHandleChatLinkSelectionPullUp(in viewController: UIViewController) async throws -> Chat.ChatLinkHandleAction {
+        try await withSafeCheckedThrowingMainActorContinuation(critical: false) { continuation in
+            let selectionViewHeight: CGFloat = 436
+            let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.warning.localized()),
+                                                                         contentAlignment: .center,
+                                                                         icon: .init(icon: .warningIconLarge, size: .large),
+                                                                         subtitle: .label(.text(String.Constants.messagingOpenLinkWarningMessage.localized())),
+                                                                         actionButton: .main(content: .init(title: String.Constants.messagingOpenLinkActionTitle.localized(), icon: .safari, analyticsName: .clear, action: {
+                continuation(.success(.handle))
+            })),
+                                                                         extraButton: .primaryDanger(content: .init(title: String.Constants.messagingCancelAndBlockActionTitle.localized(), icon: .systemMinusCircle, analyticsName: .clear, action: {
+                continuation(.success(.block))
+                
+            })),
+                                                                         cancelButton: .cancelButton),
+                                                    items: PullUpSelectionViewEmptyItem.allCases)
+            
+            showOrUpdate(in: viewController, pullUp: .settingsLegalSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
         }
     }
 }

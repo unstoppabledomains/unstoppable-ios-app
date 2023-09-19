@@ -669,7 +669,21 @@ private extension ChatViewPresenter {
     }
     
     func handleLinkPressed(_ url: URL) {
-       
+        Task {
+            guard let view else { return }
+            
+            do {
+                let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
+                await view.dismissPullUpMenu()
+                
+                switch action {
+                case .handle:
+                    view.openLink(.generic(url: url.absoluteString))
+                case .block:
+                    return
+                }
+            } catch { }
+        }
     }
 }
 
