@@ -670,8 +670,9 @@ private extension ChatViewPresenter {
     
     func handleLinkPressed(_ url: URL) {
         Task {
-            guard let view else { return }
+            guard let view, case .existingChat(let chat) = conversationState else { return }
             
+            view.hideKeyboard()
             do {
                 let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
                 await view.dismissPullUpMenu()
@@ -680,7 +681,8 @@ private extension ChatViewPresenter {
                 case .handle:
                     view.openLink(.generic(url: url.absoluteString))
                 case .block:
-                    return
+                    try await appContext.messagingService.setUser(in: chat, blocked: true)
+                    view.cNavigationController?.popViewController(animated: true)
                 }
             } catch { }
         }
