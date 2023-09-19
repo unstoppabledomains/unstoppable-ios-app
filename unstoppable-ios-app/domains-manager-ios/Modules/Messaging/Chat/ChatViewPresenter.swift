@@ -375,6 +375,9 @@ private extension ChatViewPresenter {
                                                      isGroupChatMessage: isGroupChatMessage,
                                                      actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
+            },
+                                                     externalLinkHandleCallback: { [weak self] url in
+                self?.handleExternalLinkPressed(url)
             }))
         case .imageBase64(let imageMessageDisplayInfo):
             return .imageBase64Message(configuration: .init(message: message,
@@ -662,6 +665,26 @@ private extension ChatViewPresenter {
                 }
             }
             view?.present(activityViewController, animated: true)
+        }
+    }
+    
+    func handleExternalLinkPressed(_ url: URL) {
+        Task {
+            guard let view, case .existingChat(let chat) = conversationState else { return }
+            
+            view.hideKeyboard()
+            do {
+                let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
+                await view.dismissPullUpMenu()
+                
+                switch action {
+                case .handle:
+                    view.openLink(.generic(url: url.absoluteString))
+                case .block:
+                    try await appContext.messagingService.setUser(in: chat, blocked: true)
+                    view.cNavigationController?.popViewController(animated: true)
+                }
+            } catch { }
         }
     }
 }
