@@ -642,7 +642,7 @@ extension ChatViewController {
         let textMessageDisplayInfo: MessagingChatMessageTextTypeDisplayInfo
         let isGroupChatMessage: Bool
         var actionCallback: (ChatMessageAction)->()
-        var linkHandleCallback: ChatMessageLinkPressedCallback
+        var externalLinkHandleCallback: ChatMessageLinkPressedCallback
         
         static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.message.id == rhs.message.id &&

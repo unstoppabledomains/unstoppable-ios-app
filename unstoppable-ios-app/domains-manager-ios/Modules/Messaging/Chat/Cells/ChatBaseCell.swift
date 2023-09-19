@@ -17,7 +17,7 @@ class ChatBaseCell: UICollectionViewCell {
     
     private var containerViewSideConstraints: [NSLayoutConstraint] = []
     private(set) var sender: MessagingChatSender?
-    private var linkPressedCallback: ChatMessageLinkPressedCallback?
+    private var externalLinkPressedCallback: ChatMessageLinkPressedCallback?
 
     func setWith(sender: MessagingChatSender) {
         guard self.sender != sender else {
@@ -52,8 +52,8 @@ class ChatBaseCell: UICollectionViewCell {
 
 // MARK: - Open methods
 extension ChatBaseCell {
-    func setupTextView(_ textView: UITextView, linkPressedCallback: ChatMessageLinkPressedCallback?) {
-        self.linkPressedCallback = linkPressedCallback
+    func setupTextView(_ textView: UITextView, externalLinkPressedCallback: ChatMessageLinkPressedCallback?) {
+        self.externalLinkPressedCallback = externalLinkPressedCallback
         textView.dataDetectorTypes = [.link]
         textView.delegate = self
         textView.backgroundColor = .clear
@@ -82,9 +82,9 @@ extension ChatBaseCell: UITextViewDelegate {
         case .thisUser:
             return true
         case .otherUser, .none:
-            guard let linkPressedCallback else { return true }
+            guard let externalLinkPressedCallback else { return true }
             
-            linkPressedCallback(URL)
+            externalLinkPressedCallback(URL)
             return false
         }
     }

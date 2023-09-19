@@ -376,8 +376,8 @@ private extension ChatViewPresenter {
                                                      actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
             },
-                                                     linkHandleCallback: { [weak self] url in
-                self?.handleLinkPressed(url)
+                                                     externalLinkHandleCallback: { [weak self] url in
+                self?.handleExternalLinkPressed(url)
             }))
         case .imageBase64(let imageMessageDisplayInfo):
             return .imageBase64Message(configuration: .init(message: message,
@@ -668,7 +668,7 @@ private extension ChatViewPresenter {
         }
     }
     
-    func handleLinkPressed(_ url: URL) {
+    func handleExternalLinkPressed(_ url: URL) {
         Task {
             guard let view, case .existingChat(let chat) = conversationState else { return }
             
