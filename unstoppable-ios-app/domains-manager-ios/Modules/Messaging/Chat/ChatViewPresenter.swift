@@ -375,6 +375,9 @@ private extension ChatViewPresenter {
                                                      isGroupChatMessage: isGroupChatMessage,
                                                      actionCallback: { [weak self] action in
                 self?.handleChatMessageAction(action, forMessage: message)
+            },
+                                                     linkHandleCallback: { [weak self] url in
+                self?.handleLinkPressed(url)
             }))
         case .imageBase64(let imageMessageDisplayInfo):
             return .imageBase64Message(configuration: .init(message: message,
@@ -663,6 +666,10 @@ private extension ChatViewPresenter {
             }
             view?.present(activityViewController, animated: true)
         }
+    }
+    
+    func handleLinkPressed(_ url: URL) {
+       
     }
 }
 

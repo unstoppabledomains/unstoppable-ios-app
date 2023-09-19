@@ -24,7 +24,7 @@ final class ChannelFeedCell: ChatBaseCell {
         let sender = MessagingChatSender.otherUser(.init(wallet: ""))
         setWith(sender: sender)
         setBubbleUI(bubbleContainerView, sender: sender)
-        setupTextView(messageTextView)
+        setupTextView(messageTextView, linkPressedCallback: nil)
         messageTextView.textContainerInset.top = 0
         learnButton.setTitle(String.Constants.learnMore.localized(), image: nil)
     }

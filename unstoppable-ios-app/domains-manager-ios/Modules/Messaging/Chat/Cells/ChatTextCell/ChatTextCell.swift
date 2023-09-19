@@ -12,10 +12,14 @@ final class ChatTextCell: ChatUserBubbledMessageCell {
 
     @IBOutlet private weak var messageTextView: UITextView!
     
+    private var linkHandleCallback: ChatMessageLinkPressedCallback?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        setupTextView(messageTextView)
+        setupTextView(messageTextView, linkPressedCallback: { [weak self] url in
+            self?.linkHandleCallback?(url)
+        })
     }
     
 
@@ -25,6 +29,7 @@ final class ChatTextCell: ChatUserBubbledMessageCell {
 extension ChatTextCell {
     func setWith(configuration: ChatViewController.TextMessageUIConfiguration) {
         self.actionCallback = configuration.actionCallback
+        self.linkHandleCallback = configuration.linkHandleCallback
         let textMessage = configuration.message
         var messageColor: UIColor = textMessage.senderType.isThisUser ? .white : .foregroundDefault
         
@@ -65,7 +70,8 @@ struct ChatTextCell_Previews: PreviewProvider {
             cell.setWith(configuration: .init(message: message,
                                               textMessageDisplayInfo: textDetails,
                                               isGroupChatMessage: true,
-                                              actionCallback: { _ in }))
+                                              actionCallback: { _ in },
+                                              linkHandleCallback: { _ in }))
         }
         .frame(width: 390, height: height)
     }
