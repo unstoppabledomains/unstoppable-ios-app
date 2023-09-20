@@ -7405,6 +7405,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.8.0;
+				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -7437,6 +7438,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.8.0;
+				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -7609,6 +7611,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.8.0;
+				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
