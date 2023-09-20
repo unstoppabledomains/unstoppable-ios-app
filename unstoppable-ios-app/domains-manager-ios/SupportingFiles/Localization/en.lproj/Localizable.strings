@@ -838,7 +838,7 @@
 "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN" = "%@ - Reverse Resolution domain";
 "MESSAGING_OPEN_LINK_ACTION_TITLE" = "Open link";
 "MESSAGING_CANCEL_AND_BLOCK_ACTION_TITLE" = "Cancel & block user";
-"MESSAGING_OPEN_LINK_WARNING_MESSAGE" = "Opening links from unknown senders can result in the loss of your crypto assets";
+"MESSAGING_OPEN_LINK_WARNING_MESSAGE" = "Opening links can result in the loss of your crypto assets. Do not click this link unless you are sure it is from a safe source.";
 
 // Public profile
 "FOLLOWERS" = "Followers";

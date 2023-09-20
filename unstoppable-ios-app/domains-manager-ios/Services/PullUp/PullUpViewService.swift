@@ -1662,12 +1662,12 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     
     func showHandleChatLinkSelectionPullUp(in viewController: UIViewController) async throws -> Chat.ChatLinkHandleAction {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { continuation in
-            let selectionViewHeight: CGFloat = 436
+            let selectionViewHeight: CGFloat = 456
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.warning.localized()),
                                                                          contentAlignment: .center,
-                                                                         icon: .init(icon: .warningIconLarge, size: .large),
+                                                                         icon: .init(icon: .warningIconLarge, size: .large, tintColor: .foregroundWarning),
                                                                          subtitle: .label(.text(String.Constants.messagingOpenLinkWarningMessage.localized())),
-                                                                         actionButton: .main(content: .init(title: String.Constants.messagingOpenLinkActionTitle.localized(), icon: .safari, analyticsName: .clear, action: {
+                                                                         actionButton: .raisedTertiary(content: .init(title: String.Constants.messagingOpenLinkActionTitle.localized(), icon: .safari, analyticsName: .clear, action: {
                 continuation(.success(.handle))
             })),
                                                                          extraButton: .primaryDanger(content: .init(title: String.Constants.messagingCancelAndBlockActionTitle.localized(), icon: .systemMinusCircle, analyticsName: .clear, action: {
