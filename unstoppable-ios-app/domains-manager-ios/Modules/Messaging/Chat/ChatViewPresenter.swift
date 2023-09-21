@@ -445,6 +445,13 @@ private extension ChatViewPresenter {
     func setupBarButtons() async {
         var actions: [ChatViewController.NavButtonConfiguration.Action] = []
         
+        func addCopyAddressActionFor(userInfo: MessagingChatUserDisplayInfo) {
+            actions.append(.init(type: .copyAddress, callback: { [weak self] in
+                self?.logButtonPressedAnalyticEvents(button: .copyWalletAddress)
+                CopyWalletAddressPullUpHandler.copyToClipboard(address: userInfo.wallet, ticker: BlockchainType.Ethereum.rawValue)
+            }))
+        }
+        
         func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) async {
             if let domainName = userInfo.domainName {
                 let canViewProfile: Bool
@@ -460,7 +467,11 @@ private extension ChatViewPresenter {
                         self?.didPressViewDomainProfileButton(domainName: domainName,
                                                               walletAddress: userInfo.wallet)
                     }))
+                } else {
+                    addCopyAddressActionFor(userInfo: userInfo)
                 }
+            } else {
+                addCopyAddressActionFor(userInfo: userInfo)
             }
         }
         
