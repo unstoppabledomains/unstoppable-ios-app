@@ -762,7 +762,7 @@ extension ChatViewController {
         }
         
         enum ActionType {
-            case viewProfile, block, viewInfo, leave
+            case viewProfile, block, viewInfo, leave, copyAddress
             
             var title: String {
                 switch self {
@@ -774,6 +774,8 @@ extension ChatViewController {
                     return String.Constants.viewInfo.localized()
                 case .leave:
                     return String.Constants.leave.localized()
+                case .copyAddress:
+                    return String.Constants.copyAddress.localized()
                 }
             }
             
@@ -785,12 +787,14 @@ extension ChatViewController {
                     return .systemMultiplyCircle
                 case .leave:
                     return .systemRectangleArrowRight
+                case .copyAddress:
+                    return .systemDocOnDoc
                 }
             }
             
             var isDestructive: Bool {
                 switch self {
-                case .viewProfile, .viewInfo:
+                case .viewProfile, .viewInfo, .copyAddress:
                     return false
                 case .block, .leave:
                     return true
