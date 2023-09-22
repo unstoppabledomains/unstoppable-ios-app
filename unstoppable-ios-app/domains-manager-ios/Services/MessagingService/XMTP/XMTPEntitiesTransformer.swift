@@ -82,7 +82,7 @@ struct XMTPEntitiesTransformer {
                                                 cachedMessage: MessagingChatMessage?,
                                                 in chat: MessagingChat,
                                                 isRead: Bool,
-                                                filesService: MessagingFilesServiceProtocol) -> MessagingChatMessage? {
+                                                filesService: MessagingFilesServiceProtocol) async -> MessagingChatMessage? {
         var isRead = isRead
         if Constants.shouldHideBlockedUsersLocally,
            XMTPBlockedUsersStorage.shared.isOtherUserBlockedInChat(chat.displayInfo) {
@@ -98,10 +98,10 @@ struct XMTPEntitiesTransformer {
         let userId = chat.userId
         let metadataModel = XMTPEnvironmentNamespace.MessageServiceMetadata(encodedContent: xmtpMessage.encodedContent)
         guard let serviceMetadata = metadataModel.jsonData(),
-              let type = try? extractMessageType(from: xmtpMessage,
-                                                 messageId: id,
-                                                 userId: userId,
-                                                 filesService: filesService) else { return nil }
+              let type = try? await extractMessageType(from: xmtpMessage,
+                                                       messageId: id,
+                                                       userId: userId,
+                                                       filesService: filesService) else { return nil }
         
         let senderWallet = xmtpMessage.senderAddress
         let userDisplayInfo = MessagingChatUserDisplayInfo(wallet: senderWallet)
@@ -133,7 +133,7 @@ struct XMTPEntitiesTransformer {
     private static func extractMessageType(from xmtpMessage: XMTP.DecodedMessage,
                                            messageId: String,
                                            userId: String,
-                                           filesService: MessagingFilesServiceProtocol) throws -> MessagingChatMessageDisplayType? {
+                                           filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType? {
         if let knownType = XMTPMessageKnownTypeFrom(xmtpMessage) {
             switch knownType {
             case .text:
@@ -142,7 +142,7 @@ struct XMTPEntitiesTransformer {
                 return .text(textDisplayInfo)
             case .attachment:
                 let attachment: XMTP.Attachment = try xmtpMessage.content()
-                return try getMessageTypeFor(attachment: attachment,
+                return try await getMessageTypeFor(attachment: attachment,
                                              messageId: messageId,
                                              userId: userId,
                                              filesService: filesService)
@@ -177,8 +177,8 @@ struct XMTPEntitiesTransformer {
     private static func getMessageTypeFor(attachment: Attachment,
                                           messageId: String,
                                           userId: String,
-                                          filesService: MessagingFilesServiceProtocol) throws -> MessagingChatMessageDisplayType {
-        if let image = UIImage(data: attachment.data) {
+                                          filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
+        if let image = await UIImage.createWith(anyData: attachment.data) {
             let imageDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: attachment.data,
                                                                                 image: image)
             return .imageData(imageDisplayInfo)
@@ -212,16 +212,16 @@ struct XMTPEntitiesTransformer {
     
     private static func convertMessagingWebSocketMessageEntityToChatMessage(_ webSocketMessage: MessagingWebSocketMessageEntity,
                                                                     in chat: MessagingChat,
-                                                                    filesService: MessagingFilesServiceProtocol) -> MessagingChatMessage? {
+                                                                    filesService: MessagingFilesServiceProtocol) async -> MessagingChatMessage? {
         guard let serviceContent = webSocketMessage.serviceContent as? XMTPEnvironmentNamespace.XMTPSocketMessageServiceContent else { return nil }
         
         let thisUserWallet = chat.displayInfo.thisUserDetails.wallet
         
-        return convertXMTPMessageToChatMessage(serviceContent.xmtpMessage,
-                                               cachedMessage: nil,
-                                               in: chat,
-                                               isRead: thisUserWallet == webSocketMessage.senderWallet,
-                                               filesService: filesService)
+        return await convertXMTPMessageToChatMessage(serviceContent.xmtpMessage,
+                                                     cachedMessage: nil,
+                                                     in: chat,
+                                                     isRead: thisUserWallet == webSocketMessage.senderWallet,
+                                                     filesService: filesService)
     }
     
     static func convertXMTPConversationToWebSocketChatEntity(_ conversation: Conversation,
@@ -252,10 +252,10 @@ struct XMTPEntitiesTransformer {
         let remoteAttachment = try remoteAttachmentProperties.createRemoteAttachment()
         let remoteAttachmentEncodedContent = try await remoteAttachment.content()
         let attachment: Attachment = try remoteAttachmentEncodedContent.decoded(with: client)
-        return try getMessageTypeFor(attachment: attachment,
-                                     messageId: messageId,
-                                     userId: userId,
-                                     filesService: filesService)
+        return try await getMessageTypeFor(attachment: attachment,
+                                           messageId: messageId,
+                                           userId: userId,
+                                           filesService: filesService)
     }
     
     private struct RemoteAttachmentProperties: Codable {

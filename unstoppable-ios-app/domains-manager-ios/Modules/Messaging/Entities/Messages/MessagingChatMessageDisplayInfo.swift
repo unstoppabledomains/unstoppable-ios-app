@@ -24,8 +24,13 @@ struct MessagingChatMessageDisplayInfo: Hashable {
             time = Date() 
         }
         switch type {
-        case .text, .unknown, .imageData, .remoteContent:
+        case .text, .unknown, .remoteContent:
             return
+        case .imageData(var info):
+            if info.image == nil {
+                info.image = await UIImage.createWith(anyData: info.data)
+                self.type = .imageData(info)
+            }
         case .imageBase64(var info):
             if info.image == nil {
                 info.image = await UIImage.from(base64String: info.base64Image)
