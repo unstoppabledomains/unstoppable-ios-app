@@ -295,6 +295,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func loadRemoteContentFor(_ message: MessagingChatMessage,
+                              user: MessagingChatUserProfile,
                               serviceData: Data,
                               filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
         throw PushMessagingAPIServiceError.actionNotSupported

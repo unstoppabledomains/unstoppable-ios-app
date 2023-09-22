@@ -7828,8 +7828,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/xmtp/xmtp-ios.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = revision;
+				revision = 50181dc4c4bbd02d412a827e1c377716f8ddadc7;
 			};
 		};
 		29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */ = {
