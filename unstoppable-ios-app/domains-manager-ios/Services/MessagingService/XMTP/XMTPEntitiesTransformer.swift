@@ -246,11 +246,12 @@ struct XMTPEntitiesTransformer {
     static func loadRemoteContentFrom(data: Data,
                                       messageId: String,
                                       userId: String,
+                                      client: XMTP.Client,
                                       filesService: MessagingFilesServiceProtocol) async throws -> MessagingChatMessageDisplayType {
         let remoteAttachmentProperties = try RemoteAttachmentProperties.objectFromDataThrowing(data)
         let remoteAttachment = try remoteAttachmentProperties.createRemoteAttachment()
         let remoteAttachmentEncodedContent = try await remoteAttachment.content()
-        let attachment: Attachment = try remoteAttachmentEncodedContent.decoded()
+        let attachment: Attachment = try remoteAttachmentEncodedContent.decoded(with: client)
         return try getMessageTypeFor(attachment: attachment,
                                      messageId: messageId,
                                      userId: userId,
