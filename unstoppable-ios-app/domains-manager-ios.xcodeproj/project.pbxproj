@@ -984,6 +984,7 @@
 		C6D6E5AD281A13B1008C66BB /* CollectionReusableRoundedBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E5AC281A13B1008C66BB /* CollectionReusableRoundedBackground.swift */; };
 		C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E5B1281A215D008C66BB /* SegmentPicker.swift */; };
 		C6D6E5BD281A3CD1008C66BB /* UDSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E5BC281A3CD0008C66BB /* UDSearchBar.swift */; };
+		C6D6EB2F2AB9A21600CA5B0F /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6EB2E2AB9A21600CA5B0F /* Chat.swift */; };
 		C6D9E28928533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E28828533783002CDAC2 /* UDDomainSharingCardView.swift */; };
 		C6D9E28E28533788002CDAC2 /* UDDomainSharingCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */; };
 		C6D9E29428535E33002CDAC2 /* ShareDomainImagePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */; };
@@ -2122,6 +2123,7 @@
 		C6D6E5AC281A13B1008C66BB /* CollectionReusableRoundedBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionReusableRoundedBackground.swift; sourceTree = "<group>"; };
 		C6D6E5B1281A215D008C66BB /* SegmentPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentPicker.swift; sourceTree = "<group>"; };
 		C6D6E5BC281A3CD0008C66BB /* UDSearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDSearchBar.swift; sourceTree = "<group>"; };
+		C6D6EB2E2AB9A21600CA5B0F /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		C6D9E28828533783002CDAC2 /* UDDomainSharingCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDDomainSharingCardView.swift; sourceTree = "<group>"; };
 		C6D9E28D28533788002CDAC2 /* UDDomainSharingCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UDDomainSharingCardView.xib; sourceTree = "<group>"; };
 		C6D9E29328535E33002CDAC2 /* ShareDomainImagePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareDomainImagePullUpView.swift; sourceTree = "<group>"; };
@@ -3922,6 +3924,7 @@
 		C65272492A15D928001A084C /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				C6D6EB2E2AB9A21600CA5B0F /* Chat.swift */,
 				C652724A2A15D938001A084C /* ChatViewPresenter.swift */,
 				C6500B472A418B4600ACAA8C /* ChannelViewPresenter.swift */,
 				C652724B2A15D938001A084C /* ChatViewController.swift */,
@@ -6355,6 +6358,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6B5136828322EA1001E99B5 /* MainWindow.swift in Sources */,
+				C6D6EB2F2AB9A21600CA5B0F /* Chat.swift in Sources */,
 				C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194828D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
 				C63F1D1528AF31D5000A5C12 /* HeapAnalyticService.swift in Sources */,
@@ -7489,6 +7493,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.8.0;
+				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -7521,6 +7526,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.8.0;
+				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -7693,6 +7699,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 4.8.0;
+				MERGED_BINARY_TYPE = automatic;
 				PRODUCT_BUNDLE_IDENTIFIER = com.unstoppabledomains.manager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -7909,8 +7916,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/xmtp/xmtp-ios.git";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = revision;
+				revision = 50181dc4c4bbd02d412a827e1c377716f8ddadc7;
 			};
 		};
 		29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */ = {

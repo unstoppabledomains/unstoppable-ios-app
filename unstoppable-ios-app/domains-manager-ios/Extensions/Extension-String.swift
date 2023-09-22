@@ -922,6 +922,9 @@ extension String {
         static let messagingCantContactMessage = "MESSAGING_CANT_CONTACT_MESSAGE"
         static let messagingInvite = "MESSAGING_INVITE"
         static let messagingSearchResultNotRRDomain = "MESSAGING_SEARCH_RESULT_NOT_RR_DOMAIN"
+        static let messagingOpenLinkActionTitle = "MESSAGING_OPEN_LINK_ACTION_TITLE"
+        static let messagingCancelAndBlockActionTitle = "MESSAGING_CANCEL_AND_BLOCK_ACTION_TITLE"
+        static let messagingOpenLinkWarningMessage = "MESSAGING_OPEN_LINK_WARNING_MESSAGE"
         
         // Public profile
         static let followers = "FOLLOWERS"

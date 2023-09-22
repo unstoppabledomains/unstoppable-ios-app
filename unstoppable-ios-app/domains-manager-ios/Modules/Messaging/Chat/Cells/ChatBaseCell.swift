@@ -7,6 +7,8 @@
 
 import UIKit
 
+typealias ChatMessageLinkPressedCallback = (URL)->()
+
 class ChatBaseCell: UICollectionViewCell {
     
     @IBOutlet private(set) weak var containerView: UIView!
@@ -15,6 +17,7 @@ class ChatBaseCell: UICollectionViewCell {
     
     private var containerViewSideConstraints: [NSLayoutConstraint] = []
     private(set) var sender: MessagingChatSender?
+    private var externalLinkPressedCallback: ChatMessageLinkPressedCallback?
 
     func setWith(sender: MessagingChatSender) {
         guard self.sender != sender else {
@@ -49,8 +52,10 @@ class ChatBaseCell: UICollectionViewCell {
 
 // MARK: - Open methods
 extension ChatBaseCell {
-    func setupTextView(_ textView: UITextView) {
+    func setupTextView(_ textView: UITextView, externalLinkPressedCallback: ChatMessageLinkPressedCallback?) {
+        self.externalLinkPressedCallback = externalLinkPressedCallback
         textView.dataDetectorTypes = [.link]
+        textView.delegate = self
         textView.backgroundColor = .clear
         textView.textContainerInset = .zero
         textView.textContainerInset.top = -4
@@ -65,6 +70,22 @@ extension ChatBaseCell {
             bubbleView.backgroundColor = .backgroundAccentEmphasis
         } else {
             bubbleView.backgroundColor = .backgroundMuted2
+        }
+    }
+}
+
+// MARK: - Open methods
+extension ChatBaseCell: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        UDVibration.buttonTap.vibrate()
+        switch sender {
+        case .thisUser:
+            return true
+        case .otherUser, .none:
+            guard let externalLinkPressedCallback else { return true }
+            
+            externalLinkPressedCallback(URL)
+            return false
         }
     }
 }

@@ -287,12 +287,14 @@ extension MessagingService: MessagingServiceProtocol {
               var chatMessage = await storageService.getMessageWith(id: message.id, in: messagingChat) else {
             throw MessagingServiceError.messageNotFound
         }
-        
+        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
+
         switch chatMessage.displayInfo.type {
         case .text, .imageData, .imageBase64, .unknown:
             return message
         case .remoteContent(let info):
             let loadedType = try await apiService.loadRemoteContentFor(chatMessage,
+                                                                       user: profile,
                                                                        serviceData: info.serviceData,
                                                                        filesService: filesService)
             chatMessage.displayInfo.type = loadedType

@@ -171,6 +171,18 @@ private final class PrivateMockExternalEventsService: ExternalEventsServiceProto
 }
 
 private final class MockCoreAppCoordinator: CoreAppCoordinatorProtocol {
+    func didRegisterShakeDevice() {
+        
+    }
+    
+    func askToReconnectExternalWallet(_ walletDisplayInfo: domains_manager_ios.WalletDisplayInfo) async -> Bool {
+        false
+    }
+    
+    func showExternalWalletDidNotRespondPullUp(for connectingWallet: domains_manager_ios.WCWalletsProvider.WalletRecord) async {
+        
+    }
+    
     private(set) var didGoBackToPreviousAppCalled = false
     
     func startWith(window: UIWindow) {

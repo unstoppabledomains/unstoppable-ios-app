@@ -40,6 +40,8 @@ struct XMTPServiceHelper {
         let client = try await XMTP.Client.from(bundle: keys,
                                                 options: .init(api: .init(env: env,
                                                                           appVersion: XMTPServiceSharedHelper.getXMTPVersion())))
+        client.register(codec: AttachmentCodec())
+        client.register(codec: RemoteAttachmentCodec())
         return client
     }
 }
