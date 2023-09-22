@@ -638,8 +638,8 @@ private extension CoreDataMessagingStorageService {
             return .imageBase64(imageBase64DisplayInfo)
         case .imageData:
             guard let decryptedContent = getDecryptedContent(),
-                  let decryptedData = Data(base64Encoded: decryptedContent),
-                  let imageDataDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: decryptedData) else { return nil }
+                  let decryptedData = Data(base64Encoded: decryptedContent) else { return nil }
+            let imageDataDisplayInfo = MessagingChatMessageImageDataTypeDisplayInfo(data: decryptedData)
             return .imageData(imageDataDisplayInfo)
         case .remoteContent:
             guard let decryptedContent = getDecryptedContent(),

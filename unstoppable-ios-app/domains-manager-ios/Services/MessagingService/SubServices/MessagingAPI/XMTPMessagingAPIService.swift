@@ -292,11 +292,11 @@ private extension XMTPMessagingAPIService {
         
         let newestMessages = try await conversation.messages(limit: 3, before: Date().addingTimeInterval(100)) // Get latest message
         guard let xmtpMessage = newestMessages.first(where: { $0.id == messageID }),
-              let message = XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
-                                                                                    cachedMessage: nil,
-                                                                                    in: chat,
-                                                                                    isRead: true,
-                                                                                    filesService: filesService) else { throw XMTPServiceError.failedToFindSentMessage }
+              let message = await XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                                          cachedMessage: nil,
+                                                                                          in: chat,
+                                                                                          isRead: true,
+                                                                                          filesService: filesService) else { throw XMTPServiceError.failedToFindSentMessage }
         
         return message
     }
@@ -547,15 +547,18 @@ final class DefaultXMTPMessagingAPIServiceDataProvider: XMTPMessagingAPIServiceD
         let conversation = try MessagingAPIServiceHelper.getXMTPConversationFromChat(chat, client: client)
         let start = Date()
         let messages = try await conversation.messages(limit: fetchLimit, before: before)
-        Debugger.printTimeSensitiveInfo(topic: .Messaging, "load \(messages.count) messages. fetchLimit: \(fetchLimit). before: \(before)", startDate: start, timeout: 1)
+        Debugger.printTimeSensitiveInfo(topic: .Messaging, "load \(messages.count) messages. fetchLimit: \(fetchLimit). before: \(String(describing: before))", startDate: start, timeout: 1)
         
-        let chatMessages = messages.compactMap({ xmtpMessage in
-            XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
-                                                                    cachedMessage: cachedMessages.first(where: { $0.displayInfo.id == xmtpMessage.id }),
-                                                                    in: chat,
-                                                                    isRead: isRead,
-                                                                    filesService: filesService)
-        })
+        var chatMessages = [MessagingChatMessage]()
+        for xmtpMessage in messages {
+            if let chatMessage = await XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                                               cachedMessage: cachedMessages.first(where: { $0.displayInfo.id == xmtpMessage.id }),
+                                                                                               in: chat,
+                                                                                               isRead: isRead,
+                                                                                               filesService: filesService) {
+                chatMessages.append(chatMessage)
+            }
+        }
         
         return chatMessages
     }
