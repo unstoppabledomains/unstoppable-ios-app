@@ -24,8 +24,10 @@ final class ChooseReverseResolutionDomainViewController: BaseViewController {
     var cellIdentifiers: [UICollectionViewCell.Type] { [ChooseReverseResolutionCollectionCell.self, CollectionViewHeaderCell.self] }
     var presenter: ChooseReverseResolutionDomainViewPresenterProtocol!
     override var prefersLargeTitles: Bool { true }
+    override var largeTitleIcon: UIImage? { .chooseRRDomainIllustration }
     override var largeTitleAlignment: NSTextAlignment { .center }
-    override var scrollableContentYOffset: CGFloat? { 120 }
+    override var largeTitleIconSize: CGSize? { CGSize(width: 80, height: 80) }
+    override var scrollableContentYOffset: CGFloat? { 10 }
     override var navBackStyle: BaseViewController.NavBackIconStyle { presenter.navBackStyle }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
 
@@ -83,7 +85,7 @@ private extension ChooseReverseResolutionDomainViewController {
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
-        collectionView.contentInset.top = 162
+        collectionView.contentInset.top = 254
 
         configureDataSource()
     }

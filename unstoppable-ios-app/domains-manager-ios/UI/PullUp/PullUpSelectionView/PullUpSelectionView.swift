@@ -141,6 +141,7 @@ private extension PullUpSelectionView {
         setupExtraViews()
         setupCollectionView()
         setupActionButton()
+        setupExtraButton()
         setupCancelButton()
     }
     
@@ -314,6 +315,15 @@ private extension PullUpSelectionView {
         alignToTitleView(button, andUpdateCurrentMin: 24)
     }
     
+    func setupExtraButton() {
+        guard let actionButton = self.configuration.extraButton else { return }
+        
+        let button = buildButtonView(actionButton)
+        button.accessibilityIdentifier = "Pull Up Extra Button"
+        addSubview(button)
+        alignToTitleView(button, andUpdateCurrentMin: 24)
+    }
+    
     func setupCancelButton() {
         guard let cancelButton = self.configuration.cancelButton else { return }
         
@@ -476,6 +486,7 @@ struct PullUpSelectionViewConfiguration {
     var subtitle: Subtitle? = nil
     var extraViews: [UIView]? = nil
     var actionButton: ButtonType? = nil
+    var extraButton: ButtonType? = nil
     var cancelButton: ButtonType? = nil
     var isScrollingEnabled: Bool = false
 

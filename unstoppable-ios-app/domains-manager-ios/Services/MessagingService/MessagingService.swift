@@ -287,12 +287,14 @@ extension MessagingService: MessagingServiceProtocol {
               var chatMessage = await storageService.getMessageWith(id: message.id, in: messagingChat) else {
             throw MessagingServiceError.messageNotFound
         }
-        
+        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet)
+
         switch chatMessage.displayInfo.type {
         case .text, .imageData, .imageBase64, .unknown:
             return message
         case .remoteContent(let info):
             let loadedType = try await apiService.loadRemoteContentFor(chatMessage,
+                                                                       user: profile,
                                                                        serviceData: info.serviceData,
                                                                        filesService: filesService)
             chatMessage.displayInfo.type = loadedType
@@ -1148,7 +1150,7 @@ private extension MessagingService {
             let profile = try await getUserProfileWith(wallet: wallet)
             let chats = try await storageService.getChatsFor(profile: profile)
             guard let chat = chats.first(where: { $0.displayInfo.type.otherUserDisplayInfo?.wallet == otherUserWallet }) else { throw MessagingServiceError.chatNotFound }
-            guard let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
+            guard let message = await messageEntity.transformToMessageBlock(messageEntity, chat, filesService) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
             return GroupChatMessageWithProfile(message: message, profile: profile)
         }
         

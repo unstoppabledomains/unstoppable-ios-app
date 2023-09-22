@@ -51,7 +51,7 @@ private extension XMTPMessagingWebSocketsService {
         guard profileId == listeningProfileId else { return }
         Task {
             do {
-                for try await conversation in client.conversations.stream() {
+                for try await conversation in await client.conversations.stream() {
                     guard profileId == listeningProfileId else { break } /// There's no other way to stop listening at the moment
                     
                     Task.detached {
