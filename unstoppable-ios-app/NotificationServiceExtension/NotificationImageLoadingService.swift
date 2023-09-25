@@ -24,20 +24,29 @@ final class NotificationImageLoadingService {
                 completion(image)
             } else {
                 loadImage(from: url) { data in
-                    if let imageData = data {
-                        var finalImage: UIImage?
-                        
-                        if let image = UIImage(data: imageData) {
-                            finalImage = image
+                    autoreleasepool {
+                        if let imageData = data {
+                            var finalImage: UIImage?
+                            
+                            if let image = self.downsample(imageData: imageData) {
+                                finalImage = image
+                            } else if let image = UIImage(data: imageData) {
+                                finalImage = image
+                            } else if let svgImage = UIImage.from(svgData: imageData) {
+                                if let imageData = svgImage.jpegData(compressionQuality: 0.9),
+                                   let downsampledImage = self.downsample(imageData: imageData) {
+                                    finalImage = downsampledImage
+                                } else {
+                                    finalImage = svgImage
+                                }
+                            }
+                            if let finalImage {
+                                self.storeAndCache(image: finalImage, forKey: source.key)
+                            }
+                            completion(finalImage)
                         } else {
-                            finalImage = UIImage.from(svgData: imageData)
+                            completion(nil)
                         }
-                        if let finalImage {
-                            self.storeAndCache(image: finalImage, forKey: source.key)
-                        }
-                        completion(finalImage)
-                    } else {
-                        completion(nil)
                     }
                 }
             }
@@ -62,10 +71,43 @@ private extension NotificationImageLoadingService {
     }
     
     func storeAndCache(image: UIImage, forKey key: String) {
-        if let imageData = image.jpegData(compressionQuality: 1) {
-            storage.storeImageData(imageData, for: key)
-        } else if let imageData = image.pngData() {
-            storage.storeImageData(imageData, for: key)
+        autoreleasepool {
+            if let imageData = image.jpegData(compressionQuality: 1) {
+                storage.storeImageData(imageData, for: key)
+            } else if let imageData = image.pngData() {
+                storage.storeImageData(imageData, for: key)
+            }
+        }
+    }
+    
+    func downsample(imageData: Data) -> UIImage? {
+        autoreleasepool {
+            let imageSourceOptions = [kCGImageSourceShouldCache: false] as CFDictionary
+            return imageData.withUnsafeBytes { (unsafeRawBufferPointer: UnsafeRawBufferPointer) -> UIImage? in
+                let unsafeBufferPointer = unsafeRawBufferPointer.bindMemory(to: UInt8.self)
+                
+                guard let unsafePointer = unsafeBufferPointer.baseAddress else { return nil }
+                guard let data = CFDataCreate(kCFAllocatorDefault, unsafePointer, imageData.count) else { return nil }
+                guard let imageSource = CGImageSourceCreateWithData(data, imageSourceOptions) else { return nil }
+                
+                return createThumbnail(from: imageSource,
+                                       size: CGSize(width: 384, height: 384),
+                                       scale: UIScreen.main.scale)
+            }
+        }
+    }
+    
+    private func createThumbnail(from imageSource: CGImageSource, size: CGSize, scale: CGFloat) -> UIImage? {
+        autoreleasepool {
+            let maxDimensionInPixels = max(size.width, size.height) * scale
+            let options = [
+                kCGImageSourceCreateThumbnailFromImageAlways: true,
+                kCGImageSourceShouldCacheImmediately: true,
+                kCGImageSourceCreateThumbnailWithTransform: true,
+                kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels] as CFDictionary
+            guard let thumbnail = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options) else { return nil }
+            
+            return UIImage(cgImage: thumbnail)
         }
     }
 }
