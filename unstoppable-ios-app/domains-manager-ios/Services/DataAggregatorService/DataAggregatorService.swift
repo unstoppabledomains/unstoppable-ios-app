@@ -376,9 +376,9 @@ private extension DataAggregatorService {
             guard !domains.isEmpty || !mintingDomainsNames.isEmpty || !parkedDomains.isEmpty else {
                 await dataHolder.setDataWith(domainsWithDisplayInfo: [],
                                              reverseResolutionMap: reverseResolutionMap)
-                notifyListenersWith(result: .success(.domainsUpdated([])))
                 let wallets = await getWalletsWithInfo()
                 notifyListenersWith(result: .success(.walletsListUpdated(wallets)))
+                notifyListenersWith(result: .success(.domainsUpdated([])))
                 return
             }
             
@@ -397,11 +397,12 @@ private extension DataAggregatorService {
                                                   withTransactions: transactions,
                                                   reverseResolutionMap: reverseResolutionMap)
             
+            let wallets = await getWalletsWithInfo()
+            notifyListenersWith(result: .success(.walletsListUpdated(wallets)))
+            
             let finalDomains = await dataHolder.domainsWithDisplayInfo
             notifyListenersWith(result: .success(.domainsUpdated(domainItems(from: finalDomains))))
             
-            let wallets = await getWalletsWithInfo()
-            notifyListenersWith(result: .success(.walletsListUpdated(wallets)))
             walletConnectServiceV2.disconnectAppsForAbsentDomains(from: finalDomains.map({ $0.domain }))
             Debugger.printTimeSensitiveInfo(topic: .DataAggregation,
                                             "to aggregate data for \(finalDomains.count) domains",

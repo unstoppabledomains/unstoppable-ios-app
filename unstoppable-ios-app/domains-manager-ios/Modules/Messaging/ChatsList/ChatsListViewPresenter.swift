@@ -727,7 +727,7 @@ private extension ChatsListViewPresenter {
                                                                         mode: .chooseFirstForMessaging)
             
             switch result {
-            case .cancelled:
+            case .cancelled, .failed:
                 return
             case .set(let domain):
                 var wallet = wallet
