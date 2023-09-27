@@ -71,6 +71,8 @@ extension SetupWalletsReverseResolutionNavigationManager: SetupWalletsReverseRes
             try await udWalletsService.setReverseResolution(to: domain,
                                                             paymentConfirmationDelegate: topViewController)
             dismiss(result: .set(domain: domainDisplayInfo))
+        case .didFailToSetupRequiredReverseResolution:
+            dismiss(result: .failed)
         }
     }
 }
@@ -200,11 +202,13 @@ extension SetupWalletsReverseResolutionNavigationManager {
     enum Action {
         case continueReverseResolutionSetup
         case didSelectDomainForReverseResolution(_ domain: DomainDisplayInfo)
+        case didFailToSetupRequiredReverseResolution
     }
     
     enum Result {
         case cancelled
         case set(domain: DomainDisplayInfo)
+        case failed
     }
     
     enum ChooseDomainForReverseResolutionMode {

@@ -369,12 +369,17 @@ private extension DomainsCollectionPresenter {
             guard let view = self.view else { return }
             
             self.isResolvingPrimaryDomain = true
-            _ = await UDRouter().runSetupReverseResolutionFlow(in: view,
-                                                               for: walletWithoutRR.wallet,
-                                                               walletInfo: walletInfo,
-                                                               mode: .chooseFirstDomain)
+            let result = await UDRouter().runSetupReverseResolutionFlow(in: view,
+                                                                        for: walletWithoutRR.wallet,
+                                                                        walletInfo: walletInfo,
+                                                                        mode: .chooseFirstDomain)
             self.isResolvingPrimaryDomain = false
-            await resolvePrimaryDomain(domains: domains)
+            switch result {
+            case .cancelled, .set:
+                await resolvePrimaryDomain(domains: domains)
+            case .failed:
+                Void()
+            }
         }
         
         if !domains.requirePNItems().isEmpty {

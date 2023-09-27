@@ -46,7 +46,9 @@ final class SelectWalletsReverseResolutionDomainViewPresenter: ChooseReverseReso
                 try await setupWalletsReverseResolutionFlowManager?.handle(action: .didSelectDomainForReverseResolution(selectedDomain))
             } catch {
                 await MainActor.run {
-                    view.showAlertWith(error: error)
+                    view.showAlertWith(error: error) { [weak self] _ in
+                        self?.didFailToSetRR()
+                    }
                 }
             }
         }
@@ -97,4 +99,13 @@ extension SelectWalletsReverseResolutionDomainViewPresenter {
     }
 }
 
-
+// MARK: - Private methods
+private extension SelectWalletsReverseResolutionDomainViewPresenter {
+    func didFailToSetRR() {
+        Task {
+            if case .default = useCase {
+                try? await setupWalletsReverseResolutionFlowManager?.handle(action: .didFailToSetupRequiredReverseResolution)
+            }
+        }
+    }
+}
