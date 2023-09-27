@@ -65,8 +65,8 @@ final class NotificationImageLoadingService {
 private extension NotificationImageLoadingService {
     func loadImage(from url: URL, completion: @escaping ((Data?)->())) {
         DispatchQueue.global().async {
-            let imageData = try? Data(contentsOf: url)
-            completion(imageData)
+            let loader = DataLoader()
+            loader.downloadFromURL(url, completion: completion)
         }
     }
     
@@ -97,7 +97,7 @@ private extension NotificationImageLoadingService {
         }
     }
     
-    private func createThumbnail(from imageSource: CGImageSource, size: CGSize, scale: CGFloat) -> UIImage? {
+    func createThumbnail(from imageSource: CGImageSource, size: CGSize, scale: CGFloat) -> UIImage? {
         autoreleasepool {
             let maxDimensionInPixels = max(size.width, size.height) * scale
             let options = [
@@ -124,6 +124,49 @@ extension NotificationImageLoadingService {
             case .domain(let domainName):
                 return domainName
             }
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension NotificationImageLoadingService {
+    final class DataLoader: NSObject, URLSessionDownloadDelegate {
+        
+        typealias DataCallback = (Data?)->()
+        
+        private var urlSession: URLSession!
+        private var completionCallback: DataCallback?
+        
+        override init() {
+            super.init()
+            urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+        }
+        
+        func downloadFromURL(_ url: URL, completion: @escaping DataCallback) {
+            self.completionCallback = completion
+            let downloadTask = urlSession.downloadTask(with: url)
+            downloadTask.resume()
+        }
+        
+        func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+            let data = try? Data(contentsOf: location)
+            finishWith(data: data)
+        }
+        
+        func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+            if totalBytesExpectedToWrite > Constants.imageProfileMaxSize {
+                // Drop download of very large images due to 24MB memory limit for NotificationExtension
+                downloadTask.cancel()
+            }
+        }
+        
+        func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+            finishWith(data: nil)
+        }
+        
+        private func finishWith(data: Data?) {
+            completionCallback?(data)
+            completionCallback = nil
         }
     }
 }
