@@ -7,9 +7,13 @@
 
 import Foundation
 import Bugsnag
+import os.log
 
 // Light debugger
 public struct Debugger {
+    private static let logger = Logger(subsystem: "com.unstoppabledomains",
+                                       category: "debug")
+    
     enum DebugTopic: String, CaseIterable {
         case None = ""
 
@@ -82,7 +86,7 @@ public struct Debugger {
             print ("🟩 \(s)")
         } else {
             if !allowedTopics.contains(topic) { return }
-            print ("🟩 \(topic.rawValue): \(s)")
+            logger.log("🟩 \(topic.rawValue, align: .left(columns: 10)): \(s)")
         }
         //#endif
     }
@@ -101,7 +105,9 @@ public struct Debugger {
         #if DEBUG
         if critical {
             fatalError("⛔️ CRITICAL ERROR: \(s)")
-        } else { printInfo(topic: .Error, "🟨 \(s)") }
+        } else {
+            logger.critical("🟥 \(s)")
+        }
         #else
         let exception = NSException(name:NSExceptionName(rawValue: "\(critical ? "CRITICAL" : "NON-CRITICAL"): \(s)"),
                                     reason: "",
@@ -112,7 +118,7 @@ public struct Debugger {
     
     static func printWarning(_ s: String) {
         #if DEBUG
-            print("🟨🔸 WARNING: \(s)")
+        logger.warning("🟨🔸 WARNING: \(s)")
         #else
         let exception = NSException(name:NSExceptionName(rawValue: "WARNING: \(s)"),
                                     reason: "",
