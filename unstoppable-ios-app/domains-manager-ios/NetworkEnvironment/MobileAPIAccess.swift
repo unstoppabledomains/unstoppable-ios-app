@@ -13,7 +13,13 @@ protocol TxsFetcher {
 
 extension NetworkService: TxsFetcher {
     public func fetchAllTxs(for domains: [String]) async throws -> [TransactionItem] {
-        try await fetchAllPagesWithLimit(for: domains, limit: Self.postRequestLimit)
+        do {
+            let txs: [TransactionItem] = try await fetchAllPagesWithLimit(for: domains, limit: Self.postRequestLimit)
+            return txs
+        } catch {
+            Debugger.printFailure("Failed to fetch TXS, error: \(error)", critical: false)
+            throw error
+        }
     }
 }
 
