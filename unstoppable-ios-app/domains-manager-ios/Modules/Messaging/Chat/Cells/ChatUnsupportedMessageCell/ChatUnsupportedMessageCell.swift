@@ -91,7 +91,6 @@ extension ChatUnsupportedMessageCell {
         
         
         setWith(message: message, isGroupChatMessage: configuration.isGroupChatMessage)
-        print(downloadButton.frame)
     }
     
     @objc func didTap() {

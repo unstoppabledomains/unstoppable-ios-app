@@ -1172,7 +1172,7 @@ extension MockWalletConnectServiceV2: WalletConnectServiceV2Protocol {
     }
     
     func disconnect(app: any UnifiedConnectAppInfoProtocol) {
-        print("disconnect")
+        
     }
     
     func getConnectedApps() -> [WCConnectedAppsStorageV2.ConnectedApp] {

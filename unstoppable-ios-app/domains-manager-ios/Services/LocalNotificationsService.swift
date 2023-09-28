@@ -247,7 +247,7 @@ private extension LocalNotificationsService {
             let attachment = try UNNotificationAttachment(identifier: fileIdentifier, url: fileURL, options: options)
             return attachment
         } catch let error {
-            print("error \(error)")
+            Debugger.printFailure("Failed to save image to disk for local notification with error: \(error.localizedDescription)")
         }
         
         return nil
