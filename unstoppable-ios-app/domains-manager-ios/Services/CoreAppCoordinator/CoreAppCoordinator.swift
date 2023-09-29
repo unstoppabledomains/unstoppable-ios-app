@@ -280,6 +280,8 @@ private extension CoreAppCoordinator {
             switch event {
             case .mintDomainsVerificationCode(let email, let code):
                 router.runMintDomainsFlow(with: .deepLink(email: email, code: code))
+            case .showUserDomainProfile(let domain, let wallet, let walletInfo, let badgeCode):
+                Task { await router.showDomainProfile(domain, wallet: wallet, walletInfo: walletInfo, dismissCallback: nil) }
             }
         default: return
         }

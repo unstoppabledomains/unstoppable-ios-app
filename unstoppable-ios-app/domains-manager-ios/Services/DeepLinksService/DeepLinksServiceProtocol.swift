@@ -7,8 +7,10 @@
 
 import Foundation
 
-enum DeepLinkEvent: Hashable {
+enum DeepLinkEvent {
     case mintDomainsVerificationCode(email: String, code: String)
+    case showUserDomainProfile(domain: DomainDisplayInfo, wallet: UDWallet, walletInfo: WalletDisplayInfo, badgeCode: String?)
+//    case showPublicDomainProfile(domainNameProfile: PublicDomainDisplayInfo, badgeCode: String?)
 }
 
 protocol DeepLinksServiceProtocol {
