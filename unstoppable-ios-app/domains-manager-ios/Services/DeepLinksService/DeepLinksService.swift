@@ -116,8 +116,11 @@ private extension DeepLinksService {
                                           receivedState: ExternalEventReceivedState) {
         Task {
             
-            var badgeCode: String?
-            
+            var preRequestedAction: PreRequestedProfileAction?
+            if let params,
+               let badgeCode = findValue(in: params, forKey: .openBadgeCode) {
+                preRequestedAction = .showBadge(code: badgeCode)
+            }
             
             let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
             let walletsWithInfo = await appContext.dataAggregatorService.getWalletsWithInfo()
@@ -127,7 +130,7 @@ private extension DeepLinksService {
                 notifyWaitersWith(event: .showUserDomainProfile(domain: domain,
                                                                 wallet: walletWithInfo.wallet,
                                                                 walletInfo: walletInfo,
-                                                                badgeCode: badgeCode),
+                                                                action: preRequestedAction),
                                   receivedState: receivedState)
             }
         }
@@ -219,5 +222,6 @@ private extension DeepLinksService {
         case operation
         case email, code
         case uri
+        case openBadgeCode
     }
 }

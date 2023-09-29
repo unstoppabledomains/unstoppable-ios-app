@@ -364,11 +364,13 @@ class UDRouter: DomainProfileSignatureValidator {
                                  domain: DomainDisplayInfo,
                                  wallet: UDWallet,
                                  walletInfo: WalletDisplayInfo,
+                                 preRequestedAction: PreRequestedProfileAction?,
                                  dismissCallback: EmptyCallback?) async -> CNavigationController? {
         guard await prepareProfileScreen(in: viewController, domain: domain, walletInfo: walletInfo) else { return nil }
         let vc = buildDomainProfileModule(domain: domain,
                                           wallet: wallet,
                                           walletInfo: walletInfo,
+                                          preRequestedAction: preRequestedAction,
                                           sourceScreen: .domainsCollection)
 
         let nav = presentInEmptyCRootNavigation(vc,
@@ -382,12 +384,14 @@ class UDRouter: DomainProfileSignatureValidator {
     func pushDomainProfileScreen(in nav: CNavigationController,
                                  domain: DomainDisplayInfo,
                                  wallet: UDWallet,
-                                 walletInfo: WalletDisplayInfo) async {
+                                 walletInfo: WalletDisplayInfo,
+                                 preRequestedAction: PreRequestedProfileAction?) async {
         guard await prepareProfileScreen(in: nav, domain: domain, walletInfo: walletInfo) else { return }
 
         let vc = buildDomainProfileModule(domain: domain,
                                           wallet: wallet,
                                           walletInfo: walletInfo,
+                                          preRequestedAction: preRequestedAction,
                                           sourceScreen: .domainsList)
         nav.pushViewController(vc, animated: true)
     }
@@ -409,6 +413,7 @@ class UDRouter: DomainProfileSignatureValidator {
     func buildDomainProfileModule(domain: DomainDisplayInfo,
                                   wallet: UDWallet,
                                   walletInfo: WalletDisplayInfo,
+                                  preRequestedAction: PreRequestedProfileAction?,
                                   sourceScreen: DomainProfileViewPresenter.SourceScreen) -> UIViewController {
         let walletInfo = WalletDisplayInfo(wallet: wallet,
                                            domainsCount: walletInfo.domainsCount,
@@ -419,6 +424,7 @@ class UDRouter: DomainProfileSignatureValidator {
                                                    domain: domain,
                                                    wallet: wallet,
                                                    walletInfo: walletInfo,
+                                                   preRequestedAction: preRequestedAction,
                                                    sourceScreen: sourceScreen,
                                                    dataAggregatorService: appContext.dataAggregatorService,
                                                    domainRecordsService: appContext.domainRecordsService,

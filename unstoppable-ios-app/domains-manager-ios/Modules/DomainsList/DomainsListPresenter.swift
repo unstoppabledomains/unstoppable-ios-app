@@ -115,7 +115,7 @@ private extension DomainsListPresenter {
             let walletInfo = walletWithInfo.displayInfo else { return }
         
         Task {
-            await UDRouter().pushDomainProfileScreen(in: nav, domain: domain, wallet: walletWithInfo.wallet, walletInfo: walletInfo)
+            await UDRouter().pushDomainProfileScreen(in: nav, domain: domain, wallet: walletWithInfo.wallet, walletInfo: walletInfo, preRequestedAction: nil)
         }
     }
     
