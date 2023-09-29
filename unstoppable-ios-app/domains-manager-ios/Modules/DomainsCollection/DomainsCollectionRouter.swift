@@ -247,6 +247,15 @@ extension DomainsCollectionRouter {
         }
         topViewController.present(searchVC, animated: true)
     }
+    
+    func showPublicDomainProfileFromDeepLink(of domain: PublicDomainDisplayInfo,
+                                             viewingDomain: DomainItem,
+                                             preRequestedAction: PreRequestedProfileAction?) async {
+        guard let viewController else { return }
+        
+        await resetNavigationToRoot()
+        showPublicDomainProfile(of: domain, viewingDomain: viewingDomain, in: viewController)
+    }
 }
 
 // MARK: - Private methods

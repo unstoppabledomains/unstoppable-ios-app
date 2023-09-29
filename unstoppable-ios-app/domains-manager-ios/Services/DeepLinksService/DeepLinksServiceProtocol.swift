@@ -10,7 +10,7 @@ import Foundation
 enum DeepLinkEvent {
     case mintDomainsVerificationCode(email: String, code: String)
     case showUserDomainProfile(domain: DomainDisplayInfo, wallet: UDWallet, walletInfo: WalletDisplayInfo, action: PreRequestedProfileAction?)
-//    case showPublicDomainProfile(domainNameProfile: PublicDomainDisplayInfo, badgeCode: String?)
+    case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, viewingDomain: DomainItem, action: PreRequestedProfileAction?)
 }
 
 protocol DeepLinksServiceProtocol {

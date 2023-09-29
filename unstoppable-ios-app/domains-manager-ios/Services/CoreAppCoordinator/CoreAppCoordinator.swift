@@ -286,6 +286,8 @@ private extension CoreAppCoordinator {
                 router.runMintDomainsFlow(with: .deepLink(email: email, code: code))
             case .showUserDomainProfile(let domain, let wallet, let walletInfo, let action):
                 Task { await router.showDomainProfile(domain, wallet: wallet, walletInfo: walletInfo, preRequestedAction: action, dismissCallback: nil) }
+            case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):
+                Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, viewingDomain: viewingDomain, preRequestedAction: action) }
             }
         default: return
         }

@@ -132,6 +132,15 @@ private extension DeepLinksService {
                                                                 walletInfo: walletInfo,
                                                                 action: preRequestedAction),
                                   receivedState: receivedState)
+            } else if let userDomainDisplayInfo = userDomains.first,
+                      let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: userDomainDisplayInfo.name),
+                      let globalRR = try? await NetworkService().fetchGlobalReverseResolution(for: domainName) {
+                let publicDomainDisplayInfo = PublicDomainDisplayInfo(walletAddress: globalRR.address,
+                                                                      name: domainName)
+                notifyWaitersWith(event: .showPublicDomainProfile(publicDomainDisplayInfo: publicDomainDisplayInfo,
+                                                                  viewingDomain: viewingDomain,
+                                                                  action: preRequestedAction),
+                                  receivedState: receivedState)
             }
         }
     }
