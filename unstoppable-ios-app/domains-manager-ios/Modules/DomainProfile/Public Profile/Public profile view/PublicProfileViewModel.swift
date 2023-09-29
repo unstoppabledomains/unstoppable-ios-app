@@ -33,6 +33,7 @@ extension PublicProfileView {
    @MainActor
     final class PublicProfileViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
         
+        private weak var delegate: PublicProfileViewDelegate?
         private(set) var domain: PublicDomainDisplayInfo
         private(set) var viewingDomain: DomainItem
         @Published var records: [String : String]?
@@ -50,11 +51,16 @@ extension PublicProfileView {
         @Published private(set) var followersDisplayInfo: FollowersDisplayInfo?
         private var appearTime: Date
         private var badgesInfo: BadgesInfo?
+        private var preRequestedAction: PreRequestedProfileAction?
         
         init(domain: PublicDomainDisplayInfo,
-             viewingDomain: DomainItem) {
+             viewingDomain: DomainItem,
+             preRequestedAction: PreRequestedProfileAction?,
+             delegate: PublicProfileViewDelegate?) {
             self.domain = domain
             self.viewingDomain = viewingDomain
+            self.preRequestedAction = preRequestedAction
+            self.delegate = delegate
             self.appearTime = Date()
             loadAllProfileData()
             loadViewingDomainData()
@@ -186,6 +192,7 @@ extension PublicProfileView {
                     self.badgesInfo = badgesInfo
                     badgesDisplayInfo = badgesInfo.badges.map({ DomainProfileBadgeDisplayInfo(badge: $0,
                                                                                               isExploreWeb3Badge: false) })
+                    openPreRequestedBadgeIfNeeded(using: badgesInfo)
                 }
             }
         }
@@ -253,6 +260,19 @@ extension PublicProfileView {
             if dif > 0 {
                 try? await Task.sleep(seconds: dif)
             }
+        }
+        
+        private func openPreRequestedBadgeIfNeeded(using badgesInfo: BadgesInfo) {
+            switch preRequestedAction {
+            case .showBadge(let code):
+                if let badge = badgesInfo.badges.first(where: { $0.code == code }) {
+                    let badgeDisplayInfo = DomainProfileBadgeDisplayInfo(badge: badge, isExploreWeb3Badge: false)
+                    delegate?.publicProfileDidSelectBadge(badgeDisplayInfo, in: domain.name)
+                }
+            case .none:
+                return
+            }
+            self.preRequestedAction = nil
         }
     }
     

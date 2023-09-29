@@ -184,8 +184,9 @@ private extension DomainProfileTopInfoSection {
                                                  name: follower.domain)
             try? await Task.sleep(seconds: 0.2)
             await UDRouter().showPublicDomainProfile(of: domain,
-                                               viewingDomain: viewingDomain,
-                                               in: viewController)
+                                                     viewingDomain: viewingDomain, 
+                                                     preRequestedAction: nil,
+                                                     in: viewController)
         }
     }
     

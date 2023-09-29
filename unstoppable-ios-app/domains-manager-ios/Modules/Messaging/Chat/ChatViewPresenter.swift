@@ -525,6 +525,7 @@ private extension ChatViewPresenter {
                 UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                              name: domainName),
                                                    viewingDomain: viewingDomain,
+                                                   preRequestedAction: nil,
                                                    in: view)
             }
         } else {

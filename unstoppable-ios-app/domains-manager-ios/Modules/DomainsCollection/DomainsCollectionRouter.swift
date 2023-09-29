@@ -184,7 +184,10 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
                                  viewingDomain: DomainItem) {
         guard let viewController else { return }
         
-        showPublicDomainProfile(of: domain, viewingDomain: viewingDomain, in: viewController)
+        showPublicDomainProfile(of: domain,
+                                viewingDomain: viewingDomain,
+                                preRequestedAction: nil,
+                                in: viewController)
     }
 }
 
@@ -254,7 +257,10 @@ extension DomainsCollectionRouter {
         guard let viewController else { return }
         
         await resetNavigationToRoot()
-        showPublicDomainProfile(of: domain, viewingDomain: viewingDomain, in: viewController)
+        showPublicDomainProfile(of: domain, 
+                                viewingDomain: viewingDomain,
+                                preRequestedAction: preRequestedAction,
+                                in: viewController)
     }
 }
 
@@ -347,7 +353,8 @@ private extension DomainsCollectionRouter {
             let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
                                                            name: btDomainInfo.domainName)
             showPublicDomainProfile(of: publicDomainInfo,
-                                    viewingDomain: domain,
+                                    viewingDomain: domain, 
+                                    preRequestedAction: nil,
                                     in: topViewController)
         }
     }

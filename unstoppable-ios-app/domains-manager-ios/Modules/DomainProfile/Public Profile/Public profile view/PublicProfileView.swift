@@ -12,9 +12,11 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @MainActor
     static func instantiate(domain: PublicDomainDisplayInfo,
                             viewingDomain: DomainItem,
+                            preRequestedAction: PreRequestedProfileAction?,
                             delegate: PublicProfileViewDelegate? = nil) -> UIViewController {
         let view = PublicProfileView(domain: domain,
                                      viewingDomain: viewingDomain,
+                                     preRequestedAction: preRequestedAction,
                                      delegate: delegate)
         let vc = UIHostingController(rootView: view)
         return vc
@@ -72,8 +74,9 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     
     init(domain: PublicDomainDisplayInfo,
          viewingDomain: DomainItem,
+         preRequestedAction: PreRequestedProfileAction?,
          delegate: PublicProfileViewDelegate? = nil) {
-        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, viewingDomain: viewingDomain))
+        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, viewingDomain: viewingDomain, preRequestedAction: preRequestedAction, delegate: delegate))
         self.delegate = delegate
     }
 }
@@ -744,7 +747,8 @@ struct PublicProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(Constants.swiftUIPreviewDevices, id: \.self) { device in
             PublicProfileView(domain: .init(walletAddress: "0x123", name: "dans.crypto"),
-                              viewingDomain: .init(name: "oleg.x"))
+                              viewingDomain: .init(name: "oleg.x"), 
+                              preRequestedAction: nil)
                 .previewDevice(PreviewDevice(rawValue: device))
                 .previewDisplayName(device)
         }
