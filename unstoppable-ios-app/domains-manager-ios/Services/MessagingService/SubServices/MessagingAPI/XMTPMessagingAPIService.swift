@@ -37,7 +37,7 @@ final class XMTPMessagingAPIService {
  
 // MARK: - MessagingAPIServiceProtocol
 extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
-    var serviceIdentifier: String { Constants.xmtpMessagingServiceIdentifier }
+    var serviceIdentifier: MessagingServiceIdentifier { .xmtp }
 
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
         let env = getCurrentXMTPEnvironment()

@@ -50,8 +50,6 @@ struct Constants {
     static let ensDomainTLD: String = "eth"
     static let lensDomainTLD: String = "lens"
     static let coinbaseDomainTLD: String = "id"
-    static let xmtpMessagingServiceIdentifier: String = "xmtp"
-    static let pushMessagingServiceIdentifier: String = "push"
     static let swiftUIPreviewDevices = ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone SE (1st generation)", "iPhone SE (3rd generation)", "iPhone 13 mini"]
 
     // Shake to find

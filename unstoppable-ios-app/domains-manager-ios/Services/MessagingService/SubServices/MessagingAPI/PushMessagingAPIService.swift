@@ -33,7 +33,7 @@ final class PushMessagingAPIService {
 
 // MARK: - MessagingAPIServiceProtocol
 extension PushMessagingAPIService: MessagingAPIServiceProtocol {
-    var serviceIdentifier: String { Constants.pushMessagingServiceIdentifier }
+    var serviceIdentifier: MessagingServiceIdentifier { .push }
     
     // User profile
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {

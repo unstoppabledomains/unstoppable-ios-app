@@ -7,6 +7,16 @@
 
 import Foundation
 
+struct MessagingServiceAPIProvider {
+    let apiService: MessagingAPIServiceProtocol
+    let webSocketsService: MessagingWebSocketsServiceProtocol
+}
+
+enum MessagingServiceIdentifier: String {
+    case xmtp = "xmtp"
+    case push = "push"
+}
+
 final class MessagingService {
 
     let apiService: MessagingAPIServiceProtocol

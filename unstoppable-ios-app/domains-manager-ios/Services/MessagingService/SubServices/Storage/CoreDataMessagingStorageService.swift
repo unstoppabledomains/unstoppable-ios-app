@@ -23,11 +23,11 @@ final class CoreDataMessagingStorageService: CoreDataService {
 extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     // User Profile
     func getUserProfileFor(domain: DomainItem,
-                           serviceIdentifier: String) throws -> MessagingChatUserProfile {
+                           serviceIdentifier: MessagingServiceIdentifier) throws -> MessagingChatUserProfile {
         try queue.sync {
             guard let wallet = domain.ownerWallet else { throw Error.domainWithoutWallet }
             let walletPredicate = NSPredicate(format: "normalizedWallet == %@", wallet)
-            let servicePredicate = NSPredicate(format: "serviceIdentifier == %@", serviceIdentifier)
+            let servicePredicate = NSPredicate(format: "serviceIdentifier == %@", serviceIdentifier.rawValue)
             
             if let coreDataUserProfile: CoreDataMessagingUserProfile = getCoreDataEntityWith(andPredicates: [walletPredicate, servicePredicate]) {
                 return convertCoreDataUserProfileToMessagingUserProfile(coreDataUserProfile)
@@ -37,10 +37,10 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
     }
     
     func getUserProfileWith(userId: String,
-                            serviceIdentifier: String) throws -> MessagingChatUserProfile {
+                            serviceIdentifier: MessagingServiceIdentifier) throws -> MessagingChatUserProfile {
         try queue.sync {
             let idPredicate = NSPredicate(format: "id == %@", userId)
-            let servicePredicate = NSPredicate(format: "serviceIdentifier == %@", serviceIdentifier)
+            let servicePredicate = NSPredicate(format: "serviceIdentifier == %@", serviceIdentifier.rawValue)
             if let coreDataUserProfile: CoreDataMessagingUserProfile = getCoreDataEntityWith(andPredicates: [idPredicate, servicePredicate]) {
                 return convertCoreDataUserProfileToMessagingUserProfile(coreDataUserProfile)
             }
@@ -392,9 +392,10 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
 // MARK: - User Profile parsing
 private extension CoreDataMessagingStorageService {
     func convertCoreDataUserProfileToMessagingUserProfile(_ coreDataUserProfile: CoreDataMessagingUserProfile) -> MessagingChatUserProfile {
+        let serviceIdentifier = MessagingServiceIdentifier(rawValue: coreDataUserProfile.serviceIdentifier!) ?? .xmtp
         let displayInfo = MessagingChatUserProfileDisplayInfo(id: coreDataUserProfile.id!,
                                                               wallet: coreDataUserProfile.wallet!,
-                                                              serviceIdentifier: coreDataUserProfile.serviceIdentifier!,
+                                                              serviceIdentifier: serviceIdentifier,
                                                               name: coreDataUserProfile.name,
                                                               about: coreDataUserProfile.about)
         
@@ -409,7 +410,7 @@ private extension CoreDataMessagingStorageService {
         
         coreDataUserProfile.id = userProfile.id
         coreDataUserProfile.wallet = userProfile.wallet
-        coreDataUserProfile.serviceIdentifier = userProfile.serviceIdentifier
+        coreDataUserProfile.serviceIdentifier = userProfile.serviceIdentifier.rawValue
         coreDataUserProfile.normalizedWallet = userProfile.wallet.normalized
         coreDataUserProfile.serviceMetadata = userProfile.serviceMetadata
         coreDataUserProfile.name = userProfile.displayInfo.name
