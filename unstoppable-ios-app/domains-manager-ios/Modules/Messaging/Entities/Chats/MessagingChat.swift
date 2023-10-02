@@ -13,6 +13,9 @@ struct MessagingChat: Hashable {
     let serviceMetadata: Data?
     
     var serviceIdentifier: MessagingServiceIdentifier { displayInfo.serviceIdentifier }
+    var isApproved: Bool {
+        displayInfo.isApproved
+    }
     
     func isUpToDateWith(otherChat: MessagingChat) -> Bool {
         serviceMetadata == otherChat.serviceMetadata
