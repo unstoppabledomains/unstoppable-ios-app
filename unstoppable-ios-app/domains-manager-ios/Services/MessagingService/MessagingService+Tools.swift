@@ -107,4 +107,22 @@ extension MessagingService {
         let number = unreadCountingService.getNumberOfUnreadMessagesIn(chatId: message.chatId, userId: message.userId)
         notifyListenersChangedDataType(.messageReadStatusUpdated(message, numberOfUnreadMessagesInSameChat: number))
     }
+    
+    func getServiceAPIProviderWith(identifier: MessagingServiceIdentifier) throws -> MessagingServiceAPIProvider {
+        guard let serviceProvider = serviceProviders.first(where: { $0.identifier == identifier }) else {
+            throw MessagingServiceError.failedToFindRequestedServiceProvider
+        }
+        
+        return serviceProvider
+    }
+    
+    func getAPIServiceWith(identifier: MessagingServiceIdentifier) throws -> MessagingAPIServiceProtocol {
+        let serviceProvider = try getServiceAPIProviderWith(identifier: identifier)
+        return serviceProvider.apiService
+    }
+    
+    func getWebsocketsServiceWith(identifier: MessagingServiceIdentifier) throws -> MessagingWebSocketsServiceProtocol {
+        let serviceProvider = try getServiceAPIProviderWith(identifier: identifier)
+        return serviceProvider.webSocketsService
+    }
 }

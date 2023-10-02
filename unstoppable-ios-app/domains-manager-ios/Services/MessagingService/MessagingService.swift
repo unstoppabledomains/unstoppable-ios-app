@@ -8,6 +8,7 @@
 import Foundation
 
 struct MessagingServiceAPIProvider {
+    let identifier: MessagingServiceIdentifier
     let apiService: MessagingAPIServiceProtocol
     let webSocketsService: MessagingWebSocketsServiceProtocol
 }
@@ -19,6 +20,7 @@ enum MessagingServiceIdentifier: String {
 
 final class MessagingService {
 
+    let serviceProviders: [MessagingServiceAPIProvider] = []
     let apiService: MessagingAPIServiceProtocol
     let channelsApiService: MessagingChannelsAPIServiceProtocol
     let webSocketsService: MessagingWebSocketsServiceProtocol
@@ -654,6 +656,7 @@ extension MessagingService {
         case noRRDomainForProfile
         case failedToConvertWebsocketMessage
         case attemptToLeaveNotGroupChat
+        case failedToFindRequestedServiceProvider
         
         public var errorDescription: String? {
             return rawValue
