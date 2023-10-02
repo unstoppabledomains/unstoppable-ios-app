@@ -57,6 +57,7 @@ struct XMTPEntitiesTransformer {
         let displayInfo = MessagingChatDisplayInfo(id: chatId,
                                                    thisUserDetails: thisUserInfo,
                                                    avatarURL: avatarURL,
+                                                   serviceIdentifier: .xmtp,
                                                    type: chatType,
                                                    unreadMessagesCount: 0,
                                                    isApproved: isApproved,
@@ -205,7 +206,8 @@ struct XMTPEntitiesTransformer {
         let serviceContent = XMTPEnvironmentNamespace.XMTPSocketMessageServiceContent(xmtpMessage: xmtpMessage)
         return MessagingWebSocketMessageEntity(id: id,
                                                senderWallet: senderWallet,
-                                               receiverWallet: receiverWallet,
+                                               receiverWallet: receiverWallet, 
+                                               serviceIdentifier: .xmtp,
                                                serviceContent: serviceContent,
                                                transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
     }

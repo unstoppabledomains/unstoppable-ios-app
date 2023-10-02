@@ -8,13 +8,13 @@
 import Foundation
 
 enum MessagingChatConversationState {
-    case newChat(MessagingChatUserDisplayInfo)
+    case newChat(MessagingChatNewConversationDescription)
     case existingChat(MessagingChatDisplayInfo)
     
     var userInfo: MessagingChatUserDisplayInfo? {
         switch self {
-        case .newChat(let userInfo):
-            return userInfo
+        case .newChat(let description):
+            return description.userInfo
         case .existingChat(let messagingChatDisplayInfo):
             return messagingChatDisplayInfo.type.otherUserDisplayInfo
         }
@@ -28,4 +28,9 @@ enum MessagingChatConversationState {
             return false
         }
     }
+}
+
+struct MessagingChatNewConversationDescription {
+    let userInfo: MessagingChatUserDisplayInfo
+    let messagingService: MessagingServiceIdentifier
 }

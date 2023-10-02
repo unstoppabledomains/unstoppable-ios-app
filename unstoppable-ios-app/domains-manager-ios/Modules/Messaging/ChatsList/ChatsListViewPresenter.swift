@@ -100,7 +100,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == configuration.userInfo.wallet.normalized }) {
                 openChatWith(conversationState: .existingChat(existingChat))
             } else {
-                openChatWith(conversationState: .newChat(configuration.userInfo))
+                // TODO: - Move service determinition into MessagingService
+                openChatWith(conversationState: .newChat(.init(userInfo: configuration.userInfo, messagingService: .xmtp)))
             }
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
@@ -215,9 +216,9 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                             try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
                             tryAutoOpenChat(chatId, profile: profile)
                         }
-                    case .newChat(let userInfo):
+                    case .newChat(let details):
                         try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
-                        autoOpenNewChat(with: userInfo)
+                        autoOpenNewChat(with: details.userInfo, messagingService: details.messagingService)
                     }
                 case .showChannel(let channelId, let profile):
                     if selectedProfileWalletPair?.profile?.id != profile.id ||
@@ -329,8 +330,8 @@ private extension ChatsListViewPresenter {
                     switch options {
                     case .existingChat(let chatId):
                         tryAutoOpenChat(chatId, profile: profile)
-                    case .newChat(let userInfo):
-                        autoOpenNewChat(with: userInfo)
+                    case .newChat(let details):
+                        autoOpenNewChat(with: details.userInfo, messagingService: details.messagingService)
                     }
                 case .showChannel(let channelId, let profile):
                     selectedDataType = .channels
@@ -418,8 +419,8 @@ private extension ChatsListViewPresenter {
         presentOptions = .default
     }
     
-    func autoOpenNewChat(with userInfo: MessagingChatUserDisplayInfo) {
-        openChatWith(conversationState: .newChat(userInfo))
+    func autoOpenNewChat(with userInfo: MessagingChatUserDisplayInfo, messagingService: MessagingServiceIdentifier) {
+        openChatWith(conversationState: .newChat(.init(userInfo: userInfo, messagingService: messagingService)))
         self.presentOptions = .default
     }
     

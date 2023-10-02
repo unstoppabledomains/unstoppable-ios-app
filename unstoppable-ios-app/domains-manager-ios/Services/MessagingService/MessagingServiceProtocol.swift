@@ -10,8 +10,8 @@ import Foundation
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
     // Capabilities
-    var canContactWithoutProfile: Bool { get }
-    var canBlockUsers: Bool { get }
+    func canContactWithoutProfile(using messagingService: MessagingServiceIdentifier) -> Bool
+    func canBlockUsers(in chat: MessagingChatDisplayInfo) -> Bool
     func isAbleToContactAddress(_ address: String,
                                 by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool
     func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo]
@@ -43,12 +43,14 @@ protocol MessagingServiceProtocol {
     func sendMessage(_ messageType: MessagingChatMessageDisplayType,
                      isEncrypted: Bool,
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo
-    func isMessagesEncryptedIn(conversation: MessagingChatConversationState) async -> Bool
+    func isMessagesEncryptedIn(conversation: MessagingChatConversationState) async throws -> Bool
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
                           to userInfo: MessagingChatUserDisplayInfo,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo)
-    func resendMessage(_ message: MessagingChatMessageDisplayInfo) async throws
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) async throws 
+    func resendMessage(_ message: MessagingChatMessageDisplayInfo,
+                       in chatDisplayInfo: MessagingChatDisplayInfo) async throws
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo,
+                       in chatDisplayInfo: MessagingChatDisplayInfo) async throws
     func markMessage(_ message: MessagingChatMessageDisplayInfo,
                      isRead: Bool,
                      wallet: String) throws

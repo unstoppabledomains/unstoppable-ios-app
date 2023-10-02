@@ -26,8 +26,9 @@ struct MessagingWebSocketMessageEntity {
     let id: String
     let senderWallet: String
     let receiverWallet: String
+    let serviceIdentifier: MessagingServiceIdentifier
     let serviceContent: Any
-    
+
     var transformToMessageBlock: ((_ webSocketMessage: MessagingWebSocketMessageEntity,
                                    _ chat: MessagingChat,
                                    _ filesService: MessagingFilesServiceProtocol)async->(MessagingChatMessage?))

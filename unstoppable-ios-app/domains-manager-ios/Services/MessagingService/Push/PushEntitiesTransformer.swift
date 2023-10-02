@@ -91,7 +91,8 @@ struct PushEntitiesTransformer {
         let chatId = pushChat.chatId
         let displayInfo = MessagingChatDisplayInfo(id: chatId,
                                                    thisUserDetails: thisUserInfo,
-                                                   avatarURL: avatarURL,
+                                                   avatarURL: avatarURL, 
+                                                   serviceIdentifier: .push,
                                                    type: chatType,
                                                    unreadMessagesCount: 0,
                                                    isApproved: isApproved,
@@ -221,7 +222,8 @@ struct PushEntitiesTransformer {
         let serviceContent = PushEnvironment.PushSocketMessageServiceContent(pushMessage: pushMessage, pgpKey: pgpKey)
         return MessagingWebSocketMessageEntity(id: id,
                                                senderWallet: senderWallet,
-                                               receiverWallet: receiverWallet,
+                                               receiverWallet: receiverWallet, 
+                                               serviceIdentifier: .push,
                                                serviceContent: serviceContent,
                                                transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
     }

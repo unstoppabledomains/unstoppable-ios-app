@@ -53,7 +53,7 @@ extension UIViewController: PublicProfileViewDelegate {
             } else {
                 let messagingUserDisplayInfo = MessagingChatUserDisplayInfo(wallet: profile.walletAddress.ethChecksumAddress(),
                                                                             domainName: profile.name)
-                uiFlowToRun = .showNewChat(userInfo: messagingUserDisplayInfo, profile: messagingProfile)
+                uiFlowToRun = .showNewChat(description: .init(userInfo: messagingUserDisplayInfo, messagingService: Constants.defaultMessagingServiceIdentifier), profile: messagingProfile)
             }
             
             try? await appContext.coreAppCoordinator.handle(uiFlow: uiFlowToRun)

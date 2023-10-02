@@ -11,6 +11,7 @@ struct MessagingChatDisplayInfo: Hashable {
     let id: String
     let thisUserDetails: MessagingChatUserDisplayInfo
     let avatarURL: URL?
+    let serviceIdentifier: MessagingServiceIdentifier
     var type: MessagingChatType
     var unreadMessagesCount: Int
     var isApproved: Bool

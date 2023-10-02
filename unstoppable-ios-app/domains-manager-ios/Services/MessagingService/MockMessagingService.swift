@@ -16,8 +16,8 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
-    var canContactWithoutProfile: Bool { true }
-    var canBlockUsers: Bool { true }
+    func canContactWithoutProfile(using messagingService: MessagingServiceIdentifier) -> Bool { true }
+    func canBlockUsers(in chat: MessagingChatDisplayInfo) -> Bool { true }
     func isAbleToContactAddress(_ address: String,
                                 by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool { true }
     func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] { [] }
@@ -76,8 +76,10 @@ extension MockMessagingService: MessagingServiceProtocol {
         throw NSError()
     }
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
-    func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws { }
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) async throws { }
+    func resendMessage(_ message: MessagingChatMessageDisplayInfo,
+                       in chatDisplayInfo: MessagingChatDisplayInfo) throws { }
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo,
+                       in chatDisplayInfo: MessagingChatDisplayInfo) async throws { }
     func markMessage(_ message: MessagingChatMessageDisplayInfo, isRead: Bool, wallet: String) throws { }
     func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws { }
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? { nil }
@@ -124,6 +126,7 @@ private extension MockMessagingService {
                 let chat = MessagingChatDisplayInfo(id: chatId,
                                                     thisUserDetails: sender.userDisplayInfo,
                                                     avatarURL: avatarURL,
+                                                    serviceIdentifier: .xmtp,
                                                     type: .private(.init(otherUser: sender.userDisplayInfo)),
                                                     unreadMessagesCount: unreadMessagesCount,
                                                     isApproved: true,

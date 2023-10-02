@@ -24,18 +24,22 @@ extension MessagingService {
     
     func getMessagingChatFor(displayInfo: MessagingChatDisplayInfo,
                              userId: String) async throws -> MessagingChat {
-        try await getMessagingChatWith(chatId: displayInfo.id, userId: userId)
+        try await getMessagingChatWith(chatId: displayInfo.id, userId: userId, serviceIdentifier: displayInfo.serviceIdentifier)
     }
     
-    func getMessagingChatWith(chatId: String,
-                              userId: String) async throws -> MessagingChat {
+    private func getMessagingChatWith(chatId: String,
+                              userId: String,
+                              serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChat {
         guard let chat = await storageService.getChatWith(id: chatId,
-                                                          of: userId) else { throw MessagingServiceError.chatNotFound }
+                                                          of: userId,
+                                                          serviceIdentifier: serviceIdentifier) else { throw MessagingServiceError.chatNotFound }
         
         return chat
     }
     
-    func getUserProfileWith(wallet: String) async throws -> MessagingChatUserProfile {
+    func getUserProfileWith(wallet: String,
+                            serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfile {
+        let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
         let rrDomain = try await getReverseResolutionDomainItem(for: wallet)
         return try storageService.getUserProfileFor(domain: rrDomain,
                                                     serviceIdentifier: apiService.serviceIdentifier)
@@ -49,18 +53,11 @@ extension MessagingService {
         }
     }
     
-    func refreshChatsInSameDomain(as chatId: String, userId: String) {
-        Task {
-            do {
-                let chat = try await getMessagingChatWith(chatId: chatId, userId: userId)
-                let profile = try await getUserProfileWith(wallet: chat.displayInfo.thisUserDetails.wallet)
-                refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
-            } catch { }
-        }
-    }
-    
-    func setLastMessageAndNotify(lastMessage: MessagingChatMessageDisplayInfo) async throws {
-        guard let chat = await storageService.getChatWith(id: lastMessage.chatId, of: lastMessage.userId) else { return }
+    func setLastMessageAndNotify(lastMessage: MessagingChatMessageDisplayInfo,
+                                 serviceIdentifier: MessagingServiceIdentifier) async throws {
+        guard let chat = await storageService.getChatWith(id: lastMessage.chatId, 
+                                                          of: lastMessage.userId,
+                                                          serviceIdentifier: serviceIdentifier) else { return }
         try await setLastMessageAndNotify(lastMessage, to: chat)
     }
     
@@ -70,13 +67,14 @@ extension MessagingService {
         updatedChat.displayInfo.lastMessage = lastMessage
         updatedChat.displayInfo.lastMessageTime = lastMessage.time
         try await storageService.replaceChat(chat, with: updatedChat)
-        notifyChatsChanged(wallet: chat.displayInfo.thisUserDetails.wallet)
+        notifyChatsChanged(wallet: chat.displayInfo.thisUserDetails.wallet, serviceIdentifier: chat.serviceIdentifier)
         notifyReadStatusUpdatedFor(message: lastMessage)
     }
     
     func notifyChannelsChanged(userId: String) {
         Task {
             do {
+                let apiService = try getDefaultAPIService()
                 let profile = try storageService.getUserProfileWith(userId: userId,
                                                                     serviceIdentifier: apiService.serviceIdentifier)
                 let channels = try await storageService.getChannelsFor(profile: profile)
@@ -85,10 +83,10 @@ extension MessagingService {
         }
     }
     
-    func notifyChatsChanged(wallet: String) {
+    func notifyChatsChanged(wallet: String, serviceIdentifier: MessagingServiceIdentifier) {
         Task {
             do {
-                let profile = try await getUserProfileWith(wallet: wallet)
+                let profile = try await getUserProfileWith(wallet: wallet, serviceIdentifier: serviceIdentifier)
                 let chats = try await storageService.getChatsFor(profile: profile)
                 let displayInfo = chats.map { $0.displayInfo }
                 notifyListenersChangedDataType(.chats(displayInfo, profile: profile.displayInfo))
@@ -118,6 +116,11 @@ extension MessagingService {
     
     func getAPIServiceWith(identifier: MessagingServiceIdentifier) throws -> MessagingAPIServiceProtocol {
         let serviceProvider = try getServiceAPIProviderWith(identifier: identifier)
+        return serviceProvider.apiService
+    }
+    
+    func getDefaultAPIService() throws -> MessagingAPIServiceProtocol {
+        let serviceProvider = try getServiceAPIProviderWith(identifier: defaultServiceIdentifier)
         return serviceProvider.apiService
     }
     

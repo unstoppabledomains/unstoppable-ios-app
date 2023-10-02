@@ -169,15 +169,16 @@ extension CoreDataMessagingStorageService: MessagingStorageServiceProtocol {
             let coreDataChats: [CoreDataMessagingChat] = try getEntities(predicate: predicate,
                                                                          sortDescriptions: [timeSortDescriptor],
                                                                          from: backgroundContext)
-            return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0) }.sortedByLastMessage()
+            return coreDataChats.compactMap { convertCoreDataChatToMessagingChat($0, serviceIdentifier: profile.serviceIdentifier) }.sortedByLastMessage()
         }
     }
     
     func getChatWith(id: String,
-                     of userId: String) async -> MessagingChat? {
+                     of userId: String,
+                     serviceIdentifier: MessagingServiceIdentifier) async -> MessagingChat? {
         queue.sync {
             if let coreDataChat = getCoreDataChatWith(id: id, userId: userId) {
-                return convertCoreDataChatToMessagingChat(coreDataChat)
+                return convertCoreDataChatToMessagingChat(coreDataChat, serviceIdentifier: serviceIdentifier)
             }
             return nil
         }
@@ -422,7 +423,8 @@ private extension CoreDataMessagingStorageService {
 
 // MARK: - Chats parsing
 private extension CoreDataMessagingStorageService {
-    func convertCoreDataChatToMessagingChat(_ coreDataChat: CoreDataMessagingChat) -> MessagingChat? {
+    func convertCoreDataChatToMessagingChat(_ coreDataChat: CoreDataMessagingChat,
+                                            serviceIdentifier: MessagingServiceIdentifier) -> MessagingChat? {
         guard let chatType = getChatType(from: coreDataChat) else { return nil }
         
         let serviceMetadata = coreDataChat.serviceMetadata
@@ -447,6 +449,7 @@ private extension CoreDataMessagingStorageService {
         let displayInfo = MessagingChatDisplayInfo(id: coreDataChat.id!,
                                                    thisUserDetails: thisUserDetails,
                                                    avatarURL: coreDataChat.avatarURL,
+                                                   serviceIdentifier: serviceIdentifier,
                                                    type: chatType,
                                                    unreadMessagesCount: unreadMessagesCount,
                                                    isApproved: coreDataChat.isApproved,

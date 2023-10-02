@@ -1080,6 +1080,8 @@
 		C6F060C62ACAA40100BA2E7E /* MessagingService+Channels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060C52ACAA40100BA2E7E /* MessagingService+Channels.swift */; };
 		C6F060C82ACAA4AE00BA2E7E /* MessagingService+UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060C72ACAA4AE00BA2E7E /* MessagingService+UserInfo.swift */; };
 		C6F060CA2ACAA4DF00BA2E7E /* MessagingService+Chats.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060C92ACAA4DF00BA2E7E /* MessagingService+Chats.swift */; };
+		C6F060CC2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */; };
+		C6F060CD2ACAB71300BA2E7E /* MessagingServiceIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */; };
 		C6F3FD632AAA11E700208679 /* PullUpNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */; };
 		C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */; };
 		C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */; };
@@ -2197,6 +2199,7 @@
 		C6F060C52ACAA40100BA2E7E /* MessagingService+Channels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+Channels.swift"; sourceTree = "<group>"; };
 		C6F060C72ACAA4AE00BA2E7E /* MessagingService+UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+UserInfo.swift"; sourceTree = "<group>"; };
 		C6F060C92ACAA4DF00BA2E7E /* MessagingService+Chats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+Chats.swift"; sourceTree = "<group>"; };
+		C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingServiceIdentifier.swift; sourceTree = "<group>"; };
 		C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpNamespace.swift; sourceTree = "<group>"; };
 		C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackToSettingsNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationBarScrollingController.swift; sourceTree = "<group>"; };
@@ -3865,6 +3868,7 @@
 			children = (
 				C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */,
 				C6F9FBCE2A25C41900102F81 /* MessagingService.swift */,
+				C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */,
 				C6F060C52ACAA40100BA2E7E /* MessagingService+Channels.swift */,
 				C6F060C92ACAA4DF00BA2E7E /* MessagingService+Chats.swift */,
 				C6F060C32ACAA35B00BA2E7E /* MessagingService+Tools.swift */,
@@ -6720,6 +6724,7 @@
 				C6538DC72A32248C00B63E84 /* CoreDataService.swift in Sources */,
 				3026FA2127E77AFF00FE058B /* BackupWalletViewController.swift in Sources */,
 				C6A474C729D149560073415F /* LoginFlowNavigationController.swift in Sources */,
+				C6F060CC2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift in Sources */,
 				C666E0FC29CD594F0003DECB /* UserProfileAction.swift in Sources */,
 				C6E1187D28F555A200C6AD4D /* UICollectionViewCellPreview.swift in Sources */,
 				C692C309282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
@@ -7211,6 +7216,7 @@
 				C66435C7288E59F30098E1B8 /* Codable.swift in Sources */,
 				C65DD4C72A7CAC8000CAB10C /* KeychainLayer.swift in Sources */,
 				C66A26E228B3CEAE005470B9 /* AnalyticsServiceEnvironment.swift in Sources */,
+				C6F060CD2ACAB71300BA2E7E /* MessagingServiceIdentifier.swift in Sources */,
 				C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */,
 				C6E69F97288AB6BE000A8346 /* Debugger.swift in Sources */,
 				C673BA322A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,

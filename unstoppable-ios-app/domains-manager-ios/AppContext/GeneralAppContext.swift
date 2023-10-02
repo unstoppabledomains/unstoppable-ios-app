@@ -91,9 +91,11 @@ final class GeneralAppContext: AppContextProtocol {
         let messagingStorageService: MessagingStorageServiceProtocol = coreDataMessagingStorageService
         let messagingUnreadCountingService: MessagingUnreadCountingServiceProtocol = CoreDataMessagingUnreadCountingService(storageService: coreDataMessagingStorageService)
         let messagingFilesService: MessagingFilesServiceProtocol = MessagingFilesService(decrypterService: messagingDecrypterService)
-        let messagingService = MessagingService(apiService: messagingAPIService,
+        let messagingAPIProviders: [MessagingServiceAPIProvider] = [.init(identifier: messagingAPIService.serviceIdentifier,
+                                                                          apiService: messagingAPIService,
+                                                                          webSocketsService: messagingWebSocketsService)]
+        let messagingService = MessagingService(serviceProviders: messagingAPIProviders,
                                                 channelsApiService: messagingChannelsAPIService,
-                                                webSocketsService: messagingWebSocketsService,
                                                 channelsWebSocketsService: messagingChannelsWebSocketsService,
                                                 storageProtocol: messagingStorageService,
                                                 decrypterService: messagingDecrypterService,
