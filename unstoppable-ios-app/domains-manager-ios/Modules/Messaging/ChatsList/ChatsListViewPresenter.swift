@@ -530,7 +530,7 @@ private extension ChatsListViewPresenter {
         
         if chatsList.isEmpty {
             snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType, isRequestsList: false))])
         } else {
             snapshot.appendSections([.listItems(title: nil)])
             let requestsList = chatsList.requestsOnly()
@@ -546,7 +546,7 @@ private extension ChatsListViewPresenter {
     func fillSnapshotForUserChannelsList(_ snapshot: inout ChatsListSnapshot) {
         if channels.isEmpty {
             snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType, isRequestsList: false))])
         } else {
             snapshot.appendSections([.listItems(title: nil)])
             let channelsList = channels.filter({ $0.isCurrentUserSubscribed })

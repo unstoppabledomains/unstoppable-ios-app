@@ -106,12 +106,18 @@ private extension ChatsRequestsListViewPresenter {
     func showData() {
         var snapshot = ChatsListSnapshot()
         
-        snapshot.appendSections([.listItems(title: nil)])
-        
         switch dataType {
         case .chatRequests(let requests):
-            snapshot.appendItems(requests.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+            if requests.isEmpty {
+                snapshot.appendSections([.emptyState])
+                snapshot.appendItems([.emptyState(configuration: .init(dataType: .chats, isRequestsList: true))])
+                view?.cNavigationController?.viewControllers.removeAll(where: { $0 == view })
+            } else {
+                snapshot.appendSections([.listItems(title: nil)])
+                snapshot.appendItems(requests.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+            }
         case .channelsSpam(let requests):
+            snapshot.appendSections([.listItems(title: nil)])
             snapshot.appendItems(requests.map({ ChatsListViewController.Item.channel(configuration: .init(channel: $0)) }))
         }
         
