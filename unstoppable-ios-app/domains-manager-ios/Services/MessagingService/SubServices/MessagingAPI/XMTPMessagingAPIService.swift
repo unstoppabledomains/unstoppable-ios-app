@@ -136,14 +136,14 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         switch chat.displayInfo.type {
         case .private:
             let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
-            var notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
             let chatTopic = chat.displayInfo.id
-            if blocked {
-                notificationsPreferences.blockedTopics.append(chatTopic)
-            } else {
-                notificationsPreferences.blockedTopics.removeAll(where: { $0 == chatTopic })
+            let notificationsPreferences = try await updateDomainNotificationPreferences(for: domain) { notificationsPreferences in
+                if blocked {
+                    notificationsPreferences.blockedTopics.append(chatTopic)
+                } else {
+                    notificationsPreferences.blockedTopics.removeAll(where: { $0 == chatTopic })
+                }
             }
-            try await NetworkService().updateUserDomainNotificationsPreferences(notificationsPreferences, for: domain)
             blockedUsersStorage.updatedBlockedUsersListFor(userId: chat.userId, blockedTopics: notificationsPreferences.blockedTopics)
             setSubscribed(!blocked,
                           toChat: chat,
@@ -256,7 +256,21 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func makeChatRequest(_ chat: MessagingChat, approved: Bool, by user: MessagingChatUserProfile) async throws {
-        throw XMTPServiceError.unsupportedAction
+        switch chat.displayInfo.type {
+        case .private:
+            let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
+            let chatTopic = chat.displayInfo.id
+            let notificationsPreferences = try await updateDomainNotificationPreferences(for: domain) { notificationsPreferences in
+                if approved {
+                    notificationsPreferences.acceptedTopics.append(chatTopic)
+                } else {
+                    notificationsPreferences.acceptedTopics.removeAll(where: { $0 == chatTopic })
+                }
+            }
+            approvedUsersStorage.updatedApprovedUsersListFor(userId: chat.userId, approvedTopics: notificationsPreferences.acceptedTopics)
+        case .group:
+            throw XMTPServiceError.unsupportedAction
+        }
     }
     
     func leaveGroupChat(_ chat: MessagingChat, by user: MessagingChatUserProfile) async throws {
@@ -334,6 +348,13 @@ private extension XMTPMessagingAPIService {
                 Debugger.printFailure("Failed to set subscribed: \(isSubscribed) for XMTP topics")
             }
         }
+    }
+    
+    func updateDomainNotificationPreferences(for domain: DomainItem, modificationBlock: (inout UserDomainNotificationsPreferences)->()) async throws -> UserDomainNotificationsPreferences {
+        var notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
+        modificationBlock(&notificationsPreferences)
+        try await NetworkService().updateUserDomainNotificationsPreferences(notificationsPreferences, for: domain)
+        return notificationsPreferences
     }
 }
 
