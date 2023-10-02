@@ -21,6 +21,7 @@ protocol XMTPMessagingAPIServiceDataProvider {
 final class XMTPMessagingAPIService {
     
     private let blockedUsersStorage = XMTPBlockedUsersStorage.shared
+    private let approvedUsersStorage = XMTPApprovedTopicsStorage.shared
     private let cachedDataHolder = CachedDataHolder()
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
                                                     canBlockUsers: true,
@@ -71,10 +72,24 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentXMTPEnvironment()
         let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         let conversations = try await client.conversations.list()
-        let chats = conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0,
-                                                                                             userId: user.id,
-                                                                                             userWallet: user.wallet,
-                                                                                             isApproved: true) })
+        
+        if let domain = try? await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet),
+           let notificationsPreferences = try? await NetworkService().fetchUserDomainNotificationsPreferences(for: domain) {
+            approvedUsersStorage.updatedApprovedUsersListFor(userId: user.id,
+                                                             approvedTopics: notificationsPreferences.acceptedTopics)
+            blockedUsersStorage.updatedBlockedUsersListFor(userId: user.id,
+                                                           blockedTopics: notificationsPreferences.blockedTopics)
+        }
+        
+        let approvedTopicsList = Set(approvedUsersStorage.getApprovedTopicsListFor(userId: user.id).map { $0.approvedTopic })
+        let chats = conversations.compactMap({ conversation in
+            XMTPEntitiesTransformer.convertXMTPChatToChat(conversation,
+                                                          userId: user.id,
+                                                          userWallet: user.wallet,
+                                                          isApproved: approvedTopicsList.contains(conversation.topic))
+        })
+        
+        
         let blockedUsersStorage = self.blockedUsersStorage
         Task.detached {
             let notBlockedChats = chats.filter({ !blockedUsersStorage.isOtherUserBlockedInChat($0.displayInfo) })

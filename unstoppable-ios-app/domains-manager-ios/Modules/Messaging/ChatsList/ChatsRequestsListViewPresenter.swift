@@ -70,7 +70,7 @@ extension ChatsRequestsListViewPresenter: MessagingServiceListener {
             case .chats(let chats, let profile):
                 if profile.id == self.profile.id,
                    case .chatRequests = dataType {
-                    let requests = chats.requestsOnly()
+                    let requests = chats.unblockedOnly().requestsOnly()
                     self.dataType = .chatRequests(requests)
                     showData()
                 }

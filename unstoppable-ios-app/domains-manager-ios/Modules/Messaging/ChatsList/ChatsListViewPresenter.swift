@@ -521,23 +521,12 @@ private extension ChatsListViewPresenter {
         snapshot.appendItems([.createProfile])
     }
     
+    func getListOfUnblockedChats() -> [MessagingChatDisplayInfo] {
+        chatsList.unblockedOnly()
+    }
+    
     func fillSnapshotForUserChatsList(_ snapshot: inout ChatsListSnapshot) {
-        var chatsList = [MessagingChatDisplayInfo]()
-        
-        if Constants.shouldHideBlockedUsersLocally {
-            // MARK: - Make function sync again when blocking feature will be handled on the service side
-            for chat in self.chatsList {
-                let blockingStatus = appContext.messagingService.getCachedBlockingStatusForChat(chat)
-                switch blockingStatus {
-                case .unblocked, .currentUserIsBlocked:
-                    chatsList.append(chat)
-                case .bothBlocked, .otherUserIsBlocked:
-                    continue
-                }
-            }
-        } else {
-            chatsList = self.chatsList
-        }
+        let chatsList = getListOfUnblockedChats()
         
         if chatsList.isEmpty {
             snapshot.appendSections([.emptyState])
@@ -691,6 +680,7 @@ private extension ChatsListViewPresenter {
         
         switch selectedDataType {
         case .chats:
+            let chatsList = getListOfUnblockedChats()
             let requests = chatsList.requestsOnly()
             guard !requests.isEmpty else { return }
             
