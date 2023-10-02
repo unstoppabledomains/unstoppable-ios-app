@@ -119,16 +119,6 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // User
-    func getProfileForImmediateMessagingPreferring(domain: DomainDisplayInfo) -> MessagingChatUserProfileDisplayInfo? {
-        guard let cachedProfiles = try? storageService.getAllUserProfiles(),
-              !cachedProfiles.isEmpty else { return nil }
-        
-        if let profileForPreferredDomain = cachedProfiles.first(where: { $0.normalizedWallet == domain.ownerWallet }) {
-            return profileForPreferredDomain.displayInfo
-        }
-        return cachedProfiles.first?.displayInfo
-    }
-    
     func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
         if let cachedProfile = try? storageService.getUserProfileFor(domain: domain,
