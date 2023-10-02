@@ -240,7 +240,7 @@ struct XMTPEntitiesTransformer {
         return convertXMTPChatToChat(serviceContent.conversation,
                                      userId: profile.id,
                                      userWallet: profile.wallet,
-                                     isApproved: true)
+                                     isApproved: false)
     }
     
     static func loadRemoteContentFrom(data: Data,
