@@ -73,6 +73,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptyTitle.localized()
+            case .communities:// TODO: - Communities
+                return String.Constants.messagingChatsListEmptyTitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptyTitle.localized()
             }
@@ -86,6 +88,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptySubtitle.localized()
+            case .communities:// TODO: - Communities
+                return String.Constants.messagingChatsListEmptySubtitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptySubtitle.localized()
             }
@@ -95,6 +99,9 @@ private extension ChatListEmptyCell {
     func setActionButtonWith(dataType: ChatsListViewController.DataType) {
         switch dataType {
         case .chats:
+            actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
+            actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
+        case .communities:// TODO: - Communities
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
             actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
         case .channels:

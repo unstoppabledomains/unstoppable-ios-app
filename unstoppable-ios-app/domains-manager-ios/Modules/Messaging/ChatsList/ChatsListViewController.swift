@@ -278,6 +278,9 @@ private extension ChatsListViewController {
                 title = String.Constants.chatRequests.localized()
             case .channels:
                 title = String.Constants.spam.localized()
+            case .communities:
+                // TODO: - Communities
+                title = String.Constants.chatRequests.localized()
             }
             cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }
@@ -360,7 +363,7 @@ private extension ChatsListViewController {
                     switch configuration.dataType {
                     case .channels:
                         self?.searchMode = .channelsOnly
-                    case .chats:
+                    case .chats, .communities: // TODO: - Communities
                         self?.searchMode = .chatsOnly
                     }
                     self?.setSearchBarActive(true)
@@ -524,12 +527,14 @@ extension ChatsListViewController {
     }
     
     enum DataType: String, Hashable {
-        case chats, channels
+        case chats, communities, channels
         
         var title: String {
             switch self {
             case .chats:
                 return String.Constants.chats.localized()
+            case .communities:
+                return "Communities"
             case .channels:
                 return String.Constants.appsInbox.localized()
             }

@@ -88,6 +88,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             switch configuration.dataType {
             case .chats:
                 logButtonPressedAnalyticEvents(button: .chatRequests)
+            case .communities:
+                logButtonPressedAnalyticEvents(button: .chatRequests) // TODO: - Communities
             case .channels:
                 logButtonPressedAnalyticEvents(button: .channelsSpam)
             }
@@ -507,6 +509,8 @@ private extension ChatsListViewPresenter {
                     switch selectedDataType {
                     case .chats:
                         fillSnapshotForUserChatsList(&snapshot)
+                    case .communities:
+                        fillSnapshotForUserChatsList(&snapshot) // TODO: - Communities
                     case .channels:
                         fillSnapshotForUserChannelsList(&snapshot)
                     }
@@ -656,8 +660,10 @@ private extension ChatsListViewPresenter {
     func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
         let chatsBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
         let inboxBadge = channels.reduce(0, { $0 + $1.unreadMessagesCount })
+        let communitiesBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
         
         return .init(dataTypesConfigurations: [.init(dataType: .chats, badge: chatsBadge),
+                                               .init(dataType: .communities, badge: communitiesBadge),
                                                .init(dataType: .channels, badge: inboxBadge)],
                      selectedDataType: selectedDataType) { [weak self] newSelectedDataType in
             self?.logButtonPressedAnalyticEvents(button: .messagingDataType, parameters: [.value: newSelectedDataType.rawValue])
@@ -688,6 +694,8 @@ private extension ChatsListViewPresenter {
             UDRouter().showChatRequestsScreen(dataType: .chatRequests(requests),
                                               profile: profile,
                                               in: nav)
+        case .communities:
+            return // TODO: - Communities
         case .channels:
             let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
             guard !channels.isEmpty else { return }
