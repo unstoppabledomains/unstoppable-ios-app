@@ -191,9 +191,7 @@ extension MessagingService: MessagingServiceProtocol {
     
     // Chats list
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
-        let profile = try await getUserProfileWith(wallet: profile.wallet, serviceIdentifier: profile.serviceIdentifier)
-        let chats = try await storageService.getChatsFor(profile: profile)
-        
+        let chats = try await getCachedChatsInAllServicesFor(profile: profile)
         let chatsDisplayInfo = chats.map { $0.displayInfo }
         return chatsDisplayInfo
     }
@@ -602,15 +600,19 @@ private extension MessagingService {
         Task {
             do {
                 if let userProfile {
-                    let rrDomain = try await getReverseResolutionDomainItem(for: userProfile.wallet)
-                    let profile = try storageService.getUserProfileFor(domain: rrDomain,
-                                                                       serviceIdentifier: userProfile.serviceIdentifier)
-                    if !dataRefreshManager.isUpdatingUserData(profile.displayInfo) {
-                        refreshChatsForProfile(profile, shouldRefreshUserInfo: shouldRefreshUserInfo)
-                        refreshChannelsForProfile(profile)
+                    let profiles = try await getProfilesForAllServicesBy(userProfile: userProfile)
+                    
+                    if !dataRefreshManager.isUpdatingUserData(profiles.first!.displayInfo) {
+                        profiles.forEach { profile in
+                            refreshChatsForProfile(profile, shouldRefreshUserInfo: shouldRefreshUserInfo)
+                            refreshChannelsForProfile(profile)
+                        }
                     }
 
-                    setupSocketConnection(profile: profile)
+                    profiles.forEach { profile in
+                        setupSocketConnection(profile: profile)
+                    }
+                    
                 } else {
                     disconnectAllSocketsConnections()
                 }

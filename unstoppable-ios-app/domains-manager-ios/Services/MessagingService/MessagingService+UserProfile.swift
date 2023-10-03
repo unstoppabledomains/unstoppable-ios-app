@@ -43,4 +43,18 @@ extension MessagingService {
         await storageService.saveUserProfile(remoteProfile)
         return remoteProfile.displayInfo
     }
+    
+    /// Return at least one existing profile or throw error
+    func getProfilesForAllServicesBy(userProfile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatUserProfile] {
+        let profile = try await getUserProfileWith(wallet: userProfile.wallet, serviceIdentifier: userProfile.serviceIdentifier)
+        var profiles = [profile]
+        
+        for serviceIdentifier in MessagingServiceIdentifier.allCases where serviceIdentifier != userProfile.serviceIdentifier {
+            if let profile = try? await getUserProfileWith(wallet: userProfile.wallet, serviceIdentifier: serviceIdentifier) {
+                profiles.append(profile)
+            }
+        }
+        
+        return profiles
+    }
 }

@@ -358,8 +358,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         case .group(let details):
             /// Messages not encrypted in public group
             return !details.isPublic
-        case .community:
-            return true // TODO: - Communities. Check with Aaron
+        case .community(let details):
+            return !details.isPublic
         }
     }
     

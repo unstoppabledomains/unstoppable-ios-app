@@ -68,6 +68,7 @@ struct PushEntitiesTransformer {
                 let isJoined = members.first(where: { $0.wallet.lowercased() == userWallet.lowercased() }) != nil
                 let communityChatDetails = MessagingCommunitiesChatDetails(type: .badge(badgeInfo),
                                                                            isJoined: isJoined,
+                                                                           isPublic: groupInfo.isPublic,
                                                                            members: members,
                                                                            pendingMembers: pendingMembers,
                                                                            adminWallets: adminWallets)
@@ -130,6 +131,7 @@ struct PushEntitiesTransformer {
                                             serviceIdentifier: .push,
                                             type: .community(.init(type: .badge(badgeInfo),
                                                                    isJoined: false,
+                                                                   isPublic: true,
                                                                    members: [],
                                                                    pendingMembers: [],
                                                                    adminWallets: [])),

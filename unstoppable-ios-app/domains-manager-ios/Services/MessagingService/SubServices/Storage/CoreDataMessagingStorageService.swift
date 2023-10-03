@@ -527,10 +527,11 @@ private extension CoreDataMessagingStorageService {
                                                                            pendingMembersWallets: pendingMembersWallets)
             
             let communityChatDetails = MessagingCommunitiesChatDetails(type: details.type,
-                                                                   isJoined: details.isJoined,
-                                                                   members: members,
-                                                                   pendingMembers: pendingMembers,
-                                                                   adminWallets: details.adminWallets)
+                                                                       isJoined: details.isJoined,
+                                                                       isPublic: details.isPublic,
+                                                                       members: members,
+                                                                       pendingMembers: pendingMembers,
+                                                                       adminWallets: details.adminWallets)
             return .community(communityChatDetails)
         }
         
@@ -584,6 +585,7 @@ private extension CoreDataMessagingStorageService {
             let pendingMembersWallets = details.pendingMembers.map { $0.wallet }
             coreDataChat.groupDetails = CoreDataChatCommunityDetails(type: details.type,
                                                                      isJoined: details.isJoined,
+                                                                     isPublic: details.isPublic,
                                                                      memberWallets: memberWallets,
                                                                      pendingMembersWallets: pendingMembersWallets,
                                                                      adminWallets: details.adminWallets).jsonRepresentation()
@@ -945,6 +947,7 @@ private extension CoreDataMessagingStorageService {
     struct CoreDataChatCommunityDetails: Codable {
         let type: MessagingCommunitiesChatDetails.CommunityType
         let isJoined: Bool
+        let isPublic: Bool
         let memberWallets: [String]
         let pendingMembersWallets: [String]
         let adminWallets: [String]

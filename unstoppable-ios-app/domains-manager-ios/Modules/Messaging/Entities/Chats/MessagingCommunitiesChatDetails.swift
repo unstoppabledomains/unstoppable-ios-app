@@ -10,6 +10,7 @@ import Foundation
 struct MessagingCommunitiesChatDetails: Hashable, Codable {
     let type: CommunityType
     let isJoined: Bool
+    let isPublic: Bool
     let members: [MessagingChatUserDisplayInfo]
     let pendingMembers: [MessagingChatUserDisplayInfo]
     let adminWallets: [String]

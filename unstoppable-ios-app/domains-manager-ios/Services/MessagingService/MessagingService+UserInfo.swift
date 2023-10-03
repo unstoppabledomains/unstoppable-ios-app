@@ -28,7 +28,7 @@ extension MessagingService {
                 }
             })
             
-            let updatedChats = try await storageService.getChatsFor(profile: profile)
+            let updatedChats = try await getCachedChatsInAllServicesFor(profile: profile.displayInfo)
             notifyListenersChangedDataType(.chats(updatedChats.map { $0.displayInfo }, profile: profile.displayInfo))
         } catch { }
     }

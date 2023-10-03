@@ -28,7 +28,7 @@ extension MessagingService {
                                                                   for: profile)
                 await storageService.saveChats(updatedChats)
                 
-                let updatedStoredChats = try await storageService.getChatsFor(profile: profile)
+                let updatedStoredChats = try await getCachedChatsInAllServicesFor(profile: profile.displayInfo)
                 let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
                 notifyListenersChangedDataType(.chats(chatsDisplayInfo, profile: profile.displayInfo))
                 Debugger.printTimeSensitiveInfo(topic: .Messaging,
@@ -107,7 +107,6 @@ extension MessagingService {
         return updatedChats
     }
     
-    
     func isNewMessagesAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
         if try await isNewMessagesFromAcceptedChatsAvailable(for: profile) {
             return true
@@ -137,6 +136,17 @@ extension MessagingService {
                                                                serviceIdentifier: profile.serviceIdentifier) else { return true } /// New chat => new message
         
         return !localChat.isUpToDateWith(otherChat: latestChat)
+    }
+    
+    func getCachedChatsInAllServicesFor(profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChat] {
+        let profiles = try await getProfilesForAllServicesBy(userProfile: profile)
+        var chats: [MessagingChat] = []
+        for profile in profiles {
+            if let profileChats = try? await storageService.getChatsFor(profile: profile) {
+                chats.append(contentsOf: profileChats)
+            }
+        }
+        return chats
     }
 }
 
