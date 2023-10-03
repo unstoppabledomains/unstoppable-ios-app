@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import SocketIO
-import Push
 
 final class PushMessagingChannelsWebSocketsService: PushWebSocketsService, MessagingChannelsWebSocketsServiceProtocol {
     init() {
