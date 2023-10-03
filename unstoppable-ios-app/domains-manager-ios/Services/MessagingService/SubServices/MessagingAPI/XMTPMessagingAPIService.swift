@@ -144,7 +144,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
             let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
             let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
             blockedUsersStorage.updatedBlockedUsersListFor(userId: chat.userId, blockedTopics: notificationsPreferences.blockedTopics)
-        case .group:
+        case .group, .community:
             throw XMTPServiceError.unsupportedAction
         }
     }
@@ -265,7 +265,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
             let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
             approvedUsersStorage.updatedApprovedUsersListFor(userId: chat.userId,
                                                              approvedTopics: notificationsPreferences.acceptedTopics)
-        case .group:
+        case .group, .community:
             throw XMTPServiceError.unsupportedAction
         }
     }

@@ -375,7 +375,7 @@ extension MessagingService: MessagingServiceProtocol {
             userInfo.wallet = infoInChat.otherUser.wallet
             await storageService.saveMessagingUserInfo(userInfo)
             chat.displayInfo.type = .private(.init(otherUser: userInfo))
-        case .group:
+        case .group, .community: // TODO: - Communities
             Void()
         }
         await storageService.saveChats([chat])

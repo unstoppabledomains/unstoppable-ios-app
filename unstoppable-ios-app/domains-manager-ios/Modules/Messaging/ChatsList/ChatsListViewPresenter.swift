@@ -85,6 +85,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 logButtonPressedAnalyticEvents(button: .chatInList)
             case .group:
                 logButtonPressedAnalyticEvents(button: .groupChatInList)
+            case .community:
+                logButtonPressedAnalyticEvents(button: .chatInList) // TODO: - Communities
             }
             openChatWith(conversationState: .existingChat(configuration.chat))
         case .chatRequests(let configuration):
@@ -711,6 +713,9 @@ private extension ChatsListViewPresenter {
             return isUserMatchSearchKey(details.otherUser, searchKey: searchKey)
         case .group(let details):
             let members = details.allMembers
+            return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
+        case .community(let details):
+            let members = details.members
             return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
         }
     }

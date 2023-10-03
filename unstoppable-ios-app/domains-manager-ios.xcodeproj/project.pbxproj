@@ -762,6 +762,7 @@
 		C695C2682A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */; };
 		C69698982ACBCDDB0000738C /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69698972ACBCDDB0000738C /* PushWebSocketsService.swift */; };
 		C696989A2ACBCE640000738C /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69698992ACBCE640000738C /* PushMessagingWebSocketsService.swift */; };
+		C696989C2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C696989B2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift */; };
 		C69F99202A9F1264004B1958 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99102A9F1264004B1958 /* Line.swift */; };
 		C69F99212A9F1264004B1958 /* HexagonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99112A9F1264004B1958 /* HexagonShape.swift */; };
 		C69F99222A9F1264004B1958 /* CircleIconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99122A9F1264004B1958 /* CircleIconButton.swift */; };
@@ -1900,6 +1901,7 @@
 		C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushPublicKeysStorage.swift; sourceTree = "<group>"; };
 		C69698972ACBCDDB0000738C /* PushWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushWebSocketsService.swift; sourceTree = "<group>"; };
 		C69698992ACBCE640000738C /* PushMessagingWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingWebSocketsService.swift; sourceTree = "<group>"; };
+		C696989B2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingCommunitiesChatDetails.swift; sourceTree = "<group>"; };
 		C69F99102A9F1264004B1958 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		C69F99112A9F1264004B1958 /* HexagonShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexagonShape.swift; sourceTree = "<group>"; };
 		C69F99122A9F1264004B1958 /* CircleIconButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleIconButton.swift; sourceTree = "<group>"; };
@@ -3860,6 +3862,7 @@
 			children = (
 				C623968A2A288AB300363F60 /* MessagingPrivateChatDetails.swift */,
 				C623968F2A288AC400363F60 /* MessagingGroupChatDetails.swift */,
+				C696989B2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift */,
 				C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */,
 				C62396942A288AD100363F60 /* MessagingChatType.swift */,
 				C62396992A288ADB00363F60 /* MessagingChatDisplayInfo.swift */,
@@ -6813,6 +6816,7 @@
 				C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */,
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824B2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
+				C696989C2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift in Sources */,
 				C665FC1F29B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,
 				C64528D32AA0CDFC00298121 /* PublicProfileViewDelegate.swift in Sources */,
 				C6D6E52C28193611008C66BB /* BasePresenterProtocol.swift in Sources */,

@@ -40,6 +40,12 @@ extension ChatListCell {
             avatarImageView.layer.borderWidth = 0
             Task { avatarImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(details.allMembers,
                                                                                                     iconSize: avatarImageView.bounds.width) }
+        case .community(let details):
+            // TODO: - Communities
+            avatarImageView.clipsToBounds = false
+            avatarImageView.layer.borderWidth = 0
+            Task { avatarImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(details.members,
+                                                                                                    iconSize: avatarImageView.bounds.width) }
         }
         
         setNameText(chatName)
@@ -103,6 +109,8 @@ private extension ChatListCell {
             return chatNameFrom(userInfo: otherUserDetails.otherUser)
         case .group(let groupDetails):
             return groupDetails.displayName
+        case .community(let communityDetails):
+            return communityDetails.displayName
         }
     }
     

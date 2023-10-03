@@ -42,14 +42,9 @@ extension MessagingService {
             }
             return []
         case .group(let details):
-            var infos: [MessagingChatUserDisplayInfo] = []
-            let members = details.allMembers.prefix(3) // Only first 3 members will be displayed on the UI
-            for member in members {
-                if let userInfo = await loadUserInfoFor(wallet: member.wallet) {
-                    infos.append(userInfo)
-                }
-            }
-            return infos
+            return await loadGroupUserInfosFor(members: details.allMembers)
+        case .community(let details):
+            return await loadGroupUserInfosFor(members: details.members)
         }
     }
     
@@ -81,5 +76,19 @@ extension MessagingService {
                                                 pfpURL: rrInfo.pfpURLToUse)
         }
         return nil
+    }
+}
+
+// MARK: - Private methods
+private extension MessagingService {
+    func loadGroupUserInfosFor(members: [MessagingChatUserDisplayInfo]) async -> [MessagingChatUserDisplayInfo] {
+        var infos: [MessagingChatUserDisplayInfo] = []
+        let members = members.prefix(3) // Only first 3 members will be displayed on the UI
+        for member in members {
+            if let userInfo = await loadUserInfoFor(wallet: member.wallet) {
+                infos.append(userInfo)
+            }
+        }
+        return infos
     }
 }

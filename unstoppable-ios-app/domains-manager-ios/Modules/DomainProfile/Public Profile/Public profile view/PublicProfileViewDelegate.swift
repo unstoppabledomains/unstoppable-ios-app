@@ -45,7 +45,7 @@ extension UIViewController: PublicProfileViewDelegate {
                    switch chat.type {
                    case .private(let details):
                        return details.otherUser.wallet.lowercased() == profile.walletAddress
-                   case .group:
+                   case .group, .community:
                        return false
                    }
                }) {

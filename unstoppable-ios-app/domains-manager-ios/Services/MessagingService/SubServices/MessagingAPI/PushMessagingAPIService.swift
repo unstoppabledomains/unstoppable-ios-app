@@ -208,7 +208,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             } else {
                 return .currentUserIsBlocked
             }
-        case .group:
+        case .group, .community:
             return .unblocked
         }
     }
@@ -235,7 +235,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                 pgpPrivateKey: pgpPrivateKey,
                                                 env: env)
             }
-        case .group:
+        case .group, .community:
             throw PushMessagingAPIServiceError.blockUserInGroupChatsNotSupported
         }
     }
@@ -311,6 +311,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         case .group(let details):
             /// Messages not encrypted in public group
             return !details.isPublic
+        case .community:
+            return true // TODO: - Communities. Check with Aaron
         }
     }
     
@@ -347,7 +349,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             }
             
             return try convertPushMessageToChatMessage(message)
-        case .group:
+        case .group, .community:
             let receiver = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
             let sendOptions = try await buildPushSendOptions(for: messageType,
                                                              receiver: receiver,
@@ -400,7 +402,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         switch chat.displayInfo.type {
         case .private(let otherUserDetails):
             requesterAddress = otherUserDetails.otherUser.wallet
-        case .group:
+        case .group, .community:
             requesterAddress = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
         }
 

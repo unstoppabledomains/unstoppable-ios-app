@@ -418,6 +418,8 @@ private extension ChatViewPresenter {
                 setupTitleFor(userInfo: otherUser)
             case .group(let groupDetails):
                 view?.setTitleOfType(.group(groupDetails))
+            case .community(let communityDetails):
+                view?.setTitleOfType(.community(communityDetails))
             }
         case .newChat(let description):
             setupTitleFor(userInfo: description.userInfo)
@@ -506,6 +508,8 @@ private extension ChatViewPresenter {
                         self?.didPressLeaveButton()
                     }))
                 }
+            case .community:
+                Void() // TODO: - Communities
             }
         }
         

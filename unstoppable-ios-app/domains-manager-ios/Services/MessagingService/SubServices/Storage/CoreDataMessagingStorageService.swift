@@ -509,23 +509,8 @@ private extension CoreDataMessagingStorageService {
                   let details = CoreDataChatGroupDetails.objectFromJSON(json) {
             let memberWallets = details.memberWallets
             let pendingMembersWallets = details.pendingMembersWallets
-            let allMembersWallets = memberWallets + pendingMembersWallets
-            let cachedUserInfos = getCoreDataDomainInfosFor(wallets: allMembersWallets)
-            let walletToInfoMap = cachedUserInfos.reduce([String : CoreDataMessagingUserInfo]()) { (dict, userInfo) in
-                var dict = dict
-                dict[userInfo.wallet!] = userInfo
-                return dict
-            }
-            
-            func createUserDisplayInfoFor(wallet: String) -> MessagingChatUserDisplayInfo {
-                let cachedInfo = walletToInfoMap[wallet]
-                return MessagingChatUserDisplayInfo(wallet: wallet,
-                                                    domainName: cachedInfo?.name,
-                                                    pfpURL: cachedInfo?.pfpURL)
-            }
-            
-            let members = memberWallets.map { createUserDisplayInfoFor(wallet: $0) }
-            let pendingMembers = pendingMembersWallets.map { createUserDisplayInfoFor(wallet: $0) }
+            let (members, pendingMembers) = getGroupChatUserDisplayInfoFor(memberWallets: memberWallets,
+                                                                           pendingMembersWallets: pendingMembersWallets)
             
             let groupChatDetails = MessagingGroupChatDetails(members: members,
                                                              pendingMembers: pendingMembers,
@@ -533,9 +518,50 @@ private extension CoreDataMessagingStorageService {
                                                              adminWallets: details.adminWallets ?? [],
                                                              isPublic: details.isPublic)
             return .group(groupChatDetails)
+        } else if coreDataChat.type == 2,
+                 let json = coreDataChat.groupDetails,
+                 let details = CoreDataChatCommunityDetails.objectFromJSON(json) {
+            let memberWallets = details.memberWallets
+            let pendingMembersWallets = details.pendingMembersWallets
+            let (members, pendingMembers) = getGroupChatUserDisplayInfoFor(memberWallets: memberWallets,
+                                                                           pendingMembersWallets: pendingMembersWallets)
+            
+            let communityChatDetails = MessagingCommunitiesChatDetails(type: details.type,
+                                                                   isJoined: details.isJoined,
+                                                                   members: members,
+                                                                   pendingMembers: pendingMembers,
+                                                                   adminWallets: details.adminWallets)
+            return .community(communityChatDetails)
         }
         
         return nil
+    }
+    
+    func getGroupChatUserDisplayInfoFor(memberWallets: [String], pendingMembersWallets: [String]) -> ([MessagingChatUserDisplayInfo], [MessagingChatUserDisplayInfo]) {
+        let allMembersWallets = memberWallets + pendingMembersWallets
+        let walletToInfoMap = getChatUserDisplayInfoMapFor(wallets: allMembersWallets)
+        
+        let members = memberWallets.map { createUserDisplayInfoFor(wallet: $0, using: walletToInfoMap) }
+        let pendingMembers = pendingMembersWallets.map { createUserDisplayInfoFor(wallet: $0, using: walletToInfoMap) }
+        
+        return (members, pendingMembers)
+    }
+    
+    func getChatUserDisplayInfoMapFor(wallets: [String]) -> [String : CoreDataMessagingUserInfo] {
+        let cachedUserInfos = getCoreDataDomainInfosFor(wallets: wallets)
+        let walletToInfoMap = cachedUserInfos.reduce([String : CoreDataMessagingUserInfo]()) { (dict, userInfo) in
+            var dict = dict
+            dict[userInfo.wallet!] = userInfo
+            return dict
+        }
+        return walletToInfoMap
+    }
+    
+    func createUserDisplayInfoFor(wallet: String, using walletToInfoMap: [String : CoreDataMessagingUserInfo]) -> MessagingChatUserDisplayInfo {
+        let cachedInfo = walletToInfoMap[wallet]
+        return MessagingChatUserDisplayInfo(wallet: wallet,
+                                            domainName: cachedInfo?.name,
+                                            pfpURL: cachedInfo?.pfpURL)
     }
     
     func saveChatType(_ chatType: MessagingChatType, to coreDataChat: CoreDataMessagingChat) {
@@ -552,6 +578,15 @@ private extension CoreDataMessagingStorageService {
                                                                  isPublic: details.isPublic,
                                                                  memberWallets: memberWallets,
                                                                  pendingMembersWallets: pendingMembersWallets).jsonRepresentation()
+        case .community(let details):
+            coreDataChat.type = 2
+            let memberWallets = details.members.map { $0.wallet }
+            let pendingMembersWallets = details.pendingMembers.map { $0.wallet }
+            coreDataChat.groupDetails = CoreDataChatCommunityDetails(type: details.type,
+                                                                     isJoined: details.isJoined,
+                                                                     memberWallets: memberWallets,
+                                                                     pendingMembersWallets: pendingMembersWallets,
+                                                                     adminWallets: details.adminWallets).jsonRepresentation()
         }
     }
 }
@@ -905,6 +940,14 @@ private extension CoreDataMessagingStorageService {
         let isPublic: Bool
         let memberWallets: [String]
         let pendingMembersWallets: [String]
+    }
+    
+    struct CoreDataChatCommunityDetails: Codable {
+        let type: MessagingCommunitiesChatDetails.CommunityType
+        let isJoined: Bool
+        let memberWallets: [String]
+        let pendingMembersWallets: [String]
+        let adminWallets: [String]
     }
     
     struct CoreDataUnknownMessageDetails: Codable {

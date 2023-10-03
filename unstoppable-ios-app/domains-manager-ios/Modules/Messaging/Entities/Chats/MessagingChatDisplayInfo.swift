@@ -25,7 +25,7 @@ extension MessagingChatDisplayInfo {
         switch type {
         case .private:
             return false
-        case .group:
+        case .group, .community:
             return true
         }
     }
