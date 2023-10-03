@@ -26,6 +26,7 @@ final class MessagingService {
     let dataRefreshManager = MessagingServiceDataRefreshManager()
     /// By default and as primary service we use XMTP
     let defaultServiceIdentifier: MessagingServiceIdentifier = .xmtp
+    let communitiesServiceIdentifier: MessagingServiceIdentifier = .push
     private(set) var listenerHolders: [MessagingListenerHolder] = []
     private(set) var currentUser: MessagingChatUserProfileDisplayInfo?
     
@@ -139,6 +140,14 @@ extension MessagingService: MessagingServiceProtocol {
  
     func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
         try await createUserProfile(for: domain, serviceIdentifier: defaultServiceIdentifier)
+    }
+    
+    func getUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
+        try await getUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+    }
+    
+    func createUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
+        try await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
     }
     
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) {
