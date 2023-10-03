@@ -18,8 +18,8 @@ protocol MessagingServiceProtocol {
     func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo?
     
     // User
-    func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
-    func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
+    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
+    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool
     func isNewMessagesAvailable() async throws -> Bool

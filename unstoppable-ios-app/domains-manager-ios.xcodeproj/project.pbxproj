@@ -1082,6 +1082,7 @@
 		C6F060CA2ACAA4DF00BA2E7E /* MessagingService+Chats.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060C92ACAA4DF00BA2E7E /* MessagingService+Chats.swift */; };
 		C6F060CC2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */; };
 		C6F060CD2ACAB71300BA2E7E /* MessagingServiceIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */; };
+		C6F060CF2ACBC81300BA2E7E /* MessagingService+UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CE2ACBC81300BA2E7E /* MessagingService+UserProfile.swift */; };
 		C6F3FD632AAA11E700208679 /* PullUpNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */; };
 		C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */; };
 		C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */; };
@@ -2200,6 +2201,7 @@
 		C6F060C72ACAA4AE00BA2E7E /* MessagingService+UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+UserInfo.swift"; sourceTree = "<group>"; };
 		C6F060C92ACAA4DF00BA2E7E /* MessagingService+Chats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+Chats.swift"; sourceTree = "<group>"; };
 		C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingServiceIdentifier.swift; sourceTree = "<group>"; };
+		C6F060CE2ACBC81300BA2E7E /* MessagingService+UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+UserProfile.swift"; sourceTree = "<group>"; };
 		C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpNamespace.swift; sourceTree = "<group>"; };
 		C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackToSettingsNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationBarScrollingController.swift; sourceTree = "<group>"; };
@@ -3873,6 +3875,7 @@
 				C6F060C92ACAA4DF00BA2E7E /* MessagingService+Chats.swift */,
 				C6F060C32ACAA35B00BA2E7E /* MessagingService+Tools.swift */,
 				C6F060C72ACAA4AE00BA2E7E /* MessagingService+UserInfo.swift */,
+				C6F060CE2ACBC81300BA2E7E /* MessagingService+UserProfile.swift */,
 				C6F060C12ACAA30C00BA2E7E /* MessagingService+Websockets.swift */,
 				C6AF123F2A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift */,
 				C652722A2A14B395001A084C /* MockMessagingService.swift */,
@@ -6611,6 +6614,7 @@
 				C6E041B429546AB60080F8E3 /* DomainsCollectionCarouselViewController.swift in Sources */,
 				C6E69FF6288AE47D000A8346 /* ExternalEventsService.swift in Sources */,
 				C64836C2282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */,
+				C6F060CF2ACBC81300BA2E7E /* MessagingService+UserProfile.swift in Sources */,
 				C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
 				C66FCD1A2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C6E041D8295588C90080F8E3 /* UDPageControl.swift in Sources */,

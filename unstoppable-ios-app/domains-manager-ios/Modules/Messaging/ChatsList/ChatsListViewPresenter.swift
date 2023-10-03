@@ -119,7 +119,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             } else {
                 var profile: MessagingChatUserProfileDisplayInfo?
                 if let rrDomain = wallet.reverseResolutionDomain {
-                   profile = try? await appContext.messagingService.getUserProfile(for: rrDomain)
+                   profile = try? await appContext.messagingService.getUserMessagingProfile(for: rrDomain)
                 }
                 
                 try await selectProfileWalletPair(.init(wallet: wallet,
@@ -378,7 +378,7 @@ private extension ChatsListViewPresenter {
             for wallet in wallets {
                 guard let rrDomain = wallet.reverseResolutionDomain else { continue }
                 
-                if let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
+                if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: rrDomain) {
                     /// User open chats for the first time but there's existing profile, use it as default
                     try await selectProfileWalletPair(.init(wallet: wallet,
                                                             profile: profile))
@@ -732,7 +732,7 @@ private extension ChatsListViewPresenter {
                           in wallet: WalletDisplayInfo) {
         Task {
             do {
-                let profile = try await appContext.messagingService.createUserProfile(for: domain)
+                let profile = try await appContext.messagingService.createUserMessagingProfile(for: domain)
                 try await selectProfileWalletPair(.init(wallet: wallet,
                                                         profile: profile))
             } catch {

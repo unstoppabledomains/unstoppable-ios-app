@@ -247,7 +247,7 @@ private extension ExternalEventsService {
     private func getMessagingProfileFor(domainName: String) async throws -> MessagingChatUserProfileDisplayInfo {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
         let domainDisplayInfo = DomainDisplayInfo(domainItem: domain, isSetForRR: true)
-        let profile = try await appContext.messagingService.getUserProfile(for: domainDisplayInfo)
+        let profile = try await appContext.messagingService.getUserMessagingProfile(for: domainDisplayInfo)
         return profile
     }
     

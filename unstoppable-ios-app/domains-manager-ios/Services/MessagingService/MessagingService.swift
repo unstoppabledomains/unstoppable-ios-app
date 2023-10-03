@@ -24,6 +24,7 @@ final class MessagingService {
     let unreadCountingService: MessagingUnreadCountingServiceProtocol
     
     let dataRefreshManager = MessagingServiceDataRefreshManager()
+    /// By default and as primary service we use XMTP
     let defaultServiceIdentifier: MessagingServiceIdentifier = .xmtp
     private(set) var listenerHolders: [MessagingListenerHolder] = []
     private(set) var currentUser: MessagingChatUserProfileDisplayInfo?
@@ -132,32 +133,12 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     // User
-    func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        let apiService = try getDefaultAPIService()
-        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
-        if let cachedProfile = try? storageService.getUserProfileFor(domain: domain,
-                                                                     serviceIdentifier: apiService.serviceIdentifier) {
-            return cachedProfile.displayInfo
-        }
-        
-        let remoteProfile = try await apiService.getUserFor(domain: domain)
-        await storageService.saveUserProfile(remoteProfile)
-        return remoteProfile.displayInfo
+    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
+        try await getUserProfile(for: domain, serviceIdentifier: defaultServiceIdentifier)
     }
-    
-    func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        let apiService = try getDefaultAPIService()
-
-        if let existingUser = try? await getUserProfile(for: domain) {
-            return existingUser
-        }
-        let domainItem = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
-        let newUser = try await apiService.createUser(for: domainItem)
-        Task.detached {
-            try? await apiService.updateUserProfile(newUser, name: domain.name, avatar: domain.pfpSource.value)
-        }
-        await storageService.saveUserProfile(newUser)
-        return newUser.displayInfo
+ 
+    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
+        try await createUserProfile(for: domain, serviceIdentifier: defaultServiceIdentifier)
     }
     
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) {

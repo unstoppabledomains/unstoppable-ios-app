@@ -30,7 +30,7 @@ extension UIViewController: PublicProfileViewDelegate {
         Task {
             let displayInfo = DomainDisplayInfo(domainItem: userDomain, isSetForRR: false)
             var messagingProfile: MessagingChatUserProfileDisplayInfo
-            if let profile = try? await appContext.messagingService.getUserProfile(for: displayInfo) {
+            if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: displayInfo) {
                 messagingProfile = profile
             } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
                 messagingProfile = profile
