@@ -82,18 +82,26 @@ final class GeneralAppContext: AppContextProtocol {
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
         
         // Messaging
-        let messagingAPIService: MessagingAPIServiceProtocol = XMTPMessagingAPIService()
+        let xmtpMessagingAPIService: MessagingAPIServiceProtocol = XMTPMessagingAPIService()
+        let xmtpMessagingWebSocketsService: MessagingWebSocketsServiceProtocol = XMTPMessagingWebSocketsService()
+        let pushMessagingAPIService: MessagingAPIServiceProtocol = PushMessagingAPIService()
+        let pushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol = PushMessagingWebSocketsService()
+        
+        let messagingAPIProviders: [MessagingServiceAPIProvider] = [.init(identifier: xmtpMessagingAPIService.serviceIdentifier,
+                                                                          apiService: xmtpMessagingAPIService,
+                                                                          webSocketsService: xmtpMessagingWebSocketsService),
+                                                                    .init(identifier: pushMessagingAPIService.serviceIdentifier,
+                                                                          apiService: pushMessagingAPIService,
+                                                                          webSocketsService: pushMessagingWebSocketsService)]
+        
         let messagingChannelsAPIService: MessagingChannelsAPIServiceProtocol = PushMessagingChannelsAPIService()
-        let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = XMTPMessagingWebSocketsService()
         let messagingChannelsWebSocketsService: MessagingChannelsWebSocketsServiceProtocol = PushMessagingChannelsWebSocketsService()
         let messagingDecrypterService: MessagingContentDecrypterService = SymmetricMessagingContentDecrypterService()
         let coreDataMessagingStorageService = CoreDataMessagingStorageService(decrypterService: messagingDecrypterService)
         let messagingStorageService: MessagingStorageServiceProtocol = coreDataMessagingStorageService
         let messagingUnreadCountingService: MessagingUnreadCountingServiceProtocol = CoreDataMessagingUnreadCountingService(storageService: coreDataMessagingStorageService)
         let messagingFilesService: MessagingFilesServiceProtocol = MessagingFilesService(decrypterService: messagingDecrypterService)
-        let messagingAPIProviders: [MessagingServiceAPIProvider] = [.init(identifier: messagingAPIService.serviceIdentifier,
-                                                                          apiService: messagingAPIService,
-                                                                          webSocketsService: messagingWebSocketsService)]
+        
         let messagingService = MessagingService(serviceProviders: messagingAPIProviders,
                                                 channelsApiService: messagingChannelsAPIService,
                                                 channelsWebSocketsService: messagingChannelsWebSocketsService,
