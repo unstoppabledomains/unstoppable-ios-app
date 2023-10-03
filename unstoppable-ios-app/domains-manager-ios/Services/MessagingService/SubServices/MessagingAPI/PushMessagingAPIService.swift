@@ -85,14 +85,61 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {
-        let pushChats = try await getPushChatsForUser(user,
-                                                      page: page,
-                                                      limit: limit,
-                                                      isRequests: false)
+        try await getCommunitiesListForUser(user)
+//        let pushChats = try await getPushChatsForUser(user,
+//                                                      page: page,
+//                                                      limit: limit,
+//                                                      isRequests: false)
+//        
+//        return try await transformPushChatsToChats(pushChats,
+//                                                   isApproved: true,
+//                                                   for: user)
+    }
+    
+    private func getCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] {
+        try await getBadgesCommunitiesListForUser(user)
+    }
+    
+    private func getBadgesCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] {
+        let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.normalizedWallet)
+        let badgesList = try await NetworkService().fetchBadgesInfo(for: domain)
+        let env = getCurrentPushEnvironment()
+        var chats: [MessagingChat] = []
         
-        return try await transformPushChatsToChats(pushChats,
-                                                   isApproved: true,
-                                                   for: user)
+        await withTaskGroup(of: Optional<MessagingChat>.self, body: { group in
+            for badge in badgesList.badges {
+                group.addTask {
+                    if let badgeInfo = try? await NetworkService().fetchBadgeDetailedInfo(for: badge) {
+                        if let groupChatId = badge.groupChatId,
+                           let pushGroup = try? await Push.PushChat.getGroup(chatId: groupChatId, env: env) {
+                            let pushChat = PushChat(pushGroup: pushGroup)
+                            let publicKeys = pushGroup.members.compactMap { $0.publicKey }
+                            
+                            let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
+                                                                                     userId: user.id,
+                                                                                     userWallet: user.wallet,
+                                                                                     isApproved: true,
+                                                                                     publicKeys: publicKeys,
+                                                                                     badgeInfo: badgeInfo)
+                            return chat
+                        } else {
+                            let chat = PushEntitiesTransformer.buildEmptyCommunityChatFor(badgeInfo: badgeInfo, user: user)
+                            return chat
+                        }
+                    } else {
+                        return nil
+                    }
+                }
+            }
+            
+            /// 2. Take values from group
+            for await chat in group {
+                guard let chat else { continue }
+                chats.append(chat)
+            }
+        })
+    
+        return chats
     }
     
     private func getPushChatsForUser(_ user: MessagingChatUserProfile,

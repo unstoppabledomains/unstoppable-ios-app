@@ -281,7 +281,7 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                    loadAndShowData()
                } else if profile.id == selectedProfileWalletPair?.profile?.id,
                          chatsList != chats || Constants.shouldHideBlockedUsersLocally {
-                   chatsList = chats
+                   setNewChats(chats)
                    showData()
                }
            case .channels(let channels, let profile):
@@ -374,6 +374,10 @@ private extension ChatsListViewPresenter {
                 view?.showAlertWith(error: error, handler: nil)
             }
         }
+    }
+    
+    func setNewChats(_ chats: [MessagingChatDisplayInfo]) {
+        (chatsList, communitiesList) = chats.splitCommunitiesAndOthers()
     }
     
     func refreshAvailableWalletsList() {
@@ -503,9 +507,9 @@ private extension ChatsListViewPresenter {
         async let chatsListTask = appContext.messagingService.getChatsListForProfile(profile)
         async let channelsTask = appContext.messagingService.getChannelsForProfile(profile)
         
-        let (chatsList, channels) = try await (chatsListTask, channelsTask)
+        let (chats, channels) = try await (chatsListTask, channelsTask)
         
-        self.chatsList = chatsList
+        setNewChats(chats)
         self.channels = channels
         
         await awaitForUIReady()
@@ -593,19 +597,19 @@ private extension ChatsListViewPresenter {
     
     // TODO: - Communities
     func fillSnapshotForUserCommunitiesList(_ snapshot: inout ChatsListSnapshot) {
-        let chatsList = getListOfUnblockedCommunities()
+        let communitiesList = getListOfUnblockedCommunities()
         
         if selectedProfileWalletPair?.communitiesProfile == nil {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptyState(configuration: .noCommunitiesProfile)])
         } else {
-            if chatsList.isEmpty {
+            if communitiesList.isEmpty {
                 snapshot.appendSections([.emptyState])
                 snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
             } else {
                 snapshot.appendSections([.listItems(title: nil)])
-                let requestsList = chatsList.requestsOnly()
-                let approvedList = chatsList.confirmedOnly()
+                let requestsList = communitiesList.requestsOnly()
+                let approvedList = communitiesList.confirmedOnly()
                 if !requestsList.isEmpty {
                     snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
                                                                              numberOfRequests: requestsList.count))])

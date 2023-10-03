@@ -60,4 +60,20 @@ extension Array where Element == MessagingChatDisplayInfo {
         filter { $0.isApproved }
     }
     
+    func splitCommunitiesAndOthers() -> (chats: [Element], communities: [Element]) {
+        var chats: [Element] = []
+        var communities: [Element] = []
+        
+        for element in self {
+            switch element.type {
+            case .community:
+                communities.append(element)
+            default:
+                chats.append(element)
+            }
+        }
+        
+        return (chats, communities)
+    }
+    
 }
