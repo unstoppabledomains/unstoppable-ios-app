@@ -547,6 +547,7 @@ extension ChatsListViewController {
     
     struct EmptyStateUIConfiguration: Hashable {
         let dataType: DataType
+        let isRequestsList: Bool
     }
     
     struct UserInfoUIConfiguration: Hashable {
