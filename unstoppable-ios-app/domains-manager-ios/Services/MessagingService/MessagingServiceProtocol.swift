@@ -21,7 +21,8 @@ protocol MessagingServiceProtocol {
     func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func getUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
-    func createUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo 
+    func getUserCommunitiesProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
+    func createUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool
     func isNewMessagesAvailable() async throws -> Bool

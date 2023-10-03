@@ -28,16 +28,30 @@ extension ChatListEmptyCell {
     func setWith(configuration: ChatsListViewController.EmptyStateUIConfiguration,
                  actionButtonCallback: @escaping EmptyCallback) {
         self.actionButtonCallback = actionButtonCallback
-        let isRequestsList = configuration.isRequestsList
-        let title = titleFor(dataType: configuration.dataType, isRequestsList: isRequestsList)
-        setTitle(title)
         
-        let subtitle = subtitleFor(dataType: configuration.dataType, isRequestsList: isRequestsList)
-        setSubtitle(subtitle)
-        
-        iconImageView.image = .messageCircleIcon24
-        setActionButtonWith(dataType: configuration.dataType)
-        actionButton.isHidden = isRequestsList
+        switch configuration {
+        case .emptyData(let dataType, let isRequestsList):
+            let title = titleFor(dataType: dataType, isRequestsList: isRequestsList)
+            setTitle(title)
+            
+            let subtitle = subtitleFor(dataType: dataType, isRequestsList: isRequestsList)
+            setSubtitle(subtitle)
+            
+            iconImageView.image = .messageCircleIcon24
+            
+            setActionButtonWith(dataType: dataType)
+            actionButton.isHidden = isRequestsList
+        case .noCommunitiesProfile:
+            // TODO: - Communities
+            setTitle("Let's explore communities")
+            setSubtitle("Create profile to join and interact with communities")
+            
+            iconImageView.image = .messageCircleIcon24
+            
+            actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
+            actionButton.setTitle("Create profile", image: .newMessageIcon)
+            actionButton.isHidden = false
+        }
     }
     
     func setSearchStateUI() {

@@ -24,14 +24,22 @@ extension MessagingService {
     }
     
     func getUserProfile(for domain: DomainDisplayInfo, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
+        try await getUserProfileFor(domainName: domain.name, serviceIdentifier: serviceIdentifier)
+    }
+    
+    func getUserProfileFor(domainName: String, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
+        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
+        return try await getUserProfileFor(domainItem: domain, serviceIdentifier: serviceIdentifier)
+    }
+    
+    func getUserProfileFor(domainItem: DomainItem, serviceIdentifier: MessagingServiceIdentifier) async throws -> MessagingChatUserProfileDisplayInfo {
         let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
-        let domain = try await appContext.dataAggregatorService.getDomainWith(name: domain.name)
-        if let cachedProfile = try? storageService.getUserProfileFor(domain: domain,
+        if let cachedProfile = try? storageService.getUserProfileFor(domain: domainItem,
                                                                      serviceIdentifier: serviceIdentifier) {
             return cachedProfile.displayInfo
         }
         
-        let remoteProfile = try await apiService.getUserFor(domain: domain)
+        let remoteProfile = try await apiService.getUserFor(domain: domainItem)
         await storageService.saveUserProfile(remoteProfile)
         return remoteProfile.displayInfo
     }

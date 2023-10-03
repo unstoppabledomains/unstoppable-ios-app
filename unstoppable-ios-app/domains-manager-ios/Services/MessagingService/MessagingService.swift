@@ -142,6 +142,12 @@ extension MessagingService: MessagingServiceProtocol {
         try await createUserProfile(for: domain, serviceIdentifier: defaultServiceIdentifier)
     }
     
+    func getUserCommunitiesProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
+        let wallet = messagingProfile.wallet
+        let domain = try await getReverseResolutionDomainItem(for: wallet)
+        return try await getUserProfileFor(domainItem: domain, serviceIdentifier: messagingProfile.serviceIdentifier)
+    }
+    
     func getUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
         try await getUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
     }
