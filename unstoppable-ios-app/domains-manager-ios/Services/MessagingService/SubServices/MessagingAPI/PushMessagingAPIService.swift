@@ -112,7 +112,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                     if let badgeInfo = try? await NetworkService().fetchBadgeDetailedInfo(for: badge) {
                         if let groupChatId = badge.groupChatId,
                            let pushGroup = try? await Push.PushChat.getGroup(chatId: groupChatId, env: env) {
-                            let pushChat = PushChat(pushGroup: pushGroup)
+                            let threadHash = try? await self.pushRESTService.getChatThreadHash(for: user.wallet, chatId: groupChatId)
+                            let pushChat = PushChat(pushGroup: pushGroup, threadHash: threadHash)
                             let publicKeys = pushGroup.members.compactMap { $0.publicKey }
                             
                             let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
