@@ -760,6 +760,9 @@
 		C692C364282EA71C00C31393 /* AppearanceSettingsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C692C35F282EA71C00C31393 /* AppearanceSettingsCell.xib */; };
 		C692C36A282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C692C369282EADA400C31393 /* SelectAppearanceThemePullUpView.swift */; };
 		C695C2682A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */; };
+		C69698982ACBCDDB0000738C /* PushWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69698972ACBCDDB0000738C /* PushWebSocketsService.swift */; };
+		C696989A2ACBCE640000738C /* PushMessagingWebSocketsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69698992ACBCE640000738C /* PushMessagingWebSocketsService.swift */; };
+		C696989C2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C696989B2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift */; };
 		C69F99202A9F1264004B1958 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99102A9F1264004B1958 /* Line.swift */; };
 		C69F99212A9F1264004B1958 /* HexagonShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99112A9F1264004B1958 /* HexagonShape.swift */; };
 		C69F99222A9F1264004B1958 /* CircleIconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C69F99122A9F1264004B1958 /* CircleIconButton.swift */; };
@@ -1080,6 +1083,9 @@
 		C6F060C62ACAA40100BA2E7E /* MessagingService+Channels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060C52ACAA40100BA2E7E /* MessagingService+Channels.swift */; };
 		C6F060C82ACAA4AE00BA2E7E /* MessagingService+UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060C72ACAA4AE00BA2E7E /* MessagingService+UserInfo.swift */; };
 		C6F060CA2ACAA4DF00BA2E7E /* MessagingService+Chats.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060C92ACAA4DF00BA2E7E /* MessagingService+Chats.swift */; };
+		C6F060CC2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */; };
+		C6F060CD2ACAB71300BA2E7E /* MessagingServiceIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */; };
+		C6F060CF2ACBC81300BA2E7E /* MessagingService+UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060CE2ACBC81300BA2E7E /* MessagingService+UserProfile.swift */; };
 		C6F3FD632AAA11E700208679 /* PullUpNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */; };
 		C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */; };
 		C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */; };
@@ -1893,6 +1899,9 @@
 		C692C35F282EA71C00C31393 /* AppearanceSettingsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AppearanceSettingsCell.xib; sourceTree = "<group>"; };
 		C692C369282EADA400C31393 /* SelectAppearanceThemePullUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectAppearanceThemePullUpView.swift; sourceTree = "<group>"; };
 		C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushPublicKeysStorage.swift; sourceTree = "<group>"; };
+		C69698972ACBCDDB0000738C /* PushWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushWebSocketsService.swift; sourceTree = "<group>"; };
+		C69698992ACBCE640000738C /* PushMessagingWebSocketsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingWebSocketsService.swift; sourceTree = "<group>"; };
+		C696989B2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingCommunitiesChatDetails.swift; sourceTree = "<group>"; };
 		C69F99102A9F1264004B1958 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		C69F99112A9F1264004B1958 /* HexagonShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HexagonShape.swift; sourceTree = "<group>"; };
 		C69F99122A9F1264004B1958 /* CircleIconButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleIconButton.swift; sourceTree = "<group>"; };
@@ -2197,6 +2206,8 @@
 		C6F060C52ACAA40100BA2E7E /* MessagingService+Channels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+Channels.swift"; sourceTree = "<group>"; };
 		C6F060C72ACAA4AE00BA2E7E /* MessagingService+UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+UserInfo.swift"; sourceTree = "<group>"; };
 		C6F060C92ACAA4DF00BA2E7E /* MessagingService+Chats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+Chats.swift"; sourceTree = "<group>"; };
+		C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingServiceIdentifier.swift; sourceTree = "<group>"; };
+		C6F060CE2ACBC81300BA2E7E /* MessagingService+UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MessagingService+UserProfile.swift"; sourceTree = "<group>"; };
 		C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpNamespace.swift; sourceTree = "<group>"; };
 		C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackToSettingsNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationBarScrollingController.swift; sourceTree = "<group>"; };
@@ -3240,6 +3251,7 @@
 				C6D3B9BE2A6EBC2B0091B279 /* PushServiceHelper.swift */,
 				C695C2672A57F99700B94DA8 /* PushPublicKeysStorage.swift */,
 				C66107982A31A4BC0076782F /* PushEntitiesTransformer.swift */,
+				C69698972ACBCDDB0000738C /* PushWebSocketsService.swift */,
 				C61ECD722A20E85E00E97D70 /* Entities */,
 			);
 			path = Push;
@@ -3850,6 +3862,7 @@
 			children = (
 				C623968A2A288AB300363F60 /* MessagingPrivateChatDetails.swift */,
 				C623968F2A288AC400363F60 /* MessagingGroupChatDetails.swift */,
+				C696989B2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift */,
 				C65A869B2A5BB7E400CD66D2 /* MessagingChatUserPullUpSelectionItem.swift */,
 				C62396942A288AD100363F60 /* MessagingChatType.swift */,
 				C62396992A288ADB00363F60 /* MessagingChatDisplayInfo.swift */,
@@ -3865,10 +3878,12 @@
 			children = (
 				C65272202A14B32F001A084C /* MessagingServiceProtocol.swift */,
 				C6F9FBCE2A25C41900102F81 /* MessagingService.swift */,
+				C6F060CB2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift */,
 				C6F060C52ACAA40100BA2E7E /* MessagingService+Channels.swift */,
 				C6F060C92ACAA4DF00BA2E7E /* MessagingService+Chats.swift */,
 				C6F060C32ACAA35B00BA2E7E /* MessagingService+Tools.swift */,
 				C6F060C72ACAA4AE00BA2E7E /* MessagingService+UserInfo.swift */,
+				C6F060CE2ACBC81300BA2E7E /* MessagingService+UserProfile.swift */,
 				C6F060C12ACAA30C00BA2E7E /* MessagingService+Websockets.swift */,
 				C6AF123F2A67C72200F89D2E /* MessagingServiceDataRefreshManager.swift */,
 				C652722A2A14B395001A084C /* MockMessagingService.swift */,
@@ -5874,6 +5889,7 @@
 				C6F9FBB72A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift */,
 				C6F9FBBD2A25C32700102F81 /* MessagingWebSocketEvent.swift */,
 				C64BCB702A6FA59200EF8B47 /* XMTPMessagingWebSocketsService.swift */,
+				C69698992ACBCE640000738C /* PushMessagingWebSocketsService.swift */,
 			);
 			path = WebSockets;
 			sourceTree = "<group>";
@@ -6061,6 +6077,7 @@
 				29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */,
 				29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */,
 				29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */,
+				C69698962ACBCC9B0000738C /* XCRemoteSwiftPackageReference "Starscream" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -6364,6 +6381,7 @@
 				307B1D392603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */,
 				C6D9E28928533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */,
 				C673BA2E2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
+				C69698982ACBCDDB0000738C /* PushWebSocketsService.swift in Sources */,
 				C609821C2823D36100546392 /* PullUpCollectionViewCell.swift in Sources */,
 				C6C9958E289D313D00367362 /* CNavigationTransitioningContext.swift in Sources */,
 				C62247B5283CFF1F002A0CBD /* DomainTransactionsService.swift in Sources */,
@@ -6607,6 +6625,7 @@
 				C6E041B429546AB60080F8E3 /* DomainsCollectionCarouselViewController.swift in Sources */,
 				C6E69FF6288AE47D000A8346 /* ExternalEventsService.swift in Sources */,
 				C64836C2282CC435007BD3F1 /* WalletCopyAddressAction.swift in Sources */,
+				C6F060CF2ACBC81300BA2E7E /* MessagingService+UserProfile.swift in Sources */,
 				C60C29912834E9C200626851 /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
 				C66FCD1A2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift in Sources */,
 				C6E041D8295588C90080F8E3 /* UDPageControl.swift in Sources */,
@@ -6720,6 +6739,7 @@
 				C6538DC72A32248C00B63E84 /* CoreDataService.swift in Sources */,
 				3026FA2127E77AFF00FE058B /* BackupWalletViewController.swift in Sources */,
 				C6A474C729D149560073415F /* LoginFlowNavigationController.swift in Sources */,
+				C6F060CC2ACAB6E500BA2E7E /* MessagingServiceIdentifier.swift in Sources */,
 				C666E0FC29CD594F0003DECB /* UserProfileAction.swift in Sources */,
 				C6E1187D28F555A200C6AD4D /* UICollectionViewCellPreview.swift in Sources */,
 				C692C309282E0BC300C31393 /* EnterBackupToBackupWalletPresenter.swift in Sources */,
@@ -6796,6 +6816,7 @@
 				C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */,
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824B2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
+				C696989C2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift in Sources */,
 				C665FC1F29B06896009699D2 /* NotificationsServiceProtocol.swift in Sources */,
 				C64528D32AA0CDFC00298121 /* PublicProfileViewDelegate.swift in Sources */,
 				C6D6E52C28193611008C66BB /* BasePresenterProtocol.swift in Sources */,
@@ -6993,6 +7014,7 @@
 				C69F99272A9F1264004B1958 /* AvatarStyleClipped.swift in Sources */,
 				C61C50052820FC5E00D1110A /* UISearchBar.swift in Sources */,
 				C628E36827FDDB230044E408 /* UIButton.swift in Sources */,
+				C696989A2ACBCE640000738C /* PushMessagingWebSocketsService.swift in Sources */,
 				C6C1EC662A3B09E2005EB37D /* ChatListEmptyCell.swift in Sources */,
 				C63F1D0D28AF31D5000A5C12 /* AnalyticsServiceProtocol.swift in Sources */,
 				C6D6E4DE2817BF09008C66BB /* OnboardingProtocols.swift in Sources */,
@@ -7211,6 +7233,7 @@
 				C66435C7288E59F30098E1B8 /* Codable.swift in Sources */,
 				C65DD4C72A7CAC8000CAB10C /* KeychainLayer.swift in Sources */,
 				C66A26E228B3CEAE005470B9 /* AnalyticsServiceEnvironment.swift in Sources */,
+				C6F060CD2ACAB71300BA2E7E /* MessagingServiceIdentifier.swift in Sources */,
 				C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */,
 				C6E69F97288AB6BE000A8346 /* Debugger.swift in Sources */,
 				C673BA322A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
@@ -7926,6 +7949,14 @@
 			requirement = {
 				branch = master;
 				kind = branch;
+			};
+		};
+		C69698962ACBCC9B0000738C /* XCRemoteSwiftPackageReference "Starscream" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/daltoniam/Starscream";
+			requirement = {
+				kind = exactVersion;
+				version = 4.0.4;
 			};
 		};
 		C6BC7AB92A2722C5008E3CAA /* XCRemoteSwiftPackageReference "push-swift-sdk" */ = {

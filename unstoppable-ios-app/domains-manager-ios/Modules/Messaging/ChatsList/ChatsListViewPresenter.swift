@@ -15,6 +15,7 @@ protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLog
     func didSelectWallet(_ wallet: WalletDisplayInfo)
     func actionButtonPressed()
     
+    func createCommunitiesProfileButtonPressed()
     func didStartSearch(with mode: ChatsList.SearchMode)
     func didStopSearch()
     func didSearchWith(key: String)
@@ -23,6 +24,7 @@ protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLog
 extension ChatsListViewPresenterProtocol {
     func didSelectWallet(_ wallet: WalletDisplayInfo) { }
     func actionButtonPressed() { }
+    func createCommunitiesProfileButtonPressed() { }
     func didStartSearch(with mode: ChatsList.SearchMode) { }
     func didStopSearch() { }
     func didSearchWith(key: String) { }
@@ -47,6 +49,7 @@ final class ChatsListViewPresenter {
     private var didLoadTime = Date()
     
     private var chatsList: [MessagingChatDisplayInfo] = []
+    private var communitiesList: [MessagingChatDisplayInfo] = []
     private var channels: [MessagingNewsChannel] = []
     private var searchData = SearchData()
     private let searchManager = ChatsList.SearchManager(debounce: 0.3)
@@ -82,12 +85,16 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 logButtonPressedAnalyticEvents(button: .chatInList)
             case .group:
                 logButtonPressedAnalyticEvents(button: .groupChatInList)
+            case .community:
+                logButtonPressedAnalyticEvents(button: .chatInList) // TODO: - Communities
             }
             openChatWith(conversationState: .existingChat(configuration.chat))
         case .chatRequests(let configuration):
             switch configuration.dataType {
             case .chats:
                 logButtonPressedAnalyticEvents(button: .chatRequests)
+            case .communities:
+                logButtonPressedAnalyticEvents(button: .chatRequests) // TODO: - Communities
             case .channels:
                 logButtonPressedAnalyticEvents(button: .channelsSpam)
             }
@@ -100,7 +107,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == configuration.userInfo.wallet.normalized }) {
                 openChatWith(conversationState: .existingChat(existingChat))
             } else {
-                openChatWith(conversationState: .newChat(configuration.userInfo))
+                // TODO: - Move service determinition into MessagingService
+                openChatWith(conversationState: .newChat(.init(userInfo: configuration.userInfo, messagingService: .xmtp)))
             }
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
@@ -118,15 +126,17 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             } else {
                 var profile: MessagingChatUserProfileDisplayInfo?
                 if let rrDomain = wallet.reverseResolutionDomain {
-                   profile = try? await appContext.messagingService.getUserProfile(for: rrDomain)
+                    profile = try? await appContext.messagingService.getUserMessagingProfile(for: rrDomain)
                 }
+                let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
                 
                 try await selectProfileWalletPair(.init(wallet: wallet,
-                                              profile: profile))
+                                                        profile: profile,
+                                                        isCommunitiesEnabled: isCommunitiesEnabled))
             }
         }
     }
-    
+
     func actionButtonPressed() {
         Task {
             guard let selectedProfileWalletPair,
@@ -143,6 +153,24 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                     askToSetRRDomainAndCreateProfileFor(wallet: selectedProfileWalletPair.wallet)
                 }
             } catch { }
+        }
+    }
+    
+    func createCommunitiesProfileButtonPressed() {
+        Task {
+            guard let selectedProfileWalletPair,
+                  let view else { return }
+            
+            do {
+                try await appContext.authentificationService.verifyWith(uiHandler: view,
+                                                                        purpose: .confirm)
+                let isCommunitiesEnabled = await isCommunitiesEnabled(for: selectedProfileWalletPair.profile)
+                try await selectProfileWalletPair(.init(wallet: selectedProfileWalletPair.wallet,
+                                                        profile: selectedProfileWalletPair.profile,
+                                                        isCommunitiesEnabled: isCommunitiesEnabled))
+            } catch {
+                view.showAlertWith(error: error, handler: nil)
+            }
         }
     }
     
@@ -215,9 +243,9 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                             try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
                             tryAutoOpenChat(chatId, profile: profile)
                         }
-                    case .newChat(let userInfo):
+                    case .newChat(let details):
                         try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
-                        autoOpenNewChat(with: userInfo)
+                        autoOpenNewChat(with: details.userInfo, messagingService: details.messagingService)
                     }
                 case .showChannel(let channelId, let profile):
                     if selectedProfileWalletPair?.profile?.id != profile.id ||
@@ -251,7 +279,7 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                    loadAndShowData()
                } else if profile.id == selectedProfileWalletPair?.profile?.id,
                          chatsList != chats || Constants.shouldHideBlockedUsersLocally {
-                   chatsList = chats
+                   setNewChats(chats)
                    showData()
                }
            case .channels(let channels, let profile):
@@ -329,8 +357,8 @@ private extension ChatsListViewPresenter {
                     switch options {
                     case .existingChat(let chatId):
                         tryAutoOpenChat(chatId, profile: profile)
-                    case .newChat(let userInfo):
-                        autoOpenNewChat(with: userInfo)
+                    case .newChat(let details):
+                        autoOpenNewChat(with: details.userInfo, messagingService: details.messagingService)
                     }
                 case .showChannel(let channelId, let profile):
                     selectedDataType = .channels
@@ -344,6 +372,10 @@ private extension ChatsListViewPresenter {
                 view?.showAlertWith(error: error, handler: nil)
             }
         }
+    }
+    
+    func setNewChats(_ chats: [MessagingChatDisplayInfo]) {
+        (chatsList, communitiesList) = chats.splitCommunitiesAndOthers()
     }
     
     func refreshAvailableWalletsList() {
@@ -367,24 +399,37 @@ private extension ChatsListViewPresenter {
         return wallets
     }
     
+    func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo?) async -> Bool {
+        if let messagingProfile {
+            return await appContext.messagingService.isCommunitiesEnabled(for: messagingProfile)
+        }
+        return false
+    }
+    
     func resolveInitialProfileWith(wallets: [WalletDisplayInfo]) async throws {
         if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: wallets),
            let wallet = wallets.first(where: { $0.address == profile.wallet.normalized }) {
             /// User already used chat with some profile, select last used.
+            let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
+
             try await selectProfileWalletPair(.init(wallet: wallet,
-                                                    profile: profile))
+                                                    profile: profile,
+                                                    isCommunitiesEnabled: isCommunitiesEnabled))
         } else {
             for wallet in wallets {
                 guard let rrDomain = wallet.reverseResolutionDomain else { continue }
                 
-                if let profile = try? await appContext.messagingService.getUserProfile(for: rrDomain) {
+                if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: rrDomain) {
                     /// User open chats for the first time but there's existing profile, use it as default
+                    let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
                     try await selectProfileWalletPair(.init(wallet: wallet,
-                                                            profile: profile))
+                                                            profile: profile,
+                                                            isCommunitiesEnabled: isCommunitiesEnabled))
                     return
                 } else {
                     profileWalletPairsCache.append(.init(wallet: wallet,
-                                                         profile: nil))
+                                                         profile: nil,
+                                                         isCommunitiesEnabled: false))
                 }
             }
             
@@ -392,17 +437,21 @@ private extension ChatsListViewPresenter {
             /// Select first wallet from sorted list
             let firstWallet = wallets[0] /// Safe due to .isEmpty verification above
             try await selectProfileWalletPair(.init(wallet: firstWallet,
-                                                    profile: nil))
+                                                    profile: nil,
+                                                    isCommunitiesEnabled: false))
         }
     }
     
-    func preselectProfile(_ profile: MessagingChatUserProfileDisplayInfo, usingWallets wallets: [WalletDisplayInfo]) async throws {
+    func preselectProfile(_ profile: MessagingChatUserProfileDisplayInfo,
+                          usingWallets wallets: [WalletDisplayInfo]) async throws {
         guard let wallet = wallets.first(where: { $0.address == profile.wallet.lowercased() }) else {
             try await resolveInitialProfileWith(wallets: wallets)
             return
         }
-        
-        try await selectProfileWalletPair(.init(wallet: wallet, profile: profile))
+        let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
+        try await selectProfileWalletPair(.init(wallet: wallet,
+                                                profile: profile,
+                                                isCommunitiesEnabled: isCommunitiesEnabled))
     }
     
     func tryAutoOpenChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) {
@@ -418,8 +467,8 @@ private extension ChatsListViewPresenter {
         presentOptions = .default
     }
     
-    func autoOpenNewChat(with userInfo: MessagingChatUserDisplayInfo) {
-        openChatWith(conversationState: .newChat(userInfo))
+    func autoOpenNewChat(with userInfo: MessagingChatUserDisplayInfo, messagingService: MessagingServiceIdentifier) {
+        openChatWith(conversationState: .newChat(.init(userInfo: userInfo, messagingService: messagingService)))
         self.presentOptions = .default
     }
     
@@ -461,9 +510,9 @@ private extension ChatsListViewPresenter {
         async let chatsListTask = appContext.messagingService.getChatsListForProfile(profile)
         async let channelsTask = appContext.messagingService.getChannelsForProfile(profile)
         
-        let (chatsList, channels) = try await (chatsListTask, channelsTask)
+        let (chats, channels) = try await (chatsListTask, channelsTask)
         
-        self.chatsList = chatsList
+        setNewChats(chats)
         self.channels = channels
         
         await awaitForUIReady()
@@ -506,6 +555,8 @@ private extension ChatsListViewPresenter {
                     switch selectedDataType {
                     case .chats:
                         fillSnapshotForUserChatsList(&snapshot)
+                    case .communities:
+                        fillSnapshotForUserCommunitiesList(&snapshot)
                     case .channels:
                         fillSnapshotForUserChannelsList(&snapshot)
                     }
@@ -525,12 +576,16 @@ private extension ChatsListViewPresenter {
         chatsList.unblockedOnly()
     }
     
+    func getListOfUnblockedCommunities() -> [MessagingChatDisplayInfo] {
+        communitiesList.unblockedOnly()
+    }
+    
     func fillSnapshotForUserChatsList(_ snapshot: inout ChatsListSnapshot) {
         let chatsList = getListOfUnblockedChats()
         
         if chatsList.isEmpty {
             snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType, isRequestsList: false))])
+            snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
         } else {
             snapshot.appendSections([.listItems(title: nil)])
             let requestsList = chatsList.requestsOnly()
@@ -543,10 +598,34 @@ private extension ChatsListViewPresenter {
         }
     }
     
+    // TODO: - Communities
+    func fillSnapshotForUserCommunitiesList(_ snapshot: inout ChatsListSnapshot) {
+        let communitiesList = getListOfUnblockedCommunities()
+        
+        if selectedProfileWalletPair?.isCommunitiesEnabled != true {
+            snapshot.appendSections([.emptyState])
+            snapshot.appendItems([.emptyState(configuration: .noCommunitiesProfile)])
+        } else {
+            if communitiesList.isEmpty {
+                snapshot.appendSections([.emptyState])
+                snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
+            } else {
+                snapshot.appendSections([.listItems(title: nil)])
+                let requestsList = communitiesList.requestsOnly()
+                let approvedList = communitiesList.confirmedOnly()
+                if !requestsList.isEmpty {
+                    snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
+                                                                             numberOfRequests: requestsList.count))])
+                }
+                snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+            }
+        }
+    }
+    
     func fillSnapshotForUserChannelsList(_ snapshot: inout ChatsListSnapshot) {
         if channels.isEmpty {
             snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType, isRequestsList: false))])
+            snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
         } else {
             snapshot.appendSections([.listItems(title: nil)])
             let channelsList = channels.filter({ $0.isCurrentUserSubscribed })
@@ -642,6 +721,9 @@ private extension ChatsListViewPresenter {
         case .group(let details):
             let members = details.allMembers
             return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
+        case .community(let details):
+            let members = details.members
+            return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
         }
     }
     
@@ -655,8 +737,10 @@ private extension ChatsListViewPresenter {
     func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
         let chatsBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
         let inboxBadge = channels.reduce(0, { $0 + $1.unreadMessagesCount })
+        let communitiesBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
         
         return .init(dataTypesConfigurations: [.init(dataType: .chats, badge: chatsBadge),
+                                               .init(dataType: .communities, badge: communitiesBadge),
                                                .init(dataType: .channels, badge: inboxBadge)],
                      selectedDataType: selectedDataType) { [weak self] newSelectedDataType in
             self?.logButtonPressedAnalyticEvents(button: .messagingDataType, parameters: [.value: newSelectedDataType.rawValue])
@@ -687,6 +771,8 @@ private extension ChatsListViewPresenter {
             UDRouter().showChatRequestsScreen(dataType: .chatRequests(requests),
                                               profile: profile,
                                               in: nav)
+        case .communities:
+            return // TODO: - Communities
         case .channels:
             let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
             guard !channels.isEmpty else { return }
@@ -731,9 +817,11 @@ private extension ChatsListViewPresenter {
                           in wallet: WalletDisplayInfo) {
         Task {
             do {
-                let profile = try await appContext.messagingService.createUserProfile(for: domain)
+                let profile = try await appContext.messagingService.createUserMessagingProfile(for: domain)
+                let isCommunitiesEnabled = await appContext.messagingService.isCommunitiesEnabled(for: profile)
                 try await selectProfileWalletPair(.init(wallet: wallet,
-                                                        profile: profile))
+                                                        profile: profile,
+                                                        isCommunitiesEnabled: isCommunitiesEnabled))
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
@@ -746,6 +834,7 @@ private extension ChatsListViewPresenter {
     struct ChatProfileWalletPair {
         let wallet: WalletDisplayInfo
         let profile: MessagingChatUserProfileDisplayInfo?
+        let isCommunitiesEnabled: Bool
     }
     
     struct SearchData {

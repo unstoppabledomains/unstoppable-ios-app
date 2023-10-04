@@ -64,6 +64,8 @@ extension ChatTitleView {
             setWithChannel(channel)
         case .group(let groupDetails):
             setWithGroupDetails(groupDetails)
+        case .community(let communityDetails):
+            setWithCommunityDetails(communityDetails)
         }
         setNeedsLayout()
         layoutIfNeeded()
@@ -111,6 +113,16 @@ private extension ChatTitleView {
         }
     }
     
+    func setWithCommunityDetails(_ communityDetails: MessagingCommunitiesChatDetails) {
+        setTitle(communityDetails.displayName)
+        iconImageView.layer.borderWidth = 0
+        iconImageView.clipsToBounds = false
+        Task {
+            iconImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(communityDetails.members,
+                                                                                           iconSize: iconSize)
+        }
+    }
+    
     func setTitle(_ title: String) {
         titleLabel.setAttributedTextWith(text: title,
                                          font: .currentFont(withSize: 16, weight: .semibold),
@@ -150,5 +162,6 @@ extension ChatTitleView {
         case walletAddress(HexAddress)
         case channel(MessagingNewsChannel)
         case group(MessagingGroupChatDetails)
+        case community(MessagingCommunitiesChatDetails)
     }
 }

@@ -328,6 +328,7 @@ struct BadgesInfo: Codable, Hashable {
         let description: String
         var linkUrl: String?
         var sponsor: String?
+        var groupChatId: String?
         
         var isUDBadge: Bool {
             guard let linkUrl,

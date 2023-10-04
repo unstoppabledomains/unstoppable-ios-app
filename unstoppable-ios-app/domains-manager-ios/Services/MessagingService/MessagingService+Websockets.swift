@@ -10,20 +10,31 @@ import Foundation
 extension MessagingService {
     func setupSocketConnection(profile: MessagingChatUserProfile) {
         Task {
-            do {
-                webSocketsService.disconnectAll()
-                try webSocketsService.subscribeFor(profile: profile,
-                                                   eventCallback: { [weak self] event in
-                    self?.handleWebSocketEvent(event)
-                })
+            serviceProviders.forEach { serviceProvider in
+                let webSocketsService = serviceProvider.webSocketsService
                 
-                channelsWebSocketsService.disconnectAll()
-                try channelsWebSocketsService.subscribeFor(profile: profile,
-                                                           eventCallback: { [weak self] event in
-                    self?.handleWebSocketEvent(event)
-                })
+                do {
+                    webSocketsService.disconnectAll()
+                    try webSocketsService.subscribeFor(profile: profile,
+                                                       eventCallback: { [weak self] event in
+                        self?.handleWebSocketEvent(event)
+                    })
+                    
+                    channelsWebSocketsService.disconnectAll()
+                    try channelsWebSocketsService.subscribeFor(profile: profile,
+                                                               eventCallback: { [weak self] event in
+                        self?.handleWebSocketEvent(event)
+                    })
+                } catch { }
             }
         }
+    }
+    
+    func disconnectAllSocketsConnections() {
+        serviceProviders.forEach { serviceProvider in
+            serviceProvider.webSocketsService.disconnectAll()
+        }
+        channelsWebSocketsService.disconnectAll()
     }
 }
 
@@ -44,18 +55,20 @@ private extension MessagingService {
                     let message = messageWithProfile.message
                     let profile = messageWithProfile.profile
                     let chatId = message.displayInfo.chatId
-                    
+                    /// UI always interact with default messaging profile
+                    guard let defaultProfile = try? await getDefaultProfile(for: profile) else { continue }
+
                     notifyListenersChangedDataType(.messagesAdded([message.displayInfo],
                                                                   chatId: chatId,
-                                                                  userId: profile.id))
-                    try? await setLastMessageAndNotify(lastMessage: message.displayInfo)
+                                                                  userId: defaultProfile.id))
+                    try? await setLastMessageAndNotify(lastMessage: message.displayInfo, serviceIdentifier: profile.serviceIdentifier)
                 }
             }
             
             func addNewChannelFeed(_ feed: MessagingNewsChannelFeed, to channel: MessagingNewsChannel) async throws {
                 var channel = channel
                 let profile = try storageService.getUserProfileWith(userId: channel.userId,
-                                                                    serviceIdentifier: apiService.serviceIdentifier)
+                                                                    serviceIdentifier: defaultServiceIdentifier)
                 await storageService.saveChannelsFeed([feed], in: channel)
                 channel.lastMessage = feed
                 await storageService.saveChannels([channel], for: profile)
@@ -84,9 +97,9 @@ private extension MessagingService {
                                                                         serviceIdentifier: webSocketsChat.serviceIdentifier)
                     guard let chat = webSocketsChat.transformToChatBlock(webSocketsChat, profile) else { return }
                     
-                    let updatedChats = await refreshChatsMetadata(remoteChats: [chat], localChats: [], for: profile)
+                    let updatedChats = try await refreshChatsMetadata(remoteChats: [chat], localChats: [], for: profile)
                     await storageService.saveChats(updatedChats)
-                    notifyChatsChanged(wallet: profile.wallet)
+                    notifyChatsChanged(wallet: profile.wallet, serviceIdentifier: profile.serviceIdentifier)
                     await refreshUsersInfoFor(profile: profile)
                 }
             } catch { }
@@ -97,7 +110,7 @@ private extension MessagingService {
         var messages: [GroupChatMessageWithProfile] = []
         
         func getMessageFor(wallet: String, otherUserWallet: String) async throws -> GroupChatMessageWithProfile {
-            let profile = try await getUserProfileWith(wallet: wallet)
+            let profile = try await getUserProfileWith(wallet: wallet, serviceIdentifier: messageEntity.serviceIdentifier)
             let chats = try await storageService.getChatsFor(profile: profile)
             guard let chat = chats.first(where: { $0.displayInfo.type.otherUserDisplayInfo?.wallet == otherUserWallet }) else { throw MessagingServiceError.chatNotFound }
             guard let message = await messageEntity.transformToMessageBlock(messageEntity, chat, filesService) else { throw MessagingServiceError.failedToConvertWebsocketMessage }
@@ -123,7 +136,8 @@ private extension MessagingService {
         let profiles = try storageService.getAllUserProfiles()
         for profile in profiles {
             if let chat = await storageService.getChatWith(id: messageEntity.chatId,
-                                                           of: profile.id),
+                                                           of: profile.id,
+                                                           serviceIdentifier: profile.serviceIdentifier),
                let message = messageEntity.transformToMessageBlock(messageEntity, chat, filesService) {
                 messages.append(.init(message: message, profile: profile))
             }

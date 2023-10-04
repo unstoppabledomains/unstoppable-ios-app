@@ -19,7 +19,7 @@ extension ChatsList {
         
         enum PresentChatOptions {
             case existingChat(chatId: String)
-            case newChat(userInfo: MessagingChatUserDisplayInfo)
+            case newChat(description: MessagingChatNewConversationDescription)
         }
     }
     

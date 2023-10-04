@@ -12,6 +12,7 @@ extension MessagingService {
                                                    isCurrentUserSubscribed: Bool) async throws -> MessagingNewsChannel? {
         guard let currentUser else { return nil }
         
+        let apiService = try getDefaultAPIService()
         let profile = try storageService.getUserProfileWith(userId: currentUser.id,
                                                             serviceIdentifier: apiService.serviceIdentifier)
         let cachedChannels = try await storageService.getChannelsFor(profile: profile)

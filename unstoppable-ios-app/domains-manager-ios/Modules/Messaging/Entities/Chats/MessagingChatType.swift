@@ -10,12 +10,13 @@ import Foundation
 enum MessagingChatType: Hashable {
     case `private`(MessagingPrivateChatDetails)
     case group(MessagingGroupChatDetails)
+    case community(MessagingCommunitiesChatDetails)
     
     var otherUserDisplayInfo: MessagingChatUserDisplayInfo? {
         switch self {
         case .private(let details):
             return details.otherUser
-        case .group:
+        case .group, .community:
             return nil
         }
     }

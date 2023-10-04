@@ -222,7 +222,7 @@ private extension ChatViewPresenter {
                     showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
                     
                     updateUIForChatApprovedStateAsync()
-                    isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
+                    isChannelEncrypted = try await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     let updateMessages = try await appContext.messagingService.getMessagesForChat(chat,
                                                                                                   before: nil,
                                                                                                   cachedOnly: false,
@@ -232,7 +232,7 @@ private extension ChatViewPresenter {
                     isLoadingMessages = false
                     view?.setLoading(active: false)
                 case .newChat:
-                    isChannelEncrypted = await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
+                    isChannelEncrypted = try await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
                     view?.setLoading(active: false)
                     showData(animated: false, isLoading: false)
@@ -418,9 +418,11 @@ private extension ChatViewPresenter {
                 setupTitleFor(userInfo: otherUser)
             case .group(let groupDetails):
                 view?.setTitleOfType(.group(groupDetails))
+            case .community(let communityDetails):
+                view?.setTitleOfType(.community(communityDetails))
             }
-        case .newChat(let userInfo):
-            setupTitleFor(userInfo: userInfo)
+        case .newChat(let description):
+            setupTitleFor(userInfo: description.userInfo)
         }
     }
     
@@ -476,14 +478,14 @@ private extension ChatViewPresenter {
         }
         
         switch conversationState {
-        case .newChat(let userInfo):
-            await addViewProfileActionIfPossibleFor(userInfo: userInfo)
+        case .newChat(let description):
+            await addViewProfileActionIfPossibleFor(userInfo: description.userInfo)
         case .existingChat(let chat):
             switch chat.type {
             case .private(let details):
                 await addViewProfileActionIfPossibleFor(userInfo: details.otherUser)
                 
-                if appContext.messagingService.canBlockUsers {
+                if appContext.messagingService.canBlockUsers(in: chat) {
                     switch blockStatus {
                     case .unblocked, .currentUserIsBlocked:
                         actions.append(.init(type: .block, callback: { [weak self] in
@@ -506,6 +508,8 @@ private extension ChatViewPresenter {
                         self?.didPressLeaveButton()
                     }))
                 }
+            case .community:
+                Void() // TODO: - Communities
             }
         }
         
@@ -590,13 +594,15 @@ private extension ChatViewPresenter {
     
     func handleChatMessageAction(_ action: ChatViewController.ChatMessageAction,
                                  forMessage message: MessagingChatMessageDisplayInfo) {
+        guard case .existingChat(let chat) = conversationState else { return }
+
         switch action {
         case .resend:
             logButtonPressedAnalyticEvents(button: .resendMessage)
-            Task { try? await appContext.messagingService.resendMessage(message) }
+            Task { try? await appContext.messagingService.resendMessage(message, in: chat) }
         case .delete:
             logButtonPressedAnalyticEvents(button: .deleteMessage)
-            Task { try? await appContext.messagingService.deleteMessage(message) }
+            Task { try? await appContext.messagingService.deleteMessage(message, in: chat) }
             if let i = messages.firstIndex(where: { $0.id == message.id }) {
                 messages.remove(at: i)
                 showData(animated: true, isLoading: isLoadingMessages)
@@ -633,15 +639,15 @@ private extension ChatViewPresenter {
                     self.view?.setUIState(.otherUserIsBlocked)
                 }
             }
-        case .newChat(let user):
+        case .newChat(let newConversationDescription):
             func prepareToChat() {
                 view?.setUIState(.chat)
                 view?.startTyping()
             }
             
-            if !appContext.messagingService.canContactWithoutProfile {
+            if !appContext.messagingService.canContactWithoutProfileIn(newConversation: newConversationDescription) {
                 do {
-                    let canContact = try await appContext.messagingService.isAbleToContactAddress(user.wallet,
+                    let canContact = try await appContext.messagingService.isAbleToContactUserIn(newConversation: newConversationDescription,
                                                                                                   by: profile)
                     if canContact {
                         prepareToChat()
@@ -740,10 +746,10 @@ private extension ChatViewPresenter {
                     newMessage = try await appContext.messagingService.sendMessage(type,
                                                                                    isEncrypted: isChannelEncrypted,
                                                                                    in: chat)
-                case .newChat(let userInfo):
+                case .newChat(let newConversationDescription):
                     view?.setLoading(active: true)
                     let (chat, message) = try await appContext.messagingService.sendFirstMessage(type,
-                                                                                                 to: userInfo,
+                                                                                                 to: newConversationDescription,
                                                                                                  by: profile)
                     self.conversationState = .existingChat(chat)
                     newMessage = message

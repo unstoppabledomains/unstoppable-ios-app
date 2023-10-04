@@ -21,6 +21,7 @@ final class PushMessagingAPIService {
     
     private let pushRESTService = PushRESTAPIService()
     private let dataProvider: PushMessagingAPIServiceDataProvider
+    private let isRegularChatsEnabled = false
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: true,
                                                     canBlockUsers: true,
                                                     isSupportChatsListPagination: true,
@@ -33,7 +34,7 @@ final class PushMessagingAPIService {
 
 // MARK: - MessagingAPIServiceProtocol
 extension PushMessagingAPIService: MessagingAPIServiceProtocol {
-    var serviceIdentifier: String { Constants.pushMessagingServiceIdentifier }
+    var serviceIdentifier: MessagingServiceIdentifier { .push }
     
     // User profile
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
@@ -83,16 +84,68 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     
     // Chats
     func getChatsListForUser(_ user: MessagingChatUserProfile,
-                               page: Int,
-                               limit: Int) async throws -> [MessagingChat] {
-        let pushChats = try await getPushChatsForUser(user,
-                                                      page: page,
-                                                      limit: limit,
-                                                      isRequests: false)
+                             page: Int,
+                             limit: Int) async throws -> [MessagingChat] {
+        let communities = try await getCommunitiesListForUser(user)
+        if isRegularChatsEnabled {
+            let pushChats = try await getPushChatsForUser(user,
+                                                          page: page,
+                                                          limit: limit,
+                                                          isRequests: false)
+            
+            let chats = try await transformPushChatsToChats(pushChats,
+                                                            isApproved: true,
+                                                            for: user)
+            return communities + chats
+        } else {
+            return communities
+        }
+    }
+    
+    private func getCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] {
+        try await getBadgesCommunitiesListForUser(user)
+    }
+    
+    private func getBadgesCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] {
+        let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.normalizedWallet)
+        let badgesList = try await NetworkService().fetchBadgesInfo(for: domain)
+        let env = getCurrentPushEnvironment()
+        var chats: [MessagingChat] = []
         
-        return try await transformPushChatsToChats(pushChats,
-                                                   isApproved: true,
-                                                   for: user)
+        await withTaskGroup(of: Optional<MessagingChat>.self, body: { group in
+            for badge in badgesList.badges {
+                group.addTask {
+                    if let badgeInfo = try? await NetworkService().fetchBadgeDetailedInfo(for: badge) {
+                        if let groupChatId = badge.groupChatId,
+                           let pushGroup = try? await Push.PushChat.getGroup(chatId: groupChatId, env: env) {
+                            let pushChat = PushChat(pushGroup: pushGroup)
+                            let publicKeys = pushGroup.members.compactMap { $0.publicKey }
+                            
+                            let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
+                                                                                     userId: user.id,
+                                                                                     userWallet: user.wallet,
+                                                                                     isApproved: true,
+                                                                                     publicKeys: publicKeys,
+                                                                                     badgeInfo: badgeInfo)
+                            return chat
+                        } else {
+                            let chat = PushEntitiesTransformer.buildEmptyCommunityChatFor(badgeInfo: badgeInfo, user: user)
+                            return chat
+                        }
+                    } else {
+                        return nil
+                    }
+                }
+            }
+            
+            /// 2. Take values from group
+            for await chat in group {
+                guard let chat else { continue }
+                chats.append(chat)
+            }
+        })
+    
+        return chats
     }
     
     private func getPushChatsForUser(_ user: MessagingChatUserProfile,
@@ -208,7 +261,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             } else {
                 return .currentUserIsBlocked
             }
-        case .group:
+        case .group, .community:
             return .unblocked
         }
     }
@@ -235,7 +288,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                                 pgpPrivateKey: pgpPrivateKey,
                                                 env: env)
             }
-        case .group:
+        case .group, .community:
             throw PushMessagingAPIServiceError.blockUserInGroupChatsNotSupported
         }
     }
@@ -311,6 +364,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         case .group(let details):
             /// Messages not encrypted in public group
             return !details.isPublic
+        case .community(let details):
+            return !details.isPublic
         }
     }
     
@@ -347,7 +402,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             }
             
             return try convertPushMessageToChatMessage(message)
-        case .group:
+        case .group, .community:
             let receiver = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
             let sendOptions = try await buildPushSendOptions(for: messageType,
                                                              receiver: receiver,
@@ -400,7 +455,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         switch chat.displayInfo.type {
         case .private(let otherUserDetails):
             requesterAddress = otherUserDetails.otherUser.wallet
-        case .group:
+        case .group, .community:
             requesterAddress = PushEntitiesTransformer.getPushChatIdFrom(chat: chat)
         }
 

@@ -55,7 +55,7 @@ enum ExternalEventUIFlow {
     case showPullUpLoading
     case showChatsList(profile: MessagingChatUserProfileDisplayInfo?)
     case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
-    case showNewChat(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo)
+    case showNewChat(description: MessagingChatNewConversationDescription, profile: MessagingChatUserProfileDisplayInfo)
     case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)
 }
 
@@ -247,7 +247,7 @@ private extension ExternalEventsService {
     private func getMessagingProfileFor(domainName: String) async throws -> MessagingChatUserProfileDisplayInfo {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
         let domainDisplayInfo = DomainDisplayInfo(domainItem: domain, isSetForRR: true)
-        let profile = try await appContext.messagingService.getUserProfile(for: domainDisplayInfo)
+        let profile = try await appContext.messagingService.getUserMessagingProfile(for: domainDisplayInfo)
         return profile
     }
     

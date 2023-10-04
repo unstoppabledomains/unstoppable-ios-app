@@ -28,16 +28,30 @@ extension ChatListEmptyCell {
     func setWith(configuration: ChatsListViewController.EmptyStateUIConfiguration,
                  actionButtonCallback: @escaping EmptyCallback) {
         self.actionButtonCallback = actionButtonCallback
-        let isRequestsList = configuration.isRequestsList
-        let title = titleFor(dataType: configuration.dataType, isRequestsList: isRequestsList)
-        setTitle(title)
         
-        let subtitle = subtitleFor(dataType: configuration.dataType, isRequestsList: isRequestsList)
-        setSubtitle(subtitle)
-        
-        iconImageView.image = .messageCircleIcon24
-        setActionButtonWith(dataType: configuration.dataType)
-        actionButton.isHidden = isRequestsList
+        switch configuration {
+        case .emptyData(let dataType, let isRequestsList):
+            let title = titleFor(dataType: dataType, isRequestsList: isRequestsList)
+            setTitle(title)
+            
+            let subtitle = subtitleFor(dataType: dataType, isRequestsList: isRequestsList)
+            setSubtitle(subtitle)
+            
+            iconImageView.image = .messageCircleIcon24
+            
+            setActionButtonWith(dataType: dataType)
+            actionButton.isHidden = isRequestsList
+        case .noCommunitiesProfile:
+            // TODO: - Communities
+            setTitle("Let's explore communities")
+            setSubtitle("Create profile to join and interact with communities")
+            
+            iconImageView.image = .messageCircleIcon24
+            
+            actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
+            actionButton.setTitle("Create profile", image: .newMessageIcon)
+            actionButton.isHidden = false
+        }
     }
     
     func setSearchStateUI() {
@@ -73,6 +87,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptyTitle.localized()
+            case .communities:// TODO: - Communities
+                return String.Constants.messagingChatsListEmptyTitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptyTitle.localized()
             }
@@ -86,6 +102,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptySubtitle.localized()
+            case .communities:// TODO: - Communities
+                return String.Constants.messagingChatsListEmptySubtitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptySubtitle.localized()
             }
@@ -95,6 +113,9 @@ private extension ChatListEmptyCell {
     func setActionButtonWith(dataType: ChatsListViewController.DataType) {
         switch dataType {
         case .chats:
+            actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
+            actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
+        case .communities:// TODO: - Communities
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
             actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
         case .channels:

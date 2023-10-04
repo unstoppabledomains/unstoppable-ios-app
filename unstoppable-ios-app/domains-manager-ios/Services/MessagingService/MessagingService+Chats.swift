@@ -20,17 +20,15 @@ extension MessagingService {
                 async let remoteChatsTask = updatedLocalChats(localChats, forProfile: profile, isRequests: false)
                 async let remoteRequestsTask = updatedLocalChats(localRequests, forProfile: profile, isRequests: true)
                 
-                let (remoteChats, remoteRequests) = await (remoteChatsTask, remoteRequestsTask)
+                let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
                 let allRemoteChats = remoteChats + remoteRequests
                 
-                let updatedChats = await refreshChatsMetadata(remoteChats: allRemoteChats,
-                                                              localChats: allLocalChats,
-                                                              for: profile)
+                let updatedChats = try await refreshChatsMetadata(remoteChats: allRemoteChats,
+                                                                  localChats: allLocalChats,
+                                                                  for: profile)
                 await storageService.saveChats(updatedChats)
                 
-                let updatedStoredChats = try await storageService.getChatsFor(profile: profile)
-                let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
-                notifyListenersChangedDataType(.chats(chatsDisplayInfo, profile: profile.displayInfo))
+                try await notifyChatsChangedFor(profile: profile)
                 Debugger.printTimeSensitiveInfo(topic: .Messaging,
                                                 "to refresh chats list for \(profile.wallet)",
                                                 startDate: startTime,
@@ -50,58 +48,22 @@ extension MessagingService {
             }
         }
     }
-    
-    func updatedLocalChats(_ localChats: [MessagingChat],
-                           forProfile profile: MessagingChatUserProfile,
-                           isRequests: Bool) async -> [MessagingChat] {
-        var remoteChats = [MessagingChat]()
-        let limit = 30
-        var page = 1
-        while true {
-            do {
-                let chatsPage: [MessagingChat]
-                if isRequests {
-                    chatsPage = try await apiService.getChatRequestsForUser(profile, page: 1, limit: limit)
-                } else {
-                    chatsPage = try await apiService.getChatsListForUser(profile, page: 1, limit: limit)
-                }
-                
-                remoteChats.append(contentsOf: chatsPage)
-                if !apiService.capabilities.isSupportChatsListPagination || chatsPage.count < limit {
-                    /// Loaded all chats
-                    break
-                } else if let lastPageChat = chatsPage.last,
-                          let localChat = localChats.first(where: { $0.displayInfo.id == lastPageChat.displayInfo.id }),
-                          lastPageChat.isUpToDateWith(otherChat: localChat) {
-                    /// No changes for other chats
-                    break
-                } else {
-                    page += 1
-                }
-            } catch {
-                break
-            }
-        }
-        
-        await storageService.saveChats(remoteChats)
-        
-        return remoteChats
-    }
-    
+
     func refreshChatsMetadata(remoteChats: [MessagingChat],
                               localChats: [MessagingChat],
-                              for profile: MessagingChatUserProfile) async -> [MessagingChat] {
+                              for profile: MessagingChatUserProfile) async throws -> [MessagingChat] {
+        let apiService = try getAPIServiceWith(identifier: profile.serviceIdentifier)
         var updatedChats = [MessagingChat]()
-        
+
         await withTaskGroup(of: MessagingChat.self, body: { group in
             for remoteChat in remoteChats {
                 group.addTask {
-                    if !self.apiService.capabilities.isRequiredToReloadLastMessage,
+                    if !apiService.capabilities.isRequiredToReloadLastMessage,
                        let localChat = localChats.first(where: { $0.displayInfo.id == remoteChat.displayInfo.id }),
                        localChat.isUpToDateWith(otherChat: remoteChat) {
                         return localChat
                     } else {
-                        if var lastMessage = try? await self.apiService.getMessagesForChat(remoteChat,
+                        if var lastMessage = try? await apiService.getMessagesForChat(remoteChat,
                                                                                            before: nil,
                                                                                            cachedMessages: [],
                                                                                            fetchLimit: 1,
@@ -143,7 +105,6 @@ extension MessagingService {
         return updatedChats
     }
     
-    
     func isNewMessagesAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
         if try await isNewMessagesFromAcceptedChatsAvailable(for: profile) {
             return true
@@ -153,12 +114,14 @@ extension MessagingService {
     }
     
     func isNewMessagesFromAcceptedChatsAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
+        let apiService = try getAPIServiceWith(identifier: profile.serviceIdentifier)
         let chats = try await apiService.getChatsListForUser(profile, page: 1, limit: 1)
         
         return try await isNewMessagesFromChatsAvailable(chats, for: profile)
     }
     
     func isNewMessagesFromRequestChatsAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
+        let apiService = try getAPIServiceWith(identifier: profile.serviceIdentifier)
         let chats = try await apiService.getChatRequestsForUser(profile, page: 1, limit: 1)
         
         return try await isNewMessagesFromChatsAvailable(chats, for: profile)
@@ -167,8 +130,61 @@ extension MessagingService {
     func isNewMessagesFromChatsAvailable(_ chats: [MessagingChat], for profile: MessagingChatUserProfile) async throws -> Bool {
         guard let latestChat = chats.first else { return false } /// No messages if no chats
         guard let localChat = await storageService.getChatWith(id: latestChat.displayInfo.id,
-                                                               of: latestChat.userId) else { return true } /// New chat => new message
+                                                               of: latestChat.userId,
+                                                               serviceIdentifier: profile.serviceIdentifier) else { return true } /// New chat => new message
         
         return !localChat.isUpToDateWith(otherChat: latestChat)
+    }
+    
+    func getCachedChatsInAllServicesFor(profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChat] {
+        let profiles = try await getProfilesForAllServicesBy(userProfile: profile)
+        var chats: [MessagingChat] = []
+        for profile in profiles {
+            if let profileChats = try? await storageService.getChatsFor(profile: profile) {
+                chats.append(contentsOf: profileChats)
+            }
+        }
+        return chats
+    }
+}
+
+// MARK: - Private methods
+private extension MessagingService {
+    func updatedLocalChats(_ localChats: [MessagingChat],
+                           forProfile profile: MessagingChatUserProfile,
+                           isRequests: Bool) async throws -> [MessagingChat] {
+        let apiService = try getAPIServiceWith(identifier: profile.serviceIdentifier)
+        var remoteChats = [MessagingChat]()
+        let limit = 30
+        var page = 1
+        while true {
+            do {
+                let chatsPage: [MessagingChat]
+                if isRequests {
+                    chatsPage = try await apiService.getChatRequestsForUser(profile, page: 1, limit: limit)
+                } else {
+                    chatsPage = try await apiService.getChatsListForUser(profile, page: 1, limit: limit)
+                }
+                
+                remoteChats.append(contentsOf: chatsPage)
+                if !apiService.capabilities.isSupportChatsListPagination || chatsPage.count < limit {
+                    /// Loaded all chats
+                    break
+                } else if let lastPageChat = chatsPage.last,
+                          let localChat = localChats.first(where: { $0.displayInfo.id == lastPageChat.displayInfo.id }),
+                          lastPageChat.isUpToDateWith(otherChat: localChat) {
+                    /// No changes for other chats
+                    break
+                } else {
+                    page += 1
+                }
+            } catch {
+                break
+            }
+        }
+        
+        await storageService.saveChats(remoteChats)
+        
+        return remoteChats
     }
 }

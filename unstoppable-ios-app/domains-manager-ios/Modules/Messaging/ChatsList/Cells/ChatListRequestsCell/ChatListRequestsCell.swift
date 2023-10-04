@@ -29,7 +29,7 @@ extension ChatListRequestsCell {
         let numberOfRequests = configuration.numberOfRequests
         
         switch configuration.dataType {
-        case .chats:
+        case .chats, .communities: // TODO: - Communities
             title = String.Constants.chatRequests.localized()
             subtitle = String.Constants.pluralNPeopleYouMayKnow.localized(numberOfRequests, numberOfRequests)
             icon = .chatRequestsIcon

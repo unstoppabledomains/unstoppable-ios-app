@@ -278,6 +278,9 @@ private extension ChatsListViewController {
                 title = String.Constants.chatRequests.localized()
             case .channels:
                 title = String.Constants.spam.localized()
+            case .communities:
+                // TODO: - Communities
+                title = String.Constants.chatRequests.localized()
             }
             cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }
@@ -355,15 +358,21 @@ private extension ChatsListViewController {
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration,
                              actionButtonCallback: {
-                    self?.logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
-                                                         parameters: [.value: configuration.dataType.rawValue])
-                    switch configuration.dataType {
-                    case .channels:
-                        self?.searchMode = .channelsOnly
-                    case .chats:
-                        self?.searchMode = .chatsOnly
+                    switch configuration {
+                    case .emptyData(let dataType, _):
+                        self?.logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
+                                                             parameters: [.value: dataType.rawValue])
+                        switch dataType {
+                        case .channels:
+                            self?.searchMode = .channelsOnly
+                        case .chats, .communities: // TODO: - Communities
+                            self?.searchMode = .chatsOnly
+                        }
+                        self?.setSearchBarActive(true)
+                    case .noCommunitiesProfile:
+                        self?.presenter.createCommunitiesProfileButtonPressed()
+                        // TODO: - Communities analytics
                     }
-                    self?.setSearchBarActive(true)
                 })
                 
                 return cell
@@ -524,12 +533,14 @@ extension ChatsListViewController {
     }
     
     enum DataType: String, Hashable {
-        case chats, channels
+        case chats, communities, channels
         
         var title: String {
             switch self {
             case .chats:
                 return String.Constants.chats.localized()
+            case .communities:
+                return "Communities" // TODO: - Communities
             case .channels:
                 return String.Constants.appsInbox.localized()
             }
@@ -545,9 +556,9 @@ extension ChatsListViewController {
         let channel: MessagingNewsChannel
     }
     
-    struct EmptyStateUIConfiguration: Hashable {
-        let dataType: DataType
-        let isRequestsList: Bool
+    enum EmptyStateUIConfiguration: Hashable {
+        case emptyData(dataType: DataType, isRequestsList: Bool)
+        case noCommunitiesProfile
     }
     
     struct UserInfoUIConfiguration: Hashable {

@@ -12,6 +12,7 @@ struct MessagingChat: Hashable {
     var displayInfo: MessagingChatDisplayInfo
     let serviceMetadata: Data?
     
+    var serviceIdentifier: MessagingServiceIdentifier { displayInfo.serviceIdentifier }
     var isApproved: Bool {
         displayInfo.isApproved
     }
