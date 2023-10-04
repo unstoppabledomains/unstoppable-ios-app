@@ -67,4 +67,12 @@ extension MessagingService {
         
         return profiles
     }
+    
+    func getDefaultProfile(for profile: MessagingChatUserProfile) async throws -> MessagingChatUserProfile? {
+        if profile.serviceIdentifier == defaultServiceIdentifier {
+            return profile
+        }
+        let profiles = try await getProfilesForAllServicesBy(userProfile: profile.displayInfo)
+        return profiles.first(where: { $0.serviceIdentifier == defaultServiceIdentifier })
+    }
 }

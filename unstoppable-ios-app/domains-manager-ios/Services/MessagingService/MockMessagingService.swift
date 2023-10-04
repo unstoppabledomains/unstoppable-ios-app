@@ -16,10 +16,10 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
-    func canContactWithoutProfile(using messagingService: MessagingServiceIdentifier) -> Bool { true }
+    func canContactWithoutProfileIn(newConversation newConversationDescription: MessagingChatNewConversationDescription) -> Bool { true }
     func canBlockUsers(in chat: MessagingChatDisplayInfo) -> Bool { true }
-    func isAbleToContactAddress(_ address: String,
-                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool { true }
+    func isAbleToContactUserIn(newConversation newConversationDescription: MessagingChatNewConversationDescription,
+                               by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool { true }
     func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] { [] }
     func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo? { nil }
     

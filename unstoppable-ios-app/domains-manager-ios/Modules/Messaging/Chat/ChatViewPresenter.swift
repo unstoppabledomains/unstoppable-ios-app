@@ -639,15 +639,15 @@ private extension ChatViewPresenter {
                     self.view?.setUIState(.otherUserIsBlocked)
                 }
             }
-        case .newChat(let description):
+        case .newChat(let newConversationDescription):
             func prepareToChat() {
                 view?.setUIState(.chat)
                 view?.startTyping()
             }
             
-            if !appContext.messagingService.canContactWithoutProfile(using: description.messagingService) {
+            if !appContext.messagingService.canContactWithoutProfileIn(newConversation: newConversationDescription) {
                 do {
-                    let canContact = try await appContext.messagingService.isAbleToContactAddress(description.userInfo.wallet,
+                    let canContact = try await appContext.messagingService.isAbleToContactUserIn(newConversation: newConversationDescription,
                                                                                                   by: profile)
                     if canContact {
                         prepareToChat()

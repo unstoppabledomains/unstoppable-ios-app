@@ -55,10 +55,12 @@ private extension MessagingService {
                     let message = messageWithProfile.message
                     let profile = messageWithProfile.profile
                     let chatId = message.displayInfo.chatId
-                    
+                    /// UI always interact with default messaging profile
+                    guard let defaultProfile = try? await getDefaultProfile(for: profile) else { continue }
+
                     notifyListenersChangedDataType(.messagesAdded([message.displayInfo],
                                                                   chatId: chatId,
-                                                                  userId: profile.id))
+                                                                  userId: defaultProfile.id))
                     try? await setLastMessageAndNotify(lastMessage: message.displayInfo, serviceIdentifier: profile.serviceIdentifier)
                 }
             }

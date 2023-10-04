@@ -93,9 +93,11 @@ extension MessagingService {
     }
     
     func notifyChatsChangedFor(profile: MessagingChatUserProfile) async throws {
-        let chats = try await getCachedChatsInAllServicesFor(profile: profile.displayInfo)
+        /// UI always interact with default messaging profile
+        guard let defaultProfile = try await getDefaultProfile(for: profile) else { return }
+        let chats = try await getCachedChatsInAllServicesFor(profile: defaultProfile.displayInfo)
         let displayInfo = chats.map { $0.displayInfo }
-        notifyListenersChangedDataType(.chats(displayInfo, profile: profile.displayInfo))
+        notifyListenersChangedDataType(.chats(displayInfo, profile: defaultProfile.displayInfo))
     }
     
     func notifyListenersChangedDataType(_ messagingDataType: MessagingDataType) {

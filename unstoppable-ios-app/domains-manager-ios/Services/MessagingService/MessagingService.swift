@@ -61,8 +61,8 @@ final class MessagingService {
 // MARK: - MessagingServiceProtocol
 extension MessagingService: MessagingServiceProtocol {
     // Capabilities
-    func canContactWithoutProfile(using messagingService: MessagingServiceIdentifier) -> Bool {
-        guard let apiService = try? getAPIServiceWith(identifier: messagingService) else { return false }
+    func canContactWithoutProfileIn(newConversation newConversationDescription: MessagingChatNewConversationDescription) -> Bool {
+        guard let apiService = try? getAPIServiceWith(identifier: newConversationDescription.messagingService) else { return false }
 
         return apiService.capabilities.canContactWithoutProfile
     }
@@ -72,11 +72,13 @@ extension MessagingService: MessagingServiceProtocol {
         return apiService.capabilities.canBlockUsers
     }
     
-    func isAbleToContactAddress(_ address: String,
-                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool {
-        let profile = try storageService.getUserProfileWith(userId: user.id,
-                                                            serviceIdentifier: user.serviceIdentifier)
-        let apiService = try getAPIServiceWith(identifier: user.serviceIdentifier)
+    func isAbleToContactUserIn(newConversation newConversationDescription: MessagingChatNewConversationDescription,
+                               by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool {
+        let serviceIdentifier = newConversationDescription.messagingService
+        let address = newConversationDescription.userInfo.wallet
+        let profile = try await getUserProfileWith(wallet: user.wallet, serviceIdentifier: serviceIdentifier)
+
+        let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
         return try await apiService.isAbleToContactAddress(address, by: profile)
     }
     

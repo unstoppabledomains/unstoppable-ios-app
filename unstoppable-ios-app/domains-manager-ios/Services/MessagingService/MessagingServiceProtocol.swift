@@ -10,10 +10,10 @@ import Foundation
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
     // Capabilities
-    func canContactWithoutProfile(using messagingService: MessagingServiceIdentifier) -> Bool
+    func canContactWithoutProfileIn(newConversation newConversationDescription: MessagingChatNewConversationDescription) -> Bool
     func canBlockUsers(in chat: MessagingChatDisplayInfo) -> Bool
-    func isAbleToContactAddress(_ address: String,
-                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool
+    func isAbleToContactUserIn(newConversation newConversationDescription: MessagingChatNewConversationDescription,
+                               by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool
     func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo]
     func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo?
     
