@@ -540,7 +540,7 @@ extension ChatsListViewController {
             case .chats:
                 return String.Constants.chats.localized()
             case .communities:
-                return "Communities"
+                return "Communities" // TODO: - Communities
             case .channels:
                 return String.Constants.appsInbox.localized()
             }

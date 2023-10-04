@@ -21,6 +21,7 @@ final class PushMessagingAPIService {
     
     private let pushRESTService = PushRESTAPIService()
     private let dataProvider: PushMessagingAPIServiceDataProvider
+    private let isRegularChatsEnabled = false
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: true,
                                                     canBlockUsers: true,
                                                     isSupportChatsListPagination: true,
@@ -85,17 +86,20 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {
-        try await getCommunitiesListForUser(user)
-        
-        /// Disabled standard group chats for now
-//        let pushChats = try await getPushChatsForUser(user,
-//                                                      page: page,
-//                                                      limit: limit,
-//                                                      isRequests: false)
-//        
-//        return try await transformPushChatsToChats(pushChats,
-//                                                   isApproved: true,
-//                                                   for: user)
+        let communities = try await getCommunitiesListForUser(user)
+        if isRegularChatsEnabled {
+            let pushChats = try await getPushChatsForUser(user,
+                                                          page: page,
+                                                          limit: limit,
+                                                          isRequests: false)
+            
+            let chats = try await transformPushChatsToChats(pushChats,
+                                                            isApproved: true,
+                                                            for: user)
+            return communities + chats
+        } else {
+            return communities
+        }
     }
     
     private func getCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] {
