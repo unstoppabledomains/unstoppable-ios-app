@@ -61,19 +61,15 @@ extension Array where Element == MessagingChatDisplayInfo {
     }
     
     func splitCommunitiesAndOthers() -> (chats: [Element], communities: [Element]) {
-        var chats: [Element] = []
-        var communities: [Element] = []
-        
-        for element in self {
+        var runningResult: (chats: [Element], communities: [Element]) = ([], [])
+        return self.reduce(into: runningResult) { result, element in
             switch element.type {
             case .community:
-                communities.append(element)
+                result.communities.append(element)
             default:
-                chats.append(element)
+                result.chats.append(element)
             }
         }
-        
-        return (chats, communities)
     }
     
 }
