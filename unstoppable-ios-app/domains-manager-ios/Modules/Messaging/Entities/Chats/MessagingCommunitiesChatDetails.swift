@@ -21,6 +21,13 @@ struct MessagingCommunitiesChatDetails: Hashable, Codable {
             return badge.badge.name
         }
     }
+    
+    var displayIconUrl: String {
+        switch type {
+        case .badge(let badgeInfo):
+            return badgeInfo.badge.logo
+        }
+    }
 }
 
 // MARK: - Open methods
