@@ -10,6 +10,7 @@ import SocketIO
 import Push
 
 class PushWebSocketsService {
+    private let queue = DispatchQueue(label: "com.unstoppabledomains.push.websockets")
     private var domainNameToConnectionMap: [DomainName : PushConnection] = [:]
     let connectionType: ConnectionType
     
@@ -45,19 +46,25 @@ extension PushWebSocketsService {
         }
         pushConnection.connect()
         
-        domainNameToConnectionMap[profile.wallet] = pushConnection
+        queue.sync {
+            domainNameToConnectionMap[profile.wallet] = pushConnection
+        }
     }
     
     func unsubscribeFrom(domain: DomainItem) {
-        domainNameToConnectionMap[domain.name]?.disconnect()
-        domainNameToConnectionMap[domain.name] = nil
+        queue.sync {
+            domainNameToConnectionMap[domain.name]?.disconnect()
+            domainNameToConnectionMap[domain.name] = nil
+        }
     }
     
     func disconnectAll() {
-        domainNameToConnectionMap.values.forEach { connection in
-            connection.disconnect()
+        queue.sync {
+            domainNameToConnectionMap.values.forEach { connection in
+                connection.disconnect()
+            }
+            domainNameToConnectionMap.removeAll()
         }
-        domainNameToConnectionMap.removeAll()
     }
 }
 
