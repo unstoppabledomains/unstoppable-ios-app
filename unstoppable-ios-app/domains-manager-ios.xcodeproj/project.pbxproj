@@ -215,6 +215,7 @@
 		C60E9B9C2821347F00CD7593 /* WalletsListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60E9B9B2821347F00CD7593 /* WalletsListHeaderView.swift */; };
 		C60E9BA228218DD300CD7593 /* LegalType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60E9BA128218DD300CD7593 /* LegalType.swift */; };
 		C60E9BA728218F1B00CD7593 /* ManageBackupsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60E9BA628218F1B00CD7593 /* ManageBackupsAction.swift */; };
+		C60EE80F2ACD203000D699C7 /* NetworkService+MessagingApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = C60EE80E2ACD203000D699C7 /* NetworkService+MessagingApi.swift */; };
 		C61002A0293E075300462983 /* DomainProfileDataToClipboardCopier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C610029F293E075300462983 /* DomainProfileDataToClipboardCopier.swift */; };
 		C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61002E92940936F00462983 /* UIGestureRecognizer.swift */; };
 		C6109E2B28E5AB310027D5D8 /* MockAuthentificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2428E5AB310027D5D8 /* MockAuthentificationService.swift */; };
@@ -1368,6 +1369,7 @@
 		C60E9B9B2821347F00CD7593 /* WalletsListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletsListHeaderView.swift; sourceTree = "<group>"; };
 		C60E9BA128218DD300CD7593 /* LegalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalType.swift; sourceTree = "<group>"; };
 		C60E9BA628218F1B00CD7593 /* ManageBackupsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageBackupsAction.swift; sourceTree = "<group>"; };
+		C60EE80E2ACD203000D699C7 /* NetworkService+MessagingApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NetworkService+MessagingApi.swift"; sourceTree = "<group>"; };
 		C610029F293E075300462983 /* DomainProfileDataToClipboardCopier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileDataToClipboardCopier.swift; sourceTree = "<group>"; };
 		C61002E92940936F00462983 /* UIGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIGestureRecognizer.swift; sourceTree = "<group>"; };
 		C6109E2428E5AB310027D5D8 /* MockAuthentificationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAuthentificationService.swift; sourceTree = "<group>"; };
@@ -5110,6 +5112,7 @@
 				C692C312282E303B00C31393 /* NetworkReachabilityService.swift */,
 				3034E2B5252DB02400A20477 /* NetworkService.swift */,
 				29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */,
+				C60EE80E2ACD203000D699C7 /* NetworkService+MessagingApi.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -6379,6 +6382,7 @@
 				C6D0F438283F7DFF00444921 /* MintDomainsConfigurationSelectionCell.swift in Sources */,
 				3004E32726D528D300B9CB6A /* LegacyUnitaryWallet.swift in Sources */,
 				307B1D392603C0C4007B14C3 /* UDWalletEthereum.swift in Sources */,
+				C60EE80F2ACD203000D699C7 /* NetworkService+MessagingApi.swift in Sources */,
 				C6D9E28928533783002CDAC2 /* UDDomainSharingCardView.swift in Sources */,
 				C673BA2E2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift in Sources */,
 				C69698982ACBCDDB0000738C /* PushWebSocketsService.swift in Sources */,

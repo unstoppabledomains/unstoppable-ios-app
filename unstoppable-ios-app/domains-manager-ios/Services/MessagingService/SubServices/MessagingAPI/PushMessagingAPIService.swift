@@ -86,6 +86,8 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {
         try await getCommunitiesListForUser(user)
+        
+        /// Disabled standard group chats for now
 //        let pushChats = try await getPushChatsForUser(user,
 //                                                      page: page,
 //                                                      limit: limit,
@@ -111,17 +113,7 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                 group.addTask {
                     if let badgeInfo = try? await NetworkService().fetchBadgeDetailedInfo(for: badge) {
                         if let groupChatId = badge.groupChatId,
-                           let pushGroup = try? await Push.PushChat.getGroup(chatId: groupChatId, env: env) {
-                            let threadHash = try? await self.pushRESTService.getChatThreadHash(for: user.wallet, chatId: groupChatId)
-                            let pushChat = PushChat(pushGroup: pushGroup, threadHash: threadHash)
-                            let publicKeys = pushGroup.members.compactMap { $0.publicKey }
-                            
-                            let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
-                                                                                     userId: user.id,
-                                                                                     userWallet: user.wallet,
-                                                                                     isApproved: true,
-                                                                                     publicKeys: publicKeys,
-                                                                                     badgeInfo: badgeInfo)
+                           let chat = try? await self.getGroupChatBy(groupChatId: groupChatId, user: user, badgeInfo: badgeInfo) {
                             return chat
                         } else {
                             let chat = PushEntitiesTransformer.buildEmptyCommunityChatFor(badgeInfo: badgeInfo, user: user)
@@ -133,7 +125,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
                 }
             }
             
-            /// 2. Take values from group
             for await chat in group {
                 guard let chat else { continue }
                 chats.append(chat)
@@ -141,6 +132,71 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         })
     
         return chats
+    }
+    
+    private func getGroupChatBy(groupChatId: String,
+                                user: MessagingChatUserProfile,
+                                badgeInfo: BadgeDetailedInfo) async throws -> MessagingChat {
+        let env = getCurrentPushEnvironment()
+        guard let pushGroup = (try await Push.PushChat.getGroup(chatId: groupChatId, env: env)) else {
+            throw PushMessagingAPIServiceError.groupChatWithGivenIdNotFound
+        }
+        let threadHash = try? await self.pushRESTService.getChatThreadHash(for: user.wallet, chatId: groupChatId)
+        let pushChat = PushChat(pushGroup: pushGroup, threadHash: threadHash)
+        let publicKeys = pushGroup.members.compactMap { $0.publicKey }
+        
+        guard let chat = PushEntitiesTransformer.convertPushChatToChat(pushChat,
+                                                                 userId: user.id,
+                                                                 userWallet: user.wallet,
+                                                                 isApproved: true,
+                                                                 publicKeys: publicKeys,
+                                                                       badgeInfo: badgeInfo) else {
+            throw PushMessagingAPIServiceError.failedToConvertPushChat
+        }
+        return chat
+    }
+    
+    func joinCommunityChat(_ communityChat: MessagingChat,
+                           by user: MessagingChatUserProfile) async throws -> MessagingChat {
+        let userWallet = communityChat.displayInfo.thisUserDetails.wallet
+        switch communityChat.displayInfo.type {
+        case .community(let details):
+            /// Check user is not yet joined
+            guard !details.isJoined else { return communityChat }
+            
+            switch details.type {
+            case .badge(let badgeInfo):
+                let approveResponse = try await NetworkService().joinBadgeCommunity(badge: badgeInfo, by: userWallet)
+                let groupChat = try await getGroupChatBy(groupChatId: approveResponse.groupChatId,
+                                                         user: user,
+                                                         badgeInfo: badgeInfo)
+                try await makeChatRequest(groupChat, approved: true, by: user)
+                return groupChat
+            }
+        case .private, .group:
+            throw PushMessagingAPIServiceError.actionNotSupported
+        }
+    }
+    
+    func leaveCommunityChat(_ communityChat: MessagingChat,
+                            by user: MessagingChatUserProfile) async throws -> MessagingChat {
+        let userWallet = communityChat.displayInfo.thisUserDetails.wallet
+        switch communityChat.displayInfo.type {
+        case .community(let details):
+            /// Check user is currently joined
+            guard details.isJoined else { return communityChat }
+            
+            switch details.type {
+            case .badge(let badgeInfo):
+                try await NetworkService().leaveBadgeCommunity(badge: badgeInfo, by: userWallet)
+                let groupChat = try await getGroupChatBy(groupChatId: communityChat.displayInfo.id,
+                                                         user: user,
+                                                         badgeInfo: badgeInfo)
+                return groupChat
+            }
+        case .private, .group:
+            throw PushMessagingAPIServiceError.actionNotSupported
+        }
     }
     
     private func getPushChatsForUser(_ user: MessagingChatUserProfile,
@@ -618,8 +674,10 @@ extension PushMessagingAPIService {
         case incorrectDataState
         case blockUserInGroupChatsNotSupported
         case unsupportedType
+        case groupChatWithGivenIdNotFound
         
         case failedToDecodeServiceData
+        case failedToConvertPushChat
         case failedToConvertPushMessage
         case declineRequestNotSupported
         case failedToPrepareMessageContent

@@ -146,6 +146,25 @@ extension MessagingService {
         }
         return chats
     }
+    
+    @discardableResult
+    func performAsyncOperationUnder(chat: MessagingChatDisplayInfo,
+                                    operation: (MessagingChat, MessagingChatUserProfile, MessagingAPIServiceProtocol) async throws -> MessagingChat?) async throws -> MessagingChat? {
+        let serviceIdentifier = chat.serviceIdentifier
+        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet, serviceIdentifier: serviceIdentifier)
+        let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
+        let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
+        let updatedChat = try await operation(chat, profile, apiService)
+        if let updatedChat {
+            await storageService.saveChats([updatedChat])
+        } else {
+            storageService.deleteChat(chat, filesService: filesService)
+        }
+        notifyChatsChanged(wallet: profile.wallet, serviceIdentifier: serviceIdentifier)
+        refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
+        return updatedChat
+    }
+    
 }
 
 // MARK: - Private methods

@@ -33,6 +33,8 @@ protocol MessagingServiceProtocol {
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws
     func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws
+    func joinCommunityChat(_ communityChat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo
+    func leaveCommunityChat(_ communityChat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo
     
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
