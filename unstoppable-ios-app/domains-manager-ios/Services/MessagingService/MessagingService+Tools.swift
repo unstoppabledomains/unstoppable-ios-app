@@ -87,11 +87,15 @@ extension MessagingService {
         Task {
             do {
                 let profile = try await getUserProfileWith(wallet: wallet, serviceIdentifier: serviceIdentifier)
-                let chats = try await getCachedChatsInAllServicesFor(profile: profile.displayInfo)
-                let displayInfo = chats.map { $0.displayInfo }
-                notifyListenersChangedDataType(.chats(displayInfo, profile: profile.displayInfo))
+                try await notifyChatsChangedFor(profile: profile)
             } catch { }
         }
+    }
+    
+    func notifyChatsChangedFor(profile: MessagingChatUserProfile) async throws {
+        let chats = try await getCachedChatsInAllServicesFor(profile: profile.displayInfo)
+        let displayInfo = chats.map { $0.displayInfo }
+        notifyListenersChangedDataType(.chats(displayInfo, profile: profile.displayInfo))
     }
     
     func notifyListenersChangedDataType(_ messagingDataType: MessagingDataType) {

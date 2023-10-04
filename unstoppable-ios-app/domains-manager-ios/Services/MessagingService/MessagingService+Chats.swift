@@ -28,9 +28,7 @@ extension MessagingService {
                                                                   for: profile)
                 await storageService.saveChats(updatedChats)
                 
-                let updatedStoredChats = try await getCachedChatsInAllServicesFor(profile: profile.displayInfo)
-                let chatsDisplayInfo = updatedStoredChats.sortedByLastMessage().map({ $0.displayInfo })
-                notifyListenersChangedDataType(.chats(chatsDisplayInfo, profile: profile.displayInfo))
+                try await notifyChatsChangedFor(profile: profile)
                 Debugger.printTimeSensitiveInfo(topic: .Messaging,
                                                 "to refresh chats list for \(profile.wallet)",
                                                 startDate: startTime,
