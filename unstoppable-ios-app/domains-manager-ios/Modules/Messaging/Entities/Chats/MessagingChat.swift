@@ -20,6 +20,22 @@ struct MessagingChat: Hashable {
     func isUpToDateWith(otherChat: MessagingChat) -> Bool {
         serviceMetadata == otherChat.serviceMetadata
     }
+     
+    func isDeprecatedVersion(of otherChat: MessagingChat) -> Bool {
+        switch (displayInfo.type, otherChat.displayInfo.type) {
+        case (.community(let lhsCommunity), .community(let rhsCommunity)):
+            if displayInfo.id == otherChat.displayInfo.id {
+                return false
+            }
+            
+            switch (lhsCommunity.type, rhsCommunity.type) {
+            case (.badge(let lhsBadge), .badge(let rhsBadge)):
+                return lhsBadge.badge.code == rhsBadge.badge.code
+            }
+        default:
+            return false
+        }
+    }
 }
 
 extension Array where Element == MessagingChat {

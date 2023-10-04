@@ -13,7 +13,7 @@ extension MessagingService {
             dataRefreshManager.startUpdatingChats(for: profile.displayInfo)
             var startTime = Date()
             do {
-                let allLocalChats = try await storageService.getChatsFor(profile: profile)
+                var allLocalChats = try await storageService.getChatsFor(profile: profile)
                 let localChats = allLocalChats.filter { $0.displayInfo.isApproved}
                 let localRequests = allLocalChats.filter { !$0.displayInfo.isApproved}
                 
@@ -22,6 +22,15 @@ extension MessagingService {
                 
                 let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
                 let allRemoteChats = remoteChats + remoteRequests
+                
+                // Remove deprecated chats
+                for remoteChat in allRemoteChats {
+                    if let deprecatedChatIndex = allLocalChats.firstIndex(where: { $0.isDeprecatedVersion(of: remoteChat) }) {
+                        let deprecatedChat = allLocalChats[deprecatedChatIndex]
+                        storageService.deleteChat(deprecatedChat, filesService: filesService)
+                        allLocalChats.remove(at: deprecatedChatIndex)
+                    }
+                }
                 
                 let updatedChats = try await refreshChatsMetadata(remoteChats: allRemoteChats,
                                                                   localChats: allLocalChats,
@@ -64,12 +73,12 @@ extension MessagingService {
                         return localChat
                     } else {
                         if var lastMessage = try? await apiService.getMessagesForChat(remoteChat,
-                                                                                           before: nil,
-                                                                                           cachedMessages: [],
-                                                                                           fetchLimit: 1,
-                                                                                           isRead: false,
-                                                                                           for: profile,
-                                                                                           filesService: self.filesService).first {
+                                                                                      before: nil,
+                                                                                      cachedMessages: [],
+                                                                                      fetchLimit: 1,
+                                                                                      isRead: false,
+                                                                                      for: profile,
+                                                                                      filesService: self.filesService).first {
                             
                             var updatedChat = remoteChat
                             if let storedMessage = await self.storageService.getMessageWith(id: lastMessage.displayInfo.id,
