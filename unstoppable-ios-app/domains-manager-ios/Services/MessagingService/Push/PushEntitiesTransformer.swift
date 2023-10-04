@@ -125,7 +125,7 @@ struct PushEntitiesTransformer {
     
     static func buildEmptyCommunityChatFor(badgeInfo: BadgeDetailedInfo, user: MessagingChatUserProfile) -> MessagingChat {
         let thisUserDetails = MessagingChatUserDisplayInfo(wallet: user.wallet)
-        let info = MessagingChatDisplayInfo(id: UUID().uuidString,
+        let info = MessagingChatDisplayInfo(id: "push_community_" + badgeInfo.badge.code,
                                             thisUserDetails: thisUserDetails,
                                             avatarURL: URL(string: badgeInfo.badge.logo),
                                             serviceIdentifier: .push,
