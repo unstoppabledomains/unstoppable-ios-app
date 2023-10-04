@@ -138,9 +138,12 @@ struct PushEntitiesTransformer {
                                             unreadMessagesCount: 0,
                                             isApproved: true,
                                             lastMessageTime: Date())
+        let metadataModel = PushEnvironment.ChatServiceMetadata(threadHash: nil,
+                                                                publicKeys: [])
+        let serviceMetadata = metadataModel.jsonData()
         return MessagingChat(userId: user.id,
                              displayInfo: info,
-                             serviceMetadata: nil)
+                             serviceMetadata: serviceMetadata)
     }
     
     static func getPushChatIdFrom(chat: MessagingChat) -> String {
