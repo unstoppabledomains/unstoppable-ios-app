@@ -125,19 +125,18 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 try await self.selectProfileWalletPair(cachedPair)
             } else {
                 var profile: MessagingChatUserProfileDisplayInfo?
-                var communitiesProfile: MessagingChatUserProfileDisplayInfo?
                 if let rrDomain = wallet.reverseResolutionDomain {
                     profile = try? await appContext.messagingService.getUserMessagingProfile(for: rrDomain)
-                    communitiesProfile = try? await appContext.messagingService.getUserCommunitiesProfile(for: rrDomain)
                 }
+                let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
                 
                 try await selectProfileWalletPair(.init(wallet: wallet,
                                                         profile: profile,
-                                                        communitiesProfile: communitiesProfile))
+                                                        isCommunitiesEnabled: isCommunitiesEnabled))
             }
         }
     }
-    
+
     func actionButtonPressed() {
         Task {
             guard let selectedProfileWalletPair,
@@ -160,16 +159,15 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     func createCommunitiesProfileButtonPressed() {
         Task {
             guard let selectedProfileWalletPair,
-                  let rrDomain = selectedProfileWalletPair.wallet.reverseResolutionDomain,
                   let view else { return }
             
             do {
                 try await appContext.authentificationService.verifyWith(uiHandler: view,
                                                                         purpose: .confirm)
-                let communitiesProfile = try await appContext.messagingService.createUserCommunitiesProfile(for: rrDomain)
+                let isCommunitiesEnabled = await isCommunitiesEnabled(for: selectedProfileWalletPair.profile)
                 try await selectProfileWalletPair(.init(wallet: selectedProfileWalletPair.wallet,
                                                         profile: selectedProfileWalletPair.profile,
-                                                        communitiesProfile: communitiesProfile))
+                                                        isCommunitiesEnabled: isCommunitiesEnabled))
             } catch {
                 view.showAlertWith(error: error, handler: nil)
             }
@@ -401,32 +399,37 @@ private extension ChatsListViewPresenter {
         return wallets
     }
     
+    func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo?) async -> Bool {
+        if let messagingProfile {
+            return await appContext.messagingService.isCommunitiesEnabled(for: messagingProfile)
+        }
+        return false
+    }
+    
     func resolveInitialProfileWith(wallets: [WalletDisplayInfo]) async throws {
         if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: wallets),
            let wallet = wallets.first(where: { $0.address == profile.wallet.normalized }) {
             /// User already used chat with some profile, select last used.
-            var communitiesProfile: MessagingChatUserProfileDisplayInfo?
-            if let domain = wallet.reverseResolutionDomain {
-                communitiesProfile = try? await appContext.messagingService.getUserCommunitiesProfile(for: domain)
-            }
+            let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
+
             try await selectProfileWalletPair(.init(wallet: wallet,
                                                     profile: profile,
-                                                    communitiesProfile: communitiesProfile))
+                                                    isCommunitiesEnabled: isCommunitiesEnabled))
         } else {
             for wallet in wallets {
                 guard let rrDomain = wallet.reverseResolutionDomain else { continue }
                 
                 if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: rrDomain) {
                     /// User open chats for the first time but there's existing profile, use it as default
-                    let communitiesProfile = try? await appContext.messagingService.getUserCommunitiesProfile(for: rrDomain)
+                    let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
                     try await selectProfileWalletPair(.init(wallet: wallet,
                                                             profile: profile,
-                                                            communitiesProfile: communitiesProfile))
+                                                            isCommunitiesEnabled: isCommunitiesEnabled))
                     return
                 } else {
                     profileWalletPairsCache.append(.init(wallet: wallet,
                                                          profile: nil,
-                                                         communitiesProfile: nil))
+                                                         isCommunitiesEnabled: false))
                 }
             }
             
@@ -435,7 +438,7 @@ private extension ChatsListViewPresenter {
             let firstWallet = wallets[0] /// Safe due to .isEmpty verification above
             try await selectProfileWalletPair(.init(wallet: firstWallet,
                                                     profile: nil,
-                                                    communitiesProfile: nil))
+                                                    isCommunitiesEnabled: false))
         }
     }
     
@@ -445,10 +448,10 @@ private extension ChatsListViewPresenter {
             try await resolveInitialProfileWith(wallets: wallets)
             return
         }
-        let communitiesProfile = try? await appContext.messagingService.getUserCommunitiesProfile(for: profile)
-        try await selectProfileWalletPair(.init(wallet: wallet, 
+        let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
+        try await selectProfileWalletPair(.init(wallet: wallet,
                                                 profile: profile,
-                                                communitiesProfile: communitiesProfile))
+                                                isCommunitiesEnabled: isCommunitiesEnabled))
     }
     
     func tryAutoOpenChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) {
@@ -599,7 +602,7 @@ private extension ChatsListViewPresenter {
     func fillSnapshotForUserCommunitiesList(_ snapshot: inout ChatsListSnapshot) {
         let communitiesList = getListOfUnblockedCommunities()
         
-        if selectedProfileWalletPair?.communitiesProfile == nil {
+        if selectedProfileWalletPair?.isCommunitiesEnabled != true {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([.emptyState(configuration: .noCommunitiesProfile)])
         } else {
@@ -815,10 +818,10 @@ private extension ChatsListViewPresenter {
         Task {
             do {
                 let profile = try await appContext.messagingService.createUserMessagingProfile(for: domain)
-                let communitiesProfile = try? await appContext.messagingService.createUserCommunitiesProfile(for: domain)
+                let isCommunitiesEnabled = await appContext.messagingService.isCommunitiesEnabled(for: profile)
                 try await selectProfileWalletPair(.init(wallet: wallet,
-                                                        profile: profile, 
-                                                        communitiesProfile: communitiesProfile))
+                                                        profile: profile,
+                                                        isCommunitiesEnabled: isCommunitiesEnabled))
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
@@ -831,7 +834,7 @@ private extension ChatsListViewPresenter {
     struct ChatProfileWalletPair {
         let wallet: WalletDisplayInfo
         let profile: MessagingChatUserProfileDisplayInfo?
-        let communitiesProfile: MessagingChatUserProfileDisplayInfo?
+        let isCommunitiesEnabled: Bool
     }
     
     struct SearchData {

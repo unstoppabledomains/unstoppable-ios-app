@@ -20,9 +20,7 @@ protocol MessagingServiceProtocol {
     // User
     func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
     func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
-    func getUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
-    func getUserCommunitiesProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
-    func createUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo
+    func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?)
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool
     func isNewMessagesAvailable() async throws -> Bool
@@ -48,7 +46,7 @@ protocol MessagingServiceProtocol {
                      in chat: MessagingChatDisplayInfo) async throws -> MessagingChatMessageDisplayInfo
     func isMessagesEncryptedIn(conversation: MessagingChatConversationState) async throws -> Bool
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
-                          to userInfo: MessagingChatUserDisplayInfo,
+                          to newConversationDescription: MessagingChatNewConversationDescription,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo)
     func resendMessage(_ message: MessagingChatMessageDisplayInfo,
                        in chatDisplayInfo: MessagingChatDisplayInfo) async throws

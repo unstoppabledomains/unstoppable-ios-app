@@ -44,6 +44,16 @@ extension MessagingService {
         return remoteProfile.displayInfo
     }
     
+    func getUserCommunitiesProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
+        let wallet = messagingProfile.wallet
+        let domain = try await getReverseResolutionDomainItem(for: wallet)
+        return try await getUserProfileFor(domainItem: domain, serviceIdentifier: communitiesServiceIdentifier)
+    }
+    
+    func createUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
+        try await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+    }
+    
     /// Return at least one existing profile or throw error
     func getProfilesForAllServicesBy(userProfile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatUserProfile] {
         let profile = try await getUserProfileWith(wallet: userProfile.wallet, serviceIdentifier: userProfile.serviceIdentifier)

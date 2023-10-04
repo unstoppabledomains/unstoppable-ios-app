@@ -25,9 +25,7 @@ extension MockMessagingService: MessagingServiceProtocol {
     
     func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
     func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
-    func getUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
-    func getUserCommunitiesProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
-    func createUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
+    func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool { true }
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) { }
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool { false }
     func isNewMessagesAvailable() async throws -> Bool { false }
@@ -74,7 +72,7 @@ extension MockMessagingService: MessagingServiceProtocol {
     }
     func isMessagesEncryptedIn(conversation: MessagingChatConversationState) async -> Bool { true }
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
-                          to userInfo: MessagingChatUserDisplayInfo,
+                          to newConversationDescription: MessagingChatNewConversationDescription,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo) {
         throw NSError()
     }

@@ -28,6 +28,15 @@ enum MessagingChatConversationState {
             return false
         }
     }
+    
+    var messagingService: MessagingServiceIdentifier {
+        switch self {
+        case .newChat(let description):
+            return description.messagingService
+        case .existingChat(let chat):
+            return chat.serviceIdentifier
+        }
+    }
 }
 
 struct MessagingChatNewConversationDescription {

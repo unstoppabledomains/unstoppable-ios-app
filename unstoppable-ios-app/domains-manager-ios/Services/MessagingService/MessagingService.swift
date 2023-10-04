@@ -139,23 +139,16 @@ extension MessagingService: MessagingServiceProtocol {
     }
  
     func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        try await createUserProfile(for: domain, serviceIdentifier: defaultServiceIdentifier)
+        let profile = try await createUserProfile(for: domain, serviceIdentifier: defaultServiceIdentifier)
+        _ = try? await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+        return profile
     }
     
-    func getUserCommunitiesProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        let wallet = messagingProfile.wallet
-        let domain = try await getReverseResolutionDomainItem(for: wallet)
-        return try await getUserProfileFor(domainItem: domain, serviceIdentifier: messagingProfile.serviceIdentifier)
+    func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool {
+        let communitiesProfile = try? await getUserCommunitiesProfile(for: messagingProfile)
+        return communitiesProfile != nil
     }
-    
-    func getUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        try await getUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
-    }
-    
-    func createUserCommunitiesProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
-        try await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
-    }
-    
+
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) {
         self.currentUser = userProfile
         refreshMessagingInfoFor(userProfile: userProfile, shouldRefreshUserInfo: true)
@@ -358,9 +351,10 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
-                          to userInfo: MessagingChatUserDisplayInfo,
+                          to newConversationDescription: MessagingChatNewConversationDescription,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo) {
-        let serviceIdentifier = profile.serviceIdentifier
+        let serviceIdentifier = newConversationDescription.messagingService
+        let userInfo = newConversationDescription.userInfo
         let profile = try await getUserProfileWith(wallet: profile.wallet, serviceIdentifier: serviceIdentifier)
         let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
         var (chat, message) = try await apiService.sendFirstMessage(messageType,

@@ -746,10 +746,10 @@ private extension ChatViewPresenter {
                     newMessage = try await appContext.messagingService.sendMessage(type,
                                                                                    isEncrypted: isChannelEncrypted,
                                                                                    in: chat)
-                case .newChat(let description):
+                case .newChat(let newConversationDescription):
                     view?.setLoading(active: true)
                     let (chat, message) = try await appContext.messagingService.sendFirstMessage(type,
-                                                                                                 to: description.userInfo,
+                                                                                                 to: newConversationDescription,
                                                                                                  by: profile)
                     self.conversationState = .existingChat(chat)
                     newMessage = message
