@@ -162,15 +162,16 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     func createCommunitiesProfileButtonPressed() {
         Task {
             guard let selectedProfileWalletPair,
+                  let profile = selectedProfileWalletPair.profile,
                   let view else { return }
             
             do {
                 try await appContext.authentificationService.verifyWith(uiHandler: view,
                                                                         purpose: .confirm)
-                let isCommunitiesEnabled = await isCommunitiesEnabled(for: selectedProfileWalletPair.profile)
+                try await messagingService.createCommunityProfile(for: profile)
                 try await selectProfileWalletPair(.init(wallet: selectedProfileWalletPair.wallet,
-                                                        profile: selectedProfileWalletPair.profile,
-                                                        isCommunitiesEnabled: isCommunitiesEnabled))
+                                                        profile: profile,
+                                                        isCommunitiesEnabled: true))
             } catch {
                 view.showAlertWith(error: error, handler: nil)
             }
