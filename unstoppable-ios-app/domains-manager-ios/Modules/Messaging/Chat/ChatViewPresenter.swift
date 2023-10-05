@@ -554,7 +554,6 @@ private extension ChatViewPresenter {
         Task {
             guard let view,
                   let viewingDomain = await DomainItem.getViewingDomainFor(messagingProfile: profile) else { return }
-            
             UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                          name: domainName),
                                                viewingDomain: viewingDomain,
