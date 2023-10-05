@@ -109,7 +109,6 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     private func getBadgesCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] {
         let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.normalizedWallet)
         let badgesList = try await NetworkService().fetchBadgesInfo(for: domain)
-        let env = getCurrentPushEnvironment()
         var chats: [MessagingChat] = []
         
         await withTaskGroup(of: Optional<MessagingChat>.self, body: { group in
@@ -170,11 +169,22 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             
             switch details.type {
             case .badge(let badgeInfo):
-                let approveResponse = try await NetworkService().joinBadgeCommunity(badge: badgeInfo, by: userWallet)
+                let privateKey = try await getPGPPrivateKeyFor(user: user)
+                let signature = try Pgp.sign(message: badgeInfo.badge.code, privateKey: privateKey)
+                
+                let approveResponse = try await NetworkService().joinBadgeCommunity(badge: badgeInfo, 
+                                                                                    by: userWallet,
+                                                                                    signature: signature)
                 let groupChat = try await getGroupChatBy(groupChatId: approveResponse.groupChatId,
                                                          user: user,
                                                          badgeInfo: badgeInfo)
-                try await makeChatRequest(groupChat, approved: true, by: user)
+                let requests = try await getPushChatsForUser(user,
+                                                            page: 1,
+                                                            limit: 3,
+                                                            isRequests: true)
+                if requests.first(where: { $0.chatId == groupChat.id }) != nil {
+                    try await makeChatRequest(groupChat, approved: true, by: user)
+                }
                 return groupChat
             }
         case .private, .group:
@@ -192,7 +202,12 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
             
             switch details.type {
             case .badge(let badgeInfo):
-                try await NetworkService().leaveBadgeCommunity(badge: badgeInfo, by: userWallet)
+                let privateKey = try await getPGPPrivateKeyFor(user: user)
+                let signature = try Pgp.sign(message: badgeInfo.badge.code, privateKey: privateKey)
+                
+                try await NetworkService().leaveBadgeCommunity(badge: badgeInfo,
+                                                               by: userWallet,
+                                                               signature: signature)
                 let groupChat = try await getGroupChatBy(groupChatId: communityChat.displayInfo.id,
                                                          user: user,
                                                          badgeInfo: badgeInfo)

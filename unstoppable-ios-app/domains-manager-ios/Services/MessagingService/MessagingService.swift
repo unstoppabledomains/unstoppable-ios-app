@@ -211,7 +211,11 @@ extension MessagingService: MessagingServiceProtocol {
     
     func joinCommunityChat(_ communityChat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo {
         let updatedChat = try await performAsyncOperationUnder(chat: communityChat) { chat, profile, apiService in
-            try await apiService.joinCommunityChat(chat, by: profile)
+            let updatedChat = try await apiService.joinCommunityChat(chat, by: profile)
+            if chat.isDeprecatedVersion(of: updatedChat) {
+                storageService.deleteChat(chat, filesService: filesService)
+            }
+            return updatedChat
         }
         return updatedChat!.displayInfo
     }

@@ -16,11 +16,15 @@ extension NetworkService {
     private struct JoinAndLeaveCommunityRequestPayload: Codable {
         let address: String
         let badgeCode: String
+        let signature: String
     }
     
     func joinBadgeCommunity(badge: BadgeDetailedInfo,
-                            by wallet: String) async throws -> JoinBadgeCommunityResponse {
-        let payload = JoinAndLeaveCommunityRequestPayload(address: wallet, badgeCode: badge.badge.code)
+                            by wallet: String,
+                            signature: String) async throws -> JoinBadgeCommunityResponse {
+        let payload = JoinAndLeaveCommunityRequestPayload(address: wallet, 
+                                                          badgeCode: badge.badge.code,
+                                                          signature: signature)
         let body = try prepareRequestBodyFrom(entity: payload)
         let endpoint = Endpoint.joinBadgeCommunity(body: body)
        
@@ -28,8 +32,9 @@ extension NetworkService {
     }
   
     func leaveBadgeCommunity(badge: BadgeDetailedInfo,
-                            by wallet: String) async throws  {
-        let payload = JoinAndLeaveCommunityRequestPayload(address: wallet, badgeCode: badge.badge.code)
+                             by wallet: String,
+                             signature: String) async throws  {
+        let payload = JoinAndLeaveCommunityRequestPayload(address: wallet, badgeCode: badge.badge.code, signature: signature)
 
         let body = try prepareRequestBodyFrom(entity: payload)
         let endpoint = Endpoint.leaveBadgeCommunity(body: body)
