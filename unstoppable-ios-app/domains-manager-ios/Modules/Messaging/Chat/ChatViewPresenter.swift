@@ -454,13 +454,7 @@ private extension ChatViewPresenter {
         
         func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) async {
             if let domainName = userInfo.domainName {
-                let canViewProfile: Bool
-                if domainName.isUDTLD() {
-                    canViewProfile = true
-                } else {
-                    canViewProfile = (try? await NetworkService().isProfilePageExistsFor(domainName: domainName)) ?? false
-                }
-                
+                let canViewProfile: Bool = domainName.isValidDomainName()
                 if canViewProfile  {
                     actions.append(.init(type: .viewProfile, callback: { [weak self] in
                         self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
@@ -514,21 +508,17 @@ private extension ChatViewPresenter {
     
     func didPressViewDomainProfileButton(domainName: String,
                                          walletAddress: String) {
-        if domainName.isUDTLD() {
-            Task {
-                guard let view else { return }
-                let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-                let walletDomains = userDomains.filter({ $0.ownerWallet?.normalized == profile.wallet.normalized })
-                guard let viewingDomainDisplayInfo = walletDomains.first(where: { $0.isSetForRR }) ?? walletDomains.first,
-                      let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return }
-                
-                UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
-                                                             name: domainName),
-                                                   viewingDomain: viewingDomain,
-                                                   in: view)
-            }
-        } else {
-            view?.openLink(.domainProfilePage(domainName: domainName))
+        Task {
+            guard let view else { return }
+            let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+            let walletDomains = userDomains.filter({ $0.ownerWallet?.normalized == profile.wallet.normalized })
+            guard let viewingDomainDisplayInfo = walletDomains.first(where: { $0.isSetForRR }) ?? walletDomains.first,
+                  let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return }
+            
+            UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
+                                                         name: domainName),
+                                               viewingDomain: viewingDomain,
+                                               in: view)
         }
     }
     
