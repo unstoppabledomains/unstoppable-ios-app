@@ -260,14 +260,18 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getChatRequestsForUser(_ user: MessagingChatUserProfile,
                                   page: Int,
                                   limit: Int) async throws -> [MessagingChat] {
-        let pushChats = try await getPushChatsForUser(user,
-                                                      page: page,
-                                                      limit: limit,
-                                                      isRequests: true)
-        
-        return try await transformPushChatsToChats(pushChats,
-                                                   isApproved: false,
-                                                   for: user)
+        if isRegularChatsEnabled {
+            let pushChats = try await getPushChatsForUser(user,
+                                                          page: page,
+                                                          limit: limit,
+                                                          isRequests: true)
+            
+            return try await transformPushChatsToChats(pushChats,
+                                                       isApproved: false,
+                                                       for: user)
+        } else {
+            return []
+        }
     }
     
     private func transformPushChatsToChats(_ pushChats: [PushChat],
