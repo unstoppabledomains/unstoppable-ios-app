@@ -737,6 +737,7 @@ extension ChatViewController {
         case resend
         case delete
         case unencrypted
+        case viewSenderProfile(MessagingChatSender)
     }
     
     enum ChatFeedAction: Hashable {

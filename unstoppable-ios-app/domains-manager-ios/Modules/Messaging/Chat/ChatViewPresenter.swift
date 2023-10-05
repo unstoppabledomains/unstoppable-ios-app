@@ -460,7 +460,7 @@ private extension ChatViewPresenter {
         func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) async {
             if let domainName = userInfo.domainName {
                 let canViewProfile: Bool
-                if domainName.isUDTLD() {
+                if domainName.isValidDomainName() {
                     canViewProfile = true
                 } else {
                     canViewProfile = (try? await NetworkService().isProfilePageExistsFor(domainName: domainName)) ?? false
@@ -556,13 +556,10 @@ private extension ChatViewPresenter {
     
     func didPressViewDomainProfileButton(domainName: String,
                                          walletAddress: String) {
-        if domainName.isUDTLD() {
+        if domainName.isValidDomainName() {
             Task {
-                guard let view else { return }
-                let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-                let walletDomains = userDomains.filter({ $0.ownerWallet?.normalized == profile.wallet.normalized })
-                guard let viewingDomainDisplayInfo = walletDomains.first(where: { $0.isSetForRR }) ?? walletDomains.first,
-                      let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return }
+                guard let view,
+                      let viewingDomain = await DomainItem.getViewingDomainFor(messagingProfile: profile) else { return }
                 
                 UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                              name: domainName),
@@ -649,6 +646,18 @@ private extension ChatViewPresenter {
             guard let view else { return }
             
             appContext.pullUpViewService.showUnencryptedMessageInfoPullUp(in: view)
+        case .viewSenderProfile(let sender):
+            Task {
+                let wallet = sender.userDisplayInfo.wallet
+                var domainName = sender.userDisplayInfo.domainName
+                if domainName == nil {
+                    domainName = (try? await NetworkService().fetchGlobalReverseResolution(for: wallet.lowercased()))?.name
+                }
+                if let domainName {
+                    UDVibration.buttonTap.vibrate()
+                    didPressViewDomainProfileButton(domainName: domainName, walletAddress: wallet)
+                }
+            }
         }
     }
     

@@ -258,7 +258,7 @@ fileprivate extension ImageLoadingService {
             }
             return nil
         case .messagingUserPFPOrInitials(let userInfo, let size):
-            let domainName = try? await appContext.udWalletsService.reverseResolutionDomainName(for: userInfo.wallet.normalized)
+            let domainName = (try? await NetworkService().fetchGlobalReverseResolution(for: userInfo.wallet.normalized))?.name
             if let domainName,
                !domainName.isEmpty,
                let urlString = await appContext.udDomainsService.loadPFP(for: domainName)?.pfpURL,
