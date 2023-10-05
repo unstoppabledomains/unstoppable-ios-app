@@ -150,6 +150,11 @@ extension MessagingService: MessagingServiceProtocol {
         let communitiesProfile = try? await getUserCommunitiesProfile(for: messagingProfile)
         return communitiesProfile != nil
     }
+    
+    func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws {
+        guard let domain = await appContext.dataAggregatorService.getDomainsDisplayInfo().first(where: { $0.ownerWallet?.lowercased() == messagingProfile.wallet.lowercased() }) else { throw MessagingServiceError.noRRDomainForProfile }
+        _ = try await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+    }
 
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) {
         self.currentUser = userProfile
