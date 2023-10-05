@@ -10,23 +10,22 @@ import Foundation
 extension MessagingService {
     func setupSocketConnection(profile: MessagingChatUserProfile) {
         Task {
-            serviceProviders.forEach { serviceProvider in
-                let webSocketsService = serviceProvider.webSocketsService
+            let serviceProvider = try getServiceAPIProviderWith(identifier: profile.serviceIdentifier)
+            let webSocketsService = serviceProvider.webSocketsService
+            
+            do {
+                webSocketsService.disconnectAll()
+                try webSocketsService.subscribeFor(profile: profile,
+                                                   eventCallback: { [weak self] event in
+                    self?.handleWebSocketEvent(event)
+                })
                 
-                do {
-                    webSocketsService.disconnectAll()
-                    try webSocketsService.subscribeFor(profile: profile,
-                                                       eventCallback: { [weak self] event in
-                        self?.handleWebSocketEvent(event)
-                    })
-                    
-                    channelsWebSocketsService.disconnectAll()
-                    try channelsWebSocketsService.subscribeFor(profile: profile,
-                                                               eventCallback: { [weak self] event in
-                        self?.handleWebSocketEvent(event)
-                    })
-                } catch { }
-            }
+                channelsWebSocketsService.disconnectAll()
+                try channelsWebSocketsService.subscribeFor(profile: profile,
+                                                           eventCallback: { [weak self] event in
+                    self?.handleWebSocketEvent(event)
+                })
+            } catch { }
         }
     }
     
