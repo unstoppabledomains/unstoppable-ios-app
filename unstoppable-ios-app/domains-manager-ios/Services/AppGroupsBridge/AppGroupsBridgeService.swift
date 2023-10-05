@@ -146,3 +146,8 @@ struct XMTPBlockedUserDescription: Hashable, Codable {
     let userId: String
     let blockedTopic: String
 }
+
+struct XMTPApprovedUserDescription: Hashable, Codable {
+    let userId: String
+    let approvedTopic: String
+}
