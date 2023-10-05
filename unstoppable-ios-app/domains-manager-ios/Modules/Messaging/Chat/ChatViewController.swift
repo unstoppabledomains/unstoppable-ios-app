@@ -763,6 +763,7 @@ extension ChatViewController {
         
         enum ActionType {
             case viewProfile, block, viewInfo, leave, copyAddress
+            case joinCommunity, leaveCommunity
             
             var title: String {
                 switch self {
@@ -776,6 +777,10 @@ extension ChatViewController {
                     return String.Constants.leave.localized()
                 case .copyAddress:
                     return String.Constants.copyAddress.localized()
+                case .joinCommunity:
+                    return "Join community" // TODO: - Communities
+                case .leaveCommunity:
+                    return "Leave community" // TODO: - Communities
                 }
             }
             
@@ -785,18 +790,20 @@ extension ChatViewController {
                     return .arrowUpRight
                 case .block:
                     return .systemMultiplyCircle
-                case .leave:
+                case .leave, .leaveCommunity: // TODO: - Communities
                     return .systemRectangleArrowRight
                 case .copyAddress:
                     return .systemDocOnDoc
+                case .joinCommunity:
+                    return .add // TODO: - Communities
                 }
             }
             
             var isDestructive: Bool {
                 switch self {
-                case .viewProfile, .viewInfo, .copyAddress:
+                case .viewProfile, .viewInfo, .copyAddress, .joinCommunity:
                     return false
-                case .block, .leave:
+                case .block, .leave, .leaveCommunity:
                     return true
                 }
             }

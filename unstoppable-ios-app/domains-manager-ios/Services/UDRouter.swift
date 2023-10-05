@@ -1048,7 +1048,8 @@ private extension UDRouter {
         let vc = ChatViewController.nibInstance()
         let presenter = ChatViewPresenter(view: vc,
                                           profile: profile,
-                                          conversationState: conversationState)
+                                          conversationState: conversationState,
+                                          messagingService: appContext.messagingService)
         vc.presenter = presenter
         return vc
     }
