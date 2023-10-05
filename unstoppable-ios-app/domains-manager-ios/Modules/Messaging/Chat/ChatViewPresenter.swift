@@ -459,12 +459,7 @@ private extension ChatViewPresenter {
         
         func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) async {
             if let domainName = userInfo.domainName {
-                let canViewProfile: Bool
-                if domainName.isValidDomainName() {
-                    canViewProfile = true
-                } else {
-                    canViewProfile = (try? await NetworkService().isProfilePageExistsFor(domainName: domainName)) ?? false
-                }
+                let canViewProfile: Bool = domainName.isValidDomainName()
                 
                 if canViewProfile  {
                     actions.append(.init(type: .viewProfile, callback: { [weak self] in
@@ -556,18 +551,14 @@ private extension ChatViewPresenter {
     
     func didPressViewDomainProfileButton(domainName: String,
                                          walletAddress: String) {
-        if domainName.isValidDomainName() {
-            Task {
-                guard let view,
-                      let viewingDomain = await DomainItem.getViewingDomainFor(messagingProfile: profile) else { return }
-                
-                UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
-                                                             name: domainName),
-                                                   viewingDomain: viewingDomain,
-                                                   in: view)
-            }
-        } else {
-            view?.openLink(.domainProfilePage(domainName: domainName))
+        Task {
+            guard let view,
+                  let viewingDomain = await DomainItem.getViewingDomainFor(messagingProfile: profile) else { return }
+            
+            UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
+                                                         name: domainName),
+                                               viewingDomain: viewingDomain,
+                                               in: view)
         }
     }
     
@@ -653,7 +644,8 @@ private extension ChatViewPresenter {
                 if domainName == nil {
                     domainName = (try? await NetworkService().fetchGlobalReverseResolution(for: wallet.lowercased()))?.name
                 }
-                if let domainName {
+                if let domainName,
+                   domainName.isValidDomainName() {
                     UDVibration.buttonTap.vibrate()
                     didPressViewDomainProfileButton(domainName: domainName, walletAddress: wallet)
                 }
