@@ -21,6 +21,7 @@ protocol XMTPMessagingAPIServiceDataProvider {
 final class XMTPMessagingAPIService {
     
     private let blockedUsersStorage = XMTPBlockedUsersStorage.shared
+    private let approvedUsersStorage = XMTPApprovedTopicsStorage.shared
     private let cachedDataHolder = CachedDataHolder()
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
                                                     canBlockUsers: true,
@@ -71,14 +72,27 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentXMTPEnvironment()
         let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         let conversations = try await client.conversations.list()
-        let chats = conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0,
-                                                                                             userId: user.id,
-                                                                                             userWallet: user.wallet,
-                                                                                             isApproved: true) })
+        
+        if let domain = try? await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet),
+           let notificationsPreferences = try? await NetworkService().fetchUserDomainNotificationsPreferences(for: domain) {
+            approvedUsersStorage.updatedApprovedUsersListFor(userId: user.id,
+                                                             approvedTopics: notificationsPreferences.acceptedTopics)
+            blockedUsersStorage.updatedBlockedUsersListFor(userId: user.id,
+                                                           blockedTopics: notificationsPreferences.blockedTopics)
+        }
+        
+        let approvedTopicsList = Set(approvedUsersStorage.getApprovedTopicsListFor(userId: user.id).map { $0.approvedTopic })
+        let chats = conversations.compactMap({ conversation in
+            XMTPEntitiesTransformer.convertXMTPChatToChat(conversation,
+                                                          userId: user.id,
+                                                          userWallet: user.wallet,
+                                                          isApproved: approvedTopicsList.contains(conversation.topic))
+        })
+        
+        
         let blockedUsersStorage = self.blockedUsersStorage
         Task.detached {
-            let notBlockedChats = chats.filter({ !blockedUsersStorage.isOtherUserBlockedInChat($0.displayInfo) })
-            let topicsToSubscribeForPN = notBlockedChats.map { self.getXMTPConversationTopicFromChat($0) }
+            let topicsToSubscribeForPN = chats.map { self.getXMTPConversationTopicFromChat($0) }
             try? await XMTPPushNotificationsHelper.subscribeForTopics(topicsToSubscribeForPN, by: client)
         }
         
@@ -120,19 +134,16 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func setUser(in chat: MessagingChat, blocked: Bool, by user: MessagingChatUserProfile) async throws {
         switch chat.displayInfo.type {
         case .private:
-            let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
-            var notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
+            let env = getCurrentXMTPEnvironment()
+            let client = try await XMTPServiceHelper.getClientFor(user: user,
+                                                                  env: env)
             let chatTopic = chat.displayInfo.id
-            if blocked {
-                notificationsPreferences.blockedTopics.append(chatTopic)
-            } else {
-                notificationsPreferences.blockedTopics.removeAll(where: { $0 == chatTopic })
-            }
-            try await NetworkService().updateUserDomainNotificationsPreferences(notificationsPreferences, for: domain)
+            try await XMTPPushNotificationsHelper.makeChatRequestFor(topic: chatTopic,
+                                                                     blocked: blocked,
+                                                                     by: client)
+            let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
+            let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
             blockedUsersStorage.updatedBlockedUsersListFor(userId: chat.userId, blockedTopics: notificationsPreferences.blockedTopics)
-            setSubscribed(!blocked,
-                          toChat: chat,
-                          by: user)
         case .group:
             throw XMTPServiceError.unsupportedAction
         }
@@ -241,7 +252,22 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func makeChatRequest(_ chat: MessagingChat, approved: Bool, by user: MessagingChatUserProfile) async throws {
-        throw XMTPServiceError.unsupportedAction
+        switch chat.displayInfo.type {
+        case .private:
+            let env = getCurrentXMTPEnvironment()
+            let client = try await XMTPServiceHelper.getClientFor(user: user,
+                                                                  env: env)
+            let chatTopic = chat.displayInfo.id
+            try await XMTPPushNotificationsHelper.makeChatRequestFor(topic: chatTopic,
+                                                                     accepted: approved,
+                                                                     by: client)
+            let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
+            let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
+            approvedUsersStorage.updatedApprovedUsersListFor(userId: chat.userId,
+                                                             approvedTopics: notificationsPreferences.acceptedTopics)
+        case .group:
+            throw XMTPServiceError.unsupportedAction
+        }
     }
     
     func leaveGroupChat(_ chat: MessagingChat, by user: MessagingChatUserProfile) async throws {

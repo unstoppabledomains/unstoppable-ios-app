@@ -814,6 +814,7 @@
 "MESSAGING_INTRODUCTION_HINT_3_SUBTITLE" = "Enjoy the freedom of sending messages without any additional charges.";
 "MESSAGING_CHATS_LIST_EMPTY_TITLE" = "Start your first chat";
 "MESSAGING_CHATS_LIST_EMPTY_SUBTITLE" = "Get started by messaging a friend.";
+"MESSAGING_CHATS_REQUESTS_LIST_EMPTY_TITLE" = "You have no pending chat requests";
 "MESSAGING_CHANNELS_EMPTY_TITLE" = "No messages from apps yet";
 "MESSAGING_CHANNELS_EMPTY_SUBTITLE" = "Keep an eye out for upcoming messages from the apps you connect with.";
 "MESSAGING_CHAT_EMPTY_TITLE" = "No messages yet";

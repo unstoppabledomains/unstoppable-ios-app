@@ -111,7 +111,7 @@ extension EIP712TypedData {
             }
             try encoder.encode(tuple: values)
         } catch let error {
-            print(error)
+            Debugger.printFailure(error.localizedDescription)
         }
         return encoder.data
     }

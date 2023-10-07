@@ -12,7 +12,7 @@ final class XMTPMessagingWebSocketsService {
     typealias ConversationStream = AsyncThrowingStream<Conversation, Error>
     typealias MessagesStream = AsyncThrowingStream<DecodedMessage, Error>
     
-    private var listeningProfileId: String?
+    private var listeningId: UUID?
 }
 
 // MARK: - MessagingWebSocketsServiceProtocol
@@ -20,16 +20,20 @@ extension XMTPMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
     func subscribeFor(profile: MessagingChatUserProfile, eventCallback: @escaping MessagingWebSocketEventCallback) throws {
         Task {
             do {
-                listeningProfileId = profile.id
+                let listeningId = UUID()
+                self.listeningId = listeningId
                 let profileId = profile.id
                 let env = XMTPServiceHelper.getCurrentXMTPEnvironment()
                 let client = try await XMTPServiceHelper.getClientFor(user: profile, env: env)
                 
-                listenForConversations(in: client, for: profileId, eventCallback: eventCallback)
+                listenForConversations(in: client, for: profileId, listeningId: listeningId, eventCallback: eventCallback)
 
                 let conversations = try await client.conversations.list()
                 for conversation in conversations {
-                    listenForMessages(in: conversation, for: profileId, eventCallback: eventCallback)
+                    listenForMessages(in: conversation,
+                                      for: profileId,
+                                      listeningId: listeningId,
+                                      eventCallback: eventCallback)
                 }
                 
             } catch XMTPServiceHelper.XMTPHelperError.noClientKeys {
@@ -41,18 +45,22 @@ extension XMTPMessagingWebSocketsService: MessagingWebSocketsServiceProtocol {
     }
     
     func disconnectAll() {
-        listeningProfileId = nil
+        listeningId = nil
     }
 }
 
 // MARK: - Private methods
 private extension XMTPMessagingWebSocketsService {
-    func listenForConversations(in client: Client, for profileId: String, eventCallback: @escaping MessagingWebSocketEventCallback) {
-        guard profileId == listeningProfileId else { return }
+    func listenForConversations(in client: Client, 
+                                for profileId: String,
+                                listeningId: UUID,
+                                eventCallback: @escaping MessagingWebSocketEventCallback) {
+        guard listeningId == self.listeningId else { return }
+        
         Task {
             do {
                 for try await conversation in await client.conversations.stream() {
-                    guard profileId == listeningProfileId else { break } /// There's no other way to stop listening at the moment
+                    guard self.listeningId == listeningId else { break } /// There's no other way to stop listening at the moment
                     
                     Task.detached {
                         try? await XMTPPushNotificationsHelper.subscribeForTopics([conversation.topic], by: client)
@@ -63,21 +71,25 @@ private extension XMTPMessagingWebSocketsService {
                     eventCallback(.newChat(webSocketChat))
                     listenForMessages(in: conversation,
                                       for: profileId,
+                                      listeningId: listeningId,
                                       eventCallback: eventCallback)
                 }
             } catch {
                 try? await Task.sleep(seconds: 3)
-                listenForConversations(in: client, for: profileId, eventCallback: eventCallback)
+                listenForConversations(in: client, for: profileId, listeningId: listeningId, eventCallback: eventCallback)
             }
         }
     }
     
-    func listenForMessages(in conversation: Conversation, for profileId: String, eventCallback: @escaping MessagingWebSocketEventCallback) {
-        guard profileId == listeningProfileId else { return }
+    func listenForMessages(in conversation: Conversation,
+                           for profileId: String,
+                           listeningId: UUID,
+                           eventCallback: @escaping MessagingWebSocketEventCallback) {
+        guard listeningId == self.listeningId else { return }
         Task {
             do {
                 for try await message in conversation.streamMessages() {
-                    guard profileId == listeningProfileId else { break } /// There's no other way to stop listening at the moment
+                    guard self.listeningId == listeningId else { break } /// There's no other way to stop listening at the moment
 
                     let websocketMessage = XMTPEntitiesTransformer.convertXMTPMessageToWebSocketMessageEntity(message,
                                                                                                               peerAddress: conversation.peerAddress,
@@ -86,7 +98,10 @@ private extension XMTPMessagingWebSocketsService {
                 }
             } catch {
                 try? await Task.sleep(seconds: 3)
-                listenForMessages(in: conversation, for: profileId, eventCallback: eventCallback)
+                listenForMessages(in: conversation, 
+                                  for: profileId,
+                                  listeningId: listeningId,
+                                  eventCallback: eventCallback)
             }
         }
     }
