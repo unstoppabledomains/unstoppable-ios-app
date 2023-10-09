@@ -267,7 +267,7 @@ extension NetworkService {
 }
 
 extension NetworkService {
-    static let postRequestLimit = 500
+    static let postRequestLimit = 50
     
     public func fetchUnsDomains(for wallets: [UDWallet]) async throws -> [DomainItem] {
         let ownerUnsAddresses = wallets.compactMap({ $0.extractEthWallet()?.address.normalized})
