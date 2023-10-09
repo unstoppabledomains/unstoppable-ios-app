@@ -77,15 +77,10 @@ extension ChatBaseCell {
 // MARK: - Open methods
 extension ChatBaseCell: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        guard let externalLinkPressedCallback else { return true }
         UDVibration.buttonTap.vibrate()
-        switch sender {
-        case .thisUser:
-            return true
-        case .otherUser, .none:
-            guard let externalLinkPressedCallback else { return true }
-            
-            externalLinkPressedCallback(URL)
-            return false
-        }
+        
+        externalLinkPressedCallback(URL)
+        return false
     }
 }
