@@ -18,7 +18,7 @@ struct MessagingCommunitiesChatDetails: Hashable, Codable {
     var displayName: String {
         switch type {
         case .badge(let badge):
-            return (isJoined ? "✅" : "🟥") + badge.badge.name
+            return badge.badge.name
         }
     }
     

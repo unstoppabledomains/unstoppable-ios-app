@@ -858,6 +858,8 @@
 		C6B6B06A2976607D00D4E30F /* DomainsListSearchPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B6B0692976607D00D4E30F /* DomainsListSearchPresenter.swift */; };
 		C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */; };
 		C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6B91EB329BB718100389FF5 /* StripeService.swift */; };
+		C6BA74672AD3F09E00628DC6 /* CommunityListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74652AD3F09E00628DC6 /* CommunityListCell.swift */; };
+		C6BA74682AD3F09E00628DC6 /* CommunityListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6BA74662AD3F09E00628DC6 /* CommunityListCell.xib */; };
 		C6BEEF2629C30AEB000489B9 /* UDTwitterSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */; };
 		C6BEEF2B29C30BB6000489B9 /* UDGoogleSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */; };
 		C6BEEF3029C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */; };
@@ -1997,6 +1999,8 @@
 		C6B6B0692976607D00D4E30F /* DomainsListSearchPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsListSearchPresenter.swift; sourceTree = "<group>"; };
 		C6B7CF62294AF1F80005C48D /* BlockChainItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockChainItem.swift; sourceTree = "<group>"; };
 		C6B91EB329BB718100389FF5 /* StripeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeService.swift; sourceTree = "<group>"; };
+		C6BA74652AD3F09E00628DC6 /* CommunityListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListCell.swift; sourceTree = "<group>"; };
+		C6BA74662AD3F09E00628DC6 /* CommunityListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CommunityListCell.xib; sourceTree = "<group>"; };
 		C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTwitterSigner.swift; sourceTree = "<group>"; };
 		C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDGoogleSigner.swift; sourceTree = "<group>"; };
 		C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseNetworkConfig.swift; sourceTree = "<group>"; };
@@ -3808,6 +3812,7 @@
 		C65271ED2A148F92001A084C /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				C6BA74642AD3F08D00628DC6 /* CommunityListCell */,
 				C6C1EC632A3B09CB005EB37D /* ChatListEmptyCell */,
 				C68BEC232A39ABCF00A0B809 /* ChatListCreateProfileCell */,
 				C6CF33942A2F64D700851426 /* ChatListRequestsCell */,
@@ -5206,6 +5211,15 @@
 			path = RearrangeDomainCell;
 			sourceTree = "<group>";
 		};
+		C6BA74642AD3F08D00628DC6 /* CommunityListCell */ = {
+			isa = PBXGroup;
+			children = (
+				C6BA74652AD3F09E00628DC6 /* CommunityListCell.swift */,
+				C6BA74662AD3F09E00628DC6 /* CommunityListCell.xib */,
+			);
+			path = CommunityListCell;
+			sourceTree = "<group>";
+		};
 		C6BEEF2429C30AAC000489B9 /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
@@ -6178,6 +6192,7 @@
 				C6D6E58A28193ED9008C66BB /* DomainsCollectionListCell.xib in Resources */,
 				C60982202823D36100546392 /* PullUpCollectionViewCell.xib in Resources */,
 				C60DCEF3282D13F800F71C13 /* RenameWalletViewController.xib in Resources */,
+				C6BA74682AD3F09E00628DC6 /* CommunityListCell.xib in Resources */,
 				C60E9B832821193400CD7593 /* WalletsListViewController.xib in Resources */,
 				C635194C28D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.xib in Resources */,
 				C6500B532A41924700ACAA8C /* ChannelFeedCell.xib in Resources */,
@@ -6523,6 +6538,7 @@
 				C6C99582289D313D00367362 /* CNavigationBarContentView.swift in Sources */,
 				C6D5DAE928374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */,
 				C635193C28D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewController.swift in Sources */,
+				C6BA74672AD3F09E00628DC6 /* CommunityListCell.swift in Sources */,
 				C6386843285C2D4E000F98C4 /* UpgradeToPolygonTutorial.swift in Sources */,
 				C628E37227FDE1D60044E408 /* UDSubtitleLabel.swift in Sources */,
 				C671E3E42902817000A2B3A0 /* DomainProfileGeneralInfoCell.swift in Sources */,

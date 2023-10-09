@@ -34,7 +34,8 @@ final class ChatsListViewController: BaseViewController {
                                                         ChatListDataTypeSelectionCell.self,
                                                         ChatListRequestsCell.self,
                                                         ChatListCreateProfileCell.self,
-                                                        ChatListEmptyCell.self] }
+                                                        ChatListEmptyCell.self,
+                                                        CommunityListCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
     private var navView: ChatsListNavigationView!
@@ -386,6 +387,11 @@ private extension ChatsListViewController {
                 cell.setSearchStateUI()
                 
                 return cell
+            case .community(let configuration):
+                let cell = collectionView.dequeueCellOfType(CommunityListCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
+                
+                return cell
             }
         })
         
@@ -499,10 +505,15 @@ extension ChatsListViewController {
         case emptyState(configuration: EmptyStateUIConfiguration)
         case userInfo(configuration: UserInfoUIConfiguration)
         case emptySearch
+        case community(configuration: CommunityUIConfiguration)
     }
     
     struct ChatUIConfiguration: Hashable {
         let chat: MessagingChatDisplayInfo
+    }
+    
+    struct CommunityUIConfiguration: Hashable {
+        let communityDetails: MessagingCommunitiesChatDetails
     }
     
     struct DomainSelectionUIConfiguration: Hashable {

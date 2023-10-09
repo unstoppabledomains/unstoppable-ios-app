@@ -113,6 +113,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 // TODO: - Move service determinition into MessagingService
                 openChatWith(conversationState: .newChat(.init(userInfo: configuration.userInfo, messagingService: .xmtp)))
             }
+        case .community(let configuration):
+            return
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
         }
@@ -649,7 +651,15 @@ private extension ChatsListViewPresenter {
                     
                     let title: String? = withTitle ? String.Constants.messagingCommunitiesSectionTitle.localized() : nil
                     snapshot.appendSections([.listItems(title: title)])
-                    snapshot.appendItems(groupedCommunities.notJoined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+                    let communityDetails = groupedCommunities.notJoined.compactMap({ (chat)->MessagingCommunitiesChatDetails? in
+                        switch chat.type {
+                        case .community(let messagingCommunitiesChatDetails):
+                            return messagingCommunitiesChatDetails
+                        default:
+                            return nil
+                        }
+                    })
+                    snapshot.appendItems(communityDetails.map({ ChatsListViewController.Item.community(configuration: .init(communityDetails: $0)) }))
                 }
                 
                 if !requestsList.isEmpty {
