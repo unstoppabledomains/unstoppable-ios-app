@@ -304,9 +304,7 @@ extension NetworkService {
     }
     
     func fetchAllPages<T: PaginatedFetchable>(for originItems: [T.O]) async throws -> [T] {
-        let perPage = 1000
-        let result: [T] = try await fetchAllPages(for: originItems, startingWith: 1, perPage: perPage, result: [])
-        
+        let result: [T] = try await fetchAllPages(for: originItems, startingWith: 1, perPage: Self.postRequestLimit, result: [])
         return result
     }
     
