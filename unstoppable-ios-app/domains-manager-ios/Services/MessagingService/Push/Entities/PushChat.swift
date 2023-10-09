@@ -25,7 +25,7 @@ struct PushChat: Codable, Hashable {
 }
 
 extension PushChat {
-    init(pushGroup: Push.PushChat.PushGroup) {
+    init(pushGroup: Push.PushChat.PushGroup, threadHash: String?) {
         let isoFormatter = PushEntitiesTransformer.PushISODateFormatter
         self.chatId = pushGroup.chatId
         self.did = nil
@@ -34,7 +34,7 @@ extension PushChat {
         self.publicKey = nil
         self.about = nil
         self.name = nil
-        self.threadhash = nil // TODO: - Communities. Set value
+        self.threadhash = threadHash 
         self.intent = ""
         self.intentSentBy = ""
         self.intentTimestamp = ""

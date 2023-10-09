@@ -60,6 +60,10 @@ protocol MessagingAPIServiceProtocol {
                          by user: MessagingChatUserProfile) async throws
     func leaveGroupChat(_ chat: MessagingChat,
                         by user: MessagingChatUserProfile) async throws
+    func joinCommunityChat(_ communityChat: MessagingChat,
+                           by user: MessagingChatUserProfile) async throws -> MessagingChat
+    func leaveCommunityChat(_ communityChat: MessagingChat,
+                            by user: MessagingChatUserProfile) async throws -> MessagingChat
 }
 
 struct MessagingServiceCapabilities {

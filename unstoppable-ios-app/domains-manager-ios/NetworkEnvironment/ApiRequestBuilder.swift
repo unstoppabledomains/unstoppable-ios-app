@@ -796,4 +796,24 @@ extension Endpoint {
         )
     }
     
+    static func joinBadgeCommunity(body: String) -> Endpoint {
+        //https://messaging.ud-staging.com/api/push/group/join
+        return Endpoint(
+            host: NetworkConfig.baseMessagingHost,
+            path: "/api/push/group/join",
+            queryItems: [],
+            body: body
+        )
+    }
+    
+    static func leaveBadgeCommunity(body: String) -> Endpoint {
+        //https://messaging.ud-staging.com/api/push/group/leave
+        return Endpoint(
+            host: NetworkConfig.baseMessagingHost,
+            path: "/api/push/group/leave",
+            queryItems: [],
+            body: body
+        )
+    }
+    
 }

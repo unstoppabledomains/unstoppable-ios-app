@@ -701,7 +701,7 @@ extension NetworkService {
         return false
     }
     
-    private func prepareRequestBodyFrom(entity: any Encodable) throws -> String {
+    func prepareRequestBodyFrom(entity: any Encodable) throws -> String {
         let data = try JSONEncoder().encode(entity)
         guard let body = String(data: data, encoding: .utf8) else { throw NetworkLayerError.responseFailedToParse }
         return body

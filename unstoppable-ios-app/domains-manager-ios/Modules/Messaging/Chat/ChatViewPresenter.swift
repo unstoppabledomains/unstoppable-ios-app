@@ -44,6 +44,7 @@ final class ChatViewPresenter {
     
     private weak var view: (any ChatViewProtocol)?
     private let profile: MessagingChatUserProfileDisplayInfo
+    private let messagingService: MessagingServiceProtocol
     private var conversationState: MessagingChatConversationState
     private let fetchLimit: Int = 20
     private var messages: [MessagingChatMessageDisplayInfo] = []
@@ -57,17 +58,19 @@ final class ChatViewPresenter {
 
     init(view: any ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
-         conversationState: MessagingChatConversationState) {
+         conversationState: MessagingChatConversationState,
+         messagingService: MessagingServiceProtocol) {
         self.view = view
         self.profile = profile
         self.conversationState = conversationState
+        self.messagingService = messagingService
     }
 }
 
 // MARK: - ChatViewPresenterProtocol
 extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
-        appContext.messagingService.addListener(self)
+        messagingService.addListener(self)
         view?.setUIState(.loading)
         setupTitle()
         setupPlaceholder()
@@ -88,7 +91,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
     
         if !message.isRead {
             messages[messageIndex].isRead = true
-            try? appContext.messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
+            try? messagingService.markMessage(message, isRead: true, wallet: chat.thisUserDetails.wallet)
         }
         
         if messageIndex >= (messages.count - Constants.numberOfUnreadMessagesBeforePrefetch),
@@ -214,7 +217,7 @@ private extension ChatViewPresenter {
                 switch conversationState {
                 case .existingChat(let chat):
                     isLoadingMessages = true
-                    let cachedMessages = try await appContext.messagingService.getMessagesForChat(chat,
+                    let cachedMessages = try await messagingService.getMessagesForChat(chat,
                                                                                                   before: nil,
                                                                                                   cachedOnly: true,
                                                                                                   limit: fetchLimit)
@@ -222,8 +225,8 @@ private extension ChatViewPresenter {
                     showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
                     
                     updateUIForChatApprovedStateAsync()
-                    isChannelEncrypted = try await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
-                    let updateMessages = try await appContext.messagingService.getMessagesForChat(chat,
+                    isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
+                    let updateMessages = try await messagingService.getMessagesForChat(chat,
                                                                                                   before: nil,
                                                                                                   cachedOnly: false,
                                                                                                   limit: fetchLimit)
@@ -232,7 +235,7 @@ private extension ChatViewPresenter {
                     isLoadingMessages = false
                     view?.setLoading(active: false)
                 case .newChat:
-                    isChannelEncrypted = try await appContext.messagingService.isMessagesEncryptedIn(conversation: conversationState)
+                    isChannelEncrypted = try await messagingService.isMessagesEncryptedIn(conversation: conversationState)
                     await updateUIForChatApprovedState()
                     view?.setLoading(active: false)
                     showData(animated: false, isLoading: false)
@@ -252,7 +255,7 @@ private extension ChatViewPresenter {
         showData(animated: false, isLoading: true)
         Task {
             do {
-                let unreadMessages = try await appContext.messagingService.getMessagesForChat(chat,
+                let unreadMessages = try await messagingService.getMessagesForChat(chat,
                                                                                               before: message,
                                                                                               cachedOnly: false,
                                                                                               limit: fetchLimit)
@@ -287,7 +290,7 @@ private extension ChatViewPresenter {
         
         Task {
             do {
-                let updatedMessage = try await appContext.messagingService.loadRemoteContentFor(message,
+                let updatedMessage = try await messagingService.loadRemoteContentFor(message,
                                                                                                 in: chat)
                 if let i = messages.firstIndex(where: { $0.id == updatedMessage.id }) {
                     messages[i] = updatedMessage
@@ -436,7 +439,7 @@ private extension ChatViewPresenter {
     
     func setupPlaceholder() {
         Task {
-            let wallets = await appContext.messagingService.fetchWalletsAvailableForMessaging()
+            let wallets = await messagingService.fetchWalletsAvailableForMessaging()
             let userWallet = wallets.first(where: { $0.address.normalized == profile.wallet.normalized })
             let sender = userWallet?.reverseResolutionDomain?.name ?? profile.wallet.walletAddressTruncated
             let placeholder = String.Constants.chatInputPlaceholderAsDomain.localized(sender)
@@ -457,6 +460,7 @@ private extension ChatViewPresenter {
         func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) async {
             if let domainName = userInfo.domainName {
                 let canViewProfile: Bool = domainName.isValidDomainName()
+                
                 if canViewProfile  {
                     actions.append(.init(type: .viewProfile, callback: { [weak self] in
                         self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
@@ -479,7 +483,7 @@ private extension ChatViewPresenter {
             case .private(let details):
                 await addViewProfileActionIfPossibleFor(userInfo: details.otherUser)
                 
-                if appContext.messagingService.canBlockUsers(in: chat) {
+                if messagingService.canBlockUsers(in: chat) {
                     switch blockStatus {
                     case .unblocked, .currentUserIsBlocked:
                         actions.append(.init(type: .block, callback: { [weak self] in
@@ -502,23 +506,54 @@ private extension ChatViewPresenter {
                         self?.didPressLeaveButton()
                     }))
                 }
-            case .community:
-                Void() // TODO: - Communities
+            case .community(let details):
+                // TODO: - Communities
+                if details.isJoined {
+                    actions.append(.init(type: .leaveCommunity, callback: { [weak self] in
+                        self?.logButtonPressedAnalyticEvents(button: .viewGroupChatInfo)
+                        self?.didPressLeaveCommunity(chat: chat)
+                    }))
+                } else {
+                    actions.append(.init(type: .joinCommunity, callback: { [weak self] in
+                        self?.logButtonPressedAnalyticEvents(button: .viewGroupChatInfo)
+                        self?.didPressJoinCommunity(chat: chat)
+                    }))
+                }
             }
         }
         
         view?.setupRightBarButton(with: .init(actions: actions))
     }
     
+    func didPressJoinCommunity(chat: MessagingChatDisplayInfo) {
+        Task {
+            do {
+                let updatedChat = try await messagingService.joinCommunityChat(chat)
+                self.conversationState = .existingChat(updatedChat)
+                await setupBarButtons()
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+        }
+    }
+    
+    func didPressLeaveCommunity(chat: MessagingChatDisplayInfo) {
+        Task {
+            do {
+                let updatedChat = try await messagingService.leaveCommunityChat(chat)
+                self.conversationState = .existingChat(updatedChat)
+                await setupBarButtons()
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+        }
+    }
+    
     func didPressViewDomainProfileButton(domainName: String,
                                          walletAddress: String) {
         Task {
-            guard let view else { return }
-            let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-            let walletDomains = userDomains.filter({ $0.ownerWallet?.normalized == profile.wallet.normalized })
-            guard let viewingDomainDisplayInfo = walletDomains.first(where: { $0.isSetForRR }) ?? walletDomains.first,
-                  let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return }
-            
+            guard let view,
+                  let viewingDomain = await DomainItem.getViewingDomainFor(messagingProfile: profile) else { return }
             UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
                                                          name: domainName),
                                                viewingDomain: viewingDomain,
@@ -557,7 +592,7 @@ private extension ChatViewPresenter {
         Task {
             do {
                 view?.setLoading(active: true)
-                try await appContext.messagingService.leaveGroupChat(chat)
+                try await messagingService.leaveGroupChat(chat)
                 view?.cNavigationController?.popViewController(animated: true)
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -572,7 +607,7 @@ private extension ChatViewPresenter {
         Task {
             do {
                 view?.setLoading(active: true)
-                try await appContext.messagingService.setUser(in: chat, blocked: blocked)
+                try await messagingService.setUser(in: chat, blocked: blocked)
                 await updateUIForChatApprovedState()
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
@@ -589,10 +624,10 @@ private extension ChatViewPresenter {
         switch action {
         case .resend:
             logButtonPressedAnalyticEvents(button: .resendMessage)
-            Task { try? await appContext.messagingService.resendMessage(message, in: chat) }
+            Task { try? await messagingService.resendMessage(message, in: chat) }
         case .delete:
             logButtonPressedAnalyticEvents(button: .deleteMessage)
-            Task { try? await appContext.messagingService.deleteMessage(message, in: chat) }
+            Task { try? await messagingService.deleteMessage(message, in: chat) }
             if let i = messages.firstIndex(where: { $0.id == message.id }) {
                 messages.remove(at: i)
                 showData(animated: true, isLoading: isLoadingMessages)
@@ -601,6 +636,19 @@ private extension ChatViewPresenter {
             guard let view else { return }
             
             appContext.pullUpViewService.showUnencryptedMessageInfoPullUp(in: view)
+        case .viewSenderProfile(let sender):
+            Task {
+                let wallet = sender.userDisplayInfo.wallet
+                var domainName = sender.userDisplayInfo.domainName
+                if domainName == nil {
+                    domainName = (try? await NetworkService().fetchGlobalReverseResolution(for: wallet.lowercased()))?.name
+                }
+                if let domainName,
+                   domainName.isValidDomainName() {
+                    UDVibration.buttonTap.vibrate()
+                    didPressViewDomainProfileButton(domainName: domainName, walletAddress: wallet)
+                }
+            }
         }
     }
     
@@ -618,7 +666,7 @@ private extension ChatViewPresenter {
                 return
             }
             
-            if let blockStatus = try? await appContext.messagingService.getBlockingStatusForChat(chat) {
+            if let blockStatus = try? await messagingService.getBlockingStatusForChat(chat) {
                 self.blockStatus = blockStatus
                 switch blockStatus {
                 case .unblocked:
@@ -635,9 +683,9 @@ private extension ChatViewPresenter {
                 view?.startTyping()
             }
             
-            if !appContext.messagingService.canContactWithoutProfileIn(newConversation: newConversationDescription) {
+            if !messagingService.canContactWithoutProfileIn(newConversation: newConversationDescription) {
                 do {
-                    let canContact = try await appContext.messagingService.isAbleToContactUserIn(newConversation: newConversationDescription,
+                    let canContact = try await messagingService.isAbleToContactUserIn(newConversation: newConversationDescription,
                                                                                                   by: profile)
                     if canContact {
                         prepareToChat()
@@ -658,7 +706,7 @@ private extension ChatViewPresenter {
     
     func shareContentOfMessage(_ message: MessagingChatMessageDisplayInfo) {
         Task {
-            guard let contentURL = await appContext.messagingService.decryptedContentURLFor(message: message) else {
+            guard let contentURL = await messagingService.decryptedContentURLFor(message: message) else {
                 view?.showSimpleAlert(title: String.Constants.error.localized(),
                                       body: String.Constants.messagingShareDecryptionErrorMessage.localized())
                 Debugger.printFailure("Failed to decrypt message content of \(message.id) - \(message.time) in \(message.chatId)")
@@ -688,7 +736,7 @@ private extension ChatViewPresenter {
                 case .handle:
                     view.openLink(.generic(url: url.absoluteString))
                 case .block:
-                    try await appContext.messagingService.setUser(in: chat, blocked: true)
+                    try await messagingService.setUser(in: chat, blocked: true)
                     view.cNavigationController?.popViewController(animated: true)
                 }
             } catch { }
@@ -733,12 +781,12 @@ private extension ChatViewPresenter {
                     if !chat.isApproved {
                         try await approveChatRequest(chat)
                     }
-                    newMessage = try await appContext.messagingService.sendMessage(type,
+                    newMessage = try await messagingService.sendMessage(type,
                                                                                    isEncrypted: isChannelEncrypted,
                                                                                    in: chat)
                 case .newChat(let newConversationDescription):
                     view?.setLoading(active: true)
-                    let (chat, message) = try await appContext.messagingService.sendFirstMessage(type,
+                    let (chat, message) = try await messagingService.sendFirstMessage(type,
                                                                                                  to: newConversationDescription,
                                                                                                  by: profile)
                     self.conversationState = .existingChat(chat)
@@ -759,7 +807,7 @@ private extension ChatViewPresenter {
         var chat = chat
         view?.setLoading(active: true)
         do {
-            try await appContext.messagingService.makeChatRequest(chat, approved: true)
+            try await messagingService.makeChatRequest(chat, approved: true)
             chat.isApproved = true
             self.conversationState = .existingChat(chat)
             view?.setLoading(active: false)

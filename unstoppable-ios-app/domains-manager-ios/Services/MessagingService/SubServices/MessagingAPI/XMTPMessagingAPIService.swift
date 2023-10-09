@@ -287,6 +287,16 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                                                 client: client,
                                                                 filesService: filesService)
     }
+    
+    func joinCommunityChat(_ communityChat: MessagingChat,
+                           by user: MessagingChatUserProfile) async throws -> MessagingChat {
+        throw XMTPServiceError.unsupportedAction
+    }
+    
+    func leaveCommunityChat(_ communityChat: MessagingChat,
+                            by user: MessagingChatUserProfile) async throws -> MessagingChat {
+        throw XMTPServiceError.unsupportedAction
+    }
 }
 
 // MARK: - Private methods

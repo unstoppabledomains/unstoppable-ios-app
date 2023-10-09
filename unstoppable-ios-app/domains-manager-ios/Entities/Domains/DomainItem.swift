@@ -202,3 +202,14 @@ extension DomainName {
         ext.lowercased() == NamingService.ZNS.rawValue.lowercased()
     }
 }
+
+extension DomainItem {
+    static func getViewingDomainFor(messagingProfile: MessagingChatUserProfileDisplayInfo) async -> DomainItem? {
+        let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+        let walletDomains = userDomains.filter({ $0.ownerWallet?.normalized == messagingProfile.wallet.normalized })
+        guard let viewingDomainDisplayInfo = walletDomains.first(where: { $0.isSetForRR }) ?? walletDomains.first,
+              let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return nil }
+        
+        return viewingDomain
+    }
+}

@@ -150,6 +150,11 @@ extension MessagingService: MessagingServiceProtocol {
         let communitiesProfile = try? await getUserCommunitiesProfile(for: messagingProfile)
         return communitiesProfile != nil
     }
+    
+    func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws {
+        guard let domain = await appContext.dataAggregatorService.getDomainsDisplayInfo().first(where: { $0.ownerWallet?.lowercased() == messagingProfile.wallet.lowercased() }) else { throw MessagingServiceError.noRRDomainForProfile }
+        _ = try await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+    }
 
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) {
         self.currentUser = userProfile
@@ -192,28 +197,39 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws {
-        let serviceIdentifier = chat.serviceIdentifier
-        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet, serviceIdentifier: serviceIdentifier)
-        let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
-        var chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
-        try await apiService.makeChatRequest(chat, approved: approved, by: profile)
-        chat.displayInfo.isApproved = approved
-        await storageService.saveChats([chat])
-        notifyChatsChanged(wallet: profile.wallet, serviceIdentifier: serviceIdentifier)
-        refreshChatsForProfile(profile, shouldRefreshUserInfo: false)
+        try await performAsyncOperationUnder(chat: chat) { chat, profile, apiService in
+            var chat = chat
+            try await apiService.makeChatRequest(chat, approved: approved, by: profile)
+            chat.displayInfo.isApproved = approved
+            return chat
+        }
     }
-    
+  
     func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws {
         guard case .group = chat.type else { throw MessagingServiceError.attemptToLeaveNotGroupChat }
         
-        let serviceIdentifier = chat.serviceIdentifier
-        let profile = try await getUserProfileWith(wallet: chat.thisUserDetails.wallet, serviceIdentifier: serviceIdentifier)
-        let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
-
-        let apiService = try getAPIServiceWith(identifier: serviceIdentifier)
-        try await apiService.leaveGroupChat(chat, by: profile)
-        storageService.deleteChat(chat, filesService: filesService)
-        notifyChatsChanged(wallet: profile.wallet, serviceIdentifier: serviceIdentifier)
+        try await performAsyncOperationUnder(chat: chat) { chat, profile, apiService in
+            try await apiService.leaveGroupChat(chat, by: profile)
+            return nil
+        }
+    }
+    
+    func joinCommunityChat(_ communityChat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo {
+        let updatedChat = try await performAsyncOperationUnder(chat: communityChat) { chat, profile, apiService in
+            let updatedChat = try await apiService.joinCommunityChat(chat, by: profile)
+            if chat.isDeprecatedVersion(of: updatedChat) {
+                storageService.deleteChat(chat, filesService: filesService)
+            }
+            return updatedChat
+        }
+        return updatedChat!.displayInfo
+    }
+    
+    func leaveCommunityChat(_ communityChat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo {
+        let updatedChat = try await performAsyncOperationUnder(chat: communityChat) { chat, profile, apiService in
+            try await apiService.leaveCommunityChat(chat, by: profile)
+        }
+        return updatedChat!.displayInfo
     }
     
     func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus {

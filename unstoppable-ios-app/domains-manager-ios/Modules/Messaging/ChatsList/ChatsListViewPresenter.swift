@@ -40,6 +40,7 @@ final class ChatsListViewPresenter {
     
     private weak var view: ChatsListViewProtocol?
     private let fetchLimit: Int = 10
+    private let messagingService: MessagingServiceProtocol
     private var presentOptions: ChatsList.PresentOptions
 
     private var wallets: [WalletDisplayInfo] = []
@@ -57,9 +58,11 @@ final class ChatsListViewPresenter {
     var analyticsName: Analytics.ViewName { .chatsHome }
     
     init(view: ChatsListViewProtocol,
-         presentOptions: ChatsList.PresentOptions) {
+         presentOptions: ChatsList.PresentOptions,
+         messagingService: MessagingServiceProtocol) {
         self.view = view
         self.presentOptions = presentOptions
+        self.messagingService = messagingService
         appContext.udWalletsService.addListener(self)
     }
 }
@@ -67,7 +70,7 @@ final class ChatsListViewPresenter {
 // MARK: - ChatsListViewPresenterProtocol
 extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     func viewDidLoad() {
-        appContext.messagingService.addListener(self)
+        messagingService.addListener(self)
         loadAndShowData()
     }
     
@@ -126,7 +129,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             } else {
                 var profile: MessagingChatUserProfileDisplayInfo?
                 if let rrDomain = wallet.reverseResolutionDomain {
-                    profile = try? await appContext.messagingService.getUserMessagingProfile(for: rrDomain)
+                    profile = try? await messagingService.getUserMessagingProfile(for: rrDomain)
                 }
                 let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
                 
@@ -159,15 +162,16 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
     func createCommunitiesProfileButtonPressed() {
         Task {
             guard let selectedProfileWalletPair,
+                  let profile = selectedProfileWalletPair.profile,
                   let view else { return }
             
             do {
                 try await appContext.authentificationService.verifyWith(uiHandler: view,
                                                                         purpose: .confirm)
-                let isCommunitiesEnabled = await isCommunitiesEnabled(for: selectedProfileWalletPair.profile)
+                try await messagingService.createCommunityProfile(for: profile)
                 try await selectProfileWalletPair(.init(wallet: selectedProfileWalletPair.wallet,
-                                                        profile: selectedProfileWalletPair.profile,
-                                                        isCommunitiesEnabled: isCommunitiesEnabled))
+                                                        profile: profile,
+                                                        isCommunitiesEnabled: true))
             } catch {
                 view.showAlertWith(error: error, handler: nil)
             }
@@ -388,7 +392,7 @@ private extension ChatsListViewPresenter {
     }
     
     func loadReadyForChattingWalletsOrClose() async throws -> [WalletDisplayInfo] {
-        let wallets = await appContext.messagingService.fetchWalletsAvailableForMessaging()
+        let wallets = await messagingService.fetchWalletsAvailableForMessaging()
         guard !wallets.isEmpty else {
             Debugger.printWarning("User got to chats screen without wallets with domains")
             await awaitForUIReady()
@@ -401,13 +405,13 @@ private extension ChatsListViewPresenter {
     
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo?) async -> Bool {
         if let messagingProfile {
-            return await appContext.messagingService.isCommunitiesEnabled(for: messagingProfile)
+            return await messagingService.isCommunitiesEnabled(for: messagingProfile)
         }
         return false
     }
     
     func resolveInitialProfileWith(wallets: [WalletDisplayInfo]) async throws {
-        if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: wallets),
+        if let profile = await messagingService.getLastUsedMessagingProfile(among: wallets),
            let wallet = wallets.first(where: { $0.address == profile.wallet.normalized }) {
             /// User already used chat with some profile, select last used.
             let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
@@ -419,7 +423,7 @@ private extension ChatsListViewPresenter {
             for wallet in wallets {
                 guard let rrDomain = wallet.reverseResolutionDomain else { continue }
                 
-                if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: rrDomain) {
+                if let profile = try? await messagingService.getUserMessagingProfile(for: rrDomain) {
                     /// User open chats for the first time but there's existing profile, use it as default
                     let isCommunitiesEnabled = await isCommunitiesEnabled(for: profile)
                     try await selectProfileWalletPair(.init(wallet: wallet,
@@ -507,8 +511,8 @@ private extension ChatsListViewPresenter {
                                                                    .wallet: profile.wallet])
         UserDefaults.currentMessagingOwnerWallet = profile.wallet.normalized
         
-        async let chatsListTask = appContext.messagingService.getChatsListForProfile(profile)
-        async let channelsTask = appContext.messagingService.getChannelsForProfile(profile)
+        async let chatsListTask = messagingService.getChatsListForProfile(profile)
+        async let channelsTask = messagingService.getChannelsForProfile(profile)
         
         let (chats, channels) = try await (chatsListTask, channelsTask)
         
@@ -519,7 +523,7 @@ private extension ChatsListViewPresenter {
         updateNavigationUI()
         view?.setState(.chatsList)
         showData()
-        appContext.messagingService.setCurrentUser(profile)
+        messagingService.setCurrentUser(profile)
     }
     
     func updateNavigationUI() {
@@ -527,7 +531,7 @@ private extension ChatsListViewPresenter {
         
         var isLoading = false
         if let profile = chatProfile.profile {
-            isLoading = appContext.messagingService.isUpdatingUserData(profile)
+            isLoading = messagingService.isUpdatingUserData(profile)
         }
         view?.setNavigationWith(selectedWallet: chatProfile.wallet,
                                 wallets: wallets.map({ .init(wallet: $0, numberOfUnreadMessages: unreadMessagesCountFor(wallet: $0)) }),
@@ -817,8 +821,8 @@ private extension ChatsListViewPresenter {
                           in wallet: WalletDisplayInfo) {
         Task {
             do {
-                let profile = try await appContext.messagingService.createUserMessagingProfile(for: domain)
-                let isCommunitiesEnabled = await appContext.messagingService.isCommunitiesEnabled(for: profile)
+                let profile = try await messagingService.createUserMessagingProfile(for: domain)
+                let isCommunitiesEnabled = await messagingService.isCommunitiesEnabled(for: profile)
                 try await selectProfileWalletPair(.init(wallet: wallet,
                                                         profile: profile,
                                                         isCommunitiesEnabled: isCommunitiesEnabled))

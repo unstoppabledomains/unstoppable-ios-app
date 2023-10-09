@@ -21,7 +21,8 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     }
     
     @StateObject private var viewModel: PublicProfileViewModel
- 
+    @Environment(\.presentationMode) private var presentationMode
+
     private weak var delegate: PublicProfileViewDelegate?
     private let avatarSize: CGFloat = 80
     private let sidePadding: CGFloat = 16
@@ -131,6 +132,7 @@ private extension PublicProfileView {
                                          size: .medium,
                                          callback: {
                             logButtonPressedAnalyticEvents(button: .messaging)
+                            presentationMode.wrappedValue.dismiss()
                             delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.viewingDomain)
                         })
                         if let isFollowing = viewModel.isFollowing,
