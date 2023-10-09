@@ -84,7 +84,6 @@ private extension LocalNotificationsService {
     
     func removeAllLocalNotifications() {
         notificationCenter.removeAllPendingNotificationRequests()
-        notificationCenter.removeAllDeliveredNotifications()
     }
     
     func createNotificationFor(expiredDomains: [DomainDisplayInfo]) {

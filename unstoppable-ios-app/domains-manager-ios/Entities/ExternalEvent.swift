@@ -137,6 +137,15 @@ enum ExternalEvent: Codable, Hashable {
         }
     }
     
+    var isRemote: Bool {
+        switch self {
+        case .recordsUpdated, .mintingFinished, .domainTransferred, .reverseResolutionSet, .reverseResolutionRemoved, .walletConnectRequest, .domainProfileUpdated, .badgeAdded, .chatMessage, .chatChannelMessage, .chatXMTPMessage, .chatXMTPInvite, .domainFollowerAdded, .wcDeepLink:
+            return true
+        case .parkingStatusLocal:
+            return false
+        }
+    }
+    
     var analyticsParameters: Analytics.EventParameters {
         switch self {
         case .recordsUpdated(let domainName):
@@ -260,6 +269,7 @@ extension ExternalEvent {
         case walletConnectRequest = "WalletConnectNotification"
         case domainProfileUpdated = "DomainProfileUpdated"
         case domainFollowerAdded = "DomainFollowerAdded"
+        case badgeAdded = "DomainBadgesAddedMessage"
         // Messaging
         case chatMessage = "DomainPushProtocolChat"
         case chatChannelMessage = "DomainPushProtocolNotification"
@@ -269,7 +279,6 @@ extension ExternalEvent {
         
         /// Local
         case parkingStatusLocal = "ParkingStatusLocal"
-        case badgeAdded = "DomainBadgesAddedMessage"
         
     }
 }

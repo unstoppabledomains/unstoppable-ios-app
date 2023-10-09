@@ -165,25 +165,7 @@ extension MessagingService: MessagingServiceProtocol {
     
     func isNewMessagesAvailable() async throws -> Bool {
         let totalNumberOfUnreadMessages = unreadCountingService.getTotalNumberOfUnreadMessages()
-        if totalNumberOfUnreadMessages > 0 {
-            return true
-        }
-        
-        let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-        
-        for wallet in wallets {
-            guard let rrDomain = wallet.displayInfo?.reverseResolutionDomain,
-                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomain.name),
-                  let cachedProfile = try? storageService.getUserProfileFor(domain: domain,
-                                                                            serviceIdentifier: apiService.serviceIdentifier) else { continue }
-            
-            let isNewMessagesForProfileAvailable = try? await isNewMessagesAvailable(for: cachedProfile)
-            if isNewMessagesForProfileAvailable == true {
-                return true
-            }
-        }
-        
-        return false
+        return totalNumberOfUnreadMessages > 0 
     }
     
     // Chats list
