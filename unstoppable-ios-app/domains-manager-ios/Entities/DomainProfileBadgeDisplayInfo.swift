@@ -10,7 +10,7 @@ import UIKit
 struct DomainProfileBadgeDisplayInfo: Hashable {
     
     let badge: BadgesInfo.BadgeInfo
-    let isExploreWeb3Badge: Bool
+    var isExploreWeb3Badge: Bool = false
     var icon: UIImage? = nil
 
     var defaultIcon: UIImage {

@@ -115,11 +115,12 @@ private extension ChatTitleView {
     
     func setWithCommunityDetails(_ communityDetails: MessagingCommunitiesChatDetails) {
         setTitle(communityDetails.displayName)
-        iconImageView.layer.borderWidth = 0
-        iconImageView.clipsToBounds = false
         Task {
-            iconImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(communityDetails.members,
-                                                                                           iconSize: iconSize)
+            switch communityDetails.type {
+            case .badge(let badgeInfo):
+                let displayInfo = DomainProfileBadgeDisplayInfo(badge: badgeInfo.badge)
+                iconImageView.image = await displayInfo.loadBadgeIcon()
+            }
         }
     }
     

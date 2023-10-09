@@ -821,6 +821,7 @@
 "MESSAGING_CHAT_EMPTY_ENCRYPTED_MESSAGE" = "Send a message to request to join the chat.\nChat is encrypted.";
 "MESSAGING_CHAT_EMPTY_UNENCRYPTED_MESSAGE" = "Send a message to request to join the chat.\nUntil the recipient joins the chat, your messages will be unencrypted";
 "MESSAGING_CHANNEL_EMPTY_MESSAGE" = "You haven't received any messages from this channel yet. Join to start receiving new messages.";
+"MESSAGING_COMMUNITY_EMPTY_MESSAGE" = "Kick off the conversation with like-minded people in the community";
 "MESSAGING_N_FOLLOWERS" = "%i Followers";
 "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE" = "Are you sure you want to block %@?";
 "MESSAGING_YOU_ARE_BLOCKED" = "You are blocked";

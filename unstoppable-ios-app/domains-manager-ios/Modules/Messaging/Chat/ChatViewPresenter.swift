@@ -324,7 +324,10 @@ private extension ChatViewPresenter {
         var snapshot = ChatSnapshot()
         
         if messages.isEmpty {
-            if isLoading {
+            if case .existingChat(let chat) = conversationState,
+               case .community = chat.type {
+                view?.setEmptyState(.community)                
+            } else if isLoading {
                 view?.setEmptyState(nil)
             } else {
                 if isAbleToContactUser {

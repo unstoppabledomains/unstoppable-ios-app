@@ -779,7 +779,7 @@ extension ChatViewController {
                 case .copyAddress:
                     return String.Constants.copyAddress.localized()
                 case .joinCommunity:
-                    return "Join community" // TODO: - Communities
+                    return String.Constants.join.localized()
                 case .leaveCommunity:
                     return String.Constants.leave.localized()
                 }
@@ -796,7 +796,7 @@ extension ChatViewController {
                 case .copyAddress:
                     return .systemDocOnDoc
                 case .joinCommunity:
-                    return .add // TODO: - Communities
+                    return .add
                 }
             }
             
