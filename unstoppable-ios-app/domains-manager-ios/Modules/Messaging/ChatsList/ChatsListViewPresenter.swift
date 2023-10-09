@@ -113,7 +113,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 // TODO: - Move service determinition into MessagingService
                 openChatWith(conversationState: .newChat(.init(userInfo: configuration.userInfo, messagingService: .xmtp)))
             }
-        case .community(let configuration):
+        case .community:
             return
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
@@ -651,15 +651,16 @@ private extension ChatsListViewPresenter {
                     
                     let title: String? = withTitle ? String.Constants.messagingCommunitiesSectionTitle.localized() : nil
                     snapshot.appendSections([.listItems(title: title)])
-                    let communityDetails = groupedCommunities.notJoined.compactMap({ (chat)->MessagingCommunitiesChatDetails? in
-                        switch chat.type {
+                    snapshot.appendItems(groupedCommunities.notJoined.compactMap({ community -> ChatsListViewController.Item? in
+                        switch community.type {
                         case .community(let messagingCommunitiesChatDetails):
-                            return messagingCommunitiesChatDetails
+                            return .community(configuration: .init(communityDetails: messagingCommunitiesChatDetails, joinButtonPressedCallback: { [weak self] in
+                                self?.joinCommunity(community)
+                            }))
                         default:
                             return nil
                         }
-                    })
-                    snapshot.appendItems(communityDetails.map({ ChatsListViewController.Item.community(configuration: .init(communityDetails: $0)) }))
+                    }))
                 }
                 
                 if !requestsList.isEmpty {
@@ -679,6 +680,19 @@ private extension ChatsListViewPresenter {
                     addNotJoinedCommunitiesIfPossible(withTitle: false)
                 }
             }
+        }
+    }
+    
+    func joinCommunity(_ community: MessagingChatDisplayInfo) {
+        Task {
+            view?.setActivityIndicator(active: true)
+            do {
+                let chat = try await messagingService.joinCommunityChat(community)
+                openChatWith(conversationState: .existingChat(chat))
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+            view?.setActivityIndicator(active: false)
         }
     }
     

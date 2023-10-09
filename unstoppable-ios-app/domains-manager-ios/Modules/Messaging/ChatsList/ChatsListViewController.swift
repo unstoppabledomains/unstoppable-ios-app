@@ -13,6 +13,7 @@ protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func setState(_ state: ChatsListViewController.State)
     func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
     func stopSearching()
+    func setActivityIndicator(active: Bool)
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -140,6 +141,15 @@ extension ChatsListViewController: ChatsListViewProtocol {
             searchBar.text = ""
             searchBar.forceLayout()
             udSearchBarTextDidEndEditing(searchBar)
+        }
+    }
+    
+    func setActivityIndicator(active: Bool) {
+        view.isUserInteractionEnabled = !active
+        if active {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
         }
     }
 }
@@ -514,6 +524,15 @@ extension ChatsListViewController {
     
     struct CommunityUIConfiguration: Hashable {
         let communityDetails: MessagingCommunitiesChatDetails
+        let joinButtonPressedCallback: EmptyCallback
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.communityDetails == rhs.communityDetails
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(communityDetails)
+        }
     }
     
     struct DomainSelectionUIConfiguration: Hashable {

@@ -14,6 +14,8 @@ final class CommunityListCell: UICollectionViewCell {
     @IBOutlet private weak var communityInfoLabel: UILabel!
     @IBOutlet private weak var joinButton: UIButton!
     
+    private var joinButtonPressedCallback: EmptyCallback?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -25,6 +27,8 @@ final class CommunityListCell: UICollectionViewCell {
 // MARK: - Open methods
 extension CommunityListCell {
     func setWith(configuration: ChatsListViewController.CommunityUIConfiguration) {
+        self.joinButtonPressedCallback = configuration.joinButtonPressedCallback
+        
         let details = configuration.communityDetails
         let communityName = details.displayName
         
@@ -63,7 +67,8 @@ private extension CommunityListCell {
     }
     
     @IBAction func joinButtonPressed(_ sender: Any) {
-        
+        UDVibration.buttonTap.vibrate()
+        joinButtonPressedCallback?()
     }
     
     func setAvatarFrom(url: URL?, name: String) {
