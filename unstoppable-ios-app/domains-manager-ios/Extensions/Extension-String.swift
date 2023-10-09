@@ -925,6 +925,10 @@ extension String {
         static let messagingOpenLinkActionTitle = "MESSAGING_OPEN_LINK_ACTION_TITLE"
         static let messagingCancelAndBlockActionTitle = "MESSAGING_CANCEL_AND_BLOCK_ACTION_TITLE"
         static let messagingOpenLinkWarningMessage = "MESSAGING_OPEN_LINK_WARNING_MESSAGE"
+        static let communities = "COMMUNITIES"
+        static let messagingCommunitiesSectionTitle = "MESSAGING_COMMUNITIES_SECTION_TITLE"
+        static let messagingCommunitiesListEnableTitle = "MESSAGING_COMMUNITIES_LIST_ENABLE_TITLE"
+        static let messagingCommunitiesListEnableSubtitle = "MESSAGING_COMMUNITIES_LIST_ENABLE_SUBTITLE"
         
         // Public profile
         static let followers = "FOLLOWERS"

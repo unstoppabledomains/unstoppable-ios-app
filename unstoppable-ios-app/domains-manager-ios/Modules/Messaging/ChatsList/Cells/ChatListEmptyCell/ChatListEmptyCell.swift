@@ -42,14 +42,13 @@ extension ChatListEmptyCell {
             setActionButtonWith(dataType: dataType)
             actionButton.isHidden = isRequestsList
         case .noCommunitiesProfile:
-            // TODO: - Communities
-            setTitle("Let's explore communities")
-            setSubtitle("Create profile to join and interact with communities")
+            setTitle(String.Constants.messagingCommunitiesListEnableTitle.localized())
+            setSubtitle(String.Constants.messagingCommunitiesListEnableSubtitle.localized())
             
             iconImageView.image = .messageCircleIcon24
             
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
-            actionButton.setTitle("Create profile", image: .newMessageIcon)
+            actionButton.setTitle(String.Constants.enable.localized(), image: .newMessageIcon)
             actionButton.isHidden = false
         }
     }

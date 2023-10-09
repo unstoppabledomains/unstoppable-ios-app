@@ -781,7 +781,7 @@ extension ChatViewController {
                 case .joinCommunity:
                     return "Join community" // TODO: - Communities
                 case .leaveCommunity:
-                    return "Leave community" // TODO: - Communities
+                    return String.Constants.leave.localized()
                 }
             }
             
@@ -791,7 +791,7 @@ extension ChatViewController {
                     return .arrowUpRight
                 case .block:
                     return .systemMultiplyCircle
-                case .leave, .leaveCommunity: // TODO: - Communities
+                case .leave, .leaveCommunity:
                     return .systemRectangleArrowRight
                 case .copyAddress:
                     return .systemDocOnDoc

@@ -626,14 +626,48 @@ private extension ChatsListViewPresenter {
                 snapshot.appendSections([.emptyState])
                 snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
             } else {
-                snapshot.appendSections([.listItems(title: nil)])
+                typealias GroupedCommunities = (joined: [MessagingChatDisplayInfo], notJoined: [MessagingChatDisplayInfo])
+                
                 let requestsList = communitiesList.requestsOnly()
                 let approvedList = communitiesList.confirmedOnly()
+                
+                let groupedCommunities = approvedList.reduce(into: GroupedCommunities([], [])) { result, element in
+                    switch element.type {
+                    case .community(let details):
+                        if details.isJoined {
+                            result.joined.append(element)
+                        } else {
+                            result.notJoined.append(element)
+                        }
+                    default:
+                        Void()
+                    }
+                }
+                
+                func addNotJoinedCommunitiesIfPossible(withTitle: Bool) {
+                    guard !groupedCommunities.notJoined.isEmpty else { return }
+                    
+                    let title: String? = withTitle ? String.Constants.messagingCommunitiesSectionTitle.localized() : nil
+                    snapshot.appendSections([.listItems(title: title)])
+                    snapshot.appendItems(groupedCommunities.notJoined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+                }
+                
                 if !requestsList.isEmpty {
+                    snapshot.appendSections([.listItems(title: nil)])
                     snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
                                                                              numberOfRequests: requestsList.count))])
+                    
+                    snapshot.appendItems(groupedCommunities.joined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+
+                    addNotJoinedCommunitiesIfPossible(withTitle: true)
+                } else if !groupedCommunities.joined.isEmpty {
+                    snapshot.appendSections([.listItems(title: nil)])
+                    snapshot.appendItems(groupedCommunities.joined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+                    
+                    addNotJoinedCommunitiesIfPossible(withTitle: true)
+                } else {
+                    addNotJoinedCommunitiesIfPossible(withTitle: false)
                 }
-                snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
             }
         }
     }

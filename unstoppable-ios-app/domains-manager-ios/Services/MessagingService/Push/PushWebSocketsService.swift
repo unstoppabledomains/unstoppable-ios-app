@@ -193,7 +193,6 @@ private extension PushWebSocketsService {
                     }
                 }
             case .chatGroups:
-                // TODO: - Communities
                 return nil
             }
             return nil
