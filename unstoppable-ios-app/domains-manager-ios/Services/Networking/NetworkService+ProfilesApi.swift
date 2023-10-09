@@ -93,6 +93,7 @@ struct PublicDomainProfileAttributes: Decodable {
     let coverPath: String?
     let phoneNumber: String?
     let domainPurchased: Bool?
+    let udBlue: Bool?
     
     enum CodingKeys: CodingKey {
         case displayName
@@ -104,6 +105,7 @@ struct PublicDomainProfileAttributes: Decodable {
         case coverPath
         case phoneNumber
         case domainPurchased
+        case udBlue
     }
 }
 
@@ -124,7 +126,8 @@ extension PublicDomainProfileAttributes {
         } else {
             self.imageType = nil
         }
-        self.domainPurchased = try container.decode(Bool.self, forKey: .domainPurchased)
+        self.domainPurchased = try? container.decode(Bool.self, forKey: .domainPurchased)
+        self.udBlue = try? container.decode(Bool.self, forKey: .udBlue)
     }
 }
 

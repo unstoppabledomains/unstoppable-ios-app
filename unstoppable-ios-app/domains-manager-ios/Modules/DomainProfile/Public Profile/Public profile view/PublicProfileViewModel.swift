@@ -267,17 +267,19 @@ extension PublicDomainProfileAttributes {
                                                      imageType: nil,
                                                      coverPath: nil,
                                                      phoneNumber: nil,
-                                                     domainPurchased: nil)
+                                                     domainPurchased: nil,
+                                                     udBlue: false)
     
     static let filled = PublicDomainProfileAttributes(displayName: "Oleg Kuplin",
-                              description: "Unstoppable iOS developer",
-                              location: "Danang",
-                              web2Url: "ud.me/oleg.x",
-                              imagePath: "nil",
-                              imageType: .onChain,
-                              coverPath: "nil",
-                              phoneNumber: nil,
-                              domainPurchased: nil)
+                                                      description: "Unstoppable iOS developer",
+                                                      location: "Danang",
+                                                      web2Url: "ud.me/oleg.x",
+                                                      imagePath: "nil",
+                                                      imageType: .onChain,
+                                                      coverPath: "nil",
+                                                      phoneNumber: nil,
+                                                      domainPurchased: nil,
+                                                      udBlue: false)
 }
 
 func loadImageFrom(url: URL) async -> UIImage? {
