@@ -343,6 +343,7 @@ extension String {
         static let pluralNFollowers = "SDICT:N_FOLLOWERS"
         static let pluralNFollowing = "SDICT:N_FOLLOWING"
         static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
+        static let pluralNHolders = "SDICT:N_HOLDERS"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"

@@ -32,7 +32,10 @@ extension CommunityListCell {
         
         switch details.type {
         case .badge(let badgeDetailedInfo):
-            setInfoText(String(badgeDetailedInfo.usage.holders))
+            let holders = badgeDetailedInfo.usage.holders
+            let holdersKsString = holders.asFormattedKsString
+            let info = String.Constants.pluralNHolders.localized(holdersKsString, holders)
+            setInfoText(info)
         }
         
         avatarImageView.clipsToBounds = true
