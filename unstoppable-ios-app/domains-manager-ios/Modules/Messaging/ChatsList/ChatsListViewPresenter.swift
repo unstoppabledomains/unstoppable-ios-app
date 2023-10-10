@@ -233,7 +233,7 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
             }
             try await preselectProfile(profile, usingWallets: wallets)
         }
-        
+        view?.presentedViewController?.dismiss(animated: true)
         Task {
             do {
                 let appCoordinator = appContext.coreAppCoordinator

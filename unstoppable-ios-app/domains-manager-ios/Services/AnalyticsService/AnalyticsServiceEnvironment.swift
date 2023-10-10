@@ -345,7 +345,7 @@ extension Analytics {
         case logOutConfirmation, loggedInUserProfile
         case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
         case applePayRequired
-        case messagingChannelInfo
+        case messagingChannelInfo, messagingBlockConfirmation, messagingOpenExternalLink, messagingGroupChatInfo, messagingCommunityChatInfo
         case unencryptedMessageInfo
         
         // Disabled

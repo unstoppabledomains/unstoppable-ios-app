@@ -117,8 +117,10 @@ protocol PullUpViewServiceProtocol {
     func showUnencryptedMessageInfoPullUp(in viewController: UIViewController)
     func showHandleChatLinkSelectionPullUp(in viewController: UIViewController) async throws -> Chat.ChatLinkHandleAction
     func showGroupChatInfoPullUp(groupChatDetails: MessagingGroupChatDetails,
+                                 by messagingProfile: MessagingChatUserProfileDisplayInfo,
                                  in viewController: UIViewController) async
     func showCommunityChatInfoPullUp(communityDetails: MessagingCommunitiesChatDetails,
+                                     by messagingProfile: MessagingChatUserProfileDisplayInfo,
                                      in viewController: UIViewController) async
 }
 

@@ -575,7 +575,9 @@ private extension ChatViewPresenter {
         Task {
             guard let view else { return }
             
-            await appContext.pullUpViewService.showGroupChatInfoPullUp(groupChatDetails: groupDetails, in: view)
+            await appContext.pullUpViewService.showGroupChatInfoPullUp(groupChatDetails: groupDetails,
+                                                                       by: profile,
+                                                                       in: view)
         }
     }
     
@@ -583,7 +585,9 @@ private extension ChatViewPresenter {
         Task {
             guard let view else { return }
             
-            await appContext.pullUpViewService.showCommunityChatInfoPullUp(communityDetails: communityDetails, in: view)
+            await appContext.pullUpViewService.showCommunityChatInfoPullUp(communityDetails: communityDetails,
+                                                                           by: profile,
+                                                                           in: view)
         }
     }
     

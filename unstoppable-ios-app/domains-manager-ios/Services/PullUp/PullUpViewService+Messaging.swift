@@ -106,7 +106,7 @@ extension PullUpViewService {
                                                                          cancelButton: .cancelButton),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
-            showOrUpdate(in: viewController, pullUp: .logOutConfirmation, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
+            showOrUpdate(in: viewController, pullUp: .messagingBlockConfirmation, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
     
@@ -136,54 +136,63 @@ extension PullUpViewService {
                                                                          cancelButton: .cancelButton),
                                                     items: PullUpSelectionViewEmptyItem.allCases)
             
-            showOrUpdate(in: viewController, pullUp: .settingsLegalSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
+            showOrUpdate(in: viewController, pullUp: .messagingOpenExternalLink, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
         }
     }
 
     func showGroupChatInfoPullUp(groupChatDetails: MessagingGroupChatDetails,
+                                 by messagingProfile: MessagingChatUserProfileDisplayInfo,
                                  in viewController: UIViewController) async {
         let groupMembers = groupChatDetails.allMembers
         let title = String.Constants.pluralNMembers.localized(groupMembers.count, groupMembers.count)
         let avatarImage = await MessagingImageLoader.buildImageForGroupChatMembers(groupMembers,
-                                                                                   iconSize: 56) ?? .domainSharePlaceholder
-        let admins = Set(groupChatDetails.adminWallets)
-        let memberItems = groupChatDetails.members.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: false) })
-        let pendingMemberItems = groupChatDetails.pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: true) })
-        let items = memberItems + pendingMemberItems
-        
-        let baseContentHeight: CGFloat = 216
-        let requiredSelectionViewHeight = baseContentHeight + items.reduce(0.0, { $0 + $1.height })
-        let topScreenOffset: CGFloat = 40
-        let maxHeight = UIScreen.main.bounds.height - topScreenOffset
-        let shouldScroll = requiredSelectionViewHeight > maxHeight
-        let selectionViewHeight = min(requiredSelectionViewHeight, maxHeight)
-        
-        let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
-                                                                     contentAlignment: .center,
-                                                                     icon: .init(icon: avatarImage,
-                                                                                 size: .large),
-                                                                     isScrollingEnabled: shouldScroll),
-                                                items: items)
-        
-        let pullUpVC = presentPullUpView(in: viewController, pullUp: .messagingChannelInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
-        
-        selectionView.itemSelectedCallback = { [weak pullUpVC] item in
-            guard let domainName = item.userInfo.domainName else { return }
-            
-            pullUpVC?.openLink(.domainProfilePage(domainName: domainName))
-        }
+                                                                                   iconSize: 56)
+        buildAndShowGroupMembersChatInfo(with: title,
+                                         avatarImage: avatarImage,
+                                         members: groupChatDetails.members,
+                                         pendingMembers: groupChatDetails.pendingMembers,
+                                         adminWallets: groupChatDetails.adminWallets,
+                                         by: messagingProfile,
+                                         in: viewController)
     }
     
     
     func showCommunityChatInfoPullUp(communityDetails: MessagingCommunitiesChatDetails,
+                                     by messagingProfile: MessagingChatUserProfileDisplayInfo,
                                      in viewController: UIViewController) async {
-        let groupMembers = communityDetails.allMembers
-        let title = String.Constants.pluralNMembers.localized(groupMembers.count, groupMembers.count)
-        let avatarImage = await MessagingImageLoader.buildImageForGroupChatMembers(groupMembers,
-                                                                                   iconSize: 56) ?? .domainSharePlaceholder
-        let admins = Set(communityDetails.adminWallets)
-        let memberItems = communityDetails.members.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: false) })
-        let pendingMemberItems = communityDetails.pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: true) })
+        let title = communityDetails.displayName
+        var avatarImage: UIImage?
+        
+        if let url = URL(string: communityDetails.displayIconUrl) {
+            avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: nil), downsampleDescription: nil)
+        } else {
+            avatarImage = await MessagingImageLoader.buildImageForGroupChatMembers(communityDetails.allMembers,
+                                                                       iconSize: 56)
+        }
+        
+        buildAndShowGroupMembersChatInfo(with: title,
+                                         avatarImage: avatarImage,
+                                         members: communityDetails.members,
+                                         pendingMembers: communityDetails.pendingMembers,
+                                         adminWallets: communityDetails.adminWallets,
+                                         by: messagingProfile,
+                                         in: viewController)
+    }
+    
+}
+
+// MARK: - Private methods
+private extension PullUpViewService {
+    func buildAndShowGroupMembersChatInfo(with title: String,
+                                          avatarImage: UIImage?,
+                                          members: [MessagingChatUserDisplayInfo],
+                                          pendingMembers: [MessagingChatUserDisplayInfo],
+                                          adminWallets: [String],
+                                          by messagingProfile: MessagingChatUserProfileDisplayInfo,
+                                          in viewController: UIViewController) {
+        let admins = Set(adminWallets)
+        let memberItems = members.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: false) })
+        let pendingMemberItems = pendingMembers.map({ MessagingChatUserPullUpSelectionItem(userInfo: $0, isAdmin: admins.contains($0.wallet), isPending: true) })
         let items = memberItems + pendingMemberItems
         
         let baseContentHeight: CGFloat = 216
@@ -195,18 +204,30 @@ extension PullUpViewService {
         
         let selectionView = PullUpSelectionView(configuration: .init(title: .text(title),
                                                                      contentAlignment: .center,
-                                                                     icon: .init(icon: avatarImage,
+                                                                     icon: .init(icon: avatarImage ?? .domainSharePlaceholder,
                                                                                  size: .large),
                                                                      isScrollingEnabled: shouldScroll),
                                                 items: items)
         
-        let pullUpVC = presentPullUpView(in: viewController, pullUp: .messagingChannelInfo, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+        let pullUpVC = presentPullUpView(in: viewController,
+                                         pullUp: .messagingCommunityChatInfo,
+                                         contentView: selectionView,
+                                         isDismissAble: true,
+                                         height: selectionViewHeight)
         
         selectionView.itemSelectedCallback = { [weak pullUpVC] item in
-            guard let domainName = item.userInfo.domainName else { return }
-            
-            pullUpVC?.openLink(.domainProfilePage(domainName: domainName))
+            Task {
+                guard let pullUpVC,
+                      let domainName = item.userInfo.domainName,
+                    let viewingDomain = await DomainItem.getViewingDomainFor(messagingProfile: messagingProfile) else { return }
+                
+                let walletAddress = item.userInfo.wallet
+                UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
+                                                             name: domainName),
+                                                   viewingDomain: viewingDomain,
+                                                   in: pullUpVC)
+            }
         }
     }
-    
 }
+
