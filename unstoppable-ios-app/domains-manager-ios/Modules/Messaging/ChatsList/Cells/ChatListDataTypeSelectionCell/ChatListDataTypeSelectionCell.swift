@@ -59,11 +59,11 @@ private extension ChatListDataTypeSelectionCell {
                 badgeViewDetails.badgeView.setUnreadMessagesCount(badge)
             } else {
                 let badgeView = UnreadMessagesBadgeView()
-                badgeView.setConstraints()
+                badgeView.setConstraints(size: 4)
                 badgeView.setUnreadMessagesCount(badge)
                 badgeView.setCounterLabel(hidden: true)
                 addSubview(badgeView)
-                badgeView.centerYAnchor.constraint(equalTo: segmentedControl.centerYAnchor).isActive = true
+                badgeView.centerYAnchor.constraint(equalTo: segmentedControl.centerYAnchor, constant: -5).isActive = true
                 let leadingConstraint = badgeView.leadingAnchor.constraint(equalTo: leadingAnchor)
                 leadingConstraint.isActive = true
                 
@@ -79,7 +79,6 @@ private extension ChatListDataTypeSelectionCell {
     func setupBadges() {
         if !self.badgeViewDetails.isEmpty {
             let segmentWidth = segmentedControl.bounds.width / CGFloat(segmentedControl.numberOfSegments)
-            let labels = segmentedControl.allSubviewsOfType(UILabel.self)
             for segment in 0..<segmentedControl.numberOfSegments {
                 guard let title = segmentedControl.titleForSegment(at: segment) else { continue }
                 
@@ -87,7 +86,7 @@ private extension ChatListDataTypeSelectionCell {
                                              font: UDSegmentedControl.segmentFont)
                 let maxX = (segmentWidth / 2) + (titleWidth / 2) + (segmentWidth * CGFloat(segment)) + 8
                 
-                badgeViewDetails[segment]?.leadingConstraint.constant = maxX
+                badgeViewDetails[segment]?.leadingConstraint.constant = maxX - 4
                 badgeViewDetails[segment]?.badgeView.setStyle(segment == segmentedControl.selectedSegmentIndex ? .blue : .black)
             }
         }
