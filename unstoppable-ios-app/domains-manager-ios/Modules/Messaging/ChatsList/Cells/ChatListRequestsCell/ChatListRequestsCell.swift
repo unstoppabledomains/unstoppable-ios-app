@@ -39,6 +39,7 @@ extension ChatListRequestsCell {
             icon = .alertOctagon24
         case .communities:
             Debugger.printFailure("Requests section are not exist for communities", critical: true)
+            return
         }
         
         titleLabel.setAttributedTextWith(text: title,
