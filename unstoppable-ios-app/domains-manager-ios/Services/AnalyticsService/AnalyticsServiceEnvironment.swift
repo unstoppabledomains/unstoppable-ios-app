@@ -284,7 +284,7 @@ extension Analytics {
         case chatInList, groupChatInList, chatRequests, channelInList, channelsSpam, userToChatInList, domainToChatInList
         case messagingProfileSelection, messagingProfileInList
         case messagingDataType
-        case newMessage, emptyMessagingAction
+        case newMessage, emptyMessagingAction, createCommunityProfile
         case createMessagingProfile
         case messageInputSend, messageInputPlus, messageInputPlusAction
         case viewMessagingProfile, viewGroupChatInfo

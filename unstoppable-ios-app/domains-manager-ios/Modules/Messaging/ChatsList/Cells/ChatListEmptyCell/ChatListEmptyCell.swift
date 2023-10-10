@@ -86,8 +86,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptyTitle.localized()
-            case .communities:// TODO: - Communities
-                return String.Constants.messagingChatsListEmptyTitle.localized()
+            case .communities:
+                return String.Constants.messagingCommunitiesEmptyTitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptyTitle.localized()
             }
@@ -101,8 +101,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptySubtitle.localized()
-            case .communities:// TODO: - Communities
-                return String.Constants.messagingChatsListEmptySubtitle.localized()
+            case .communities:
+                return String.Constants.messagingCommunitiesEmptySubtitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptySubtitle.localized()
             }
@@ -114,9 +114,9 @@ private extension ChatListEmptyCell {
         case .chats:
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
             actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
-        case .communities:// TODO: - Communities
+        case .communities:
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
-            actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
+            actionButton.setTitle(String.Constants.learnMore.localized(), image: .infoIcon)
         case .channels:
             actionButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
             actionButton.setTitle(String.Constants.searchApps.localized(), image: .searchIcon)

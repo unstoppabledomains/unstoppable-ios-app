@@ -376,13 +376,16 @@ private extension ChatsListViewController {
                         switch dataType {
                         case .channels:
                             self?.searchMode = .channelsOnly
-                        case .chats, .communities: // TODO: - Communities
+                        case .chats:
                             self?.searchMode = .chatsOnly
+                        case .communities:
+                            self?.openLink(.communitiesInfo)
+                            return
                         }
                         self?.setSearchBarActive(true)
                     case .noCommunitiesProfile:
+                        self?.logButtonPressedAnalyticEvents(button: .createCommunityProfile)
                         self?.presenter.createCommunitiesProfileButtonPressed()
-                        // TODO: - Communities analytics
                     }
                 })
                 

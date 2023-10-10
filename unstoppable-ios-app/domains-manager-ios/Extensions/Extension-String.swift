@@ -29,6 +29,7 @@ extension String {
         case referralTutorial
         case referralLink(code: String)
         case udBlue
+        case communitiesInfo
 
         var urlString: String {
             switch self {
@@ -91,6 +92,8 @@ extension String {
                 return "\(NetworkConfig.migratedBaseUrl)/?ref=\(code)"
             case .udBlue:
                 return "https://unstoppabledomains.com/products/blue"
+            case .communitiesInfo:
+                return "https://support.unstoppabledomains.com/support/solutions/articles/48001215751-badges"
             }
         }
         
@@ -906,6 +909,8 @@ extension String {
         static let messagingChatsRequestsListEmptyTitle = "MESSAGING_CHATS_REQUESTS_LIST_EMPTY_TITLE"
         static let messagingChannelsEmptyTitle = "MESSAGING_CHANNELS_EMPTY_TITLE"
         static let messagingChannelsEmptySubtitle = "MESSAGING_CHANNELS_EMPTY_SUBTITLE"
+        static let messagingCommunitiesEmptyTitle = "MESSAGING_COMMUNITIES_LIST_EMPTY_TITLE"
+        static let messagingCommunitiesEmptySubtitle = "MESSAGING_COMMUNITIES_LIST_EMPTY_SUBTITLE"
         static let messagingChatEmptyTitle = "MESSAGING_CHAT_EMPTY_TITLE"
         static let messagingChatEmptyEncryptedMessage = "MESSAGING_CHAT_EMPTY_ENCRYPTED_MESSAGE"
         static let messagingChatEmptyUnencryptedMessage = "MESSAGING_CHAT_EMPTY_UNENCRYPTED_MESSAGE"

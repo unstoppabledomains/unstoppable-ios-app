@@ -817,6 +817,8 @@
 "MESSAGING_CHATS_REQUESTS_LIST_EMPTY_TITLE" = "You have no pending chat requests";
 "MESSAGING_CHANNELS_EMPTY_TITLE" = "No messages from apps yet";
 "MESSAGING_CHANNELS_EMPTY_SUBTITLE" = "Keep an eye out for upcoming messages from the apps you connect with.";
+"MESSAGING_COMMUNITIES_LIST_EMPTY_TITLE" = "Join the community";
+"MESSAGING_COMMUNITIES_LIST_EMPTY_SUBTITLE" = "Earn badges and join the communities to unlock endless opportunities for meaningful connections and discussions with like-minded enthusiasts who share your passions.";
 "MESSAGING_CHAT_EMPTY_TITLE" = "No messages yet";
 "MESSAGING_CHAT_EMPTY_ENCRYPTED_MESSAGE" = "Send a message to request to join the chat.\nChat is encrypted.";
 "MESSAGING_CHAT_EMPTY_UNENCRYPTED_MESSAGE" = "Send a message to request to join the chat.\nUntil the recipient joins the chat, your messages will be unencrypted";
