@@ -864,7 +864,7 @@
 		C6BA746C2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA746B2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift */; };
 		C6BA746E2AD4FE1800628DC6 /* PullUpViewService+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA746D2AD4FE1800628DC6 /* PullUpViewService+Tools.swift */; };
 		C6BA74702AD4FE5500628DC6 /* PullUpViewService+Badges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA746F2AD4FE5500628DC6 /* PullUpViewService+Badges.swift */; };
-		C6BA74722AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74712AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift */; };
+		C6BA74722AD4FEE600628DC6 /* PullUpViewService+ExternalWallets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74712AD4FEE600628DC6 /* PullUpViewService+ExternalWallets.swift */; };
 		C6BA74742AD5013500628DC6 /* PullUpViewService+DomainProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */; };
 		C6BEEF2629C30AEB000489B9 /* UDTwitterSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */; };
 		C6BEEF2B29C30BB6000489B9 /* UDGoogleSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */; };
@@ -2011,7 +2011,7 @@
 		C6BA746B2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+Messaging.swift"; sourceTree = "<group>"; };
 		C6BA746D2AD4FE1800628DC6 /* PullUpViewService+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+Tools.swift"; sourceTree = "<group>"; };
 		C6BA746F2AD4FE5500628DC6 /* PullUpViewService+Badges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+Badges.swift"; sourceTree = "<group>"; };
-		C6BA74712AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewServic+ExternalWallets.swift"; sourceTree = "<group>"; };
+		C6BA74712AD4FEE600628DC6 /* PullUpViewService+ExternalWallets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+ExternalWallets.swift"; sourceTree = "<group>"; };
 		C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+DomainProfile.swift"; sourceTree = "<group>"; };
 		C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTwitterSigner.swift; sourceTree = "<group>"; };
 		C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDGoogleSigner.swift; sourceTree = "<group>"; };
@@ -5874,7 +5874,7 @@
 			children = (
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
 				C6BA746B2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift */,
-				C6BA74712AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift */,
+				C6BA74712AD4FEE600628DC6 /* PullUpViewService+ExternalWallets.swift */,
 				C6BA746D2AD4FE1800628DC6 /* PullUpViewService+Tools.swift */,
 				C6BA746F2AD4FE5500628DC6 /* PullUpViewService+Badges.swift */,
 				C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */,
@@ -6526,7 +6526,7 @@
 				C69F99792A9F2206004B1958 /* PublicProfilePullUpHeaderView.swift in Sources */,
 				299713D228F6933F00743003 /* ABIEncoder.swift in Sources */,
 				C6D5DABC2836021300379C38 /* CryptoRecord.swift in Sources */,
-				C6BA74722AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift in Sources */,
+				C6BA74722AD4FEE600628DC6 /* PullUpViewService+ExternalWallets.swift in Sources */,
 				C665B9C028335808005E535C /* ListItemView.swift in Sources */,
 				C692C31B282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
 				30EFBBDC27F4754E00B8D667 /* MainButton.swift in Sources */,
