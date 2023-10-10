@@ -86,7 +86,7 @@ private extension ChatListDataTypeSelectionCell {
                                              font: UDSegmentedControl.segmentFont)
                 let maxX = (segmentWidth / 2) + (titleWidth / 2) + (segmentWidth * CGFloat(segment)) + 8
                 
-                badgeViewDetails[segment]?.leadingConstraint.constant = maxX - 4
+                badgeViewDetails[segment]?.leadingConstraint.constant = maxX - 6
                 badgeViewDetails[segment]?.badgeView.setStyle(segment == segmentedControl.selectedSegmentIndex ? .blue : .black)
             }
         }

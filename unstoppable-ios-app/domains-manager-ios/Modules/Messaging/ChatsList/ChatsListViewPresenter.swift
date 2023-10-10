@@ -684,6 +684,11 @@ private extension ChatsListViewPresenter {
     }
     
     func joinCommunity(_ community: MessagingChatDisplayInfo) {
+        guard let selectedProfileWalletPair,
+              selectedProfileWalletPair.isUDBlueEnabled else {
+            view?.openLinkExternally(.udBlue)
+            return
+        }
         Task {
             view?.setActivityIndicator(active: true)
             do {
