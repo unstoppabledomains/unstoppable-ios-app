@@ -251,7 +251,8 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                     case .existingChat(chatId: let chatId):
                         if selectedProfileWalletPair?.profile?.id != profile.id ||
                             !appCoordinator.isActiveState(.chatOpened(chatId: chatId)) {
-                            try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
+                            let dataType: ChatsListDataType = communitiesList.first(where: { $0.id == chatId }) != nil ? .communities : .chats
+                            try await prepareToAutoOpenWith(profile: profile, dataType: dataType)
                             tryAutoOpenChat(chatId, profile: profile)
                         }
                     case .newChat(let details):
