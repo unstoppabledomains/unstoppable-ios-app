@@ -350,7 +350,7 @@ extension ChatsListViewPresenter: SceneActivationListener {
                 if let selectedProfileWalletPair,
                    !selectedProfileWalletPair.isUDBlueEnabled,
                    let domain = selectedProfileWalletPair.wallet.reverseResolutionDomain {
-                    /// Refresh UDBlue status 
+                    /// Refresh UDBlue status
                     let isUDBlueEnabled = await getUDBlueEnabledStatus(for: domain)
                     self.selectedProfileWalletPair?.isUDBlueEnabled = isUDBlueEnabled
                 }
@@ -677,6 +677,8 @@ private extension ChatsListViewPresenter {
                         switch community.type {
                         case .community(let messagingCommunitiesChatDetails):
                             return .community(configuration: .init(communityDetails: messagingCommunitiesChatDetails, joinButtonPressedCallback: { [weak self] in
+                                self?.logButtonPressedAnalyticEvents(button: .joinCommunity,
+                                                                     parameters: [.communityName: messagingCommunitiesChatDetails.displayName])
                                 self?.joinCommunity(community)
                             }))
                         default:

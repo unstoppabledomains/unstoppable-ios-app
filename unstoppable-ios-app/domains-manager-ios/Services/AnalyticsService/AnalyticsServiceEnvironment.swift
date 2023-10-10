@@ -103,6 +103,7 @@ extension Analytics {
         case messageType
         case feedName
         case isUserDomain
+        case communityName
     }
 }
 
@@ -287,8 +288,8 @@ extension Analytics {
         case createMessagingProfile
         case messageInputSend, messageInputPlus, messageInputPlusAction
         case viewMessagingProfile, viewGroupChatInfo
-        case viewChannelInfo, leaveChannel, learnMoreChannelFeed
-        case block, unblock, leaveGroup
+        case viewChannelInfo, leaveChannel, learnMoreChannelFeed, viewCommunityInfo
+        case block, unblock, leaveGroup, joinCommunity, leaveCommunity
         case resendMessage, deleteMessage
         case downloadUnsupportedMessage
         

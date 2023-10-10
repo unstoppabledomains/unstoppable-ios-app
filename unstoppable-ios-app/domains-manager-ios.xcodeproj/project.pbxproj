@@ -861,6 +861,11 @@
 		C6BA74672AD3F09E00628DC6 /* CommunityListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74652AD3F09E00628DC6 /* CommunityListCell.swift */; };
 		C6BA74682AD3F09E00628DC6 /* CommunityListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6BA74662AD3F09E00628DC6 /* CommunityListCell.xib */; };
 		C6BA746A2AD4398500628DC6 /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74692AD4398500628DC6 /* Int.swift */; };
+		C6BA746C2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA746B2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift */; };
+		C6BA746E2AD4FE1800628DC6 /* PullUpViewService+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA746D2AD4FE1800628DC6 /* PullUpViewService+Tools.swift */; };
+		C6BA74702AD4FE5500628DC6 /* PullUpViewService+Badges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA746F2AD4FE5500628DC6 /* PullUpViewService+Badges.swift */; };
+		C6BA74722AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74712AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift */; };
+		C6BA74742AD5013500628DC6 /* PullUpViewService+DomainProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */; };
 		C6BEEF2629C30AEB000489B9 /* UDTwitterSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */; };
 		C6BEEF2B29C30BB6000489B9 /* UDGoogleSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */; };
 		C6BEEF3029C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */; };
@@ -2003,6 +2008,11 @@
 		C6BA74652AD3F09E00628DC6 /* CommunityListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityListCell.swift; sourceTree = "<group>"; };
 		C6BA74662AD3F09E00628DC6 /* CommunityListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CommunityListCell.xib; sourceTree = "<group>"; };
 		C6BA74692AD4398500628DC6 /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
+		C6BA746B2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+Messaging.swift"; sourceTree = "<group>"; };
+		C6BA746D2AD4FE1800628DC6 /* PullUpViewService+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+Tools.swift"; sourceTree = "<group>"; };
+		C6BA746F2AD4FE5500628DC6 /* PullUpViewService+Badges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+Badges.swift"; sourceTree = "<group>"; };
+		C6BA74712AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewServic+ExternalWallets.swift"; sourceTree = "<group>"; };
+		C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+DomainProfile.swift"; sourceTree = "<group>"; };
 		C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTwitterSigner.swift; sourceTree = "<group>"; };
 		C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDGoogleSigner.swift; sourceTree = "<group>"; };
 		C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseNetworkConfig.swift; sourceTree = "<group>"; };
@@ -5863,6 +5873,11 @@
 			isa = PBXGroup;
 			children = (
 				C64836B7282BADB1007BD3F1 /* PullUpViewService.swift */,
+				C6BA746B2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift */,
+				C6BA74712AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift */,
+				C6BA746D2AD4FE1800628DC6 /* PullUpViewService+Tools.swift */,
+				C6BA746F2AD4FE5500628DC6 /* PullUpViewService+Badges.swift */,
+				C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */,
 				C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */,
 			);
 			path = PullUp;
@@ -6355,6 +6370,7 @@
 				306DB27226936C57009D95DE /* Endpoint.swift in Sources */,
 				C6E041DD2955EC5B0080F8E3 /* CarouselCardState.swift in Sources */,
 				C6124CC729222CC7005E6537 /* DashesView.swift in Sources */,
+				C6BA746C2AD4FDC100628DC6 /* PullUpViewService+Messaging.swift in Sources */,
 				C6B6B03E296FF74400D4E30F /* SortDomainsManager.swift in Sources */,
 				C628E30927FD7DFF0044E408 /* TutorialStepViewController.swift in Sources */,
 				C6124CBE2922283D005E6537 /* DomainProfileActionCoverViewController.swift in Sources */,
@@ -6415,6 +6431,7 @@
 				C629A4702A3FF5CE00A528A1 /* ChatBaseCell.swift in Sources */,
 				C6A2D59F28504EB300327C47 /* ConnectedAppCell.swift in Sources */,
 				C609820A2822D92300546392 /* ToastMessageService.swift in Sources */,
+				C6BA74742AD5013500628DC6 /* PullUpViewService+DomainProfile.swift in Sources */,
 				C6ECBF8B28D2D20900E94309 /* WalletInfoBadgeView.swift in Sources */,
 				C6B91EB429BB718100389FF5 /* StripeService.swift in Sources */,
 				C613C22229E3BEEC0001A3AF /* NFCService.swift in Sources */,
@@ -6509,6 +6526,7 @@
 				C69F99792A9F2206004B1958 /* PublicProfilePullUpHeaderView.swift in Sources */,
 				299713D228F6933F00743003 /* ABIEncoder.swift in Sources */,
 				C6D5DABC2836021300379C38 /* CryptoRecord.swift in Sources */,
+				C6BA74722AD4FEE600628DC6 /* PullUpViewServic+ExternalWallets.swift in Sources */,
 				C665B9C028335808005E535C /* ListItemView.swift in Sources */,
 				C692C31B282E485C00C31393 /* SecuritySettingsViewPresenter.swift in Sources */,
 				30EFBBDC27F4754E00B8D667 /* MainButton.swift in Sources */,
@@ -6569,6 +6587,7 @@
 				299713CD28F6931E00743003 /* Function.swift in Sources */,
 				C69F99232A9F1264004B1958 /* AttributedText.swift in Sources */,
 				C6289A472AAB06F9002C2DEC /* SquareFrame.swift in Sources */,
+				C6BA746E2AD4FE1800628DC6 /* PullUpViewService+Tools.swift in Sources */,
 				C6124CF029253BB0005E6537 /* ImportExistingExternalWalletPresenter.swift in Sources */,
 				299713C828F692D700743003 /* ABIError.swift in Sources */,
 				C61B3E90283E708500500B6D /* EnterEmailVerificationCodeViewController.swift in Sources */,
@@ -6857,6 +6876,7 @@
 				C6BEEF2B29C30BB6000489B9 /* UDGoogleSigner.swift in Sources */,
 				3018AEB827EA12A700E8C37D /* AddWalletViewController.swift in Sources */,
 				C6B366B62A173AC700DE512B /* ChatSectionHeaderView.swift in Sources */,
+				C6BA74702AD4FE5500628DC6 /* PullUpViewService+Badges.swift in Sources */,
 				C60982402823F73600546392 /* BackupCreatedLocalWalletPresenter.swift in Sources */,
 				C6B6B02D296D309C00D4E30F /* CGSize.swift in Sources */,
 				C6A2D54A284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,

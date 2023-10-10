@@ -15,6 +15,8 @@ struct MessagingCommunitiesChatDetails: Hashable, Codable {
     let pendingMembers: [MessagingChatUserDisplayInfo]
     let adminWallets: [String]
     
+    var allMembers: [MessagingChatUserDisplayInfo] { members + pendingMembers }
+
     var displayName: String {
         switch type {
         case .badge(let badge):
