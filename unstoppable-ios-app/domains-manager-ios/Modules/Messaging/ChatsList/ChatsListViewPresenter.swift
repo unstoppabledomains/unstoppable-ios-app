@@ -64,6 +64,7 @@ final class ChatsListViewPresenter {
         self.presentOptions = presentOptions
         self.messagingService = messagingService
         appContext.udWalletsService.addListener(self)
+        SceneDelegate.shared?.addListener(self)
     }
 }
 
@@ -335,6 +336,27 @@ extension ChatsListViewPresenter: UDWalletsServiceListener {
             refreshAvailableWalletsList()
         case .walletRemoved:
             return
+        }
+    }
+}
+
+
+// MARK: - SceneActivationListener
+extension ChatsListViewPresenter: SceneActivationListener {
+    func didChangeSceneActivationState(to state: SceneActivationState) {
+        Task {
+            switch state {
+            case .foregroundActive:
+                if let selectedProfileWalletPair,
+                   !selectedProfileWalletPair.isUDBlueEnabled,
+                   let domain = selectedProfileWalletPair.wallet.reverseResolutionDomain {
+                    /// Refresh UDBlue status 
+                    let isUDBlueEnabled = await getUDBlueEnabledStatus(for: domain)
+                    self.selectedProfileWalletPair?.isUDBlueEnabled = isUDBlueEnabled
+                }
+            default:
+                return
+            }
         }
     }
 }
@@ -922,7 +944,7 @@ private extension ChatsListViewPresenter {
         let wallet: WalletDisplayInfo
         let profile: MessagingChatUserProfileDisplayInfo?
         let isCommunitiesEnabled: Bool
-        let isUDBlueEnabled: Bool
+        var isUDBlueEnabled: Bool
     }
     
     struct SearchData {
