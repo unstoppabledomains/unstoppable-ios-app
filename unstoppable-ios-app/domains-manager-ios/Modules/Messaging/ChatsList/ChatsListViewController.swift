@@ -300,7 +300,7 @@ private extension ChatsListViewController {
     func setupActionButton() {
         var icon: UIImage?
         if User.instance.getSettings().touchIdActivated {
-            icon = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+            icon = appContext.authentificationService.biometricIcon
         }
         actionButton.setTitle(String.Constants.enable.localized(),
                               image: icon)

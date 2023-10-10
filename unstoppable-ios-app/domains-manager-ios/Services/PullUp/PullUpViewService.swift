@@ -198,7 +198,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let selectionViewHeight: CGFloat = 340
         var icon: UIImage?
         if User.instance.getSettings().touchIdActivated {
-            icon = authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+            icon = authentificationService.biometricIcon
         }
         
         let title: String = String.Constants.deleteICloudBackupsConfirmationMessage.localized()
@@ -267,7 +267,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let address = walletInfo.address.walletAddressTruncated
         var icon: UIImage?
         if User.instance.getSettings().touchIdActivated {
-            icon = authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+            icon = authentificationService.biometricIcon
         }
         
         let title: String
@@ -464,7 +464,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         
         var icon: UIImage?
         if User.instance.getSettings().touchIdActivated {
-            icon = authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+            icon = authentificationService.biometricIcon
         }
         let walletAddress = walletInfo.address.walletAddressTruncated
         let domainName = domain.name
@@ -585,7 +585,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let selectionViewHeight: CGFloat = 368
         var icon: UIImage?
         if User.instance.getSettings().touchIdActivated {
-            icon = authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+            icon = authentificationService.biometricIcon
         }
         
         let title: String = String.Constants.logOut.localized()

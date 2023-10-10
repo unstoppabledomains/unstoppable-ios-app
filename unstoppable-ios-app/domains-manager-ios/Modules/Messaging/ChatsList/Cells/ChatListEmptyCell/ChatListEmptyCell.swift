@@ -45,10 +45,10 @@ extension ChatListEmptyCell {
             setTitle(String.Constants.messagingCommunitiesListEnableTitle.localized())
             setSubtitle(String.Constants.messagingCommunitiesListEnableSubtitle.localized())
             
-            iconImageView.image = .messageCircleIcon24
+            iconImageView.image = .chatRequestsIcon
             
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
-            actionButton.setTitle(String.Constants.enable.localized(), image: .newMessageIcon)
+            actionButton.setTitle(String.Constants.enable.localized(), image: appContext.authentificationService.biometricIcon)
             actionButton.isHidden = false
         }
     }

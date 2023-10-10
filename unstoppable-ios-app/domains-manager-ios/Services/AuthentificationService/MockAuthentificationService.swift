@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 30.08.2022.
 //
 
-import Foundation
+import UIKit
 import LocalAuthentication
 
 final class MockAuthentificationService {
@@ -35,6 +35,8 @@ extension MockAuthentificationService: AuthentificationServiceProtocol {
     var biometricType: LABiometryType {
         biometricTypeToUse
     }
+    
+    var biometricIcon: UIImage? { nil }
     
     func biometryState() -> AuthentificationService.BiometryState {
         isBiometricEnabled ? .available : .notAvailable
