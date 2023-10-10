@@ -129,7 +129,7 @@ extension NetworkService {
     }
     
     struct DomainResponse: Decodable {
-        let id: Int
+        let id: Int?
         let name: String
         let ownerAddress: String?
         let resolver: String?
