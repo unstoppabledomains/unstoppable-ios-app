@@ -22,7 +22,7 @@ class PushWebSocketsService {
 extension PushWebSocketsService {
     func subscribeFor(profile: MessagingChatUserProfile,
                       eventCallback: @escaping MessagingWebSocketEventCallback) throws {
-        if let connection = domainNameToConnectionMap[profile.wallet] {
+        if let connection = queue.sync { domainNameToConnectionMap[profile.wallet] } {
             switch connection.status {
             case .connecting, .connected:
                 return
