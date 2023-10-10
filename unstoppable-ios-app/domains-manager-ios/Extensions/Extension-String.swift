@@ -939,7 +939,8 @@ extension String {
         static let messagingCommunitiesSectionTitle = "MESSAGING_COMMUNITIES_SECTION_TITLE"
         static let messagingCommunitiesListEnableTitle = "MESSAGING_COMMUNITIES_LIST_ENABLE_TITLE"
         static let messagingCommunitiesListEnableSubtitle = "MESSAGING_COMMUNITIES_LIST_ENABLE_SUBTITLE"
-        
+        static let messagingCommunitiesListEnabled = "MESSAGING_COMMUNITIES_ENABLED"
+
         // Public profile
         static let followers = "FOLLOWERS"
         static let following = "FOLLOWING"

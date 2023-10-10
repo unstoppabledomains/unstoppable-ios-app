@@ -16,11 +16,6 @@ final class ChatListEmptyCell: UICollectionViewCell {
     
     private var actionButtonCallback: EmptyCallback?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-    }
-
 }
 
 // MARK: - Open methods

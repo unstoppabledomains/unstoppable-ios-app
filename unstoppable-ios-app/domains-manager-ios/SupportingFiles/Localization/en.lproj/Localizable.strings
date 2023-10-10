@@ -847,6 +847,7 @@
 "MESSAGING_COMMUNITIES_SECTION_TITLE" = "Explore communities";
 "MESSAGING_COMMUNITIES_LIST_ENABLE_TITLE" = "Explore more communities";
 "MESSAGING_COMMUNITIES_LIST_ENABLE_SUBTITLE" = "Unlock the power of communities with a simple tap on the button.";
+"MESSAGING_COMMUNITIES_ENABLED" = "Communities enabled";
 
 // Public profile
 "FOLLOWERS" = "Followers";

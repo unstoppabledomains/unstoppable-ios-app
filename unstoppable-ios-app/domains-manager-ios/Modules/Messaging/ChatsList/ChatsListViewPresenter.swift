@@ -179,6 +179,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                                                         profile: profile,
                                                         isCommunitiesEnabled: true,
                                                         isUDBlueEnabled: isUDBlueEnabled))
+                appContext.toastMessageService.showToast(.communityProfileEnabled, isSticky: false)
             } catch {
                 view.showAlertWith(error: error, handler: nil)
             }
