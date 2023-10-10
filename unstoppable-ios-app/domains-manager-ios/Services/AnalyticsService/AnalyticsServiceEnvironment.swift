@@ -281,7 +281,7 @@ extension Analytics {
         case inviteFriendInfo, copyLink
         
         // Messaging
-        case chatInList, groupChatInList, chatRequests, channelInList, channelsSpam, userToChatInList, domainToChatInList
+        case chatInList, groupChatInList, communityInList, chatRequests, channelInList, channelsSpam, userToChatInList, domainToChatInList
         case messagingProfileSelection, messagingProfileInList
         case messagingDataType
         case newMessage, emptyMessagingAction, createCommunityProfile

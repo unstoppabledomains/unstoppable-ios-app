@@ -90,7 +90,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             case .group:
                 logButtonPressedAnalyticEvents(button: .groupChatInList)
             case .community:
-                logButtonPressedAnalyticEvents(button: .chatInList) // TODO: - Communities
+                logButtonPressedAnalyticEvents(button: .communityInList)
             }
             openChatWith(conversationState: .existingChat(configuration.chat))
         case .chatRequests(let configuration):
@@ -98,7 +98,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             case .chats:
                 logButtonPressedAnalyticEvents(button: .chatRequests)
             case .communities:
-                logButtonPressedAnalyticEvents(button: .chatRequests) // TODO: - Communities
+                Debugger.printFailure("Requests section are not exist for communities", critical: true)
             case .channels:
                 logButtonPressedAnalyticEvents(button: .channelsSpam)
             }
@@ -657,10 +657,7 @@ private extension ChatsListViewPresenter {
             } else {
                 typealias GroupedCommunities = (joined: [MessagingChatDisplayInfo], notJoined: [MessagingChatDisplayInfo])
                 
-                let requestsList = communitiesList.requestsOnly()
-                let approvedList = communitiesList.confirmedOnly()
-                
-                let groupedCommunities = approvedList.reduce(into: GroupedCommunities([], [])) { result, element in
+                let groupedCommunities = communitiesList.reduce(into: GroupedCommunities([], [])) { result, element in
                     switch element.type {
                     case .community(let details):
                         if details.isJoined {
@@ -692,15 +689,7 @@ private extension ChatsListViewPresenter {
                     }))
                 }
                 
-                if !requestsList.isEmpty {
-                    snapshot.appendSections([.listItems(title: nil)])
-                    snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                             numberOfRequests: requestsList.count))])
-                    
-                    snapshot.appendItems(groupedCommunities.joined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
-
-                    addNotJoinedCommunitiesIfPossible(withTitle: true)
-                } else if !groupedCommunities.joined.isEmpty {
+                if !groupedCommunities.joined.isEmpty {
                     snapshot.appendSections([.listItems(title: nil)])
                     snapshot.appendItems(groupedCommunities.joined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
                     
@@ -880,7 +869,8 @@ private extension ChatsListViewPresenter {
                                               profile: profile,
                                               in: nav)
         case .communities:
-            return // TODO: - Communities
+            Debugger.printFailure("Requests section are not exist for communities", critical: true)
+            return
         case .channels:
             let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
             guard !channels.isEmpty else { return }

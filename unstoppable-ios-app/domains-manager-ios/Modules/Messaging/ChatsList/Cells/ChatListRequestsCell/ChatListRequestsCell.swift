@@ -29,7 +29,7 @@ extension ChatListRequestsCell {
         let numberOfRequests = configuration.numberOfRequests
         
         switch configuration.dataType {
-        case .chats, .communities: // TODO: - Communities
+        case .chats:
             title = String.Constants.chatRequests.localized()
             subtitle = String.Constants.pluralNPeopleYouMayKnow.localized(numberOfRequests, numberOfRequests)
             icon = .chatRequestsIcon
@@ -37,6 +37,8 @@ extension ChatListRequestsCell {
             title = String.Constants.spam.localized()
             subtitle = String.Constants.pluralNMessages.localized(numberOfRequests, numberOfRequests)
             icon = .alertOctagon24
+        case .communities:
+            Debugger.printFailure("Requests section are not exist for communities", critical: true)
         }
         
         titleLabel.setAttributedTextWith(text: title,

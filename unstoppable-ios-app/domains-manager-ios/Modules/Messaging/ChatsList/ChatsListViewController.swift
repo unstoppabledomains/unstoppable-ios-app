@@ -290,8 +290,7 @@ private extension ChatsListViewController {
             case .channels:
                 title = String.Constants.spam.localized()
             case .communities:
-                // TODO: - Communities
-                title = String.Constants.chatRequests.localized()
+                Debugger.printFailure("Requests section are not exist for communities", critical: true)
             }
             cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }
