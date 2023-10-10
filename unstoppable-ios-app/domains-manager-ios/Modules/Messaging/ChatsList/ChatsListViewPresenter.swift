@@ -307,9 +307,13 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                    updateNavigationUI()
                }
            case .messageReadStatusUpdated(let message, let numberOfUnreadMessagesInSameChat):
-               if message.userId == selectedProfileWalletPair?.profile?.id,
-                  let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
-                   chatsList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
+               if let profile = selectedProfileWalletPair?.profile,
+                  await messagingService.isMessage(message, belongTo: profile) {
+                   if let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
+                       chatsList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
+                   } else if let i = communitiesList.firstIndex(where: { $0.id == message.chatId }) {
+                       communitiesList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
+                   }
                    if numberOfUnreadMessagesInSameChat == 0 {
                        showData()
                    }
@@ -639,7 +643,6 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    // TODO: - Communities
     func fillSnapshotForUserCommunitiesList(_ snapshot: inout ChatsListSnapshot) {
         let communitiesList = getListOfUnblockedCommunities()
         
@@ -841,7 +844,7 @@ private extension ChatsListViewPresenter {
     func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
         let chatsBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
         let inboxBadge = channels.reduce(0, { $0 + $1.unreadMessagesCount })
-        let communitiesBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
+        let communitiesBadge = communitiesList.reduce(0, { $0 + $1.unreadMessagesCount })
         
         return .init(dataTypesConfigurations: [.init(dataType: .chats, badge: chatsBadge),
                                                .init(dataType: .communities, badge: communitiesBadge),
