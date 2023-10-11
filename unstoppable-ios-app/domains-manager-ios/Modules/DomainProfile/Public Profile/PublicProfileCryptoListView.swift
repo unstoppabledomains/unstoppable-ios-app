@@ -12,8 +12,8 @@ struct PublicProfileCryptoListView: View, ViewAnalyticsLogger {
     @Environment(\.presentationMode) private var presentationMode
 
     let domainName: DomainName
-    let recordsDict: [String : String]
-    @State private var records: [RecordWithIcon] = []
+    let records: [CryptoRecord]
+    @State private var recordsWithIcons: [RecordWithIcon] = []
     @State private var copiedRecord: CryptoRecord?
     @State private var copiedTimer: Timer?
     var analyticsName: Analytics.ViewName { .domainCryptoList }
@@ -25,7 +25,7 @@ struct PublicProfileCryptoListView: View, ViewAnalyticsLogger {
                 logButtonPressedAnalyticEvents(button: .close)
                 dismiss()
             })
-            List(records, id: \.record.coin) { record in
+            List(recordsWithIcons, id: \.record.coin) { record in
                 viewForRecordRow(record)
                     .listRowSeparator(.hidden)
                     .unstoppableListRowInset()
@@ -36,10 +36,8 @@ struct PublicProfileCryptoListView: View, ViewAnalyticsLogger {
             .ignoresSafeArea()
         }
         .background(Color.backgroundDefault)
-        .task {
-            await prepareRecords()
-        }
         .onAppear {
+            prepareRecords()
             UITableView.appearance().backgroundColor = .clear
             logAnalytic(event: .viewDidAppear, parameters: [.domainName : domainName])
         }
@@ -49,12 +47,8 @@ struct PublicProfileCryptoListView: View, ViewAnalyticsLogger {
 
 // MARK: - Private methods
 private extension PublicProfileCryptoListView {
-    func prepareRecords() async {
-        let currencies = await appContext.coinRecordsService.getCurrencies()
-        let recordsData = DomainRecordsData(from: recordsDict,
-                                            coinRecords: currencies,
-                                            resolver: nil)
-        records = recordsData.records
+    func prepareRecords() {
+        recordsWithIcons = records
             .map { RecordWithIcon(record: $0) }
             .sorted(by: { lhs, rhs in
             lhs.record.coin.ticker < rhs.record.coin.ticker
@@ -154,8 +148,8 @@ private extension PublicProfileCryptoListView {
         Task {
             
             func setIcon(_ icon: UIImage?, to record: RecordWithIcon) {
-                if let i = records.firstIndex(where: { $0.record.coin == record.record.coin }) {
-                    records[i].icon = icon
+                if let i = recordsWithIcons.firstIndex(where: { $0.record.coin == record.record.coin }) {
+                    recordsWithIcons[i].icon = icon
                 }
             }
             
@@ -181,11 +175,12 @@ struct PublicProfileCryptoListView_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(Constants.swiftUIPreviewDevices, id: \.self) { device in
             PublicProfileCryptoListView(domainName: "dans.crypto",
-                                        recordsDict: ["crypto.ETH.address": "0x557fc13812460e5414d9881cb3659902e9501041",
-                                                      "crypto.1INCH.version.ERC20.address": "0x557fc13812460e5414d9881cb3659902e9501041",
-                                                      "crypto.MATIC.version.ERC20.address": "0x557fc13812460e5414d9881cb3659902e9501041",
-                                                      "crypto.MATIC.version.MATIC.address": "0x557fc13812460e5414d9881cb3659902e9501041",
-                                                      "crypto.1INCH.version.MATIC.address": "0x557fc13812460e5414d9881cb3659902e9501041"])
+                                        records: [.init(coin: .init(ticker: "1INCH",
+                                                                    version: "ERC20",
+                                                                    expandedTicker: "crypto.1INCH.version.ERC20.address", 
+                                                                    regexPattern: nil,
+                                                                    isDeprecated: false),
+                                                        address: "0x557fc13812460e5414d9881cb3659902e9501041")])
                 .previewDevice(PreviewDevice(rawValue: device))
                 .previewDisplayName(device)
         }
