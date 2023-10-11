@@ -655,40 +655,14 @@ private extension ChatsListViewPresenter {
                 snapshot.appendSections([.emptyState])
                 snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
             } else {
-                typealias GroupedCommunities = (joined: [MessagingChatDisplayInfo], notJoined: [MessagingChatDisplayInfo])
-                
-                let groupedCommunities = communitiesList.reduce(into: GroupedCommunities([], [])) { result, element in
-                    switch element.type {
-                    case .community(let details):
-                        if details.isJoined {
-                            result.joined.append(element)
-                        } else {
-                            result.notJoined.append(element)
-                        }
-                    default:
-                        Void()
-                    }
-                }
+                let groupedCommunities = groupCommunitiesByJoinStatus(communitiesList)
                 
                 func addNotJoinedCommunitiesIfPossible(withTitle: Bool) {
                     guard !groupedCommunities.notJoined.isEmpty else { return }
                     
                     let title: String? = withTitle ? String.Constants.messagingCommunitiesSectionTitle.localized() : nil
                     snapshot.appendSections([.listItems(title: title)])
-                    snapshot.appendItems(groupedCommunities.notJoined.compactMap({ community -> ChatsListViewController.Item? in
-                        switch community.type {
-                        case .community(let messagingCommunitiesChatDetails):
-                            return .community(configuration: .init(community: community,
-                                                                   communityDetails: messagingCommunitiesChatDetails,
-                                                                   joinButtonPressedCallback: { [weak self] in
-                                self?.logButtonPressedAnalyticEvents(button: .joinCommunity,
-                                                                     parameters: [.communityName: messagingCommunitiesChatDetails.displayName])
-                                self?.joinCommunity(community)
-                            }))
-                        default:
-                            return nil
-                        }
-                    }))
+                    snapshot.appendItems(groupedCommunities.notJoined.compactMap({ createChatListItemForNotJoinedCommunity($0) }))
                 }
                 
                 if !groupedCommunities.joined.isEmpty {
@@ -700,6 +674,37 @@ private extension ChatsListViewPresenter {
                     addNotJoinedCommunitiesIfPossible(withTitle: false)
                 }
             }
+        }
+    }
+    typealias GroupedCommunities = (joined: [MessagingChatDisplayInfo], notJoined: [MessagingChatDisplayInfo])
+
+    func groupCommunitiesByJoinStatus(_ communities: [MessagingChatDisplayInfo]) -> GroupedCommunities {
+        communities.reduce(into: GroupedCommunities([], [])) { result, element in
+            switch element.type {
+            case .community(let details):
+                if details.isJoined {
+                    result.joined.append(element)
+                } else {
+                    result.notJoined.append(element)
+                }
+            default:
+                Void()
+            }
+        }
+    }
+    
+    func createChatListItemForNotJoinedCommunity(_ community: MessagingChatDisplayInfo) -> ChatsListViewController.Item? {
+        switch community.type {
+        case .community(let messagingCommunitiesChatDetails):
+            return .community(configuration: .init(community: community,
+                                                   communityDetails: messagingCommunitiesChatDetails,
+                                                   joinButtonPressedCallback: { [weak self] in
+                self?.logButtonPressedAnalyticEvents(button: .joinCommunity,
+                                                     parameters: [.communityName: messagingCommunitiesChatDetails.displayName])
+                self?.joinCommunity(community)
+            }))
+        default:
+            return nil
         }
     }
     
@@ -754,9 +759,11 @@ private extension ChatsListViewPresenter {
         let searchKey = searchData.searchKey.trimmedSpaces.lowercased()
 
         var people = [PeopleSearchResult]()
+        var communities = [MessagingChatDisplayInfo]()
         var channels = [MessagingNewsChannel]()
         if searchKey.isEmpty {
             people = chatsList.map({ .existingChat($0) })
+            communities = communitiesList
             channels = self.channels
         } else {
             /// Chats
@@ -781,6 +788,8 @@ private extension ChatsListViewPresenter {
             })
             people += remotePeople.map { .newUser($0) }
             
+            /// Communities
+            communities = communitiesList.filter { isChatMatchingSearchKey($0, searchKey: searchKey)}
             
             /// Channels
             let localChannels = self.channels.filter { $0.name.lowercased().contains(searchKey) }
@@ -794,8 +803,10 @@ private extension ChatsListViewPresenter {
             Void()
         case .chatsOnly:
             channels.removeAll()
+            communities.removeAll()
         case .channelsOnly:
             people.removeAll()
+            communities.removeAll()
         }
         
         if people.isEmpty && channels.isEmpty {
@@ -805,6 +816,12 @@ private extension ChatsListViewPresenter {
             if !people.isEmpty {
                 snapshot.appendSections([.listItems(title: String.Constants.people.localized())])
                 snapshot.appendItems(people.map({ $0.item }))
+            }
+            if !communities.isEmpty {
+                snapshot.appendSections([.listItems(title: String.Constants.communities.localized())])
+                let groupedCommunities = groupCommunitiesByJoinStatus(communities)
+                snapshot.appendItems(groupedCommunities.joined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+                snapshot.appendItems(groupedCommunities.notJoined.compactMap({ createChatListItemForNotJoinedCommunity($0) }))
             }
             if !channels.isEmpty {
                 snapshot.appendSections([.listItems(title: String.Constants.apps.localized())])
@@ -822,6 +839,9 @@ private extension ChatsListViewPresenter {
             return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
         case .community(let details):
             let members = details.members
+            if details.displayName.lowercased().contains(searchKey) {
+                return true
+            }
             return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
         }
     }
