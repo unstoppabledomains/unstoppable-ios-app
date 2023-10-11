@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -25,8 +25,11 @@
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="LKC-3t-qzg">
                                 <rect key="frame" x="16" y="14" width="376" height="74"/>
                                 <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="IcH-z5-1qh">
+                                        <rect key="frame" x="0.0" y="28" width="19.666666666666668" height="19"/>
+                                    </imageView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="q93-ez-iwd">
-                                        <rect key="frame" x="0.0" y="17" width="40" height="40"/>
+                                        <rect key="frame" x="35.666666666666664" y="17" width="39.999999999999993" height="40"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="40" id="Re3-gh-Z0m"/>
@@ -45,13 +48,13 @@
                                         </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Uph-qA-Hd8">
-                                        <rect key="frame" x="56" y="0.0" width="284" height="74"/>
+                                        <rect key="frame" x="91.666666666666671" y="0.0" width="248.33333333333331" height="74"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ojf-IK-tC3">
-                                                <rect key="frame" x="0.0" y="0.0" width="284" height="24"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="248.33333333333334" height="24"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="748" text="Label cvjxncfsd fsd fsd fsd fsd fsdf" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="O1n-ib-iGi">
-                                                        <rect key="frame" x="0.0" y="0.0" width="224" height="24"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="188.33333333333334" height="24"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="24" id="yXR-LF-7p7"/>
                                                         </constraints>
@@ -60,7 +63,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Labeldf" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sw7-04-bnh">
-                                                        <rect key="frame" x="224" y="2" width="60" height="20.333333333333332"/>
+                                                        <rect key="frame" x="188.33333333333331" y="2" width="60" height="20.333333333333332"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" relation="lessThanOrEqual" constant="60" id="UdJ-rD-A8y"/>
                                                         </constraints>
@@ -71,16 +74,16 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K70-Kt-yGP">
-                                                <rect key="frame" x="0.0" y="24" width="284" height="50"/>
+                                                <rect key="frame" x="0.0" y="24" width="248.33333333333334" height="50"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Label ksj sdl jsd flsdjf sdfh lsdkj" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z4E-zO-3KL">
-                                                        <rect key="frame" x="0.0" y="0.0" width="224" height="50"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="188.33333333333334" height="50"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zIZ-G5-Ira">
-                                                        <rect key="frame" x="224" y="0.0" width="60" height="50"/>
+                                                        <rect key="frame" x="188.33333333333331" y="0.0" width="60" height="50"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" placeholderIntrinsicWidth="16" placeholderIntrinsicHeight="16" translatesAutoresizingMaskIntoConstraints="NO" id="JMX-Lc-gxp" customClass="UnreadMessagesBadgeView" customModule="domains_manager_ios" customModuleProvider="target">
                                                                 <rect key="frame" x="44" y="2" width="16" height="16"/>
@@ -133,6 +136,7 @@
                 <outlet property="avatarImageView" destination="q93-ez-iwd" id="YBH-q6-KWB"/>
                 <outlet property="badgeView" destination="JMX-Lc-gxp" id="tmq-uF-g5Q"/>
                 <outlet property="chatNameLabel" destination="O1n-ib-iGi" id="JBF-FH-tQR"/>
+                <outlet property="checkmarkIcon" destination="IcH-z5-1qh" id="xp9-kn-jik"/>
                 <outlet property="chevron" destination="p0N-QZ-kul" id="j2t-fG-7bQ"/>
                 <outlet property="containerView" destination="x4U-D8-9XQ" id="5ap-ZZ-mJy"/>
                 <outlet property="lastMessageLabel" destination="Z4E-zO-3KL" id="tUT-jX-e2y"/>
@@ -143,6 +147,7 @@
     </objects>
     <resources>
         <image name="cellChevron" width="20" height="20"/>
+        <image name="circle" catalog="system" width="128" height="123"/>
         <namedColor name="borderSubtle">
             <color red="0.0" green="0.0" blue="0.0" alpha="0.019999999552965164" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -14,6 +14,7 @@ final class ChatsRequestsListViewPresenter {
     
     private let profile: MessagingChatUserProfileDisplayInfo
     private var dataType: DataType
+    private var selectedChats: [MessagingChatDisplayInfo] = []
     
     init(view: ChatsListViewProtocol,
          dataType: DataType,
@@ -49,16 +50,59 @@ extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
         showData()
     }
     
-    func didSelectItem(_ item: ChatsListViewController.Item) {
+    func didSelectItem(_ item: ChatsListViewController.Item, mode: ChatsListViewController.Mode) {
         UDVibration.buttonTap.vibrate()
         switch item {
         case .chat(let configuration):
-            openChat(configuration.chat)
+            let chat = configuration.chat
+            switch mode {
+            case .default:
+                openChat(chat)
+            case .editing:
+                if let i = selectedChats.firstIndex(where: { $0.id == chat.id }) {
+                    selectedChats.remove(at: i)
+                } else {
+                    selectedChats.append(chat)
+                }
+            }
+            showData()
         case .channel(let configuration):
             openChannel(configuration.channel)
         default:
             return
         }
+    }
+    
+    func actionButtonPressed() {
+        guard !selectedChats.isEmpty,
+              case .chatRequests(let chats) = dataType else { return }
+        
+        Task {
+            view?.setActivityIndicator(active: true)
+            do {
+                try await appContext.messagingService.block(chats: selectedChats)
+                if chats.count == selectedChats.count {
+                    view?.cNavigationController?.popViewController(animated: true)
+                }
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+            view?.setActivityIndicator(active: false)
+        }
+    }
+    
+    func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction) {
+        switch action {
+        case .selectAll:
+            if case .chatRequests(let chats) = dataType {
+                selectedChats = chats
+            }
+        case .cancel:
+            selectedChats = []
+        case .edit:
+            return
+        }
+        showData()
     }
 }
 
@@ -114,7 +158,11 @@ private extension ChatsRequestsListViewPresenter {
                 view?.cNavigationController?.viewControllers.removeAll(where: { $0 == view })
             } else {
                 snapshot.appendSections([.listItems(title: nil)])
-                snapshot.appendItems(requests.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+                snapshot.appendItems(requests.map({ request in
+                    let isSelected = selectedChats.first(where: { $0.id == request.id }) != nil
+                    return ChatsListViewController.Item.chat(configuration: .init(chat: request,
+                                                                                  isSelected: isSelected))
+                }))
             }
         case .channelsSpam(let requests):
             snapshot.appendSections([.listItems(title: nil)])
