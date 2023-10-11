@@ -19,6 +19,7 @@ protocol ChatViewProtocol: BaseDiffableCollectionViewControllerProtocol where Se
     func setUIState(_ state: ChatViewController.State)
     func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
     func setEmptyState(_ state: ChatEmptyView.State?)
+    func setCanSendAttachments(_ canSendAttachments: Bool)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -238,6 +239,10 @@ extension ChatViewController: ChatViewProtocol {
         } else {
             chatEmptyView.isHidden = true
         }
+    }
+    
+    func setCanSendAttachments(_ canSendAttachments: Bool) {
+        chatInputView.setCanSendAttachments(canSendAttachments)
     }
 }
 

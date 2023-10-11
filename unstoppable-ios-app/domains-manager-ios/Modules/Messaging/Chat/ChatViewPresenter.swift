@@ -74,6 +74,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         view?.setUIState(.loading)
         setupTitle()
         setupPlaceholder()
+        setupFunctionality()
         loadAndShowData()
     }
     
@@ -448,6 +449,20 @@ private extension ChatViewPresenter {
             let sender = userWallet?.reverseResolutionDomain?.name ?? profile.wallet.walletAddressTruncated
             let placeholder = String.Constants.chatInputPlaceholderAsDomain.localized(sender)
             view?.setPlaceholder(placeholder)
+        }
+    }
+    
+    func setupFunctionality() {
+        switch conversationState {
+        case .existingChat(let chat):
+            switch chat.type {
+            case .community:
+                view?.setCanSendAttachments(false)
+            case .private, .group:
+                return
+            }
+        case .newChat:
+            return
         }
     }
     
