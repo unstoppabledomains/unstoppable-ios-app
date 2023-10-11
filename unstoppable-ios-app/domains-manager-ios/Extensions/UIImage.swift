@@ -183,6 +183,8 @@ extension UIImage {
     static let systemArrowTurnUpRight = UIImage(systemName: "arrow.turn.up.right")!
     static let systemCamera = UIImage(systemName: "camera")!
     static let systemRectangleArrowRight = UIImage(systemName: "rectangle.portrait.and.arrow.right")!
+    static let systemCircle = UIImage(systemName: "circle")!
+    static let systemCheckmarkCircleFill = UIImage(systemName: "checkmark.circle.fill")!
     
 }
 

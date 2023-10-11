@@ -93,7 +93,7 @@ final class ChatsListViewController: BaseViewController {
     }
     
     override func shouldPopOnBackButton() -> Bool {
-        !searchBar.isEditing
+        !searchBar.isEditing && mode == .default
     }
     
     deinit { presenter.viewDeinit() }
@@ -149,7 +149,7 @@ extension ChatsListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        presenter.didSelectItem(item)
+        presenter.didSelectItem(item, mode: mode)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -199,7 +199,8 @@ private extension ChatsListViewController {
     }
     
     @objc func bulkBlockButtonPressed(_ sender: Any) {
-        
+        logButtonPressedAnalyticEvents(button: .bulkBlockButtonPressed)
+        presenter.actionButtonPressed()
     }
     
     @objc func newMessageButtonPressed() {
@@ -210,21 +211,37 @@ private extension ChatsListViewController {
     }
     
     @objc func editButtonPressed() {
-        logButtonPressedAnalyticEvents(button: .edit)
         UDVibration.buttonTap.vibrate()
         switch mode {
         case .default:
+            logButtonPressedAnalyticEvents(button: .edit)
             mode = .editing
             collectionView.contentInset.bottom = actionButtonContainerView.bounds.height
+            cNavigationBar?.setBackButton(hidden: true)
+            presenter.editingModeActionButtonPressed(.edit)
         case .editing:
+            logButtonPressedAnalyticEvents(button: .cancel)
             mode = .default
             collectionView.contentInset.bottom = 0
+            cNavigationBar?.setBackButton(hidden: false)
+            presenter.editingModeActionButtonPressed(.cancel)
         }
         
         setupActionButton()
         setupNavigation()
         cNavigationController?.updateNavigationBar()
         collectionView.reloadData()
+        switch mode {
+        case .default:
+            cNavigationBar?.setBackButton(hidden: false)
+        case .editing:
+            cNavigationBar?.setBackButton(hidden: true)
+        }
+    }
+    
+    @objc func selectAllButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+        presenter.editingModeActionButtonPressed(.selectAll)
     }
     
     func checkIfCollectionScrollingEnabled() {
@@ -303,15 +320,23 @@ private extension ChatsListViewController {
                 switch mode {
                 case .default:
                     buttonTitle = "Edit"
+                    navigationItem.leftBarButtonItem = nil
                 case .editing:
                     buttonTitle = String.Constants.cancel.localized()
+                    
+                    let selectAllButton = UIBarButtonItem(title: "Select all",
+                                                          style: .plain,
+                                                          target: self,
+                                                          action: #selector(selectAllButtonPressed))
+                    selectAllButton.tintColor = .foregroundDefault
+                    navigationItem.leftBarButtonItem = selectAllButton
                 }
-                let newMessageButton = UIBarButtonItem(title: buttonTitle,
-                                                       style: .plain,
-                                                       target: self,
-                                                       action: #selector(editButtonPressed))
-                newMessageButton.tintColor = .foregroundDefault
-                navigationItem.rightBarButtonItem = newMessageButton
+                let editButton = UIBarButtonItem(title: buttonTitle,
+                                                 style: .plain,
+                                                 target: self,
+                                                 action: #selector(editButtonPressed))
+                editButton.tintColor = .foregroundDefault
+                navigationItem.rightBarButtonItem = editButton
             case .channels:
                 title = String.Constants.spam.localized()
             }
@@ -329,13 +354,13 @@ private extension ChatsListViewController {
                 actionButtonContainerView.isHidden = true
             case .editing:
                 actionButtonContainerView.isHidden = false
-                let actionButton = PrimaryDangerButton()
-                actionButton.translatesAutoresizingMaskIntoConstraints = false
-                actionButton.addTarget(self, action: #selector(bulkBlockButtonPressed), for: .touchUpInside)
-                actionButton.setTitle(String.Constants.block.localized(),
+                let blockButton = PrimaryDangerButton()
+                blockButton.translatesAutoresizingMaskIntoConstraints = false
+                blockButton.addTarget(self, action: #selector(bulkBlockButtonPressed), for: .touchUpInside)
+                blockButton.setTitle(String.Constants.block.localized(),
                                       image: .systemMinusCircle)
                 actionButtonsStack.removeArrangedSubviews()
-                actionButtonsStack.addArrangedSubview(actionButton)
+                actionButtonsStack.addArrangedSubview(blockButton)
             }
         case .createProfile:
             actionButtonContainerView.isHidden = false
@@ -548,6 +573,7 @@ extension ChatsListViewController {
     
     struct ChatUIConfiguration: Hashable {
         let chat: MessagingChatDisplayInfo
+        var isSelected: Bool = false 
     }
     
     struct DomainSelectionUIConfiguration: Hashable {

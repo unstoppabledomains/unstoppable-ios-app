@@ -33,6 +33,7 @@ extension ChatListCell {
         let chat = configuration.chat
         let chatName = chatNameFrom(chat: chat)
         checkmarkIcon.isHidden = !isEditing
+        checkmarkIcon.image = configuration.isSelected ? .systemCheckmarkCircleFill : .systemCircle
         
         switch chat.type {
         case .private(let info):
