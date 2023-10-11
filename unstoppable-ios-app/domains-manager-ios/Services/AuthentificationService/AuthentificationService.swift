@@ -32,6 +32,8 @@ extension AuthentificationService: AuthentificationServiceProtocol {
         return context.biometryType
     }
     
+    var biometricIcon: UIImage? { biometricType == .faceID ? .faceIdIcon : .touchIdIcon }
+    
     func biometryState() -> BiometryState {
         var error: NSError?
         let context = LAContext()

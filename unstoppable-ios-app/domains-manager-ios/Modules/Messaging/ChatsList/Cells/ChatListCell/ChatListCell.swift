@@ -41,7 +41,6 @@ extension ChatListCell {
             Task { avatarImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(details.allMembers,
                                                                                                     iconSize: avatarImageView.bounds.width) }
         case .community(let details):
-            // TODO: - Communities
             avatarImageView.clipsToBounds = true
             avatarImageView.layer.borderWidth = 1
             setAvatarFrom(url: URL(string: details.displayIconUrl), name: chatName)

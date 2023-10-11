@@ -59,6 +59,7 @@ protocol MessagingServiceProtocol {
                      isRead: Bool,
                      wallet: String) throws
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL?
+    func isMessage(_ message: MessagingChatMessageDisplayInfo, belongTo profile: MessagingChatUserProfileDisplayInfo) async -> Bool
     
     // Channels
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]

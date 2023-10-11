@@ -367,7 +367,7 @@ extension MessagingService: MessagingServiceProtocol {
             userInfo.wallet = infoInChat.otherUser.wallet
             await storageService.saveMessagingUserInfo(userInfo)
             chat.displayInfo.type = .private(.init(otherUser: userInfo))
-        case .group, .community: // TODO: - Communities
+        case .group, .community: 
             Void()
         }
         await storageService.saveChats([chat])
@@ -416,6 +416,15 @@ extension MessagingService: MessagingServiceProtocol {
    
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? {
         await filesService.decryptedContentURLFor(message: message)
+    }
+    
+    func isMessage(_ message: MessagingChatMessageDisplayInfo, belongTo profile: MessagingChatUserProfileDisplayInfo) async -> Bool {
+        if message.userId == profile.id {
+            return true
+        } else if let communitiesProfile = try? await getUserCommunitiesProfile(for: profile) {
+            return message.userId == communitiesProfile.id
+        }
+        return false 
     }
     
     // Channels

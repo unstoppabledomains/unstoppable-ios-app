@@ -74,6 +74,7 @@ extension ChatViewPresenter: ChatViewPresenterProtocol {
         view?.setUIState(.loading)
         setupTitle()
         setupPlaceholder()
+        setupFunctionality()
         loadAndShowData()
     }
     
@@ -324,7 +325,10 @@ private extension ChatViewPresenter {
         var snapshot = ChatSnapshot()
         
         if messages.isEmpty {
-            if isLoading {
+            if case .existingChat(let chat) = conversationState,
+               case .community = chat.type {
+                view?.setEmptyState(.community)
+            } else if isLoading {
                 view?.setEmptyState(nil)
             } else {
                 if isAbleToContactUser {
@@ -448,6 +452,20 @@ private extension ChatViewPresenter {
         }
     }
     
+    func setupFunctionality() {
+        switch conversationState {
+        case .existingChat(let chat):
+            switch chat.type {
+            case .community:
+                view?.setCanSendAttachments(false)
+            case .private, .group:
+                return
+            }
+        case .newChat:
+            return
+        }
+    }
+    
     func setupBarButtons() async {
         var actions: [ChatViewController.NavButtonConfiguration.Action] = []
         
@@ -508,15 +526,21 @@ private extension ChatViewPresenter {
                     }))
                 }
             case .community(let details):
-                // TODO: - Communities
+                actions.append(.init(type: .viewInfo, callback: { [weak self] in
+                    self?.logButtonPressedAnalyticEvents(button: .viewCommunityInfo,
+                                                         parameters: [.communityName: details.displayName])
+                    self?.didPressViewCommunityInfoButton(communityDetails: details)
+                }))
                 if details.isJoined {
                     actions.append(.init(type: .leaveCommunity, callback: { [weak self] in
-                        self?.logButtonPressedAnalyticEvents(button: .viewGroupChatInfo)
+                        self?.logButtonPressedAnalyticEvents(button: .leaveCommunity,
+                                                             parameters: [.communityName: details.displayName])
                         self?.didPressLeaveCommunity(chat: chat)
                     }))
                 } else {
                     actions.append(.init(type: .joinCommunity, callback: { [weak self] in
-                        self?.logButtonPressedAnalyticEvents(button: .viewGroupChatInfo)
+                        self?.logButtonPressedAnalyticEvents(button: .joinCommunity,
+                                                             parameters: [.communityName: details.displayName])
                         self?.didPressJoinCommunity(chat: chat)
                     }))
                 }
@@ -540,13 +564,14 @@ private extension ChatViewPresenter {
     
     func didPressLeaveCommunity(chat: MessagingChatDisplayInfo) {
         Task {
+            view?.setLoading(active: true)
             do {
-                let updatedChat = try await messagingService.leaveCommunityChat(chat)
-                self.conversationState = .existingChat(updatedChat)
-                await setupBarButtons()
+                _ = try await messagingService.leaveCommunityChat(chat)
+                view?.cNavigationController?.popViewController(animated: true)
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
+            view?.setLoading(active: false)
         }
     }
     
@@ -566,7 +591,19 @@ private extension ChatViewPresenter {
         Task {
             guard let view else { return }
             
-            await appContext.pullUpViewService.showGroupChatInfoPullUp(groupChatDetails: groupDetails, in: view)
+            await appContext.pullUpViewService.showGroupChatInfoPullUp(groupChatDetails: groupDetails,
+                                                                       by: profile,
+                                                                       in: view)
+        }
+    }
+    
+    func didPressViewCommunityInfoButton(communityDetails: MessagingCommunitiesChatDetails) {
+        Task {
+            guard let view else { return }
+            
+            await appContext.pullUpViewService.showCommunityChatInfoPullUp(communityDetails: communityDetails,
+                                                                           by: profile,
+                                                                           in: view)
         }
     }
     

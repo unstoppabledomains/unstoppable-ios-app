@@ -13,6 +13,7 @@ protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func setState(_ state: ChatsListViewController.State)
     func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
     func stopSearching()
+    func setActivityIndicator(active: Bool)
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -34,7 +35,8 @@ final class ChatsListViewController: BaseViewController {
                                                         ChatListDataTypeSelectionCell.self,
                                                         ChatListRequestsCell.self,
                                                         ChatListCreateProfileCell.self,
-                                                        ChatListEmptyCell.self] }
+                                                        ChatListEmptyCell.self,
+                                                        CommunityListCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
     private var navView: ChatsListNavigationView!
@@ -139,6 +141,15 @@ extension ChatsListViewController: ChatsListViewProtocol {
             searchBar.text = ""
             searchBar.forceLayout()
             udSearchBarTextDidEndEditing(searchBar)
+        }
+    }
+    
+    func setActivityIndicator(active: Bool) {
+        view.isUserInteractionEnabled = !active
+        if active {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
         }
     }
 }
@@ -279,8 +290,7 @@ private extension ChatsListViewController {
             case .channels:
                 title = String.Constants.spam.localized()
             case .communities:
-                // TODO: - Communities
-                title = String.Constants.chatRequests.localized()
+                Debugger.printFailure("Requests section are not exist for communities", critical: true)
             }
             cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }
@@ -289,7 +299,7 @@ private extension ChatsListViewController {
     func setupActionButton() {
         var icon: UIImage?
         if User.instance.getSettings().touchIdActivated {
-            icon = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+            icon = appContext.authentificationService.biometricIcon
         }
         actionButton.setTitle(String.Constants.enable.localized(),
                               image: icon)
@@ -365,13 +375,16 @@ private extension ChatsListViewController {
                         switch dataType {
                         case .channels:
                             self?.searchMode = .channelsOnly
-                        case .chats, .communities: // TODO: - Communities
+                        case .chats:
                             self?.searchMode = .chatsOnly
+                        case .communities:
+                            self?.openLink(.communitiesInfo)
+                            return
                         }
                         self?.setSearchBarActive(true)
                     case .noCommunitiesProfile:
+                        self?.logButtonPressedAnalyticEvents(button: .createCommunityProfile)
                         self?.presenter.createCommunitiesProfileButtonPressed()
-                        // TODO: - Communities analytics
                     }
                 })
                 
@@ -384,6 +397,11 @@ private extension ChatsListViewController {
             case .emptySearch:
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
                 cell.setSearchStateUI()
+                
+                return cell
+            case .community(let configuration):
+                let cell = collectionView.dequeueCellOfType(CommunityListCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
                 
                 return cell
             }
@@ -499,10 +517,25 @@ extension ChatsListViewController {
         case emptyState(configuration: EmptyStateUIConfiguration)
         case userInfo(configuration: UserInfoUIConfiguration)
         case emptySearch
+        case community(configuration: CommunityUIConfiguration)
     }
     
     struct ChatUIConfiguration: Hashable {
         let chat: MessagingChatDisplayInfo
+    }
+    
+    struct CommunityUIConfiguration: Hashable {
+        let community: MessagingChatDisplayInfo
+        let communityDetails: MessagingCommunitiesChatDetails
+        let joinButtonPressedCallback: EmptyCallback
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.communityDetails == rhs.communityDetails
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(communityDetails)
+        }
     }
     
     struct DomainSelectionUIConfiguration: Hashable {
@@ -540,7 +573,7 @@ extension ChatsListViewController {
             case .chats:
                 return String.Constants.chats.localized()
             case .communities:
-                return "Communities" // TODO: - Communities
+                return String.Constants.communities.localized()
             case .channels:
                 return String.Constants.appsInbox.localized()
             }

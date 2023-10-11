@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         #if DEBUG
-        Debugger.setAllowedTopicsSet(.debugNetwork)
+        Debugger.setAllowedTopicsSet(.debugDefault)
 //        CoreDataMessagingStorageService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        MessagingFilesService(decrypterService: AESMessagingContentDecrypterService()).clear()
 //        Task {

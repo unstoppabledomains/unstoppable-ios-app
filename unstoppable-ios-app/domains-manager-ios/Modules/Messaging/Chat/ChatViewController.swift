@@ -19,6 +19,7 @@ protocol ChatViewProtocol: BaseDiffableCollectionViewControllerProtocol where Se
     func setUIState(_ state: ChatViewController.State)
     func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
     func setEmptyState(_ state: ChatEmptyView.State?)
+    func setCanSendAttachments(_ canSendAttachments: Bool)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -238,6 +239,10 @@ extension ChatViewController: ChatViewProtocol {
         } else {
             chatEmptyView.isHidden = true
         }
+    }
+    
+    func setCanSendAttachments(_ canSendAttachments: Bool) {
+        chatInputView.setCanSendAttachments(canSendAttachments)
     }
 }
 
@@ -779,9 +784,9 @@ extension ChatViewController {
                 case .copyAddress:
                     return String.Constants.copyAddress.localized()
                 case .joinCommunity:
-                    return "Join community" // TODO: - Communities
+                    return String.Constants.join.localized()
                 case .leaveCommunity:
-                    return "Leave community" // TODO: - Communities
+                    return String.Constants.leave.localized()
                 }
             }
             
@@ -791,12 +796,12 @@ extension ChatViewController {
                     return .arrowUpRight
                 case .block:
                     return .systemMultiplyCircle
-                case .leave, .leaveCommunity: // TODO: - Communities
+                case .leave, .leaveCommunity:
                     return .systemRectangleArrowRight
                 case .copyAddress:
                     return .systemDocOnDoc
                 case .joinCommunity:
-                    return .add // TODO: - Communities
+                    return .add
                 }
             }
             

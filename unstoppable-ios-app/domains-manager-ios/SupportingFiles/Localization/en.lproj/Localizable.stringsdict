@@ -434,6 +434,30 @@
 			<string>members</string>
 		</dict>
 	</dict>
+	<key>SDICT:N_HOLDERS</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%@ %#@holder@</string>
+		<key>holder</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>zero</key>
+			<string>holders</string>
+			<key>one</key>
+			<string>holder</string>
+			<key>two</key>
+			<string>holders</string>
+			<key>few</key>
+			<string>holders</string>
+			<key>many</key>
+			<string>holders</string>
+			<key>other</key>
+			<string>holders</string>
+		</dict>
+	</dict>
 	<key>SDICT:N_PROFILES_FOUND</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

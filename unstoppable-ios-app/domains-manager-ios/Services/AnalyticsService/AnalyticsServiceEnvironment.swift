@@ -103,6 +103,7 @@ extension Analytics {
         case messageType
         case feedName
         case isUserDomain
+        case communityName
     }
 }
 
@@ -280,15 +281,15 @@ extension Analytics {
         case inviteFriendInfo, copyLink
         
         // Messaging
-        case chatInList, groupChatInList, chatRequests, channelInList, channelsSpam, userToChatInList, domainToChatInList
+        case chatInList, groupChatInList, communityInList, chatRequests, channelInList, channelsSpam, userToChatInList, domainToChatInList
         case messagingProfileSelection, messagingProfileInList
         case messagingDataType
-        case newMessage, emptyMessagingAction
+        case newMessage, emptyMessagingAction, createCommunityProfile
         case createMessagingProfile
         case messageInputSend, messageInputPlus, messageInputPlusAction
         case viewMessagingProfile, viewGroupChatInfo
-        case viewChannelInfo, leaveChannel, learnMoreChannelFeed
-        case block, unblock, leaveGroup
+        case viewChannelInfo, leaveChannel, learnMoreChannelFeed, viewCommunityInfo
+        case block, unblock, leaveGroup, joinCommunity, leaveCommunity
         case resendMessage, deleteMessage
         case downloadUnsupportedMessage
         
@@ -344,7 +345,7 @@ extension Analytics {
         case logOutConfirmation, loggedInUserProfile
         case parkedDomainInfo, parkedDomainExpiresSoonInfo, parkedDomainTrialExpiresInfo, parkedDomainExpiredInfo
         case applePayRequired
-        case messagingChannelInfo
+        case messagingChannelInfo, messagingBlockConfirmation, messagingOpenExternalLink, messagingGroupChatInfo, messagingCommunityChatInfo
         case unencryptedMessageInfo
         
         // Disabled

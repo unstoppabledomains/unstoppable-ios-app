@@ -64,6 +64,7 @@ final class ChatsListViewPresenter {
         self.presentOptions = presentOptions
         self.messagingService = messagingService
         appContext.udWalletsService.addListener(self)
+        SceneDelegate.shared?.addListener(self)
     }
 }
 
@@ -89,7 +90,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             case .group:
                 logButtonPressedAnalyticEvents(button: .groupChatInList)
             case .community:
-                logButtonPressedAnalyticEvents(button: .chatInList) // TODO: - Communities
+                logButtonPressedAnalyticEvents(button: .communityInList)
             }
             openChatWith(conversationState: .existingChat(configuration.chat))
         case .chatRequests(let configuration):
@@ -97,7 +98,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             case .chats:
                 logButtonPressedAnalyticEvents(button: .chatRequests)
             case .communities:
-                logButtonPressedAnalyticEvents(button: .chatRequests) // TODO: - Communities
+                Debugger.printFailure("Requests section are not exist for communities", critical: true)
             case .channels:
                 logButtonPressedAnalyticEvents(button: .channelsSpam)
             }
@@ -113,6 +114,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 // TODO: - Move service determinition into MessagingService
                 openChatWith(conversationState: .newChat(.init(userInfo: configuration.userInfo, messagingService: .xmtp)))
             }
+        case .community(let configuration):
+            joinCommunity(configuration.community)
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
         }
@@ -176,6 +179,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                                                         profile: profile,
                                                         isCommunitiesEnabled: true,
                                                         isUDBlueEnabled: isUDBlueEnabled))
+                appContext.toastMessageService.showToast(.communityProfileEnabled, isSticky: false)
             } catch {
                 view.showAlertWith(error: error, handler: nil)
             }
@@ -230,7 +234,7 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
             }
             try await preselectProfile(profile, usingWallets: wallets)
         }
-        
+        view?.presentedViewController?.dismiss(animated: true)
         Task {
             do {
                 let appCoordinator = appContext.coreAppCoordinator
@@ -248,7 +252,8 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                     case .existingChat(chatId: let chatId):
                         if selectedProfileWalletPair?.profile?.id != profile.id ||
                             !appCoordinator.isActiveState(.chatOpened(chatId: chatId)) {
-                            try await prepareToAutoOpenWith(profile: profile, dataType: .chats)
+                            let dataType: ChatsListDataType = communitiesList.first(where: { $0.id == chatId }) != nil ? .communities : .chats
+                            try await prepareToAutoOpenWith(profile: profile, dataType: dataType)
                             tryAutoOpenChat(chatId, profile: profile)
                         }
                     case .newChat(let details):
@@ -303,9 +308,13 @@ extension ChatsListViewPresenter: MessagingServiceListener {
                    updateNavigationUI()
                }
            case .messageReadStatusUpdated(let message, let numberOfUnreadMessagesInSameChat):
-               if message.userId == selectedProfileWalletPair?.profile?.id,
-                  let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
-                   chatsList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
+               if let profile = selectedProfileWalletPair?.profile,
+                  await messagingService.isMessage(message, belongTo: profile) {
+                   if let i = chatsList.firstIndex(where: { $0.id == message.chatId }) {
+                       chatsList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
+                   } else if let i = communitiesList.firstIndex(where: { $0.id == message.chatId }) {
+                       communitiesList[i].unreadMessagesCount = numberOfUnreadMessagesInSameChat
+                   }
                    if numberOfUnreadMessagesInSameChat == 0 {
                        showData()
                    }
@@ -333,6 +342,27 @@ extension ChatsListViewPresenter: UDWalletsServiceListener {
             refreshAvailableWalletsList()
         case .walletRemoved:
             return
+        }
+    }
+}
+
+
+// MARK: - SceneActivationListener
+extension ChatsListViewPresenter: SceneActivationListener {
+    func didChangeSceneActivationState(to state: SceneActivationState) {
+        Task {
+            switch state {
+            case .foregroundActive:
+                if let selectedProfileWalletPair,
+                   !selectedProfileWalletPair.isUDBlueEnabled,
+                   let domain = selectedProfileWalletPair.wallet.reverseResolutionDomain {
+                    /// Refresh UDBlue status
+                    let isUDBlueEnabled = await getUDBlueEnabledStatus(for: domain)
+                    self.selectedProfileWalletPair?.isUDBlueEnabled = isUDBlueEnabled
+                }
+            default:
+                return
+            }
         }
     }
 }
@@ -614,7 +644,6 @@ private extension ChatsListViewPresenter {
         }
     }
     
-    // TODO: - Communities
     func fillSnapshotForUserCommunitiesList(_ snapshot: inout ChatsListSnapshot) {
         let communitiesList = getListOfUnblockedCommunities()
         
@@ -626,15 +655,74 @@ private extension ChatsListViewPresenter {
                 snapshot.appendSections([.emptyState])
                 snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: selectedDataType, isRequestsList: false))])
             } else {
-                snapshot.appendSections([.listItems(title: nil)])
-                let requestsList = communitiesList.requestsOnly()
-                let approvedList = communitiesList.confirmedOnly()
-                if !requestsList.isEmpty {
-                    snapshot.appendItems([.chatRequests(configuration: .init(dataType: selectedDataType,
-                                                                             numberOfRequests: requestsList.count))])
+                let groupedCommunities = groupCommunitiesByJoinStatus(communitiesList)
+                
+                func addNotJoinedCommunitiesIfPossible(withTitle: Bool) {
+                    guard !groupedCommunities.notJoined.isEmpty else { return }
+                    
+                    let title: String? = withTitle ? String.Constants.messagingCommunitiesSectionTitle.localized() : nil
+                    snapshot.appendSections([.listItems(title: title)])
+                    snapshot.appendItems(groupedCommunities.notJoined.compactMap({ createChatListItemForNotJoinedCommunity($0) }))
                 }
-                snapshot.appendItems(approvedList.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+                
+                if !groupedCommunities.joined.isEmpty {
+                    snapshot.appendSections([.listItems(title: nil)])
+                    snapshot.appendItems(groupedCommunities.joined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+                    
+                    addNotJoinedCommunitiesIfPossible(withTitle: true)
+                } else {
+                    addNotJoinedCommunitiesIfPossible(withTitle: false)
+                }
             }
+        }
+    }
+    typealias GroupedCommunities = (joined: [MessagingChatDisplayInfo], notJoined: [MessagingChatDisplayInfo])
+
+    func groupCommunitiesByJoinStatus(_ communities: [MessagingChatDisplayInfo]) -> GroupedCommunities {
+        communities.reduce(into: GroupedCommunities([], [])) { result, element in
+            switch element.type {
+            case .community(let details):
+                if details.isJoined {
+                    result.joined.append(element)
+                } else {
+                    result.notJoined.append(element)
+                }
+            default:
+                Void()
+            }
+        }
+    }
+    
+    func createChatListItemForNotJoinedCommunity(_ community: MessagingChatDisplayInfo) -> ChatsListViewController.Item? {
+        switch community.type {
+        case .community(let messagingCommunitiesChatDetails):
+            return .community(configuration: .init(community: community,
+                                                   communityDetails: messagingCommunitiesChatDetails,
+                                                   joinButtonPressedCallback: { [weak self] in
+                self?.logButtonPressedAnalyticEvents(button: .joinCommunity,
+                                                     parameters: [.communityName: messagingCommunitiesChatDetails.displayName])
+                self?.joinCommunity(community)
+            }))
+        default:
+            return nil
+        }
+    }
+    
+    func joinCommunity(_ community: MessagingChatDisplayInfo) {
+        guard let selectedProfileWalletPair,
+              selectedProfileWalletPair.isUDBlueEnabled else {
+            view?.openLinkExternally(.udBlue)
+            return
+        }
+        Task {
+            view?.setActivityIndicator(active: true)
+            do {
+                let chat = try await messagingService.joinCommunityChat(community)
+                openChatWith(conversationState: .existingChat(chat))
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+            view?.setActivityIndicator(active: false)
         }
     }
     
@@ -671,9 +759,11 @@ private extension ChatsListViewPresenter {
         let searchKey = searchData.searchKey.trimmedSpaces.lowercased()
 
         var people = [PeopleSearchResult]()
+        var communities = [MessagingChatDisplayInfo]()
         var channels = [MessagingNewsChannel]()
         if searchKey.isEmpty {
             people = chatsList.map({ .existingChat($0) })
+            communities = communitiesList
             channels = self.channels
         } else {
             /// Chats
@@ -698,6 +788,8 @@ private extension ChatsListViewPresenter {
             })
             people += remotePeople.map { .newUser($0) }
             
+            /// Communities
+            communities = communitiesList.filter { isChatMatchingSearchKey($0, searchKey: searchKey)}
             
             /// Channels
             let localChannels = self.channels.filter { $0.name.lowercased().contains(searchKey) }
@@ -711,8 +803,10 @@ private extension ChatsListViewPresenter {
             Void()
         case .chatsOnly:
             channels.removeAll()
+            communities.removeAll()
         case .channelsOnly:
             people.removeAll()
+            communities.removeAll()
         }
         
         if people.isEmpty && channels.isEmpty {
@@ -722,6 +816,12 @@ private extension ChatsListViewPresenter {
             if !people.isEmpty {
                 snapshot.appendSections([.listItems(title: String.Constants.people.localized())])
                 snapshot.appendItems(people.map({ $0.item }))
+            }
+            if !communities.isEmpty {
+                snapshot.appendSections([.listItems(title: String.Constants.communities.localized())])
+                let groupedCommunities = groupCommunitiesByJoinStatus(communities)
+                snapshot.appendItems(groupedCommunities.joined.map({ ChatsListViewController.Item.chat(configuration: .init(chat: $0)) }))
+                snapshot.appendItems(groupedCommunities.notJoined.compactMap({ createChatListItemForNotJoinedCommunity($0) }))
             }
             if !channels.isEmpty {
                 snapshot.appendSections([.listItems(title: String.Constants.apps.localized())])
@@ -739,7 +839,7 @@ private extension ChatsListViewPresenter {
             return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
         case .community(let details):
             let members = details.members
-            return members.first(where: { isUserMatchSearchKey($0, searchKey: searchKey) }) != nil
+            return details.displayName.lowercased().contains(searchKey)
         }
     }
     
@@ -753,7 +853,7 @@ private extension ChatsListViewPresenter {
     func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
         let chatsBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
         let inboxBadge = channels.reduce(0, { $0 + $1.unreadMessagesCount })
-        let communitiesBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
+        let communitiesBadge = communitiesList.reduce(0, { $0 + $1.unreadMessagesCount })
         
         return .init(dataTypesConfigurations: [.init(dataType: .chats, badge: chatsBadge),
                                                .init(dataType: .communities, badge: communitiesBadge),
@@ -788,7 +888,8 @@ private extension ChatsListViewPresenter {
                                               profile: profile,
                                               in: nav)
         case .communities:
-            return // TODO: - Communities
+            Debugger.printFailure("Requests section are not exist for communities", critical: true)
+            return
         case .channels:
             let channels = self.channels.filter { !$0.isCurrentUserSubscribed }
             guard !channels.isEmpty else { return }
@@ -859,7 +960,7 @@ private extension ChatsListViewPresenter {
         let wallet: WalletDisplayInfo
         let profile: MessagingChatUserProfileDisplayInfo?
         let isCommunitiesEnabled: Bool
-        let isUDBlueEnabled: Bool
+        var isUDBlueEnabled: Bool
     }
     
     struct SearchData {

@@ -50,7 +50,7 @@ private extension SecurityWallViewController {
     }
     
     func localizeContent() {
-        protectImageview.image = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+        protectImageview.image = appContext.authentificationService.biometricIcon
 
         let bioName = appContext.authentificationService.biometricsName ?? ""
         titleLabel.setTitle(String.Constants.securityWallMessage.localized(bioName))

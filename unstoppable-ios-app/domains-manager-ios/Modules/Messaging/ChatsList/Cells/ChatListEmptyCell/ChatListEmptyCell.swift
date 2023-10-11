@@ -16,11 +16,6 @@ final class ChatListEmptyCell: UICollectionViewCell {
     
     private var actionButtonCallback: EmptyCallback?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-    }
-
 }
 
 // MARK: - Open methods
@@ -42,14 +37,13 @@ extension ChatListEmptyCell {
             setActionButtonWith(dataType: dataType)
             actionButton.isHidden = isRequestsList
         case .noCommunitiesProfile:
-            // TODO: - Communities
-            setTitle("Let's explore communities")
-            setSubtitle("Create profile to join and interact with communities")
+            setTitle(String.Constants.messagingCommunitiesListEnableTitle.localized())
+            setSubtitle(String.Constants.messagingCommunitiesListEnableSubtitle.localized())
             
-            iconImageView.image = .messageCircleIcon24
+            iconImageView.image = .chatRequestsIcon
             
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
-            actionButton.setTitle("Create profile", image: .newMessageIcon)
+            actionButton.setTitle(String.Constants.enable.localized(), image: appContext.authentificationService.biometricIcon)
             actionButton.isHidden = false
         }
     }
@@ -87,8 +81,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptyTitle.localized()
-            case .communities:// TODO: - Communities
-                return String.Constants.messagingChatsListEmptyTitle.localized()
+            case .communities:
+                return String.Constants.messagingCommunitiesEmptyTitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptyTitle.localized()
             }
@@ -102,8 +96,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptySubtitle.localized()
-            case .communities:// TODO: - Communities
-                return String.Constants.messagingChatsListEmptySubtitle.localized()
+            case .communities:
+                return String.Constants.messagingCommunitiesEmptySubtitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptySubtitle.localized()
             }
@@ -115,9 +109,9 @@ private extension ChatListEmptyCell {
         case .chats:
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
             actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
-        case .communities:// TODO: - Communities
+        case .communities:
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
-            actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
+            actionButton.setTitle(String.Constants.learnMore.localized(), image: .infoIcon)
         case .channels:
             actionButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
             actionButton.setTitle(String.Constants.searchApps.localized(), image: .searchIcon)
