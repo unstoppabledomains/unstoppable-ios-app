@@ -339,12 +339,12 @@ private extension ChatsListViewController {
                 let buttonTitle: String
                 switch mode {
                 case .default:
-                    buttonTitle = "Edit"
+                    buttonTitle = String.Constants.editButtonTitle.localized()
                     navigationItem.leftBarButtonItem = nil
                 case .editing:
                     buttonTitle = String.Constants.cancel.localized()
                     
-                    let selectAllButton = UIBarButtonItem(title: "Select all",
+                    let selectAllButton = UIBarButtonItem(title: String.Constants.selectAll.localized(),
                                                           style: .plain,
                                                           target: self,
                                                           action: #selector(selectAllButtonPressed))
