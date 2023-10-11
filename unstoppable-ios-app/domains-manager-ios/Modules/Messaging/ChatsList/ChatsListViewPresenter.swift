@@ -114,8 +114,8 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
                 // TODO: - Move service determinition into MessagingService
                 openChatWith(conversationState: .newChat(.init(userInfo: configuration.userInfo, messagingService: .xmtp)))
             }
-        case .community:
-            return
+        case .community(let configuration):
+            joinCommunity(configuration.community)
         case .dataTypeSelection, .createProfile, .emptyState, .emptySearch:
             return
         }
@@ -678,7 +678,9 @@ private extension ChatsListViewPresenter {
                     snapshot.appendItems(groupedCommunities.notJoined.compactMap({ community -> ChatsListViewController.Item? in
                         switch community.type {
                         case .community(let messagingCommunitiesChatDetails):
-                            return .community(configuration: .init(communityDetails: messagingCommunitiesChatDetails, joinButtonPressedCallback: { [weak self] in
+                            return .community(configuration: .init(community: community,
+                                                                   communityDetails: messagingCommunitiesChatDetails,
+                                                                   joinButtonPressedCallback: { [weak self] in
                                 self?.logButtonPressedAnalyticEvents(button: .joinCommunity,
                                                                      parameters: [.communityName: messagingCommunitiesChatDetails.displayName])
                                 self?.joinCommunity(community)

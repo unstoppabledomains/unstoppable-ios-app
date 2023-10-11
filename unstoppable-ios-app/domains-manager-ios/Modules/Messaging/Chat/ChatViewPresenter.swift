@@ -549,13 +549,14 @@ private extension ChatViewPresenter {
     
     func didPressLeaveCommunity(chat: MessagingChatDisplayInfo) {
         Task {
+            view?.setLoading(active: true)
             do {
-                let updatedChat = try await messagingService.leaveCommunityChat(chat)
-                self.conversationState = .existingChat(updatedChat)
-                await setupBarButtons()
+                _ = try await messagingService.leaveCommunityChat(chat)
+                view?.cNavigationController?.popViewController(animated: true)
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
+            view?.setLoading(active: false)
         }
     }
     

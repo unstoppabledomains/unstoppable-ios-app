@@ -525,6 +525,7 @@ extension ChatsListViewController {
     }
     
     struct CommunityUIConfiguration: Hashable {
+        let community: MessagingChatDisplayInfo
         let communityDetails: MessagingCommunitiesChatDetails
         let joinButtonPressedCallback: EmptyCallback
         
