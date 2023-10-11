@@ -129,7 +129,6 @@ extension NetworkService {
     }
     
     struct DomainResponse: Decodable {
-        let id: Int
         let name: String
         let ownerAddress: String?
         let resolver: String?
@@ -304,9 +303,8 @@ extension NetworkService {
     }
     
     func fetchAllPages<T: PaginatedFetchable>(for originItems: [T.O]) async throws -> [T] {
-        let perPage = 1000
+        let perPage = 50
         let result: [T] = try await fetchAllPages(for: originItems, startingWith: 1, perPage: perPage, result: [])
-        
         return result
     }
     

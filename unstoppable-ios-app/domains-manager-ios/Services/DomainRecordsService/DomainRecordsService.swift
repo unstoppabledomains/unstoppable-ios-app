@@ -9,15 +9,6 @@ import Foundation
 
 // MARK: - DomainRecordsServiceProtocol
 final class DomainRecordsService: DomainRecordsServiceProtocol {
-    func getRecordsFor(domain: DomainItem) async throws -> DomainRecordsData {
-        let start = Date()
-        let domainRecordsData = try await NetworkService().fetchRecords(domain: domain)
-        Debugger.printTimeSensitiveInfo(topic: .Domain,
-                                        "to load \(domainRecordsData.records.count) domain records for \(domain.name) domain",
-                                        startDate: start,
-                                        timeout: 2)
-        return domainRecordsData
-    }
     
     func saveRecords(records: [RecordToUpdate],
                      in domain: DomainItem,
