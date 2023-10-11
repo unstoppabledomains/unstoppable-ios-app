@@ -76,7 +76,13 @@ extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
     func actionButtonPressed() {
         guard !selectedChats.isEmpty else { return }
         
-        
+        Task {
+            do {
+                try await appContext.messagingService.block(chats: selectedChats)
+            } catch {
+                view?.showAlertWith(error: error, handler: nil)
+            }
+        }
     }
     
     func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction) {

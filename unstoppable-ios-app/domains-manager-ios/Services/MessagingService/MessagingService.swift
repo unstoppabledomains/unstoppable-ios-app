@@ -221,6 +221,25 @@ extension MessagingService: MessagingServiceProtocol {
         }
     }
     
+    func block(chats: [MessagingChatDisplayInfo]) async throws {
+        guard !chats.isEmpty else { return }
+        
+        let profile = try await getUserProfileWith(wallet: chats[0].thisUserDetails.wallet)
+        var messagingChats = [MessagingChat]()
+        for chat in chats {
+            let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
+            messagingChats.append(chat)
+        }
+        
+        try await apiService.block(chats: messagingChats, by: profile)
+        if Constants.shouldHideBlockedUsersLocally {
+            for chat in messagingChats {
+                try? await storageService.markAllMessagesIn(chat: chat, isRead: true)
+            }
+            notifyChatsChanged(wallet: profile.wallet)
+        }
+    }
+    
     // Messages
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
