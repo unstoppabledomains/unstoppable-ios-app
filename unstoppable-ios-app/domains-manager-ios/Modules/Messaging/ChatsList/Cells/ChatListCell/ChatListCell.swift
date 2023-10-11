@@ -15,6 +15,7 @@ final class ChatListCell: BaseListCollectionViewCell {
     @IBOutlet private weak var lastMessageLabel: UILabel!
     @IBOutlet private weak var badgeView: UnreadMessagesBadgeView!
     @IBOutlet private weak var chevron: UIImageView!
+    @IBOutlet private weak var checkmarkIcon: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,9 +28,12 @@ final class ChatListCell: BaseListCollectionViewCell {
 
 // MARK: - Open methods
 extension ChatListCell {
-    func setWith(configuration: ChatsListViewController.ChatUIConfiguration) {
+    func setWith(configuration: ChatsListViewController.ChatUIConfiguration,
+                 isEditing: Bool) {
         let chat = configuration.chat
         let chatName = chatNameFrom(chat: chat)
+        checkmarkIcon.isHidden = !isEditing
+        checkmarkIcon.image = configuration.isSelected ? .systemCheckmarkCircleFill : .systemCircle
         
         switch chat.type {
         case .private(let info):
@@ -67,6 +71,7 @@ extension ChatListCell {
         setNameText(chatName)
         setAvatarFrom(url: channel.icon, name: chatName)
         badgeView.setUnreadMessagesCount(channel.unreadMessagesCount)
+        checkmarkIcon.isHidden = true
         
         if let lastMessage = channel.lastMessage {
             setTimeText(lastMessage.time)
@@ -88,6 +93,7 @@ extension ChatListCell {
         setNameText(chatName)
         setAvatarFrom(url: userInfo.pfpURL, name: chatName)
         badgeView.setUnreadMessagesCount(0)
+        checkmarkIcon.isHidden = true
 
         setTimeText(nil)
         if let rrDomain = userInfo.rrDomainName {

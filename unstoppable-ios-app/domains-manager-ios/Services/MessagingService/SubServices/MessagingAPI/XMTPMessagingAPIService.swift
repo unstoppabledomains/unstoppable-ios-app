@@ -134,19 +134,15 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func setUser(in chat: MessagingChat, blocked: Bool, by user: MessagingChatUserProfile) async throws {
         switch chat.displayInfo.type {
         case .private:
-            let env = getCurrentXMTPEnvironment()
-            let client = try await XMTPServiceHelper.getClientFor(user: user,
-                                                                  env: env)
-            let chatTopic = chat.displayInfo.id
-            try await XMTPPushNotificationsHelper.makeChatRequestFor(topic: chatTopic,
-                                                                     blocked: blocked,
-                                                                     by: client)
-            let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
-            let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
-            blockedUsersStorage.updatedBlockedUsersListFor(userId: chat.userId, blockedTopics: notificationsPreferences.blockedTopics)
+            try await setChats(chats: [chat], blocked: blocked, by: user)
         case .group, .community:
             throw XMTPServiceError.unsupportedAction
         }
+    }
+    
+    func block(chats: [MessagingChat],
+               by user: MessagingChatUserProfile) async throws {
+        try await setChats(chats: chats, blocked: true, by: user)
     }
     
     func isAbleToContactAddress(_ address: String,
@@ -355,6 +351,23 @@ private extension XMTPMessagingAPIService {
                 Debugger.printFailure("Failed to set subscribed: \(isSubscribed) for XMTP topics")
             }
         }
+    }
+    
+    func setChats(chats: [MessagingChat],
+                  blocked: Bool,
+                  by user: MessagingChatUserProfile) async throws {
+        guard !chats.isEmpty else { return }
+        
+        let env = getCurrentXMTPEnvironment()
+        let client = try await XMTPServiceHelper.getClientFor(user: user,
+                                                              env: env)
+        let chatTopics = chats.map { $0.displayInfo.id }
+        try await XMTPPushNotificationsHelper.makeChatRequestFor(topics: chatTopics,
+                                                                 blocked: blocked,
+                                                                 by: client)
+        let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
+        let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
+        blockedUsersStorage.updatedBlockedUsersListFor(userId: chats[0].userId, blockedTopics: notificationsPreferences.blockedTopics)
     }
 }
 

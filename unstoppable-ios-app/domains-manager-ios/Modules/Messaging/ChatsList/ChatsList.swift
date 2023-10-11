@@ -28,6 +28,10 @@ extension ChatsList {
         case chatsOnly
         case channelsOnly
     }
+    
+    enum EditingModeAction {
+        case edit, cancel, selectAll
+    }
 }
 
 extension ChatsList {

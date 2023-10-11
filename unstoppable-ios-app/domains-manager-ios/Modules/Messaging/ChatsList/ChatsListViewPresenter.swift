@@ -11,9 +11,10 @@ import Foundation
 protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { get }
     
-    func didSelectItem(_ item: ChatsListViewController.Item)
+    func didSelectItem(_ item: ChatsListViewController.Item, mode: ChatsListViewController.Mode)
     func didSelectWallet(_ wallet: WalletDisplayInfo)
     func actionButtonPressed()
+    func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction)
     
     func createCommunitiesProfileButtonPressed()
     func didStartSearch(with mode: ChatsList.SearchMode)
@@ -25,6 +26,7 @@ extension ChatsListViewPresenterProtocol {
     func didSelectWallet(_ wallet: WalletDisplayInfo) { }
     func actionButtonPressed() { }
     func createCommunitiesProfileButtonPressed() { }
+    func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction) { }
     func didStartSearch(with mode: ChatsList.SearchMode) { }
     func didStopSearch() { }
     func didSearchWith(key: String) { }
@@ -75,7 +77,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         loadAndShowData()
     }
     
-    func didSelectItem(_ item: ChatsListViewController.Item) {
+    func didSelectItem(_ item: ChatsListViewController.Item, mode: ChatsListViewController.Mode) {
         UDVibration.buttonTap.vibrate()
         view?.stopSearching()
         switch item {

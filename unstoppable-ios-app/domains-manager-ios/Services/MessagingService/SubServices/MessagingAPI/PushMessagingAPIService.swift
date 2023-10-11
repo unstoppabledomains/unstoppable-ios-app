@@ -367,6 +367,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         }
     }
     
+    func block(chats: [MessagingChat],
+               by user: MessagingChatUserProfile) async throws {
+        throw PushMessagingAPIServiceError.actionNotSupported /// Since we work with XMTP chats only ATM
+    }
+    
     func isAbleToContactAddress(_ address: String,
                                 by user: MessagingChatUserProfile) async throws -> Bool {
         true
