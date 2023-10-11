@@ -13,6 +13,7 @@ protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func setState(_ state: ChatsListViewController.State)
     func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
     func stopSearching()
+    func setActivityIndicator(active: Bool)
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -142,6 +143,15 @@ extension ChatsListViewController: ChatsListViewProtocol {
             udSearchBarTextDidEndEditing(searchBar)
         }
     }
+    
+    func setActivityIndicator(active: Bool) {
+        view.isUserInteractionEnabled = !active
+        if active {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -201,6 +211,7 @@ private extension ChatsListViewController {
     @objc func bulkBlockButtonPressed(_ sender: Any) {
         logButtonPressedAnalyticEvents(button: .bulkBlockButtonPressed)
         presenter.actionButtonPressed()
+        toggleCurrentMode()
     }
     
     @objc func newMessageButtonPressed() {
@@ -215,16 +226,25 @@ private extension ChatsListViewController {
         switch mode {
         case .default:
             logButtonPressedAnalyticEvents(button: .edit)
-            mode = .editing
-            collectionView.contentInset.bottom = actionButtonContainerView.bounds.height
-            cNavigationBar?.setBackButton(hidden: true)
             presenter.editingModeActionButtonPressed(.edit)
         case .editing:
             logButtonPressedAnalyticEvents(button: .cancel)
+            presenter.editingModeActionButtonPressed(.cancel)
+        }
+        
+        toggleCurrentMode()
+    }
+    
+    func toggleCurrentMode() {
+        switch mode {
+        case .default:
+            mode = .editing
+            collectionView.contentInset.bottom = actionButtonContainerView.bounds.height
+            cNavigationBar?.setBackButton(hidden: true)
+        case .editing:
             mode = .default
             collectionView.contentInset.bottom = 0
             cNavigationBar?.setBackButton(hidden: false)
-            presenter.editingModeActionButtonPressed(.cancel)
         }
         
         setupActionButton()

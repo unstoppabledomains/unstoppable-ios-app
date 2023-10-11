@@ -74,14 +74,20 @@ extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
     }
     
     func actionButtonPressed() {
-        guard !selectedChats.isEmpty else { return }
+        guard !selectedChats.isEmpty,
+              case .chatRequests(let chats) = dataType else { return }
         
         Task {
+            view?.setActivityIndicator(active: true)
             do {
                 try await appContext.messagingService.block(chats: selectedChats)
+                if chats.count == selectedChats.count {
+                    view?.cNavigationController?.popViewController(animated: true)
+                }
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
+            view?.setActivityIndicator(active: false)
         }
     }
     
