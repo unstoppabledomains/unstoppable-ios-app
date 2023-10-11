@@ -358,7 +358,7 @@ private extension ChatsListViewController {
                 blockButton.translatesAutoresizingMaskIntoConstraints = false
                 blockButton.addTarget(self, action: #selector(bulkBlockButtonPressed), for: .touchUpInside)
                 blockButton.setTitle(String.Constants.block.localized(),
-                                      image: .systemMinusCircle)
+                                      image: .systemMultiplyCircle)
                 actionButtonsStack.removeArrangedSubviews()
                 actionButtonsStack.addArrangedSubview(blockButton)
             }
