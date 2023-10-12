@@ -76,6 +76,9 @@ protocol MessagingServiceProtocol {
                                searchKey: String,
                                for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
     
+    // Spam
+    func isAddressIsSpam(_ address: String) async throws -> Bool
+    
     // Listeners
     func addListener(_ listener: MessagingServiceListener)
     func removeListener(_ listener: MessagingServiceListener)
