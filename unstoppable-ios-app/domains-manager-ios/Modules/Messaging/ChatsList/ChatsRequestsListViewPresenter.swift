@@ -15,7 +15,10 @@ final class ChatsRequestsListViewPresenter {
     private let profile: MessagingChatUserProfileDisplayInfo
     private var dataType: DataType
     private var selectedChats: [MessagingChatDisplayInfo] = []
-    
+    private var spamWalletsList: Set<String> = []
+    private var verifiedWalletsList: Set<String> = []
+    private let serialQueue = DispatchQueue(label: "ChatsRequestsListViewPresenter.queue")
+
     init(view: ChatsListViewProtocol,
          dataType: DataType,
          profile: MessagingChatUserProfileDisplayInfo) {
@@ -48,6 +51,7 @@ extension ChatsRequestsListViewPresenter: ChatsListViewPresenterProtocol {
             view?.setState(.requestsList(.channels))
         }
         showData()
+        checkForSpamChats()
     }
     
     func didSelectItem(_ item: ChatsListViewController.Item, mode: ChatsListViewController.Mode) {
@@ -117,6 +121,7 @@ extension ChatsRequestsListViewPresenter: MessagingServiceListener {
                     let requests = chats.unblockedOnly().requestsOnly()
                     self.dataType = .chatRequests(requests)
                     showData()
+                    checkForSpamChats()
                 }
             case .channels(let channels, let profile):
                 if profile.id == self.profile.id,
@@ -160,8 +165,10 @@ private extension ChatsRequestsListViewPresenter {
                 snapshot.appendSections([.listItems(title: nil)])
                 snapshot.appendItems(requests.map({ request in
                     let isSelected = selectedChats.first(where: { $0.id == request.id }) != nil
+                    let isSpam = isChatIsSpam(request)
                     return ChatsListViewController.Item.chat(configuration: .init(chat: request,
-                                                                                  isSelected: isSelected))
+                                                                                  isSelected: isSelected,
+                                                                                  isSpam: isSpam))
                 }))
             }
         case .channelsSpam(let requests):
@@ -170,6 +177,22 @@ private extension ChatsRequestsListViewPresenter {
         }
         
         view?.applySnapshot(snapshot, animated: true)
+    }
+    
+    func getPrivateChatUserWallet(_ chat: MessagingChatDisplayInfo) -> String? {
+        switch chat.type {
+        case .private(let details):
+            return details.otherUser.wallet
+        case .group:
+            return nil
+        }
+    }
+    
+    func isChatIsSpam(_ chat: MessagingChatDisplayInfo) -> Bool {
+        if let wallet = getPrivateChatUserWallet(chat) {
+            return spamWalletsList.contains(wallet)
+        }
+        return false
     }
     
     func openChat(_ chat: MessagingChatDisplayInfo) {
@@ -188,6 +211,41 @@ private extension ChatsRequestsListViewPresenter {
                                      in: nav)
     }
     
+    func checkForSpamChats() {
+        Task {
+            switch dataType {
+            case .chatRequests(let chats):
+                await withTaskGroup(of: Void.self) { group in
+                    for chat in chats {
+                        if let wallet = getPrivateChatUserWallet(chat),
+                           !verifiedWalletsList.contains(wallet) {
+                            group.addTask {
+                                try? await self.verifyWallet(wallet)
+                                return Void()
+                            }
+                        }
+                    }
+                    
+                    for await _ in group {
+                        
+                    }
+                }
+                showData()
+            case .channelsSpam:
+                return
+            }
+        }
+    }
+    
+    func verifyWallet(_ wallet: String) async throws {
+        let isSpam = try await appContext.messagingService.isAddressIsSpam(wallet)
+        serialQueue.sync {
+            if isSpam {
+                spamWalletsList.insert(wallet)
+            }
+            verifiedWalletsList.insert(wallet)
+        }
+    }
 }
 
 // MARK: - Open methods

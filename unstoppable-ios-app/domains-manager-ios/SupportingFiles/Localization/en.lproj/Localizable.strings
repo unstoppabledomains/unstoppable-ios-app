@@ -840,6 +840,7 @@
 "MESSAGING_OPEN_LINK_ACTION_TITLE" = "Open link";
 "MESSAGING_CANCEL_AND_BLOCK_ACTION_TITLE" = "Cancel & block user";
 "MESSAGING_OPEN_LINK_WARNING_MESSAGE" = "Opening links can result in the loss of your crypto assets. Do not click this link unless you are sure it is from a safe source.";
+"MESSAGING_USER_REPORTED_AS_SPAM_MESSAGE" = "⚠️ Others have reported this sender as spam";
 
 // Public profile
 "FOLLOWERS" = "Followers";

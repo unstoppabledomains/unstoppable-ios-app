@@ -58,6 +58,10 @@ extension ChatListCell {
             setTimeText(nil)
             setLastMessageText("")
         }
+        if configuration.isSpam {
+            setLastMessageText(String.Constants.messagingUserReportedAsSpamMessage.localized(),
+                               isSpam: true)
+        }
         chevron.isHidden = true
     }
     
@@ -140,10 +144,11 @@ private extension ChatListCell {
                                             lineBreakMode: .byTruncatingTail)
     }
     
-    func setLastMessageText(_ text: String) {
+    func setLastMessageText(_ text: String,
+                            isSpam: Bool = false) {
         lastMessageLabel.setAttributedTextWith(text: text,
                                                font: .currentFont(withSize: 14, weight: .regular),
-                                               textColor: .foregroundSecondary,
+                                               textColor: isSpam ? .foregroundWarning : .foregroundSecondary,
                                                lineHeight: 20,
                                                lineBreakMode: .byTruncatingTail)
     }
