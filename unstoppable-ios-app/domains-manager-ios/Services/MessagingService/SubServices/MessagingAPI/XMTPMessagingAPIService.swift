@@ -238,6 +238,10 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,
                                                                        isApproved: true) else { throw XMTPServiceError.failedToParseChat }
+        Task.detached {
+            /// To not keep user waiting
+            try? await self.makeChatRequest(chat, approved: true, by: user)
+        }
         var message = try await sendMessage(messageType,
                                             in: conversation,
                                             client: client,
