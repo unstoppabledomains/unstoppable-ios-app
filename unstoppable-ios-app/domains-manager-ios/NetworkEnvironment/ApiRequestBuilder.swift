@@ -796,6 +796,7 @@ extension Endpoint {
         )
     }
     
+
     static func joinBadgeCommunity(body: String) -> Endpoint {
         //https://messaging.ud-staging.com/api/push/group/join
         return Endpoint(
@@ -813,6 +814,16 @@ extension Endpoint {
             path: "/api/push/group/leave",
             queryItems: [],
             body: body
+        )
+    }
+            
+    static func getSpamStatus(for address: HexAddress) -> Endpoint {
+        //https://api.unstoppabledomains.com/messaging/xmtp/spam/0x9B4Ed628640A73154895e369AE39a93732535924
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/messaging/xmtp/spam/\(address)",
+            queryItems: [],
+            body: ""
         )
     }
     

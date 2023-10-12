@@ -553,6 +553,17 @@ extension MessagingService: MessagingServiceProtocol {
         return channels
     }
     
+    // Spam
+    func isAddressIsSpam(_ address: String) async throws -> Bool {
+        struct Response: Codable {
+            let isSpam: Bool
+        }
+        
+        let endpoint = Endpoint.getSpamStatus(for: address)
+        let response: Response = try await NetworkService().fetchDecodableDataFor(endpoint: endpoint, method: .get)
+        return response.isSpam
+    }
+    
     // Listeners
     func addListener(_ listener: MessagingServiceListener) {
         if !listenerHolders.contains(where: { $0.listener === listener }) {
