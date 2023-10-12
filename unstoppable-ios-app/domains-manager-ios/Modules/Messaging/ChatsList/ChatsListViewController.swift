@@ -594,6 +594,7 @@ extension ChatsListViewController {
     struct ChatUIConfiguration: Hashable {
         let chat: MessagingChatDisplayInfo
         var isSelected: Bool = false 
+        var isSpam: Bool = false 
     }
     
     struct DomainSelectionUIConfiguration: Hashable {
