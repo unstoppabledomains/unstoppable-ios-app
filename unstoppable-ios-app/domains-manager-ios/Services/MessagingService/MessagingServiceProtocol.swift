@@ -10,6 +10,7 @@ import Foundation
 //MARK: - This is draft implementation to make UI done.
 protocol MessagingServiceProtocol {
     // Capabilities
+    var defaultServiceIdentifier: MessagingServiceIdentifier { get }
     func canContactWithoutProfileIn(newConversation newConversationDescription: MessagingChatNewConversationDescription) -> Bool
     func canBlockUsers(in chat: MessagingChatDisplayInfo) -> Bool
     func isAbleToContactUserIn(newConversation newConversationDescription: MessagingChatNewConversationDescription,

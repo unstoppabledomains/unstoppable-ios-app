@@ -113,8 +113,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
             if let existingChat = chatsList.first(where: { $0.type.otherUserDisplayInfo?.wallet.normalized == configuration.userInfo.wallet.normalized }) {
                 openChatWith(conversationState: .existingChat(existingChat))
             } else {
-                // TODO: - Move service determinition into MessagingService
-                openChatWith(conversationState: .newChat(.init(userInfo: configuration.userInfo, messagingService: .xmtp)))
+                openChatWith(conversationState: .newChat(.init(userInfo: configuration.userInfo, messagingService: messagingService.defaultServiceIdentifier)))
             }
         case .community(let configuration):
             joinCommunity(configuration.community)

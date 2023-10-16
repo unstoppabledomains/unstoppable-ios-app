@@ -16,6 +16,8 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
+    var defaultServiceIdentifier: MessagingServiceIdentifier { .xmtp }
+
     func canContactWithoutProfileIn(newConversation newConversationDescription: MessagingChatNewConversationDescription) -> Bool { true }
     func canBlockUsers(in chat: MessagingChatDisplayInfo) -> Bool { true }
     func isAbleToContactUserIn(newConversation newConversationDescription: MessagingChatNewConversationDescription,
