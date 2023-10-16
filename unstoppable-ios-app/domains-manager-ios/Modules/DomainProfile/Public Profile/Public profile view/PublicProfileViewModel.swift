@@ -36,7 +36,7 @@ extension PublicProfileView {
         private weak var delegate: PublicProfileViewDelegate?
         private(set) var domain: PublicDomainDisplayInfo
         private(set) var viewingDomain: DomainItem
-        @Published var records: [String : String]?
+        @Published var records: [CryptoRecord]?
         @Published var socialInfo: DomainProfileSocialInfo?
         @Published var socialAccounts: SocialAccounts?
         @Published var error: Error?
@@ -162,13 +162,21 @@ extension PublicProfileView {
                     await waitForAppear()
                     self.profile = profile
                     isUserDomainSelected = domains.first(where: { $0.name == domain.name }) != nil
-                    records = profile.records
+                    records = await convertRecordsFrom(recordsDict: profile.records ?? [:])
                     socialInfo = profile.social
                     socialAccounts = profile.socialAccounts
                     isLoading = false
                     loadImages()
                 }
             }
+        }
+        
+        private func convertRecordsFrom(recordsDict: [String: String]) async -> [CryptoRecord] {
+            let currencies = await appContext.coinRecordsService.getCurrencies()
+            let recordsData = DomainRecordsData(from: recordsDict,
+                                                coinRecords: currencies,
+                                                resolver: nil)
+            return recordsData.records
         }
         
         private func loadFollowingState() {

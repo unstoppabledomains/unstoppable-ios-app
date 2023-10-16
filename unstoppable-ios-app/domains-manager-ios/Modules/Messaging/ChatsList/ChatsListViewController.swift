@@ -13,6 +13,7 @@ protocol ChatsListViewProtocol: BaseCollectionViewControllerProtocol {
     func setState(_ state: ChatsListViewController.State)
     func setNavigationWith(selectedWallet: WalletDisplayInfo, wallets: [ChatsListNavigationView.WalletTitleInfo], isLoading: Bool)
     func stopSearching()
+    func setActivityIndicator(active: Bool)
 }
 
 typealias ChatsListDataType = ChatsListViewController.DataType
@@ -24,8 +25,8 @@ final class ChatsListViewController: BaseViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
-    @IBOutlet private weak var actionButton: MainButton!
     @IBOutlet private weak var actionButtonContainerView: UIView!
+    @IBOutlet private weak var actionButtonsStack: UIStackView!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     
@@ -60,6 +61,7 @@ final class ChatsListViewController: BaseViewController {
         }
     }()
     private var searchMode: ChatsList.SearchMode = .default
+    private var mode: Mode = .default
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,7 +94,7 @@ final class ChatsListViewController: BaseViewController {
     }
     
     override func shouldPopOnBackButton() -> Bool {
-        !searchBar.isEditing
+        !searchBar.isEditing && mode == .default
     }
     
     deinit { presenter.viewDeinit() }
@@ -141,6 +143,15 @@ extension ChatsListViewController: ChatsListViewProtocol {
             udSearchBarTextDidEndEditing(searchBar)
         }
     }
+    
+    func setActivityIndicator(active: Bool) {
+        view.isUserInteractionEnabled = !active
+        if active {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
+    }
 }
 
 // MARK: - UICollectionViewDelegate
@@ -148,7 +159,7 @@ extension ChatsListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
         
-        presenter.didSelectItem(item)
+        presenter.didSelectItem(item, mode: mode)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -192,9 +203,15 @@ extension ChatsListViewController: UDSearchBarDelegate {
 
 // MARK: - Private functions
 private extension ChatsListViewController {
-    @IBAction func actionButtonPressed(_ sender: Any) {
+    @objc func actionButtonPressed(_ sender: Any) {
         logButtonPressedAnalyticEvents(button: .createMessagingProfile)
         presenter.actionButtonPressed()
+    }
+    
+    @objc func bulkBlockButtonPressed(_ sender: Any) {
+        logButtonPressedAnalyticEvents(button: .bulkBlockButtonPressed)
+        presenter.actionButtonPressed()
+        toggleCurrentMode()
     }
     
     @objc func newMessageButtonPressed() {
@@ -202,6 +219,49 @@ private extension ChatsListViewController {
         UDVibration.buttonTap.vibrate()
         searchMode = .chatsOnly
         searchBar.becomeFirstResponder()
+    }
+    
+    @objc func editButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+        switch mode {
+        case .default:
+            logButtonPressedAnalyticEvents(button: .edit)
+            presenter.editingModeActionButtonPressed(.edit)
+        case .editing:
+            logButtonPressedAnalyticEvents(button: .cancel)
+            presenter.editingModeActionButtonPressed(.cancel)
+        }
+        
+        toggleCurrentMode()
+    }
+    
+    func toggleCurrentMode() {
+        switch mode {
+        case .default:
+            mode = .editing
+            collectionView.contentInset.bottom = actionButtonContainerView.bounds.height
+            cNavigationBar?.setBackButton(hidden: true)
+        case .editing:
+            mode = .default
+            collectionView.contentInset.bottom = 0
+            cNavigationBar?.setBackButton(hidden: false)
+        }
+        
+        setupActionButton()
+        setupNavigation()
+        cNavigationController?.updateNavigationBar()
+        collectionView.reloadData()
+        switch mode {
+        case .default:
+            cNavigationBar?.setBackButton(hidden: false)
+        case .editing:
+            cNavigationBar?.setBackButton(hidden: true)
+        }
+    }
+    
+    @objc func selectAllButtonPressed() {
+        UDVibration.buttonTap.vibrate()
+        presenter.editingModeActionButtonPressed(.selectAll)
     }
     
     func checkIfCollectionScrollingEnabled() {
@@ -276,6 +336,27 @@ private extension ChatsListViewController {
             switch dataType {
             case .chats:
                 title = String.Constants.chatRequests.localized()
+                let buttonTitle: String
+                switch mode {
+                case .default:
+                    buttonTitle = String.Constants.editButtonTitle.localized()
+                    navigationItem.leftBarButtonItem = nil
+                case .editing:
+                    buttonTitle = String.Constants.cancel.localized()
+                    
+                    let selectAllButton = UIBarButtonItem(title: String.Constants.selectAll.localized(),
+                                                          style: .plain,
+                                                          target: self,
+                                                          action: #selector(selectAllButtonPressed))
+                    selectAllButton.tintColor = .foregroundDefault
+                    navigationItem.leftBarButtonItem = selectAllButton
+                }
+                let editButton = UIBarButtonItem(title: buttonTitle,
+                                                 style: .plain,
+                                                 target: self,
+                                                 action: #selector(editButtonPressed))
+                editButton.tintColor = .foregroundDefault
+                navigationItem.rightBarButtonItem = editButton
             case .channels:
                 title = String.Constants.spam.localized()
             }
@@ -284,18 +365,36 @@ private extension ChatsListViewController {
     }
     
     func setupActionButton() {
-        var icon: UIImage?
-        if User.instance.getSettings().touchIdActivated {
-            icon = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
-        }
-        actionButton.setTitle(String.Constants.enable.localized(),
-                              image: icon)
-        
         switch state {
-        case .chatsList, .loading, .requestsList:
+        case .chatsList, .loading:
             actionButtonContainerView.isHidden = true
+        case .requestsList:
+            switch mode {
+            case .default:
+                actionButtonContainerView.isHidden = true
+            case .editing:
+                actionButtonContainerView.isHidden = false
+                let blockButton = PrimaryDangerButton()
+                blockButton.translatesAutoresizingMaskIntoConstraints = false
+                blockButton.addTarget(self, action: #selector(bulkBlockButtonPressed), for: .touchUpInside)
+                blockButton.setTitle(String.Constants.block.localized(),
+                                      image: .systemMultiplyCircle)
+                actionButtonsStack.removeArrangedSubviews()
+                actionButtonsStack.addArrangedSubview(blockButton)
+            }
         case .createProfile:
             actionButtonContainerView.isHidden = false
+            let actionButton = MainButton()
+            actionButton.translatesAutoresizingMaskIntoConstraints = false
+            actionButton.addTarget(self, action: #selector(actionButtonPressed), for: .touchUpInside)
+            var icon: UIImage?
+            if User.instance.getSettings().touchIdActivated {
+                icon = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+            }
+            actionButton.setTitle(String.Constants.enable.localized(),
+                                  image: icon)
+            actionButtonsStack.removeArrangedSubviews()
+            actionButtonsStack.addArrangedSubview(actionButton)
         }
     }
     
@@ -324,7 +423,7 @@ private extension ChatsListViewController {
             switch item {
             case .chat(let configuration):
                 let cell = collectionView.dequeueCellOfType(ChatListCell.self, forIndexPath: indexPath)
-                cell.setWith(configuration: configuration)
+                cell.setWith(configuration: configuration, isEditing: self?.mode == .editing)
                 
                 return cell
             case .domainSelection(let configuration):
@@ -494,6 +593,8 @@ extension ChatsListViewController {
     
     struct ChatUIConfiguration: Hashable {
         let chat: MessagingChatDisplayInfo
+        var isSelected: Bool = false 
+        var isSpam: Bool = false 
     }
     
     struct DomainSelectionUIConfiguration: Hashable {
@@ -559,5 +660,10 @@ extension ChatsListViewController {
         case chatsList
         case loading
         case requestsList(DataType)
+    }
+    
+    enum Mode {
+        case `default`
+        case editing
     }
 }

@@ -334,22 +334,6 @@ extension NetworkService {
         let records: RecordsArray
     }
     
-    func fetchRecords (domain: DomainItem) async throws -> DomainRecordsData {
-        let url = URL(string: "\(NetworkConfig.baseResolveUrl)/domains/\(domain.name)")!
-        let data = try await NetworkService().fetchData(for: url,
-                                                        method: .get,
-                                                        extraHeaders: MetadataNetworkConfig.authHeader)
-        let response = try JSONDecoder().decode(ResolveDomainsApiResponse.self, from: data)
-        let resolver = response.meta.resolver
-        
-        let records = response.records
-        let coinRecords = await appContext.coinRecordsService.getCurrencies()
-        
-        return DomainRecordsData(from: records,
-                                 coinRecords: coinRecords,
-                                 resolver: resolver)
-    }
-    
     func fetchReverseResolution(for address: HexAddress) async throws -> DomainName? {
         let url = URL(string: "\(NetworkConfig.baseResolveUrl)/reverse/\(address)")!
         let data = try await NetworkService().fetchData(for: url,
