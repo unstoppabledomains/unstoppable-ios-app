@@ -226,15 +226,6 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
 // MARK: - ChatsListCoordinator
 extension ChatsListViewPresenter: ChatsListCoordinator {
     func update(presentOptions: ChatsList.PresentOptions) {
-        func prepareToAutoOpenWith(profile: MessagingChatUserProfileDisplayInfo,
-                                   dataType: ChatsListDataType) async throws {
-            await popToChatsList()
-            if selectedDataType != dataType {
-                selectedDataType = dataType
-                showData()
-            }
-            try await preselectProfile(profile, usingWallets: wallets)
-        }
         view?.presentedViewController?.dismiss(animated: true)
         Task {
             do {
@@ -253,7 +244,7 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                     case .existingChat(chatId: let chatId):
                         if selectedProfileWalletPair?.profile?.id != profile.id ||
                             !appCoordinator.isActiveState(.chatOpened(chatId: chatId)) {
-                            let dataType: ChatsListDataType = communitiesList.first(where: { $0.id == chatId }) != nil ? .communities : .chats
+                            let dataType = dataTypeFor(chatId: chatId)
                             try await prepareToAutoOpenWith(profile: profile, dataType: dataType)
                             tryAutoOpenChat(chatId, profile: profile)
                         }
@@ -272,6 +263,10 @@ extension ChatsListViewPresenter: ChatsListCoordinator {
                 view?.showAlertWith(error: error, handler: nil)
             }
         }
+    }
+    
+    private func dataTypeFor(chatId: String) -> ChatsListDataType {
+        communitiesList.first(where: { $0.id.contains(chatId) }) != nil ? .communities : .chats
     }
     
     private func popToChatsList() async {
@@ -395,14 +390,15 @@ private extension ChatsListViewPresenter {
                     try await preselectProfile(profile, usingWallets: wallets)
                     switch options {
                     case .existingChat(let chatId):
+                        let dataType = dataTypeFor(chatId: chatId)
+                        selectedDataType = dataType
+                        showData()
                         tryAutoOpenChat(chatId, profile: profile)
                     case .newChat(let details):
                         autoOpenNewChat(with: details.userInfo, messagingService: details.messagingService)
                     }
                 case .showChannel(let channelId, let profile):
-                    selectedDataType = .channels
-                    try await preselectProfile(profile, usingWallets: wallets)
-                    showData()
+                    try await prepareToAutoOpenWith(profile: profile, dataType: .channels)
                     tryAutoOpenChannel(channelId, profile: profile)
                 }
             } catch ChatsListError.noWalletsForChatting {
@@ -411,6 +407,16 @@ private extension ChatsListViewPresenter {
                 view?.showAlertWith(error: error, handler: nil)
             }
         }
+    }
+    
+    func prepareToAutoOpenWith(profile: MessagingChatUserProfileDisplayInfo,
+                               dataType: ChatsListDataType) async throws {
+        await popToChatsList()
+        if selectedDataType != dataType {
+            selectedDataType = dataType
+            showData()
+        }
+        try await preselectProfile(profile, usingWallets: wallets)
     }
     
     func setNewChats(_ chats: [MessagingChatDisplayInfo]) {
@@ -502,7 +508,12 @@ private extension ChatsListViewPresenter {
     }
     
     func tryAutoOpenChat(_ chatId: String, profile: MessagingChatUserProfileDisplayInfo) {
-        guard let chat = chatsList.first(where: { $0.id.contains(chatId) }) else { return }
+        var chat = chatsList.first(where: { $0.id.contains(chatId) })
+        if let community = communitiesList.first(where: { $0.id.contains(chatId) }) {
+            chat = community
+            
+        }
+        guard let chat else { return }
         openChatWith(conversationState: .existingChat(chat))
         presentOptions = .default
     }
