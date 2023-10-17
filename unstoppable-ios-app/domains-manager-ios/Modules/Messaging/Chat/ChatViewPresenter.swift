@@ -45,6 +45,7 @@ final class ChatViewPresenter {
     private weak var view: (any ChatViewProtocol)?
     private let profile: MessagingChatUserProfileDisplayInfo
     private let messagingService: MessagingServiceProtocol
+    private let featureFlagsService: UDFeatureFlagsServiceProtocol
     private var conversationState: MessagingChatConversationState
     private let fetchLimit: Int = 20
     private var messages: [MessagingChatMessageDisplayInfo] = []
@@ -59,11 +60,13 @@ final class ChatViewPresenter {
     init(view: any ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState,
-         messagingService: MessagingServiceProtocol) {
+         messagingService: MessagingServiceProtocol,
+         featureFlagsService: UDFeatureFlagsServiceProtocol) {
         self.view = view
         self.profile = profile
         self.conversationState = conversationState
         self.messagingService = messagingService
+        self.featureFlagsService = featureFlagsService
     }
 }
 
@@ -71,6 +74,7 @@ final class ChatViewPresenter {
 extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
         messagingService.addListener(self)
+        featureFlagsService.addListener(self)
         view?.setUIState(.loading)
         setupTitle()
         setupPlaceholder()
@@ -209,6 +213,19 @@ extension ChatViewPresenter: MessagingServiceListener {
     }
 }
 
+// MARK: - UDFeatureFlagsListener
+extension ChatViewPresenter: UDFeatureFlagsListener {
+    func didUpdatedUDFeatureFlag(_ flag: UDFeatureFlag, withValue newValue: Bool) {
+        switch flag {
+        case .communityMediaEnabled:
+            if isCommunityChat() {
+                view?.setCanSendAttachments(newValue)
+                reloadCachedMessages()
+            }
+        }
+    }
+}
+
 // MARK: - Private functions
 private extension ChatViewPresenter {
     func loadAndShowData() {
@@ -270,6 +287,19 @@ private extension ChatViewPresenter {
         }
     }
     
+    func reloadCachedMessages() {
+        Task {
+            if case .existingChat(let chat) = conversationState {
+                let cachedMessages = try await messagingService.getMessagesForChat(chat,
+                                                                                   before: nil,
+                                                                                   cachedOnly: true,
+                                                                                   limit: fetchLimit)
+                await addMessages(cachedMessages)
+                showData(animated: false, isLoading: isLoadingMessages)
+            }
+        }
+    }
+    
     func addMessages(_ messages: [MessagingChatMessageDisplayInfo]) async {
         for message in messages {
             var message = message
@@ -281,7 +311,18 @@ private extension ChatViewPresenter {
             }
             loadRemoteContentOfMessageAsync(message)
         }
-        
+        if isCommunityChat(),
+           !featureFlagsService.valueFor(flag: .communityMediaEnabled) {
+            // Filter media attachments
+            self.messages = self.messages.filter({ message in
+                switch message.type {
+                case .text:
+                    return true
+                default:
+                    return false
+                }
+            })
+        }
         self.messages.sort(by: { $0.time > $1.time })
     }
     
@@ -453,16 +494,23 @@ private extension ChatViewPresenter {
     }
     
     func setupFunctionality() {
+        if isCommunityChat() {
+            let canSendAttachments = featureFlagsService.valueFor(flag: .communityMediaEnabled)
+            view?.setCanSendAttachments(canSendAttachments)
+        }
+    }
+    
+    func isCommunityChat() -> Bool {
         switch conversationState {
         case .existingChat(let chat):
             switch chat.type {
             case .community:
-                view?.setCanSendAttachments(false)
+                return true
             case .private, .group:
-                return
+                return false
             }
         case .newChat:
-            return
+            return false
         }
     }
     

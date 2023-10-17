@@ -147,6 +147,10 @@ extension ChatInputView {
     func setCanSendAttachments(_ canSendAttachments: Bool) {
         self.canSendAttachments = canSendAttachments
         leadingButton.alpha = canSendAttachments ? 1 : 0
+        DispatchQueue.main.async {
+            self.setNeedsLayout()
+            self.layoutIfNeeded()
+        }
     }
 }
 

@@ -82,6 +82,15 @@
       }
     },
     {
+      "identity" : "ios-client-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/launchdarkly/ios-client-sdk.git",
+      "state" : {
+        "revision" : "ce4a8459fcff7d4c9770798d5a1e6049dcebc168",
+        "version" : "9.1.1"
+      }
+    },
+    {
       "identity" : "objectivepgp",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/krzyzanowskim/ObjectivePGP.git",
@@ -187,6 +196,15 @@
       "state" : {
         "revision" : "937e904258d22af6e447a0b72c0bc67583ef64a2",
         "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "swift-eventsource",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/LaunchDarkly/swift-eventsource.git",
+      "state" : {
+        "revision" : "3d45eacab476f9bb2c58662cfb2d35088140b25b",
+        "version" : "3.1.1"
       }
     },
     {
