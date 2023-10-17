@@ -42,6 +42,10 @@ private extension MockUDFeatureFlagsService {
         DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
             self.isMocking = true
             self.notifyListenersUpdated(flag: .communityMediaEnabled, withValue: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                self.isMocking = false
+                self.notifyListenersUpdated(flag: .communityMediaEnabled, withValue: false)
+            }
         }
     }
     

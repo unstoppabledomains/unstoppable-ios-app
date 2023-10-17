@@ -1050,7 +1050,7 @@ private extension UDRouter {
                                           profile: profile,
                                           conversationState: conversationState,
                                           messagingService: appContext.messagingService, 
-                                          featureFlagsService: MockUDFeatureFlagsService())
+                                          featureFlagsService: appContext.udFeatureFlagsService)
         vc.presenter = presenter
         return vc
     }

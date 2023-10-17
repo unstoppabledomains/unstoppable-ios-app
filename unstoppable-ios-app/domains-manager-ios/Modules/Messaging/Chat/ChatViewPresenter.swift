@@ -220,6 +220,7 @@ extension ChatViewPresenter: UDFeatureFlagsListener {
         case .communityMediaEnabled:
             if isCommunityChat() {
                 view?.setCanSendAttachments(newValue)
+                reloadCachedMessages()
             }
         }
     }
@@ -286,6 +287,19 @@ private extension ChatViewPresenter {
         }
     }
     
+    func reloadCachedMessages() {
+        Task {
+            if case .existingChat(let chat) = conversationState {
+                let cachedMessages = try await messagingService.getMessagesForChat(chat,
+                                                                                   before: nil,
+                                                                                   cachedOnly: true,
+                                                                                   limit: fetchLimit)
+                await addMessages(cachedMessages)
+                showData(animated: false, isLoading: isLoadingMessages)
+            }
+        }
+    }
+    
     func addMessages(_ messages: [MessagingChatMessageDisplayInfo]) async {
         for message in messages {
             var message = message
@@ -297,7 +311,18 @@ private extension ChatViewPresenter {
             }
             loadRemoteContentOfMessageAsync(message)
         }
-        
+        if isCommunityChat(),
+           !featureFlagsService.valueFor(flag: .communityMediaEnabled) {
+            // Filter media attachments
+            self.messages = self.messages.filter({ message in
+                switch message.type {
+                case .text:
+                    return true
+                default:
+                    return false
+                }
+            })
+        }
         self.messages.sort(by: { $0.time > $1.time })
     }
     
