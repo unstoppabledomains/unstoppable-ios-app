@@ -50,6 +50,6 @@ private extension MockUDFeatureFlagsService {
     }
     
     func notifyListenersUpdated(flag: UDFeatureFlag, withValue value: Bool) {
-        listenerHolders.forEach { $0.listener?.udFeatureFlag(flag, updatedValue: value) }
+        listenerHolders.forEach { $0.listener?.didUpdatedUDFeatureFlag(flag, withValue: value) }
     }
 }

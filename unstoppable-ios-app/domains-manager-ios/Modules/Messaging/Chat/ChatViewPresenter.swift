@@ -215,7 +215,7 @@ extension ChatViewPresenter: MessagingServiceListener {
 
 // MARK: - UDFeatureFlagsListener
 extension ChatViewPresenter: UDFeatureFlagsListener {
-    func udFeatureFlag(_ flag: UDFeatureFlag, updatedValue newValue: Bool) {
+    func didUpdatedUDFeatureFlag(_ flag: UDFeatureFlag, withValue newValue: Bool) {
         switch flag {
         case .communityMediaEnabled:
             if isCommunityChat() {

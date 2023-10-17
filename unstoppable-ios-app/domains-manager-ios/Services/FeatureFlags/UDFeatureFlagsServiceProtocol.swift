@@ -14,7 +14,7 @@ protocol UDFeatureFlagsServiceProtocol {
 }
 
 protocol UDFeatureFlagsListener: AnyObject {
-    func udFeatureFlag(_ flag: UDFeatureFlag, updatedValue newValue: Bool)
+    func didUpdatedUDFeatureFlag(_ flag: UDFeatureFlag, withValue newValue: Bool)
 }
 
 final class UDFeatureFlagListenerHolder: Equatable {
