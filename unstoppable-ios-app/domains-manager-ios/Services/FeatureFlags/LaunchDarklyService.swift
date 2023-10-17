@@ -5,7 +5,7 @@
 //  Created by Oleg Kuplin on 17.10.2023.
 //
 
-import Foundation
+import UIKit
 import LaunchDarkly
 
 final class LaunchDarklyService {
@@ -16,9 +16,15 @@ final class LaunchDarklyService {
     private var keyUpdatedCallback: KeysUpdatedCallback?
 
     init(mobileKey: String) {
+        let id = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+        var contextBuilder = LDContextBuilder(key: id)
+        guard case .success(let context) = contextBuilder.build() else {
+            Debugger.printFailure("Failed to create context for Launch darkly", critical: true)
+            return }
+        
         let config = LDConfig(mobileKey: mobileKey, autoEnvAttributes: .enabled)
         
-        LDClient.start(config: config)
+        LDClient.start(config: config, context: context)
     }
     
 }
