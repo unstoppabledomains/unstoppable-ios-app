@@ -18,13 +18,6 @@ final class MockUDFeatureFlagsService {
 
 // MARK: - UDFeatureFlagsServiceProtocol
 extension MockUDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
-    func start() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-            self.isMocking = true
-            self.notifyListenersUpdated(flag: .communityMediaEnabled, withValue: true)
-        }
-    }
-    
     func valueFor(flag: UDFeatureFlag) -> Bool {
         if isMocking {
             return true
@@ -45,6 +38,13 @@ extension MockUDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
 
 // MARK: - Private methods
 private extension MockUDFeatureFlagsService {
+    func start() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            self.isMocking = true
+            self.notifyListenersUpdated(flag: .communityMediaEnabled, withValue: true)
+        }
+    }
+    
     func notifyListenersUpdated(flag: UDFeatureFlag, withValue value: Bool) {
         listenerHolders.forEach { $0.listener?.udFeatureFlag(flag, updatedValue: value) }
     }

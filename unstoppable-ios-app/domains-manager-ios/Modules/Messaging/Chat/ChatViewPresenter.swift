@@ -218,7 +218,9 @@ extension ChatViewPresenter: UDFeatureFlagsListener {
     func udFeatureFlag(_ flag: UDFeatureFlag, updatedValue newValue: Bool) {
         switch flag {
         case .communityMediaEnabled:
-            view?.setCanSendAttachments(newValue)
+            if isCommunityChat() {
+                view?.setCanSendAttachments(newValue)
+            }
         }
     }
 }
@@ -467,17 +469,23 @@ private extension ChatViewPresenter {
     }
     
     func setupFunctionality() {
+        if isCommunityChat() {
+            let canSendAttachments = featureFlagsService.valueFor(flag: .communityMediaEnabled)
+            view?.setCanSendAttachments(canSendAttachments)
+        }
+    }
+    
+    func isCommunityChat() -> Bool {
         switch conversationState {
         case .existingChat(let chat):
             switch chat.type {
             case .community:
-                let canSendAttachments = featureFlagsService.valueFor(flag: .communityMediaEnabled)
-                view?.setCanSendAttachments(canSendAttachments)
+                return true
             case .private, .group:
-                return
+                return false
             }
         case .newChat:
-            return
+            return false
         }
     }
     

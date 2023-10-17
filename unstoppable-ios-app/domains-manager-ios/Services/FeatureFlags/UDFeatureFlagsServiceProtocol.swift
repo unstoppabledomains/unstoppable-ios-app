@@ -8,7 +8,6 @@
 import Foundation
 
 protocol UDFeatureFlagsServiceProtocol {
-    func start()
     func valueFor(flag: UDFeatureFlag) -> Bool
     func addListener(_ listener: UDFeatureFlagsListener)
     func removeListener(_ listener: UDFeatureFlagsListener)

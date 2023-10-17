@@ -134,6 +134,6 @@ private extension AppDelegate {
     }
     
     func setupFeatureFlags() {
-        appContext.udFeatureFlagsService.start()
+        _ = appContext.udFeatureFlagsService
     }
 }

@@ -28,9 +28,7 @@ final class UDFeatureFlagsService {
 }
 
 // MARK: - UDFeatureFlagsServiceProtocol
-extension UDFeatureFlagsService: UDFeatureFlagsServiceProtocol {
-    func start() { }
-    
+extension UDFeatureFlagsService: UDFeatureFlagsServiceProtocol {    
     func valueFor(flag: UDFeatureFlag) -> Bool {
         let defaultValue = getDefaultValueFor(featureFlag: flag)
         let ldValue = ldService.valueFor(key: flag.rawValue, defaultValue: defaultValue)
