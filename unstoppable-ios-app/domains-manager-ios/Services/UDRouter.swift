@@ -1049,7 +1049,8 @@ private extension UDRouter {
         let presenter = ChatViewPresenter(view: vc,
                                           profile: profile,
                                           conversationState: conversationState,
-                                          messagingService: appContext.messagingService)
+                                          messagingService: appContext.messagingService, 
+                                          featureFlagsService: MockUDFeatureFlagsService())
         vc.presenter = presenter
         return vc
     }

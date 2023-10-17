@@ -9,12 +9,10 @@ import Foundation
 
 final class UDFeatureFlagsService {
     
-    static let shared: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
-
     private let ldService: LaunchDarklyService
     private var listenerHolders: [UDFeatureFlagListenerHolder] = []
 
-    private init() {
+    init() {
         #if DEBUG
         let ldMobileKey = LaunchDarkly.stagingMobileKey
         #else

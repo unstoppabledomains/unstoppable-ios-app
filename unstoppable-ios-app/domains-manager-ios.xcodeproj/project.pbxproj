@@ -737,6 +737,7 @@
 		C689C1772ADE693900AA0186 /* LaunchDarklyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */; };
 		C689C17A2ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */; };
 		C689C17C2ADE6D3400AA0186 /* UDFeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C17B2ADE6D3400AA0186 /* UDFeatureFlag.swift */; };
+		C689C17E2ADE767500AA0186 /* MockUDFeatureFlagsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C17D2ADE767500AA0186 /* MockUDFeatureFlagsService.swift */; };
 		C68BEC0F2A397AD400A0B809 /* MessagingChatUserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */; };
 		C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */; };
 		C68BEC262A39ABEA00A0B809 /* ChatListCreateProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC242A39ABEA00A0B809 /* ChatListCreateProfileCell.swift */; };
@@ -1889,6 +1890,7 @@
 		C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchDarklyService.swift; sourceTree = "<group>"; };
 		C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsServiceProtocol.swift; sourceTree = "<group>"; };
 		C689C17B2ADE6D3400AA0186 /* UDFeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlag.swift; sourceTree = "<group>"; };
+		C689C17D2ADE767500AA0186 /* MockUDFeatureFlagsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUDFeatureFlagsService.swift; sourceTree = "<group>"; };
 		C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfile.swift; sourceTree = "<group>"; };
 		C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfileDisplayInfo.swift; sourceTree = "<group>"; };
 		C68BEC242A39ABEA00A0B809 /* ChatListCreateProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListCreateProfileCell.swift; sourceTree = "<group>"; };
@@ -4709,6 +4711,7 @@
 			isa = PBXGroup;
 			children = (
 				C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */,
+				C689C17D2ADE767500AA0186 /* MockUDFeatureFlagsService.swift */,
 				C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */,
 				C689C17B2ADE6D3400AA0186 /* UDFeatureFlag.swift */,
 				C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */,
@@ -6452,6 +6455,7 @@
 				C628E38227FEE31D0044E408 /* DeviceHelper.swift in Sources */,
 				C600AB8D29F8085D0089107B /* MockDomainTransferService.swift in Sources */,
 				C6157B242A72663B00081574 /* SymmetricMessagingContentDecrypterService.swift in Sources */,
+				C689C17E2ADE767500AA0186 /* MockUDFeatureFlagsService.swift in Sources */,
 				C6D2F13028729585005F4F2E /* DomainDisplayInfo.swift in Sources */,
 				C629A4702A3FF5CE00A528A1 /* ChatBaseCell.swift in Sources */,
 				C6A2D59F28504EB300327C47 /* ConnectedAppCell.swift in Sources */,

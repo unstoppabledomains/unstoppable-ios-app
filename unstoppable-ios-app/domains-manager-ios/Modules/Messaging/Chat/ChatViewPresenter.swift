@@ -45,6 +45,7 @@ final class ChatViewPresenter {
     private weak var view: (any ChatViewProtocol)?
     private let profile: MessagingChatUserProfileDisplayInfo
     private let messagingService: MessagingServiceProtocol
+    private let featureFlagsService: UDFeatureFlagsServiceProtocol
     private var conversationState: MessagingChatConversationState
     private let fetchLimit: Int = 20
     private var messages: [MessagingChatMessageDisplayInfo] = []
@@ -59,11 +60,13 @@ final class ChatViewPresenter {
     init(view: any ChatViewProtocol,
          profile: MessagingChatUserProfileDisplayInfo,
          conversationState: MessagingChatConversationState,
-         messagingService: MessagingServiceProtocol) {
+         messagingService: MessagingServiceProtocol,
+         featureFlagsService: UDFeatureFlagsServiceProtocol) {
         self.view = view
         self.profile = profile
         self.conversationState = conversationState
         self.messagingService = messagingService
+        self.featureFlagsService = featureFlagsService
     }
 }
 
@@ -71,6 +74,7 @@ final class ChatViewPresenter {
 extension ChatViewPresenter: ChatViewPresenterProtocol {
     func viewDidLoad() {
         messagingService.addListener(self)
+        featureFlagsService.addListener(self)
         view?.setUIState(.loading)
         setupTitle()
         setupPlaceholder()
@@ -205,6 +209,16 @@ extension ChatViewPresenter: MessagingServiceListener {
             case .channels, .channelFeedAdded, .refreshOfUserProfile, .messageReadStatusUpdated, .totalUnreadMessagesCountUpdated:
                 return
             }
+        }
+    }
+}
+
+// MARK: - UDFeatureFlagsListener
+extension ChatViewPresenter: UDFeatureFlagsListener {
+    func udFeatureFlag(_ flag: UDFeatureFlag, updatedValue newValue: Bool) {
+        switch flag {
+        case .communityMediaEnabled:
+            view?.setCanSendAttachments(newValue)
         }
     }
 }
@@ -457,7 +471,8 @@ private extension ChatViewPresenter {
         case .existingChat(let chat):
             switch chat.type {
             case .community:
-                view?.setCanSendAttachments(false)
+                let canSendAttachments = featureFlagsService.valueFor(flag: .communityMediaEnabled)
+                view?.setCanSendAttachments(canSendAttachments)
             case .private, .group:
                 return
             }
