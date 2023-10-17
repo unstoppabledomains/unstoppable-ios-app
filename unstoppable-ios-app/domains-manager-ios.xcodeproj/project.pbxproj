@@ -732,6 +732,11 @@
 		C68953922834CD280046CBA3 /* CollectionTextHeaderReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953912834CD280046CBA3 /* CollectionTextHeaderReusableView.swift */; };
 		C689539A2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68953982834D08F0046CBA3 /* AddCurrencyCell.swift */; };
 		C689539E2834D08F0046CBA3 /* AddCurrencyCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C68953992834D08F0046CBA3 /* AddCurrencyCell.xib */; };
+		C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */ = {isa = PBXBuildFile; productRef = C689C1722ADE484300AA0186 /* LaunchDarkly */; };
+		C689C1752ADE56AF00AA0186 /* UDFeatureFlagsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */; };
+		C689C1772ADE693900AA0186 /* LaunchDarklyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */; };
+		C689C17A2ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */; };
+		C689C17C2ADE6D3400AA0186 /* UDFeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = C689C17B2ADE6D3400AA0186 /* UDFeatureFlag.swift */; };
 		C68BEC0F2A397AD400A0B809 /* MessagingChatUserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */; };
 		C68BEC142A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */; };
 		C68BEC262A39ABEA00A0B809 /* ChatListCreateProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68BEC242A39ABEA00A0B809 /* ChatListCreateProfileCell.swift */; };
@@ -1880,6 +1885,10 @@
 		C68953912834CD280046CBA3 /* CollectionTextHeaderReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionTextHeaderReusableView.swift; sourceTree = "<group>"; };
 		C68953982834D08F0046CBA3 /* AddCurrencyCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCurrencyCell.swift; sourceTree = "<group>"; };
 		C68953992834D08F0046CBA3 /* AddCurrencyCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddCurrencyCell.xib; sourceTree = "<group>"; };
+		C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsService.swift; sourceTree = "<group>"; };
+		C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchDarklyService.swift; sourceTree = "<group>"; };
+		C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlagsServiceProtocol.swift; sourceTree = "<group>"; };
+		C689C17B2ADE6D3400AA0186 /* UDFeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFeatureFlag.swift; sourceTree = "<group>"; };
 		C68BEC0E2A397AD400A0B809 /* MessagingChatUserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfile.swift; sourceTree = "<group>"; };
 		C68BEC132A397D9B00A0B809 /* MessagingChatUserProfileDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingChatUserProfileDisplayInfo.swift; sourceTree = "<group>"; };
 		C68BEC242A39ABEA00A0B809 /* ChatListCreateProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListCreateProfileCell.swift; sourceTree = "<group>"; };
@@ -2265,6 +2274,7 @@
 				307B1D5A2603C8E0007B14C3 /* BigInt in Frameworks */,
 				290A60502950AA1600882109 /* WalletConnectPush in Frameworks */,
 				2917EDDD2A6F25AB004EAB31 /* Web3ContractABI in Frameworks */,
+				C689C1732ADE484300AA0186 /* LaunchDarkly in Frameworks */,
 				290A604E2950AA1600882109 /* WalletConnectPairing in Frameworks */,
 				30CE604C26A9DED000E0D29B /* web3swift in Frameworks */,
 				C63402882886547C00AB5D38 /* SVGKit in Frameworks */,
@@ -4525,6 +4535,7 @@
 				C681092028041325002D780E /* GIFAnimationsService.swift */,
 				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
 				C65272652A15DEB9001A084C /* KeyboardService.swift */,
+				C689C1782ADE6D1700AA0186 /* FeatureFlags */,
 				C664B678291551E600A76154 /* LinkPresentationService.swift */,
 				C6209F9729D4180500D573EB /* LocalNotificationsService.swift */,
 				C613C22129E3BEEC0001A3AF /* NFCService.swift */,
@@ -4692,6 +4703,17 @@
 				C68953992834D08F0046CBA3 /* AddCurrencyCell.xib */,
 			);
 			path = AddCurrencyCell;
+			sourceTree = "<group>";
+		};
+		C689C1782ADE6D1700AA0186 /* FeatureFlags */ = {
+			isa = PBXGroup;
+			children = (
+				C689C1742ADE56AF00AA0186 /* UDFeatureFlagsService.swift */,
+				C689C1792ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift */,
+				C689C17B2ADE6D3400AA0186 /* UDFeatureFlag.swift */,
+				C689C1762ADE693900AA0186 /* LaunchDarklyService.swift */,
+			);
+			path = FeatureFlags;
 			sourceTree = "<group>";
 		};
 		C68BEC232A39ABCF00A0B809 /* ChatListCreateProfileCell */ = {
@@ -5999,6 +6021,7 @@
 				2917EDDC2A6F25AB004EAB31 /* Web3ContractABI */,
 				2917EDDE2A6F25AB004EAB31 /* Web3PromiseKit */,
 				2917EDE02A6F25AB004EAB31 /* XMTP */,
+				C689C1722ADE484300AA0186 /* LaunchDarkly */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -6113,6 +6136,7 @@
 				29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */,
 				29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */,
 				C69698962ACBCC9B0000738C /* XCRemoteSwiftPackageReference "Starscream" */,
+				C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */,
 			);
 			productRefGroup = 3064867E2527253700388026 /* Products */;
 			projectDirPath = "";
@@ -6350,6 +6374,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6B5136828322EA1001E99B5 /* MainWindow.swift in Sources */,
+				C689C17C2ADE6D3400AA0186 /* UDFeatureFlag.swift in Sources */,
 				C6D6EB2F2AB9A21600CA5B0F /* Chat.swift in Sources */,
 				C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
 				C635194828D03FFB00FC6AF8 /* ChooseReverseResolutionCollectionCell.swift in Sources */,
@@ -6758,6 +6783,7 @@
 				C685D81A2AA978DE00212879 /* UDBTSearchView.swift in Sources */,
 				C61002EA2940936F00462983 /* UIGestureRecognizer.swift in Sources */,
 				29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */,
+				C689C1772ADE693900AA0186 /* LaunchDarklyService.swift in Sources */,
 				C66804C9280D9EC8007E6390 /* PasscodeInputView.swift in Sources */,
 				306C9ACD273184FA00FD9D9C /* ReleaseConfig.swift in Sources */,
 				C6538DB72A32164F00B63E84 /* iCloudPrivateKeyStorage.swift in Sources */,
@@ -7148,6 +7174,7 @@
 				3048B47727FA149C00253BB7 /* WalletConnectedViewController.swift in Sources */,
 				C6CF338C2A2F217800851426 /* ChatListDataTypeSelectionCell.swift in Sources */,
 				C6D6E58628193ED9008C66BB /* DomainsCollectionListCell.swift in Sources */,
+				C689C1752ADE56AF00AA0186 /* UDFeatureFlagsService.swift in Sources */,
 				C6B6858B280077F7000F9037 /* UIImage.swift in Sources */,
 				C6861B742A5BE9AA00A1632B /* ChatEmptyView.swift in Sources */,
 				290A60422950A89900882109 /* WalletConnectServiceV2.swift in Sources */,
@@ -7190,6 +7217,7 @@
 				C609829D282A548800546392 /* BaseExternalWalletConnectedPresenter.swift in Sources */,
 				C6538DC22A32244400B63E84 /* CoreDataModel.xcdatamodeld in Sources */,
 				C61B3E8C283E708500500B6D /* EnterEmailVerificationCodeViewPresenter.swift in Sources */,
+				C689C17A2ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift in Sources */,
 				C624D7AF281BCDB600F55530 /* BaseListCollectionViewCell.swift in Sources */,
 				C6E04182295057FE0080F8E3 /* DomainsListViewController.swift in Sources */,
 				C6A2D5B5285074DF00327C47 /* SignMessageRequestConfirmationView.swift in Sources */,
@@ -7995,6 +8023,14 @@
 				kind = branch;
 			};
 		};
+		C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/launchdarkly/ios-client-sdk.git";
+			requirement = {
+				kind = exactVersion;
+				version = 9.1.1;
+			};
+		};
 		C69698962ACBCC9B0000738C /* XCRemoteSwiftPackageReference "Starscream" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/daltoniam/Starscream";
@@ -8133,6 +8169,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */;
 			productName = Valet;
+		};
+		C689C1722ADE484300AA0186 /* LaunchDarkly */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C689C1712ADE47AF00AA0186 /* XCRemoteSwiftPackageReference "ios-client-sdk" */;
+			productName = LaunchDarkly;
 		};
 		C6E69F98288AB6DC000A8346 /* Bugsnag */ = {
 			isa = XCSwiftPackageProductDependency;
