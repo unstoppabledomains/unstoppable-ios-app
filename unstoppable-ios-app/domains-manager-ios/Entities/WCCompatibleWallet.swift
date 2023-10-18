@@ -195,14 +195,20 @@ struct WCWalletsProvider {
     
     static func findBy(walletProxy: WCRegistryWalletProxy) -> WalletRecord? {
         
-        let host = walletProxy.host
-        let hostSld = String(host.split(separator: Character.dotSeparator).dropLast().last ?? "")
-        
         guard let allWcWallets = WCWalletsProvider.fetchRegistry() else {
             Debugger.printFailure("Failed to fetch a WC registry", critical: true)
             return nil
         }
         let walletsInstalled = getDiscoverable(registry: allWcWallets)
+
+        if walletProxy.needsLedgerSearchHack {
+            return walletsInstalled.first(where: {$0.name.lowercased().contains("ledger")})
+        }
+        
+        let host = walletProxy.host
+        let hostSld = String(host.split(separator: Character.dotSeparator).dropLast().last ?? "")
+        
+
         return walletsInstalled.first(where: {($0.homepage ?? "").contains(hostSld)})
     }
 }
