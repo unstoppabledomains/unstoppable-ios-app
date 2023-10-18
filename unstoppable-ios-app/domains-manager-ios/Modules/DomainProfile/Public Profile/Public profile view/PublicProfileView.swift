@@ -175,12 +175,17 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func avatarView() -> some View {
-        Image(uiImage: viewModel.avatarImage ?? .domainSharePlaceholder)
-            .resizable()
-            .scaledToFill()
-            .frame(width: avatarSize,
-                   height: avatarSize)
-            .clipForAvatarStyle(avatarStyle)
+        ZStack(alignment: .bottomTrailing) {
+            Image(uiImage: viewModel.avatarImage ?? .domainSharePlaceholder)
+                .resizable()
+                .scaledToFill()
+                .squareFrame(avatarSize)
+                .clipForAvatarStyle(avatarStyle)
+            if viewModel.isUDBlue {
+                Image.udBlueGrayIcon
+                    .squareFrame(24)
+            }
+        }
     }
     
     @ViewBuilder

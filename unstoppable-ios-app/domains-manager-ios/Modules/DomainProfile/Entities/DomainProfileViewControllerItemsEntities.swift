@@ -29,6 +29,7 @@ extension DomainProfileViewController {
         let id: UUID
         let domain: DomainDisplayInfo
         let social: DomainProfileSocialInfo
+        let isUDBlue: Bool
         let isEnabled: Bool
         let avatarImageState: DomainProfileTopInfoData.ImageState
         let bannerImageState: DomainProfileTopInfoData.ImageState

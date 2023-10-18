@@ -24,6 +24,7 @@ final class DomainProfileTopInfoCell: UICollectionViewCell {
     @IBOutlet private weak var qrCodeButton: SmallRaisedTertiaryWhiteButton!
     @IBOutlet private weak var followersButton: SmallRaisedTertiaryWhiteButton!
     @IBOutlet private weak var bannerTopConstraint: NSLayoutConstraint!
+    @IBOutlet private weak var udBlueImageView: UIImageView!
     
     private var avatarStyle: DomainAvatarImageView.AvatarStyle = .circle
     private var buttonPressedCallback: DomainProfileTopInfoButtonCallback?
@@ -114,6 +115,7 @@ extension DomainProfileTopInfoCell {
                                               lineBreakMode: .byTruncatingTail)
         
         followersButton.isHidden = false
+        udBlueImageView.isHidden = !data.isUDBlue
         let social = data.social
         let havingFollowers = social.followerCount > 0
         let havingFollowings = social.followingCount > 0

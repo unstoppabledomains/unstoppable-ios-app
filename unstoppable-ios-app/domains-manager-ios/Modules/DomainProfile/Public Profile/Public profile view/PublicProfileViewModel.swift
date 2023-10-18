@@ -40,6 +40,7 @@ extension PublicProfileView {
         @Published var socialAccounts: SocialAccounts?
         @Published var error: Error?
         @Published private(set) var isLoading = false
+        @Published private(set) var isUDBlue = false
         @Published private(set) var isUserDomainSelected = true
         @Published private(set) var profile: SerializedPublicDomainProfile?
         @Published private(set) var badgesDisplayInfo: [DomainProfileBadgeDisplayInfo]?
@@ -159,6 +160,7 @@ extension PublicProfileView {
                     records = await convertRecordsFrom(recordsDict: profile.records ?? [:])
                     socialInfo = profile.social
                     socialAccounts = profile.socialAccounts
+                    isUDBlue = profile.profile.udBlue ?? false
                     isLoading = false
                     loadImages()
                 }

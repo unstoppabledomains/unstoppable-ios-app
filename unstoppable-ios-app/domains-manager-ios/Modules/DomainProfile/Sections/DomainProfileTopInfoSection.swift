@@ -33,12 +33,14 @@ extension DomainProfileTopInfoSection: DomainProfileSection {
     func fill(snapshot: inout DomainProfileSnapshot, withGeneralData generalData: DomainProfileGeneralData) {
         let domain = generalData.domain
         let social = topInfoData.social
+        let isUDBlue = topInfoData.isUDBlue
         
         let isEnabled = state == .default || state == .updatingRecords
         snapshot.appendSections([.topInfo])
         snapshot.appendItems([.topInfo(data: .init(id: id,
                                                    domain: domain,
-                                                   social: social,
+                                                   social: social, 
+                                                   isUDBlue: isUDBlue,
                                                    isEnabled: isEnabled,
                                                    avatarImageState: editingTopInfoData.avatarImageState,
                                                    bannerImageState: editingTopInfoData.bannerImageState,
