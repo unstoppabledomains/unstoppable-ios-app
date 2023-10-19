@@ -81,11 +81,13 @@ final class ChatViewController: BaseViewController {
     
     override func keyboardWillShowAction(duration: Double, curve: Int, keyboardHeight: CGFloat) {
         calculateCollectionBottomInset()
+        calculateCollectionViewTopInset()
         scrollToTheBottom(animated: true)
     }
     
     override func keyboardWillHideAction(duration: Double, curve: Int) {
         calculateCollectionBottomInset()
+        calculateCollectionViewTopInset()
     }
     
     override func keyboardDidAdjustFrame(keyboardHeight: CGFloat) {
@@ -108,6 +110,7 @@ extension ChatViewController: ChatViewProtocol {
                                                               snapshot: snapshot,
                                                               animated: animated) { [weak self] in
             self?.scrollingInfo = nil
+            self?.calculateCollectionViewTopInset()
             completion?()
         }
         operationQueue.addOperation(operation)
@@ -356,8 +359,17 @@ private extension ChatViewController {
 
 // MARK: - Private functions
 private extension ChatViewController {
+    func calculateCollectionHeightToContentHeightDiff() -> CGFloat {
+        let contentHeight = collectionView.contentSize.height
+        let viewHeight = collectionView.bounds.height - (cNavigationBar?.bounds.height ?? 0) - chatInputView.bounds.height
+        let contentToBoundsDiff = viewHeight - contentHeight
+        return contentToBoundsDiff
+    }
+    
+    var currentKeyboardHeight: CGFloat { isKeyboardOpened ? keyboardFrame.height : 0 }
+    
     func calculateCollectionBottomInset(shouldAdjustContentOffset: Bool = false) {
-        let keyboardHeight = isKeyboardOpened ? keyboardFrame.height : 0
+        let keyboardHeight = currentKeyboardHeight
         let currentInset = collectionView.contentInset.bottom
         collectionView.contentInset.bottom = chatInputView.bounds.height + keyboardHeight + 12
         if shouldAdjustContentOffset {
@@ -367,6 +379,17 @@ private extension ChatViewController {
                 return
             }
             self.collectionView.contentOffset.y -= insetDif
+        }
+    }
+    
+    func calculateCollectionViewTopInset() {
+        let baseInset: CGFloat = 56
+        let currentKeyboardHeight = self.currentKeyboardHeight
+        let contentToBoundsDiff = calculateCollectionHeightToContentHeightDiff()
+        if (contentToBoundsDiff - currentKeyboardHeight) > 0 {
+            collectionView.contentInset.top = contentToBoundsDiff + baseInset - currentKeyboardHeight
+        } else {
+            collectionView.contentInset.top = baseInset
         }
     }
     
@@ -498,7 +521,7 @@ private extension ChatViewController {
     func setupCollectionView() {
         collectionView.delegate = self
         collectionView.collectionViewLayout = buildLayout()
-        collectionView.contentInset.top = 50
+        calculateCollectionViewTopInset()
         collectionView.showsVerticalScrollIndicator = true
         collectionView.register(ChatSectionHeaderView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
