@@ -109,7 +109,6 @@ struct WCWalletsProvider {
             guard let nativeLink = $0.getNativeAppLink() else {
                 return false
             }
-            guard universal != nativeLink else { return false }
             guard let url = URL(string: nativeLink) else {
                 Debugger.printFailure("Can't create URL from native link: \(nativeLink)", critical: true)
                 return false }
