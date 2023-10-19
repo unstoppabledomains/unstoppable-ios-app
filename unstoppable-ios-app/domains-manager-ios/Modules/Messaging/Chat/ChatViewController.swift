@@ -382,7 +382,7 @@ private extension ChatViewController {
     var currentChatInputViewHeight: CGFloat { 
         switch state {
         case .viewChannel:
-            return 0
+            return 16
         default:
             return chatInputView.bounds.height
         }
