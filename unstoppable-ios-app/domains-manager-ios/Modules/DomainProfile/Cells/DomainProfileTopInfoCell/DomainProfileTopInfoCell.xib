@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -35,38 +36,59 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="bSB-9Q-2th">
                                 <rect key="frame" x="0.0" y="46" width="346" height="322"/>
                                 <subviews>
-                                    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8KU-Uo-7G0">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jcC-lZ-j5C">
                                         <rect key="frame" x="133" y="0.0" width="80" height="80"/>
                                         <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="D8f-DF-qvd">
+                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8KU-Uo-7G0">
                                                 <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                                <subviews>
+                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="D8f-DF-qvd">
+                                                        <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="width" secondItem="D8f-DF-qvd" secondAttribute="height" id="bJn-4A-c1y"/>
+                                                            <constraint firstAttribute="width" priority="999" constant="80" id="tk4-re-rAc"/>
+                                                        </constraints>
+                                                    </imageView>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xsz-SU-6Ar" customClass="GhostTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
+                                                        <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                                                        <state key="normal" title="Button"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                                    </button>
+                                                </subviews>
+                                                <color key="backgroundColor" name="brandUnstoppableBlue"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" secondItem="D8f-DF-qvd" secondAttribute="height" id="bJn-4A-c1y"/>
-                                                    <constraint firstAttribute="width" priority="999" constant="80" id="tk4-re-rAc"/>
+                                                    <constraint firstItem="D8f-DF-qvd" firstAttribute="top" secondItem="8KU-Uo-7G0" secondAttribute="top" id="3yc-Ea-n1I"/>
+                                                    <constraint firstAttribute="trailing" secondItem="D8f-DF-qvd" secondAttribute="trailing" id="6EI-3A-WLB"/>
+                                                    <constraint firstAttribute="bottom" secondItem="Xsz-SU-6Ar" secondAttribute="bottom" id="Dqf-w1-6El"/>
+                                                    <constraint firstItem="D8f-DF-qvd" firstAttribute="leading" secondItem="8KU-Uo-7G0" secondAttribute="leading" id="FhB-Jk-A6M"/>
+                                                    <constraint firstItem="Xsz-SU-6Ar" firstAttribute="top" secondItem="8KU-Uo-7G0" secondAttribute="top" id="MQh-aE-L0N"/>
+                                                    <constraint firstAttribute="trailing" secondItem="Xsz-SU-6Ar" secondAttribute="trailing" id="SUW-aD-S4w"/>
+                                                    <constraint firstItem="Xsz-SU-6Ar" firstAttribute="leading" secondItem="8KU-Uo-7G0" secondAttribute="leading" id="T0G-03-4ZL"/>
+                                                    <constraint firstAttribute="bottom" secondItem="D8f-DF-qvd" secondAttribute="bottom" id="zqi-sB-vA5"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
+                                                        <real key="value" value="40"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="udBlueGrayIcon" translatesAutoresizingMaskIntoConstraints="NO" id="gBz-m9-G14">
+                                                <rect key="frame" x="56" y="56" width="24" height="24"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="24" id="SKV-pX-Qde"/>
+                                                    <constraint firstAttribute="width" constant="24" id="vfO-s1-Pxs"/>
                                                 </constraints>
                                             </imageView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xsz-SU-6Ar" customClass="GhostTertiaryWhiteButton" customModule="domains_manager_ios" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
-                                            </button>
                                         </subviews>
-                                        <color key="backgroundColor" name="brandUnstoppableBlue"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="D8f-DF-qvd" firstAttribute="top" secondItem="8KU-Uo-7G0" secondAttribute="top" id="3yc-Ea-n1I"/>
-                                            <constraint firstAttribute="trailing" secondItem="D8f-DF-qvd" secondAttribute="trailing" id="6EI-3A-WLB"/>
-                                            <constraint firstAttribute="bottom" secondItem="Xsz-SU-6Ar" secondAttribute="bottom" id="Dqf-w1-6El"/>
-                                            <constraint firstItem="D8f-DF-qvd" firstAttribute="leading" secondItem="8KU-Uo-7G0" secondAttribute="leading" id="FhB-Jk-A6M"/>
-                                            <constraint firstItem="Xsz-SU-6Ar" firstAttribute="top" secondItem="8KU-Uo-7G0" secondAttribute="top" id="MQh-aE-L0N"/>
-                                            <constraint firstAttribute="trailing" secondItem="Xsz-SU-6Ar" secondAttribute="trailing" id="SUW-aD-S4w"/>
-                                            <constraint firstItem="Xsz-SU-6Ar" firstAttribute="leading" secondItem="8KU-Uo-7G0" secondAttribute="leading" id="T0G-03-4ZL"/>
-                                            <constraint firstAttribute="bottom" secondItem="D8f-DF-qvd" secondAttribute="bottom" id="zqi-sB-vA5"/>
+                                            <constraint firstItem="8KU-Uo-7G0" firstAttribute="leading" secondItem="jcC-lZ-j5C" secondAttribute="leading" id="LCD-rE-dAi"/>
+                                            <constraint firstAttribute="trailing" secondItem="8KU-Uo-7G0" secondAttribute="trailing" id="MNG-BG-OB5"/>
+                                            <constraint firstAttribute="bottom" secondItem="gBz-m9-G14" secondAttribute="bottom" id="NMO-BR-tY8"/>
+                                            <constraint firstItem="8KU-Uo-7G0" firstAttribute="top" secondItem="jcC-lZ-j5C" secondAttribute="top" id="eVm-4H-iPV"/>
+                                            <constraint firstAttribute="trailing" secondItem="gBz-m9-G14" secondAttribute="trailing" id="lOc-Yy-u3N"/>
+                                            <constraint firstAttribute="bottom" secondItem="8KU-Uo-7G0" secondAttribute="bottom" id="sed-dw-MDK"/>
                                         </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="number" keyPath="defaultCornerRadius">
-                                                <real key="value" value="40"/>
-                                            </userDefinedRuntimeAttribute>
-                                        </userDefinedRuntimeAttributes>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="8Ee-Fh-fmj">
                                         <rect key="frame" x="0.0" y="96" width="346" height="178"/>
@@ -148,11 +170,11 @@
                 <constraint firstItem="8gd-8M-DIy" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" priority="999" constant="24" id="9XU-H7-Z3s"/>
                 <constraint firstItem="8Ts-Qa-VHS" firstAttribute="leading" secondItem="ZTg-uK-7eu" secondAttribute="leading" id="NbQ-MF-bNO"/>
                 <constraint firstItem="8Ts-Qa-VHS" firstAttribute="centerY" secondItem="l9h-aR-zxu" secondAttribute="centerY" id="QJy-c8-f0B"/>
+                <constraint firstItem="8v8-I7-B0o" firstAttribute="bottom" secondItem="jcC-lZ-j5C" secondAttribute="top" constant="28" id="TUN-kK-OpR"/>
                 <constraint firstItem="8gd-8M-DIy" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="biA-2X-JTq"/>
                 <constraint firstItem="8gd-8M-DIy" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="e2V-RD-mua"/>
                 <constraint firstItem="8v8-I7-B0o" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="erW-PE-KlK"/>
                 <constraint firstItem="8v8-I7-B0o" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="prw-Il-KJB"/>
-                <constraint firstItem="8v8-I7-B0o" firstAttribute="bottom" secondItem="8KU-Uo-7G0" secondAttribute="top" constant="28" id="puC-AO-0Kb"/>
                 <constraint firstItem="8Ts-Qa-VHS" firstAttribute="centerX" secondItem="l9h-aR-zxu" secondAttribute="centerX" id="ucf-YH-GSY"/>
             </constraints>
             <size key="customSize" width="378" height="376"/>
@@ -166,11 +188,13 @@
                 <outlet property="domainNameLabel" destination="LrO-nW-5kD" id="D9s-nG-i8V"/>
                 <outlet property="followersButton" destination="rHb-ab-50F" id="WLu-1c-e8x"/>
                 <outlet property="qrCodeButton" destination="GJQ-Ck-XLe" id="aLD-IN-eN1"/>
+                <outlet property="udBlueImageView" destination="gBz-m9-G14" id="jQ5-Pe-gh2"/>
             </connections>
             <point key="canvasLocation" x="272.30769230769232" y="38.388625592417057"/>
         </collectionViewCell>
     </objects>
     <resources>
+        <image name="udBlueGrayIcon" width="25" height="26"/>
         <namedColor name="brandUnstoppableBlue">
             <color red="0.050980392156862744" green="0.40392156862745099" blue="0.99215686274509807" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
