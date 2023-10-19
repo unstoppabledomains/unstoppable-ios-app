@@ -58,7 +58,11 @@ final class EnterTransferDomainRecipientValuePresenter: EnterValueViewPresenter 
                 }
             } else {
                 if value.isMatchingRegexPattern(Constants.ETHRegexPattern) {
-                    didEnterValidRecipient(.walletAddress(value))
+                    if Constants.UDContractAddresses.contains(value.lowercased()) {
+                        didEnterInvalidRecipient(error: .udContractAddress)
+                    } else {
+                        didEnterValidRecipient(.walletAddress(value))
+                    }
                 } else {
                     didEnterInvalidRecipient(error: .walletAddressIncorrect)
                 }
@@ -100,6 +104,7 @@ private extension EnterTransferDomainRecipientValuePresenter {
         case domainNameNotResolved
         case walletAddressIncorrect
         case transferringToSameWallet
+        case udContractAddress
         
         var message: String {
             switch self {
@@ -109,6 +114,8 @@ private extension EnterTransferDomainRecipientValuePresenter {
                 return String.Constants.transferDomainRecipientAddressInvalidError.localized()
             case .transferringToSameWallet:
                 return String.Constants.transferDomainRecipientSameWalletError.localized()
+            case .udContractAddress:
+                return String.Constants.transferDomainRecipientToUDContractError.localized()
             }
         }
     }
