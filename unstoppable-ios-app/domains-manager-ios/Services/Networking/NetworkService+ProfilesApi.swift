@@ -358,7 +358,7 @@ struct BadgeDetailedInfo: Codable, Hashable {
     let usage: Leaderboard
     
     struct Leaderboard: Codable, Hashable {
-        let rank: Int
+        let rank: Int?
         let holders: Int
         let domains: Int
         let featured: [String]
