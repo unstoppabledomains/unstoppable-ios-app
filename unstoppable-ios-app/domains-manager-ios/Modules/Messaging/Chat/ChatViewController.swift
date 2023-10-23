@@ -51,6 +51,7 @@ final class ChatViewController: BaseViewController {
     private var scrollingInfo: ScrollingInfo?
     private var moveToTopButtonVisibilityWorkItem: DispatchWorkItem?
     private var isMoveToTopButtonHidden = false
+    private var state: State?
     override var isObservingKeyboard: Bool { true }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
 
@@ -153,43 +154,14 @@ extension ChatViewController: ChatViewProtocol {
     }
     
     func setUIState(_ state: ChatViewController.State) {
-        secondaryButton.isUserInteractionEnabled = true
-        secondaryButton.isHidden = true
-        acceptButton.isHidden = true
-        chatInputView.isHidden = true
-        collectionView.isHidden = false
-        approveContentView.isHidden = true
-        
-        switch state {
-        case .loading:
-            collectionView.isHidden = true
-        case .chat:
-            chatInputView.isHidden = false
-        case .viewChannel:
-            return
-        case .joinChannel:
-            approveContentView.isHidden = false
-            acceptButton.isHidden = false
-            acceptButton.setTitle(String.Constants.join.localized(), image: nil)
-        case .otherUserIsBlocked:
-            approveContentView.isHidden = false
-            secondaryButton.isHidden = false
-            secondaryButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration())
-            secondaryButton.setTitle(String.Constants.unblock.localized(), image: nil)
-        case .userIsBlocked:
-            approveContentView.isHidden = false
-            secondaryButton.isHidden = false
-            var configuration = UDButtonConfiguration.mediumRaisedTertiaryButtonConfiguration
-            configuration.backgroundIdleColor = .clear
-            secondaryButton.setConfiguration(configuration)
-            secondaryButton.isUserInteractionEnabled = false
-            secondaryButton.setTitle(String.Constants.messagingYouAreBlocked.localized(), image: nil)
-        case .cantContactUser(let ableToInvite):
-            if ableToInvite {
-                approveContentView.isHidden = false
-                acceptButton.isHidden = false
-                acceptButton.setTitle(String.Constants.messagingInvite.localized(), image: nil)
-            }
+        self.state = state
+        var animated = true
+        if case .loading = state {
+            animated = false
+        }
+        let animationDuration: TimeInterval = animated ? 0.25 : 0
+        UIView.animate(withDuration: animationDuration) {
+            self.updateUIForCurrentState()
         }
     }
     
@@ -354,19 +326,73 @@ private extension ChatViewController {
 
 // MARK: - Private functions
 private extension ChatViewController {
+    func updateUIForCurrentState() {
+        secondaryButton.isUserInteractionEnabled = true
+        secondaryButton.isHidden = true
+        acceptButton.isHidden = true
+        chatInputView.isHidden = true
+        collectionView.alpha = 1
+        approveContentView.isHidden = true
+        
+        switch state {
+        case .loading:
+            collectionView.alpha = 0
+        case .chat:
+            chatInputView.isHidden = false
+        case .viewChannel:
+            UIView.performWithoutAnimation {
+                calculateCollectionBottomInset()
+            }
+        case .joinChannel:
+            approveContentView.isHidden = false
+            acceptButton.isHidden = false
+            acceptButton.setTitle(String.Constants.join.localized(), image: nil)
+        case .otherUserIsBlocked:
+            approveContentView.isHidden = false
+            secondaryButton.isHidden = false
+            secondaryButton.setConfiguration(.mediumGhostPrimaryButtonConfiguration())
+            secondaryButton.setTitle(String.Constants.unblock.localized(), image: nil)
+        case .userIsBlocked:
+            approveContentView.isHidden = false
+            secondaryButton.isHidden = false
+            var configuration = UDButtonConfiguration.mediumRaisedTertiaryButtonConfiguration
+            configuration.backgroundIdleColor = .clear
+            secondaryButton.setConfiguration(configuration)
+            secondaryButton.isUserInteractionEnabled = false
+            secondaryButton.setTitle(String.Constants.messagingYouAreBlocked.localized(), image: nil)
+        case .cantContactUser(let ableToInvite):
+            if ableToInvite {
+                approveContentView.isHidden = false
+                acceptButton.isHidden = false
+                acceptButton.setTitle(String.Constants.messagingInvite.localized(), image: nil)
+            }
+        case .none:
+            return
+        }
+    }
+    
     func calculateCollectionHeightToContentHeightDiff() -> CGFloat {
         let contentHeight = collectionView.contentSize.height
-        let viewHeight = collectionView.bounds.height - (cNavigationBar?.bounds.height ?? 0) - chatInputView.bounds.height
+        let viewHeight = collectionView.bounds.height - (cNavigationBar?.bounds.height ?? 0) - currentChatInputViewHeight
         let contentToBoundsDiff = viewHeight - contentHeight
         return contentToBoundsDiff
     }
     
     var currentKeyboardHeight: CGFloat { isKeyboardOpened ? keyboardFrame.height : 0 }
+    var currentChatInputViewHeight: CGFloat { 
+        switch state {
+        case .viewChannel:
+            return 16
+        default:
+            return chatInputView.bounds.height
+        }
+    }
     
     func calculateCollectionBottomInset(shouldAdjustContentOffset: Bool = false) {
         let keyboardHeight = currentKeyboardHeight
         let currentInset = collectionView.contentInset.bottom
-        collectionView.contentInset.bottom = chatInputView.bounds.height + keyboardHeight + 12
+        
+        collectionView.contentInset.bottom = currentChatInputViewHeight + keyboardHeight + 12
         if shouldAdjustContentOffset {
             let insetDif = currentInset - collectionView.contentInset.bottom
             if isReachedEnd,
