@@ -182,7 +182,7 @@ private extension WCRequestsHandlingService {
     
     func handleV1ConnectionRequestURL(_ requestURL: WalletConnectSwift.WCURL) async {
         await withSafeCheckedContinuation({ [weak self] completion in
-            walletConnectServiceV1.connectAsync(to: requestURL) { result in
+            self?.walletConnectServiceV1.connectAsync(to: requestURL) { result in
                 guard let self else { return }
                 
                 Task {
@@ -211,7 +211,7 @@ private extension WCRequestsHandlingService {
 
     func handleConnectionProposal(_ proposal: WC2ConnectionProposal) async {
         await withSafeCheckedContinuation({ [weak self] completion in
-            walletConnectServiceV2.handleConnectionProposal(proposal) { result in
+            self?.walletConnectServiceV2.handleConnectionProposal(proposal) { result in
                 guard let self else { return }
                 
                 Task {
