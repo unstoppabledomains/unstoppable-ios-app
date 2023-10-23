@@ -48,15 +48,4 @@ extension Array where Element == MessagingChat {
             return lhsTime > rhsTime
         })
     }
-    
-    func splitCommunitiesAndOthers() -> (chats: [Element], communities: [Element]) {
-        var runningResult: (chats: [Element], communities: [Element]) = ([], [])
-        return self.reduce(into: runningResult) { result, element in
-            if element.displayInfo.isCommunityChat {
-                result.communities.append(element)
-            } else {
-                result.chats.append(element)
-            }
-        }
-    }
 }

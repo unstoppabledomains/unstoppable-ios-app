@@ -19,9 +19,10 @@ extension MessagingService {
                 
                 async let remoteChatsTask = updatedLocalChats(localChats, forProfile: profile, isRequests: false)
                 async let remoteRequestsTask = updatedLocalChats(localRequests, forProfile: profile, isRequests: true)
+                async let remoteCommunitiesTask = updatedLocalChatsCommunities(forProfile: profile)
                 
-                let (remoteChats, remoteRequests) = try await (remoteChatsTask, remoteRequestsTask)
-                let allRemoteChats = remoteChats + remoteRequests
+                let (remoteChats, remoteRequests, remoteCommunities) = try await (remoteChatsTask, remoteRequestsTask, remoteCommunitiesTask)
+                let allRemoteChats = remoteChats + remoteRequests + remoteCommunities
                 
                 // Remove deprecated chats
                 for remoteChat in allRemoteChats {
@@ -114,37 +115,6 @@ extension MessagingService {
         return updatedChats
     }
     
-    func isNewMessagesAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
-        if try await isNewMessagesFromAcceptedChatsAvailable(for: profile) {
-            return true
-        }
-        
-        return try await isNewMessagesFromRequestChatsAvailable(for: profile)
-    }
-    
-    func isNewMessagesFromAcceptedChatsAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
-        let apiService = try getAPIServiceWith(identifier: profile.serviceIdentifier)
-        let chats = try await apiService.getChatsListForUser(profile, page: 1, limit: 1)
-        
-        return try await isNewMessagesFromChatsAvailable(chats, for: profile)
-    }
-    
-    func isNewMessagesFromRequestChatsAvailable(for profile: MessagingChatUserProfile) async throws -> Bool {
-        let apiService = try getAPIServiceWith(identifier: profile.serviceIdentifier)
-        let chats = try await apiService.getChatRequestsForUser(profile, page: 1, limit: 1)
-        
-        return try await isNewMessagesFromChatsAvailable(chats, for: profile)
-    }
-    
-    func isNewMessagesFromChatsAvailable(_ chats: [MessagingChat], for profile: MessagingChatUserProfile) async throws -> Bool {
-        guard let latestChat = chats.first else { return false } /// No messages if no chats
-        guard let localChat = await storageService.getChatWith(id: latestChat.displayInfo.id,
-                                                               of: latestChat.userId,
-                                                               serviceIdentifier: profile.serviceIdentifier) else { return true } /// New chat => new message
-        
-        return !localChat.isUpToDateWith(otherChat: latestChat)
-    }
-    
     func getCachedChatsInAllServicesFor(profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChat] {
         let profiles = try await getProfilesForAllServicesBy(userProfile: profile)
         var chats: [MessagingChat] = []
@@ -195,11 +165,8 @@ private extension MessagingService {
                 }
                 
                 remoteChats.append(contentsOf: chatsPage)
-                /// Communities doesn't have a proper pagination since they're based on UD badges and can't be sorted by last message
-                /// For the same reason we can't count them as part of the loaded page
-                let (chats, _) = chatsPage.splitCommunitiesAndOthers()
                 
-                if !apiService.capabilities.isSupportChatsListPagination || chats.count < limit {
+                if !apiService.capabilities.isSupportChatsListPagination || chatsPage.count < limit {
                     /// Loaded all chats
                     break
                 } else if let lastPageChat = chatsPage.last,
@@ -218,5 +185,12 @@ private extension MessagingService {
         await storageService.saveChats(remoteChats)
         
         return remoteChats
+    }
+    
+    func updatedLocalChatsCommunities(forProfile profile: MessagingChatUserProfile) async throws -> [MessagingChat] {
+        let apiService = try getAPIServiceWith(identifier: profile.serviceIdentifier)
+        let remoteCommunities = try await apiService.getCommunitiesListForUser(profile)
+        await storageService.saveChats(remoteCommunities)
+        return remoteCommunities
     }
 }

@@ -102,6 +102,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         []
     }
     
+    func getCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] { [] }
+    
     func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus {
         if blockedUsersStorage.isOtherUserBlockedInChat(chat) {
             return .otherUserIsBlocked

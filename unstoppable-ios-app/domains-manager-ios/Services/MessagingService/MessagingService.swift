@@ -166,7 +166,6 @@ extension MessagingService: MessagingServiceProtocol {
     }
     
     func isNewMessagesAvailable() async throws -> Bool {
-        let apiService = try getDefaultAPIService()
         let totalNumberOfUnreadMessages = unreadCountingService.getTotalNumberOfUnreadMessages()
         return totalNumberOfUnreadMessages > 0 
     }
