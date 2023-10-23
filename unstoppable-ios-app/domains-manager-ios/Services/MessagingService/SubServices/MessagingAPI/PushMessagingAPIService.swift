@@ -86,7 +86,12 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     func getChatsListForUser(_ user: MessagingChatUserProfile,
                                page: Int,
                                limit: Int) async throws -> [MessagingChat] {
-        let communities = try await getCommunitiesListForUser(user)
+        var communities: [MessagingChat] = []
+        /// Communities doesn't have a proper pagination since they're based on UD badges and can't be sorted by last message
+        /// To avoid multiple loading of full list of communities for each page, they'll be loaded only once
+        if page == 1 {
+            communities = try await getCommunitiesListForUser(user)
+        }
         if isRegularChatsEnabled {
             let pushChats = try await getPushChatsForUser(user,
                                                           page: page,
@@ -109,10 +114,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
     private func getBadgesCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] {
         let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.normalizedWallet)
         let badgesList = try await NetworkService().fetchBadgesInfo(for: domain)
+        let badges = badgesList.badges
         var chats: [MessagingChat] = []
         
         await withTaskGroup(of: Optional<MessagingChat>.self, body: { group in
-            for badge in badgesList.badges {
+            for badge in badges {
                 group.addTask {
                     if let badgeInfo = try? await NetworkService().fetchBadgeDetailedInfo(for: badge) {
                         if let groupChatId = badge.groupChatId,

@@ -195,7 +195,11 @@ private extension MessagingService {
                 }
                 
                 remoteChats.append(contentsOf: chatsPage)
-                if !apiService.capabilities.isSupportChatsListPagination || chatsPage.count < limit {
+                /// Communities doesn't have a proper pagination since they're based on UD badges and can't be sorted by last message
+                /// For the same reason we can't count them as part of the loaded page
+                let (chats, _) = chatsPage.splitCommunitiesAndOthers()
+                
+                if !apiService.capabilities.isSupportChatsListPagination || chats.count < limit {
                     /// Loaded all chats
                     break
                 } else if let lastPageChat = chatsPage.last,

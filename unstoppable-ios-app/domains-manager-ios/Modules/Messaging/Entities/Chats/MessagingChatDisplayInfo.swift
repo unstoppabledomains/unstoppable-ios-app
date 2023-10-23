@@ -29,6 +29,15 @@ extension MessagingChatDisplayInfo {
             return true
         }
     }
+    
+    var isCommunityChat: Bool {
+        switch type {
+        case .community:
+            return true
+        case .group, .private:
+            return false
+        }
+    }
 }
 
 extension Array where Element == MessagingChatDisplayInfo {
@@ -63,10 +72,9 @@ extension Array where Element == MessagingChatDisplayInfo {
     func splitCommunitiesAndOthers() -> (chats: [Element], communities: [Element]) {
         var runningResult: (chats: [Element], communities: [Element]) = ([], [])
         return self.reduce(into: runningResult) { result, element in
-            switch element.type {
-            case .community:
+            if element.isCommunityChat {
                 result.communities.append(element)
-            default:
+            } else {
                 result.chats.append(element)
             }
         }
