@@ -173,7 +173,7 @@ private extension UDButton {
             setSizeIfPossible(CGSize(width: iconSize + contentInset.left + contentInset.right,
                                      height: iconSize + contentInset.top + contentInset.bottom))
             imageView.center = localCenter
-        } else {
+        } else if imageView.image != nil && !title.isEmpty {
             // Title and image
             let maxContentHeight = max(titleHeight, iconSize)
             setSizeIfPossible(CGSize(width: titleWidth + iconSize + titleImagePadding + contentInset.left + contentInset.right,
@@ -195,7 +195,8 @@ private extension UDButton {
     }
     
     func setSizeIfPossible(_ size: CGSize) {
-        if translatesAutoresizingMaskIntoConstraints || bounds.size != _intrinsicContentSize {
+        let needUpdate = (translatesAutoresizingMaskIntoConstraints && bounds.size != size) || bounds.size != _intrinsicContentSize
+        if needUpdate {
             bounds.size = size
         }
         _intrinsicContentSize = size

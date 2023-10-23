@@ -108,7 +108,6 @@ extension ChannelViewPresenter: MessagingServiceListener {
 private extension ChannelViewPresenter {
     func setupUI() {
         view?.setTitleOfType(.channel(channel))
-        setupChannelActions()
     }
     
     func setupChannelActions() {
@@ -139,8 +138,10 @@ private extension ChannelViewPresenter {
                 view?.setLoading(active: true)
                 
                 try await loadAndAddFeed(forPage: currentPage, cachedOnly: true)
-                showData(animated: true, isLoading: true)
-        
+                showData(animated: true, scrollToBottomAnimated: false, isLoading: false, completion: { [weak self] in
+                    self?.setupChannelActions()
+                })
+                
                 try await loadAndAddFeed(forPage: currentPage)
                 showData(animated: false, scrollToBottomAnimated: false, isLoading: false)
                 self.isLoadingFeed = false
@@ -148,7 +149,7 @@ private extension ChannelViewPresenter {
             } catch {
                 view?.showAlertWith(error: error, handler: nil)
             }
-        }
+        }   
     }
     
     @discardableResult
@@ -197,11 +198,12 @@ private extension ChannelViewPresenter {
         self.feed.sort(by: { $0.time > $1.time })
     }
     
-    func showData(animated: Bool, scrollToBottomAnimated: Bool, isLoading: Bool) {
+    func showData(animated: Bool, scrollToBottomAnimated: Bool, isLoading: Bool, completion: EmptyCallback? = nil) {
         showData(animated: animated, isLoading: isLoading, completion: { [weak self] in
             self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                 self?.view?.scrollToTheBottom(animated: scrollToBottomAnimated)
+                completion?()
             }
         })
     }
