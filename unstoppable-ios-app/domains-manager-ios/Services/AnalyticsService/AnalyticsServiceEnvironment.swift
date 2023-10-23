@@ -293,6 +293,7 @@ extension Analytics {
         case block, unblock, leaveGroup
         case resendMessage, deleteMessage
         case downloadUnsupportedMessage
+        case bulkBlockButtonPressed
         
         // Public profile
         case follow, unfollow

@@ -21,6 +21,7 @@ protocol XMTPMessagingAPIServiceDataProvider {
 final class XMTPMessagingAPIService {
     
     private let blockedUsersStorage = XMTPBlockedUsersStorage.shared
+    private let approvedUsersStorage = XMTPApprovedTopicsStorage.shared
     private let cachedDataHolder = CachedDataHolder()
     let capabilities = MessagingServiceCapabilities(canContactWithoutProfile: false,
                                                     canBlockUsers: true,
@@ -71,14 +72,26 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         let env = getCurrentXMTPEnvironment()
         let client = try await XMTPServiceHelper.getClientFor(user: user, env: env)
         let conversations = try await client.conversations.list()
-        let chats = conversations.compactMap({ XMTPEntitiesTransformer.convertXMTPChatToChat($0,
-                                                                                             userId: user.id,
-                                                                                             userWallet: user.wallet,
-                                                                                             isApproved: true) })
-        let blockedUsersStorage = self.blockedUsersStorage
+        
+        if let domain = try? await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet),
+           let notificationsPreferences = try? await NetworkService().fetchUserDomainNotificationsPreferences(for: domain) {
+            approvedUsersStorage.updatedApprovedUsersListFor(userId: user.id,
+                                                             approvedTopics: notificationsPreferences.acceptedTopics)
+            blockedUsersStorage.updatedBlockedUsersListFor(userId: user.id,
+                                                           blockedTopics: notificationsPreferences.blockedTopics)
+        }
+        
+        let approvedTopicsList = Set(approvedUsersStorage.getApprovedTopicsListFor(userId: user.id).map { $0.approvedTopic })
+        let chats = conversations.compactMap({ conversation in
+            XMTPEntitiesTransformer.convertXMTPChatToChat(conversation,
+                                                          userId: user.id,
+                                                          userWallet: user.wallet,
+                                                          isApproved: approvedTopicsList.contains(conversation.topic))
+        })
+        
+        
         Task.detached {
-            let notBlockedChats = chats.filter({ !blockedUsersStorage.isOtherUserBlockedInChat($0.displayInfo) })
-            let topicsToSubscribeForPN = notBlockedChats.map { self.getXMTPConversationTopicFromChat($0) }
+            let topicsToSubscribeForPN = chats.map { self.getXMTPConversationTopicFromChat($0) }
             try? await XMTPPushNotificationsHelper.subscribeForTopics(topicsToSubscribeForPN, by: client)
         }
         
@@ -120,22 +133,15 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     func setUser(in chat: MessagingChat, blocked: Bool, by user: MessagingChatUserProfile) async throws {
         switch chat.displayInfo.type {
         case .private:
-            let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
-            var notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
-            let chatTopic = chat.displayInfo.id
-            if blocked {
-                notificationsPreferences.blockedTopics.append(chatTopic)
-            } else {
-                notificationsPreferences.blockedTopics.removeAll(where: { $0 == chatTopic })
-            }
-            try await NetworkService().updateUserDomainNotificationsPreferences(notificationsPreferences, for: domain)
-            blockedUsersStorage.updatedBlockedUsersListFor(userId: chat.userId, blockedTopics: notificationsPreferences.blockedTopics)
-            setSubscribed(!blocked,
-                          toChat: chat,
-                          by: user)
+            try await setChats(chats: [chat], blocked: blocked, by: user)
         case .group:
             throw XMTPServiceError.unsupportedAction
         }
+    }
+    
+    func block(chats: [MessagingChat],
+               by user: MessagingChatUserProfile) async throws {
+        try await setChats(chats: chats, blocked: true, by: user)
     }
     
     func isAbleToContactAddress(_ address: String,
@@ -231,6 +237,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                                                        userId: user.id,
                                                                        userWallet: user.wallet,
                                                                        isApproved: true) else { throw XMTPServiceError.failedToParseChat }
+       
+        try? await self.makeChatRequest(chat, approved: true, by: user)
         var message = try await sendMessage(messageType,
                                             in: conversation,
                                             client: client,
@@ -241,7 +249,22 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
     }
     
     func makeChatRequest(_ chat: MessagingChat, approved: Bool, by user: MessagingChatUserProfile) async throws {
-        throw XMTPServiceError.unsupportedAction
+        switch chat.displayInfo.type {
+        case .private:
+            let env = getCurrentXMTPEnvironment()
+            let client = try await XMTPServiceHelper.getClientFor(user: user,
+                                                                  env: env)
+            let chatTopic = chat.displayInfo.id
+            try await XMTPPushNotificationsHelper.makeChatRequestFor(topic: chatTopic,
+                                                                     accepted: approved,
+                                                                     by: client)
+            let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
+            let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
+            approvedUsersStorage.updatedApprovedUsersListFor(userId: chat.userId,
+                                                             approvedTopics: notificationsPreferences.acceptedTopics)
+        case .group:
+            throw XMTPServiceError.unsupportedAction
+        }
     }
     
     func leaveGroupChat(_ chat: MessagingChat, by user: MessagingChatUserProfile) async throws {
@@ -292,11 +315,11 @@ private extension XMTPMessagingAPIService {
         
         let newestMessages = try await conversation.messages(limit: 3, before: Date().addingTimeInterval(100)) // Get latest message
         guard let xmtpMessage = newestMessages.first(where: { $0.id == messageID }),
-              let message = XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
-                                                                                    cachedMessage: nil,
-                                                                                    in: chat,
-                                                                                    isRead: true,
-                                                                                    filesService: filesService) else { throw XMTPServiceError.failedToFindSentMessage }
+              let message = await XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                                          cachedMessage: nil,
+                                                                                          in: chat,
+                                                                                          isRead: true,
+                                                                                          filesService: filesService) else { throw XMTPServiceError.failedToFindSentMessage }
         
         return message
     }
@@ -319,6 +342,23 @@ private extension XMTPMessagingAPIService {
                 Debugger.printFailure("Failed to set subscribed: \(isSubscribed) for XMTP topics")
             }
         }
+    }
+    
+    func setChats(chats: [MessagingChat],
+                  blocked: Bool,
+                  by user: MessagingChatUserProfile) async throws {
+        guard !chats.isEmpty else { return }
+        
+        let env = getCurrentXMTPEnvironment()
+        let client = try await XMTPServiceHelper.getClientFor(user: user,
+                                                              env: env)
+        let chatTopics = chats.map { $0.displayInfo.id }
+        try await XMTPPushNotificationsHelper.makeChatRequestFor(topics: chatTopics,
+                                                                 blocked: blocked,
+                                                                 by: client)
+        let domain = try await MessagingAPIServiceHelper.getAnyDomainItem(for: user.wallet)
+        let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
+        blockedUsersStorage.updatedBlockedUsersListFor(userId: chats[0].userId, blockedTopics: notificationsPreferences.blockedTopics)
     }
 }
 
@@ -547,15 +587,18 @@ final class DefaultXMTPMessagingAPIServiceDataProvider: XMTPMessagingAPIServiceD
         let conversation = try MessagingAPIServiceHelper.getXMTPConversationFromChat(chat, client: client)
         let start = Date()
         let messages = try await conversation.messages(limit: fetchLimit, before: before)
-        Debugger.printTimeSensitiveInfo(topic: .Messaging, "load \(messages.count) messages. fetchLimit: \(fetchLimit). before: \(before)", startDate: start, timeout: 1)
+        Debugger.printTimeSensitiveInfo(topic: .Messaging, "load \(messages.count) messages. fetchLimit: \(fetchLimit). before: \(String(describing: before))", startDate: start, timeout: 1)
         
-        let chatMessages = messages.compactMap({ xmtpMessage in
-            XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
-                                                                    cachedMessage: cachedMessages.first(where: { $0.displayInfo.id == xmtpMessage.id }),
-                                                                    in: chat,
-                                                                    isRead: isRead,
-                                                                    filesService: filesService)
-        })
+        var chatMessages = [MessagingChatMessage]()
+        for xmtpMessage in messages {
+            if let chatMessage = await XMTPEntitiesTransformer.convertXMTPMessageToChatMessage(xmtpMessage,
+                                                                                               cachedMessage: cachedMessages.first(where: { $0.displayInfo.id == xmtpMessage.id }),
+                                                                                               in: chat,
+                                                                                               isRead: isRead,
+                                                                                               filesService: filesService) {
+                chatMessages.append(chatMessage)
+            }
+        }
         
         return chatMessages
     }

@@ -11,9 +11,10 @@ import Foundation
 protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLogger {
     var analyticsName: Analytics.ViewName { get }
     
-    func didSelectItem(_ item: ChatsListViewController.Item)
+    func didSelectItem(_ item: ChatsListViewController.Item, mode: ChatsListViewController.Mode)
     func didSelectWallet(_ wallet: WalletDisplayInfo)
     func actionButtonPressed()
+    func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction)
     
     func didStartSearch(with mode: ChatsList.SearchMode)
     func didStopSearch()
@@ -23,6 +24,7 @@ protocol ChatsListViewPresenterProtocol: BasePresenterProtocol, ViewAnalyticsLog
 extension ChatsListViewPresenterProtocol {
     func didSelectWallet(_ wallet: WalletDisplayInfo) { }
     func actionButtonPressed() { }
+    func editingModeActionButtonPressed(_ action: ChatsList.EditingModeAction) { }
     func didStartSearch(with mode: ChatsList.SearchMode) { }
     func didStopSearch() { }
     func didSearchWith(key: String) { }
@@ -68,7 +70,7 @@ extension ChatsListViewPresenter: ChatsListViewPresenterProtocol {
         loadAndShowData()
     }
     
-    func didSelectItem(_ item: ChatsListViewController.Item) {
+    func didSelectItem(_ item: ChatsListViewController.Item, mode: ChatsListViewController.Mode) {
         UDVibration.buttonTap.vibrate()
         view?.stopSearching()
         switch item {
@@ -521,27 +523,16 @@ private extension ChatsListViewPresenter {
         snapshot.appendItems([.createProfile])
     }
     
+    func getListOfUnblockedChats() -> [MessagingChatDisplayInfo] {
+        chatsList.unblockedOnly()
+    }
+    
     func fillSnapshotForUserChatsList(_ snapshot: inout ChatsListSnapshot) {
-        var chatsList = [MessagingChatDisplayInfo]()
-        
-        if Constants.shouldHideBlockedUsersLocally {
-            // MARK: - Make function sync again when blocking feature will be handled on the service side
-            for chat in self.chatsList {
-                let blockingStatus = appContext.messagingService.getCachedBlockingStatusForChat(chat)
-                switch blockingStatus {
-                case .unblocked, .currentUserIsBlocked:
-                    chatsList.append(chat)
-                case .bothBlocked, .otherUserIsBlocked:
-                    continue
-                }
-            }
-        } else {
-            chatsList = self.chatsList
-        }
+        let chatsList = getListOfUnblockedChats()
         
         if chatsList.isEmpty {
             snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType, isRequestsList: false))])
         } else {
             snapshot.appendSections([.listItems(title: nil)])
             let requestsList = chatsList.requestsOnly()
@@ -557,7 +548,7 @@ private extension ChatsListViewPresenter {
     func fillSnapshotForUserChannelsList(_ snapshot: inout ChatsListSnapshot) {
         if channels.isEmpty {
             snapshot.appendSections([.emptyState])
-            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType))])
+            snapshot.appendItems([.emptyState(configuration: .init(dataType: selectedDataType, isRequestsList: false))])
         } else {
             snapshot.appendSections([.listItems(title: nil)])
             let channelsList = channels.filter({ $0.isCurrentUserSubscribed })
@@ -691,6 +682,7 @@ private extension ChatsListViewPresenter {
         
         switch selectedDataType {
         case .chats:
+            let chatsList = getListOfUnblockedChats()
             let requests = chatsList.requestsOnly()
             guard !requests.isEmpty else { return }
             
@@ -727,7 +719,7 @@ private extension ChatsListViewPresenter {
                                                                         mode: .chooseFirstForMessaging)
             
             switch result {
-            case .cancelled:
+            case .cancelled, .failed:
                 return
             case .set(let domain):
                 var wallet = wallet

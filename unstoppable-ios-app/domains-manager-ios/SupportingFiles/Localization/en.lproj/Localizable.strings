@@ -776,6 +776,7 @@
 "TRANSFER_DOMAIN_RECIPIENT_NOT_RESOLVED_ERROR" = "Domain name couldn't be resolved";
 "TRANSFER_DOMAIN_RECIPIENT_ADDRESS_INVALID_ERROR" = "Wallet address is incorrect";
 "TRANSFER_DOMAIN_RECIPIENT_SAME_WALLET_ERROR" = "Transfering domain to same wallet is not possible";
+"TRANSFER_DOMAIN_RECIPIENT_TO_UD_CONTRACT_ERROR" = "Transfer is blocked to the Unstoppable Domains smart contract address as it would result in the permanent loss of your domain.";
 "REVIEW_AND_CONFIRM" = "Review and confirm";
 "TRANSFER_CONSENT_ACTION_IRREVERSIBLE" = "I understand that I am transferring ownership of this domain and this action is irreversible";
 "TRANSFER_CONSENT_NOT_EXCHANGE" = "I’m not transferring to an exchange address";
@@ -816,6 +817,7 @@
 "MESSAGING_INTRODUCTION_HINT_3_SUBTITLE" = "Enjoy the freedom of sending messages without any additional charges.";
 "MESSAGING_CHATS_LIST_EMPTY_TITLE" = "Start your first chat";
 "MESSAGING_CHATS_LIST_EMPTY_SUBTITLE" = "Get started by messaging a friend.";
+"MESSAGING_CHATS_REQUESTS_LIST_EMPTY_TITLE" = "You have no pending chat requests";
 "MESSAGING_CHANNELS_EMPTY_TITLE" = "No messages from apps yet";
 "MESSAGING_CHANNELS_EMPTY_SUBTITLE" = "Keep an eye out for upcoming messages from the apps you connect with.";
 "MESSAGING_CHAT_EMPTY_TITLE" = "No messages yet";
@@ -841,6 +843,7 @@
 "MESSAGING_OPEN_LINK_ACTION_TITLE" = "Open link";
 "MESSAGING_CANCEL_AND_BLOCK_ACTION_TITLE" = "Cancel & block user";
 "MESSAGING_OPEN_LINK_WARNING_MESSAGE" = "Opening links can result in the loss of your crypto assets. Do not click this link unless you are sure it is from a safe source.";
+"MESSAGING_USER_REPORTED_AS_SPAM_MESSAGE" = "⚠️ Others have reported this sender as spam";
 
 // Public profile
 "FOLLOWERS" = "Followers";

@@ -32,6 +32,25 @@ extension MessagingChatDisplayInfo {
 
 extension Array where Element == MessagingChatDisplayInfo {
     
+    func unblockedOnly() -> [Element] {
+        if Constants.shouldHideBlockedUsersLocally {
+            var chatsList = [MessagingChatDisplayInfo]()
+            // MARK: - Make function sync again when blocking feature will be handled on the service side
+            for chat in self {
+                let blockingStatus = appContext.messagingService.getCachedBlockingStatusForChat(chat)
+                switch blockingStatus {
+                case .unblocked, .currentUserIsBlocked:
+                    chatsList.append(chat)
+                case .bothBlocked, .otherUserIsBlocked:
+                    continue
+                }
+            }
+            return chatsList
+        } else {
+            return self
+        }
+    }
+    
     func requestsOnly() -> [Element] {
         filter { !$0.isApproved }
     }

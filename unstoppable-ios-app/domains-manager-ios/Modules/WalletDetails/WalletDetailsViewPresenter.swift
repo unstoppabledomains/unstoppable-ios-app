@@ -345,7 +345,7 @@ private extension WalletDetailsViewPresenter {
     
     func handleSetupReverseResolution(result: SetupWalletsReverseResolutionNavigationManager.Result) {
         switch result {
-        case .cancelled:
+        case .cancelled, .failed:
             return
         case .set:
             showWalletDetails()

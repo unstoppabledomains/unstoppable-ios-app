@@ -46,6 +46,7 @@ extension MockMessagingService: MessagingServiceProtocol {
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus { .unblocked }
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws { }
+    func block(chats: [MessagingChatDisplayInfo]) async throws { }
     
     func getMessagesForChat(_ chatDisplayInfo: MessagingChatDisplayInfo,
                             before message: MessagingChatMessageDisplayInfo?,
@@ -103,6 +104,10 @@ extension MockMessagingService: MessagingServiceProtocol {
                                searchKey: String,
                                for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
     
+    //Spam
+    func isAddressIsSpam(_ address: String) async throws -> Bool { false }
+    
+    // Listeners
     func addListener(_ listener: MessagingServiceListener) {}
     func removeListener(_ listener: MessagingServiceListener) {}
 }

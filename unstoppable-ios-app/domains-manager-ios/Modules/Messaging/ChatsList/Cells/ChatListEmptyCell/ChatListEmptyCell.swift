@@ -28,15 +28,16 @@ extension ChatListEmptyCell {
     func setWith(configuration: ChatsListViewController.EmptyStateUIConfiguration,
                  actionButtonCallback: @escaping EmptyCallback) {
         self.actionButtonCallback = actionButtonCallback
-        let title = titleFor(dataType: configuration.dataType)
+        let isRequestsList = configuration.isRequestsList
+        let title = titleFor(dataType: configuration.dataType, isRequestsList: isRequestsList)
         setTitle(title)
         
-        let subtitle = subtitleFor(dataType: configuration.dataType)
+        let subtitle = subtitleFor(dataType: configuration.dataType, isRequestsList: isRequestsList)
         setSubtitle(subtitle)
         
         iconImageView.image = .messageCircleIcon24
         setActionButtonWith(dataType: configuration.dataType)
-        actionButton.isHidden = false
+        actionButton.isHidden = isRequestsList
     }
     
     func setSearchStateUI() {
@@ -65,21 +66,29 @@ private extension ChatListEmptyCell {
                                             lineHeight: 24)
     }
     
-    func titleFor(dataType: ChatsListViewController.DataType) -> String {
-        switch dataType {
-        case .chats:
-            return String.Constants.messagingChatsListEmptyTitle.localized()
-        case .channels:
-            return String.Constants.messagingChannelsEmptyTitle.localized()
+    func titleFor(dataType: ChatsListViewController.DataType, isRequestsList: Bool) -> String {
+        if isRequestsList {
+            return String.Constants.messagingChatsRequestsListEmptyTitle.localized()
+        } else {
+            switch dataType {
+            case .chats:
+                return String.Constants.messagingChatsListEmptyTitle.localized()
+            case .channels:
+                return String.Constants.messagingChannelsEmptyTitle.localized()
+            }
         }
     }
     
-    func subtitleFor(dataType: ChatsListViewController.DataType) -> String {
-        switch dataType {
-        case .chats:
-            return String.Constants.messagingChatsListEmptySubtitle.localized()
-        case .channels:
-            return String.Constants.messagingChannelsEmptySubtitle.localized()
+    func subtitleFor(dataType: ChatsListViewController.DataType, isRequestsList: Bool) -> String {
+        if isRequestsList {
+            return ""
+        } else {
+            switch dataType {
+            case .chats:
+                return String.Constants.messagingChatsListEmptySubtitle.localized()
+            case .channels:
+                return String.Constants.messagingChannelsEmptySubtitle.localized()
+            }
         }
     }
     

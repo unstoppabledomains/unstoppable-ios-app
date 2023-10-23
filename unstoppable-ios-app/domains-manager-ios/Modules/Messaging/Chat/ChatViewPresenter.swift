@@ -377,7 +377,8 @@ private extension ChatViewPresenter {
                 self?.handleChatMessageAction(action, forMessage: message)
             },
                                                      externalLinkHandleCallback: { [weak self] url in
-                self?.handleExternalLinkPressed(url)
+                self?.handleExternalLinkPressed(url,
+                                                in: message)
             }))
         case .imageBase64(let imageMessageDisplayInfo):
             return .imageBase64Message(configuration: .init(message: message,
@@ -454,13 +455,7 @@ private extension ChatViewPresenter {
         
         func addViewProfileActionIfPossibleFor(userInfo: MessagingChatUserDisplayInfo) async {
             if let domainName = userInfo.domainName {
-                let canViewProfile: Bool
-                if domainName.isUDTLD() {
-                    canViewProfile = true
-                } else {
-                    canViewProfile = (try? await NetworkService().isProfilePageExistsFor(domainName: domainName)) ?? false
-                }
-                
+                let canViewProfile: Bool = domainName.isValidDomainName()
                 if canViewProfile  {
                     actions.append(.init(type: .viewProfile, callback: { [weak self] in
                         self?.logButtonPressedAnalyticEvents(button: .viewMessagingProfile)
@@ -514,21 +509,17 @@ private extension ChatViewPresenter {
     
     func didPressViewDomainProfileButton(domainName: String,
                                          walletAddress: String) {
-        if domainName.isUDTLD() {
-            Task {
-                guard let view else { return }
-                let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
-                let walletDomains = userDomains.filter({ $0.ownerWallet?.normalized == profile.wallet.normalized })
-                guard let viewingDomainDisplayInfo = walletDomains.first(where: { $0.isSetForRR }) ?? walletDomains.first,
-                      let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return }
-                
-                UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
-                                                             name: domainName),
-                                                   viewingDomain: viewingDomain,
-                                                   in: view)
-            }
-        } else {
-            view?.openLink(.domainProfilePage(domainName: domainName))
+        Task {
+            guard let view else { return }
+            let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+            let walletDomains = userDomains.filter({ $0.ownerWallet?.normalized == profile.wallet.normalized })
+            guard let viewingDomainDisplayInfo = walletDomains.first(where: { $0.isSetForRR }) ?? walletDomains.first,
+                  let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return }
+            
+            UDRouter().showPublicDomainProfile(of: .init(walletAddress: walletAddress,
+                                                         name: domainName),
+                                               viewingDomain: viewingDomain,
+                                               in: view)
         }
     }
     
@@ -679,23 +670,28 @@ private extension ChatViewPresenter {
         }
     }
     
-    func handleExternalLinkPressed(_ url: URL) {
-        Task {
-            guard let view, case .existingChat(let chat) = conversationState else { return }
-            
-            view.hideKeyboard()
-            do {
-                let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
-                await view.dismissPullUpMenu()
-                
-                switch action {
-                case .handle:
-                    view.openLink(.generic(url: url.absoluteString))
-                case .block:
-                    try await appContext.messagingService.setUser(in: chat, blocked: true)
-                    view.cNavigationController?.popViewController(animated: true)
-                }
-            } catch { }
+    func handleExternalLinkPressed(_ url: URL, in message: MessagingChatMessageDisplayInfo) {
+        guard let view, case .existingChat(let chat) = conversationState else { return }
+        
+        switch message.senderType {
+        case .thisUser:
+            view.openLink(.generic(url: url.absoluteString))
+        case .otherUser:
+            Task {
+                view.hideKeyboard()
+                do {
+                    let action = try await appContext.pullUpViewService.showHandleChatLinkSelectionPullUp(in: view)
+                    await view.dismissPullUpMenu()
+                    
+                    switch action {
+                    case .handle:
+                        view.openLink(.generic(url: url.absoluteString))
+                    case .block:
+                        try await appContext.messagingService.setUser(in: chat, blocked: true)
+                        view.cNavigationController?.popViewController(animated: true)
+                    }
+                } catch { }
+            }
         }
     }
 }

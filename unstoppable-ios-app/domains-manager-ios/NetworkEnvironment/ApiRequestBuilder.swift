@@ -828,4 +828,14 @@ extension Endpoint {
         )
     }
     
+    static func getSpamStatus(for address: HexAddress) -> Endpoint {
+        //https://api.unstoppabledomains.com/messaging/xmtp/spam/0x9B4Ed628640A73154895e369AE39a93732535924
+        return Endpoint(
+            host: NetworkConfig.baseProfileHost,
+            path: "/messaging/xmtp/spam/\(address)",
+            queryItems: [],
+            body: ""
+        )
+    }
+    
 }

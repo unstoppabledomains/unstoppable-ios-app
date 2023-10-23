@@ -1086,6 +1086,7 @@
 		C6EECEA22833A67900978ED5 /* DomainRecordsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EECEA12833A67900978ED5 /* DomainRecordsServiceProtocol.swift */; };
 		C6EECEA72833A68A00978ED5 /* DomainRecordsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EECEA62833A68A00978ED5 /* DomainRecordsService.swift */; };
 		C6EECEB12833BBE300978ED5 /* DomainRecordsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6EECEB02833BBE300978ED5 /* DomainRecordsData.swift */; };
+		C6F060C02ACA700700BA2E7E /* XMTPApprovedUsersStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F060BF2ACA700700BA2E7E /* XMTPApprovedUsersStorage.swift */; };
 		C6F3FD632AAA11E700208679 /* PullUpNamespace.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */; };
 		C6F6AF5928A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */; };
 		C6F6AF6328A35FB900A7B571 /* CNavigationBarScrollingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */; };
@@ -2209,6 +2210,7 @@
 		C6EECEA12833A67900978ED5 /* DomainRecordsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRecordsServiceProtocol.swift; sourceTree = "<group>"; };
 		C6EECEA62833A68A00978ED5 /* DomainRecordsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRecordsService.swift; sourceTree = "<group>"; };
 		C6EECEB02833BBE300978ED5 /* DomainRecordsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRecordsData.swift; sourceTree = "<group>"; };
+		C6F060BF2ACA700700BA2E7E /* XMTPApprovedUsersStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPApprovedUsersStorage.swift; sourceTree = "<group>"; };
 		C6F3FD622AAA11E700208679 /* PullUpNamespace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpNamespace.swift; sourceTree = "<group>"; };
 		C6F6AF5828A24E2C00A7B571 /* BackToSettingsNavBarPopAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackToSettingsNavBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6F6AF6228A35FB900A7B571 /* CNavigationBarScrollingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CNavigationBarScrollingController.swift; sourceTree = "<group>"; };
@@ -5470,6 +5472,7 @@
 				C64BCB752A6FA61F00EF8B47 /* XMTPServiceHelper.swift */,
 				C673BA2D2A81EA2F001FD763 /* XMTPServiceSharedHelper.swift */,
 				C61308632A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift */,
+				C6F060BF2ACA700700BA2E7E /* XMTPApprovedUsersStorage.swift */,
 				C65DD4B82A7C9A3F00CAB10C /* XMTPPushNotificationsHelper.swift */,
 			);
 			path = XMTP;
@@ -6641,6 +6644,7 @@
 				C6F9FBB82A25C30C00102F81 /* MessagingWebSocketsServiceProtocol.swift in Sources */,
 				C6098315282B6F7100546392 /* EmptyRootNavigationController.swift in Sources */,
 				C61ECD6E2A20AB4A00E97D70 /* PushMessage.swift in Sources */,
+				C6F060C02ACA700700BA2E7E /* XMTPApprovedUsersStorage.swift in Sources */,
 				C6C995BA289D313D00367362 /* CNavigationControllerDefaultPushAnimation.swift in Sources */,
 				C6D6E5B2281A215D008C66BB /* SegmentPicker.swift in Sources */,
 				C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */,

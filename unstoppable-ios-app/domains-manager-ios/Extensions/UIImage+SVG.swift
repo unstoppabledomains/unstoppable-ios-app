@@ -10,8 +10,11 @@ import SVGKit
 
 extension UIImage {
     static func from(svgData: Data) -> UIImage? {
-        let svim = SVGKImage(data: svgData)
-        return svim?.uiImage
+        autoreleasepool {
+            let svim = SVGKImage(data: svgData)
+            let image = svim?.uiImage
+            return image
+        }
     }
 }
 

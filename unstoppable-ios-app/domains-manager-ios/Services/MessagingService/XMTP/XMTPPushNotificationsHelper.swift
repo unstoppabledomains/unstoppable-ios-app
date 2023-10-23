@@ -11,9 +11,32 @@ import web3
 
 struct XMTPPushNotificationsHelper {
     static func subscribeForTopics(_ topics: [String], by client: Client) async throws {
+        try await makeRequestFor(topics: topics, accepted: nil, blocked: nil, by: client)
+    }
+    
+    static func makeChatRequestFor(topic: String, accepted: Bool, by client: Client) async throws {
+        try await makeRequestFor(topics: [topic], accepted: accepted, blocked: nil, by: client)
+    }
+    
+    static func makeChatRequestFor(topics: [String], blocked: Bool, by client: Client) async throws {
+        try await makeRequestFor(topics: topics, accepted: nil, blocked: blocked, by: client)
+    }
+    
+    static func unsubscribeFromTopics(_ topics: [String], by client: Client) async throws {
+        
+        
+    }
+}
+
+// MARK: - Private methods
+private extension XMTPPushNotificationsHelper {
+    static func makeRequestFor(topics: [String], accepted: Bool?, blocked: Bool?, by client: Client) async throws {
         do {
             let url = URL(string: "https://\(NetworkConfig.baseMessagingHost)/api/xmtp/topics/register")!
-            let subReq = try await buildSubscribeRequestFor(topics: topics, by: client)
+            let subReq = try await buildSubscribeRequestFor(topics: topics, 
+                                                            accepted: accepted,
+                                                            blocked: blocked,
+                                                            by: client)
             guard let reqData = subReq.jsonString() else {
                 throw XMTPPushNotificationError.failedToPrepareRequestData
             }
@@ -26,19 +49,16 @@ struct XMTPPushNotificationsHelper {
         }
     }
     
-    static func unsubscribeFromTopics(_ topics: [String], by client: Client) async throws {
-        
-        
-    }
-}
-
-// MARK: - Private methods
-private extension XMTPPushNotificationsHelper {
     static func buildSubscribeRequestFor(topics: [String],
+                                         accepted: Bool? = nil,
+                                         blocked: Bool? = nil,
                                          by client: Client) async throws -> SubscribeRequest {
         let ownerAddress = client.address
         let signedPublicKey = (try client.publicKeyBundle.serializedData()).base64EncodedString()
-        let registrations = try await signTopics(topics, by: client)
+        let registrations = try await signTopics(topics, 
+                                                 accepted: accepted,
+                                                 blocked: blocked,
+                                                 by: client)
         
         let subReq = SubscribeRequest(ownerAddress: ownerAddress,
                                       registrations: registrations,
@@ -47,23 +67,33 @@ private extension XMTPPushNotificationsHelper {
     }
     
     static func signTopics(_ topics: [String],
+                           accepted: Bool?,
+                           blocked: Bool?,
                            by client: Client) async throws -> [Registration] {
         var registrations: [Registration] = []
         for topic in topics {
-            let registration = try await signTopic(topic, by: client)
+            let registration = try await signTopic(topic, 
+                                                   accepted: accepted,
+                                                   blocked: blocked,
+                                                   by: client)
             registrations.append(registration)
         }
         return registrations
     }
     
     static func signTopic(_ topic: String,
+                          accepted: Bool?,
+                          blocked: Bool?,
                           by client: Client) async throws -> Registration {
         guard let topicData = topic.data(using: .utf8) else {
             throw XMTPPushNotificationError.failedToPrepareTopicData
         }
         let hashedTopicData = topicData.web3.keccak256
         let signature = try await signData(hashedTopicData, by: client)
-        let registration = Registration(topic: topic, signature: signature)
+        let registration = Registration(topic: topic,
+                                        signature: signature,
+                                        accept: accepted,
+                                        block: blocked)
         return registration
     }
     
@@ -80,6 +110,8 @@ private extension XMTPPushNotificationsHelper {
     struct Registration: Codable {
         let topic: String
         let signature: String
+        let accept: Bool?
+        let block: Bool?
     }
     
     struct SubscribeRequest: Codable {

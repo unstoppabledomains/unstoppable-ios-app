@@ -8,7 +8,6 @@
 import Foundation
 
 protocol DomainRecordsServiceProtocol {
-    func getRecordsFor(domain: DomainItem) async throws -> DomainRecordsData
     @discardableResult
     func saveRecords(records: [RecordToUpdate],
                              in domain: DomainItem,

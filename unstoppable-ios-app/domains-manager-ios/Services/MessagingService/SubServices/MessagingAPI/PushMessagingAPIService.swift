@@ -240,6 +240,11 @@ extension PushMessagingAPIService: MessagingAPIServiceProtocol {
         }
     }
     
+    func block(chats: [MessagingChat],
+               by user: MessagingChatUserProfile) async throws {
+        throw PushMessagingAPIServiceError.actionNotSupported /// Since we work with XMTP chats only ATM
+    }
+    
     func isAbleToContactAddress(_ address: String,
                                 by user: MessagingChatUserProfile) async throws -> Bool {
         true
@@ -523,7 +528,7 @@ private extension PushMessagingAPIService {
             guard let jsonString = entity.jsonString() else { throw PushMessagingAPIServiceError.failedToPrepareMessageContent }
             return jsonString
         case .imageData(let details):
-            guard let base64 = details.image.base64String else { throw PushMessagingAPIServiceError.unsupportedType }
+            guard let base64 = details.image?.base64String else { throw PushMessagingAPIServiceError.unsupportedType }
             let preparedBase64 = Base64DataTransformer.addingImageIdentifier(to: base64)
             let imageBase64TypeDetails = MessagingChatMessageImageBase64TypeDisplayInfo(base64: preparedBase64)
             return try getPushMessageContentFrom(displayType: .imageBase64(imageBase64TypeDetails))

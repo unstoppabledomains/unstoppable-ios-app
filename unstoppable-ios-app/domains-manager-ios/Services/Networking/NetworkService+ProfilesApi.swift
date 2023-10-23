@@ -395,9 +395,11 @@ struct UserDomainProfileHumanityCheckAttribute: Codable {
 
 struct UserDomainNotificationsPreferences: Codable {
     var blockedTopics: [String]
+    var acceptedTopics: [String]
     
     enum CodingKeys: String, CodingKey {
         case blockedTopics = "blocked_topics"
+        case acceptedTopics = "accepted_topics"
     }
 }
 

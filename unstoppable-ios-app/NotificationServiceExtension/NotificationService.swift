@@ -25,13 +25,14 @@ final class NotificationService: UNNotificationServiceExtension {
         if let bestAttemptContent = bestAttemptContent,
            let event = ExternalEvent(pushNotificationPayload: bestAttemptContent.userInfo) {
             
-            set(notificationContent: bestAttemptContent, for: event, completion: { content in
+            set(notificationContent: bestAttemptContent, for: event, completion: { [weak self] content in
                 if let content {
                     contentHandler(content)
                 } else {
                     contentHandler(bestAttemptContent)
 //                    contentHandler(UNNotificationContent()) // TODO: - Ignore notification. Enable when filtering entitlement is added to the project
                 }
+                self?.bestAttemptContent = nil
             })
         } else if let bestAttemptContent = bestAttemptContent {
             contentHandler(bestAttemptContent)
@@ -373,19 +374,20 @@ private extension NotificationService {
                        name: String,
                        in notificationContent: UNMutableNotificationContent,
                        completion: @escaping NotificationContentCallback) {
-        NotificationImageLoadingService.shared.imageFor(source: source) { image in
-            if let image,
-               let imageData = image.jpegData(compressionQuality: 1) {
-                
-                let intent = self.intentFor(domainName: name,
-                                            imageData: imageData)
-                
-                if let updatedContent = try? notificationContent.updating(from: intent) {
-                    completion(updatedContent)
-                    return
+        NotificationImageLoadingService.shared.imageFor(source: source) { [weak self] image in
+            autoreleasepool {
+                if let image,
+                   let imageData = image.jpegData(compressionQuality: 1) {
+                    
+                    if let intent = self?.intentFor(domainName: name,
+                                                    imageData: imageData),
+                       let updatedContent = try? notificationContent.updating(from: intent) {
+                        completion(updatedContent)
+                        return
+                    }
                 }
+                completion(nil)
             }
-            completion(nil)
         }
     }
     

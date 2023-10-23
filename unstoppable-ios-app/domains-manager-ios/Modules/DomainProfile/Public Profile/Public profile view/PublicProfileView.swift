@@ -322,7 +322,7 @@ private extension PublicProfileView {
                                      callback: showSocialsList)
                     }
                 }
-                if let records = profile.records,
+                if let records = viewModel.records,
                    !records.isEmpty {
                     carouselItem(text: String.Constants.pluralNCrypto.localized(records.count, records.count),
                                  icon: .walletBTCIcon20,
@@ -666,14 +666,14 @@ private extension PublicProfileView {
     struct ShowingCryptoList: ViewModifier {
         @Binding var isCryptoListPresented: Bool
         let domainName: DomainName
-        var records: [String : String]?
+        var records: [CryptoRecord]?
         
         func body(content: Content) -> some View {
             if let records {
                 content
                     .sheet(isPresented: $isCryptoListPresented, content: {
                         PublicProfileCryptoListView(domainName: domainName,
-                                                    recordsDict: records)
+                                                    records: records)
                         .adaptiveSheet()
                     })
             } else {
