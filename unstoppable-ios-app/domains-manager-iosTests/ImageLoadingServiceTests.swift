@@ -10,7 +10,7 @@ import XCTest
 
 final class ImageLoadingServiceTests: XCTestCase {
     
-    private let mockImage = UIImage(named: "testImage")!
+    private let mockImage = UIImage(named: "testImage", in: Bundle(for: ImageLoadingServiceTests.self), with: nil)!
     private var loader: MockImageDataLoader!
     private var storage: MockImagesStorage!
     private var cacheStorage: MockImagesCacheStorage!
