@@ -50,7 +50,7 @@ extension GenericBadgeView {
                                                                                    downsampleDescription: nil)
                 let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain,
                                                                                                    size: .default),
-                                                                           downsampleDescription: nil)
+                                                                           downsampleDescription: .icon)
                 badgeImageView.image = image
             }
         }

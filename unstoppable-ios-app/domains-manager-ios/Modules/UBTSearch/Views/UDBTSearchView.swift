@@ -137,7 +137,7 @@ private extension UDBTSearchView {
         promotingDomain = domain
         Task {
             promotingDomainImage = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
-                                                                                  downsampleDescription: nil)
+                                                                                  downsampleDescription: .icon)
         }
         controller.setPromotingDomainInfo(domain)
     }

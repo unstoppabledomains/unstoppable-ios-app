@@ -143,7 +143,7 @@ extension BaseSignTransactionView {
                     domainImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domainDisplayInfo, size: .full),
                                                                                            downsampleDescription: nil)
                     let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainDisplayInfo, size: .full),
-                                                                               downsampleDescription: nil)
+                                                                               downsampleDescription: .icon)
                     domainImageView.image = image
                 }
             }

@@ -32,6 +32,7 @@ struct DownsampleDescription {
     }
     
     static let max: DownsampleDescription = .init(maxSize: Constants.downloadedImageMaxSize)
+    static let mid: DownsampleDescription = .init(maxSize: 256)
     static let icon: DownsampleDescription = .init(maxSize: Constants.downloadedIconMaxSize)
 }
 

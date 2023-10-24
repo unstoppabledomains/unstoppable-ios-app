@@ -24,7 +24,7 @@ extension ProfileImageLoader {
     func loadIconFor(domainName: DomainName) async -> UIImage? {
         if let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName) {
             return await appContext.imageLoadingService.loadImage(from: .domainPFPSource(pfpInfo.source),
-                                                                  downsampleDescription: nil)
+                                                                  downsampleDescription: .icon)
         }
         return nil
     }

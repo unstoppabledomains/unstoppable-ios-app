@@ -23,7 +23,7 @@ struct DomainProfileBadgeDisplayInfo: Hashable {
             return .udBadgeLogo
         } else if let url = URL(string: badge.logo) {
             return await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedIconMaxSize),
-                                                                  downsampleDescription: nil)
+                                                                  downsampleDescription: .icon)
         }
         return nil
     }
