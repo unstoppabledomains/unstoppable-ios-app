@@ -13,7 +13,10 @@ final class MockContext: AppContextProtocol {
                                                                                                        dataAggregatorService: dataAggregatorService,
                                                                                                        udWalletsService: udWalletsService,
                                                                                                        walletConnectServiceV2: walletConnectServiceV2, walletConnectRequestsHandlingService: wcRequestsHandlingService)
-    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
+    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
+                                                                                                 loader: DefaultImageDataLoader(),
+                                                                                                 storage: ImagesStorage(),
+                                                                                                 cacheStorage: CImagesCacheStorage())
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var notificationsService: NotificationsServiceProtocol = { MockNotificationsService() }()
     private(set) lazy var permissionsService: PermissionsServiceProtocol = PermissionsService()
