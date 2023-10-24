@@ -292,7 +292,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     private func canSupport( _ proposal: SessionV2.Proposal) -> Bool {
-        guard proposal.requiredNamespaces.count > 1 else { return true }
+        guard proposal.requiredNamespaces.count >= 1 else { return true }
         guard let references = try? getChainIds(proposal: proposal) else { return false }
         guard Set(references).isSubset(of: Self.supportedReferences) else { return false }
         return true
