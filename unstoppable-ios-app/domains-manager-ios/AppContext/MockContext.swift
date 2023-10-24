@@ -16,7 +16,7 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
                                                                                                  loader: DefaultImageDataLoader(),
                                                                                                  storage: ImagesStorage(),
-                                                                                                 cacheStorage: CImagesCacheStorage())
+                                                                                                 cacheStorage: ImagesCacheStorage())
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var notificationsService: NotificationsServiceProtocol = { MockNotificationsService() }()
     private(set) lazy var permissionsService: PermissionsServiceProtocol = PermissionsService()

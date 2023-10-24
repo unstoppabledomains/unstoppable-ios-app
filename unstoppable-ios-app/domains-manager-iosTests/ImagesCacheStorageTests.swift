@@ -10,11 +10,11 @@ import XCTest
 
 final class ImagesCacheStorageTests: XCTestCase {
     
-    private var cacheStorage: CImagesCacheStorage!
+    private var cacheStorage: ImagesCacheStorage!
     private let memoryLimit: Int = 1_000_000 // 1 MB
     
     override func setUp() async throws {
-        cacheStorage = CImagesCacheStorage(totalCostLimit: memoryLimit)
+        cacheStorage = ImagesCacheStorage(maxCacheSize: memoryLimit)
     }
     
     override func tearDown() async throws {

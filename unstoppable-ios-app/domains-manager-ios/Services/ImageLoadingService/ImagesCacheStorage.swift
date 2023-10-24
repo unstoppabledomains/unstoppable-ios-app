@@ -15,60 +15,17 @@ protocol ImagesCacheStorageProtocol {
 
 final class ImagesCacheStorage {
     
-    private let imageCache = NSCache<NSString, UIImage>()
+    private var imageCache = [CacheKeyDescription: UIImage]()
+    private let maxCacheSize: Int
     private let serialQueue = DispatchQueue(label: "com.unstoppable.image.cache.serial")
-    private(set) var cacheKeys = Set<String>()
     
-    init(totalCostLimit: Int = 250_000_000) { // 250 MB
-        imageCache.totalCostLimit = totalCostLimit
+    init(maxCacheSize: Int = 250_000_000) { // 250 MB
+        self.maxCacheSize = maxCacheSize
     }
 }
 
 // MARK: - Open methods
 extension ImagesCacheStorage: ImagesCacheStorageProtocol {
-    var cacheMemoryUsage: Int {
-        cacheKeys.compactMap({ imageCache.object(forKey: $0 as NSString) }).map({ $0.memoryUsage }).reduce(0, { $0 + $1 })
-    }
-    var numberOfCachedItems: Int { cacheKeys.count }
-    
-    func cachedImage(for key: String) -> UIImage? {
-        serialQueue.sync {
-            self.imageCache.object(forKey: key as NSString)
-        }
-    }
-    
-    func cache(image: UIImage, forKey key: String) {
-        serialQueue.sync {
-            self.imageCache.setObject(image, forKey: key as NSString)
-#if DEBUG
-            self.cacheKeys.insert(key)
-            let cacheSize = cacheMemoryUsage
-            print("Did cache image with size \(image.size) for key \(key)\nCurrent images cache memory usage: \(cacheSize)")
-#endif
-        }
-    }
-    
-    func clearCache() {
-        serialQueue.sync {
-            imageCache.removeAllObjects()
-        }
-    }
-}
-
-
-final class CImagesCacheStorage {
-    
-    private var imageCache = [CacheKeyDescription: UIImage]()
-    private let totalCostLimit: Int
-    private let serialQueue = DispatchQueue(label: "com.unstoppable.image.cache.serial")
-    
-    init(totalCostLimit: Int = 250_000_000) { // 250 MB
-        self.totalCostLimit = totalCostLimit
-    }
-}
-
-// MARK: - Open methods
-extension CImagesCacheStorage: ImagesCacheStorageProtocol {
     var cacheMemoryUsage: Int {
         imageCache.values.map({ $0.memoryUsage }).reduce(0, { $0 + $1 })
     }
@@ -92,14 +49,14 @@ extension CImagesCacheStorage: ImagesCacheStorageProtocol {
             
             var currentCacheUsage = cacheMemoryUsage
             let newImageMemoryUsage = image.memoryUsage
-            if (currentCacheUsage + newImageMemoryUsage) > totalCostLimit {
+            if (currentCacheUsage + newImageMemoryUsage) > maxCacheSize {
                 let sortedKeys = imageCache.keys.sorted(by: { $0.lastUsedDate < $1.lastUsedDate })
                 for key in sortedKeys {
                     let image = self.imageCache[key]!
                     let imageMemoryUsage = image.memoryUsage
                     imageCache.removeValue(forKey: key)
                     currentCacheUsage -= imageMemoryUsage
-                    if (currentCacheUsage + newImageMemoryUsage) <= totalCostLimit {
+                    if (currentCacheUsage + newImageMemoryUsage) <= maxCacheSize {
                         break
                     }
                 }
@@ -122,7 +79,7 @@ extension CImagesCacheStorage: ImagesCacheStorageProtocol {
 }
 
 // MARK: - Private methods
-private extension CImagesCacheStorage {
+private extension ImagesCacheStorage {
     struct CacheKeyDescription: Hashable {
         let key: String
         let lastUsedDate = Date()

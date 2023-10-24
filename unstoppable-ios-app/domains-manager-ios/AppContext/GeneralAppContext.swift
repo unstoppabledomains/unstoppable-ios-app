@@ -35,7 +35,7 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
                                                                                                  loader: DefaultImageDataLoader(),
                                                                                                  storage: ImagesStorage(),
-                                                                                                 cacheStorage: CImagesCacheStorage())
+                                                                                                 cacheStorage: ImagesCacheStorage())
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
     private(set) lazy var analyticsService: AnalyticsServiceProtocol = {
