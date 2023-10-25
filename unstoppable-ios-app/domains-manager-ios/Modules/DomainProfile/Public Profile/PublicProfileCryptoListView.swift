@@ -164,7 +164,7 @@ private extension PublicProfileCryptoListView {
             if let icon = await appContext.imageLoadingService.loadImage(from: .currency(coin,
                                                                                          size: .default,
                                                                                          style: .gray),
-                                                                         downsampleDescription: nil) {
+                                                                         downsampleDescription: .icon) {
                 setIcon(icon, to: record)
             }
         }

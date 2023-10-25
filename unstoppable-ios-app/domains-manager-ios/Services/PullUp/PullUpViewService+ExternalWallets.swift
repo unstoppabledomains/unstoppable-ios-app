@@ -338,7 +338,7 @@ extension PullUpViewService {
         
         let avatarImage = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain,
                                                                                                      size: .default),
-                                                                         downsampleDescription: nil) ?? .init()
+                                                                         downsampleDescription: .icon) ?? .init()
         let domainImageView = buildImageViewWith(image: avatarImage.circleCroppedImage(size: 56),
                                                  width: 56,
                                                  height: 56)
@@ -353,7 +353,7 @@ extension PullUpViewService {
                                                        width: 20,
                                                        height: 20)
         
-        let icon = await appContext.imageLoadingService.loadImage(from: .connectedApp(connectedApp, size: .default), downsampleDescription: nil)
+        let icon = await appContext.imageLoadingService.loadImage(from: .connectedApp(connectedApp, size: .default), downsampleDescription: .mid)
         if connectedApp.appIconUrls.isEmpty {
             connectedAppImageBackgroundView.backgroundColor = .clear
         } else {

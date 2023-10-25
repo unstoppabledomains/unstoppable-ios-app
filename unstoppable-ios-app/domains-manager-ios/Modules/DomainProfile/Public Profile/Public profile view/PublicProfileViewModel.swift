@@ -224,7 +224,7 @@ extension PublicProfileView {
                 if let imagePath = profile?.profile.imagePath,
                    let url = URL(string: imagePath) {
                     let avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
-                                                                                 downsampleDescription: nil)
+                                                                                     downsampleDescription: .mid)
                     await waitForAppear()
                     self.avatarImage = avatarImage
                 }
@@ -236,7 +236,7 @@ extension PublicProfileView {
                 if let coverPath = profile?.profile.coverPath,
                    let url = URL(string: coverPath) {
                     let coverImage = await appContext.imageLoadingService.loadImage(from: .url(url),
-                                                                                downsampleDescription: nil)
+                                                                                    downsampleDescription: .mid)
                     await waitForAppear()
                     self.coverImage = coverImage
                 }
@@ -249,7 +249,7 @@ extension PublicProfileView {
                 guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }
                 
                 let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),
-                                                                                    downsampleDescription: nil)
+                                                                                        downsampleDescription: .icon)
                 await waitForAppear()
                 self.viewingDomainImage = viewingDomainImage
             }

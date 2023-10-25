@@ -58,7 +58,7 @@ extension QRScannerDomainInfoView {
             iconImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domain, size: .default),
                                                                                  downsampleDescription: nil)
             let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .icon)
             iconImageView.image = image
         }
         

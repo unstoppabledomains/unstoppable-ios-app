@@ -13,14 +13,14 @@ struct UIMenuDomainAvatarLoader {
     static func menuAvatarFor(domain: DomainDisplayInfo,
                               size: CGFloat = 20) async -> UIImage? {
         var avatar = await appContext.imageLoadingService.loadImage(from: .domain(domain),
-                                                                    downsampleDescription: nil)
+                                                                    downsampleDescription: .icon)
         
         if let image = avatar {
             avatar = image.circleCroppedImage(size: size)
         } else {
             avatar = await appContext.imageLoadingService.loadImage(from: .domainInitials(domain,
                                                                                           size: .default),
-                                                                    downsampleDescription: nil)
+                                                                    downsampleDescription: .icon)
         }
         return avatar
     }

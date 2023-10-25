@@ -40,7 +40,7 @@ private extension PullUpViewService {
         var badgeIcon = badgeDisplayInfo.defaultIcon
         if let url = URL(string: badgeDisplayInfo.badge.logo),
            let image = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedIconMaxSize),
-                                                                      downsampleDescription: nil) {
+                                                                      downsampleDescription: .mid) {
             badgeIcon = image
         }
         

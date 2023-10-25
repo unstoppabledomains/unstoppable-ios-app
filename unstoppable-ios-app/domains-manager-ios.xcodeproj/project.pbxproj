@@ -86,7 +86,6 @@
 		309194EF2582C52400D132B9 /* MobileAPIAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3091944F2582B4DD00D132B9 /* MobileAPIAccess.swift */; };
 		30972CC4258A62A700D7E229 /* LocalStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30972CC3258A62A700D7E229 /* LocalStorage.swift */; };
 		309748A225990ADF00846137 /* PullUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309748A125990ADF00846137 /* PullUpView.swift */; };
-		30974924259B75EF00846137 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306486892527253C00388026 /* Assets.xcassets */; };
 		309BD85F265679EA00CB0C49 /* PaymentConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309BD85E265679EA00CB0C49 /* PaymentConfiguration.swift */; };
 		309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 309FDFBB265E7C0C00AE53D3 /* StripePaymentHelper.swift */; };
 		30A1895525AB483B0001178D /* PullUpView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 30A1895425AB483B0001178D /* PullUpView.xib */; };
@@ -261,7 +260,6 @@
 		C6109EA228E6B1CC0027D5D8 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109EA128E6B1CC0027D5D8 /* Toast.swift */; };
 		C6109EA728E6B55A0027D5D8 /* AppearanceTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109EA628E6B55A0027D5D8 /* AppearanceTheme.swift */; };
 		C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236E6292C88D1002BA97B /* ImagesStorage.swift */; };
-		C61236EB292C895C002BA97B /* ImagesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236E6292C88D1002BA97B /* ImagesStorage.swift */; };
 		C61236ED292CAAD9002BA97B /* NotificationImageLoadingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236EC292CAAD9002BA97B /* NotificationImageLoadingService.swift */; };
 		C61236F0292CADF7002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236EF292CADF7002BA97B /* AppGroupsBridgeFromDataAggregatorService.swift */; };
 		C61236F5292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236F4292E20A9002BA97B /* DomainImageDetailsViewPresenter.swift */; };
@@ -696,6 +694,13 @@
 		C679B611291A591500F543A7 /* DomainProfileUpdatingRecordsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B60F291A591500F543A7 /* DomainProfileUpdatingRecordsCell.swift */; };
 		C679B615291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C679B610291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib */; };
 		C679B61C291CF8C800F543A7 /* BaseTestClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C679B61B291CF8C800F543A7 /* BaseTestClass.swift */; };
+		C67B6D4C2AE79AB000F74B0B /* ImagesCacheStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B6D4B2AE79AB000F74B0B /* ImagesCacheStorage.swift */; };
+		C67B6D502AE79B5500F74B0B /* ImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B6D4F2AE79B5500F74B0B /* ImageDataLoader.swift */; };
+		C67B6D532AE79BB600F74B0B /* ImagesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C61236E6292C88D1002BA97B /* ImagesStorage.swift */; };
+		C67B6D552AE79E3B00F74B0B /* ImageLoadingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B6D542AE79E3B00F74B0B /* ImageLoadingServiceTests.swift */; };
+		C67B6D572AE79E8400F74B0B /* ImagesCacheStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67B6D562AE79E8400F74B0B /* ImagesCacheStorageTests.swift */; };
+		C67B6D592AE79FD300F74B0B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 306486892527253C00388026 /* Assets.xcassets */; };
+		C67B6D5E2AE7F8FB00F74B0B /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C67B6D5C2AE7F7CC00F74B0B /* Media.xcassets */; };
 		C68017862886730300524712 /* CurrencyImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C68017852886730300524712 /* CurrencyImageLoader.swift */; };
 		C680178E2886E96400524712 /* XCTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C680178D2886E96400524712 /* XCTest.swift */; };
 		C681092128041325002D780E /* GIFAnimationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C681092028041325002D780E /* GIFAnimationsService.swift */; };
@@ -1849,6 +1854,11 @@
 		C679B60F291A591500F543A7 /* DomainProfileUpdatingRecordsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileUpdatingRecordsCell.swift; sourceTree = "<group>"; };
 		C679B610291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainProfileUpdatingRecordsCell.xib; sourceTree = "<group>"; };
 		C679B61B291CF8C800F543A7 /* BaseTestClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTestClass.swift; sourceTree = "<group>"; };
+		C67B6D4B2AE79AB000F74B0B /* ImagesCacheStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesCacheStorage.swift; sourceTree = "<group>"; };
+		C67B6D4F2AE79B5500F74B0B /* ImageDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDataLoader.swift; sourceTree = "<group>"; };
+		C67B6D542AE79E3B00F74B0B /* ImageLoadingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoadingServiceTests.swift; sourceTree = "<group>"; };
+		C67B6D562AE79E8400F74B0B /* ImagesCacheStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesCacheStorageTests.swift; sourceTree = "<group>"; };
+		C67B6D5C2AE7F7CC00F74B0B /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		C68017852886730300524712 /* CurrencyImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyImageLoader.swift; sourceTree = "<group>"; };
 		C680178A2886A7CC00524712 /* UDWalletsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDWalletsServiceTests.swift; sourceTree = "<group>"; };
 		C680178D2886E96400524712 /* XCTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XCTest.swift; sourceTree = "<group>"; };
@@ -2471,6 +2481,8 @@
 				308B1D4025B8A75D005FE726 /* testUpdateRecords.swift */,
 				C6D9E29D28537AC8002CDAC2 /* TransactionsDecodingTests.swift */,
 				300F291525CFEBEC007EEAD1 /* TransactionsStorageTests.swift */,
+				C67B6D542AE79E3B00F74B0B /* ImageLoadingServiceTests.swift */,
+				C67B6D562AE79E8400F74B0B /* ImagesCacheStorageTests.swift */,
 				C680178A2886A7CC00524712 /* UDWalletsServiceTests.swift */,
 				30F6A88F277BB5310086D70B /* UnsConfigManagerTests.swift */,
 				3087E3A22823DE0B0023B7A7 /* WalletAutonamingTests.swift */,
@@ -2478,6 +2490,7 @@
 				C6DF9878290F832A0098733A /* WebsiteURLValidatorTests.swift */,
 				C60610E729A7469A005DC0D5 /* WCRequestsHandlingServiceTests.swift */,
 				306486992527253D00388026 /* Info.plist */,
+				C67B6D5C2AE7F7CC00F74B0B /* Media.xcassets */,
 				C680178C2886E95E00524712 /* Extensions */,
 			);
 			path = "domains-manager-iosTests";
@@ -2530,7 +2543,6 @@
 				C63538E52949C2C100ECABA6 /* DomainsPFPInfoStorage.swift */,
 				C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */,
 				C6E6A000288AEAC6000A8346 /* ExternalEventsStorage.swift */,
-				C61236E6292C88D1002BA97B /* ImagesStorage.swift */,
 				29BECD1C2979BE8800662FC1 /* SecureHashStorage.swift */,
 				29BECD0D2979BD7B00662FC1 /* CloudStorage.swift */,
 				30972CC3258A62A700D7E229 /* LocalStorage.swift */,
@@ -4515,6 +4527,17 @@
 			path = DomainProfileUpdatingRecordsCell;
 			sourceTree = "<group>";
 		};
+		C67B6D4A2AE79AA100F74B0B /* ImageLoadingService */ = {
+			isa = PBXGroup;
+			children = (
+				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
+				C67B6D4F2AE79B5500F74B0B /* ImageDataLoader.swift */,
+				C67B6D4B2AE79AB000F74B0B /* ImagesCacheStorage.swift */,
+				C61236E6292C88D1002BA97B /* ImagesStorage.swift */,
+			);
+			path = ImageLoadingService;
+			sourceTree = "<group>";
+		};
 		C680178C2886E95E00524712 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -4535,7 +4558,7 @@
 				C6E69FF5288AE47D000A8346 /* ExternalEventsService.swift */,
 				C63902BC28E2FCF200E16B42 /* ExternalWalletConnectionService.swift */,
 				C681092028041325002D780E /* GIFAnimationsService.swift */,
-				C624D76F281B884600F55530 /* ImageLoadingService.swift */,
+				C67B6D4A2AE79AA100F74B0B /* ImageLoadingService */,
 				C65272652A15DEB9001A084C /* KeyboardService.swift */,
 				C689C1782ADE6D1700AA0186 /* FeatureFlags */,
 				C664B678291551E600A76154 /* LinkPresentationService.swift */,
@@ -6175,7 +6198,6 @@
 				C6B6B05529713ED000D4E30F /* RearrangeDomainCell.xib in Resources */,
 				C673D57A29FA3645001CC77C /* ReviewAndConfirmTransferViewController.xib in Resources */,
 				C60982D4282A7A8E00546392 /* AddWalletViewController.xib in Resources */,
-				30974924259B75EF00846137 /* Assets.xcassets in Resources */,
 				C673D5B429FB725B001CC77C /* InviteFriendsViewController.xib in Resources */,
 				C60982DE282A7B6B00546392 /* WalletConnectedViewController.xib in Resources */,
 				C685A954284097E600E54044 /* UDDomainCardView.xib in Resources */,
@@ -6225,6 +6247,7 @@
 				C60982C4282A77D300546392 /* ConfirmWordsViewController.xib in Resources */,
 				C60982CF282A79E200546392 /* RestoreWalletViewController.xib in Resources */,
 				C6E04186295057FE0080F8E3 /* DomainsListViewController.xib in Resources */,
+				C67B6D592AE79FD300F74B0B /* Assets.xcassets in Resources */,
 				C615E0D628891BC10082490B /* DomainsCollectionSearchEmptyCell.xib in Resources */,
 				C679B615291A591500F543A7 /* DomainProfileUpdatingRecordsCell.xib in Resources */,
 				C6E04199295170370080F8E3 /* DomainsCollectionNoRecentActivitiesCell.xib in Resources */,
@@ -6329,6 +6352,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C67B6D5E2AE7F8FB00F74B0B /* Media.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6692,6 +6716,7 @@
 				C671E3DE29027BE200A2B3A0 /* DomainProfileTopInfoData.swift in Sources */,
 				C6E04140295051CA0080F8E3 /* DomainsCollectionPageViewController.swift in Sources */,
 				C679B5F62918F38100F543A7 /* DefaultCodable.swift in Sources */,
+				C67B6D502AE79B5500F74B0B /* ImageDataLoader.swift in Sources */,
 				C69F99772A9F2206004B1958 /* PublicProfileFollowersViewModel.swift in Sources */,
 				C6E041B429546AB60080F8E3 /* DomainsCollectionCarouselViewController.swift in Sources */,
 				C6E69FF6288AE47D000A8346 /* ExternalEventsService.swift in Sources */,
@@ -6778,6 +6803,7 @@
 				C685A94928408C8600E54044 /* WalletListSelectionToMintDomainsPresenter.swift in Sources */,
 				C62396812A288A9400363F60 /* MessagingChatMessageDisplayInfo.swift in Sources */,
 				C63A350C28F0071B0057D34B /* DomainProfileViewPresenter.swift in Sources */,
+				C67B6D4C2AE79AB000F74B0B /* ImagesCacheStorage.swift in Sources */,
 				307F82B82677532D0070A9A6 /* PaymentConfirmationDelegate.swift in Sources */,
 				C63F1D1128AF31D5000A5C12 /* AnalyticsService.swift in Sources */,
 				C63902BD28E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */,
@@ -7252,6 +7278,7 @@
 				29EDB623290A94E700A0BD08 /* ProfilesTests.swift in Sources */,
 				C680178E2886E96400524712 /* XCTest.swift in Sources */,
 				C6DF9879290F832A0098733A /* WebsiteURLValidatorTests.swift in Sources */,
+				C67B6D552AE79E3B00F74B0B /* ImageLoadingServiceTests.swift in Sources */,
 				C6DF986F290F83020098733A /* TransactionsDecodingTests.swift in Sources */,
 				C679B61C291CF8C800F543A7 /* BaseTestClass.swift in Sources */,
 				C6DF9877290F83020098733A /* domains_manager_iosTests.swift in Sources */,
@@ -7260,6 +7287,7 @@
 				C6AB383E2A692D45003C0944 /* PushMessagingAPIServiceTests.swift in Sources */,
 				C6DF986E290F83020098733A /* DomainRecordsViewModelTests.swift in Sources */,
 				C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */,
+				C67B6D572AE79E8400F74B0B /* ImagesCacheStorageTests.swift in Sources */,
 				C6DF9870290F83020098733A /* testUpdateRecords.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -7316,9 +7344,9 @@
 				C6E69FEF288AD405000A8346 /* String+Notification.swift in Sources */,
 				C63414DE2A7D335100C80B77 /* GlobalRR.swift in Sources */,
 				C6E69F8D288A93D3000A8346 /* NotificationService.swift in Sources */,
-				C61236EB292C895C002BA97B /* ImagesStorage.swift in Sources */,
 				C6E69FE5288AD264000A8346 /* String+Localization.swift in Sources */,
 				C6E69FFF288AEAAF000A8346 /* ExternalEvent.swift in Sources */,
+				C67B6D532AE79BB600F74B0B /* ImagesStorage.swift in Sources */,
 				C60CB2DA2A7CAF9000663989 /* XMTPEnvironmentNamespace.swift in Sources */,
 				C65DD4C82A7CAC8500CAB10C /* KeychainXMTPKeysStorage.swift in Sources */,
 				C65DD4CE2A7CACEC00CAB10C /* Extension-String-Common.swift in Sources */,

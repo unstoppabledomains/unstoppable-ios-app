@@ -66,7 +66,7 @@ extension MintDomainsConfigurationSelectionCell {
                 let image = await appContext.imageLoadingService.loadImage(from: .initials(domain,
                                                                                        size: .default,
                                                                                        style: .accent),
-                                                                       downsampleDescription: nil)
+                                                                           downsampleDescription: .icon)
                 await self?.updateImage(image)
             }
         }

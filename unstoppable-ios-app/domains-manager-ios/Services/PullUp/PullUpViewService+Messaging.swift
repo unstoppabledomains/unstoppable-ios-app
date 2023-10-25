@@ -66,7 +66,7 @@ extension PullUpViewService {
                                     ])
         
         var avatarImage = await appContext.imageLoadingService.loadImage(from: .url(channel.icon),
-                                                                         downsampleDescription: nil) ?? .init()
+                                                                         downsampleDescription: .mid) ?? .init()
         avatarImage = avatarImage.circleCroppedImage(size: 56)
         let buttonTitle = String.Constants.profileOpenWebsite.localized()
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
@@ -164,7 +164,7 @@ extension PullUpViewService {
         var avatarImage: UIImage?
         
         if let url = URL(string: communityDetails.displayIconUrl) {
-            avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: nil), downsampleDescription: nil)
+            avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url), downsampleDescription: .mid)
         } else {
             avatarImage = await MessagingImageLoader.buildImageForGroupChatMembers(communityDetails.allMembers,
                                                                        iconSize: 56)

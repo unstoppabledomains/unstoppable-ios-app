@@ -20,6 +20,20 @@ protocol ImageLoadingServiceProtocol {
 struct DownsampleDescription {
     let size: CGSize
     let scale: CGFloat
+    var cacheKey: String { "\(size.width)x\(size.height)x\(scale)" }
+    
+    init(size: CGSize, scale: CGFloat) {
+        self.size = size
+        self.scale = scale
+    }
+    
+    init(maxSize: CGFloat, scale: CGFloat = 1) {
+        self.init(size: .init(width: maxSize, height: maxSize), scale: scale)
+    }
+    
+    static let max: DownsampleDescription = .init(maxSize: Constants.downloadedImageMaxSize)
+    static let mid: DownsampleDescription = .init(maxSize: 256)
+    static let icon: DownsampleDescription = .init(maxSize: Constants.downloadedIconMaxSize)
 }
 
 enum ImageSource {
@@ -70,20 +84,32 @@ enum ImageSource {
             return "messaging_" + userInfo.wallet.normalized
         }
     }
+    
+    func keyFor(downsampleDescription: DownsampleDescription?) -> String {
+        if let downsampleDescription {
+            return self.key + "_" + downsampleDescription.cacheKey
+        }
+        return self.key
+    }
 }
 
 final class ImageLoadingService {
         
     private let qrCodeService: QRCodeServiceProtocol
-    private let storage = ImagesStorage()
+    private let loader: ImageDataLoader
+    private let storage: ImagesStorageProtocol
+    private let cacheStorage: ImagesCacheStorageProtocol
     private let serialQueue = DispatchQueue(label: "com.unstoppable.image.loading.serial")
-    private let imageCache = NSCache<NSString, UIImage>()
-    private var cacheKeys = Set<String>()
     private var currentAsyncProcess = [String : Task<UIImage?, Never>]()
     
-    init(qrCodeService: QRCodeServiceProtocol) {
+    init(qrCodeService: QRCodeServiceProtocol,
+         loader: ImageDataLoader,
+         storage: ImagesStorageProtocol,
+         cacheStorage: ImagesCacheStorageProtocol) {
         self.qrCodeService = qrCodeService
-        imageCache.totalCostLimit = 50_000_000 // 50 MB
+        self.loader = loader
+        self.storage = storage
+        self.cacheStorage = cacheStorage
     }
     
 }
@@ -92,64 +118,69 @@ final class ImageLoadingService {
 extension ImageLoadingService: ImageLoadingServiceProtocol {
     // Currently downsample description is ignored. We set maximum size of upcoming image to 512px.
     func loadImage(from source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
-        let key = source.key
-        if let cachedImage = cachedImage(for: key) {
-            Debugger.printInfo(topic: .Images, "Will return cached image for key: \(key)")
+        let downsampledCacheKey = source.keyFor(downsampleDescription: downsampleDescription)
+        let imageKey = source.key
+        if let cachedImage = cacheStorage.getCachedImage(for: downsampledCacheKey) {
+            Debugger.printInfo(topic: .Images, "Will return cached image for key: \(imageKey)")
             return cachedImage
         }
         
-        if let imageTask = serialQueue.sync(execute: { currentAsyncProcess[key] }) {
-            Debugger.printInfo(topic: .Images, "Will return active image loading task for key: \(key)")
+        if let imageTask = serialQueue.sync(execute: { currentAsyncProcess[imageKey] }) {
+            Debugger.printInfo(topic: .Images, "Will return active image loading task for key: \(imageKey)")
             return await imageTask.value
         }
         
         let task: Task<UIImage?, Never> = Task.detached(priority: .medium) {
-            if let storedImage = await self.getStoredImage(for: key) {
-                Debugger.printInfo(topic: .Images, "Will return stored image for key: \(key)")
+            if let storedImage = await self.getStoredImage(for: imageKey) {
+                Debugger.printInfo(topic: .Images, "Will return stored image for key: \(imageKey)")
+                if let downsampleDescription,
+                   let downsampledImage = self.downsampleAndCache(image: storedImage,
+                                                                  downsampleDescription: downsampleDescription,
+                                                                  cacheKey: downsampledCacheKey) {
+                    return downsampledImage
+                }
                 return storedImage
             }
             
             if let image = await self.fetchImageFor(source: source, downsampleDescription: downsampleDescription) {
-                Debugger.printInfo(topic: .Images, "Will return loaded image for key: \(key)")
+                Debugger.printInfo(topic: .Images, "Will return loaded image for key: \(imageKey)")
                 return image
             } else {
                 return nil
             }
         }
         
-        serialQueue.sync { currentAsyncProcess[key] = task }
+        serialQueue.sync { currentAsyncProcess[imageKey] = task }
         let image = await task.value
-        serialQueue.sync { currentAsyncProcess[key] = nil }
+        serialQueue.sync { currentAsyncProcess[imageKey] = nil }
         
         return image
     }
     
     nonisolated
     func downsample(image: UIImage, downsampleDescription: DownsampleDescription) -> UIImage? {
-        guard let imageData = image.jpegData(compressionQuality: 1) else { return nil }
-        
+        guard let imageData = image.pngData() ?? image.jpegData(compressionQuality: 1) else { return nil }
+
         return downsample(imageData: imageData, downsampleDescription: downsampleDescription)
     }
     
     func storeImage(_ image: UIImage, for source: ImageSource) async {
-        guard let imageData = image.jpegData(compressionQuality: 1) ?? image.pngData() else { return }
-        
+        guard let imageData = image.pngData() ?? image.jpegData(compressionQuality: 1) else { return }
+
         storage.storeImageData(imageData, for: source.key)
     }
     
     nonisolated
     func cachedImage(for source: ImageSource) -> UIImage? {
-        cachedImage(for: source.key)
+        cacheStorage.getCachedImage(for: source.key)
     }
    
     func getStoredImage(for source: ImageSource) async -> UIImage? {
         await getStoredImage(for: source.key)
     }
   
-    func clearCache() async {
-        serialQueue.sync {
-            imageCache.removeAllObjects()
-        }
+    func clearCache() {
+        cacheStorage.clearCache()
     }
     
     func clearStoredImages() async {
@@ -184,6 +215,13 @@ fileprivate extension ImageLoadingService {
                         finalImage = scaleIfNeeded(finalImage, maxImageSize: maxImageSize)
                     }
                     
+                    if let downsampleDescription,
+                       let image = finalImage,
+                       let downsampledImage = self.downsample(image: image, downsampleDescription: downsampleDescription) {
+                        finalImage = downsampledImage
+                        cacheStorage.cache(image: downsampledImage, forKey: source.keyFor(downsampleDescription: downsampleDescription))
+                    }
+                    
                     guard let image = finalImage else { return nil }
                     
                     storeAndCache(image: image, forKey: source.key)
@@ -194,11 +232,11 @@ fileprivate extension ImageLoadingService {
                 return nil
             }
         case .initials(let initials, let size, let style):
-            if let cachedImage = serialQueue.sync(execute: { self.imageCache.object(forKey: source.key as NSString) }) {
+            if let cachedImage = self.cacheStorage.getCachedImage(for: source.key) {
                 return cachedImage
             }
             if let image = await InitialsView(initials: initials, size: size, style: style).toInitialsImage() {
-                self.cache(image: image, forKey: source.key)
+                self.cacheStorage.cache(image: image, forKey: source.key)
                 return image
             }
             return nil
@@ -267,7 +305,7 @@ fileprivate extension ImageLoadingService {
                let urlString = await appContext.udDomainsService.loadPFP(for: domainName)?.pfpURL,
                let url = URL(string: urlString),
                let image = await fetchImageFor(source: .url(url), downsampleDescription: downsampleDescription) {
-                cache(image: image, forKey: source.key)
+                cacheStorage.cache(image: image, forKey: source.key)
                 return image
             }
             return await fetchImageFor(source: .initials(domainName ?? userInfo.wallet.droppedHexPrefix,
@@ -300,11 +338,17 @@ fileprivate extension ImageLoadingService {
         }
     }
     
+    func downsampleAndCache(image: UIImage, downsampleDescription: DownsampleDescription, cacheKey: String) -> UIImage? {
+        guard let downsampledImage = self.downsample(image: image, downsampleDescription: downsampleDescription) else { return nil }
+        self.cacheStorage.cache(image: downsampledImage, forKey: cacheKey)
+        return downsampledImage
+    }
+    
     func loadImage(from url: URL) async throws -> Data {
         try await withSafeCheckedThrowingContinuation { completion in
             Task.detached {
                 do {
-                    let imageData = try Data(contentsOf: url)
+                    let imageData = try await self.loader.loadImageDataFrom(url: url)
                     completion(.success(imageData))
                 } catch {
                     completion(.failure(error))
@@ -313,14 +357,8 @@ fileprivate extension ImageLoadingService {
         }
     }
     
-    func cachedImage(for key: String) -> UIImage? {
-        serialQueue.sync {
-            self.imageCache.object(forKey: key as NSString)
-        }
-    }
-    
     func getStoredImage(for key: String) async -> UIImage? {
-        if let cachedImage = cachedImage(for: key) {
+        if let cachedImage = cacheStorage.getCachedImage(for: key) {
             return cachedImage
         }
         guard let imageData = storage.getStoredImage(for: key) else { return nil }
@@ -334,7 +372,7 @@ fileprivate extension ImageLoadingService {
             
         guard let image else { return nil }
       
-        cache(image: image, forKey: key)
+        cacheStorage.cache(image: image, forKey: key)
         return image
     }
     
@@ -348,18 +386,7 @@ fileprivate extension ImageLoadingService {
     
     func storeAndCache(imageData: Data, image: UIImage, forKey key: String) {
         storage.storeImageData(imageData, for: key)
-        cache(image: image, forKey: key)
-    }
-    
-    func cache(image: UIImage, forKey key: String) {
-        serialQueue.sync {
-            self.imageCache.setObject(image, forKey: key as NSString)
-            #if DEBUG
-            self.cacheKeys.insert(key)
-            let cacheSize = cacheKeys.compactMap({ imageCache.object(forKey: $0 as NSString)?.size }).map({ $0.width * $0.height * 4 }).reduce(0, { $0 + $1 })
-            Debugger.printInfo(topic: .Images, "Did cache image with size \(image.size) for key \(key)\nCurrent images cache memory usage: \(cacheSize)")
-            #endif
-        }
+        cacheStorage.cache(image: image, forKey: key)
     }
     
     func downsample(imageAt imageURL: URL, to size: CGSize, scale: CGFloat) -> UIImage? {

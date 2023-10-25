@@ -85,7 +85,7 @@ private extension CommunityListCell {
         Task {
             await setAvatarFromName()
             if let avatarURL = url {
-                if let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: nil) {
+                if let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: .icon) {
                     self.avatarImageView.image = image
                 }
             }

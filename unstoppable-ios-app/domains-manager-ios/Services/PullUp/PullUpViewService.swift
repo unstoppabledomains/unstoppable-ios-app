@@ -550,7 +550,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         let coinIcon = await appContext.imageLoadingService.loadImage(from: .currency(coin,
                                                                                       size: .default,
                                                                                       style: .gray),
-                                                                      downsampleDescription: nil)
+                                                                      downsampleDescription: .mid)
         let segmentedControl = UDSegmentedControl(frame: .zero)
         segmentedControl.heightAnchor.constraint(equalToConstant: 36).isActive = true
         for (i, result) in CoinVersionSelectionResult.allCases.enumerated() {

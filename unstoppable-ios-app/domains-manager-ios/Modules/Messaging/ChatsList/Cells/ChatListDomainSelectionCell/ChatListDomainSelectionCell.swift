@@ -71,7 +71,7 @@ private extension ChatListDomainSelectionCell {
         } else {
             Task {
                 let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain, size: .default),
-                                                                           downsampleDescription: nil)
+                                                                           downsampleDescription: .icon)
                 iconImageView.image = image
             }
         }

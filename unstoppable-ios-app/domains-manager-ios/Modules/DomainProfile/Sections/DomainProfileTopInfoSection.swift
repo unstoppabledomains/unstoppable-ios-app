@@ -428,7 +428,7 @@ private extension DomainProfileTopInfoSection {
                 return (image, type)
             case .imageURL(let url, let type):
                 let image = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedImageMaxSize),
-                                                                           downsampleDescription: nil)
+                                                                           downsampleDescription: .mid)
                 return (image, type)
             case .none:
                 return (nil, .default)
