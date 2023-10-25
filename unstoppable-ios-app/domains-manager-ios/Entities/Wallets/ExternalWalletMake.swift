@@ -132,7 +132,7 @@ extension ExternalWalletMake {
     
     var isRecommended: Bool {
         switch self {
-        case .MetaMask:
+        case .MetaMask, .TrustWallet:
             return true
         default:
             return false
