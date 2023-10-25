@@ -125,7 +125,7 @@ final class ImagesCacheStorageTests: XCTestCase {
         XCTAssertEqual(cacheStorage.numberOfCachedItems, 2)
         XCTAssertEqual(cacheStorage.cacheMemoryUsage, memory2 + memory1)
         
-        _ = cacheStorage.cachedImage(for: key1) // Access older image
+        _ = cacheStorage.getCachedImage(for: key1) // Access older image
         
         let memory3 = 739_600
         let image3 = createImageWithMemorySize(memory3)

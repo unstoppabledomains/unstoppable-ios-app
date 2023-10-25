@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ImagesCacheStorageProtocol {
-    func cachedImage(for key: String) -> UIImage?
+    func getCachedImage(for key: String) -> UIImage?
     func cache(image: UIImage, forKey key: String)
     func clearCache()
 }
@@ -31,7 +31,7 @@ extension ImagesCacheStorage: ImagesCacheStorageProtocol {
     }
     var numberOfCachedItems: Int { imageCache.count }
     
-    func cachedImage(for key: String) -> UIImage? {
+    func getCachedImage(for key: String) -> UIImage? {
         serialQueue.sync {
             let key = CacheKeyDescription(key)
             if let image = self.imageCache[key] {
@@ -66,7 +66,7 @@ extension ImagesCacheStorage: ImagesCacheStorageProtocol {
             
             
 #if DEBUG
-            print("Did cache image with size \(image.size) for key \(key)\nCurrent images cache memory usage: \(cacheMemoryUsage)")
+            Debugger.printInfo(topic: .Images, "Did cache image with size \(image.size) for key \(key)\nCurrent images cache memory usage: \(cacheMemoryUsage)")
 #endif
         }
     }

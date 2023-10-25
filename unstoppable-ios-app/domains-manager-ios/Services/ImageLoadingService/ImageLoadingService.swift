@@ -120,7 +120,7 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
     func loadImage(from source: ImageSource, downsampleDescription: DownsampleDescription?) async -> UIImage? {
         let downsampledCacheKey = source.keyFor(downsampleDescription: downsampleDescription)
         let imageKey = source.key
-        if let cachedImage = cacheStorage.cachedImage(for: downsampledCacheKey) {
+        if let cachedImage = cacheStorage.getCachedImage(for: downsampledCacheKey) {
             Debugger.printInfo(topic: .Images, "Will return cached image for key: \(imageKey)")
             return cachedImage
         }
@@ -172,7 +172,7 @@ extension ImageLoadingService: ImageLoadingServiceProtocol {
     
     nonisolated
     func cachedImage(for source: ImageSource) -> UIImage? {
-        cacheStorage.cachedImage(for: source.key)
+        cacheStorage.getCachedImage(for: source.key)
     }
    
     func getStoredImage(for source: ImageSource) async -> UIImage? {
@@ -232,7 +232,7 @@ fileprivate extension ImageLoadingService {
                 return nil
             }
         case .initials(let initials, let size, let style):
-            if let cachedImage = self.cacheStorage.cachedImage(for: source.key) {
+            if let cachedImage = self.cacheStorage.getCachedImage(for: source.key) {
                 return cachedImage
             }
             if let image = await InitialsView(initials: initials, size: size, style: style).toInitialsImage() {
@@ -358,7 +358,7 @@ fileprivate extension ImageLoadingService {
     }
     
     func getStoredImage(for key: String) async -> UIImage? {
-        if let cachedImage = cacheStorage.cachedImage(for: key) {
+        if let cachedImage = cacheStorage.getCachedImage(for: key) {
             return cachedImage
         }
         guard let imageData = storage.getStoredImage(for: key) else { return nil }

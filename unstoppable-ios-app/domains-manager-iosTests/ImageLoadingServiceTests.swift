@@ -39,7 +39,7 @@ final class ImageLoadingServiceTests: XCTestCase {
                                                         downsampleDescription: nil)
         XCTAssertTrue(compareImages(image!, mockImage))
         XCTAssertNotNil(storage.getStoredImage(for: sourceKey))
-        XCTAssertEqual(image, cacheStorage.cachedImage(for: sourceKey))
+        XCTAssertEqual(image, cacheStorage.getCachedImage(for: sourceKey))
     }
     
     func testLoadingSameSizeImage() async throws {
@@ -52,7 +52,7 @@ final class ImageLoadingServiceTests: XCTestCase {
                                                         downsampleDescription: nil)
         XCTAssertTrue(compareImages(image!, mockImage))
         XCTAssertNotNil(storage.getStoredImage(for: sourceKey))
-        XCTAssertEqual(image, cacheStorage.cachedImage(for: sourceKey))
+        XCTAssertEqual(image, cacheStorage.getCachedImage(for: sourceKey))
     }
     
     func testLoadingSmallImage() async throws {
@@ -65,7 +65,7 @@ final class ImageLoadingServiceTests: XCTestCase {
                                                         downsampleDescription: nil)
         XCTAssertTrue(compareImages(image!, mockImage))
         XCTAssertNotNil(storage.getStoredImage(for: sourceKey))
-        XCTAssertEqual(image, cacheStorage.cachedImage(for: sourceKey))
+        XCTAssertEqual(image, cacheStorage.getCachedImage(for: sourceKey))
     }
     
     func testLoadingLargeImage() async throws {
@@ -80,7 +80,7 @@ final class ImageLoadingServiceTests: XCTestCase {
                                                                                                              scale: 1))
         XCTAssertTrue(compareImages(image!, downsampledImage!))
         XCTAssertNotNil(storage.getStoredImage(for: sourceKey))
-        XCTAssertEqual(image, cacheStorage.cachedImage(for: sourceKey))
+        XCTAssertEqual(image, cacheStorage.getCachedImage(for: sourceKey))
     }
     
     func testLoadingImageMultipleTimeFromSameSource() async throws {
@@ -129,7 +129,7 @@ final class ImageLoadingServiceTests: XCTestCase {
         
         XCTAssertTrue(compareImages(image!, downsampledImage!))
         XCTAssertNotNil(storage.getStoredImage(for: sourceKey))
-        XCTAssertEqual(image, cacheStorage.cachedImage(for: sourceKey))
+        XCTAssertEqual(image, cacheStorage.getCachedImage(for: sourceKey))
         XCTAssertEqual(image!.size.maxSide, minSize)
     }
     
@@ -147,7 +147,7 @@ final class ImageLoadingServiceTests: XCTestCase {
         
         XCTAssertTrue(compareImages(image!, downsampledImage!))
         XCTAssertNotNil(storage.getStoredImage(for: sourceKey))
-        XCTAssertEqual(image, cacheStorage.cachedImage(for: sourceKey))
+        XCTAssertEqual(image, cacheStorage.getCachedImage(for: sourceKey))
         XCTAssertEqual(image!.size.maxSide, downsampleDescription.size.maxSide)
     }
     
@@ -167,8 +167,8 @@ final class ImageLoadingServiceTests: XCTestCase {
         
         XCTAssertNotNil(storage.getStoredImage(for: sourceKey))
         XCTAssertNotNil(storage.getStoredImage(for: sourceKey2))
-        XCTAssertNotNil(cacheStorage.cachedImage(for: sourceKey))
-        XCTAssertNotNil(cacheStorage.cachedImage(for: sourceKey2))
+        XCTAssertNotNil(cacheStorage.getCachedImage(for: sourceKey))
+        XCTAssertNotNil(cacheStorage.getCachedImage(for: sourceKey2))
         XCTAssertEqual(2, storage.cache.count)
         XCTAssertEqual(2, cacheStorage.cache.count)
         XCTAssertEqual(2, loader.callsCounter)
@@ -191,7 +191,7 @@ final class ImageLoadingServiceTests: XCTestCase {
         let image = await imageLoadingService.loadImage(from: source,
                                                         downsampleDescription: nil)
         XCTAssertTrue(compareImages(image!, mockImage))
-        XCTAssertNotNil(cacheStorage.cachedImage(for: sourceKey))
+        XCTAssertNotNil(cacheStorage.getCachedImage(for: sourceKey))
         XCTAssertEqual(0, loader.callsCounter)
     }
     
@@ -228,7 +228,7 @@ final class ImageLoadingServiceTests: XCTestCase {
         let downsampledImage = imageLoadingService.downsample(image: mockImage,
                                                               downsampleDescription: downsampleDescription)!
         XCTAssertTrue(compareImages(image!, downsampledImage))
-        XCTAssertNotNil(cacheStorage.cachedImage(for: sourceKey))
+        XCTAssertNotNil(cacheStorage.getCachedImage(for: sourceKey))
         XCTAssertEqual(0, loader.callsCounter)
     }
     
@@ -306,7 +306,7 @@ fileprivate final class MockImagesStorage: ImagesStorageProtocol {
 fileprivate final class MockImagesCacheStorage: ImagesCacheStorageProtocol {
     var cache: [String : UIImage] = [:]
     
-    func cachedImage(for key: String) -> UIImage? {
+    func getCachedImage(for key: String) -> UIImage? {
         cache[key]
     }
     
