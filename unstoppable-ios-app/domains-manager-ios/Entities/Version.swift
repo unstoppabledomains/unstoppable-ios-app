@@ -87,10 +87,15 @@ struct AppVersionAPIResponse: Decodable {
     let tlds: [String]
     var dotcoinDeprecationReleased: Bool?
     var mobileUnsReleaseVersion: String?
+    var limits: AppConfigurationLimits?
+}
+
+struct AppConfigurationLimits: Codable {
+    let maxWalletAddressesRequestLimit: Int
 }
 
 struct AppVersionInfo: Codable {
-    var minSupportedVersion: Version = Version(major: 0, minor: 3, revision: 1)
+    var minSupportedVersion: Version = Version(major: 4, minor: 6, revision: 6)
     var supportedStoreLink: String = "https://apps.apple.com/us/app/unstoppable-domains-app/id\(Constants.appStoreAppId)"
     var mintingIsEnabled: Bool = true
     var polygonMintingReleased: Bool = true
@@ -106,6 +111,7 @@ struct AppVersionInfo: Codable {
                          "nft",
                          "dao",
                          "zil"]
+    var limits: AppConfigurationLimits?
 }
 
 struct DefaultAppVersionFetcher: AppVersionApi {
@@ -125,7 +131,8 @@ struct DefaultAppVersionFetcher: AppVersionApi {
                                             mintingZilTldOnPolygonReleased: response.mintingZilTldOnPolygonReleased,
                                             dotcoinDeprecationReleased: response.dotcoinDeprecationReleased,
                                             mobileUnsReleaseVersion: response.mobileUnsReleaseVersion,
-                                            tlds: response.tlds)
+                                            tlds: response.tlds,
+                                            limits: response.limits)
             return appVersion
         } else {
             throw AppVersionApiError.invalidDataFromServer

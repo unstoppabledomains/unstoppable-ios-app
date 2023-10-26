@@ -345,6 +345,8 @@
 "CREATE_VAULT" = "Create vault";
 "WALLETS_LIST_EMPTY_TITLE" = "No wallets";
 "WALLETS_LIST_EMPTY_SUBTITLE" = "Create or import your wallet by clicking «+» icon at the top right corner.";
+"WALLETS_LIMIT_REACHED_PULL_UP_TITLE" = "Wallets limit reached";
+"WALLETS_LIMIT_REACHED_PULL_UP_SUBTITLE" = "You can have up to %i wallets at a time";
 
 // Wallet details
 "VIEW_RECOVERY_PHRASE" = "View recovery phrase";

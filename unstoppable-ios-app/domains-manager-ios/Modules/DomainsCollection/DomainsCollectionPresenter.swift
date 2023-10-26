@@ -81,6 +81,20 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             await resolvePrimaryDomain(domains: domains)
             launchMintFlowAfterOnboardingIfNeeded()
             await showReverseResolutionPromptIfNeeded()
+            checkMaxNumberOfWalletsReached()
+        }
+    }
+    
+    func checkMaxNumberOfWalletsReached() {
+        Task { @MainActor in
+            guard let view else { return }
+            
+            let numberOfWalletsUserHas = stateController.walletsWithInfo.count
+            let maxNumberOfWallets = User.instance.getWalletsNumberLimit()
+            if numberOfWalletsUserHas > maxNumberOfWallets {
+                appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
+                                                                                 maxNumberOfWallets: maxNumberOfWallets)
+            }
         }
     }
     

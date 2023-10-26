@@ -27,6 +27,7 @@ struct Constants {
     static let UnstoppableTwitterName = "unstoppableweb"
     static let UnstoppableGroupIdentifier = "group.unstoppabledomains.manager.extensions"
 
+    static let defaultWalletsNumberLimit = 25
     static let nonRemovableDomainCoins = ["ETH", "MATIC"]
     static let domainNameMinimumScaleFactor: CGFloat = 0.625
     static let maximumConcurrentNetworkRequestsLimit = 3

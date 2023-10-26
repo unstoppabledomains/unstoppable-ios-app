@@ -347,6 +347,7 @@ extension Analytics {
         case applePayRequired
         case messagingChannelInfo
         case unencryptedMessageInfo
+        case walletsMaxNumberLimitReached
         
         // Disabled
         case walletTransactionsSelection, copyWalletAddressSelection
