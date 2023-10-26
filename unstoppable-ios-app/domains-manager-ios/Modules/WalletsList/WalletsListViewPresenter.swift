@@ -80,6 +80,11 @@ extension WalletsListViewPresenter: WalletsListViewPresenterProtocol {
     }
     
     func didPressAddButton() {
+        let walletsLimit = User.instance.getWalletsNumberLimit()
+        guard walletsWithInfo.count < walletsLimit else {
+            showWalletsNumberLimitReachedPullUp(walletsLimit: walletsLimit)
+            return
+        }
         showAddWalletPullUp(isImportOnly: false)
     }
     
@@ -374,6 +379,15 @@ private extension WalletsListViewPresenter {
             }
         }
         self.walletsWithInfo = walletsWithInfo
+    }
+    
+    func showWalletsNumberLimitReachedPullUp(walletsLimit: Int) {
+        Task { @MainActor in
+            guard let view else { return }
+            
+            appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
+                                                                             maxNumberOfWallets: walletsLimit)
+        }
     }
 }
 
