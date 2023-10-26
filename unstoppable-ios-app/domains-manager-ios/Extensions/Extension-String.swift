@@ -433,6 +433,8 @@ extension String {
         static let walletsListEmptySubtitle = "WALLETS_LIST_EMPTY_SUBTITLE"
         static let walletsLimitReachedPullUpTitle = "WALLETS_LIMIT_REACHED_PULL_UP_TITLE"
         static let walletsLimitReachedPullUpSubtitle = "WALLETS_LIMIT_REACHED_PULL_UP_SUBTITLE"
+        static let walletsLimitReachedAlreadyPullUpTitle = "WALLETS_LIMIT_REACHED_ALREADY_PULL_UP_TITLE"
+        static let walletsLimitReachedAlreadyPullUpSubtitle = "WALLETS_LIMIT_REACHED_ALREADY_PULL_UP_SUBTITLE"
         
         // Wallet details
         static let viewRecoveryPhrase = "VIEW_RECOVERY_PHRASE"

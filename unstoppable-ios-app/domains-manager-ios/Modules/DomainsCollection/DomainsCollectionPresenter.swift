@@ -946,8 +946,8 @@ private extension DomainsCollectionPresenter {
         let numberOfWalletsUserHas = stateController.walletsWithInfo.count
         let maxNumberOfWallets = User.instance.getWalletsNumberLimit()
         if numberOfWalletsUserHas > maxNumberOfWallets {
-            appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
-                                                                             maxNumberOfWallets: maxNumberOfWallets)
+            appContext.pullUpViewService.showWalletsNumberLimitReachedAlreadyPullUp(in: view,
+                                                                                    maxNumberOfWallets: maxNumberOfWallets)
         }
     }
 }

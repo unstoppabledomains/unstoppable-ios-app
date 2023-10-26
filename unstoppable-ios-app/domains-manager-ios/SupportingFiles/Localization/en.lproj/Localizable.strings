@@ -346,7 +346,9 @@
 "WALLETS_LIST_EMPTY_TITLE" = "No wallets";
 "WALLETS_LIST_EMPTY_SUBTITLE" = "Create or import your wallet by clicking «+» icon at the top right corner.";
 "WALLETS_LIMIT_REACHED_PULL_UP_TITLE" = "Wallets limit reached";
-"WALLETS_LIMIT_REACHED_PULL_UP_SUBTITLE" = "You can have up to %i wallets at a time";
+"WALLETS_LIMIT_REACHED_PULL_UP_SUBTITLE" = "You can't add another wallet as you have reached the maximum permitted of %i";
+"WALLETS_LIMIT_REACHED_ALREADY_PULL_UP_TITLE" = "Wallets limit exceeded";
+"WALLETS_LIMIT_REACHED_ALREADY_PULL_UP_SUBTITLE" = "We can't manage your wallets until you reduce them to the maximum permitted of %i";
 
 // Wallet details
 "VIEW_RECOVERY_PHRASE" = "View recovery phrase";
