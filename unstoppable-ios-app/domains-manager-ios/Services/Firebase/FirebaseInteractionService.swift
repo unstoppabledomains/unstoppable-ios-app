@@ -170,7 +170,8 @@ private extension FirebaseInteractionService {
     
     func loadParkedDomainsFor(page: Int, perPage: Int) async throws -> [FirebaseDomain] {
         struct Response: Codable {
-            let domains: [FirebaseDomain]
+            @DecodeIgnoringFailed
+            var domains:  [FirebaseDomain]
         }
         
         let url = URL(string: "\(baseAPIURL())user/domains?extension=All&page=\(page)&perPage=\(perPage)&status=unclaimed")!
