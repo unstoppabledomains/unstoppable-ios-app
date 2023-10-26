@@ -85,19 +85,6 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         }
     }
     
-    func checkMaxNumberOfWalletsReached() {
-        Task { @MainActor in
-            guard let view else { return }
-            
-            let numberOfWalletsUserHas = stateController.walletsWithInfo.count
-            let maxNumberOfWallets = User.instance.getWalletsNumberLimit()
-            if numberOfWalletsUserHas > maxNumberOfWallets {
-                appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
-                                                                                 maxNumberOfWallets: maxNumberOfWallets)
-            }
-        }
-    }
-    
     func viewDidAppear() {
         Task {
             let domains = await stateController.domains
@@ -949,6 +936,18 @@ private extension DomainsCollectionPresenter {
                 isNewMessagesAvailable = false
             }
             await view?.setUnreadMessagesCount(isNewMessagesAvailable ? 1 : 0)
+        }
+    }
+    
+    @MainActor
+    func checkMaxNumberOfWalletsReached() {
+        guard let view else { return }
+        
+        let numberOfWalletsUserHas = stateController.walletsWithInfo.count
+        let maxNumberOfWallets = User.instance.getWalletsNumberLimit()
+        if numberOfWalletsUserHas > maxNumberOfWallets {
+            appContext.pullUpViewService.showWalletsNumberLimitReachedPullUp(in: view,
+                                                                             maxNumberOfWallets: maxNumberOfWallets)
         }
     }
 }
