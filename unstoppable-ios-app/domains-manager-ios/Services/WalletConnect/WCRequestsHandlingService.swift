@@ -204,7 +204,7 @@ private extension WCRequestsHandlingService {
         do {
             try await walletConnectServiceV2.pairClient(uri: requestURI) /// It will create proposal request and call `handleConnectionProposal` when ready
         } catch {
-            Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: true)
+            Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: false)
             await handleConnectionFailed(error: error)
         }
     }

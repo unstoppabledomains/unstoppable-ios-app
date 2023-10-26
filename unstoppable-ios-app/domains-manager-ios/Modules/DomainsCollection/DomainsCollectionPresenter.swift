@@ -81,6 +81,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             await resolvePrimaryDomain(domains: domains)
             launchMintFlowAfterOnboardingIfNeeded()
             await showReverseResolutionPromptIfNeeded()
+            checkMaxNumberOfWalletsReached()
         }
     }
     
@@ -935,6 +936,18 @@ private extension DomainsCollectionPresenter {
                 isNewMessagesAvailable = false
             }
             await view?.setUnreadMessagesCount(isNewMessagesAvailable ? 1 : 0)
+        }
+    }
+    
+    @MainActor
+    func checkMaxNumberOfWalletsReached() {
+        guard let view else { return }
+        
+        let numberOfWalletsUserHas = stateController.walletsWithInfo.count
+        let maxNumberOfWallets = User.instance.getWalletsNumberLimit()
+        if numberOfWalletsUserHas > maxNumberOfWallets {
+            appContext.pullUpViewService.showWalletsNumberLimitReachedAlreadyPullUp(in: view,
+                                                                                    maxNumberOfWallets: maxNumberOfWallets)
         }
     }
 }
