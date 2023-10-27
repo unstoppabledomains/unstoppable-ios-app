@@ -292,7 +292,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     }
     
     private func canSupport( _ proposal: SessionV2.Proposal) -> Bool {
-        guard proposal.requiredNamespaces.count == 1 else { return false }
+        guard proposal.requiredNamespaces.count >= 1 else { return true }
         guard let references = try? getChainIds(proposal: proposal) else { return false }
         guard Set(references).isSubset(of: Self.supportedReferences) else { return false }
         return true
@@ -570,22 +570,19 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     // when user approves proposal
     func didApproveSession(_ proposal: SessionV2.Proposal, accountAddress: HexAddress) {
         var sessionNamespaces = [String: SessionNamespace]()
-        proposal.requiredNamespaces.forEach {
+        let spaces = proposal.requiredNamespaces.merging(proposal.optionalNamespaces ?? [:]) { (current, new) in ProposalNamespace(chains: (current.chains ?? Set() ).union(new.chains ?? Set()),
+                                                                                                                                   methods: current.methods.union(new.methods),
+                                                                                                                                   events: current.events.union(new.events)) }
+        spaces.forEach {
             let caip2Namespace = $0.key
             let proposalNamespace = $0.value
             guard let chains = proposalNamespace.chains else { return }
             
-            // get methods
             var methods = proposalNamespace.methods
-            if let optionalNamespaces = proposal.optionalNamespaces,
-               let optional = optionalNamespaces[caip2Namespace],
-               optional.chains == chains {
-                methods = methods.union(optional.methods)
-            }
-            
             let accounts = Set(chains.compactMap { Account($0.absoluteString + ":\(accountAddress)") })
             
-            let sessionNamespace = SessionNamespace(accounts: accounts,
+            let sessionNamespace = SessionNamespace(chains: chains,
+                                                    accounts: accounts,
                                                     methods: methods,
                                                     events: proposalNamespace.events)
             sessionNamespaces[caip2Namespace] = sessionNamespace
@@ -594,7 +591,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
             self.approve(proposalId: proposal.id, namespaces: sessionNamespaces)
         }
     }
-
+    
     @MainActor
     private func approve(proposalId: String, namespaces: [String: SessionNamespace]) {
         Debugger.printInfo(topic: .WalletConnectV2, "Approve Session: \(proposalId)")

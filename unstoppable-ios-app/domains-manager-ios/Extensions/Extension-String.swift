@@ -431,6 +431,10 @@ extension String {
         static let restoreFromICloudHelpTextHighlighted = "RESTORE_FROM_ICLOUD_HELP_TEXT_HIGHLIGHTED"
         static let walletsListEmptyTitle = "WALLETS_LIST_EMPTY_TITLE"
         static let walletsListEmptySubtitle = "WALLETS_LIST_EMPTY_SUBTITLE"
+        static let walletsLimitReachedPullUpTitle = "WALLETS_LIMIT_REACHED_PULL_UP_TITLE"
+        static let walletsLimitReachedPullUpSubtitle = "WALLETS_LIMIT_REACHED_PULL_UP_SUBTITLE"
+        static let walletsLimitReachedAlreadyPullUpTitle = "WALLETS_LIMIT_REACHED_ALREADY_PULL_UP_TITLE"
+        static let walletsLimitReachedAlreadyPullUpSubtitle = "WALLETS_LIMIT_REACHED_ALREADY_PULL_UP_SUBTITLE"
         
         // Wallet details
         static let viewRecoveryPhrase = "VIEW_RECOVERY_PHRASE"
@@ -859,6 +863,7 @@ extension String {
         static let transferDomainRecipientNotResolvedError = "TRANSFER_DOMAIN_RECIPIENT_NOT_RESOLVED_ERROR"
         static let transferDomainRecipientAddressInvalidError = "TRANSFER_DOMAIN_RECIPIENT_ADDRESS_INVALID_ERROR"
         static let transferDomainRecipientSameWalletError = "TRANSFER_DOMAIN_RECIPIENT_SAME_WALLET_ERROR"
+        static let transferDomainRecipientToUDContractError = "TRANSFER_DOMAIN_RECIPIENT_TO_UD_CONTRACT_ERROR"
         static let reviewAndConfirm = "REVIEW_AND_CONFIRM"
         static let transferConsentActionIrreversible = "TRANSFER_CONSENT_ACTION_IRREVERSIBLE"
         static let transferConsentNotExchange = "TRANSFER_CONSENT_NOT_EXCHANGE"
@@ -925,6 +930,7 @@ extension String {
         static let messagingOpenLinkActionTitle = "MESSAGING_OPEN_LINK_ACTION_TITLE"
         static let messagingCancelAndBlockActionTitle = "MESSAGING_CANCEL_AND_BLOCK_ACTION_TITLE"
         static let messagingOpenLinkWarningMessage = "MESSAGING_OPEN_LINK_WARNING_MESSAGE"
+        static let messagingUserReportedAsSpamMessage = "MESSAGING_USER_REPORTED_AS_SPAM_MESSAGE"
         
         // Public profile
         static let followers = "FOLLOWERS"

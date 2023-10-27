@@ -56,6 +56,15 @@ struct User: Codable {
     mutating func update(appVersionInfo: AppVersionInfo) {
         self.appVersionInfo = appVersionInfo
     }
+    
+    func getWalletsNumberLimit() -> Int {
+//        #if DEBUG
+//        return 4
+//        #else
+        let appVersion = getAppVersionInfo()
+        return appVersion.limits?.maxWalletAddressesRequestLimit ?? Constants.defaultWalletsNumberLimit
+//        #endif
+    }
 }
 
 extension User {

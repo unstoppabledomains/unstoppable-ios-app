@@ -45,7 +45,7 @@ extension Decodable {
             let jsonData = try JSONSerialization.data(withJSONObject: json, options: .prettyPrinted)
             return genericObjectFromData(jsonData, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy)
         } catch {
-            Debugger.printInfo("Failed to parse \(self) with error \((error as NSError).userInfo)")
+            Debugger.printFailure("Failed to parse \(self) with error \((error as NSError).userInfo)")
             return nil
         }
     }
@@ -62,7 +62,7 @@ extension Decodable {
                                                           dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601,
                                                           encoding: String.Encoding = .utf8) -> T? {
         guard let jsonData = jsonString.data(using: encoding) else {
-            Debugger.printInfo("Failed to parse jsonString to entity")
+            Debugger.printFailure("Failed to parse jsonString to entity")
             return nil
         }
         return genericObjectFromData(jsonData, using: keyDecodingStrategy, dateDecodingStrategy: dateDecodingStrategy)
@@ -86,7 +86,7 @@ extension Decodable {
                                                      using: keyDecodingStrategy,
                                                      dateDecodingStrategy: dateDecodingStrategy)
         } catch {
-            Debugger.printInfo("Failed to parse \(self) with error \((error as NSError).userInfo)")
+            Debugger.printFailure("Failed to parse \(self) with error \((error as NSError).userInfo)")
             return nil
         }
     }

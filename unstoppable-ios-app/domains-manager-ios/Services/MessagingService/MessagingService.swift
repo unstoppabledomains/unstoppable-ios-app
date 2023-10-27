@@ -165,25 +165,7 @@ extension MessagingService: MessagingServiceProtocol {
     
     func isNewMessagesAvailable() async throws -> Bool {
         let totalNumberOfUnreadMessages = unreadCountingService.getTotalNumberOfUnreadMessages()
-        if totalNumberOfUnreadMessages > 0 {
-            return true
-        }
-        
-        let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
-        
-        for wallet in wallets {
-            guard let rrDomain = wallet.displayInfo?.reverseResolutionDomain,
-                  let domain = try? await appContext.dataAggregatorService.getDomainWith(name: rrDomain.name),
-                  let cachedProfile = try? storageService.getUserProfileFor(domain: domain,
-                                                                            serviceIdentifier: apiService.serviceIdentifier) else { continue }
-            
-            let isNewMessagesForProfileAvailable = try? await isNewMessagesAvailable(for: cachedProfile)
-            if isNewMessagesForProfileAvailable == true {
-                return true
-            }
-        }
-        
-        return false
+        return totalNumberOfUnreadMessages > 0 
     }
     
     // Chats list
@@ -235,6 +217,25 @@ extension MessagingService: MessagingServiceProtocol {
         try await apiService.setUser(in: chat, blocked: blocked, by: profile)
         if Constants.shouldHideBlockedUsersLocally {
             try? await storageService.markAllMessagesIn(chat: chat, isRead: true)
+            notifyChatsChanged(wallet: profile.wallet)
+        }
+    }
+    
+    func block(chats: [MessagingChatDisplayInfo]) async throws {
+        guard !chats.isEmpty else { return }
+        
+        let profile = try await getUserProfileWith(wallet: chats[0].thisUserDetails.wallet)
+        var messagingChats = [MessagingChat]()
+        for chat in chats {
+            let chat = try await getMessagingChatFor(displayInfo: chat, userId: profile.id)
+            messagingChats.append(chat)
+        }
+        
+        try await apiService.block(chats: messagingChats, by: profile)
+        if Constants.shouldHideBlockedUsersLocally {
+            for chat in messagingChats {
+                try? await storageService.markAllMessagesIn(chat: chat, isRead: true)
+            }
             notifyChatsChanged(wallet: profile.wallet)
         }
     }
@@ -506,6 +507,17 @@ extension MessagingService: MessagingServiceProtocol {
         let channels = try await channelsApiService.searchForChannels(page: page, limit: limit, searchKey: searchKey, for: profile)
         
         return channels
+    }
+    
+    // Spam
+    func isAddressIsSpam(_ address: String) async throws -> Bool {
+        struct Response: Codable {
+            let isSpam: Bool
+        }
+        
+        let endpoint = Endpoint.getSpamStatus(for: address)
+        let response: Response = try await NetworkService().fetchDecodableDataFor(endpoint: endpoint, method: .get)
+        return response.isSpam
     }
     
     // Listeners

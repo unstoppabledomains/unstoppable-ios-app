@@ -182,7 +182,7 @@ private extension WCRequestsHandlingService {
     
     func handleV1ConnectionRequestURL(_ requestURL: WalletConnectSwift.WCURL) async {
         await withSafeCheckedContinuation({ [weak self] completion in
-            walletConnectServiceV1.connectAsync(to: requestURL) { result in
+            self?.walletConnectServiceV1.connectAsync(to: requestURL) { result in
                 guard let self else { return }
                 
                 Task {
@@ -204,14 +204,14 @@ private extension WCRequestsHandlingService {
         do {
             try await walletConnectServiceV2.pairClient(uri: requestURI) /// It will create proposal request and call `handleConnectionProposal` when ready
         } catch {
-            Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: true)
+            Debugger.printFailure("[DAPP] Pairing connect error: \(error)", critical: false)
             await handleConnectionFailed(error: error)
         }
     }
 
     func handleConnectionProposal(_ proposal: WC2ConnectionProposal) async {
         await withSafeCheckedContinuation({ [weak self] completion in
-            walletConnectServiceV2.handleConnectionProposal(proposal) { result in
+            self?.walletConnectServiceV2.handleConnectionProposal(proposal) { result in
                 guard let self else { return }
                 
                 Task {

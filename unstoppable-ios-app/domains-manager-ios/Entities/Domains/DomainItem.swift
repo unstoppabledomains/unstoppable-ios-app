@@ -17,8 +17,6 @@ struct DomainItem: DomainEntity, Codable {
     }
     
     var name: String
-    var registry: String?
-    var tokenId: String? = nil
     var ownerWallet: String? = nil
     var resolver: String? = nil
     var blockchain: BlockchainType? = nil
@@ -37,9 +35,6 @@ struct DomainItem: DomainEntity, Codable {
     func merge(with newDomain: DomainItem) -> DomainItem {
         var origin = self
         origin.name = newDomain.name
-        if tokenId == nil {
-            origin.tokenId = newDomain.tokenId
-        }
         origin.ownerWallet = newDomain.ownerWallet
         if claimingTxId == nil {
             origin.claimingTxId = newDomain.claimingTxId

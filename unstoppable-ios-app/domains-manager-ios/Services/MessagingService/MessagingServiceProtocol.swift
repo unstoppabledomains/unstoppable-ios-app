@@ -32,6 +32,7 @@ protocol MessagingServiceProtocol {
     func getBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) async throws -> MessagingPrivateChatBlockingStatus
     func setUser(in chat: MessagingChatDisplayInfo,
                  blocked: Bool) async throws
+    func block(chats: [MessagingChatDisplayInfo]) async throws
     func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws
     
     // Messages
@@ -74,6 +75,9 @@ protocol MessagingServiceProtocol {
                                limit: Int,
                                searchKey: String,
                                for user: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel]
+    
+    // Spam
+    func isAddressIsSpam(_ address: String) async throws -> Bool
     
     // Listeners
     func addListener(_ listener: MessagingServiceListener)
