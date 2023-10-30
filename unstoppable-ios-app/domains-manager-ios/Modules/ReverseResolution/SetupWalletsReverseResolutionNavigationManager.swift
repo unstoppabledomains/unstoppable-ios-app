@@ -120,10 +120,10 @@ private extension SetupWalletsReverseResolutionNavigationManager {
 // MARK: - Setup methods
 private extension SetupWalletsReverseResolutionNavigationManager {
     func setup() {
-        isModalInPresentation = true
         
         switch mode {
         case .chooseFirstDomain:
+            isModalInPresentation = true
             if let initialViewController = createStep(.setupReverseResolutionInfo) {
                 setViewControllers([initialViewController], animated: false)
             }
