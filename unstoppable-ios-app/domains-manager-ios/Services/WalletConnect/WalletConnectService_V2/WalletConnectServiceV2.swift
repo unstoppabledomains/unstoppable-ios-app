@@ -56,6 +56,23 @@ struct SocketFactory: WebSocketFactory {
     }
 }
 
+typealias WCConnectionResult = Swift.Result<UnifiedConnectAppInfo, Swift.Error>
+typealias WCConnectionResultCompletion = ((WCConnectionResult)->())
+typealias WCAppDisconnectedCallback = ((UnifiedConnectAppInfo)->())
+
+
+enum WalletConnectUIError: Error {
+    case cancelled, noControllerToPresent
+}
+
+enum WCRequest {
+    case connectWallet(_ request: WalletConnectServiceV2.ConnectWalletRequest),
+         signMessage(_ request: SignMessageTransactionUIConfiguration),
+         payment(_ request: SignPaymentTransactionUIConfiguration)
+}
+
+
+
 class WCClientConnectionsV2: DefaultsStorage<WalletConnectServiceV2.ExtWalletDataV2> {
     override init() {
         super.init()
