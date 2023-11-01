@@ -8,14 +8,9 @@
 import Foundation
 import Combine
 
-// V1
-import WalletConnectSwift
-
 // V2
 import WalletConnectSign
 
-private typealias WCRPCRequestV1 = WalletConnectSwift.Request
-private typealias WCRPCResponseV1 = WalletConnectSwift.Response
 private typealias WCRPCRequestV2 = WalletConnectSign.Request
 private typealias WCRPCResponseV2 = WalletConnectSign.RPCResult
 typealias WC2ConnectionProposal = WalletConnectSign.Session.Proposal
@@ -345,24 +340,6 @@ private extension WCRequestsHandlingService {
         case connectionRequest(_ request: WalletConnectServiceV2.ConnectWalletRequest)
         case connectionProposal(_ proposal: WC2ConnectionProposal)
         case rpcRequestV2(_ request: WCRPCRequestV2, type: WalletConnectRequestType?)
-    }
-}
-
-extension WCRPCRequestV1: Equatable {
-    public static func == (lhs: WalletConnectSwift.Request, rhs: WalletConnectSwift.Request) -> Bool {
-        if let lhsStr = lhs.id as? Int,
-           let rhsStr = rhs.id as? Int {
-            return lhsStr == rhsStr
-        }
-        if let lhsStr = lhs.id as? Double,
-           let rhsStr = rhs.id as? Double {
-            return lhsStr == rhsStr
-        }
-        if let lhsStr = lhs.id as? String,
-           let rhsStr = rhs.id as? String {
-            return lhsStr == rhsStr
-        }
-        return false
     }
 }
 

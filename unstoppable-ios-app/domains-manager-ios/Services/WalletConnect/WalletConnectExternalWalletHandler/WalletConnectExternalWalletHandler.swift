@@ -10,8 +10,6 @@ import Combine
 import UIKit
 import Boilertalk_Web3
 
-// V1
-import WalletConnectSwift
 
 // V2
 import WalletConnectSign
