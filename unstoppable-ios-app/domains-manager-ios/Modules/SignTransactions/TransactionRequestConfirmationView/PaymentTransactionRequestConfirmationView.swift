@@ -6,12 +6,37 @@
 //
 
 import UIKit
+import Boilertalk_Web3
 
 struct SignPaymentTransactionUIConfiguration {
+        struct TxDisplayDetails {
+            let quantity: BigUInt
+            let gasPrice: BigUInt
+            let gasLimit: BigUInt
+            let description: String
+    
+            var gasFee: BigUInt {
+                gasPrice * gasLimit
+            }
+    
+            init?(tx: EthereumTransaction) {
+                guard let quantity = tx.value?.quantity,
+                      let gasPrice = tx.gasPrice?.quantity,
+                      let gasLimit = tx.gas?.quantity else { return nil }
+    
+    
+                self.quantity = quantity
+                self.gasPrice = gasPrice
+                self.gasLimit = gasLimit
+                self.description = tx.description
+            }
+        }
+
+    
     let connectionConfig: WalletConnectService.ConnectionConfig
     let walletAddress: HexAddress
     let chainId: Int
-    let cost: WalletConnectService.TxDisplayDetails
+    let cost: TxDisplayDetails
     
     var isGasFeeOnlyTransaction: Bool {
         cost.quantity == 0
@@ -22,7 +47,7 @@ protocol PaymentTransactionDisplayCostView: UIView {
     var height: CGFloat { get }
     
     func set(isLoading: Bool)
-    func setWith(cost: WalletConnectService.TxDisplayDetails,
+    func setWith(cost: SignPaymentTransactionUIConfiguration.TxDisplayDetails,
                  exchangeRate: Double,
                  blockchainType: BlockchainType,
                  pullUp: Analytics.PullUp)

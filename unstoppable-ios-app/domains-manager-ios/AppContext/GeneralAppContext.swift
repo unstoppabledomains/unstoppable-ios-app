@@ -63,7 +63,6 @@ final class GeneralAppContext: AppContextProtocol {
         
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
-        walletConnectService.setUIHandler(coreAppCoordinator)
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
         
         // Data aggregator
@@ -74,8 +73,7 @@ final class GeneralAppContext: AppContextProtocol {
         self.dataAggregatorService = dataAggregatorService
         
         // WC requests
-        wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
-                                                              walletConnectServiceV2: walletConnectServiceV2,
+        wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV2: walletConnectServiceV2,
                                                               walletConnectExternalWalletHandler: walletConnectExternalWalletHandler)
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
         

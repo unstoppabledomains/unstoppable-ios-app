@@ -30,7 +30,6 @@ protocol WCRequestsHandlingServiceProtocol {
 
 final class WCRequestsHandlingService {
     
-    private var walletConnectServiceV1: WalletConnectV1RequestHandlingServiceProtocol
     private var walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol
     private var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
     private var listeners: [WalletConnectServiceListenerHolder] = []
@@ -40,10 +39,8 @@ final class WCRequestsHandlingService {
     private var publishers = [AnyCancellable]() // For WC2
     private var timeoutWorkItem: DispatchWorkItem?
 
-    init(walletConnectServiceV1: WalletConnectV1RequestHandlingServiceProtocol,
-         walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol,
+    init(walletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol,
          walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol) {
-        self.walletConnectServiceV1 = walletConnectServiceV1
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.walletConnectExternalWalletHandler = walletConnectExternalWalletHandler
         setup()
@@ -81,14 +78,6 @@ extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
     
     func expectConnection() {
         startConnectionTimeout()
-    }
-}
-
-// MARK: - WalletConnectV1SignTransactionHandlerDelegate
-extension WCRequestsHandlingService: WalletConnectV1SignTransactionHandlerDelegate {
-    func wcV1SignHandlerWillHandleRequest(_  request: WalletConnectSwift.Request, ofType requestType: WalletConnectRequestType) {
-        stopConnectionTimeout()
-        addNewRequest(.rpcRequestV1(request, type: requestType))
     }
 }
 
@@ -143,8 +132,6 @@ private extension WCRequestsHandlingService {
             await handleConnectionRequest(connectionRequest)
         case .connectionProposal(let proposal):
             await handleConnectionProposal(proposal)
-        case .rpcRequestV1(let request, let type):
-            await handleRPCRequestV1(request, requestType: type)
         case .rpcRequestV2(let request, let type):
             await handleRPCRequestV2(request, requestType: type)
         }
@@ -155,27 +142,7 @@ private extension WCRequestsHandlingService {
         startConnectionTimeout()
         await handleV2ConnectionRequestURI(request.uri)
     }
-    
-    func handleV1ConnectionRequestURL(_ requestURL: WalletConnectSwift.WCURL) async {
-        await withSafeCheckedContinuation({ [weak self] completion in
-            self?.walletConnectServiceV1.connectAsync(to: requestURL) { result in
-                guard let self else { return }
-                
-                Task {
-                    switch result {
-                    case .success(let subInfo):
-                        self.notifyDidConnect(to: subInfo)
-                    case .failure(let error):
-                        Debugger.printFailure("Failed to connect to WC as a wallet, error: \(error)")
-                        await self.handleConnectionFailed(error: error)
-                    }
-                    
-                    completion(Void())
-                }
-            }
-        })
-    }
-    
+        
     func handleV2ConnectionRequestURI(_ requestURI: WalletConnectSign.WalletConnectURI) async {
         do {
             try await walletConnectServiceV2.pairClient(uri: requestURI) /// It will create proposal request and call `handleConnectionProposal` when ready
@@ -208,41 +175,6 @@ private extension WCRequestsHandlingService {
     func handleConnectionFailed(error: Error) async {
         await commonHandleError(error: error)
         notifyCompleteConnectionAttempt()
-    }
-    
-    func handleRPCRequestV1(_ request: WCRPCRequestV1, requestType: WalletConnectRequestType) async {
-        let wcSigner = walletConnectServiceV1
-        do {
-            let response: WCRPCResponseV1
-            switch requestType {
-            case .personalSign:
-                response = try await wcSigner.handlePersonalSign(request: request)
-            case .ethSign:
-                response = try await wcSigner.handleEthSign(request: request)
-            case .ethSignTransaction:
-                response = try await wcSigner.handleSignTx(request: request)
-            case .ethGetTransactionCount:
-                response = try await wcSigner.handleGetTransactionCount(request: request)
-            case .ethSendTransaction:
-                response = try await wcSigner.handleSendTx(request: request)
-            case .ethSendRawTransaction:
-                response = try await wcSigner.handleSendRawTx(request: request)
-            case .ethSignTypedData:
-                response = try await wcSigner.handleSignTypedData(request: request)
-            case .ethSignTypedData_v4:
-                throw WalletConnectRequestError.methodUnsupported
-            }
-            wcSigner.sendResponse(response)
-            notifyDidHandleExternalWCRequestWith(result: .success(()))
-        } catch {
-            if let uiError = error as? WalletConnectUIError,
-               uiError == .cancelled {
-                wcSigner.sendResponse(.reject(request))
-            } else {
-                wcSigner.sendResponse(.invalid(request))
-            }
-            await handleRPCRequestFailed(error: error)
-        }
     }
     
     func handleRPCRequestV2(_ request: WCRPCRequestV2, requestType: WalletConnectRequestType?) async {
@@ -313,7 +245,6 @@ private extension WCRequestsHandlingService {
     func startConnectionTimeout() {
         timeoutWorkItem?.cancel()
         let timeoutWorkItem = DispatchWorkItem { [weak self] in
-            self?.walletConnectServiceV1.connectionTimeout()
             self?.walletConnectServiceV2.connectionTimeout()
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + Constants.wcConnectionTimeout,
@@ -357,20 +288,12 @@ private extension WCRequestsHandlingService {
 // MARK: - Setup methods
 private extension WCRequestsHandlingService {
     func setup() {
-        registerV1RequestHandlers()
         registerV2ProposalHandler()
         registerV2RequestHandlers()
         registerDisconnectCallbacks()
         registerWillHandleRequestCallbacks()
         setSceneActivationListener()
         setExternalWalletSignerListener()
-    }
-    
-    func registerV1RequestHandlers() {
-        WalletConnectRequestType.allCases.forEach { requestType in
-            let handler = WalletConnectV1SignTransactionHandler(requestType: requestType, delegate: self)
-            walletConnectServiceV1.registerRequestHandler(handler)
-        }
     }
     
     func registerV2ProposalHandler() {
@@ -398,12 +321,10 @@ private extension WCRequestsHandlingService {
     }
     
     func registerDisconnectCallbacks() {
-        walletConnectServiceV1.appDisconnectedCallback = { [weak self] app in self?.notifyDidDisconnect(from: app) }
         walletConnectServiceV2.appDisconnectedCallback = { [weak self] app in self?.notifyDidDisconnect(from: app) }
     }
     
     func registerWillHandleRequestCallbacks() {
-        walletConnectServiceV1.willHandleRequestCallback = { [weak self] in self?.stopConnectionTimeout() }
         walletConnectServiceV2.willHandleRequestCallback = { [weak self] in self?.stopConnectionTimeout() }
     }
     
@@ -423,7 +344,6 @@ private extension WCRequestsHandlingService {
     enum UnifiedWCRequest: Equatable {
         case connectionRequest(_ request: WalletConnectServiceV2.ConnectWalletRequest)
         case connectionProposal(_ proposal: WC2ConnectionProposal)
-        case rpcRequestV1(_ request: WCRPCRequestV1, type: WalletConnectRequestType)
         case rpcRequestV2(_ request: WCRPCRequestV2, type: WalletConnectRequestType?)
     }
 }
