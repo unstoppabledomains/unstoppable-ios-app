@@ -126,22 +126,13 @@ extension UDWallet {
     func sendTxViaWalletConnect(request: WalletConnectSign.Request,
                                 chainId: Int) async throws -> JSONRPC.RPCResult {
         func sendSingleTx(tx: EthereumTransaction) async throws -> JSONRPC.RPCResult {
-            let session = try detectWCSessionType() // fetch from sessions cache
-            switch session {
-            case .wc1(let wc1Session):
-                let response: WalletConnectSwift.Response = try await appContext.walletConnectExternalWalletHandler.sendTxViaWalletConnect_V1(session: wc1Session, tx: tx, in: self)
-                let result = try response.result(as: String.self)
-                let respCodable = AnyCodable(result)
-                return .response(respCodable)
-                
-            case .wc2(let wc2Sessions):
-                let response: WalletConnectSign.Response = try await appContext.walletConnectServiceV2.proceedSendTxViaWC_2(sessions: wc2Sessions,
-                                                                                                                            chainId: chainId,
-                                                                                                                            txParams: request.params,
-                                                                                                                            in: self)
-                let respCodable = AnyCodable(response)
-                return .response(respCodable)
-            }
+            let wc2Sessions = try getWC2Session()
+            let response: WalletConnectSign.Response = try await appContext.walletConnectServiceV2.proceedSendTxViaWC_2(sessions: wc2Sessions,
+                                                                                                                        chainId: chainId,
+                                                                                                                        txParams: request.params,
+                                                                                                                        in: self)
+            let respCodable = AnyCodable(response)
+            return .response(respCodable)
         }
         
         guard let transactionToSign = try? request.params.getTransactions().first else {

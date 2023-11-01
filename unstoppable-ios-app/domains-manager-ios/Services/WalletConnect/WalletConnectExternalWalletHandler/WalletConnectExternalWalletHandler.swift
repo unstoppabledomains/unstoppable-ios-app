@@ -21,7 +21,7 @@ final class WalletConnectExternalWalletHandler: WalletConnectExternalWalletHandl
     private var publishers = [AnyCancellable]()
     private var listeners: [WalletConnectExternalWalletSignerListenerHolder] = []
     
-    private var externalWalletWC1ResponseCallback: ((Swift.Result<WC1Response, Error>)->Void)?
+//    private var externalWalletWC1ResponseCallback: ((Swift.Result<WC1Response, Error>)->Void)?
     private var externalWalletWC2ResponseCallback: ((Swift.Result<ResponseV2, Error>)->Void)?
     
     var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
@@ -44,112 +44,6 @@ extension WalletConnectExternalWalletHandler {
     }
 }
 
-// MARK: - WC1 methods
-extension WalletConnectExternalWalletHandler {
-
-    typealias WC1Client = WalletConnectSwift.Client
-    typealias WC1Response = WalletConnectSwift.Response
-    typealias WC1ResponseCallback = WalletConnectSwift.Client.RequestResponse
-    typealias WC1ClientResponseTuple = (WC1Client, WC1ResponseCallback)
-    typealias WC1ClientCallBlock = (WC1ClientResponseTuple) throws -> ()
-    
-    private func submitWC1RequestToExternalWallet(in wallet: UDWallet,
-                                                      clientCallBlock: WC1ClientCallBlock) async throws -> WalletConnectSwift.Response {
-        // TODO: - Check for there's already callback set?
-        do {
-            let client = appContext.walletConnectClientService.getClient()
-            
-            func handleCompletion(response: WC1Response) {
-                if let error = response.error {
-                    Debugger.printFailure("Error from handling WC1 request via ext wallet: \(error)", critical: false)
-                    externalWalletWC1ResponseCallback?(.failure(WalletConnectRequestError.externalWalletFailedToSend))
-                } else {
-                    externalWalletWC1ResponseCallback?(.success(response))
-                }
-                externalWalletWC1ResponseCallback = nil
-            }
-            
-            try clientCallBlock((client, handleCompletion(response:)))
-            try await launchExternalWalletAndNotifyListeners(wallet)
-            return try await withCheckedThrowingContinuation({ (continuation: CheckedContinuation<WC1Response, Error>) in
-                externalWalletWC1ResponseCallback = { result in
-                    switch result {
-                    case .success(let response):
-                        if let error = response.error {
-                            continuation.resume(throwing: error)                            
-                        } else {
-                            continuation.resume(returning: response)
-                        }
-                    case .failure(let error):
-                        continuation.resume(throwing: error)
-                    }
-                }
-            })
-        } catch {
-            throw WalletConnectRequestError.failedToRelayTxToExternalWallet
-        }
-    }
-    
-    func signTypedDataViaWalletConnect_V1(session: WalletConnectSwift.Session,
-                                          walletAddress: HexAddress,
-                                          message: String,
-                                          in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
-        try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
-            try client.eth_signTypedData(url: session.url,
-                                         account: walletAddress,
-                                         message: message,
-                                         completion: completion)
-        }
-    }
-    
-    func sendTxViaWalletConnect_V1(session: WalletConnectSwift.Session,
-                                   tx: EthereumTransaction,
-                                   in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
-        guard let transaction = Client.Transaction(ethTx: tx) else {
-            throw WalletConnectRequestError.failedCreateTxForExtWallet
-        }
-        return try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
-            try client.eth_sendTransaction(url: session.url,
-                                           transaction: transaction,
-                                           completion: completion)
-        }
-    }
-    
-    func signTxViaWalletConnect_V1(session: WalletConnectSwift.Session,
-                                   tx: EthereumTransaction,
-                                   in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
-        guard let transaction = Client.Transaction(ethTx: tx) else {
-            throw WalletConnectRequestError.failedCreateTxForExtWallet
-        }
-        return try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
-            try client.eth_signTransaction(url: session.url,
-                                           transaction: transaction,
-                                           completion: completion)
-        }
-    }
-    
-    func signPersonalSignViaWalletConnect_V1(session: WalletConnectSwift.Session,
-                                             message: String,
-                                             in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
-        try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
-            try client.personal_sign(url: session.url,
-                                     message: message,
-                                     account: wallet.address,
-                                     completion: completion)
-        }
-    }
-    
-    func signConnectEthSignViaWalletConnect_V1(session: WalletConnectSwift.Session,
-                                               message: String,
-                                               in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
-        try await submitWC1RequestToExternalWallet(in: wallet) { client, completion in
-            try client.eth_sign(url: session.url,
-                                account: wallet.address,
-                                message: message,
-                                completion: completion)
-        }
-    }
-}
 
 
 extension Blockchain {
@@ -194,14 +88,10 @@ extension WalletConnectExternalWalletHandler: WalletConnectExternalWalletConnect
     var noResponseFromExternalWalletTimeOut: TimeInterval { 0.5 }
 
     func isWaitingForResponseFromExternalWallet() -> Bool {
-        externalWalletWC1ResponseCallback != nil || externalWalletWC2ResponseCallback != nil
+        externalWalletWC2ResponseCallback != nil
     }
     
     func handleExternalWalletDidNotRespond() {
-        // WC1
-        externalWalletWC1ResponseCallback?(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
-        externalWalletWC1ResponseCallback = nil
-        
         // WC2
         externalWalletWC2ResponseCallback?(.failure(WalletConnectRequestError.failedToRelayTxToExternalWallet))
         externalWalletWC2ResponseCallback = nil

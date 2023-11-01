@@ -19,10 +19,6 @@ final class MockWalletConnectExternalWalletHandler: WalletConnectExternalWalletH
         throw WalletConnectRequestError.externalWalletFailedToSign
     }
     
-    func signTypedDataViaWalletConnect_V1(session: WalletConnectSwift.Session, walletAddress: HexAddress, message: String, in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
-        try await wc1Response()
-    }
-    
     func sendTxViaWalletConnect_V1(session: WalletConnectSwift.Session, tx: EthereumTransaction, in wallet: UDWallet) async throws -> WalletConnectSwift.Response {
         try await wc1Response()
     }

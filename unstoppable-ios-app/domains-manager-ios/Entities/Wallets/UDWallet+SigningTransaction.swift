@@ -22,13 +22,6 @@ extension UDWallet {
     func signTransactionViaWalletConnect(ethTx: EthereumTransaction,
                                          request: Request,
                                          chainId: Int) async throws -> String {
-        if let session_V1 = appContext.walletConnectClientService.findSessions(by: address).first {
-            
-            return try await singTxViaWalletConnect_V1(sessionWithExtWallet: session_V1,
-                                                       request: request,
-                                                       tx: ethTx)
-        }
-        
         let sessions_V2 = appContext.walletConnectServiceV2.findSessions(by: address)
         if sessions_V2.count > 0 {
             return try await appContext.walletConnectServiceV2.signTxViaWalletConnect_V2(udWallet: self,
@@ -38,14 +31,6 @@ extension UDWallet {
         }
         
         throw WalletConnectRequestError.noWCSessionFound
-    }
-    
-    private func singTxViaWalletConnect_V1(sessionWithExtWallet: Session,
-                                           request: Request,
-                                           tx: EthereumTransaction) async throws -> String {
-        let response = try await appContext.walletConnectExternalWalletHandler.signTxViaWalletConnect_V1(session: sessionWithExtWallet, tx: tx, in: self)
-        let result = try response.result(as: String.self)
-        return result
     }
     
     func signTxLocally_V1(ethTx: EthereumTransaction, chainId: BigUInt) throws -> String {
