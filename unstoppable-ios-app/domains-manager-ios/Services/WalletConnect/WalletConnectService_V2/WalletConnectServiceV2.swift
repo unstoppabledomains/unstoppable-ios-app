@@ -150,6 +150,11 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
     struct ExtWalletDataV2: Codable, Equatable {
         let session: WCConnectedAppsStorageV2.SessionProxy
     }
+    
+    struct ConnectWalletRequest: Equatable {
+        let uri: WalletConnectURI
+    }
+    
     var sessionProposalPublisher: AnyPublisher<(proposal: WalletConnectSign.Session.Proposal, context: WalletConnectSign.VerifyContext?), Never> { Sign.instance.sessionProposalPublisher }
     var sessionRequestPublisher: AnyPublisher<(request: WalletConnectSign.Request, context: WalletConnectSign.VerifyContext?), Never> { Sign.instance.sessionRequestPublisher }
     private let udWalletsService: UDWalletsServiceProtocol

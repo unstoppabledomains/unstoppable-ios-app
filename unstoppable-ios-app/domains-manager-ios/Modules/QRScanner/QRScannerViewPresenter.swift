@@ -269,14 +269,9 @@ private extension QRScannerViewPresenter {
     }
     
     func getWCConnectionRequest(for code: QRCode) async throws -> WCRequest {
-        if let wcurl = code.wcurl {
-            let connectWalletRequest = WalletConnectService.ConnectWalletRequest.version1(wcurl)
-            return WCRequest.connectWallet(connectWalletRequest)
-        }
-        
         do {
             let uriV2 = try appContext.walletConnectServiceV2.getWCV2Request(for: code)
-            return WCRequest.connectWallet(WalletConnectService.ConnectWalletRequest.version2(uriV2))
+            return WCRequest.connectWallet(WalletConnectServiceV2.ConnectWalletRequest(uri: uriV2))
         } catch {
             Debugger.printFailure("QRCode failed to convert to url: \(code)", critical: false)
             if let view = self.view {

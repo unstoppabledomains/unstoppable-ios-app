@@ -16,12 +16,6 @@ import WalletConnectUtils
 import WalletConnectSign
 import WalletConnectEcho
 
-extension WalletConnectService {
-    enum ConnectWalletRequest: Equatable {
-        case version1 (WCURL)
-        case version2 (WalletConnectURI)
-    }
-}
 
 extension WalletConnectService {
     struct ClientDataV2 {

@@ -58,29 +58,11 @@ extension WCRequestsHandlingService: WCRequestsHandlingServiceProtocol {
             Debugger.printFailure("Request is not for connecting wallet", critical: true)
             throw WalletConnectRequestError.invalidWCRequest
         }
-        
-        if case let .version1(wcurl) = req {
-            let connectedAppsURLS = WCConnectedAppsStorage.shared.retrieveApps().map({ $0.session.url })
-            guard !connectedAppsURLS.contains(wcurl) else {
-                Debugger.printWarning("App already connected")
-                throw WalletConnectRequestError.appAlreadyConnected
-            }
-            
             WCConnectionIntentStorage.shared.save(newIntent: WCConnectionIntentStorage.Intent(domain: target.1,
                                                                                               walletAddress: target.0.address,
                                                                                               requiredNamespaces: nil,
                                                                                               appData: nil))
             connectAsync(to: req)
-            return
-        }
-        
-        if case .version2(_) = req {
-            WCConnectionIntentStorage.shared.save(newIntent: WCConnectionIntentStorage.Intent(domain: target.1,
-                                                                                              walletAddress: target.0.address,
-                                                                                              requiredNamespaces: nil,
-                                                                                              appData: nil))
-            connectAsync(to: req)
-        }
     }
    
     func setUIHandler(_ uiHandler: WalletConnectUIErrorHandler) {
@@ -130,7 +112,7 @@ extension WCRequestsHandlingService: WalletConnectExternalWalletSignerListener {
 
 // MARK: - Private methods
 private extension WCRequestsHandlingService {
-    func connectAsync(to request: WalletConnectService.ConnectWalletRequest) {
+    func connectAsync(to request: WalletConnectServiceV2.ConnectWalletRequest) {
         addNewRequest(.connectionRequest(request))
     }
     
@@ -169,15 +151,9 @@ private extension WCRequestsHandlingService {
         didFinishHandlingOf(request: request)
     }
     
-    func handleConnectionRequest(_ request: WalletConnectService.ConnectWalletRequest) async {
+    func handleConnectionRequest(_ request: WalletConnectServiceV2.ConnectWalletRequest) async {
         startConnectionTimeout()
-        if case let .version1(requestURL) = request  {
-            await handleV1ConnectionRequestURL(requestURL)
-        }
-        
-        if case let .version2(uri) = request  {
-            await handleV2ConnectionRequestURI(uri)
-        }
+        await handleV2ConnectionRequestURI(request.uri)
     }
     
     func handleV1ConnectionRequestURL(_ requestURL: WalletConnectSwift.WCURL) async {
@@ -445,7 +421,7 @@ private extension WCRequestsHandlingService {
 // MARK: - Private entities
 private extension WCRequestsHandlingService {
     enum UnifiedWCRequest: Equatable {
-        case connectionRequest(_ request: WalletConnectService.ConnectWalletRequest)
+        case connectionRequest(_ request: WalletConnectServiceV2.ConnectWalletRequest)
         case connectionProposal(_ proposal: WC2ConnectionProposal)
         case rpcRequestV1(_ request: WCRPCRequestV1, type: WalletConnectRequestType)
         case rpcRequestV2(_ request: WCRPCRequestV2, type: WalletConnectRequestType?)
