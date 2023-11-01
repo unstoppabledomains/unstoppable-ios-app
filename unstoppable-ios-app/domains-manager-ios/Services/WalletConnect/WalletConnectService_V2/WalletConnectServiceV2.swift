@@ -1565,6 +1565,13 @@ extension WalletConnectServiceV2 {
     }
 }
 
+extension WalletConnectServiceV2 {
+    struct ConnectionUISettings {
+        let domain: DomainItem
+        let blockchainType: BlockchainType
+    }
+}
+
 extension EthereumTransaction {
     func convertToAnyCodable() -> AnyCodable {
         var accum: [String: String] = [String: String]()

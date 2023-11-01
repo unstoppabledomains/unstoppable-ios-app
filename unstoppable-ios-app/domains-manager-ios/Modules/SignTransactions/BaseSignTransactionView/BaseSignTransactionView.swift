@@ -30,7 +30,7 @@ class BaseSignTransactionView: UIView, SelfNameable, NibInstantiateable {
     
     var confirmButtonTitle: String { String.Constants.confirm.localized() }
     
-    var confirmationCallback: ((WalletConnectService.ConnectionUISettings)->())?
+    var confirmationCallback: ((WalletConnectServiceV2.ConnectionUISettings)->())?
     var domainButtonCallback: ((DomainItem)->())?
 
     override init(frame: CGRect) {

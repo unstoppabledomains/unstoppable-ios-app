@@ -41,7 +41,7 @@ protocol PullUpViewServiceProtocol {
     func showPayGasFeeConfirmationPullUp(gasFeeInCents: Int,
                                          in viewController: UIViewController) async throws
     func showMintDomainConfirmationPullUp(in viewController: UIViewController) async throws -> MintDomainPullUpAction
-    func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration, in viewController: UIViewController) async throws -> WalletConnectService.ConnectionUISettings
+    func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration, in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings
     func showConnectingAppVerifiedPullUp(in viewController: UIViewController)
     func showNetworkNotSupportedPullUp(in viewController: UIViewController) async
     func showWCRequestNotSupportedPullUp(in viewController: UIViewController) async
@@ -512,7 +512,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     }
     
     func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration,
-                                             in viewController: UIViewController) async throws -> WalletConnectService.ConnectionUISettings {
+                                             in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let signTransactionView: BaseSignTransactionView
             let selectionViewHeight: CGFloat
