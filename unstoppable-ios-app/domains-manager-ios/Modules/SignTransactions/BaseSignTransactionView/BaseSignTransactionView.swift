@@ -122,16 +122,11 @@ extension BaseSignTransactionView {
     }
     
     func getChainFromAppInfo(_ appInfo: WalletConnectService.WCServiceAppInfo, domain: DomainItem) -> BlockchainType {
-        switch appInfo.dAppInfoInternal {
-        case .version1:
-            return domain.getBlockchainType()
-        case .version2:
-            let appBlockchainTypes = appInfo.getChainIds().compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
-            if let domainBlockchainType = appBlockchainTypes.first(where: { $0 == domain.getBlockchainType() }) {
-                return domainBlockchainType
-            }
-            return appBlockchainTypes.first ?? .Ethereum
+        let appBlockchainTypes = appInfo.getChainIds().compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
+        if let domainBlockchainType = appBlockchainTypes.first(where: { $0 == domain.getBlockchainType() }) {
+            return domainBlockchainType
         }
+        return appBlockchainTypes.first ?? .Ethereum
     }
     
     func setDomainInfo(_ domain: DomainItem, isSelectable: Bool) {

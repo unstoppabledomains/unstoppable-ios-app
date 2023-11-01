@@ -14,15 +14,6 @@ struct PushSubscriberInfo {
     let domainName: String
     let appInfo: WalletConnectService.WCServiceAppInfo
     
-    init?(app: WCConnectedAppsStorage.ConnectedApp) {
-        guard let walletInfo = app.session.walletInfo else { return nil }
-        self.dAppName = app.appName
-        self.peerId = walletInfo.peerId
-        self.bridgeUrl = app.session.url.bridgeURL
-        self.domainName = app.domain.name
-        self.appInfo = WalletConnectService.appInfo(from: app.session)
-    }
-    
     init?(appV2: WCConnectedAppsStorageV2.ConnectedApp) {
         guard let url = URL(string: appV2.sessionProxy.peer.url) else { return nil }
         self.dAppName = appV2.appName
@@ -31,7 +22,7 @@ struct PushSubscriberInfo {
         self.domainName = appV2.domain.name
         let clientData = WalletConnectService.ClientDataV2(appMetaData: appV2.sessionProxy.peer,
                                                            proposalNamespace: appV2.proposalNamespace)
-        self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version2(clientData),
+        self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: clientData,
                                                              isTrusted: appV2.sessionProxy.peer.isTrusted)
     }
 }

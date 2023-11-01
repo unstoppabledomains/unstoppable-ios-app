@@ -40,15 +40,10 @@ extension ConnectServerRequestConfirmationView {
             }
         }
         
-        switch connectionConfig.appInfo.dAppInfoInternal {
-        case .version1:
-            supportedChains = BlockchainType.supportedCases
-        case .version2:
-            networkFullStackView?.isHidden = true
-            bottomStackView?.axis = .vertical
-            domainInfoStackView?.axis = .horizontal
-        }
-        
+        networkFullStackView?.isHidden = true
+        bottomStackView?.axis = .vertical
+        domainInfoStackView?.axis = .horizontal
+
         let blockchainType = getChainFromAppInfo(connectionConfig.appInfo, domain: connectionConfig.domain)
         set(selectedChain: blockchainType)
     }

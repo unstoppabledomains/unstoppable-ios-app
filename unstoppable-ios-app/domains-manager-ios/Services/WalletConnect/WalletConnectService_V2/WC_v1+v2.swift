@@ -30,62 +30,38 @@ extension WalletConnectService {
     }
     
     struct WCServiceAppInfo {
-        enum ClientInfo {
-            case version1 (WalletConnectSwift.Session)
-            case version2 (ClientDataV2)
-        }
         
-        let dAppInfoInternal: ClientInfo
+        let dAppInfoInternal: ClientDataV2
         let isTrusted: Bool
         var iconURL: String?
         
         func getDappName() -> String {
-            switch dAppInfoInternal {
-            case .version1(let info): return info.dAppInfo.getDappName()
-            case .version2(let data): return data.appMetaData.name
-            }
+            return dAppInfoInternal.appMetaData.name
         }
         
         func getDappHostName() -> String {
-            switch dAppInfoInternal {
-            case .version1(let info): return info.dAppInfo.getDappHostName()
-            case .version2(let data): return data.appMetaData.url
-            }
+            return dAppInfoInternal.appMetaData.url
         }
         
         func getChainIds() -> [Int] {
-            switch dAppInfoInternal {
-            case .version1(let info):
-                return [info.walletInfo?.chainId].compactMap({$0})
-            case .version2(let info):
-                guard let namespace = info.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else {
-                    return []
-                }
-                guard let chains = namespace.chains else { return [] }
-                return chains.map {$0.reference}
-                                        .compactMap({Int($0)})
+            guard let namespace = dAppInfoInternal.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else {
+                return []
             }
+            guard let chains = namespace.chains else { return [] }
+            return chains.map {$0.reference}
+                                    .compactMap({Int($0)})
         }
         
         func getIconURL() -> URL? {
-            switch dAppInfoInternal {
-            case .version1(let info): return info.dAppInfo.getIconURL()
-            case .version2(let info): return info.appMetaData.getIconURL()
-            }
+            return dAppInfoInternal.appMetaData.getIconURL()
         }
         
         func getDappHostDisplayName() -> String {
-            switch dAppInfoInternal {
-            case .version1(let info): return info.dAppInfo.getDappHostDisplayName()
-            case .version2(let info): return info.appMetaData.name
-            }
+            dAppInfoInternal.appMetaData.name
         }
         
         func getPeerId() -> String? {
-            switch dAppInfoInternal {
-            case .version1(let info): return info.dAppInfo.peerId
-            case .version2(let info): return nil
-            }
+            return nil
         }
         
         func getDisplayName() -> String {

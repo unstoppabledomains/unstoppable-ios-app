@@ -241,7 +241,7 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         let unifiedApp = app as! UnifiedConnectAppInfo // always safe
         guard unifiedApp.isV2dApp else {
             let peerId = unifiedApp.appInfo.getPeerId()! // always safe with V1
-            appContext.walletConnectService.disconnect(peerId: peerId)
+//            appContext.walletConnectService.disconnect(peerId: peerId)
             return
         }
 
@@ -707,7 +707,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             }
             let udWallet = try detectWallet(by: walletAddress)
             let chainIdInt = try request.getChainId()
-            let completedTx = try await appContext.walletConnectService.completeTx(transaction: tx, chainId: chainIdInt)
+            let completedTx = try await completeTx(transaction: tx, chainId: chainIdInt)
             
             let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
                                                                       chainId: chainIdInt,
@@ -762,7 +762,7 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
             }
             let udWallet = try detectWallet(by: walletAddress)
             let chainIdInt = try request.getChainId()
-            let completedTx = try await appContext.walletConnectService.completeTx(transaction: tx, chainId: chainIdInt)
+            let completedTx = try await completeTx(transaction: tx, chainId: chainIdInt)
             
             let (_, _) = try await getClientAfterConfirmationIfNeeded(address: walletAddress,
                                                                       chainId: chainIdInt,
@@ -841,6 +841,102 @@ extension WalletConnectServiceV2: WalletConnectV2RequestHandlingServiceProtocol 
         
         return .response(sig)
     }
+    
+    // complete TX helpers
+    
+    func completeTx(transaction: EthereumTransaction,
+                            chainId: Int) async throws -> EthereumTransaction {
+        var txBuilding = transaction
+        
+        if txBuilding.gasPrice == nil {
+            guard let gasPrice = try await fetchGasPrice(chainId: chainId) else {
+                throw WalletConnectRequestError.failedFetchGas
+            }
+            txBuilding.gasPrice = EthereumQuantity(quantity: gasPrice)
+        }
+                
+        txBuilding = try await ensureGasLimit(transaction: txBuilding, chainId: chainId)
+        txBuilding = try await ensureNonce(transaction: txBuilding, chainId: chainId)
+        
+        if txBuilding.value == nil {
+            txBuilding.value = 0
+        }
+        return txBuilding
+    }
+    
+    private func fetchGasPrice(chainId: Int) async throws -> BigUInt? {
+        guard let gasPrice = try? await NetworkService().getGasPrice(chainId: chainId) else {
+            Debugger.printFailure("Failed to fetch gasPrice", critical: false)
+            throw WalletConnectRequestError.failedFetchGas
+        }
+        Debugger.printInfo(topic: .WalletConnect, "Fetched gasPrice successfully: \(gasPrice)")
+        return BigUInt(gasPrice.droppedHexPrefix, radix: 16)
+    }
+    
+    private func ensureGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumTransaction {
+        guard transaction.gas == nil else {
+            return transaction
+        }
+        
+        let gas = try await fetchGasLimit(transaction: transaction, chainId: chainId)
+        var newTx = transaction
+        newTx.gas = EthereumQuantity(quantity: gas)
+        return newTx
+    }
+    
+    private func ensureNonce(transaction: EthereumTransaction, chainId: Int) async throws -> EthereumTransaction {
+        guard transaction.nonce == nil else {
+            return transaction
+        }
+        
+        guard let nonce = await fetchNonce(transaction: transaction, chainId: chainId),
+              let nonceBig = BigUInt(nonce.droppedHexPrefix, radix: 16) else {
+            throw WalletConnectRequestError.failedFetchNonce
+        }
+        var newTx = transaction
+        newTx.nonce = EthereumQuantity(quantity: nonceBig)
+        return newTx
+    }
+    
+    private func fetchNonce(transaction: EthereumTransaction, chainId: Int) async -> String? {
+        guard let addressString = transaction.from?.hex() else { return nil }
+        return await fetchNonce(address: addressString, chainId: chainId)
+    }
+    
+    private func fetchNonce(address: HexAddress, chainId: Int) async -> String? {
+        guard let nonceString = try? await NetworkService().getTransactionCount(address: address,
+                                                                     chainId: chainId) else {
+            Debugger.printFailure("Failed to fetch nonce for address: \(address)", critical: true)
+            return nil
+        }
+        Debugger.printInfo(topic: .WalletConnect, "Fetched nonce successfully: \(nonceString)")
+        return nonceString
+    }
+    
+    private func fetchGasLimit(transaction: EthereumTransaction, chainId: Int) async throws -> BigUInt {
+        do {
+            let gasPriceString = try await NetworkService().getGasEstimation(tx: transaction,
+                                                                             chainId: chainId)
+            guard let result = BigUInt(gasPriceString.droppedHexPrefix, radix: 16) else {
+                Debugger.printFailure("Failed to parse gas Estimate from: \(gasPriceString)", critical: true)
+                throw WalletConnectRequestError.failedFetchGas
+            }
+            Debugger.printInfo(topic: .WalletConnect, "Fetched gas Estimate successfully: \(gasPriceString)")
+            return result
+        } catch {
+            if let jrpcError = error as? NetworkService.JRPCError {
+                switch jrpcError {
+                case .gasRequiredExceedsAllowance:
+                    Debugger.printFailure("Failed to fetch gas Estimate because of Low Allowance Error", critical: false)
+                    throw WalletConnectRequestError.lowAllowance
+                default: throw WalletConnectRequestError.failedFetchGas
+                }
+            } else {
+                Debugger.printFailure("Failed to fetch gas Estimate: \(error.localizedDescription)", critical: false)
+                throw WalletConnectRequestError.failedFetchGas
+            }
+        }
+    }
 }
 
 extension WalletConnectServiceV2: DataAggregatorServiceListener {
@@ -879,7 +975,6 @@ private extension WalletConnectSign.Request {
 extension WalletConnectServiceV2 {
     private func getAllUnifiedAppsFromCache() -> [UnifiedConnectAppInfo] {
         appsStorageV2.retrieveApps().map{ UnifiedConnectAppInfo(from: $0)}
-        + appContext.walletConnectService.getConnectedAppsV1().map{ UnifiedConnectAppInfo(from: $0)}
     }
     
     private func disconnectApps(from unifiedApps: [UnifiedConnectAppInfo],
@@ -1110,14 +1205,14 @@ extension WalletConnectServiceV2 {
     static func appInfo(from sessionPropossal: SessionV2.Proposal) -> WalletConnectService.WCServiceAppInfo {
         let clientData = WalletConnectService.ClientDataV2(appMetaData: sessionPropossal.proposer,
                                                            proposalNamespace: sessionPropossal.requiredNamespaces)
-        return WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version2(clientData),
+        return WalletConnectService.WCServiceAppInfo(dAppInfoInternal: clientData,
                                                      isTrusted: sessionPropossal.proposer.isTrusted)
     }
     
     static func appInfo(from appMetaData: WalletConnectSign.AppMetadata, nameSpases: [String: ProposalNamespace]) -> WalletConnectService.WCServiceAppInfo {
         let clientData = WalletConnectService.ClientDataV2(appMetaData: appMetaData,
                                                            proposalNamespace: nameSpases)
-        return WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version2(clientData),
+        return WalletConnectService.WCServiceAppInfo(dAppInfoInternal: clientData,
                                                      isTrusted: appMetaData.isTrusted)
     }
 }

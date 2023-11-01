@@ -538,11 +538,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             case .connectWallet(let connectionConfig):
                 let connectServerConfirmationView = ConnectServerRequestConfirmationView(frame: viewFrame)
                 connectServerConfirmationView.setWith(connectionConfig: connectionConfig)
-                if case .version2 = connectionConfig.appInfo.dAppInfoInternal {
-                    selectionViewHeight = 376
-                } else {
-                    selectionViewHeight = 420
-                }
+                selectionViewHeight = 376
                 signTransactionView = connectServerConfirmationView
                 pullUp = .wcRequestConnectConfirmation
                 connectionConfiguration = connectionConfig

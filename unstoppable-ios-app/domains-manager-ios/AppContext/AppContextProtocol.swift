@@ -20,7 +20,6 @@ protocol AppContextProtocol {
     var domainTransactionsService: DomainTransactionsServiceProtocol { get }
     var udDomainsService: UDDomainsServiceProtocol { get }
     var udWalletsService: UDWalletsServiceProtocol { get }
-    var walletConnectService: WalletConnectServiceProtocol { get }
     var walletConnectServiceV2: WalletConnectServiceV2Protocol { get }
     var coinRecordsService: CoinRecordsServiceProtocol { get }
     var imageLoadingService: ImageLoadingServiceProtocol { get }
