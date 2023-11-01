@@ -23,7 +23,7 @@ final class ConnectServerRequestConfirmationView: BaseSignTransactionView {
 
 // MARK: - Open methods
 extension ConnectServerRequestConfirmationView {
-    func setWith(connectionConfig: WalletConnectService.ConnectionConfig) {
+    func setWith(connectionConfig: WalletConnectServiceV2.ConnectionConfig) {
         titleLabel.setAttributedTextWith(text: String.Constants.connectWalletSignRequestTitle.localized(connectionConfig.appInfo.getDisplayName()),
                                          font: .currentFont(withSize: 22, weight: .bold),
                                          textColor: .foregroundSecondary)

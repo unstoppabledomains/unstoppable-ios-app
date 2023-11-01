@@ -8,7 +8,7 @@
 import Foundation
 import Boilertalk_Web3
 
-// V1
+
 import WalletConnectSwift
 
 // V2
@@ -16,57 +16,6 @@ import WalletConnectUtils
 import WalletConnectSign
 import WalletConnectEcho
 
-
-extension WalletConnectService {
-    struct ClientDataV2 {
-        let appMetaData: WalletConnectSign.AppMetadata
-        let proposalNamespace: [String: ProposalNamespace]
-    }
-    
-    struct WCServiceAppInfo {
-        
-        let dAppInfoInternal: ClientDataV2
-        let isTrusted: Bool
-        var iconURL: String?
-        
-        func getDappName() -> String {
-            return dAppInfoInternal.appMetaData.name
-        }
-        
-        func getDappHostName() -> String {
-            return dAppInfoInternal.appMetaData.url
-        }
-        
-        func getChainIds() -> [Int] {
-            guard let namespace = dAppInfoInternal.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else {
-                return []
-            }
-            guard let chains = namespace.chains else { return [] }
-            return chains.map {$0.reference}
-                                    .compactMap({Int($0)})
-        }
-        
-        func getIconURL() -> URL? {
-            return dAppInfoInternal.appMetaData.getIconURL()
-        }
-        
-        func getDappHostDisplayName() -> String {
-            dAppInfoInternal.appMetaData.name
-        }
-        
-        func getPeerId() -> String? {
-            return nil
-        }
-        
-        func getDisplayName() -> String {
-            let name = getDappName()
-            if name.isEmpty {
-                return getDappHostDisplayName()
-            }
-            return name
-        }
-    }
-}
 
 struct WCRegistryWalletProxy {
     let host: String

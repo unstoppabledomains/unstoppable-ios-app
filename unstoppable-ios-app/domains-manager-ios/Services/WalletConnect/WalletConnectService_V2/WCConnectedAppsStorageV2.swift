@@ -130,7 +130,7 @@ protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
     var appUrlString: String { get }
     var displayName: String { get }
     var description: String { get }
-    var appInfo: WalletConnectService.WCServiceAppInfo { get }
+    var appInfo: WalletConnectServiceV2.WCServiceAppInfo { get }
     var connectionStartDate: Date? { get }
         
     init(from appV2: WCConnectedAppsStorageV2.ConnectedApp)
@@ -176,7 +176,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
     let appIconUrls: [String]
     let appName: String
     let appUrlString: String
-    let appInfo: WalletConnectService.WCServiceAppInfo
+    let appInfo: WalletConnectServiceV2.WCServiceAppInfo
     let connectionStartDate: Date?
     let topic: String
 
@@ -189,7 +189,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
         self.appIconUrls = appV2.appIconUrls
         self.appName = appV2.appName
         self.appUrlString = appV2.appUrlString
-        self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: WalletConnectService.ClientDataV2(appMetaData: appV2.sessionProxy.peer, proposalNamespace: appV2.proposalNamespace),
+        self.appInfo = WalletConnectServiceV2.WCServiceAppInfo(dAppInfoInternal: WalletConnectServiceV2.ClientDataV2(appMetaData: appV2.sessionProxy.peer, proposalNamespace: appV2.proposalNamespace),
                                                              isTrusted: appV2.isTrusted)
         self.connectionStartDate = appV2.connectionStartDate
         self.topic = appV2.topic

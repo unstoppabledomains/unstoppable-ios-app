@@ -24,7 +24,7 @@ class BaseSignTransactionView: UIView, SelfNameable, NibInstantiateable {
     private var domainImageView: UIImageView?
     private var domainNameButton: SelectorButton?
     private var domain: DomainItem?
-    private var appInfo: WalletConnectService.WCServiceAppInfo?
+    private var appInfo: WalletConnectServiceV2.WCServiceAppInfo?
     var network: BlockchainType?
     var pullUp: Analytics.PullUp = .unspecified
     
@@ -97,7 +97,7 @@ extension BaseSignTransactionView {
         cancelButton.setTitle(String.Constants.cancel.localized(), image: nil)
     }
     
-    func setWith(appInfo: WalletConnectService.WCServiceAppInfo) {
+    func setWith(appInfo: WalletConnectServiceV2.WCServiceAppInfo) {
         self.appInfo = appInfo
         Task {
             let icon = await appContext.imageLoadingService.loadImage(from: .wcApp(appInfo, size: .default), downsampleDescription: nil)
@@ -117,11 +117,11 @@ extension BaseSignTransactionView {
                                image: appInfo.isTrusted ? .checkBadge : nil)
     }
     
-    func setNetworkFrom(appInfo: WalletConnectService.WCServiceAppInfo, domain: DomainItem) {
+    func setNetworkFrom(appInfo: WalletConnectServiceV2.WCServiceAppInfo, domain: DomainItem) {
         self.network = getChainFromAppInfo(appInfo, domain: domain)
     }
     
-    func getChainFromAppInfo(_ appInfo: WalletConnectService.WCServiceAppInfo, domain: DomainItem) -> BlockchainType {
+    func getChainFromAppInfo(_ appInfo: WalletConnectServiceV2.WCServiceAppInfo, domain: DomainItem) -> BlockchainType {
         let appBlockchainTypes = appInfo.getChainIds().compactMap({ (try? UnsConfigManager.getBlockchainType(from: $0)) })
         if let domainBlockchainType = appBlockchainTypes.first(where: { $0 == domain.getBlockchainType() }) {
             return domainBlockchainType

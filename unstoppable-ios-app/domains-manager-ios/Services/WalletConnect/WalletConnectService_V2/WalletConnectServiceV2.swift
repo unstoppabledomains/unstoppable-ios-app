@@ -1030,7 +1030,7 @@ extension WalletConnectServiceV2 {
     
     private func getClientAfterConfirmation_generic(address: HexAddress,
                                                     request: WalletConnectSign.Request,
-                                                    uiConfigBuilder: (WalletConnectService.ConnectionConfig)-> WCRequestUIConfiguration ) async throws -> (WCConnectedAppsStorageV2.ConnectedApp, UDWallet) {
+                                                    uiConfigBuilder: (WalletConnectServiceV2.ConnectionConfig)-> WCRequestUIConfiguration ) async throws -> (WCConnectedAppsStorageV2.ConnectedApp, UDWallet) {
         let connectedApp = try detectApp(by: address, topic: request.topic)
         let udWallet = try detectWallet(by: address)
         
@@ -1042,7 +1042,7 @@ extension WalletConnectServiceV2 {
 
             let appInfo = Self.appInfo(from: connectedApp.appData,
                                        nameSpases: connectedApp.proposalNamespace)
-            let connectionConfig = WalletConnectService.ConnectionConfig(domain: connectedApp.domain,
+            let connectionConfig = WalletConnectServiceV2.ConnectionConfig(domain: connectedApp.domain,
                                                                          appInfo: appInfo)
             let uiConfig = uiConfigBuilder(connectionConfig)
             try await uiHandler.getConfirmationToConnectServer(config: uiConfig)
@@ -1175,14 +1175,14 @@ extension WCRequestUIConfiguration {
     init (connectionIntent: WCConnectionIntentStorage.Intent, sessionProposal: SessionV2.Proposal) {
         let intendedDomain = connectionIntent.domain
         let appInfo = WalletConnectServiceV2.appInfo(from: sessionProposal)
-        let intendedConfig = WalletConnectService.ConnectionConfig(domain: intendedDomain, appInfo: appInfo)
+        let intendedConfig = WalletConnectServiceV2.ConnectionConfig(domain: intendedDomain, appInfo: appInfo)
         self = WCRequestUIConfiguration.connectWallet(intendedConfig)
     }
     
     init (connectionDomain: DomainItem, sessionProposal: SessionV2.Proposal) {
         let intendedDomain = connectionDomain
         let appInfo = WalletConnectServiceV2.appInfo(from: sessionProposal)
-        let intendedConfig = WalletConnectService.ConnectionConfig(domain: intendedDomain, appInfo: appInfo)
+        let intendedConfig = WalletConnectServiceV2.ConnectionConfig(domain: intendedDomain, appInfo: appInfo)
         self = WCRequestUIConfiguration.connectWallet(intendedConfig)
     }
 }
@@ -1207,17 +1207,17 @@ extension SessionV2.Proposal {
 }
 
 extension WalletConnectServiceV2 {
-    static func appInfo(from sessionPropossal: SessionV2.Proposal) -> WalletConnectService.WCServiceAppInfo {
-        let clientData = WalletConnectService.ClientDataV2(appMetaData: sessionPropossal.proposer,
+    static func appInfo(from sessionPropossal: SessionV2.Proposal) -> WalletConnectServiceV2.WCServiceAppInfo {
+        let clientData = WalletConnectServiceV2.ClientDataV2(appMetaData: sessionPropossal.proposer,
                                                            proposalNamespace: sessionPropossal.requiredNamespaces)
-        return WalletConnectService.WCServiceAppInfo(dAppInfoInternal: clientData,
+        return WalletConnectServiceV2.WCServiceAppInfo(dAppInfoInternal: clientData,
                                                      isTrusted: sessionPropossal.proposer.isTrusted)
     }
     
-    static func appInfo(from appMetaData: WalletConnectSign.AppMetadata, nameSpases: [String: ProposalNamespace]) -> WalletConnectService.WCServiceAppInfo {
-        let clientData = WalletConnectService.ClientDataV2(appMetaData: appMetaData,
+    static func appInfo(from appMetaData: WalletConnectSign.AppMetadata, nameSpases: [String: ProposalNamespace]) -> WalletConnectServiceV2.WCServiceAppInfo {
+        let clientData = WalletConnectServiceV2.ClientDataV2(appMetaData: appMetaData,
                                                            proposalNamespace: nameSpases)
-        return WalletConnectService.WCServiceAppInfo(dAppInfoInternal: clientData,
+        return WalletConnectServiceV2.WCServiceAppInfo(dAppInfoInternal: clientData,
                                                      isTrusted: appMetaData.isTrusted)
     }
 }
@@ -1570,7 +1570,78 @@ extension WalletConnectServiceV2 {
         let domain: DomainItem
         let blockchainType: BlockchainType
     }
+    
+    struct ConnectionConfig {
+        let domain: DomainItem
+        let appInfo: WCServiceAppInfo
+    }
+    
+    struct ClientDataV2 {
+        let appMetaData: WalletConnectSign.AppMetadata
+        let proposalNamespace: [String: ProposalNamespace]
+    }
+    
+    struct WCServiceAppInfo {
+        
+        let dAppInfoInternal: ClientDataV2
+        let isTrusted: Bool
+        var iconURL: String?
+        
+        func getDappName() -> String {
+            return dAppInfoInternal.appMetaData.name
+        }
+        
+        func getDappHostName() -> String {
+            return dAppInfoInternal.appMetaData.url
+        }
+        
+        func getChainIds() -> [Int] {
+            guard let namespace = dAppInfoInternal.proposalNamespace[WalletConnectServiceV2.supportedNamespace] else {
+                return []
+            }
+            guard let chains = namespace.chains else { return [] }
+            return chains.map {$0.reference}
+                                    .compactMap({Int($0)})
+        }
+        
+        func getIconURL() -> URL? {
+            return dAppInfoInternal.appMetaData.getIconURL()
+        }
+        
+        func getDappHostDisplayName() -> String {
+            dAppInfoInternal.appMetaData.name
+        }
+        
+        func getPeerId() -> String? {
+            return nil
+        }
+        
+        func getDisplayName() -> String {
+            let name = getDappName()
+            if name.isEmpty {
+                return getDappHostDisplayName()
+            }
+            return name
+        }
+    }
+
 }
+
+enum WCRequestUIConfiguration {
+    case signMessage(_ configuration: SignMessageTransactionUIConfiguration),
+         payment(_ configuration: SignPaymentTransactionUIConfiguration),
+         connectWallet(_ configuration: WalletConnectServiceV2.ConnectionConfig)
+    
+    var isSARequired: Bool {
+        switch self {
+        case .connectWallet:
+            return false
+        case .signMessage, .payment:
+            return true
+        }
+    }
+}
+
 
 extension EthereumTransaction {
     func convertToAnyCodable() -> AnyCodable {

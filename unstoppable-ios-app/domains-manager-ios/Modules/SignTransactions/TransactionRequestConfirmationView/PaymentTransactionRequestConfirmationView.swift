@@ -33,7 +33,7 @@ struct SignPaymentTransactionUIConfiguration {
         }
 
     
-    let connectionConfig: WalletConnectService.ConnectionConfig
+    let connectionConfig: WalletConnectServiceV2.ConnectionConfig
     let walletAddress: HexAddress
     let chainId: Int
     let cost: TxDisplayDetails

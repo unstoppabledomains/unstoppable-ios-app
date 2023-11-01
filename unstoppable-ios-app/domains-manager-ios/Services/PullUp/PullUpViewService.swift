@@ -517,7 +517,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             let signTransactionView: BaseSignTransactionView
             let selectionViewHeight: CGFloat
             let pullUp: Analytics.PullUp
-            let connectionConfiguration: WalletConnectService.ConnectionConfig
+            let connectionConfiguration: WalletConnectServiceV2.ConnectionConfig
             let viewFrame: CGRect = UIScreen.main.bounds
             
             switch connectionConfig {
