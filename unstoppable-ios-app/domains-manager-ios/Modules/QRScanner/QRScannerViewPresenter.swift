@@ -44,6 +44,8 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     }
 }
 
+typealias QRCode = String
+
 // MARK: - WalletConnectServiceDelegate
 extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
     @MainActor
