@@ -22,7 +22,6 @@ final class GeneralAppContext: AppContextProtocol {
     let domainTransactionsService: DomainTransactionsServiceProtocol
     let udDomainsService: UDDomainsServiceProtocol
     let udWalletsService: UDWalletsServiceProtocol
-    let walletConnectService: WalletConnectServiceProtocol
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
     let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol
     let walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
@@ -56,7 +55,6 @@ final class GeneralAppContext: AppContextProtocol {
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
         let walletConnectService = WalletConnectService()
-        self.walletConnectService = walletConnectService
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         self.walletConnectServiceV2 = walletConnectServiceV2
         permissionsService = PermissionsService()

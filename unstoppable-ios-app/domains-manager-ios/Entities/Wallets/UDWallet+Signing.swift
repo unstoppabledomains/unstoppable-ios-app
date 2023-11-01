@@ -9,8 +9,6 @@ import Foundation
 import CryptoSwift
 import Boilertalk_Web3
 import web3swift
-import WalletConnectSwift
-
 
 // Signing methods
 extension UDWallet {
@@ -146,12 +144,7 @@ extension UDWallet {
                                                                                     in: self)
         return try appContext.walletConnectServiceV2.handle(response: response)
     }
-    
-    enum WCSession {
-        case wc1(Session)
-        case wc2([WCConnectedAppsStorageV2.SessionProxy])
-    }
-        
+            
     func signViaWalletConnectEthSign(message: String) async throws -> String {
         let wc2Sessions = try getWC2Session()
         let response = try await appContext.walletConnectServiceV2.sendEthSign(sessions: wc2Sessions,
@@ -160,11 +153,6 @@ extension UDWallet {
                                                                                address: address,
                                                                                in: self)
         return try appContext.walletConnectServiceV2.handle(response: response)
-    }
-    
-    private func handleResponse(response: Response) throws -> String {
-        let result = try response.result(as: String.self)
-        return result
     }
     
     func multipleWalletPersonalSigns(messages: [String]) async throws -> [String]{
