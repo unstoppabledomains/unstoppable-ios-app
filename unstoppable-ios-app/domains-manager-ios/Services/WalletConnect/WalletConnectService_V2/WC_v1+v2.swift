@@ -9,8 +9,6 @@ import Foundation
 import Boilertalk_Web3
 
 
-import WalletConnectSwift
-
 // V2
 import WalletConnectUtils
 import WalletConnectSign
@@ -24,13 +22,6 @@ struct WCRegistryWalletProxy {
     // TODO: Remove when Ledger fixes the url in wallet info
     var needsLedgerSearchHack: Bool {
         name.lowercased().contains("ledger")
-    }
-    
-    init?(_ walletInfo: WalletConnectSwift.Session.WalletInfo?) {
-        guard let info = walletInfo else { return nil }
-        guard let host = info.peerMeta.url.host else { return nil }
-        self.host = host
-        self.name = info.peerMeta.name
     }
     
     init?(_ walletInfo: SessionV2) {
