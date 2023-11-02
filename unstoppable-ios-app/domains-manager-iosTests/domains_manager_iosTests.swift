@@ -21,7 +21,7 @@ class APIRequestTests: XCTestCase {
     func testAPIRequestBuilder_Claiming    () throws {
         let email = "test@example.com"
         let code = "CODE1234"
-        let domains = [ DomainItem(name: "toclaim.crypto", tokenId: "", ownerWallet: "0xabcdef012345", transactionHashes: [], status: .unclaimed)]
+        let domains = [ DomainItem(name: "toclaim.crypto", ownerWallet: "0xabcdef012345", transactionHashes: [], status: .unclaimed)]
         
         // request security code
         let urlAuthenticate = "\(NetworkConfig.migratedBaseUrl)/api/v1/resellers/mobile-app-v1/users/\(email)/authenticate"
