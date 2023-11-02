@@ -38,7 +38,6 @@
 		29BECD182979BE4000662FC1 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BECD172979BE4000662FC1 /* Date.swift */; };
 		29BECD1D2979BE8800662FC1 /* SecureHashStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BECD1C2979BE8800662FC1 /* SecureHashStorage.swift */; };
 		29BECD22297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BECD21297ABF3C00662FC1 /* UDWalletWithPrivateSeed.swift */; };
-		29C3C89F2A370E2A008781A9 /* WalletConnectSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 29C3C89E2A370E2A008781A9 /* WalletConnectSwift */; };
 		29DE3B1328913DF500655675 /* Env.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DE3B1228913DF500655675 /* Env.swift */; };
 		29EDB61E28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EDB61D28FED24D00A0BD08 /* NetworkService+ProfilesApi.swift */; };
 		29EDB623290A94E700A0BD08 /* ProfilesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EDB622290A94E700A0BD08 /* ProfilesTests.swift */; };
@@ -2204,7 +2203,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29C3C89F2A370E2A008781A9 /* WalletConnectSwift in Frameworks */,
 				30AD0D792704634600F42ACC /* Zesame in Frameworks */,
 				C61ECD862A25AB4200E97D70 /* SocketIO in Frameworks */,
 				290A604C2950AA1600882109 /* WalletConnectNetworking in Frameworks */,
@@ -5899,7 +5897,6 @@
 				C63812232993E009002590E7 /* Valet */,
 				C61ECD852A25AB4200E97D70 /* SocketIO */,
 				C623966B2A273D3B00363F60 /* Push */,
-				29C3C89E2A370E2A008781A9 /* WalletConnectSwift */,
 				2917EDDA2A6F25AB004EAB31 /* Boilertalk-Web3 */,
 				2917EDDC2A6F25AB004EAB31 /* Web3ContractABI */,
 				2917EDDE2A6F25AB004EAB31 /* Web3PromiseKit */,
@@ -6014,7 +6011,6 @@
 				C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */,
 				C61ECD842A25AB4200E97D70 /* XCRemoteSwiftPackageReference "socket" */,
 				C6BC7AB92A2722C5008E3CAA /* XCRemoteSwiftPackageReference "push-swift-sdk" */,
-				29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */,
 				29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */,
 				29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */,
 			);
@@ -7800,14 +7796,6 @@
 				revision = 50181dc4c4bbd02d412a827e1c377716f8ddadc7;
 			};
 		};
-		29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/unstoppabledomains/WalletConnectSwift.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 		307B1D582603C8E0007B14C3 /* XCRemoteSwiftPackageReference "BigInt" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/attaswift/BigInt";
@@ -7937,11 +7925,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 29BF9FE62A6EDA3200EDA0DF /* XCRemoteSwiftPackageReference "xmtp-ios" */;
 			productName = XMTP;
-		};
-		29C3C89E2A370E2A008781A9 /* WalletConnectSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 29C3C89D2A370E2A008781A9 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */;
-			productName = WalletConnectSwift;
 		};
 		307B1D592603C8E0007B14C3 /* BigInt */ = {
 			isa = XCSwiftPackageProductDependency;
