@@ -8,7 +8,7 @@
 import UIKit
 
 struct SignMessageTransactionUIConfiguration {
-    let connectionConfig: WalletConnectService.ConnectionConfig
+    let connectionConfig: WalletConnectServiceV2.ConnectionConfig
     let signingMessage: String
 }
 

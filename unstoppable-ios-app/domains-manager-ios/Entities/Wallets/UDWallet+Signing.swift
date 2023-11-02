@@ -9,8 +9,6 @@ import Foundation
 import CryptoSwift
 import Boilertalk_Web3
 import web3swift
-import WalletConnectSwift
-
 
 // Signing methods
 extension UDWallet {
@@ -118,84 +116,43 @@ extension UDWallet {
         return "0x" + sig.dataToHexString()
     }
     
-    func signViaWalletConnectTypedData(dataString: String) async throws -> String {
-        let session = try detectWCSessionType()
-        switch session {
-        case .wc1(let wc1Session):
-            let response = try await appContext.walletConnectExternalWalletHandler.signTypedDataViaWalletConnect_V1(session: wc1Session, walletAddress: self.address, message: dataString, in: self)
-            return try handleResponse(response: response)
-        case .wc2(let wc2Sessions):
-            let response = try await appContext.walletConnectServiceV2.sendSignTypedData(sessions: wc2Sessions,
-                                                                                        chainId: 1, // chain here makes no difference
-                                                                                        dataString: dataString,
-                                                                                        address: address,
-                                                                                        in: self)
-            return try appContext.walletConnectServiceV2.handle(response: response)
+    func getWC2Session() throws -> [WCConnectedAppsStorageV2.SessionProxy] {
+        let walletSessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
+        guard walletSessions.count > 0 else {
+            Debugger.printFailure("Failed to find session for WC", critical: false)
+            throw WalletConnectRequestError.noWCSessionFound
         }
+        return walletSessions
+    }
+    
+    func signViaWalletConnectTypedData(dataString: String) async throws -> String {
+        let wc2Sessions = try getWC2Session()
+        let response = try await appContext.walletConnectServiceV2.sendSignTypedData(sessions: wc2Sessions,
+                                                                                     chainId: 1, // chain here makes no difference
+                                                                                     dataString: dataString,
+                                                                                     address: address,
+                                                                                     in: self)
+        return try appContext.walletConnectServiceV2.handle(response: response)
     }
     
     func signViaWalletConnectPersonalSign(message: String) async throws -> String {
-        let session = try detectWCSessionType()
-        switch session {
-        case .wc1(let wc1Session):
-            let messageToSend: String
-            if message.droppedHexPrefix.isHexNumber {
-                let data = message.droppedHexPrefix.hexToBytes()
-                messageToSend = String (bytes: data, encoding: .default)!
-            } else {
-                messageToSend = message
-            }
-            let response = try await appContext.walletConnectExternalWalletHandler.signPersonalSignViaWalletConnect_V1(session: wc1Session, message: messageToSend, in: self)
-            return try handleResponse(response: response)
-        case .wc2(let wc2Sessions):
-            let response = try await appContext.walletConnectServiceV2.sendPersonalSign(sessions: wc2Sessions,
-                                                                                        chainId: 1, // chain here makes no difference
-                                                                                        message: message,
-                                                                                        address: address,
-                                                                                        in: self)
-            return try appContext.walletConnectServiceV2.handle(response: response)
-        }
+        let wc2Sessions = try getWC2Session()
+        let response = try await appContext.walletConnectServiceV2.sendPersonalSign(sessions: wc2Sessions,
+                                                                                    chainId: 1, // chain here makes no difference
+                                                                                    message: message,
+                                                                                    address: address,
+                                                                                    in: self)
+        return try appContext.walletConnectServiceV2.handle(response: response)
     }
-    
-    enum WCSession {
-        case wc1(Session)
-        case wc2([WCConnectedAppsStorageV2.SessionProxy])
-    }
-    
-    func detectWCSessionType() throws -> WCSession {
-        let walletSessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
-        if  walletSessions.count > 0 { return .wc2(walletSessions) }
-        guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
-            Debugger.printFailure("Failed to find session for WC", critical: false)
-            throw WalletConnectRequestError.noWCSessionFound
-        }
-        return .wc1(session)
-    }
-    
+            
     func signViaWalletConnectEthSign(message: String) async throws -> String {
-        let sessions = appContext.walletConnectServiceV2.findSessions(by: self.address)
-        if  sessions.count > 0 {
-            let response = try await appContext.walletConnectServiceV2.sendEthSign(sessions: sessions,
-                                                                                   chainId: 1, // chain here makes no difference
-                                                                                   message: message,
-                                                                                   address: address,
-                                                                                   in: self)
-            return try appContext.walletConnectServiceV2.handle(response: response)
-        }
-        
-        guard let session = appContext.walletConnectClientService.findSessions(by: self.address).first else {
-            Debugger.printFailure("Failed to find session for WC", critical: false)
-            throw WalletConnectRequestError.noWCSessionFound
-        }
-        
-        let response = try await appContext.walletConnectExternalWalletHandler.signConnectEthSignViaWalletConnect_V1(session: session, message: message, in: self)
-
-        return try handleResponse(response: response)
-    }
-    
-    private func handleResponse(response: Response) throws -> String {
-        let result = try response.result(as: String.self)
-        return result
+        let wc2Sessions = try getWC2Session()
+        let response = try await appContext.walletConnectServiceV2.sendEthSign(sessions: wc2Sessions,
+                                                                               chainId: 1, // chain here makes no difference
+                                                                               message: message,
+                                                                               address: address,
+                                                                               in: self)
+        return try appContext.walletConnectServiceV2.handle(response: response)
     }
     
     func multipleWalletPersonalSigns(messages: [String]) async throws -> [String]{

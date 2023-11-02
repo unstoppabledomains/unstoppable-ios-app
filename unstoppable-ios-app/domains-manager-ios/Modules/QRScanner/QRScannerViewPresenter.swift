@@ -22,7 +22,6 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     internal weak var view: QRScannerViewProtocol?
     private var isAcceptingQRCodes = true
     private let dataAggregatorService: DataAggregatorServiceProtocol
-    private let walletConnectService: WalletConnectServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
@@ -33,19 +32,19 @@ final class QRScannerViewPresenter: ViewAnalyticsLogger {
     init(view: QRScannerViewProtocol,
          selectedDomain: DomainDisplayInfo,
          dataAggregatorService: DataAggregatorServiceProtocol,
-         walletConnectService: WalletConnectServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol) {
         self.view = view
         self.selectedDomain = selectedDomain
         self.dataAggregatorService = dataAggregatorService
-        self.walletConnectService = walletConnectService
         self.walletConnectServiceV2 = walletConnectServiceV2
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
     }
 }
+
+typealias QRCode = String
 
 // MARK: - WalletConnectServiceDelegate
 extension QRScannerViewPresenter: QRScannerViewPresenterProtocol {
@@ -272,14 +271,9 @@ private extension QRScannerViewPresenter {
     }
     
     func getWCConnectionRequest(for code: QRCode) async throws -> WCRequest {
-        if let wcurl = code.wcurl {
-            let connectWalletRequest = WalletConnectService.ConnectWalletRequest.version1(wcurl)
-            return WCRequest.connectWallet(connectWalletRequest)
-        }
-        
         do {
             let uriV2 = try appContext.walletConnectServiceV2.getWCV2Request(for: code)
-            return WCRequest.connectWallet(WalletConnectService.ConnectWalletRequest.version2(uriV2))
+            return WCRequest.connectWallet(WalletConnectServiceV2.ConnectWalletRequest(uri: uriV2))
         } catch {
             Debugger.printFailure("QRCode failed to convert to url: \(code)", critical: false)
             if let view = self.view {
