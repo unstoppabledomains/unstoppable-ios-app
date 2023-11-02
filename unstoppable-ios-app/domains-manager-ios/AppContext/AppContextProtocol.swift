@@ -30,7 +30,6 @@ protocol AppContextProtocol {
     var domainRecordsService: DomainRecordsServiceProtocol { get }
     var qrCodeService: QRCodeServiceProtocol { get }
     var userDataService: UserDataServiceProtocol { get }
-    var walletConnectClientService: WalletConnectClientServiceProtocol { get }
     var linkPresentationService: LinkPresentationServiceProtocol { get }
     var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol { get }
     var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol { get }

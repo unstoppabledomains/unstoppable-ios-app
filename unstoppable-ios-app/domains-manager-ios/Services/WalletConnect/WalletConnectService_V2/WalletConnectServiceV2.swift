@@ -60,6 +60,18 @@ typealias WCConnectionResult = Swift.Result<UnifiedConnectAppInfo, Swift.Error>
 typealias WCConnectionResultCompletion = ((WCConnectionResult)->())
 typealias WCAppDisconnectedCallback = ((UnifiedConnectAppInfo)->())
 
+protocol WalletConnectDelegate: AnyObject {
+    func failedToConnect()
+    func didConnect(to walletAddress: HexAddress?, with wcRegistryWallet: WCRegistryWalletProxy?, successfullyAddedCallback: (()->Void)?)
+    func didDisconnect(from accounts: [HexAddress]?, with wcRegistryWallet: WCRegistryWalletProxy?)
+}
+
+@MainActor
+protocol WalletConnectClientUIHandler: AnyObject {
+    func didDisconnect(walletDisplayInfo: WalletDisplayInfo)
+    func askToReconnectExternalWallet(_ walletDisplayInfo: WalletDisplayInfo) async -> Bool
+    func showExternalWalletDidNotRespondPullUp(for connectingWallet: WCWalletsProvider.WalletRecord) async
+}
 
 enum WalletConnectUIError: Error {
     case cancelled, noControllerToPresent

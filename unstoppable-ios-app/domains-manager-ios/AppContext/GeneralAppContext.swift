@@ -45,7 +45,6 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = DomainRecordsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()
     private(set) lazy var userDataService: UserDataServiceProtocol = UserDataService()
-    private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = WalletConnectClientService(udWalletsService: udWalletsService)
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
 

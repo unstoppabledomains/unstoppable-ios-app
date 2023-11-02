@@ -221,8 +221,6 @@
 		C6109E3B28E5AB310027D5D8 /* MockAppLaunchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2928E5AB310027D5D8 /* MockAppLaunchService.swift */; };
 		C6109E3F28E5AB310027D5D8 /* AppLaunchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E2A28E5AB310027D5D8 /* AppLaunchService.swift */; };
 		C6109E4528E5ABFE0027D5D8 /* TestsEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E4428E5ABFE0027D5D8 /* TestsEnum.swift */; };
-		C6109E4C28E5AC310027D5D8 /* MockWalletConnectClientManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E4A28E5AC310027D5D8 /* MockWalletConnectClientManager.swift */; };
-		C6109E5028E5AC310027D5D8 /* WalletConnectClientService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E4B28E5AC310027D5D8 /* WalletConnectClientService.swift */; };
 		C6109E7128E5AC510027D5D8 /* XCUIElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E5528E5AC500027D5D8 /* XCUIElement.swift */; };
 		C6109E7228E5AC510027D5D8 /* RemoveWalletUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E5628E5AC500027D5D8 /* RemoveWalletUITests.swift */; };
 		C6109E7328E5AC510027D5D8 /* SettingsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6109E5728E5AC500027D5D8 /* SettingsUITests.swift */; };
@@ -1358,8 +1356,6 @@
 		C6109E2928E5AB310027D5D8 /* MockAppLaunchService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockAppLaunchService.swift; sourceTree = "<group>"; };
 		C6109E2A28E5AB310027D5D8 /* AppLaunchService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppLaunchService.swift; sourceTree = "<group>"; };
 		C6109E4428E5ABFE0027D5D8 /* TestsEnum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestsEnum.swift; sourceTree = "<group>"; };
-		C6109E4A28E5AC310027D5D8 /* MockWalletConnectClientManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockWalletConnectClientManager.swift; sourceTree = "<group>"; };
-		C6109E4B28E5AC310027D5D8 /* WalletConnectClientService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WalletConnectClientService.swift; sourceTree = "<group>"; };
 		C6109E5528E5AC500027D5D8 /* XCUIElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCUIElement.swift; sourceTree = "<group>"; };
 		C6109E5628E5AC500027D5D8 /* RemoveWalletUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemoveWalletUITests.swift; sourceTree = "<group>"; };
 		C6109E5728E5AC500027D5D8 /* SettingsUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsUITests.swift; sourceTree = "<group>"; };
@@ -3030,15 +3026,6 @@
 				C6109E4428E5ABFE0027D5D8 /* TestsEnum.swift */,
 			);
 			path = Mock;
-			sourceTree = "<group>";
-		};
-		C6109E4928E5AC310027D5D8 /* Client */ = {
-			isa = PBXGroup;
-			children = (
-				C6109E4A28E5AC310027D5D8 /* MockWalletConnectClientManager.swift */,
-				C6109E4B28E5AC310027D5D8 /* WalletConnectClientService.swift */,
-			);
-			path = Client;
 			sourceTree = "<group>";
 		};
 		C6109E5428E5AC500027D5D8 /* Extensions */ = {
@@ -4927,7 +4914,6 @@
 				299713BA28F6918E00743003 /* EIP712 */,
 				C6A2D58D284FA0AB00327C47 /* WalletConnectServiceProtocol.swift */,
 				30B3DC9628763294006FAA64 /* WCConnectionIntentStorage.swift */,
-				C6109E4928E5AC310027D5D8 /* Client */,
 			);
 			path = WalletConnectService;
 			sourceTree = "<group>";
@@ -6741,7 +6727,6 @@
 				C66804DD280D9EC8007E6390 /* VerifyPasscodeViewController.swift in Sources */,
 				C6500B4F2A41924700ACAA8C /* ChannelFeedCell.swift in Sources */,
 				309FDFBC265E7C0C00AE53D3 /* StripePaymentHelper.swift in Sources */,
-				C6109E5028E5AC310027D5D8 /* WalletConnectClientService.swift in Sources */,
 				C669C37529121E7A00837F21 /* DomainProfileAddSocialNavigationController.swift in Sources */,
 				C69F99752A9F2206004B1958 /* ProfileFollowerImageLoader.swift in Sources */,
 				C6456F2A280030AB00A517D5 /* UICollectionView.swift in Sources */,
@@ -6974,7 +6959,6 @@
 				C603A53628522C0D003962E3 /* IgnoreFailureArrayElement+PropertyWrapper.swift in Sources */,
 				C628E37D27FEE2D40044E408 /* NSLayoutHelper.swift in Sources */,
 				C6A2D53A284E139E00327C47 /* QRScannerPermissionsView.swift in Sources */,
-				C6109E4C28E5AC310027D5D8 /* MockWalletConnectClientManager.swift in Sources */,
 				C60CA2922832501D00AB1B36 /* QRCodeMonkeyServiceProvider.swift in Sources */,
 				C665B9AD28325282005E535C /* DomainDetailsViewPresenter.swift in Sources */,
 				C6526DE829D2E06800D6F2EB /* NoParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,

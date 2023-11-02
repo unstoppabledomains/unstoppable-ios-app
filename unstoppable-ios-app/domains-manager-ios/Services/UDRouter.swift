@@ -685,7 +685,6 @@ private extension UDRouter {
                                                    dataAggregatorService: appContext.dataAggregatorService,
                                                    networkReachabilityService: appContext.networkReachabilityService,
                                                    udWalletsService: appContext.udWalletsService,
-                                                   walletConnectClientService: appContext.walletConnectClientService,
                                                    walletConnectServiceV2: appContext.walletConnectServiceV2)
         presenter.walletRemovedCallback = walletRemovedCallback
         vc.presenter = presenter

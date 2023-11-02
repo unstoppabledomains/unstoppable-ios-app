@@ -24,7 +24,6 @@ final class MockAppLaunchService {
 extension MockAppLaunchService: AppLaunchServiceProtocol {
     func startWith(sceneDelegate: SceneDelegateProtocol,
                    walletConnectServiceV2: WalletConnectServiceV2Protocol,
-                   walletConnectClientService: WalletConnectClientServiceProtocol,
                    completion: @escaping EmptyCallback) {
         #if DEBUG
         Constants.deprecatedTLDs = ["coin"]
