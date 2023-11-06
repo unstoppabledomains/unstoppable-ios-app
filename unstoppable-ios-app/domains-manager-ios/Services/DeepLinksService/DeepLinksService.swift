@@ -103,7 +103,7 @@ private extension DeepLinksService {
         let pathComponents = path.components(separatedBy: "/")
         
         if host == "ud.me" {
-            return validatedProfileName(pathComponents.first)
+            return validatedProfileName(pathComponents.last)
         } else if pathComponents.contains("d"),
            pathComponents.count >= 3 {
             return validatedProfileName(pathComponents[2])
