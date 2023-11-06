@@ -37,7 +37,7 @@ final class XMTPMessagingAPIService {
  
 // MARK: - MessagingAPIServiceProtocol
 extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
-    var serviceIdentifier: String { Constants.xmtpMessagingServiceIdentifier }
+    var serviceIdentifier: MessagingServiceIdentifier { .xmtp }
 
     func getUserFor(domain: DomainItem) async throws -> MessagingChatUserProfile {
         let env = getCurrentXMTPEnvironment()
@@ -102,6 +102,8 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         []
     }
     
+    func getCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat] { [] }
+    
     func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus {
         if blockedUsersStorage.isOtherUserBlockedInChat(chat) {
             return .otherUserIsBlocked
@@ -134,7 +136,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
         switch chat.displayInfo.type {
         case .private:
             try await setChats(chats: [chat], blocked: blocked, by: user)
-        case .group:
+        case .group, .community:
             throw XMTPServiceError.unsupportedAction
         }
     }
@@ -262,7 +264,7 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
             let notificationsPreferences = try await NetworkService().fetchUserDomainNotificationsPreferences(for: domain)
             approvedUsersStorage.updatedApprovedUsersListFor(userId: chat.userId,
                                                              approvedTopics: notificationsPreferences.acceptedTopics)
-        case .group:
+        case .group, .community:
             throw XMTPServiceError.unsupportedAction
         }
     }
@@ -283,6 +285,16 @@ extension XMTPMessagingAPIService: MessagingAPIServiceProtocol {
                                                                 userId: message.userId,
                                                                 client: client,
                                                                 filesService: filesService)
+    }
+    
+    func joinCommunityChat(_ communityChat: MessagingChat,
+                           by user: MessagingChatUserProfile) async throws -> MessagingChat {
+        throw XMTPServiceError.unsupportedAction
+    }
+    
+    func leaveCommunityChat(_ communityChat: MessagingChat,
+                            by user: MessagingChatUserProfile) async throws -> MessagingChat {
+        throw XMTPServiceError.unsupportedAction
     }
 }
 

@@ -42,14 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         #endif
          
-        setVersionAndBuildNumber()
-
-        configureNavBar()
-        setupAppearance()
-        
-        Bugsnag.start()
-
-        StripeService.shared.setup()
+        setup()
         
         appContext.analyticsService.log(event: .appLaunch, withParameters: nil)
         
@@ -80,14 +73,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Debugger.printFailure("APNs registration failed: \(error.localizedDescription)", critical: false)
         appContext.notificationsService.unregisterDeviceToken()
     }
-    
-    func setVersionAndBuildNumber() {
-        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        UserDefaults.buildVersion = "Build \(version) (\(build)) \(Env.schemeDescription)"
+
+}
+
+// MARK: - AppDelegateProtocol
+extension AppDelegate: AppDelegateProtocol {
+    func setAppContextType(_ contextType: AppContextType) {
+        switch contextType {
+        case .general:
+            self.appContext = GeneralAppContext()
+        case .mock:
+            self.appContext = MockContext()
+        }
+    }
+}
+
+// MARK: - Private methods
+private extension AppDelegate {
+    func setup() {
+        setVersionAndBuildNumber()
+        configureNavBar()
+        setupAppearance()
+        setupBugsnag()
+        setupStripe()
+        setupFeatureFlags()
     }
     
-    private func configureNavBar() {
+    func configureNavBar() {
         let titleFont: UIFont
         if let font = UIFont(name: UIFont.fontBoldName, size: 18) { titleFont = font }
         else {
@@ -95,7 +107,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Debugger.printFailure("Failed to find the SFPro-Bold font")
         }
         let titleFontAttrs = [ NSAttributedString.Key.font: titleFont, NSAttributedString.Key.foregroundColor: UIColor.label ]
-
+        
         UINavigationBar.appearance().setBackgroundImage(UIImage(), for: .default)
         UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().backgroundColor = .clear
@@ -106,15 +118,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func setupAppearance() {
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).backgroundColor = .backgroundSubtle
     }
-}
+    
+    func setVersionAndBuildNumber() {
+        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
+        let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+        UserDefaults.buildVersion = "Build \(version) (\(build)) \(Env.schemeDescription)"
+    }
 
-extension AppDelegate: AppDelegateProtocol {
-    func setAppContextType(_ contextType: AppContextType) {
-        switch contextType {
-        case .general:
-            self.appContext = GeneralAppContext()
-        case .mock:
-            self.appContext = MockContext()
-        }
+    func setupBugsnag() {
+        Bugsnag.start()
+    }
+    
+    func setupStripe() {
+        StripeService.shared.setup()
+    }
+    
+    func setupFeatureFlags() {
+        _ = appContext.udFeatureFlagsService
     }
 }

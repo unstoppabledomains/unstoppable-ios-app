@@ -30,7 +30,7 @@ struct XMTPBlockedUsersStorage {
             let isOtherUserBlocked = isUser(userId,
                                             blockingChatTopic: chatTopic)
             return isOtherUserBlocked
-        case .group:
+        case .group, .community:
             return false
         }
     }

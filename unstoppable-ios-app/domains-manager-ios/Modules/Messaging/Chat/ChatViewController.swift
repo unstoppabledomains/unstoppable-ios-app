@@ -19,6 +19,7 @@ protocol ChatViewProtocol: BaseDiffableCollectionViewControllerProtocol where Se
     func setUIState(_ state: ChatViewController.State)
     func setupRightBarButton(with configuration: ChatViewController.NavButtonConfiguration)
     func setEmptyState(_ state: ChatEmptyView.State?)
+    func setCanSendAttachments(_ canSendAttachments: Bool)
 }
 
 typealias ChatDataSource = UICollectionViewDiffableDataSource<ChatViewController.Section, ChatViewController.Item>
@@ -213,6 +214,10 @@ extension ChatViewController: ChatViewProtocol {
         } else {
             chatEmptyView.isHidden = true
         }
+    }
+    
+    func setCanSendAttachments(_ canSendAttachments: Bool) {
+        chatInputView.setCanSendAttachments(canSendAttachments)
     }
 }
 
@@ -786,6 +791,7 @@ extension ChatViewController {
         case resend
         case delete
         case unencrypted
+        case viewSenderProfile(MessagingChatSender)
     }
     
     enum ChatFeedAction: Hashable {
@@ -812,6 +818,7 @@ extension ChatViewController {
         
         enum ActionType {
             case viewProfile, block, viewInfo, leave, copyAddress
+            case joinCommunity, leaveCommunity
             
             var title: String {
                 switch self {
@@ -825,6 +832,10 @@ extension ChatViewController {
                     return String.Constants.leave.localized()
                 case .copyAddress:
                     return String.Constants.copyAddress.localized()
+                case .joinCommunity:
+                    return String.Constants.join.localized()
+                case .leaveCommunity:
+                    return String.Constants.leave.localized()
                 }
             }
             
@@ -834,18 +845,20 @@ extension ChatViewController {
                     return .arrowUpRight
                 case .block:
                     return .systemMultiplyCircle
-                case .leave:
+                case .leave, .leaveCommunity:
                     return .systemRectangleArrowRight
                 case .copyAddress:
                     return .systemDocOnDoc
+                case .joinCommunity:
+                    return .add
                 }
             }
             
             var isDestructive: Bool {
                 switch self {
-                case .viewProfile, .viewInfo, .copyAddress:
+                case .viewProfile, .viewInfo, .copyAddress, .joinCommunity:
                     return false
-                case .block, .leave:
+                case .block, .leave, .leaveCommunity:
                     return true
                 }
             }

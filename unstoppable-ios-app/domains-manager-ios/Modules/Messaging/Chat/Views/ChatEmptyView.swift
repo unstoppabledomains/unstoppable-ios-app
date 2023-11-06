@@ -125,6 +125,7 @@ extension ChatEmptyView {
         case chatUnEncrypted
         case cantContact
         case channel
+        case community
         
         var message: String? {
             switch self {
@@ -136,6 +137,8 @@ extension ChatEmptyView {
                 return String.Constants.messagingCantContactMessage.localized()
             case .channel:
                 return String.Constants.messagingChannelEmptyMessage.localized()
+            case .community:
+                return String.Constants.messagingCommunityEmptyMessage.localized()
             }
         }
     }

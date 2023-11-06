@@ -48,7 +48,7 @@ private extension DomainSelectionCell {
                                                                                    downsampleDescription: nil)
             let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainItem,
                                                                                                size: .default),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .icon)
             domainNameImageView.image = image
         }
     }

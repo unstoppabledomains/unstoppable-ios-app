@@ -15,7 +15,7 @@ struct XMTPEntitiesTransformer {
         let userId = client.address
         let displayInfo = MessagingChatUserProfileDisplayInfo(id: userId,
                                                               wallet: wallet,
-                                                              serviceIdentifier: Constants.xmtpMessagingServiceIdentifier,
+                                                              serviceIdentifier: .xmtp,
                                                               name: nil,
                                                               about: nil,
                                                               unreadMessagesCount: nil)
@@ -57,6 +57,7 @@ struct XMTPEntitiesTransformer {
         let displayInfo = MessagingChatDisplayInfo(id: chatId,
                                                    thisUserDetails: thisUserInfo,
                                                    avatarURL: avatarURL,
+                                                   serviceIdentifier: .xmtp,
                                                    type: chatType,
                                                    unreadMessagesCount: 0,
                                                    isApproved: isApproved,
@@ -205,7 +206,8 @@ struct XMTPEntitiesTransformer {
         let serviceContent = XMTPEnvironmentNamespace.XMTPSocketMessageServiceContent(xmtpMessage: xmtpMessage)
         return MessagingWebSocketMessageEntity(id: id,
                                                senderWallet: senderWallet,
-                                               receiverWallet: receiverWallet,
+                                               receiverWallet: receiverWallet, 
+                                               serviceIdentifier: .xmtp,
                                                serviceContent: serviceContent,
                                                transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
     }
@@ -229,7 +231,7 @@ struct XMTPEntitiesTransformer {
         let serviceContent = XMTPEnvironmentNamespace.XMTPSocketChatServiceContent(conversation: conversation)
         return MessagingWebSocketChatEntity(userId: userId,
                                             serviceContent: serviceContent,
-                                            serviceIdentifier: Constants.xmtpMessagingServiceIdentifier,
+                                            serviceIdentifier: .xmtp,
                                             transformToChatBlock: convertMessagingWebSocketChatEntityToChat)
     }
     

@@ -93,7 +93,7 @@ private extension ChooseReverseResolutionDomainViewController {
     func setupConfirmButton() {
         var icon: UIImage?
         if User.instance.getSettings().touchIdActivated {
-            icon = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+            icon = appContext.authentificationService.biometricIcon
         }
         confirmButton.setTitle(String.Constants.confirm.localized(), image: icon)
     }

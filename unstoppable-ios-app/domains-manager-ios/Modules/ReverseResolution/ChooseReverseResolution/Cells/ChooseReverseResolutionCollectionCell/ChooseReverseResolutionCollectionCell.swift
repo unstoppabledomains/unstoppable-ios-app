@@ -54,7 +54,7 @@ extension ChooseReverseResolutionCollectionCell {
                                                                                    downsampleDescription: nil)
             let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain,
                                                                                                size: .default),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .icon)
             domainImageView.image = image
         }
     }

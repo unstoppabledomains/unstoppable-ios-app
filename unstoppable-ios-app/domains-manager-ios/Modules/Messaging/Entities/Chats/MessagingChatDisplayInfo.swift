@@ -11,6 +11,7 @@ struct MessagingChatDisplayInfo: Hashable {
     let id: String
     let thisUserDetails: MessagingChatUserDisplayInfo
     let avatarURL: URL?
+    let serviceIdentifier: MessagingServiceIdentifier
     var type: MessagingChatType
     var unreadMessagesCount: Int
     var isApproved: Bool
@@ -24,8 +25,17 @@ extension MessagingChatDisplayInfo {
         switch type {
         case .private:
             return false
-        case .group:
+        case .group, .community:
             return true
+        }
+    }
+    
+    var isCommunityChat: Bool {
+        switch type {
+        case .community:
+            return true
+        case .group, .private:
+            return false
         }
     }
 }
@@ -57,6 +67,17 @@ extension Array where Element == MessagingChatDisplayInfo {
     
     func confirmedOnly() -> [Element] {
         filter { $0.isApproved }
+    }
+    
+    func splitCommunitiesAndOthers() -> (chats: [Element], communities: [Element]) {
+        var runningResult: (chats: [Element], communities: [Element]) = ([], [])
+        return self.reduce(into: runningResult) { result, element in
+            if element.isCommunityChat {
+                result.communities.append(element)
+            } else {
+                result.chats.append(element)
+            }
+        }
     }
     
 }

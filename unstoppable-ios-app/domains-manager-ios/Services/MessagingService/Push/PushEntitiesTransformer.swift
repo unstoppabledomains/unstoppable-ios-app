@@ -24,7 +24,7 @@ struct PushEntitiesTransformer {
         let userId = pushUser.did
         let displayInfo = MessagingChatUserProfileDisplayInfo(id: userId,
                                                               wallet: wallet,
-                                                              serviceIdentifier: Constants.pushMessagingServiceIdentifier,
+                                                              serviceIdentifier: .push,
                                                               name: pushUser.profile.name,
                                                               about: pushUser.profile.desc,
                                                               unreadMessagesCount: nil)
@@ -39,7 +39,8 @@ struct PushEntitiesTransformer {
                                       userId: String,
                                       userWallet: String,
                                       isApproved: Bool,
-                                      publicKeys: [String]) -> MessagingChat? {
+                                      publicKeys: [String],
+                                      badgeInfo: BadgeDetailedInfo? = nil) -> MessagingChat? {
         
         func convertChatMembersToUserDisplayInfo(_ members: [PushGroupChatMember]) -> [MessagingChatUserDisplayInfo] {
             members.compactMap({
@@ -47,7 +48,7 @@ struct PushEntitiesTransformer {
                     return nil // Exclude current user from other members list
                 } else if let address = getWalletAddressFrom(eip155String: $0.wallet) {
                     return MessagingChatUserDisplayInfo(wallet: address,
-                                                        pfpURL: URL(string: $0.image))
+                                                        pfpURL: URL(string: $0.image ?? ""))
                 }
                 return nil
             })
@@ -61,12 +62,26 @@ struct PushEntitiesTransformer {
             let adminWallets = allGroupMembers.filter({ $0.isAdmin }).compactMap { getWalletAddressFrom(eip155String:  $0.wallet) }
         
             let pendingMembers = convertChatMembersToUserDisplayInfo(groupInfo.pendingMembers)
-            let groupChatDetails = MessagingGroupChatDetails(members: members,
-                                                             pendingMembers: pendingMembers,
-                                                             name: groupInfo.groupName,
-                                                             adminWallets: adminWallets,
-                                                             isPublic: groupInfo.isPublic)
-            chatType = .group(groupChatDetails)
+            
+            
+            if let badgeInfo {
+                let isJoined = members.first(where: { $0.wallet.lowercased() == userWallet.lowercased() }) != nil
+                let communityChatDetails = MessagingCommunitiesChatDetails(type: .badge(badgeInfo),
+                                                                           isJoined: isJoined,
+                                                                           isPublic: groupInfo.isPublic,
+                                                                           members: members,
+                                                                           pendingMembers: pendingMembers,
+                                                                           adminWallets: adminWallets)
+                
+                chatType = .community(communityChatDetails)
+            } else {
+                let groupChatDetails = MessagingGroupChatDetails(members: members,
+                                                                 pendingMembers: pendingMembers,
+                                                                 name: groupInfo.groupName,
+                                                                 adminWallets: adminWallets,
+                                                                 isPublic: groupInfo.isPublic)
+                chatType = .group(groupChatDetails)
+            }
         } else {
             let fromUserEip = pushChat.intentSentBy
             guard let fromUserWallet = getWalletAddressFrom(eip155String: fromUserEip),
@@ -91,7 +106,8 @@ struct PushEntitiesTransformer {
         let chatId = pushChat.chatId
         let displayInfo = MessagingChatDisplayInfo(id: chatId,
                                                    thisUserDetails: thisUserInfo,
-                                                   avatarURL: avatarURL,
+                                                   avatarURL: avatarURL, 
+                                                   serviceIdentifier: .push,
                                                    type: chatType,
                                                    unreadMessagesCount: 0,
                                                    isApproved: isApproved,
@@ -105,6 +121,29 @@ struct PushEntitiesTransformer {
                                  displayInfo: displayInfo,
                                  serviceMetadata: serviceMetadata)
         return chat
+    }
+    
+    static func buildEmptyCommunityChatFor(badgeInfo: BadgeDetailedInfo, user: MessagingChatUserProfile) -> MessagingChat {
+        let thisUserDetails = MessagingChatUserDisplayInfo(wallet: user.wallet)
+        let info = MessagingChatDisplayInfo(id: "push_community_" + badgeInfo.badge.code,
+                                            thisUserDetails: thisUserDetails,
+                                            avatarURL: URL(string: badgeInfo.badge.logo),
+                                            serviceIdentifier: .push,
+                                            type: .community(.init(type: .badge(badgeInfo),
+                                                                   isJoined: false,
+                                                                   isPublic: true,
+                                                                   members: [],
+                                                                   pendingMembers: [],
+                                                                   adminWallets: [])),
+                                            unreadMessagesCount: 0,
+                                            isApproved: true,
+                                            lastMessageTime: Date())
+        let metadataModel = PushEnvironment.ChatServiceMetadata(threadHash: nil,
+                                                                publicKeys: [])
+        let serviceMetadata = metadataModel.jsonData()
+        return MessagingChat(userId: user.id,
+                             displayInfo: info,
+                             serviceMetadata: serviceMetadata)
     }
     
     static func getPushChatIdFrom(chat: MessagingChat) -> String {
@@ -221,7 +260,8 @@ struct PushEntitiesTransformer {
         let serviceContent = PushEnvironment.PushSocketMessageServiceContent(pushMessage: pushMessage, pgpKey: pgpKey)
         return MessagingWebSocketMessageEntity(id: id,
                                                senderWallet: senderWallet,
-                                               receiverWallet: receiverWallet,
+                                               receiverWallet: receiverWallet, 
+                                               serviceIdentifier: .push,
                                                serviceContent: serviceContent,
                                                transformToMessageBlock: convertMessagingWebSocketMessageEntityToChatMessage)
     }

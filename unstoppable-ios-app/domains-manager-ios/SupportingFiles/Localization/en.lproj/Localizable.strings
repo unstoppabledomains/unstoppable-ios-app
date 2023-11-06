@@ -822,10 +822,13 @@
 "MESSAGING_CHATS_REQUESTS_LIST_EMPTY_TITLE" = "You have no pending chat requests";
 "MESSAGING_CHANNELS_EMPTY_TITLE" = "No messages from apps yet";
 "MESSAGING_CHANNELS_EMPTY_SUBTITLE" = "Keep an eye out for upcoming messages from the apps you connect with.";
+"MESSAGING_COMMUNITIES_LIST_EMPTY_TITLE" = "Join the community";
+"MESSAGING_COMMUNITIES_LIST_EMPTY_SUBTITLE" = "Earn badges and join the communities to unlock endless opportunities for meaningful connections and discussions with like-minded enthusiasts who share your passions.";
 "MESSAGING_CHAT_EMPTY_TITLE" = "No messages yet";
 "MESSAGING_CHAT_EMPTY_ENCRYPTED_MESSAGE" = "Send a message to request to join the chat.\nChat is encrypted.";
 "MESSAGING_CHAT_EMPTY_UNENCRYPTED_MESSAGE" = "Send a message to request to join the chat.\nUntil the recipient joins the chat, your messages will be unencrypted";
 "MESSAGING_CHANNEL_EMPTY_MESSAGE" = "You haven't received any messages from this channel yet. Join to start receiving new messages.";
+"MESSAGING_COMMUNITY_EMPTY_MESSAGE" = "Kick off the conversation with like-minded people in the community";
 "MESSAGING_N_FOLLOWERS" = "%i Followers";
 "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE" = "Are you sure you want to block %@?";
 "MESSAGING_YOU_ARE_BLOCKED" = "You are blocked";
@@ -846,6 +849,11 @@
 "MESSAGING_CANCEL_AND_BLOCK_ACTION_TITLE" = "Cancel & block user";
 "MESSAGING_OPEN_LINK_WARNING_MESSAGE" = "Opening links can result in the loss of your crypto assets. Do not click this link unless you are sure it is from a safe source.";
 "MESSAGING_USER_REPORTED_AS_SPAM_MESSAGE" = "⚠️ Others have reported this sender as spam";
+"COMMUNITIES" = "Communities";
+"MESSAGING_COMMUNITIES_SECTION_TITLE" = "Explore communities";
+"MESSAGING_COMMUNITIES_LIST_ENABLE_TITLE" = "Explore more communities";
+"MESSAGING_COMMUNITIES_LIST_ENABLE_SUBTITLE" = "Unlock the power of communities with a simple tap on the button.";
+"MESSAGING_COMMUNITIES_ENABLED" = "Communities enabled";
 
 // Public profile
 "FOLLOWERS" = "Followers";

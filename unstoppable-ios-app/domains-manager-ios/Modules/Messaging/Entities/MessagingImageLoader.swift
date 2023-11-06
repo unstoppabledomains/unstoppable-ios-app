@@ -32,10 +32,10 @@ struct MessagingImageLoader {
         }
         
         if groupChatMembers.count == 1 {
-            return await getIconForUserInfo(groupChatMembers[0])
+            return await getIconForGroupUserInfo(groupChatMembers[0])
         }
-        let image1 = await getIconForUserInfo(groupChatMembers[0])
-        let image2 = await getIconForUserInfo(groupChatMembers[1])
+        let image1 = await getIconForGroupUserInfo(groupChatMembers[0])
+        let image2 = await getIconForGroupUserInfo(groupChatMembers[1])
         let imageView1 = buildImageViewWith(image: image1)
         let imageView2 = buildImageViewWith(image: image2)
         containerView.addSubview(imageView1)
@@ -45,7 +45,7 @@ struct MessagingImageLoader {
             imageView1.frame.origin = CGPoint(x: 0, y: iconSize / 5)
             imageView2.frame.origin = CGPoint(x: iconSize / 2.5, y: iconSize / 5)
         } else {
-            let image3 = await getIconForUserInfo(groupChatMembers[2])
+            let image3 = await getIconForGroupUserInfo(groupChatMembers[2])
             let imageView3 = buildImageViewWith(image: image3)
             containerView.addSubview(imageView3)
             
@@ -57,9 +57,9 @@ struct MessagingImageLoader {
         return containerView.renderedImage()
     }
     
-    static func getIconForUserInfo(_ userInfo: MessagingChatUserDisplayInfo) async -> UIImage? {
+    private static func getIconForGroupUserInfo(_ userInfo: MessagingChatUserDisplayInfo) async -> UIImage? {
         if let pfpURL = userInfo.pfpURL {
-            return await appContext.imageLoadingService.loadImage(from: .url(pfpURL), downsampleDescription: nil)
+            return await appContext.imageLoadingService.loadImage(from: .url(pfpURL), downsampleDescription: .icon)
         } else if let domainName = userInfo.domainName {
             return await getIconImageFor(domainName: domainName)
         }
@@ -70,14 +70,14 @@ struct MessagingImageLoader {
         let pfpInfo = await appContext.udDomainsService.loadPFP(for: domainName)
         if let pfpInfo,
            let image = await appContext.imageLoadingService.loadImage(from: .domainPFPSource(pfpInfo.source),
-                                                                      downsampleDescription: nil) {
+                                                                      downsampleDescription: .icon) {
             return image
         } else if domainName.isValidDomainNameForMessagingSearch(),
                   let rrInfo = try? await NetworkService().fetchGlobalReverseResolution(for: domainName.lowercased()),
                   let pfpURL = rrInfo.pfpURLToUse {
             
             let image = await appContext.imageLoadingService.loadImage(from: .url(pfpURL),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .icon)
             return image
         } else {
             return await getIconWithInitialsFor(name: domainName)
@@ -90,7 +90,7 @@ struct MessagingImageLoader {
     
     static func getIconForChannel(_ channel: MessagingNewsChannel) async -> UIImage? {
         if let image = await appContext.imageLoadingService.loadImage(from: .url(channel.icon),
-                                                                      downsampleDescription: nil) {
+                                                                      downsampleDescription: .icon) {
             return image
         } else {
             return await MessagingImageLoader.getIconWithInitialsFor(name: channel.name)

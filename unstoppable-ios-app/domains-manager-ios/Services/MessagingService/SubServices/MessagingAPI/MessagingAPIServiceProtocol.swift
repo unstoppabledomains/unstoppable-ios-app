@@ -8,7 +8,7 @@
 import Foundation
 
 protocol MessagingAPIServiceProtocol {
-    var serviceIdentifier: String { get }
+    var serviceIdentifier: MessagingServiceIdentifier { get }
     var capabilities: MessagingServiceCapabilities { get }
 
     // User profile
@@ -25,6 +25,7 @@ protocol MessagingAPIServiceProtocol {
     func getChatRequestsForUser(_ user: MessagingChatUserProfile,
                                 page: Int,
                                 limit: Int) async throws -> [MessagingChat]
+    func getCommunitiesListForUser(_ user: MessagingChatUserProfile) async throws -> [MessagingChat]
     func getCachedBlockingStatusForChat(_ chat: MessagingChatDisplayInfo) -> MessagingPrivateChatBlockingStatus
     func getBlockingStatusForChat(_ chat: MessagingChat) async throws -> MessagingPrivateChatBlockingStatus
     func setUser(in chat: MessagingChat,
@@ -62,6 +63,10 @@ protocol MessagingAPIServiceProtocol {
                          by user: MessagingChatUserProfile) async throws
     func leaveGroupChat(_ chat: MessagingChat,
                         by user: MessagingChatUserProfile) async throws
+    func joinCommunityChat(_ communityChat: MessagingChat,
+                           by user: MessagingChatUserProfile) async throws -> MessagingChat
+    func leaveCommunityChat(_ communityChat: MessagingChat,
+                            by user: MessagingChatUserProfile) async throws -> MessagingChat
 }
 
 struct MessagingServiceCapabilities {

@@ -28,7 +28,7 @@ struct MessagingChatUserPullUpSelectionItem: PullUpCollectionViewCellItem {
             } else if let initialsImage = await appContext.imageLoadingService.loadImage(from: .initials(userInfo.domainName ?? userInfo.wallet.droppedHexPrefix,
                                                                                                          size: .default,
                                                                                                          style: .accent),
-                                                                                         downsampleDescription: nil) {
+                                                                                         downsampleDescription: .icon) {
                 return initialsImage
             }
             

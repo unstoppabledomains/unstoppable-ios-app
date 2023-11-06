@@ -111,7 +111,7 @@ private extension DomainSelectionListView {
         Task {
             let icon = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainWithIcon.domain,
                                                                                                   size: .default),
-                                                                      downsampleDescription: nil)
+                                                                      downsampleDescription: .icon)
             
             if let i = domainsWithIcons.firstIndex(where: { $0.domain.name == domainWithIcon.domain.name }) {
                 domainsWithIcons[i].icon = icon

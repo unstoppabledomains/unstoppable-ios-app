@@ -13,6 +13,7 @@ class CoreDataService {
     private let persistentContainer: NSPersistentContainer
     
     var viewContext: NSManagedObjectContext { persistentContainer.viewContext }
+    let coreDataQueue = DispatchQueue(label: "com.coredata.service")
     private(set) var backgroundContext: NSManagedObjectContext!
     
     init() {
@@ -26,9 +27,11 @@ class CoreDataService {
         let mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         viewContext.automaticallyMergesChangesFromParent = true
         viewContext.mergePolicy = mergePolicy
-        backgroundContext = persistentContainer.newBackgroundContext()
-        backgroundContext.automaticallyMergesChangesFromParent = true
-        backgroundContext.mergePolicy = mergePolicy
+        coreDataQueue.sync {
+            backgroundContext = persistentContainer.newBackgroundContext()
+            backgroundContext.automaticallyMergesChangesFromParent = true
+            backgroundContext.mergePolicy = mergePolicy
+        }
     }
 }
 

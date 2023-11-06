@@ -28,6 +28,8 @@ extension String {
         case unableToCreateAccountTutorial
         case referralTutorial
         case referralLink(code: String)
+        case udBlue
+        case communitiesInfo
 
         var urlString: String {
             switch self {
@@ -88,6 +90,10 @@ extension String {
                 return "https://unstoppabledomains.com/refer-a-friend"
             case .referralLink(let code):
                 return "\(NetworkConfig.migratedBaseUrl)/?ref=\(code)"
+            case .udBlue:
+                return "https://unstoppabledomains.com/products/blue"
+            case .communitiesInfo:
+                return "https://support.unstoppabledomains.com/support/solutions/articles/48001215751-badges"
             }
         }
         
@@ -343,6 +349,7 @@ extension String {
         static let pluralNFollowers = "SDICT:N_FOLLOWERS"
         static let pluralNFollowing = "SDICT:N_FOLLOWING"
         static let pluralNProfilesFound = "SDICT:N_PROFILES_FOUND"
+        static let pluralNHolders = "SDICT:N_HOLDERS"
         
         // Errors
         static let creationFailed = "CREATION_FAILED"
@@ -907,10 +914,13 @@ extension String {
         static let messagingChatsRequestsListEmptyTitle = "MESSAGING_CHATS_REQUESTS_LIST_EMPTY_TITLE"
         static let messagingChannelsEmptyTitle = "MESSAGING_CHANNELS_EMPTY_TITLE"
         static let messagingChannelsEmptySubtitle = "MESSAGING_CHANNELS_EMPTY_SUBTITLE"
+        static let messagingCommunitiesEmptyTitle = "MESSAGING_COMMUNITIES_LIST_EMPTY_TITLE"
+        static let messagingCommunitiesEmptySubtitle = "MESSAGING_COMMUNITIES_LIST_EMPTY_SUBTITLE"
         static let messagingChatEmptyTitle = "MESSAGING_CHAT_EMPTY_TITLE"
         static let messagingChatEmptyEncryptedMessage = "MESSAGING_CHAT_EMPTY_ENCRYPTED_MESSAGE"
         static let messagingChatEmptyUnencryptedMessage = "MESSAGING_CHAT_EMPTY_UNENCRYPTED_MESSAGE"
         static let messagingChannelEmptyMessage = "MESSAGING_CHANNEL_EMPTY_MESSAGE"
+        static let messagingCommunityEmptyMessage = "MESSAGING_COMMUNITY_EMPTY_MESSAGE"
         static let messagingNFollowers = "MESSAGING_N_FOLLOWERS"
         static let messagingBlockUserConfirmationTitle = "MESSAGING_BLOCK_USER_CONFIRMATION_TITLE"
         static let messagingYouAreBlocked = "MESSAGING_YOU_ARE_BLOCKED"
@@ -931,7 +941,12 @@ extension String {
         static let messagingCancelAndBlockActionTitle = "MESSAGING_CANCEL_AND_BLOCK_ACTION_TITLE"
         static let messagingOpenLinkWarningMessage = "MESSAGING_OPEN_LINK_WARNING_MESSAGE"
         static let messagingUserReportedAsSpamMessage = "MESSAGING_USER_REPORTED_AS_SPAM_MESSAGE"
-        
+        static let communities = "COMMUNITIES"
+        static let messagingCommunitiesSectionTitle = "MESSAGING_COMMUNITIES_SECTION_TITLE"
+        static let messagingCommunitiesListEnableTitle = "MESSAGING_COMMUNITIES_LIST_ENABLE_TITLE"
+        static let messagingCommunitiesListEnableSubtitle = "MESSAGING_COMMUNITIES_LIST_ENABLE_SUBTITLE"
+        static let messagingCommunitiesListEnabled = "MESSAGING_COMMUNITIES_ENABLED"
+
         // Public profile
         static let followers = "FOLLOWERS"
         static let following = "FOLLOWING"

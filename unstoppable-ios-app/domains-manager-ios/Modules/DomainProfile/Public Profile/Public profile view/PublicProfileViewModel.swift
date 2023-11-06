@@ -40,6 +40,7 @@ extension PublicProfileView {
         @Published var socialAccounts: SocialAccounts?
         @Published var error: Error?
         @Published private(set) var isLoading = false
+        @Published private(set) var isUDBlue = false
         @Published private(set) var isUserDomainSelected = true
         @Published private(set) var profile: SerializedPublicDomainProfile?
         @Published private(set) var badgesDisplayInfo: [DomainProfileBadgeDisplayInfo]?
@@ -159,6 +160,7 @@ extension PublicProfileView {
                     records = await convertRecordsFrom(recordsDict: profile.records ?? [:])
                     socialInfo = profile.social
                     socialAccounts = profile.socialAccounts
+                    isUDBlue = profile.profile.udBlue ?? false
                     isLoading = false
                     loadImages()
                 }
@@ -222,7 +224,7 @@ extension PublicProfileView {
                 if let imagePath = profile?.profile.imagePath,
                    let url = URL(string: imagePath) {
                     let avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
-                                                                                 downsampleDescription: nil)
+                                                                                     downsampleDescription: .mid)
                     await waitForAppear()
                     self.avatarImage = avatarImage
                 }
@@ -234,7 +236,7 @@ extension PublicProfileView {
                 if let coverPath = profile?.profile.coverPath,
                    let url = URL(string: coverPath) {
                     let coverImage = await appContext.imageLoadingService.loadImage(from: .url(url),
-                                                                                downsampleDescription: nil)
+                                                                                    downsampleDescription: .mid)
                     await waitForAppear()
                     self.coverImage = coverImage
                 }
@@ -247,7 +249,7 @@ extension PublicProfileView {
                 guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }
                 
                 let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),
-                                                                                    downsampleDescription: nil)
+                                                                                        downsampleDescription: .icon)
                 await waitForAppear()
                 self.viewingDomainImage = viewingDomainImage
             }
@@ -275,17 +277,19 @@ extension PublicDomainProfileAttributes {
                                                      imageType: nil,
                                                      coverPath: nil,
                                                      phoneNumber: nil,
-                                                     domainPurchased: nil)
+                                                     domainPurchased: nil,
+                                                     udBlue: false)
     
     static let filled = PublicDomainProfileAttributes(displayName: "Oleg Kuplin",
-                              description: "Unstoppable iOS developer",
-                              location: "Danang",
-                              web2Url: "ud.me/oleg.x",
-                              imagePath: "nil",
-                              imageType: .onChain,
-                              coverPath: "nil",
-                              phoneNumber: nil,
-                              domainPurchased: nil)
+                                                      description: "Unstoppable iOS developer",
+                                                      location: "Danang",
+                                                      web2Url: "ud.me/oleg.x",
+                                                      imagePath: "nil",
+                                                      imageType: .onChain,
+                                                      coverPath: "nil",
+                                                      phoneNumber: nil,
+                                                      domainPurchased: nil,
+                                                      udBlue: false)
 }
 
 func loadImageFrom(url: URL) async -> UIImage? {

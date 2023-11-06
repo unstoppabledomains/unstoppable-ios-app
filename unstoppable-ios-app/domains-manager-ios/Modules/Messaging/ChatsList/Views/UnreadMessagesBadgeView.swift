@@ -9,7 +9,7 @@ import UIKit
 
 final class UnreadMessagesBadgeView: UIView {
     
-    private let size: CGFloat = 16
+    private var size: CGFloat = 16
     private var counterLabel: UILabel!
     
     override init(frame: CGRect) {
@@ -44,7 +44,10 @@ extension UnreadMessagesBadgeView {
         counterLabel.isHidden = hidden
     }
     
-    func setConstraints() {
+    func setConstraints(size: CGFloat = 16) {
+        self.size = size
+        layer.cornerRadius = size / 2
+
         translatesAutoresizingMaskIntoConstraints = false
         widthAnchor.constraint(greaterThanOrEqualToConstant: size).isActive = true
         heightAnchor.constraint(equalToConstant: size).isActive = true
