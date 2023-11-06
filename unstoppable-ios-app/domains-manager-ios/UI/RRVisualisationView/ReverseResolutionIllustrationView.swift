@@ -66,7 +66,7 @@ extension ReverseResolutionIllustrationView {
             var image: UIImage?
             if let domain = domain {
                 image = await appContext.imageLoadingService.loadImage(from: .domain(domain),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .mid)
             }
             domainImageView.image = image ?? .domainSharePlaceholder
         }

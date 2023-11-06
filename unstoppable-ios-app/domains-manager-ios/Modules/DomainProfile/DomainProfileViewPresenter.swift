@@ -1088,7 +1088,7 @@ private extension DomainProfileViewPresenter {
         if let path = dataHolder.profile.profile.coverPath,
            let url = URL(string: path) {
             Task {
-                let image = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: nil)
+                let image = await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedImageMaxSize), downsampleDescription: .icon)
                 view?.setBackgroundImage(image)
             }
         }

@@ -10,7 +10,7 @@ import UIKit
 struct DomainProfileBadgeDisplayInfo: Hashable {
     
     let badge: BadgesInfo.BadgeInfo
-    let isExploreWeb3Badge: Bool
+    var isExploreWeb3Badge: Bool = false
     var icon: UIImage? = nil
 
     var defaultIcon: UIImage {
@@ -23,7 +23,7 @@ struct DomainProfileBadgeDisplayInfo: Hashable {
             return .udBadgeLogo
         } else if let url = URL(string: badge.logo) {
             return await appContext.imageLoadingService.loadImage(from: .url(url, maxSize: Constants.downloadedIconMaxSize),
-                                                                  downsampleDescription: nil)
+                                                                  downsampleDescription: .icon)
         }
         return nil
     }

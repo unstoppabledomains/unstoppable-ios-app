@@ -14,7 +14,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
     private var dataProvider: MockMessagingServiceDataProvider!
     private var messagingService: XMTPMessagingAPIService!
     private let filesService = MessagingFilesServiceProtocolMock(decrypterService: SymmetricMessagingContentDecrypterService())
-    private let user = MessagingChatUserProfile(id: "", wallet: "", displayInfo: .init(id: "", wallet: "", serviceIdentifier: ""))
+    private let user = MessagingChatUserProfile(id: "", wallet: "", displayInfo: .init(id: "", wallet: "", serviceIdentifier: .xmtp))
     private let fetchLimit = 5
     private var firstMessage: MessagingChatMessage { getMockMessage(at: 0) }
     private var firstMessageId: String { firstMessage.displayInfo.id }
@@ -159,7 +159,8 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
 private extension XMTPMessagingAPIServiceTests {
     func createMessagingChat(lastMessage: MessagingChatMessageDisplayInfo?) -> MessagingChat {
         let displayInfo = MessagingChatDisplayInfo(id: "", thisUserDetails: .init(wallet: ""),
-                                                   avatarURL: nil,
+                                                   avatarURL: nil, 
+                                                   serviceIdentifier: .xmtp,
                                                    type: .private(.init(otherUser: .init(wallet: ""))),
                                                    unreadMessagesCount: 0,
                                                    isApproved: true,

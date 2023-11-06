@@ -16,20 +16,24 @@ final class MockMessagingService {
 
 // MARK: - MessagingServiceProtocol
 extension MockMessagingService: MessagingServiceProtocol {
-    var canContactWithoutProfile: Bool { true }
-    var canBlockUsers: Bool { true }
-    func isAbleToContactAddress(_ address: String,
-                                by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool { true }
+    var defaultServiceIdentifier: MessagingServiceIdentifier { .xmtp }
+
+    func canContactWithoutProfileIn(newConversation newConversationDescription: MessagingChatNewConversationDescription) -> Bool { true }
+    func canBlockUsers(in chat: MessagingChatDisplayInfo) -> Bool { true }
+    func isAbleToContactUserIn(newConversation newConversationDescription: MessagingChatNewConversationDescription,
+                               by user: MessagingChatUserProfileDisplayInfo) async throws -> Bool { true }
     func fetchWalletsAvailableForMessaging() async -> [WalletDisplayInfo] { [] }
     func getLastUsedMessagingProfile(among givenWallets: [WalletDisplayInfo]?) async -> MessagingChatUserProfileDisplayInfo? { nil }
     
-    func getProfileForImmediateMessagingPreferring(domain: DomainDisplayInfo) -> MessagingChatUserProfileDisplayInfo? { nil }
-    func getUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
-    func createUserProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
+    func getUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
+    func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo { throw NSError() }
+    func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool { true }
+    func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws { throw NSError() }
     func setCurrentUser(_ userProfile: MessagingChatUserProfileDisplayInfo?) { }
     func isUpdatingUserData(_ userProfile: MessagingChatUserProfileDisplayInfo) -> Bool { false }
     func isNewMessagesAvailable() async throws -> Bool { false }
-    
+    func joinCommunityChat(_ communityChat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo { throw NSError() }
+    func leaveCommunityChat(_ communityChat: MessagingChatDisplayInfo) async throws -> MessagingChatDisplayInfo { throw NSError() }
     func getChatsListForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingChatDisplayInfo] {
         []
         /*
@@ -73,16 +77,19 @@ extension MockMessagingService: MessagingServiceProtocol {
     }
     func isMessagesEncryptedIn(conversation: MessagingChatConversationState) async -> Bool { true }
     func sendFirstMessage(_ messageType: MessagingChatMessageDisplayType,
-                          to userInfo: MessagingChatUserDisplayInfo,
+                          to newConversationDescription: MessagingChatNewConversationDescription,
                           by profile: MessagingChatUserProfileDisplayInfo) async throws -> (MessagingChatDisplayInfo, MessagingChatMessageDisplayInfo) {
         throw NSError()
     }
     func makeChatRequest(_ chat: MessagingChatDisplayInfo, approved: Bool) async throws { }
-    func resendMessage(_ message: MessagingChatMessageDisplayInfo) throws { }
-    func deleteMessage(_ message: MessagingChatMessageDisplayInfo) async throws { }
+    func resendMessage(_ message: MessagingChatMessageDisplayInfo,
+                       in chatDisplayInfo: MessagingChatDisplayInfo) throws { }
+    func deleteMessage(_ message: MessagingChatMessageDisplayInfo,
+                       in chatDisplayInfo: MessagingChatDisplayInfo) async throws { }
     func markMessage(_ message: MessagingChatMessageDisplayInfo, isRead: Bool, wallet: String) throws { }
     func leaveGroupChat(_ chat: MessagingChatDisplayInfo) async throws { }
     func decryptedContentURLFor(message: MessagingChatMessageDisplayInfo) async -> URL? { nil }
+    func isMessage(_ message: MessagingChatMessageDisplayInfo, belongTo profile: MessagingChatUserProfileDisplayInfo) async -> Bool { true }
     
     // Channels
     func getChannelsForProfile(_ profile: MessagingChatUserProfileDisplayInfo) async throws -> [MessagingNewsChannel] { [] }
@@ -130,6 +137,7 @@ private extension MockMessagingService {
                 let chat = MessagingChatDisplayInfo(id: chatId,
                                                     thisUserDetails: sender.userDisplayInfo,
                                                     avatarURL: avatarURL,
+                                                    serviceIdentifier: .xmtp,
                                                     type: .private(.init(otherUser: sender.userDisplayInfo)),
                                                     unreadMessagesCount: unreadMessagesCount,
                                                     isApproved: true,

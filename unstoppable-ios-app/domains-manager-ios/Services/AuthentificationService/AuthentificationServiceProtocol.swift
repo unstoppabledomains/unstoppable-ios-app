@@ -10,6 +10,7 @@ import LocalAuthentication
 
 protocol AuthentificationServiceProtocol {
     var biometricType: LABiometryType { get }
+    var biometricIcon: UIImage? { get }
     var biometricsName: String? { get }
     var isSecureAuthSet: Bool { get }
     var biometricUIProcessingTime: TimeInterval { get }

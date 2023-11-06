@@ -159,7 +159,7 @@ private extension ChatsRequestsListViewPresenter {
         case .chatRequests(let requests):
             if requests.isEmpty {
                 snapshot.appendSections([.emptyState])
-                snapshot.appendItems([.emptyState(configuration: .init(dataType: .chats, isRequestsList: true))])
+                snapshot.appendItems([.emptyState(configuration: .emptyData(dataType: .chats, isRequestsList: true))])
                 view?.cNavigationController?.viewControllers.removeAll(where: { $0 == view })
             } else {
                 snapshot.appendSections([.listItems(title: nil)])
@@ -183,7 +183,7 @@ private extension ChatsRequestsListViewPresenter {
         switch chat.type {
         case .private(let details):
             return details.otherUser.wallet
-        case .group:
+        case .group, .community:
             return nil
         }
     }

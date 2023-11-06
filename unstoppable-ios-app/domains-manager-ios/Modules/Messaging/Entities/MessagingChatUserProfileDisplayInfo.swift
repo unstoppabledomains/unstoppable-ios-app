@@ -10,7 +10,7 @@ import Foundation
 struct MessagingChatUserProfileDisplayInfo: Hashable {
     let id: String
     let wallet: String
-    let serviceIdentifier: String
+    let serviceIdentifier: MessagingServiceIdentifier
     var name: String?
     var about: String?
     var unreadMessagesCount: Int?

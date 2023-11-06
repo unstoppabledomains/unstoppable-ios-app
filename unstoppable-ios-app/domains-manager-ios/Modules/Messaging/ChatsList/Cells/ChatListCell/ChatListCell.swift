@@ -44,6 +44,10 @@ extension ChatListCell {
             avatarImageView.layer.borderWidth = 0
             Task { avatarImageView.image = await MessagingImageLoader.buildImageForGroupChatMembers(details.allMembers,
                                                                                                     iconSize: avatarImageView.bounds.width) }
+        case .community(let details):
+            avatarImageView.clipsToBounds = true
+            avatarImageView.layer.borderWidth = 1
+            setAvatarFrom(url: URL(string: details.displayIconUrl), name: chatName)
         }
         
         setNameText(chatName)
@@ -113,6 +117,8 @@ private extension ChatListCell {
             return chatNameFrom(userInfo: otherUserDetails.otherUser)
         case .group(let groupDetails):
             return groupDetails.displayName
+        case .community(let communityDetails):
+            return communityDetails.displayName
         }
     }
     
@@ -178,7 +184,7 @@ private extension ChatListCell {
         Task {
             await setAvatarFromName()
             if let avatarURL = url {
-                if let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: nil) {
+                if let image = await appContext.imageLoadingService.loadImage(from: .url(avatarURL), downsampleDescription: .icon) {
                     self.avatarImageView.image = image
                 }
             }

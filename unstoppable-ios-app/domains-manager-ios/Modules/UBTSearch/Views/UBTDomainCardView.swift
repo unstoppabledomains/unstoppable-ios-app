@@ -67,7 +67,7 @@ private extension UBTDomainCardView {
                 if let pfpURL = profileDetails.profile.imagePath,
                    let url = URL(string: pfpURL) {
                     avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
-                                                                                 downsampleDescription: nil)
+                                                                                 downsampleDescription: .mid)
                 }
             }
         }

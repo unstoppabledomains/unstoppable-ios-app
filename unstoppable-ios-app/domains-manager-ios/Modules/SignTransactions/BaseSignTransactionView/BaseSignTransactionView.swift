@@ -88,7 +88,7 @@ extension BaseSignTransactionView {
         if isRequired {
             var icon: UIImage?
             if User.instance.getSettings().touchIdActivated {
-                icon = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+                icon = appContext.authentificationService.biometricIcon
             }
             confirmButton.setTitle(confirmButtonTitle, image: icon)
         } else {
@@ -138,7 +138,7 @@ extension BaseSignTransactionView {
                     domainImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domainDisplayInfo, size: .full),
                                                                                            downsampleDescription: nil)
                     let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainDisplayInfo, size: .full),
-                                                                               downsampleDescription: nil)
+                                                                               downsampleDescription: .icon)
                     domainImageView.image = image
                 }
             }

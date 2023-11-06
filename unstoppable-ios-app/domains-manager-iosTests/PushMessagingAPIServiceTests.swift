@@ -14,7 +14,7 @@ final class PushMessagingAPIServiceTests: XCTestCase {
     private var dataProvider: MockMessagingServiceDataProvider!
     private var messagingService: PushMessagingAPIService!
     private let filesService = MessagingFilesServiceProtocolMock(decrypterService: SymmetricMessagingContentDecrypterService())
-    private let user = MessagingChatUserProfile(id: "", wallet: "", displayInfo: .init(id: "", wallet: "", serviceIdentifier: ""))
+    private let user = MessagingChatUserProfile(id: "", wallet: "", displayInfo: .init(id: "", wallet: "", serviceIdentifier: .xmtp))
     private let fetchLimit = 5
     private var firstMessage: MessagingChatMessage { getMockMessage(at: 0) }
     private var firstMessageId: String { firstMessage.displayInfo.id }
@@ -180,7 +180,8 @@ private extension PushMessagingAPIServiceTests {
     func createMessagingChat(lastMessage: MessagingChatMessageDisplayInfo?, threadHash: String?) -> MessagingChat {
         let serviceMetadata = PushEnvironment.ChatServiceMetadata(threadHash: threadHash, publicKeys: []).jsonData()
         let displayInfo = MessagingChatDisplayInfo(id: "", thisUserDetails: .init(wallet: ""),
-                                                   avatarURL: nil,
+                                                   avatarURL: nil, 
+                                                   serviceIdentifier: .xmtp,
                                                    type: .private(.init(otherUser: .init(wallet: ""))),
                                                    unreadMessagesCount: 0,
                                                    isApproved: true,

@@ -170,17 +170,15 @@ extension UIViewController {
     }
     
     func openMailApp() {
-        if let mailURL = URL(string: "message://"),
-           UIApplication.shared.canOpenURL(mailURL) {
-            UIApplication.shared.open(mailURL)
-        }
+        guard let url = URL(string: "message://") else { return }
+
+        openURLExternally(url)
     }
     
     func openAppSettings() {
-        if let settingsURL = URL(string: UIApplication.openSettingsURLString),
-           UIApplication.shared.canOpenURL(settingsURL) {
-            UIApplication.shared.open(settingsURL)
-        }
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+
+        openURLExternally(url)
     }
     
     func openUDTwitter() {
@@ -188,19 +186,31 @@ extension UIViewController {
         let appURL = URL(string: "twitter://user?screen_name=\(twitterName)")!
         let webURL = URL(string: "https://twitter.com/\(twitterName)")!
         
-        if UIApplication.shared.canOpenURL(appURL) {
-            UIApplication.shared.open(appURL)
-        } else if UIApplication.shared.canOpenURL(webURL) {
-            UIApplication.shared.open(webURL)
+        if !openURLExternally(appURL) {
+            openURLExternally(webURL)
         }
     }
     
     func openAppStore(for appId: String) {
         guard let url = URL(string: "itms-apps://apple.com/app/\(appId)") else { return }
         
+        openURLExternally(url)
+    }
+    
+    @discardableResult
+    func openURLExternally(_ url: URL) -> Bool {
         if UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
+            return true
         }
+        return false
+    }
+    
+    
+    func openLinkExternally(_ link: String.Links) {
+        guard let url = link.url else { return }
+
+        openURLExternally(url)
     }
     
     func shareDomainProfile(domainName: DomainName,
@@ -210,7 +220,7 @@ extension UIViewController {
 
         let titleItem = DomainURLActivityItemSource(isUserDomain: isUserDomain, url: url, isTitleOnly: true)
         let linkItem = DomainURLActivityItemSource(isUserDomain: isUserDomain, url: url, isTitleOnly: false)
-        var activityItems: [Any] = [titleItem, linkItem] + additionalItems
+        let activityItems: [Any] = [titleItem, linkItem] + additionalItems
         let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         activityViewController.completionWithItemsHandler = { _, completed, _, _ in
             if completed {

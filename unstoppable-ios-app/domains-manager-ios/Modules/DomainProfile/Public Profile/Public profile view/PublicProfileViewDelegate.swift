@@ -30,7 +30,7 @@ extension UIViewController: PublicProfileViewDelegate {
         Task {
             let displayInfo = DomainDisplayInfo(domainItem: userDomain, isSetForRR: false)
             var messagingProfile: MessagingChatUserProfileDisplayInfo
-            if let profile = try? await appContext.messagingService.getUserProfile(for: displayInfo) {
+            if let profile = try? await appContext.messagingService.getUserMessagingProfile(for: displayInfo) {
                 messagingProfile = profile
             } else if let profile = await appContext.messagingService.getLastUsedMessagingProfile(among: nil) {
                 messagingProfile = profile
@@ -45,7 +45,7 @@ extension UIViewController: PublicProfileViewDelegate {
                    switch chat.type {
                    case .private(let details):
                        return details.otherUser.wallet.lowercased() == profile.walletAddress
-                   case .group:
+                   case .group, .community:
                        return false
                    }
                }) {
@@ -53,7 +53,7 @@ extension UIViewController: PublicProfileViewDelegate {
             } else {
                 let messagingUserDisplayInfo = MessagingChatUserDisplayInfo(wallet: profile.walletAddress.ethChecksumAddress(),
                                                                             domainName: profile.name)
-                uiFlowToRun = .showNewChat(userInfo: messagingUserDisplayInfo, profile: messagingProfile)
+                uiFlowToRun = .showNewChat(description: .init(userInfo: messagingUserDisplayInfo, messagingService: Constants.defaultMessagingServiceIdentifier), profile: messagingProfile)
             }
             
             try? await appContext.coreAppCoordinator.handle(uiFlow: uiFlowToRun)

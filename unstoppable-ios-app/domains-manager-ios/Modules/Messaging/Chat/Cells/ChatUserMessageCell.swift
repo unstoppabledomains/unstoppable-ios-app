@@ -113,6 +113,8 @@ extension ChatUserMessageCell {
         if let userInfo {
             if otherUserAvatarView == nil {
                 let otherUserAvatarView = UIImageView()
+                otherUserAvatarView.isUserInteractionEnabled = true
+                otherUserAvatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didSelectOtherUserProfile)))
                 self.otherUserAvatarView = otherUserAvatarView
                 otherUserAvatarView.translatesAutoresizingMaskIntoConstraints = false
                 contentHStackView.spacing = 8
@@ -141,7 +143,7 @@ extension ChatUserMessageCell {
             
             let image = await appContext.imageLoadingService.loadImage(from: .messagingUserPFPOrInitials(userInfo,
                                                                                                          size: .default),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .icon)
             if userInfo.wallet == self.otherUserInfo?.wallet {
                 otherUserAvatarView?.image = image
             }
@@ -158,5 +160,11 @@ private extension ChatUserMessageCell {
     
     @IBAction func deleteButtonPressed(_ sender: Any) {
         actionCallback?(.delete)
+    }
+    
+    @objc func didSelectOtherUserProfile() {
+        guard let sender else { return }
+        
+        actionCallback?(.viewSenderProfile(sender))
     }
 }

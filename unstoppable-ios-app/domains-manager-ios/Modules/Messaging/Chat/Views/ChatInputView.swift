@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 @MainActor
 protocol ChatInputViewDelegate: AnyObject {
@@ -39,6 +40,8 @@ final class ChatInputView: UIView {
     private var movedKeyboardFrame: CGRect = .zero
     private var bottomInset: CGFloat { superview?.safeAreaInsets.bottom ?? 0 }
     private var textHeight: CGFloat = 0
+    
+    private var canSendAttachments = true
     weak var delegate: ChatInputViewDelegate?
     
     override init(frame: CGRect) {
@@ -64,15 +67,18 @@ final class ChatInputView: UIView {
         self.frame.origin.x = 0
         topBorderView.frame = CGRect(x: 0, y: 0, width: bounds.width, height: 1)
         
-        leadingButton.frame.origin.x = leadingHorizontalOffset
-        
+        if canSendAttachments {
+            leadingButton.frame.origin.x = leadingHorizontalOffset
+        } else {
+            leadingButton.frame.origin.x = leadingHorizontalOffset - leadingButtonSize - trailingHorizontalOffset
+        }
         let textViewWidth = calculateTextViewWidth()
         let textHeight = calculateTextHeight()
         var textViewHeight: CGFloat = ChatInputView.height - (textViewVerticalOffset * 2)
         textView.layer.cornerRadius = textViewHeight / 2
         textViewHeight = max(textViewHeight, textHeight)
         textViewHeight = min(textViewHeight, maxTextViewHeight)
-        textView.frame = CGRect(x: leadingButton.frame.maxX + leadingHorizontalOffset,
+        textView.frame = CGRect(x: leadingButton.frame.maxX + trailingHorizontalOffset,
                                 y: textViewVerticalOffset,
                                 width: textViewWidth,
                                 height: textViewHeight)
@@ -88,7 +94,7 @@ final class ChatInputView: UIView {
             self.frame.origin.y = superview.bounds.height - frame.size.height
         }
         
-        leadingButton.frame.origin.y = textView.frame.maxY - leadingButtonSize - 7
+        leadingButton.frame.origin.y = textView.frame.maxY - leadingButtonSize - 10
         sendButton.frame.origin.y = textView.frame.maxY - sendButtonSize
         sendButton.frame.origin.x = bounds.width - sendButton.bounds.width - trailingHorizontalOffset
         loadingIndicator.center = sendButton.center
@@ -135,6 +141,15 @@ extension ChatInputView {
         let animationDuration: TimeInterval = animated ? 0.25 : 0.0
         UIView.animate(withDuration: animationDuration) {
             self.topBorderView.alpha = isHidden ? 0 : 1
+        }
+    }
+    
+    func setCanSendAttachments(_ canSendAttachments: Bool) {
+        self.canSendAttachments = canSendAttachments
+        leadingButton.alpha = canSendAttachments ? 1 : 0
+        DispatchQueue.main.async {
+            self.setNeedsLayout()
+            self.layoutIfNeeded()
         }
     }
 }
@@ -209,6 +224,9 @@ private extension ChatInputView {
         var width = bounds.width - (leadingButton.bounds.width + (leadingHorizontalOffset * 2) + trailingHorizontalOffset)
         if isSendButtonVisible {
             width -= (textViewToSendButtonOffset + sendButton.bounds.width)
+        }
+        if !canSendAttachments {
+            width += leadingButton.bounds.width + trailingHorizontalOffset
         }
         return width
     }
@@ -387,4 +405,20 @@ extension ChatInputView {
             }
         }
     }
+}
+
+
+struct ChatInputViewPreviews: PreviewProvider {
+    
+    static var previews: some View {
+        let height: CGFloat = 288
+        
+        return UIViewPreview {
+            let view = ChatInputView()
+            view.setCanSendAttachments(false)
+            return view
+        }
+        .frame(width: 390, height: height)
+    }
+    
 }

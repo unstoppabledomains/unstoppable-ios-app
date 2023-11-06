@@ -1034,7 +1034,8 @@ private extension UDRouter {
     func buildChatsListModule(presentOptions: ChatsList.PresentOptions) -> UIViewController {
         let vc = ChatsListViewController.nibInstance()
         let presenter = ChatsListViewPresenter(view: vc,
-                                               presentOptions: presentOptions)
+                                               presentOptions: presentOptions,
+                                               messagingService: appContext.messagingService)
         vc.presenter = presenter
         return vc
     }
@@ -1054,7 +1055,9 @@ private extension UDRouter {
         let vc = ChatViewController.nibInstance()
         let presenter = ChatViewPresenter(view: vc,
                                           profile: profile,
-                                          conversationState: conversationState)
+                                          conversationState: conversationState,
+                                          messagingService: appContext.messagingService, 
+                                          featureFlagsService: appContext.udFeatureFlagsService)
         vc.presenter = presenter
         return vc
     }

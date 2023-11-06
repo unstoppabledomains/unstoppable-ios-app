@@ -26,3 +26,5 @@ extension MessagingGroupChatDetails {
         return adminWallets.first(where: { $0.lowercased() == wallet }) != nil
     }
 }
+
+

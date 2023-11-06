@@ -7,6 +7,12 @@
 
 import Foundation
 
+protocol ImagesStorageProtocol {
+    func getStoredImage(for key: String) -> Data?
+    func storeImageData(_ data: Data, for key: String)
+    func clearStoredImages()
+}
+
 struct ImagesStorage {
     private let fileManager = FileManager.default
     private let storedImagesPath = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString).appendingPathComponent("StoredImages") as NSString
@@ -17,7 +23,7 @@ struct ImagesStorage {
 }
 
 // MARK: - Open methods
-extension ImagesStorage {
+extension ImagesStorage: ImagesStorageProtocol {
     func getStoredImage(for key: String) -> Data? {
         let imagePath = pathForStoredImageAtKey(key)
         return try? Data.init(contentsOf: URL(fileURLWithPath: imagePath))

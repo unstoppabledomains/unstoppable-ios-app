@@ -182,7 +182,7 @@ private extension DomainsCollectionCarouselCardCell {
             set(avatarImage: nil)
             Task {
                 let image = await appContext.imageLoadingService.loadImage(from: .domain(domainItem),
-                                                                           downsampleDescription: nil)
+                                                                           downsampleDescription: .max)
                 set(avatarImage: image)
             }
         }
