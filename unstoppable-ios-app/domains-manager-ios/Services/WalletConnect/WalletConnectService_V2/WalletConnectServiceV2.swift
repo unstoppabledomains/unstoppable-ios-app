@@ -12,7 +12,6 @@ import Boilertalk_Web3
 // WC V2
 import WalletConnectUtils
 import WalletConnectSign
-import WalletConnectEcho
 
 import Starscream
 
@@ -320,7 +319,9 @@ class WalletConnectServiceV2: WalletConnectServiceV2Protocol, WalletConnectV2Pub
         let metadata = AppMetadata(name: String.Constants.mobileAppName.localized(),
                                    description: String.Constants.mobileAppDescription.localized(),
                                    url: String.Links.mainLanding.urlString,
-                                   icons: [String.Links.udLogoPng.urlString])
+                                   icons: [String.Links.udLogoPng.urlString],
+                                   redirect: .init(native: "unstoppable://",
+                                                   universal: "https://unstoppabledomains.com"))
         
         Pair.configure(metadata: metadata)
     }
