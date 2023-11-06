@@ -163,13 +163,15 @@ fileprivate extension NotificationsService {
         let environment: WalletConnectPush.APNSEnvironment
         #if DEBUG
         environment = .sandbox
-        Notify.instance.setLogging(level: .debug)
         #else
         environment = .production
         #endif
-        Notify.configure(groupIdentifier: Constants.UnstoppableGroupIdentifier, 
+        Notify.configure(groupIdentifier: Constants.UnstoppableGroupIdentifier,
                          environment: environment,
                          crypto: WCV2NotifyDefaultCryptoProvider())
+        #if DEBUG
+        Notify.instance.setLogging(level: .debug)
+        #endif
         
         return true
     }
