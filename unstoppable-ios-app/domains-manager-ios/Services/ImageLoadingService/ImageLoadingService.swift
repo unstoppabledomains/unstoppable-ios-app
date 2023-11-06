@@ -44,7 +44,7 @@ enum ImageSource {
     case domainInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case domainItemOrInitials(_ domainItem: DomainDisplayInfo, size: InitialsView.InitialsSize)
     case currency(_ currency: CoinRecord, size: InitialsView.InitialsSize, style: InitialsView.Style)
-    case wcApp(_ appInfo: WalletConnectService.WCServiceAppInfo, size: InitialsView.InitialsSize)
+    case wcApp(_ appInfo: WalletConnectServiceV2.WCServiceAppInfo, size: InitialsView.InitialsSize)
     case connectedApp(_ connectedApp: any UnifiedConnectAppInfoProtocol, size: InitialsView.InitialsSize)
     case qrCode(url: URL, options: [QRCodeService.Options])
     case messagingUserPFPOrInitials(_ userInfo: MessagingChatUserDisplayInfo, size: InitialsView.InitialsSize)

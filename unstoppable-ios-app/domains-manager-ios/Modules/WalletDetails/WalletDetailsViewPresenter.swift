@@ -21,7 +21,6 @@ final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let networkReachabilityService: NetworkReachabilityServiceProtocol?
     private let udWalletsService: UDWalletsServiceProtocol
-    private let walletConnectClientService: WalletConnectClientServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     var walletRemovedCallback: EmptyCallback?
@@ -32,7 +31,6 @@ final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
          dataAggregatorService: DataAggregatorServiceProtocol,
          networkReachabilityService: NetworkReachabilityServiceProtocol?,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectClientService: WalletConnectClientServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
         self.wallet = wallet
@@ -40,7 +38,6 @@ final class WalletDetailsViewPresenter: ViewAnalyticsLogger {
         self.dataAggregatorService = dataAggregatorService
         self.networkReachabilityService = networkReachabilityService
         self.udWalletsService = udWalletsService
-        self.walletConnectClientService = walletConnectClientService
         self.walletConnectServiceV2 = walletConnectServiceV2
     }
 }
@@ -268,8 +265,7 @@ private extension WalletDetailsViewPresenter {
     
     func removeWallet() async {
         udWalletsService.remove(wallet: wallet)
-        // WC1 + WC2
-        try? walletConnectClientService.disconnect(walletAddress: wallet.address)
+        // WC2 only
         await walletConnectServiceV2.disconnect(from: wallet.address)
         let wallets = udWalletsService.getUserWallets()
         guard !wallets.isEmpty else { return }

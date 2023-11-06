@@ -23,12 +23,12 @@ extension PullUpViewService {
     }
     
     func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration,
-                                             in viewController: UIViewController) async throws -> WalletConnectService.ConnectionUISettings {
+                                             in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let signTransactionView: BaseSignTransactionView
             let selectionViewHeight: CGFloat
             let pullUp: Analytics.PullUp
-            let connectionConfiguration: WalletConnectService.ConnectionConfig
+            let connectionConfiguration: WalletConnectServiceV2.ConnectionConfig
             let viewFrame: CGRect = UIScreen.main.bounds
             
             switch connectionConfig {
@@ -49,11 +49,7 @@ extension PullUpViewService {
             case .connectWallet(let connectionConfig):
                 let connectServerConfirmationView = ConnectServerRequestConfirmationView(frame: viewFrame)
                 connectServerConfirmationView.setWith(connectionConfig: connectionConfig)
-                if case .version2 = connectionConfig.appInfo.dAppInfoInternal {
-                    selectionViewHeight = 376
-                } else {
-                    selectionViewHeight = 420
-                }
+                selectionViewHeight = 376
                 signTransactionView = connectServerConfirmationView
                 pullUp = .wcRequestConnectConfirmation
                 connectionConfiguration = connectionConfig

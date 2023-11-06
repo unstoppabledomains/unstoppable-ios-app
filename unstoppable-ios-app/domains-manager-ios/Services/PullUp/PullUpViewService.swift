@@ -26,6 +26,7 @@ protocol PullUpViewServiceProtocol {
                                             selectedStyle: UIUserInterfaceStyle,
                                             styleChangedCallback: @escaping AppearanceStyleChangedCallback)
     func showMintDomainConfirmationPullUp(in viewController: UIViewController) async throws -> MintDomainPullUpAction
+
     func showYouAreOfflinePullUp(in viewController: UIViewController,
                                  unavailableFeature: PullUpViewService.UnavailableOfflineFeature) async
     func showZilDomainsNotSupportedPullUp(in viewController: UIViewController) async throws
@@ -57,7 +58,7 @@ protocol PullUpViewServiceProtocol {
     
     // MARK: - External wallet
     func showConnectedWalletInfoPullUp(in viewController: UIViewController)
-    func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration, in viewController: UIViewController) async throws -> WalletConnectService.ConnectionUISettings
+    func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration, in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings
     func showConnectingAppVerifiedPullUp(in viewController: UIViewController)
     func showGasFeeInfoPullUp(in viewController: UIViewController, for network: BlockchainType)
     func showNetworkNotSupportedPullUp(in viewController: UIViewController) async
@@ -345,7 +346,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             showOrUpdate(in: viewController, pullUp: .mintDomainsSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { completion(.failure(PullUpError.dismissed)) })
         }
     }
-   
+    
     func showYouAreOfflinePullUp(in viewController: UIViewController,
                                  unavailableFeature: UnavailableOfflineFeature) async {
         await withSafeCheckedMainActorContinuation(critical: false) { completion in
