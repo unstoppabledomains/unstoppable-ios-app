@@ -51,7 +51,7 @@ extension PaymentConfiguration {
 }
 
 struct FirebaseKeys {
-    static let ProductionAPIKey = "<firebase-prod-api-key>"
+    static let ProductionAPIKey = "<firebase-prod-api-key>"  // 27.10.2023 new key ending in 'xMQY'
     static let StagingAPIKey = "<firebase-staging-api-key>"
     
     static let ProductionClientId = "<firebase-prod-client-id>"

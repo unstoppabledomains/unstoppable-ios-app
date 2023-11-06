@@ -41,7 +41,7 @@ protocol PullUpViewServiceProtocol {
     func showPayGasFeeConfirmationPullUp(gasFeeInCents: Int,
                                          in viewController: UIViewController) async throws
     func showMintDomainConfirmationPullUp(in viewController: UIViewController) async throws -> MintDomainPullUpAction
-    func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration, in viewController: UIViewController) async throws -> WalletConnectService.ConnectionUISettings
+    func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration, in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings
     func showConnectingAppVerifiedPullUp(in viewController: UIViewController)
     func showNetworkNotSupportedPullUp(in viewController: UIViewController) async
     func showWCRequestNotSupportedPullUp(in viewController: UIViewController) async
@@ -116,6 +116,10 @@ protocol PullUpViewServiceProtocol {
                                  in viewController: UIViewController) async
     func showUnencryptedMessageInfoPullUp(in viewController: UIViewController)
     func showHandleChatLinkSelectionPullUp(in viewController: UIViewController) async throws -> Chat.ChatLinkHandleAction
+    func showWalletsNumberLimitReachedPullUp(in viewController: UIViewController,
+                                             maxNumberOfWallets: Int)
+    func showWalletsNumberLimitReachedAlreadyPullUp(in viewController: UIViewController,
+                                                    maxNumberOfWallets: Int)
 }
 
 @MainActor
@@ -508,12 +512,12 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     }
     
     func showServerConnectConfirmationPullUp(for connectionConfig: WCRequestUIConfiguration,
-                                             in viewController: UIViewController) async throws -> WalletConnectService.ConnectionUISettings {
+                                             in viewController: UIViewController) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let signTransactionView: BaseSignTransactionView
             let selectionViewHeight: CGFloat
             let pullUp: Analytics.PullUp
-            let connectionConfiguration: WalletConnectService.ConnectionConfig
+            let connectionConfiguration: WalletConnectServiceV2.ConnectionConfig
             let viewFrame: CGRect = UIScreen.main.bounds
             
             switch connectionConfig {
@@ -534,11 +538,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             case .connectWallet(let connectionConfig):
                 let connectServerConfirmationView = ConnectServerRequestConfirmationView(frame: viewFrame)
                 connectServerConfirmationView.setWith(connectionConfig: connectionConfig)
-                if case .version2 = connectionConfig.appInfo.dAppInfoInternal {
-                    selectionViewHeight = 376
-                } else {
-                    selectionViewHeight = 420
-                }
+                selectionViewHeight = 376
                 signTransactionView = connectServerConfirmationView
                 pullUp = .wcRequestConnectConfirmation
                 connectionConfiguration = connectionConfig
@@ -1679,6 +1679,36 @@ extension PullUpViewService: PullUpViewServiceProtocol {
             
             showOrUpdate(in: viewController, pullUp: .settingsLegalSelection, contentView: selectionView, height: selectionViewHeight, closedCallback: { continuation(.failure(PullUpError.dismissed)) })
         }
+    }
+    
+    func showWalletsNumberLimitReachedPullUp(in viewController: UIViewController,
+                                             maxNumberOfWallets: Int) {
+        let selectionViewHeight: CGFloat = 268
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.walletsLimitReachedPullUpTitle.localized()),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .warningIcon,
+                                                                                 size: .small,
+                                                                                 tintColor: .foregroundWarning),
+                                                                     subtitle: .label(.text(String.Constants.walletsLimitReachedPullUpSubtitle.localized(maxNumberOfWallets))),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReached, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
+    }
+    
+    func showWalletsNumberLimitReachedAlreadyPullUp(in viewController: UIViewController,
+                                                    maxNumberOfWallets: Int) {
+        let selectionViewHeight: CGFloat = 268
+        let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.walletsLimitReachedAlreadyPullUpTitle.localized()),
+                                                                     contentAlignment: .center,
+                                                                     icon: .init(icon: .warningIcon,
+                                                                                 size: .small,
+                                                                                 tintColor: .foregroundWarning),
+                                                                     subtitle: .label(.text(String.Constants.walletsLimitReachedAlreadyPullUpSubtitle.localized(maxNumberOfWallets))),
+                                                                     cancelButton: .gotItButton()),
+                                                items: PullUpSelectionViewEmptyItem.allCases)
+        
+        presentPullUpView(in: viewController, pullUp: .walletsMaxNumberLimitReachedAlready, contentView: selectionView, isDismissAble: true, height: selectionViewHeight)
     }
 }
 

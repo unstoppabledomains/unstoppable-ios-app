@@ -17,12 +17,10 @@ final class ConnectNewExternalWalletPresenter: ConnectExternalWalletViewPresente
     init(view: ConnectExternalWalletViewProtocol,
          addWalletFlowManager: AddWalletFlowManager,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectClientService: WalletConnectClientServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.addWalletFlowManager = addWalletFlowManager
         super.init(view: view,
                    udWalletsService: udWalletsService,
-                   walletConnectClientService: walletConnectClientService,
                    walletConnectServiceV2: walletConnectServiceV2)
     }
     

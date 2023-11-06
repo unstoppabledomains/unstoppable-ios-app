@@ -24,7 +24,6 @@ class ConnectExternalWalletViewPresenter {
 
     init(view: ConnectExternalWalletViewProtocol,
          udWalletsService: UDWalletsServiceProtocol,
-         walletConnectClientService: WalletConnectClientServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
         self.udWalletsService = udWalletsService

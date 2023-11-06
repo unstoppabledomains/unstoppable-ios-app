@@ -53,9 +53,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         appContext.coreAppCoordinator.startWith(window: window)
         appContext.appLaunchService.startWith(sceneDelegate: self,
-                                              walletConnectService: appContext.walletConnectService,
                                               walletConnectServiceV2: appContext.walletConnectServiceV2,
-                                              walletConnectClientService: appContext.walletConnectClientService,
                                               completion: { Task { await MainActor.run { self.didResolveInitialViewController = true } } })
         
         setAppearanceStyle(UserDefaults.appearanceStyle)

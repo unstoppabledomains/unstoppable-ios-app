@@ -139,7 +139,7 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
 // MARK: - WalletConnectUIHandler
 extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectUIErrorHandler {
     @discardableResult
-    func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectService.ConnectionUISettings {
+    func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         func awaitPullUpDisappear() async throws {
             try await Task.sleep(seconds: 0.2)
         }
