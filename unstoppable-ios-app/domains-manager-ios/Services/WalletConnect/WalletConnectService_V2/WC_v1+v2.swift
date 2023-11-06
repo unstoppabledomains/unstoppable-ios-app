@@ -12,7 +12,6 @@ import Boilertalk_Web3
 // V2
 import WalletConnectUtils
 import WalletConnectSign
-import WalletConnectEcho
 
 
 struct WCRegistryWalletProxy {
