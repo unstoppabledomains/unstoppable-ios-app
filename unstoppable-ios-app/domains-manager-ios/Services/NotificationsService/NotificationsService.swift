@@ -8,7 +8,7 @@
 import UIKit
 import UserNotifications
 import WalletConnectPush
-import WalletConnectEcho
+import WalletConnectNotify
 
 // MARK: - NotificationsService
 final class NotificationsService: NSObject {
@@ -159,10 +159,18 @@ fileprivate extension NotificationsService {
             Debugger.printFailure("Did fail to get client id from WC2 and configure Echo.")
             return false
         }
+        
+        let environment: WalletConnectPush.APNSEnvironment
         #if DEBUG
-        Echo.configure(environment: .sandbox)
+        environment = .sandbox
         #else
-        Echo.configure(environment: .production)
+        environment = .production
+        #endif
+        Notify.configure(groupIdentifier: Constants.UnstoppableGroupIdentifier,
+                         environment: environment,
+                         crypto: WCV2NotifyDefaultCryptoProvider())
+        #if DEBUG
+        Notify.instance.setLogging(level: .debug)
         #endif
         
         return true
@@ -173,7 +181,7 @@ fileprivate extension NotificationsService {
         
         Task {
             do {                
-                try await Echo.instance.register(deviceToken: deviceToken)
+                try await Notify.instance.register(deviceToken: deviceToken)
                 Debugger.printInfo(topic: .PNs, "Did register device token with WC2")
             } catch {
                 Debugger.printInfo(topic: .PNs, "Failed to register device token with WC2 with error: \(error)")

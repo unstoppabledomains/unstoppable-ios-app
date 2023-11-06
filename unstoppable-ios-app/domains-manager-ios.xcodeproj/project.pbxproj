@@ -474,6 +474,8 @@
 		C650BC0328F3C97900AD6733 /* DomainProfileGeneralData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */; };
 		C651DC51286C115400808D4C /* WatchFaceDomainImagePreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C651DC50286C115400808D4C /* WatchFaceDomainImagePreviewView.swift */; };
 		C651DC56286C115900808D4C /* WatchFaceDomainImagePreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */; };
+		C652446A2AF8A7A400673CC0 /* WalletConnectNotify in Frameworks */ = {isa = PBXBuildFile; productRef = C65244692AF8A7A400673CC0 /* WalletConnectNotify */; };
+		C652446C2AF8AA2600673CC0 /* WCV2NotifyDefaultCryptoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652446B2AF8AA2600673CC0 /* WCV2NotifyDefaultCryptoProvider.swift */; };
 		C652629828110B8500F1D699 /* SecurityWallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C652629628110B8500F1D699 /* SecurityWallViewController.swift */; };
 		C652629C28110B8500F1D699 /* SecurityWallViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C652629728110B8500F1D699 /* SecurityWallViewController.xib */; };
 		C6526DB929D2BACB00D6F2EB /* AppSessionInterpreter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */; };
@@ -1616,6 +1618,7 @@
 		C650BC0228F3C97900AD6733 /* DomainProfileGeneralData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileGeneralData.swift; sourceTree = "<group>"; };
 		C651DC50286C115400808D4C /* WatchFaceDomainImagePreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFaceDomainImagePreviewView.swift; sourceTree = "<group>"; };
 		C651DC55286C115900808D4C /* WatchFaceDomainImagePreviewView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WatchFaceDomainImagePreviewView.xib; sourceTree = "<group>"; };
+		C652446B2AF8AA2600673CC0 /* WCV2NotifyDefaultCryptoProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WCV2NotifyDefaultCryptoProvider.swift; sourceTree = "<group>"; };
 		C652629628110B8500F1D699 /* SecurityWallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityWallViewController.swift; sourceTree = "<group>"; };
 		C652629728110B8500F1D699 /* SecurityWallViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SecurityWallViewController.xib; sourceTree = "<group>"; };
 		C6526DB829D2BACB00D6F2EB /* AppSessionInterpreter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSessionInterpreter.swift; sourceTree = "<group>"; };
@@ -2243,6 +2246,7 @@
 				30B6583926A9E75E004F707F /* Stripe in Frameworks */,
 				2917EDE12A6F25AB004EAB31 /* XMTP in Frameworks */,
 				2917EDDB2A6F25AB004EAB31 /* Boilertalk-Web3 in Frameworks */,
+				C652446A2AF8A7A400673CC0 /* WalletConnectNotify in Frameworks */,
 				290A60542950AA1600882109 /* WalletConnectVerify in Frameworks */,
 				C63812242993E009002590E7 /* Valet in Frameworks */,
 				2917EDDF2A6F25AB004EAB31 /* Web3PromiseKit in Frameworks */,
@@ -4124,6 +4128,7 @@
 			isa = PBXGroup;
 			children = (
 				C6E69FF0288AD9DB000A8346 /* NotificationsService.swift */,
+				C652446B2AF8AA2600673CC0 /* WCV2NotifyDefaultCryptoProvider.swift */,
 				C665FC1E29B06896009699D2 /* NotificationsServiceProtocol.swift */,
 				C665FC2329B068A3009699D2 /* MockNotificationsService.swift */,
 			);
@@ -5977,6 +5982,7 @@
 				2917EDDC2A6F25AB004EAB31 /* Web3ContractABI */,
 				2917EDDE2A6F25AB004EAB31 /* Web3PromiseKit */,
 				2917EDE02A6F25AB004EAB31 /* XMTP */,
+				C65244692AF8A7A400673CC0 /* WalletConnectNotify */,
 			);
 			productName = "domains-manager-ios";
 			productReference = 3064867D2527253700388026 /* domains-manager-ios.app */;
@@ -6688,6 +6694,7 @@
 				C6289A492AAB0722002C2DEC /* UBTPromotingDomainSelectionView.swift in Sources */,
 				C6010D15287EE5C700FBD401 /* BuyDomainsWebViewController.swift in Sources */,
 				C60610D429A4FF84005DC0D5 /* WCRequestsHandlingService.swift in Sources */,
+				C652446C2AF8AA2600673CC0 /* WCV2NotifyDefaultCryptoProvider.swift in Sources */,
 				291A9C6A29E444CF00527FF1 /* WC_v1+v2.swift in Sources */,
 				C652723C2A14C223001A084C /* UnreadMessagesBadgeView.swift in Sources */,
 				C6C42182293741A4005B791B /* DomainProfileTutorialItemViewController.swift in Sources */,
@@ -7866,7 +7873,7 @@
 			repositoryURL = "https://github.com/WalletConnect/WalletConnectSwiftV2";
 			requirement = {
 				kind = exactVersion;
-				version = 1.6.17;
+				version = 1.9.5;
 			};
 		};
 		29BF9FDF2A6ED48A00EDA0DF /* XCRemoteSwiftPackageReference "Boilertalk-Web3.swift" */ = {
@@ -8064,6 +8071,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C63812222993E009002590E7 /* XCRemoteSwiftPackageReference "Valet-ios" */;
 			productName = Valet;
+		};
+		C65244692AF8A7A400673CC0 /* WalletConnectNotify */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 290A60462950AA1500882109 /* XCRemoteSwiftPackageReference "WalletConnectSwiftV2" */;
+			productName = WalletConnectNotify;
 		};
 		C65DD4BD2A7CAB1500CAB10C /* XMTP */ = {
 			isa = XCSwiftPackageProductDependency;
