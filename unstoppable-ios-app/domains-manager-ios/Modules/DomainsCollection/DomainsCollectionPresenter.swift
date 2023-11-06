@@ -702,7 +702,7 @@ private extension DomainsCollectionPresenter {
             if !domains.isEmpty {
                 let domain = domains[currentIndex]
                 let avatar = await appContext.imageLoadingService.loadImage(from: .domain(domain),
-                                                                            downsampleDescription: nil)
+                                                                            downsampleDescription: .icon)
                 view?.setBackgroundImage(avatar)
             } else {
                 view?.setBackgroundImage(nil)

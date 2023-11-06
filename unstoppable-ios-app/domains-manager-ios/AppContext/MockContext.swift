@@ -13,7 +13,10 @@ final class MockContext: AppContextProtocol {
                                                                                                        dataAggregatorService: dataAggregatorService,
                                                                                                        udWalletsService: udWalletsService,
                                                                                                        walletConnectServiceV2: walletConnectServiceV2, walletConnectRequestsHandlingService: wcRequestsHandlingService)
-    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
+    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
+                                                                                                 loader: DefaultImageDataLoader(),
+                                                                                                 storage: ImagesStorage(),
+                                                                                                 cacheStorage: ImagesCacheStorage())
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var notificationsService: NotificationsServiceProtocol = { MockNotificationsService() }()
     private(set) lazy var permissionsService: PermissionsServiceProtocol = PermissionsService()
@@ -51,6 +54,7 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var firebaseDomainsService: FirebaseDomainsServiceProtocol = FirebaseDomainsService(firebaseInteractionService: firebaseInteractionService as! FirebaseDomainsLoaderProtocol)
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = MockDomainTransferService()
     private(set) lazy var messagingService: MessagingServiceProtocol = MockMessagingService()
+    private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = MockUDFeatureFlagsService()
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
 }

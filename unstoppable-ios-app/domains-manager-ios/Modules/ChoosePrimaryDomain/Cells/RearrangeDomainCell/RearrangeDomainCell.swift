@@ -52,7 +52,7 @@ extension RearrangeDomainCell {
         setDomainName(domainName)
         Task {
             let image = await appContext.imageLoadingService.loadImage(from: .initials(domainName, size: .default, style: .accent),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .icon)
             domainImageView.image = image
         }
     }
@@ -75,7 +75,7 @@ private extension RearrangeDomainCell {
                                                                                        downsampleDescription: nil)
             let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainItem,
                                                                                                    size: .default),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .icon)
             domainImageView.image = image
         }
     }

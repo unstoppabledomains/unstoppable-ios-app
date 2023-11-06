@@ -828,6 +828,27 @@ extension Endpoint {
         )
     }
     
+
+    static func joinBadgeCommunity(body: String) -> Endpoint {
+        //https://messaging.ud-staging.com/api/push/group/join
+        return Endpoint(
+            host: NetworkConfig.baseMessagingHost,
+            path: "/api/push/group/join",
+            queryItems: [],
+            body: body
+        )
+    }
+    
+    static func leaveBadgeCommunity(body: String) -> Endpoint {
+        //https://messaging.ud-staging.com/api/push/group/leave
+        return Endpoint(
+            host: NetworkConfig.baseMessagingHost,
+            path: "/api/push/group/leave",
+            queryItems: [],
+            body: body
+        )
+    }
+            
     static func getSpamStatus(for address: HexAddress) -> Endpoint {
         //https://api.unstoppabledomains.com/messaging/xmtp/spam/0x9B4Ed628640A73154895e369AE39a93732535924
         return Endpoint(

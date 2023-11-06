@@ -31,7 +31,10 @@ final class GeneralAppContext: AppContextProtocol {
     let messagingService: MessagingServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
-    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
+    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
+                                                                                                 loader: DefaultImageDataLoader(),
+                                                                                                 storage: ImagesStorage(),
+                                                                                                 cacheStorage: ImagesCacheStorage())
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
     private(set) lazy var analyticsService: AnalyticsServiceProtocol = {
@@ -48,6 +51,7 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var walletNFTsService: WalletNFTsServiceProtocol = WalletNFTsService()
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
+    private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
 
     init() {
         authentificationService = AuthentificationService()
@@ -77,18 +81,28 @@ final class GeneralAppContext: AppContextProtocol {
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
         
         // Messaging
-        let messagingAPIService: MessagingAPIServiceProtocol = XMTPMessagingAPIService()
+        let xmtpMessagingAPIService: MessagingAPIServiceProtocol = XMTPMessagingAPIService()
+        let xmtpMessagingWebSocketsService: MessagingWebSocketsServiceProtocol = XMTPMessagingWebSocketsService()
+        let pushMessagingAPIService: MessagingAPIServiceProtocol = PushMessagingAPIService()
+        let pushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol = PushMessagingWebSocketsService()
+        
+        let messagingAPIProviders: [MessagingServiceAPIProvider] = [.init(identifier: xmtpMessagingAPIService.serviceIdentifier,
+                                                                          apiService: xmtpMessagingAPIService,
+                                                                          webSocketsService: xmtpMessagingWebSocketsService),
+                                                                    .init(identifier: pushMessagingAPIService.serviceIdentifier,
+                                                                          apiService: pushMessagingAPIService,
+                                                                          webSocketsService: pushMessagingWebSocketsService)]
+        
         let messagingChannelsAPIService: MessagingChannelsAPIServiceProtocol = PushMessagingChannelsAPIService()
-        let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = XMTPMessagingWebSocketsService()
         let messagingChannelsWebSocketsService: MessagingChannelsWebSocketsServiceProtocol = PushMessagingChannelsWebSocketsService()
         let messagingDecrypterService: MessagingContentDecrypterService = SymmetricMessagingContentDecrypterService()
         let coreDataMessagingStorageService = CoreDataMessagingStorageService(decrypterService: messagingDecrypterService)
         let messagingStorageService: MessagingStorageServiceProtocol = coreDataMessagingStorageService
         let messagingUnreadCountingService: MessagingUnreadCountingServiceProtocol = CoreDataMessagingUnreadCountingService(storageService: coreDataMessagingStorageService)
         let messagingFilesService: MessagingFilesServiceProtocol = MessagingFilesService(decrypterService: messagingDecrypterService)
-        let messagingService = MessagingService(apiService: messagingAPIService,
+        
+        let messagingService = MessagingService(serviceProviders: messagingAPIProviders,
                                                 channelsApiService: messagingChannelsAPIService,
-                                                webSocketsService: messagingWebSocketsService,
                                                 channelsWebSocketsService: messagingChannelsWebSocketsService,
                                                 storageProtocol: messagingStorageService,
                                                 decrypterService: messagingDecrypterService,

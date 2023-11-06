@@ -93,6 +93,7 @@ struct PublicDomainProfileAttributes: Decodable {
     let coverPath: String?
     let phoneNumber: String?
     let domainPurchased: Bool?
+    let udBlue: Bool?
     
     enum CodingKeys: CodingKey {
         case displayName
@@ -104,6 +105,7 @@ struct PublicDomainProfileAttributes: Decodable {
         case coverPath
         case phoneNumber
         case domainPurchased
+        case udBlue
     }
 }
 
@@ -124,7 +126,8 @@ extension PublicDomainProfileAttributes {
         } else {
             self.imageType = nil
         }
-        self.domainPurchased = try container.decode(Bool.self, forKey: .domainPurchased)
+        self.domainPurchased = try? container.decode(Bool.self, forKey: .domainPurchased)
+        self.udBlue = try? container.decode(Bool.self, forKey: .udBlue)
     }
 }
 
@@ -158,7 +161,8 @@ struct UserDomainProfileAttributes: Codable {
     let imagePathPublic: Bool
     let coverPathPublic: Bool
     let phoneNumberPublic: Bool
-    
+    let udBlue: Bool?
+
     enum CodingKeys: CodingKey {
         case id
         case domainId
@@ -179,6 +183,7 @@ struct UserDomainProfileAttributes: Codable {
         case coverPathPublic
         case web2UrlPublic
         case phoneNumberPublic
+        case udBlue
     }
     
     internal init(id: UInt = 0,
@@ -199,7 +204,8 @@ struct UserDomainProfileAttributes: Codable {
                   imagePathPublic: Bool = false,
                   coverPathPublic: Bool = false,
                   web2UrlPublic: Bool = false,
-                  phoneNumberPublic: Bool = false) {
+                  phoneNumberPublic: Bool = false,
+                  udBlue: Bool = false) {
         self.id = id
         self.domainId = domainId
         self.privateEmail = privateEmail
@@ -219,6 +225,7 @@ struct UserDomainProfileAttributes: Codable {
         self.coverPathPublic = coverPathPublic
         self.web2UrlPublic = web2UrlPublic
         self.phoneNumberPublic = phoneNumberPublic
+        self.udBlue = udBlue
     }
     
     init(from decoder: Decoder) throws {
@@ -247,6 +254,7 @@ struct UserDomainProfileAttributes: Codable {
         self.coverPathPublic = try container.decode(Bool.self, forKey: UserDomainProfileAttributes.CodingKeys.coverPathPublic)
         self.web2UrlPublic = try container.decode(Bool.self, forKey: UserDomainProfileAttributes.CodingKeys.web2UrlPublic)
         self.phoneNumberPublic = try container.decode(Bool.self, forKey: UserDomainProfileAttributes.CodingKeys.phoneNumberPublic)
+        self.udBlue = try? container.decode(Bool.self, forKey: UserDomainProfileAttributes.CodingKeys.udBlue)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -271,6 +279,7 @@ struct UserDomainProfileAttributes: Codable {
         try container.encode(coverPathPublic, forKey: .coverPathPublic)
         try container.encode(web2UrlPublic, forKey: .web2UrlPublic)
         try container.encode(phoneNumberPublic, forKey: .phoneNumberPublic)
+        try container.encode(udBlue, forKey: .udBlue)
     }
 }
 
@@ -328,6 +337,7 @@ struct BadgesInfo: Codable, Hashable {
         let description: String
         var linkUrl: String?
         var sponsor: String?
+        var groupChatId: String?
         
         var isUDBadge: Bool {
             guard let linkUrl,
@@ -348,7 +358,7 @@ struct BadgeDetailedInfo: Codable, Hashable {
     let usage: Leaderboard
     
     struct Leaderboard: Codable, Hashable {
-        let rank: Int
+        let rank: Int?
         let holders: Int
         let domains: Int
         let featured: [String]
@@ -757,7 +767,7 @@ extension NetworkService {
         return false
     }
     
-    private func prepareRequestBodyFrom(entity: any Encodable) throws -> String {
+    func prepareRequestBodyFrom(entity: any Encodable) throws -> String {
         let data = try JSONEncoder().encode(entity)
         guard let body = String(data: data, encoding: .utf8) else { throw NetworkLayerError.responseFailedToParse }
         return body

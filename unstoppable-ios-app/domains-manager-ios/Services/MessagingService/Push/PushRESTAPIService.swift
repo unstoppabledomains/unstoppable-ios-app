@@ -39,6 +39,9 @@ private extension PushRESTAPIService.URLSList {
     static func GET_CHAT_MESSAGES_URL(threadHash: String) -> String {
         CHAT_URL.appendingURLPathComponents("conversationhash", threadHash)
     }
+    static func GET_CHAT_THREAD_HASH_URL(userEIP: String, chatId: String) -> String {
+        CHAT_USERS_URL.appendingURLPathComponents(userEIP, "conversations", chatId, "hash")
+    }
     static func GET_INBOX_URL(userEIP: String) -> String {
         GET_USER_URL.appendingURLPathComponents(userEIP, "feeds")
     }
@@ -91,6 +94,16 @@ extension PushRESTAPIService {
                                          method: .get)
         
         return try await getDecodableObjectWith(request: request)
+    }
+    
+    func getChatThreadHash(for wallet: String,
+                           chatId: String) async throws -> String? {
+        let userEIP = createEIPFormatFor(address: wallet)
+        let urlString = URLSList.GET_CHAT_THREAD_HASH_URL(userEIP: userEIP, chatId: chatId)
+        let request = try apiRequestWith(urlString: urlString,
+                                         method: .get)
+        let response: ChatThreadHashResponse = try await getDecodableObjectWith(request: request)
+        return response.threadHash
     }
     
     func getSubscribedChannelsIds(for wallet: String) async throws -> [String] {
@@ -276,6 +289,10 @@ private extension PushRESTAPIService {
     struct ChatsRequestsResponse: Codable {
         @DecodeIgnoringFailed
         var requests: [PushChat]
+    }
+    
+    struct ChatThreadHashResponse: Codable {
+        let threadHash: String?
     }
     
     struct ChannelSubscriptionsResponse: Codable {

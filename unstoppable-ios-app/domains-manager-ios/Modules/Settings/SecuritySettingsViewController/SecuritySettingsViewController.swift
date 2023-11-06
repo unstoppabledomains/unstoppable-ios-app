@@ -225,7 +225,7 @@ extension SecuritySettingsViewController {
         var icon: UIImage? {
             switch self {
             case .biometric:
-                return appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+                return appContext.authentificationService.biometricIcon
             case .passcode:
                 return .passcodeIcon
             }

@@ -36,7 +36,7 @@ extension MintingDomainListCell {
         Task {
             let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domain,
                                                                                                    size: .default),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .icon)
             domainNameImageView.image = image
         }
     }

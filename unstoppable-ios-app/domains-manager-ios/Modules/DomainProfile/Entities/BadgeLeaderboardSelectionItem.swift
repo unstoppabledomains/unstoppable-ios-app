@@ -10,7 +10,11 @@ import UIKit
 struct BadgeLeaderboardSelectionItem: PullUpCollectionViewCellItem {
     
     var title: String {
-        String.Constants.profileBadgesLeaderboardRankMessage.localized(largeNumberFormatter.string(from: badgeDetailedInfo.usage.rank as NSNumber) ?? "")
+        if let rank = badgeDetailedInfo.usage.rank {
+            return String.Constants.profileBadgesLeaderboardRankMessage.localized(largeNumberFormatter.string(from: rank as NSNumber) ?? "")
+        } else {
+            return "-"
+        }
     }
     var icon: UIImage {
         get async {
