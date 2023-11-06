@@ -695,7 +695,6 @@ private extension UDRouter {
                                                    dataAggregatorService: appContext.dataAggregatorService,
                                                    networkReachabilityService: appContext.networkReachabilityService,
                                                    udWalletsService: appContext.udWalletsService,
-                                                   walletConnectClientService: appContext.walletConnectClientService,
                                                    walletConnectServiceV2: appContext.walletConnectServiceV2)
         presenter.walletRemovedCallback = walletRemovedCallback
         vc.presenter = presenter
@@ -869,7 +868,7 @@ private extension UDRouter {
         let presenter = QRScannerViewPresenter(view: vc,
                                                selectedDomain: selectedDomain,
                                                dataAggregatorService: appContext.dataAggregatorService,
-                                               walletConnectService: appContext.walletConnectService, walletConnectServiceV2: appContext.walletConnectServiceV2,
+                                               walletConnectServiceV2: appContext.walletConnectServiceV2,
                                                networkReachabilityService: appContext.networkReachabilityService,
                                                udWalletsService: appContext.udWalletsService)
         presenter.qrRecognizedCallback = qrRecognizedCallback
@@ -892,7 +891,7 @@ private extension UDRouter {
         let vc = ConnectedAppsListViewController.nibInstance()
         let presenter = ConnectedAppsListViewPresenter(view: vc,
                                                        dataAggregatorService: appContext.dataAggregatorService,
-                                                       walletConnectService: appContext.walletConnectService, walletConnectServiceV2: appContext.walletConnectServiceV2)
+                                                       walletConnectServiceV2: appContext.walletConnectServiceV2)
         vc.presenter = presenter
         return vc
     }

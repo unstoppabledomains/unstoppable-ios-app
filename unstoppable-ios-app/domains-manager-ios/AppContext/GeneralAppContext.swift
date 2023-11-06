@@ -22,7 +22,6 @@ final class GeneralAppContext: AppContextProtocol {
     let domainTransactionsService: DomainTransactionsServiceProtocol
     let udDomainsService: UDDomainsServiceProtocol
     let udWalletsService: UDWalletsServiceProtocol
-    let walletConnectService: WalletConnectServiceProtocol
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
     let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol
     let walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
@@ -46,7 +45,6 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = DomainRecordsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()
     private(set) lazy var userDataService: UserDataServiceProtocol = UserDataService()
-    private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = WalletConnectClientService(udWalletsService: udWalletsService)
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var walletNFTsService: WalletNFTsServiceProtocol = WalletNFTsService()
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
@@ -56,8 +54,6 @@ final class GeneralAppContext: AppContextProtocol {
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
-        let walletConnectService = WalletConnectService()
-        self.walletConnectService = walletConnectService
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         self.walletConnectServiceV2 = walletConnectServiceV2
         permissionsService = PermissionsService()
@@ -66,7 +62,6 @@ final class GeneralAppContext: AppContextProtocol {
         
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
-        walletConnectService.setUIHandler(coreAppCoordinator)
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
         
         // Data aggregator
@@ -77,8 +72,7 @@ final class GeneralAppContext: AppContextProtocol {
         self.dataAggregatorService = dataAggregatorService
         
         // WC requests
-        wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
-                                                              walletConnectServiceV2: walletConnectServiceV2,
+        wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV2: walletConnectServiceV2,
                                                               walletConnectExternalWalletHandler: walletConnectExternalWalletHandler)
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
         

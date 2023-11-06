@@ -280,18 +280,9 @@
       }
     },
     {
-      "identity" : "walletconnectswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/unstoppabledomains/WalletConnectSwift.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "4d96634ab476252dece5aa1c0f8459ce35d4bdac"
-      }
-    },
-    {
       "identity" : "walletconnectswiftv2",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2.git",
+      "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2",
       "state" : {
         "revision" : "5199a4db3119540f98ab0d21d3c744f833ae2747",
         "version" : "1.6.17"

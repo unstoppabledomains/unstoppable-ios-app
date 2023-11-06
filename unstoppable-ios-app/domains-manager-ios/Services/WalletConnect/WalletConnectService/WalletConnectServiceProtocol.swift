@@ -7,26 +7,6 @@
 
 import Foundation
 import Boilertalk_Web3
-import WalletConnectSwift
-
-protocol WalletConnectServiceProtocol {
-    func setUIHandler(_ uiHandler: WalletConnectUIConfirmationHandler) 
-    func reconnectExistingSessions()
-    
-    func disconnect(app: WCConnectedAppsStorage.ConnectedApp) async
-    func disconnect(peerId: String)
-    func getConnectedAppsV1() -> [WCConnectedAppsStorage.ConnectedApp]
-    
-    func didLostOwnership(to domain: DomainItem)
-    
-    func completeTx(transaction: EthereumTransaction,
-                            chainId: Int) async throws -> EthereumTransaction
-    
-    func proceedSendTxViaWC(by udWallet: UDWallet,
-                                    during session: Session,
-                                    in request: Request,
-                                    transaction: EthereumTransaction) async throws -> Response
-}
 
 typealias WCExternalRequestResult = Result<Void, Error>
 protocol WalletConnectServiceConnectionListener: AnyObject {
@@ -59,7 +39,7 @@ final class WalletConnectServiceListenerHolder: Equatable {
 
 protocol WalletConnectUIConfirmationHandler: AnyObject {
     @discardableResult
-    func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectService.ConnectionUISettings
+    func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings
 }
 
 protocol WalletConnectUIErrorHandler: AnyObject {

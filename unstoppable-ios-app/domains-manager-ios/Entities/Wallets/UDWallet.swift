@@ -562,7 +562,7 @@ extension UDWallet {
     }
     
     var isExternalConnectionActive: Bool {
-        !(appContext.walletConnectClientService.findSessions(by: self.address).isEmpty && appContext.walletConnectServiceV2.findSessions(by: self.address).isEmpty)
+        !(appContext.walletConnectServiceV2.findSessions(by: self.address).isEmpty)
     }
 }
 

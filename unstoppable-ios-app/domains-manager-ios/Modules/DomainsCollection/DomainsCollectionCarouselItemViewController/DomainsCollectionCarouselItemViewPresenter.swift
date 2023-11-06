@@ -406,10 +406,7 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                                        parameters: [.wcAppName: app.appName,
                                                     .domainName: domain.name])
         Task {
-            switch app.appInfo.dAppInfoInternal {
-            case .version1(let session): appContext.walletConnectService.disconnect(peerId: session.dAppInfo.peerId)
-            case .version2(_): try await appContext.walletConnectServiceV2.disconnect(app: app)
-            }
+            try await appContext.walletConnectServiceV2.disconnect(app: app)
         }
     }
     

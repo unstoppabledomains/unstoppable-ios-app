@@ -15,12 +15,7 @@ struct FirebaseDomain: Codable {
     var parkingTrial: Bool?
     var domainId: Int
     var blockchain: String
-    var projectedBlockchain: String
-    var geminiCustody: String?
-    var geminiCustodyExpiresAt: Date?
     var name: String
     var ownerAddress: String
-    var logicalOwnerAddress: String
-    var type: String
 }
 

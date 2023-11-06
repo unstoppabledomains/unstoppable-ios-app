@@ -140,29 +140,11 @@ extension NotificationsService: UDWalletsServiceListener {
 extension NotificationsService: WalletConnectServiceConnectionListener {
     func didConnect(to app: UnifiedConnectAppInfo) {
         checkNotificationsPermissions()
-        
-        switch app.appInfo.dAppInfoInternal {
-        case .version1(let session):
-            guard let walletInfo = session.walletInfo else { return }
-
-            subscribeToWC(dAppName: app.appName,
-                          wcWalletPeerId: walletInfo.peerId,
-                          bridgeUrl: session.url.bridgeURL,
-                          domainName: app.domain.name)
-        case .version2:
-            return // TODO: - WC2 Send PN on its own
-        }
+        return // TODO: - WC2 Send PN on its own
     }
     
     func didDisconnect(from app: UnifiedConnectAppInfo) {
-        switch app.appInfo.dAppInfoInternal {
-        case .version1(let session):
-            guard let walletInfo = session.walletInfo else { return }
-            
-            unsubscribeToWC(wcWalletPeerId: walletInfo.peerId)
-        case .version2:
-            return // TODO: - Handled by WC2
-        }
+        return // TODO: - Handled by WC2
     }
     
     func didCompleteConnectionAttempt() { }
