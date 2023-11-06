@@ -17,7 +17,7 @@ final class LaunchDarklyService {
 
     init(mobileKey: String) {
         let id = UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
-        var contextBuilder = LDContextBuilder(key: id)
+        let contextBuilder = LDContextBuilder(key: id)
         guard case .success(let context) = contextBuilder.build() else {
             Debugger.printFailure("Failed to create context for Launch darkly", critical: true)
             return }

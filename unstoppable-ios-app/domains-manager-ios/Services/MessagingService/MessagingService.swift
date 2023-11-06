@@ -142,13 +142,18 @@ extension MessagingService: MessagingServiceProtocol {
  
     func createUserMessagingProfile(for domain: DomainDisplayInfo) async throws -> MessagingChatUserProfileDisplayInfo {
         let profile = try await createUserProfile(for: domain, serviceIdentifier: defaultServiceIdentifier)
-        _ = try? await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+        if Constants.isCommunitiesEnabled {
+            _ = try? await createUserProfile(for: domain, serviceIdentifier: communitiesServiceIdentifier)
+        }
         return profile
     }
     
     func isCommunitiesEnabled(for messagingProfile: MessagingChatUserProfileDisplayInfo) async -> Bool {
-        let communitiesProfile = try? await getUserCommunitiesProfile(for: messagingProfile)
-        return communitiesProfile != nil
+        if Constants.isCommunitiesEnabled {
+            let communitiesProfile = try? await getUserCommunitiesProfile(for: messagingProfile)
+            return communitiesProfile != nil
+        }
+        return false 
     }
     
     func createCommunityProfile(for messagingProfile: MessagingChatUserProfileDisplayInfo) async throws {

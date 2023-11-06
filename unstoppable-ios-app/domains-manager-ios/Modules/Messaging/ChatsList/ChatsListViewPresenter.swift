@@ -342,7 +342,6 @@ extension ChatsListViewPresenter: UDWalletsServiceListener {
     }
 }
 
-
 // MARK: - SceneActivationListener
 extension ChatsListViewPresenter: SceneActivationListener {
     func didChangeSceneActivationState(to state: SceneActivationState) {
@@ -511,7 +510,6 @@ private extension ChatsListViewPresenter {
         var chat = chatsList.first(where: { $0.id.contains(chatId) })
         if let community = communitiesList.first(where: { $0.id.contains(chatId) }) {
             chat = community
-            
         }
         guard let chat else { return }
         openChatWith(conversationState: .existingChat(chat))
@@ -865,11 +863,15 @@ private extension ChatsListViewPresenter {
     func getDataTypeSelectionUIConfiguration() -> ChatsListViewController.DataTypeSelectionUIConfiguration {
         let chatsBadge = chatsList.reduce(0, { $0 + $1.unreadMessagesCount })
         let inboxBadge = channels.reduce(0, { $0 + $1.unreadMessagesCount })
-        let communitiesBadge = communitiesList.reduce(0, { $0 + $1.unreadMessagesCount })
         
-        return .init(dataTypesConfigurations: [.init(dataType: .chats, badge: chatsBadge),
-                                               .init(dataType: .communities, badge: communitiesBadge),
-                                               .init(dataType: .channels, badge: inboxBadge)],
+        var configurations: [ChatsListViewController.DataTypeUIConfiguration] = [.init(dataType: .chats, badge: chatsBadge),
+                                                                                 .init(dataType: .channels, badge: inboxBadge)]
+        if Constants.isCommunitiesEnabled {
+            let communitiesBadge = communitiesList.reduce(0, { $0 + $1.unreadMessagesCount })
+            configurations.insert(.init(dataType: .communities, badge: communitiesBadge), at: 1)
+        }
+        
+        return .init(dataTypesConfigurations: configurations,
                      selectedDataType: selectedDataType) { [weak self] newSelectedDataType in
             self?.logButtonPressedAnalyticEvents(button: .messagingDataType, parameters: [.value: newSelectedDataType.rawValue])
             self?.selectedDataType = newSelectedDataType
@@ -881,6 +883,11 @@ private extension ChatsListViewPresenter {
         guard let profile = selectedProfileWalletPair?.profile,
               let nav = view?.cNavigationController else { return }
         
+        if case .existingChat(let messagingChatDisplayInfo) = conversationState,
+           messagingChatDisplayInfo.isCommunityChat,
+           !Constants.isCommunitiesEnabled {
+            return
+        }
         UDRouter().showChatScreen(profile: profile,
                                   conversationState: conversationState,
                                   in: nav)

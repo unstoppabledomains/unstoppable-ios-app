@@ -188,6 +188,9 @@ private extension MessagingService {
     }
     
     func updatedLocalChatsCommunities(forProfile profile: MessagingChatUserProfile) async throws -> [MessagingChat] {
+        if !Constants.isCommunitiesEnabled {
+            return []
+        }
         let apiService = try getAPIServiceWith(identifier: profile.serviceIdentifier)
         let remoteCommunities = try await apiService.getCommunitiesListForUser(profile)
         await storageService.saveChats(remoteCommunities)
