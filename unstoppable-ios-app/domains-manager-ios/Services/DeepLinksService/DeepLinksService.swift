@@ -93,20 +93,19 @@ private extension DeepLinksService {
         guard let path = components.path,
               let host = components.host else { return nil }
         
-        func validatedProfileName(_ profileName: String?) -> String? {
-            if profileName?.isValidDomainName() == true {
-                return profileName
-            }
-            return nil
-        }
-        
         let pathComponents = path.components(separatedBy: "/")
-        let udMeHosts: Set<String> = ["ud.me", "staging.ud.me"]
-        if udMeHosts.contains(host) {
+        if Constants.udMeHosts.contains(host) {
             return validatedProfileName(pathComponents.last)
         } else if pathComponents.contains("d"),
            pathComponents.count >= 3 {
             return validatedProfileName(pathComponents[2])
+        }
+        return nil
+    }
+    
+    func validatedProfileName(_ profileName: String?) -> String? {
+        if profileName?.isValidDomainName() == true {
+            return profileName
         }
         return nil
     }
