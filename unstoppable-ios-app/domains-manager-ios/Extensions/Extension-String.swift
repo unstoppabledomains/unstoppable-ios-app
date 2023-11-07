@@ -1031,7 +1031,7 @@ extension String {
     }
     
     static let messagingAdditionalSupportedTLDs: Set = [GlobalConstants.lensDomainTLD,
-                                                                GlobalConstants.coinbaseDomainTLD] // MARK: - Temporary urgent request
+                                                        GlobalConstants.coinbaseDomainTLD] // MARK: - Temporary urgent request
 
     func isValidDomainNameForMessagingSearch() -> Bool {
         guard let tld = self.getTldName() else { return false }
