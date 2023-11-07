@@ -755,7 +755,7 @@ private extension DomainsCollectionPresenter {
                 guard let domainWallet = walletsWithInfo.first(where: { domain.isOwned(by: $0.wallet) })?.wallet,
                       let walletInfo = await dataAggregatorService.getWalletDisplayInfo(for: domainWallet) else { return }
                 
-                await router.showDomainProfile(domain, wallet: domainWallet, walletInfo: walletInfo, dismissCallback: { [weak self] in self?.didCloseDomainProfile(domain) })
+                await router.showDomainProfile(domain, wallet: domainWallet, walletInfo: walletInfo, preRequestedAction: nil, dismissCallback: { [weak self] in self?.didCloseDomainProfile(domain) })
             case .parked:
                 let action = await UDRouter().showDomainProfileParkedActionModule(in: topView,
                                                                                   domain: domain,

@@ -34,6 +34,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
 
     private weak var view: (any DomainProfileViewProtocol)?
     private var refreshTransactionsTimer: Timer?
+    private var preRequestedAction: PreRequestedProfileAction?
     private let dataAggregatorService: DataAggregatorServiceProtocol
     private let domainRecordsService: DomainRecordsServiceProtocol
     private let domainTransactionsService: DomainTransactionsServiceProtocol
@@ -54,6 +55,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
          domain: DomainDisplayInfo,
          wallet: UDWallet,
          walletInfo: WalletDisplayInfo,
+         preRequestedAction: PreRequestedProfileAction?,
          sourceScreen: SourceScreen,
          dataAggregatorService: DataAggregatorServiceProtocol,
          domainRecordsService: DomainRecordsServiceProtocol,
@@ -62,6 +64,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
          externalEventsService: ExternalEventsServiceProtocol) {
         self.view = view
         self.sourceScreen = sourceScreen
+        self.preRequestedAction = preRequestedAction
         self.dataHolder = DataHolder(domain: domain,
                                      wallet: wallet,
                                      walletInfo: walletInfo)
@@ -1098,6 +1101,25 @@ private extension DomainProfileViewPresenter {
         dataHolder.mergeWith(cachedProfile: cachedProfile)
         loadBackgroundImage()
     }
+    
+    func openPreRequestedBadgeIfNeeded(using badgesInfo: BadgesInfo) {
+        Task {
+            switch preRequestedAction {
+            case .showBadge(let code):
+                if let view,
+                   let badge = badgesInfo.badges.first(where: { $0.code == code }) {
+                    let badgeDisplayInfo = DomainProfileBadgeDisplayInfo(badge: badge, isExploreWeb3Badge: false)
+                    let domainName = await dataHolder.domain.name
+                    await appContext.pullUpViewService.showBadgeInfoPullUp(in: view,
+                                                                           badgeDisplayInfo: badgeDisplayInfo,
+                                                                           domainName: domainName)
+                }
+            case .none:
+                return
+            }
+            self.preRequestedAction = nil
+        }
+    }
 }
 
 // MARK: - Private methods
@@ -1233,7 +1255,7 @@ private extension DomainProfileViewPresenter {
 }
 
 // MARK: - Get profile data
-extension DomainProfileViewPresenter {
+private extension DomainProfileViewPresenter {
     enum ProfileGetDataType: CaseIterable {
         case badges, privateProfile, transactions
     }
@@ -1245,6 +1267,7 @@ extension DomainProfileViewPresenter {
         case .badges:
             let badgesInfo = try await NetworkService().fetchBadgesInfo(for: domain)
             await dataHolder.set(badgesInfo: badgesInfo)
+            openPreRequestedBadgeIfNeeded(using: badgesInfo)
         case .privateProfile:
             let profileFields: Set<GetDomainProfileField> = [.profile, .records, .socialAccounts, .humanityCheck]
             let profile = try await NetworkService().fetchUserDomainProfile(for: domain,
@@ -1284,4 +1307,8 @@ extension DomainProfileViewPresenter {
     enum SourceScreen {
         case domainsCollection, domainsList
     }
+}
+
+enum PreRequestedProfileAction {
+    case showBadge(code: String)
 }

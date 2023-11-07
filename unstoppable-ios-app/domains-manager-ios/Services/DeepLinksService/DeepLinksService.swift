@@ -35,6 +35,8 @@ extension DeepLinksService: DeepLinksServiceProtocol {
             if !tryHandleUDDeepLink(incomingURL, params: params, receivedState: receivedState) {
                 tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
             }
+        } else if let domainName = getUDmeDomainName(in: components) {
+            tryHandleUDDomainProfileDeepLink(domainName: domainName, params: components.queryItems, receivedState: receivedState)
         } else  {
             tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
         }
@@ -87,6 +89,61 @@ extension DeepLinksService: WalletConnectServiceConnectionListener {
 
 // MARK: - Private methods
 private extension DeepLinksService {
+    func getUDmeDomainName(in components: NSURLComponents) -> String? {
+        guard let path = components.path,
+              let host = components.host else { return nil }
+        
+        let pathComponents = path.components(separatedBy: "/")
+        if Constants.udMeHosts.contains(host) {
+            return validatedProfileName(pathComponents.last)
+        } else if pathComponents.contains("d"),
+           pathComponents.count >= 3 {
+            return validatedProfileName(pathComponents[2])
+        }
+        return nil
+    }
+    
+    func validatedProfileName(_ profileName: String?) -> String? {
+        if profileName?.isValidDomainName() == true {
+            return profileName
+        }
+        return nil
+    }
+    
+    func tryHandleUDDomainProfileDeepLink(domainName: String, 
+                                          params: [URLQueryItem]?,
+                                          receivedState: ExternalEventReceivedState) {
+        Task {
+            
+            var preRequestedAction: PreRequestedProfileAction?
+            if let params,
+               let badgeCode = findValue(in: params, forKey: .openBadgeCode) {
+                preRequestedAction = .showBadge(code: badgeCode)
+            }
+            
+            let userDomains = await appContext.dataAggregatorService.getDomainsDisplayInfo()
+            let walletsWithInfo = await appContext.dataAggregatorService.getWalletsWithInfo()
+            if let domain = userDomains.first(where: { $0.name == domainName }),
+               let walletWithInfo = walletsWithInfo.first(where: { $0.wallet.owns(domain: domain) }),
+               let walletInfo = walletWithInfo.displayInfo {
+                notifyWaitersWith(event: .showUserDomainProfile(domain: domain,
+                                                                wallet: walletWithInfo.wallet,
+                                                                walletInfo: walletInfo,
+                                                                action: preRequestedAction),
+                                  receivedState: receivedState)
+            } else if let userDomainDisplayInfo = userDomains.first,
+                      let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: userDomainDisplayInfo.name),
+                      let globalRR = try? await NetworkService().fetchGlobalReverseResolution(for: domainName) {
+                let publicDomainDisplayInfo = PublicDomainDisplayInfo(walletAddress: globalRR.address,
+                                                                      name: domainName)
+                notifyWaitersWith(event: .showPublicDomainProfile(publicDomainDisplayInfo: publicDomainDisplayInfo,
+                                                                  viewingDomain: viewingDomain,
+                                                                  action: preRequestedAction),
+                                  receivedState: receivedState)
+            }
+        }
+    }
+    
     func tryHandleUDDeepLink(_ incomingURL: URL, params: [URLQueryItem], receivedState: ExternalEventReceivedState) -> Bool {
         Debugger.printInfo(topic: .UniversalLink, "Handling Universal Link \(incomingURL.absoluteURL)")
         
@@ -173,5 +230,6 @@ private extension DeepLinksService {
         case operation
         case email, code
         case uri
+        case openBadgeCode
     }
 }

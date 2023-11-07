@@ -20,6 +20,10 @@
                             "email": "*"
                         },
                         "comment": "Matches any URL whose path starts with /mobile/ and which has query items 'operation' and 'email' and a value of any number of characters"
+                    },
+                    {
+                        "/": "/d/*",
+                        "comment": "Matches any URL whose path starts with /d/ to handle domain profiles"
                     }
                 ]
             }

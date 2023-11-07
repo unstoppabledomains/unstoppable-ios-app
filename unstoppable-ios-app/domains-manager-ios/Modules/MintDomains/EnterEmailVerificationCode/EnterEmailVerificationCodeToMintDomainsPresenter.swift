@@ -91,6 +91,8 @@ extension EnterEmailVerificationCodeToMintDomainsPresenter: DeepLinkServiceListe
             Task {
                 await view?.setCode(code)
             }
+        default:
+            return 
         }
     }
 }

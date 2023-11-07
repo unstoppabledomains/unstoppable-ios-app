@@ -54,6 +54,7 @@ struct Constants {
     static let coinbaseDomainTLD: String = "id"
     static let swiftUIPreviewDevices = ["iPhone 14 Pro", "iPhone 14 Pro Max", "iPhone SE (1st generation)", "iPhone SE (3rd generation)", "iPhone 13 mini"]
     static let defaultMessagingServiceIdentifier: MessagingServiceIdentifier = .xmtp
+    static let udMeHosts: Set<String> = ["ud.me", "staging.ud.me"]
     
     
     // Shake to find
