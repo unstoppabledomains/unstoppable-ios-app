@@ -101,8 +101,8 @@ private extension DeepLinksService {
         }
         
         let pathComponents = path.components(separatedBy: "/")
-        
-        if host == "ud.me" {
+        let udMeHosts: Set<String> = ["ud.me", "staging.ud.me"]
+        if udMeHosts.contains(host) {
             return validatedProfileName(pathComponents.last)
         } else if pathComponents.contains("d"),
            pathComponents.count >= 3 {

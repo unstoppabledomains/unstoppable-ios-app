@@ -29,7 +29,7 @@ struct NetworkConfig {
     static var baseDomainProfileUrl: String {
         let isTestnetUsed = User.instance.getSettings().isTestnetUsed
         if isTestnetUsed {
-            return "https://ud-staging.com/d/"
+            return "https://staging.ud.me/"
         }
         return "https://ud.me/"
     }
