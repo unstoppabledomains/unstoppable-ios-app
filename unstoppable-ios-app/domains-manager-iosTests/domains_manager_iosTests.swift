@@ -42,7 +42,19 @@ class APIRequestTests: XCTestCase {
         let apiRequestClaimDomains = try! APIRequestBuilder().users(email: email).secure(code: code).mint(domains, stripeIntent: nil).build()
         XCTAssertEqual(urlClaim, apiRequestClaimDomains.url.absoluteString)
         XCTAssertEqual("Bearer \(code)", apiRequestClaimDomains.headers["Authorization"] )
-        XCTAssertEqual(apiRequestClaimDomains.body, "{\"claim\":{\"domains\":[{\"name\":\"toclaim.crypto\",\"owner\":\"0xabcdef012345\"}]}}")
+        
+        guard let bodyData = apiRequestClaimDomains.body.data(using: .utf8),
+              let json = try! JSONSerialization.jsonObject(with: bodyData) as? [String: Any],
+              let claimValue = json["claim"] as? [String: Any],
+              let domainsValue = (claimValue["domains"] as! [[String: String]]).first,
+              let ownerValue = domainsValue["owner"],
+              let nameValue = domainsValue["name"] else {
+            XCTFail("Fail to parse apiRequestClaimDomains")
+            return
+        }
+        
+        XCTAssertEqual(ownerValue, "0xabcdef012345")
+        XCTAssertEqual(nameValue, "toclaim.crypto")
         
         // non-correct requests
         let apiRequestAuthenticate_No_Users = try? APIRequestBuilder().authenticate().build()
