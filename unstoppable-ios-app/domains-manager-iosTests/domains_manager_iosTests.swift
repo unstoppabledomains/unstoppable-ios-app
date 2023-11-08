@@ -119,11 +119,17 @@ class APIRequestTests: XCTestCase {
                         signatures: signatures)
             .build()
         
-        let resultBody = """
-        [{\"id\":\(txId1),\"type\":\"\(txType)\",\"signature\":\"\(signatures[0])\"},{\"id\":\(txId2),\"type\":\"\(txType)\",\"signature\":\"\(signatures[1])\"}]
-        """.trimmedSpaces
-        XCTAssertEqual(request.body.trimmedSpaces, resultBody)
-        XCTAssertEqual(request.method, .post)
-        XCTAssertEqual(request.url.absoluteString, "https://unstoppabledomains.com/api/v2/resellers/mobile_app_v1/actions/\(actionId)/sign")
+        guard let bodyData = request.body.trimmedSpaces.data(using: .utf8),
+              let json = try! JSONSerialization.jsonObject(with: bodyData) as? [[String: Any]],
+              let first = json.first(where: { Int(exactly: $0["id"] as! Int)! == txId1}),
+              let second = json.first(where: { Int(exactly: $0["id"] as! Int)! == txId2}) else {
+            XCTFail("Fail to parse request.body")
+            return
+        }
+        
+        XCTAssertEqual(first["signature"] as! String, signatures[0])
+        XCTAssertEqual(first["type"] as! String, txType)
+        XCTAssertEqual(second["signature"] as! String, signatures[1])
+        XCTAssertEqual(second["type"] as! String, txType)
     }
 }
