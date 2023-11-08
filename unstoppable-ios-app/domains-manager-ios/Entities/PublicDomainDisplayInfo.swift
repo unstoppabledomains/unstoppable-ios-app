@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PublicDomainDisplayInfo {
+struct PublicDomainDisplayInfo: Equatable {
     let walletAddress: String
     let name: String
 }

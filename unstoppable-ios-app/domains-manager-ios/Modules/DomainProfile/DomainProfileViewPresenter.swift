@@ -1309,6 +1309,6 @@ extension DomainProfileViewPresenter {
     }
 }
 
-enum PreRequestedProfileAction {
+enum PreRequestedProfileAction: Equatable {
     case showBadge(code: String)
 }
