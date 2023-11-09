@@ -816,7 +816,7 @@ private extension ChatViewPresenter {
         
         switch message.senderType {
         case .thisUser:
-            view.openLink(.generic(url: url.absoluteString))
+            openLinkOrDomainProfile(url)
         case .otherUser:
             Task {
                 do {
@@ -825,12 +825,37 @@ private extension ChatViewPresenter {
                     
                     switch action {
                     case .handle:
-                        view.openLink(.generic(url: url.absoluteString))
+                        openLinkOrDomainProfile(url)
                     case .block:
                         try await messagingService.setUser(in: chat, blocked: true)
                         view.cNavigationController?.popViewController(animated: true)
                     }
                 } catch { }
+            }
+        }
+    }
+    
+    func openLinkOrDomainProfile(_ url: URL) {
+        guard let view else { return }
+        
+        Task {
+            let showDomainResult = await DomainProfileLinkValidator.getShowDomainProfileResultFor(url: url)
+            
+            switch showDomainResult {
+            case .none:
+                view.openLink(.generic(url: url.absoluteString))
+            case .showUserDomainProfile(let domain, let wallet, let walletInfo, let action):
+                await UDRouter().showDomainProfileScreen(in: view,
+                                                         domain: domain,
+                                                         wallet: wallet,
+                                                         walletInfo: walletInfo,
+                                                         preRequestedAction: action,
+                                                         dismissCallback: nil)
+            case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):
+                UDRouter().showPublicDomainProfile(of: publicDomainDisplayInfo,
+                                                   viewingDomain: viewingDomain,
+                                                   preRequestedAction: action,
+                                                   in: view)
             }
         }
     }
