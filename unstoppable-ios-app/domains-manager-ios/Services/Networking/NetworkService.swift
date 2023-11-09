@@ -62,6 +62,19 @@ struct NetworkService {
         }
     }
     
+    static var authAPIKey: String {
+        let isTestnetUsed = User.instance.getSettings().isTestnetUsed
+        if isTestnetUsed {
+            return NetworkService.testnetMetadataAPIKey
+        } else {
+            return NetworkService.mainnetMetadataAPIKey
+        }
+    }
+    
+    static var authHeader: [String : String] {
+        return ["Authorization" : "Bearer \(authAPIKey)"]
+    }
+    
     func makeDecodableAPIRequest<T: Decodable>(_ apiRequest: APIRequest,
                                                using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
@@ -338,18 +351,9 @@ extension NetworkService {
         let url = URL(string: "\(NetworkConfig.baseResolveUrl)/reverse/\(address)")!
         let data = try await NetworkService().fetchData(for: url,
                                                         method: .get,
-                                                        extraHeaders: MetadataNetworkConfig.authHeader)
+                                                        extraHeaders: NetworkService.authHeader)
         let response = try JSONDecoder().decode(ResolveDomainsApiResponse.self, from: data)
         return response.meta.domain
-    }
-    
-    func fetchDomainOwner(for domainName: DomainName) async throws -> HexAddress? {
-        let url = URL(string: "\(NetworkConfig.baseResolveUrl)/domains/\(domainName)")!
-        let data = try await NetworkService().fetchData(for: url,
-                                                        method: .get,
-                                                        extraHeaders: MetadataNetworkConfig.authHeader)
-        let response = try JSONDecoder().decode(ResolveDomainsApiResponse.self, from: data)
-        return response.meta.owner
     }
     
     /// This function will return UD/ENS/Null name and corresponding PFP if available OR throw 404
@@ -358,8 +362,7 @@ extension NetworkService {
             guard let url = URL(string: "\(NetworkConfig.baseProfileUrl)/profile/resolve/\(identifier)") else { return nil } // User's input contains not allowed characters
             
             let data = try await NetworkService().fetchData(for: url,
-                                                            method: .get,
-                                                            extraHeaders: MetadataNetworkConfig.authHeader)
+                                                            method: .get)
             let response = try JSONDecoder().decode(GlobalRR.self, from: data)
             return response
         } catch NetworkLayerError.badResponseOrStatusCode(let code, _) where code == 404 { // 404 means no RR domain or ENS domain
