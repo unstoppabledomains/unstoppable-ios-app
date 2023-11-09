@@ -228,7 +228,7 @@ private extension MockUDWalletsService {
                                                                  mobile: .init(native: "", universal: ""),
                                                                  isV2Compatible: true))
         wallet.aliasName = wallet.address
-        
+        (appContext.walletConnectServiceV2 as! MockWalletConnectServiceV2).saveWallet(wallet)
         return wallet
     }
     
