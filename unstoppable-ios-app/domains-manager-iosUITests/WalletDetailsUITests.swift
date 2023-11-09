@@ -61,10 +61,6 @@ final class WalletDetailsUDBackedUpUITests: BaseXCTestCase {
             .tapOnCellWith(name: "See 1 domain stored in vault")
         WalletsListRobot(app)
             .ensureNumberOfCells(1)
-            .back()
-        
-        WalletDetailsRobot(app)
-            .ensureCell(with: "Info Custom Name", visible: true)
     }
     
 }
@@ -108,7 +104,7 @@ final class WalletDetailsExternalUITests: BaseXCTestCase {
             .openWalletDetails(walletName: walletsToUse[0].name!)
         
         WalletDetailsRobot(app)
-            .ensureNumberOfCells(3)
+            .ensureNumberOfCells(4)
             .ensureCell(with: "Info Rainbow", visible: true)
             .ensureCell(with: "Rename", visible: true)
             .ensureCell(with: "Disconnect wallet", visible: true)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DeepLinkEvent {
+enum DeepLinkEvent: Equatable {
     case mintDomainsVerificationCode(email: String, code: String)
     case showUserDomainProfile(domain: DomainDisplayInfo, wallet: UDWallet, walletInfo: WalletDisplayInfo, action: PreRequestedProfileAction?)
     case showPublicDomainProfile(publicDomainDisplayInfo: PublicDomainDisplayInfo, viewingDomain: DomainItem, action: PreRequestedProfileAction?)

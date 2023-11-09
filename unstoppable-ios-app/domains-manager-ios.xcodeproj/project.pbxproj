@@ -542,6 +542,7 @@
 		C6637A6A2810074D0000AE56 /* SecurityWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A692810074D0000AE56 /* SecurityWindow.swift */; };
 		C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */; };
 		C6637A7528100D3A0000AE56 /* LaunchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6637A7028100D3A0000AE56 /* LaunchViewController.xib */; };
+		C663D1AC2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D1AB2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift */; };
 		C663D1AE2AFCA022003C54E0 /* DomainProfileLinkValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */; };
 		C66430FD28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66430FA28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift */; };
 		C664310128D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66430FB28D8B85800A9C734 /* ConnectExternalWalletViewController.swift */; };
@@ -1701,6 +1702,7 @@
 		C6637A692810074D0000AE56 /* SecurityWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityWindow.swift; sourceTree = "<group>"; };
 		C6637A6F28100D3A0000AE56 /* LaunchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchViewController.swift; sourceTree = "<group>"; };
 		C6637A7028100D3A0000AE56 /* LaunchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LaunchViewController.xib; sourceTree = "<group>"; };
+		C663D1AB2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWalletConnectServiceV2.swift; sourceTree = "<group>"; };
 		C663D1AD2AFCA022003C54E0 /* DomainProfileLinkValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileLinkValidator.swift; sourceTree = "<group>"; };
 		C66430FA28D8B85800A9C734 /* ConnectExternalWalletViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectExternalWalletViewPresenter.swift; sourceTree = "<group>"; };
 		C66430FB28D8B85800A9C734 /* ConnectExternalWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectExternalWalletViewController.swift; sourceTree = "<group>"; };
@@ -2322,6 +2324,7 @@
 			isa = PBXGroup;
 			children = (
 				290A60412950A89900882109 /* WalletConnectServiceV2.swift */,
+				C663D1AB2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift */,
 				291A9C6929E444CF00527FF1 /* WC_v1+v2.swift */,
 				295506EF2954D14400EDA42D /* WCConnectedAppsStorageV2.swift */,
 				29150FBA2975DA4D00169A1A /* PushSubscriberInfo.swift */,
@@ -6530,6 +6533,7 @@
 				C6D6E4F72817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
 				C6526DD429D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
 				C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
+				C663D1AC2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift in Sources */,
 				C6D3B9C42A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */,
 				C685A96F2840A59B00E54044 /* TextBlackButton.swift in Sources */,
 				C66435E0288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift in Sources */,

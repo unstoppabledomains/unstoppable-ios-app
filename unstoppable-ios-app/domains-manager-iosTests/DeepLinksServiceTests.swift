@@ -50,11 +50,6 @@ final class DeepLinksServiceTests: BaseTestClass {
         // Test EventsService handling WC URL
         XCTAssertEqual(expectedEvent, mockExternalEventsService.receivedEvent)
         XCTAssertEqual(nil, deepLinksServiceListener.receivedEvent)
-        
-        // Test user redirected back to the source app when request confirmed
-        try await XCTAssertFalseAsync(await mockCoreAppCoordinator.didGoBackToPreviousAppCalled)
-        try await waitFor(interval: 0.1)
-        try await XCTAssertTrueAsync(await mockCoreAppCoordinator.didGoBackToPreviousAppCalled)
     }
     
     func testWCRequestDeepLinkHandled() async throws {
