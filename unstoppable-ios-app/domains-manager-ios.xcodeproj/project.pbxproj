@@ -555,8 +555,6 @@
 		C66435C5288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66435C0288E58E90098E1B8 /* AppGroupsBridgeService.swift */; };
 		C66435C7288E59F30098E1B8 /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C645130B280808ED00413C51 /* Codable.swift */; };
 		C66435CF288ECC370098E1B8 /* PushNotificationsInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66435CE288ECC370098E1B8 /* PushNotificationsInfo.swift */; };
-		C66435D4288EE4A00098E1B8 /* MetadataNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66435D3288EE4A00098E1B8 /* MetadataNetworkConfig.swift */; };
-		C66435D9288EF0520098E1B8 /* MetadataEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66435D8288EF0520098E1B8 /* MetadataEndpoint.swift */; };
 		C66435E0288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66435DE288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift */; };
 		C66435E4288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C66435DF288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.xib */; };
 		C664B6432913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C664B6422913A6A400A76154 /* CollectionTextFooterReusableView.swift */; };
@@ -1714,8 +1712,6 @@
 		C66435BC288E57550098E1B8 /* NotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		C66435C0288E58E90098E1B8 /* AppGroupsBridgeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroupsBridgeService.swift; sourceTree = "<group>"; };
 		C66435CE288ECC370098E1B8 /* PushNotificationsInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsInfo.swift; sourceTree = "<group>"; };
-		C66435D3288EE4A00098E1B8 /* MetadataNetworkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataNetworkConfig.swift; sourceTree = "<group>"; };
-		C66435D8288EF0520098E1B8 /* MetadataEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEndpoint.swift; sourceTree = "<group>"; };
 		C66435DE288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionEmptyListCell.swift; sourceTree = "<group>"; };
 		C66435DF288F8EEC0098E1B8 /* DomainsCollectionEmptyListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionEmptyListCell.xib; sourceTree = "<group>"; };
 		C664B6422913A6A400A76154 /* CollectionTextFooterReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionTextFooterReusableView.swift; sourceTree = "<group>"; };
@@ -2564,8 +2560,6 @@
 				306DB27126936C57009D95DE /* Endpoint.swift */,
 				307B1C7D25FA258F007B14C3 /* Env-Demo.swift */,
 				29DE3B1228913DF500655675 /* Env.swift */,
-				C66435D8288EF0520098E1B8 /* MetadataEndpoint.swift */,
-				C66435D3288EE4A00098E1B8 /* MetadataNetworkConfig.swift */,
 				3091944F2582B4DD00D132B9 /* MobileAPIAccess.swift */,
 				30AE8520257837B5003A0142 /* NetworkConfig.swift */,
 				C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */,
@@ -6778,7 +6772,6 @@
 				307F82B82677532D0070A9A6 /* PaymentConfirmationDelegate.swift in Sources */,
 				C63F1D1128AF31D5000A5C12 /* AnalyticsService.swift in Sources */,
 				C63902BD28E2FCF200E16B42 /* ExternalWalletConnectionService.swift in Sources */,
-				C66435D4288EE4A00098E1B8 /* MetadataNetworkConfig.swift in Sources */,
 				C671E3AA28FEA2D400A2B3A0 /* ManageDomainTopInfoCell.swift in Sources */,
 				C6D6E5452819388D008C66BB /* BaseCollectionViewPresenterProtocol.swift in Sources */,
 				C685D81A2AA978DE00212879 /* UDBTSearchView.swift in Sources */,
@@ -7120,7 +7113,6 @@
 				C674598F280E9CA20074CBE5 /* WebViewController.swift in Sources */,
 				C6D0F442283F870F00444921 /* MintDomainsConfigurationListHeaderView.swift in Sources */,
 				C6A2D5BC2850848500327C47 /* PaymentTransactionRequestConfirmationView.swift in Sources */,
-				C66435D9288EF0520098E1B8 /* MetadataEndpoint.swift in Sources */,
 				3018AED227EE45B400E8C37D /* CreatePasswordViewController.swift in Sources */,
 				C629A4672A3FF4A600A528A1 /* ChatImageCell.swift in Sources */,
 				C63A351028F0071B0057D34B /* DomainProfileViewController.swift in Sources */,
