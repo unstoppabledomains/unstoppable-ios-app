@@ -107,3 +107,14 @@ extension String {
         return String(format: "It took %.2f sec", elapsed)
     }
 }
+
+extension String {
+    var urlHTTPSString: String {
+        if self.prefix(5) == "http:" {
+            return self.replacingOccurrences(of: "http:", with: "https:")
+        } else if self.prefix(8) != "https://" {
+            return "https://" + self
+        }
+        return self
+    }
+}
