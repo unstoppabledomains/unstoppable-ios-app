@@ -16,9 +16,12 @@ class CoreDataService {
     let coreDataQueue = DispatchQueue(label: "com.coredata.service")
     private(set) var backgroundContext: NSManagedObjectContext!
     
-    init() {
+    init(inMemory: Bool = false) {
         let dataModelName = "CoreDataModel"
         persistentContainer = NSPersistentContainer(name: dataModelName)
+        if inMemory {
+            persistentContainer.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+        }
         loadStore()
     }
     
