@@ -32,6 +32,11 @@ extension XCTest {
         XCTAssertNil(val)
     }
     
+    public func XCTAssertNotNilAsync(_ expression: @autoclosure () async throws -> Any?, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) async throws {
+        let val = try await expression()
+        XCTAssertNotNil(val)
+    }
+    
     public func XCTAssertThrowsErrorAsync(_ expression: @autoclosure () async throws -> Any?, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) async throws {
         do {
             let val = try await expression()

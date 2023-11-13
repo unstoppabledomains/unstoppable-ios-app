@@ -26,14 +26,14 @@ class CoreDataMessagingStorageServiceTests: XCTestCase {
     }
     
     func testStressCreateDeleteEntitiesSingleThread() async throws {
-        await runCreateDeleteOperationsOnSingleThread()
+        try await runCreateDeleteOperationsOnSingleThread()
     }
     
     func testStressCreateDeleteEntitiesMultipleThread() async throws {
         try await withThrowingTaskGroup(of: Void.self) { group in
             for i in 0..<5 {
                 group.addTask {
-                    await self.runCreateDeleteOperationsOnSingleThread(id: i)
+                    try await self.runCreateDeleteOperationsOnSingleThread(id: i)
                 }
             }
             
@@ -43,12 +43,88 @@ class CoreDataMessagingStorageServiceTests: XCTestCase {
         }
     }
     
+    func testLastMessageWontExistInDB() async throws {
+        let user = createUsers()[0]
+        await coreDataService.saveUserProfile(user)
+        var chat = createChatsFor(profile: user)[0]
+        let message = createMessages(in: chat)[0]
+        chat.displayInfo.lastMessage = message.displayInfo
+        await coreDataService.saveChats([chat])
+        
+        let coreDataChat = try await coreDataService.getChatsFor(profile: user)[0]
+        XCTAssertNil(coreDataChat.displayInfo.lastMessage)
+    }
     
+    func testLastMessageNotYetExistInDB() async throws {
+        let user = createUsers()[0]
+        await coreDataService.saveUserProfile(user)
+        var chat = createChatsFor(profile: user)[0]
+        let message = createMessages(in: chat)[0]
+        chat.displayInfo.lastMessage = message.displayInfo
+        await coreDataService.saveChats([chat])
+        await coreDataService.saveMessages([message])
+        
+        let coreDataChat = try await coreDataService.getChatsFor(profile: user)[0]
+        XCTAssertNotNil(coreDataChat.displayInfo.lastMessage)
+    }
+    
+    func testLastMessageChatNotYetExistInDB() async throws {
+        let user = createUsers()[0]
+        await coreDataService.saveUserProfile(user)
+        var chat = createChatsFor(profile: user)[0]
+        let message = createMessages(in: chat)[0]
+        chat.displayInfo.lastMessage = message.displayInfo
+        await coreDataService.saveMessages([message])
+        await coreDataService.saveChats([chat])
+        
+        let coreDataChat = try await coreDataService.getChatsFor(profile: user)[0]
+        XCTAssertNotNil(coreDataChat.displayInfo.lastMessage)
+    }
+    
+    func testLastMessageDeleted() async throws {
+        let user = createUsers()[0]
+        await coreDataService.saveUserProfile(user)
+        var chat = createChatsFor(profile: user)[0]
+        let message = createMessages(in: chat)[0]
+        chat.displayInfo.lastMessage = message.displayInfo
+        await coreDataService.saveMessages([message])
+        await coreDataService.saveChats([chat])
+        
+        let coreDataChat = try await coreDataService.getChatsFor(profile: user)[0]
+        XCTAssertNotNil(coreDataChat.displayInfo.lastMessage)
+        
+        coreDataService.deleteMessage(message.displayInfo)
+        let coreDataChat2 = try await coreDataService.getChatsFor(profile: user)[0]
+        XCTAssertNil(coreDataChat2.displayInfo.lastMessage)
+    }
+    
+    func testLastMessageReplaced() async throws {
+        let user = createUsers()[0]
+        await coreDataService.saveUserProfile(user)
+        var chat1 = createChatsFor(profile: user)[0]
+        let message = createMessages(in: chat1)[0]
+        chat1.displayInfo.lastMessage = message.displayInfo
+        await coreDataService.saveMessages([message])
+        await coreDataService.saveChats([chat1])
+        
+        try await XCTAssertEqualAsync(1, try await coreDataService.getChatsFor(profile: user).count)
+        try await XCTAssertNotNilAsync(try await coreDataService.getChatsFor(profile: user)[0].displayInfo.lastMessage)
+        
+        let message2 = createMessages(in: chat1)[0]
+        try await coreDataService.replaceMessage(message, with: message2)
+        try await XCTAssertEqualAsync(1, try await coreDataService.getMessagesFor(chat: chat1, before: nil, limit: .max).count)
+        try await XCTAssertNilAsync(try await coreDataService.getChatsFor(profile: user)[0].displayInfo.lastMessage)
+        
+        var chat2 = createChatsFor(profile: user)[0]
+        chat2.displayInfo.lastMessage = message2.displayInfo
+        try await coreDataService.replaceChat(chat1, with: chat2)
+        try await XCTAssertEqualAsync(1, try await coreDataService.getChatsFor(profile: user).count)
+    }
 }
 
 // MARK: - Private methods
 private extension CoreDataMessagingStorageServiceTests {
-    func runCreateDeleteOperationsOnSingleThread(id: Int = 0) async {
+    func runCreateDeleteOperationsOnSingleThread(id: Int = 0) async throws {
         Debugger.printInfo("Will run operation \(id)")
         let users = createUsers(4)
         let chats = users.reduce([MessagingChat](), { $0 + createChatsFor(profile: $1, count: 20) })
@@ -65,7 +141,21 @@ private extension CoreDataMessagingStorageServiceTests {
         await coreDataService.saveMessages(messages)
         Debugger.printInfo("Did save messages for operation \(id)")
         
-        for chat in chats {
+        let coreDataUsers = try coreDataService.getAllUserProfiles()
+        
+        var coreDataChats: [MessagingChat] = []
+        for profile in coreDataUsers {
+            let chats = try await coreDataService.getChatsFor(profile: profile)
+            coreDataChats.append(contentsOf: chats)
+        }
+        
+        var coreDataMessages: [MessagingChatMessage] = []
+        for chat in coreDataChats {
+            let messages = try await coreDataService.getMessagesFor(chat: chat, before: nil, limit: 1000)
+            coreDataMessages.append(contentsOf: messages)
+        }
+        
+        for chat in coreDataChats {
             coreDataService.deleteChat(chat, filesService: messagingFilesService)
         }
         Debugger.printInfo("Did delete chats for operation \(id)")
@@ -74,7 +164,7 @@ private extension CoreDataMessagingStorageServiceTests {
 
 // MARK: - Private methods
 private extension CoreDataMessagingStorageServiceTests {
-    func createUsers(_ count: Int = 2) -> [MessagingChatUserProfile] {
+    func createUsers(_ count: Int = 1) -> [MessagingChatUserProfile] {
         var users: [MessagingChatUserProfile] = []
         for i in 0..<count {
             let id = UUID().uuidString
@@ -90,7 +180,7 @@ private extension CoreDataMessagingStorageServiceTests {
     }
     
     func createChatsFor(profile: MessagingChatUserProfile,
-                        count: Int = 2) -> [MessagingChat] {
+                        count: Int = 1) -> [MessagingChat] {
         var chats = [MessagingChat]()
         
         for i in 0..<count {
@@ -112,7 +202,7 @@ private extension CoreDataMessagingStorageServiceTests {
         return chats
     }
     
-    func createMessages(in chat: MessagingChat, count: Int = 2) -> [MessagingChatMessage] {
+    func createMessages(in chat: MessagingChat, count: Int = 1) -> [MessagingChatMessage] {
         var messages = [MessagingChatMessage]()
 
         for i in 0..<count {
