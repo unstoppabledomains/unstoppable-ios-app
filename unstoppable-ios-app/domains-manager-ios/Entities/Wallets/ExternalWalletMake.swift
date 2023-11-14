@@ -100,7 +100,7 @@ extension ExternalWalletMake {
         case .CryptoComDeFiWallet: return UIImage(named: "walletCryptoComDeFi")!
         case .Zerion: return UIImage(named: "walletZerion")!
         case .Mew: return .cancelCircleIcon
-        case .OKX: return .cancelCircleIcon
+        case .OKX: return UIImage(named: "walletOKX")!
         default: return .init()
         }
     }
