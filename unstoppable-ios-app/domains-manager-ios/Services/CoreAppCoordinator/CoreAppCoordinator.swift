@@ -108,7 +108,11 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
             case .showDomainProfile(let domain, let walletWithInfo):
                 guard let walletInfo = walletWithInfo.displayInfo else { throw CoordinatorError.incorrectArguments }
                 
-                await router.showDomainProfile(domain, wallet: walletWithInfo.wallet, walletInfo: walletInfo, dismissCallback: nil)
+                await router.showDomainProfile(domain,
+                                               wallet: walletWithInfo.wallet,
+                                               walletInfo: walletInfo,
+                                               preRequestedAction: nil,
+                                               dismissCallback: nil)
             case .primaryDomainMinted(let primaryDomain):
                 await router.primaryDomainMinted(primaryDomain)
             case .showHomeScreenList:
@@ -119,8 +123,8 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
                 pullUpViewService.showLoadingIndicator(in: topVC)
             case .showChat(let chatId, let profile):
                 await router.showChat(chatId, profile: profile)
-            case .showNewChat(let userInfo, let profile):
-                await router.showChatWith(options: .newChat(userInfo: userInfo), profile: profile)
+            case .showNewChat(let description, let profile):
+                await router.showChatWith(options: .newChat(description: description), profile: profile)
             case .showChannel(let channelId, let profile):
                 await router.showChannel(channelId, profile: profile)
             case .showChatsList(let profile):
@@ -135,7 +139,7 @@ extension CoreAppCoordinator: ExternalEventsUIHandler {
 // MARK: - WalletConnectUIHandler
 extension CoreAppCoordinator: WalletConnectUIConfirmationHandler, WalletConnectUIErrorHandler {
     @discardableResult
-    func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectService.ConnectionUISettings {
+    func getConfirmationToConnectServer(config: WCRequestUIConfiguration) async throws -> WalletConnectServiceV2.ConnectionUISettings {
         func awaitPullUpDisappear() async throws {
             try await Task.sleep(seconds: 0.2)
         }
@@ -280,6 +284,10 @@ private extension CoreAppCoordinator {
             switch event {
             case .mintDomainsVerificationCode(let email, let code):
                 router.runMintDomainsFlow(with: .deepLink(email: email, code: code))
+            case .showUserDomainProfile(let domain, let wallet, let walletInfo, let action):
+                Task { await router.showDomainProfile(domain, wallet: wallet, walletInfo: walletInfo, preRequestedAction: action, dismissCallback: nil) }
+            case .showPublicDomainProfile(let publicDomainDisplayInfo, let viewingDomain, let action):
+                Task { await router.showPublicDomainProfileFromDeepLink(of: publicDomainDisplayInfo, viewingDomain: viewingDomain, preRequestedAction: action) }
             }
         default: return
         }

@@ -26,7 +26,7 @@ extension RecordChangeType: PullUpCollectionViewCellItem, DomainProfileSectionCh
                 return await appContext.imageLoadingService.loadImage(from: .currency(record.coin,
                                                                                       size: .default,
                                                                                       style: .gray),
-                                                                      downsampleDescription: nil) ?? .init()
+                                                                      downsampleDescription: .icon) ?? .init()
             }
         }
     }

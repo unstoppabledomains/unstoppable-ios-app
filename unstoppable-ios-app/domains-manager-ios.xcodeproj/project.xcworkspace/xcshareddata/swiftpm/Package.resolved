@@ -82,6 +82,15 @@
       }
     },
     {
+      "identity" : "ios-client-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/launchdarkly/ios-client-sdk.git",
+      "state" : {
+        "revision" : "ce4a8459fcff7d4c9770798d5a1e6049dcebc168",
+        "version" : "9.1.1"
+      }
+    },
+    {
       "identity" : "objectivepgp",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/krzyzanowskim/ObjectivePGP.git",
@@ -104,8 +113,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ethereum-push-notification-service/push-swift-sdk",
       "state" : {
-        "revision" : "186e4236d7c334ef8c86a04ba81f3aa3610680aa",
-        "version" : "0.6.2"
+        "revision" : "c560b33e29e439444850a1f413503fe7ae07d54c",
+        "version" : "0.6.3"
       }
     },
     {
@@ -187,6 +196,15 @@
       "state" : {
         "revision" : "937e904258d22af6e447a0b72c0bc67583ef64a2",
         "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "swift-eventsource",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/LaunchDarkly/swift-eventsource.git",
+      "state" : {
+        "revision" : "3d45eacab476f9bb2c58662cfb2d35088140b25b",
+        "version" : "3.1.1"
       }
     },
     {
@@ -280,21 +298,12 @@
       }
     },
     {
-      "identity" : "walletconnectswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/unstoppabledomains/WalletConnectSwift.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "4d96634ab476252dece5aa1c0f8459ce35d4bdac"
-      }
-    },
-    {
       "identity" : "walletconnectswiftv2",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/WalletConnect/WalletConnectSwiftV2",
       "state" : {
-        "revision" : "5199a4db3119540f98ab0d21d3c744f833ae2747",
-        "version" : "1.6.17"
+        "revision" : "7cf45ea8f98097b5813cd3c99d08b87c1be28ebe",
+        "version" : "1.9.5"
       }
     },
     {

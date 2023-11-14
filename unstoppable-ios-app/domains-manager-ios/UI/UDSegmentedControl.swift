@@ -32,6 +32,9 @@ final class UDSegmentedControl: UISegmentedControl {
         layer.cornerRadius = bounds.height / 2
         //foreground
         let foregroundIndex = numberOfSegments
+        DispatchQueue.main.async {
+            self.clearDashes()
+        }
         if subviews.indices.contains(foregroundIndex),
             let foregroundImageView = subviews[foregroundIndex] as? UIImageView {
             foregroundImageView.bounds = foregroundImageView.bounds.insetBy(dx: segmentInset, dy: segmentInset)
@@ -62,6 +65,19 @@ private extension UDSegmentedControl {
     
     @objc func segmentValueChanged() {
         UDVibration.buttonTap.vibrate()
+        DispatchQueue.main.async {
+            self.clearDashes()
+        }
+    }
+    
+    func clearDashes() {
+        guard subviews.count >= numberOfSegments else { return }
+        
+        for i in 0..<numberOfSegments {
+            subviews[i].allSubviewsOfType(UIImageView.self).filter({ $0.subviews.isEmpty }).forEach { view in
+                view.alpha = 0
+            }
+        }
     }
 }
 

@@ -15,17 +15,14 @@ final class ConnectedAppsListViewPresenter: ViewAnalyticsLogger {
     
     private weak var view: ConnectedAppsListViewProtocol?
     private let dataAggregatorService: DataAggregatorServiceProtocol
-    private let walletConnectService: WalletConnectServiceProtocol
     private let walletConnectServiceV2: WalletConnectServiceV2Protocol
     var analyticsName: Analytics.ViewName { view?.analyticsName ?? .unspecified }
     
     init(view: ConnectedAppsListViewProtocol,
          dataAggregatorService: DataAggregatorServiceProtocol,
-         walletConnectService: WalletConnectServiceProtocol,
          walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         self.view = view
         self.dataAggregatorService = dataAggregatorService
-        self.walletConnectService = walletConnectService
         self.walletConnectServiceV2 = walletConnectServiceV2
     }
 }

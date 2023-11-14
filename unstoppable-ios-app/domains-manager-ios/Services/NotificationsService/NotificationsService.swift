@@ -8,7 +8,7 @@
 import UIKit
 import UserNotifications
 import WalletConnectPush
-import WalletConnectEcho
+import WalletConnectNotify
 
 // MARK: - NotificationsService
 final class NotificationsService: NSObject {
@@ -140,29 +140,11 @@ extension NotificationsService: UDWalletsServiceListener {
 extension NotificationsService: WalletConnectServiceConnectionListener {
     func didConnect(to app: UnifiedConnectAppInfo) {
         checkNotificationsPermissions()
-        
-        switch app.appInfo.dAppInfoInternal {
-        case .version1(let session):
-            guard let walletInfo = session.walletInfo else { return }
-
-            subscribeToWC(dAppName: app.appName,
-                          wcWalletPeerId: walletInfo.peerId,
-                          bridgeUrl: session.url.bridgeURL,
-                          domainName: app.domain.name)
-        case .version2:
-            return // TODO: - WC2 Send PN on its own
-        }
+        return // TODO: - WC2 Send PN on its own
     }
     
     func didDisconnect(from app: UnifiedConnectAppInfo) {
-        switch app.appInfo.dAppInfoInternal {
-        case .version1(let session):
-            guard let walletInfo = session.walletInfo else { return }
-            
-            unsubscribeToWC(wcWalletPeerId: walletInfo.peerId)
-        case .version2:
-            return // TODO: - Handled by WC2
-        }
+        return // TODO: - Handled by WC2
     }
     
     func didCompleteConnectionAttempt() { }
@@ -177,10 +159,18 @@ fileprivate extension NotificationsService {
             Debugger.printFailure("Did fail to get client id from WC2 and configure Echo.")
             return false
         }
+        
+        let environment: WalletConnectPush.APNSEnvironment
         #if DEBUG
-        Echo.configure(environment: .sandbox)
+        environment = .sandbox
         #else
-        Echo.configure(environment: .production)
+        environment = .production
+        #endif
+        Notify.configure(groupIdentifier: Constants.UnstoppableGroupIdentifier,
+                         environment: environment,
+                         crypto: WCV2NotifyDefaultCryptoProvider())
+        #if DEBUG
+        Notify.instance.setLogging(level: .debug)
         #endif
         
         return true
@@ -191,7 +181,7 @@ fileprivate extension NotificationsService {
         
         Task {
             do {                
-                try await Echo.instance.register(deviceToken: deviceToken)
+                try await Notify.instance.register(deviceToken: deviceToken)
                 Debugger.printInfo(topic: .PNs, "Did register device token with WC2")
             } catch {
                 Debugger.printInfo(topic: .PNs, "Failed to register device token with WC2 with error: \(error)")

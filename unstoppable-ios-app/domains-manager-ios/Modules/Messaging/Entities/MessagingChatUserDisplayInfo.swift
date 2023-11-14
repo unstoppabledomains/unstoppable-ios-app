@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MessagingChatUserDisplayInfo: Hashable {
+struct MessagingChatUserDisplayInfo: Hashable, Codable {
     var wallet: String
     var domainName: DomainName? = nil
     var rrDomainName: DomainName? = nil

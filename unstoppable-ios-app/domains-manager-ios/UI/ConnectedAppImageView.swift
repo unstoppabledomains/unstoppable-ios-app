@@ -41,7 +41,7 @@ extension ConnectedAppImageView {
         appImageView.layer.borderColor = UIColor.borderSubtle.cgColor
         appImageView.layer.borderWidth = 1
         Task {
-            let icon = await appContext.imageLoadingService.loadImage(from: .connectedApp(app, size: .default), downsampleDescription: nil)
+            let icon = await appContext.imageLoadingService.loadImage(from: .connectedApp(app, size: .default), downsampleDescription: .icon)
             
             let color = await ConnectedAppsImageCache.shared.colorForApp(app)
             appImageBackgroundView.isHidden = color == nil

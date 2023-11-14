@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct WalletDisplayInfo: Hashable {
+struct WalletDisplayInfo: Hashable, Equatable {
     let name: String
     let address: String
     let domainsCount: Int

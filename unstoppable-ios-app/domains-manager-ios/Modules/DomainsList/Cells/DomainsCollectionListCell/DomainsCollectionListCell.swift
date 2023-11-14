@@ -36,9 +36,9 @@ extension DomainsCollectionListCell {
         } else {
             Task {
                 iconImageView.image = await appContext.imageLoadingService.loadImage(from: .domainInitials(domainItem, size: .default),
-                                                                                     downsampleDescription: nil)
+                                                                                     downsampleDescription: .icon)
                 let image = await appContext.imageLoadingService.loadImage(from: .domainItemOrInitials(domainItem, size: .default),
-                                                                           downsampleDescription: nil)
+                                                                           downsampleDescription: .icon)
                 iconImageView.image = image
             }
         }
@@ -71,10 +71,10 @@ extension DomainsCollectionListCell {
             iconImageView.image = await appContext.imageLoadingService.loadImage(from: .initials(searchDomain.name,
                                                                                                  size: .default,
                                                                                                  style: .accent),
-                                                                                 downsampleDescription: nil)
+                                                                                 downsampleDescription: .icon)
             if let path = searchDomain.imagePath,
                 let image = await appContext.imageLoadingService.loadImage(from: .domainPFPSource(.nonNFT(imagePath: path)),
-                                                                           downsampleDescription: nil) {
+                                                                           downsampleDescription: .icon) {
                 iconImageView.image = image
             }
         }

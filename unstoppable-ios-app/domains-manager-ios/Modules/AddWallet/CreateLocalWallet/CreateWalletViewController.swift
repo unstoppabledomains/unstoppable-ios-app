@@ -110,8 +110,9 @@ private extension CreateWalletViewController {
         
         // Full UI
         createVaultButton.setTitle(String.Constants.createVault.localized(), image: nil)
+        createVaultButton.accessibilityIdentifier = "Create vault confirm button"
         titleLabel.setTitle(String.Constants.createNewVaultTitle.localized())
-        subtitleLabel.setSubtitle(String.Constants.createNewVaultSubtitle.localized())
+        subtitleLabel.setSubtitle(String.Constants.createNewVaultSubtitle.localized())        
     }
 }
 

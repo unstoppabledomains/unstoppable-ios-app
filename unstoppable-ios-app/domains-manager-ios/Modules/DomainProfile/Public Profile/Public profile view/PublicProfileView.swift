@@ -12,16 +12,19 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     @MainActor
     static func instantiate(domain: PublicDomainDisplayInfo,
                             viewingDomain: DomainItem,
+                            preRequestedAction: PreRequestedProfileAction?,
                             delegate: PublicProfileViewDelegate? = nil) -> UIViewController {
         let view = PublicProfileView(domain: domain,
                                      viewingDomain: viewingDomain,
+                                     preRequestedAction: preRequestedAction,
                                      delegate: delegate)
         let vc = UIHostingController(rootView: view)
         return vc
     }
     
     @StateObject private var viewModel: PublicProfileViewModel
- 
+    @Environment(\.presentationMode) private var presentationMode
+
     private weak var delegate: PublicProfileViewDelegate?
     private let avatarSize: CGFloat = 80
     private let sidePadding: CGFloat = 16
@@ -72,8 +75,9 @@ struct PublicProfileView: View, ViewAnalyticsLogger {
     
     init(domain: PublicDomainDisplayInfo,
          viewingDomain: DomainItem,
+         preRequestedAction: PreRequestedProfileAction?,
          delegate: PublicProfileViewDelegate? = nil) {
-        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, viewingDomain: viewingDomain))
+        _viewModel = StateObject(wrappedValue: PublicProfileViewModel(domain: domain, viewingDomain: viewingDomain, preRequestedAction: preRequestedAction, delegate: delegate))
         self.delegate = delegate
     }
 }
@@ -131,6 +135,7 @@ private extension PublicProfileView {
                                          size: .medium,
                                          callback: {
                             logButtonPressedAnalyticEvents(button: .messaging)
+                            presentationMode.wrappedValue.dismiss()
                             delegate?.publicProfileDidSelectMessagingWithProfile(viewModel.domain, by: viewModel.viewingDomain)
                         })
                         if let isFollowing = viewModel.isFollowing,
@@ -173,12 +178,17 @@ private extension PublicProfileView {
     
     @ViewBuilder
     func avatarView() -> some View {
-        Image(uiImage: viewModel.avatarImage ?? .domainSharePlaceholder)
-            .resizable()
-            .scaledToFill()
-            .frame(width: avatarSize,
-                   height: avatarSize)
-            .clipForAvatarStyle(avatarStyle)
+        ZStack(alignment: .bottomTrailing) {
+            Image(uiImage: viewModel.avatarImage ?? .domainSharePlaceholder)
+                .resizable()
+                .scaledToFill()
+                .squareFrame(avatarSize)
+                .clipForAvatarStyle(avatarStyle)
+            if viewModel.isUDBlue {
+                Image.udBlueGrayIcon
+                    .squareFrame(24)
+            }
+        }
     }
     
     @ViewBuilder
@@ -744,7 +754,8 @@ struct PublicProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ForEach(Constants.swiftUIPreviewDevices, id: \.self) { device in
             PublicProfileView(domain: .init(walletAddress: "0x123", name: "dans.crypto"),
-                              viewingDomain: .init(name: "oleg.x"))
+                              viewingDomain: .init(name: "oleg.x"), 
+                              preRequestedAction: nil)
                 .previewDevice(PreviewDevice(rawValue: device))
                 .previewDisplayName(device)
         }

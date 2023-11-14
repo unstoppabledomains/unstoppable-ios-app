@@ -62,7 +62,10 @@ final class DomainsListSearchPresenter: DomainsListViewPresenter {
                       let view else { return }
                 
                 let domainPublicInfo = PublicDomainDisplayInfo(walletAddress: walletAddress, name: searchProfile.name)
-                UDRouter().showPublicDomainProfile(of: domainPublicInfo, viewingDomain: domain, in: view)
+                UDRouter().showPublicDomainProfile(of: domainPublicInfo, 
+                                                   viewingDomain: domain,
+                                                   preRequestedAction: nil,
+                                                   in: view)
             }
         }
     }

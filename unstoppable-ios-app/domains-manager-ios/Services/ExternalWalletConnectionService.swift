@@ -7,7 +7,6 @@
 
 import Foundation
 import UIKit
-import WalletConnectSwift
 
 final class ExternalWalletConnectionService {
         
@@ -19,7 +18,6 @@ final class ExternalWalletConnectionService {
     var noResponseFromExternalWalletWorkItem: DispatchWorkItem?
 
     init() {
-        appContext.walletConnectClientService.delegate = self
         appContext.walletConnectServiceV2.delegate = self
         registerForAppBecomeActiveNotification()
     }
@@ -109,27 +107,22 @@ extension ExternalWalletConnectionService: WalletConnectExternalWalletConnection
 private extension ExternalWalletConnectionService {
     func evokeConnectExternalWallet(wcWallet: WCWalletsProvider.WalletRecord) async {
         let connectionUrlString: String?
-        if wcWallet.isV2Compatible {
-            guard let uri = try? await appContext.walletConnectServiceV2.connect(to: wcWallet) else {
-                Debugger.printFailure("Failed to connect via URI", critical: false)
-                finishWith(result: .failure(.failedToConnect))
-                return
-            }
-            switch uri {
-            case .oldPairing: connectionUrlString = nil
-            case .newPairing(let ur): connectionUrlString = ur.absoluteString
-            }
-            
-            
-        } else {
-            guard let connectionUrl = try? appContext.walletConnectClientService.connect() else {
-                Debugger.printFailure("Failed to connect via WCURL", critical: true)
-                finishWith(result: .failure(.failedToConnect))
-                return
-            }
-            connectionUrlString = connectionUrl.absoluteStringCorrect
+        guard wcWallet.isV2Compatible else {
+            Debugger.printFailure("Attempt to connect to WC1 wallet", critical: true)
+            finishWith(result: .failure(.failedToConnect))
+            return
         }
-        
+
+        guard let uri = try? await appContext.walletConnectServiceV2.connect(to: wcWallet) else {
+            Debugger.printFailure("Failed to connect via URI", critical: false)
+            finishWith(result: .failure(.failedToConnect))
+            return
+        }
+        switch uri {
+        case .oldPairing: connectionUrlString = nil
+        case .newPairing(let ur): connectionUrlString = ur.absoluteString
+        }
+
         startExternalWallet(wcWallet: wcWallet, connectionUrlString: connectionUrlString)
     }
     

@@ -31,17 +31,13 @@ final class AppLaunchService {
 // MARK: - AppLaunchServiceProtocol
 extension AppLaunchService: AppLaunchServiceProtocol {
     func startWith(sceneDelegate: SceneDelegateProtocol,
-                   walletConnectService: WalletConnectServiceProtocol,
                    walletConnectServiceV2: WalletConnectServiceV2Protocol,
-                   walletConnectClientService: WalletConnectClientServiceProtocol,
                    completion: @escaping EmptyAsyncCallback) {
         self.sceneDelegate = sceneDelegate
         self.completion = completion
         checkFirstLaunchAfterGIFSupportReleased()
         resolveInitialViewController()
-        wakeUpServices(walletConnectService: walletConnectService,
-                       walletConnectServiceV2: walletConnectServiceV2,
-                       walletConnectClientService: walletConnectClientService)
+        wakeUpServices(walletConnectServiceV2: walletConnectServiceV2)
         preparePopularPlaceholders()
     }
     
@@ -219,10 +215,7 @@ private extension AppLaunchService {
         }
     }
     
-    func wakeUpServices(walletConnectService: WalletConnectServiceProtocol,
-                        walletConnectServiceV2: WalletConnectServiceV2Protocol,
-                        walletConnectClientService: WalletConnectClientServiceProtocol) {        
-        walletConnectClientService.setUIHandler(coreAppCoordinator) // wake up
+    func wakeUpServices(walletConnectServiceV2: WalletConnectServiceV2Protocol) {
         walletConnectServiceV2.setWalletUIHandler(coreAppCoordinator) // wake up
         _ = AppGroupsBridgeFromDataAggregatorService.shared // wake up
     }

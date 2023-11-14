@@ -57,3 +57,8 @@ struct FirebaseKeys {
     static let ProductionClientId = "<firebase-prod-client-id>"
     static let StagingClientId = "<firebase-staging-client-id>"
 }
+
+struct LaunchDarkly {
+    static let stagingMobileKey = "<launch-darkly-staging-key>"
+    static let productionMobileKey = "<launch-darkly-production-key>"
+}

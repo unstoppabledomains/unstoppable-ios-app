@@ -23,7 +23,7 @@ final class ConnectServerRequestConfirmationView: BaseSignTransactionView {
 
 // MARK: - Open methods
 extension ConnectServerRequestConfirmationView {
-    func setWith(connectionConfig: WalletConnectService.ConnectionConfig) {
+    func setWith(connectionConfig: WalletConnectServiceV2.ConnectionConfig) {
         titleLabel.setAttributedTextWith(text: String.Constants.connectWalletSignRequestTitle.localized(connectionConfig.appInfo.getDisplayName()),
                                          font: .currentFont(withSize: 22, weight: .bold),
                                          textColor: .foregroundSecondary)
@@ -40,15 +40,10 @@ extension ConnectServerRequestConfirmationView {
             }
         }
         
-        switch connectionConfig.appInfo.dAppInfoInternal {
-        case .version1:
-            supportedChains = BlockchainType.supportedCases
-        case .version2:
-            networkFullStackView?.isHidden = true
-            bottomStackView?.axis = .vertical
-            domainInfoStackView?.axis = .horizontal
-        }
-        
+        networkFullStackView?.isHidden = true
+        bottomStackView?.axis = .vertical
+        domainInfoStackView?.axis = .horizontal
+
         let blockchainType = getChainFromAppInfo(connectionConfig.appInfo, domain: connectionConfig.domain)
         set(selectedChain: blockchainType)
     }

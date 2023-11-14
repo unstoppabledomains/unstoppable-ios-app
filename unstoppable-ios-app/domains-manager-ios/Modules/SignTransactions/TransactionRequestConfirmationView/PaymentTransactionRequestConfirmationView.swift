@@ -6,12 +6,37 @@
 //
 
 import UIKit
+import Boilertalk_Web3
 
 struct SignPaymentTransactionUIConfiguration {
-    let connectionConfig: WalletConnectService.ConnectionConfig
+        struct TxDisplayDetails {
+            let quantity: BigUInt
+            let gasPrice: BigUInt
+            let gasLimit: BigUInt
+            let description: String
+    
+            var gasFee: BigUInt {
+                gasPrice * gasLimit
+            }
+    
+            init?(tx: EthereumTransaction) {
+                guard let quantity = tx.value?.quantity,
+                      let gasPrice = tx.gasPrice?.quantity,
+                      let gasLimit = tx.gas?.quantity else { return nil }
+    
+    
+                self.quantity = quantity
+                self.gasPrice = gasPrice
+                self.gasLimit = gasLimit
+                self.description = tx.description
+            }
+        }
+
+    
+    let connectionConfig: WalletConnectServiceV2.ConnectionConfig
     let walletAddress: HexAddress
     let chainId: Int
-    let cost: WalletConnectService.TxDisplayDetails
+    let cost: TxDisplayDetails
     
     var isGasFeeOnlyTransaction: Bool {
         cost.quantity == 0
@@ -22,7 +47,7 @@ protocol PaymentTransactionDisplayCostView: UIView {
     var height: CGFloat { get }
     
     func set(isLoading: Bool)
-    func setWith(cost: WalletConnectService.TxDisplayDetails,
+    func setWith(cost: SignPaymentTransactionUIConfiguration.TxDisplayDetails,
                  exchangeRate: Double,
                  blockchainType: BlockchainType,
                  pullUp: Analytics.PullUp)
@@ -250,5 +275,18 @@ private extension PaymentTransactionRequestConfirmationView {
         if let stack = cancelButton.superview as? UIStackView {
             stack.addArrangedSubview(lowBalanceStack)
         }
+    }
+}
+
+extension EthereumTransaction {
+    var description: String {
+        return """
+        to: \(to == nil ? "" : String(describing: to!.hex(eip55: true))),
+        value: \(value == nil ? "" : String(describing: value!.hex())),
+        gasPrice: \(gasPrice == nil ? "" : String(describing: gasPrice!.hex())),
+        gas: \(gas == nil ? "" : String(describing: gas!.hex())),
+        data: \(data.hex()),
+        nonce: \(nonce == nil ? "" : String(describing: nonce!.hex()))
+        """
     }
 }

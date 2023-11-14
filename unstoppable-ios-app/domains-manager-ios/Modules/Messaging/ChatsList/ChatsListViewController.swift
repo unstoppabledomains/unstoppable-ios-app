@@ -35,7 +35,8 @@ final class ChatsListViewController: BaseViewController {
                                                         ChatListDataTypeSelectionCell.self,
                                                         ChatListRequestsCell.self,
                                                         ChatListCreateProfileCell.self,
-                                                        ChatListEmptyCell.self] }
+                                                        ChatListEmptyCell.self,
+                                                        CommunityListCell.self] }
     var presenter: ChatsListViewPresenterProtocol!
     private var dataSource: ChatsListDataSource!
     private var navView: ChatsListNavigationView!
@@ -359,6 +360,8 @@ private extension ChatsListViewController {
                 navigationItem.rightBarButtonItem = editButton
             case .channels:
                 title = String.Constants.spam.localized()
+            case .communities:
+                Debugger.printFailure("Requests section are not exist for communities", critical: true)
             }
             cNavigationBar?.navBarContentView.setTitle(hidden: false, animated: true)
         }
@@ -389,7 +392,7 @@ private extension ChatsListViewController {
             actionButton.addTarget(self, action: #selector(actionButtonPressed), for: .touchUpInside)
             var icon: UIImage?
             if User.instance.getSettings().touchIdActivated {
-                icon = appContext.authentificationService.biometricType == .faceID ? .faceIdIcon : .touchIdIcon
+                icon = appContext.authentificationService.biometricIcon
             }
             actionButton.setTitle(String.Constants.enable.localized(),
                                   image: icon)
@@ -454,15 +457,24 @@ private extension ChatsListViewController {
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
                 cell.setWith(configuration: configuration,
                              actionButtonCallback: {
-                    self?.logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
-                                                         parameters: [.value: configuration.dataType.rawValue])
-                    switch configuration.dataType {
-                    case .channels:
-                        self?.searchMode = .channelsOnly
-                    case .chats:
-                        self?.searchMode = .chatsOnly
+                    switch configuration {
+                    case .emptyData(let dataType, _):
+                        self?.logButtonPressedAnalyticEvents(button: .emptyMessagingAction,
+                                                             parameters: [.value: dataType.rawValue])
+                        switch dataType {
+                        case .channels:
+                            self?.searchMode = .channelsOnly
+                        case .chats:
+                            self?.searchMode = .chatsOnly
+                        case .communities:
+                            self?.openLink(.communitiesInfo)
+                            return
+                        }
+                        self?.setSearchBarActive(true)
+                    case .noCommunitiesProfile:
+                        self?.logButtonPressedAnalyticEvents(button: .createCommunityProfile)
+                        self?.presenter.createCommunitiesProfileButtonPressed()
                     }
-                    self?.setSearchBarActive(true)
                 })
                 
                 return cell
@@ -474,6 +486,11 @@ private extension ChatsListViewController {
             case .emptySearch:
                 let cell = collectionView.dequeueCellOfType(ChatListEmptyCell.self, forIndexPath: indexPath)
                 cell.setSearchStateUI()
+                
+                return cell
+            case .community(let configuration):
+                let cell = collectionView.dequeueCellOfType(CommunityListCell.self, forIndexPath: indexPath)
+                cell.setWith(configuration: configuration)
                 
                 return cell
             }
@@ -589,12 +606,27 @@ extension ChatsListViewController {
         case emptyState(configuration: EmptyStateUIConfiguration)
         case userInfo(configuration: UserInfoUIConfiguration)
         case emptySearch
+        case community(configuration: CommunityUIConfiguration)
     }
     
     struct ChatUIConfiguration: Hashable {
         let chat: MessagingChatDisplayInfo
         var isSelected: Bool = false 
         var isSpam: Bool = false 
+    }
+    
+    struct CommunityUIConfiguration: Hashable {
+        let community: MessagingChatDisplayInfo
+        let communityDetails: MessagingCommunitiesChatDetails
+        let joinButtonPressedCallback: EmptyCallback
+        
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.communityDetails == rhs.communityDetails
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(communityDetails)
+        }
     }
     
     struct DomainSelectionUIConfiguration: Hashable {
@@ -625,12 +657,14 @@ extension ChatsListViewController {
     }
     
     enum DataType: String, Hashable {
-        case chats, channels
+        case chats, communities, channels
         
         var title: String {
             switch self {
             case .chats:
                 return String.Constants.chats.localized()
+            case .communities:
+                return String.Constants.communities.localized()
             case .channels:
                 return String.Constants.appsInbox.localized()
             }
@@ -646,9 +680,9 @@ extension ChatsListViewController {
         let channel: MessagingNewsChannel
     }
     
-    struct EmptyStateUIConfiguration: Hashable {
-        let dataType: DataType
-        let isRequestsList: Bool
+    enum EmptyStateUIConfiguration: Hashable {
+        case emptyData(dataType: DataType, isRequestsList: Bool)
+        case noCommunitiesProfile
     }
     
     struct UserInfoUIConfiguration: Hashable {

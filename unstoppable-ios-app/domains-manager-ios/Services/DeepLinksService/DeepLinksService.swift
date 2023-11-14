@@ -35,6 +35,8 @@ extension DeepLinksService: DeepLinksServiceProtocol {
             if !tryHandleUDDeepLink(incomingURL, params: params, receivedState: receivedState) {
                 tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
             }
+        } else if let domainName = DomainProfileLinkValidator.getUDmeDomainName(in: components) {
+            tryHandleUDDomainProfileDeepLink(domainName: domainName, params: components.queryItems, receivedState: receivedState)
         } else  {
             tryHandleWCDeepLink(from: components, incomingURL: incomingURL, receivedState: receivedState)
         }
@@ -87,10 +89,40 @@ extension DeepLinksService: WalletConnectServiceConnectionListener {
 
 // MARK: - Private methods
 private extension DeepLinksService {
+    func tryHandleUDDomainProfileDeepLink(domainName: String, 
+                                          params: [URLQueryItem]?,
+                                          receivedState: ExternalEventReceivedState) {
+        Task {
+            let showDomainResult = await DomainProfileLinkValidator.getShowDomainProfileResultFor(domainName: domainName,
+                                                                                                  params: params)
+            
+            switch showDomainResult {
+            case .none:
+                return
+            case .showUserDomainProfile(let domain,
+                                        let wallet,
+                                        let walletInfo,
+                                        let action):
+                notifyWaitersWith(event: .showUserDomainProfile(domain: domain,
+                                                                wallet: wallet,
+                                                                walletInfo: walletInfo,
+                                                                action: action),
+                                  receivedState: receivedState)
+            case .showPublicDomainProfile(let publicDomainDisplayInfo,
+                                          let viewingDomain,
+                                          let action):
+                notifyWaitersWith(event: .showPublicDomainProfile(publicDomainDisplayInfo: publicDomainDisplayInfo,
+                                                                  viewingDomain: viewingDomain,
+                                                                  action: action),
+                                  receivedState: receivedState)
+            }
+        }
+    }
+    
     func tryHandleUDDeepLink(_ incomingURL: URL, params: [URLQueryItem], receivedState: ExternalEventReceivedState) -> Bool {
         Debugger.printInfo(topic: .UniversalLink, "Handling Universal Link \(incomingURL.absoluteURL)")
         
-        guard let operationString = findValue(in: params, forKey: .operation),
+        guard let operationString = params.findValue(forDeepLinkKey: ParameterKey.operation),
               let operation = DeepLinkOperation (operationString) else { return false }
         
         appContext.analyticsService.log(event: .didOpenDeepLink,
@@ -134,7 +166,7 @@ private extension DeepLinksService {
             return url
         } else if isWCDeepLinkUrl(from: components),
                   let params = components.queryItems,
-                  let uri = findValue(in: params, forKey: .uri),
+                  let uri = params.findValue(forDeepLinkKey: ParameterKey.uri),
                   let wcURL = URL(string: uri) {
             return wcURL
         }
@@ -145,13 +177,9 @@ private extension DeepLinksService {
         externalEventsService.receiveEvent(.wcDeepLink(incomingURL), receivedState: receivedState)
     }
     
-    func findValue(in parameters: [URLQueryItem], forKey key: ParameterKey) -> String? {
-        parameters.first(where: { $0.name == key.rawValue })?.value
-    }
-    
     func handleMintDomainsLink(with parameters: [URLQueryItem], receivedState: ExternalEventReceivedState) {
-        guard let email = findValue(in: parameters, forKey: .email),
-              let code = findValue(in: parameters, forKey: .code) else {
+        guard let email = parameters.findValue(forDeepLinkKey: ParameterKey.email),
+              let code = parameters.findValue(forDeepLinkKey: ParameterKey.code) else {
             Debugger.printInfo(topic: .UniversalLink, "Failed to get email or code from Mint domains Universal Link")
             return }
         
@@ -168,10 +196,21 @@ private extension DeepLinksService {
 }
 
 // MARK: - Private methods
-private extension DeepLinksService {
+extension DeepLinksService {
     enum ParameterKey: String {
         case operation
         case email, code
         case uri
+        case openBadgeCode
+    }
+}
+
+extension Array where Element == URLQueryItem {
+    func findValue(for key: String) -> String? {
+        first(where: { $0.name == key })?.value
+    }
+    
+    func findValue<Key: RawRepresentable>(forDeepLinkKey key: Key) -> String? where Key.RawValue == String {
+        first(where: { $0.name == key.rawValue })?.value
     }
 }

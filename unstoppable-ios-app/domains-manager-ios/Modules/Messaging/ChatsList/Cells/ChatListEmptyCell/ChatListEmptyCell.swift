@@ -16,11 +16,6 @@ final class ChatListEmptyCell: UICollectionViewCell {
     
     private var actionButtonCallback: EmptyCallback?
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-    }
-
 }
 
 // MARK: - Open methods
@@ -28,16 +23,29 @@ extension ChatListEmptyCell {
     func setWith(configuration: ChatsListViewController.EmptyStateUIConfiguration,
                  actionButtonCallback: @escaping EmptyCallback) {
         self.actionButtonCallback = actionButtonCallback
-        let isRequestsList = configuration.isRequestsList
-        let title = titleFor(dataType: configuration.dataType, isRequestsList: isRequestsList)
-        setTitle(title)
         
-        let subtitle = subtitleFor(dataType: configuration.dataType, isRequestsList: isRequestsList)
-        setSubtitle(subtitle)
-        
-        iconImageView.image = .messageCircleIcon24
-        setActionButtonWith(dataType: configuration.dataType)
-        actionButton.isHidden = isRequestsList
+        switch configuration {
+        case .emptyData(let dataType, let isRequestsList):
+            let title = titleFor(dataType: dataType, isRequestsList: isRequestsList)
+            setTitle(title)
+            
+            let subtitle = subtitleFor(dataType: dataType, isRequestsList: isRequestsList)
+            setSubtitle(subtitle)
+            
+            iconImageView.image = .messageCircleIcon24
+            
+            setActionButtonWith(dataType: dataType)
+            actionButton.isHidden = isRequestsList
+        case .noCommunitiesProfile:
+            setTitle(String.Constants.messagingCommunitiesListEnableTitle.localized())
+            setSubtitle(String.Constants.messagingCommunitiesListEnableSubtitle.localized())
+            
+            iconImageView.image = .chatRequestsIcon
+            
+            actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
+            actionButton.setTitle(String.Constants.enable.localized(), image: appContext.authentificationService.biometricIcon)
+            actionButton.isHidden = false
+        }
     }
     
     func setSearchStateUI() {
@@ -73,6 +81,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptyTitle.localized()
+            case .communities:
+                return String.Constants.messagingCommunitiesEmptyTitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptyTitle.localized()
             }
@@ -86,6 +96,8 @@ private extension ChatListEmptyCell {
             switch dataType {
             case .chats:
                 return String.Constants.messagingChatsListEmptySubtitle.localized()
+            case .communities:
+                return String.Constants.messagingCommunitiesEmptySubtitle.localized()
             case .channels:
                 return String.Constants.messagingChannelsEmptySubtitle.localized()
             }
@@ -97,6 +109,9 @@ private extension ChatListEmptyCell {
         case .chats:
             actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
             actionButton.setTitle(String.Constants.newMessage.localized(), image: .newMessageIcon)
+        case .communities:
+            actionButton.setConfiguration(.mediumRaisedPrimaryButtonConfiguration)
+            actionButton.setTitle(String.Constants.learnMore.localized(), image: .infoIcon)
         case .channels:
             actionButton.setConfiguration(.mediumRaisedTertiaryButtonConfiguration)
             actionButton.setTitle(String.Constants.searchApps.localized(), image: .searchIcon)

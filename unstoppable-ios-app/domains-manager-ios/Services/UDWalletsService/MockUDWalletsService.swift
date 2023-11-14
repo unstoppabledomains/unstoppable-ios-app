@@ -11,8 +11,7 @@ final class MockUDWalletsService {
     private var wallets: [UDWallet] = []
     private var listenerHolders: [UDWalletsListenerHolder] = []
 
-    init(udDomainsService: MockUDDomainsService,
-         walletConnectClientService: MockWalletConnectClientManager) {
+    init(udDomainsService: MockUDDomainsService) {
         #if DEBUG
         let walletsToUse = TestsEnvironment.walletsToUse
         
@@ -29,7 +28,7 @@ final class MockUDWalletsService {
                 if walletToUse.isExternal {
                     wallet = createConnectedUDWallet()
                     
-                    walletConnectClientService.addSession(for: wallet.address, name: walletToUse.name)
+//                    walletConnectClientService.addSession(for: wallet.address, name: walletToUse.name)
                 } else {
                     wallet = createUnverifiedUDWallet()
                     wallet.type = type
@@ -229,7 +228,7 @@ private extension MockUDWalletsService {
                                                                  mobile: .init(native: "", universal: ""),
                                                                  isV2Compatible: true))
         wallet.aliasName = wallet.address
-        
+        (appContext.walletConnectServiceV2 as! MockWalletConnectServiceV2).saveWallet(wallet)
         return wallet
     }
     

@@ -55,7 +55,7 @@ enum ExternalEventUIFlow {
     case showPullUpLoading
     case showChatsList(profile: MessagingChatUserProfileDisplayInfo?)
     case showChat(chatId: String, profile: MessagingChatUserProfileDisplayInfo)
-    case showNewChat(userInfo: MessagingChatUserDisplayInfo, profile: MessagingChatUserProfileDisplayInfo)
+    case showNewChat(description: MessagingChatNewConversationDescription, profile: MessagingChatUserProfileDisplayInfo)
     case showChannel(channelId: String, profile: MessagingChatUserProfileDisplayInfo)
 }
 
@@ -247,21 +247,18 @@ private extension ExternalEventsService {
     private func getMessagingProfileFor(domainName: String) async throws -> MessagingChatUserProfileDisplayInfo {
         let domain = try await appContext.dataAggregatorService.getDomainWith(name: domainName)
         let domainDisplayInfo = DomainDisplayInfo(domainItem: domain, isSetForRR: true)
-        let profile = try await appContext.messagingService.getUserProfile(for: domainDisplayInfo)
+        let profile = try await appContext.messagingService.getUserMessagingProfile(for: domainDisplayInfo)
         return profile
     }
     
-    private func resolveRequest(from url: URL) throws -> WalletConnectService.ConnectWalletRequest {
-        let wcRequest: WalletConnectService.ConnectWalletRequest
+    private func resolveRequest(from url: URL) throws -> WalletConnectServiceV2.ConnectWalletRequest {
+        let wcRequest: WalletConnectServiceV2.ConnectWalletRequest
         do {
             let uriV2 = try appContext.walletConnectServiceV2.getWCV2Request(for: url.absoluteString)
-            wcRequest = WalletConnectService.ConnectWalletRequest.version2(uriV2)
+            wcRequest = WalletConnectServiceV2.ConnectWalletRequest(uri: uriV2)
         } catch {
-            guard let wcURL = WalletConnectService.wcURL(from: url) else {
-                Debugger.printWarning("Invalid WC url: \(url)")
-                throw EventsHandlingError.invalidWCURL
-            }
-            wcRequest = WalletConnectService.ConnectWalletRequest.version1(wcURL)
+            Debugger.printWarning("Invalid WC url: \(url)")
+            throw EventsHandlingError.invalidWCURL
         }
         return wcRequest
     }

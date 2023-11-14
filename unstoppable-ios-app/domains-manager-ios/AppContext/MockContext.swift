@@ -13,7 +13,10 @@ final class MockContext: AppContextProtocol {
                                                                                                        dataAggregatorService: dataAggregatorService,
                                                                                                        udWalletsService: udWalletsService,
                                                                                                        walletConnectServiceV2: walletConnectServiceV2, walletConnectRequestsHandlingService: wcRequestsHandlingService)
-    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
+    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
+                                                                                                 loader: DefaultImageDataLoader(),
+                                                                                                 storage: ImagesStorage(),
+                                                                                                 cacheStorage: ImagesCacheStorage())
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var notificationsService: NotificationsServiceProtocol = { MockNotificationsService() }()
     private(set) lazy var permissionsService: PermissionsServiceProtocol = PermissionsService()
@@ -38,12 +41,9 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var domainTransactionsService: DomainTransactionsServiceProtocol = MockDomainTransactionsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()
     private(set) lazy var udDomainsService: UDDomainsServiceProtocol = MockUDDomainsService()
-    private(set) lazy var udWalletsService: UDWalletsServiceProtocol = MockUDWalletsService(udDomainsService: udDomainsService as! MockUDDomainsService,
-                                                                                            walletConnectClientService: walletConnectClientService as! MockWalletConnectClientManager)
+    private(set) lazy var udWalletsService: UDWalletsServiceProtocol = MockUDWalletsService(udDomainsService: udDomainsService as! MockUDDomainsService)
     private(set) lazy var userDataService: UserDataServiceProtocol = MockUserDataService()
-    private(set) lazy var walletConnectService: WalletConnectServiceProtocol = MockWalletConnectService()
     private(set) lazy var walletConnectServiceV2: WalletConnectServiceV2Protocol = MockWalletConnectServiceV2()
-    private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = MockWalletConnectClientManager()
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol = MockWCRequestsHandlingService()
     private(set) lazy var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol = MockWalletConnectExternalWalletHandler()
@@ -53,6 +53,7 @@ final class MockContext: AppContextProtocol {
     private(set) lazy var firebaseDomainsService: FirebaseDomainsServiceProtocol = FirebaseDomainsService(firebaseInteractionService: firebaseInteractionService as! FirebaseDomainsLoaderProtocol)
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = MockDomainTransferService()
     private(set) lazy var messagingService: MessagingServiceProtocol = MockMessagingService()
+    private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = MockUDFeatureFlagsService()
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
 }

@@ -65,7 +65,7 @@ extension PaymentTransactionCostView: PaymentTransactionDisplayCostView {
     }
     
     
-    func setWith(cost: WalletConnectService.TxDisplayDetails,
+    func setWith(cost: SignPaymentTransactionUIConfiguration.TxDisplayDetails,
                  exchangeRate: Double,
                  blockchainType: BlockchainType,
                  pullUp: Analytics.PullUp) {

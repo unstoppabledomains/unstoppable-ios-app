@@ -142,6 +142,7 @@ extension UIImage {
     static let cellChevron = UIImage(named: "cellChevron")!
     static let udCartLogoRaster = UIImage(named: "udCartLogoRaster")!
     static let chooseRRDomainIllustration = UIImage(named: "chooseRRDomainIllustration")!
+    static let udBlueGrayIcon = UIImage(named: "udBlueGrayIcon")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

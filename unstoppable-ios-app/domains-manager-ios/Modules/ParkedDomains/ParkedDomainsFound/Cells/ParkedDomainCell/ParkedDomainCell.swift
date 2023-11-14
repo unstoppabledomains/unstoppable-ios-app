@@ -29,7 +29,7 @@ extension ParkedDomainCell {
             let image = await appContext.imageLoadingService.loadImage(from: .initials(domain.name,
                                                                                        size: .default,
                                                                                        style: .accent),
-                                                                       downsampleDescription: nil)
+                                                                       downsampleDescription: .icon)
             imageView.image = image
         }
 

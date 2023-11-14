@@ -33,6 +33,7 @@ extension PublicProfileView {
    @MainActor
     final class PublicProfileViewModel: ObservableObject, ProfileImageLoader, ViewErrorHolder {
         
+        private weak var delegate: PublicProfileViewDelegate?
         private(set) var domain: PublicDomainDisplayInfo
         private(set) var viewingDomain: DomainItem
         @Published var records: [CryptoRecord]?
@@ -40,6 +41,7 @@ extension PublicProfileView {
         @Published var socialAccounts: SocialAccounts?
         @Published var error: Error?
         @Published private(set) var isLoading = false
+        @Published private(set) var isUDBlue = false
         @Published private(set) var isUserDomainSelected = true
         @Published private(set) var profile: SerializedPublicDomainProfile?
         @Published private(set) var badgesDisplayInfo: [DomainProfileBadgeDisplayInfo]?
@@ -50,11 +52,16 @@ extension PublicProfileView {
         @Published private(set) var followersDisplayInfo: FollowersDisplayInfo?
         private var appearTime: Date
         private var badgesInfo: BadgesInfo?
+        private var preRequestedAction: PreRequestedProfileAction?
         
         init(domain: PublicDomainDisplayInfo,
-             viewingDomain: DomainItem) {
+             viewingDomain: DomainItem,
+             preRequestedAction: PreRequestedProfileAction?,
+             delegate: PublicProfileViewDelegate?) {
             self.domain = domain
             self.viewingDomain = viewingDomain
+            self.preRequestedAction = preRequestedAction
+            self.delegate = delegate
             self.appearTime = Date()
             loadAllProfileData()
             loadViewingDomainData()
@@ -159,6 +166,7 @@ extension PublicProfileView {
                     records = await convertRecordsFrom(recordsDict: profile.records ?? [:])
                     socialInfo = profile.social
                     socialAccounts = profile.socialAccounts
+                    isUDBlue = profile.profile.udBlue ?? false
                     isLoading = false
                     loadImages()
                 }
@@ -194,6 +202,7 @@ extension PublicProfileView {
                     self.badgesInfo = badgesInfo
                     badgesDisplayInfo = badgesInfo.badges.map({ DomainProfileBadgeDisplayInfo(badge: $0,
                                                                                               isExploreWeb3Badge: false) })
+                    openPreRequestedBadgeIfNeeded(using: badgesInfo)
                 }
             }
         }
@@ -222,7 +231,7 @@ extension PublicProfileView {
                 if let imagePath = profile?.profile.imagePath,
                    let url = URL(string: imagePath) {
                     let avatarImage = await appContext.imageLoadingService.loadImage(from: .url(url),
-                                                                                 downsampleDescription: nil)
+                                                                                     downsampleDescription: .mid)
                     await waitForAppear()
                     self.avatarImage = avatarImage
                 }
@@ -234,7 +243,7 @@ extension PublicProfileView {
                 if let coverPath = profile?.profile.coverPath,
                    let url = URL(string: coverPath) {
                     let coverImage = await appContext.imageLoadingService.loadImage(from: .url(url),
-                                                                                downsampleDescription: nil)
+                                                                                    downsampleDescription: .mid)
                     await waitForAppear()
                     self.coverImage = coverImage
                 }
@@ -247,7 +256,7 @@ extension PublicProfileView {
                 guard let displayInfo = domains.first(where: { $0.isSameEntity(viewingDomain) }) else { return }
                 
                 let viewingDomainImage = await appContext.imageLoadingService.loadImage(from: .domain(displayInfo),
-                                                                                    downsampleDescription: nil)
+                                                                                        downsampleDescription: .icon)
                 await waitForAppear()
                 self.viewingDomainImage = viewingDomainImage
             }
@@ -262,6 +271,19 @@ extension PublicProfileView {
                 try? await Task.sleep(seconds: dif)
             }
         }
+        
+        private func openPreRequestedBadgeIfNeeded(using badgesInfo: BadgesInfo) {
+            switch preRequestedAction {
+            case .showBadge(let code):
+                if let badge = badgesInfo.badges.first(where: { $0.code == code }) {
+                    let badgeDisplayInfo = DomainProfileBadgeDisplayInfo(badge: badge, isExploreWeb3Badge: false)
+                    delegate?.publicProfileDidSelectBadge(badgeDisplayInfo, in: domain.name)
+                }
+            case .none:
+                return
+            }
+            self.preRequestedAction = nil
+        }
     }
     
 }
@@ -275,17 +297,19 @@ extension PublicDomainProfileAttributes {
                                                      imageType: nil,
                                                      coverPath: nil,
                                                      phoneNumber: nil,
-                                                     domainPurchased: nil)
+                                                     domainPurchased: nil,
+                                                     udBlue: false)
     
     static let filled = PublicDomainProfileAttributes(displayName: "Oleg Kuplin",
-                              description: "Unstoppable iOS developer",
-                              location: "Danang",
-                              web2Url: "ud.me/oleg.x",
-                              imagePath: "nil",
-                              imageType: .onChain,
-                              coverPath: "nil",
-                              phoneNumber: nil,
-                              domainPurchased: nil)
+                                                      description: "Unstoppable iOS developer",
+                                                      location: "Danang",
+                                                      web2Url: "ud.me/oleg.x",
+                                                      imagePath: "nil",
+                                                      imageType: .onChain,
+                                                      coverPath: "nil",
+                                                      phoneNumber: nil,
+                                                      domainPurchased: nil,
+                                                      udBlue: false)
 }
 
 func loadImageFrom(url: URL) async -> UIImage? {

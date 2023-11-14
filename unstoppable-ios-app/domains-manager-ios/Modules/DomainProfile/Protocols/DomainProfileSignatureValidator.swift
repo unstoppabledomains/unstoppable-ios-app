@@ -40,7 +40,7 @@ extension DomainProfileSignatureValidator {
             isOnChainAvatar = false
         }
         let avatarImage = await appContext.imageLoadingService.loadImage(from: .domain(domain),
-                                                                         downsampleDescription: nil)
+                                                                         downsampleDescription: .mid)
         var backgroundImage: UIImage?
         if let cachedProfile = DomainProfileInfoStorage.instance.getCachedDomainProfile(for: domain.name),
            let coverPath = cachedProfile.profile.profile.coverPath,

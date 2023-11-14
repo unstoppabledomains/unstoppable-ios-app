@@ -37,6 +37,9 @@ extension ChatListRequestsCell {
             title = String.Constants.spam.localized()
             subtitle = String.Constants.pluralNMessages.localized(numberOfRequests, numberOfRequests)
             icon = .alertOctagon24
+        case .communities:
+            Debugger.printFailure("Requests section are not exist for communities", critical: true)
+            return
         }
         
         titleLabel.setAttributedTextWith(text: title,

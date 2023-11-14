@@ -13,22 +13,26 @@ class CoreDataService {
     private let persistentContainer: NSPersistentContainer
     
     var viewContext: NSManagedObjectContext { persistentContainer.viewContext }
+    let coreDataQueue = DispatchQueue(label: "com.coredata.service")
     private(set) var backgroundContext: NSManagedObjectContext!
     
-    init() {
+    init(inMemory: Bool = false) {
         let dataModelName = "CoreDataModel"
         persistentContainer = NSPersistentContainer(name: dataModelName)
+        if inMemory {
+            persistentContainer.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+        }
         loadStore()
     }
     
     func didLoadPersistentContainer() {
         Debugger.printInfo(topic: .CoreData, "Did load persistent container")
         let mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        viewContext.automaticallyMergesChangesFromParent = true
         viewContext.mergePolicy = mergePolicy
-        backgroundContext = persistentContainer.newBackgroundContext()
-        backgroundContext.automaticallyMergesChangesFromParent = true
-        backgroundContext.mergePolicy = mergePolicy
+        coreDataQueue.sync {
+            backgroundContext = persistentContainer.newBackgroundContext()
+            backgroundContext.mergePolicy = mergePolicy
+        }
     }
 }
 
@@ -36,7 +40,10 @@ class CoreDataService {
 extension CoreDataService {
     func saveContext(_ context: NSManagedObjectContext) {
         context.performAndWait {
-            Debugger.printInfo(topic: .CoreData, "Will Save context")
+            guard context.hasChanges else {
+                Debugger.printInfo(topic: .CoreData, "No changes in context on \(Thread.current)")
+                return }
+            Debugger.printInfo(topic: .CoreData, "Will Save context on \(Thread.current)")
             do {
                 try context.save()
             } catch {

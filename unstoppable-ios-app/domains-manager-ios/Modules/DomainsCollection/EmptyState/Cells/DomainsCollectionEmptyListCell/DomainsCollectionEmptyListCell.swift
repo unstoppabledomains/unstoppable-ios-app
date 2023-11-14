@@ -24,7 +24,7 @@ final class DomainsCollectionEmptyListCell: BaseListCollectionViewCell {
 // MARK: - Open methods
 extension DomainsCollectionEmptyListCell {
     func setWith(item: DomainsCollectionEmptyStateView.EmptyListItemType) {
-        accessibilityIdentifier = "Domains Collection Cell \(item.title)"
+        accessibilityIdentifier = "Domains Collection Cell \(item.accessibilityIdentifier)"
         self.iconImageView.image = item.icon
         headLabel.setAttributedTextWith(text: item.title,
                                         font: .currentFont(withSize: 20, weight: .bold),

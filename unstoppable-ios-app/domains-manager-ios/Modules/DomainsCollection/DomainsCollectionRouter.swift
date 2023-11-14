@@ -14,6 +14,7 @@ protocol DomainsCollectionRouterProtocol {
     func showDomainProfile(_ domain: DomainDisplayInfo,
                            wallet: UDWallet,
                            walletInfo: WalletDisplayInfo,
+                           preRequestedAction: PreRequestedProfileAction?,
                            dismissCallback: EmptyCallback?) async
     func isMintingAvailable(in viewController: UIViewController) async -> Bool
     func runMintDomainsFlow(with mode: MintDomainsNavigationController.Mode)
@@ -94,11 +95,13 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     func showDomainProfile(_ domain: DomainDisplayInfo,
                            wallet: UDWallet,
                            walletInfo: WalletDisplayInfo,
+                           preRequestedAction: PreRequestedProfileAction?,
                            dismissCallback: EmptyCallback?) async {
         
         await showDomainProfileFromDomainsCollection(domain,
                                                      wallet: wallet,
                                                      walletInfo: walletInfo,
+                                                     preRequestedAction: preRequestedAction,
                                                      dismissCallback: { [weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self?.presenter?.viewDidAppear()
@@ -181,7 +184,10 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
                                  viewingDomain: DomainItem) {
         guard let viewController else { return }
         
-        showPublicDomainProfile(of: domain, viewingDomain: viewingDomain, in: viewController)
+        showPublicDomainProfile(of: domain,
+                                viewingDomain: viewingDomain,
+                                preRequestedAction: nil,
+                                in: viewController)
     }
 }
 
@@ -244,6 +250,18 @@ extension DomainsCollectionRouter {
         }
         topViewController.present(searchVC, animated: true)
     }
+    
+    func showPublicDomainProfileFromDeepLink(of domain: PublicDomainDisplayInfo,
+                                             viewingDomain: DomainItem,
+                                             preRequestedAction: PreRequestedProfileAction?) async {
+        guard let viewController else { return }
+        
+        await resetNavigationToRoot()
+        showPublicDomainProfile(of: domain, 
+                                viewingDomain: viewingDomain,
+                                preRequestedAction: preRequestedAction,
+                                in: viewController)
+    }
 }
 
 // MARK: - Private methods
@@ -261,6 +279,7 @@ private extension DomainsCollectionRouter {
     func showDomainProfileFromDomainsCollection(_ domain: DomainDisplayInfo,
                                                 wallet: UDWallet,
                                                 walletInfo: WalletDisplayInfo,
+                                                preRequestedAction: PreRequestedProfileAction?,
                                                 dismissCallback: EmptyCallback?) async -> CNavigationController? {
         guard domain.isInteractable else {
             await resetNavigationToRoot()
@@ -275,7 +294,7 @@ private extension DomainsCollectionRouter {
         }
             
         func show(in viewToPresent: UIViewController) async -> CNavigationController? {
-            await showDomainProfileScreen(in: viewToPresent, domain: domain, wallet: wallet, walletInfo: walletInfo, dismissCallback: dismissCallback)
+            await showDomainProfileScreen(in: viewToPresent, domain: domain, wallet: wallet, walletInfo: walletInfo, preRequestedAction: preRequestedAction, dismissCallback: dismissCallback)
         }
         
         navigationController?.popToRootViewController(animated: false)
@@ -334,7 +353,8 @@ private extension DomainsCollectionRouter {
             let publicDomainInfo = PublicDomainDisplayInfo(walletAddress: btDomainInfo.walletAddress,
                                                            name: btDomainInfo.domainName)
             showPublicDomainProfile(of: publicDomainInfo,
-                                    viewingDomain: domain,
+                                    viewingDomain: domain, 
+                                    preRequestedAction: nil,
                                     in: topViewController)
         }
     }

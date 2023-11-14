@@ -20,7 +20,6 @@ protocol AppContextProtocol {
     var domainTransactionsService: DomainTransactionsServiceProtocol { get }
     var udDomainsService: UDDomainsServiceProtocol { get }
     var udWalletsService: UDWalletsServiceProtocol { get }
-    var walletConnectService: WalletConnectServiceProtocol { get }
     var walletConnectServiceV2: WalletConnectServiceV2Protocol { get }
     var coinRecordsService: CoinRecordsServiceProtocol { get }
     var imageLoadingService: ImageLoadingServiceProtocol { get }
@@ -31,7 +30,6 @@ protocol AppContextProtocol {
     var domainRecordsService: DomainRecordsServiceProtocol { get }
     var qrCodeService: QRCodeServiceProtocol { get }
     var userDataService: UserDataServiceProtocol { get }
-    var walletConnectClientService: WalletConnectClientServiceProtocol { get }
     var linkPresentationService: LinkPresentationServiceProtocol { get }
     var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol { get }
     var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol { get }
@@ -40,6 +38,7 @@ protocol AppContextProtocol {
     var firebaseDomainsService: FirebaseDomainsServiceProtocol { get }
     var domainTransferService: DomainTransferServiceProtocol { get }
     var messagingService: MessagingServiceProtocol { get }
+    var udFeatureFlagsService: UDFeatureFlagsServiceProtocol { get }
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
 }

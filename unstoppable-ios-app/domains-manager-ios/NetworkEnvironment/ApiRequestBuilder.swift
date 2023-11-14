@@ -574,21 +574,6 @@ extension Dictionary where Key == String, Value == String {
 }
 
 extension Endpoint {
-    static func domainsNonNFTImages(for domains: [DomainItem]) -> Endpoint {
-        var paramQueryItems: [URLQueryItem] = []
-        domains.forEach {
-            paramQueryItems.append(URLQueryItem(name: "domains[]", value: "\($0.name)"))
-        }
-        paramQueryItems.append(URLQueryItem(name: "key", value: "imagePath"))
-        return Endpoint(
-            path: "/api/domain-profiles",
-            queryItems: paramQueryItems,
-            body: ""
-        )
-    }
-}
-
-extension Endpoint {
     static let expirationPeriodMin: TimeInterval = 5
     static func getPublicProfile(for domain: DomainItem,
                                  fields: Set<GetDomainProfileField>) -> Endpoint {
@@ -796,6 +781,27 @@ extension Endpoint {
         )
     }
     
+
+    static func joinBadgeCommunity(body: String) -> Endpoint {
+        //https://messaging.ud-staging.com/api/push/group/join
+        return Endpoint(
+            host: NetworkConfig.baseMessagingHost,
+            path: "/api/push/group/join",
+            queryItems: [],
+            body: body
+        )
+    }
+    
+    static func leaveBadgeCommunity(body: String) -> Endpoint {
+        //https://messaging.ud-staging.com/api/push/group/leave
+        return Endpoint(
+            host: NetworkConfig.baseMessagingHost,
+            path: "/api/push/group/leave",
+            queryItems: [],
+            body: body
+        )
+    }
+            
     static func getSpamStatus(for address: HexAddress) -> Endpoint {
         //https://api.unstoppabledomains.com/messaging/xmtp/spam/0x9B4Ed628640A73154895e369AE39a93732535924
         return Endpoint(

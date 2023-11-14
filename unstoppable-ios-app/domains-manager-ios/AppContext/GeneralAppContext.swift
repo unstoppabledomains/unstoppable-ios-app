@@ -22,7 +22,6 @@ final class GeneralAppContext: AppContextProtocol {
     let domainTransactionsService: DomainTransactionsServiceProtocol
     let udDomainsService: UDDomainsServiceProtocol
     let udWalletsService: UDWalletsServiceProtocol
-    let walletConnectService: WalletConnectServiceProtocol
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
     let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol
     let walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
@@ -32,7 +31,10 @@ final class GeneralAppContext: AppContextProtocol {
     let messagingService: MessagingServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
-    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService)
+    private(set) lazy var imageLoadingService: ImageLoadingServiceProtocol = ImageLoadingService(qrCodeService: qrCodeService,
+                                                                                                 loader: DefaultImageDataLoader(),
+                                                                                                 storage: ImagesStorage(),
+                                                                                                 cacheStorage: ImagesCacheStorage())
     private(set) lazy var networkReachabilityService: NetworkReachabilityServiceProtocol? = NetworkReachabilityService()
     private(set) lazy var toastMessageService: ToastMessageServiceProtocol = ToastMessageService()
     private(set) lazy var analyticsService: AnalyticsServiceProtocol = {
@@ -46,17 +48,15 @@ final class GeneralAppContext: AppContextProtocol {
     private(set) lazy var domainRecordsService: DomainRecordsServiceProtocol = DomainRecordsService()
     private(set) lazy var qrCodeService: QRCodeServiceProtocol = QRCodeService()
     private(set) lazy var userDataService: UserDataServiceProtocol = UserDataService()
-    private(set) lazy var walletConnectClientService: WalletConnectClientServiceProtocol = WalletConnectClientService(udWalletsService: udWalletsService)
     private(set) lazy var linkPresentationService: LinkPresentationServiceProtocol = LinkPresentationService()
     private(set) lazy var domainTransferService: DomainTransferServiceProtocol = DomainTransferService()
+    private(set) lazy var udFeatureFlagsService: UDFeatureFlagsServiceProtocol = UDFeatureFlagsService()
 
     init() {
         authentificationService = AuthentificationService()
         domainTransactionsService = DomainTransactionsService()
         udDomainsService = UDDomainsService()
         udWalletsService = UDWalletsService()
-        let walletConnectService = WalletConnectService()
-        self.walletConnectService = walletConnectService
         let walletConnectServiceV2 = WalletConnectServiceV2(udWalletsService: udWalletsService)
         self.walletConnectServiceV2 = walletConnectServiceV2
         permissionsService = PermissionsService()
@@ -65,7 +65,6 @@ final class GeneralAppContext: AppContextProtocol {
         
         let coreAppCoordinator = CoreAppCoordinator(pullUpViewService: pullUpViewService)
         self.coreAppCoordinator = coreAppCoordinator
-        walletConnectService.setUIHandler(coreAppCoordinator)
         walletConnectServiceV2.setUIHandler(coreAppCoordinator)
         
         // Data aggregator
@@ -76,24 +75,33 @@ final class GeneralAppContext: AppContextProtocol {
         self.dataAggregatorService = dataAggregatorService
         
         // WC requests
-        wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV1: walletConnectService,
-                                                              walletConnectServiceV2: walletConnectServiceV2,
+        wcRequestsHandlingService = WCRequestsHandlingService(walletConnectServiceV2: walletConnectServiceV2,
                                                               walletConnectExternalWalletHandler: walletConnectExternalWalletHandler)
         wcRequestsHandlingService.setUIHandler(coreAppCoordinator)
         
         // Messaging
-        let messagingAPIService: MessagingAPIServiceProtocol = XMTPMessagingAPIService()
+        let xmtpMessagingAPIService: MessagingAPIServiceProtocol = XMTPMessagingAPIService()
+        let xmtpMessagingWebSocketsService: MessagingWebSocketsServiceProtocol = XMTPMessagingWebSocketsService()
+        let pushMessagingAPIService: MessagingAPIServiceProtocol = PushMessagingAPIService()
+        let pushMessagingWebSocketsService: MessagingWebSocketsServiceProtocol = PushMessagingWebSocketsService()
+        
+        let messagingAPIProviders: [MessagingServiceAPIProvider] = [.init(identifier: xmtpMessagingAPIService.serviceIdentifier,
+                                                                          apiService: xmtpMessagingAPIService,
+                                                                          webSocketsService: xmtpMessagingWebSocketsService),
+                                                                    .init(identifier: pushMessagingAPIService.serviceIdentifier,
+                                                                          apiService: pushMessagingAPIService,
+                                                                          webSocketsService: pushMessagingWebSocketsService)]
+        
         let messagingChannelsAPIService: MessagingChannelsAPIServiceProtocol = PushMessagingChannelsAPIService()
-        let messagingWebSocketsService: MessagingWebSocketsServiceProtocol = XMTPMessagingWebSocketsService()
         let messagingChannelsWebSocketsService: MessagingChannelsWebSocketsServiceProtocol = PushMessagingChannelsWebSocketsService()
         let messagingDecrypterService: MessagingContentDecrypterService = SymmetricMessagingContentDecrypterService()
         let coreDataMessagingStorageService = CoreDataMessagingStorageService(decrypterService: messagingDecrypterService)
         let messagingStorageService: MessagingStorageServiceProtocol = coreDataMessagingStorageService
         let messagingUnreadCountingService: MessagingUnreadCountingServiceProtocol = CoreDataMessagingUnreadCountingService(storageService: coreDataMessagingStorageService)
         let messagingFilesService: MessagingFilesServiceProtocol = MessagingFilesService(decrypterService: messagingDecrypterService)
-        let messagingService = MessagingService(apiService: messagingAPIService,
+        
+        let messagingService = MessagingService(serviceProviders: messagingAPIProviders,
                                                 channelsApiService: messagingChannelsAPIService,
-                                                webSocketsService: messagingWebSocketsService,
                                                 channelsWebSocketsService: messagingChannelsWebSocketsService,
                                                 storageProtocol: messagingStorageService,
                                                 decrypterService: messagingDecrypterService,

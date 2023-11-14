@@ -130,7 +130,7 @@ protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
     var appUrlString: String { get }
     var displayName: String { get }
     var description: String { get }
-    var appInfo: WalletConnectService.WCServiceAppInfo { get }
+    var appInfo: WalletConnectServiceV2.WCServiceAppInfo { get }
     var connectionStartDate: Date? { get }
         
     init(from appV2: WCConnectedAppsStorageV2.ConnectedApp)
@@ -154,10 +154,7 @@ extension UnifiedConnectAppInfoProtocol {
     }
     
     var isV2dApp: Bool {
-        switch appInfo.dAppInfoInternal {
-        case .version1: return false
-        case .version2: return true
-        }
+        return true
     }
 }
 
@@ -179,7 +176,7 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
     let appIconUrls: [String]
     let appName: String
     let appUrlString: String
-    let appInfo: WalletConnectService.WCServiceAppInfo
+    let appInfo: WalletConnectServiceV2.WCServiceAppInfo
     let connectionStartDate: Date?
     let topic: String
 
@@ -192,22 +189,10 @@ struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol, DomainHolder {
         self.appIconUrls = appV2.appIconUrls
         self.appName = appV2.appName
         self.appUrlString = appV2.appUrlString
-        self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version2(WalletConnectService.ClientDataV2(appMetaData: appV2.sessionProxy.peer, proposalNamespace: appV2.proposalNamespace)),
+        self.appInfo = WalletConnectServiceV2.WCServiceAppInfo(dAppInfoInternal: WalletConnectServiceV2.ClientDataV2(appMetaData: appV2.sessionProxy.peer, proposalNamespace: appV2.proposalNamespace),
                                                              isTrusted: appV2.isTrusted)
         self.connectionStartDate = appV2.connectionStartDate
         self.topic = appV2.topic
-    }
-    
-    init(from appV1: WCConnectedAppsStorage.ConnectedApp) {
-        self.walletAddress = appV1.walletAddress
-        self.domain = appV1.domain
-        self.appIconUrls = appV1.appIconUrls.map({$0.absoluteString})
-        self.appName = appV1.appName
-        self.appUrlString = appV1.appUrl.absoluteString
-        self.appInfo = WalletConnectService.WCServiceAppInfo(dAppInfoInternal: .version1(appV1.session),
-                                                             isTrusted: WalletConnectService.isTrusted(dAppInfo: appV1.session.dAppInfo))
-        self.connectionStartDate = appV1.connectionStartDate
-        self.topic = appV1.session.url.topic
     }
 }
 
