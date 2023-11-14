@@ -83,7 +83,9 @@ extension AppDelegate: AppDelegateProtocol {
         case .general:
             self.appContext = GeneralAppContext()
         case .mock:
+            #if DEBUG
             self.appContext = MockContext()
+            #endif
         }
     }
 }
