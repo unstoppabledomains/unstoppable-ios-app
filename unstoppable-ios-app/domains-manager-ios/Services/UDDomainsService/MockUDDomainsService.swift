@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+#if DEBUG
 final class MockUDDomainsService {
     
     private let DomainsLimit = 200
@@ -130,3 +131,4 @@ private extension MockUDDomainsService {
         return nil
     }
 }
+#endif

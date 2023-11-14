@@ -7,6 +7,7 @@
 
 import Foundation
 
+#if DEBUG
 final class MockContext: AppContextProtocol {
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
     private(set) lazy var externalEventsService: ExternalEventsServiceProtocol = ExternalEventsService(coreAppCoordinator: coreAppCoordinator,
@@ -58,3 +59,4 @@ final class MockContext: AppContextProtocol {
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
 }
 
+#endif

@@ -7,6 +7,7 @@
 
 import Foundation
 
+#if DEBUG
 final class MockUDWalletsService {
     private var wallets: [UDWallet] = []
     private var listenerHolders: [UDWalletsListenerHolder] = []
@@ -245,3 +246,4 @@ private extension MockUDWalletsService {
         return wallet
     }
 }
+#endif
