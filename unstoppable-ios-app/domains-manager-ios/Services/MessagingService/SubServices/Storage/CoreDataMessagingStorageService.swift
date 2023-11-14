@@ -12,10 +12,15 @@ final class CoreDataMessagingStorageService: CoreDataService {
     
     private let decrypterService: MessagingContentDecrypterService
     
-    init(decrypterService: MessagingContentDecrypterService) {
+    init(decrypterService: MessagingContentDecrypterService,
+         inMemory: Bool = false) {
         self.decrypterService = decrypterService
+        super.init(inMemory: inMemory)
     }
     
+    convenience init(decrypterService: MessagingContentDecrypterService) {
+        self.init(decrypterService: decrypterService, inMemory: false)
+    }
 }
 
 // MARK: - MessagingStorageServiceProtocol

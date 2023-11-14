@@ -641,6 +641,7 @@
 		C66FCD1328450A8F009B9525 /* GIFAnimationImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66FCD1228450A8F009B9525 /* GIFAnimationImageView.swift */; };
 		C66FCD1A2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66FCD182845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift */; };
 		C66FCD1E2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C66FCD192845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib */; };
+		C66FFD052B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C66FFD042B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift */; };
 		C670695628981C84001FD241 /* TextWarningButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C670695528981C84001FD241 /* TextWarningButton.swift */; };
 		C671E38728FE85C800A2B3A0 /* CarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E38628FE85C800A2B3A0 /* CarouselView.swift */; };
 		C671E38E28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C671E38C28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift */; };
@@ -1798,6 +1799,7 @@
 		C66FCD1228450A8F009B9525 /* GIFAnimationImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFAnimationImageView.swift; sourceTree = "<group>"; };
 		C66FCD182845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionMintingInProgressCell.swift; sourceTree = "<group>"; };
 		C66FCD192845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionMintingInProgressCell.xib; sourceTree = "<group>"; };
+		C66FFD042B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataMessagingStorageServiceTests.swift; sourceTree = "<group>"; };
 		C670695528981C84001FD241 /* TextWarningButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWarningButton.swift; sourceTree = "<group>"; };
 		C671E38628FE85C800A2B3A0 /* CarouselView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselView.swift; sourceTree = "<group>"; };
 		C671E38C28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarouselCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -2462,6 +2464,7 @@
 				C6478B1729A36960006FADFE /* DeepLinksServiceTests.swift */,
 				300F291B25D3D4A1007EEAD1 /* DomainRecordsViewModelTests.swift */,
 				306486972527253D00388026 /* domains_manager_iosTests.swift */,
+				C66FFD042B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift */,
 				C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */,
 				C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */,
 				30C0F94927D8CB250060D283 /* PrivateKeyStorageTests.swift */,
@@ -7238,6 +7241,7 @@
 				C6DF9876290F83020098733A /* ArrayExtensionsTests.swift in Sources */,
 				C6DF9873290F83020098733A /* UDWalletsServiceTests.swift in Sources */,
 				C6DF9872290F83020098733A /* TransactionsStorageTests.swift in Sources */,
+				C66FFD052B01E2EE00988A6F /* CoreDataMessagingStorageServiceTests.swift in Sources */,
 				C60610E829A7469A005DC0D5 /* WCRequestsHandlingServiceTests.swift in Sources */,
 				C6DF9875290F83020098733A /* UnsConfigManagerTests.swift in Sources */,
 				C6DF986B290F83020098733A /* WalletAutonamingTests.swift in Sources */,
