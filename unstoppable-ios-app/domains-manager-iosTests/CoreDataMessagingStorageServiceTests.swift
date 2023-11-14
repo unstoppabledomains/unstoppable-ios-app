@@ -120,6 +120,50 @@ class CoreDataMessagingStorageServiceTests: XCTestCase {
         try await coreDataService.replaceChat(chat1, with: chat2)
         try await XCTAssertEqualAsync(1, try await coreDataService.getChatsFor(profile: user).count)
     }
+    
+    func testAddSameMessagesStress() async throws {
+        let users = createUsers(2)
+        let chat1 = createChatsFor(profile: users[0])[0]
+        let chat2 = createChatsFor(profile: users[1])[0]
+        let message = createMessages(in: chat1)[0]
+        let message2 = MessagingChatMessage(displayInfo: .init(id: message.id,
+                                                               chatId: chat2.id,
+                                                               userId: chat2.userId,
+                                                               senderType: message.displayInfo.senderType,
+                                                               time: message.displayInfo.time,
+                                                               type: message.displayInfo.type,
+                                                               isRead: message.displayInfo.isRead,
+                                                               isFirstInChat: message.displayInfo.isFirstInChat,
+                                                               deliveryState: message.displayInfo.deliveryState,
+                                                               isEncrypted: message.displayInfo.isEncrypted))
+        
+        for user in users {
+            await coreDataService.saveUserProfile(user)
+        }
+        
+        await coreDataService.saveChats([chat1])
+        await coreDataService.saveChats([chat1, chat2])
+        await coreDataService.saveMessages([message])
+        await coreDataService.saveMessages([message, message, message2])
+        try await XCTAssertEqualAsync(1, try await coreDataService.getMessagesFor(chat: chat1, before: nil, limit: .max).count)
+        try await XCTAssertEqualAsync(1, try await coreDataService.getMessagesFor(chat: chat2, before: nil, limit: .max).count)
+
+        await withTaskGroup(of: Void.self) { task in
+            for _ in 0..<1000 {
+                task.addTask {
+                    await self.coreDataService.saveMessages([message])
+                    await self.coreDataService.saveMessages([message, message2])
+                }
+            }
+            
+            for await _ in task {
+                
+            }
+        }
+        
+        try await XCTAssertEqualAsync(1, try await coreDataService.getMessagesFor(chat: chat1, before: nil, limit: .max).count)
+        try await XCTAssertEqualAsync(1, try await coreDataService.getMessagesFor(chat: chat2, before: nil, limit: .max).count)
+    }
 }
 
 // MARK: - Private methods
