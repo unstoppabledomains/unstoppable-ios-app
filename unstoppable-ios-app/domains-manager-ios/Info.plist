@@ -56,6 +56,7 @@
 		<string>mathwallet</string>
 		<string>metamask</string>
 		<string>rainbow</string>
+        <string>okex</string>
 		<string>celo</string>
 		<string>zel</string>
 		<string>fuse.cash</string>
@@ -67,7 +68,6 @@
 		<string>1inch</string>
 		<string>aktionaria</string>
 		<string>autonomy-wc</string>
-		<string>avacus</string>
 		<string>bitpay</string>
 		<string>bridgewallet</string>
 		<string>cybavowallet</string>
