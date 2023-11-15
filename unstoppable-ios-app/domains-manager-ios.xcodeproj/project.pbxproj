@@ -425,6 +425,8 @@
 		C63A352B28F017A90057D34B /* DomainProfileEmptySection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A352A28F017A90057D34B /* DomainProfileEmptySection.swift */; };
 		C63A77A828F40B6B00F66E72 /* GhostTertiaryWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63A77A728F40B6A00F66E72 /* GhostTertiaryWhiteButton.swift */; };
 		C63B1F342A4595D000B1D7D1 /* Base64DataTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */; };
+		C63B68552B0475A1005D4046 /* DomainsCollectionSuggestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63B68532B0475A1005D4046 /* DomainsCollectionSuggestionCell.swift */; };
+		C63B68562B0475A1005D4046 /* DomainsCollectionSuggestionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63B68542B0475A1005D4046 /* DomainsCollectionSuggestionCell.xib */; };
 		C63DD36129C89FEC002D45B2 /* LoginViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */; };
 		C63DD36529C89FEC002D45B2 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */; };
 		C63DD36929C89FEC002D45B2 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C63DD36029C89FEC002D45B2 /* LoginViewController.xib */; };
@@ -1592,6 +1594,8 @@
 		C63A352A28F017A90057D34B /* DomainProfileEmptySection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileEmptySection.swift; sourceTree = "<group>"; };
 		C63A77A728F40B6A00F66E72 /* GhostTertiaryWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostTertiaryWhiteButton.swift; sourceTree = "<group>"; };
 		C63B1F332A4595D000B1D7D1 /* Base64DataTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Base64DataTransformer.swift; sourceTree = "<group>"; };
+		C63B68532B0475A1005D4046 /* DomainsCollectionSuggestionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainsCollectionSuggestionCell.swift; sourceTree = "<group>"; };
+		C63B68542B0475A1005D4046 /* DomainsCollectionSuggestionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DomainsCollectionSuggestionCell.xib; sourceTree = "<group>"; };
 		C63DD35E29C89FEC002D45B2 /* LoginViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewPresenter.swift; sourceTree = "<group>"; };
 		C63DD35F29C89FEC002D45B2 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		C63DD36029C89FEC002D45B2 /* LoginViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
@@ -3659,6 +3663,15 @@
 			path = Entities;
 			sourceTree = "<group>";
 		};
+		C63B68522B047570005D4046 /* DomainsCollectionSuggestionCell */ = {
+			isa = PBXGroup;
+			children = (
+				C63B68532B0475A1005D4046 /* DomainsCollectionSuggestionCell.swift */,
+				C63B68542B0475A1005D4046 /* DomainsCollectionSuggestionCell.xib */,
+			);
+			path = DomainsCollectionSuggestionCell;
+			sourceTree = "<group>";
+		};
 		C63DD35D29C89FCB002D45B2 /* LoginViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -5621,6 +5634,7 @@
 		C6D6E56128193D00008C66BB /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				C63B68522B047570005D4046 /* DomainsCollectionSuggestionCell */,
 				C6E041922951701C0080F8E3 /* DomainsCollectionNoRecentActivitiesCell */,
 				C6E0415F295054130080F8E3 /* DomainsCollectionRecentActivityCell */,
 				C6E0414F295052E10080F8E3 /* DomainsCollectionCarouselCardCell */,
@@ -6177,6 +6191,7 @@
 				C673D5B429FB725B001CC77C /* InviteFriendsViewController.xib in Resources */,
 				C60982DE282A7B6B00546392 /* WalletConnectedViewController.xib in Resources */,
 				C685A954284097E600E54044 /* UDDomainCardView.xib in Resources */,
+				C63B68562B0475A1005D4046 /* DomainsCollectionSuggestionCell.xib in Resources */,
 				C66FCD1E2845C3AE009B9525 /* DomainsCollectionMintingInProgressCell.xib in Resources */,
 				30A280372714217200FD3759 /* wallets-registry.json in Resources */,
 				30BFA4D527DE0C5C00644CD5 /* Tutorial.storyboard in Resources */,
@@ -7034,6 +7049,7 @@
 				C624D791281BCA1F00F55530 /* SettingsViewController.swift in Sources */,
 				C689539A2834D08F0046CBA3 /* AddCurrencyCell.swift in Sources */,
 				C68BEC262A39ABEA00A0B809 /* ChatListCreateProfileCell.swift in Sources */,
+				C63B68552B0475A1005D4046 /* DomainsCollectionSuggestionCell.swift in Sources */,
 				C685A95B28409AFE00E54044 /* MintDomainsConfigurationCardCell.swift in Sources */,
 				C6456F2F2800520E00A517D5 /* Vibration.swift in Sources */,
 				306DB242268F4EE2009D95DE /* Extension-String.swift in Sources */,

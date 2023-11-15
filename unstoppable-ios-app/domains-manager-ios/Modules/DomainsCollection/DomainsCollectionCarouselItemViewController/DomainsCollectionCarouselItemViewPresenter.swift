@@ -28,6 +28,7 @@ final class DomainsCollectionCarouselItemViewPresenter {
     private weak var actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate?
     private var didShowSwipeDomainCardTutorial = UserDefaults.didShowSwipeDomainCardTutorial
     var analyticsName: Analytics.ViewName { .unspecified }
+    var didDismissSuggestion = false
 
     init(view: DomainsCollectionCarouselItemViewProtocol,
          domain: DomainDisplayInfo,
@@ -59,6 +60,8 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         switch item {
         case .domainCard(let configuration):
             actionsDelegate?.didOccurUIAction(.domainSelected(configuration.domain))
+        case .suggestion(let configuration):
+            return
         case .noRecentActivities, .recentActivity:
             return
         }
@@ -66,6 +69,10 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
     
     func setCarouselCardState(_ state: CarouselCardState) {
         guard self.cardState != state else { return }
+        
+        if state != .expanded {
+            didShowSwipeDomainCardTutorial = true
+        }
         
         func isSwipeTutorialValueChanged() -> Bool {
             UserDefaults.didShowSwipeDomainCardTutorial != didShowSwipeDomainCardTutorial
@@ -178,9 +185,13 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             isTutorialOn = true
         }
         
+        let needToShowSuggestion = addSuggestionSectionIfNeeded(in: &snapshot)
+        
         if case .parking = domain.state {
+            
             if isTutorialOn {
-                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+                snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState(),
+                                                         placement: .footer)])
                 snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
             }
             snapshot.appendSections([.noRecentActivities])
@@ -190,7 +201,10 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         } else {
             if connectedApps.isEmpty {
                 if isTutorialOn {
-                    snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+                    if !needToShowSuggestion {
+                        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState(),
+                                                                 placement: .footer)])
+                    }
                     snapshot.appendSections([.tutorialDashesSeparator(height: Self.dashesSeparatorSectionHeight)])
                 }
                 
@@ -200,8 +214,10 @@ private extension DomainsCollectionCarouselItemViewPresenter {
                 }, isTutorialOn: isTutorialOn, dataType: .activity))])
             } else {
                 // Spacer
-                if cardState == .expanded {
-                    snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState())])
+                if cardState == .expanded,
+                !needToShowSuggestion {
+                    snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState(),
+                                                             placement: .footer)])
                 }
                 
                 // Separator
@@ -233,6 +249,29 @@ private extension DomainsCollectionCarouselItemViewPresenter {
          
         
         view?.applySnapshot(snapshot, animated: animated)
+    }
+    
+    func getHotFeatureSuggestion() -> HotFeatureSuggestion? {
+        didDismissSuggestion ? nil : .init()
+    }
+    
+    func addSuggestionSectionIfNeeded(in snapshot: inout DomainsCollectionCarouselItemSnapshot) -> Bool {
+        guard let suggestion = getHotFeatureSuggestion() else { return false }
+        
+        snapshot.appendSections([.emptySeparator(height: emptySeparatorHeightForExpandedState() + 16,
+                                                 placement: .header)])
+        snapshot.appendItems([.suggestion(configuration: .init(closeCallback: { [weak self] in
+            self?.didDismissSuggestion(suggestion)
+        }, suggestion: suggestion))])
+        
+        return true
+    }
+    
+    func didDismissSuggestion(_ suggestion: HotFeatureSuggestion) {
+        didDismissSuggestion = true
+        Task {
+            await showDomainDataWithActions(animated: true)
+        }
     }
     
     func emptySeparatorHeightForExpandedState() -> CGFloat {
@@ -368,4 +407,8 @@ private extension DomainsCollectionCarouselItemViewPresenter {
             self?.actionsDelegate?.didOccurUIAction(.rearrangeDomains)
         }
     }
+}
+
+struct HotFeatureSuggestion: Hashable {
+    
 }
