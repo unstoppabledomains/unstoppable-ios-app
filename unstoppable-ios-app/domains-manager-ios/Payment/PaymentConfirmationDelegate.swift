@@ -32,6 +32,7 @@ extension PaymentConfirmationDelegate {
                 return
             }
             
+            StripeService.prepare()
             self.stripePaymentHelper = stripePaymentHelper
             
             Task {

@@ -385,6 +385,31 @@
 		C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C3FC5283F70970094FC93 /* SelectorButton.swift */; };
 		C62C8DC528DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C62C8DC328DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib */; };
 		C62C8DC928DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62C8DC428DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift */; };
+		C63095CD2B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095C52B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift */; };
+		C63095CE2B0DA5DE00205054 /* PurchaseDomainsCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095C62B0DA5DE00205054 /* PurchaseDomainsCart.swift */; };
+		C63095CF2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095C72B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift */; };
+		C63095D02B0DA5DE00205054 /* PurchaseDomainsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095C82B0DA5DE00205054 /* PurchaseDomainsServiceProtocol.swift */; };
+		C63095D12B0DA5DE00205054 /* PurchaseDomainsCheckoutData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095C92B0DA5DE00205054 /* PurchaseDomainsCheckoutData.swift */; };
+		C63095D22B0DA5DE00205054 /* DomainToPurchase.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095CA2B0DA5DE00205054 /* DomainToPurchase.swift */; };
+		C63095D32B0DA5DE00205054 /* PurchasedDomainsWalletDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095CB2B0DA5DE00205054 /* PurchasedDomainsWalletDescription.swift */; };
+		C63095D42B0DA5DE00205054 /* PurchaseDomainsPreferencesStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095CC2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorage.swift */; };
+		C63095D62B0DA61600205054 /* PublishingAppStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095D52B0DA61600205054 /* PublishingAppStorage.swift */; };
+		C63095E82B0DA66400205054 /* UDFirebaseSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095D82B0DA66400205054 /* UDFirebaseSigner.swift */; };
+		C63095E92B0DA66400205054 /* GoogleIDTokenUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095D92B0DA66400205054 /* GoogleIDTokenUtilities.swift */; };
+		C63095EA2B0DA66400205054 /* FirebaseServiceEnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095DA2B0DA66400205054 /* FirebaseServiceEnvironmentKeys.swift */; };
+		C63095EB2B0DA66400205054 /* UDWalletSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095DB2B0DA66400205054 /* UDWalletSigner.swift */; };
+		C63095EC2B0DA66400205054 /* FirebaseAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095DC2B0DA66400205054 /* FirebaseAuthError.swift */; };
+		C63095ED2B0DA66400205054 /* BaseFirebaseInteractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095DD2B0DA66400205054 /* BaseFirebaseInteractionService.swift */; };
+		C63095EE2B0DA66400205054 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095DE2B0DA66400205054 /* FirebaseAuthService.swift */; };
+		C63095EF2B0DA66400205054 /* FirebaseAuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095DF2B0DA66400205054 /* FirebaseAuthenticationService.swift */; };
+		C63095F02B0DA66400205054 /* UDGoogleSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095E02B0DA66400205054 /* UDGoogleSigner.swift */; };
+		C63095F12B0DA66400205054 /* FirebasePurchaseDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095E22B0DA66400205054 /* FirebasePurchaseDomainsService.swift */; };
+		C63095F22B0DA66400205054 /* MockFirebaseInteractionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095E32B0DA66400205054 /* MockFirebaseInteractionsService.swift */; };
+		C63095F32B0DA66400205054 /* FirebasePurchaseEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095E42B0DA66400205054 /* FirebasePurchaseEntities.swift */; };
+		C63095F42B0DA66400205054 /* UDTwitterSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095E52B0DA66400205054 /* UDTwitterSigner.swift */; };
+		C63095F52B0DA66400205054 /* FirebaseAuthUtilitiesProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095E62B0DA66400205054 /* FirebaseAuthUtilitiesProtocol.swift */; };
+		C63095F62B0DA66400205054 /* FirebaseDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095E72B0DA66400205054 /* FirebaseDomainsService.swift */; };
+		C63095F92B0DAAA900205054 /* MockStripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095F82B0DAAA900205054 /* MockStripeService.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63402882886547C00AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C63402872886547C00AB5D38 /* SVGKit */; };
 		C63414DA2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
@@ -596,7 +621,6 @@
 		C666E0A529CB3FEA0003DECB /* ParkedDomainCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C666E0A029CB3FEA0003DECB /* ParkedDomainCell.xib */; };
 		C666E0AA29CB41350003DECB /* FirebaseDomainDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0A929CB41350003DECB /* FirebaseDomainDisplayInfo.swift */; };
 		C666E0AF29CB41960003DECB /* DomainParkingStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0AE29CB41960003DECB /* DomainParkingStatus.swift */; };
-		C666E0C329CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */; };
 		C666E0C829CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */; };
 		C666E0FC29CD594F0003DECB /* UserProfileAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C666E0FB29CD594F0003DECB /* UserProfileAction.swift */; };
 		C6670A0928D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */; };
@@ -872,14 +896,7 @@
 		C6BA74702AD4FE5500628DC6 /* PullUpViewService+Badges.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA746F2AD4FE5500628DC6 /* PullUpViewService+Badges.swift */; };
 		C6BA74722AD4FEE600628DC6 /* PullUpViewService+ExternalWallets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74712AD4FEE600628DC6 /* PullUpViewService+ExternalWallets.swift */; };
 		C6BA74742AD5013500628DC6 /* PullUpViewService+DomainProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */; };
-		C6BEEF2629C30AEB000489B9 /* UDTwitterSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */; };
-		C6BEEF2B29C30BB6000489B9 /* UDGoogleSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */; };
 		C6BEEF3029C30C89000489B9 /* FirebaseNetworkConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */; };
-		C6BEEF3529C30D5C000489B9 /* GoogleIDTokenUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF3429C30D5C000489B9 /* GoogleIDTokenUtilities.swift */; };
-		C6BEEF3A29C30D7D000489B9 /* FirebaseAuthUtilitiesProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF3929C30D7D000489B9 /* FirebaseAuthUtilitiesProtocol.swift */; };
-		C6BEEF3F29C30D9D000489B9 /* UDFirebaseSigner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF3E29C30D9D000489B9 /* UDFirebaseSigner.swift */; };
-		C6BEEF4429C30DDE000489B9 /* FirebaseAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF4329C30DDE000489B9 /* FirebaseAuthError.swift */; };
-		C6BEEF4929C30F9B000489B9 /* FirebaseAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */; };
 		C6BF42CC2A49553900A02860 /* ChatLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BF42CA2A49553900A02860 /* ChatLoadingCell.swift */; };
 		C6BF42D02A49553900A02860 /* ChatLoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6BF42CB2A49553900A02860 /* ChatLoadingCell.xib */; };
 		C6C1EC552A3ACAB1005EB37D /* ChatsListNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C1EC542A3ACAB1005EB37D /* ChatsListNavigationView.swift */; };
@@ -921,7 +938,6 @@
 		C6C995C2289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957A289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift */; };
 		C6C995C6289D313D00367362 /* CBaseTransitioningAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */; };
 		C6C995DA289D313E00367362 /* CNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C99581289D313D00367362 /* CNavigationBar.swift */; };
-		C6C9A80729C390F300B23675 /* FirebaseInteractionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9A80629C390F300B23675 /* FirebaseInteractionService.swift */; };
 		C6C9DE942834A9DB00BAC36F /* TextWhiteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9DE932834A9DB00BAC36F /* TextWhiteButton.swift */; };
 		C6C9DE992834B28F00BAC36F /* SubheadTertiaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9DE982834B28F00BAC36F /* SubheadTertiaryButton.swift */; };
 		C6C9DEA02834B56200BAC36F /* ManageDomainLoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C9DE9E2834B56200BAC36F /* ManageDomainLoadingCell.swift */; };
@@ -1553,6 +1569,31 @@
 		C62C3FC5283F70970094FC93 /* SelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorButton.swift; sourceTree = "<group>"; };
 		C62C8DC328DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PaymentTransactionGasOnlyCostView.xib; sourceTree = "<group>"; };
 		C62C8DC428DAF8E500967D0A /* PaymentTransactionGasOnlyCostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentTransactionGasOnlyCostView.swift; sourceTree = "<group>"; };
+		C63095C52B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsServiceEnvironmentKey.swift; sourceTree = "<group>"; };
+		C63095C62B0DA5DE00205054 /* PurchaseDomainsCart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCart.swift; sourceTree = "<group>"; };
+		C63095C72B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsPreferencesStorageEnvironmentKey.swift; sourceTree = "<group>"; };
+		C63095C82B0DA5DE00205054 /* PurchaseDomainsServiceProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsServiceProtocol.swift; sourceTree = "<group>"; };
+		C63095C92B0DA5DE00205054 /* PurchaseDomainsCheckoutData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsCheckoutData.swift; sourceTree = "<group>"; };
+		C63095CA2B0DA5DE00205054 /* DomainToPurchase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DomainToPurchase.swift; sourceTree = "<group>"; };
+		C63095CB2B0DA5DE00205054 /* PurchasedDomainsWalletDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchasedDomainsWalletDescription.swift; sourceTree = "<group>"; };
+		C63095CC2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsPreferencesStorage.swift; sourceTree = "<group>"; };
+		C63095D52B0DA61600205054 /* PublishingAppStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublishingAppStorage.swift; sourceTree = "<group>"; };
+		C63095D82B0DA66400205054 /* UDFirebaseSigner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDFirebaseSigner.swift; sourceTree = "<group>"; };
+		C63095D92B0DA66400205054 /* GoogleIDTokenUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleIDTokenUtilities.swift; sourceTree = "<group>"; };
+		C63095DA2B0DA66400205054 /* FirebaseServiceEnvironmentKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseServiceEnvironmentKeys.swift; sourceTree = "<group>"; };
+		C63095DB2B0DA66400205054 /* UDWalletSigner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDWalletSigner.swift; sourceTree = "<group>"; };
+		C63095DC2B0DA66400205054 /* FirebaseAuthError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseAuthError.swift; sourceTree = "<group>"; };
+		C63095DD2B0DA66400205054 /* BaseFirebaseInteractionService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseFirebaseInteractionService.swift; sourceTree = "<group>"; };
+		C63095DE2B0DA66400205054 /* FirebaseAuthService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
+		C63095DF2B0DA66400205054 /* FirebaseAuthenticationService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseAuthenticationService.swift; sourceTree = "<group>"; };
+		C63095E02B0DA66400205054 /* UDGoogleSigner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDGoogleSigner.swift; sourceTree = "<group>"; };
+		C63095E22B0DA66400205054 /* FirebasePurchaseDomainsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebasePurchaseDomainsService.swift; sourceTree = "<group>"; };
+		C63095E32B0DA66400205054 /* MockFirebaseInteractionsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockFirebaseInteractionsService.swift; sourceTree = "<group>"; };
+		C63095E42B0DA66400205054 /* FirebasePurchaseEntities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebasePurchaseEntities.swift; sourceTree = "<group>"; };
+		C63095E52B0DA66400205054 /* UDTwitterSigner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDTwitterSigner.swift; sourceTree = "<group>"; };
+		C63095E62B0DA66400205054 /* FirebaseAuthUtilitiesProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseAuthUtilitiesProtocol.swift; sourceTree = "<group>"; };
+		C63095E72B0DA66400205054 /* FirebaseDomainsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseDomainsService.swift; sourceTree = "<group>"; };
+		C63095F82B0DAAA900205054 /* MockStripeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockStripeService.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63414D92A7D335100C80B77 /* GlobalRR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalRR.swift; sourceTree = "<group>"; };
 		C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
@@ -1756,7 +1797,6 @@
 		C666E0A029CB3FEA0003DECB /* ParkedDomainCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ParkedDomainCell.xib; sourceTree = "<group>"; };
 		C666E0A929CB41350003DECB /* FirebaseDomainDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDomainDisplayInfo.swift; sourceTree = "<group>"; };
 		C666E0AE29CB41960003DECB /* DomainParkingStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainParkingStatus.swift; sourceTree = "<group>"; };
-		C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDomainsService.swift; sourceTree = "<group>"; };
 		C666E0C729CC0B5D0003DECB /* FirebaseDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDomainsStorage.swift; sourceTree = "<group>"; };
 		C666E0FB29CD594F0003DECB /* UserProfileAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileAction.swift; sourceTree = "<group>"; };
 		C6670A0828D4622100415EBB /* SetupChangeReverseResolutionDomainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupChangeReverseResolutionDomainPresenter.swift; sourceTree = "<group>"; };
@@ -2024,14 +2064,7 @@
 		C6BA746F2AD4FE5500628DC6 /* PullUpViewService+Badges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+Badges.swift"; sourceTree = "<group>"; };
 		C6BA74712AD4FEE600628DC6 /* PullUpViewService+ExternalWallets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+ExternalWallets.swift"; sourceTree = "<group>"; };
 		C6BA74732AD5013500628DC6 /* PullUpViewService+DomainProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PullUpViewService+DomainProfile.swift"; sourceTree = "<group>"; };
-		C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDTwitterSigner.swift; sourceTree = "<group>"; };
-		C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDGoogleSigner.swift; sourceTree = "<group>"; };
 		C6BEEF2F29C30C89000489B9 /* FirebaseNetworkConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseNetworkConfig.swift; sourceTree = "<group>"; };
-		C6BEEF3429C30D5C000489B9 /* GoogleIDTokenUtilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleIDTokenUtilities.swift; sourceTree = "<group>"; };
-		C6BEEF3929C30D7D000489B9 /* FirebaseAuthUtilitiesProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthUtilitiesProtocol.swift; sourceTree = "<group>"; };
-		C6BEEF3E29C30D9D000489B9 /* UDFirebaseSigner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UDFirebaseSigner.swift; sourceTree = "<group>"; };
-		C6BEEF4329C30DDE000489B9 /* FirebaseAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthError.swift; sourceTree = "<group>"; };
-		C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthService.swift; sourceTree = "<group>"; };
 		C6BF42CA2A49553900A02860 /* ChatLoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLoadingCell.swift; sourceTree = "<group>"; };
 		C6BF42CB2A49553900A02860 /* ChatLoadingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatLoadingCell.xib; sourceTree = "<group>"; };
 		C6C1EC542A3ACAB1005EB37D /* ChatsListNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatsListNavigationView.swift; sourceTree = "<group>"; };
@@ -2073,7 +2106,6 @@
 		C6C9957A289D313D00367362 /* CNavigationControllerDefaultNavigationBarPopAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationControllerDefaultNavigationBarPopAnimation.swift; sourceTree = "<group>"; };
 		C6C9957B289D313D00367362 /* CBaseTransitioningAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBaseTransitioningAnimation.swift; sourceTree = "<group>"; };
 		C6C99581289D313D00367362 /* CNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CNavigationBar.swift; sourceTree = "<group>"; };
-		C6C9A80629C390F300B23675 /* FirebaseInteractionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseInteractionService.swift; sourceTree = "<group>"; };
 		C6C9DE9128349E2900BAC36F /* WalletDataValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDataValidationTests.swift; sourceTree = "<group>"; };
 		C6C9DE932834A9DB00BAC36F /* TextWhiteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWhiteButton.swift; sourceTree = "<group>"; };
 		C6C9DE982834B28F00BAC36F /* SubheadTertiaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubheadTertiaryButton.swift; sourceTree = "<group>"; };
@@ -3497,6 +3529,60 @@
 			path = PaymentTransactionGasOnlyCostView;
 			sourceTree = "<group>";
 		};
+		C63095C42B0DA5DE00205054 /* Purchase domains */ = {
+			isa = PBXGroup;
+			children = (
+				C63095C52B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift */,
+				C63095C62B0DA5DE00205054 /* PurchaseDomainsCart.swift */,
+				C63095C72B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift */,
+				C63095C82B0DA5DE00205054 /* PurchaseDomainsServiceProtocol.swift */,
+				C63095C92B0DA5DE00205054 /* PurchaseDomainsCheckoutData.swift */,
+				C63095CA2B0DA5DE00205054 /* DomainToPurchase.swift */,
+				C63095CB2B0DA5DE00205054 /* PurchasedDomainsWalletDescription.swift */,
+				C63095CC2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorage.swift */,
+			);
+			path = "Purchase domains";
+			sourceTree = "<group>";
+		};
+		C63095D72B0DA66400205054 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				C63095DD2B0DA66400205054 /* BaseFirebaseInteractionService.swift */,
+				C63095DF2B0DA66400205054 /* FirebaseAuthenticationService.swift */,
+				C63095DC2B0DA66400205054 /* FirebaseAuthError.swift */,
+				C63095DE2B0DA66400205054 /* FirebaseAuthService.swift */,
+				C63095E62B0DA66400205054 /* FirebaseAuthUtilitiesProtocol.swift */,
+				C63095E72B0DA66400205054 /* FirebaseDomainsService.swift */,
+				C63095DA2B0DA66400205054 /* FirebaseServiceEnvironmentKeys.swift */,
+				C63095D92B0DA66400205054 /* GoogleIDTokenUtilities.swift */,
+				C63095D82B0DA66400205054 /* UDFirebaseSigner.swift */,
+				C63095E02B0DA66400205054 /* UDGoogleSigner.swift */,
+				C63095E52B0DA66400205054 /* UDTwitterSigner.swift */,
+				C63095DB2B0DA66400205054 /* UDWalletSigner.swift */,
+				C63095E32B0DA66400205054 /* MockFirebaseInteractionsService.swift */,
+				C63095E12B0DA66400205054 /* Purchase */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		C63095E12B0DA66400205054 /* Purchase */ = {
+			isa = PBXGroup;
+			children = (
+				C63095E22B0DA66400205054 /* FirebasePurchaseDomainsService.swift */,
+				C63095E42B0DA66400205054 /* FirebasePurchaseEntities.swift */,
+			);
+			path = Purchase;
+			sourceTree = "<group>";
+		};
+		C63095F72B0DAA9B00205054 /* Stripe */ = {
+			isa = PBXGroup;
+			children = (
+				C6B91EB329BB718100389FF5 /* StripeService.swift */,
+				C63095F82B0DAAA900205054 /* MockStripeService.swift */,
+			);
+			path = Stripe;
+			sourceTree = "<group>";
+		};
 		C635193328D03F1600FC6AF8 /* SetupReverseResolution */ = {
 			isa = PBXGroup;
 			children = (
@@ -4539,17 +4625,17 @@
 				C6E69FF5288AE47D000A8346 /* ExternalEventsService.swift */,
 				C63902BC28E2FCF200E16B42 /* ExternalWalletConnectionService.swift */,
 				C681092028041325002D780E /* GIFAnimationsService.swift */,
-				C67B6D4A2AE79AA100F74B0B /* ImageLoadingService */,
 				C65272652A15DEB9001A084C /* KeyboardService.swift */,
+				C67B6D4A2AE79AA100F74B0B /* ImageLoadingService */,
 				C689C1782ADE6D1700AA0186 /* FeatureFlags */,
 				C664B678291551E600A76154 /* LinkPresentationService.swift */,
 				C6209F9729D4180500D573EB /* LocalNotificationsService.swift */,
 				C613C22129E3BEEC0001A3AF /* NFCService.swift */,
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
-				C6B91EB329BB718100389FF5 /* StripeService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
-				C6BEEF2429C30AAC000489B9 /* Firebase */,
+				C63095F72B0DAA9B00205054 /* Stripe */,
+				C63095D72B0DA66400205054 /* Firebase */,
 				C63F1D0328AF31D5000A5C12 /* AnalyticsService */,
 				C61236EE292CADE1002BA97B /* AppGroupsBridge */,
 				C6109E2728E5AB310027D5D8 /* AppLaunchService */,
@@ -5183,6 +5269,7 @@
 				C6ED320C295E8EDE00BC6919 /* NonEmptyArray.swift */,
 				C671E3AB28FEE72B00A2B3A0 /* UnstoppableImagePicker.swift */,
 				C6DF46222AA180C000D124E7 /* PublicDomainDisplayInfo.swift */,
+				C63095D52B0DA61600205054 /* PublishingAppStorage.swift */,
 				C61FD05528FD3F540088CFDD /* ShareDomainHandler.swift */,
 				C669C37E29124C2600837F21 /* SocialsType.swift */,
 				C69F99552A9F167F004B1958 /* SocialDescription.swift */,
@@ -5197,6 +5284,7 @@
 				C606B740286474E000DC562B /* WalletWithInfo.swift */,
 				C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */,
 				C63902B228E2FADC00E16B42 /* WCCompatibleWallet.swift */,
+				C63095C42B0DA5DE00205054 /* Purchase domains */,
 				C671E39D28FE973800A2B3A0 /* CarouselItems */,
 				C63538E42948891200ECABA6 /* Domains */,
 				C6109E4328E5ABFE0027D5D8 /* Mock */,
@@ -5256,22 +5344,6 @@
 				C6BA74662AD3F09E00628DC6 /* CommunityListCell.xib */,
 			);
 			path = CommunityListCell;
-			sourceTree = "<group>";
-		};
-		C6BEEF2429C30AAC000489B9 /* Firebase */ = {
-			isa = PBXGroup;
-			children = (
-				C6C9A80629C390F300B23675 /* FirebaseInteractionService.swift */,
-				C6BEEF4829C30F9B000489B9 /* FirebaseAuthService.swift */,
-				C666E0C229CC0AA00003DECB /* FirebaseDomainsService.swift */,
-				C6BEEF2529C30AEB000489B9 /* UDTwitterSigner.swift */,
-				C6BEEF2A29C30BB6000489B9 /* UDGoogleSigner.swift */,
-				C6BEEF3E29C30D9D000489B9 /* UDFirebaseSigner.swift */,
-				C6BEEF3929C30D7D000489B9 /* FirebaseAuthUtilitiesProtocol.swift */,
-				C6BEEF4329C30DDE000489B9 /* FirebaseAuthError.swift */,
-				C6BEEF3429C30D5C000489B9 /* GoogleIDTokenUtilities.swift */,
-			);
-			path = Firebase;
 			sourceTree = "<group>";
 		};
 		C6BF42C92A49552700A02860 /* ChatLoadingCell */ = {
@@ -6377,6 +6449,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C6B5136828322EA1001E99B5 /* MainWindow.swift in Sources */,
+				C63095F62B0DA66400205054 /* FirebaseDomainsService.swift in Sources */,
 				C689C17C2ADE6D3400AA0186 /* UDFeatureFlag.swift in Sources */,
 				C6D6EB2F2AB9A21600CA5B0F /* Chat.swift in Sources */,
 				C603E8C9285859560028C21C /* CollectionViewHeaderCell.swift in Sources */,
@@ -6391,6 +6464,7 @@
 				C623E2052A70061600595662 /* AESMessagingContentDecrypterService.swift in Sources */,
 				C6637A7128100D3A0000AE56 /* LaunchViewController.swift in Sources */,
 				C66804D5280D9EC8007E6390 /* EnterPasscodeViewController.swift in Sources */,
+				C63095D32B0DA5DE00205054 /* PurchasedDomainsWalletDescription.swift in Sources */,
 				C6ECBF8128D2D0D400E94309 /* ReverseResolutionTransactionInProgressCardCell.swift in Sources */,
 				C609823A2823F62C00546392 /* BaseBackupWalletPresenter.swift in Sources */,
 				C6526DE329D2E05F00D6F2EB /* NoParkedDomainsFoundInAppViewPresenter.swift in Sources */,
@@ -6416,6 +6490,7 @@
 				C60982252823E4CC00546392 /* WalletDetailsAddWalletAction.swift in Sources */,
 				C6E1188828F570A200C6AD4D /* WalletConnectPushNotificationsUnsubscribeInfo.swift in Sources */,
 				C6526DD929D2DF6E00D6F2EB /* LoginWithEmailInAppViewPresenter.swift in Sources */,
+				C63095D62B0DA61600205054 /* PublishingAppStorage.swift in Sources */,
 				29BECD182979BE4000662FC1 /* Date.swift in Sources */,
 				C6A2D57D284F9EC700327C47 /* ConnectedAppsListViewController.swift in Sources */,
 				C61308922A7A22AD00E7CE21 /* SwiftUIZoomableContainer.swift in Sources */,
@@ -6484,7 +6559,6 @@
 				C635195128D0441000FC6AF8 /* SetupWalletsReverseResolutionPresenter.swift in Sources */,
 				C6ECBF7528D2C6D300E94309 /* BaseMintingTransactionInProgressViewPresenter.swift in Sources */,
 				C638680B2858DA0F000F98C4 /* KeepingAnimationImageView.swift in Sources */,
-				C6BEEF2629C30AEB000489B9 /* UDTwitterSigner.swift in Sources */,
 				C6D6E527281932FF008C66BB /* BaseViewControllerProtocol.swift in Sources */,
 				307B1CEA2602775D007B14C3 /* UDWallet.swift in Sources */,
 				C6B6B028296D2CEA00D4E30F /* MintingDomainWithDisplayInfo.swift in Sources */,
@@ -6501,7 +6575,6 @@
 				C669C3842912576D00837F21 /* UITextField.swift in Sources */,
 				C6124CCC29223066005E6537 /* DomainAvatarImageView.swift in Sources */,
 				C69F99292A9F1264004B1958 /* View.swift in Sources */,
-				C6BEEF3529C30D5C000489B9 /* GoogleIDTokenUtilities.swift in Sources */,
 				C6B6B039296EA86300D4E30F /* SignTransactionDomainSelectionHeaderView.swift in Sources */,
 				C669C38C2912632100837F21 /* SocialsVerificationViewPresenter.swift in Sources */,
 				C6D6E5062817E5ED008C66BB /* OnboardingAddWalletPresenter.swift in Sources */,
@@ -6528,6 +6601,7 @@
 				C60CA2962832501D00AB1B36 /* QRCodeServiceProvider.swift in Sources */,
 				C6D3B9D42A6EC8C00091B279 /* MessagingAPIServiceHelper.swift in Sources */,
 				C66435CF288ECC370098E1B8 /* PushNotificationsInfo.swift in Sources */,
+				C63095F32B0DA66400205054 /* FirebasePurchaseEntities.swift in Sources */,
 				C6456F1B2800302900A517D5 /* ConfirmWordListCell.swift in Sources */,
 				C692C36A282EADA400C31393 /* SelectAppearanceThemePullUpView.swift in Sources */,
 				C652725C2A15DD7E001A084C /* ObserveKeyboardAccessoryView.swift in Sources */,
@@ -6535,6 +6609,7 @@
 				C645131128095BA400413C51 /* ExistingUsersTutorialViewController.swift in Sources */,
 				C6D6E4F72817E045008C66BB /* OnboardingConfirmWordsPresenter.swift in Sources */,
 				C6526DD429D2DE0700D6F2EB /* LoadingParkedDomainsOnboardingViewPresenter.swift in Sources */,
+				C63095D22B0DA5DE00205054 /* DomainToPurchase.swift in Sources */,
 				C6B366D22A1BA35A00DE512B /* NavBarBackButtonTransitionPerformer.swift in Sources */,
 				C663D1AC2AFC85A0003C54E0 /* MockWalletConnectServiceV2.swift in Sources */,
 				C6D3B9C42A6EBF370091B279 /* XMTPMessagingAPIService.swift in Sources */,
@@ -6594,11 +6669,11 @@
 				C666E09929CB3F960003DECB /* FirebaseDomain.swift in Sources */,
 				C689537E2834CB730046CBA3 /* AddCurrencyViewController.swift in Sources */,
 				30BA2B36252914100097817E /* Helpers.swift in Sources */,
-				C6C9A80729C390F300B23675 /* FirebaseInteractionService.swift in Sources */,
 				C665FC2429B068A3009699D2 /* MockNotificationsService.swift in Sources */,
 				C624D766281A8BF500F55530 /* UICollectionViewLayout.swift in Sources */,
 				C669C355291168C000837F21 /* DomainProfileSocialsSection.swift in Sources */,
 				C61308972A7A22D500E7CE21 /* MessagingImageView.swift in Sources */,
+				C63095EA2B0DA66400205054 /* FirebaseServiceEnvironmentKeys.swift in Sources */,
 				C65272512A15D938001A084C /* ChatViewController.swift in Sources */,
 				C6D6E5A32819945C008C66BB /* StatusMessage.swift in Sources */,
 				C6E385FD2849D66E00C91293 /* DomainsListPresenter.swift in Sources */,
@@ -6606,6 +6681,7 @@
 				C6526DF229D2E12A00D6F2EB /* ParkedDomainsFoundOnboardingViewPresenter.swift in Sources */,
 				C603D7A12A56B72700CEC696 /* ChatUnsupportedMessageCell.swift in Sources */,
 				C6E459032925F08600751742 /* DomainsCollectionEmptyTopInfoCell.swift in Sources */,
+				C63095E92B0DA66400205054 /* GoogleIDTokenUtilities.swift in Sources */,
 				C60982352823F10C00546392 /* CreateLocalWalletPresenter.swift in Sources */,
 				C6FECF41282CDDFC008DAA49 /* ICloudBackupDisplayInfo.swift in Sources */,
 				C691CFE128C1D5600077C59F /* SetupNewReverseResolutionDomainPresenter.swift in Sources */,
@@ -6702,11 +6778,13 @@
 				C666E07629C9F1900003DECB /* LoginWithEmailViewController.swift in Sources */,
 				C6ECBF9628D2E06800E94309 /* GenericBadgeView.swift in Sources */,
 				C6E0419F2951A4E60080F8E3 /* DomainsCollectionSectionHeader.swift in Sources */,
+				C63095F22B0DA66400205054 /* MockFirebaseInteractionsService.swift in Sources */,
 				C63902B828E2FB5B00E16B42 /* PaymentError.swift in Sources */,
 				C6109E3328E5AB310027D5D8 /* AuthentificationService.swift in Sources */,
 				C69F997A2A9F2206004B1958 /* PublicProfileView.swift in Sources */,
 				C6F9FBE32A25C5C600102F81 /* CoreDataMessagingStorageService.swift in Sources */,
 				C6456F1027FF3C6B00A517D5 /* UIViewController.swift in Sources */,
+				C63095F92B0DAAA900205054 /* MockStripeService.swift in Sources */,
 				C6B7CF63294AF1F80005C48D /* BlockChainItem.swift in Sources */,
 				C6C995AE289D313D00367362 /* CNavigationBarSlidePopAnimation.swift in Sources */,
 				C6D5DAF42837866800379C38 /* SecondaryDangerButton.swift in Sources */,
@@ -6768,6 +6846,7 @@
 				C669C39E291280C900837F21 /* DomainProfileBadgesSection.swift in Sources */,
 				C6B6B06A2976607D00D4E30F /* DomainsListSearchPresenter.swift in Sources */,
 				C624D76B281AD2B900F55530 /* FABButton.swift in Sources */,
+				C63095E82B0DA66400205054 /* UDFirebaseSigner.swift in Sources */,
 				C64BCB712A6FA59200EF8B47 /* XMTPMessagingWebSocketsService.swift in Sources */,
 				C66A26E628B4C22F005470B9 /* LoadPaginatedFetchableOperation.swift in Sources */,
 				C6124CDC2923C7FF005E6537 /* DomainProfileSectionUIChangeFailedItem.swift in Sources */,
@@ -6827,15 +6906,14 @@
 				C62396A42A28D51000363F60 /* PushInboxNotification.swift in Sources */,
 				C6E69FF1288AD9DB000A8346 /* NotificationsService.swift in Sources */,
 				C60E9B92282127E600CD7593 /* WalletsListCell.swift in Sources */,
-				C6BEEF3F29C30D9D000489B9 /* UDFirebaseSigner.swift in Sources */,
 				30BA2B45252C4E2B0097817E /* DomainItem.swift in Sources */,
 				C6C4217829371446005B791B /* DomainProfileTutorialViewController.swift in Sources */,
-				C6BEEF4929C30F9B000489B9 /* FirebaseAuthService.swift in Sources */,
 				307852642771FB030039FF40 /* DeepLinks.swift in Sources */,
 				C606B741286474E000DC562B /* WalletWithInfo.swift in Sources */,
 				C6E041622950541D0080F8E3 /* DomainsCollectionRecentActivityCell.swift in Sources */,
 				C6D3B9BA2A6EB8F80091B279 /* PushMessagingChannelsAPIService.swift in Sources */,
 				C685A9872840FD4900E54044 /* ChoosePrimaryDomainViewPresenter.swift in Sources */,
+				C63095CF2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift in Sources */,
 				C6A2D528284DC45B00327C47 /* PermissionsService.swift in Sources */,
 				C6C995B2289D313D00367362 /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				C666E09029CB3F430003DECB /* ParkedDomainsFoundViewController.swift in Sources */,
@@ -6845,6 +6923,7 @@
 				C623969F2A288AE300363F60 /* MessagingChat.swift in Sources */,
 				C6BF42CC2A49553900A02860 /* ChatLoadingCell.swift in Sources */,
 				C6F9FBD42A25C4ED00102F81 /* MessagingChatUserDisplayInfo.swift in Sources */,
+				C63095F02B0DA66400205054 /* UDGoogleSigner.swift in Sources */,
 				C671E3EE2902D0CC00A2B3A0 /* CollectionDashesHeaderReusableView.swift in Sources */,
 				C6E041D3295553B40080F8E3 /* UDButton.swift in Sources */,
 				C6BA746A2AD4398500628DC6 /* Int.swift in Sources */,
@@ -6857,8 +6936,10 @@
 				C62C3FA9283F67B60094FC93 /* NoDomainsToMintViewPresenter.swift in Sources */,
 				C69F99282A9F1264004B1958 /* AdaptiveSheet.swift in Sources */,
 				C69F99252A9F1264004B1958 /* UnstoppableListRowInset.swift in Sources */,
+				C63095D12B0DA5DE00205054 /* PurchaseDomainsCheckoutData.swift in Sources */,
 				C6A2D506284DBDCD00327C47 /* QRScannerViewPresenter.swift in Sources */,
 				C624D77F281BAE2100F55530 /* UDWalletsService.swift in Sources */,
+				C63095F12B0DA66400205054 /* FirebasePurchaseDomainsService.swift in Sources */,
 				C63902B328E2FADC00E16B42 /* WCCompatibleWallet.swift in Sources */,
 				C63A351A28F0152E0057D34B /* DomainProfileSection.swift in Sources */,
 				C664310C28D8BEB600A9C734 /* ConnectExternalWalletCell.swift in Sources */,
@@ -6896,6 +6977,7 @@
 				C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */,
 				C61236E7292C88D1002BA97B /* ImagesStorage.swift in Sources */,
 				C624D77A281BAB5000F55530 /* UDDomainsService.swift in Sources */,
+				C63095EB2B0DA66400205054 /* UDWalletSigner.swift in Sources */,
 				C6526DCF29D2DDFD00D6F2EB /* LoadingParkedDomainsInAppViewPresenter.swift in Sources */,
 				C6C75C692848E82000DD8E3F /* Sequence.swift in Sources */,
 				C686BF172A5FE8870036C7C1 /* MessagingFilesService.swift in Sources */,
@@ -6903,10 +6985,10 @@
 				C695C2682A57F99700B94DA8 /* PushPublicKeysStorage.swift in Sources */,
 				C6C57C4D2869D8C90093FD8C /* SaveDomainImageTypePullUpView.swift in Sources */,
 				C6C9DE992834B28F00BAC36F /* SubheadTertiaryButton.swift in Sources */,
-				C6BEEF2B29C30BB6000489B9 /* UDGoogleSigner.swift in Sources */,
 				3018AEB827EA12A700E8C37D /* AddWalletViewController.swift in Sources */,
 				C6B366B62A173AC700DE512B /* ChatSectionHeaderView.swift in Sources */,
 				C6BA74702AD4FE5500628DC6 /* PullUpViewService+Badges.swift in Sources */,
+				C63095EC2B0DA66400205054 /* FirebaseAuthError.swift in Sources */,
 				C60982402823F73600546392 /* BackupCreatedLocalWalletPresenter.swift in Sources */,
 				C6B6B02D296D309C00D4E30F /* CGSize.swift in Sources */,
 				C6A2D54A284E3ABD00327C47 /* QRScannerDomainInfoView.swift in Sources */,
@@ -6916,6 +6998,7 @@
 				C6D5DADF28374B8400379C38 /* ManageMultiChainDomainAddressCell.swift in Sources */,
 				C6C1EC5F2A3AD483005EB37D /* UIAction.swift in Sources */,
 				C66435C1288E58E90098E1B8 /* AppGroupsBridgeService.swift in Sources */,
+				C63095CE2B0DA5DE00205054 /* PurchaseDomainsCart.swift in Sources */,
 				C6C99596289D313D00367362 /* CNavigationController.swift in Sources */,
 				C691CFC428C070450077C59F /* SetupReverseResolutionViewPresenter.swift in Sources */,
 				C6F9FBCA2A25C39400102F81 /* MessagingStorageServiceProtocol.swift in Sources */,
@@ -6927,6 +7010,7 @@
 				C6FE49DB285CBAB10058F9D1 /* CoreAppCoordinatorProtocol.swift in Sources */,
 				C6E041A92951F3DE0080F8E3 /* EmptyCollectionSectionFooter.swift in Sources */,
 				C63538F02949D55D00ECABA6 /* DomainWithDisplayInfo.swift in Sources */,
+				C63095ED2B0DA66400205054 /* BaseFirebaseInteractionService.swift in Sources */,
 				C666895528117C66002062B4 /* BaseViewController.swift in Sources */,
 				C6DF46272AA18F8900D124E7 /* DisplayError.swift in Sources */,
 				C6D6E4E32817C0F4008C66BB /* OnboardingProtectWalletViewPresenter.swift in Sources */,
@@ -6938,6 +7022,7 @@
 				C6500B482A418B4600ACAA8C /* ChannelViewPresenter.swift in Sources */,
 				C69F99762A9F2206004B1958 /* PublicProfileCryptoListView.swift in Sources */,
 				C664B6432913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */,
+				C63095D02B0DA5DE00205054 /* PurchaseDomainsServiceProtocol.swift in Sources */,
 				C6157AFE2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
 				C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */,
 				C635A5CE287BD74400CCF533 /* LoadingIndicatorView.swift in Sources */,
@@ -6974,6 +7059,7 @@
 				C6386838285C0ED1000F98C4 /* AppUpdatedRequired.swift in Sources */,
 				30472D8C2672435200B0D7A7 /* Debugger.swift in Sources */,
 				C608C8312877F9D300EDEC6E /* Double.swift in Sources */,
+				C63095CD2B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift in Sources */,
 				C685A99B284101DA00E54044 /* DomainSelectionCell.swift in Sources */,
 				C60D2717295AC4AB0060635D /* ConnectedAppsBackgroundColorCache.swift in Sources */,
 				C60686382A30BCD400927396 /* FABRaisedTertiaryButton.swift in Sources */,
@@ -6995,6 +7081,7 @@
 				C6A2D55C284F3E3200327C47 /* SignTransactionDomainSelectionViewController.swift in Sources */,
 				C66804AD280D93E5007E6390 /* ObjectWithAttributedString.swift in Sources */,
 				C6D3B9BF2A6EBC2B0091B279 /* PushServiceHelper.swift in Sources */,
+				C63095F52B0DA66400205054 /* FirebaseAuthUtilitiesProtocol.swift in Sources */,
 				C691CFC828C070450077C59F /* SetupReverseResolutionViewController.swift in Sources */,
 				C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */,
 				C679B611291A591500F543A7 /* DomainProfileUpdatingRecordsCell.swift in Sources */,
@@ -7013,7 +7100,6 @@
 				306486D225273DD400388026 /* Storage.swift in Sources */,
 				C666E08C29CB3F430003DECB /* ParkedDomainsFoundViewPresenter.swift in Sources */,
 				C686BF2C2A6135570036C7C1 /* ChatsList.swift in Sources */,
-				C6BEEF4429C30DDE000489B9 /* FirebaseAuthError.swift in Sources */,
 				C666E0AA29CB41350003DECB /* FirebaseDomainDisplayInfo.swift in Sources */,
 				C6C9DEA92834B84A00BAC36F /* BlinkingView.swift in Sources */,
 				29AEA050292F941F003BB5B4 /* PersistedSignaturesStorage.swift in Sources */,
@@ -7068,17 +7154,16 @@
 				C60982512823FBB500546392 /* BaseRecoveryPhrasePresenter.swift in Sources */,
 				C6420BF328AA620B0069DFED /* DashesProgressNavBarPushAnimation.swift in Sources */,
 				C6A474D429D150A40073415F /* NoParkedDomainsFoundViewController.swift in Sources */,
+				C63095D42B0DA5DE00205054 /* PurchaseDomainsPreferencesStorage.swift in Sources */,
 				C60CA28E2832501D00AB1B36 /* QRCodeService.swift in Sources */,
 				C68953882834CCCA0046CBA3 /* CollectionGenericContentViewReusableView.swift in Sources */,
 				C600AB9829FA0CFF0089107B /* TransferDomainNavigationManager.swift in Sources */,
 				2959AC4729A61916006387DD /* UDWallet+SigningTransaction.swift in Sources */,
-				C6BEEF3A29C30D7D000489B9 /* FirebaseAuthUtilitiesProtocol.swift in Sources */,
 				C671E38E28FE86EB00A2B3A0 /* CarouselCollectionViewCell.swift in Sources */,
 				C60982672824012200546392 /* EnterBackupCreateLocalWalletPresenter.swift in Sources */,
 				304C66CF2807F1E800E1ACFE /* OnboardingData.swift in Sources */,
 				C6EA6D6828B3B85D00B2785F /* MintingNotPrimaryDomainsInProgressViewPresenter.swift in Sources */,
 				C6E04152295053100080F8E3 /* DomainsCollectionCarouselCardCell.swift in Sources */,
-				C666E0C329CC0AA00003DECB /* FirebaseDomainsService.swift in Sources */,
 				C66FCD1328450A8F009B9525 /* GIFAnimationImageView.swift in Sources */,
 				C606863D2A30D3D300927396 /* MessagingNewsChannel.swift in Sources */,
 				C671E3C229014CFC00A2B3A0 /* RaisedTertiaryWhiteButton.swift in Sources */,
@@ -7139,6 +7224,7 @@
 				C6124CE12924C236005E6537 /* CachedDomainProfileInfo.swift in Sources */,
 				C69F992C2A9F1264004B1958 /* Color.swift in Sources */,
 				C6ECBF6B28D07FE000E94309 /* ChangeWalletsReverseResolutionDomainViewPresenter.swift in Sources */,
+				C63095EE2B0DA66400205054 /* FirebaseAuthService.swift in Sources */,
 				C6F946DB2A6788E0008043AC /* MockEntitiesFabric.swift in Sources */,
 				C6D6E4D92817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */,
 				C652721B2A149E41001A084C /* MessageDateFormatter.swift in Sources */,
@@ -7153,6 +7239,7 @@
 				C60D2712295AAE420060635D /* DomainsCollectionUICache.swift in Sources */,
 				C6E1186F28F52C6E00C6AD4D /* UIViewControllerPreview.swift in Sources */,
 				C685A97B2840BF6200E54044 /* InfoScreen.swift in Sources */,
+				C63095EF2B0DA66400205054 /* FirebaseAuthenticationService.swift in Sources */,
 				C666E0C829CC0B5D0003DECB /* FirebaseDomainsStorage.swift in Sources */,
 				C679B60A291A581100F543A7 /* DomainProfileUpdatingRecordsData.swift in Sources */,
 				C628E34527FDB1310044E408 /* TableViewSelectionCell.swift in Sources */,
@@ -7217,6 +7304,7 @@
 				C609829D282A548800546392 /* BaseExternalWalletConnectedPresenter.swift in Sources */,
 				C6538DC22A32244400B63E84 /* CoreDataModel.xcdatamodeld in Sources */,
 				C61B3E8C283E708500500B6D /* EnterEmailVerificationCodeViewPresenter.swift in Sources */,
+				C63095F42B0DA66400205054 /* UDTwitterSigner.swift in Sources */,
 				C689C17A2ADE6D2500AA0186 /* UDFeatureFlagsServiceProtocol.swift in Sources */,
 				C624D7AF281BCDB600F55530 /* BaseListCollectionViewCell.swift in Sources */,
 				C6E04182295057FE0080F8E3 /* DomainsListViewController.swift in Sources */,

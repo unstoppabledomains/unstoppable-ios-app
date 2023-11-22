@@ -22,7 +22,7 @@ class UDRouter: DomainProfileSignatureValidator {
                                           loginCallback: loginCallback,
                                           notificationsService: appContext.notificationsService,
                                           dataAggregatorService: appContext.dataAggregatorService,
-                                          firebaseInteractionService: appContext.firebaseInteractionService)
+                                          firebaseAuthenticationService: appContext.firebaseAuthenticationService)
         vc.presenter = presenter
         
         return vc
