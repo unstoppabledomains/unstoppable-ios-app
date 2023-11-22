@@ -251,9 +251,9 @@ private extension PublicProfileView {
                     if let displayName = viewModel.profile?.profile.displayName,
                        !displayName.trimmedSpaces.isEmpty {
                         primaryLargeText(displayName)
-                        secondaryLargeText(viewModel.domain.name)
+                        profileNameButton(isPrimary: false)
                     } else {
-                        primaryLargeText(viewModel.domain.name)
+                        profileNameButton(isPrimary: true)
                     }
                 }
                 if isBioTextAvailable() {
@@ -261,6 +261,28 @@ private extension PublicProfileView {
                 }
             }
             Spacer()
+        }
+    }
+    
+    @ViewBuilder
+    func profileNameButton(isPrimary: Bool) -> some View {
+        Button {
+            UDVibration.buttonTap.vibrate()
+            delegate?.publicProfileDidSelectViewInBrowser(domainName: viewModel.domain.name)
+        } label: {
+            HStack(alignment: .center) {
+                if isPrimary {
+                    primaryLargeText(viewModel.domain.name)
+                } else {
+                    secondaryLargeText(viewModel.domain.name)
+                }
+                Image.systemGlobe
+                    .renderingMode(.template)
+                    .resizable()
+                    .squareFrame(20)
+                    .foregroundColor(.white)
+                    .opacity(isPrimary ? 1 : 0.56)
+            }
         }
     }
     

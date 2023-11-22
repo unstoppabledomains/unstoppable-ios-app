@@ -24,5 +24,6 @@ extension Image {
     static let checkCircle = Image(uiImage: .checkCircle)
     static let udCartLogoRaster = Image(uiImage: .udCartLogoRaster)
     static let udBlueGrayIcon = Image(uiImage: .udBlueGrayIcon)
+    static let systemGlobe = Image(uiImage: .systemGlobe)
     
 }
