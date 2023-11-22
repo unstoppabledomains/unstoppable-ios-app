@@ -182,7 +182,8 @@ fileprivate extension NotificationsService {
         Task {
             do {                
                 try await Notify.instance.register(deviceToken: deviceToken)
-                Debugger.printInfo(topic: .PNs, "Did register device token with WC2")
+                let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+                Debugger.printInfo(topic: .PNs, "Did register device token with WC2: \(tokenString)")
             } catch {
                 Debugger.printInfo(topic: .PNs, "Failed to register device token with WC2 with error: \(error)")
             }
