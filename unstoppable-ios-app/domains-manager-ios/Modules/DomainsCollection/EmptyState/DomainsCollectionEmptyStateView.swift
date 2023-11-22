@@ -60,6 +60,7 @@ private extension DomainsCollectionEmptyStateView {
         createCollectionView()
         collectionView.registerCellNibOfType(DomainsCollectionEmptyListCell.self)
         collectionView.registerCellNibOfType(DomainsCollectionEmptyTopInfoCell.self)
+        collectionView.accessibilityIdentifier = "Domains Collection Collection View"
         
         switch deviceSize {
         case .i4Inch:
@@ -186,6 +187,15 @@ extension DomainsCollectionEmptyStateView {
                 return .mintDomains
             case .external:
                 return .manageDomains
+            }
+        }
+        
+        var accessibilityIdentifier: String {
+            switch self {
+            case .importWallet:
+                return "Import Wallet"
+            case .external:
+                return "External"
             }
         }
     }

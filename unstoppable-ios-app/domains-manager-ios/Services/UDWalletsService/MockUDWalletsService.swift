@@ -7,6 +7,7 @@
 
 import Foundation
 
+#if DEBUG
 final class MockUDWalletsService {
     private var wallets: [UDWallet] = []
     private var listenerHolders: [UDWalletsListenerHolder] = []
@@ -228,7 +229,7 @@ private extension MockUDWalletsService {
                                                                  mobile: .init(native: "", universal: ""),
                                                                  isV2Compatible: true))
         wallet.aliasName = wallet.address
-        
+        (appContext.walletConnectServiceV2 as! MockWalletConnectServiceV2).saveWallet(wallet)
         return wallet
     }
     
@@ -245,3 +246,4 @@ private extension MockUDWalletsService {
         return wallet
     }
 }
+#endif

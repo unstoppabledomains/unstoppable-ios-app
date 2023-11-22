@@ -360,6 +360,7 @@ class UDRouter: DomainProfileSignatureValidator {
         presentInEmptyCRootNavigation(vc, in: viewController)
     }
     
+    @discardableResult
     func showDomainProfileScreen(in viewController: UIViewController,
                                  domain: DomainDisplayInfo,
                                  wallet: UDWallet,

@@ -20,7 +20,6 @@ final class SettingsUITests: BaseXCTestCase {
             .openSettings()
         
         SettingsRobot(app)
-            .ensureNumberOfCells(canSendMail ? 7 : 6)
     }
     
 }

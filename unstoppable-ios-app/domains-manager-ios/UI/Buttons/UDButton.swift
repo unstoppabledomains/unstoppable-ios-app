@@ -195,7 +195,7 @@ private extension UDButton {
     }
     
     func setSizeIfPossible(_ size: CGSize) {
-        let needUpdate = (translatesAutoresizingMaskIntoConstraints && bounds.size != size) || bounds.size != _intrinsicContentSize
+        let needUpdate = (translatesAutoresizingMaskIntoConstraints && bounds.size != size)
         if needUpdate {
             bounds.size = size
         }

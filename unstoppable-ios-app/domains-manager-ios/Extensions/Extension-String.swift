@@ -83,7 +83,7 @@ extension String {
             case .badgesLeaderboard:
                 return NetworkConfig.badgesLeaderboardUrl
             case .generic(let url):
-                return url
+                return url.urlHTTPSString
             case .unableToCreateAccountTutorial:
                 return "https://support.unstoppabledomains.com/support/solutions/articles/48001237087-mobile-app-unable-to-create-account"
             case .referralTutorial:

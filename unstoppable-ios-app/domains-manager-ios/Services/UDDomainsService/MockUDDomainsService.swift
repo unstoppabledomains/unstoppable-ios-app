@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 
+#if DEBUG
 final class MockUDDomainsService {
     
     private let DomainsLimit = 200
@@ -18,14 +19,6 @@ final class MockUDDomainsService {
     private let shouldShakePrimaryDomain = false
     private let workingQueue = DispatchQueue(label: "mock.domains")
     private var walletToDomains: [String : [DomainItem]] = [:]
-    
-    init() {
-        #if DEBUG
-        for _ in 0..<TestsEnvironment.numberOfDomainsToUse {
-            addDomain()
-        }
-        #endif
-    }
     
 }
 
@@ -52,7 +45,7 @@ extension MockUDDomainsService: UDDomainsServiceProtocol {
         workingQueue.sync {
             if domains.isEmpty {
                 for (i, wallet) in userWallets.enumerated() {
-                    for _ in 0..<2 {
+                    for _ in 0..<TestsEnvironment.numberOfDomainsToUse {
                         if let domain = addDomain(suffix: "_\(i)",
                                                   wallet: wallet.address) {
                             walletToDomains[wallet.address, default: []].append(domain)
@@ -138,3 +131,4 @@ private extension MockUDDomainsService {
         return nil
     }
 }
+#endif

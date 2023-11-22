@@ -109,7 +109,7 @@ extension UDDomainsService: UDDomainsServiceProtocol {
     
     // Resolution
     func resolveDomainOwnerFor(domainName: DomainName) async -> HexAddress? {
-        return try? await NetworkService().fetchDomainOwner(for: domainName)
+        return(try? await NetworkService().fetchGlobalReverseResolution(for: domainName))?.address
     }
 }
 

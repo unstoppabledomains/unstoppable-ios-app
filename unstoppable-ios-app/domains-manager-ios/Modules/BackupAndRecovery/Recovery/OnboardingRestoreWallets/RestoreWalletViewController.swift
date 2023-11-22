@@ -159,6 +159,7 @@ private extension RestoreWalletViewController {
         titleLabel.setTitle(String.Constants.connectWalletTitle.localized())
         subtitleLabel.setSubtitle(String.Constants.connectWalletSubtitle.localized())
         alreadyHaveDomainsButton.setTitle(String.Constants.connectWalletCreateNew.localized(), image: nil)
+        alreadyHaveDomainsButton.accessibilityIdentifier = "Restore wallet create new button"
     }
     
     func setupDashesProgressView() {

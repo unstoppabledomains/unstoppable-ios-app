@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-struct DomainItem: DomainEntity, Codable {
+struct DomainItem: DomainEntity, Codable, Equatable {
     
     enum Status: String, Codable {
         case unclaimed

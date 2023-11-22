@@ -41,7 +41,8 @@ final class WCRequestsHandlingServiceTests: BaseTestClass {
         let metadata = AppMetadata(name: String.Constants.mobileAppName.localized(),
                                    description: String.Constants.mobileAppDescription.localized(),
                                    url: String.Links.mainLanding.urlString,
-                                   icons: [String.Links.udLogoPng.urlString])
+                                   icons: [String.Links.udLogoPng.urlString], 
+                                   redirect: .init(native: "", universal: nil))
         
         Pair.configure(metadata: metadata)
     }
@@ -134,54 +135,8 @@ extension WCRequestsHandlingServiceTests {
     }
 }
 
-
-// MARK: - Requests queuing
-extension WCRequestsHandlingServiceTests {
-    func testSameRequestsHandled() async throws {
-        verifyInitialState()
-        
-        try await waitFor(interval: 0.1)
-        XCTAssertEqual(mockListener.didConnectCalledCount, 1)
-        XCTAssertNil(mockWCServiceV2.completion)
-    }
-    
-    func testMixedWCVersionsRequestsHandled() async throws {
-        verifyInitialState()
-        
-        // Add first WC2 request
-        try await handleWCV2ConnectionRequestAndProposalAndWait()
-        
-        // Check request passed to service
-        XCTAssertNotNil(mockWCServiceV2.completion)
-        XCTAssertFalse(mockListener.didConnectCalled)
-        
-        // Check it is not passed, waiting for its turn
-        XCTAssertNotNil(mockWCServiceV2.completion)
-        XCTAssertFalse(mockListener.didConnectCalled)
-        
-        // Check WC2 request handled. Check WC1 turn now
-        XCTAssertEqual(mockListener.didConnectCalledCount, 1)
-        XCTAssertNil(mockWCServiceV2.completion)
-        
-        // Complete second WC1 request
-        try await waitFor(interval: 0.1)
-        
-        // Check WC1 request handled
-        XCTAssertEqual(mockListener.didConnectCalledCount, 2)
-        XCTAssertNil(mockWCServiceV2.completion)
-    }
-}
-
 // MARK: - Request timeout
 extension WCRequestsHandlingServiceTests {
-    func testWCV1RequestTimeout() async throws {
-        verifyInitialState()
-        
-        try await awaitForLongerThanConnectionTimeout()
-        
-        XCTAssertTrue(mockWCServiceV2.didCallConnectionTimeout)
-    }
-    
     func testWCV2RequestTimeout() async throws {
         verifyInitialState()
         
@@ -262,7 +217,8 @@ private extension WCRequestsHandlingServiceTests {
             let metadata: WalletConnectSign.AppMetadata
         }
         
-        let appMetaData = WalletConnectSign.AppMetadata(name: "name", description: "des", url: "https://g.com", icons: [])
+        let redirect = AppMetadata.Redirect(native: "", universal: nil)
+        let appMetaData = WalletConnectSign.AppMetadata(name: "name", description: "des", url: "https://g.com", icons: [], redirect: redirect)
         let participantClone = ParticipantClone(publicKey: "key", metadata: appMetaData)
         let sessionProposalClone = SessionProposalClone(relays: [],
                                                         proposer: participantClone,
@@ -284,8 +240,7 @@ private extension WCRequestsHandlingServiceTests {
                                                               params: AnyCodable(""),
                                                               chainId: Blockchain("eip155:1")!),
                                                        VerifyContext(origin: nil,
-                                                                     validation: .valid,
-                                                                     verifyUrl: "")))
+                                                                     validation: .valid)))
     }
     
     func awaitForLongerThanConnectionTimeout() async throws {

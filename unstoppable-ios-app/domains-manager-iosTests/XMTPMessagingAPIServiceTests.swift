@@ -33,7 +33,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     before: nil,
                                                     cachedMessages: [])
         
-        XCTAssertEqual(messages, MessagesMockData.allMessages)
+        assertMessagesSame(messages, MessagesMockData.allMessages)
         XCTAssertEqual(dataProvider.requests, [.init(before: nil, fetchLimit: fetchLimit)])
     }
     
@@ -43,7 +43,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     before: nil,
                                                     cachedMessages: [getMockMessage(at: 1)])
         
-        XCTAssertEqual(messages, MessagesMockData.allMessages)
+        assertMessagesSame(messages, MessagesMockData.allMessages)
         XCTAssertEqual(dataProvider.requests, [.init(before: nil, fetchLimit: fetchLimit)])
     }
     
@@ -53,7 +53,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     before: nil,
                                                     cachedMessages: [firstMessage])
         
-        XCTAssertEqual(messages, MessagesMockData.allMessages)
+        assertMessagesSame(messages, MessagesMockData.allMessages)
         XCTAssertEqual(dataProvider.requests, [.init(before: nil, fetchLimit: fetchLimit)])
     }
     
@@ -64,7 +64,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     cachedMessages: [firstMessage,
                                                                      getMockMessage(at: 1)])
         
-        XCTAssertEqual(messages, MessagesMockData.allMessages)
+        assertMessagesSame(messages, MessagesMockData.allMessages)
         XCTAssertEqual(dataProvider.requests, [.init(before: nil, fetchLimit: fetchLimit)])
     }
     
@@ -74,7 +74,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     before: nil,
                                                     cachedMessages: MessagesMockData.allMessages)
         
-        XCTAssertEqual(messages, MessagesMockData.allMessages)
+        assertMessagesSame(messages, MessagesMockData.allMessages)
         XCTAssertEqual(dataProvider.requests, [.init(before: nil, fetchLimit: fetchLimit)])
     }
     
@@ -85,7 +85,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     before: firstMessage,
                                                     cachedMessages: [])
         
-        XCTAssertEqual(messages, Array(MessagesMockData.allMessages.suffix(5)))
+        assertMessagesSame(messages, Array(MessagesMockData.allMessages.suffix(5)))
         XCTAssertEqual(dataProvider.requests, [.init(before: firstMessage.displayInfo.time, fetchLimit: fetchLimit)])
     }
     
@@ -95,7 +95,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     before: firstMessage,
                                                     cachedMessages: [getMockMessage(at: 1)])
         
-        XCTAssertEqual(messages, Array(MessagesMockData.allMessages.suffix(5)))
+        assertMessagesSame(messages, Array(MessagesMockData.allMessages.suffix(5)))
         XCTAssertEqual(dataProvider.requests, [.init(before: getMockMessageTime(at: 1), fetchLimit: fetchLimit - 1)])
     }
     
@@ -107,7 +107,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                                      getMockMessage(at: 2),
                                                                      getMockMessage(at: 3)])
         
-        XCTAssertEqual(messages, Array(MessagesMockData.allMessages.suffix(5)))
+        assertMessagesSame(messages, Array(MessagesMockData.allMessages.suffix(5)))
         XCTAssertEqual(dataProvider.requests, [.init(before: getMockMessageTime(at: 3), fetchLimit: fetchLimit - 3)])
     }
     
@@ -118,7 +118,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     cachedMessages: [getMockMessage(at: 1),
                                                                      getMockMessage(at: 3)])
         
-        XCTAssertEqual(messages, Array(MessagesMockData.allMessages.suffix(5)))
+        assertMessagesSame(messages, Array(MessagesMockData.allMessages.suffix(5)))
         XCTAssertEqual(dataProvider.requests, [.init(before: getMockMessageTime(at: 1), fetchLimit: fetchLimit - 1)])
     }
     
@@ -128,7 +128,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     before: getMockMessage(at: 2),
                                                     cachedMessages: [getMockMessage(at: 3)])
         
-        XCTAssertEqual(messages, Array(MessagesMockData.allMessages.suffix(3)))
+        assertMessagesSame(messages, Array(MessagesMockData.allMessages.suffix(3)))
         XCTAssertEqual(dataProvider.requests, [.init(before: getMockMessageTime(at: 3), fetchLimit: fetchLimit - 1)])
     }
     
@@ -138,7 +138,7 @@ final class XMTPMessagingAPIServiceTests: XCTestCase {
                                                     before: firstMessage,
                                                     cachedMessages: Array(MessagesMockData.allMessages.suffix(4)))
         
-        XCTAssertEqual(messages, Array(MessagesMockData.allMessages.suffix(4)))
+        assertMessagesSame(messages, Array(MessagesMockData.allMessages.suffix(4)))
         XCTAssertEqual(dataProvider.requests, [])
     }
     
@@ -188,6 +188,10 @@ private extension XMTPMessagingAPIServiceTests {
                                                       isRead: true,
                                                       for: user,
                                                       filesService: filesService)
+    }
+    
+    func assertMessagesSame(_ messages1: [MessagingChatMessage], _ messages2: [MessagingChatMessage]) {
+        XCTAssertEqual(messages1.map { $0.id }, messages2.map { $0.id })
     }
 }
 

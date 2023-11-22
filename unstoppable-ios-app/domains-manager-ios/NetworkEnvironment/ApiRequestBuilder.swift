@@ -575,21 +575,6 @@ extension Dictionary where Key == String, Value == String {
 }
 
 extension Endpoint {
-    static func domainsNonNFTImages(for domains: [DomainItem]) -> Endpoint {
-        var paramQueryItems: [URLQueryItem] = []
-        domains.forEach {
-            paramQueryItems.append(URLQueryItem(name: "domains[]", value: "\($0.name)"))
-        }
-        paramQueryItems.append(URLQueryItem(name: "key", value: "imagePath"))
-        return Endpoint(
-            path: "/api/domain-profiles",
-            queryItems: paramQueryItems,
-            body: ""
-        )
-    }
-}
-
-extension Endpoint {
     static let expirationPeriodMin: TimeInterval = 5
     static func getPublicProfile(for domain: DomainItem,
                                  fields: Set<GetDomainProfileField>) -> Endpoint {

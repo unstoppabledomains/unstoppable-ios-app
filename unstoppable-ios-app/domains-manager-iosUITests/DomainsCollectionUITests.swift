@@ -16,10 +16,9 @@ final class DomainsCollectionUIEmptyStateTests: BaseXCTestCase {
             .ensurePlusButton(visible: false)
             .ensureVisualisationControl(visible: false)
             .ensureScanButton(visible: false)
-            .ensureNumberOfCells(2)
-            .ensureCellWith(name: "Mint domains", visible: true)
-            .ensureCellWith(name: "Buy domains", visible: false)
-            .ensureCellWith(name: "Manage domains", visible: true)
+            .ensureNumberOfCells(3)
+            .ensureCellWith(name: "Import Wallet", visible: true)
+            .ensureCellWith(name: "External", visible: true)
     }
     
 }
