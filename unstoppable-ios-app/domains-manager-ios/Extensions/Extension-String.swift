@@ -203,6 +203,7 @@ extension String {
         static let leave = "LEAVE"
         static let download = "DOWNLOAD"
         static let unencrypted = "UNENCRYPTED"
+        static let viewInBrowser = "VIEW_IN_BROWSER"
         
         //Onboarding
         static let alreadyMintedDomain = "ALREADY_MINTED_DOMAIN"

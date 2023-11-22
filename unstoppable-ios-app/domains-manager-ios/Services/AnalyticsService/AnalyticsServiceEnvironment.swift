@@ -220,7 +220,7 @@ extension Analytics {
         case biometric, passcode
         
         // Manage domain
-        case setPrimaryDomain, showWalletDetails, addCurrency, domainRecord, routeCryptoInfo, copyCoinAddress, editCoinAddress, editCoinMultiChainAddresses, removeCoin, primaryDomainInfo, manageOnTheWebsite
+        case setPrimaryDomain, showWalletDetails, addCurrency, domainRecord, routeCryptoInfo, copyCoinAddress, editCoinAddress, editCoinMultiChainAddresses, removeCoin, primaryDomainInfo, manageOnTheWebsite, viewInBrowser
         
         // Verification code
         case openEmailApp, resendCode

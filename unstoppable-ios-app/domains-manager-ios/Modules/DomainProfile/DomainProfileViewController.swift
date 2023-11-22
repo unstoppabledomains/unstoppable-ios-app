@@ -177,6 +177,12 @@ private extension DomainProfileViewController {
         presenter.didTapShowWalletDetailsButton()
     }
     
+    @objc func didTapViewInBrowserButton() {
+        logProfileButtonPressedAnalyticEvents(button: .viewInBrowser) 
+        UDVibration.buttonTap.vibrate()
+        presenter.didTapViewInBrowserButton()
+    }
+    
     @objc func didTapSetReverseResolutionButton() {
         logProfileButtonPressedAnalyticEvents(button: .setReverseResolution)
         UDVibration.buttonTap.vibrate()
@@ -279,6 +285,10 @@ private extension DomainProfileViewController {
                                        subtitle: subtitle,
                                        image: .arrowUpRight,
                                        handler: { [weak self] _ in  self?.didTapShowWalletDetailsButton() })
+        case .viewInBrowser:
+            return UIAction.createWith(title: String.Constants.viewInBrowser.localized(),
+                                       image: .systemGlobe,
+                                       handler: { [weak self] _ in  self?.didTapViewInBrowserButton() })
         case .setReverseResolution(let isEnabled):
             return UIAction.createWith(title: String.Constants.setReverseResolution.localized(),
                                        subtitle: isEnabled ? nil : String.Constants.reverseResolutionUnavailableWhileRecordsUpdating.localized(),
@@ -619,7 +629,7 @@ extension DomainProfileViewController {
 
 extension DomainProfileViewController {
     enum Action: Hashable {
-        case copyDomain, viewWallet(subtitle: String), setReverseResolution(isEnabled: Bool)
+        case copyDomain, viewWallet(subtitle: String), viewInBrowser, setReverseResolution(isEnabled: Bool)
         case aboutProfiles, mintedOn(chain: BlockchainType)
         case transfer
     }

@@ -21,6 +21,7 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
     func shouldPopOnBackButton() -> Bool
     func shareButtonPressed()
     func didTapShowWalletDetailsButton()
+    func didTapViewInBrowserButton()
     func didTapSetReverseResolutionButton()
     func didTapCopyDomainButton()
     func didTapAboutProfilesButton()
@@ -163,6 +164,10 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
                 await closeProfileScreen()
             }
         }
+    }
+    
+    func didTapViewInBrowserButton() {
+        view?.openLink(.domainProfilePage(domainName: dataHolder.domain.name))
     }
     
     func didTapSetReverseResolutionButton() {
@@ -1061,6 +1066,7 @@ private extension DomainProfileViewPresenter {
                 viewWalletSubtitle = "\(domainName) \u{2B82} \(walletAddress)"
             }
             topActionsGroup.append(.viewWallet(subtitle: viewWalletSubtitle))
+            topActionsGroup.append(.viewInBrowser)
             
             if domain.isInteractable,
                state == .default {
