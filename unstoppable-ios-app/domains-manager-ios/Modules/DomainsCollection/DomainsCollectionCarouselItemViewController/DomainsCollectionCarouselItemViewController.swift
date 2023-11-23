@@ -25,7 +25,8 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     private(set) var collectionView: UICollectionView!
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainsCollectionCarouselCardCell.self,
                                                         DomainsCollectionRecentActivityCell.self,
-                                                        DomainsCollectionNoRecentActivitiesCell.self] }
+                                                        DomainsCollectionNoRecentActivitiesCell.self,
+                                                        DomainsCollectionGetDomainCardCell.self] }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
     private var dataSource: DomainsCollectionCarouselItemDataSource!
     private(set) weak var containerViewController: BaseViewController?
@@ -212,6 +213,15 @@ private extension DomainsCollectionCarouselItemViewController {
                 cell.learnMoreButtonPressedCallback = configuration.learnMoreButtonPressedCallback
              
                 return cell
+            case .getDomainCard:
+                let cell = collectionView.dequeueCellOfType(DomainsCollectionGetDomainCardCell.self, forIndexPath: indexPath)
+                cell.didScrollTo(offset: collectionView.offsetRelativeToInset)
+                
+                DispatchQueue.main.async {
+                    self?.delegate?.updatePagesVisibility()
+                }
+                
+                return cell
             }
         })
         
@@ -383,6 +393,7 @@ extension DomainsCollectionCarouselItemViewController {
         case domainCard(configuration: DomainCardConfiguration)
         case recentActivity(configuration: RecentActivitiesConfiguration)
         case noRecentActivities(configuration: NoRecentActivitiesConfiguration)
+        case getDomainCard
     }
     
     struct DomainCardConfiguration: Hashable {
