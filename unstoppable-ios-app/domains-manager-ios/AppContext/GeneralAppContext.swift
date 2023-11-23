@@ -25,9 +25,9 @@ final class GeneralAppContext: AppContextProtocol {
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
     let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol
     let walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
-    let firebaseInteractionService: FirebaseInteractionServiceProtocol
-    let firebaseAuthService: FirebaseAuthServiceProtocol
+    let firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol
     let firebaseDomainsService: FirebaseDomainsServiceProtocol
+    let purchaseDomainsService: PurchaseDomainsServiceProtocol
     let messagingService: MessagingServiceProtocol
 
     private(set) lazy var coinRecordsService: CoinRecordsServiceProtocol = CoinRecordsService()
@@ -135,19 +135,26 @@ final class GeneralAppContext: AppContextProtocol {
         // Firebase
         let firebaseSigner = UDFirebaseSigner()
         let firebaseAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner)
-        self.firebaseAuthService = firebaseAuthService
-        let firebaseInteractionService = FirebaseInteractionService(firebaseAuthService: firebaseAuthService,
-                                                                    firebaseSigner: firebaseSigner)
-        self.firebaseInteractionService = firebaseInteractionService
-        firebaseDomainsService = FirebaseDomainsService(firebaseInteractionService: firebaseInteractionService)
+        let firebaseAuthenticationService = FirebaseAuthenticationService(firebaseAuthService: firebaseAuthService,
+                                                                          firebaseSigner: firebaseSigner)
+        self.firebaseAuthenticationService = firebaseAuthenticationService
+        firebaseDomainsService = FirebaseDomainsService(firebaseAuthService: firebaseAuthService,
+                                                        firebaseSigner: firebaseSigner)
         
-        firebaseInteractionService.addListener(dataAggregatorService)
+        firebaseAuthenticationService.addListener(dataAggregatorService)
         dataAggregatorService.addListener(LocalNotificationsService.shared)
+        
+        purchaseDomainsService = FirebasePurchaseDomainsService(firebaseAuthService: firebaseAuthService,
+                                                                firebaseSigner: firebaseSigner,
+                                                                preferencesService: .shared)
         
         Task {
             persistedProfileSignaturesStorage.removeExpired()
         }
     }
     
+    func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
+        StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))
+    }
 }
 

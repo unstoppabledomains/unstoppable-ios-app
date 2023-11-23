@@ -13,10 +13,13 @@ protocol FirebaseAuthServiceProtocol {
 
 final class FirebaseAuthService {
         
-    private let keychainStorage: KeychainPrivateKeyStorage = .instance
-    private let tokenKeychainKey: KeychainKey = .firebaseRefreshToken
+    static let shared = FirebaseAuthService(firebaseSigner: UDFirebaseSigner.shared)
+    
+    private let keychainStorage = UserDefaults.standard
+    private let tokenKeychainKey: String = "firebaseRefreshToken"
     private let twitterSigner = UDTwitterSigner()
     private let googleSigner = UDGoogleSigner()
+    private let walletSigner = UDWalletSigner()
     private let firebaseSigner: UDFirebaseSigner
 
     init(firebaseSigner: UDFirebaseSigner) {
@@ -27,12 +30,12 @@ final class FirebaseAuthService {
 // MARK: - FirebaseAuthServiceProtocol
 extension FirebaseAuthService: FirebaseAuthServiceProtocol {
     var refreshToken: String? {
-        get { keychainStorage.retrieveValue(for: tokenKeychainKey, isCritical: false) }
+        get { keychainStorage.value(forKey: tokenKeychainKey) as? String }
         set {
             if let newValue {
-                keychainStorage.store(newValue, for: tokenKeychainKey)
+                keychainStorage.setValue(newValue, forKey: tokenKeychainKey)
             } else {
-                keychainStorage.clear(for: tokenKeychainKey)
+                keychainStorage.setValue(nil, forKey: tokenKeychainKey)
             }
         }
     }
@@ -46,7 +49,7 @@ extension FirebaseAuthService: FirebaseAuthServiceProtocol {
         return authResponse
     }
     
-    func authorizeWithGoogleSignInIdToken(in viewController: UIViewController) async throws -> FirebaseTokenData {
+    func authorizeWithGoogleSignInIdToken(in viewController: UIWindow) async throws -> FirebaseTokenData {
         let googleSignInToken = try await googleSigner.signIn(in: viewController)
         let authResponse = try await firebaseSigner.authorizeWithGoogleSignInIdToken(googleSignInToken)
         
@@ -56,7 +59,15 @@ extension FirebaseAuthService: FirebaseAuthServiceProtocol {
     
     func authorizeWithTwitterCustomToken(in viewController: UIViewController) async throws -> FirebaseTokenData {
         let customToken = try await twitterSigner.signIn(in: viewController)
-        let authResponse = try await firebaseSigner.authorizeWithTwitterCustomToken(customToken)
+        let authResponse = try await firebaseSigner.authorizeWithCustomToken(customToken)
+        
+        saveAuthResponse(authResponse)
+        return authResponse
+    }
+    
+    func authorizeWith(wallet: UDWallet) async throws -> FirebaseTokenData {
+        let customToken = try await walletSigner.signInWith(wallet: wallet)
+        let authResponse = try await firebaseSigner.authorizeWithCustomToken(customToken)
         
         saveAuthResponse(authResponse)
         return authResponse

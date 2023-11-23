@@ -127,7 +127,7 @@ private extension LoginFlowNavigationController {
             await MainActor.run {
                 moveToStep(.fetchingDomains)
             }
-            let parkedDomains = try await appContext.firebaseDomainsService.loadParkedDomains()
+            let parkedDomains = try await appContext.firebaseDomainsService.getParkedDomains()
             let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
             
             await MainActor.run {

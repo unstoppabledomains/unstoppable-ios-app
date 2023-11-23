@@ -293,8 +293,8 @@ extension DataAggregatorService: UDWalletsServiceListener {
     }
 }
 
-// MARK: - FirebaseInteractionServiceListener
-extension DataAggregatorService: FirebaseInteractionServiceListener {
+// MARK: - FirebaseAuthenticationServiceListener
+extension DataAggregatorService: FirebaseAuthenticationServiceListener {
     func firebaseUserUpdated(firebaseUser: FirebaseUser?) {
         Task {
             if firebaseUser != nil {
@@ -320,7 +320,7 @@ private extension DataAggregatorService {
             return
         case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
             SceneDelegate.shared?.restartOnboarding()
-            appContext.firebaseInteractionService.logout()
+            appContext.firebaseAuthenticationService.logout()
             Task { await aggregateData(shouldRefreshPFP: false) }
         }
     }
@@ -427,7 +427,7 @@ private extension DataAggregatorService {
     }
     
     func loadParkedDomains() async -> [FirebaseDomain] {
-        let domains = try? await appContext.firebaseDomainsService.loadParkedDomains()
+        let domains = try? await appContext.firebaseDomainsService.getParkedDomains()
         
         return domains ?? []
     }

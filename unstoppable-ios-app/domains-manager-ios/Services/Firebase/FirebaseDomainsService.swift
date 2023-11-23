@@ -1,43 +1,72 @@
 //
-//  FirebaseDomainsService.swift
-//  domains-manager-ios
+//  FirebaseDomainsLoaderService.swift
+//  UBTSharing
 //
-//  Created by Oleg Kuplin on 23.03.2023.
+//  Created by Oleg Kuplin on 31.10.2023.
 //
 
 import Foundation
 
 protocol FirebaseDomainsServiceProtocol {
     func getCachedDomains() -> [FirebaseDomain]
-    func loadParkedDomains() async throws -> [FirebaseDomain]
+    func getParkedDomains() async throws -> [FirebaseDomain]
     func clearParkedDomains()
 }
 
-final class FirebaseDomainsService {
+final class FirebaseDomainsService: BaseFirebaseInteractionService {
     
-    private let firebaseInteractionService: FirebaseDomainsLoaderProtocol
+    static let shared: FirebaseDomainsServiceProtocol = FirebaseDomainsService(firebaseAuthService: .shared,
+                                                                               firebaseSigner: .shared)
     private let storage = FirebaseDomainsStorage.instance
-    
-    init(firebaseInteractionService: FirebaseDomainsLoaderProtocol) {
-        self.firebaseInteractionService = firebaseInteractionService
-    }
-    
+
 }
 
+// MARK: - FirebaseDomainsLoaderProtocol
 extension FirebaseDomainsService: FirebaseDomainsServiceProtocol {
     func getCachedDomains() -> [FirebaseDomain] {
         storage.getFirebaseDomains()
     }
     
-    func loadParkedDomains() async throws -> [FirebaseDomain] {
-        let domains = try await firebaseInteractionService.getParkedDomains()
+    func getParkedDomains() async throws -> [FirebaseDomain] {
+        var result = [FirebaseDomain]()
+        var isThereDomainsToLoad = true
+        var page = 1
+        let perPage = 200
         
-        storage.saveFirebaseDomains(domains)
+        while isThereDomainsToLoad {
+            let domains = try await loadParkedDomainsFor(page: page, perPage: perPage)
+            result += domains
+            page += 1
+            isThereDomainsToLoad = domains.count >= perPage
+        }
         
-        return domains
+        return result
     }
     
     func clearParkedDomains() {
         storage.saveFirebaseDomains([])
     }
 }
+
+// MARK: - Private methods
+private extension FirebaseDomainsService {
+    func loadParkedDomainsFor(page: Int, perPage: Int) async throws -> [FirebaseDomain] {
+        struct Response: Codable {
+            @DecodeIgnoringFailed
+            var domains:  [FirebaseDomain]
+        }
+        
+        let queryComponents = ["extension" : "All",
+                               "page" : String(page),
+                               "perPage" : String(perPage),
+                               "status" : "unclaimed"]
+
+        let url = URLSList.baseAPIURL.appendingURLPathComponents("user", "domains").appendingURLQueryComponents(queryComponents)
+        let request = try APIRequest(urlString: url, method: .get)
+        let response: Response = try await makeFirebaseDecodableAPIDataRequest(request,
+                                                                               dateDecodingStrategy: .defaultDateDecodingStrategy())
+        
+        return response.domains
+    }
+}
+
