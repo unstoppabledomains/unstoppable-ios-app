@@ -42,5 +42,5 @@ protocol AppContextProtocol {
     
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol { get }
     
-    func stripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol
+    func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol
 }

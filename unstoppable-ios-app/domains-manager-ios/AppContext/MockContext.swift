@@ -58,7 +58,7 @@ final class MockContext: AppContextProtocol {
 
     var persistedProfileSignaturesStorage: PersistedSignaturesStorageProtocol = MockPersistedSignaturesStorage()
     
-    func stripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
+    func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         MockStripeService(amount: amount)
     }
 

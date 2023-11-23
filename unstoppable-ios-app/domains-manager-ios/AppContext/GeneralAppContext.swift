@@ -153,7 +153,7 @@ final class GeneralAppContext: AppContextProtocol {
         }
     }
     
-    func stripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
+    func createStripeInstance(amount: Int, using secret: String) -> StripeServiceProtocol {
         StripeService(paymentDetails: .init(amount: amount, paymentSecret: secret))
     }
 }

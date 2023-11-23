@@ -16,6 +16,7 @@ class BaseFirebaseInteractionService {
         static var baseAPIURL: String { baseURL.appendingURLPathComponent("api") }
     }
     
+    let authHeaderKey = "auth-firebase-id-token"
     var tokenData: FirebaseTokenData?
     let firebaseAuthService: FirebaseAuthService
     let firebaseSigner: UDFirebaseSigner
@@ -47,10 +48,8 @@ extension BaseFirebaseInteractionService {
     @discardableResult
     func makeFirebaseAPIDataRequest(_ apiRequest: APIRequest) async throws -> Data {
         do {
-            let startTime = Date()
             let firebaseAPIRequest = try await prepareFirebaseAPIRequest(apiRequest)
             let response = try await NetworkService().makeAPIRequest(firebaseAPIRequest)
-            print("It took \(Date().timeIntervalSince(startTime))")
             return response
         } catch {
             Debugger.printInfo("Failed to make firebase api request: \(error.localizedDescription) for \(apiRequest.url)")
@@ -61,12 +60,10 @@ extension BaseFirebaseInteractionService {
     func makeFirebaseDecodableAPIDataRequest<T: Decodable>(_ apiRequest: APIRequest,
                                                            using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
                                                            dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T {
-        let startTime = Date()
         let firebaseAPIRequest = try await prepareFirebaseAPIRequest(apiRequest)
         let response: T = try await NetworkService().makeDecodableAPIRequest(firebaseAPIRequest,
                                                                              using: keyDecodingStrategy,
                                                                              dateDecodingStrategy: dateDecodingStrategy)
-        print("It took \(Date().timeIntervalSince(startTime)) for \(apiRequest.url)")
         return response
     }
 }
@@ -77,7 +74,7 @@ private extension BaseFirebaseInteractionService {
         let idToken = try await getIdToken()
         
         var headers = apiRequest.headers
-        headers["auth-firebase-id-token"] = idToken
+        headers[authHeaderKey] = idToken
         let firebaseAPIRequest = APIRequest(url: apiRequest.url,
                                             headers: headers,
                                             body: apiRequest.body,

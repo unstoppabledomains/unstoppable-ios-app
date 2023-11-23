@@ -127,7 +127,7 @@ private extension FirebasePurchaseDomainsService {
     
     func purchaseDomainsInTheCart(to wallet: UDUserAccountCryptWallet) async throws {
         let paymentDetails = try await prepareStripePaymentDetails(for: wallet)
-        let paymentService = appContext.stripeInstance(amount: paymentDetails.amount, using: paymentDetails.clientSecret)
+        let paymentService = appContext.createStripeInstance(amount: paymentDetails.amount, using: paymentDetails.clientSecret)
         try await paymentService.payWithStripe()
         try? await refreshUserCart()
     }
