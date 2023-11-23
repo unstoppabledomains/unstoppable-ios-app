@@ -51,6 +51,8 @@ final class DomainsCollectionGetDomainCardCell: BaseDomainsCollectionCardCell {
         actionLabel.frame.size.height = 24
         actionImageView.frame.size = CGSize(width: 20, height: 20)
         actionImageView.tintColor = .black
+        titleCollapsedLabel.alpha = 0
+        subtitleCollapsedLabel.alpha = 0
     }
     
     override func setFrame(for state: BaseDomainsCollectionCardCell.CardState) {
@@ -61,23 +63,19 @@ final class DomainsCollectionGetDomainCardCell: BaseDomainsCollectionCardCell {
         setTitleFrame(for: state)
         setSubtitleFrame(for: state)
     }
-
+    
 }
 
 // MARK: - UI Frame related methods
 private extension DomainsCollectionGetDomainCardCell {
     func setUDLogoViewFrame(for state: CardState) {
-        let udLogoSize: CGFloat
-        let udLogoSideOffset: CGFloat
+        let udLogoSize: CGFloat = 56
+        let udLogoSideOffset: CGFloat = defaultSideOffset
         let alpha: CGFloat
         switch state {
         case .expanded:
-            udLogoSize = 56
-            udLogoSideOffset = defaultSideOffset
             alpha = 1
         case .collapsed:
-            udLogoSize = 14
-            udLogoSideOffset = 6
             alpha = 0
         }
         udLogoImageView.frame = CGRect(origin: CGPoint(x: udLogoSideOffset,
@@ -90,12 +88,9 @@ private extension DomainsCollectionGetDomainCardCell {
     func setTitleFrame(for state: CardState) {
         switch state {
         case .expanded:
-            [titleLabel, titleCollapsedLabel].forEach { label in
-                label?.transform = .identity
-                label?.frame.origin = CGPoint(x: defaultSideOffset,
+            titleLabel.frame.origin = CGPoint(x: defaultSideOffset,
                                               y: udLogoImageView.frame.maxY + defaultSideOffset)
-                label?.frame.size.height = 138
-            }
+            titleLabel.frame.size.height = 138
             
             let maxDomainNameLabelWidth = containerView.frame.width - (defaultSideOffset * 2)
             titleLabel.frame.size.width = maxDomainNameLabelWidth
@@ -103,12 +98,10 @@ private extension DomainsCollectionGetDomainCardCell {
             titleCollapsedLabel.alpha = 0
         case .collapsed:
             let titleScale: CGFloat = 0.5
-            [titleLabel, titleCollapsedLabel].forEach { label in
-                label?.transform = .init(scaleX: titleScale, y: titleScale)
-                label?.frame.origin = CGPoint(x: defaultSideOffset,
-                                              y: 14)
-                label?.frame.size.height = 28
-            }
+            titleCollapsedLabel.transform = .init(scaleX: titleScale, y: titleScale)
+            titleCollapsedLabel.frame.origin = CGPoint(x: defaultSideOffset,
+                                                       y: 14)
+            titleCollapsedLabel.frame.size.height = 28
             let distanceToActionView: CGFloat = 8
             let domainNameMaxWidth = containerView.bounds.width - defaultSideOffset - (containerView.bounds.width - actionContainerView.frame.minX) - distanceToActionView
             titleCollapsedLabel.frame.size.width = domainNameMaxWidth
@@ -120,24 +113,19 @@ private extension DomainsCollectionGetDomainCardCell {
     func setSubtitleFrame(for state: CardState) {
         switch state {
         case .expanded:
-            [subtitleLabel, subtitleCollapsedLabel].forEach { label in
-                label?.transform = .identity
-                label?.frame.origin = CGPoint(x: titleLabel.frame.minX,
-                                              y: titleLabel.frame.maxY + defaultSideOffset)
-                label?.frame.size.height = 48
-            }
+            subtitleLabel.frame.origin = CGPoint(x: titleLabel.frame.minX,
+                                                 y: titleLabel.frame.maxY + defaultSideOffset)
+            subtitleLabel.frame.size.height = 48
             
             subtitleLabel.frame.size.width = titleLabel.frame.width
             subtitleLabel.alpha = 1
             subtitleCollapsedLabel.alpha = 0
         case .collapsed:
-            let titleScale: CGFloat = 0.875
-            [subtitleLabel, subtitleCollapsedLabel].forEach { label in
-                label?.transform = .init(scaleX: titleScale, y: titleScale)
-                label?.frame.origin = CGPoint(x: titleCollapsedLabel.frame.minX,
-                                              y: titleCollapsedLabel.frame.maxY + 4)
-                label?.frame.size.height = 20
-            }
+            let subitleScale: CGFloat = 0.875
+            subtitleCollapsedLabel.transform = .init(scaleX: subitleScale, y: subitleScale)
+            subtitleCollapsedLabel.frame.origin = CGPoint(x: titleCollapsedLabel.frame.minX,
+                                                          y: titleCollapsedLabel.frame.maxY + 4)
+            subtitleCollapsedLabel.frame.size.height = 20
             
             subtitleCollapsedLabel.frame.size.width = titleCollapsedLabel.frame.width
             subtitleLabel.alpha = 0
