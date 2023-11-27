@@ -298,6 +298,8 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
             presenter.didOccureUIAction(.rearrangeDomains)
         case .parkedDomainLearnMore:
             presenter.didOccureUIAction(.parkedDomainLearnMore)
+        case .purchaseDomains:
+            presenter.didOccureUIAction(.purchaseDomains)
         }
     }
 }
@@ -780,5 +782,6 @@ extension DomainsCollectionViewController {
         case rearrangeDomains
         case searchPressed
         case parkedDomainLearnMore
+        case purchaseDomains
     }
 }

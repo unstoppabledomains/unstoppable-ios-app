@@ -1028,6 +1028,10 @@
 		C6DDF25A2B147F5E006D1F0B /* UDSubtitleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */; };
 		C6DDF25D2B148294006D1F0B /* DomainToPurchaseSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF25C2B148294006D1F0B /* DomainToPurchaseSuggestion.swift */; };
 		C6DDF25F2B148300006D1F0B /* PurchaseSearchDomainsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */; };
+		C6DDF2612B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2602B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift */; };
+		C6DDF2632B14848F006D1F0B /* PurchaseDomainsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2622B14848F006D1F0B /* PurchaseDomainsNavigationController.swift */; };
+		C6DDF26A2B148A31006D1F0B /* PositionObservingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */; };
+		C6DDF26B2B148A31006D1F0B /* OffsetObservingScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */; };
 		C6DF46232AA180C000D124E7 /* PublicDomainDisplayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DF46222AA180C000D124E7 /* PublicDomainDisplayInfo.swift */; };
 		C6DF46252AA18D4000D124E7 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DF46242AA18D4000D124E7 /* Error.swift */; };
 		C6DF46272AA18F8900D124E7 /* DisplayError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DF46262AA18F8900D124E7 /* DisplayError.swift */; };
@@ -2215,6 +2219,10 @@
 		C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UDSubtitleText.swift; sourceTree = "<group>"; };
 		C6DDF25C2B148294006D1F0B /* DomainToPurchaseSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainToPurchaseSuggestion.swift; sourceTree = "<group>"; };
 		C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PurchaseSearchDomainsView.swift; sourceTree = "<group>"; };
+		C6DDF2602B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseSearchDomainsViewController.swift; sourceTree = "<group>"; };
+		C6DDF2622B14848F006D1F0B /* PurchaseDomainsNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsNavigationController.swift; sourceTree = "<group>"; };
+		C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PositionObservingView.swift; sourceTree = "<group>"; };
+		C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OffsetObservingScrollView.swift; sourceTree = "<group>"; };
 		C6DF46222AA180C000D124E7 /* PublicDomainDisplayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicDomainDisplayInfo.swift; sourceTree = "<group>"; };
 		C6DF46242AA18D4000D124E7 /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		C6DF46262AA18F8900D124E7 /* DisplayError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayError.swift; sourceTree = "<group>"; };
@@ -4965,6 +4973,8 @@
 				C6289A4A2AAB095D002C2DEC /* DomainSelectionListView.swift */,
 				C6DDF2432B147F1A006D1F0B /* Buttons */,
 				C6DDF2412B147F1A006D1F0B /* FlowLayoutView.swift */,
+				C6DDF2692B148A31006D1F0B /* OffsetObservingScrollView.swift */,
+				C6DDF2682B148A31006D1F0B /* PositionObservingView.swift */,
 				C6DDF2422B147F1A006D1F0B /* UDCollectionListRowButton.swift */,
 				C6DDF2402B147F19006D1F0B /* UDCollectionSectionBackgroundView.swift */,
 				C6DDF24C2B147F1A006D1F0B /* UDTextFieldView.swift */,
@@ -5813,6 +5823,8 @@
 		C6DDF25B2B14821F006D1F0B /* PurchaseDomains */ = {
 			isa = PBXGroup;
 			children = (
+				C6DDF2622B14848F006D1F0B /* PurchaseDomainsNavigationController.swift */,
+				C6DDF2602B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift */,
 				C6DDF25E2B148300006D1F0B /* PurchaseSearchDomainsView.swift */,
 			);
 			path = PurchaseDomains;
@@ -6667,6 +6679,7 @@
 				C6C9959E289D313D00367362 /* CInteractiveTransitioningController.swift in Sources */,
 				C6DDF25A2B147F5E006D1F0B /* UDSubtitleText.swift in Sources */,
 				C6DDF24F2B147F1A006D1F0B /* UDCollectionListRowButton.swift in Sources */,
+				C6DDF2612B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift in Sources */,
 				C669C3842912576D00837F21 /* UITextField.swift in Sources */,
 				C6124CCC29223066005E6537 /* DomainAvatarImageView.swift in Sources */,
 				C69F99292A9F1264004B1958 /* View.swift in Sources */,
@@ -6913,6 +6926,7 @@
 				C6098310282B6DDE00546392 /* RevealRecoveryPhrasePresenter.swift in Sources */,
 				C6C1EC552A3ACAB1005EB37D /* ChatsListNavigationView.swift in Sources */,
 				C6109E3728E5AB310027D5D8 /* AppLaunchServiceProtocol.swift in Sources */,
+				C6DDF2632B14848F006D1F0B /* PurchaseDomainsNavigationController.swift in Sources */,
 				C691CFD128C0A5720077C59F /* CollectionSubheadTertiaryButtonHeaderView.swift in Sources */,
 				C6166CC728ED748100004252 /* CollectionViewTitleSwitcherCell.swift in Sources */,
 				C672FD75286061E300D27078 /* WalletBackUpPassword.swift in Sources */,
@@ -7014,6 +7028,7 @@
 				C6D3B9BA2A6EB8F80091B279 /* PushMessagingChannelsAPIService.swift in Sources */,
 				C685A9872840FD4900E54044 /* ChoosePrimaryDomainViewPresenter.swift in Sources */,
 				C63095CF2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift in Sources */,
+				C6DDF26B2B148A31006D1F0B /* OffsetObservingScrollView.swift in Sources */,
 				C6A2D528284DC45B00327C47 /* PermissionsService.swift in Sources */,
 				C6C995B2289D313D00367362 /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				C666E09029CB3F430003DECB /* ParkedDomainsFoundViewController.swift in Sources */,
@@ -7126,6 +7141,7 @@
 				C69F99762A9F2206004B1958 /* PublicProfileCryptoListView.swift in Sources */,
 				C664B6432913A6A400A76154 /* CollectionTextFooterReusableView.swift in Sources */,
 				C63095D02B0DA5DE00205054 /* PurchaseDomainsServiceProtocol.swift in Sources */,
+				C6DDF26A2B148A31006D1F0B /* PositionObservingView.swift in Sources */,
 				C6157AFE2A7108B400081574 /* MessagingChatMessageRemoteContentTypeDisplayInfo.swift in Sources */,
 				C642A6A52841157E00299C6E /* MintingInProgressViewPresenter.swift in Sources */,
 				C635A5CE287BD74400CCF533 /* LoadingIndicatorView.swift in Sources */,

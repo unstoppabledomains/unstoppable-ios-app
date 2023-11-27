@@ -17,9 +17,13 @@ struct PurchaseSearchDomainsView: View {
     @State private var isLoading = false
     @State private var searchingText = ""
     @State private var cart: PurchaseDomainsCart = .empty
+    @State private var scrollOffset: CGPoint = .zero
+
+    var domainSelectedCallback: ((DomainToPurchase)->())
+    var scrollOffsetCallback: ((CGPoint)->())? = nil
 
     var body: some View {
-        ScrollView {
+        OffsetObservingScrollView(offset: $scrollOffset) {
             VStack {
                 headerView()
                 searchView()
@@ -30,6 +34,9 @@ struct PurchaseSearchDomainsView: View {
         .background(Color.backgroundDefault)
         .onReceive(purchaseDomainsService.cartPublisher.receive(on: DispatchQueue.main)) { cart in
             self.cart = cart
+        }
+        .onChange(of: scrollOffset) { newValue in
+            scrollOffsetCallback?(newValue)
         }
         .navigationTitle("Search ")
         .onAppear(perform: onAppear)
@@ -46,6 +53,7 @@ private extension PurchaseSearchDomainsView {
             Text("Search available domains")
                 .subtitleText()
         }
+        .padding(EdgeInsets(top: 56, leading: 0, bottom: 0, trailing: 0))
     }
     
     @ViewBuilder
@@ -113,7 +121,7 @@ private extension PurchaseSearchDomainsView {
                     UDCollectionListRowButton(content: {
                         domainSearchResultRow(domainInfo)
                     }, callback: {
-                        
+                        domainSelectedCallback(domainInfo)
                     })
                 }
             }
@@ -125,8 +133,7 @@ private extension PurchaseSearchDomainsView {
 // MARK: - Private methods
 private extension PurchaseSearchDomainsView {
     func onAppear() {
-//        loadSuggestions()
-        search(text: "asd")
+        loadSuggestions()
     }
     
     func loadSuggestions() {
@@ -186,7 +193,7 @@ private extension PurchaseSearchDomainsView {
 }
 
 #Preview {
-    PurchaseSearchDomainsView()
+    PurchaseSearchDomainsView(domainSelectedCallback: { _ in })
         .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }
 

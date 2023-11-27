@@ -141,6 +141,8 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         case .searchPressed:
             logButtonPressedAnalyticEvents(button: .searchDomains)
             showDomainsSearch()
+        case .purchaseDomains:
+            runPurchaseDomainsFlow()
         }
     }
 
@@ -216,12 +218,12 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
                 case .connectWallet:
                     connectWalletPressed()
                 case .findNew:
-                    return
+                    runPurchaseDomainsFlow()
                 }
             }
         }
     }
-    
+   
     func didTapMessagingButton() {
         router.showChatsListScreen()
     }
@@ -566,6 +568,11 @@ private extension DomainsCollectionPresenter {
                 return
             }
         }
+    }
+    
+    @MainActor
+    func runPurchaseDomainsFlow() {
+        router.runPurchaseDomainsFlow()
     }
 }
  

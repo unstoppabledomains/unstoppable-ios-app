@@ -61,6 +61,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
             actionsDelegate?.didOccurUIAction(.domainSelected(configuration.domain))
         case .getDomainCard:
             UDVibration.buttonTap.vibrate()
+            actionsDelegate?.didOccurUIAction(.purchaseDomains)
         case .noRecentActivities, .recentActivity:
             return
         }
@@ -166,14 +167,13 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         var snapshot = DomainsCollectionCarouselItemSnapshot()
         
         snapshot.appendSections([.domainsCarousel])
-        snapshot.appendItems([.getDomainCard])
-//        snapshot.appendItems([.domainCard(configuration: .init(id: cardId,
-//                                                               domain: domain,
-//                                                               availableActions: actions,
-//                                                               actionButtonPressedCallback: { [weak self] in
-//            self?.logButtonPressedAnalyticEvents(button: .domainCardDot,
-//                                                 parameters: [.domainName : domain.name])
-//        }))])
+        snapshot.appendItems([.domainCard(configuration: .init(id: cardId,
+                                                               domain: domain,
+                                                               availableActions: actions,
+                                                               actionButtonPressedCallback: { [weak self] in
+            self?.logButtonPressedAnalyticEvents(button: .domainCardDot,
+                                                 parameters: [.domainName : domain.name])
+        }))])
         
         var isTutorialOn = false
         if !didShowSwipeDomainCardTutorial,
