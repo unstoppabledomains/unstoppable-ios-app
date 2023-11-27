@@ -72,6 +72,14 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         return tlds.map { DomainToPurchase(name: "\(key).\($0)", price: prices.randomElement()!, metadata: nil)}
     }
     
+    func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
+        try await Task.sleep(seconds: 0.4)
+        
+        return [.init(name: "oleg"),
+                .init(name: "39993"),
+                .init(name: "explorevista")]
+    }
+    
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
         cart.domains.append(contentsOf: domains)
         updateCart()

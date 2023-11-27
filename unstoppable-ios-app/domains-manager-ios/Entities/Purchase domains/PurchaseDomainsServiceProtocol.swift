@@ -12,6 +12,7 @@ protocol PurchaseDomainsServiceProtocol {
     var cartPublisher: Published<PurchaseDomainsCart>.Publisher  { get }
     
     func searchForDomains(key: String) async throws -> [DomainToPurchase]
+    func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion]
     func getSupportedWalletsToMint() async throws -> [PurchasedDomainsWalletDescription]
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws

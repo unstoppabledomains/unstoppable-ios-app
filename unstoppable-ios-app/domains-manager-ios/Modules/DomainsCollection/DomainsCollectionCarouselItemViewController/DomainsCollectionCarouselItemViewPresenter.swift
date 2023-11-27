@@ -166,13 +166,14 @@ private extension DomainsCollectionCarouselItemViewPresenter {
         var snapshot = DomainsCollectionCarouselItemSnapshot()
         
         snapshot.appendSections([.domainsCarousel])
-        snapshot.appendItems([.domainCard(configuration: .init(id: cardId,
-                                                               domain: domain,
-                                                               availableActions: actions,
-                                                               actionButtonPressedCallback: { [weak self] in
-            self?.logButtonPressedAnalyticEvents(button: .domainCardDot,
-                                                 parameters: [.domainName : domain.name])
-        }))])
+        snapshot.appendItems([.getDomainCard])
+//        snapshot.appendItems([.domainCard(configuration: .init(id: cardId,
+//                                                               domain: domain,
+//                                                               availableActions: actions,
+//                                                               actionButtonPressedCallback: { [weak self] in
+//            self?.logButtonPressedAnalyticEvents(button: .domainCardDot,
+//                                                 parameters: [.domainName : domain.name])
+//        }))])
         
         var isTutorialOn = false
         if !didShowSwipeDomainCardTutorial,

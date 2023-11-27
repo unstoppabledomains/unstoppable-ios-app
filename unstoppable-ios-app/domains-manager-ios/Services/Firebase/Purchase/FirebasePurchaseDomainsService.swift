@@ -14,6 +14,7 @@ private extension BaseFirebaseInteractionService.URLSList {
     
     static var DOMAIN_URL: String { baseAPIURL.appendingURLPathComponent("domain") }
     static var DOMAIN_SEARCH_URL: String { DOMAIN_URL.appendingURLPathComponent("search") }
+    static var DOMAIN_AI_SUGGESTIONS_URL: String { DOMAIN_SEARCH_URL.appendingURLPathComponent("ai-suggestions") }
     static func DOMAIN_ENS_STATUS_URL(domain: String) -> String {
         DOMAIN_URL.appendingURLPathComponents(domain, "ens-status")
     }
@@ -78,6 +79,17 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
             .filter({ $0.availability })
             .map { DomainToPurchase(domainProduct: $0) }
         return domains
+    }
+    
+    func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion] {
+        let hint = hint ?? "Anything you think is trending now"
+        let queryComponents = ["phrase" : hint,
+                               "extension" : "All"]
+        let urlString = URLSList.DOMAIN_AI_SUGGESTIONS_URL.appendingURLQueryComponents(queryComponents)
+        let request = try APIRequest(urlString: urlString,
+                                     method: .get)
+        let response: SuggestDomainsResponse = try await NetworkService().makeDecodableAPIRequest(request)
+        return response.suggestions.map { DomainToPurchaseSuggestion(name: $0.domain.label) }
     }
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
