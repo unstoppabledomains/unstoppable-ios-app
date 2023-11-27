@@ -25,7 +25,7 @@ protocol PullUpViewServiceProtocol {
     func showAppearanceStyleSelectionPullUp(in viewController: UIViewController,
                                             selectedStyle: UIUserInterfaceStyle,
                                             styleChangedCallback: @escaping AppearanceStyleChangedCallback)
-    func showMintDomainConfirmationPullUp(in viewController: UIViewController) async throws -> MintDomainPullUpAction
+    func showAddDomainSelectionPullUp(in viewController: UIViewController) async throws -> AddDomainPullUpAction
 
     func showYouAreOfflinePullUp(in viewController: UIViewController,
                                  unavailableFeature: PullUpViewService.UnavailableOfflineFeature) async
@@ -330,15 +330,13 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         showOrUpdate(in: viewController, pullUp: .themeSelection, contentView: contentView, height: selectionViewHeight)
     }
     
-    func showMintDomainConfirmationPullUp(in viewController: UIViewController) async throws -> MintDomainPullUpAction {
-        let selectionViewHeight: CGFloat = 408
+    func showAddDomainSelectionPullUp(in viewController: UIViewController) async throws -> AddDomainPullUpAction {
+        let selectionViewHeight: CGFloat = 456
         
         return try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.importYourDomains.localized()),
-                                                                         contentAlignment: .center,
-                                                                         icon: .init(icon: .walletOpen,
-                                                                                     size: .small)),
-                                                    items: MintDomainPullUpAction.allCases,
+                                                                         contentAlignment: .center),
+                                                    items: AddDomainPullUpAction.pullUpSections,
                                                     itemSelectedCallback: { action in
                 completion(.success(action))
             })

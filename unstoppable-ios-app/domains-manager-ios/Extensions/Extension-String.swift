@@ -979,6 +979,11 @@ extension String {
         static let shakeToFindFailedSubtitle = "Looks like Bluetooth doesn't work on your phone. Ensure your device is working fine."
         static let openSettings = "Open settings"
         
+        // Purchase domain
+        static let getDomainCardTitle = "GET_DOMAIN_CARD_TITLE"
+        static let getDomainCardSubtitle = "GET_DOMAIN_CARD_SUBTITLE"
+        static let findANewDomain = "FIND_A_NEW_DOMAIN"
+
     }
 
     enum BlockChainIcons: String {

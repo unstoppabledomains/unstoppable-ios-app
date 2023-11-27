@@ -27,7 +27,7 @@ final class DomainsCollectionGetDomainCardCell: BaseDomainsCollectionCardCell {
         
         [titleLabel, titleCollapsedLabel].forEach { label in
             label?.numberOfLines = 0
-            label?.setAttributedTextWith(text: "get your domain".uppercased(),
+            label?.setAttributedTextWith(text: String.Constants.getDomainCardTitle.localized().uppercased(),
                                         font: .helveticaNeueCustom(size: 56),
                                         letterSpacing: 0,
                                         textColor: .foregroundOnEmphasis,
@@ -36,18 +36,19 @@ final class DomainsCollectionGetDomainCardCell: BaseDomainsCollectionCardCell {
         
         [subtitleLabel, subtitleCollapsedLabel].forEach { label in
             label?.numberOfLines = 0
-            label?.setAttributedTextWith(text: "Own your identity in the digital world.\nGet started with a Web3 domain.",
+            label?.setAttributedTextWith(text: String.Constants.getDomainCardSubtitle.localized(),
                                          font: .currentFont(withSize: 16, weight: .medium),
                                          textColor: .foregroundOnEmphasis.withAlphaComponent(0.56),
                                          lineBreakMode: .byTruncatingTail)
         }
         
+        let actionTitleText = String.Constants.findANewDomain.localized()
         actionContainerView.layer.cornerRadius = actionContainerHeight / 2
-        actionLabel.setAttributedTextWith(text: "Find a new domain",
+        actionLabel.setAttributedTextWith(text: actionTitleText,
                                           font: .currentFont(withSize: 16, weight: .medium),
                                           textColor: .black)
-        actionLabel.frame.size.width = "Find a new domain".width(withConstrainedHeight: .greatestFiniteMagnitude,
-                                                            font: .currentFont(withSize: 16, weight: .medium))
+        actionLabel.frame.size.width = actionTitleText.width(withConstrainedHeight: .greatestFiniteMagnitude,
+                                                             font: .currentFont(withSize: 16, weight: .medium))
         actionLabel.frame.size.height = 24
         actionImageView.frame.size = CGSize(width: 20, height: 20)
         actionImageView.tintColor = .black

@@ -205,7 +205,7 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
                   await router.isMintingAvailable(in: view) else { return }
             
             do {
-                let action = try await appContext.pullUpViewService.showMintDomainConfirmationPullUp(in: view)
+                let action = try await appContext.pullUpViewService.showAddDomainSelectionPullUp(in: view)
                 await view.dismissPullUpMenu()
 
                 switch action {
@@ -215,6 +215,8 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
                     importWalletPressed()
                 case .connectWallet:
                     connectWalletPressed()
+                case .findNew:
+                    return
                 }
             }
         }
@@ -978,8 +980,11 @@ extension DomainsCollectionPresenter {
     }
 }
 
-enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem {
+enum AddDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem {
     case connectWallet, importFromWebsite, importWallet
+    case findNew
+    
+    static let pullUpSections: [[AddDomainPullUpAction]] = [[.importWallet, .connectWallet, .importFromWebsite], [.findNew]]
     
     var title: String {
         switch self {
@@ -989,6 +994,8 @@ enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem 
             return String.Constants.connectWalletRecovery.localized()
         case .connectWallet:
             return String.Constants.connectWalletExternal.localized()
+        case .findNew:
+            return String.Constants.findANewDomain.localized()
         }
     }
     
@@ -1000,6 +1007,8 @@ enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem 
             return String.Constants.domainsCollectionEmptyStateImportSubtitle.localized()
         case .connectWallet:
             return String.Constants.domainsCollectionEmptyStateExternalSubtitle.localized()
+        case .findNew:
+            return nil
         }
     }
     
@@ -1011,9 +1020,26 @@ enum MintDomainPullUpAction: String, CaseIterable, PullUpCollectionViewCellItem 
             return .recoveryPhraseIcon
         case .connectWallet:
             return .externalWalletIndicator
+        case .findNew:
+            return .searchIcon
         }
     }
-    
+    var tintColor: UIColor {
+        switch self {
+        case .findNew:
+            return .foregroundOnEmphasis
+        case .connectWallet, .importFromWebsite, .importWallet:
+            return .foregroundDefault
+        }
+    }
+    var backgroundColor: UIColor {
+        switch self {
+        case .findNew:
+            return .backgroundAccentEmphasis
+        case .connectWallet, .importFromWebsite, .importWallet:
+            return .backgroundMuted2
+        }
+    }
     var analyticsName: String { rawValue }
     
 }

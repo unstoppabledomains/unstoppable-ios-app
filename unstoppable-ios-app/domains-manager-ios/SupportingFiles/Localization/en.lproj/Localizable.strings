@@ -886,3 +886,8 @@
 "SHAKE_TO_FIND_FAILED_TITLE" = "Failed to run\nBluetooth services";
 "SHAKE_TO_FIND_FAILED_SUBTITLE" = "Looks like Bluetooth doesn't work on your phone. Ensure your device is working fine.";
 "OPEN_SETTINGS" = "Open settings";
+
+// Purchase domain
+"GET_DOMAIN_CARD_TITLE" = "Get your domain";
+"GET_DOMAIN_CARD_SUBTITLE" = "Own your identity in the digital world.\nGet started with a Web3 domain.";
+"FIND_A_NEW_DOMAIN" = "Find a new domain";
