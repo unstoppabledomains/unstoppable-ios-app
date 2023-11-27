@@ -145,6 +145,7 @@ private extension PurchaseSearchDomainsView {
     }
 
     func search(text: String) {
+        let text = text.trimmedSpaces
         guard searchingText != text else { return }
         searchingText = text
         Task {
