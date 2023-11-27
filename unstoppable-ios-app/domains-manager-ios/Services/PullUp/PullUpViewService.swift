@@ -331,7 +331,7 @@ extension PullUpViewService: PullUpViewServiceProtocol {
     }
     
     func showAddDomainSelectionPullUp(in viewController: UIViewController) async throws -> AddDomainPullUpAction {
-        let selectionViewHeight: CGFloat = 456
+        let selectionViewHeight: CGFloat = 436
         
         return try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.importYourDomains.localized()),
