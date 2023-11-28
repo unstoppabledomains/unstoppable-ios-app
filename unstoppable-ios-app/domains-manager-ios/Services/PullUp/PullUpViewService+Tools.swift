@@ -7,7 +7,7 @@
 
 import UIKit
 
-// MARK: - Private methods
+// MARK: - Tools
 extension PullUpViewService {
     func currentPullUpViewController(in viewController: UIViewController) -> PullUpViewController? {
         if let pullUpView = viewController.presentedViewController as? PullUpViewController {

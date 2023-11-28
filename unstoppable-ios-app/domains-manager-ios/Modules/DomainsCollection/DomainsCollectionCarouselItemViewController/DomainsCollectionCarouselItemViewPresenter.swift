@@ -59,6 +59,8 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
         switch item {
         case .domainCard(let configuration):
             actionsDelegate?.didOccurUIAction(.domainSelected(configuration.domain))
+        case .getDomainCard:
+            UDVibration.buttonTap.vibrate()
         case .noRecentActivities, .recentActivity:
             return
         }

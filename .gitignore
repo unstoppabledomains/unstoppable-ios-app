@@ -7,3 +7,5 @@ Breakpoints_v2.xcbkptlist
 *.xcuserstate
 *.xcuserstate
 *.xcbkptlist
+xcuserdata/
+*.xcuserdatad
