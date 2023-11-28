@@ -15,13 +15,14 @@ struct PurchaseSearchDomainsView: View {
     @State private var suggestions: [DomainToPurchaseSuggestion] = []
     @State private var searchResult: [DomainToPurchase] = []
     @State private var isLoading = false
+    @State private var loadingError: Error?
     @State private var searchingText = ""
     @State private var cart: PurchaseDomainsCart = .empty
     @State private var scrollOffset: CGPoint = .zero
-
+    
     var domainSelectedCallback: ((DomainToPurchase)->())
     var scrollOffsetCallback: ((CGPoint)->())? = nil
-
+    
     var body: some View {
         OffsetObservingScrollView(offset: $scrollOffset) {
             VStack {
@@ -61,8 +62,8 @@ private extension PurchaseSearchDomainsView {
         UDTextFieldView(text: $debounceObject.text,
                         placeholder: "domain.x",
                         hint: nil,
-                        rightViewType: .inspire({ }),
-                        rightViewMode: .always,
+                        rightViewType: .clear,
+                        rightViewMode: .whileEditing,
                         leftViewType: .search)
         .onChange(of: debounceObject.debouncedText) { text in
             search(text: text)
@@ -76,8 +77,28 @@ private extension PurchaseSearchDomainsView {
             ProgressView()
         } else if !searchResult.isEmpty {
             resultListView()
+        } else if loadingError != nil {
+            errorView()
+        } else if !searchingText.isEmpty {
+            noResultsView()
         } else if !suggestions.isEmpty {
             trendingListView()
+        }
+    }
+    
+    @ViewBuilder
+    func resultListView() -> some View {
+        UDCollectionSectionBackgroundView {
+            VStack {
+                ForEach(searchResult, id: \.name) { domainInfo in
+                    UDCollectionListRowButton(content: {
+                        domainSearchResultRow(domainInfo)
+                    }, callback: {
+                        domainSelectedCallback(domainInfo)
+                    })
+                }
+            }
+            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         }
     }
     
@@ -114,18 +135,44 @@ private extension PurchaseSearchDomainsView {
     }
     
     @ViewBuilder
-    func resultListView() -> some View {
+    func noResultsView() -> some View {
         UDCollectionSectionBackgroundView {
-            VStack {
-                ForEach(searchResult, id: \.name) { domainInfo in
-                    UDCollectionListRowButton(content: {
-                        domainSearchResultRow(domainInfo)
-                    }, callback: {
-                        domainSelectedCallback(domainInfo)
-                    })
+            VStack(alignment: .center, spacing: 16) {
+                Image.grimaseIcon
+                    .resizable()
+                    .squareFrame(32)
+                    .foregroundColor(.foregroundSecondary)
+                VStack(spacing: 8) {
+                    Text("No available domains")
+                        .font(.currentFont(size: 20, weight: .bold))
+                    Text("Try entering a different name.")
+                        .font(.currentFont(size: 14))
                 }
+                .multilineTextAlignment(.center)
+                .foregroundColor(.foregroundSecondary)
             }
-            .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
+            .padding(EdgeInsets(top: 24, leading: 24, bottom: 24, trailing: 24))
+        }
+    }
+    
+    @ViewBuilder
+    func errorView() -> some View {
+        UDCollectionSectionBackgroundView {
+            VStack(alignment: .center, spacing: 16) {
+                Image.grimaseIcon
+                    .resizable()
+                    .squareFrame(32)
+                    .foregroundColor(.foregroundSecondary)
+                VStack(spacing: 8) {
+                    Text("Something went wrong")
+                        .font(.currentFont(size: 20, weight: .bold))
+                    Text("Check your internet connection or try again later.")
+                        .font(.currentFont(size: 14))
+                }
+                .multilineTextAlignment(.center)
+                .foregroundColor(.foregroundSecondary)
+            }
+            .padding(EdgeInsets(top: 24, leading: 24, bottom: 24, trailing: 24))
         }
     }
 }
@@ -143,11 +190,14 @@ private extension PurchaseSearchDomainsView {
             self.suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
         }
     }
-
+    
     func search(text: String) {
         let text = text.trimmedSpaces
         guard searchingText != text else { return }
         searchingText = text
+        searchResult = []
+        loadingError = nil
+        
         Task {
             isLoading = true
             do {
@@ -156,7 +206,7 @@ private extension PurchaseSearchDomainsView {
                 
                 self.searchResult = searchResult
             } catch {
-                
+                loadingError = error
             }
             isLoading = false
         }
