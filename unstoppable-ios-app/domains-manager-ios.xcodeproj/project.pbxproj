@@ -873,6 +873,7 @@
 		C6A474E429D1756D0073415F /* LoadingParkedDomainsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474DE29D1756D0073415F /* LoadingParkedDomainsViewController.swift */; };
 		C6A474E829D1756D0073415F /* LoadingParkedDomainsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6A474DF29D1756D0073415F /* LoadingParkedDomainsViewController.xib */; };
 		C6A474ED29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A474EC29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift */; };
+		C6A931042B17796B0078CB9E /* WalletWithInfo+Mock.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6A931032B17796B0078CB9E /* WalletWithInfo+Mock.swift */; };
 		C6AB383E2A692D45003C0944 /* PushMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */; };
 		C6AD180F28D319BF0008A479 /* CollectionViewShowHideCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AD180D28D319BF0008A479 /* CollectionViewShowHideCell.swift */; };
 		C6AD181328D319BF0008A479 /* CollectionViewShowHideCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6AD180E28D319BF0008A479 /* CollectionViewShowHideCell.xib */; };
@@ -2075,6 +2076,7 @@
 		C6A474DE29D1756D0073415F /* LoadingParkedDomainsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingParkedDomainsViewController.swift; sourceTree = "<group>"; };
 		C6A474DF29D1756D0073415F /* LoadingParkedDomainsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingParkedDomainsViewController.xib; sourceTree = "<group>"; };
 		C6A474EC29D1E6000073415F /* DomainProfileParkedActionCoverViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainProfileParkedActionCoverViewPresenter.swift; sourceTree = "<group>"; };
+		C6A931032B17796B0078CB9E /* WalletWithInfo+Mock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalletWithInfo+Mock.swift"; sourceTree = "<group>"; };
 		C6AB383D2A692D45003C0944 /* PushMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C6AD180D28D319BF0008A479 /* CollectionViewShowHideCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewShowHideCell.swift; sourceTree = "<group>"; };
 		C6AD180E28D319BF0008A479 /* CollectionViewShowHideCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewShowHideCell.xib; sourceTree = "<group>"; };
@@ -5411,6 +5413,7 @@
 				C672FD74286061E300D27078 /* WalletBackUpPassword.swift */,
 				C60981F92822612F00546392 /* WalletDisplayInfo.swift */,
 				C606B740286474E000DC562B /* WalletWithInfo.swift */,
+				C6A931032B17796B0078CB9E /* WalletWithInfo+Mock.swift */,
 				C608C82B2877DEFD00EDEC6E /* WalletWithInfoAndBalance.swift */,
 				C63902B228E2FADC00E16B42 /* WCCompatibleWallet.swift */,
 				C63095C42B0DA5DE00205054 /* Purchase domains */,
@@ -6671,6 +6674,7 @@
 				C6E0414B295052180080F8E3 /* CarouselCellVisibilityLevel.swift in Sources */,
 				C64836BD282BCAFB007BD3F1 /* PrimaryDangerButton.swift in Sources */,
 				C6C4218C293A1E21005B791B /* UDConfigurableButton.swift in Sources */,
+				C6A931042B17796B0078CB9E /* WalletWithInfo+Mock.swift in Sources */,
 				C60DCEEF282D13F800F71C13 /* RenameWalletViewController.swift in Sources */,
 				C61308642A78CA1300E7CE21 /* XMTPBlockedUsersStorage.swift in Sources */,
 				C66107992A31A4BC0076782F /* PushEntitiesTransformer.swift in Sources */,

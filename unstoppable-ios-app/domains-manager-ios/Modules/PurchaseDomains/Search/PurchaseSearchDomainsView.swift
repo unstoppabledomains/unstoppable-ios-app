@@ -193,12 +193,12 @@ private extension PurchaseSearchDomainsView {
 // MARK: - Private methods
 private extension PurchaseSearchDomainsView {
     func onAppear() {
-        setupSekeletonItemsWidth()
+        setupSkeletonItemsWidth()
         loadSuggestions()
         
     }
     
-    func setupSekeletonItemsWidth() {
+    func setupSkeletonItemsWidth() {
         guard skeletonItemsWidth.isEmpty else { return }
         
         for _ in 0..<10 {
