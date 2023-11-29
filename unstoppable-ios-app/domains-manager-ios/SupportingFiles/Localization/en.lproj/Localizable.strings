@@ -153,6 +153,7 @@
 "LEAVE" = "Leave";
 "DOWNLOAD" = "Download";
 "UNENCRYPTED" = "Unencrypted";
+"VIEW_IN_BROWSER" = "View in browser";
 
 /* ONBOARDING */
 // Tutorial screens
