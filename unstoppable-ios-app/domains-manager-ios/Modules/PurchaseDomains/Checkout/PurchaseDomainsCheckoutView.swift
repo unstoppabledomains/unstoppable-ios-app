@@ -11,7 +11,7 @@ struct PurchaseDomainsCheckoutView: View {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
-
+    
     @State var domain: DomainToPurchase
     @State var selectedWallet: WalletWithInfo
     @State var wallets: [WalletWithInfo]
@@ -20,27 +20,34 @@ struct PurchaseDomainsCheckoutView: View {
     @State private var cart: PurchaseDomainsCart = .empty
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
     
+    @State private var isLoading = false
     @State private var isSelectWalletPresented = false
     @State private var isEnterZIPCodePresented = false
     @State private var isSelectDiscountsPresented = false
     @State private var isEnterDiscountCodePresented = false
-
+    
     var purchasedCallback: EmptyCallback
     var scrollOffsetCallback: ((CGPoint)->())? = nil
     
     var body: some View {
-        VStack(spacing: 0) {
-            OffsetObservingScrollView(offset: $scrollOffset) {
-                LazyVStack {
-                    headerView()
-                    checkoutDashSeparator()
-                    detailsSection()
-                    checkoutDashSeparator()
-                    summarySection()
+        ZStack {
+            VStack(spacing: 0) {
+                OffsetObservingScrollView(offset: $scrollOffset) {
+                    LazyVStack {
+                        headerView()
+                        checkoutDashSeparator()
+                        detailsSection()
+                        checkoutDashSeparator()
+                        summarySection()
+                    }
                 }
+                checkoutView()
             }
-            checkoutView()
+            if isLoading {
+                ProgressView()
+            }
         }
+        .allowsHitTesting(!isLoading)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .onReceive(purchaseDomainsService.cartPublisher.receive(on: DispatchQueue.main)) { cart in
@@ -53,9 +60,9 @@ struct PurchaseDomainsCheckoutView: View {
             scrollOffsetCallback?(newValue)
         }
         .modifier(ShowingSelectWallet(isSelectWalletPresented: $isSelectWalletPresented,
-                                     selectedWallet: selectedWallet,
-                                     wallets: wallets,
-                                     selectedWalletCallback: didSelectWallet))
+                                      selectedWallet: selectedWallet,
+                                      wallets: wallets,
+                                      selectedWalletCallback: didSelectWallet))
         .sheet(isPresented: $isEnterZIPCodePresented, content: {
             PurchaseDomainsEnterZIPCodeView()
         })
@@ -175,7 +182,7 @@ private extension PurchaseDomainsCheckoutView {
         
         return sum
     }
-
+    
     @ViewBuilder
     func checkoutDashSeparator() -> some View {
         Line()
@@ -201,7 +208,7 @@ private extension PurchaseDomainsCheckoutView {
                     summaryDomainInfoView()
                         .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
                     additionalCheckoutDetailsView()
-                        .padding(EdgeInsets(top: 0, 
+                        .padding(EdgeInsets(top: 0,
                                             leading: 16,
                                             bottom: shouldShowTotalDueInSummary ? 0 : 16,
                                             trailing: 16))
@@ -282,7 +289,7 @@ private extension PurchaseDomainsCheckoutView {
             }
             checkoutButton()
         }
-
+        
     }
     
     @ViewBuilder
@@ -307,10 +314,21 @@ private extension PurchaseDomainsCheckoutView {
 private extension PurchaseDomainsCheckoutView {
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
+        didSelectWallet(selectedWallet)
     }
     
     func didSelectWallet(_ wallet: WalletWithInfo) {
-        
+        Task {
+            selectedWallet = wallet
+            isLoading = true
+            do {
+                try await purchaseDomainsService.authoriseWithWallet(wallet.wallet,
+                                                                     toPurchaseDomains: [domain])
+            } catch {
+                Debugger.printFailure("Did fail to authorise wallet \(wallet.wallet.address) with error \(error)")
+            }
+            isLoading = false
+        }
     }
 }
 
@@ -337,7 +355,7 @@ private extension PurchaseDomainsCheckoutView {
         let selectedWallet: WalletWithInfo
         let wallets: [WalletWithInfo]
         let selectedWalletCallback: PurchaseDomainSelectWalletCallback
-
+        
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectWalletPresented, content: {
@@ -354,8 +372,6 @@ private extension PurchaseDomainsCheckoutView {
                 })
         }
     }
-    
-    
 }
 
 #Preview {

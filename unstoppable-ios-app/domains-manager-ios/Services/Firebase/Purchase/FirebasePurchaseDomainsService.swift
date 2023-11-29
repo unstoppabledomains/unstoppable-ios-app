@@ -50,7 +50,9 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
     private let queue = DispatchQueue(label: "com.unstoppabledomains.firebase.purchase.service")
     private var cancellables: Set<AnyCancellable> = []
     private var checkoutData: PurchaseDomainsCheckoutData
-    private var cachedPaymentDetails: StripePaymentDetails? = .init(amount: 20000, clientSecret: "", orderId: 0)
+    private var cachedPaymentDetails: StripePaymentDetails? = nil
+    private var isAutoRefreshCartSuspended = false
+    private var domainsToPurchase: [DomainToPurchase] = []
 
     init(firebaseAuthService: FirebaseAuthService,
          firebaseSigner: UDFirebaseSigner,
@@ -95,13 +97,23 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws {
         let domainItems = domains.compactMap({ $0.metadata }).compactMap({ DomainProductItem.objectFromData($0) })
         let products = domainItems.map { UDProduct.domain($0) }
-        try await addProductsToCart(products)
+        try await addProductsToCart(products, shouldRefreshCart: true)
     }
     
     func removeDomainsFromCart(_ domains: [DomainToPurchase]) async throws {
         let domainItems = domains.compactMap({ $0.metadata }).compactMap({ DomainProductItem.objectFromData($0) })
         let products = domainItems.map { UDProduct.domain($0) }
-        try await removeProductsFromCart(products)
+        try await removeProductsFromCart(products, shouldRefreshCart: true)
+    }
+    
+    func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
+        isAutoRefreshCartSuspended = true
+        logout()
+        cart = .empty
+        tokenData = try await firebaseAuthService.authorizeWith(wallet: wallet)
+        self.domainsToPurchase = domains
+        try await addDomainsToCart(domains)
+        isAutoRefreshCartSuspended = false
     }
     
     func getSupportedWalletsToMint() async throws -> [PurchasedDomainsWalletDescription] {
@@ -110,12 +122,11 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     }
     
     func purchaseDomainsInTheCartAndMintTo(wallet: PurchasedDomainsWalletDescription) async throws {
-        let unsupportedProducts = filterUnsupportedProductsFrom(products: udCart.calculations.cartItems)
-        guard unsupportedProducts.isEmpty else {
-            throw PurchaseDomainsError.udAccountHasUnpaidVault
-        }
+        isAutoRefreshCartSuspended = true
+        try await refreshUserCart()
         let userWallet = try UDUserAccountCryptWallet.objectFromDataThrowing(wallet.metadata ?? Data())
         try await purchaseDomainsInTheCart(to: userWallet)
+        isAutoRefreshCartSuspended = false
     }
 }
 
@@ -127,14 +138,18 @@ private extension FirebasePurchaseDomainsService {
         return searchResponse
     }
     
-    func addProductsToCart(_ products: [UDProduct]) async throws {
+    func addProductsToCart(_ products: [UDProduct],
+                           shouldRefreshCart: Bool) async throws {
         try await makeCartOperationAPIRequestWith(urlString: URLSList.CART_ADD_URL,
-                                                  products: products)
+                                                  products: products,
+                                                  shouldRefreshCart: shouldRefreshCart)
     }
     
-    func removeProductsFromCart(_ products: [UDProduct]) async throws {
+    func removeProductsFromCart(_ products: [UDProduct],
+                                shouldRefreshCart: Bool) async throws {
         try await makeCartOperationAPIRequestWith(urlString: URLSList.CART_REMOVE_URL,
-                                                  products: products)
+                                                  products: products,
+                                                  shouldRefreshCart: shouldRefreshCart)
     }
     
     func purchaseDomainsInTheCart(to wallet: UDUserAccountCryptWallet) async throws {
@@ -207,7 +222,10 @@ private extension FirebasePurchaseDomainsService {
     func runRefreshTimer() {
         Task {
             do {
-                refreshUserCartAsync()
+                if !isAutoRefreshCartSuspended,
+                   !domainsToPurchase.isEmpty {
+                    refreshUserCartAsync()
+                }
                 try await Task.sleep(seconds: 60)
                 runRefreshTimer()
             } catch {
@@ -252,14 +270,22 @@ private extension FirebasePurchaseDomainsService {
                                                           others: otherDiscountsSum))
     }
     
-    func makeCartOperationAPIRequestWith(urlString: String, products: [UDProduct]) async throws {
+    func makeCartOperationAPIRequestWith(urlString: String,
+                                         products: [UDProduct],
+                                         shouldRefreshCart: Bool) async throws {
         let requestEntity = CartOperationRequestBody(products: products)
         let request = try APIRequest(urlString: urlString,
                                      body: requestEntity,
                                      method: .post)
         try await makeFirebaseAPIDataRequest(request)
+        if shouldRefreshCart {
+            await waitForCartUpdated()
+            try? await refreshUserCart()
+        }
+    }
+    
+    func waitForCartUpdated() async {
         try? await Task.sleep(seconds: 0.5) // BE need a time to add hidden products (Parking). Can't refresh cart immediately
-        refreshUserCartAsync()
     }
     
     func loadStripePaymentDetails(for wallet: UDUserAccountCryptWallet) async throws -> StripePaymentDetailsResponse {
@@ -350,7 +376,7 @@ private extension FirebasePurchaseDomainsService {
         let productsToRemove = filterUnsupportedProductsFrom(products: cart.cart)
         
         if !productsToRemove.isEmpty {
-            try await removeProductsFromCart(productsToRemove)
+            try await removeProductsFromCart(productsToRemove, shouldRefreshCart: false)
         }
     }
     
@@ -358,6 +384,10 @@ private extension FirebasePurchaseDomainsService {
         products.flatMap { product -> [UDProduct] in
             switch product {
             case .domain(let domain):
+                /// Remove all domains except what user has selected for purchase
+                if domainsToPurchase.first(where: { $0.name == domain.domain.name }) == nil {
+                    return [product]
+                }
                 return domain.hiddenProducts
             default:
                 return [product]

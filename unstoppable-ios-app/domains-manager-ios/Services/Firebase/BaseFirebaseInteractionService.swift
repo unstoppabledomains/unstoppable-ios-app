@@ -28,6 +28,7 @@ class BaseFirebaseInteractionService {
     }
     
     func logout() {
+        tokenData = nil
         firebaseAuthService.logout()
     }
 }
