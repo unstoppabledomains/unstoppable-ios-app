@@ -27,11 +27,12 @@ extension ViewWithDashesProgress {
         cNavigationBar?.navBarContentView.setTitleView(hidden: progress == nil, animated: false)
     }
 
-    func addProgressDashesView() {
+    func addProgressDashesView(configuration: DashesProgressView.Configuration = .init()) {
         if let dashesProgressView = cNavigationController?.navigationBar.navBarContentView.titleView as? DashesProgressView {
             navigationItem.titleView = dashesProgressView
         } else {
             let dashesProgressView = DashesProgressView(frame: CGRect(x: 0, y: 0, width: 160, height: 4))
+            dashesProgressView.setWith(configuration: configuration)
             navigationItem.titleView = dashesProgressView
             dashesProgressView.setProgress(0.0)            
         }

@@ -66,6 +66,11 @@ extension FirebasePurchaseDomainsService {
         let invalidCharacters: [String]
         let invalidReason: String?
     }
+    
+    struct SuggestDomainsResponse: Codable {
+        @DecodeHashableIgnoringFailed
+        var suggestions: [DomainProductItem]
+    }
 }
 
 // MARK: - Product entities

@@ -143,6 +143,10 @@ extension UIImage {
     static let udCartLogoRaster = UIImage(named: "udCartLogoRaster")!
     static let chooseRRDomainIllustration = UIImage(named: "chooseRRDomainIllustration")!
     static let udBlueGrayIcon = UIImage(named: "udBlueGrayIcon")!
+    static let check = UIImage(named: "check")!
+    static let statsIcon = UIImage(named: "statsIcon")!
+    static let sparkleIcon = UIImage(named: "sparkleIcon")!
+    static let chevronRight = UIImage(named: "chevronRight")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!
@@ -167,7 +171,7 @@ extension UIImage {
     static let arrowUpRight = UIImage(systemName: "arrowshape.turn.up.right")!
     static let safari = UIImage(systemName: "safari")!
     static let chevronLeft = UIImage(systemName: "chevron.left")
-    static let chevronRight = UIImage(systemName: "chevron.right")
+    static let systemChevronRight = UIImage(systemName: "chevron.right")
     static let systemMinusCircle = UIImage(systemName: "minus.circle")!
     static let systemMultiplyCircle = UIImage(systemName: "multiply.circle")!
     static let arrowRightArrowLeft = UIImage(systemName: "arrow.right.arrow.left")!

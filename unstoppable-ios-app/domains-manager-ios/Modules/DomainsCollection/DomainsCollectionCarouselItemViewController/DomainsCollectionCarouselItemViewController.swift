@@ -584,6 +584,7 @@ extension DomainsCollectionCarouselItemViewController {
         case domainNameCopied
         case rearrangeDomains
         case parkedDomainLearnMore
+        case purchaseDomains
     }
     
     enum VisibleDataType: Int, CaseIterable, Hashable {

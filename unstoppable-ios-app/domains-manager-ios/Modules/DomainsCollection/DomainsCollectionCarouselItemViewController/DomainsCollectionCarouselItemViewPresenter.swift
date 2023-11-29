@@ -61,6 +61,7 @@ extension DomainsCollectionCarouselItemViewPresenter: DomainsCollectionCarouselI
             actionsDelegate?.didOccurUIAction(.domainSelected(configuration.domain))
         case .getDomainCard:
             UDVibration.buttonTap.vibrate()
+            actionsDelegate?.didOccurUIAction(.purchaseDomains)
         case .noRecentActivities, .recentActivity:
             return
         }

@@ -38,6 +38,6 @@ extension ConnectExternalWalletCell {
                                            textColor: .foregroundDefault,
                                            lineHeight: 24)
         secondaryLabel.isHidden = !(walletRecord.make?.isRecommended == true)
-        chevronImageView.image = isInstalled ? .chevronRight : .downloadIcon
+        chevronImageView.image = isInstalled ? .systemChevronRight : .downloadIcon
     }
 }
