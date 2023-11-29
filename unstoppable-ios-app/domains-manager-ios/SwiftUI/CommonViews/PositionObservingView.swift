@@ -15,10 +15,8 @@ struct PositionObservingView<Content: View>: View {
     var body: some View {
         content()
             .background(GeometryReader { geometry in
-                Color.clear.preference(
-                    key: PreferenceKey.self,
-                    value: geometry.frame(in: coordinateSpace).origin
-                )
+                Color.clear.preference(key: PreferenceKey.self,
+                                       value: geometry.frame(in: coordinateSpace).origin)
             })
             .onPreferenceChange(PreferenceKey.self) { position in
                 self.position = position

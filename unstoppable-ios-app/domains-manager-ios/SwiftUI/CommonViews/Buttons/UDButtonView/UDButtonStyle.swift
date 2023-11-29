@@ -184,6 +184,7 @@ extension UDButtonStyle {
     enum LargeStyle: String, CaseIterable {
         case raisedPrimary, raisedPrimaryWhite, raisedDanger, raisedTertiary, raisedTertiaryWhite
         case ghostPrimary, ghostDanger
+        case applePay
         
         var backgroundIdleColor: Color {
             switch self {
@@ -199,6 +200,8 @@ extension UDButtonStyle {
                 return .brandWhite.opacity(0.16)
             case .ghostPrimary, .ghostDanger:
                 return .clear
+            case .applePay:
+                return .black
             }
         }
         
@@ -216,6 +219,8 @@ extension UDButtonStyle {
                 return .brandWhite.opacity(0.24)
             case .ghostPrimary, .ghostDanger:
                 return .backgroundMuted
+            case .applePay:
+                return .black.opacity(0.64)
             }
         }
         
@@ -233,6 +238,8 @@ extension UDButtonStyle {
                 return .brandWhite.opacity(0.08)
             case .ghostPrimary, .ghostDanger:
                 return .clear
+            case .applePay:
+                return .black.opacity(0.16)
             }
         }
         
@@ -242,7 +249,7 @@ extension UDButtonStyle {
                 return .backgroundSuccessEmphasis
             case .raisedTertiary, .raisedTertiaryWhite:
                 return .backgroundSuccess
-            case .ghostPrimary, .ghostDanger:
+            case .ghostPrimary, .ghostDanger, .applePay:
                 return .clear
             }
         }
@@ -261,6 +268,8 @@ extension UDButtonStyle {
                 return .foregroundAccent
             case .ghostDanger:
                 return .foregroundDanger
+            case .applePay:
+                return .foregroundOnEmphasis
             }
         }
         
@@ -268,7 +277,7 @@ extension UDButtonStyle {
         
         var textDisabledColor: Color {
             switch self {
-            case .raisedPrimary, .raisedDanger:
+            case .raisedPrimary, .raisedDanger, .applePay:
                 return .foregroundOnEmphasis.opacity(0.56)
             case .raisedPrimaryWhite:
                 return .black
@@ -287,7 +296,7 @@ extension UDButtonStyle {
             switch self {
             case .raisedPrimary, .raisedPrimaryWhite, .raisedDanger:
                 return .foregroundOnEmphasis
-            case .raisedTertiary, .raisedTertiaryWhite, .ghostPrimary, .ghostDanger:
+            case .raisedTertiary, .raisedTertiaryWhite, .ghostPrimary, .ghostDanger, .applePay:
                 return .foregroundSuccess
             }
         }

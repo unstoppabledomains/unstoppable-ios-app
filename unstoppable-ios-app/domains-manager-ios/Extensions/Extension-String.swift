@@ -983,7 +983,27 @@ extension String {
         static let getDomainCardTitle = "GET_DOMAIN_CARD_TITLE"
         static let getDomainCardSubtitle = "GET_DOMAIN_CARD_SUBTITLE"
         static let findANewDomain = "FIND_A_NEW_DOMAIN"
-
+        static let findYourDomain = "FIND_YOUR_DOMAIN"
+        static let trending = "TRENDING"
+        static let noAvailableDomains = "NO_AVAILABLE_DOMAINS"
+        static let tryEnterDifferentName = "TRY_ENTER_DIFF_NAME"
+        static let enterDiscountCode = "ENTER_DISCOUNT_CODE"
+        static let discountCode = "DISCOUNT_CODE"
+        static let mintTo = "MINT_TO"
+        static let applyDiscounts = "APPLY_DISCOUNTS"
+        static let addDiscountCode = "ADD_DISCOUNT_CODE"
+        static let promoCredits = "PROMO_CREDITS"
+        static let storeCredits = "STORE_CREDITS"
+        static let usZIPCode = "US_ZIP_CODE"
+        static let enterUSZIPCode = "ENTER_US_ZIP_CODE"
+        static let zipCode = "ZIP_CODE"
+        static let checkout = "CHECKOUT"
+        static let toCalculateTaxes = "TO_CALCULATE_TAXES"
+        static let taxes = "TAXES"
+        static let discounts = "DISCOUNTS"
+        static let apply = "APPLY"
+        static let orderSummary = "ORDER_SUMMARY"
+        static let totalDue = "TOTAL_DUE"
     }
 
     enum BlockChainIcons: String {

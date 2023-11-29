@@ -21,19 +21,14 @@ struct OffsetObservingScrollView<Content: View>: View {
     
     var body: some View {
         ScrollView(axes, showsIndicators: showsIndicators) {
-            PositionObservingView(
-                coordinateSpace: .named(coordinateSpaceName),
-                position: Binding(
-                    get: { offset },
-                    set: { newOffset in
-                        offset = CGPoint(
-                            x: -newOffset.x,
-                            y: -newOffset.y
-                        )
-                    }
-                ),
-                content: content
-            )
+            PositionObservingView(coordinateSpace: .named(coordinateSpaceName),
+                                  position: Binding(
+                                    get: { offset },
+                                    set: { newOffset in
+                                        offset = CGPoint(x: -newOffset.x,
+                                                         y: -newOffset.y)
+                                    }),
+                                  content: content)
         }
         .coordinateSpace(name: coordinateSpaceName)
     }

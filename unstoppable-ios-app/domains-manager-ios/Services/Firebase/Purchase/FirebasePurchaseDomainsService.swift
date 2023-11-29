@@ -243,10 +243,13 @@ private extension FirebasePurchaseDomainsService {
             }
         }
         let domains = domainProducts.map { DomainToPurchase(domainProduct: $0) }
+        let otherDiscountsSum = udCart.calculations.discounts.reduce(0, { $0 + $1.amount })
         return PurchaseDomainsCart(domains: domains,
                                    totalPrice: udCart.calculations.totalAmountDue,
+                                   taxes: udCart.calculations.salesTax,
                                    discountDetails: .init(storeCredits: udCart.discountDetails.storeCredits,
-                                                          promoCredits: udCart.discountDetails.promoCredits))
+                                                          promoCredits: udCart.discountDetails.promoCredits,
+                                                          others: otherDiscountsSum))
     }
     
     func makeCartOperationAPIRequestWith(urlString: String, products: [UDProduct]) async throws {
@@ -370,13 +373,11 @@ private extension FirebasePurchaseDomainsService {
     }
     
     func loadUserCartCalculations() async throws -> UserCartCalculationsResponse {
-        var queryComponents = ["applyPromoCredits" : String(checkoutData.isPromoCreditsOn),
+        let queryComponents = ["applyPromoCredits" : String(checkoutData.isPromoCreditsOn),
                                "applyStoreCredits" : String(checkoutData.isStoreCreditsOn),
                                "discountCode" : checkoutData.discountCode.trimmedSpaces,
-                               "durationsMap" : checkoutData.getDurationsMapString()]
-        if checkoutData.isLivingInUSA {
-            queryComponents["zipCode"] = checkoutData.usaZipCode.trimmedSpaces
-        }
+                               "durationsMap" : checkoutData.getDurationsMapString(),
+                               "zipCode" : checkoutData.usaZipCode.trimmedSpaces]
         
         let urlString = URLSList.USER_CART_CALCULATIONS_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
