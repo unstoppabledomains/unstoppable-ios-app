@@ -15,7 +15,7 @@ protocol DomainsCollectionPresenterProtocol: BasePresenterProtocol {
     var currentIndex: Int { get }
     
     func canMove(to index: Int) -> Bool
-    func domain(at index: Int) -> DomainDisplayInfo?
+    func displayMode(at index: Int) -> DomainsCollectionCarouselItemDisplayMode?
     func didMove(to index: Int)
     func didOccureUIAction(_ action: DomainsCollectionViewController.Action)
     func didTapSettingsButton()
@@ -75,7 +75,9 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             await loadInitialData()
             let domains = stateController.domains
             if let domain = domains.first {
-                view?.setSelectedDomain(domain, at: 0, animated: false)
+                view?.setSelectedDisplayMode(.domain(domain), at: 0, animated: false)
+            } else {
+                view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
             }
             updateUI()
             await resolvePrimaryDomain(domains: domains)
@@ -97,10 +99,18 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         isIndexSupported(index)
     }
     
-    func domain(at index: Int) -> DomainDisplayInfo? {
-        guard isIndexSupported(index) else { return nil }
-        
-        return stateController.domains[index]
+    func displayMode(at index: Int) -> DomainsCollectionCarouselItemDisplayMode? {
+        if stateController.domains.isEmpty {
+            if index == 0 {
+                return .empty
+            }
+            return nil
+        } else {
+            guard isIndexSupported(index) else { return nil }
+            
+            let domain = stateController.domains[index]
+            return .domain(domain)
+        }
     }
    
     func didMove(to index: Int) {
@@ -408,7 +418,7 @@ private extension DomainsCollectionPresenter {
             return }
         let domains = stateController.domains
         currentIndex = newIndex
-        view?.setSelectedDomain(domains[newIndex], at: newIndex, animated: animated)
+        view?.setSelectedDisplayMode(.domain(domains[newIndex]), at: newIndex, animated: animated)
     }
     
     @MainActor
@@ -480,7 +490,7 @@ private extension DomainsCollectionPresenter {
             return
         }
         
-        await view?.setSelectedDomain(preferableDomainForRR, at: index, animated: true)
+        await view?.setSelectedDisplayMode(.domain(preferableDomainForRR), at: index, animated: true)
         try? await askToSetReverseResolutionFor(domain: preferableDomainForRR, in: walletInfo)
         UserDefaults.preferableDomainNameForRR = nil
     }
@@ -614,7 +624,7 @@ private extension DomainsCollectionPresenter {
         func updateSelectedDomain(_ domain: DomainDisplayInfo, at index: Int, newCurrentIndex: Int) {
             self.currentIndex = newCurrentIndex
             stateController.set(domains: newDomains)
-            view?.setSelectedDomain(domain, at: index, animated: true)
+            view?.setSelectedDisplayMode(.domain(domain), at: index, animated: true)
         }
         
         guard isIndexSupported(currentIndex) else {
@@ -671,6 +681,9 @@ private extension DomainsCollectionPresenter {
             checkPresentedDomainsIndexChangedAndUpdateUI(newDomains: domains)
         }
         stateController.set(domains: domains)
+        if domains.isEmpty {
+            view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
+        }
         view?.setNumberOfSteps(domains.count)
         updateMintingDomainsUI()
     }
@@ -696,8 +709,8 @@ private extension DomainsCollectionPresenter {
             view?.setScanButtonHidden(!domains[currentIndex].isInteractable)
         }
         let availableForMessagingDomains = domains.availableForMessagingItems()
-        view?.setAddButtonHidden(domains.isEmpty, isMessagingAvailable: !availableForMessagingDomains.isEmpty )
-        view?.setEmptyState(hidden: !domains.isEmpty)
+        view?.setAddButtonHidden(false, isMessagingAvailable: !availableForMessagingDomains.isEmpty )
+        view?.setEmptyState(hidden: true)
     }
     
     @MainActor

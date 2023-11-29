@@ -34,14 +34,14 @@ final class DomainsCollectionCarouselItemViewController: BaseViewController {
     var presenter: DomainsCollectionCarouselItemViewPresenterProtocol!
     private var cardState: CarouselCardState = .expanded
     
-    static func instantiate(domain: DomainDisplayInfo,
+    static func instantiate(mode: DomainsCollectionCarouselItemDisplayMode,
                             cardState: CarouselCardState,
                             containerViewController: BaseViewController,
                             actionsDelegate: DomainsCollectionCarouselViewControllerActionsDelegate) -> DomainsCollectionCarouselItemViewController {
         let vc = DomainsCollectionCarouselItemViewController()
         vc.containerViewController = containerViewController
         let presenter = DomainsCollectionCarouselItemViewPresenter(view: vc,
-                                                                   domain: domain,
+                                                                   mode: mode,
                                                                    cardState: cardState,
                                                                    actionsDelegate: actionsDelegate)
         vc.presenter = presenter
@@ -588,7 +588,8 @@ extension DomainsCollectionCarouselItemViewController {
     }
     
     enum VisibleDataType: Int, CaseIterable, Hashable {
-        case parkedDomain, activity
+        case parkedDomain, activity, getDomain
     }
     
 }
+
