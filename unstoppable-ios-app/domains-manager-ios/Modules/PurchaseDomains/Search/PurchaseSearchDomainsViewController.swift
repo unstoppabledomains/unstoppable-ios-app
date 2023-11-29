@@ -20,12 +20,6 @@ final class PurchaseSearchDomainsViewController: BaseViewController, ViewWithDas
         
         setup()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        setDashesProgress(progress)
-    }
 }
 
 // MARK: - Private methods
@@ -46,6 +40,9 @@ private extension PurchaseSearchDomainsViewController {
     func setup() {
         addProgressDashesView(configuration: .init(numberOfDashes: 3))
         addChildView()
+        DispatchQueue.main.async {
+            self.setDashesProgress(self.progress)
+        }
     }
     
     func addChildView() {

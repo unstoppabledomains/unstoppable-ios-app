@@ -211,7 +211,8 @@ private extension PurchaseSearchDomainsView {
         guard suggestions.isEmpty else { return }
         
         Task {
-            self.suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
+            let suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
+            self.suggestions = Array(suggestions.prefix(20))
         }
     }
     

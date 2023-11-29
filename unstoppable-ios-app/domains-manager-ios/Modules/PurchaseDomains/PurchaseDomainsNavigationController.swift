@@ -51,6 +51,12 @@ extension PurchaseDomainsNavigationController: PurchaseDomainsFlowManager {
         switch action {
         case .didSelectDomain(let domain):
             purchaseData.domain = domain
+            let wallets = await appContext.dataAggregatorService.getWalletsWithInfo()
+            guard let selectedWallet = wallets.first else { return }
+            
+            moveToStep(.checkout(domain: domain,
+                                 selectedWallet: selectedWallet,
+                                 wallets: wallets))
         }
     }
 }
@@ -135,6 +141,12 @@ private extension PurchaseDomainsNavigationController {
             let vc = PurchaseSearchDomainsViewController()
             vc.purchaseDomainsFlowManager = self
             return vc
+        case .checkout(let domain, let selectedWallet, let wallets):
+            let vc = PurchaseDomainsCheckoutViewController.instantiate(domain: domain,
+                                                                       selectedWallet: selectedWallet,
+                                                                       wallets: wallets)
+            vc.purchaseDomainsFlowManager = self
+            return vc
         }
     }
 }
@@ -152,8 +164,9 @@ extension PurchaseDomainsNavigationController {
         case `default`
     }
     
-    enum Step: Codable {
+    enum Step {
         case searchDomain
+        case checkout(domain: DomainToPurchase, selectedWallet: WalletWithInfo, wallets: [WalletWithInfo])
     }
     
     enum Action {
