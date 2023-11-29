@@ -217,7 +217,7 @@ private extension PurchaseSearchDomainsView {
     }
     
     func search(text: String) {
-        let text = text.trimmedSpaces
+        let text = text.trimmedSpaces.lowercased()
         guard searchingText != text else { return }
         searchingText = text
         searchResult = []
@@ -231,12 +231,24 @@ private extension PurchaseSearchDomainsView {
                 let searchResult = try await purchaseDomainsService.searchForDomains(key: text)
                 guard text == self.searchingText else { return } // Result is irrelevant, search query has changed
                 
-                self.searchResult = searchResult
+                self.searchResult = sortSearchResult(searchResult, searchText: text)
             } catch {
                 loadingError = error
             }
             isLoading = false
         }
+    }
+    
+    func sortSearchResult(_ searchResult: [DomainToPurchase], searchText: String) -> [DomainToPurchase] {
+        var searchResult = searchResult
+        /// Move exactly matched domain to the top of the list
+        if let i = searchResult.firstIndex(where: { $0.name == searchText }),
+           i != 0 {
+            let matchingDomain = searchResult[i]
+            searchResult.remove(at: i)
+            searchResult.insert(matchingDomain, at: 0)
+        }
+        return searchResult
     }
 }
 
