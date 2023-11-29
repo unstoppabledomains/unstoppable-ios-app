@@ -30,6 +30,12 @@ struct UDCollectionListRowButton<Content: View>: View {
             }
         }))
     }
+    
+    init(@ViewBuilder content: @escaping () -> Content,
+         callback: @escaping EmptyCallback) {
+        self.content = content
+        self.callback = callback
+    }
 }
 
 #Preview {

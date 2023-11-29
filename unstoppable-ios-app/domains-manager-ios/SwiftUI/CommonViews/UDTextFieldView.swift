@@ -15,21 +15,31 @@ struct UDTextFieldView: View {
     var rightViewType: RightViewType = .clear
     var rightViewMode: UITextField.ViewMode = .whileEditing
     var leftViewType: LeftViewType? = nil
+    var focusBehaviour: FocusBehaviour = .default
+    var keyboardType: UIKeyboardType = .default
     @State private var state: TextFieldState = .rest
     @FocusState private var isTextFieldFocused: Bool
     @Environment(\.isEnabled) var isEnabled
-
+    
     var body: some View {
         VStack {
             ZStack {
                 getTextFieldBackground()
                 getTextFieldContent()
-                .sideInsets(16)
+                    .sideInsets(16)
             }
             .frame(height: 56)
         }
         .frame(maxWidth: .infinity)
         .animation(.default, value: UUID())
+        .onAppear {
+            switch focusBehaviour {
+            case .default:
+                return
+            case .activateOnAppear:
+                isTextFieldFocused = true
+            }
+        }
     }
     
 }
@@ -72,6 +82,7 @@ private extension UDTextFieldView {
                         .foregroundStyle(state.placeholderColor)
                 }
                 .focused($isTextFieldFocused)
+                .keyboardType(keyboardType)
                 .onChange(of: isTextFieldFocused) { isFocused in
                     if isFocused {
                         // began editing...
@@ -240,14 +251,19 @@ private extension UDTextFieldView {
 extension UDTextFieldView {
     enum RightViewType {
         case clear
-//        case paste
-//        case loading
-//        case success
+        //        case paste
+        //        case loading
+        //        case success
         case inspire(EmptyCallback)
     }
     
     enum LeftViewType {
         case search
+    }
+    
+    enum FocusBehaviour {
+        case `default`
+        case activateOnAppear
     }
 }
 
@@ -259,11 +275,11 @@ extension UDTextFieldView {
         
         var body: some View {
             UDTextFieldView(text: $text,
-                        placeholder: "domain.x",
-                        hint: nil,
-                        rightViewType: .inspire({ }),
-                        rightViewMode: .always,
-                        leftViewType: .search)
+                            placeholder: "domain.x",
+                            hint: nil,
+                            rightViewType: .inspire({ }),
+                            rightViewMode: .always,
+                            leftViewType: .search)
             .disabled(textFieldDisabled)
         }
         

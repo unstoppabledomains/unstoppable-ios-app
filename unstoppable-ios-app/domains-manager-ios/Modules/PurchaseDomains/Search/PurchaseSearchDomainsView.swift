@@ -17,8 +17,8 @@ struct PurchaseSearchDomainsView: View {
     @State private var isLoading = false
     @State private var loadingError: Error?
     @State private var searchingText = ""
-    @State private var cart: PurchaseDomainsCart = .empty
     @State private var scrollOffset: CGPoint = .zero
+    @State private var skeletonItemsWidth: [CGFloat] = []
     
     var domainSelectedCallback: ((DomainToPurchase)->())
     var scrollOffsetCallback: ((CGPoint)->())? = nil
@@ -33,13 +33,9 @@ struct PurchaseSearchDomainsView: View {
         }
         .animation(.default, value: UUID())
         .background(Color.backgroundDefault)
-        .onReceive(purchaseDomainsService.cartPublisher.receive(on: DispatchQueue.main)) { cart in
-            self.cart = cart
-        }
         .onChange(of: scrollOffset) { newValue in
             scrollOffsetCallback?(newValue)
         }
-        .navigationTitle("Search ")
         .onAppear(perform: onAppear)
     }
 }
@@ -49,10 +45,8 @@ private extension PurchaseSearchDomainsView {
     @ViewBuilder
     func headerView() -> some View {
         VStack(spacing: 16) {
-            Text("Find your domain")
+            Text(String.Constants.findYourDomain.localized())
                 .titleText()
-            Text("Search available domains")
-                .subtitleText()
         }
         .padding(EdgeInsets(top: 56, leading: 0, bottom: 0, trailing: 0))
     }
@@ -74,7 +68,7 @@ private extension PurchaseSearchDomainsView {
     @ViewBuilder
     func searchResultView() -> some View {
         if isLoading {
-            ProgressView()
+            loadingView()
         } else if !searchResult.isEmpty {
             resultListView()
         } else if loadingError != nil {
@@ -87,9 +81,24 @@ private extension PurchaseSearchDomainsView {
     }
     
     @ViewBuilder
-    func resultListView() -> some View {
+    func loadingView() -> some View {
         UDCollectionSectionBackgroundView {
             VStack {
+                ForEach(skeletonItemsWidth, id: \.self) { itemWidth in
+                    domainSearchSkeletonRow(itemWidth: itemWidth)
+                }
+                .setSkeleton(.constant(true),
+                             animationType: .solid(.backgroundSubtle))
+            }
+            .padding(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+        }
+        .padding()
+    }
+    
+    @ViewBuilder
+    func resultListView() -> some View {
+        UDCollectionSectionBackgroundView {
+            LazyVStack {
                 ForEach(searchResult, id: \.name) { domainInfo in
                     UDCollectionListRowButton(content: {
                         domainSearchResultRow(domainInfo)
@@ -100,17 +109,18 @@ private extension PurchaseSearchDomainsView {
             }
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
         }
+        .padding()
     }
     
     @ViewBuilder
     func trendingListView() -> some View {
-        UDCollectionSectionBackgroundView {
+        UDCollectionSectionBackgroundView(withShadow: true) {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     Image.statsIcon
                         .resizable()
                         .squareFrame(16)
-                    Text("Trending")
+                    Text(String.Constants.trending.localized())
                         .font(.currentFont(size: 14, weight: .semibold))
                 }
                 .foregroundColor(.foregroundDefault)
@@ -132,6 +142,7 @@ private extension PurchaseSearchDomainsView {
             }
             .padding()
         }
+        .padding()
     }
     
     @ViewBuilder
@@ -143,9 +154,9 @@ private extension PurchaseSearchDomainsView {
                     .squareFrame(32)
                     .foregroundColor(.foregroundSecondary)
                 VStack(spacing: 8) {
-                    Text("No available domains")
+                    Text(String.Constants.noAvailableDomains.localized())
                         .font(.currentFont(size: 20, weight: .bold))
-                    Text("Try entering a different name.")
+                    Text(String.Constants.tryEnterDifferentName.localized())
                         .font(.currentFont(size: 14))
                 }
                 .multilineTextAlignment(.center)
@@ -153,6 +164,7 @@ private extension PurchaseSearchDomainsView {
             }
             .padding(EdgeInsets(top: 24, leading: 24, bottom: 24, trailing: 24))
         }
+        .padding()
     }
     
     @ViewBuilder
@@ -164,9 +176,9 @@ private extension PurchaseSearchDomainsView {
                     .squareFrame(32)
                     .foregroundColor(.foregroundSecondary)
                 VStack(spacing: 8) {
-                    Text("Something went wrong")
+                    Text(String.Constants.somethingWentWrong.localized())
                         .font(.currentFont(size: 20, weight: .bold))
-                    Text("Check your internet connection or try again later.")
+                    Text(String.Constants.pleaseCheckInternetConnection.localized())
                         .font(.currentFont(size: 14))
                 }
                 .multilineTextAlignment(.center)
@@ -174,20 +186,33 @@ private extension PurchaseSearchDomainsView {
             }
             .padding(EdgeInsets(top: 24, leading: 24, bottom: 24, trailing: 24))
         }
+        .padding()
     }
 }
 
 // MARK: - Private methods
 private extension PurchaseSearchDomainsView {
     func onAppear() {
+        setupSkeletonItemsWidth()
         loadSuggestions()
+        
+    }
+    
+    func setupSkeletonItemsWidth() {
+        guard skeletonItemsWidth.isEmpty else { return }
+        
+        for _ in 0..<10 {
+            let width: CGFloat = 60 + CGFloat(arc4random_uniform(100))
+            skeletonItemsWidth.append(width)
+        }
     }
     
     func loadSuggestions() {
         guard suggestions.isEmpty else { return }
         
         Task {
-            self.suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
+            let suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
+            self.suggestions = Array(suggestions.prefix(20))
         }
     }
     
@@ -197,6 +222,8 @@ private extension PurchaseSearchDomainsView {
         searchingText = text
         searchResult = []
         loadingError = nil
+        
+        guard !searchingText.isEmpty else { return }
         
         Task {
             isLoading = true
@@ -225,7 +252,7 @@ private extension PurchaseSearchDomainsView {
                     .foregroundStyle(Color.foregroundSuccess)
                     .padding(EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10))
                     .background(Color.backgroundSuccess)
-                    .cornerRadius(30)
+                    .clipShape(Circle())
                 Text(domain.name)
                     .font(.currentFont(size: 16, weight: .medium))
                     .foregroundStyle(Color.foregroundDefault)
@@ -239,7 +266,31 @@ private extension PurchaseSearchDomainsView {
                 .squareFrame(20)
                 .foregroundStyle(Color.foregroundMuted)
         }
-        .frame(minHeight: 64)
+        .frame(minHeight: UDListItemView.height)
+    }
+    
+    @ViewBuilder
+    func domainSearchSkeletonRow(itemWidth: CGFloat) -> some View {
+        HStack(spacing: 8) {
+            HStack(spacing: 16) {
+                Image.check
+                    .squareFrame(40)
+                    .skeletonable()
+                    .clipShape(Circle())
+                Text("")
+                    .frame(height: 12)
+                    .frame(minWidth: itemWidth)
+                    .skeletonable()
+                    .skeletonCornerRadius(6)
+            }
+            Spacer()
+            Text("")
+                .frame(width: 40,
+                       height: 12)
+                .skeletonable()
+                .skeletonCornerRadius(6)
+        }
+        .frame(height: UDListItemView.height)
     }
 }
 

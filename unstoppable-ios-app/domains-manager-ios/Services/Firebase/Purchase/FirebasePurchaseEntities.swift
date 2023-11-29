@@ -30,7 +30,7 @@ extension FirebasePurchaseDomainsService {
         let promoCreditsUsed: Int
         let storeCreditsUsed: Int
         let salesTax: Int
-        let taxRate: Int
+        let taxRate: Double
         let discounts: [DiscountDetails] // Assuming discounts are represented as strings
         let timestamp: Int
         @DecodeIgnoringFailed

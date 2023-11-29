@@ -147,6 +147,9 @@ extension UIImage {
     static let statsIcon = UIImage(named: "statsIcon")!
     static let sparkleIcon = UIImage(named: "sparkleIcon")!
     static let chevronRight = UIImage(named: "chevronRight")!
+    static let tagsCashIcon = UIImage(named: "tagsCashIcon")!
+    static let usaFlagIcon = UIImage(named: "usaFlagIcon")!
+    static let tagIcon = UIImage(named: "tagIcon")!
     
     static let twitterIcon24 = UIImage(named: "twitterIcon24")!
     static let discordIcon24 = UIImage(named: "discordIcon24")!

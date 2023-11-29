@@ -13,11 +13,13 @@ struct ControllableButtonStyle<Content>: ButtonStyle where Content: View {
     var change: (ControllableButtonState) -> Content
     
     func makeBody(configuration: Self.Configuration) -> some View {
-        let state = ControllableButtonState(pressed: configuration.isPressed, 
-                                isEnabled: state.isEnabled,
-                                isLoading: state.isLoading,
-                                isSuccess: state.isSuccess)
+        let state = ControllableButtonState(pressed: configuration.isPressed,
+                                            isEnabled: state.isEnabled,
+                                            isLoading: state.isLoading,
+                                            isSuccess: state.isSuccess)
         return change(state)
+            .contentShape(Rectangle())
+        
     }
 }
 

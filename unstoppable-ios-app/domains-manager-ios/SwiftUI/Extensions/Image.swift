@@ -29,5 +29,11 @@ extension Image {
     static let check = Image(uiImage: .check)
     static let sparkleIcon = Image(uiImage: .sparkleIcon)
     static let statsIcon = Image(uiImage: .statsIcon)
+    static let vaultIcon = Image(uiImage: .vaultIcon)
+    static let tagsCashIcon = Image(uiImage: .tagsCashIcon)
+    static let usaFlagIcon = Image(uiImage: .usaFlagIcon)
+    static let appleIcon = Image(uiImage: .appleIcon)
+    static let tagIcon = Image(uiImage: .tagIcon)
+    static let udWalletListIcon = Image(uiImage: .udWalletListIcon)
     
 }
