@@ -80,7 +80,7 @@ private extension LoginViewPresenter {
             guard let window = await SceneDelegate.shared?.window else { return }
     
             do {
-                try await appContext.firebaseAuthenticationService.authorizeWithGoogle(in: window)
+                try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithGoogle(in: window)
                 await userDidAuthorize()
             } catch {
                 await authFailedWith(error: error)
@@ -93,7 +93,7 @@ private extension LoginViewPresenter {
             guard let view else { return }
             
             do {
-                try await appContext.firebaseAuthenticationService.authorizeWithTwitter(in: view)
+                try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWithTwitter(in: view)
                 await userDidAuthorize()
             } catch {
                 await authFailedWith(error: error)

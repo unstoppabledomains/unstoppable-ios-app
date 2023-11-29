@@ -25,8 +25,8 @@ final class GeneralAppContext: AppContextProtocol {
     let walletConnectServiceV2: WalletConnectServiceV2Protocol
     let wcRequestsHandlingService: WCRequestsHandlingServiceProtocol
     let walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol
-    let firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol
-    let firebaseDomainsService: FirebaseDomainsServiceProtocol
+    let firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol
+    let firebaseParkedDomainsService: FirebaseDomainsServiceProtocol
     let purchaseDomainsService: PurchaseDomainsServiceProtocol
     let messagingService: MessagingServiceProtocol
 
@@ -133,18 +133,25 @@ final class GeneralAppContext: AppContextProtocol {
                                                                        storageFileKey: "ud.profile.signatures.file")
         
         // Firebase
+        // Parked domains
         let firebaseSigner = UDFirebaseSigner()
-        let firebaseAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner)
-        let firebaseAuthenticationService = FirebaseAuthenticationService(firebaseAuthService: firebaseAuthService,
-                                                                          firebaseSigner: firebaseSigner)
-        self.firebaseAuthenticationService = firebaseAuthenticationService
-        firebaseDomainsService = FirebaseDomainsService(firebaseAuthService: firebaseAuthService,
+        let firebaseParkedDomainsRefreshTokenStorage = ParkedDomainsFirebaseAuthTokenStorage()
+        let firebaseParkedDomainsAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner,
+                                                                   refreshTokenStorage: firebaseParkedDomainsRefreshTokenStorage)
+        let firebaseParkedDomainsAuthenticationService = FirebaseAuthenticationService(firebaseAuthService: firebaseParkedDomainsAuthService,
+                                                                                       firebaseSigner: firebaseSigner)
+        self.firebaseParkedDomainsAuthenticationService = firebaseParkedDomainsAuthenticationService
+        firebaseParkedDomainsService = FirebaseDomainsService(firebaseAuthService: firebaseParkedDomainsAuthService,
                                                         firebaseSigner: firebaseSigner)
         
-        firebaseAuthenticationService.addListener(dataAggregatorService)
+        firebaseParkedDomainsAuthenticationService.addListener(dataAggregatorService)
         dataAggregatorService.addListener(LocalNotificationsService.shared)
         
-        purchaseDomainsService = FirebasePurchaseDomainsService(firebaseAuthService: firebaseAuthService,
+        // Purchase domains
+        let firebasePurchaseDomainsRefreshTokenStorage = PurchaseDomainsFirebaseAuthTokenStorage()
+        let firebasePurchaseDomainsAuthService = FirebaseAuthService(firebaseSigner: firebaseSigner,
+                                                                     refreshTokenStorage: firebasePurchaseDomainsRefreshTokenStorage)
+        purchaseDomainsService = FirebasePurchaseDomainsService(firebaseAuthService: firebasePurchaseDomainsAuthService,
                                                                 firebaseSigner: firebaseSigner,
                                                                 preferencesService: .shared)
         

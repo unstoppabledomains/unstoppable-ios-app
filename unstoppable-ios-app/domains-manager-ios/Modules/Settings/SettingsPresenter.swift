@@ -236,16 +236,16 @@ private extension SettingsPresenter {
     func showLoginScreen() {
         guard let view else { return }
         
-        if appContext.firebaseAuthenticationService.isAuthorized {
+        if appContext.firebaseParkedDomainsAuthenticationService.isAuthorized {
             Task {
                 do {
                     guard let firebaseUser else {
-                        appContext.firebaseAuthenticationService.logout()
+                        appContext.firebaseParkedDomainsAuthenticationService.logout()
                         showLoginScreen()
                         Debugger.printFailure("Failed to get firebaser user model in authorized state", critical: true)
                         return
                     }
-                    let domainsCount = appContext.firebaseDomainsService.getCachedDomains().count
+                    let domainsCount = appContext.firebaseParkedDomainsService.getCachedDomains().count
                     let profileAction = try await appContext.pullUpViewService.showUserProfilePullUp(with: firebaseUser.email ?? "Twitter account",
                                                                                                      domainsCount: domainsCount,
                                                                                                      in: view)

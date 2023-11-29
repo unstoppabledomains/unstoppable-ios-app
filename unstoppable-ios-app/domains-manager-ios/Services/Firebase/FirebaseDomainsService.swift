@@ -15,8 +15,6 @@ protocol FirebaseDomainsServiceProtocol {
 
 final class FirebaseDomainsService: BaseFirebaseInteractionService {
     
-    static let shared: FirebaseDomainsServiceProtocol = FirebaseDomainsService(firebaseAuthService: .shared,
-                                                                               firebaseSigner: .shared)
     private let storage = FirebaseDomainsStorage.instance
 
 }

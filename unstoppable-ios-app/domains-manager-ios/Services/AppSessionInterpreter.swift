@@ -21,8 +21,8 @@ extension AppSessionInterpreter {
         let wallets = appContext.udWalletsService.getUserWallets()
         
         if wallets.isEmpty {
-            if appContext.firebaseAuthenticationService.isAuthorized {
-                let domains = appContext.firebaseDomainsService.getCachedDomains()
+            if appContext.firebaseParkedDomainsAuthenticationService.isAuthorized {
+                let domains = appContext.firebaseParkedDomainsService.getCachedDomains()
                 if domains.isEmpty {
                     return .webAccountWithoutParkedDomains
                 } else {

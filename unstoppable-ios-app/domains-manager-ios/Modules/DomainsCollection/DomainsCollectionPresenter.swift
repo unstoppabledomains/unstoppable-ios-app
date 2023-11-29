@@ -786,7 +786,7 @@ private extension DomainsCollectionPresenter {
                 showNoWalletsToClaimDomainPullUp()
                 return
             }
-            let userProfile = try? await appContext.firebaseAuthenticationService.getUserProfile()
+            let userProfile = try? await appContext.firebaseParkedDomainsAuthenticationService.getUserProfile()
             let email = userProfile?.email ?? User.instance.email
             await router.runMintDomainsFlow(with: .default(email: email))
         }

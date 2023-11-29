@@ -33,8 +33,8 @@ protocol AppContextProtocol {
     var linkPresentationService: LinkPresentationServiceProtocol { get }
     var wcRequestsHandlingService: WCRequestsHandlingServiceProtocol { get }
     var walletConnectExternalWalletHandler: WalletConnectExternalWalletHandlerProtocol { get }
-    var firebaseAuthenticationService: any FirebaseAuthenticationServiceProtocol { get }
-    var firebaseDomainsService: FirebaseDomainsServiceProtocol { get }
+    var firebaseParkedDomainsAuthenticationService: any FirebaseAuthenticationServiceProtocol { get }
+    var firebaseParkedDomainsService: FirebaseDomainsServiceProtocol { get }
     var purchaseDomainsService: PurchaseDomainsServiceProtocol { get }
     var domainTransferService: DomainTransferServiceProtocol { get }
     var messagingService: MessagingServiceProtocol { get }

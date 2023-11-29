@@ -39,7 +39,7 @@ extension LoginWithEmailViewPresenter: LoginWithEmailViewPresenterProtocol {
             view?.setLoadingIndicator(active: true)
             
             do {
-                try await appContext.firebaseAuthenticationService.authorizeWith(email: email, password: password)
+                try await appContext.firebaseParkedDomainsAuthenticationService.authorizeWith(email: email, password: password)
                 didAuthorizeAction()
             } catch {
                 Vibration.error.vibrate()

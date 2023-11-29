@@ -12,30 +12,29 @@ protocol FirebaseAuthServiceProtocol {
 }
 
 final class FirebaseAuthService {
-        
-    static let shared = FirebaseAuthService(firebaseSigner: UDFirebaseSigner.shared)
-    
-    private let keychainStorage = UserDefaults.standard
-    private let tokenKeychainKey: String = "firebaseRefreshToken"
+            
+    private let refreshTokenStorage: FirebaseAuthRefreshTokenStorageProtocol
     private let twitterSigner = UDTwitterSigner()
     private let googleSigner = UDGoogleSigner()
     private let walletSigner = UDWalletSigner()
     private let firebaseSigner: UDFirebaseSigner
 
-    init(firebaseSigner: UDFirebaseSigner) {
+    init(firebaseSigner: UDFirebaseSigner,
+         refreshTokenStorage: FirebaseAuthRefreshTokenStorageProtocol) {
         self.firebaseSigner = firebaseSigner
+        self.refreshTokenStorage = refreshTokenStorage
     }
 }
 
 // MARK: - FirebaseAuthServiceProtocol
 extension FirebaseAuthService: FirebaseAuthServiceProtocol {
     var refreshToken: String? {
-        get { keychainStorage.value(forKey: tokenKeychainKey) as? String }
+        get { refreshTokenStorage.getAuthRefreshToken() }
         set {
             if let newValue {
-                keychainStorage.setValue(newValue, forKey: tokenKeychainKey)
+                refreshTokenStorage.setAuthRefreshToken(newValue)
             } else {
-                keychainStorage.setValue(nil, forKey: tokenKeychainKey)
+                refreshTokenStorage.clearAuthRefreshToken()
             }
         }
     }

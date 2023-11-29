@@ -320,7 +320,7 @@ private extension DataAggregatorService {
             return
         case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
             SceneDelegate.shared?.restartOnboarding()
-            appContext.firebaseAuthenticationService.logout()
+            appContext.firebaseParkedDomainsAuthenticationService.logout()
             Task { await aggregateData(shouldRefreshPFP: false) }
         }
     }
@@ -336,7 +336,7 @@ private extension DataAggregatorService {
     }
     
     func fillDomainsDataFromCache() async {
-        let cachedParkedDomains = appContext.firebaseDomainsService.getCachedDomains()
+        let cachedParkedDomains = appContext.firebaseParkedDomainsService.getCachedDomains()
         await fillDomainsDataFromCache(parkedDomains: cachedParkedDomains)
     }
     
@@ -427,7 +427,7 @@ private extension DataAggregatorService {
     }
     
     func loadParkedDomains() async -> [FirebaseDomain] {
-        let domains = try? await appContext.firebaseDomainsService.getParkedDomains()
+        let domains = try? await appContext.firebaseParkedDomainsService.getParkedDomains()
         
         return domains ?? []
     }
