@@ -580,6 +580,7 @@ extension DomainsCollectionCarouselItemViewController {
     
     enum Action {
         case recentActivityLearnMore
+        case recentActivityGetDomain
         case domainSelected(_ domain: DomainDisplayInfo)
         case domainNameCopied
         case rearrangeDomains

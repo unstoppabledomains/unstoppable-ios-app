@@ -319,11 +319,15 @@ private extension DomainsCollectionCarouselItemViewPresenter {
     }
     
     func recentActivitiesLearnMoreButtonPressed() {
-        if case .domain(let domain) = mode,
-           case .parking = domain.state {
-            actionsDelegate?.didOccurUIAction(.parkedDomainLearnMore)
-        } else {
-            actionsDelegate?.didOccurUIAction(.recentActivityLearnMore)
+        switch mode {
+        case .domain(let domain):
+            if case .parking = domain.state {
+                actionsDelegate?.didOccurUIAction(.parkedDomainLearnMore)
+            } else {
+                actionsDelegate?.didOccurUIAction(.recentActivityLearnMore)
+            }
+        case .empty:
+            actionsDelegate?.didOccurUIAction(.recentActivityGetDomain)            
         }
     }
 }

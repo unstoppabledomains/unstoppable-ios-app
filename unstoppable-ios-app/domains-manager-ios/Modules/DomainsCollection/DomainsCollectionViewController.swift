@@ -300,6 +300,8 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
             presenter.didOccureUIAction(.parkedDomainLearnMore)
         case .purchaseDomains:
             presenter.didOccureUIAction(.purchaseDomains)
+        case .recentActivityGetDomain:
+            presenter.didOccureUIAction(.recentActivityGetDomain)
         }
     }
 }
@@ -785,5 +787,6 @@ extension DomainsCollectionViewController {
         case searchPressed
         case parkedDomainLearnMore
         case purchaseDomains
+        case recentActivityGetDomain
     }
 }

@@ -153,6 +153,8 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             showDomainsSearch()
         case .purchaseDomains:
             runPurchaseDomainsFlow()
+        case .recentActivityGetDomain:
+            showRecentActivitiesGetDomainPullUp()
         }
     }
 
@@ -922,9 +924,22 @@ private extension DomainsCollectionPresenter {
             do {
                 guard let view = self.view else { return }
                 
-                try await appContext.pullUpViewService.showRecentActivitiesInfoPullUp(in: view)
+                try await appContext.pullUpViewService.showRecentActivitiesInfoPullUp(in: view, isGetNewDomain: false)
                 await view.dismissPullUpMenu()
                 showQRScanner()
+            }
+        }
+    }
+    
+    @MainActor
+    func showRecentActivitiesGetDomainPullUp() {
+        Task {
+            do {
+                guard let view = self.view else { return }
+                
+                try await appContext.pullUpViewService.showRecentActivitiesInfoPullUp(in: view, isGetNewDomain: true)
+                await view.dismissPullUpMenu()
+                runPurchaseDomainsFlow()
             }
         }
     }
