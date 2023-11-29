@@ -227,19 +227,3 @@ struct Utilities {
         }
     }
 }
-
-let cartPriceFormatter: NumberFormatter = {
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .currency
-    formatter.locale = Locale(identifier: "es_CL")
-    formatter.currencyCode = "USD"
-    formatter.currencySymbol = "$"
-    formatter.maximumFractionDigits = 2
-    formatter.minimumFractionDigits = 0
-    return formatter
-}()
-
-func formatCartPrice(_ price: Int) -> String {
-    let price = Double(price) / 100
-    return cartPriceFormatter.string(from: price as NSNumber)!
-}
