@@ -69,7 +69,7 @@ private extension BaseFirebaseInteractionService {
     func prepareFirebaseAPIRequest(_ apiRequest: APIRequest) async throws -> APIRequest {
         let idToken = try await getIdToken()
         
-        var headers = apiRequest.headers
+        var headers = apiRequest.headers.appending(dict2: NetworkConfig.disableFastlyCacheHeader)
         headers[authHeaderKey] = idToken
         let firebaseAPIRequest = APIRequest(url: apiRequest.url,
                                             headers: headers,

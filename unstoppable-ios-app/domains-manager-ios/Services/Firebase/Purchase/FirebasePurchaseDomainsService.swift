@@ -62,7 +62,6 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
         checkoutData = preferencesService.checkoutData
         super.init(firebaseAuthService: firebaseAuthService,
                    firebaseSigner: firebaseSigner)
-        runRefreshTimer()
         preferencesService.$checkoutData.publisher
             .sink { [weak self] checkoutData in
                 self?.checkoutData = checkoutData
@@ -212,8 +211,8 @@ private extension FirebasePurchaseDomainsService {
         
         let (cartResponse, calculationsResponse, userProfileResponse) = try await (cartResponseTask, calculationsResponseTask, userProfileResponseTask)
         
-        if cartResponse.cart != calculationsResponse.cartItems {
-            await waitForCartUpdated()
+        
+        if !filterUnsupportedProductsFrom(products: cartResponse.cart).isEmpty || !filterUnsupportedProductsFrom(products: calculationsResponse.cartItems).isEmpty  {
             try await removeCartUnsupportedProducts(in: calculationsResponse.cartItems)
             try await refreshUserCart()
         }
@@ -288,13 +287,8 @@ private extension FirebasePurchaseDomainsService {
                                      method: .post)
         try await makeFirebaseAPIDataRequest(request)
         if shouldRefreshCart {
-            await waitForCartUpdated()
             try? await refreshUserCart()
         }
-    }
-    
-    func waitForCartUpdated() async {
-        try? await Task.sleep(seconds: 0.5) // BE need a time to add hidden products (Parking). Can't refresh cart immediately
     }
     
     func loadStripePaymentDetails(for wallet: UDUserAccountCryptWallet) async throws -> StripePaymentDetailsResponse {
