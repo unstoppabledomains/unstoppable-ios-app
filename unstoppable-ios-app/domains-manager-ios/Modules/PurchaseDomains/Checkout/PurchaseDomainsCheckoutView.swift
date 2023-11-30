@@ -298,7 +298,7 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func checkoutButton() -> some View {
         UDButtonView(text: String.Constants.pay.localized(), icon: .appleIcon, style: .large(.applePay)) {
-            
+            purchaseDomains()
         }
         .padding()
     }
@@ -332,6 +332,10 @@ private extension PurchaseDomainsCheckoutView {
             }
             isLoading = false
         }
+    }
+    
+    func purchaseDomains() {
+        purchasedCallback()
     }
 }
 

@@ -916,3 +916,5 @@
 "APPLY" = "Apply";
 "ORDER_SUMMARY" = "Order summary";
 "TOTAL_DUE" = "Total due";
+"DOMAINS_PURCHASED_SUBTITLE" = "Claiming process started, it can take up to 5 minutes.";
+"GO_TO_DOMAINS" = "Go to domains";

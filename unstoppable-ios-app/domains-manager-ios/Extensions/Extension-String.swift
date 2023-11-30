@@ -1008,6 +1008,8 @@ extension String {
         static let apply = "APPLY"
         static let orderSummary = "ORDER_SUMMARY"
         static let totalDue = "TOTAL_DUE"
+        static let domainsPurchasedSubtitle = "DOMAINS_PURCHASED_SUBTITLE"
+        static let goToDomains = "GO_TO_DOMAINS"
     }
 
     enum BlockChainIcons: String {

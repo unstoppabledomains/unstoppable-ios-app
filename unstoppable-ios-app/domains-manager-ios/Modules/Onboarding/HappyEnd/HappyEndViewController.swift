@@ -156,5 +156,9 @@ extension HappyEndViewController {
         static let onboarding = Configuration(title: String.Constants.youAreAllDoneTitle.localized(),
                                               subtitle: String.Constants.youAreAllDoneSubtitle.localized(),
                                               actionButtonTitle: String.Constants.getStarted.localized())
+        
+        static let domainsPurchased = Configuration(title: String.Constants.youAreAllDoneTitle.localized(),
+                                              subtitle: String.Constants.domainsPurchasedSubtitle.localized(),
+                                              actionButtonTitle: String.Constants.goToDomains.localized())
     }
 }
