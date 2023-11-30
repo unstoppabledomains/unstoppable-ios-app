@@ -101,10 +101,12 @@ final class DomainsCollectionViewController: BaseViewController, TitleVisibility
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        setupCollectionUICache()
-        let domainCardY = DomainsCollectionUICache.shared.underCardControlY()
-        underCardControl.center = self.view.localCenter
-        underCardControl.frame.origin.y = domainCardY
+        DispatchQueue.main.async {
+            self.setupCollectionUICache()
+            let domainCardY = DomainsCollectionUICache.shared.underCardControlY()
+            self.underCardControl.center = self.view.localCenter
+            self.underCardControl.frame.origin.y = domainCardY
+        }
     }
     
     override func becomeFirstResponder() -> Bool {
