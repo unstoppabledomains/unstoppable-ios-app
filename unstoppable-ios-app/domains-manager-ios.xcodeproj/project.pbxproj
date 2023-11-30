@@ -412,6 +412,8 @@
 		C63095F52B0DA66400205054 /* FirebaseAuthUtilitiesProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095E62B0DA66400205054 /* FirebaseAuthUtilitiesProtocol.swift */; };
 		C63095F62B0DA66400205054 /* FirebaseDomainsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095E72B0DA66400205054 /* FirebaseDomainsService.swift */; };
 		C63095F92B0DAAA900205054 /* MockStripeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63095F82B0DAAA900205054 /* MockStripeService.swift */; };
+		C630BC772B18376100E29318 /* BaseHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC762B18376100E29318 /* BaseHappyEndViewPresenter.swift */; };
+		C630BC792B18381500E29318 /* OnboardingHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC782B18381500E29318 /* OnboardingHappyEndViewPresenter.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63402882886547C00AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C63402872886547C00AB5D38 /* SVGKit */; };
 		C63414DA2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
@@ -1631,6 +1633,8 @@
 		C63095E62B0DA66400205054 /* FirebaseAuthUtilitiesProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseAuthUtilitiesProtocol.swift; sourceTree = "<group>"; };
 		C63095E72B0DA66400205054 /* FirebaseDomainsService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseDomainsService.swift; sourceTree = "<group>"; };
 		C63095F82B0DAAA900205054 /* MockStripeService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockStripeService.swift; sourceTree = "<group>"; };
+		C630BC762B18376100E29318 /* BaseHappyEndViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseHappyEndViewPresenter.swift; sourceTree = "<group>"; };
+		C630BC782B18381500E29318 /* OnboardingHappyEndViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingHappyEndViewPresenter.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63414D92A7D335100C80B77 /* GlobalRR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalRR.swift; sourceTree = "<group>"; };
 		C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
@@ -4826,6 +4830,8 @@
 		C681092E28042B66002D780E /* HappyEnd */ = {
 			isa = PBXGroup;
 			children = (
+				C630BC762B18376100E29318 /* BaseHappyEndViewPresenter.swift */,
+				C630BC782B18381500E29318 /* OnboardingHappyEndViewPresenter.swift */,
 				3018AEC127EB2CC200E8C37D /* HappyEndViewController.swift */,
 				3018AEBC27EB2AF200E8C37D /* HappyEnd.storyboard */,
 			);
@@ -7387,8 +7393,10 @@
 				C6D6E4DE2817BF09008C66BB /* OnboardingProtocols.swift in Sources */,
 				C655CAA92B16E82800FDA063 /* PurchaseDomainsEnterZIPCodeView.swift in Sources */,
 				C6D6E59928194AC9008C66BB /* TextTertiaryButton.swift in Sources */,
+				C630BC792B18381500E29318 /* OnboardingHappyEndViewPresenter.swift in Sources */,
 				C6109E9828E6AA860027D5D8 /* GeneralAppContext.swift in Sources */,
 				C600AB8829F807FF0089107B /* DomainTransferServiceProtocol.swift in Sources */,
+				C630BC772B18376100E29318 /* BaseHappyEndViewPresenter.swift in Sources */,
 				C645130C280808ED00413C51 /* Codable.swift in Sources */,
 				C6E041C4295499100080F8E3 /* DomainsCollectionTitleView.swift in Sources */,
 				C6C995A2289D313D00367362 /* CNavigationControllerChildTransitioning.swift in Sources */,

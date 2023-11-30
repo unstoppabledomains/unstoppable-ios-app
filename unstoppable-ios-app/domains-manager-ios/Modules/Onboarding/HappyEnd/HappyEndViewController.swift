@@ -7,6 +7,13 @@
 
 import UIKit
 
+@MainActor
+protocol HappyEndViewControllerProtocol: BaseViewControllerProtocol {
+    func setAgreement(visible: Bool)
+    func setConfiguration(_ configuration: HappyEndViewController.Configuration)
+    func setActionButtonEnabled(_ enabled: Bool)
+}
+
 final class HappyEndViewController: BaseViewController {
 
     @IBOutlet private weak var titleLabel: UDTitleLabel!
@@ -16,11 +23,13 @@ final class HappyEndViewController: BaseViewController {
     @IBOutlet private weak var getStartedButton: MainButton!
     @IBOutlet private weak var checkboxContainer: UIView!
     @IBOutlet private weak var checkbox: UDCheckBox!
+    @IBOutlet private weak var agreementStackView: UIStackView!
     
     private let termsOfUseText = String.Constants.termsOfUse.localized()
     private let privacyPolicyText = String.Constants.privacyPolicy.localized()
     override var isNavBarHidden: Bool { true }
-    override var analyticsName: Analytics.ViewName { .onboardingHappyEnd }
+    override var analyticsName: Analytics.ViewName { presenter.analyticsName }
+    var presenter: HappyEndViewPresenterProtocol!
 
     static func instance() -> HappyEndViewController {
         HappyEndViewController.storyboardInstance(from: .happyEnd)
@@ -30,49 +39,57 @@ final class HappyEndViewController: BaseViewController {
         super.viewDidLoad()
         
         setup()
+        presenter.viewDidLoad()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     
         confettiImageView.startConfettiAnimationAsync()
+        presenter.viewWillAppear()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         Vibration.success.vibrate()
+        presenter.viewDidAppear()
     }
     
+}
+
+// MARK: - HappyEndViewControllerProtocol
+extension HappyEndViewController: HappyEndViewControllerProtocol {
+    func setAgreement(visible: Bool) {
+        agreementStackView.isHidden = !visible
+    }
+    
+    func setConfiguration(_ configuration: HappyEndViewController.Configuration) {
+        titleLabel.setTitle(configuration.title)
+        subtitleLabel.setSubtitle(configuration.subtitle)
+        getStartedButton.setTitle(configuration.actionButtonTitle, image: nil)
+    }
+    
+    func setActionButtonEnabled(_ enabled: Bool) {
+        getStartedButton.isEnabled = enabled
+    }
 }
 
 // MARK: - Actions
 private extension HappyEndViewController {
     @IBAction func didTapSwitch(_ sender: UDCheckBox) {
-        getStartedButton.isEnabled = sender.isOn
+        presenter.agreementSwitchValueChanged(isOn: sender.isOn)
         logButtonPressedAnalyticEvents(button: .agreeCheckbox, parameters: [.isOn : String(checkbox.isOn)])
     }
     
     @IBAction func didTapGetStartedButton(_ sender: MainButton) {
-        if UserDefaults.onboardingData?.didRestoreWalletsFromBackUp == true {
-            AppReviewService.shared.appReviewEventDidOccurs(event: .didRestoreWalletsFromBackUp)
-        }
-        UserDefaults.onboardingNavigationInfo = nil
-        UserDefaults.onboardingData = nil
-        
-        var settings = User.instance.getSettings()
-        settings.onboardingDone = true
-        User.instance.update(settings: settings)
-        
-        ConfettiImageView.releaseAnimations()
-        appContext.coreAppCoordinator.showHome(mintingState: .default)
+        presenter.actionButtonPressed()
         logButtonPressedAnalyticEvents(button: .getStarted)
     }
     
     @objc func didTapCheckboxContainer() {
         UDVibration.buttonTap.vibrate()
-        checkbox.isOn.toggle()
-        getStartedButton.isEnabled = checkbox.isOn
+        presenter.agreementSwitchValueChanged(isOn: checkbox.isOn)
         logButtonPressedAnalyticEvents(button: .agreeCheckbox, parameters: [.isOn : String(checkbox.isOn)])
     }
     
@@ -118,10 +135,6 @@ private extension HappyEndViewController {
     }
     
     func localizeContent() {
-        titleLabel.setTitle(String.Constants.youAreAllDoneTitle.localized())
-        subtitleLabel.setSubtitle(String.Constants.youAreAllDoneSubtitle.localized())
-        getStartedButton.setTitle(String.Constants.getStarted.localized(), image: nil)
-        
         agreementTextView.isUserInteractionEnabled = true
         agreementTextView.setAttributedTextWith(text: String.Constants.agreeToTUAndPP.localized(),
                                                 font: .currentFont(withSize: 14, weight: .medium),
@@ -130,5 +143,18 @@ private extension HappyEndViewController {
                                              textColor: .foregroundAccent)
         agreementTextView.updateAttributesOf(text: privacyPolicyText,
                                              textColor: .foregroundAccent)
+    }
+}
+
+// MARK: - Open methods
+extension HappyEndViewController {
+    struct Configuration {
+        let title: String
+        let subtitle: String
+        let actionButtonTitle: String
+        
+        static let onboarding = Configuration(title: String.Constants.youAreAllDoneTitle.localized(),
+                                              subtitle: String.Constants.youAreAllDoneSubtitle.localized(),
+                                              actionButtonTitle: String.Constants.getStarted.localized())
     }
 }
