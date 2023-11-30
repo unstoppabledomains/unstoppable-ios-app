@@ -108,10 +108,15 @@ private extension PurchaseDomainsCheckoutView {
             UDListItemView(title: String.Constants.mintTo.localized(),
                            value: selectedWalletName,
                            image: .vaultIcon,
-                           rightViewStyle: wallets.count > 1 ? .chevron : nil)
+                           rightViewStyle: canSelectWallet ? .chevron : nil)
         }, callback: {
             isSelectWalletPresented = true
         })
+        .allowsHitTesting(canSelectWallet)
+    }
+    
+    var canSelectWallet: Bool {
+        wallets.count > 1
     }
     
     var selectedWalletName: String {
