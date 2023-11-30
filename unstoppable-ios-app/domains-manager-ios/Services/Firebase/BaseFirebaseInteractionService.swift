@@ -14,6 +14,8 @@ class BaseFirebaseInteractionService {
             NetworkConfig.migratedBaseUrl
         }
         static var baseAPIURL: String { baseURL.appendingURLPathComponent("api") }
+        
+        static var logoutURL: String { baseAPIURL.appendingURLPathComponents("user", "profile") }
     }
     
     let authHeaderKey = "auth-firebase-id-token"
@@ -26,7 +28,9 @@ class BaseFirebaseInteractionService {
         self.firebaseSigner = firebaseSigner
     }
     
-    func logout() {
+    func logout() async {
+        try? await makeFirebaseAPIDataRequest(.init(urlString: URLSList.logoutURL,
+                                                    method: .post))
         firebaseAuthService.logout()
     }
 }

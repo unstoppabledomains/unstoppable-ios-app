@@ -108,8 +108,8 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
         isAutoRefreshCartSuspended = true
-        logout()
         cart = .empty
+        await logout()
         try await firebaseAuthService.authorizeWith(wallet: wallet)
         self.domainsToPurchase = domains
         try await addDomainsToCart(domains)
@@ -204,7 +204,7 @@ private extension FirebasePurchaseDomainsService {
     func refreshUserCart() async throws {
         Debugger.printInfo("Will refresh cart")
         let cart = try await loadUserCart()
-        try await removeCartUnsupportedProducts(in: cart)
+        try await removeCartUnsupportedProducts(in: cart.cart)
         
         async let cartResponseTask = loadUserCart()
         async let calculationsResponseTask = loadUserCartCalculations()
@@ -212,10 +212,16 @@ private extension FirebasePurchaseDomainsService {
         
         let (cartResponse, calculationsResponse, userProfileResponse) = try await (cartResponseTask, calculationsResponseTask, userProfileResponseTask)
         
+        if cartResponse.cart != calculationsResponse.cartItems {
+            await waitForCartUpdated()
+            try await removeCartUnsupportedProducts(in: calculationsResponse.cartItems)
+            try await refreshUserCart()
+        }
+        
         self.udCart = UDUserCart(products: cartResponse.cart,
-                               calculations: calculationsResponse,
-                               discountDetails: .init(storeCredits: userProfileResponse.storeCredits,
-                                                      promoCredits: userProfileResponse.promoCredits))
+                                 calculations: calculationsResponse,
+                                 discountDetails: .init(storeCredits: userProfileResponse.storeCredits,
+                                                        promoCredits: userProfileResponse.promoCredits))
         Debugger.printInfo("Did refresh cart")
     }
     
@@ -375,8 +381,8 @@ private extension FirebasePurchaseDomainsService {
         self.udCart = cart
     }
     
-    func removeCartUnsupportedProducts(in cart: UserCartResponse) async throws {
-        let productsToRemove = filterUnsupportedProductsFrom(products: cart.cart)
+    func removeCartUnsupportedProducts(in cart: [UDProduct]) async throws {
+        let productsToRemove = filterUnsupportedProductsFrom(products: cart)
         
         if !productsToRemove.isEmpty {
             try await removeProductsFromCart(productsToRemove, shouldRefreshCart: false)

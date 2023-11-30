@@ -108,10 +108,11 @@ private extension FirebaseAuthService {
             guard let expiresIn = TimeInterval(authResponse.expiresIn) else { throw FirebaseAuthError.failedToGetTokenExpiresData }
             
             let expirationDate = Date().addingTimeInterval(expiresIn - 60) // Deduct 1 minute to ensure token won't expire in between of making request
-            tokenData = FirebaseTokenData(idToken: authResponse.idToken,
-                                          expiresIn: authResponse.expiresIn,
-                                          expirationDate: expirationDate,
-                                          refreshToken: authResponse.refreshToken)
+            let tokenData = FirebaseTokenData(idToken: authResponse.idToken,
+                                              expiresIn: authResponse.expiresIn,
+                                              expirationDate: expirationDate,
+                                              refreshToken: authResponse.refreshToken)
+            saveAuthResponse(tokenData)
         } catch FirebaseAuthError.refreshTokenExpired {
             logout()
             throw FirebaseAuthError.refreshTokenExpired

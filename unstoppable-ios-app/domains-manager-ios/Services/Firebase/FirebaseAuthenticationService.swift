@@ -59,8 +59,10 @@ final class FirebaseAuthenticationService: BaseFirebaseInteractionService {
         refreshUserProfileAsync()
     }
     
-    override func logout() {
-        super.logout()
+    func logout() {
+        Task {
+            await super.logout()
+        }
         setFirebaseUser(nil)
         isAuthorized = false
     }
