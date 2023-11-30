@@ -304,7 +304,7 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func checkoutButton() -> some View {
         UDButtonView(text: String.Constants.pay.localized(), icon: .appleIcon, style: .large(.applePay)) {
-            purchaseDomains()
+            startPurchaseDomains()
         }
         .padding()
     }
@@ -340,7 +340,7 @@ private extension PurchaseDomainsCheckoutView {
         }
     }
     
-    func purchaseDomains() {
+    func startPurchaseDomains() {
         Task {
             isLoading = true
             do {
