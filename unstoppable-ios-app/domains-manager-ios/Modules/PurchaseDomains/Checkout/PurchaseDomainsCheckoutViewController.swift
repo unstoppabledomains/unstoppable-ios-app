@@ -42,7 +42,7 @@ private extension PurchaseDomainsCheckoutViewController {
     }
     
     func didPurchaseDomains() {
-        Task {
+        Task { @MainActor in 
             try? await purchaseDomainsFlowManager?.handle(action: .didPurchaseDomains)
         }
     }

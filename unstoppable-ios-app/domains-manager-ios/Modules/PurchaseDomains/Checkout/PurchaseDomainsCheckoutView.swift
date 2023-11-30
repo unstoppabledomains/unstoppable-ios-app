@@ -11,6 +11,7 @@ struct PurchaseDomainsCheckoutView: View {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
+    @Environment(\.dataAggregatorService) private var dataAggregatorService
     
     @State var domain: DomainToPurchase
     @State var selectedWallet: WalletWithInfo
@@ -335,7 +336,22 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     func purchaseDomains() {
-        purchasedCallback()
+        Task {
+            isLoading = true
+            do {
+                let walletsToMint = try await purchaseDomainsService.getSupportedWalletsToMint()
+                guard let walletToMint = walletsToMint.first(where: { $0.address == selectedWallet.wallet.address }) else {
+                    throw PurchaseError.failedToGetWalletToMint
+                }
+                        
+                try await purchaseDomainsService.purchaseDomainsInTheCartAndMintTo(wallet: walletToMint)
+                await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                purchasedCallback()
+            } catch {
+                Debugger.printFailure("Did fail to purchase domains with error \(error)")
+            }
+            isLoading = false
+        }
     }
 }
 
@@ -377,6 +393,14 @@ private extension PurchaseDomainsCheckoutView {
                                                         selectedWalletCallback: selectedWalletCallback)
                     }
                 })
+        }
+    }
+    
+    enum PurchaseError: String, LocalizedError {
+        case failedToGetWalletToMint
+        
+        public var errorDescription: String? {
+            return rawValue
         }
     }
 }

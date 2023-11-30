@@ -415,6 +415,7 @@
 		C630BC772B18376100E29318 /* BaseHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC762B18376100E29318 /* BaseHappyEndViewPresenter.swift */; };
 		C630BC792B18381500E29318 /* OnboardingHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC782B18381500E29318 /* OnboardingHappyEndViewPresenter.swift */; };
 		C630BC7B2B183E5700E29318 /* PurchaseDomainsHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7A2B183E5700E29318 /* PurchaseDomainsHappyEndViewPresenter.swift */; };
+		C630BC7D2B18448A00E29318 /* AppContextEnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7C2B18448A00E29318 /* AppContextEnvironmentKeys.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63402882886547C00AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C63402872886547C00AB5D38 /* SVGKit */; };
 		C63414DA2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
@@ -1637,6 +1638,7 @@
 		C630BC762B18376100E29318 /* BaseHappyEndViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseHappyEndViewPresenter.swift; sourceTree = "<group>"; };
 		C630BC782B18381500E29318 /* OnboardingHappyEndViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingHappyEndViewPresenter.swift; sourceTree = "<group>"; };
 		C630BC7A2B183E5700E29318 /* PurchaseDomainsHappyEndViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsHappyEndViewPresenter.swift; sourceTree = "<group>"; };
+		C630BC7C2B18448A00E29318 /* AppContextEnvironmentKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContextEnvironmentKeys.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63414D92A7D335100C80B77 /* GlobalRR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalRR.swift; sourceTree = "<group>"; };
 		C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
@@ -3245,6 +3247,7 @@
 			isa = PBXGroup;
 			children = (
 				C6109E8D28E6AA660027D5D8 /* AppContextProtocol.swift */,
+				C630BC7C2B18448A00E29318 /* AppContextEnvironmentKeys.swift */,
 				C6109E9728E6AA860027D5D8 /* GeneralAppContext.swift */,
 				C6109E9C28E6AA910027D5D8 /* MockContext.swift */,
 				C6109E9228E6AA7A0027D5D8 /* AppContextType.swift */,
@@ -7360,6 +7363,7 @@
 				C60E9B9C2821347F00CD7593 /* WalletsListHeaderView.swift in Sources */,
 				C669C37A2912486B00837F21 /* EnterDomainProfileSocialValuePresenter.swift in Sources */,
 				C6FF2D9C28F0245F00148007 /* DomainProfileSectionsController.swift in Sources */,
+				C630BC7D2B18448A00E29318 /* AppContextEnvironmentKeys.swift in Sources */,
 				C65271E12A148D91001A084C /* ChatsListViewPresenter.swift in Sources */,
 				C6DDF2592B147F5E006D1F0B /* UDTitleText.swift in Sources */,
 				C6109E9328E6AA7A0027D5D8 /* AppContextType.swift in Sources */,

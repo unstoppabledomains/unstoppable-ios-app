@@ -539,6 +539,8 @@ private extension DataAggregatorService {
             var domainState: DomainDisplayInfo.State = .default
             if transactions.filterPending(extraCondition: { $0.operation == .transferDomain }).first(where: { $0.domainName == domain.name }) != nil {
                 domainState = .transfer
+            } else if transactions.containMintingInProgress(domain) {
+                domainState = .minting
             } else if transactions.containPending(domain) {
                 domainState = .updatingRecords
             }

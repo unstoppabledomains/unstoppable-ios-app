@@ -212,7 +212,7 @@ private extension PurchaseSearchDomainsView {
         
         Task {
             let suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
-            self.suggestions = Array(suggestions.prefix(20))
+            self.suggestions = Array(suggestions.prefix(12))
         }
     }
     

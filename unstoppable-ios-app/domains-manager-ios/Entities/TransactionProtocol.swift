@@ -325,6 +325,12 @@ extension Array where Element == TransactionItem {
         first(where: { $0.isPendingFor(domain) }) != nil 
     }
     
+    func containMintingInProgress(_ domain: DomainItem) -> Bool {
+        filterPending { transaction in
+            transaction.isMintingTransaction()
+        }.first != nil
+    }
+    
     func filterPending(extraCondition: ( (TransactionItem) -> Bool) = { _ in true }) -> Self {
         self.filter({ $0.isPending && extraCondition($0) })
     }
