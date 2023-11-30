@@ -26,6 +26,7 @@ public class PaymentConfiguration {
         formatter.maximumFractionDigits = 2
         formatter.minimumFractionDigits = 0
         formatter.currencyDecimalSeparator = "."
+        formatter.currencyGroupingSeparator = ","
         return formatter
     }()
 }
