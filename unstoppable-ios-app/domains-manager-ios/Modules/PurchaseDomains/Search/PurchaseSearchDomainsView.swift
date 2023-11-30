@@ -201,7 +201,7 @@ private extension PurchaseSearchDomainsView {
     func setupSkeletonItemsWidth() {
         guard skeletonItemsWidth.isEmpty else { return }
         
-        for _ in 0..<10 {
+        for _ in 0..<6 {
             let width: CGFloat = 60 + CGFloat(arc4random_uniform(100))
             skeletonItemsWidth.append(width)
         }

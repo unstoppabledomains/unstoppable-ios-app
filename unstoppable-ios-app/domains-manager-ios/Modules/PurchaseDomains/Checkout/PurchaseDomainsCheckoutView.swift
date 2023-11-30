@@ -51,6 +51,9 @@ struct PurchaseDomainsCheckoutView: View {
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .onReceive(purchaseDomainsService.cartPublisher.receive(on: DispatchQueue.main)) { cart in
+            if self.cart.discountDetails.others == 0 && cart.discountDetails.others != 0 {
+                appContext.toastMessageService.showToast(.purchaseDomainsDiscountApplied(cart.discountDetails.others), isSticky: false)
+            }
             self.cart = cart
         }
         .onReceive(purchaseDomainsPreferencesStorage.$checkoutData.publisher.receive(on: DispatchQueue.main), perform: { checkoutData in
