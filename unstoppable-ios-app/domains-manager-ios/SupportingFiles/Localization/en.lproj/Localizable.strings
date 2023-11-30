@@ -912,6 +912,7 @@
 "TAXES" = "Taxes";
 "CREDITS_AND_DISCOUNTS" = "Credits & discounts";
 "DISCOUNTS" = "Discounts";
+"DISCOUNT_APPLIED_TOAST_MESSAGE" = "%@ off applied with your discount code";
 "APPLY" = "Apply";
 "ORDER_SUMMARY" = "Order summary";
 "TOTAL_DUE" = "Total due";

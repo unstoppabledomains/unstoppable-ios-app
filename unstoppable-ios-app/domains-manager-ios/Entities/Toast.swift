@@ -67,7 +67,7 @@ enum Toast: Hashable {
         case .communityProfileEnabled:
             return String.Constants.messagingCommunitiesListEnabled.localized()
         case .purchaseDomainsDiscountApplied(let discount):
-            return "\(formatCartPrice(discount)) off applied with your discount code"
+            return String.Constants.discountAppliedToastMessage.localized(formatCartPrice(discount))
         }
     }
     

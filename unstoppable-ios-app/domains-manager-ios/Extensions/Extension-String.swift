@@ -1004,6 +1004,7 @@ extension String {
         static let taxes = "TAXES"
         static let creditsAndDiscounts = "CREDITS_AND_DISCOUNTS"
         static let discounts = "DISCOUNTS"
+        static let discountAppliedToastMessage = "DISCOUNT_APPLIED_TOAST_MESSAGE"
         static let apply = "APPLY"
         static let orderSummary = "ORDER_SUMMARY"
         static let totalDue = "TOTAL_DUE"
