@@ -99,16 +99,9 @@ private extension PurchaseDomainsNavigationController {
         }
     }
     
-    func setSwipeGestureEnabledForCurrentState() {
-        guard let topViewController = viewControllers.last else { return }
-        
-        if topViewController is HappyEndViewController {
-            transitionHandler?.isInteractionEnabled = false
-            cNavigationController?.transitionHandler?.isInteractionEnabled = false
-        } else {
-            transitionHandler?.isInteractionEnabled = !isLastViewController(topViewController)
-            cNavigationController?.transitionHandler?.isInteractionEnabled = isLastViewController(topViewController)
-        }
+    func setSwipeGestureEnabledForCurrentState() {        
+        transitionHandler?.isInteractionEnabled = false
+        cNavigationController?.transitionHandler?.isInteractionEnabled = false
     }
     
     func purchase(domains: [DomainToPurchase], domainsOrderInfoMap: SortDomainsOrderInfoMap?) async throws {
