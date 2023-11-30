@@ -45,7 +45,7 @@ struct PurchaseDomainsSelectDiscountsView: View {
         }
         .onAppear {
             checkoutData = purchaseDomainsPreferencesStorage.checkoutData
-            isStoreCreditsOn = purchaseDomainsPreferencesStorage.checkoutData.isStoreCreditsOn
+            isPromoCreditsOn = purchaseDomainsPreferencesStorage.checkoutData.isPromoCreditsOn
             isStoreCreditsOn = purchaseDomainsPreferencesStorage.checkoutData.isStoreCreditsOn
         }
     }
