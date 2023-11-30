@@ -416,6 +416,8 @@
 		C630BC792B18381500E29318 /* OnboardingHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC782B18381500E29318 /* OnboardingHappyEndViewPresenter.swift */; };
 		C630BC7B2B183E5700E29318 /* PurchaseDomainsHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7A2B183E5700E29318 /* PurchaseDomainsHappyEndViewPresenter.swift */; };
 		C630BC7D2B18448A00E29318 /* AppContextEnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7C2B18448A00E29318 /* AppContextEnvironmentKeys.swift */; };
+		C630BC7F2B18479F00E29318 /* PurchasedDomainsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7E2B18479F00E29318 /* PurchasedDomainsStorage.swift */; };
+		C630BC812B1847F800E29318 /* PendingPurchasedDomain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC802B1847F800E29318 /* PendingPurchasedDomain.swift */; };
 		C63391782A86819600623188 /* XMTPMessagingAPIServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */; };
 		C63402882886547C00AB5D38 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = C63402872886547C00AB5D38 /* SVGKit */; };
 		C63414DA2A7D335100C80B77 /* GlobalRR.swift in Sources */ = {isa = PBXBuildFile; fileRef = C63414D92A7D335100C80B77 /* GlobalRR.swift */; };
@@ -1639,6 +1641,8 @@
 		C630BC782B18381500E29318 /* OnboardingHappyEndViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingHappyEndViewPresenter.swift; sourceTree = "<group>"; };
 		C630BC7A2B183E5700E29318 /* PurchaseDomainsHappyEndViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainsHappyEndViewPresenter.swift; sourceTree = "<group>"; };
 		C630BC7C2B18448A00E29318 /* AppContextEnvironmentKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContextEnvironmentKeys.swift; sourceTree = "<group>"; };
+		C630BC7E2B18479F00E29318 /* PurchasedDomainsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasedDomainsStorage.swift; sourceTree = "<group>"; };
+		C630BC802B1847F800E29318 /* PendingPurchasedDomain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPurchasedDomain.swift; sourceTree = "<group>"; };
 		C63391772A86819600623188 /* XMTPMessagingAPIServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XMTPMessagingAPIServiceTests.swift; sourceTree = "<group>"; };
 		C63414D92A7D335100C80B77 /* GlobalRR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalRR.swift; sourceTree = "<group>"; };
 		C635193528D03F8F00FC6AF8 /* ChooseReverseResolutionDomainViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseReverseResolutionDomainViewPresenter.swift; sourceTree = "<group>"; };
@@ -3620,6 +3624,7 @@
 		C63095C42B0DA5DE00205054 /* Purchase domains */ = {
 			isa = PBXGroup;
 			children = (
+				C630BC802B1847F800E29318 /* PendingPurchasedDomain.swift */,
 				C63095C52B0DA5DE00205054 /* PurchaseDomainsServiceEnvironmentKey.swift */,
 				C63095C62B0DA5DE00205054 /* PurchaseDomainsCart.swift */,
 				C63095C72B0DA5DE00205054 /* PurchaseDomainsPreferencesStorageEnvironmentKey.swift */,
@@ -3629,6 +3634,7 @@
 				C6DDF25C2B148294006D1F0B /* DomainToPurchaseSuggestion.swift */,
 				C63095CB2B0DA5DE00205054 /* PurchasedDomainsWalletDescription.swift */,
 				C63095CC2B0DA5DE00205054 /* PurchaseDomainsPreferencesStorage.swift */,
+				C630BC7E2B18479F00E29318 /* PurchasedDomainsStorage.swift */,
 			);
 			path = "Purchase domains";
 			sourceTree = "<group>";
@@ -6679,6 +6685,7 @@
 				C6D3B9CA2A6EC10F0091B279 /* KeychainXMTPKeysStorage.swift in Sources */,
 				C6ED31E3295BF8DF00BC6919 /* Equatable.swift in Sources */,
 				C60982252823E4CC00546392 /* WalletDetailsAddWalletAction.swift in Sources */,
+				C630BC812B1847F800E29318 /* PendingPurchasedDomain.swift in Sources */,
 				C6E1188828F570A200C6AD4D /* WalletConnectPushNotificationsUnsubscribeInfo.swift in Sources */,
 				C6526DD929D2DF6E00D6F2EB /* LoginWithEmailInAppViewPresenter.swift in Sources */,
 				C63095D62B0DA61600205054 /* PublishingAppStorage.swift in Sources */,
@@ -7484,6 +7491,7 @@
 				C6C99592289D313D00367362 /* CNavigationHelper.swift in Sources */,
 				C6EECEA22833A67900978ED5 /* DomainRecordsServiceProtocol.swift in Sources */,
 				C669C399291265FF00837F21 /* DomainProfileSocialsVerificationPresenter.swift in Sources */,
+				C630BC7F2B18479F00E29318 /* PurchasedDomainsStorage.swift in Sources */,
 				30BA2B302529020E0097817E /* Extensions.swift in Sources */,
 				C669C36C2912197C00837F21 /* EnterValueViewController.swift in Sources */,
 				3048B47727FA149C00253BB7 /* WalletConnectedViewController.swift in Sources */,

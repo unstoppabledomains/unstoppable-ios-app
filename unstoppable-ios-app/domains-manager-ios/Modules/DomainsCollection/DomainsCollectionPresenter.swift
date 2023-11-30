@@ -205,6 +205,20 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         }
     }
     
+    @MainActor
+    func didPurchaseDomains(result: PurchaseDomainsNavigationController.PurchaseDomainsResult) {
+        switch result {
+        case .cancel:
+            return
+        case .purchased(let domainName):
+            let domains = stateController.domains
+            guard let mintingDomainIndex = domains.firstIndex(where: { $0.name == domainName }) else { return }
+            
+            setNewIndex(mintingDomainIndex, animated: true)
+            updateUI()
+        }
+    }
+    
     func didRecognizeQRCode() {
         guard let view = self.view else { return }
         

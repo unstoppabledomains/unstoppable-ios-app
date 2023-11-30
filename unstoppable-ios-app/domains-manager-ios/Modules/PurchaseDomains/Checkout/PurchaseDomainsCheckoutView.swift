@@ -345,6 +345,9 @@ private extension PurchaseDomainsCheckoutView {
                 }
                         
                 try await purchaseDomainsService.purchaseDomainsInTheCartAndMintTo(wallet: walletToMint)
+                let pendingPurchasedDomain = PendingPurchasedDomain(name: domain.name,
+                                                                    walletAddress: walletToMint.address)
+                PurchasedDomainsStorage.save(purchasedDomains: [pendingPurchasedDomain])
                 await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
                 purchasedCallback()
             } catch {

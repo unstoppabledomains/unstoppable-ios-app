@@ -634,8 +634,10 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(vc, animated: true)
     }
     
-    func showSearchDomainToPurchase(in viewController: UIViewController) {
+    func showSearchDomainToPurchase(in viewController: UIViewController,
+                                    domainsPurchasedCallback: @escaping  PurchaseDomainsNavigationController.DomainsPurchasedCallback) {
         let purchaseDomainsNavigationController = PurchaseDomainsNavigationController()
+        purchaseDomainsNavigationController.domainsPurchasedCallback = domainsPurchasedCallback
         viewController.cNavigationController?.pushViewController(purchaseDomainsNavigationController,
                                                                  animated: true)
     }

@@ -557,6 +557,26 @@ private extension DataAggregatorService {
                                                 displayInfo: domainDisplayInfo))
         }
         
+        // Purchased domains
+        let pendingPurchasedDomains = PurchasedDomainsStorage.retrievePurchasedDomains().filter({ pendingDomain in
+            domains.first(where: { $0.name == pendingDomain.name }) == nil // Purchased domain not yet reflected in the mirror
+        })
+        for pendingPurchasedDomain in pendingPurchasedDomains {
+            let domain = DomainItem(name: pendingPurchasedDomain.name,
+                                    ownerWallet: pendingPurchasedDomain.walletAddress,
+                                    blockchain: .Matic)
+            let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
+            let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
+                                                      state: .minting,
+                                                      order: order,
+                                                      isSetForRR: false)
+            
+            domainsWithDisplayInfo.append(.init(domain: domain,
+                                                displayInfo: domainDisplayInfo))
+        }
+        PurchasedDomainsStorage.save(purchasedDomains: pendingPurchasedDomains)
+        
+        // Parked domains
         for parkedDomain in parkedDomains {
             let parkedDomainDisplayInfo = FirebaseDomainDisplayInfo(firebaseDomain: parkedDomain)
             let domain = DomainItem(name: parkedDomain.name, ownerWallet: parkedDomain.ownerAddress, status: .unclaimed)

@@ -81,7 +81,7 @@ private extension PurchaseDomainsNavigationController {
     }
     
     func didFinishPurchase() {
-        dismiss(result: .purchased)
+        dismiss(result: .purchased(domainName: purchaseData.domain?.name ?? ""))
     }
     
     func isLastViewController(_ viewController: UIViewController) -> Bool {
@@ -193,6 +193,6 @@ extension PurchaseDomainsNavigationController {
     
     enum Result {
         case cancel
-        case purchased
+        case purchased(domainName: String)
     }
 }
