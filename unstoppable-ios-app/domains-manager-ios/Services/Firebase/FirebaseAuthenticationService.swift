@@ -62,32 +62,32 @@ final class FirebaseAuthenticationService: BaseFirebaseInteractionService {
     override func logout() {
         super.logout()
         setFirebaseUser(nil)
-        setTokenData(nil)
+        isAuthorized = false
     }
 }
 
 // MARK: - FirebaseInteractionServiceProtocol
 extension FirebaseAuthenticationService: FirebaseAuthenticationServiceProtocol {
     func authorizeWith(email: String, password: String) async throws {
-        let tokenData = try await firebaseAuthService.authorizeWith(email: email, password: password)
-        setTokenData(tokenData)
+        try await firebaseAuthService.authorizeWith(email: email, password: password)
+        userAuthorized()
     }
     
     @MainActor
     func authorizeWithGoogle(in viewController: UIWindow) async throws {
-        let tokenData = try await firebaseAuthService.authorizeWithGoogleSignInIdToken(in: viewController)
-        setTokenData(tokenData)
+        try await firebaseAuthService.authorizeWithGoogleSignInIdToken(in: viewController)
+        userAuthorized()
     }
     
     @MainActor
     func authorizeWithTwitter(in viewController: UIViewController) async throws {
-        let tokenData = try await firebaseAuthService.authorizeWithTwitterCustomToken(in: viewController)
-        setTokenData(tokenData)
+        try await firebaseAuthService.authorizeWithTwitterCustomToken(in: viewController)
+        userAuthorized()
     }
     
     func authorizeWith(wallet: UDWallet) async throws {
-        let tokenData = try await firebaseAuthService.authorizeWith(wallet: wallet)
-        setTokenData(tokenData)
+        try await firebaseAuthService.authorizeWith(wallet: wallet)
+        userAuthorized()
     }
     
     func getUserProfile() async throws -> FirebaseUser {
@@ -145,13 +145,9 @@ private extension FirebaseAuthenticationService {
         }
     }
     
-    func setTokenData(_ tokenData: FirebaseTokenData?) {
-        if tokenData != nil,
-           self.tokenData == nil {
-            refreshUserProfileAsync()
-        }
-        isAuthorized = tokenData != nil
-        self.tokenData = tokenData
+    func userAuthorized() {
+        isAuthorized = true
+        refreshUserProfileAsync()
     }
 }
 

@@ -236,11 +236,11 @@ private extension SettingsPresenter {
     func showLoginScreen() {
         guard let view else { return }
         
-        if appContext.firebaseParkedDomainsAuthenticationService.isAuthorized {
+        if firebaseAuthenticationService.isAuthorized {
             Task {
                 do {
                     guard let firebaseUser else {
-                        appContext.firebaseParkedDomainsAuthenticationService.logout()
+                        firebaseAuthenticationService.logout()
                         showLoginScreen()
                         Debugger.printFailure("Failed to get firebaser user model in authorized state", critical: true)
                         return

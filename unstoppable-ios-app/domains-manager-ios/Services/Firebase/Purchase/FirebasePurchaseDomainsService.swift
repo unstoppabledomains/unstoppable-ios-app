@@ -110,7 +110,7 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         isAutoRefreshCartSuspended = true
         logout()
         cart = .empty
-        tokenData = try await firebaseAuthService.authorizeWith(wallet: wallet)
+        try await firebaseAuthService.authorizeWith(wallet: wallet)
         self.domainsToPurchase = domains
         try await addDomainsToCart(domains)
         isAutoRefreshCartSuspended = false
