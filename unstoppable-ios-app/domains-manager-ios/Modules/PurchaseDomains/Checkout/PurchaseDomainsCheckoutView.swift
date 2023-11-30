@@ -17,6 +17,7 @@ struct PurchaseDomainsCheckoutView: View {
     @State var selectedWallet: WalletWithInfo
     @State var wallets: [WalletWithInfo]
     
+    @State private var domainAvatar: UIImage?
     @State private var scrollOffset: CGPoint = .zero
     @State private var cart: PurchaseDomainsCart = .empty
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
@@ -232,6 +233,13 @@ private extension PurchaseDomainsCheckoutView {
         .padding()
     }
     
+    var avatarImage: Image {
+        if let domainAvatar {
+            return Image(uiImage: domainAvatar)
+        }
+        return .domainSharePlaceholder
+    }
+    
     @ViewBuilder
     func summaryDomainInfoView() -> some View {
         ZStack {
@@ -239,7 +247,8 @@ private extension PurchaseDomainsCheckoutView {
                 .fill(Color.backgroundOverlay)
             UDListItemView(title: domain.name,
                            value: formatCartPrice(domain.price),
-                           image: .tagsCashIcon)
+                           image: avatarImage,
+                           imageStyle: .full)
             .padding(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 12))
         }
     }
@@ -324,6 +333,9 @@ private extension PurchaseDomainsCheckoutView {
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
         didSelectWallet(selectedWallet)
+        Task {
+            domainAvatar = await appContext.imageLoadingService.loadImage(from: .initials(domain.name, size: .default, style: .accent), downsampleDescription: nil)
+        }
     }
     
     func didSelectWallet(_ wallet: WalletWithInfo) {
