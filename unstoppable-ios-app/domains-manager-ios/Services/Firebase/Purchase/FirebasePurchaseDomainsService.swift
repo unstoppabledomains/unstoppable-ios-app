@@ -243,7 +243,10 @@ private extension FirebasePurchaseDomainsService {
     }
     
     func loadUserCart() async throws -> UserCartResponse {
-        let queryComponents = ["durationsMap" : checkoutData.getDurationsMapString()]
+        var queryComponents: [String : String] = [:]
+        if !checkoutData.durationsMap.isEmpty {
+            queryComponents["durationsMap"] = checkoutData.getDurationsMapString()
+        }
         let urlString = URLSList.CART_URL.appendingURLQueryComponents(queryComponents)
         let request = try APIRequest(urlString: urlString,
                                      method: .get)
