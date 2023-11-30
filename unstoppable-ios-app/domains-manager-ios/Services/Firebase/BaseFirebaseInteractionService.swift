@@ -15,7 +15,7 @@ class BaseFirebaseInteractionService {
         }
         static var baseAPIURL: String { baseURL.appendingURLPathComponent("api") }
         
-        static var logoutURL: String { baseAPIURL.appendingURLPathComponents("user", "profile") }
+        static var logoutURL: String { baseAPIURL.appendingURLPathComponents("user", "session", "clear") }
     }
     
     let authHeaderKey = "auth-firebase-id-token"
