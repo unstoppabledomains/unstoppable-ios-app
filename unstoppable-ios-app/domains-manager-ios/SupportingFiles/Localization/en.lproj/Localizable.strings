@@ -892,7 +892,6 @@
 "GET_DOMAIN_CARD_TITLE" = "Get your domain";
 "GET_DOMAIN_CARD_SUBTITLE" = "Own your identity in the digital world.\nGet started with a Web3 domain.";
 "FIND_A_NEW_DOMAIN" = "Find a new domain";
-"FIND_A_NEW_DOMAIN" = "Find a new domain";
 "FIND_YOUR_DOMAIN" = "Find your domain";
 "TRENDING" = "Trending";
 "NO_AVAILABLE_DOMAINS" = "No available domains";
@@ -908,8 +907,10 @@
 "ENTER_US_ZIP_CODE" = "Enter US ZIP code";
 "ZIP_CODE" = "ZIP code";
 "CHECKOUT" = "Checkout";
-"TO_CALCULATE_TAXES" = "To calculate taxes";
+"TO_CALCULATE_TAXES" = "For sales tax";
+"US_RESIDENTS" = "US Residents";
 "TAXES" = "Taxes";
+"CREDITS_AND_DISCOUNTS" = "Credits & discounts";
 "DISCOUNTS" = "Discounts";
 "APPLY" = "Apply";
 "ORDER_SUMMARY" = "Order summary";

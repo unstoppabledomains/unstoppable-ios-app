@@ -122,7 +122,7 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func usaZIPCodeView() -> some View {
         UDCollectionListRowButton(content: {
-            UDListItemView(title: String.Constants.usZIPCode.localized(),
+            UDListItemView(title: String.Constants.zipCode.localized(),
                            subtitle: String.Constants.toCalculateTaxes.localized(),
                            value: usaZipCodeValue,
                            image: .usaFlagIcon,
@@ -137,14 +137,14 @@ private extension PurchaseDomainsCheckoutView {
         if !checkoutData.usaZipCode.isEmpty {
             return checkoutData.usaZipCode
         } else {
-            return String.Constants.optional.localized()
+            return String.Constants.usResidents.localized()
         }
     }
     
     @ViewBuilder
     func discountView() -> some View {
         UDCollectionListRowButton(content: {
-            UDListItemView(title: String.Constants.discounts.localized(),
+            UDListItemView(title: String.Constants.creditsAndDiscounts.localized(),
                            value: discountValueString,
                            image: .tagsCashIcon,
                            rightViewStyle: .chevron)
@@ -379,4 +379,5 @@ private extension PurchaseDomainsCheckoutView {
                                 selectedWallet: WalletWithInfo.mock[0],
                                 wallets: WalletWithInfo.mock,
                                 purchasedCallback: { })
+    .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }
