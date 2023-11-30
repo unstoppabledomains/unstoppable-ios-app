@@ -128,8 +128,10 @@ private extension MockFirebaseInteractionsService {
     }
     
     func loadUserCryptoWallets() async throws -> [FirebasePurchaseDomainsService.UDUserAccountCryptWallet] {
-        [.init(id: 1605, address: "0xc4a748796805dfa42cafe0901ec182936584cc6e"),
-         .init(id: 1606, address: "0x8ed92xjd2793yenx837g3847d3n4dx9h")]
+        let wallets = appContext.udWalletsService.getUserWallets()
+        return wallets.map { FirebasePurchaseDomainsService.UDUserAccountCryptWallet(id: 1, address: $0.address) }
+//        [.init(id: 1605, address: "0xc4a748796805dfa42cafe0901ec182936584cc6e"),
+//         .init(id: 1606, address: "0x8ed92xjd2793yenx837g3847d3n4dx9h")]
     }
     
     func updateCart() {

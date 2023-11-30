@@ -10,4 +10,6 @@ import Foundation
 struct WalletWithInfo {
     var wallet: UDWallet
     var displayInfo: WalletDisplayInfo?
+    
+    var address: String { wallet.address }
 }

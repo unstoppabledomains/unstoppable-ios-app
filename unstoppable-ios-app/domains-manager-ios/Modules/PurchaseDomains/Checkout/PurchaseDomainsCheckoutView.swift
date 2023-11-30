@@ -67,7 +67,7 @@ struct PurchaseDomainsCheckoutView: View {
         .modifier(ShowingSelectWallet(isSelectWalletPresented: $isSelectWalletPresented,
                                       selectedWallet: selectedWallet,
                                       wallets: wallets,
-                                      selectedWalletCallback: didSelectWallet))
+                                      selectedWalletCallback: { wallet in didSelectWallet(wallet) }))
         .sheet(isPresented: $isEnterZIPCodePresented, content: {
             PurchaseDomainsEnterZIPCodeView()
         })
@@ -125,7 +125,7 @@ private extension PurchaseDomainsCheckoutView {
            displayInfo.isNameSet {
             return "\(displayInfo.name) (\(displayInfo.address.walletAddressTruncated))"
         } else {
-            return selectedWallet.wallet.address.walletAddressTruncated
+            return selectedWallet.address.walletAddressTruncated
         }
     }
     
@@ -332,21 +332,25 @@ private extension PurchaseDomainsCheckoutView {
 private extension PurchaseDomainsCheckoutView {
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
-        didSelectWallet(selectedWallet)
+        didSelectWallet(selectedWallet, forceReload: true)
         Task {
             domainAvatar = await appContext.imageLoadingService.loadImage(from: .initials(domain.name, size: .default, style: .accent), downsampleDescription: nil)
         }
     }
     
-    func didSelectWallet(_ wallet: WalletWithInfo) {
+    func didSelectWallet(_ wallet: WalletWithInfo, forceReload: Bool = false) {
+        guard wallet.address != selectedWallet.address || forceReload else { return }
+        
         Task {
+            let currentlySelectedWallet = self.selectedWallet
             selectedWallet = wallet
             isLoading = true
             do {
                 try await purchaseDomainsService.authoriseWithWallet(wallet.wallet,
                                                                      toPurchaseDomains: [domain])
             } catch {
-                Debugger.printFailure("Did fail to authorise wallet \(wallet.wallet.address) with error \(error)")
+                selectedWallet = currentlySelectedWallet
+                Debugger.printFailure("Did fail to authorise wallet \(wallet.address) with error \(error)")
             }
             isLoading = false
         }
@@ -357,7 +361,7 @@ private extension PurchaseDomainsCheckoutView {
             isLoading = true
             do {
                 let walletsToMint = try await purchaseDomainsService.getSupportedWalletsToMint()
-                guard let walletToMint = walletsToMint.first(where: { $0.address == selectedWallet.wallet.address }) else {
+                guard let walletToMint = walletsToMint.first(where: { $0.address == selectedWallet.address }) else {
                     throw PurchaseError.failedToGetWalletToMint
                 }
                         
