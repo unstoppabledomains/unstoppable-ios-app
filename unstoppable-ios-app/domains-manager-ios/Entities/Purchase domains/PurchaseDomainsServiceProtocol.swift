@@ -13,6 +13,8 @@ protocol PurchaseDomainsServiceProtocol {
     
     func searchForDomains(key: String) async throws -> [DomainToPurchase]
     func getDomainsSuggestions(hint: String?) async throws -> [DomainToPurchaseSuggestion]
+    
+    func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws
     func getSupportedWalletsToMint() async throws -> [PurchasedDomainsWalletDescription]
     
     func addDomainsToCart(_ domains: [DomainToPurchase]) async throws

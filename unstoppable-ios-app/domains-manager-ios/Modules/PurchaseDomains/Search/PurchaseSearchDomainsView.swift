@@ -201,7 +201,7 @@ private extension PurchaseSearchDomainsView {
     func setupSkeletonItemsWidth() {
         guard skeletonItemsWidth.isEmpty else { return }
         
-        for _ in 0..<10 {
+        for _ in 0..<6 {
             let width: CGFloat = 60 + CGFloat(arc4random_uniform(100))
             skeletonItemsWidth.append(width)
         }
@@ -212,12 +212,12 @@ private extension PurchaseSearchDomainsView {
         
         Task {
             let suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
-            self.suggestions = Array(suggestions.prefix(20))
+            self.suggestions = Array(suggestions.prefix(12))
         }
     }
     
     func search(text: String) {
-        let text = text.trimmedSpaces
+        let text = text.trimmedSpaces.lowercased()
         guard searchingText != text else { return }
         searchingText = text
         searchResult = []
@@ -231,12 +231,24 @@ private extension PurchaseSearchDomainsView {
                 let searchResult = try await purchaseDomainsService.searchForDomains(key: text)
                 guard text == self.searchingText else { return } // Result is irrelevant, search query has changed
                 
-                self.searchResult = searchResult
+                self.searchResult = sortSearchResult(searchResult, searchText: text)
             } catch {
                 loadingError = error
             }
             isLoading = false
         }
+    }
+    
+    func sortSearchResult(_ searchResult: [DomainToPurchase], searchText: String) -> [DomainToPurchase] {
+        var searchResult = searchResult
+        /// Move exactly matched domain to the top of the list
+        if let i = searchResult.firstIndex(where: { $0.name == searchText }),
+           i != 0 {
+            let matchingDomain = searchResult[i]
+            searchResult.remove(at: i)
+            searchResult.insert(matchingDomain, at: 0)
+        }
+        return searchResult
     }
 }
 

@@ -41,6 +41,11 @@ private extension PurchaseDomainsCheckoutViewController {
         cNavigationController?.underlyingScrollViewDidScrollTo(offset: offset)
     }
     
+    func didPurchaseDomains() {
+        Task { @MainActor in
+            try? await purchaseDomainsFlowManager?.handle(action: .didPurchaseDomains)
+        }
+    }
 }
 
 // MARK: - Setup methods
@@ -57,8 +62,8 @@ private extension PurchaseDomainsCheckoutViewController {
         let view = PurchaseDomainsCheckoutView(domain: domain,
                                                selectedWallet: selectedWallet,
                                                wallets: wallets,
-                                               purchasedCallback: {
-            
+                                               purchasedCallback: { [weak self] in
+            self?.didPurchaseDomains()
         },
                                                scrollOffsetCallback: { [weak self] offset in
             self?.didScrollTo(offset: offset)

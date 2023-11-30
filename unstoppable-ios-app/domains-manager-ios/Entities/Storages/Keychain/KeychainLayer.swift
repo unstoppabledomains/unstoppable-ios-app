@@ -66,11 +66,11 @@ extension PrivateKeyStorage {
         }
     }
     
-    func retrieveValue(for key: KeychainKey, isCritical: Bool = true) -> String? {
+    func retrieveValue(for key: KeychainKey, isCritical: Bool = false) -> String? {
         retrieveValue(for: key.rawValue, isCritical: isCritical)
     }
     
-    func retrieveValue(for key: String, isCritical: Bool = true) -> String? {
+    func retrieveValue(for key: String, isCritical: Bool = false) -> String? {
         do {
             let value = try valet.string(forKey: key)
             Debugger.printInfo("Retrieved private key for key: \(key)")
@@ -81,7 +81,7 @@ extension PrivateKeyStorage {
         }
     }
     
-    func retrievePrivateKey(for pubKeyHex: String, isCritical: Bool = true) -> String? {
+    func retrievePrivateKey(for pubKeyHex: String, isCritical: Bool = false) -> String? {
         if let valueFromNormalizedKey = try? valet.string(forKey: pubKeyHex.normalized) {
             Debugger.printInfo("Retrieved private key for key: \(pubKeyHex.normalized)")
             return valueFromNormalizedKey
@@ -128,7 +128,7 @@ extension PrivateKeyStorage {
         }
     }
     
-    func retrieveData(for key: String, isCritical: Bool = true) -> Data? {
+    func retrieveData(for key: String, isCritical: Bool = false) -> Data? {
         do {
             let value = try valet.object(forKey: key)
             Debugger.printInfo("Retrieved keychain data for key: \(key)")

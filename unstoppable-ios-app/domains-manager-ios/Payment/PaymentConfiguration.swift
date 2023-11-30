@@ -25,6 +25,8 @@ public class PaymentConfiguration {
         formatter.currencySymbol = PaymentConfiguration.usdCurrencySymbol
         formatter.maximumFractionDigits = 2
         formatter.minimumFractionDigits = 0
+        formatter.currencyDecimalSeparator = "."
+        formatter.currencyGroupingSeparator = ","
         return formatter
     }()
 }

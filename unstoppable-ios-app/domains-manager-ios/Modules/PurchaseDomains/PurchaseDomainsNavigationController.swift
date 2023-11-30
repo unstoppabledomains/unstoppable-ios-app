@@ -57,6 +57,10 @@ extension PurchaseDomainsNavigationController: PurchaseDomainsFlowManager {
             moveToStep(.checkout(domain: domain,
                                  selectedWallet: selectedWallet,
                                  wallets: wallets))
+        case .didPurchaseDomains:
+            moveToStep(.purchased)
+        case .goToDomains:
+            didFinishPurchase()
         }
     }
 }
@@ -77,7 +81,7 @@ private extension PurchaseDomainsNavigationController {
     }
     
     func didFinishPurchase() {
-        dismiss(result: .purchased)
+        dismiss(result: .purchased(domainName: purchaseData.domain?.name ?? ""))
     }
     
     func isLastViewController(_ viewController: UIViewController) -> Bool {
@@ -95,11 +99,9 @@ private extension PurchaseDomainsNavigationController {
         }
     }
     
-    func setSwipeGestureEnabledForCurrentState() {
-        guard let topViewController = viewControllers.last else { return }
-        
-        transitionHandler?.isInteractionEnabled = !isLastViewController(topViewController)
-        cNavigationController?.transitionHandler?.isInteractionEnabled = isLastViewController(topViewController)
+    func setSwipeGestureEnabledForCurrentState() {        
+        transitionHandler?.isInteractionEnabled = false
+        cNavigationController?.transitionHandler?.isInteractionEnabled = false
     }
     
     func purchase(domains: [DomainToPurchase], domainsOrderInfoMap: SortDomainsOrderInfoMap?) async throws {
@@ -147,6 +149,12 @@ private extension PurchaseDomainsNavigationController {
                                                                        wallets: wallets)
             vc.purchaseDomainsFlowManager = self
             return vc
+        case .purchased:
+            let vc = HappyEndViewController.instance()
+            let presenter = PurchaseDomainsHappyEndViewPresenter(view: vc)
+            presenter.purchaseDomainsFlowManager = self
+            vc.presenter = presenter
+            return vc
         }
     }
 }
@@ -167,14 +175,17 @@ extension PurchaseDomainsNavigationController {
     enum Step {
         case searchDomain
         case checkout(domain: DomainToPurchase, selectedWallet: WalletWithInfo, wallets: [WalletWithInfo])
+        case purchased
     }
     
     enum Action {
         case didSelectDomain(_ domain: DomainToPurchase)
+        case didPurchaseDomains
+        case goToDomains
     }
     
     enum Result {
         case cancel
-        case purchased
+        case purchased(domainName: String)
     }
 }

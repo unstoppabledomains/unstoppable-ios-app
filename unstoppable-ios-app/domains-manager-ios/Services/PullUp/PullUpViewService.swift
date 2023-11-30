@@ -40,7 +40,7 @@ protocol PullUpViewServiceProtocol {
                                                 in viewController: UIViewController) async throws
     func showDomainMintedOnChainDescriptionPullUp(in viewController: UIViewController,
                                                   chain: BlockchainType)
-    func showRecentActivitiesInfoPullUp(in viewController: UIViewController) async throws
+    func showRecentActivitiesInfoPullUp(in viewController: UIViewController, isGetNewDomain: Bool) async throws
     func showChooseCoinVersionPullUp(for coin: CoinRecord,
                                      in viewController: UIViewController) async throws -> CoinVersionSelectionResult
     func showLogoutConfirmationPullUp(in viewController: UIViewController) async throws
@@ -525,16 +525,16 @@ extension PullUpViewService: PullUpViewServiceProtocol {
         showOrUpdate(in: viewController, pullUp: .domainMintedOnChainDescription, additionalAnalyticParameters: [.chainNetwork: chain.rawValue], contentView: selectionView, height: selectionViewHeight)
     }
 
-    func showRecentActivitiesInfoPullUp(in viewController: UIViewController) async throws {
+    func showRecentActivitiesInfoPullUp(in viewController: UIViewController, isGetNewDomain: Bool) async throws {
         let selectionViewHeight: CGFloat = 368
-        
+        let buttonTitle = isGetNewDomain ? String.Constants.findYourDomain.localized() : String.Constants.scanToConnect.localized()
         try await withSafeCheckedThrowingMainActorContinuation(critical: false) { completion in
             let selectionView = PullUpSelectionView(configuration: .init(title: .text(String.Constants.recentActivityInfoTitle.localized()),
                                                                          contentAlignment: .center,
                                                                          icon: .init(icon: .timeIcon24,
                                                                                      size: .small),
                                                                          subtitle: .label(.text(String.Constants.recentActivityInfoSubtitle.localized())),
-                                                                         actionButton: .main(content: .init(title: String.Constants.scanToConnect.localized(),
+                                                                         actionButton: .main(content: .init(title: buttonTitle,
                                                                                                             icon: nil,
                                                                                                             analyticsName: .scanToConnect,
                                                                                                             action: { completion(.success(Void())) })),

@@ -100,6 +100,11 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
     func purchaseDomainsInTheCartAndMintTo(wallet: PurchasedDomainsWalletDescription) async throws {
         
     }
+    
+    func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
+        cart = .empty
+        updateCart()
+    }
 }
 
 // MARK: - FirebaseDomainsServiceProtocol

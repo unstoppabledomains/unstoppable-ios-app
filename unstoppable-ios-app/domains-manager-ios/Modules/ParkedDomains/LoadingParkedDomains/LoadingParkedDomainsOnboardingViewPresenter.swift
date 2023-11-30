@@ -24,7 +24,7 @@ final class LoadingParkedDomainsOnboardingViewPresenter: LoadingParkedDomainsVie
         
         Task {
             do {
-                let parkedDomains = try await appContext.firebaseDomainsService.getParkedDomains()
+                let parkedDomains = try await appContext.firebaseParkedDomainsService.getParkedDomains()
                 let displayInfo = parkedDomains.map({ FirebaseDomainDisplayInfo(firebaseDomain: $0) })
                 
                 await MainActor.run {
@@ -61,7 +61,7 @@ extension LoadingParkedDomainsOnboardingViewPresenter: OnboardingDataHandling {
 private extension LoadingParkedDomainsOnboardingViewPresenter {
     func failedToLoadParkedDomains() {
         Task { @MainActor in
-            appContext.firebaseAuthenticationService.logout()
+            appContext.firebaseParkedDomainsAuthenticationService.logout()
             view?.cNavigationController?.popTo(LoginViewController.self)
         }
     }

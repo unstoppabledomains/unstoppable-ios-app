@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 private struct FirebaseAuthenticationServiceKey: EnvironmentKey {
-    static let defaultValue = appContext.firebaseAuthenticationService
+    static let defaultValue = appContext.firebaseParkedDomainsAuthenticationService
 }
 
 extension EnvironmentValues {

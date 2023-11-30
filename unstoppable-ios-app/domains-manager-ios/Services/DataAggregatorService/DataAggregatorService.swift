@@ -320,7 +320,7 @@ private extension DataAggregatorService {
             return
         case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
             SceneDelegate.shared?.restartOnboarding()
-            appContext.firebaseAuthenticationService.logout()
+            appContext.firebaseParkedDomainsAuthenticationService.logout()
             Task { await aggregateData(shouldRefreshPFP: false) }
         }
     }
@@ -336,7 +336,7 @@ private extension DataAggregatorService {
     }
     
     func fillDomainsDataFromCache() async {
-        let cachedParkedDomains = appContext.firebaseDomainsService.getCachedDomains()
+        let cachedParkedDomains = appContext.firebaseParkedDomainsService.getCachedDomains()
         await fillDomainsDataFromCache(parkedDomains: cachedParkedDomains)
     }
     
@@ -427,7 +427,7 @@ private extension DataAggregatorService {
     }
     
     func loadParkedDomains() async -> [FirebaseDomain] {
-        let domains = try? await appContext.firebaseDomainsService.getParkedDomains()
+        let domains = try? await appContext.firebaseParkedDomainsService.getParkedDomains()
         
         return domains ?? []
     }
@@ -539,6 +539,8 @@ private extension DataAggregatorService {
             var domainState: DomainDisplayInfo.State = .default
             if transactions.filterPending(extraCondition: { $0.operation == .transferDomain }).first(where: { $0.domainName == domain.name }) != nil {
                 domainState = .transfer
+            } else if transactions.containMintingInProgress(domain) {
+                domainState = .minting
             } else if transactions.containPending(domain) {
                 domainState = .updatingRecords
             }
@@ -555,6 +557,26 @@ private extension DataAggregatorService {
                                                 displayInfo: domainDisplayInfo))
         }
         
+        // Purchased domains
+        let pendingPurchasedDomains = PurchasedDomainsStorage.retrievePurchasedDomains().filter({ pendingDomain in
+            domains.first(where: { $0.name == pendingDomain.name }) == nil // Purchased domain not yet reflected in the mirror
+        })
+        for pendingPurchasedDomain in pendingPurchasedDomains {
+            let domain = DomainItem(name: pendingPurchasedDomain.name,
+                                    ownerWallet: pendingPurchasedDomain.walletAddress,
+                                    blockchain: .Matic)
+            let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
+            let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
+                                                      state: .minting,
+                                                      order: order,
+                                                      isSetForRR: false)
+            
+            domainsWithDisplayInfo.append(.init(domain: domain,
+                                                displayInfo: domainDisplayInfo))
+        }
+        PurchasedDomainsStorage.save(purchasedDomains: pendingPurchasedDomains)
+        
+        // Parked domains
         for parkedDomain in parkedDomains {
             let parkedDomainDisplayInfo = FirebaseDomainDisplayInfo(firebaseDomain: parkedDomain)
             let domain = DomainItem(name: parkedDomain.name, ownerWallet: parkedDomain.ownerAddress, status: .unclaimed)

@@ -17,7 +17,7 @@ final class UDWalletSigner {
 // MARK: - Open methods
 extension UDWalletSigner {
     func signInWith(wallet: UDWallet) async throws -> String {
-        let walletAddress = wallet.address
+        let walletAddress = wallet.address.lowercased()
         let messageToSign = try await getAuthMessageToSignFor(walletAddress: walletAddress)
         guard let signedMessage = wallet.signPersonal(messageString: messageToSign) else {
             throw WalletSignerError.failedToSignMessage

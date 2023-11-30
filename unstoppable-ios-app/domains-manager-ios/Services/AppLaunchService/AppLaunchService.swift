@@ -69,7 +69,7 @@ private extension AppLaunchService {
                 switch sessionState {
                 case .noWalletsOrWebAccount, .webAccountWithoutParkedDomains:
                     shouldRunOnboarding = true
-                    appContext.firebaseAuthenticationService.logout()
+                    appContext.firebaseParkedDomainsAuthenticationService.logout()
                 case .walletAdded, .webAccountWithParkedDomains:
                     shouldRunOnboarding = false
                 }

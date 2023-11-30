@@ -194,7 +194,9 @@ extension DomainsCollectionRouter: DomainsCollectionRouterProtocol {
     func runPurchaseDomainsFlow() {
         guard let viewController else { return }
         
-        UDRouter().showSearchDomainToPurchase(in: viewController)
+        UDRouter().showSearchDomainToPurchase(in: viewController, domainsPurchasedCallback: { [weak self] result in
+            self?.presenter?.didPurchaseDomains(result: result)
+        })
     }
 }
 

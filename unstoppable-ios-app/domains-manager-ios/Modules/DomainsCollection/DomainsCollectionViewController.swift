@@ -14,7 +14,7 @@ protocol DomainsCollectionViewProtocol: BaseViewControllerProtocol {
     func setScanButtonHidden(_ isHidden: Bool)
     func setBackgroundImage(_ image: UIImage?)
     func setEmptyState(hidden: Bool)
-    func setSelectedDomain(_ domain: DomainDisplayInfo, at index: Int, animated: Bool)
+    func setSelectedDisplayMode(_ mode: DomainsCollectionCarouselItemDisplayMode, at index: Int, animated: Bool)
     func runConfettiAnimation()
     func setTitle(_ title: String?)
     func setNumberOfSteps(_ numberOfSteps: Int)
@@ -101,10 +101,12 @@ final class DomainsCollectionViewController: BaseViewController, TitleVisibility
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        setupCollectionUICache()
-        let domainCardY = DomainsCollectionUICache.shared.underCardControlY()
-        underCardControl.center = self.view.localCenter
-        underCardControl.frame.origin.y = domainCardY
+        DispatchQueue.main.async {
+            self.setupCollectionUICache()
+            let domainCardY = DomainsCollectionUICache.shared.underCardControlY()
+            self.underCardControl.center = self.view.localCenter
+            self.underCardControl.frame.origin.y = domainCardY
+        }
     }
     
     override func becomeFirstResponder() -> Bool {
@@ -159,8 +161,8 @@ extension DomainsCollectionViewController: DomainsCollectionViewProtocol {
         }
     }
     
-    func setSelectedDomain(_ domain: DomainDisplayInfo, at index: Int, animated: Bool) {
-        setStepForDomain(domain, at: index, animated: animated)
+    func setSelectedDisplayMode(_ mode: DomainsCollectionCarouselItemDisplayMode, at index: Int, animated: Bool) {
+        setStepForDisplayMode(mode, at: index, animated: animated)
         pageControlDidSetIndex(index, isInteractive: false)
         underCardControl.setCurrentPage(index)
     }
@@ -300,6 +302,8 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
             presenter.didOccureUIAction(.parkedDomainLearnMore)
         case .purchaseDomains:
             presenter.didOccureUIAction(.purchaseDomains)
+        case .recentActivityGetDomain:
+            presenter.didOccureUIAction(.recentActivityGetDomain)
         }
     }
 }
@@ -307,9 +311,9 @@ extension DomainsCollectionViewController: DomainsCollectionCarouselViewControll
 // MARK: - UIPageViewControllerDataSource
 extension DomainsCollectionViewController: DomainsCollectionPageViewControllerDataSource {
     func pageViewController(_ pageViewController: DomainsCollectionPageViewController, viewControllerAt index: Int) -> UIViewController? {
-        guard let domain = presenter.domain(at: index) else { return nil }
+        guard let domain = presenter.displayMode(at: index) else { return nil }
         
-        return getContainerItemForDomain(domain, at: index)
+        return getContainerItemForDisplayMode(domain, at: index)
     }
     
     func pageViewController(_ pageViewController: DomainsCollectionPageViewController, canMoveTo index: Int) -> Bool {
@@ -338,7 +342,8 @@ extension DomainsCollectionViewController: DomainsCollectionPageViewControllerDe
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7,
                                       execute: setSearchUnderCardControlStateWorkingItem)
         self.setSearchUnderCardControlStateWorkingItem = setSearchUnderCardControlStateWorkingItem
-        if let domain = presenter.domain(at: pageViewController.currentIndex) {
+        if let displayMode = presenter.displayMode(at: pageViewController.currentIndex),
+           case .domain(let domain) = displayMode {
             logAnalytic(event: .didSwipeToDomain, parameters: [.domainName: domain.name])
         }
     }
@@ -632,8 +637,8 @@ private extension DomainsCollectionViewController {
 private extension DomainsCollectionViewController {
     var currentStep: Int { presenter.currentIndex }
 
-    func getContainerItemForDomain(_ domain: DomainDisplayInfo, at index: Int) -> DomainsCollectionCarouselViewController? {
-        let itemVC = DomainsCollectionCarouselItemViewController.instantiate(domain: domain,
+    func getContainerItemForDisplayMode(_ mode: DomainsCollectionCarouselItemDisplayMode, at index: Int) -> DomainsCollectionCarouselViewController? {
+        let itemVC = DomainsCollectionCarouselItemViewController.instantiate(mode: mode,
                                                                              cardState: cardState,
                                                                              containerViewController: self,
                                                                              actionsDelegate: self)
@@ -648,7 +653,8 @@ private extension DomainsCollectionViewController {
         if isInteractive {
             underCardControl.setState(.pageControl(page: index))
         }
-        if let domain = presenter.domain(at: index) {
+        if let displayMode = presenter.displayMode(at: index),
+            case .domain(let domain) = displayMode {
             titleView.setWith(domain: domain)
         }
     }
@@ -752,10 +758,10 @@ private extension DomainsCollectionViewController {
         pageViewController.didMove(toParent: self)
     }
     
-    func setStepForDomain(_ domain: DomainDisplayInfo,
+    func setStepForDisplayMode(_ mode: DomainsCollectionCarouselItemDisplayMode,
                           at index: Int,
                           animated: Bool = true) {
-        if let step = getContainerItemForDomain(domain, at: index) {
+        if let step = getContainerItemForDisplayMode(mode, at: index) {
             pageViewController.setViewController(step,
                                                  animated: animated,
                                                  index: index, completion: { [weak self] in
@@ -783,5 +789,6 @@ extension DomainsCollectionViewController {
         case searchPressed
         case parkedDomainLearnMore
         case purchaseDomains
+        case recentActivityGetDomain
     }
 }

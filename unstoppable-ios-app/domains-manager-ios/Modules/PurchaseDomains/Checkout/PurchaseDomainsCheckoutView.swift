@@ -11,7 +11,8 @@ struct PurchaseDomainsCheckoutView: View {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
-
+    @Environment(\.dataAggregatorService) private var dataAggregatorService
+    
     @State var domain: DomainToPurchase
     @State var selectedWallet: WalletWithInfo
     @State var wallets: [WalletWithInfo]
@@ -20,30 +21,40 @@ struct PurchaseDomainsCheckoutView: View {
     @State private var cart: PurchaseDomainsCart = .empty
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
     
+    @State private var isLoading = false
     @State private var isSelectWalletPresented = false
     @State private var isEnterZIPCodePresented = false
     @State private var isSelectDiscountsPresented = false
     @State private var isEnterDiscountCodePresented = false
-
+    
     var purchasedCallback: EmptyCallback
     var scrollOffsetCallback: ((CGPoint)->())? = nil
     
     var body: some View {
-        VStack(spacing: 0) {
-            OffsetObservingScrollView(offset: $scrollOffset) {
-                LazyVStack {
-                    headerView()
-                    checkoutDashSeparator()
-                    detailsSection()
-                    checkoutDashSeparator()
-                    summarySection()
+        ZStack {
+            VStack(spacing: 0) {
+                OffsetObservingScrollView(offset: $scrollOffset) {
+                    LazyVStack {
+                        headerView()
+                        checkoutDashSeparator()
+                        detailsSection()
+                        checkoutDashSeparator()
+                        summarySection()
+                    }
                 }
+                checkoutView()
             }
-            checkoutView()
+            if isLoading {
+                ProgressView()
+            }
         }
+        .allowsHitTesting(!isLoading)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .onReceive(purchaseDomainsService.cartPublisher.receive(on: DispatchQueue.main)) { cart in
+            if self.cart.discountDetails.others == 0 && cart.discountDetails.others != 0 {
+                appContext.toastMessageService.showToast(.purchaseDomainsDiscountApplied(cart.discountDetails.others), isSticky: false)
+            }
             self.cart = cart
         }
         .onReceive(purchaseDomainsPreferencesStorage.$checkoutData.publisher.receive(on: DispatchQueue.main), perform: { checkoutData in
@@ -53,9 +64,9 @@ struct PurchaseDomainsCheckoutView: View {
             scrollOffsetCallback?(newValue)
         }
         .modifier(ShowingSelectWallet(isSelectWalletPresented: $isSelectWalletPresented,
-                                     selectedWallet: selectedWallet,
-                                     wallets: wallets,
-                                     selectedWalletCallback: didSelectWallet))
+                                      selectedWallet: selectedWallet,
+                                      wallets: wallets,
+                                      selectedWalletCallback: didSelectWallet))
         .sheet(isPresented: $isEnterZIPCodePresented, content: {
             PurchaseDomainsEnterZIPCodeView()
         })
@@ -97,10 +108,15 @@ private extension PurchaseDomainsCheckoutView {
             UDListItemView(title: String.Constants.mintTo.localized(),
                            value: selectedWalletName,
                            image: .vaultIcon,
-                           rightViewStyle: wallets.count > 1 ? .chevron : nil)
+                           rightViewStyle: canSelectWallet ? .chevron : nil)
         }, callback: {
             isSelectWalletPresented = true
         })
+        .allowsHitTesting(canSelectWallet)
+    }
+    
+    var canSelectWallet: Bool {
+        wallets.count > 1
     }
     
     var selectedWalletName: String {
@@ -115,7 +131,7 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func usaZIPCodeView() -> some View {
         UDCollectionListRowButton(content: {
-            UDListItemView(title: String.Constants.usZIPCode.localized(),
+            UDListItemView(title: String.Constants.zipCode.localized(),
                            subtitle: String.Constants.toCalculateTaxes.localized(),
                            value: usaZipCodeValue,
                            image: .usaFlagIcon,
@@ -130,14 +146,14 @@ private extension PurchaseDomainsCheckoutView {
         if !checkoutData.usaZipCode.isEmpty {
             return checkoutData.usaZipCode
         } else {
-            return String.Constants.optional.localized()
+            return String.Constants.usResidents.localized()
         }
     }
     
     @ViewBuilder
     func discountView() -> some View {
         UDCollectionListRowButton(content: {
-            UDListItemView(title: String.Constants.discounts.localized(),
+            UDListItemView(title: String.Constants.creditsAndDiscounts.localized(),
                            value: discountValueString,
                            image: .tagsCashIcon,
                            rightViewStyle: .chevron)
@@ -175,7 +191,7 @@ private extension PurchaseDomainsCheckoutView {
         
         return sum
     }
-
+    
     @ViewBuilder
     func checkoutDashSeparator() -> some View {
         Line()
@@ -201,7 +217,7 @@ private extension PurchaseDomainsCheckoutView {
                     summaryDomainInfoView()
                         .padding(EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4))
                     additionalCheckoutDetailsView()
-                        .padding(EdgeInsets(top: 0, 
+                        .padding(EdgeInsets(top: 0,
                                             leading: 16,
                                             bottom: shouldShowTotalDueInSummary ? 0 : 16,
                                             trailing: 16))
@@ -282,13 +298,13 @@ private extension PurchaseDomainsCheckoutView {
             }
             checkoutButton()
         }
-
+        
     }
     
     @ViewBuilder
     func checkoutButton() -> some View {
         UDButtonView(text: String.Constants.pay.localized(), icon: .appleIcon, style: .large(.applePay)) {
-            
+            startPurchaseDomains()
         }
         .padding()
     }
@@ -307,10 +323,43 @@ private extension PurchaseDomainsCheckoutView {
 private extension PurchaseDomainsCheckoutView {
     func onAppear() {
         checkoutData = purchaseDomainsPreferencesStorage.checkoutData
+        didSelectWallet(selectedWallet)
     }
     
     func didSelectWallet(_ wallet: WalletWithInfo) {
-        
+        Task {
+            selectedWallet = wallet
+            isLoading = true
+            do {
+                try await purchaseDomainsService.authoriseWithWallet(wallet.wallet,
+                                                                     toPurchaseDomains: [domain])
+            } catch {
+                Debugger.printFailure("Did fail to authorise wallet \(wallet.wallet.address) with error \(error)")
+            }
+            isLoading = false
+        }
+    }
+    
+    func startPurchaseDomains() {
+        Task {
+            isLoading = true
+            do {
+                let walletsToMint = try await purchaseDomainsService.getSupportedWalletsToMint()
+                guard let walletToMint = walletsToMint.first(where: { $0.address == selectedWallet.wallet.address }) else {
+                    throw PurchaseError.failedToGetWalletToMint
+                }
+                        
+                try await purchaseDomainsService.purchaseDomainsInTheCartAndMintTo(wallet: walletToMint)
+                let pendingPurchasedDomain = PendingPurchasedDomain(name: domain.name,
+                                                                    walletAddress: walletToMint.address)
+                PurchasedDomainsStorage.save(purchasedDomains: [pendingPurchasedDomain])
+                await dataAggregatorService.aggregateData(shouldRefreshPFP: false)
+                purchasedCallback()
+            } catch {
+                Debugger.printFailure("Did fail to purchase domains with error \(error)")
+            }
+            isLoading = false
+        }
     }
 }
 
@@ -337,7 +386,7 @@ private extension PurchaseDomainsCheckoutView {
         let selectedWallet: WalletWithInfo
         let wallets: [WalletWithInfo]
         let selectedWalletCallback: PurchaseDomainSelectWalletCallback
-
+        
         func body(content: Content) -> some View {
             content
                 .sheet(isPresented: $isSelectWalletPresented, content: {
@@ -355,7 +404,13 @@ private extension PurchaseDomainsCheckoutView {
         }
     }
     
-    
+    enum PurchaseError: String, LocalizedError {
+        case failedToGetWalletToMint
+        
+        public var errorDescription: String? {
+            return rawValue
+        }
+    }
 }
 
 #Preview {
@@ -363,4 +418,5 @@ private extension PurchaseDomainsCheckoutView {
                                 selectedWallet: WalletWithInfo.mock[0],
                                 wallets: WalletWithInfo.mock,
                                 purchasedCallback: { })
+    .environment(\.purchaseDomainsService, MockFirebaseInteractionsService())
 }

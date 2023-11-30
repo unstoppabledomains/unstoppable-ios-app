@@ -14,10 +14,11 @@ class BaseFirebaseInteractionService {
             NetworkConfig.migratedBaseUrl
         }
         static var baseAPIURL: String { baseURL.appendingURLPathComponent("api") }
+        
+        static var logoutURL: String { baseAPIURL.appendingURLPathComponents("user", "profile") }
     }
     
     let authHeaderKey = "auth-firebase-id-token"
-    var tokenData: FirebaseTokenData?
     let firebaseAuthService: FirebaseAuthService
     let firebaseSigner: UDFirebaseSigner
     
@@ -27,7 +28,9 @@ class BaseFirebaseInteractionService {
         self.firebaseSigner = firebaseSigner
     }
     
-    func logout() {
+    func logout() async {
+        try? await makeFirebaseAPIDataRequest(.init(urlString: URLSList.logoutURL,
+                                                    method: .post))
         firebaseAuthService.logout()
     }
 }
@@ -35,14 +38,7 @@ class BaseFirebaseInteractionService {
 // MARK: - Open methods
 extension BaseFirebaseInteractionService {
     func getIdToken() async throws -> String {
-        guard let tokenData,
-              let expirationDate = tokenData.expirationDate,
-              expirationDate > Date() else {
-            try await refreshIdTokenIfPossible()
-            return try await getIdToken()
-        }
-        
-        return tokenData.idToken
+        try await firebaseAuthService.getIdToken()
     }
     
     @discardableResult
@@ -81,31 +77,5 @@ private extension BaseFirebaseInteractionService {
                                             method: apiRequest.method)
         
         return firebaseAPIRequest
-    }
-    
-    func refreshIdTokenIfPossible() async throws {
-        if let refreshToken = firebaseAuthService.refreshToken {
-            try await refreshIdTokenWith(refreshToken: refreshToken)
-        } else {
-            throw FirebaseAuthError.firebaseUserNotAuthorisedInTheApp
-        }
-    }
-    
-    func refreshIdTokenWith(refreshToken: String) async throws {
-        do {
-            let authResponse = try await firebaseSigner.refreshIDTokenWith(refreshToken: refreshToken)
-            guard let expiresIn = TimeInterval(authResponse.expiresIn) else { throw FirebaseAuthError.failedToGetTokenExpiresData }
-            
-            let expirationDate = Date().addingTimeInterval(expiresIn - 60) // Deduct 1 minute to ensure token won't expire in between of making request
-            tokenData = FirebaseTokenData(idToken: authResponse.idToken,
-                                          expiresIn: authResponse.expiresIn,
-                                          expirationDate: expirationDate,
-                                          refreshToken: authResponse.refreshToken)
-        } catch FirebaseAuthError.refreshTokenExpired {
-            logout()
-            throw FirebaseAuthError.refreshTokenExpired
-        } catch {
-            throw error
-        }
     }
 }

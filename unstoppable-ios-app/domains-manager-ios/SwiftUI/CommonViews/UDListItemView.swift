@@ -21,7 +21,7 @@ struct UDListItemView: View {
     var rightViewStyle: RightViewStyle? = nil
     
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 0) {
             HStack(spacing: 16) {
                 imageView()
                 VStack(alignment: .leading, spacing: 0) {
@@ -30,8 +30,10 @@ struct UDListItemView: View {
                 }
             }
             Spacer()
-            valueView()
-            rightView()
+            HStack(spacing: 8) {
+                valueView()
+                rightView()
+            }
         }
         .frame(minHeight: UDListItemView.height)
     }

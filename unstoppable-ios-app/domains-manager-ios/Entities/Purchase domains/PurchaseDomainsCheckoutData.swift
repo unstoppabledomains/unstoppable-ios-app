@@ -15,6 +15,9 @@ struct PurchaseDomainsCheckoutData: Equatable {
     var durationsMap: [String : Double] = [:]
     
     func getDurationsMapString() -> String {
+        if durationsMap.isEmpty {
+            return ""
+        }
         guard let data = durationsMap.jsonData(),
               let str = String(data: data, encoding: .utf8) else {
             return ""

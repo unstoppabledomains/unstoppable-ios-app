@@ -892,7 +892,6 @@
 "GET_DOMAIN_CARD_TITLE" = "Get your domain";
 "GET_DOMAIN_CARD_SUBTITLE" = "Own your identity in the digital world.\nGet started with a Web3 domain.";
 "FIND_A_NEW_DOMAIN" = "Find a new domain";
-"FIND_A_NEW_DOMAIN" = "Find a new domain";
 "FIND_YOUR_DOMAIN" = "Find your domain";
 "TRENDING" = "Trending";
 "NO_AVAILABLE_DOMAINS" = "No available domains";
@@ -908,9 +907,14 @@
 "ENTER_US_ZIP_CODE" = "Enter US ZIP code";
 "ZIP_CODE" = "ZIP code";
 "CHECKOUT" = "Checkout";
-"TO_CALCULATE_TAXES" = "To calculate taxes";
+"TO_CALCULATE_TAXES" = "For sales tax";
+"US_RESIDENTS" = "US Residents";
 "TAXES" = "Taxes";
+"CREDITS_AND_DISCOUNTS" = "Credits & discounts";
 "DISCOUNTS" = "Discounts";
+"DISCOUNT_APPLIED_TOAST_MESSAGE" = "%@ off applied with your discount code";
 "APPLY" = "Apply";
 "ORDER_SUMMARY" = "Order summary";
 "TOTAL_DUE" = "Total due";
+"DOMAINS_PURCHASED_SUBTITLE" = "Claiming process started, it can take up to 5 minutes.";
+"GO_TO_DOMAINS" = "Go to domains";

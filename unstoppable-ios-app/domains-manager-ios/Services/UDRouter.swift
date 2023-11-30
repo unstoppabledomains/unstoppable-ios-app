@@ -22,7 +22,7 @@ class UDRouter: DomainProfileSignatureValidator {
                                           loginCallback: loginCallback,
                                           notificationsService: appContext.notificationsService,
                                           dataAggregatorService: appContext.dataAggregatorService,
-                                          firebaseAuthenticationService: appContext.firebaseAuthenticationService)
+                                          firebaseAuthenticationService: appContext.firebaseParkedDomainsAuthenticationService)
         vc.presenter = presenter
         
         return vc
@@ -634,8 +634,10 @@ class UDRouter: DomainProfileSignatureValidator {
         viewController.present(vc, animated: true)
     }
     
-    func showSearchDomainToPurchase(in viewController: UIViewController) {
+    func showSearchDomainToPurchase(in viewController: UIViewController,
+                                    domainsPurchasedCallback: @escaping  PurchaseDomainsNavigationController.DomainsPurchasedCallback) {
         let purchaseDomainsNavigationController = PurchaseDomainsNavigationController()
+        purchaseDomainsNavigationController.domainsPurchasedCallback = domainsPurchasedCallback
         viewController.cNavigationController?.pushViewController(purchaseDomainsNavigationController,
                                                                  animated: true)
     }

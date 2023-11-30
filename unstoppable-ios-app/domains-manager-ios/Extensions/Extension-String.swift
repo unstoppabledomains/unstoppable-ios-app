@@ -1000,11 +1000,16 @@ extension String {
         static let zipCode = "ZIP_CODE"
         static let checkout = "CHECKOUT"
         static let toCalculateTaxes = "TO_CALCULATE_TAXES"
+        static let usResidents = "US_RESIDENTS"
         static let taxes = "TAXES"
+        static let creditsAndDiscounts = "CREDITS_AND_DISCOUNTS"
         static let discounts = "DISCOUNTS"
+        static let discountAppliedToastMessage = "DISCOUNT_APPLIED_TOAST_MESSAGE"
         static let apply = "APPLY"
         static let orderSummary = "ORDER_SUMMARY"
         static let totalDue = "TOTAL_DUE"
+        static let domainsPurchasedSubtitle = "DOMAINS_PURCHASED_SUBTITLE"
+        static let goToDomains = "GO_TO_DOMAINS"
     }
 
     enum BlockChainIcons: String {
