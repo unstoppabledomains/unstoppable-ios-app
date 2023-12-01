@@ -43,3 +43,8 @@ extension DomainPFPInfo {
         }
     }
 }
+
+enum DomainProfileImageType: String, Codable, Hashable {
+    case onChain, offChain
+    case `default` /// Means no avatar is set
+}

@@ -7,12 +7,6 @@
 
 import Foundation
 
-protocol FirebaseDomainsServiceProtocol {
-    func getCachedDomains() -> [FirebaseDomain]
-    func getParkedDomains() async throws -> [FirebaseDomain]
-    func clearParkedDomains()
-}
-
 final class FirebaseDomainsService: BaseFirebaseInteractionService {
     
     private let storage = FirebaseDomainsStorage.instance

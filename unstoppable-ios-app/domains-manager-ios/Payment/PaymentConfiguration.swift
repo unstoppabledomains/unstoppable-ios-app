@@ -35,15 +35,3 @@ func formatCartPrice(_ price: Int) -> String {
     let price = PaymentConfiguration.centsIntoDollars(cents: price) 
     return PaymentConfiguration.cartPriceFormatter.string(from: price as NSNumber)!
 }
-
-extension DomainItem {
-    /// This method puts a rule whether or not the domains requires payment for a critical trnasaction.
-    /// True means that the app will launch Apple Pay flow and will depend on the backend
-    /// - Returns: Bool
-    func doesRequirePayment() -> Bool {
-        switch self.getBlockchainType() {
-        case .Ethereum: return true
-        case .Zilliqa, .Matic: return false
-        }
-    }
-}
