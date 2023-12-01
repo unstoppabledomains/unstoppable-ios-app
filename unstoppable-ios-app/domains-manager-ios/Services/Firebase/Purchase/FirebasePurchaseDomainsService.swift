@@ -274,8 +274,10 @@ private extension FirebasePurchaseDomainsService {
         return PurchaseDomainsCart(domains: domains,
                                    totalPrice: udCart.calculations.totalAmountDue,
                                    taxes: udCart.calculations.salesTax,
-                                   discountDetails: .init(storeCredits: udCart.discountDetails.storeCredits,
-                                                          promoCredits: udCart.discountDetails.promoCredits,
+                                   storeCreditsAvailable: udCart.discountDetails.storeCredits,
+                                   promoCreditsAvailable: udCart.discountDetails.promoCredits,
+                                   appliedDiscountDetails: .init(storeCredits: udCart.calculations.storeCreditsUsed,
+                                                          promoCredits: udCart.calculations.promoCreditsUsed,
                                                           others: otherDiscountsSum))
     }
     
@@ -297,15 +299,17 @@ private extension FirebasePurchaseDomainsService {
             let cryptoWalletId: Int
             let applyStoreCredits: Bool
             let applyPromoCredits: Bool
-//            let discountCode: String
-//            let zipCode: String
+            let discountCode: String?
+            let zipCode: String?
         }
         
         
         let urlString = URLSList.PAYMENT_STRIPE_URL
         let body = RequestBody(cryptoWalletId: wallet.id,
                                applyStoreCredits: checkoutData.isStoreCreditsOn,
-                               applyPromoCredits: checkoutData.isPromoCreditsOn)
+                               applyPromoCredits: checkoutData.isPromoCreditsOn, 
+                               discountCode: checkoutData.discountCodeIfEntered, 
+                               zipCode: checkoutData.zipCodeIfEntered)
         let request = try APIRequest(urlString: urlString,
                                      body: body,
                                      method: .post)

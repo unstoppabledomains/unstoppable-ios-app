@@ -19,8 +19,6 @@ struct PurchaseDomainsSelectDiscountsView: View {
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
     @State private var cart: PurchaseDomainsCart = .empty
 
-    private var discountDetails: PurchaseDomainsCart.DiscountDetails { purchaseDomainsService.cart.discountDetails }
-
     var body: some View {
         VStack(spacing: 24) {
             Text(String.Constants.applyDiscounts.localized())
@@ -54,11 +52,11 @@ struct PurchaseDomainsSelectDiscountsView: View {
 // MARK: - Private methods
 private extension PurchaseDomainsSelectDiscountsView {
     var hasPromoCredits: Bool {
-        discountDetails.promoCredits > 0
+        cart.promoCreditsAvailable > 0
     }
     
     var hasStoreCredits: Bool {
-        discountDetails.storeCredits > 0
+        cart.storeCreditsAvailable > 0
     }
     
     var creditsSectionHeight: CGFloat {
@@ -80,7 +78,7 @@ private extension PurchaseDomainsSelectDiscountsView {
         UDCollectionSectionBackgroundView {
             VStack(alignment: .center, spacing: 0) {
                 if hasPromoCredits {
-                    Toggle("\(String.Constants.promoCredits.localized()): \(formatCartPrice(discountDetails.promoCredits))",
+                    Toggle("\(String.Constants.promoCredits.localized()): \(formatCartPrice(cart.promoCreditsAvailable))",
                            isOn: $isPromoCreditsOn)
                     .toggleStyle(UDToggleStyle())
                     .frame(minHeight: UDListItemView.height)
@@ -89,7 +87,7 @@ private extension PurchaseDomainsSelectDiscountsView {
                     }
                 }
                 if hasStoreCredits {
-                    Toggle("\(String.Constants.storeCredits.localized()): \(formatCartPrice(discountDetails.storeCredits))",
+                    Toggle("\(String.Constants.storeCredits.localized()): \(formatCartPrice(cart.storeCreditsAvailable))",
                            isOn: $isStoreCreditsOn)
                     .toggleStyle(UDToggleStyle())
                     .frame(minHeight: UDListItemView.height)
@@ -141,7 +139,7 @@ private extension PurchaseDomainsSelectDiscountsView {
             purchaseDomainsPreferencesStorage.checkoutData.discountCode = ""
         } label: {
             HStack(spacing: 4) {
-                Text("\(String.Constants.discountCode.localized()): \(formatCartPrice(cart.discountDetails.others))")
+                Text("\(String.Constants.discountCode.localized()): \(formatCartPrice(cart.appliedDiscountDetails.others))")
                     .foregroundStyle(Color.foregroundDefault)
                 Spacer()
                 HStack(spacing: 8) {

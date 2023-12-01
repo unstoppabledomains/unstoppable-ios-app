@@ -53,8 +53,8 @@ struct PurchaseDomainsCheckoutView: View {
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
         .onReceive(purchaseDomainsService.cartPublisher.receive(on: DispatchQueue.main)) { cart in
-            if self.cart.discountDetails.others == 0 && cart.discountDetails.others != 0 {
-                appContext.toastMessageService.showToast(.purchaseDomainsDiscountApplied(cart.discountDetails.others), isSticky: false)
+            if self.cart.appliedDiscountDetails.others == 0 && cart.appliedDiscountDetails.others != 0 {
+                appContext.toastMessageService.showToast(.purchaseDomainsDiscountApplied(cart.appliedDiscountDetails.others), isSticky: false)
             }
             self.cart = cart
         }
@@ -159,7 +159,7 @@ private extension PurchaseDomainsCheckoutView {
                            image: .tagsCashIcon,
                            rightViewStyle: .chevron)
         }, callback: {
-            if cart.discountDetails.storeCredits == 0 && cart.discountDetails.promoCredits == 0 {
+            if cart.storeCreditsAvailable == 0 && cart.promoCreditsAvailable == 0 {
                 isEnterDiscountCodePresented = true
             } else {
                 isSelectDiscountsPresented = true
@@ -175,16 +175,7 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var appliedDiscountsSum: Int? {
-        var sum = 0
-        
-        if checkoutData.isStoreCreditsOn {
-            sum += cart.discountDetails.storeCredits
-        }
-        if checkoutData.isPromoCreditsOn {
-            sum += cart.discountDetails.promoCredits
-        }
-        
-        sum += cart.discountDetails.others
+        let sum = cart.appliedDiscountDetails.totalSum
         
         if sum == 0 {
             return nil
@@ -261,7 +252,7 @@ private extension PurchaseDomainsCheckoutView {
                     additionalCheckoutDetailsRow(title: String.Constants.taxes.localized(), value: formatCartPrice(cart.taxes))
                 }
                 if appliedDiscountsSum != nil {
-                    additionalCheckoutDetailsRow(title: String.Constants.discounts.localized(), value: discountValueString)
+                    additionalCheckoutDetailsRow(title: String.Constants.creditsAndDiscounts.localized(), value: discountValueString)
                 }
             }
         }

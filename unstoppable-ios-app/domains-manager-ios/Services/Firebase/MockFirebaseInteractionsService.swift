@@ -139,7 +139,9 @@ private extension MockFirebaseInteractionsService {
         let storeCredits = checkoutData.isStoreCreditsOn ? 100 : 0
         let promoCredits = checkoutData.isPromoCreditsOn ? 2000 : 0
         let otherDiscounts = checkoutData.discountCode.isEmpty ? 0 : cart.totalPrice / 3
-        cart.discountDetails = .init(storeCredits: storeCredits, promoCredits: promoCredits, others: otherDiscounts)
+        cart.appliedDiscountDetails = .init(storeCredits: storeCredits, 
+                                            promoCredits: promoCredits,
+                                            others: otherDiscounts)
         if !checkoutData.usaZipCode.isEmpty {
             let taxes = 200
             cart.taxes = taxes
@@ -151,7 +153,9 @@ private extension MockFirebaseInteractionsService {
         .init(domains: [.init(name: "oleg.x", price: 100, metadata: nil)],
               totalPrice: 100,
               taxes: 0,
-              discountDetails: .init(storeCredits: 100,
+              storeCreditsAvailable: 100,
+              promoCreditsAvailable: 2000,
+              appliedDiscountDetails: .init(storeCredits: 100,
                                      promoCredits: 2000,
                                      others: 0))
     }
