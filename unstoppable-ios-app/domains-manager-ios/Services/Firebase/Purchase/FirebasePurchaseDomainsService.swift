@@ -126,7 +126,6 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
         let userWallet = try UDUserAccountCryptWallet.objectFromDataThrowing(wallet.metadata ?? Data())
         try await purchaseDomainsInTheCart(to: userWallet)
         isAutoRefreshCartSuspended = false
-        checkoutData.discountCode = ""
     }
 }
 
