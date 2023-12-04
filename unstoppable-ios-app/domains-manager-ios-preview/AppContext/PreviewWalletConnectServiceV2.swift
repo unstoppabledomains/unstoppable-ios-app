@@ -8,11 +8,18 @@
 import Foundation
 
 protocol WalletConnectServiceV2Protocol {
-    
+    func getConnectedApps() async -> [UnifiedConnectAppInfo]
+    func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
 }
 
 final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
-    struct WCServiceAppInfo {
+    func getConnectedApps() async -> [UnifiedConnectAppInfo] {
+        []
+    }
+    func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws {
+        
+    }
+    struct WCServiceAppInfo: Hashable {
         func getDisplayName() -> String {
             ""
         }
@@ -20,6 +27,16 @@ final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
 }
 
 protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
+    var walletAddress: HexAddress { get }
+    var domain: DomainItem { get }
+    var appIconUrls: [String] { get }
+    
+    var appName: String { get }
+    var appUrlString: String { get }
     var displayName: String { get }
+    var description: String { get }
+    var appInfo: WalletConnectServiceV2.WCServiceAppInfo { get }
+    var connectionStartDate: Date? { get }
+
 }
 

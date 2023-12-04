@@ -313,3 +313,11 @@ struct BackedUpWallet {
 struct LegacyUnitaryWallet: Codable {
     
 }
+
+
+extension UDWallet {
+    func owns(domain: any DomainEntity) -> Bool {
+        guard let domainWalletAddress = domain.ownerWallet?.normalized else { return false }
+        return self.address.normalized == domainWalletAddress || self.address.normalized == domainWalletAddress
+    }
+}

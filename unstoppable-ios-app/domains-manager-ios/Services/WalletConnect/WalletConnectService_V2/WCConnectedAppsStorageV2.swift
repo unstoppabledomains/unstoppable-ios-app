@@ -136,18 +136,6 @@ protocol UnifiedConnectAppInfoProtocol: Equatable, Hashable {
     init(from appV2: WCConnectedAppsStorageV2.ConnectedApp)
 }
 
-struct UnifiedConnectedAppInfoHolder: Hashable {
-    let app: any UnifiedConnectAppInfoProtocol
-    
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.app.isEqual(rhs.app)
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(app)
-    }
-}
-
 extension UnifiedConnectAppInfoProtocol {
     var chainIds: [Int] {
         return appInfo.getChainIds()

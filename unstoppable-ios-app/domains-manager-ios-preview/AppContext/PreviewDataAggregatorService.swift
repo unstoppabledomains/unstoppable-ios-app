@@ -73,9 +73,9 @@ struct DataAggregatorService: DataAggregatorServiceProtocol {
     }
     
     func getDomainsDisplayInfo() async -> [DomainDisplayInfo] {
-        [.init(name: "one.x", ownerWallet: "1"),
-         .init(name: "two.x", ownerWallet: "2"),
-         .init(name: "three.x", ownerWallet: "3")]
+        [.init(name: "one.x", ownerWallet: "1", isSetForRR: true),
+         .init(name: "two.x", ownerWallet: "2", isSetForRR: false),
+         .init(name: "three.x", ownerWallet: "3", isSetForRR: false)]
     }
     
     func getDomainWith(name: String) async throws -> DomainItem {

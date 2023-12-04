@@ -7,39 +7,12 @@
 
 import Foundation
 
-protocol DomainEntity: Equatable {
-    var name: String { get }
-    var ownerWallet: String? { get }
-}
-
 struct DomainItem: DomainEntity {
     var name = ""
     var ownerWallet: String? = ""
+    var blockchain: BlockchainType? = .Matic
 }
 
-struct DomainDisplayInfo: Hashable, DomainEntity {
-    
-    private(set) var name: String
-    private(set) var ownerWallet: String?
-    private(set) var order: Int?
-    var isSetForRR: Bool = false
-    var pfpSource: DomainPFPInfo.PFPSource { .none }
-
-}
-
-extension Array where Element == DomainDisplayInfo {
-    func interactableItems() -> [DomainDisplayInfo] {
-        self
-    }
-    
-    func availableForMessagingItems() -> [DomainDisplayInfo] {
-        self
-    }
-    
-    func requirePNItems() -> [DomainDisplayInfo] {
-        self
-    }
-}
 
 struct PublicDomainDisplayInfo: Hashable {
     let walletAddress: String

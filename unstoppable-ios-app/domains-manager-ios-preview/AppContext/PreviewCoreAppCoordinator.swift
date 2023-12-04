@@ -10,11 +10,13 @@ import Foundation
 
 @MainActor
 protocol CoreAppCoordinatorProtocol {
-    
+    func didRegisterShakeDevice()
 }
 
 final class CoreAppCoordinator: CoreAppCoordinatorProtocol {
     nonisolated init() {
         
     }
+    
+    func didRegisterShakeDevice() { }
 }

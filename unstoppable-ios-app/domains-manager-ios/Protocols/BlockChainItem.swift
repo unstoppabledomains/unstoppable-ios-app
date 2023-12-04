@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol DomainEntity: Equatable {
+protocol DomainEntity: Hashable {
     var name: String { get }
     var blockchain: BlockchainType? { get }
     var ownerWallet: String? { get }
@@ -44,7 +44,7 @@ extension DomainEntity {
     func isOwned(by wallet: UDWallet) -> Bool {
         guard let ownerWallet = self.ownerWallet?.normalized else { return false }
         
-        return wallet.extractEthWallet()?.address.normalized == ownerWallet || wallet.extractZilWallet()?.address.normalized == ownerWallet
+        return wallet.address.normalized == ownerWallet || wallet.address.normalized == ownerWallet
     }
     
     var isUDDomain: Bool {

@@ -171,6 +171,10 @@ extension NetworkService {
         let gwei: UInt64
         let wei: UInt64
     }
+    
+    struct TxPayload {
+        
+    }
 }
 
 enum NetworkLayerError: LocalizedError, RawValueLocalizable {

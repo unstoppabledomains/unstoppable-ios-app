@@ -8,12 +8,14 @@
 import UIKit
 
 protocol SceneDelegateProtocol {
-    
+    var window: UIWindow? { get }
+
 }
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    static let shared: SceneDelegateProtocol? = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegateProtocol
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
