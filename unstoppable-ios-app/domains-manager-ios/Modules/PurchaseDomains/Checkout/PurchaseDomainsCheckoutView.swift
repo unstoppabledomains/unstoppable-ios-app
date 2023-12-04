@@ -19,9 +19,10 @@ struct PurchaseDomainsCheckoutView: View {
     
     @State private var domainAvatar: UIImage?
     @State private var scrollOffset: CGPoint = .zero
-    @State private var cart: PurchaseDomainsCart = .empty
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
     
+    @State private var error: PullUpErrorConfiguration?
+    @State private var cartStatus: PurchaseDomainCartStatus = .ready(cart: .empty)
     @State private var isLoading = false
     @State private var isSelectWalletPresented = false
     @State private var isEnterZIPCodePresented = false
@@ -52,11 +53,12 @@ struct PurchaseDomainsCheckoutView: View {
         .allowsHitTesting(!isLoading)
         .background(Color.backgroundDefault)
         .animation(.default, value: UUID())
-        .onReceive(purchaseDomainsService.cartPublisher.receive(on: DispatchQueue.main)) { cart in
-            if self.cart.appliedDiscountDetails.others == 0 && cart.appliedDiscountDetails.others != 0 {
-                appContext.toastMessageService.showToast(.purchaseDomainsDiscountApplied(cart.appliedDiscountDetails.others), isSticky: false)
+        .onReceive(purchaseDomainsService.cartStatusPublisher.receive(on: DispatchQueue.main)) { cartStatus in
+            if self.cartStatus.otherDiscountsApplied == 0 && cartStatus.otherDiscountsApplied != 0 {
+                appContext.toastMessageService.showToast(.purchaseDomainsDiscountApplied(cartStatus.otherDiscountsApplied), isSticky: false)
             }
-            self.cart = cart
+            self.cartStatus = cartStatus
+            checkUpdatedCartStatus()
         }
         .onReceive(purchaseDomainsPreferencesStorage.$checkoutData.publisher.receive(on: DispatchQueue.main), perform: { checkoutData in
             self.checkoutData = checkoutData
@@ -74,6 +76,7 @@ struct PurchaseDomainsCheckoutView: View {
         .sheet(isPresented: $isEnterDiscountCodePresented, content: {
             PurchaseDomainsEnterDiscountCodeView()
         })
+        .pullUpError($error)
         .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
         .onAppear(perform: onAppear)
     }
@@ -83,9 +86,28 @@ struct PurchaseDomainsCheckoutView: View {
 private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func headerView() -> some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 32) {
             Text(String.Constants.checkout.localized())
                 .titleText()
+            if case .hasUnpaidDomains = cartStatus {
+                Button {
+                    openLinkExternally(.mainLanding)
+                } label: {
+                    HStack(spacing: 8) {
+                        Image.infoIcon
+                            .resizable()
+                            .squareFrame(20)
+                            .foregroundStyle(Color.foregroundDanger)
+                        AttributedText(attributesList: .init(text: String.Constants.purchaseHasUnpaidVaultDomainsErrorMessage.localized(),
+                                       font: .currentFont(withSize: 16, weight: .medium),
+                                       textColor: .foregroundDanger,
+                                       alignment: .left),
+                                       updatedAttributesList: [.init(text: String.Constants.purchaseHasUnpaidVaultDomainsErrorMessageHighlighted.localized(),
+                                                                     textColor: .foregroundAccent)])
+                    }
+                    .frame(height: 48)
+                }
+            }
         }
         .padding(EdgeInsets(top: 56, leading: 16, bottom: 0, trailing: 16))
     }
@@ -109,11 +131,18 @@ private extension PurchaseDomainsCheckoutView {
             UDListItemView(title: String.Constants.mintTo.localized(),
                            value: selectedWalletName,
                            image: .vaultIcon,
-                           rightViewStyle: canSelectWallet ? .chevron : nil)
+                           rightViewStyle: walletSelectionIndicatorStyle)
         }, callback: {
             isSelectWalletPresented = true
         })
         .allowsHitTesting(canSelectWallet)
+    }
+    
+    var walletSelectionIndicatorStyle: UDListItemView.RightViewStyle? {
+        if case .failedToAuthoriseWallet = cartStatus {
+            return .errorCircle
+        }
+        return canSelectWallet ? .chevron : nil
     }
     
     var canSelectWallet: Bool {
@@ -159,7 +188,7 @@ private extension PurchaseDomainsCheckoutView {
                            image: .tagsCashIcon,
                            rightViewStyle: .chevron)
         }, callback: {
-            if cart.storeCreditsAvailable == 0 && cart.promoCreditsAvailable == 0 {
+            if cartStatus.storeCreditsAvailable == 0 && cartStatus.promoCreditsAvailable == 0 {
                 isEnterDiscountCodePresented = true
             } else {
                 isSelectDiscountsPresented = true
@@ -175,7 +204,7 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var appliedDiscountsSum: Int? {
-        let sum = cart.appliedDiscountDetails.totalSum
+        let sum = cartStatus.otherDiscountsApplied
         
         if sum == 0 {
             return nil
@@ -248,8 +277,8 @@ private extension PurchaseDomainsCheckoutView {
     func additionalCheckoutDetailsView() -> some View {
         if hasAdditionalCheckoutData {
             VStack(spacing: 8) {
-                if cart.taxes > 0 {
-                    additionalCheckoutDetailsRow(title: String.Constants.taxes.localized(), value: formatCartPrice(cart.taxes))
+                if cartStatus.taxes > 0 {
+                    additionalCheckoutDetailsRow(title: String.Constants.taxes.localized(), value: formatCartPrice(cartStatus.taxes))
                 }
                 if appliedDiscountsSum != nil {
                     additionalCheckoutDetailsRow(title: String.Constants.creditsAndDiscounts.localized(), value: discountValueString)
@@ -259,7 +288,7 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     var hasAdditionalCheckoutData: Bool {
-        appliedDiscountsSum != nil || cart.taxes > 0
+        appliedDiscountsSum != nil || cartStatus.taxes > 0
     }
     
     @ViewBuilder
@@ -275,12 +304,47 @@ private extension PurchaseDomainsCheckoutView {
         .frame(height: 20)
     }
     
+    var failedToLoadCalculations: Bool {
+        if case .failedToLoadCalculations = cartStatus {
+            return true
+        }
+        return false
+    }
+    
     @ViewBuilder
     func totalDueView() -> some View {
         HStack {
-            Text(String.Constants.totalDue.localized())
+            VStack(alignment: .leading) {
+                Text(String.Constants.totalDue.localized())
+                if failedToLoadCalculations {
+                    HStack {
+                        Image.infoIcon
+                            .resizable()
+                            .squareFrame(16)
+                        Text(String.Constants.somethingWentWrong.localized())
+                            .font(.currentFont(size: 14, weight: .medium))
+                    }
+                    .foregroundStyle(Color.foregroundDanger)
+                }
+            }
             Spacer()
-            Text(formatCartPrice(cart.totalPrice))
+            if failedToLoadCalculations {
+                Button {
+                    UDVibration.buttonTap.vibrate()
+                    Task { try? await purchaseDomainsService.refreshCart() }
+                } label: {
+                    HStack {
+                        Image.refreshIcon
+                            .resizable()
+                            .squareFrame(20)
+                        Text(String.Constants.refresh.localized())
+                            .font(.currentFont(size: 16, weight: .medium))
+                    }
+                    .foregroundStyle(Color.foregroundAccent)
+                }
+            } else {
+                Text(formatCartPrice(cartStatus.totalPrice))
+            }
         }
         .font(.currentFont(size: 16, weight: .medium))
         .foregroundStyle(Color.foregroundDefault)
@@ -306,6 +370,7 @@ private extension PurchaseDomainsCheckoutView {
         UDButtonView(text: String.Constants.pay.localized(), icon: .appleIcon, style: .large(.applePay)) {
             startPurchaseDomains()
         }
+        .disabled(isPayButtonDisabled)
         .padding()
     }
     
@@ -316,6 +381,13 @@ private extension PurchaseDomainsCheckoutView {
         default:
             return true
         }
+    }
+    
+    var isPayButtonDisabled: Bool {
+        if case .ready = cartStatus {
+            return false
+        }
+        return true
     }
 }
 
@@ -330,17 +402,16 @@ private extension PurchaseDomainsCheckoutView {
     }
     
     func didSelectWallet(_ wallet: WalletWithInfo, forceReload: Bool = false) {
-        guard wallet.address != selectedWallet.address || forceReload else { return }
+        guard wallet.address != selectedWallet.address || error != nil || forceReload else { return }
         
+        error = nil
         Task {
-            let currentlySelectedWallet = self.selectedWallet
             selectedWallet = wallet
             isLoading = true
             do {
                 try await purchaseDomainsService.authoriseWithWallet(wallet.wallet,
                                                                      toPurchaseDomains: [domain])
             } catch {
-                selectedWallet = currentlySelectedWallet
                 Debugger.printFailure("Did fail to authorise wallet \(wallet.address) with error \(error)")
             }
             isLoading = false
@@ -365,8 +436,26 @@ private extension PurchaseDomainsCheckoutView {
                 purchasedCallback()
             } catch {
                 Debugger.printFailure("Did fail to purchase domains with error \(error)")
+                self.error = .purchaseError(tryAgainCallback: startPurchaseDomains)
             }
             isLoading = false
+        }
+    }
+    
+    func checkUpdatedCartStatus() {
+        switch cartStatus {
+        case .failedToAuthoriseWallet(let wallet):
+            error = .selectWalletError(wallet: wallet,
+                                       selectAnotherCallback: {
+                isSelectWalletPresented = true
+            }, tryAgainCallback: {
+                guard let walletWithInfo = self.wallets.first(where: { $0.address == wallet.address }) else { return }
+                didSelectWallet(walletWithInfo, forceReload: true)
+            })
+        case .failedToLoadCalculations(let callback):
+            error = .loadCalculationsError(tryAgainCallback: callback)
+        default:
+            return
         }
     }
 }
@@ -418,6 +507,35 @@ private extension PurchaseDomainsCheckoutView {
         public var errorDescription: String? {
             return rawValue
         }
+    }
+}
+
+private extension PullUpErrorConfiguration {
+    static func selectWalletError(wallet: UDWallet,
+                                  selectAnotherCallback: @escaping EmptyCallback,
+                                  tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
+        .init(title: String.Constants.purchaseWalletAuthErrorTitle.localized(wallet.address.walletAddressTruncated),
+              subtitle: String.Constants.purchaseWalletAuthErrorSubtitle.localized(),
+              primaryAction: .init(title: String.Constants.selectAnotherWallet.localized(),
+                                   callback: selectAnotherCallback),
+              secondaryAction: .init(title: String.Constants.tryAgain.localized(),
+                                    callback: tryAgainCallback))
+    }
+    
+    static func loadCalculationsError(tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
+        .init(title: String.Constants.purchaseWalletCalculationsErrorTitle.localized(),
+              subtitle: String.Constants.purchaseWalletCalculationsErrorSubtitle.localized(),
+              primaryAction: .init(title: String.Constants.tryAgain.localized(),
+                                   callback: tryAgainCallback),
+              height: deviceSize == .i4_7Inch ? 350 : 320)
+    }
+    
+    static func purchaseError(tryAgainCallback: @escaping EmptyCallback) -> PullUpErrorConfiguration {
+        .init(title: String.Constants.purchaseWalletPurchaseErrorTitle.localized(),
+              subtitle: String.Constants.purchaseWalletPurchaseErrorSubtitle.localized(),
+              primaryAction: .init(title: String.Constants.tryAgain.localized(),
+                                   callback: tryAgainCallback),
+              height: deviceSize == .i4_7Inch ? 330 : 300)
     }
 }
 

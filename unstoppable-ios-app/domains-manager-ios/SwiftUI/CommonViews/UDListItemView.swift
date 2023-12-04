@@ -95,18 +95,10 @@ private extension UDListItemView {
     @ViewBuilder
     func rightView() -> some View {
         if let rightViewStyle  {
-            switch rightViewStyle {
-            case .chevron:
-                Image.chevronRight
-                    .resizable()
-                    .squareFrame(20)
-                    .foregroundStyle(Color.foregroundMuted)
-            case .checkmark:
-                Image.checkCircle
-                    .resizable()
-                    .squareFrame(20)
-                    .foregroundStyle(Color.foregroundAccent)
-            }
+            rightViewStyle.image
+                .resizable()
+                .squareFrame(20)
+                .foregroundStyle(rightViewStyle.foregroundColor)
         }
     }
 }
@@ -119,7 +111,29 @@ extension UDListItemView {
     }
     
     enum RightViewStyle {
-        case chevron, checkmark
+        case chevron, checkmark, errorCircle
+        
+        var image: Image {
+            switch self {
+            case .chevron:
+                return .chevronRight
+            case .checkmark:
+                return .checkCircle
+            case .errorCircle:
+                return .infoIcon
+            }
+        }
+        
+        var foregroundColor: Color {
+            switch self {
+            case .chevron:
+                return .foregroundMuted
+            case .checkmark:
+                return .foregroundAccent
+            case .errorCircle:
+                return .foregroundDanger
+            }
+        }
     }
 }
 

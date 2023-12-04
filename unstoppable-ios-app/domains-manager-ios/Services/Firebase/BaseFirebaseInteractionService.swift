@@ -33,13 +33,6 @@ class BaseFirebaseInteractionService {
                                                     method: .post))
         firebaseAuthService.logout()
     }
-}
-
-// MARK: - Open methods
-extension BaseFirebaseInteractionService {
-    func getIdToken() async throws -> String {
-        try await firebaseAuthService.getIdToken()
-    }
     
     @discardableResult
     func makeFirebaseAPIDataRequest(_ apiRequest: APIRequest) async throws -> Data {
@@ -61,6 +54,13 @@ extension BaseFirebaseInteractionService {
                                                                              using: keyDecodingStrategy,
                                                                              dateDecodingStrategy: dateDecodingStrategy)
         return response
+    }
+}
+
+// MARK: - Open methods
+extension BaseFirebaseInteractionService {
+    func getIdToken() async throws -> String {
+        try await firebaseAuthService.getIdToken()
     }
 }
 

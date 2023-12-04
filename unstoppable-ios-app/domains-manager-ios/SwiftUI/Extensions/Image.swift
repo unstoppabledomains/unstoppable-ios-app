@@ -36,5 +36,7 @@ extension Image {
     static let tagIcon = Image(uiImage: .tagIcon)
     static let udWalletListIcon = Image(uiImage: .udWalletListIcon)
     static let systemGlobe = Image(uiImage: .systemGlobe)
+    static let infoIcon = Image(uiImage: .infoIcon)
+    static let refreshIcon = Image(uiImage: .refreshIcon)
     
 }
