@@ -17,3 +17,14 @@ extension EnvironmentValues {
         set { self[DataAggregatorServiceKey.self] = newValue }
     }
 }
+
+private struct AnalyticsViewNameKey: EnvironmentKey {
+    static let defaultValue = Analytics.ViewName.unspecified
+}
+
+extension EnvironmentValues {
+    var analyticsViewName: Analytics.ViewName {
+        get { self[AnalyticsViewNameKey.self] }
+        set { self[AnalyticsViewNameKey.self] = newValue }
+    }
+}

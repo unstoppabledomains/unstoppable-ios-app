@@ -12,6 +12,7 @@ final class PurchaseSearchDomainsViewController: BaseViewController, ViewWithDas
     override var scrollableContentYOffset: CGFloat? { 16 }
 
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
+    override var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
 
     var progress: Double? { 1 / 6 }
 

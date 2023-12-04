@@ -62,6 +62,9 @@ extension Analytics {
         
         // Shake to find
         case didDiscoverBTDomain
+        
+        // Purchase domain
+        case didPurchaseDomains
     }
 }
 
@@ -173,6 +176,7 @@ extension Analytics {
         case publicDomainProfile
         case domainFollowersList, domainCryptoList, domainSocialsList, publicProfileDomainsSelectionList
         case shakeToFind
+        case purchaseDomainsSearch, purchaseDomainsCheckout
     }
 }
 
@@ -302,6 +306,14 @@ extension Analytics {
         
         // Shake and find
         case btDomain
+        
+        // Purchase domain
+        case getNewDomain, getNewDomainLearnMore
+        case suggestedName
+        case purchaseDomainTargetWalletSelected
+        case enterUSZIPCode, confirmUSZIPCode
+        case creditsAndDiscounts, removeDiscountCode, confirmDiscountCode
+        case applyPromoCredits, applyStoreCredits
     }
 }
 

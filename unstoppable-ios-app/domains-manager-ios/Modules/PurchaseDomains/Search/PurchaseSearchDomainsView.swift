@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-struct PurchaseSearchDomainsView: View {
+struct PurchaseSearchDomainsView: View, ViewAnalyticsLogger {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @StateObject private var debounceObject = DebounceObject()
@@ -22,7 +22,8 @@ struct PurchaseSearchDomainsView: View {
     
     var domainSelectedCallback: ((DomainToPurchase)->())
     var scrollOffsetCallback: ((CGPoint)->())? = nil
-    
+    var analyticsName: Analytics.ViewName { .purchaseDomainsSearch }
+
     var body: some View {
         OffsetObservingScrollView(offset: $scrollOffset) {
             VStack {
@@ -60,6 +61,7 @@ private extension PurchaseSearchDomainsView {
                         rightViewMode: .whileEditing,
                         leftViewType: .search)
         .onChange(of: debounceObject.debouncedText) { text in
+            logAnalytic(event: .didSearch, parameters: [.value: text])
             search(text: text)
         }
         .padding()
@@ -103,6 +105,7 @@ private extension PurchaseSearchDomainsView {
                     UDCollectionListRowButton(content: {
                         domainSearchResultRow(domainInfo)
                     }, callback: {
+                        logButtonPressedAnalyticEvents(button: .searchDomains, parameters: [.value: domainInfo.name])
                         domainSelectedCallback(domainInfo)
                     })
                 }
@@ -127,6 +130,8 @@ private extension PurchaseSearchDomainsView {
                 
                 FlowLayoutView(suggestions) { suggestion in
                     Button(action: {
+                        UDVibration.buttonTap.vibrate()
+                        logButtonPressedAnalyticEvents(button: .suggestedName, parameters: [.value: suggestion.name])
                         search(text: suggestion.name)
                         debounceObject.text = suggestion.name
                     }, label: {
