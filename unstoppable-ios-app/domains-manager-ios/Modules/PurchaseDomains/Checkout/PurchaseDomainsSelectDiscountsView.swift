@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct PurchaseDomainsSelectDiscountsView: View {
+struct PurchaseDomainsSelectDiscountsView: View, ViewAnalyticsLogger {
     
+    @Environment(\.analyticsViewName) private var analyticsViewName
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
@@ -18,6 +19,7 @@ struct PurchaseDomainsSelectDiscountsView: View {
     @State private var isStoreCreditsOn = false
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
     @State private var cartStatus: PurchaseDomainCartStatus = .ready(cart: .empty)
+    var analyticsName: Analytics.ViewName { analyticsViewName }
 
     var body: some View {
         VStack(spacing: 24) {
@@ -83,6 +85,7 @@ private extension PurchaseDomainsSelectDiscountsView {
                     .toggleStyle(UDToggleStyle())
                     .frame(minHeight: UDListItemView.height)
                     .onChange(of: isPromoCreditsOn) { newValue in
+                        logButtonPressedAnalyticEvents(button: .applyPromoCredits, parameters: [.value : String(newValue)])
                         purchaseDomainsPreferencesStorage.checkoutData.isPromoCreditsOn = newValue
                     }
                 }
@@ -92,6 +95,7 @@ private extension PurchaseDomainsSelectDiscountsView {
                     .toggleStyle(UDToggleStyle())
                     .frame(minHeight: UDListItemView.height)
                     .onChange(of: isStoreCreditsOn) { newValue in
+                        logButtonPressedAnalyticEvents(button: .applyStoreCredits, parameters: [.value : String(newValue)])
                         purchaseDomainsPreferencesStorage.checkoutData.isStoreCreditsOn = newValue
                     }
                 }
@@ -117,6 +121,7 @@ private extension PurchaseDomainsSelectDiscountsView {
     @ViewBuilder
     func addDiscountRow() -> some View {
         Button {
+            logButtonPressedAnalyticEvents(button: .creditsAndDiscounts)
             UDVibration.buttonTap.vibrate()
             isEnterDiscountCodePresented = true
         } label: {
@@ -135,6 +140,7 @@ private extension PurchaseDomainsSelectDiscountsView {
     @ViewBuilder
     func discountAppliedRow() -> some View {
         Button {
+            logButtonPressedAnalyticEvents(button: .removeDiscountCode)
             UDVibration.buttonTap.vibrate()
             purchaseDomainsPreferencesStorage.checkoutData.discountCode = ""
         } label: {

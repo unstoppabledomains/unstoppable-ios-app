@@ -133,8 +133,10 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
             logButtonPressedAnalyticEvents(button: .searchDomains)
             showDomainsSearch()
         case .purchaseDomains:
+            logButtonPressedAnalyticEvents(button: .getNewDomain)
             runPurchaseDomainsFlow()
         case .recentActivityGetDomain:
+            logButtonPressedAnalyticEvents(button: .getNewDomainLearnMore)
             showRecentActivitiesGetDomainPullUp()
         }
     }

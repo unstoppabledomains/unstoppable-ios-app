@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PurchaseDomainsCheckoutView: View {
+struct PurchaseDomainsCheckoutView: View, ViewAnalyticsLogger {
     
     @Environment(\.purchaseDomainsService) private var purchaseDomainsService
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
@@ -31,7 +31,8 @@ struct PurchaseDomainsCheckoutView: View {
     
     var purchasedCallback: EmptyCallback
     var scrollOffsetCallback: ((CGPoint)->())? = nil
-    
+    var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
+
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -69,12 +70,15 @@ struct PurchaseDomainsCheckoutView: View {
         .modifier(ShowingSelectWallet(isSelectWalletPresented: $isSelectWalletPresented,
                                       selectedWallet: selectedWallet,
                                       wallets: wallets,
+                                      analyticsName: analyticsName,
                                       selectedWalletCallback: { wallet in didSelectWallet(wallet) }))
         .sheet(isPresented: $isEnterZIPCodePresented, content: {
             PurchaseDomainsEnterZIPCodeView()
+                .environment(\.analyticsViewName, analyticsName)
         })
         .sheet(isPresented: $isEnterDiscountCodePresented, content: {
             PurchaseDomainsEnterDiscountCodeView()
+                .environment(\.analyticsViewName, analyticsName)
         })
         .pullUpError($error)
         .modifier(ShowingSelectDiscounts(isSelectDiscountsPresented: $isSelectDiscountsPresented))
@@ -133,6 +137,7 @@ private extension PurchaseDomainsCheckoutView {
                            image: .vaultIcon,
                            rightViewStyle: walletSelectionIndicatorStyle)
         }, callback: {
+            logButtonPressedAnalyticEvents(button: .selectWallet)
             isSelectWalletPresented = true
         })
         .allowsHitTesting(canSelectWallet)
@@ -168,6 +173,7 @@ private extension PurchaseDomainsCheckoutView {
                            imageStyle: .centred(offset: EdgeInsets(top: 6, leading: 8, bottom: 6, trailing: 8)),
                            rightViewStyle: .chevron)
         }, callback: {
+            logButtonPressedAnalyticEvents(button: .enterUSZIPCode)
             isEnterZIPCodePresented = true
         })
     }
@@ -189,6 +195,7 @@ private extension PurchaseDomainsCheckoutView {
                            rightViewStyle: .chevron)
         }, callback: {
             if cartStatus.storeCreditsAvailable == 0 && cartStatus.promoCreditsAvailable == 0 {
+                logButtonPressedAnalyticEvents(button: .creditsAndDiscounts)
                 isEnterDiscountCodePresented = true
             } else {
                 isSelectDiscountsPresented = true
@@ -368,6 +375,7 @@ private extension PurchaseDomainsCheckoutView {
     @ViewBuilder
     func checkoutButton() -> some View {
         UDButtonView(text: String.Constants.pay.localized(), icon: .appleIcon, style: .large(.applePay)) {
+            logButtonPressedAnalyticEvents(button: .pay, parameters: [.value : String(cartStatus.totalPrice)])
             startPurchaseDomains()
         }
         .disabled(isPayButtonDisabled)
@@ -429,6 +437,8 @@ private extension PurchaseDomainsCheckoutView {
                         
                 try await purchaseDomainsService.purchaseDomainsInTheCartAndMintTo(wallet: walletToMint)
                 purchaseDomainsPreferencesStorage.checkoutData.discountCode = ""
+                logAnalytic(event: .didPurchaseDomains, parameters: [.value : String(cartStatus.totalPrice),
+                                                                     .count: String(1)])
                 let pendingPurchasedDomain = PendingPurchasedDomain(name: domain.name,
                                                                     walletAddress: walletToMint.address)
                 PurchasedDomainsStorage.save(purchasedDomains: [pendingPurchasedDomain])
@@ -482,6 +492,7 @@ private extension PurchaseDomainsCheckoutView {
         @Binding var isSelectWalletPresented: Bool
         let selectedWallet: WalletWithInfo
         let wallets: [WalletWithInfo]
+        let analyticsName: Analytics.ViewName
         let selectedWalletCallback: PurchaseDomainSelectWalletCallback
         
         func body(content: Content) -> some View {
@@ -492,10 +503,12 @@ private extension PurchaseDomainsCheckoutView {
                                                         wallets: wallets,
                                                         selectedWalletCallback: selectedWalletCallback)
                         .presentationDetents([.medium, .large])
+                        .environment(\.analyticsViewName, analyticsName)
                     } else {
                         PurchaseDomainsSelectWalletView(selectedWallet: selectedWallet,
                                                         wallets: wallets,
                                                         selectedWalletCallback: selectedWalletCallback)
+                        .environment(\.analyticsViewName, analyticsName)
                     }
                 })
         }

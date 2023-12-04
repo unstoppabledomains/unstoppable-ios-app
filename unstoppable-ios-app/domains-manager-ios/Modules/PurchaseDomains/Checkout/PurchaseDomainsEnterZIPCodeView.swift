@@ -7,11 +7,13 @@
 
 import SwiftUI
 
-struct PurchaseDomainsEnterZIPCodeView: View {
+struct PurchaseDomainsEnterZIPCodeView: View, ViewAnalyticsLogger {
     
+    @Environment(\.analyticsViewName) private var analyticsViewName
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
     @State private var value: String = ""
+    var analyticsName: Analytics.ViewName { analyticsViewName }
 
     var body: some View {
         VStack(spacing: 24) {
@@ -24,8 +26,9 @@ struct PurchaseDomainsEnterZIPCodeView: View {
                             focusBehaviour: .activateOnAppear,
                             keyboardType: .numberPad)
             UDButtonView(text: String.Constants.confirm.localized(), style: .large(.raisedPrimary)) {
-                UDVibration.buttonTap.vibrate()
                 let zipCode = value.trimmedSpaces
+                logButtonPressedAnalyticEvents(button: .confirmUSZIPCode, parameters: [.value: zipCode])
+                UDVibration.buttonTap.vibrate()
                 purchaseDomainsPreferencesStorage.checkoutData.usaZipCode = zipCode
                 presentationMode.wrappedValue.dismiss()
             }

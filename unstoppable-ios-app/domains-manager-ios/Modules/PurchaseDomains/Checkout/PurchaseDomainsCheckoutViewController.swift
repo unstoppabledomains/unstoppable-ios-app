@@ -15,7 +15,8 @@ final class PurchaseDomainsCheckoutViewController: BaseViewController, ViewWithD
     private var domain: DomainToPurchase!
     private var selectedWallet: WalletWithInfo!
     private var wallets: [WalletWithInfo]!
-    
+    override var analyticsName: Analytics.ViewName { .purchaseDomainsCheckout }
+
     var progress: Double? { 5 / 6 }
     
     static func instantiate(domain: DomainToPurchase,
