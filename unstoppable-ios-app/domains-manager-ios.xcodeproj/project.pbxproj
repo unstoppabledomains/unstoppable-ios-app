@@ -2796,7 +2796,7 @@
 				306486962527253D00388026 /* domains-manager-iosTests */,
 				306486A12527253D00388026 /* domains-manager-iosUITests */,
 				C6E69F8B288A93D3000A8346 /* NotificationServiceExtension */,
-				C6960C192B19939E00B79E28 /* manager */,
+				C6960C192B19939E00B79E28 /* domains-manager-ios-preview */,
 				3064867E2527253700388026 /* Products */,
 				3B7896E6DE9955166D9015A2 /* Frameworks */,
 				C65DEA6E29B5834B00FF142B /* Recovered References */,
@@ -5389,7 +5389,7 @@
 			path = SelectAppearanceThemePullUpView;
 			sourceTree = "<group>";
 		};
-		C6960C192B19939E00B79E28 /* manager */ = {
+		C6960C192B19939E00B79E28 /* domains-manager-ios-preview */ = {
 			isa = PBXGroup;
 			children = (
 				C6960C1A2B19939E00B79E28 /* AppDelegate.swift */,
@@ -5402,7 +5402,7 @@
 				C6960C252B1993A100B79E28 /* LaunchScreen.storyboard */,
 				C6960C282B1993A100B79E28 /* Info.plist */,
 			);
-			path = manager;
+			path = "domains-manager-ios-preview";
 			sourceTree = "<group>";
 		};
 		C69F990E2A9F1264004B1958 /* CommonViews */ = {
@@ -8768,7 +8768,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = manager/Info.plist;
+				INFOPLIST_FILE = "domains-manager-ios-preview/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -8809,7 +8809,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = manager/Info.plist;
+				INFOPLIST_FILE = "domains-manager-ios-preview/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -8849,7 +8849,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = manager/Info.plist;
+				INFOPLIST_FILE = "domains-manager-ios-preview/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
