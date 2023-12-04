@@ -13,8 +13,13 @@ final class MockFirebaseInteractionsService {
     @Published var isAuthorized: Bool = true
     var isAuthorizedPublisher: Published<Bool>.Publisher { $isAuthorized }
     
-    @Published var cart: PurchaseDomainsCart = MockFirebaseInteractionsService.createMockCart()
-    var cartPublisher: Published<PurchaseDomainsCart>.Publisher { $cart }
+    private var cart: PurchaseDomainsCart = .empty {
+        didSet {
+            cartStatus = .ready(cart: cart)
+        }
+    }
+    @Published var cartStatus: PurchaseDomainCartStatus = .ready(cart: MockFirebaseInteractionsService.createMockCart())
+    var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher { $cartStatus }
     
     private var cancellables: Set<AnyCancellable> = []
     private var checkoutData: PurchaseDomainsCheckoutData
@@ -101,8 +106,10 @@ extension MockFirebaseInteractionsService: PurchaseDomainsServiceProtocol {
         
     }
     
+    func refreshCart() async throws { }
+    
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
-        cart = .empty
+        cartStatus = .ready(cart: .empty)
         updateCart()
     }
 }

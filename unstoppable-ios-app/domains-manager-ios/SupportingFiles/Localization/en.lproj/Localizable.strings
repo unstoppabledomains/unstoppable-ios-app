@@ -918,3 +918,12 @@
 "TOTAL_DUE" = "Total due";
 "DOMAINS_PURCHASED_SUBTITLE" = "Claiming process started, it can take up to 5 minutes.";
 "GO_TO_DOMAINS" = "Go to domains";
+"PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE" = "You have 1 or more unpaid vaults for your domain, please go to the website";
+"PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE_HIGHLIGHTED" = "go to the website";
+"PURCHASE_WALLET_AUTH_ERROR_TITLE" = "Vault (%@) is not authorized for minting";
+"PURCHASE_WALLET_AUTH_ERROR_SUBTITLE" = "Select another wallet or try again.";
+"SELECT_ANOTHER_WALLET" = "Select another wallet";
+"PURCHASE_WALLET_CALCULATIONS_ERROR_TITLE" = "There seems to be an issue with calculating your order's total";
+"PURCHASE_WALLET_CALCULATIONS_ERROR_SUBTITLE" = "No worries, just give it another moment and try again.";
+"PURCHASE_WALLET_PURCHASE_ERROR_TITLE" = "Purchase couldn’t be completed";
+"PURCHASE_WALLET_PURCHASE_ERROR_SUBTITLE" = "Please check your internet connection and try again.";
