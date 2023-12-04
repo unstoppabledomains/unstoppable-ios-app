@@ -158,8 +158,8 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         logButtonPressedAnalyticEvents(button: .scan, parameters: [.domainName: getCurrentDomainName()])
         showQRScanner()
     }
-   
-    func didMintDomains(result: MintDomainsNavigationController.MintDomainsResult) {
+    
+    func didMintDomains(result: MintDomainsResult) {
         switch result {
         case .noDomainsToMint:
             handleNoDomainsToMint()
