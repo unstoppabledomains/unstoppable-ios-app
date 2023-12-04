@@ -12,6 +12,15 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        showDomainsCollection()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showDomainsCollection()
+    }
+    
+    func showPurchaseDomainsCheckout() {
         let view = PurchaseDomainsCheckoutView(domain: .init(name: "oleg.x", price: 10000, metadata: nil),
                                                selectedWallet: WalletWithInfo.mock[0],
                                                wallets: WalletWithInfo.mock,
@@ -24,6 +33,17 @@ class ViewController: UIViewController {
         
         let vc = UIHostingController(rootView: view)
         addChildViewController(vc, andEmbedToView: self.view)
+    }
+    
+    func showDomainsCollection() {
+        let domainsCollectionVC = DomainsCollectionViewController.nibInstance()
+        let presenter = PreviewDomainsCollectionViewPresenter(view: domainsCollectionVC)
+        domainsCollectionVC.presenter = presenter
+        let nav = CNavigationController(rootViewController: domainsCollectionVC)
+        nav.modalTransitionStyle = .crossDissolve
+        nav.modalPresentationStyle = .fullScreen
+        
+        present(nav, animated: false)
     }
 
 
