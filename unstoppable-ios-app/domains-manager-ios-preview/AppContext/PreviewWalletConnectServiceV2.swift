@@ -12,16 +12,13 @@ protocol WalletConnectServiceV2Protocol {
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws
 }
 
+
 final class WalletConnectServiceV2: WalletConnectServiceV2Protocol {
+    
+    static var connectedAppsToUse: [UnifiedConnectAppInfo] = []
+    
     func getConnectedApps() async -> [UnifiedConnectAppInfo] {
-        [.init(walletAddress: "",
-               appIconUrls: [],
-               appName: "Uniswap",
-               appUrlString: "",
-               displayName: "Uniswap",
-               description: "",
-               appInfo: .init(),
-               domain: .init(name: "oleg.x"))]
+        WalletConnectServiceV2.connectedAppsToUse
     }
     func disconnect(app: any UnifiedConnectAppInfoProtocol) async throws {
         

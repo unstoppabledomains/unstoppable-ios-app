@@ -23,22 +23,26 @@ protocol WalletConnectExternalWalletHandlerProtocol {
 }
 
 struct UnifiedConnectAppInfo: UnifiedConnectAppInfoProtocol {
+    
+    
     var walletAddress: HexAddress
-    
-    var appIconUrls: [String]
-    
     var appName: String
-    
-    var appUrlString: String
-    
     var displayName: String
-    
-    var description: String
-    
-    var appInfo: WalletConnectServiceV2.WCServiceAppInfo
-    
-    var connectionStartDate: Date?
-    
     let domain: DomainItem
-
+    
+    var appIconUrls: [String] = []
+    var appUrlString: String = ""
+    var description: String = ""
+    var appInfo: WalletConnectServiceV2.WCServiceAppInfo = .init()
+    var connectionStartDate: Date? = Date()
+    
+    init(name: String = "Uniswap",
+              walletAddress: String = "",
+              domainName: String = "oleg.x") {
+        self.walletAddress = walletAddress
+        self.appName = name
+        self.displayName = name
+        self.domain = .init(name: domainName)
+    }
+    
 }

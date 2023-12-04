@@ -41,8 +41,11 @@ extension PreviewDomainsCollectionViewPresenter: DomainsCollectionPresenterProto
         view?.setScanButtonHidden(true)
         view?.setAddButtonHidden(false, isMessagingAvailable: false)
         view?.setEmptyState(hidden: true)
-        view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
-//        view?.setSelectedDisplayMode(.domain(.init(name: "oleg.x", ownerWallet: "", isSetForRR: false)), at: 0, animated: false)
+        
+        
+        WalletConnectServiceV2.connectedAppsToUse = [.init()]
+//        view?.setSelectedDisplayMode(.empty, at: 0, animated: false)
+        view?.setSelectedDisplayMode(.domain(.init(name: "oleg.x", ownerWallet: "", isSetForRR: false)), at: 0, animated: false)
     }
     
     var currentIndex: Int {
