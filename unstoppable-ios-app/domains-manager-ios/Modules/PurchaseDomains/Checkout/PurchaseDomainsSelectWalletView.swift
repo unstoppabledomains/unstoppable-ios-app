@@ -9,14 +9,15 @@ import SwiftUI
 
 typealias PurchaseDomainSelectWalletCallback = (WalletWithInfo)->()
 
-struct PurchaseDomainsSelectWalletView: View {
+struct PurchaseDomainsSelectWalletView: View, ViewAnalyticsLogger {
     
+    @Environment(\.analyticsViewName) private var analyticsViewName
     @Environment(\.presentationMode) private var presentationMode
 
     @State var selectedWallet: WalletWithInfo
     let wallets: [WalletWithInfo]
     let selectedWalletCallback: PurchaseDomainSelectWalletCallback
-    
+    var analyticsName: Analytics.ViewName { analyticsViewName }
     
     var body: some View {
         ScrollView {
@@ -72,6 +73,8 @@ private extension PurchaseDomainsSelectWalletView {
                            imageStyle: imageStyle,
                            rightViewStyle: wallet.address == selectedWallet.wallet.address ? .checkmark : nil)
         }, callback: {
+            logButtonPressedAnalyticEvents(button: .purchaseDomainTargetWalletSelected)
+
             guard let selectedWallet = wallets.first(where: { $0.wallet.address == wallet.address }) else { return }
             self.selectedWallet = selectedWallet
             selectedWalletCallback(selectedWallet)

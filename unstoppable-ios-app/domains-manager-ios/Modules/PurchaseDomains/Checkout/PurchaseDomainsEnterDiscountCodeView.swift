@@ -7,14 +7,16 @@
 
 import SwiftUI
 
-struct PurchaseDomainsEnterDiscountCodeView: View {
+struct PurchaseDomainsEnterDiscountCodeView: View, ViewAnalyticsLogger {
     
+    @Environment(\.analyticsViewName) private var analyticsViewName
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.purchaseDomainsPreferencesStorage) private var purchaseDomainsPreferencesStorage
     @State private var value: String = ""
     
     var enteredCallback: EmptyCallback?
-    
+    var analyticsName: Analytics.ViewName { analyticsViewName }
+
     var body: some View {
         VStack(spacing: 24) {
             Text(String.Constants.enterDiscountCode.localized())
@@ -25,6 +27,7 @@ struct PurchaseDomainsEnterDiscountCodeView: View {
                             placeholder: String.Constants.discountCode.localized(),
                             focusBehaviour: .activateOnAppear)
             UDButtonView(text: String.Constants.confirm.localized(), style: .large(.raisedPrimary)) {
+                logButtonPressedAnalyticEvents(button: .confirmDiscountCode, parameters: [.value: value.trimmedSpaces])
                 UDVibration.buttonTap.vibrate()
                 purchaseDomainsPreferencesStorage.checkoutData.discountCode = value.trimmedSpaces
                 presentationMode.wrappedValue.dismiss()
