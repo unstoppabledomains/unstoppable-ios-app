@@ -1195,6 +1195,12 @@
 		C6D5DAE928374C7300379C38 /* WalletAddressFieldCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAE828374C7300379C38 /* WalletAddressFieldCollectionCell.swift */; };
 		C6D5DAEF2837682300379C38 /* RecordChangeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAEE2837682300379C38 /* RecordChangeType.swift */; };
 		C6D5DAF42837866800379C38 /* SecondaryDangerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D5DAF32837866800379C38 /* SecondaryDangerButton.swift */; };
+		C6D645732B1D721D00D724AC /* PurchaseDomainsCheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA22B16E82700FDA063 /* PurchaseDomainsCheckoutView.swift */; };
+		C6D645742B1D721D00D724AC /* PurchaseDomainsSelectWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA32B16E82700FDA063 /* PurchaseDomainsSelectWalletView.swift */; };
+		C6D645752B1D721D00D724AC /* PurchaseDomainsEnterZIPCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA42B16E82700FDA063 /* PurchaseDomainsEnterZIPCodeView.swift */; };
+		C6D645762B1D721D00D724AC /* PurchaseDomainsSelectDiscountsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA02B16E82700FDA063 /* PurchaseDomainsSelectDiscountsView.swift */; };
+		C6D645772B1D721D00D724AC /* PurchaseDomainsEnterDiscountCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAA12B16E82700FDA063 /* PurchaseDomainsEnterDiscountCodeView.swift */; };
+		C6D645782B1D724500D724AC /* DeviceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C628E38127FEE31D0044E408 /* DeviceHelper.swift */; };
 		C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */; };
 		C6D6E4D92817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */; };
 		C6D6E4DE2817BF09008C66BB /* OnboardingProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */; };
@@ -8068,6 +8074,8 @@
 				C61808332B19AEDC0032E543 /* XMTPServiceSharedHelper.swift in Sources */,
 				C61808832B19BC6A0032E543 /* TransactionError.swift in Sources */,
 				C6960C5F2B199A7B00B79E28 /* PreviewTransactionItem.swift in Sources */,
+				C6D645732B1D721D00D724AC /* PurchaseDomainsCheckoutView.swift in Sources */,
+				C6D645782B1D724500D724AC /* DeviceHelper.swift in Sources */,
 				C61808372B19AF120032E543 /* UITextField.swift in Sources */,
 				C618085E2B19BBFE0032E543 /* UDListItemView.swift in Sources */,
 				C61807FB2B19A81D0032E543 /* ObjectWithAttributedString.swift in Sources */,
@@ -8100,6 +8108,7 @@
 				C61807FC2B19A83E0032E543 /* QRCodeService.swift in Sources */,
 				C61807B82B199E850032E543 /* UIImage+GIF.swift in Sources */,
 				C61808642B19BBFE0032E543 /* UDToggleStyle.swift in Sources */,
+				C6D645742B1D721D00D724AC /* PurchaseDomainsSelectWalletView.swift in Sources */,
 				C61808772B19BC290032E543 /* UnstoppableListRowInset.swift in Sources */,
 				C61808612B19BBFE0032E543 /* PositionObservingView.swift in Sources */,
 				C6960C622B199AE600B79E28 /* String+Localization.swift in Sources */,
@@ -8136,6 +8145,7 @@
 				C61807F62B19A7BC0032E543 /* CryptoRecord.swift in Sources */,
 				C61808102B19AA4C0032E543 /* LinkPresentationService.swift in Sources */,
 				C61808342B19AEEC0032E543 /* PublishingAppStorage.swift in Sources */,
+				C6D645752B1D721D00D724AC /* PurchaseDomainsEnterZIPCodeView.swift in Sources */,
 				C618081A2B19AAEF0032E543 /* FirebaseDomainsServiceProtocol.swift in Sources */,
 				C61808742B19BC150032E543 /* Font.swift in Sources */,
 				C618086F2B19BC100032E543 /* View+Skeleton.swift in Sources */,
@@ -8172,6 +8182,7 @@
 				C61807EA2B19A6400032E543 /* UDWalletsServiceProtocol.swift in Sources */,
 				C61807B52B199DF50032E543 /* UIColor.swift in Sources */,
 				C61807BB2B199FD10032E543 /* PreviewData.swift in Sources */,
+				C6D645772B1D721D00D724AC /* PurchaseDomainsEnterDiscountCodeView.swift in Sources */,
 				C6960C662B199B6F00B79E28 /* PreviewDomainItem.swift in Sources */,
 				C618087E2B19BC380032E543 /* DomainAvatarImageView.swift in Sources */,
 				C6960C502B19990E00B79E28 /* Extensions.swift in Sources */,
@@ -8190,6 +8201,7 @@
 				C6960C312B1994EC00B79E28 /* PreviewDebugger.swift in Sources */,
 				C61807B22B199DD70032E543 /* UIView.swift in Sources */,
 				C61807E32B19A57D0032E543 /* DomainsSortOrderStorage.swift in Sources */,
+				C6D645762B1D721D00D724AC /* PurchaseDomainsSelectDiscountsView.swift in Sources */,
 				C6960C612B199AD400B79E28 /* Helpers.swift in Sources */,
 				C6960C1D2B19939E00B79E28 /* SceneDelegate.swift in Sources */,
 				C61808522B19BA750032E543 /* Task.swift in Sources */,
