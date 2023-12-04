@@ -1360,6 +1360,8 @@
 		C6D6463A2B1DC50400D724AC /* AppReviewActionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646392B1DC50400D724AC /* AppReviewActionEvent.swift */; };
 		C6D6463B2B1DC50600D724AC /* AppReviewActionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646392B1DC50400D724AC /* AppReviewActionEvent.swift */; };
 		C6D6463C2B1DC53700D724AC /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
+		C6D646412B1DC6DA00D724AC /* PreviewDomainsCollectionViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6463F2B1DC65400D724AC /* PreviewDomainsCollectionViewPresenter.swift */; };
+		C6D646432B1DC70000D724AC /* PreviewDomainsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646422B1DC70000D724AC /* PreviewDomainsCollectionViewController.swift */; };
 		C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */; };
 		C6D6E4D92817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */; };
 		C6D6E4DE2817BF09008C66BB /* OnboardingProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */; };
@@ -2641,6 +2643,8 @@
 		C6D646232B1DC28600D724AC /* PreviewAppReviewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAppReviewService.swift; sourceTree = "<group>"; };
 		C6D6462F2B1DC36F00D724AC /* PreviewUDRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewUDRouter.swift; sourceTree = "<group>"; };
 		C6D646392B1DC50400D724AC /* AppReviewActionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewActionEvent.swift; sourceTree = "<group>"; };
+		C6D6463F2B1DC65400D724AC /* PreviewDomainsCollectionViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDomainsCollectionViewPresenter.swift; sourceTree = "<group>"; };
+		C6D646422B1DC70000D724AC /* PreviewDomainsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDomainsCollectionViewController.swift; sourceTree = "<group>"; };
 		C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCreateWalletPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingProtocols.swift; sourceTree = "<group>"; };
@@ -6310,8 +6314,18 @@
 		C6D6463D2B1DC55500D724AC /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				C6D6463E2B1DC64700D724AC /* PreviewDomainsCollection */,
 			);
 			path = Modules;
+			sourceTree = "<group>";
+		};
+		C6D6463E2B1DC64700D724AC /* PreviewDomainsCollection */ = {
+			isa = PBXGroup;
+			children = (
+				C6D6463F2B1DC65400D724AC /* PreviewDomainsCollectionViewPresenter.swift */,
+				C6D646422B1DC70000D724AC /* PreviewDomainsCollectionViewController.swift */,
+			);
+			path = PreviewDomainsCollection;
 			sourceTree = "<group>";
 		};
 		C6D6E50A2817E65C008C66BB /* ImportWallet */ = {
@@ -8257,6 +8271,7 @@
 				C6960C4F2B19989D00B79E28 /* Env.swift in Sources */,
 				C61807D92B19A48F0032E543 /* PreviewAuthentificationService.swift in Sources */,
 				C6D6457B2B1D7C3100D724AC /* PullUpError.swift in Sources */,
+				C6D646432B1DC70000D724AC /* PreviewDomainsCollectionViewController.swift in Sources */,
 				C6960C3E2B19980200B79E28 /* MessagingServiceIdentifier.swift in Sources */,
 				C61808002B19A8B80032E543 /* MessagingChatUserDisplayInfo.swift in Sources */,
 				C61807CF2B19A3FA0032E543 /* ExternalEvent.swift in Sources */,
@@ -8499,6 +8514,7 @@
 				C61807D02B19A4040032E543 /* AnalyticsServiceEnvironment.swift in Sources */,
 				C6D645992B1DBB1200D724AC /* DomainsCollectionRecentActivityCell.swift in Sources */,
 				C6D645D42B1DBD4600D724AC /* CNavigationControllerSlidePushAnimation.swift in Sources */,
+				C6D646412B1DC6DA00D724AC /* PreviewDomainsCollectionViewPresenter.swift in Sources */,
 				C6D6461E2B1DC23600D724AC /* BlockChainItem.swift in Sources */,
 				C618085D2B19BBFE0032E543 /* CircleIconButton.swift in Sources */,
 				C6D646212B1DC25B00D724AC /* NamingService.swift in Sources */,
