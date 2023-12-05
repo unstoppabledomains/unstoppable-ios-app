@@ -69,13 +69,16 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
             }
             .store(in: &cancellables)
     }
+    private var shouldCheckForRequestError: Bool {
+        !isAutoRefreshCartSuspended && !domainsToPurchase.isEmpty
+    }
  
     @discardableResult
     override func makeFirebaseAPIDataRequest(_ apiRequest: APIRequest) async throws -> Data {
         do {
             return try await super.makeFirebaseAPIDataRequest(apiRequest)
         } catch {
-            if !domainsToPurchase.isEmpty {
+            if shouldCheckForRequestError {
                 cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
             }
             throw error
@@ -91,7 +94,7 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
                                                                        using: keyDecodingStrategy,
                                                                        dateDecodingStrategy: dateDecodingStrategy)
         } catch {
-            if !domainsToPurchase.isEmpty {
+            if shouldCheckForRequestError {
                 cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
             }
             throw error
