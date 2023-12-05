@@ -18,7 +18,13 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         print("Did appear")
-        showDomainProfile()
+//        showDomainProfile()
+    }
+    
+    @IBAction func runPurchaseButtonPressed() {
+        UDRouter().showSearchDomainToPurchase(in: self) { result in
+            
+        }
     }
     
     func showPurchaseDomainsCheckout() {

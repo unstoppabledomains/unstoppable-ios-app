@@ -1653,6 +1653,15 @@
 		C6D6479D2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */; };
 		C6D6479F2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */; };
 		C6D647A02B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */; };
+		C6D647A22B1F187600D724AC /* UDRouter+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647A12B1F187600D724AC /* UDRouter+Common.swift */; };
+		C6D647A32B1F188400D724AC /* UDRouter+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647A12B1F187600D724AC /* UDRouter+Common.swift */; };
+		C6D647A42B1F189400D724AC /* PurchaseDomainsNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2622B14848F006D1F0B /* PurchaseDomainsNavigationController.swift */; };
+		C6D647A52B1F189800D724AC /* PurchaseDomainsCheckoutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C655CAAC2B16EFEB00FDA063 /* PurchaseDomainsCheckoutViewController.swift */; };
+		C6D647A62B1F189B00D724AC /* PurchaseSearchDomainsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DDF2602B14840D006D1F0B /* PurchaseSearchDomainsViewController.swift */; };
+		C6D647A72B1F18AE00D724AC /* HappyEndViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3018AEC127EB2CC200E8C37D /* HappyEndViewController.swift */; };
+		C6D647A82B1F18B000D724AC /* HappyEnd.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3018AEBC27EB2AF200E8C37D /* HappyEnd.storyboard */; };
+		C6D647A92B1F18B300D724AC /* BaseHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC762B18376100E29318 /* BaseHappyEndViewPresenter.swift */; };
+		C6D647AA2B1F18B500D724AC /* PurchaseDomainsHappyEndViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C630BC7A2B183E5700E29318 /* PurchaseDomainsHappyEndViewPresenter.swift */; };
 		C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */; };
 		C6D6E4D92817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */; };
 		C6D6E4DE2817BF09008C66BB /* OnboardingProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */; };
@@ -2961,6 +2970,7 @@
 		C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
 		C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PurchaseDomainProfileTopInfoCell.xib; sourceTree = "<group>"; };
 		C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
+		C6D647A12B1F187600D724AC /* UDRouter+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UDRouter+Common.swift"; sourceTree = "<group>"; };
 		C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCreateWalletPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingProtocols.swift; sourceTree = "<group>"; };
@@ -5625,6 +5635,7 @@
 				C6A2D527284DC45B00327C47 /* PermissionsService.swift */,
 				C60982092822D92300546392 /* ToastMessageService.swift */,
 				C624D79E281BCB9A00F55530 /* UDRouter.swift */,
+				C6D647A12B1F187600D724AC /* UDRouter+Common.swift */,
 				C63095F72B0DAA9B00205054 /* Stripe */,
 				C63095D72B0DA66400205054 /* Firebase */,
 				C63F1D0328AF31D5000A5C12 /* AnalyticsService */,
@@ -7579,6 +7590,7 @@
 				C6960C412B19985C00B79E28 /* InfoPlist.strings in Resources */,
 				C6960C3F2B19984700B79E28 /* Colors.xcassets in Resources */,
 				C6D646D52B1ED2E700D724AC /* SocialsVerificationViewController.xib in Resources */,
+				C6D647A82B1F18B000D724AC /* HappyEnd.storyboard in Resources */,
 				C6D646282B1DC2A700D724AC /* PullUpView.xib in Resources */,
 				C6D6465C2B1ED10D00D724AC /* DomainProfileBadgeCell.xib in Resources */,
 				C6960C442B19986E00B79E28 /* Inter-SemiBold.ttf in Resources */,
@@ -8328,6 +8340,7 @@
 				C6109E8E28E6AA660027D5D8 /* AppContextProtocol.swift in Sources */,
 				C6500B432A4189C800ACAA8C /* GhostPrimaryButton.swift in Sources */,
 				C6DDF25D2B148294006D1F0B /* DomainToPurchaseSuggestion.swift in Sources */,
+				C6D647A22B1F187600D724AC /* UDRouter+Common.swift in Sources */,
 				C603D7AA2A56FC2300CEC696 /* ChatUserBubbledMessageCell.swift in Sources */,
 				C6010D1A287FBEFC00FBD401 /* DomainsPurchasedDetails.swift in Sources */,
 				C60981F128225B9100546392 /* WalletDetailsListCell.swift in Sources */,
@@ -8920,6 +8933,7 @@
 				C6D647652B1EDEEA00D724AC /* UDNavigationController.swift in Sources */,
 				C618081E2B19AB130032E543 /* PurchaseDomainsCart.swift in Sources */,
 				C618084C2B19B9B10032E543 /* PreviewUserDataService.swift in Sources */,
+				C6D647A92B1F18B300D724AC /* BaseHappyEndViewPresenter.swift in Sources */,
 				C6D647002B1ED7C300D724AC /* MessagingPrivateChatDetails.swift in Sources */,
 				C6D645A42B1DBB1600D724AC /* DomainsCollectionViewController.swift in Sources */,
 				C6D6457C2B1D8ADE00D724AC /* AttributedText.swift in Sources */,
@@ -8937,6 +8951,7 @@
 				C6960C522B19993700B79E28 /* PreviewString.swift in Sources */,
 				C6D647062B1ED7CA00D724AC /* MessagingImageLoader.swift in Sources */,
 				C6D647832B1EE23000D724AC /* UITableViewCell.swift in Sources */,
+				C6D647A32B1F188400D724AC /* UDRouter+Common.swift in Sources */,
 				C61807FC2B19A83E0032E543 /* QRCodeService.swift in Sources */,
 				C6D646C42B1ED23700D724AC /* CurrencyImageLoader.swift in Sources */,
 				C6D647132B1ED7D000D724AC /* MessagingChatMessageUnknownTypeDisplayInfo.swift in Sources */,
@@ -9015,6 +9030,7 @@
 				C6D6458C2B1DBAEA00D724AC /* DomainsCollectionItemScrollingCalculator.swift in Sources */,
 				C61808232B19AB250032E543 /* PurchaseDomainsPreferencesStorage.swift in Sources */,
 				C6D646B92B1ED1A300D724AC /* UDDomainCardView.swift in Sources */,
+				C6D647A52B1F189800D724AC /* PurchaseDomainsCheckoutViewController.swift in Sources */,
 				C6D647532B1EDB7C00D724AC /* SelectorButton.swift in Sources */,
 				C6D646ED2B1ED5A900D724AC /* ImportExistingExternalWalletPresenter.swift in Sources */,
 				C6D6459D2B1DBB1200D724AC /* BaseDomainsCollectionCardCell.swift in Sources */,
@@ -9122,10 +9138,12 @@
 				C6D646A72B1ED15A00D724AC /* ProfileFollowerImageLoader.swift in Sources */,
 				C61808662B19BC050032E543 /* UDButtonView.swift in Sources */,
 				C618083C2B19AFB70032E543 /* PreviewNotificationsService.swift in Sources */,
+				C6D647A42B1F189400D724AC /* PurchaseDomainsNavigationController.swift in Sources */,
 				C6D646752B1ED11B00D724AC /* DomainProfileSectionType.swift in Sources */,
 				C6D647112B1ED7D000D724AC /* MessagingChatMessageImageBase64TypeDisplayInfo.swift in Sources */,
 				C6D645942B1DBB0200D724AC /* DomainsCollectionCarouselItemViewPresenter.swift in Sources */,
 				C6D646192B1DC18900D724AC /* PreviewVerifyPasscodeViewController.swift in Sources */,
+				C6D647AA2B1F18B500D724AC /* PurchaseDomainsHappyEndViewPresenter.swift in Sources */,
 				C6D645952B1DBB0200D724AC /* DomainsCollectionCarouselItemViewController.swift in Sources */,
 				C6960C2E2B19947000B79E28 /* UIImage.swift in Sources */,
 				C618081D2B19AB110032E543 /* PurchaseDomainsServiceEnvironmentKey.swift in Sources */,
@@ -9144,8 +9162,10 @@
 				C6D645D72B1DBD4900D724AC /* CNavigationControllerDefaultPopAnimation.swift in Sources */,
 				C6D645DB2B1DBD4D00D724AC /* NavBarItemsTransitionPerformer.swift in Sources */,
 				C618086D2B19BC0C0032E543 /* HexagonShape.swift in Sources */,
+				C6D647A62B1F189B00D724AC /* PurchaseSearchDomainsViewController.swift in Sources */,
 				C6D645C62B1DBD3900D724AC /* CNavigationBarContentView.swift in Sources */,
 				C6D647572B1EDC1600D724AC /* UISearchBar.swift in Sources */,
+				C6D647A72B1F18AE00D724AC /* HappyEndViewController.swift in Sources */,
 				C61808722B19BC150032E543 /* Color.swift in Sources */,
 				C61808162B19AAB70032E543 /* FirebaseAuthenticationServiceProtocol.swift in Sources */,
 				C6D645862B1DBAA700D724AC /* DomainsCollectionMessagingBarButton.swift in Sources */,
