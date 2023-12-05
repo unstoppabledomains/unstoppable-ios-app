@@ -1010,6 +1010,16 @@ extension String {
         static let totalDue = "TOTAL_DUE"
         static let domainsPurchasedSubtitle = "DOMAINS_PURCHASED_SUBTITLE"
         static let goToDomains = "GO_TO_DOMAINS"
+        static let purchaseHasUnpaidVaultDomainsErrorMessage = "PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE"
+        static let purchaseHasUnpaidVaultDomainsErrorMessageHighlighted = "PURCHASE_HAS_UNPAID_VAULT_DOMAINS_ERROR_MESSAGE_HIGHLIGHTED"
+        static let purchaseWalletAuthErrorTitle = "PURCHASE_WALLET_AUTH_ERROR_TITLE"
+        static let purchaseWalletAuthErrorSubtitle = "PURCHASE_WALLET_AUTH_ERROR_SUBTITLE"
+        static let selectAnotherWallet = "SELECT_ANOTHER_WALLET"
+        static let purchaseWalletCalculationsErrorTitle = "PURCHASE_WALLET_CALCULATIONS_ERROR_TITLE"
+        static let purchaseWalletCalculationsErrorSubtitle = "PURCHASE_WALLET_CALCULATIONS_ERROR_SUBTITLE"
+        static let purchaseWalletPurchaseErrorTitle = "PURCHASE_WALLET_PURCHASE_ERROR_TITLE"
+        static let purchaseWalletPurchaseErrorSubtitle = "PURCHASE_WALLET_PURCHASE_ERROR_SUBTITLE"
+
     }
 
     enum BlockChainIcons: String {

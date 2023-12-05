@@ -18,9 +18,7 @@ struct PurchaseDomainsSelectDiscountsView: View, ViewAnalyticsLogger {
     @State private var isPromoCreditsOn = false
     @State private var isStoreCreditsOn = false
     @State private var checkoutData: PurchaseDomainsCheckoutData = PurchaseDomainsCheckoutData()
-    @State private var cart: PurchaseDomainsCart = .empty
-
-    private var discountDetails: PurchaseDomainsCart.DiscountDetails { purchaseDomainsService.cart.discountDetails }
+    @State private var cartStatus: PurchaseDomainCartStatus = .ready(cart: .empty)
     var analyticsName: Analytics.ViewName { analyticsViewName }
 
     var body: some View {
@@ -42,12 +40,12 @@ struct PurchaseDomainsSelectDiscountsView: View, ViewAnalyticsLogger {
         .onReceive(purchaseDomainsPreferencesStorage.$checkoutData.publisher.receive(on: DispatchQueue.main), perform: { checkoutData in
             self.checkoutData = checkoutData
         })
-        .onReceive(purchaseDomainsService.cartPublisher.receive(on: DispatchQueue.main)) { cart in
-            self.cart = cart
+        .onReceive(purchaseDomainsService.cartStatusPublisher.receive(on: DispatchQueue.main)) { cartStatus in
+            self.cartStatus = cartStatus
         }
         .onAppear {
             checkoutData = purchaseDomainsPreferencesStorage.checkoutData
-            isStoreCreditsOn = purchaseDomainsPreferencesStorage.checkoutData.isStoreCreditsOn
+            isPromoCreditsOn = purchaseDomainsPreferencesStorage.checkoutData.isPromoCreditsOn
             isStoreCreditsOn = purchaseDomainsPreferencesStorage.checkoutData.isStoreCreditsOn
         }
     }
@@ -56,11 +54,11 @@ struct PurchaseDomainsSelectDiscountsView: View, ViewAnalyticsLogger {
 // MARK: - Private methods
 private extension PurchaseDomainsSelectDiscountsView {
     var hasPromoCredits: Bool {
-        discountDetails.promoCredits > 0
+        cartStatus.promoCreditsAvailable > 0
     }
     
     var hasStoreCredits: Bool {
-        discountDetails.storeCredits > 0
+        cartStatus.storeCreditsAvailable > 0
     }
     
     var creditsSectionHeight: CGFloat {
@@ -82,7 +80,7 @@ private extension PurchaseDomainsSelectDiscountsView {
         UDCollectionSectionBackgroundView {
             VStack(alignment: .center, spacing: 0) {
                 if hasPromoCredits {
-                    Toggle("\(String.Constants.promoCredits.localized()): \(formatCartPrice(discountDetails.promoCredits))",
+                    Toggle("\(String.Constants.promoCredits.localized()): \(formatCartPrice(cartStatus.promoCreditsAvailable))",
                            isOn: $isPromoCreditsOn)
                     .toggleStyle(UDToggleStyle())
                     .frame(minHeight: UDListItemView.height)
@@ -92,7 +90,7 @@ private extension PurchaseDomainsSelectDiscountsView {
                     }
                 }
                 if hasStoreCredits {
-                    Toggle("\(String.Constants.storeCredits.localized()): \(formatCartPrice(discountDetails.storeCredits))",
+                    Toggle("\(String.Constants.storeCredits.localized()): \(formatCartPrice(cartStatus.storeCreditsAvailable))",
                            isOn: $isStoreCreditsOn)
                     .toggleStyle(UDToggleStyle())
                     .frame(minHeight: UDListItemView.height)
@@ -147,7 +145,7 @@ private extension PurchaseDomainsSelectDiscountsView {
             purchaseDomainsPreferencesStorage.checkoutData.discountCode = ""
         } label: {
             HStack(spacing: 4) {
-                Text("\(String.Constants.discountCode.localized()): \(formatCartPrice(cart.discountDetails.others))")
+                Text("\(String.Constants.discountCode.localized()): \(formatCartPrice(cartStatus.otherDiscountsApplied))")
                     .foregroundStyle(Color.foregroundDefault)
                 Spacer()
                 HStack(spacing: 8) {

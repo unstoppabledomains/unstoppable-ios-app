@@ -37,13 +37,13 @@ private extension BaseFirebaseInteractionService.URLSList {
 }
 
 final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
-
-    @Published var cart: PurchaseDomainsCart
-    var cartPublisher: Published<PurchaseDomainsCart>.Publisher { $cart }
+    
+    @Published var cartStatus: PurchaseDomainCartStatus
+    var cartStatusPublisher: Published<PurchaseDomainCartStatus>.Publisher { $cartStatus }
 
     private var udCart: UDUserCart {
         didSet {
-            cart = createCartFromUDCart(udCart)
+            cartStatus = .ready(cart: createCartFromUDCart(udCart))
         }
     }
 
@@ -58,11 +58,10 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
          firebaseSigner: UDFirebaseSigner,
          preferencesService: PurchaseDomainsPreferencesStorage) {
         udCart = .empty
-        cart = .empty
+        cartStatus = .ready(cart: .empty)
         checkoutData = preferencesService.checkoutData
         super.init(firebaseAuthService: firebaseAuthService,
                    firebaseSigner: firebaseSigner)
-        runRefreshTimer()
         preferencesService.$checkoutData.publisher
             .sink { [weak self] checkoutData in
                 self?.checkoutData = checkoutData
@@ -70,7 +69,34 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
             }
             .store(in: &cancellables)
     }
+ 
+    @discardableResult
+    override func makeFirebaseAPIDataRequest(_ apiRequest: APIRequest) async throws -> Data {
+        do {
+            return try await super.makeFirebaseAPIDataRequest(apiRequest)
+        } catch {
+            if !domainsToPurchase.isEmpty {
+                cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+            }
+            throw error
+        }
+    }
     
+    
+    override func makeFirebaseDecodableAPIDataRequest<T>(_ apiRequest: APIRequest,
+                                                         using keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+                                                         dateDecodingStrategy: JSONDecoder.DateDecodingStrategy = .iso8601) async throws -> T where T : Decodable {
+        do {
+            return try await super.makeFirebaseDecodableAPIDataRequest(apiRequest,
+                                                                       using: keyDecodingStrategy,
+                                                                       dateDecodingStrategy: dateDecodingStrategy)
+        } catch {
+            if !domainsToPurchase.isEmpty {
+                cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+            }
+            throw error
+        }
+    }
 }
 
 // MARK: - PurchaseDomainsServiceProtocol
@@ -108,9 +134,15 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
         isAutoRefreshCartSuspended = true
-        cart = .empty
+        cartStatus = .ready(cart: .empty)
+        self.domainsToPurchase = []
         await logout()
-        try await firebaseAuthService.authorizeWith(wallet: wallet)
+        do {
+            try await firebaseAuthService.authorizeWith(wallet: wallet)
+        } catch {
+            cartStatus = .failedToAuthoriseWallet(wallet)
+            throw error
+        }
         self.domainsToPurchase = domains
         try await addDomainsToCart(domains)
         isAutoRefreshCartSuspended = false
@@ -119,6 +151,10 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     func getSupportedWalletsToMint() async throws -> [PurchasedDomainsWalletDescription] {
         let userWallets = try await loadUserCryptoWallets()
         return userWallets.map { PurchasedDomainsWalletDescription(address: $0.address, metadata: $0.jsonData()) }
+    }
+    
+    func refreshCart() async throws {
+        try await refreshUserCart()
     }
     
     func purchaseDomainsInTheCartAndMintTo(wallet: PurchasedDomainsWalletDescription) async throws {
@@ -201,7 +237,7 @@ private extension FirebasePurchaseDomainsService {
         }
     }
     
-    func refreshUserCart() async throws {
+    func refreshUserCart(shouldFailIfCartContainsUnsupportedProducts: Bool = false) async throws {
         Debugger.printInfo("Will refresh cart")
         let cart = try await loadUserCart()
         try await removeCartUnsupportedProducts(in: cart.cart)
@@ -212,10 +248,15 @@ private extension FirebasePurchaseDomainsService {
         
         let (cartResponse, calculationsResponse, userProfileResponse) = try await (cartResponseTask, calculationsResponseTask, userProfileResponseTask)
         
-        if cartResponse.cart != calculationsResponse.cartItems {
-            await waitForCartUpdated()
-            try await removeCartUnsupportedProducts(in: calculationsResponse.cartItems)
-            try await refreshUserCart()
+        
+        if !filterUnsupportedProductsFrom(products: cartResponse.cart).isEmpty || !filterUnsupportedProductsFrom(products: calculationsResponse.cartItems).isEmpty  {
+            if shouldFailIfCartContainsUnsupportedProducts {
+                cartStatus = .hasUnpaidDomains
+                return
+            } else {
+                try await removeCartUnsupportedProducts(in: calculationsResponse.cartItems)
+                try await refreshUserCart(shouldFailIfCartContainsUnsupportedProducts: true)
+            }
         }
         
         self.udCart = UDUserCart(products: cartResponse.cart,
@@ -274,8 +315,10 @@ private extension FirebasePurchaseDomainsService {
         return PurchaseDomainsCart(domains: domains,
                                    totalPrice: udCart.calculations.totalAmountDue,
                                    taxes: udCart.calculations.salesTax,
-                                   discountDetails: .init(storeCredits: udCart.discountDetails.storeCredits,
-                                                          promoCredits: udCart.discountDetails.promoCredits,
+                                   storeCreditsAvailable: udCart.discountDetails.storeCredits,
+                                   promoCreditsAvailable: udCart.discountDetails.promoCredits,
+                                   appliedDiscountDetails: .init(storeCredits: udCart.calculations.storeCreditsUsed,
+                                                          promoCredits: udCart.calculations.promoCreditsUsed,
                                                           others: otherDiscountsSum))
     }
     
@@ -288,13 +331,8 @@ private extension FirebasePurchaseDomainsService {
                                      method: .post)
         try await makeFirebaseAPIDataRequest(request)
         if shouldRefreshCart {
-            await waitForCartUpdated()
             try? await refreshUserCart()
         }
-    }
-    
-    func waitForCartUpdated() async {
-        try? await Task.sleep(seconds: 0.5) // BE need a time to add hidden products (Parking). Can't refresh cart immediately
     }
     
     func loadStripePaymentDetails(for wallet: UDUserAccountCryptWallet) async throws -> StripePaymentDetailsResponse {
@@ -302,15 +340,17 @@ private extension FirebasePurchaseDomainsService {
             let cryptoWalletId: Int
             let applyStoreCredits: Bool
             let applyPromoCredits: Bool
-//            let discountCode: String
-//            let zipCode: String
+            let discountCode: String?
+            let zipCode: String?
         }
         
         
         let urlString = URLSList.PAYMENT_STRIPE_URL
         let body = RequestBody(cryptoWalletId: wallet.id,
                                applyStoreCredits: checkoutData.isStoreCreditsOn,
-                               applyPromoCredits: checkoutData.isPromoCreditsOn)
+                               applyPromoCredits: checkoutData.isPromoCreditsOn, 
+                               discountCode: checkoutData.discountCodeIfEntered, 
+                               zipCode: checkoutData.zipCodeIfEntered)
         let request = try APIRequest(urlString: urlString,
                                      body: body,
                                      method: .post)

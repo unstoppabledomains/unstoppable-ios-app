@@ -25,6 +25,8 @@ struct PurchaseDomainsCheckoutData: Equatable {
         return str
     }
     
+    var discountCodeIfEntered: String? { discountCode.isEmpty ? nil : discountCode }
+    var zipCodeIfEntered: String? { usaZipCode.isEmpty ? nil : usaZipCode }
 }
 
 extension PurchaseDomainsCheckoutData: Codable {

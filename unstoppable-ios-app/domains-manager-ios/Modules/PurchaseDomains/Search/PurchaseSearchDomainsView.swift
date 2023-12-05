@@ -215,9 +215,25 @@ private extension PurchaseSearchDomainsView {
     func loadSuggestions() {
         guard suggestions.isEmpty else { return }
         
+        func waitAndTryAgain() {
+            Task {
+                try? await Task.sleep(seconds: 5)
+                loadSuggestions()
+            }
+        }
+        
         Task {
-            let suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
-            self.suggestions = Array(suggestions.prefix(12))
+            do {
+                let suggestions = try await purchaseDomainsService.getDomainsSuggestions(hint: nil)
+                if suggestions.isEmpty {
+                    Debugger.printFailure("Did load 0 suggestions")
+                    waitAndTryAgain()
+                }
+                self.suggestions = Array(suggestions.prefix(12))
+            } catch {
+                Debugger.printFailure("Failed to load suggestions")
+                waitAndTryAgain()
+            }
         }
     }
     

@@ -15,7 +15,7 @@ class BaseFirebaseInteractionService {
         }
         static var baseAPIURL: String { baseURL.appendingURLPathComponent("api") }
         
-        static var logoutURL: String { baseAPIURL.appendingURLPathComponents("user", "profile") }
+        static var logoutURL: String { baseAPIURL.appendingURLPathComponents("user", "session", "clear") }
     }
     
     let authHeaderKey = "auth-firebase-id-token"
@@ -32,13 +32,6 @@ class BaseFirebaseInteractionService {
         try? await makeFirebaseAPIDataRequest(.init(urlString: URLSList.logoutURL,
                                                     method: .post))
         firebaseAuthService.logout()
-    }
-}
-
-// MARK: - Open methods
-extension BaseFirebaseInteractionService {
-    func getIdToken() async throws -> String {
-        try await firebaseAuthService.getIdToken()
     }
     
     @discardableResult
@@ -64,12 +57,19 @@ extension BaseFirebaseInteractionService {
     }
 }
 
+// MARK: - Open methods
+extension BaseFirebaseInteractionService {
+    func getIdToken() async throws -> String {
+        try await firebaseAuthService.getIdToken()
+    }
+}
+
 // MARK: - Private methods
 private extension BaseFirebaseInteractionService {
     func prepareFirebaseAPIRequest(_ apiRequest: APIRequest) async throws -> APIRequest {
         let idToken = try await getIdToken()
         
-        var headers = apiRequest.headers
+        var headers = apiRequest.headers.appending(dict2: NetworkConfig.disableFastlyCacheHeader)
         headers[authHeaderKey] = idToken
         let firebaseAPIRequest = APIRequest(url: apiRequest.url,
                                             headers: headers,

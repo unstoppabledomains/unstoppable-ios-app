@@ -372,8 +372,9 @@ private extension DataAggregatorService {
             
             let (domains, reverseResolutionMap, parkedDomains) = try await (domainsTask, reverseResolutionTask, parkedDomainsTask)
             let mintingDomainsNames = MintingDomainsStorage.retrieveMintingDomains().map({ $0.name })
-
-            guard !domains.isEmpty || !mintingDomainsNames.isEmpty || !parkedDomains.isEmpty else {
+            let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains)
+            
+            guard !domains.isEmpty || !mintingDomainsNames.isEmpty || !parkedDomains.isEmpty || !pendingPurchasedDomains.isEmpty else {
                 await dataHolder.setDataWith(domainsWithDisplayInfo: [],
                                              reverseResolutionMap: reverseResolutionMap)
                 let wallets = await getWalletsWithInfo()
@@ -558,13 +559,8 @@ private extension DataAggregatorService {
         }
         
         // Purchased domains
-        let pendingPurchasedDomains = PurchasedDomainsStorage.retrievePurchasedDomains().filter({ pendingDomain in
-            domains.first(where: { $0.name == pendingDomain.name }) == nil // Purchased domain not yet reflected in the mirror
-        })
-        for pendingPurchasedDomain in pendingPurchasedDomains {
-            let domain = DomainItem(name: pendingPurchasedDomain.name,
-                                    ownerWallet: pendingPurchasedDomain.walletAddress,
-                                    blockchain: .Matic)
+        let pendingPurchasedDomains = getPurchasedDomainsUnlessInList(domains)
+        for domain in pendingPurchasedDomains {
             let order = SortDomainsManager.shared.orderFor(domainName: domain.name)
             let domainDisplayInfo = DomainDisplayInfo(domainItem: domain,
                                                       state: .minting,
@@ -574,7 +570,6 @@ private extension DataAggregatorService {
             domainsWithDisplayInfo.append(.init(domain: domain,
                                                 displayInfo: domainDisplayInfo))
         }
-        PurchasedDomainsStorage.save(purchasedDomains: pendingPurchasedDomains)
         
         // Parked domains
         for parkedDomain in parkedDomains {
@@ -644,6 +639,19 @@ private extension DataAggregatorService {
         await dataHolder.setDataWith(domainsWithDisplayInfo: finalDomainsWithDisplayInfo,
                                      reverseResolutionMap: reverseResolutionMap)
         await dataHolder.sortDomainsToDisplay()
+    }
+    
+    func getPurchasedDomainsUnlessInList(_ domains: [DomainItem]) -> [DomainItem] {
+        let pendingPurchasedDomains = PurchasedDomainsStorage.retrievePurchasedDomains().filter({ pendingDomain in
+            domains.first(where: { $0.name == pendingDomain.name }) == nil // Purchased domain not yet reflected in the mirror
+        })
+        let pendingDomains = pendingPurchasedDomains.map {
+            DomainItem(name: $0.name,
+                       ownerWallet: $0.walletAddress,
+                       blockchain: .Matic)
+        }
+        PurchasedDomainsStorage.save(purchasedDomains: pendingPurchasedDomains)
+        return pendingDomains
     }
     
     func getWallets() async -> [UDWallet] {

@@ -43,6 +43,7 @@ final class DomainsCollectionGetDomainCardCell: BaseDomainsCollectionCardCell {
         }
         
         let actionTitleText = String.Constants.findANewDomain.localized()
+        actionContainerView.backgroundColor = .white
         actionContainerView.layer.cornerRadius = actionContainerHeight / 2
         actionLabel.setAttributedTextWith(text: actionTitleText,
                                           font: .currentFont(withSize: 16, weight: .medium),
