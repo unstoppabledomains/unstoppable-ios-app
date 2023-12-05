@@ -115,28 +115,6 @@ private extension AppReviewService {
     }
 }
 
-enum AppReviewActionEvent {
-    case walletAdded
-    case walletBackedUp
-    case didSetRR
-    case didRevealPK
-    case didShareProfile
-    case didSaveProfileImage
-    case didUpdateProfile
-    case didMintDomains
-    case didHandleWCRequest
-    case didRestoreWalletsFromBackUp
-    
-    var shouldFireRequestDirectly: Bool {
-        switch self {
-        case .didRestoreWalletsFromBackUp:
-            return true
-        default:
-            return false
-        }
-    }
-}
-
 private enum AppReviewStorageKey: String {
     case appReviewEventsCountKey
     case lastVersionPromptedForReviewKey

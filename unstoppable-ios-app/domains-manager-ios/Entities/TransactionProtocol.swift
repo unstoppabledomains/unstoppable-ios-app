@@ -8,18 +8,6 @@
 import Foundation
 import BigInt
 
-enum TransactionError: String, LocalizedError {
-    case TransactionNotPending
-    case SuggestedGasPriceNotHigher
-    case FailedToFindDomainById
-    case FailedToMerge
-    case EmptyNonce
-    case InvalidValue
-    
-    public var errorDescription: String? {
-        return rawValue
-    }
-}
  // Refactoring
 protocol TransactionProtocol {
     func makeCopy(with nonce: Int, gasPrice: Gwei) -> TransactionProtocol

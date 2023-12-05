@@ -39,3 +39,7 @@ final class DeepLinkListenerHolder: Equatable {
     }
     
 }
+
+enum PreRequestedProfileAction: Equatable {
+    case showBadge(code: String)
+}

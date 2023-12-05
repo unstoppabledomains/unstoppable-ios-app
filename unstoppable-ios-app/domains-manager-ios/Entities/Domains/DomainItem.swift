@@ -129,13 +129,6 @@ extension DomainItem {
     }
 }
 
-enum NamingService: String, Codable, CaseIterable {
-    case UNS
-    case ZNS = "zil"
-    
-    static let cases = NamingService.allCases
-}
-
 struct CryptoTxPayload {
     let resolverAddress: HexAddress?
     var txCosts: [NetworkService.TxCost] = []
@@ -206,5 +199,17 @@ extension DomainItem {
               let viewingDomain = try? await appContext.dataAggregatorService.getDomainWith(name: viewingDomainDisplayInfo.name) else { return nil }
         
         return viewingDomain
+    }
+}
+
+extension DomainItem {
+    /// This method puts a rule whether or not the domains requires payment for a critical trnasaction.
+    /// True means that the app will launch Apple Pay flow and will depend on the backend
+    /// - Returns: Bool
+    func doesRequirePayment() -> Bool {
+        switch self.getBlockchainType() {
+        case .Ethereum: return true
+        case .Zilliqa, .Matic: return false
+        }
     }
 }

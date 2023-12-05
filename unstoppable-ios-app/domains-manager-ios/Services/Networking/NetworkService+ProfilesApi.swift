@@ -131,11 +131,6 @@ extension PublicDomainProfileAttributes {
     }
 }
 
-enum DomainProfileImageType: String, Codable, Hashable {
-    case onChain, offChain
-    case `default` /// Means no avatar is set
-}
-
 struct UserDomainProfileAttributes: Codable {
     
     let id: UInt

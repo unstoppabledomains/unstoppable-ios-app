@@ -9,7 +9,7 @@ import UIKit
 
 class BaseListCollectionViewCell: UICollectionViewCell {
     
-    static let height: CGFloat = TableViewSelectionCell.Height
+    static let height: CGFloat = 70
 
     @IBOutlet private(set) weak var containerView: UIView!
     

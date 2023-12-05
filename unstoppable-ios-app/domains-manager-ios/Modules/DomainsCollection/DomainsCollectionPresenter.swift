@@ -8,25 +8,6 @@
 import Foundation
 import UIKit
 
-@MainActor
-protocol DomainsCollectionPresenterProtocol: BasePresenterProtocol {
-    var analyticsName: Analytics.ViewName { get }
-    var navBackStyle: BaseViewController.NavBackIconStyle { get }
-    var currentIndex: Int { get }
-    
-    func canMove(to index: Int) -> Bool
-    func displayMode(at index: Int) -> DomainsCollectionCarouselItemDisplayMode?
-    func didMove(to index: Int)
-    func didOccureUIAction(_ action: DomainsCollectionViewController.Action)
-    func didTapSettingsButton()
-    func importDomainsFromWebPressed()
-    func didPressScanButton()
-    func didMintDomains(result: MintDomainsNavigationController.MintDomainsResult)
-    func didRecognizeQRCode()
-    func didTapAddButton()
-    func didTapMessagingButton()
-}
-
 final class DomainsCollectionPresenter: ViewAnalyticsLogger {
     
     private weak var view: DomainsCollectionViewProtocol?
@@ -177,8 +158,8 @@ extension DomainsCollectionPresenter: DomainsCollectionPresenterProtocol {
         logButtonPressedAnalyticEvents(button: .scan, parameters: [.domainName: getCurrentDomainName()])
         showQRScanner()
     }
-   
-    func didMintDomains(result: MintDomainsNavigationController.MintDomainsResult) {
+    
+    func didMintDomains(result: MintDomainsResult) {
         switch result {
         case .noDomainsToMint:
             handleNoDomainsToMint()

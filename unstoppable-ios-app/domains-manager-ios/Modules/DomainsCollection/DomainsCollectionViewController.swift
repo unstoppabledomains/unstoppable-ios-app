@@ -101,6 +101,7 @@ final class DomainsCollectionViewController: BaseViewController, TitleVisibility
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
+        setupCollectionUICache()
         DispatchQueue.main.async {
             self.setupCollectionUICache()
             let domainCardY = DomainsCollectionUICache.shared.underCardControlY()

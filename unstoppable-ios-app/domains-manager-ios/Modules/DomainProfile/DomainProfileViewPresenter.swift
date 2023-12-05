@@ -1314,7 +1314,3 @@ extension DomainProfileViewPresenter {
         case domainsCollection, domainsList
     }
 }
-
-enum PreRequestedProfileAction: Equatable {
-    case showBadge(code: String)
-}

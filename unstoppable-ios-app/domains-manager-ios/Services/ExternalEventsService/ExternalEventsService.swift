@@ -7,47 +7,6 @@
 
 import Foundation
 
-
-public enum ExternalEventReceivedState {
-    case foreground, background, foregroundAction
-}
-
-protocol ExternalEventsServiceProtocol {
-    func receiveEvent(_ event: ExternalEvent, receivedState: ExternalEventReceivedState)
-    func checkPendingEvents()
-    
-    func addListener(_ listener: ExternalEventsServiceListener)
-    func removeListener(_ listener: ExternalEventsServiceListener)
-}
-
-protocol ExternalEventsServiceListener: AnyObject {
-    func didReceive(event: ExternalEvent)
-}
-
-final class ExternalEventsListenerHolder: Equatable {
-    
-    weak var listener: ExternalEventsServiceListener?
-    
-    init(listener: ExternalEventsServiceListener) {
-        self.listener = listener
-    }
-    
-    static func == (lhs: ExternalEventsListenerHolder, rhs: ExternalEventsListenerHolder) -> Bool {
-        guard let lhsListener = lhs.listener,
-              let rhsListener = rhs.listener else { return false }
-        
-        return lhsListener === rhsListener
-    }
-    
-}
-
-typealias ExternalEventUIHandleCompletion = (Bool) -> ()
-
-@MainActor
-protocol ExternalEventsUIHandler {
-    func handle(uiFlow: ExternalEventUIFlow) async throws
-}
-
 enum ExternalEventUIFlow {
     case showDomainProfile(domain: DomainDisplayInfo, walletWithInfo: WalletWithInfo)
     case primaryDomainMinted(domain: DomainDisplayInfo)
