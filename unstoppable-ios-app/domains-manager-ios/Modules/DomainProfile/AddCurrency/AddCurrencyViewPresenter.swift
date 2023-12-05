@@ -90,7 +90,7 @@ private extension AddCurrencyViewPresenter {
                 snapshot.appendSections([.empty])
                 snapshot.appendItems([.emptyState])
             } else if searchKey.isEmpty {
-                let popularTickers = coinRecordsService.popularCoinsTickers
+                let popularTickers = Constants.popularCoinsTickers
                 var popularCurrencies = [GroupedCoinRecord]()
                 var allCurrencies = [GroupedCoinRecord]()
                 

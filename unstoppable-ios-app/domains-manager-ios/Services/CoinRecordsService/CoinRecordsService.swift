@@ -7,18 +7,10 @@
 
 import Foundation
 
-protocol CoinRecordsServiceProtocol {
-    var popularCoinsTickers: [String] { get }
-    
-    func getCurrencies() async -> [CoinRecord]
-    func refreshCurrencies(version: String)
-}
-
 final class CoinRecordsService {
     
     let coinsFileName = "resolver-keys"
     
-    let popularCoinsTickers: [String] = ["BTC", "ETH", "ZIL", "LTC", "XRP"] // This is not required order to be on the UI
     private var currencies: [CoinRecord] = []
     private let fileManager = FileManager.default
     private let coinRecordsFolderPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("coin_records", isDirectory: true)
