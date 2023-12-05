@@ -14,6 +14,7 @@ protocol DomainProfileViewPresenterProtocol: BasePresenterProtocol {
     var walletName: String { get }
     var domainName: String { get }
     var navBackStyle: BaseViewController.NavBackIconStyle { get }
+    var progress: Double? { get }
     
     func isNavEnabled() -> Bool
     func didSelectItem(_ item: DomainProfileViewController.Item)
@@ -84,6 +85,7 @@ final class DomainProfileViewPresenter: NSObject, ViewAnalyticsLogger, WebsiteUR
 extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
     var walletName: String { dataHolder.walletInfo.walletSourceName }
     var domainName: String { dataHolder.domain.name }
+    var progress: Double? { nil }
     
     @MainActor
     func isNavEnabled() -> Bool { stateController.updatingProfileDataType == nil }
@@ -1078,7 +1080,7 @@ private extension DomainProfileViewPresenter {
                 case .default:
                     let isEnabled = await dataAggregatorService.isReverseResolutionChangeAllowed(for: wallet)
                     topActionsGroup.append(.setReverseResolution(isEnabled: isEnabled))
-                case .loading, .updatingRecords, .loadingError, .updatingProfile:
+                case .loading, .updatingRecords, .loadingError, .updatingProfile, .purchaseNew:
                     topActionsGroup.append(.setReverseResolution(isEnabled: false))
                 }
             }

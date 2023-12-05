@@ -86,6 +86,7 @@ extension UIImage {
     static let infoIcon = UIImage(named: "settingsIconPrivacy")!
     static let arrowTopRight = UIImage(named: "arrowTopRight")!
     static let framesIcon = UIImage(named: "framesIcon")!
+    static let framesIcon16 = UIImage(named: "framesIcon16")!
     static let framesIcon20 = UIImage(named: "framesIcon20")!
     static let scanQRIcon = UIImage(named: "scanQRIcon")!
     static let scanQRIcon16 = UIImage(named: "scanQRIcon16")!
@@ -96,6 +97,7 @@ extension UIImage {
     static let profileAccessIllustration = UIImage(named: "profileAccessIllustration")!
     static let profileAccessIllustrationLarge = UIImage(named: "profileAccessIllustrationLarge")!
     static let profileAccessIllustrationLargeiPhoneSE = UIImage(named: "profileAccessIllustrationLargeiPhoneSE")!
+    static let avatarsIcon16 = UIImage(named: "avatarsIcon16")!
     static let avatarsIcon20 = UIImage(named: "avatarsIcon20")!
     static let avatarsIcon24 = UIImage(named: "avatarsIcon24")!
     static let avatarsIcon32 = UIImage(named: "avatarsIcon32")!

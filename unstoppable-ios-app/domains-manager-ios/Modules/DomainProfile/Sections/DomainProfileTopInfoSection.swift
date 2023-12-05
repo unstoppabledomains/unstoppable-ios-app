@@ -37,25 +37,32 @@ extension DomainProfileTopInfoSection: DomainProfileSection {
         
         let isEnabled = state == .default || state == .updatingRecords
         snapshot.appendSections([.topInfo])
-        snapshot.appendItems([.topInfo(data: .init(id: id,
-                                                   domain: domain,
-                                                   social: social, 
-                                                   isUDBlue: isUDBlue,
-                                                   isEnabled: isEnabled,
-                                                   avatarImageState: editingTopInfoData.avatarImageState,
-                                                   bannerImageState: editingTopInfoData.bannerImageState,
-                                                   buttonPressedCallback: { [weak self] button in
+        
+        let itemData = DomainProfileViewController.ItemTopInfoData(id: id,
+                                                                   domain: domain,
+                                                                   social: social,
+                                                                   isUDBlue: isUDBlue,
+                                                                   isEnabled: isEnabled,
+                                                                   avatarImageState: editingTopInfoData.avatarImageState,
+                                                                   bannerImageState: editingTopInfoData.bannerImageState,
+                                                                   buttonPressedCallback: { [weak self] button in
             self?.didTap(on: button)
         },
-                                                   bannerImageActions: imageActionsIf(imageState: editingTopInfoData.bannerImageState,
-                                                                                      of: .banner),
-                                                   avatarImageActions: imageActionsIf(imageState: editingTopInfoData.avatarImageState,
-                                                                                      of: .avatar),
-                                                   avatarDropCallback: { [weak self] image in
+                                                                   bannerImageActions: imageActionsIf(imageState: editingTopInfoData.bannerImageState,
+                                                                                                      of: .banner),
+                                                                   avatarImageActions: imageActionsIf(imageState: editingTopInfoData.avatarImageState,
+                                                                                                      of: .avatar),
+                                                                   avatarDropCallback: { [weak self] image in
             self?.didPickImage(image, ofType: .avatar)
         }, bannerDropCallback: { [weak self] image in
             self?.didPickImage(image, ofType: .banner)
-        }))])
+        })
+        switch state {
+        case .purchaseNew:
+            snapshot.appendItems([.purchaseTopInfo(data: itemData)])
+        default:
+            snapshot.appendItems([.topInfo(data: itemData)])
+        }
     }
  
     func areAllFieldsValid() -> Bool {
@@ -151,8 +158,18 @@ private extension DomainProfileTopInfoSection {
         logProfileSectionButtonPressedAnalyticEvent(button: button.analyticName,
                                                     parameters: [:])
         switch button {
-        case .banner, .avatar:
-            return
+        case .avatar:
+            if state == .purchaseNew {
+                logProfileSectionButtonPressedAnalyticEvent(button: .changePhoto,
+                                                            parameters: [.fieldName : DomainImageType.avatar.analyticsName])
+                setImageOf(type: .avatar)
+            }
+        case .banner:
+            if state == .purchaseNew {
+                logProfileSectionButtonPressedAnalyticEvent(button: .changePhoto,
+                                                            parameters: [.fieldName : DomainImageType.banner.analyticsName])
+                setImageOf(type: .banner)
+            }
         case .qrCode:
             UDRouter().showDomainDetails(controller.generalData.domain,
                                          in: viewController)

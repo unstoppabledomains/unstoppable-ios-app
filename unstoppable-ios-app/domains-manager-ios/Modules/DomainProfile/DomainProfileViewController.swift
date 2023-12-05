@@ -9,7 +9,7 @@ import UIKit
 import SwiftUI
 
 @MainActor
-protocol DomainProfileViewProtocol: BaseDiffableCollectionViewControllerProtocol & DomainProfileSectionViewProtocol where Section == DomainProfileViewController.Section, Item == DomainProfileViewController.Item {
+protocol DomainProfileViewProtocol: BaseDiffableCollectionViewControllerProtocol & DomainProfileSectionViewProtocol & ViewWithDashesProgress where Section == DomainProfileViewController.Section, Item == DomainProfileViewController.Item {
     func setConfirmButtonHidden(_ isHidden: Bool, counter: Int)
     func set(title: String?)
     func setAvailableActionsGroups(_ actionGroups: [DomainProfileActionsGroup])
@@ -46,9 +46,11 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
                                                         DomainProfileNoSocialsCell.self,
                                                         DomainProfileWeb3WebsiteCell.self,
                                                         DomainProfileWeb3WebsiteLoadingCell.self,
-                                                        DomainProfileUpdatingRecordsCell.self] }
+                                                        DomainProfileUpdatingRecordsCell.self,
+                                                        PurchaseDomainProfileTopInfoCell.self] }
     var presenter: DomainProfileViewPresenterProtocol!
-    
+    var progress: Double? { presenter.progress }
+
     override var isObservingKeyboard: Bool { true }
     override var scrollableContentYOffset: CGFloat? { 8 }
     override var analyticsName: Analytics.ViewName { presenter.analyticsName }
@@ -233,14 +235,22 @@ private extension DomainProfileViewController {
 private extension DomainProfileViewController {
     func setup() {
         view.backgroundColor = .brandUnstoppableBlue
+        addProgressDashesView(configuration: .init(numberOfDashes: 3))
         setupNavigation(actionGroups: [])
         setupCollectionView()
         setupConfirmButton()
         setupGradientView()
         addHideKeyboardTapGesture(cancelsTouchesInView: false, toView: nil)
+        DispatchQueue.main.async {
+            self.setDashesProgress(self.progress)
+        }
     }
     
     func setupNavigation(actionGroups: [DomainProfileActionsGroup]) {
+        if actionGroups.isEmpty {
+            navigationItem.rightBarButtonItems = nil
+            return
+        }
         // Share button
         let shareButton = UIButton()
         shareButton.tintColor = .foregroundOnEmphasis
@@ -343,6 +353,11 @@ private extension DomainProfileViewController {
             switch item {
             case .topInfo(let data):
                 let cell = collectionView.dequeueCellOfType(DomainProfileTopInfoCell.self, forIndexPath: indexPath)
+                cell.set(with: data)
+                
+                return cell
+            case .purchaseTopInfo(let data):
+                let cell = collectionView.dequeueCellOfType(PurchaseDomainProfileTopInfoCell.self, forIndexPath: indexPath)
                 cell.set(with: data)
                 
                 return cell
@@ -604,6 +619,7 @@ extension DomainProfileViewController {
     
     enum Item: Hashable {
         case topInfo(data: ItemTopInfoData)
+        case purchaseTopInfo(data: ItemTopInfoData)
         case updatingRecords(displayInfo: DomainProfileUpdatingRecordsDisplayInfo)
         case generalInfo(displayInfo: DomainProfileGeneralDisplayInfo)
         case loading(id: UUID = .init(),
@@ -620,6 +636,7 @@ extension DomainProfileViewController {
     
     enum State: Hashable {
         case loading, `default`, updatingRecords, loadingError, updatingProfile(dataType: UpdateProfileDataType)
+        case purchaseNew
         
         enum UpdateProfileDataType: Hashable {
             case onChain, offChain, mixed

@@ -1645,6 +1645,14 @@
 		C6D6478F2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6478E2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift */; };
 		C6D647902B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6478E2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift */; };
 		C6D647922B1EE75A00D724AC /* PreviewCoinRecordsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647912B1EE75A00D724AC /* PreviewCoinRecordsService.swift */; };
+		C6D647942B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647932B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift */; };
+		C6D647952B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647932B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift */; };
+		C6D6479A2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */; };
+		C6D6479B2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */; };
+		C6D6479C2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */; };
+		C6D6479D2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */; };
+		C6D6479F2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */; };
+		C6D647A02B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */; };
 		C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */; };
 		C6D6E4D92817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */; };
 		C6D6E4DE2817BF09008C66BB /* OnboardingProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */; };
@@ -2949,6 +2957,10 @@
 		C6D6478A2B1EE5B600D724AC /* PreviewDomainProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDomainProfile.swift; sourceTree = "<group>"; };
 		C6D6478E2B1EE73D00D724AC /* CoinRecordsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinRecordsServiceProtocol.swift; sourceTree = "<group>"; };
 		C6D647912B1EE75A00D724AC /* PreviewCoinRecordsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewCoinRecordsService.swift; sourceTree = "<group>"; };
+		C6D647932B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainDomainProfileViewPresenter.swift; sourceTree = "<group>"; };
+		C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseDomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
+		C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PurchaseDomainProfileTopInfoCell.xib; sourceTree = "<group>"; };
+		C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDomainProfileTopInfoCell.swift; sourceTree = "<group>"; };
 		C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCreateWalletPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingProtocols.swift; sourceTree = "<group>"; };
@@ -3499,12 +3511,12 @@
 				C664B64D2914C0D200A76154 /* DomainProfileMetadataCell */,
 				C664B65D2914FAAC00A76154 /* DomainProfileNoSocialsCell */,
 				C669C35929117AFC00837F21 /* DomainProfileSocialCell */,
-				C6E1189128F7D26900C6AD4D /* DomainProfileTopInfoCell */,
 				C679B60E291A590400F543A7 /* DomainProfileUpdatingRecordsCell */,
 				C664B66D291542D300A76154 /* DomainProfileWeb3WebsiteCell */,
 				C679B5EA2918BCC300F543A7 /* DomainProfileWeb3WebsiteLoadingCell */,
 				C6C9DE9D2834B55100BAC36F /* ManageDomainLoadingCell */,
 				C635B023283392F80058F14F /* ManageDomainRecordCell */,
+				C6D647972B1EF49B00D724AC /* TopInfoCell */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -4631,6 +4643,7 @@
 			isa = PBXGroup;
 			children = (
 				C63A350928F0071B0057D34B /* DomainProfileViewPresenter.swift */,
+				C6D647932B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift */,
 				C63A350A28F0071B0057D34B /* DomainProfileViewController.swift */,
 				C63A350B28F0071B0057D34B /* DomainProfileViewController.xib */,
 				C6C4217529371428005B791B /* DomainProfileTutorial */,
@@ -6668,6 +6681,25 @@
 			path = CoinRecordsService;
 			sourceTree = "<group>";
 		};
+		C6D647962B1EF49400D724AC /* PurchaseDomainProfileTopInfoCell */ = {
+			isa = PBXGroup;
+			children = (
+				C6D647982B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift */,
+				C6D647992B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib */,
+			);
+			path = PurchaseDomainProfileTopInfoCell;
+			sourceTree = "<group>";
+		};
+		C6D647972B1EF49B00D724AC /* TopInfoCell */ = {
+			isa = PBXGroup;
+			children = (
+				C6D6479E2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift */,
+				C6E1189128F7D26900C6AD4D /* DomainProfileTopInfoCell */,
+				C6D647962B1EF49400D724AC /* PurchaseDomainProfileTopInfoCell */,
+			);
+			path = TopInfoCell;
+			sourceTree = "<group>";
+		};
 		C6D6E50A2817E65C008C66BB /* ImportWallet */ = {
 			isa = PBXGroup;
 			children = (
@@ -7360,6 +7392,7 @@
 				C664310528D8B85800A9C734 /* ConnectExternalWalletViewController.xib in Resources */,
 				C6D5DAD828374B4600379C38 /* ManageMultiChainDomainAddressesViewController.xib in Resources */,
 				C628E32F27FDA3270044E408 /* Inter-ExtraBold.ttf in Resources */,
+				C6D6479C2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */,
 				C6386847285C2D4E000F98C4 /* UpgradeToPolygonTutorial.xib in Resources */,
 				3046D390255C63A10099B482 /* Localizable.strings in Resources */,
 				C62C3FC1283F6E410094FC93 /* MintDomainsConfigurationViewController.xib in Resources */,
@@ -7609,6 +7642,7 @@
 				C6D647362B1ED9EF00D724AC /* PaymentTransactionGasOnlyCostView.xib in Resources */,
 				C6960C482B19986E00B79E28 /* HelveticaNeue-Custom.ttf in Resources */,
 				C6D646C92B1ED25F00D724AC /* EnterValueViewController.xib in Resources */,
+				C6D6479D2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.xib in Resources */,
 				C6D647172B1ED82E00D724AC /* CollectionViewShowHideCell.xib in Resources */,
 				C6D6477B2B1EE0ED00D724AC /* CropImageViewController.xib in Resources */,
 				C6D6459B2B1DBB1200D724AC /* DomainsCollectionGetDomainCardCell.xib in Resources */,
@@ -8348,6 +8382,7 @@
 				C606B73C2863545000DC562B /* MintingDomainsStorage.swift in Sources */,
 				C679B611291A591500F543A7 /* DomainProfileUpdatingRecordsCell.swift in Sources */,
 				299713C328F692AB00743003 /* ABIValue.swift in Sources */,
+				C6D6479F2B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */,
 				C6B435002A52884F00BC644B /* MessagingPrivateChatBlockingStatus.swift in Sources */,
 				C615E0D228891BC10082490B /* DomainsCollectionSearchEmptyCell.swift in Sources */,
 				C664B6602914FAC100A76154 /* DomainProfileNoSocialsCell.swift in Sources */,
@@ -8359,6 +8394,7 @@
 				C6A223C32869FE1E005C3267 /* SocialsDomainImagePreviewView.swift in Sources */,
 				C6DDF24E2B147F1A006D1F0B /* FlowLayoutView.swift in Sources */,
 				C6B6B023296D2CDC00D4E30F /* MintingDomain.swift in Sources */,
+				C6D6479A2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift in Sources */,
 				C6D5DAD028374B4600379C38 /* ManageMultiChainDomainAddressesViewPresenter.swift in Sources */,
 				C6DDF2512B147F1A006D1F0B /* UDButtonView.swift in Sources */,
 				306486D225273DD400388026 /* Storage.swift in Sources */,
@@ -8592,6 +8628,7 @@
 				C6A2D5B5285074DF00327C47 /* SignMessageRequestConfirmationView.swift in Sources */,
 				C64BCB762A6FA61F00EF8B47 /* XMTPServiceHelper.swift in Sources */,
 				C664310128D8B85800A9C734 /* ConnectExternalWalletViewController.swift in Sources */,
+				C6D647942B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift in Sources */,
 				C6526DFA29D32FC800D6F2EB /* WalletsEmptyStateCell.swift in Sources */,
 				C6B6B048297039E500D4E30F /* DateFormattingService.swift in Sources */,
 				C6109EA728E6B55A0027D5D8 /* AppearanceTheme.swift in Sources */,
@@ -8920,6 +8957,7 @@
 				C6960C542B19996700B79E28 /* PaymentConfiguration.swift in Sources */,
 				C6D645A92B1DBB2700D724AC /* UICollectionView.swift in Sources */,
 				C61808282B19AB550032E543 /* PreviewMessagingService.swift in Sources */,
+				C6D6479B2B1EF4B400D724AC /* PurchaseDomainProfileTopInfoCell.swift in Sources */,
 				C6D6464D2B1ED0F300D724AC /* DomainProfileWeb3WebsiteLoadingCell.swift in Sources */,
 				C6D645CE2B1DBD4100D724AC /* DashesProgressNavBarPushAnimation.swift in Sources */,
 				C6D645D32B1DBD4600D724AC /* CNavigationBarSlidePopAnimation.swift in Sources */,
@@ -8928,6 +8966,7 @@
 				C6D6459A2B1DBB1200D724AC /* DomainsCollectionGetDomainCardCell.swift in Sources */,
 				C6D645D22B1DBD4600D724AC /* CNavigationControllerSlidePopAnimation.swift in Sources */,
 				C6D647642B1EDEDA00D724AC /* ResizableRoundedWalletImageView.swift in Sources */,
+				C6D647A02B1EF4F200D724AC /* BaseDomainProfileTopInfoCell.swift in Sources */,
 				C61807EC2B19A6980032E543 /* PreviewUDWalletsService.swift in Sources */,
 				C6D647262B1ED91F00D724AC /* PullUpViewService+Tools.swift in Sources */,
 				C6D645B82B1DBC4300D724AC /* KeepingAnimationImageView.swift in Sources */,
@@ -9065,6 +9104,7 @@
 				C6D6464B2B1ED0F300D724AC /* ManageDomainRecordCell.swift in Sources */,
 				C6D647632B1EDED500D724AC /* ResizableRoundedWalletBadgeImageView.swift in Sources */,
 				C61808362B19AF0E0032E543 /* UILabel.swift in Sources */,
+				C6D647952B1EEEBE00D724AC /* PurchaseDomainDomainProfileViewPresenter.swift in Sources */,
 				C61808582B19BB3C0032E543 /* PreviewUDFeatureFlagsService.swift in Sources */,
 				C6D6471F2B1ED89A00D724AC /* ViewErrorHolder.swift in Sources */,
 				C6D646DA2B1ED33400D724AC /* SocialDescription.swift in Sources */,
