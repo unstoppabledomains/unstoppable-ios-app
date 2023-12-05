@@ -215,7 +215,6 @@ struct UDWallet: Codable, Hashable {
     
     static let mock: [UDWallet] = [.init(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e", address: "0xc4a748796805dfa42cafe0901ec182936584cc6e", type: .importedUnverified,
                                          mockingExternalWalletType: .Rainbow),
-                                   .init(aliasName: "Custom name", address: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52", type: .importedUnverified),
                                    .init(aliasName: "0xcA429897570aa7083a7D296CD0009FA286731ED2", address: "0xcA429897570aa7083a7D296CD0009FA286731ED2", type: .generatedLocally),
                                    .init(aliasName: "UD", address: "0x3d76FC25271e53e9B4adD854f27f99d3465d02AB", type: .generatedLocally)]
     
@@ -228,8 +227,6 @@ struct UDWallet: Codable, Hashable {
         switch address {
         case "0xc4a748796805dfa42cafe0901ec182936584cc6e":
             return "5e7885830346c1f2fa0d40b811b8948a311086e8fd84631ce56cc5b9ca7b28ca"
-        case "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52":
-            return "c903cc1198bbdbd54083e00dd078453fd2c42025ce61de5ba4b436a48a606061"
         case "0xcA429897570aa7083a7D296CD0009FA286731ED2":
             return "470ee355aafebd64e6ca23427d2c448cbdb8769927be85aa90904f715f844f97"
         case "0x3d76FC25271e53e9B4adD854f27f99d3465d02AB":
