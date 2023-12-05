@@ -213,10 +213,15 @@ enum WalletType: String, Codable {
 
 struct UDWallet: Codable, Hashable {
     
-    static let mock: [UDWallet] = [.init(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e", address: "0xc4a748796805dfa42cafe0901ec182936584cc6e", type: .importedUnverified,
-                                         mockingExternalWalletType: .Rainbow),
-                                   .init(aliasName: "0xcA429897570aa7083a7D296CD0009FA286731ED2", address: "0xcA429897570aa7083a7D296CD0009FA286731ED2", type: .generatedLocally),
-                                   .init(aliasName: "UD", address: "0x3d76FC25271e53e9B4adD854f27f99d3465d02AB", type: .generatedLocally)]
+    static let mock: [UDWallet] = [.init(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e", 
+                                         address: "0xc4a748796805dfa42cafe0901ec182936584cc6e",
+                                         type: .importedUnverified),
+                                   .init(aliasName: "0xcA429897570aa7083a7D296CD0009FA286731ED2", 
+                                         address: "0xcA429897570aa7083a7D296CD0009FA286731ED2",
+                                         type: .generatedLocally),
+                                   .init(aliasName: "UD", address: "0x3d76FC25271e53e9B4adD854f27f99d3465d02AB", 
+                                         type: .generatedLocally,
+                                         mockingExternalWalletType: .Rainbow)]
     
     var aliasName: String = ""
     var address: String = "0xc4a748796805dfa42cafe0901ec182936584cc6e"
