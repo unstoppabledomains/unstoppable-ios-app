@@ -129,9 +129,9 @@ extension DomainProfileViewController: DomainProfileViewProtocol, DomainProfileS
             confirmUpdateMainButton.isHidden = true
             confirmButtonsContainerStack.alignment = .center
             confirmButtonsContainerStackTopConstraint.constant = 0
-        case .main(let title):
+        case .main(let type):
             confirmUpdateMainButton.isHidden = false
-            confirmUpdateMainButton.setTitle(title, image: nil)
+            confirmUpdateMainButton.setTitle(type.title, image: nil)
             confirmUpdateButton.isHidden = true
             confirmButtonsContainerStack.alignment = .fill
             confirmButtonsContainerStackTopConstraint.constant = 16
@@ -670,6 +670,19 @@ extension DomainProfileViewController {
     
     enum ActionButtonStyle {
         case counter(Int)
-        case main(String)
+        case main(MainButtonType)
+        
+        enum MainButtonType {
+            case skip, confirm
+            
+            var title: String {
+                switch self {
+                case .skip:
+                    return String.Constants.skip.localized()
+                case .confirm:
+                    return String.Constants.confirm.localized()
+                }
+            }
+        }
     }
 }

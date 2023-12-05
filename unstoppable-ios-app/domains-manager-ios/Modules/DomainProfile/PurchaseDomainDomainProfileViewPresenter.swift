@@ -44,7 +44,7 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
 
     func viewDidLoad() {
         view?.setAvailableActionsGroups([])
-        view?.setConfirmButtonHidden(false, style: .main(String.Constants.skip.localized()))
+        resolveChangesState()
         updateSectionsData()
         refreshDomainProfileDetails(animated: true)
     }
@@ -62,7 +62,16 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
     }
     
     func shouldPopOnBackButton() -> Bool {
-        true
+        view?.hideKeyboard()
+        
+        let changes = calculateChanges()
+        if !changes.isEmpty {
+            askToDiscardChanges()
+            UDVibration.buttonTap.vibrate()
+            return false
+        }
+        
+        return true
     }
     
     func shareButtonPressed() { }
@@ -82,7 +91,7 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileSectionsControl
     
     func sectionDidUpdate(animated: Bool) {
         Task { @MainActor in
-//            resolveChangesState()
+            resolveChangesState()
             refreshDomainProfileDetails(animated: animated)
         }
     }
@@ -147,4 +156,29 @@ private extension PurchaseDomainDomainProfileViewPresenter {
         }
     }
     
+    func calculateChanges() -> [DomainProfileSectionChangeDescription] {
+        sections.reduce([DomainProfileSectionChangeDescription](), { $0 + $1.calculateChanges() })
+    }
+    
+    func resolveChangesState() {
+        let changes = calculateChanges()
+//        let isAnyFieldInvalid = sections.first(where: { !$0.areAllFieldsValid() }) != nil
+        view?.setConfirmButtonHidden(false,
+                                     style: .main(changes.count == 0 ? .skip : .confirm))
+    }
+    
+    func askToDiscardChanges() {
+        Task {
+            do {
+                guard let view = self.view else { return }
+                
+                try await appContext.pullUpViewService.showDiscardRecordChangesConfirmationPullUp(in: view)
+                await closeProfileScreen()
+            }
+        }
+    }
+    
+    func closeProfileScreen() async {
+        await view?.cNavigationController?.presentingViewController?.dismiss(animated: true)
+    }
 }
