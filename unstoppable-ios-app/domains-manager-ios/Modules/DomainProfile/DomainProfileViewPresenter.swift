@@ -92,7 +92,7 @@ extension DomainProfileViewPresenter: DomainProfileViewPresenterProtocol {
 
     @MainActor
     func viewDidLoad() {
-        view?.setConfirmButtonHidden(true, counter: 0)
+        view?.setConfirmButtonHidden(true, style: .counter(0))
         Task {
             let currencies = await coinRecordsService.getCurrencies()
             dataHolder.set(currencies: currencies)
@@ -1038,7 +1038,7 @@ private extension DomainProfileViewPresenter {
         }
         
         view?.setConfirmButtonHidden(isConfirmButtonHidden,
-                                     counter: changes.count)
+                                     style: .counter(changes.count))
     }
     
     @MainActor

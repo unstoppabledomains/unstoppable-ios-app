@@ -10,7 +10,7 @@ import SwiftUI
 
 @MainActor
 protocol DomainProfileViewProtocol: BaseDiffableCollectionViewControllerProtocol & DomainProfileSectionViewProtocol & ViewWithDashesProgress where Section == DomainProfileViewController.Section, Item == DomainProfileViewController.Item {
-    func setConfirmButtonHidden(_ isHidden: Bool, counter: Int)
+    func setConfirmButtonHidden(_ isHidden: Bool, style: DomainProfileViewController.ActionButtonStyle)
     func set(title: String?)
     func setAvailableActionsGroups(_ actionGroups: [DomainProfileActionsGroup])
     func setBackgroundImage(_ image: UIImage?)
@@ -33,7 +33,10 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
     @IBOutlet private weak var backgroundImageView: UIImageView!
     @IBOutlet private weak var backgroundImageBlurView: UIVisualEffectView!
     @IBOutlet private weak var confirmUpdateButton: FABCounterButton!
+    @IBOutlet private weak var confirmUpdateMainButton: RaisedWhiteButton!
     @IBOutlet private weak var confirmButtonGradientView: GradientView!
+    @IBOutlet private weak var confirmButtonsContainerStack: UIStackView!
+    @IBOutlet private weak var confirmButtonsContainerStackTopConstraint: NSLayoutConstraint!
     
     var cellIdentifiers: [UICollectionViewCell.Type] { [DomainProfileTopInfoCell.self,
                                                         DomainProfileGeneralInfoCell.self,
@@ -116,10 +119,23 @@ final class DomainProfileViewController: BaseViewController, TitleVisibilityAfte
 
 // MARK: - DomainProfileViewProtocol
 extension DomainProfileViewController: DomainProfileViewProtocol, DomainProfileSectionViewProtocol {
-    func setConfirmButtonHidden(_ isHidden: Bool, counter: Int) {
-        confirmUpdateButton.isHidden = isHidden
+    func setConfirmButtonHidden(_ isHidden: Bool, style: DomainProfileViewController.ActionButtonStyle) {
+        confirmButtonsContainerStack.isHidden = isHidden
         confirmButtonGradientView.isHidden = isHidden
-        confirmUpdateButton.setCounter(counter)
+        switch style {
+        case .counter(let counter):
+            confirmUpdateButton.isHidden = false
+            confirmUpdateButton.setCounter(counter)
+            confirmUpdateMainButton.isHidden = true
+            confirmButtonsContainerStack.alignment = .center
+            confirmButtonsContainerStackTopConstraint.constant = 0
+        case .main(let title):
+            confirmUpdateMainButton.isHidden = false
+            confirmUpdateMainButton.setTitle(title, image: nil)
+            confirmUpdateButton.isHidden = true
+            confirmButtonsContainerStack.alignment = .fill
+            confirmButtonsContainerStackTopConstraint.constant = 16
+        }
         setBottomContentInset()
     }
     
@@ -650,5 +666,10 @@ extension DomainProfileViewController {
         case copyDomain, viewWallet(subtitle: String), viewInBrowser, setReverseResolution(isEnabled: Bool)
         case aboutProfiles, mintedOn(chain: BlockchainType)
         case transfer
+    }
+    
+    enum ActionButtonStyle {
+        case counter(Int)
+        case main(String)
     }
 }

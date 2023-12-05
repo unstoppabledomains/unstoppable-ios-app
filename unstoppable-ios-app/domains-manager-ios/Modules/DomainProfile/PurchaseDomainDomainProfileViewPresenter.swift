@@ -44,8 +44,7 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
 
     func viewDidLoad() {
         view?.setAvailableActionsGroups([])
-//        view?.set(title: domain.name)
-        view?.setConfirmButtonHidden(true, counter: 0)
+        view?.setConfirmButtonHidden(false, style: .main(String.Constants.skip.localized()))
         updateSectionsData()
         refreshDomainProfileDetails(animated: true)
     }
@@ -57,7 +56,9 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
     }
     
     func confirmChangesButtonPressed() {
-        
+        Task {
+            try? await purchaseDomainsFlowManager?.handle(action: .didFillProfileForDomain(domain))
+        }
     }
     
     func shouldPopOnBackButton() -> Bool {

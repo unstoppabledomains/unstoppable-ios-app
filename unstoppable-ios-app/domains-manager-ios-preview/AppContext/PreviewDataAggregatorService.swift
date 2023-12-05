@@ -9,7 +9,7 @@ import Foundation
 
 struct DataAggregatorService: DataAggregatorServiceProtocol {
     func getWalletsWithInfo() async -> [WalletWithInfo] {
-        []
+        WalletWithInfo.mock
     }
     
     func getWalletsWithInfoAndBalance(for blockchainType: BlockchainType) async throws -> [WalletWithInfoAndBalance] {
