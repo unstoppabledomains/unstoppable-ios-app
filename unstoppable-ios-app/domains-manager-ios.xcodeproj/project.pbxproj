@@ -2180,7 +2180,6 @@
 		C61807C42B19A3580032E543 /* PreviewAppContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAppContext.swift; sourceTree = "<group>"; };
 		C61807C72B19A3920032E543 /* PreviewDataAggregatorService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDataAggregatorService.swift; sourceTree = "<group>"; };
 		C61807C92B19A3B00032E543 /* PullUpViewServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullUpViewServiceProtocol.swift; sourceTree = "<group>"; };
-		C61807CC2B19A3D80032E543 /* PreviewPullUpViewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPullUpViewService.swift; sourceTree = "<group>"; };
 		C61807D42B19A4450032E543 /* ExternalEventsServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalEventsServiceProtocol.swift; sourceTree = "<group>"; };
 		C61807D82B19A48F0032E543 /* PreviewAuthentificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewAuthentificationService.swift; sourceTree = "<group>"; };
 		C61807DC2B19A4D50032E543 /* PreviewUDWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewUDWallet.swift; sourceTree = "<group>"; };
@@ -4133,7 +4132,6 @@
 				C61808032B19A9A70032E543 /* PreviewNetworkReachabilityService.swift */,
 				C618083B2B19AFB70032E543 /* PreviewNotificationsService.swift */,
 				C618082D2B19AD870032E543 /* PreviewPersistedSignaturesStorage.swift */,
-				C61807CC2B19A3D80032E543 /* PreviewPullUpViewService.swift */,
 				C618082F2B19AD9D0032E543 /* PreviewStripeService.swift */,
 				C61808062B19A9D50032E543 /* PreviewToastMessageService.swift */,
 				C61808412B19B0AF0032E543 /* PreviewUDDomainsService.swift */,

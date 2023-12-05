@@ -17,6 +17,7 @@ final class PurchaseDomainDomainProfileViewPresenter: ViewAnalyticsLogger {
     private var profile: SerializedUserDomainProfile
     private let domain: DomainToPurchase
     private let domainDisplayInfoHolder: DomainDisplayInfoHolder
+    private var didDiscardChanges = false
     weak var purchaseDomainsFlowManager: PurchaseDomainsFlowManager?
 
     init(view: any DomainProfileViewProtocol,
@@ -63,6 +64,10 @@ extension PurchaseDomainDomainProfileViewPresenter: DomainProfileViewPresenterPr
     
     func shouldPopOnBackButton() -> Bool {
         view?.hideKeyboard()
+        
+        if didDiscardChanges {
+            return true
+        }
         
         let changes = calculateChanges()
         if !changes.isEmpty {
@@ -173,12 +178,10 @@ private extension PurchaseDomainDomainProfileViewPresenter {
                 guard let view = self.view else { return }
                 
                 try await appContext.pullUpViewService.showDiscardRecordChangesConfirmationPullUp(in: view)
-                await closeProfileScreen()
+                didDiscardChanges = true
+                await view.dismissPullUpMenu()
+                view.cNavigationController?.popViewController(animated: true)
             }
         }
-    }
-    
-    func closeProfileScreen() async {
-        await view?.cNavigationController?.presentingViewController?.dismiss(animated: true)
     }
 }
