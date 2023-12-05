@@ -213,7 +213,8 @@ enum WalletType: String, Codable {
 
 struct UDWallet: Codable, Hashable {
     
-    static let mock: [UDWallet] = [.init(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e", address: "0xc4a748796805dfa42cafe0901ec182936584cc6e", type: .importedUnverified),
+    static let mock: [UDWallet] = [.init(aliasName: "0xc4a748796805dfa42cafe0901ec182936584cc6e", address: "0xc4a748796805dfa42cafe0901ec182936584cc6e", type: .importedUnverified,
+                                         mockingExternalWalletType: .Rainbow),
                                    .init(aliasName: "Custom name", address: "0x537e2EB956AEC859C99B3e5e28D8E45200C4Fa52", type: .importedUnverified),
                                    .init(aliasName: "0xcA429897570aa7083a7D296CD0009FA286731ED2", address: "0xcA429897570aa7083a7D296CD0009FA286731ED2", type: .generatedLocally),
                                    .init(aliasName: "UD", address: "0x3d76FC25271e53e9B4adD854f27f99d3465d02AB", type: .generatedLocally)]
@@ -240,12 +241,15 @@ struct UDWallet: Codable, Hashable {
     var walletState: WalletState {
         return self.isExternalConnectionActive ? .externalLinked : .verified
     }
+    
+    
+    var mockingExternalWalletType: ExternalWalletMake?
     var isExternalConnectionActive: Bool {
-        false
+        mockingExternalWalletType != nil
     }
     
     func getExternalWallet() -> ExternalWalletMake? {
-        nil
+        mockingExternalWalletType
     }
 }
 

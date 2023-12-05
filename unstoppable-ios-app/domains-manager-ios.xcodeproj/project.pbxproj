@@ -1361,6 +1361,8 @@
 		C6D6463B2B1DC50600D724AC /* AppReviewActionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646392B1DC50400D724AC /* AppReviewActionEvent.swift */; };
 		C6D6463C2B1DC53700D724AC /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C674598E280E9CA20074CBE5 /* WebViewController.swift */; };
 		C6D646432B1DC70000D724AC /* PreviewDomainsCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646422B1DC70000D724AC /* PreviewDomainsCollectionViewController.swift */; };
+		C6D646452B1E084C00D724AC /* ViewPullUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646442B1E084C00D724AC /* ViewPullUp.swift */; };
+		C6D646462B1E084F00D724AC /* ViewPullUp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D646442B1E084C00D724AC /* ViewPullUp.swift */; };
 		C6D6E4D42817BD4B008C66BB /* TutorialViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */; };
 		C6D6E4D92817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */; };
 		C6D6E4DE2817BF09008C66BB /* OnboardingProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */; };
@@ -2643,6 +2645,7 @@
 		C6D6462F2B1DC36F00D724AC /* PreviewUDRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewUDRouter.swift; sourceTree = "<group>"; };
 		C6D646392B1DC50400D724AC /* AppReviewActionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppReviewActionEvent.swift; sourceTree = "<group>"; };
 		C6D646422B1DC70000D724AC /* PreviewDomainsCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDomainsCollectionViewController.swift; sourceTree = "<group>"; };
+		C6D646442B1E084C00D724AC /* ViewPullUp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPullUp.swift; sourceTree = "<group>"; };
 		C6D6E4D32817BD4B008C66BB /* TutorialViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4D82817BDBD008C66BB /* OnboardingCreateWalletPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingCreateWalletPresenter.swift; sourceTree = "<group>"; };
 		C6D6E4DD2817BF09008C66BB /* OnboardingProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingProtocols.swift; sourceTree = "<group>"; };
@@ -5637,6 +5640,7 @@
 				C69F99162A9F1264004B1958 /* ClearListBackground.swift */,
 				C6DF46262AA18F8900D124E7 /* DisplayError.swift */,
 				C6D645792B1D7C2F00D724AC /* PullUpError.swift */,
+				C6D646442B1E084C00D724AC /* ViewPullUp.swift */,
 				C69F99182A9F1264004B1958 /* SideInsets.swift */,
 				C6289A462AAB06F9002C2DEC /* SquareFrame.swift */,
 				C6DDF2582B147F5E006D1F0B /* UDSubtitleText.swift */,
@@ -7815,6 +7819,7 @@
 				C6B366D72A1C715000DE512B /* PushRESTAPIService.swift in Sources */,
 				C6F060C42ACAA35B00BA2E7E /* MessagingService+Tools.swift in Sources */,
 				C69F997B2A9F2206004B1958 /* PublicProfileViewModel.swift in Sources */,
+				C6D646452B1E084C00D724AC /* ViewPullUp.swift in Sources */,
 				C62C3FC6283F70970094FC93 /* SelectorButton.swift in Sources */,
 				C609824B2823F89C00546392 /* CreateBackupPasswordForNewLocalWalletPresenter.swift in Sources */,
 				C696989C2ACC043A0000738C /* MessagingCommunitiesChatDetails.swift in Sources */,
@@ -8553,6 +8558,7 @@
 				C618082B2B19AD6C0032E543 /* UDFeatureFlagsServiceProtocol.swift in Sources */,
 				C6D645D12B1DBD4600D724AC /* CNavigationBarSlidePushAnimation.swift in Sources */,
 				C61808202B19AB1B0032E543 /* PurchaseDomainsCheckoutData.swift in Sources */,
+				C6D646462B1E084F00D724AC /* ViewPullUp.swift in Sources */,
 				C6D645F02B1DBEC200D724AC /* TitleVisibilityAfterLimitNavBarScrollingBehaviour.swift in Sources */,
 				C6D645D92B1DBD4900D724AC /* CNavigationControllerDefaultNavigationBarPopAnimation.swift in Sources */,
 				C6D645E02B1DBD8400D724AC /* BaseViewControllerProtocol.swift in Sources */,
@@ -9118,7 +9124,7 @@
 		C6960C2A2B1993A100B79E28 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Preview";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -9131,6 +9137,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "domains-manager-ios-preview/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "UD Preview";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -9159,7 +9166,7 @@
 		C6960C2B2B1993A100B79E28 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Preview";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -9172,6 +9179,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "domains-manager-ios-preview/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "UD Preview";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -9199,7 +9207,7 @@
 		C6960C2C2B1993A100B79E28 /* Testflight Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Preview";
 				ASSETCATALOG_COMPILER_GENERATE_ASSET_SYMBOLS = YES;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -9212,6 +9220,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "domains-manager-ios-preview/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "UD Preview";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

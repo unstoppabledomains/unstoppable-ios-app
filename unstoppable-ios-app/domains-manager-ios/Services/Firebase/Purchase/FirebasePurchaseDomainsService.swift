@@ -75,7 +75,9 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
         do {
             return try await super.makeFirebaseAPIDataRequest(apiRequest)
         } catch {
-            cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+            if !domainsToPurchase.isEmpty {
+                cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+            }
             throw error
         }
     }
@@ -89,7 +91,9 @@ final class FirebasePurchaseDomainsService: BaseFirebaseInteractionService {
                                                                        using: keyDecodingStrategy,
                                                                        dateDecodingStrategy: dateDecodingStrategy)
         } catch {
-            cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+            if !domainsToPurchase.isEmpty {
+                cartStatus = .failedToLoadCalculations(refreshUserCartAsync)
+            }
             throw error
         }
     }
@@ -131,6 +135,7 @@ extension FirebasePurchaseDomainsService: PurchaseDomainsServiceProtocol {
     func authoriseWithWallet(_ wallet: UDWallet, toPurchaseDomains domains: [DomainToPurchase]) async throws {
         isAutoRefreshCartSuspended = true
         cartStatus = .ready(cart: .empty)
+        self.domainsToPurchase = []
         await logout()
         do {
             try await firebaseAuthService.authorizeWith(wallet: wallet)

@@ -10,69 +10,35 @@ import SwiftUI
 struct PullUpError: ViewModifier {
 
     @Binding var error: PullUpErrorConfiguration?
-    var isShowingError: Binding<Bool> {
+    var configuration: Binding<ViewPullUpConfiguration?> {
         Binding {
-            error != nil
+            if let error {
+                return createPullUpConfigurationFor(error: error)
+            }
+            return nil
         } set: { _ in
             error = nil
         }
     }
     
     func body(content: Content) -> some View {
-        content
-            .sheet(isPresented: isShowingError, content: {
-                if #available(iOS 16.0, *) {
-                    errorContentView()
-                        .presentationDetents([.height(error?.height ?? 370)])
-                } else {
-                    errorContentView()
-                }
-            })
+        content.viewPullUp(configuration)
     }
     
-    @ViewBuilder
-    private func errorContentView() -> some View {
-        if let error {
-            VStack(spacing: 16) {
-                RoundedRectangle(cornerRadius: 2)
-                    .frame(width: 40, height: 4)
-                    .foregroundStyle(Color.foregroundSubtle)
-                Image.infoIcon
-                    .resizable()
-                    .squareFrame(40)
-                    .foregroundStyle(Color.foregroundDanger)
-                    .padding(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 0))
-                VStack(spacing: 8) {
-                    Text(error.title)
-                        .font(.currentFont(size: 22, weight: .bold))
-                        .foregroundStyle(Color.foregroundDefault)
-                    Text(error.subtitle)
-                        .font(.currentFont(size: 16))
-                        .foregroundStyle(Color.foregroundSecondary)
-                }
-                .multilineTextAlignment(.center)
-                
-                UDButtonView(text: error.primaryAction.title,
-                             style: .large(.raisedPrimary),
-                             callback: { closeAndPassCallback(error.primaryAction.callback) })
-                .padding(EdgeInsets(top: 14, leading: 0, bottom: 0, trailing: 0))
-                
-                if let secondaryAction = error.secondaryAction {
-                    UDButtonView(text: secondaryAction.title,
-                                 style: .large(.ghostPrimary),
-                                 callback: { closeAndPassCallback(secondaryAction.callback) })
-                }
-                Spacer()
-            }
-            .padding()
-        }
-    }
-    
-    private func closeAndPassCallback(_ callback: @escaping EmptyCallback) {
-        error = nil
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            callback()
-        }
+    private func createPullUpConfigurationFor(error: PullUpErrorConfiguration) -> ViewPullUpConfiguration {
+        ViewPullUpConfiguration(icon: .init(icon: .infoIcon, size: .small,
+                                            tintColor: .foregroundDanger),
+                                title: .text(error.title),
+                                subtitle: .label(.text(error.subtitle)),
+                                actionButton: .main(content: .init(title: error.primaryAction.title,
+                                                                   icon: nil,
+                                                                   analyticsName: .clear,
+                                                                   action: error.primaryAction.callback)),
+                                extraButton: error.secondaryAction == nil ? nil : .secondary(content: .init(title: error.secondaryAction!.title,
+                                                                                                            icon: nil,
+                                                                                                            analyticsName: .clear,
+                                                                                                            action: error.secondaryAction?.callback)),
+                                dismissAble: error.dismissAble)
     }
 }
 
@@ -87,7 +53,7 @@ struct PullUpErrorConfiguration {
     let subtitle: String
     let primaryAction: ActionConfiguration
     var secondaryAction: ActionConfiguration? = nil
-    var height: CGFloat = 370
+    var dismissAble: Bool = true
     
     struct ActionConfiguration {
         let title: String
